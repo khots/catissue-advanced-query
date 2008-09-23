@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config
+PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+"http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<struts-config>
+	
+	<form-beans>
+		<!--Query-->		
+		<form-bean name="categorySearchForm" type="edu.wustl.query.actionForm.CategorySearchForm"/>
+		<!--<form-bean name="advanceSearchForm" type="edu.wustl.query.actionForm.AdvanceSearchForm"/> --> 
+		<form-bean name="saveQueryForm" type="edu.wustl.query.actionForm.querysuite.SaveQueryForm"/>
+				
+	</form-beans>
+	
+	<!-- Global Exception Definitions -->
+	<global-exceptions>
+		<exception
+			type="edu.wustl.common.exception.UserNotAuthenticatedException"
+			key="" scope="request" path=".catissuecore.redirectToLoginPageDef" />
+		<exception
+			handler="edu.wustl.common.util.CommonExceptionHandler"
+			key="" scope="request" type="java.lang.Exception"
+			path=".catissuecore.errorPageDef" />
+	</global-exceptions>
+	
+	<action-mappings>
+	
+		
+		<action path="/Home"
+					type="edu.wustl.catissuecore.action.ForwardAction">
+		 			<forward name="success" path=".catissuecore.homePageDef" /> 
+		</action>
+		
+		<action path="/RedirectHome"
+					type="org.apache.struts.actions.ForwardAction"
+					parameter=".catissuecore.mainTitlePageDef" />
+		
+		<action path="/Search"
+					type="edu.wustl.catissuecore.action.ForwardAction">
+					<forward name="success" path=".catissuecore.searchHomeDef" />
+		</action>
+		
+		<action path="/ContactUs" type="edu.wustl.common.action.ApplicationFooterAction">
+            <forward name="success" path=".catissuecore.contactUsDef"/>
+            <forward name="failure" path=".catissuecore.errorPageDef"/>
+		</action>
+
+		<action path="/Accessibility" type="edu.wustl.common.action.ApplicationFooterAction">
+            <forward name="success" path=".catissuecore.accessibilityDef"/>
+            <forward name="failure" path=".catissuecore.errorPageDef"/>
+		</action>
+
+		<action path="/Disclaimer" type="edu.wustl.common.action.ApplicationFooterAction">
+            <forward name="success" path=".catissuecore.disclaimerDef"/>
+            <forward name="failure" path=".catissuecore.errorPageDef"/>
+		</action>
+		
+		<action path="/PrivacyNotice" type="edu.wustl.common.action.ApplicationFooterAction">
+            <forward name="success" path=".catissuecore.privacyNoticeDef"/>
+            <forward name="failure" path=".catissuecore.errorPageDef"/>
+		</action>
+		
+        <action path="/Summary" type="edu.wustl.catissuecore.action.SummaryAction" name="summaryForm">
+        	<forward name="success" path=".catissuecore.summaryHomeDef" />
+            <forward name="failure" path=".catissuecore.homePageDef" />
+		</action>
+				
+        <action path="/Help" type="org.apache.struts.actions.ForwardAction"
+                    parameter=".catissuecore.helpHomeDef" />
+                    
+		<action path="/LoggedInSummary" type="edu.wustl.catissuecore.action.SummaryAction">
+        	<forward name="success" path=".catissuecore.summaryLoggedInDef" />
+            <forward name="failure" path=".catissuecore.homePageDef" />
+		 </action>
+
+         <action path="/LoggedInHelp"
+                    type="org.apache.struts.actions.ForwardAction"
+                    parameter=".catissuecore.helpLoggedInDef" />
+                   
+        <action path="/RedirectToHelp"  type="edu.wustl.catissuecore.action.RedirectToHelpAction" >
+        	<forward name="success" path=".catissuecore.RedirectToHelp" />
+        </action> 
+        
+        <!--Suite-->	
+			
+		
+	<!--Added by Deepti -define array end-->
+	<!-- Action code : Query Module Starts : 06/11/06 -->
+		<action path="/QueryWizard"
+			type="edu.wustl.query.action.QueryWizardAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.searchCategory"/>
+		</action>
+		<action path="/SearchCategory"
+			type="edu.wustl.query.action.CategorySearchAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.searchCategory"/>
+		</action>
+		<action path="/ValidateQuery"
+			type="edu.wustl.query.action.ValidateQueryAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.searchCategory"/>
+		</action>
+		<action path="/LoadSaveQueryPage"
+            type="edu.wustl.query.action.LoadSaveQueryPageAction"
+            name="saveQueryForm"
+            validate="false"
+            scope="request">
+            <forward name="success" path="/pages/content/search/querysuite/SavedQueryConditionPage.jsp"/>
+        </action>
+        <action path="/SaveQueryAction"
+			type="edu.wustl.query.action.SaveQueryAction"
+			name="saveQueryForm"
+			validate="true"
+			input="/LoadSaveQueryPage.do"
+			scope="request">
+			<forward name="success" path="/LoadSaveQueryPage.do"/>
+			<forward name="failure" path="/LoadSaveQueryPage.do"/>
+		</action>
+		<action path="/RetrieveQueryAction"
+			type="edu.wustl.query.action.RetrieveQueryAction"
+			name="saveQueryForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.queryViewPageDef"/>
+			<forward name="failure" path=".catissuecore.errorPageDef"/>
+		</action>
+		<action path="/ExecuteQueryAction"
+			type="edu.wustl.query.action.ExecuteQueryAction"
+			name="saveQueryForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.viewSearchResults"/>
+			<forward name="treeNodeLimitExceededRecords" path="/OpenDecisionMakingPage.do" />			
+			<forward name="failure" path="/RetrieveQueryAction.do"/>
+			<forward name="InvalidValues" path="/FetchQuery.do"/>
+		</action>
+		<action path="/DeleteQuery"
+			type="edu.wustl.query.action.DeleteQueryAction"
+			validate="false"
+			scope="request">
+			<forward name="success" path="/RetrieveQueryAction.do"/>
+			<forward name="failure" path="/RetrieveQueryAction.do"/>
+		</action>
+		<action path="/FetchQuery"
+			type="edu.wustl.query.action.FetchQueryAction"
+			name="saveQueryForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.collectQueryParameter"/>
+			<forward name="failure" path="/RetrieveQueryAction.do"/>
+			<forward name="executeQuery" path="/ExecuteQueryAction.do"/>
+		</action>
+		<action path="/loadDefineSearchRules"
+			type="edu.wustl.query.action.LoadDefineSearchRulesAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.searchCategory"/>
+		</action>
+		<action path="/ViewSearchResultsJSPAction"
+			type="edu.wustl.query.action.ViewSearchResultsJSPAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.viewSearchResults"/>
+			<forward name="failure" path=".catissuecore.errorPageDef"/>
+	
+		</action>
+		<action path="/DefineSearchResultsView"
+			type="edu.wustl.query.action.DefineSearchResultsViewAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.defineSearchResultsView"/>
+			<forward name="BuildNewTree" path=".catissuecore.defineSearchResultsViewBNT"/>
+		</action>
+		
+		<action path="/BuildCustomizeTree"
+			type="edu.wustl.catissuecore.action.querysuite.BuildCustomizeTreeAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.defineSearchResultsViewBNT"/>			
+		</action>
+		<action path="/BuildQueryOutputTree"
+			type="edu.wustl.query.action.BuildQueryOutputTreeAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.defineSearchResultsViewBNT"/>			
+		</action>
+		<action path="/ShowGrid"
+			type="edu.wustl.query.action.ShowGridAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.queryResultsSpreadsheetViewDef" />
+			<forward name="failure" path="/pages/content/search/querysuite/UserNotAuthorised.jsp"/>
+		</action>
+		<action path="/BuildQueryOutputSpreadsheet"
+			type="edu.wustl.catissuecore.action.querysuite.BuildQueryOutputSpreadsheetAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.defineSearchResultsViewBNT"/>			
+		</action>
+		<action path="/DefineQueryResultsView"
+			type="edu.wustl.query.action.DefineQueryResultsViewAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.defineQueryResultsView"/>			
+		</action>
+		
+		<action path="/ConfigureGridView"
+			type="edu.wustl.query.action.ConfigureGridViewAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.queryResultsSpreadsheetViewDef"/>			
+		</action>
+		<action path="/OpenDecisionMakingPage"
+			type="edu.wustl.query.action.OpenDecisionMakingPageAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.openDecisionMakingPage"/>		
+			<forward name="viewAllRecords" path=".catissuecore.viewSearchResults"/>		
+		</action>
+								
+	<!--Commented out By Baljeet as it is related to Shopping Cart -->
+	<!--	<action path="/ViewCart"
+			type="edu.wustl.catissuecore.action.querysuite.ViewCartAction"
+			name="advanceSearchForm"
+			validate="false"
+			scope="request">
+			<forward name="view" path=".catissuecore.shoppingCartDef" />
+			<forward name="differentCartView" path=".catissuecore.queryResultsSpreadsheetViewDef" />
+			<forward name="access_denied" path=".catissuecore.searchHomeDef" />
+		</action>
+		
+	-->	
+		
+		
+	<!--	<action path="/ExportCart"
+			type="edu.wustl.catissuecore.action.querysuite.ExportCartAction"
+			name="advanceSearchForm"
+			validate="false"
+			scope="request">			
+			<forward name="shoppingCartExport" path=".catissuecore.shoppingCartDef" />
+     		<forward name="access_denied" path=".catissuecore.searchHomeDef" />
+		</action>
+	-->	
+		
+	<!--	<action path="/AddDeleteCart"
+			type="edu.wustl.catissuecore.action.querysuite.AddDeleteCartAction"
+			name="advanceSearchForm"
+			validate="false"
+			scope="request">
+			<forward name="shoppingCartAdd" path=".catissuecore.queryResultsSpreadsheetViewDef" />
+			<forward name="duplicateObject" path=".catissuecore.queryResultsSpreadsheetViewDef" />
+			<forward name="shoppingCartDelete" path=".catissuecore.shoppingCartDef" />
+			<forward name="access_denied" path=".catissuecore.searchHomeDef" />
+		</action>
+	-->
+		
+	<!--	<action path="/BulkCart"
+			type="edu.wustl.catissuecore.action.querysuite.BulkCartAction"
+			name="advanceSearchForm"
+			validate="false"
+			scope="request">
+			<forward name="requestToOrder" path="/RequestToOrder.do"/>
+			<forward name="bulkTransfers" path="/BulkTransferEvents.do?menuSelected=15"/>
+			<forward name="bulkDisposals" path="/BulkDisposalEvents.do?menuSelected=15"/>
+			<forward name="createShipmentRequest" path="/ProcessMyListCreateShipmentRequest.do?menuSelected=15"/>
+			<forward name="createShipment" path="/ProcessMyListCreateShipment.do?menuSelected=15"/>
+			<forward name="editMultipleSp" path="/MultipleSpecimenFlexInitAction.do?operation=edit"/>
+			<forward name="access_denied" path=".catissuecore.searchHomeDef" />
+			<forward name="access_denied" path=".catissuecore.searchHomeDef" />
+		</action>
+	-->	
+		
+	<!--	<action path="/AddSpecimenToCart"
+			type="edu.wustl.catissuecore.action.NewShopingCartAction"
+			name="newSpecimenForm"
+			validate="false"
+			scope="request">
+			<forward name="pageOfNewSpecimen" path="/QuerySpecimenSearch.do?pageOf=pageOfNewSpecimenCPQuery" />
+			<forward name="pageOfEditSpecimen" path="/NewSpecimen.do?pageOf=pageOfNewSpecimen" />
+		</action>
+	-->	
+	<!--	
+		<action path="/AddScgToCart"
+			type="edu.wustl.catissuecore.action.NewShopingCartAction"
+			name="viewSpecimenSummaryForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path="/redirecttoSCG.do" />	
+		</action>
+	-->
+	
+	<!--		<action path="/AddMltipleSpecimenToCart"
+			type="edu.wustl.catissuecore.action.NewShopingCartAction"
+			name="viewSpecimenSummaryForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path="/pages/AnticipatorySpecimens.jsp" />	
+			<forward name="multipleSpWithMenu" path=".catissuecore.viewSpecimenSummary" />	
+			<forward name="failure" path="/pages/AnticipatorySpecimens.jsp" />
+			<forward name="multipleSpWithMenuFaliure" path=".catissuecore.viewSpecimenSummary" />
+			<forward name="printMultiple" path="/printMultiple.do" />
+		</action>
+	-->	
+		
+	<!--	<action path="/AddDeriveSpecimenToCart"
+			type="edu.wustl.catissuecore.action.NewShopingCartAction"
+			name="createSpecimenForm"
+			validate="false"
+			scope="request">
+			<forward name="pageOfNewSpecimen" path="/QuerySpecimenSearch.do?operation=search&amp;pageOf=pageOfNewSpecimenCPQuery&amp;id=0" />
+		</action>
+		-->
+		
+	<!--	<action path="/AddAliquotSpecimenToCart"
+			type="edu.wustl.catissuecore.action.NewShopingCartAction"
+			name="aliquotForm"
+			validate="false"
+			scope="request">
+			<forward name="pageOfNewSpecimen" path=".catissuecore.aliquotSummaryCpQueryDef" />
+		</action>
+	-->
+		<action path="/QueryMessageAction"
+			type="edu.wustl.query.action.QueryMessageAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".catissuecore.searchCategory"/>
+		</action>
+		
+		<!-- Applet Action mapping for query Module -->
+	<!--	<action path="/ViewSearchResultsAction" 
+			type="edu.wustl.catissuecore.action.querysuite.ViewSearchResultsAction" 
+			parameter="method">
+		<forward name="success" path=".catissuecore.viewSearchResults"/>
+		</action>
+	-->	
+		<!--
+		<action path="/addToLimitSet" 
+			type="edu.wustl.catissuecore.action.querysuite.AddToLimitSetAction" 
+			parameter="method">
+		</action>
+		-->
+	<!--
+		<action path="/PathFinderAction" 
+			type="edu.wustl.catissuecore.action.querysuite.PathFinderAction" 
+			parameter="method">
+		</action>
+		<action path="/getDagViewDataAction" 
+			type="edu.wustl.catissuecore.action.querysuite.GetDagViewDataAction" 
+			parameter="method">
+		</action>
+    -->
+    		
+		<!-- Action code : Query Module changes for pagination starts : 20/07/2007 -->
+		
+		<action path="/QueryTreeView"
+			type="edu.wustl.query.action.QueryTreeViewAction">
+			<forward name="success" path=".catissuecore.queryTreeViewDef" />
+		</action>
+		
+		<action path="/QueryGridView"
+			type="edu.wustl.query.action.QueryGridViewAction">
+			<forward name="success" path=".catissuecore.queryResultsSpreadsheetViewDef" />
+		</action>
+		<!-- Action code : Query Module changes for pagination ends : 20/07/2007 -->		
+		
+		<!-- Action code : Query Module Ends : 06/11/06 -->	
+
+
+	   <action path="/ComboDataAction" type="edu.wustl.catissuecore.action.ComboDataAction" scope="request"/>					
+
+	</action-mappings>
+	
+	<controller processorClass="edu.wustl.common.struts.ApplicationRequestProcessor" />
+	
+	<message-resources parameter="ApplicationResources" />
+	
+	<plug-in className="org.apache.struts.tiles.TilesPlugin" >
+		<set-property property="definitions-config"
+		value="/WEB-INF/tiles-defs.xml" />
+		<set-property property="moduleAware" value="true" />
+		<set-property property="definitions-parser-validate" value="true" />
+	</plug-in>
+</struts-config>
