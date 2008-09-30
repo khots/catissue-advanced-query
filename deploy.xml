@@ -978,11 +978,12 @@ Thanking You,
 
 		<unwar src="${base.dir}/query.war" dest="${temp.dir}/query" />
 
-		<copy file="${base.dir}/DE_conf/hibernate.cfg.xml" todir="${temp.dir}/query/WEB-INF/classes" overwrite="true" />
+		<copy file="${base.dir}/DE_conf/QueryHibernate.cfg.xml" todir="${temp.dir}/query/WEB-INF/classes" overwrite="true" />
 		<copy file="${base.dir}/DE_conf/DynamicExtensionsHibernate.cfg.xml" todir="${temp.dir}/query/WEB-INF/classes" overwrite="true" />
 
 		<echo>Configuring logger ...</echo>
-		<antcall target="configure_log4j" />
+		<!--<antcall target="configure_log4j" /> -->
+		
 		<if>
 			<equals arg1="mysql" arg2="${database.type}" />
 			<then>
@@ -1005,12 +1006,14 @@ Thanking You,
 				</then>
 			</elseif>
 		</if>
+		<echo>Replacing ...</echo>
 		<replace dir="${temp.dir}/query/WEB-INF/classes">
 			<include name="*.cfg.xml" />
 			<replacefilter token="@@DATABASE_USERNAME@@" value="${database.username}" />
-			<replacefilter token="${token.database.password}" value="${database.password}" />
+			<replacefilter token="@@DATABASE_PASSWORD@@" value="${database.password}" />
 		</replace>
 
+		<echo>Importing</echo>
 		<java classname="edu.wustl.query.annotations.xmi.ImportXmi" fork="true">
 			<arg value="${filename}" />
 			<arg value="${hookentity}" />
@@ -1020,21 +1023,29 @@ Thanking You,
 			
 			<classpath>
 				<pathelement location="${temp.dir}/query/WEB-INF/classes" />
-				<fileset dir="${temp.dir}/query/WEB-INF/lib">
+				<!--fileset dir="${temp.dir}/query/WEB-INF/lib">
 					<include name="*.jar" />
 					<exclude name="uml-1.3.jar" />
-				</fileset>
+				</fileset -->
 				<fileset dir="${lib.dir}">
-						<include name="*.jar" />
-				</fileset>
+						<include name="*.jar" /> 
+					   <!--exclude name="commonpackage.jar" />
+					   <exclude name="washu-commons.jar" /-->
+					   <exclude name="uml-1.3.jar" />
+				</fileset>  	
+				
+				<fileset dir="${jboss.server.url}/lib">
+						<include name="jboss-j2ee.jar" /> 
+				</fileset>  	
+				
 			</classpath>
 		</java>
 
-		<delete includeemptydirs="true">
+		<!--delete includeemptydirs="true">
 			<fileset dir="${temp.dir}/query">
 				<include name="**/*" />
 			</fileset>
-		</delete>
+		</delete --> 
 	</target>
 
 
