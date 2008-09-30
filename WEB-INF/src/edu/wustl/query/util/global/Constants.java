@@ -401,4 +401,18 @@ public class Constants extends edu.wustl.common.util.global.Constants
 
 	public static final String SearchCategory = "SearchCategory.do";
 	public static final String DefineSearchResultsViewJSPAction = "ViewSearchResultsJSPAction.do";
+	public static final String NAME = "name";
+	public static final String TREE_VIEW_FRAME = "treeViewFrame";
+    public static final String QUERY_TREE_VIEW_ACTION = "QueryTreeView.do";
+    public static final String QUERY_GRID_VIEW_ACTION = "QueryGridView.do";
+    public static final String GRID_DATA_VIEW_FRAME = "gridFrame";
+    public static final String PAGE_NUMBER = "pageNum";
+    public static final String TOTAL_RESULTS = "totalResults";
+    public static final String RESULTS_PER_PAGE = "numResultsPerPage";
+    public static final String SPREADSHEET_COLUMN_LIST = "spreadsheetColumnList";
+    public static final String PAGE_OF = "pageOf";
+    
+    public static final String SPREADSHEET_EXPORT_ACTION = "SpreadsheetExport.do";
+    public static final int[] RESULT_PERPAGE_OPTIONS = {10,50,100,500,1000};
+    public static final String PAGE_OF_PARTICIPANT_CP_QUERY = "pageOfParticipantCPQuery";
 }
