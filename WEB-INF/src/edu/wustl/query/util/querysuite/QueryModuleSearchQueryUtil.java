@@ -87,11 +87,11 @@ public class QueryModuleSearchQueryUtil
 				}
 				if (queryDetailsObj.getSessionData() != null)
 				{
-				QueryOutputTreeBizLogic outputTreeBizLogic = auditQuery();		
-				boolean hasCondOnIdentifiedField = edu.wustl.common.querysuite
-					.security.utility.Utility.isConditionOnIdentifiedField(query);
-				setDataInSession(option, outputTreeBizLogic, hasCondOnIdentifiedField);
-			    }
+					QueryOutputTreeBizLogic outputTreeBizLogic = auditQuery();		
+					boolean hasCondOnIdentifiedField = edu.wustl.common.querysuite
+						.security.utility.Utility.isConditionOnIdentifiedField(query);
+					setDataInSession(option, outputTreeBizLogic, hasCondOnIdentifiedField);
+				}
 		}
 		catch (QueryModuleException e) 
 		{
@@ -189,23 +189,29 @@ public class QueryModuleSearchQueryUtil
 		QueryOutputTreeBizLogic outputTreeBizLogic = new QueryOutputTreeBizLogic();		
 		try
 		{
-			queryBizLogic = (QueryBizLogic)AbstractBizLogicFactory.getBizLogic(
+			//Commneted out By Baljeet......
+			/*queryBizLogic = (QueryBizLogic)AbstractBizLogicFactory.getBizLogic(
 			    	ApplicationProperties.getValue("app.bizLogicFactory"),
-					"getBizLogic", Constants.QUERY_INTERFACE_ID);
+					"getBizLogic", Constants.QUERY_INTERFACE_ID);*/
 			String selectSql = (String)session.getAttribute(Constants.SAVE_GENERATED_SQL);		
-			queryBizLogic.insertQuery(selectSql, queryDetailsObj.getSessionData());
+			
+			//Commneted out By Baljeet......
+			//queryBizLogic.insertQuery(selectSql, queryDetailsObj.getSessionData());*/
 			outputTreeBizLogic.createOutputTreeTable(selectSql, queryDetailsObj);
 		}
-		catch (BizLogicException e)
+		//Commneted out By Baljeet......
+		/*catch (BizLogicException e)
 		{
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
 			throw queryModExp;
-		}
-		catch (ClassNotFoundException e) 
+		}*/
+		
+		
+		/*catch (ClassNotFoundException e) 
 		{
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.CLASS_NOT_FOUND);
 			throw queryModExp;
-		}
+		}*/
 		catch (DAOException e)
 		{
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
