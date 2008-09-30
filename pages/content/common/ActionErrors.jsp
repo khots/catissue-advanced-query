@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@ page import="edu.wustl.catissuecore.util.global.Constants"%>
+<%@ page import="edu.wustl.query.util.global.Constants"%>
 <%@ page import="org.apache.struts.action.Action"%>
 <%@ page import="org.apache.struts.action.ActionError"%>
 <%@ page import="edu.wustl.common.util.global.ApplicationProperties"%>

@@ -1,13 +1,13 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/struts-bean.tld"  prefix="bean" %>
 <%@ taglib uri="/WEB-INF/PagenationTag.tld" prefix="custom" %>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Hashtable"%>
-<%@ page import="edu.wustl.catissuecore.actionForm.AdvanceSearchForm"%>
-<%@ page import="edu.wustl.catissuecore.util.global.Constants"%>
-<%@ page import="edu.wustl.catissuecore.util.global.Utility"%>
-<%@ page import="edu.wustl.catissuecore.util.global.Variables"%>
+<%@ page import="edu.wustl.query.actionForm.AdvanceSearchForm"%>
+<%@ page import = "edu.wustl.query.util.global.Constants"%>
+<%@ page import="edu.wustl.query.util.global.Utility"%>
+<%@ page import="edu.wustl.query.util.global.Variables"%>
 <%@ page language="java" isELIgnored="false"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <script src="jss/script.js"></script>
@@ -22,7 +22,7 @@ tr#hiddenCombo
 <head>
 <%
 	
-	int pageNum = Integer.parseInt((String)request.getAttribute(Constants.PAGE_NUMBER));
+	 int pageNum = Integer.parseInt((String)request.getAttribute(Constants.PAGE_NUMBER));
 	
 	int totalResults = ((Integer)session.getAttribute(Constants.TOTAL_RESULTS)).intValue();
 	int numResultsPerPage = Integer.parseInt((String)session.getAttribute(Constants.RESULTS_PER_PAGE));
@@ -92,22 +92,20 @@ tr#hiddenCombo
 			
 		    if(isChecked == "true")
 		    {
-			    var pageNum = "<%=pageNum%>";
-				var action;
-                var isQueryModule = "<%=pageOf.equals(Constants.PAGEOF_QUERY_MODULE)%>";
-                <%if (pageOf.equals(Constants.PAGEOF_QUERY_MODULE))
-                {
-                %>
+			     var pageNum = "<%=pageNum%>";
+				 var action;
+                 var isQueryModule = "<%=pageOf.equals(Constants.PAGEOF_QUERY_MODULE)%>";
+                 <%if (pageOf.equals(Constants.PAGEOF_QUERY_MODULE))
+                 {
+                 %>
 				
-				 action = "AddDeleteCart.do?operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
-				  document.forms[0].target = "gridFrame";
-				<%} else {%>
-				
-				
+				  action = "AddDeleteCart.do?operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
+				   document.forms[0].target = "gridFrame";
+				<%} else 
+				{%>
 			     action = "ShoppingCart.do?operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked ;
 				 document.forms[0].target = "myframe1";
 				<%}%>
-
 				document.forms[0].operation.value="add";
 				document.forms[0].action = action;
 				document.forms[0].submit();
@@ -155,10 +153,10 @@ tr#hiddenCombo
 		}
 		function onQueryResultsConfigure()
 		{
-			action="DefineQueryResultsView.do?pageOf=pageOfQueryModule";
-			document.forms[0].action = action;
-			document.forms[0].target = "<%=Constants.GRID_DATA_VIEW_FRAME%>";
-			document.forms[0].submit();
+			 action="DefineQueryResultsView.do?pageOf=pageOfQueryModule";
+			 document.forms[0].action = action;
+			 document.forms[0].target = "<%=Constants.GRID_DATA_VIEW_FRAME%>";
+			 document.forms[0].submit();
 		}
 		function onRedefineSimpleQuery()
 		{
@@ -196,13 +194,12 @@ tr#hiddenCombo
 			}
 		}
 		
-		function setDefaultView(element)
-		{
-			action="DefaultSpecimenView.do?pageOf=pageOfQueryResults&<%=Constants.SPECIMENT_VIEW_ATTRIBUTE%>="+element.checked+"&view=<%=Constants.SPECIMEN%>"+"&isPaging=false";
-			document.forms[0].action = action;
-			document.forms[0].target = "myframe1";
-			document.forms[0].submit();
-		}
+		
+
+        //Commented out By Baljeet...
+		
+		 
+				
 		function callAction(action)
 		{
 			document.forms[0].action = action;
@@ -289,7 +286,7 @@ function checkAllOnThisPageResponse()
 				</td>
 		      </tr>
 		    </table>
- 
+          </logic:equal>
 		</td>
 	  </tr>
 	   <tr>
@@ -301,7 +298,7 @@ function checkAllOnThisPageResponse()
       </tr>
 	 
     </table>
-	</logic:equal>
+	
 	<table width="100%" border="0" cellpadding="3" cellspacing="0" class="whitetable_bg">
       
       <tr>
@@ -385,7 +382,7 @@ function checkAllOnThisPageResponse()
 					var useDefaultRowClickHandler =1;
 					var useFunction = "search";	
 				</script>
-				<%@ include file="/pages/content/search/AdvanceGrid.jsp" %>
+				<%@ include file="/pages/content/search/AdvanceGrid.jsp" %> 
 <!--  **************  Code for New Grid  *********************** -->
 			</td>
 		</tr>
@@ -403,13 +400,17 @@ function checkAllOnThisPageResponse()
 						<span class="black_ar"><bean:message key="buttons.checkAll" /></span>
 					</td>
 					<%
-						Object obj = session.getAttribute(Constants.SPECIMENT_VIEW_ATTRIBUTE);
-						boolean isDefaultView = (obj!=null);
+						//Commented out By Baljeet....
+			            //Object obj = session.getAttribute(Constants.SPECIMENT_VIEW_ATTRIBUTE);
+						//boolean isDefaultView = (obj!=null);
+                        boolean isDefaultView = true;
 					%>
 					<td width="5%" valign="top">
-					<%if(pageOf.equals(Constants.PAGEOF_QUERY_RESULTS)){%>
-						<input type='checkbox' <%if (isDefaultView){%>checked='checked' <%}%>name='checkDefaultSpecimenView' id='checkDefaultSpecimenView' onClick='setDefaultView(this)'>
-						<span class="black_ar"><bean:message key="buttons.defaultSpecimenView" /></span>&nbsp;
+					<%if(pageOf.equals(Constants.PAGEOF_QUERY_RESULTS)){ %>
+						
+						<!--Commented out by Baljeet as it is catissuecore specific -->
+						<!--<input type='checkbox' <%if (isDefaultView){%>checked='checked' <%}%>name='checkDefaultSpecimenView' id='checkDefaultSpecimenView' onClick='setDefaultView(this)'>
+						<span class="black_ar"><bean:message key="buttons.defaultSpecimenView" /></span>&nbsp; -->
 					<%}else{%>
 						&nbsp;
 					<%}%>

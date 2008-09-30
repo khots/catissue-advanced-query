@@ -9,7 +9,7 @@
 <script language="JavaScript" type="text/javascript" src="jss/javaScript.js"></script>
 
 <%@ page import="java.util.HashMap,java.util.Map,edu.wustl.common.beans.QueryResultObjectData"%>
-<script>
+<script><!--
 <%
 String checkAllPagesSession = (String)session.getAttribute("checkAllPages");
 String gridDivHeight="280";
@@ -43,7 +43,7 @@ function checkAllAcrossAllPages(element)
 	request.onreadystatechange = handlerFunction;				
 	actionURL = "checkAllPages=" + state;			
 	var url = "SpreadsheetView.do?isAjax=true&amp;isPaging=true&amp;checkAllPages=" + state;				
-	<!-- Open connection to servlet -->
+	 Open connection to servlet 
 	request.open("POST",url,true);	
 	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 	request.send(actionURL);	
@@ -67,7 +67,7 @@ function checkAllOnThisPage(element)
 	request.onreadystatechange = handlerFunction;				
 	actionURL = "checkAllPages=false&isPaging=true";
 	var url = "SpreadsheetView.do?isAjax=true&amp;isPaging=true&amp;checkAllPages=false";
-	<!-- Open connection to servlet -->
+	 Open connection to servlet 
 	request.open("POST",url,true);	
 	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 	request.send(actionURL);	
@@ -184,20 +184,6 @@ function setEditableChkbox(checkAllPages)
 	}
 	
 		
-	function viewSPR(id)
-	{	
-		var url = "<%=Constants.VIEW_SPR_ACTION%>?operation=viewSPR&pageOf=gridViewReport&reportId="+id+"&flow=viewReport";
-			platform = navigator.platform.toLowerCase();
-		    if (platform.indexOf("mac") != -1)
-			{
-		    	NewWindow(url,'name',screen.width,screen.height,'yes');
-		    }
-		    else
-		    {
-		    	NewWindow(url,'name','700','600','yes');
-		    }
-			hideCursor();		
-	}
 	
 </script>
 

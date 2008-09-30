@@ -1,10 +1,8 @@
-<%@ page import="edu.wustl.catissuecore.actionForm.CategorySearchForm"%>
+<%@ page import="edu.wustl.query.actionForm.CategorySearchForm"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.lang.*"%>
 
-<%@ page import="edu.wustl.catissuecore.util.global.Constants"%>
-<%@ page import="edu.wustl.catissuecore.util.global.Utility"%>
-<%@ page import="edu.wustl.catissuecore.util.global.Variables"%>
+<%@ page import="edu.wustl.query.util.global.Constants"%>
 <%@ page import="edu.wustl.common.tree.QueryTreeNodeData"%>
 <html >
 <head>
