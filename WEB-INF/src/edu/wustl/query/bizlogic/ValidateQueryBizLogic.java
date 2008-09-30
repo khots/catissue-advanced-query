@@ -74,8 +74,8 @@ public class ValidateQueryBizLogic {
 			validationMessage = ApplicationProperties.getValue("query.defineView.noExpression.message");
 			return validationMessage;
 		}
-		try 
-		{
+		try   
+		{ 
 			HttpSession session = request.getSession(); 
 			SqlGenerator sqlGenerator = new QuerySqlGenerator();
 			String selectSql = sqlGenerator.generateSQL(query);
@@ -89,6 +89,7 @@ public class ValidateQueryBizLogic {
 			List<OutputTreeDataNode> rootOutputTreeNodeList = sqlGenerator
 			.getRootOutputTreeNodeList();
 			session.setAttribute(Constants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
+			session.setAttribute(Constants.NO_OF_TREES, Long.valueOf(rootOutputTreeNodeList.size()));
 			Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
 			.getAllChildrenNodes(rootOutputTreeNodeList);
 			queryDetailsObj.setUniqueIdNodesMap(uniqueIdNodesMap);

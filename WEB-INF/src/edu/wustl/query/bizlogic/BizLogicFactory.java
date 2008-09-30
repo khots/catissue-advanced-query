@@ -41,6 +41,13 @@ public class BizLogicFactory
         	case Constants.SIMPLE_QUERY_INTERFACE_ID:
         		bizLogic = new QueryBizLogic();
         		break;
+        		
+        	/*case Constants.ADVANCE_QUERY_INTERFACE_ID:
+        		bizLogic = new AdvanceQueryBizlogic();
+        		break;*/
+        	case Constants.QUERY_INTERFACE_ID:
+        		bizLogic = new QueryBizLogic();
+    			break;
         }
 		return bizLogic;
     }

@@ -44,7 +44,7 @@ public class QueryCsmBizLogic
 	public List executeCSMQuery(String selectSql, QueryDetails queryDetailsObj,
 			Map<Long, QueryResultObjectDataBean> queryResulObjectDataMap,
 			OutputTreeDataNode root, boolean hasConditionOnIdentifiedField)
-	throws DAOException, ClassNotFoundException
+	//throws DAOException, ClassNotFoundException
 	{  
 		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 		List<List<String>> dataList = new ArrayList<List<String>>();
@@ -54,11 +54,29 @@ public class QueryCsmBizLogic
 			dataList = dao.executeQuery(selectSql, queryDetailsObj.getSessionData(),
 					queryDetailsObj.getSessionData().isSecurityRequired(),
 					hasConditionOnIdentifiedField, queryResulObjectDataMap);
+			System.out.println("Here in Query CSM User Bizlogic");
+			System.out.println("Here in Query CSM User Bizlogic*****2");
 			dao.commit();
+			dao.closeSession();
+		}
+		/*catch(ClassNotFoundException e)
+		{
+			
+		}*/
+		catch(DAOException t)
+		{
+			System.out.println("DAOException occured in CSMQueryBizLogic");
+			t.printStackTrace();
+		}
+		
+		catch(Exception e)
+		{
+			System.out.println("Exception occured in CSMQueryBizLogic");
+			e.printStackTrace();
 		}
 		finally
 		{
-			dao.closeSession();
+			
 		}
 		return dataList;
 	}
