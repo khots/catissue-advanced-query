@@ -458,10 +458,10 @@ TextInput
 	private function initApp():void
 	{
 		
-		registerClassAlias("edu.wustl.catissuecore.flex.dag.DAGNode", DAGNode);
-		registerClassAlias("edu.wustl.catissuecore.flex.dag.DAGPath", DAGPath);
-		registerClassAlias("edu.wustl.catissuecore.flex.dag.CustomFormulaNode",CustomFormulaNode);
-		registerClassAlias("edu.wustl.catissuecore.flex.dag.SingleNodeCustomFormulaNode",SingleNodeCustomFormulaNode);
+		registerClassAlias("edu.wustl.query.flex.dag.DAGNode", DAGNode);
+		registerClassAlias("edu.wustl.query.flex.dag.DAGPath", DAGPath);
+		registerClassAlias("edu.wustl.query.flex.dag.CustomFormulaNode",CustomFormulaNode);
+		registerClassAlias("edu.wustl.query.flex.dag.SingleNodeCustomFormulaNode",SingleNodeCustomFormulaNode);
 //		rpcService= new RemoteObject();
 		rpcService.channelSet = Utility.getChannelSet();
 		rpcService.destination="cdeService";
