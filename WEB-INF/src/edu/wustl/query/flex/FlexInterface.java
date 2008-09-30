@@ -2,74 +2,30 @@
 package edu.wustl.query.flex;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpSession;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
-/*import edu.wustl.catissuecore.bean.CpAndParticipentsBean;
-import edu.wustl.catissuecore.bean.GenericSpecimen;
-import edu.wustl.catissuecore.bean.SpecimenDataBean;
-import edu.wustl.catissuecore.bizlogic.BiohazardBizLogic;
-import edu.wustl.catissuecore.bizlogic.BizLogicFactory;
-import edu.wustl.catissuecore.bizlogic.NewSpecimenBizLogic;
-import edu.wustl.catissuecore.bizlogic.SpecimenCollectionGroupBizLogic;
-import edu.wustl.catissuecore.bizlogic.UserBizLogic;
-import edu.wustl.catissuecore.domain.AbstractSpecimen;
-import edu.wustl.catissuecore.domain.Biohazard;
-import edu.wustl.catissuecore.domain.CellSpecimen;
-import edu.wustl.catissuecore.domain.CollectionEventParameters;
-import edu.wustl.catissuecore.domain.CollectionProtocol;
-import edu.wustl.catissuecore.domain.CollectionProtocolRegistration;
-import edu.wustl.catissuecore.domain.ExternalIdentifier;
-import edu.wustl.catissuecore.domain.FluidSpecimen;
-import edu.wustl.catissuecore.domain.MolecularSpecimen;
-import edu.wustl.catissuecore.domain.ReceivedEventParameters;
-import edu.wustl.catissuecore.domain.Specimen;
-import edu.wustl.catissuecore.domain.SpecimenCharacteristics;
-import edu.wustl.catissuecore.domain.SpecimenCollectionGroup;
-import edu.wustl.catissuecore.domain.SpecimenEventParameters;
-import edu.wustl.catissuecore.domain.StorageContainer;
-import edu.wustl.catissuecore.domain.TissueSpecimen;
-import edu.wustl.catissuecore.domain.User;*/
-import edu.wustl.query.flex.dag.CustomFormulaNode;
-import edu.wustl.query.flex.dag.SingleNodeCustomFormulaNode;
-import edu.wustl.query.flex.dag.DAGConstant;
-import edu.wustl.query.flex.dag.DAGNode;
-import edu.wustl.query.flex.dag.DAGPanel;
-import edu.wustl.query.flex.dag.DAGPath;
-//import edu.wustl.catissuecore.util.CollectionProtocolUtil;
-//import edu.wustl.catissuecore.util.ParticipantRegistrationCacheManager;
-//import edu.wustl.catissuecore.util.SpecimenAutoStorageContainer;
-//import edu.wustl.query.util.global.Utility;
-//import edu.wustl.query.util.global.Variables;
 import edu.wustl.common.beans.NameValueBean;
-//import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.cde.CDE;
 import edu.wustl.common.cde.CDEManager;
 import edu.wustl.common.cde.PermissibleValue;
-//import edu.wustl.common.dao.DAOFactory;
-//import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.metadata.path.Path;
 import edu.wustl.common.querysuite.queryengine.impl.CommonPathFinder;
 import edu.wustl.common.querysuite.queryobject.IExpression;
-//import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.Constants;
-//import edu.wustl.common.util.logger.Logger;
+import edu.wustl.query.flex.dag.CustomFormulaNode;
+import edu.wustl.query.flex.dag.DAGConstant;
+import edu.wustl.query.flex.dag.DAGNode;
+import edu.wustl.query.flex.dag.DAGPanel;
+import edu.wustl.query.flex.dag.DAGPath;
+import edu.wustl.query.flex.dag.SingleNodeCustomFormulaNode;
 
 public class FlexInterface
 {
@@ -1534,7 +1490,7 @@ public class FlexInterface
 			Path p = (Path) pathsList.get(i);
 			DAGPath path = new DAGPath();
 			path.setToolTip(DAGPanel.getPathDisplayString(pathsList.get(i)));
-			path.setId(new Long(p.getPathId()).toString());
+			path.setId(Long.valueOf(p.getPathId()).toString());
 			pathsListStr.add(path);
 		}
 		return pathsListStr;
@@ -1570,7 +1526,7 @@ public class FlexInterface
 			for (int i = 0; i < pathsList.size(); i++)
 			{
 				IPath path = pathsList.get(i);
-				String pathStr = new Long(path.getPathId()).toString();
+				String pathStr = Long.valueOf(path.getPathId()).toString();
 				DAGPath dagPath = selectedPaths.get(j);
 				String pathId = dagPath.getId();
 				if (pathStr.equals(pathId))

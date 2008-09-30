@@ -417,7 +417,9 @@ public class TwoNodesTemporalQuery
 					dateOffsetAttr2 = QueryObjectFactory.createDateOffsetAttribute(destIExpression,destAttributeById,qAttrInterval2);
 				}
 				else
-				dateOffsetAttr2 = QueryObjectFactory.createDateOffsetAttribute(destIExpression,destAttributeById,TimeInterval.Day);
+				{
+					dateOffsetAttr2 = QueryObjectFactory.createDateOffsetAttribute(destIExpression,destAttributeById,TimeInterval.Day);
+				}
 			}
 			else
 			{
@@ -427,7 +429,9 @@ public class TwoNodesTemporalQuery
 					dateOffsetAttr1 = QueryObjectFactory.createDateOffsetAttribute(srcIExpression,srcAttributeById,qAttrInterval1);
 				}
 				else
-				dateOffsetAttr1 = QueryObjectFactory.createDateOffsetAttribute(srcIExpression,srcAttributeById,TimeInterval.Day);
+				{
+					dateOffsetAttr1 = QueryObjectFactory.createDateOffsetAttribute(srcIExpression,srcAttributeById,TimeInterval.Day);
+				}
 				
 			}
 		}
@@ -486,9 +490,13 @@ public class TwoNodesTemporalQuery
 				String pattern="";
 				try {
 					if((firstAttributeType.equals("DateTime")) && (secondAttributeType.equals("DateTime")))
+					{
 						pattern = "MM/dd/yyyy HH:mm:ss";
+					}
 					else
+					{
 						pattern = "MM/dd/yyyy";
+					}
 					formatter = new SimpleDateFormat(pattern);						
 					date = formatter.parse(timeValue);
 				} catch (ParseException e) {

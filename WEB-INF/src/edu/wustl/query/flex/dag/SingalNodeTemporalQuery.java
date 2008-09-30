@@ -367,7 +367,7 @@ public class SingalNodeTemporalQuery
         	//if DatePicker exists on LHS
         	lhsTerm.addOperand(lhsDateLiteral);
         	addSecondLhsOperand();
-       }
+        }
         else
         {
         	//If DatePicker doesn't exists on LHS
@@ -389,7 +389,7 @@ public class SingalNodeTemporalQuery
         	//if DatePicker exists on LHS
         	lhsTerm.addOperand(lhsDateLiteral);
         	addSecondLhsOperand();
-       }
+        }
         else
         {
         	//If DatePicker doesn't exists on LHS
@@ -445,7 +445,10 @@ public class SingalNodeTemporalQuery
 				dateOffsetAttr = QueryObjectFactory.createDateOffsetAttribute(entityIExpression,attributeById,qAttrInterval);
 			}
 			else
-			dateOffsetAttr = QueryObjectFactory.createDateOffsetAttribute(entityIExpression,attributeById,TimeInterval.Day);
+			{
+				dateOffsetAttr = QueryObjectFactory.createDateOffsetAttribute(entityIExpression,attributeById,TimeInterval.Day);	
+			}
+			
 		}
 	}
 	
@@ -481,9 +484,13 @@ public class SingalNodeTemporalQuery
 				{
 					//Date date = Utility.parseDate(rhsTimeValue, "MM/dd/yyyy HH:MM:SS");
 					if(attributeType.equals("DateTime"))
+					{
 						pattern = "MM/dd/yyyy HH:mm:ss";
+					}
 					else
+					{
 						pattern = "MM/dd/yyyy";
+					}
 					
 					formatter = new SimpleDateFormat(pattern);						
 					date = formatter.parse(rhsTimeValue);

@@ -220,7 +220,7 @@ public class DAGPanel
 				for (int i = 0; i < paths.size(); i++) {
 					IPath path = paths.get(i);
 					LinkTwoNode(sourceNode, destNode, paths.get(i), new ArrayList());
-					String pathStr = new Long(path.getPathId()).toString();
+					String pathStr = Long.valueOf(path.getPathId()).toString();					
 					DAGPath dagPath = new DAGPath();
 					dagPath.setToolTip(getPathDisplayString(path));
 					dagPath.setId(pathStr);
@@ -272,7 +272,7 @@ public class DAGPanel
 	
 	private AttributeInterface getAttributeIdentifier(IQuery query, int nodeExpressionId,String firstAttributeId)
 	{
-		Long identifier = new Long(firstAttributeId);
+		Long identifier = Long.valueOf(firstAttributeId);
 		IConstraints constraints = query.getConstraints();
 		IExpression expression = constraints.getExpression(nodeExpressionId);
 		IQueryEntity sourceEntity = expression.getQueryEntity();
@@ -395,9 +395,9 @@ public class DAGPanel
         	{
         		if(uiBean.getSingleNode()!= null)
         		{
-        			uiBean.setSingleNode(node);
-        		}
-        	}
+        			uiBean.setSingleNode(node);	
+        		}   	
+        	}        	
         }	
 	}
 	
@@ -525,7 +525,7 @@ public class DAGPanel
         {
         	CustomFormulaUIBean uiBean = TQUIMap.get(id);
         	if(uiBean != null)
-        	{ 
+        	{
         		if(uiBean.getTwoNode() != null)
         		{
         			uiBean.setTwoNode(node);
@@ -1155,7 +1155,7 @@ public class DAGPanel
 		{	
 			if(expression.isVisible())
 			{
-				visibleExpression.add(new Integer(expression.getExpressionId()));
+				visibleExpression.add(Integer.valueOf(expression.getExpressionId()));
 			}
 	    }
 		for(Integer expressionId:visibleExpression)
@@ -1247,7 +1247,7 @@ public class DAGPanel
 	
 	private String[] splitCustomColumnName(String customColumnName)
 	{
-		int index = customColumnName.lastIndexOf("(");
+		int index = customColumnName.lastIndexOf('(');
 		String []splitCCName = new String[2]; 
 		splitCCName[0]  = customColumnName.substring(0,index);
 		splitCCName[1] = customColumnName.substring(index+1,customColumnName.length()-1);
@@ -1514,8 +1514,7 @@ public class DAGPanel
         	singleCNode.setLhsTimeValue(getDateInGivenFormat(dateLit.getDate()));
         	singleCNode.setLhsTimeInterval(DAGConstant.NULL_STRING);
         }
-        singleCNode.setNodeType("singleNodeCustomNode");
-        System.out.print("");
+        singleCNode.setNodeType("singleNodeCustomNode");        
         singleCNode.setSelectedLogicalOp(DAGConstant.NULL_STRING);
         singleCNode.setTimeInterval(DAGConstant.NULL_STRING);
         singleCNode.setTimeValue(DAGConstant.NULL_STRING);
@@ -1826,9 +1825,13 @@ public class DAGPanel
 				IDateLiteral dateLit = (DateLiteral)operand;
 						
 				if(dateLit.getDate()!=null)
-				  singleCNode.setTimeValue(getDateInGivenFormat(dateLit.getDate()));
+				{
+					singleCNode.setTimeValue(getDateInGivenFormat(dateLit.getDate()));
+				}
 				else
-				  singleCNode.setTimeValue("");
+				{
+					singleCNode.setTimeValue("");
+				}
 			} else
 			{
 				throw new RuntimeException("Should not occur.....");
@@ -1880,7 +1883,7 @@ public class DAGPanel
 		
 		String columnName  = outputTerm.getName();
 		//As custom column name consists of column Name , ( and Time Interval ), so we need to parse it to get the exact column name
-		int index = columnName.lastIndexOf("(");
+		int index = columnName.lastIndexOf('(');
 		String customColumnName  = columnName.substring(0,index);
 		return customColumnName;
 		
@@ -2073,7 +2076,7 @@ public class DAGPanel
 				dagNode.setToolTip(exp);
 				
 			/*	Adding Dag Path in each visible list which have childrens*/
-				String pathStr =new Long(pathId).toString();
+				String pathStr = Long.valueOf(pathId).toString();
 			  	DAGPath dagPath  = new DAGPath();
 				dagPath.setToolTip(getPathDisplayString(pathObj));
 				dagPath.setId(pathStr);

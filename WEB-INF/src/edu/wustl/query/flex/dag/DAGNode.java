@@ -76,7 +76,7 @@ public class DAGNode implements Externalizable,Comparable<DAGNode>{
 	}
 	
 	public void  setToolTip(IExpression expression) {
-		StringBuffer sb = new StringBuffer();
+		StringBuffer sb = new StringBuffer(128);
 		IRule rule = null;
 		if (!((IExpression) expression).containsRule()) {
 			return;
@@ -85,45 +85,45 @@ public class DAGNode implements Externalizable,Comparable<DAGNode>{
 		}
 		int totalConditions = rule.size();
 			
-		sb.append("Condition(s) on  ").append("\n");
+		sb.append("Condition(s) on  \n");
 		for (int i = 0; i < totalConditions; i++) {
 			ICondition condition = rule.getCondition(i);
 			sb.append((i + 1)).append(") ");
 			String formattedAttributeName = CommonUtils.getFormattedString(condition.getAttribute()
 					.getName());
-			sb.append(formattedAttributeName).append(" ");
+			sb.append(formattedAttributeName).append(' ');
 			List<String> values = condition.getValues();
 			RelationalOperator operator = condition.getRelationalOperator();
 			sb.append(edu.wustl.cab2b.client.ui.query.Utility
-							.displayStringForRelationalOperator(operator)).append(" ");
+							.displayStringForRelationalOperator(operator)).append(' ');
 			int size = values.size();
 			if (size > 0)// Special case for 'Not Equals and Equals
 			{
 				if (size == 1) {
 					sb.append(values.get(0));
 				} else {
-					sb.append("(");
+					sb.append(')');
 					if (values.get(0).indexOf(",") != -1) {
-						sb.append("\"");
+						sb.append('\'');
 						sb.append(values.get(0));
-						sb.append("\"");
+						sb.append('\'');
 					} else {
 						sb.append(values.get(0));
 					}
 					for (int j = 1; j < size; j++) {
 						sb.append(", ");
 						if (values.get(j).indexOf(",") != -1) {
-							sb.append("\"");
+							sb.append('\'');
 							sb.append(values.get(j));
-							sb.append("\"");
+							sb.append('\'');
 						} else {
 							sb.append(values.get(j));
 						}
 					}
-					sb.append(")");
+					sb.append(')');
 				}
 			}
-			sb.append("\n");
+			sb.append('\n');
 		}
 		this.toolTip=sb.toString();
 	}
@@ -175,7 +175,7 @@ public class DAGNode implements Externalizable,Comparable<DAGNode>{
 
 	public String toString()
 	{
-		StringBuffer buff = new StringBuffer("");
+		StringBuffer buff = new StringBuffer(128);
 		buff.append("\n nodeName: ").append(nodeName).append("\n toolTip: ").append(toolTip).
 		append("\n expressionId: ").append(expressionId).append("\n operatorBetweenAttrAndAssociation:").
 		append(operatorBetweenAttrAndAssociation);
