@@ -14,6 +14,7 @@ import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.beans.SessionDataBean;
 /**
  * Action is called when user clicks on QueryWizard link on search tab.
  * @author deepti_shelar
@@ -32,7 +33,6 @@ public class QueryWizardAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	throws Exception
 	{
-		System.out.println("Here in Query Wizard Action");
 		HttpSession session = request.getSession();
 		CategorySearchForm searchForm = (CategorySearchForm) form;
 		session.removeAttribute(Constants.QUERY_OBJECT);
@@ -44,6 +44,29 @@ public class QueryWizardAction extends Action
 		session.removeAttribute(Constants.EXPORT_DATA_LIST);
 		session.removeAttribute(Constants.ENTITY_IDS_MAP);
 		searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
+		
+		//Added a Default session data bean......Need to be removed when there query will have login
+		 
+		 SessionDataBean sessionBean = (SessionDataBean)session.getAttribute(Constants.SESSION_DATA);
+		 if(sessionBean == null)
+		 {
+			// HttpSession newSession = request.getSession(true);
+			 Long userId = new Long(1);
+	         String ipAddress = request.getRemoteAddr();
+	         SessionDataBean sessionData = new SessionDataBean();
+			 
+	         sessionData.setUserName("admin@admin.com");
+             sessionData.setIpAddress(ipAddress);
+             sessionData.setUserId(userId);
+             sessionData.setFirstName("admin@admin.com");
+             sessionData.setLastName("admin@admin.com");
+             sessionData.setAdmin(true);
+             sessionData.setSecurityRequired(false);
+             
+             session.setAttribute(Constants.SESSION_DATA,sessionData);
+		 }
+		 
+		
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
 	}
 }
