@@ -62,7 +62,7 @@ public class FetchQueryAction extends Action
 		{
 			IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
 					.getValue("app.bizLogicFactory"), "getBizLogic",
-					Constants.CATISSUECORE_QUERY_INTERFACE_ID);
+					Constants.QUERY_INTERFACE_BIZLOGIC_ID);
 			try
 			{
 				List<IParameterizedQuery> queryList = bizLogic.retrieve(ParameterizedQuery.class

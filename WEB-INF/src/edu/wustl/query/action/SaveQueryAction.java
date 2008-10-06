@@ -35,7 +35,6 @@ import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.ObjectCloner;
@@ -76,7 +75,7 @@ public class SaveQueryAction extends BaseAction
 			{
 				IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
 						.getValue("app.bizLogicFactory"), "getBizLogic",
-						Constants.CATISSUECORE_QUERY_INTERFACE_ID);
+						Constants.QUERY_INTERFACE_BIZLOGIC_ID);
                 IParameterizedQuery queryClone = ObjectCloner.clone(parameterizedQuery);
                 new HibernateCleanser(queryClone).clean();
                 bizLogic.insert(queryClone, Constants.HIBERNATE_DAO);

@@ -47,7 +47,7 @@ public class FetchAndExecuteQueryAction extends Action
 			List<IParameterizedQuery> queryList = null;
 			IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
 					.getValue("app.bizLogicFactory"), "getBizLogic",
-					Constants.CATISSUECORE_QUERY_INTERFACE_ID);
+					Constants.QUERY_INTERFACE_BIZLOGIC_ID);
 			Object object = bizLogic.retrieve(ParameterizedQuery.class.getName(), queryId);
 
 			if (object != null)
