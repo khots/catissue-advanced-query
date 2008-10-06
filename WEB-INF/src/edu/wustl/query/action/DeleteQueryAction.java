@@ -43,7 +43,7 @@ public class DeleteQueryAction extends Action
 				session.setAttribute(Constants.QUERY_ALREADY_DELETED,queryIdStr);
 				IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
 						.getValue("app.bizLogicFactory"), "getBizLogic",
-						Constants.CATISSUECORE_QUERY_INTERFACE_ID);
+						Constants.QUERY_INTERFACE_BIZLOGIC_ID);
 				try
 				{
 					Object object = bizLogic.retrieve(ParameterizedQuery.class.getName(), queryId);
