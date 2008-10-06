@@ -10,7 +10,7 @@ PUBLIC
 		<!--Query-->		
 		<form-bean name="categorySearchForm" type="edu.wustl.query.actionForm.CategorySearchForm"/>
 		<!--<form-bean name="advanceSearchForm" type="edu.wustl.query.actionForm.AdvanceSearchForm"/> --> 
-		<form-bean name="saveQueryForm" type="edu.wustl.query.actionForm.querysuite.SaveQueryForm"/>
+		<form-bean name="saveQueryForm" type="edu.wustl.query.actionForm.SaveQueryForm"/>
 				
 	</form-beans>
 	
