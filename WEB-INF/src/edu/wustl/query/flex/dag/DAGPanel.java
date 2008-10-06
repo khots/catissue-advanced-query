@@ -432,24 +432,7 @@ public class DAGPanel
 		//Setting the Relational Ops
 		tqBean.setRelOp(getRelationalOperator(node.getSelectedLogicalOp()));
 		
-		//Setting the qAttrInterval1 
-		if(node.getQAttrInterval1().equals("null"))
-		{
-			tqBean.setQAttrInterval1(null);
-		}
-		else
-		{
-			tqBean.setQAttrTInterval1(node.getQAttrInterval1());
-		}
-		//Setting the qAttrInterval2
-		if(node.getQAttrInterval2().equals("null"))
-		{
-			tqBean.setQAttrInterval2(null);
-		}
-		else
-		{
-			tqBean.setQAttrTInterval2(node.getQAttrInterval2());
-		}
+		setQAttrInterval(node, tqBean);
 		
         //Creating all expressions
 		tqBean.createExpressions();
@@ -515,6 +498,27 @@ public class DAGPanel
 		}
 		return node;
 	}
+	private void setQAttrInterval(CustomFormulaNode node, TwoNodesTemporalQuery tqBean)
+	{
+		//Setting the qAttrInterval1 
+		if(node.getQAttrInterval1().equals("null"))
+		{
+			tqBean.setQAttrInterval1(null);
+		}
+		else
+		{
+			tqBean.setQAttrTInterval1(node.getQAttrInterval1());
+		}
+		//Setting the qAttrInterval2
+		if(node.getQAttrInterval2().equals("null"))
+		{
+			tqBean.setQAttrInterval2(null);
+		}
+		else
+		{
+			tqBean.setQAttrTInterval2(node.getQAttrInterval2());
+		}
+	}
 	private  void updateTwoNodesCN(CustomFormulaNode node)
 	{
 		String id = node.getName();
@@ -543,7 +547,7 @@ public class DAGPanel
 		}
 		else
 		{
-			return getExistingOutputTerm(nodeId);
+		  return getExistingOutputTerm(nodeId);
 		}
 	}
 	
