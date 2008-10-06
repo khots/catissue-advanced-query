@@ -48,6 +48,10 @@ public class BizLogicFactory
         	case Constants.QUERY_INTERFACE_ID:
         		bizLogic = new QueryBizLogic();
     			break;
+    			
+        	case Constants.QUERY_INTERFACE_BIZLOGIC_ID:
+        		bizLogic = new QueryBizLogic();
+        		break;
         }
 		return bizLogic;
     }
