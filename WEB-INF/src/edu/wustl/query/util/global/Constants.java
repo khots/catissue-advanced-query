@@ -50,7 +50,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String DEFINE_RESULTS_VIEW = "DefineResultsView";
 	public static final String CURRENT_PAGE = "currentPage"; 
 	public static final String ADD_LIMITS = "AddLimits";
-	public static final int CATISSUECORE_QUERY_INTERFACE_ID = 67;
+	public static final int QUERY_INTERFACE_BIZLOGIC_ID = 67;
 	public static final String SQL = "SQL";
 	public static final String ID_COLUMN_ID = "ID_COLUMN_ID";
 	public static final String ID = "id";
@@ -415,4 +415,9 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String SPREADSHEET_EXPORT_ACTION = "SpreadsheetExport.do";
     public static final int[] RESULT_PERPAGE_OPTIONS = {10,50,100,500,1000};
     public static final String PAGE_OF_PARTICIPANT_CP_QUERY = "pageOfParticipantCPQuery";
+    public static final String CONFIGURE_GRID_VIEW_ACTION = "ConfigureGridView.do";
+    public static final String SAVE_QUERY_ACTION = "SaveQueryAction.do";
+    
+    public static final int CHARACTERS_IN_ONE_LINE = 110;
+    public static final String SINGLE_QUOTE_ESCAPE_SEQUENCE = "&#096;";
 }
