@@ -308,7 +308,7 @@
 	    </javadoc>
 	</target>
 	
-	<target name="create_zip" depends="createJavaDoc,build_war">
+	<target name="create_zip" depends="build_war">
 		<property name="zip.dir" value="${base.dir}/Query_v${application.version}_Installable" />
 		<property name="zip.file" value="${base.dir}/Query_v${application.version}_Installable.zip" />
 
@@ -332,13 +332,24 @@
 		<copy todir="${zip.dir}/query-properties" overwrite="true">
 			<fileset dir="${base.dir}/query-properties" />
 		</copy>
-
+		
+		<!--Added By Baljeet for meta data loading -->
+		<copy todir ="${zip.dir}/csv" overwrite="true">
+			<fileset dir="${base.dir}/csv" />
+		</copy>
+		
+		<copy todir ="${zip.dir}/xmi" overwrite="true">
+			<fileset dir="${base.dir}/xmi" />	 
+        </copy> 
+		
+		<!--Baljeet's changes ends here -->
+		
 		<copy todir="${zip.dir}/lib" overwrite="true">
 			<fileset file="${lib.dir}/ant-contrib.jar" />
 			<fileset file="${lib.dir}/mysql-connector-java-5.0.8-bin.jar" />
 			<fileset file="${lib.dir}/oracleDriver.jar" />
 			<fileset file="${lib.dir}/dom4j-1.6.jar" />
-			<fileset file="${lib.dir}/lib/j2ee.jar" />
+			<!-- <fileset file="${lib.dir}/lib/j2ee.jar" /> --> 
 			<fileset file="${lib.dir}/log4j-1.2.9.jar" />
 	
 		</copy>
@@ -348,10 +359,11 @@
 		</copy>
 		<!--delete dir="${zip.dir}/SQL/DBUpgrade" /-->
 
-		<copy file="MySql_DB_Creation.sql" todir="${zip.dir}" overwrite="true" />
+		<!--<copy file="MySql_DB_Creation.sql" todir="${zip.dir}" overwrite="true" />
 		<copy file="Oracle_DB_Creation.sql" todir="${zip.dir}" overwrite="true" />
 		<copy file="DBValidate_Suite1.0.sql" todir="${zip.dir}" overwrite="true" />
 		<copy file="DBValidate_V1.2.0.1.sql" todir="${zip.dir}" overwrite="true" />
+		-->
 		<copy todir="${zip.dir}/images" overwrite="true">
 			<fileset file="${base.dir}/images/InstitutionLogo.gif" />
 		</copy> 
@@ -360,7 +372,7 @@
 			<fileset dir="${base.dir}/DE_conf" />
 		</copy>
 		<!-- DE conf files end -->
-		<delete dir="${zip.dir}" />
+		<!--<delete dir="${zip.dir}" /> -->
 	</target>
 
 	
