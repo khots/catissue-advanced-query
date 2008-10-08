@@ -493,27 +493,35 @@ public class TwoNodesTemporalQuery
 		}
 		else if(!timeValue.equals("null"))
 		{
-			//Date date = Utility.parseDate(timeValue, "MM/dd/yyyy HH:MM:SS");					
-			Date date=null;
-			String pattern="";
-			try {
-				if((firstAttributeType.equals("DateTime")) && (secondAttributeType.equals("DateTime")))
-				{
-					pattern = "MM/dd/yyyy HH:mm:ss";
-				}
-				else
-				{
-					pattern = "MM/dd/yyyy";
-				}
-				formatter = new SimpleDateFormat(pattern);						
-				date = formatter.parse(timeValue);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}				
+			Date date = dateFormater(timeValue);				
 			
 			dateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
 		}
+	}
+
+
+
+	private Date dateFormater(String timeValue)
+	{
+		//Date date = Utility.parseDate(timeValue, "MM/dd/yyyy HH:MM:SS");					
+		Date date=null;
+		String pattern="";
+		try {
+			if((firstAttributeType.equals("DateTime")) && (secondAttributeType.equals("DateTime")))
+			{
+				pattern = "MM/dd/yyyy HH:mm:ss";
+			}
+			else
+			{
+				pattern = "MM/dd/yyyy";
+			}
+			formatter = new SimpleDateFormat(pattern);						
+			date = formatter.parse(timeValue);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return date;
 	}
 
 	public void setTimeInterval(String timeIntervalValue)
@@ -598,23 +606,28 @@ public class TwoNodesTemporalQuery
 		}
 	    else
 	    {
-	    	if(IExpression1 != null && dateOffsetAttr2 != null)
-			{
-				lhsTerm.addOperand(IExpression1);
-			    lhsTerm.addOperand(iCon,dateOffsetAttr2);
-
-			    rhsTerm.addOperand(dateLiteral);
-			    
-			}
-			else
-			{
-				lhsTerm.addOperand(dateOffsetAttr1);
-				lhsTerm.addOperand(iCon,IExpression2);
-				
-			    rhsTerm.addOperand(dateLiteral);
-				
-			}
+	    	addOperand();
 	    }
+	}
+
+
+
+	private void addOperand()
+	{
+		if(IExpression1 != null && dateOffsetAttr2 != null)
+		{
+			lhsTerm.addOperand(IExpression1);
+		    lhsTerm.addOperand(iCon,dateOffsetAttr2);
+		    rhsTerm.addOperand(dateLiteral);
+		    
+		}
+		else
+		{
+			lhsTerm.addOperand(dateOffsetAttr1);
+			lhsTerm.addOperand(iCon,IExpression2);
+		    rhsTerm.addOperand(dateLiteral);
+			
+		}
 	}
 	
 	

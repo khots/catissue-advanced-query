@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpSession;
-
 import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;

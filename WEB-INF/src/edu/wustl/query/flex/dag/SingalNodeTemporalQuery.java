@@ -475,30 +475,35 @@ public class SingalNodeTemporalQuery
 		}
 		else
 		{
-			if((!rhsTimeValue.equals(DAGConstant.NULL_STRING)) && (rhsTimeInterval.equals(DAGConstant.NULL_STRING)))
+			generateRhsTimeValue(rhsTimeValue, rhsTimeInterval);
+		}
+	}
+
+	private void generateRhsTimeValue(String rhsTimeValue, String rhsTimeInterval)
+	{
+		if((!rhsTimeValue.equals(DAGConstant.NULL_STRING)) && (rhsTimeInterval.equals(DAGConstant.NULL_STRING)))
+		{
+			//It  means there exists TextInput and Time Intervals on LHS, so create dateOffSetLiteral
+			Date date=null;
+			String pattern="";
+			try 
 			{
-				//It  means there exists TextInput and Time Intervals on LHS, so create dateOffSetLiteral
-				Date date=null;
-				String pattern="";
-				try 
+				//Date date = Utility.parseDate(rhsTimeValue, "MM/dd/yyyy HH:MM:SS");
+				if(attributeType.equals("DateTime"))
 				{
-					//Date date = Utility.parseDate(rhsTimeValue, "MM/dd/yyyy HH:MM:SS");
-					if(attributeType.equals("DateTime"))
-					{
-						pattern = "MM/dd/yyyy HH:mm:ss";
-					}
-					else
-					{
-						pattern = "MM/dd/yyyy";
-					}
-					
-					formatter = new SimpleDateFormat(pattern);						
-					date = formatter.parse(rhsTimeValue);
-					rhsDateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
-				} catch (ParseException e) 
-				{				    
-					e.printStackTrace();					
+					pattern = "MM/dd/yyyy HH:mm:ss";
 				}
+				else
+				{
+					pattern = "MM/dd/yyyy";
+				}
+				
+				formatter = new SimpleDateFormat(pattern);						
+				date = formatter.parse(rhsTimeValue);
+				rhsDateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
+			} catch (ParseException e) 
+			{				    
+				e.printStackTrace();					
 			}
 		}
 	}
@@ -518,18 +523,23 @@ public class SingalNodeTemporalQuery
 		}
 		else
 		{
-			if((!lhsTimeValue.equals(DAGConstant.NULL_STRING)) && (lhsTimeInterval.equals(DAGConstant.NULL_STRING)))
+			dateFormatter(lhsTimeValue, lhsTimeInterval);
+		}
+	}
+
+	private void dateFormatter(String lhsTimeValue, String lhsTimeInterval)
+	{
+		if((!lhsTimeValue.equals(DAGConstant.NULL_STRING)) && (lhsTimeInterval.equals(DAGConstant.NULL_STRING)))
+		{
+			//This is the case when there exists DataPicker on LHS, so create only Date Literal
+			try 
+			{					
+				Date date = Utility.parseDate(lhsTimeValue, "MM/dd/yyyy");
+				lhsDateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
+			} catch (ParseException e) 
 			{
-				//This is the case when there exists DataPicker on LHS, so create only Date Literal
-				try 
-				{					
-					Date date = Utility.parseDate(lhsTimeValue, "MM/dd/yyyy");
-					lhsDateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
-				} catch (ParseException e) 
-				{
-				   e.printStackTrace();					
-				}				
-			}
+			   e.printStackTrace();					
+			}				
 		}
 	}
 	

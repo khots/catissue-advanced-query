@@ -114,24 +114,28 @@ public class DAGNode implements Externalizable,Comparable<DAGNode>{
 				sb.append(values.get(0));
 			} else {
 				sb.append(')');
-				if (values.get(0).indexOf(",") != -1) {
-					sb.append('\'');
-					sb.append(values.get(0));
-					sb.append('\'');
-				} else {
-					sb.append(values.get(0));
-				}
-				for (int j = 1; j < size; j++) {
-					sb.append(", ");
-					if (values.get(j).indexOf(",") != -1) {
-						sb.append('\'');
-						sb.append(values.get(j));
-						sb.append('\'');
-					} else {
-						sb.append(values.get(j));
-					}
-				}
+				generateFomulaString(sb, values, size);
 				sb.append(')');
+			}
+		}
+	}
+	private void generateFomulaString(StringBuffer sb, List<String> values, int size)
+	{
+		if (values.get(0).indexOf(",") != -1) {
+			sb.append('\'');
+			sb.append(values.get(0));
+			sb.append('\'');
+		} else {
+			sb.append(values.get(0));
+		}
+		for (int j = 1; j < size; j++) {
+			sb.append(", ");
+			if (values.get(j).indexOf(",") != -1) {
+				sb.append('\'');
+				sb.append(values.get(j));
+				sb.append('\'');
+			} else {
+				sb.append(values.get(j));
 			}
 		}
 	}

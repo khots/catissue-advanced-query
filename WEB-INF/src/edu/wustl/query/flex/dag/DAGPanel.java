@@ -25,7 +25,6 @@ import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.querysuite.exceptions.CyclicException;
-import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.metadata.associations.IAssociation;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
@@ -878,7 +877,7 @@ public class DAGPanel
 		 */
 		for(AttributeInterface attribute : destAttributeCollection)
         {
-        	 String destDataType  = attribute.getDataType();
+        	String destDataType  = attribute.getDataType();
 			if(destDataType.equals(Constants.DATE_TYPE))
 			{
         		destNodeList = new ArrayList<String>();
@@ -1083,7 +1082,7 @@ public class DAGPanel
 		boolean isContains =  false;
 		Set keySet = TQUIMap.keySet();
 		
-		if(keySet.size() == 0)
+		if(keySet.isEmpty())
 		{
 			//This is the Initial case
 			customNodeName = nodeName + "_" + customNodeNumber;
@@ -1218,14 +1217,14 @@ public class DAGPanel
 //		}	
 //	}
 	
-	private String[] splitCustomColumnName(String customColumnName)
-	{
-		int index = customColumnName.lastIndexOf('(');
-		String []splitCCName = new String[2]; 
-		splitCCName[0]  = customColumnName.substring(0,index);
-		splitCCName[1] = customColumnName.substring(index+1,customColumnName.length()-1);
-		return splitCCName;
-	}
+//	private String[] splitCustomColumnName(String customColumnName)
+//	{
+//		int index = customColumnName.lastIndexOf('(');
+//		String []splitCCName = new String[2]; 
+//		splitCCName[0]  = customColumnName.substring(0,index);
+//		splitCCName[1] = customColumnName.substring(index+1,customColumnName.length()-1);
+//		return splitCCName;
+//	}
 //	private void repaintCrsFromSavedQuery(IQuery query,List <SingleNodeCustomFormulaNode>SNcustomNodeList,List<CustomFormulaNode> customNodeList,List<IOutputTerm> outputTermList )
 //	{		
 //		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
@@ -1288,22 +1287,22 @@ public class DAGPanel
 //			}
 //		}
 //	}
-	private IExpression getSingleNodeExp(ITerm lhs)
-	{
-		IExpression exp = null;
-		IArithmeticOperand operand = lhs.getOperand(1);
-		if(operand instanceof IExpressionAttribute)
-		{
-			IExpressionAttribute expAttr = (IExpressionAttribute)operand;
-			exp = expAttr.getExpression(); 
-		}
-		else if(operand instanceof IDateOffsetAttribute)
-		{
-			IDateOffsetAttribute dateOffSetAttr = (IDateOffsetAttribute)operand;
-			exp = dateOffSetAttr.getExpression();
-		}
-		return exp;
-	}
+//	private IExpression getSingleNodeExp(ITerm lhs)
+//	{
+//		IExpression exp = null;
+//		IArithmeticOperand operand = lhs.getOperand(1);
+//		if(operand instanceof IExpressionAttribute)
+//		{
+//			IExpressionAttribute expAttr = (IExpressionAttribute)operand;
+//			exp = expAttr.getExpression(); 
+//		}
+//		else if(operand instanceof IDateOffsetAttribute)
+//		{
+//			IDateOffsetAttribute dateOffSetAttr = (IDateOffsetAttribute)operand;
+//			exp = dateOffSetAttr.getExpression();
+//		}
+//		return exp;
+//	}
 	
 //	private CustomFormulaNode createTwoNodesCr(ITerm lhs)
 //	{
@@ -1791,7 +1790,7 @@ public class DAGPanel
         }*/
 		//Handling RHS part
 		List<ITerm> allRhs = c.getAllRhs();
-		if(allRhs.size()!=0)
+		if(!allRhs.isEmpty())
 		{
 			setDateOperand(singleCNode, allRhs); 
 		}
@@ -1887,7 +1886,7 @@ public class DAGPanel
 		cNode.setSelectedLogicalOp(relOperator.getStringRepresentation());
 		
 		List<ITerm> allRhs = c.getAllRhs();
-		if(allRhs.size()!=0)
+		if(!allRhs.isEmpty())
 		{
 			ITerm term = allRhs.get(0);
 			IArithmeticOperand operand = term.getOperand(0);
