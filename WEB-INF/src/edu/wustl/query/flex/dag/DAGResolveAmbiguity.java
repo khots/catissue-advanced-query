@@ -68,15 +68,7 @@ public class DAGResolveAmbiguity {
         List<IPath> curatedPaths = new ArrayList<IPath>();
         for (ICuratedPath iCuratedPaths : allCuratedPaths) {
             Set<IPath> iPathSet = iCuratedPaths.getPaths();
-            if (iPathSet != null && !iPathSet.isEmpty()) {
-                for (IPath iPath : iPathSet) {
-                    if (iCuratedPaths.isSelected()) {
-                        selectedPaths.add(iPath);
-                    } else {
-                        curatedPaths.add(iPath);
-                    }
-                }
-            }
+            getCuratedPaths(selectedPaths, curatedPaths, iCuratedPaths, iPathSet);
         }
 
         List<IPath> generalPaths = m_pathFinder.getAllPossiblePaths(sourceEntity, destinationEntity);
@@ -88,4 +80,18 @@ public class DAGResolveAmbiguity {
 
         return allPathMap;
     }
+
+	private void getCuratedPaths(List<IPath> selectedPaths, List<IPath> curatedPaths,
+			ICuratedPath iCuratedPaths, Set<IPath> iPathSet)
+	{
+		if (iPathSet != null && !iPathSet.isEmpty()) {
+		    for (IPath iPath : iPathSet) {
+		        if (iCuratedPaths.isSelected()) {
+		            selectedPaths.add(iPath);
+		        } else {
+		            curatedPaths.add(iPath);
+		        }
+		    }
+		}
+	}
 }

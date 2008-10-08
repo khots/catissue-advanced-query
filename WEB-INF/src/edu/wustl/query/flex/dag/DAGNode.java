@@ -86,9 +86,14 @@ public class DAGNode implements Externalizable,Comparable<DAGNode>{
 		int totalConditions = rule.size();
 			
 		sb.append("Condition(s) on  \n");
+		generateFormattedString(sb, rule, totalConditions);
+		this.toolTip=sb.toString();
+	}
+	private void generateFormattedString(StringBuffer sb, IRule rule, int totalConditions)
+	{
 		for (int i = 0; i < totalConditions; i++) {
 			ICondition condition = rule.getCondition(i);
-			sb.append((i + 1)).append(") ");
+			sb.append((i + 1) + ") ");
 			String formattedAttributeName = CommonUtils.getFormattedString(condition.getAttribute()
 					.getName());
 			sb.append(formattedAttributeName).append(' ');
@@ -96,36 +101,39 @@ public class DAGNode implements Externalizable,Comparable<DAGNode>{
 			RelationalOperator operator = condition.getRelationalOperator();
 			sb.append(edu.wustl.cab2b.client.ui.query.Utility
 							.displayStringForRelationalOperator(operator)).append(' ');
-			int size = values.size();
-			if (size > 0)// Special case for 'Not Equals and Equals
-			{
-				if (size == 1) {
-					sb.append(values.get(0));
-				} else {
-					sb.append(')');
-					if (values.get(0).indexOf(",") != -1) {
-						sb.append('\'');
-						sb.append(values.get(0));
-						sb.append('\'');
-					} else {
-						sb.append(values.get(0));
-					}
-					for (int j = 1; j < size; j++) {
-						sb.append(", ");
-						if (values.get(j).indexOf(",") != -1) {
-							sb.append('\'');
-							sb.append(values.get(j));
-							sb.append('\'');
-						} else {
-							sb.append(values.get(j));
-						}
-					}
-					sb.append(')');
-				}
-			}
+			checkEquality(sb, values);
 			sb.append('\n');
 		}
-		this.toolTip=sb.toString();
+	}
+	private void checkEquality(StringBuffer sb, List<String> values)
+	{
+		int size = values.size();
+		if (size > 0)// Special case for 'Not Equals and Equals
+		{
+			if (size == 1) {
+				sb.append(values.get(0));
+			} else {
+				sb.append(')');
+				if (values.get(0).indexOf(",") != -1) {
+					sb.append('\'');
+					sb.append(values.get(0));
+					sb.append('\'');
+				} else {
+					sb.append(values.get(0));
+				}
+				for (int j = 1; j < size; j++) {
+					sb.append(", ");
+					if (values.get(j).indexOf(",") != -1) {
+						sb.append('\'');
+						sb.append(values.get(j));
+						sb.append('\'');
+					} else {
+						sb.append(values.get(j));
+					}
+				}
+				sb.append(')');
+			}
+		}
 	}
 	
 	public String getToolTip() {

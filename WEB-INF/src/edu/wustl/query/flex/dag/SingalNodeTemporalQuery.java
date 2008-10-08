@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.wustl.query.util.global.Constants;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.ArithmeticOperator;
 import edu.wustl.common.querysuite.queryobject.IConnector;
@@ -19,6 +18,7 @@ import edu.wustl.common.querysuite.queryobject.ITerm;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
 import edu.wustl.common.util.Utility;
+import edu.wustl.query.util.global.Constants;
 
 
 public class SingalNodeTemporalQuery
@@ -454,7 +454,7 @@ public class SingalNodeTemporalQuery
 	
 	public void createRhsDateOffSetLiteral(String rhsTimeInterval)
 	{
-		if((!rhsTimeInterval.equals("null")))
+		if((!rhsTimeInterval.equals(DAGConstant.NULL_STRING)))
 		{
 			this.rhsTimeInterval = getTimeInterval(rhsTimeInterval);
 			rhsDateOffSetLiteral = QueryObjectFactory.createDateOffsetLiteral(this.rhsTimeInterval);
@@ -467,7 +467,7 @@ public class SingalNodeTemporalQuery
 	 */
 	public void createRightLiterals(String rhsTimeValue, String rhsTimeInterval)
 	{
-		if((!rhsTimeValue.equals("null")) && (!rhsTimeInterval.equals("null")))
+		if((!rhsTimeValue.equals(DAGConstant.NULL_STRING)) && (!rhsTimeInterval.equals(DAGConstant.NULL_STRING)))
 		{
 			//It  means there exists TextInput and Time Intervals on LHS, so create dateOffSetLiteral
 			this.rhsTimeInterval = getTimeInterval(rhsTimeInterval);
@@ -475,7 +475,7 @@ public class SingalNodeTemporalQuery
 		}
 		else
 		{
-			if((!rhsTimeValue.equals("null")) && (rhsTimeInterval.equals("null")))
+			if((!rhsTimeValue.equals(DAGConstant.NULL_STRING)) && (rhsTimeInterval.equals(DAGConstant.NULL_STRING)))
 			{
 				//It  means there exists TextInput and Time Intervals on LHS, so create dateOffSetLiteral
 				Date date=null;
@@ -496,8 +496,8 @@ public class SingalNodeTemporalQuery
 					date = formatter.parse(rhsTimeValue);
 					rhsDateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
 				} catch (ParseException e) 
-				{
-				    throw new RuntimeException("Cann't Occur");
+				{				    
+					e.printStackTrace();					
 				}
 			}
 		}
@@ -510,7 +510,7 @@ public class SingalNodeTemporalQuery
 	 */
 	public void createLeftLiterals(String lhsTimeValue, String lhsTimeInterval)
 	{
-		if((!lhsTimeValue.equals("null")) && (!lhsTimeInterval.equals("null")))
+		if((!lhsTimeValue.equals(DAGConstant.NULL_STRING)) && (!lhsTimeInterval.equals(DAGConstant.NULL_STRING)))
 		{
 			//It  means there exists TextInput and Time Intervals on LHS, so create dateOffSetLiteral
 			this.lhsTimeInterval = getTimeInterval(lhsTimeInterval);
@@ -518,7 +518,7 @@ public class SingalNodeTemporalQuery
 		}
 		else
 		{
-			if((!lhsTimeValue.equals("null")) && (lhsTimeInterval.equals("null")))
+			if((!lhsTimeValue.equals(DAGConstant.NULL_STRING)) && (lhsTimeInterval.equals(DAGConstant.NULL_STRING)))
 			{
 				//This is the case when there exists DataPicker on LHS, so create only Date Literal
 				try 
@@ -527,7 +527,7 @@ public class SingalNodeTemporalQuery
 					lhsDateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
 				} catch (ParseException e) 
 				{
-				    throw new RuntimeException("Cann't Occur");
+				   e.printStackTrace();					
 				}				
 			}
 		}

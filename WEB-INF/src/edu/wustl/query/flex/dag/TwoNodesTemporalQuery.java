@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.wustl.query.util.global.Constants;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.ArithmeticOperator;
 import edu.wustl.common.querysuite.queryobject.IConnector;
@@ -19,6 +18,7 @@ import edu.wustl.common.querysuite.queryobject.INumericLiteral;
 import edu.wustl.common.querysuite.queryobject.ITerm;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
+import edu.wustl.query.util.global.Constants;
 
 public class TwoNodesTemporalQuery
 {
@@ -479,33 +479,40 @@ public class TwoNodesTemporalQuery
 		}
 		else
 		{
-			if((firstAttributeType.equals("Integer")) && (secondAttributeType.equals("Integer")))
-			{
-                intLiteral = QueryObjectFactory.createNumericLiteral(timeValue);
-			}
-			else if(!timeValue.equals("null"))
-			{
-				//Date date = Utility.parseDate(timeValue, "MM/dd/yyyy HH:MM:SS");					
-				Date date=null;
-				String pattern="";
-				try {
-					if((firstAttributeType.equals("DateTime")) && (secondAttributeType.equals("DateTime")))
-					{
-						pattern = "MM/dd/yyyy HH:mm:ss";
-					}
-					else
-					{
-						pattern = "MM/dd/yyyy";
-					}
-					formatter = new SimpleDateFormat(pattern);						
-					date = formatter.parse(timeValue);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}				
-				
-				dateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
-			}
+			checkAttributeType(timeValue);
+		}
+	}
+
+
+
+	private void checkAttributeType(String timeValue)
+	{
+		if((firstAttributeType.equals("Integer")) && (secondAttributeType.equals("Integer")))
+		{
+		    intLiteral = QueryObjectFactory.createNumericLiteral(timeValue);
+		}
+		else if(!timeValue.equals("null"))
+		{
+			//Date date = Utility.parseDate(timeValue, "MM/dd/yyyy HH:MM:SS");					
+			Date date=null;
+			String pattern="";
+			try {
+				if((firstAttributeType.equals("DateTime")) && (secondAttributeType.equals("DateTime")))
+				{
+					pattern = "MM/dd/yyyy HH:mm:ss";
+				}
+				else
+				{
+					pattern = "MM/dd/yyyy";
+				}
+				formatter = new SimpleDateFormat(pattern);						
+				date = formatter.parse(timeValue);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}				
+			
+			dateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
 		}
 	}
 
