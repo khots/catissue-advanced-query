@@ -311,10 +311,10 @@
   	   	  }
   	   }
   	   
-  	  private function faultHandler (event:FaultEvent):void
+      private function faultHandler (event:FaultEvent):void
 	  {
 		  AlertManager.showError(event.fault.faultString);
-	  }
+	  } 
 	  
 	  private function deleteNodeHandler(event : ResultEvent) : void
 	  {
@@ -345,7 +345,7 @@
        	   this.parentApplication.operationforView="edit"; //to get popwindow fields values
        	   this.parentApplication.rpcService.getSingleNodeEditData(node);
        	   this.parentApplication.rpcService.addEventListener(ResultEvent.RESULT,editNodeHandler);  
-		   this.parentApplication.rpcService.addEventListener(FaultEvent.FAULT, faultHandler);
+		   //this.parentApplication.rpcService.addEventListener(FaultEvent.FAULT, faultHandler);
        }
        /*private function changeBgColor() : void{
        	if(this.parentApplication.view=="Result"){

@@ -16,8 +16,6 @@
 	 		import mx.collections.ArrayCollection;
 	 		import mx.controls.TextInput;
             import mx.managers.PopUpManager;
-            import mx.controls.Alert;
-            import mx.core.ClassFactory;
             import mx.controls.List;  
             import Components.DAGNode;
             import Components.CustomFormulaNode;  
@@ -46,9 +44,6 @@
 	 	    
 	 	    [Bindable]
 	 	    public var secondNodeDp : Object;
-	 	    
-	 	   	[Bindable]
-     		private var myDropdownFactory:ClassFactory;
      		
      		[Bindable]
      		public var firstEntityName : String = null;
@@ -213,8 +208,6 @@
             //Setting the selected Arithmetic Operator
             customFormulaNode.setSelectedArithmeticOp(cb2.selectedItem.toString());
             
-            trace("this.parentApplication.view" + this.parentApplication.view);
-            
             //Setting the first selected DAG Nodes Properties
 	            customFormulaNode.setFirstNodeName(firstEntityName); 
 	            customFormulaNode.setFirstNodeExpId(firstEntityExpId); 
@@ -251,7 +244,7 @@
 	        customFormulaNode.setNodeView(this.parentApplication.view);
 	        
             parentApplication.customFormulaString = customFormulaString;
-            this.parentApplication.rpcService.addEventListener(FaultEvent.FAULT, faultHandler);
+            //this.parentApplication.rpcService.addEventListener(FaultEvent.FAULT, faultHandler);
 
             if(submitButton.label == "OK")
             {              	 
@@ -285,10 +278,10 @@
            this.parentApplication.rpcService.removeEventListener(ResultEvent.RESULT, resultHandler);
            parentApplication.addCustomFromulaNode(node);
        }  
-      private function faultHandler (event:FaultEvent):void
+      /* private function faultHandler (event:FaultEvent):void
 	  {
-		  Alert.show(event.fault.faultString, 'Error');
-	  }
+		  AlertManager.showError(event.fault.faultString);
+	  } */
 	  
            private function addInputControl() : void
            {
@@ -369,20 +362,7 @@
                        }
            	
            } 
-           
-          /*  private function initClassFactory():void
-			{
-				
-						
-				myDropdownFactory = new ClassFactory(List);
-				myDropdownFactory.properties = {showDataTips:true, dataTipFunction:myDataTipFunction};
-			}
-           
-           private function myDataTipFunction(item:Object):String
-           { 
-           	    return String(item);
-           }
-           */
+          
            private function validateQueryData():void
            {
            	  	var firstOperandType : String  = null; 
@@ -452,8 +432,8 @@
            	 			arithmeticOperand= cb2.selectedItem.toString();
            	 	    	if((arithmeticOperand == "+") || (arithmeticOperand == "/") || (arithmeticOperand == "*"))
            	 	    	{
-           	 	    		AlertManager.showWarning("Not a valid operation. Change the Operator");           	 	    		
-           	 	    		createBigTip("Not a valid operation. Change the Operator");
+           	 	    		AlertManager.showWarning("A date/timestamp may only be subtracted from another date/timestamp.  Please change the operator to a minus sign.");           	 	    		
+           	 	    		createBigTip("A date/timestamp may only be subtracted from another date/timestamp.  Please change the operator to a minus sign.");
            	 	    	}
            	 	    	else
            	 	    	{
@@ -521,8 +501,8 @@
            	 		}
            	 		else if((firstOperandType=="Integer" && secondOperandType=="Date") && (cb2.selectedItem.toString()=="-"))
            	 		{
-           	 			AlertManager.showWarning("Not a valid Operand. Second Operand should be DateOffset");
-           	 			createBigTip("Not a valid Operand. Second Operand should be DateOffset");
+           	 			AlertManager.showWarning("A date/timestamp may not be subtracted from a quantitative attribute.  Please change the operator to a plus sign.");
+           	 			createBigTip("A date/timestamp may not be subtracted from a quantitative attribute.  Please change the operator to a plus sign.");
            	 		}
            	 		else
            	 		{
@@ -531,8 +511,8 @@
            	 	    	arithmeticOperand= cb2.selectedItem.toString();
            	 	   	 	if((arithmeticOperand == "/") || (arithmeticOperand == "*") )
            	 	    	{
-           	 	    		AlertManager.showWarning("Operation is not valid. Change Operator");
-           	 	    		createBigTip("Operation is not valid. Change Operator");
+           	 	    		AlertManager.showWarning("A date/timestamp may only be subtracted from another date/timestamp.  Please change the operator to a minus sign.");
+           	 	    		createBigTip("A date/timestamp may only be subtracted from another date/timestamp.  Please change the operator to a minus sign.");
            	 	    	}
            	 	    	else
            	 	    	{

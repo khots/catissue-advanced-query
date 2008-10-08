@@ -366,7 +366,7 @@
   	   	  var nodeName : String = this.name;
   	   	  this.parentApplication.rpcService.addEventListener(ResultEvent.RESULT,nodeRemoveHandler);
   	   	  this.parentApplication.rpcService.removeCustomFormula(nodeName);
-          this.parentApplication.rpcService.addEventListener(FaultEvent.FAULT, faultHandler);
+          //this.parentApplication.rpcService.addEventListener(FaultEvent.FAULT, faultHandler);
   	   }
   	   private function nodeRemoveHandler(event : ResultEvent) : void
   	   {
@@ -389,7 +389,7 @@
 			this.parentApplication.rpcService.retrieveEditQueryData(node);
 			this.parentApplication.rpcService.removeEventListener(ResultEvent.RESULT,nodeRemoveHandler);
 			this.parentApplication.rpcService.addEventListener(ResultEvent.RESULT,editNodeHandler);  
-			this.parentApplication.rpcService.addEventListener(FaultEvent.FAULT, faultHandler);  
+			//this.parentApplication.rpcService.addEventListener(FaultEvent.FAULT, faultHandler);  
   	   }
   	  private function faultHandler (event:FaultEvent):void
 	  {

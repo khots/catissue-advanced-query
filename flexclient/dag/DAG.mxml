@@ -37,11 +37,16 @@ TextInput
 {
 	borderColor: blue;
 }
-
+Application
+{
+	font-anti-alias-type : advanced;
+	font-sharpness : -100;
+}
 		
 </mx:Style>
 <mx:Script>
 <![CDATA[
+	import mx.messaging.messages.ErrorMessage;
 	import mx.controls.Text;
 	import Components.AlertManager;
 	import mx.controls.DateField;
@@ -191,8 +196,11 @@ TextInput
 	* Remote Call fault handler
 	*/	
 	private function faultHandler (event:FaultEvent):void
-	{
-		AlertManager.showError(event.fault.faultString);
+	{		
+		var errorMessage:ErrorMessage = event.message as ErrorMessage;	
+		AlertManager.showError("Fault occur at server please contact Administrator.");
+		rpcService.removeEventListener("result",linkNodesHandler);
+		CursorManager.removeBusyCursor();	
 	}
 	/**
 	* To drag nodes on UI
@@ -321,18 +329,7 @@ TextInput
 			{
 				drawLines(dagNode, singleCustomNode.x,singleCustomNode.y,singleCustomNode.name);
 			}
-		}
-		
-		/*if((firstDAGNode != null) && (secondDAGNode != null))
-		{
-			 customNodeName = firstDAGNode.nodeNumber + "_" + secondDAGNode.nodeNumber;
-			 customNode = mainPanel.getChildByName(customNodeName) as CustomFormulaNode;
-		     if(customNode != null)
-		     {
-		     	drawLines(firstDAGNode, customNode.x,customNode.y,customNode.name);
-		     	drawLines(secondDAGNode, customNode.x,customNode.y,customNode.name);
-		     }
-		} */
+		}		
 	 }
 	 else if(nodeSelected == "customFormulaNode")
 	 {
@@ -496,7 +493,7 @@ TextInput
 				{
 					rpcService.initFlexInterface();
 					rpcService.addEventListener(ResultEvent.RESULT,initFlexInterfaceHandler);
-					rpcService.addEventListener(FaultEvent.FAULT, faultHandler);
+					//rpcService.addEventListener(FaultEvent.FAULT, faultHandler);
 				}
 			}
 			else
@@ -811,13 +808,13 @@ TextInput
 			}
 			else
 			{
-				AlertManager.showWarning("Cannot connect selected nodes as it creates cycle in the query graph");
+				AlertManager.showWarning("The selected classes may not be linked together because a cyclic graph is created.");
 			}
 				
 		}
 		else
 		{
-			AlertManager.showWarning("No association present or no association selected.");
+			AlertManager.showWarning("The selected classes may not be linked together because no association exists between them in the object model.");
 		}
 		rpcService.removeEventListener(ResultEvent.RESULT,linkNodesHandler,false);
 	}
@@ -927,14 +924,14 @@ TextInput
 			
 		if(dagNode1 == null || dagNode2 == null)
 		{
-			AlertManager.showWarning("Please select two nodes to link");
+			AlertManager.showWarning("Two classes must be selected before pressing the 'Add Link' button.");
 			CursorManager.removeBusyCursor();	
 		}
 		else
 		{
 			if(dagNode1.getOutAssociation(node2) != null)
 			{
-				AlertManager.showWarning("An association already exists between selected nodes");
+				AlertManager.showWarning("The selected classes are already linked in the Diagrammatic View.");
 		  		CursorManager.removeBusyCursor();   	   
 			}
 			else
@@ -947,8 +944,7 @@ TextInput
 	Path handler.
 	*/
 	public function getPathHandler(event: ResultEvent):void
-	{
-		
+	{		
 		try
 		{
 		var dagpath:DAGPath = new DAGPath();
@@ -963,14 +959,15 @@ TextInput
 		else
 		{
 			if(ambiguityPanel.pathList.length>1)
-			{
+			{			
 				ambiguityPanel.nodeList=selectedNodeList;
 				createPopUp();
 			}
 			else
-			{
-				rpcService.removeEventListener(ResultEvent.RESULT,getPathHandler,false);
-				rpcService.addEventListener("result",linkNodesHandler);
+			{				
+				rpcService.removeEventListener(ResultEvent.RESULT,getPathHandler,false);				
+				rpcService.addEventListener("result",linkNodesHandler);		
+				
 				rpcService.linkNodes(selectedNodeList,ambiguityPanel.pathList);
 			}
 		}
@@ -1398,7 +1395,7 @@ TextInput
 	 	}
 	 	else
 	 	{
-	 	     AlertManager.showWarning("Node is not valid for Temporal Query");	
+	 	     AlertManager.showWarning("A calculated predicate may not be added to the selected class as it does not contain any date, timestamp, or quantitative attributes.");	
 	 	}
 	 }
 	 
@@ -1414,7 +1411,7 @@ TextInput
 		}
 		else
 		{
-			 AlertManager.showWarning("Nodes are not valid for Temporal Query");
+			 AlertManager.showWarning("A calculated predicate may not be added to the selected classes as either one or both do not contain any date, timestamp, or quantitative attributes.");
 		}
 	}
 	
@@ -1980,7 +1977,6 @@ TextInput
 	 	}else if((operation == "rePaint") || (operation == "rePaintEdit"))
 	 	{
 	 		//This is the case of repaint, so get the DAG Node from singleRepaintDAG Node Map
-	 		trace("1");
 	 		nodeList = singleRepaintDAGNodeMap.getValue(nodeName);
 	 		if((nodeList != null) && (nodeList.length >0))
 	 		{
@@ -1990,7 +1986,6 @@ TextInput
 	 		{
 	 			//This is the case when any node is added for Redefine Query and then it is edited
             	//So in that case get that node from  associatedDAGNodes Map as node is created aftre repaint and Edited
-	 			trace("2");
 	 			nodeList = associatedSingleDagNodes[nodeName];
 	 	   		dagNode = nodeList.getItemAt(0) as DAGNode;
 	 		}	
@@ -2359,7 +2354,7 @@ TextInput
 
 ]]>
 </mx:Script>
-<mx:RemoteObject id="rpcService" destination="cdeService">
+<mx:RemoteObject id="rpcService" destination="cdeService" fault="faultHandler(event);">
 </mx:RemoteObject>
 
 <mx:VBox width="100%" height="100%" backgroundColor="#f9e886" horizontalGap="0" verticalGap="0">

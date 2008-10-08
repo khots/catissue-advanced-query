@@ -11,13 +11,13 @@ package Components
 	public class MessageBoxHelper
 	{
 	
-        [Embed(source="../alert_info.gif")]
+        [Embed(source="../assets/alert_info.gif")]
 		public static var INFO_ICON:Class;		
 		
-        [Embed(source="../alert_error.gif")]
+        [Embed(source="../assets/alert_error.gif")]
         public static var ERROR_ICON:Class;
 		
-		[Embed(source="../alert_confirm.gif")]		       
+		[Embed(source="../assets/alert_confirm.gif")]		       
         public static var WARNING_ICON:Class; 
 
 		public static var INFO_TITLE:String = "Info";

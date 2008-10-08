@@ -6,6 +6,7 @@
 	verticalScrollPolicy="off" horizontalScrollPolicy="off">
 <mx:Script>
 	<![CDATA[
+		import mx.messaging.messages.ErrorMessage;
 		import Util.HashMap;
 		import mx.collections.ICollectionView;
 		import mx.controls.ComboBox;
@@ -218,7 +219,7 @@
 		*/
 		public function init():void
 		{ 
-			this.parentApplication.rpcService.addEventListener("fault", faultHandler);
+			//this.parentApplication.rpcService.addEventListener("fault", faultHandler);
 		}
 		/**
 		*Initilize DAG node before creation
@@ -458,10 +459,12 @@
 		/**
 		* Error handler
 		*/
-		public function faultHandler (event:FaultEvent):void {
+		/* public function faultHandler (event:FaultEvent):void {
 				// Deal with event.fault.faultString, etc.
-			Alert.show(event.fault.faultString, 'Error');
-		}
+			var errorMessage:ErrorMessage = event.message as ErrorMessage;
+			AlertManager.showError(errorMessage.rootCause.message);				
+			
+		} */
 		/**
 		* Change operator handler
 		*/	
