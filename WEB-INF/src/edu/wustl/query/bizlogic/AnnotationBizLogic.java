@@ -54,11 +54,6 @@ public class AnnotationBizLogic extends DefaultBizLogic
     {
         List<EntityMap> dynamicList = new ArrayList<EntityMap>();
 
-        String[] selectColumnName = {"id"};
-        String[] whereColumnName = {"staticEntityId"};
-        String[] whereColumnCondition = {"="};
-        Object[] whereColumnValue = {new Long(staticEntityId)};
-        String joinCondition = null;
         List list = new ArrayList();
         try
         {
