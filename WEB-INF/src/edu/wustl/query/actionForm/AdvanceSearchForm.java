@@ -14,7 +14,6 @@ package edu.wustl.query.actionForm;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,14 +23,12 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
-import edu.wustl.query.bizlogic.BizLogicFactory;
-import edu.wustl.query.util.global.SearchUtil;
-import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.QueryBizLogic;
-import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.query.bizlogic.BizLogicFactory;
+import edu.wustl.query.util.global.SearchUtil;
 
 /**
  * This Class is used to encapsulate all the request parameters passed from Search Pages.

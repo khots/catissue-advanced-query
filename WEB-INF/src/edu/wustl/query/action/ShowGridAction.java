@@ -15,20 +15,19 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
-import edu.wustl.query.bizlogic.QueryOutputTreeBizLogic;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.querysuite.QueryDetails;
-import edu.wustl.query.util.querysuite.QueryModuleUtil;
 import edu.wustl.common.action.BaseAction;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
 import edu.wustl.common.beans.SessionDataBean;
-
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.security.utility.Utility;
+import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
+import edu.wustl.query.bizlogic.QueryOutputTreeBizLogic;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 /**
  * This class is invoked when user clicks on a node from the tree. It loads the data required for grid formation.

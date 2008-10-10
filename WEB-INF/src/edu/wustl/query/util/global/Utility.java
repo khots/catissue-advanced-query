@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.global.Variables;
 import edu.wustl.common.beans.QueryResultObjectData;
 import edu.wustl.common.util.logger.Logger;
 

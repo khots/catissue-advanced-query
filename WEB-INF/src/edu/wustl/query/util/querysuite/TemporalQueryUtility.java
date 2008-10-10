@@ -6,11 +6,11 @@ package edu.wustl.query.util.querysuite;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wustl.query.util.global.Constants;
 import edu.wustl.common.querysuite.queryobject.DSInterval;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
 import edu.wustl.common.querysuite.queryobject.YMInterval;
+import edu.wustl.query.util.global.Constants;
 
 
 /**

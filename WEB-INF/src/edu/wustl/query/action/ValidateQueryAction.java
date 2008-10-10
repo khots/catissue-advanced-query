@@ -4,15 +4,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.Action;
+
+import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.query.bizlogic.ValidateQueryBizLogic;
 import edu.wustl.query.util.global.Constants;
-import edu.wustl.common.action.BaseAction;
-import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
-import edu.wustl.common.util.global.ApplicationProperties;
 /**
  * When the user searches or saves a query , the query is checked for the conditions like DAG should not be empty , is there 
  * at least one node in view on define view page and does the query contain the main object. If all the conditions are satisfied 

@@ -3,16 +3,17 @@ package edu.wustl.query.action;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import edu.wustl.common.querysuite.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.bizlogic.QueryOutputTreeBizLogic;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryDetails;
-import edu.wustl.common.action.BaseAction;
-import edu.wustl.common.querysuite.queryobject.impl.OutputTreeDataNode;
-import org.apache.struts.action.Action;
 
 /**
  * This class is invoked when user clicks on a node from the tree. It loads the data required for tree formation.

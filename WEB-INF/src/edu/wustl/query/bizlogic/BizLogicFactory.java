@@ -1,8 +1,8 @@
 package edu.wustl.query.bizlogic;
 
-import edu.wustl.query.util.global.Constants;
 import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.bizlogic.QueryBizLogic;
+import edu.wustl.query.util.global.Constants;
 
 
 public class BizLogicFactory

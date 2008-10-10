@@ -14,13 +14,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.wustl.query.actionForm.CategorySearchForm;
-import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
-import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
-import edu.wustl.query.querysuite.QueryShoppingCart;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.querysuite.QueryDetails;
-import edu.wustl.query.util.querysuite.QueryModuleUtil;
 import edu.wustl.common.action.BaseAction;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
@@ -31,6 +24,13 @@ import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.impl.metadata.SelectedColumnsMetadata;
+import edu.wustl.query.actionForm.CategorySearchForm;
+import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
+import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
+import edu.wustl.query.querysuite.QueryShoppingCart;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 /**
  * When user is done with selecting the columns to be shown in results, this action is invoked.

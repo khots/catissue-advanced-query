@@ -4,14 +4,13 @@ package edu.wustl.query.action;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.util.global.Constants;
-import edu.wustl.common.action.BaseAction;
-import org.apache.struts.action.Action;
 /**
  * This is a action called whern user clicks on search button from addlimits .jsp. The result data lists are already
  * stored in session through an applet action ViewSearchResultsAction. This class just forwards the control to ViewSearchResults.jsp.

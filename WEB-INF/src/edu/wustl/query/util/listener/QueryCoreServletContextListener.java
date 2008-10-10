@@ -10,13 +10,12 @@ import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 
 import net.sf.ehcache.CacheException;
-
 import edu.wustl.cab2b.server.path.PathFinder;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.global.Variables;
 import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Variables;
 
 
 public class QueryCoreServletContextListener implements ServletContextListener

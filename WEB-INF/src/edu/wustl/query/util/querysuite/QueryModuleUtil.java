@@ -1,9 +1,7 @@
 
 package edu.wustl.query.util.querysuite;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -13,11 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.query.actionForm.CategorySearchForm;
-//import edu.wustl.catissuecore.bizlogic.querysuite.QueryShoppingCartBizLogic;
-//import edu.wustl.catissuecore.querysuite.QueryShoppingCart;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.global.Utility;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
 import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
@@ -27,6 +20,9 @@ import edu.wustl.common.querysuite.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.querysuite.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.query.actionForm.CategorySearchForm;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 
 /**
  * This is an utility class to provide methods required for query interface.

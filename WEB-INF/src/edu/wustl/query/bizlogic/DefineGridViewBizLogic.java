@@ -12,12 +12,6 @@ import java.util.Vector;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.query.actionForm.CategorySearchForm;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.querysuite.QueryCSMUtil;
-import edu.wustl.query.util.querysuite.TemporalColumnUIBean;
-import edu.wustl.query.util.querysuite.QueryDetails;
-import edu.wustl.query.util.querysuite.QueryModuleConstants;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
@@ -30,6 +24,12 @@ import edu.wustl.common.querysuite.queryobject.impl.metadata.QueryOutputTreeAttr
 import edu.wustl.common.querysuite.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.tree.QueryTreeNodeData;
 import edu.wustl.common.util.Utility;
+import edu.wustl.query.actionForm.CategorySearchForm;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.QueryCSMUtil;
+import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleConstants;
+import edu.wustl.query.util.querysuite.TemporalColumnUIBean;
 /**
  * This bizlogic is called when user wants to define columns to be shown for grid results.
  * 

@@ -9,12 +9,11 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
-import edu.wustl.common.action.BaseAction;
-import edu.wustl.common.beans.SessionDataBean;
 /**
  * Action is called when user clicks on QueryWizard link on search tab.
  * @author deepti_shelar

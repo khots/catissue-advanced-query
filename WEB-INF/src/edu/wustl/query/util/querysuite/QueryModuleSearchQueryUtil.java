@@ -11,18 +11,9 @@ import javax.servlet.http.HttpSession;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
-import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
-import edu.wustl.query.bizlogic.QueryOutputTreeBizLogic;
-import edu.wustl.query.querysuite.QuerySqlGenerator;
-//import edu.wustl.catissuecore.querysuite.QueryShoppingCart;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.global.Variables;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
 import edu.wustl.common.bizlogic.QueryBizLogic;
 import edu.wustl.common.dao.QuerySessionData;
-import edu.wustl.common.exception.BizLogicException;
-import edu.wustl.common.factory.AbstractBizLogicFactory;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.factory.SqlGeneratorFactory;
@@ -40,7 +31,12 @@ import edu.wustl.common.querysuite.queryobject.util.QueryObjectProcessor;
 import edu.wustl.common.tree.QueryTreeNodeData;
 import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
+import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
+import edu.wustl.query.bizlogic.QueryOutputTreeBizLogic;
+import edu.wustl.query.querysuite.QuerySqlGenerator;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Variables;
 
 /**
  * @author santhoshkumar_c

@@ -10,13 +10,7 @@ import java.util.Vector;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.querysuite.QueryCSMUtil;
-import edu.wustl.query.util.querysuite.QueryDetails;
-import edu.wustl.query.util.querysuite.QueryModuleSqlUtil;
-import edu.wustl.query.util.querysuite.QueryModuleUtil;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
-import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
@@ -26,6 +20,11 @@ import edu.wustl.common.tree.QueryTreeNodeData;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.QueryCSMUtil;
+import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleSqlUtil;
+import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 /**
  * Creates QueryOutputTree Object as per the data filled by the user on AddLimits section.

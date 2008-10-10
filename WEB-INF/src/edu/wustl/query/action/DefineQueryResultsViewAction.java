@@ -1,6 +1,5 @@
 package edu.wustl.query.action;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -9,19 +8,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.Action;
-import edu.wustl.query.actionForm.CategorySearchForm;
-import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.querysuite.QueryDetails;
-import edu.wustl.common.action.BaseAction;
+
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.querysuite.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.tree.QueryTreeNodeData;
+import edu.wustl.query.actionForm.CategorySearchForm;
+import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.QueryDetails;
 
 /**
  * This action is invoked when user clicks on Define View button from the results screen. This will open a page where user can select the attributes 

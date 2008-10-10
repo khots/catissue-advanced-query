@@ -15,12 +15,6 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
-import edu.wustl.query.util.global.Constants;
-//import edu.wustl.catissuecore.util.listener.CatissueCoreServletContextListener;
-import edu.wustl.query.util.querysuite.QueryCSMUtil;
-import edu.wustl.query.util.querysuite.QueryDetails;
-import edu.wustl.query.util.querysuite.QueryModuleUtil;
-import edu.wustl.query.util.querysuite.TemporalColumnUIBean;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
 import edu.wustl.common.bizlogic.QueryBizLogic;
@@ -42,7 +36,11 @@ import edu.wustl.common.querysuite.queryobject.impl.metadata.SelectedColumnsMeta
 import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.logger.Logger;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.QueryCSMUtil;
+import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleUtil;
+import edu.wustl.query.util.querysuite.TemporalColumnUIBean;
 
 /**
  * Creates QueryOutput spreadsheet data as per the inputs given by user on AddLimits and define results section .

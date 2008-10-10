@@ -1,6 +1,5 @@
 package edu.wustl.query.bizlogic;
 
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -9,11 +8,6 @@ import javax.servlet.http.HttpSession;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.query.querysuite.QuerySqlGenerator;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.querysuite.QueryCSMUtil;
-import edu.wustl.query.util.querysuite.QueryDetails;
-import edu.wustl.query.util.querysuite.QueryModuleUtil;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryengine.impl.SqlGenerator;
@@ -25,6 +19,11 @@ import edu.wustl.common.querysuite.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.util.QueryObjectProcessor;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.query.querysuite.QuerySqlGenerator;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.QueryCSMUtil;
+import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 /**
  * When the user searches or saves a query , the query is checked for the conditions like DAG should not be empty , is there 

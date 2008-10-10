@@ -7,12 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.Action;
+
 import edu.wustl.query.util.global.Constants;
-import edu.wustl.common.action.BaseAction;
 /**
  * This action is called when user clicks on Search button after forming the query object.This class loads required grid data in session/request.
  * And then it forwards control to simpleSearchDataView.jsp.
