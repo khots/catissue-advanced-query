@@ -138,7 +138,9 @@ public abstract class QueryCSMUtil
 				tempMainEntityList = new ArrayList<EntityInterface>();
 				EntityInterface parentEntity = tempDynamicExtensionsEntity.getParentEntity();
 				if(parentEntity == null)
+				{
 					break;
+				}
 				else
 				{
 					tempMainEntityList = getAllMainEntities(parentEntity, tempMainEntityList);
@@ -159,7 +161,9 @@ public abstract class QueryCSMUtil
 				for(EntityInterface temperoryEntity : temperoryList)
 				{
 					if(!(temperoryEntity.equals(dynamicExtensionsEntity)))
+					{
 						mainEntityList.add(temperoryEntity);
+					}
 				}
 			}
 			
@@ -242,7 +246,7 @@ public abstract class QueryCSMUtil
 		}
 		
 		queryResultObjectDataBean.setCsmEntityName(entityName);
-		setEntityName(queryResultObjectDataBean, entityName);
+		setEntityName(queryResultObjectDataBean);
 		readDeniedObject = isReadDeniedObject(queryResultObjectDataBean.getCsmEntityName());
 		queryResultObjectDataBean.setReadDeniedObject(readDeniedObject);
 		}
@@ -255,7 +259,7 @@ public abstract class QueryCSMUtil
 	 * @param queryResultObjectDataBean
 	 * @param name
 	 */
-	private static void setEntityName(QueryResultObjectDataBean queryResultObjectDataBean, String name)
+	private static void setEntityName(QueryResultObjectDataBean queryResultObjectDataBean)
 	{
 //		boolean presentInArray = QueryModuleUtil.isPresentInArray(name,
 //				Constants.INHERITED_ENTITY_NAMES);
@@ -277,10 +281,12 @@ public abstract class QueryCSMUtil
 	 */
 	private static boolean isReadDeniedObject(String entityName)
 	{  
+		boolean isReadDenied = false;
 		if (edu.wustl.common.util.global.Variables.queryReadDeniedObjectList.contains(entityName))
-			return true;
-		else
-			return false;
+		{
+			isReadDenied = true;
+		}
+		return isReadDenied;
 	}
 
 	
@@ -295,18 +301,16 @@ public abstract class QueryCSMUtil
 	{
 		 //check if node itself is main entity
 		EntityInterface entity = null;
-		 	
-		 	
 		// check if main entity is present in parent hierarchy
 		if (node.getParent() != null)
-			entity = getMainEntityFromParentHierarchy(mainEntityList, node.getParent()); 
-		if (entity != null)
-			return entity;	
-		 	
-		 //check if main entity is present in child hierarchy
-		 	
-		entity = getMainEntityFromChildHierarchy(mainEntityList, node);
-			
+		{
+			entity = getMainEntityFromParentHierarchy(mainEntityList, node.getParent());
+		}
+		if (entity == null)
+		{
+			//check if main entity is present in child hierarchy
+			entity = getMainEntityFromChildHierarchy(mainEntityList, node);
+		}
 		return entity;
 	}
 		 
@@ -320,10 +324,11 @@ public abstract class QueryCSMUtil
 	 {
 		 EntityInterface dynamicExtensionsEntity = node.getOutputEntity()
 					.getDynamicExtensionsEntity();
-		 if (mainEntityList.contains(dynamicExtensionsEntity))
-			 return dynamicExtensionsEntity;
-		 else 
-			 return null;
+		 if (!mainEntityList.contains(dynamicExtensionsEntity))
+		 {
+			 dynamicExtensionsEntity = null;
+		 }
+		 return dynamicExtensionsEntity;
 	 }
 		 
 	 /**
@@ -335,12 +340,13 @@ public abstract class QueryCSMUtil
 	 private static EntityInterface  getMainEntityFromParentHierarchy(
 		 		List<EntityInterface> mainEntityList, OutputTreeDataNode node)
 	 {
-		 
 		EntityInterface entity = isMainEntity(mainEntityList, node);
 	 	if (entity == null)
 	 	{
 	 		if (node.getParent() != null)
-	 		 	return getMainEntityFromParentHierarchy(mainEntityList, node.getParent());
+	 		{
+	 			entity = getMainEntityFromParentHierarchy(mainEntityList, node.getParent());
+	 		}
 	 	}
 	 	return entity;
 	 }
@@ -349,7 +355,7 @@ public abstract class QueryCSMUtil
 	  * recursively checks in child hierarchy for main entity
 	  * @param mainEntityList
 	  * @param node
-	  * @return main Entiy if found in child Hierarchy
+	  * @return main Entity if found in child Hierarchy
 	  */
 	 private static EntityInterface getMainEntityFromChildHierarchy(
 	 		List<EntityInterface> mainEntityList, OutputTreeDataNode node)
@@ -364,7 +370,7 @@ public abstract class QueryCSMUtil
 				entity = getMainEntityFromChildHierarchy(mainEntityList, childNode);
 				if (entity != null)
 				{
-		 			return entity;	
+		 			break;	
 		 		}
 			}
 		}
@@ -389,7 +395,9 @@ public abstract class QueryCSMUtil
 			
 			RoleInterface targetRole = associationById.getTargetRole();
 			if (associationById!=null && targetRole.getAssociationsType().getValue().equals(Constants.CONTAINTMENT_ASSOCIATION))
+			{
 				list.add(associationById);
+			}
 		}
 		return list;
 	}	
@@ -524,7 +532,9 @@ public abstract class QueryCSMUtil
 		{
 			OutputTreeDataNode outputTreeDataNode = (OutputTreeDataNode) iterator.next();
 			if(outputTreeDataNode.getOutputEntity().getDynamicExtensionsEntity().equals(entity))
+			{
 				return outputTreeDataNode;
+			}
 		}
 		return null;
 	}
