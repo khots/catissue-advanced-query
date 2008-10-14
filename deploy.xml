@@ -27,12 +27,17 @@
 
 	<property name="mysql.lib" value="mysql-connector-java-5.0.8-bin.jar" />
 	
+	<!-- These properties are not required so commented out -->
+	<!-- 
 	<property name="query.struts.config.file" value="struts-config.xml" />
 	<property name="query.hibernate.config.file" value="QueryHibernate.cfg.xml" />
 	<property name="query.tiles.def.file" value="tiles-defs.xml" />
+	-->
 	
 	<property name="oracle_home" value="${env.ORACLE_HOME}"/>
 	<property name="jboss.bin.run.jar" value="${jboss.home.dir}/bin/run.jar"/>
+	
+	 <property name ="datasource" value ="java:/query"/>
 	
 	<!-- Check for required properties -->
 	<target name="assert">
@@ -246,17 +251,25 @@
 		</replace>
 		<replace file="${temp.dir}/query/WEB-INF/classes/QueryHibernate.cfg.xml">
 			<replacefilter token="${mysql.dialect.string}" value="${mysql.dialect.string}" />
+			<!-- Added by Baljeet -->
+			<replacefilter token="@@dataSource@@" value="${datasource}"/>
 		</replace>
 		<replace file="${temp.dir}/query/WEB-INF/classes/DynamicExtensionsHibernate.cfg.xml">
 			<replacefilter token="${mysql.dialect.string}" value="${mysql.dialect.string}" />
+			<!--Added By Baljeet-->
+			<replacefilter token="@@dataSource@@" value="${datasource}"/>
 		</replace>
 		
 		<replace file="${temp.dir}/dynamicExtensions/WEB-INF/classes/DynamicExtensionsHibernate.cfg.xml">
 			<replacefilter token="${mysql.dialect.string}" value="${mysql.dialect.string}" />
+			<!--Added By Baljeet--> 
+			<replacefilter token="@@dataSource@@" value="${datasource}"/>
 		</replace>
 		
 		<replace file="${temp.dir}/dynamicExtensionsjar/DynamicExtensionsHibernate.cfg.xml">
 			<replacefilter token="${mysql.dialect.string}" value="${mysql.dialect.string}" />
+			<!--Added By Baljeet-->
+			<replacefilter token="@@dataSource@@" value="${datasource}"/>
 		</replace>
 	
 	</target>
@@ -549,7 +562,7 @@
 		<antcall target="send_mail" />
 		<antcall target="config_jboss_files" />
 		
-		<delete dir="${temp.dir}" />				
+		<!-- delete dir="${temp.dir}" / --> 
 	</target>
 	
 	<!--Target for deployment with jboss config-->
