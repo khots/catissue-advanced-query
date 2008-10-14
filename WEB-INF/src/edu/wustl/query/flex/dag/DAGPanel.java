@@ -25,6 +25,7 @@ import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.querysuite.exceptions.CyclicException;
+import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.metadata.associations.IAssociation;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
@@ -1736,7 +1737,7 @@ public class DAGPanel
 		int expressionId =expId;
 		IExpression expression = m_queryObject.getQuery().getConstraints().getExpression(expressionId);
 		EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
-		GenerateHtmlForAddLimitsBizLogic generateHTMLBizLogic = new GenerateHtmlForAddLimitsBizLogic();
+		GenerateHtmlForAddLimitsBizLogic generateHTMLBizLogic = new GenerateHtmlForAddLimitsBizLogic(null);
 		Rule rule = ((Rule) (expression.getOperand(0)));
 		List<ICondition> conditions = Collections.list(rule);
 		String html = generateHTMLBizLogic.generateHTML(entity, conditions);

@@ -82,7 +82,7 @@ public class FetchQueryAction extends Action
 					else
 					{
 						Map<Integer,ICustomFormula> customFormulaIndexMap = new HashMap<Integer, ICustomFormula>();
-						String htmlContents = new GenerateHtmlForAddLimitsBizLogic()
+						String htmlContents = new GenerateHtmlForAddLimitsBizLogic(null)
 								.getHTMLForSavedQuery(parameterizedQuery, false,
 										Constants.EXECUTE_QUERY_PAGE,customFormulaIndexMap);
 						request.setAttribute(Constants.HTML_CONTENTS, htmlContents);

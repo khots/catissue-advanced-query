@@ -1,7 +1,6 @@
 
 package edu.wustl.query.bizlogic;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,11 +29,6 @@ import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.wustl.cab2b.common.exception.CheckedException;
 import edu.wustl.cab2b.common.util.AttributeInterfaceComparator;
 import edu.wustl.cab2b.common.util.PermissibleValueComparator;
-import edu.wustl.query.flex.dag.CustomFormulaUIBean;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.querysuite.QueryModuleConstants;
-import edu.wustl.query.util.querysuite.TemporalQueryUtility;
-import edu.wustl.common.querysuite.queryobject.IArithmeticOperand;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
@@ -46,6 +40,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IRule;
 import edu.wustl.common.querysuite.queryobject.ITerm;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
+import edu.wustl.common.querysuite.queryobject.TermType;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
 import edu.wustl.common.querysuite.queryobject.impl.DateLiteral;
 import edu.wustl.common.querysuite.queryobject.impl.DateOffsetLiteral;
@@ -54,7 +49,9 @@ import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.ParseXMLFile;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
-import edu.wustl.common.querysuite.queryobject.TermType;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.QueryModuleConstants;
+import edu.wustl.query.util.querysuite.TemporalQueryUtility;
 
 /**
  * This class generates UI for 'Add Limits' and 'Edit Limits' section.
@@ -64,6 +61,36 @@ import edu.wustl.common.querysuite.queryobject.TermType;
 public class GenerateHtmlForAddLimitsBizLogic
 {
 
+	public GenerateHtmlForAddLimitsBizLogic(GenerateHTMLDetails generateHTMLDetails)
+	{
+		this.generateHTMLDetails = new GenerateHTMLDetails();
+		if(generateHTMLDetails!=null)
+		{
+			this.generateHTMLDetails.setSearchString(generateHTMLDetails.getSearchString());
+			this.generateHTMLDetails.setAttributeChecked(generateHTMLDetails.isAttributeChecked());
+			this.generateHTMLDetails.setPermissibleValuesChecked(generateHTMLDetails.isPermissibleValuesChecked());
+		}
+		else
+		{
+			this.generateHTMLDetails.setSearchString("");
+			this.generateHTMLDetails.setAttributeChecked(false);
+			this.generateHTMLDetails.setPermissibleValuesChecked(false);
+		}
+		
+		if (parseFile == null)
+		{
+			try
+			{
+				parseFile = ParseXMLFile.getInstance(Constants.DYNAMIC_UI_XML);
+			}
+			catch (CheckedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
+
 	/**
 	 * Object which holds data operators fro attributes.
 	 */
@@ -72,6 +99,8 @@ public class GenerateHtmlForAddLimitsBizLogic
 	private int expressionId = -1;
 
 	private String attributesList = "";
+	
+	private GenerateHTMLDetails generateHTMLDetails;
 
 	public int getExpressionId()
 	{
@@ -90,19 +119,9 @@ public class GenerateHtmlForAddLimitsBizLogic
 	 * 
 	 * @throws CheckedException
 	 */
-	public GenerateHtmlForAddLimitsBizLogic()
+	private GenerateHtmlForAddLimitsBizLogic()
 	{
-		if (parseFile == null)
-		{
-			try
-			{
-				parseFile = ParseXMLFile.getInstance(Constants.DYNAMIC_UI_XML);
-			}
-			catch (CheckedException e)
-			{
-				e.printStackTrace();
-			}
-		}
+		
 	}
 
 	/**
@@ -744,6 +763,9 @@ public class GenerateHtmlForAddLimitsBizLogic
 	 */
 	public String generateHTML(EntityInterface entity, List<ICondition> conditions)
 	{
+		boolean attributeChecked = this.generateHTMLDetails.isAttributeChecked();
+		boolean permissibleValuesChecked = this.generateHTMLDetails.isPermissibleValuesChecked();
+		
 		StringBuffer generatedPreHTML = new StringBuffer();
 		StringBuffer generatedHTML = new StringBuffer();
 		String nameOfTheEntity = entity.getName();
@@ -762,7 +784,7 @@ public class GenerateHtmlForAddLimitsBizLogic
 				.append("<td class='standardLabelQuery' valign='top' height=\"2%\" colspan=\"8\" bgcolor=\"#EAEAEA\" ><font face=\"Arial\" size=\"2\" color=\"#000000\"><b>");
 		generatedPreHTML.append(header + " '" + entityName + "'</b></font>");
 		generatedPreHTML.append("\n</td>");
-
+		
 		boolean isTopButton = true;
 		if (conditions != null)
 		{
@@ -774,6 +796,7 @@ public class GenerateHtmlForAddLimitsBizLogic
 		generatedHTML
 				.append("<table valign='top' border=\"0\" width=\"100%\" height=\"100%\" cellspacing=\"0\" cellpadding=\"0\" class='rowBGWhiteColor'>");
 		boolean isBGColor = false;
+		boolean isBold = false;
 		generatedHTML.append("\n<tr>");
 		generatedHTML.append("\n<td valign=\"top\">");
 		generatedHTML.append("\n</td>");
@@ -785,9 +808,22 @@ public class GenerateHtmlForAddLimitsBizLogic
 			Collections.sort(attributes, new AttributeInterfaceComparator());
 			for (int i = 0; i < attributes.size(); i++)
 			{
+				isBold = false;
 				AttributeInterface attribute = (AttributeInterface) attributes.get(i);
-				String attrName = attribute.getName();
+				String attrName = attribute.getName();				
 				String attrLabel = Utility.getDisplayLabel(attrName);
+				if(attributeChecked)
+				{
+					isBold = isAttributeBold(attrName.toLowerCase());
+				}
+				if(!isBold && permissibleValuesChecked)
+				{
+					isBold = isPerValueAttributeBold(getPermissibleValuesList(attribute));
+				}
+				if(isBold)
+				{
+					attrLabel = "<b>" + attrLabel + "</b>";
+				}
 				String componentId = generateComponentName(attribute);
 				attributesList = attributesList + ";" + componentId;
 				if (isBGColor)
@@ -810,6 +846,10 @@ public class GenerateHtmlForAddLimitsBizLogic
 				if (attribute.getDataType().equalsIgnoreCase(Constants.DATE))
 				{
 					String dateFormat = Constants.DATE_FORMAT;//ApplicationProperties.getValue("query.date.format");
+					if(isBold)
+					{
+						dateFormat = "<b>" + dateFormat + "</b>" ;
+					}
 					generatedHTML.append("\n(" + dateFormat + ")");
 				}
 				generatedHTML.append(":&nbsp;&nbsp;&nbsp;&nbsp;</td>\n");
@@ -837,6 +877,39 @@ public class GenerateHtmlForAddLimitsBizLogic
 		//generatedHTML.append(generateHTMLForButton(nameOfTheEntity, attributesList, isEditLimits,isTopButton));
 		generatedHTML.append("</table>");
 		return generatedPreHTML.toString() + "####" + generatedHTML.toString();
+	}
+
+	private boolean isPerValueAttributeBold(
+			List<PermissibleValueInterface> permissibleValuesList) 
+	{
+		boolean isBold = false;
+		if (permissibleValuesList != null && permissibleValuesList.size() != 0)
+		{
+			for (int i = 0; i < permissibleValuesList.size(); i++)
+			{
+				PermissibleValueInterface perValue = (PermissibleValueInterface) permissibleValuesList.get(i);
+				String value = perValue.getValueAsObject().toString();
+				if (isAttributeBold(value.toLowerCase()))
+				{
+					isBold = true;
+					break;
+				}
+			}
+		}
+		return isBold;
+	}
+
+	
+	private boolean isAttributeBold(String attrName) 
+	{
+		for(String searchString : this.generateHTMLDetails.getSearcStrings())
+		{
+			if(attrName.indexOf(searchString)>=0)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -1283,11 +1356,10 @@ public class GenerateHtmlForAddLimitsBizLogic
 				PermissibleValueInterface perValue = (PermissibleValueInterface) values.get(i);
 				String value = perValue.getValueAsObject().toString();
 				if (editLimitPermissibleValues != null
-						&& editLimitPermissibleValues.contains(value))
+						&& editLimitPermissibleValues.contains(value) || isAttributeBold(value.toLowerCase()))
 				{
 					html.append("\n<option class=\"PermissibleValuesQuery\" title=\"" + value
-							+ "\" value=\"" + value + "\" SELECTED>" + value + "</option>");
-
+							+ "\" value=\"" + value + "\" style=\"background:#808080\" SELECTED>" + value + "</option>");
 				}
 				else
 				{

@@ -10,21 +10,21 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.Action;
+
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.client.metadatasearch.MetadataSearch;
 import edu.wustl.cab2b.common.beans.MatchedClass;
 import edu.wustl.cab2b.common.util.Constants;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.util.querysuite.EntityCacheFactory;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
-import edu.wustl.common.action.BaseAction;
-import edu.wustl.common.util.Utility;
-import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
  * This class loads screen for categorySearch.
@@ -81,6 +81,8 @@ public class CategorySearchAction extends Action
 			Set<EntityInterface> entityCollection = new HashSet<EntityInterface>();
 			String[] searchString = null;
 			searchString = prepareSearchString(textfieldValue);
+			String attributeChecked = searchForm.getAttributeChecked();
+			String permissibleValuesChecked = searchForm.getPermissibleValuesChecked();
 			String entitiesString = "";
 			EntityCache cache = EntityCacheFactory.getInstance();
 			MetadataSearch advancedSearch = new MetadataSearch(cache);
@@ -113,6 +115,9 @@ public class CategorySearchAction extends Action
 				String KeySeparator = edu.wustl.query.util.global.Constants.KEY_CODE;
 				String key = request.getParameter(KeySeparator);
 				entitiesString = entitiesString + edu.wustl.query.util.global.Constants.KEY_SEPARATOR + key;
+				entitiesString = entitiesString + edu.wustl.query.util.global.Constants.KEY_SEPARATOR + textfieldValue;
+				entitiesString = entitiesString + edu.wustl.query.util.global.Constants.KEY_SEPARATOR + attributeChecked;
+				entitiesString = entitiesString + edu.wustl.query.util.global.Constants.KEY_SEPARATOR + permissibleValuesChecked;
 			}
 			response.setContentType("text/html");
 			response.getWriter().write(entitiesString);

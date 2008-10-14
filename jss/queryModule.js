@@ -439,17 +439,17 @@
 		if(!(classCheckStatus || attributeCheckStatus || permissibleValuesCheckStatus) ) 
 		{
 			alert("Please choose at least one option for metadata search from advanced options ");
-			onResponseUpdate(" ");
+			onResponseUpdate(" ", textFieldValue, attributeChecked, permissibleValuesChecked);
 		}
 		else if(textFieldValue == "")
 		{
 			alert("Please Enter the String to search.");
-			onResponseUpdate(" ");
+			onResponseUpdate(" ", textFieldValue, attributeChecked, permissibleValuesChecked);
 		}
 		else if(radioCheckStatus == null)
 		{
 			alert("Please select any of the radio button : 'based on' criteria");
-			onResponseUpdate(" ");
+			onResponseUpdate(" ", textFieldValue, attributeChecked, permissibleValuesChecked);
 		}
 		else
 		{
@@ -503,6 +503,9 @@
 			var length = listOfEntities.length;
 			var temp = listOfEntities[length-1].split("*&*");
 			var key = temp[1];
+			var textField = temp[2];
+			var attributeChecked = temp[3];
+			var permissibleValuesChecked = temp[4];
 			var row ='<table width="100%" border="0" bordercolor="#FFFFFF" cellspacing="0" cellpadding="1">';
 			for(i=1; i<listOfEntities.length; i++)
 			{
@@ -511,7 +514,7 @@
 				var name = nameIdDescription[0];
 				var id = nameIdDescription[1];				
 				var description = nameIdDescription[2];
-				var functionCall = "retriveEntityInformation('loadDefineSearchRules.do','categorySearchForm','"+id+"')";		
+				var functionCall = "retriveEntityInformation('loadDefineSearchRules.do','categorySearchForm','"+id+"','"+textField+"','"+attributeChecked+"','"+permissibleValuesChecked+"')";		
 				var entityName = "<font color=#0000CC>"+name +"</font>";
 				var tooltipFunction = "Tip('"+description+"', WIDTH, 200)";				
 				row = row+'<tr><td ><a  class="entityLink"  onmouseover="'+tooltipFunction+'"  href="javascript:'+functionCall+'">' +entityName+ '</a></td></tr>';
@@ -524,19 +527,19 @@
 				var e = listOfEntities[1];	
 				var nameIdDescription = e.split("|");	
 				var id = nameIdDescription[1];		
-				retriveEntityInformation('loadDefineSearchRules.do','categorySearchForm', id);	
+				retriveEntityInformation('loadDefineSearchRules.do','categorySearchForm', id, textField, attributeChecked, permissibleValuesChecked);	
 			}
 		}
 		hideCursor();
 	}
-	function retriveEntityInformation(url,nameOfFormToPost,entityName) 
+	function retriveEntityInformation(url,nameOfFormToPost,entityName, textField, attributeChecked, permissibleValuesChecked) 
 	{	
 		waitCursor();
 		var request = newXMLHTTPReq();			
 		var actionURL;
 		var handlerFunction = getReadyStateHandler(request,showEntityInformation,true);	
 		request.onreadystatechange = handlerFunction;	
-		actionURL = "entityName=" + entityName;				
+		actionURL = "entityName=" + entityName + "&textField=" + textField + "&attributeChecked=" + attributeChecked + "&permissibleValuesChecked=" + permissibleValuesChecked;				
 		request.open("POST",url,true);	
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 		request.send(actionURL);		

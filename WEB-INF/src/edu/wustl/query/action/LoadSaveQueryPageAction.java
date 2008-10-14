@@ -51,7 +51,7 @@ public class LoadSaveQueryPageAction extends Action
 		if (queryObject != null)
 		{
 			boolean isShowAll = request.getParameter(Constants.SHOW_ALL) == null ? false : true;
-			GenerateHtmlForAddLimitsBizLogic htmlGenerator = new GenerateHtmlForAddLimitsBizLogic();
+			GenerateHtmlForAddLimitsBizLogic htmlGenerator = new GenerateHtmlForAddLimitsBizLogic(null);
 			Map<Integer,ICustomFormula> customFormulaIndexMap = new HashMap<Integer, ICustomFormula>();
 			String htmlContents = htmlGenerator.getHTMLForSavedQuery(queryObject, isShowAll,
 					Constants.SAVE_QUERY_PAGE,customFormulaIndexMap);
