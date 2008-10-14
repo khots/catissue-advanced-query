@@ -3,7 +3,7 @@
 <mx:Application  xmlns:mx="http://www.adobe.com/2006/mxml" 
 layout="vertical" dragEnter="doDragEnter(event)" dragDrop="onDragDrop(event)" dragExit="onDragExit(event)"
 xmlns:Components="Components.*" xmlns:display="flash.display.*"
-creationComplete="initApp()"  width="100%" height="100%" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+creationComplete="initApp()"  width="100%" height="100%" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0" resize="onStageResize()">
 <mx:Style>	
 ComboBox
 {
@@ -2336,20 +2336,26 @@ Application
            
           // rpcService.removeCustomFormula();
       }
-	/*private function geAssociationHandler(event: ResultEvent)
-	{
-		var pathList:ArrayCollection = event.result as ArrayCollection;
-		if((pathList == null) || (pathList.length==0))
-		{
-			Alert.show("There exists no association between two nodes");
-		}
-		else
-		{
-			Alert.show("Association exists");
-		}
-	
-	}*/
-
+      
+      private function onStageResize():void
+      {
+      		if(popUp)
+      		{
+      			PopUpManager.centerPopUp(popUp);
+      			if (popUp.parentApplication.width < popUp.width)
+      				popUp.x = 0;
+      			if (popUp.parentApplication.height < popUp.height)
+      				popUp.y = 0;
+      		}
+      		if(singleNodeTQPope)
+      		{
+      			PopUpManager.centerPopUp(singleNodeTQPope);
+      			if (singleNodeTQPope.parentApplication.width < singleNodeTQPope.width)
+      				singleNodeTQPope.x = 0;
+      			if (singleNodeTQPope.parentApplication.height < singleNodeTQPope.height)
+      				singleNodeTQPope.y = 0;
+      		}		
+       }
 
 
 ]]>
