@@ -126,15 +126,12 @@ public class AnnotationUtil
 
 			//Add association to the static entity and save it.
 			staticEntity.addAssociation(association);
-			Long start = new Long(System.currentTimeMillis());
+			Long start = Long.valueOf(System.currentTimeMillis());
 
 			staticEntity = EntityManager.getInstance().persistEntityMetadataForAnnotation(
 					staticEntity, true, false, association);
 
-			Long end = new Long(System.currentTimeMillis());
-			System.out.println("Time required to persist one entity is " + (end - start) / 1000
-					+ "seconds");
-
+			Long end = Long.valueOf(System.currentTimeMillis());
 			//Add the column related to the association to the entity table of the associated entities.
 			EntityManager.getInstance().addAssociationColumn(association);
 
@@ -239,7 +236,7 @@ public class AnnotationUtil
 	public static void addQueryPathsForAllAssociatedEntities(EntityInterface dynamicEntity,
 			EntityInterface staticEntity, Long associationId, Long staticEntityId, Set<PathObject> processedPathList) throws BizLogicException
 	{
-		Long start = new Long(System.currentTimeMillis());
+		Long start = Long.valueOf(System.currentTimeMillis());
 		if(staticEntity != null)
 		{
 			PathObject pathObject = new PathObject();
@@ -262,17 +259,13 @@ public class AnnotationUtil
 				.getAssociationCollection();
 		for (AssociationInterface associationInteface : associationCollection)
 		{
-			System.out.println("PERSISTING PATH");
 			addQueryPathsForAllAssociatedEntities( associationInteface
 					.getTargetEntity(),dynamicEntity, associationInteface.getId(),staticEntityId,processedPathList);
 
 			//			AnnotationUtil.addPathsForQuery(dynamicEntity.getId(), associationInteface
 			//					.getTargetEntity().getId(), associationInteface.getId());
 		}
-		Long end = new Long(System.currentTimeMillis());
-		System.out.println("Time required to add complete paths is" + (end - start) / 1000
-				+ "seconds");
-
+		//Long end = Long.valueOf(System.currentTimeMillis());
 	}
 
 	/**
@@ -284,23 +277,8 @@ public class AnnotationUtil
 	public static void addEntitiesToCache(boolean isEntityFromXmi, EntityInterface dynamicEntity,
 			EntityInterface staticEntity) throws BizLogicException
 	{
-		Long start = new Long(System.currentTimeMillis());
-
-//      Commented the code as this is not required since cache is refreshed using refreshCache.
-
-//		Set<EntityInterface> entitySet = new HashSet<EntityInterface>();
-//		entitySet.add(dynamicEntity);
-//		entitySet.add(staticEntity);
-//		DynamicExtensionsUtility.getAssociatedEntities(dynamicEntity, entitySet);
 		if (!isEntityFromXmi)
 		{
-//			Commented the code as this is not required since cache is refreshed using refreshCache.
-
-//			for (EntityInterface entity : entitySet)
-//			{
-//				EntityCache.getInstance().addEntityToCache(entity);
-//			}
-			//EntityInterface cachedStaticEntityInterfaceEntityCache.getInstance().getEntityById(staticEntityId);
 			Connection conn = null;
 			try
 			{
@@ -337,9 +315,6 @@ public class AnnotationUtil
 			}
 
 		}
-
-		Long end = new Long(System.currentTimeMillis());
-		System.out.println("Time required to refresh cache is " + (end - start) / 1000 + "seconds");
 	}
 
 	/**
@@ -549,7 +524,7 @@ public class AnnotationUtil
 	 * @param conn
 	 * @throws SQLException
 	 */
-	private static void addIndirectPaths(Long maxPathId, Long staticEntityId, Long dynamicEntityId,
+/*	private static void addIndirectPaths(Long maxPathId, Long staticEntityId, Long dynamicEntityId,
 			Long intraModelAssociationId, Connection conn)
 
 	{
@@ -602,7 +577,7 @@ public class AnnotationUtil
 
 		}
 	}
-
+*/
 //	/**
 //	 * @param conn
 //	 * @param staticEntityId
@@ -749,7 +724,7 @@ public class AnnotationUtil
 				return entity.getId();
 			}
 		}
-		return new Long(0);
+		return Long.valueOf(0);
 	}
 
 }

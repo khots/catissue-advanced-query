@@ -91,12 +91,12 @@ public class AdvanceSearchForm extends ActionForm
     /**
 	 * Objectname of the advancedConditionNode Object
 	 */
-    private String objectName=new String();
+    private String objectName = "";
     
     /**
 	 * Selected node from the query tree
 	 */
-    private String selectedNode = new String();
+    private String selectedNode = "";
     
     /**
 	 * A counter that holds the number of event parameter rows
@@ -247,8 +247,6 @@ public class AdvanceSearchForm extends ActionForm
    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) 
     {
         ActionErrors errors = new ActionErrors();
-        Validator validator = new Validator();
-
      /*   String opConstant = "Operator:";
         Iterator it = values.keySet().iterator();
 
@@ -470,7 +468,6 @@ public class AdvanceSearchForm extends ActionForm
 		//Constants for EventMap keys
 		String eventName = "EventName_";
 		String eventColumn = "EventColumnName_";
-		String eventOperator = "EventColumnOperator_";
 		String eventValue = "EventColumnValue_";
 
 		QueryBizLogic bizLogic = (QueryBizLogic)BizLogicFactory.getInstance().getBizLogic(Constants.SIMPLE_QUERY_INTERFACE_ID);

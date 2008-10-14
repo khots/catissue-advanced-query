@@ -268,7 +268,7 @@ public class DefineGridViewBizLogic
 			if(next instanceof String)
 			{
 				outputTreeDataNode = queryDetailsObj.getUniqueIdNodesMap().get(next);
-				if(new Integer(outputTreeDataNode.getExpressionId()).toString().equals(expressionId))
+				if(Integer.valueOf(outputTreeDataNode.getExpressionId()).toString().equals(expressionId))
 				{
 					break;
 				}
@@ -327,9 +327,13 @@ public class DefineGridViewBizLogic
 			if(Constants.ID.equals(element.getAttribute().getName()))
 			{
 				if(queryResulObjectDataBean.isMainEntity())
+				{	
 					queryResulObjectDataBean.setMainEntityIdentifierColumnId(columnIndex);
+				}
 				else
+				{	
 					queryResulObjectDataBean.setEntityId(columnIndex);
+				}	
 			}
 			if(Constants.FILE.equals(element.getAttribute().getDataType()))
 			{
@@ -353,7 +357,7 @@ public class DefineGridViewBizLogic
 		}
 		Iterator<Long> mapItr = queryResultObjecctDataMap.keySet().iterator();
 		String sql="";
-		if (selectedColumnNames.lastIndexOf(Constants.DELIMETER) != -1)
+		if(selectedColumnNames.lastIndexOf(Constants.DELIMETER) != -1)
 		{
 			sql = selectedColumnNames.substring(0, selectedColumnNames.lastIndexOf(Constants.DELIMETER));
 		}
@@ -377,16 +381,20 @@ public class DefineGridViewBizLogic
 					sql, defineViewNodeList, entityIdIndexMap, queryDetailsObj);
 			selectedColumnNames.replace(QueryModuleConstants.ARGUMENT_ZERO,
 					selectedColumnNames.length(), sql);
-			if(queryResulObjectDataBean.isMainEntity()) {
+			if(queryResulObjectDataBean.isMainEntity())
+			{
 				EntityInterface entity = queryResulObjectDataBean.getEntity();
 				Integer integer = queryResulObjectDataBean.getEntityIdIndexMap().get(entity);
 				queryResulObjectDataBean.setMainEntityIdentifierColumnId(integer);
-			} else
+			} 
+			else
 			{
 				EntityInterface mainEntity = queryResulObjectDataBean.getMainEntity();
 				if(queryResulObjectDataBean.getEntityIdIndexMap().get(mainEntity)!=null)
+				{
 				  queryResulObjectDataBean.setMainEntityIdentifierColumnId(queryResulObjectDataBean
 						  .getEntityIdIndexMap().get(mainEntity));
+				} 
 			}
 		}
 		}

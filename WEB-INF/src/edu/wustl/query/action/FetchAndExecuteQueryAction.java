@@ -43,8 +43,6 @@ public class FetchAndExecuteQueryAction extends Action
 		{
 			SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
 			Long queryId = saveQueryForm.getQueryId();
-
-			List<IParameterizedQuery> queryList = null;
 			IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
 					.getValue("app.bizLogicFactory"), "getBizLogic",
 					Constants.QUERY_INTERFACE_BIZLOGIC_ID);

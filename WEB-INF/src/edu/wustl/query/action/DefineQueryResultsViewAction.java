@@ -49,11 +49,13 @@ public class DefineQueryResultsViewAction extends Action
 		SelectedColumnsMetadata selectedColumnsMetadata = (SelectedColumnsMetadata)session.getAttribute(Constants.SELECTED_COLUMN_META_DATA);
 		List<NameValueBean> prevSelectedColumnNameValueBeanList= selectedColumnsMetadata.getSelectedColumnNameValueBeanList();
 		if(!selectedColumnsMetadata.isDefinedView())
+		{	
 			prevSelectedColumnNameValueBeanList = null;
+		}
 		OutputTreeDataNode currentSelectedObject = selectedColumnsMetadata.getCurrentSelectedObject();
 		request.setAttribute(Constants.categorySearchForm,categorySearchForm);
 		
-		Map<Long,OutputTreeDataNode> uniqueIdNodesMap = (Map<Long,OutputTreeDataNode>) session.getAttribute(Constants.ID_NODES_MAP);
+		//Map<Long,OutputTreeDataNode> uniqueIdNodesMap = (Map<Long,OutputTreeDataNode>) session.getAttribute(Constants.ID_NODES_MAP);
 		Vector<QueryTreeNodeData> treeDataVector = new Vector<QueryTreeNodeData>();
 		DefineGridViewBizLogic defineGridViewBizLogic = new DefineGridViewBizLogic();
 		defineGridViewBizLogic.createTree(categorySearchForm, queryDetailsObj,

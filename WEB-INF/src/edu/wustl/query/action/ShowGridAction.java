@@ -56,18 +56,18 @@ public class ShowGridAction extends BaseAction
 		session.setAttribute(Constants.HAS_CONDITION_ON_IDENTIFIED_FIELD, hasConditionOnIdentifiedField);
 		Map<EntityInterface ,List<EntityInterface>> mainEntityMap =(Map<EntityInterface ,List<EntityInterface>>)session.getAttribute(Constants.MAIN_ENTITY_MAP);
 		Map<Long, QueryResultObjectDataBean> queryResultObjectDataMap = (Map<Long, QueryResultObjectDataBean>)session.getAttribute(Constants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP);
-		Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map<String, OutputTreeDataNode>) session.getAttribute(Constants.ID_NODES_MAP);
+		//Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map<String, OutputTreeDataNode>) session.getAttribute(Constants.ID_NODES_MAP);
 		Map<Long, Map<AttributeInterface, String>> columnMap = (Map<Long, Map<AttributeInterface, String>>) session.getAttribute(
 				Constants.ID_COLUMNS_MAP);
-		List<OutputTreeDataNode> rootOutputTreeNodeList = (List<OutputTreeDataNode>)session.getAttribute(Constants.TREE_ROOTS);
-		SessionDataBean sessionData = getSessionData(request);
+		//List<OutputTreeDataNode> rootOutputTreeNodeList = (List<OutputTreeDataNode>)session.getAttribute(Constants.TREE_ROOTS);
+		//SessionDataBean sessionData = getSessionData(request);
 		SelectedColumnsMetadata selectedColumnsMetadata = (SelectedColumnsMetadata)session.getAttribute(Constants.SELECTED_COLUMN_META_DATA);
 		String idOfClickedNode = request.getParameter(Constants.TREE_NODE_ID);
 		QueryOutputTreeBizLogic treeBizLogic = new QueryOutputTreeBizLogic();
 		idOfClickedNode = treeBizLogic.decryptId(idOfClickedNode);
  		Map spreadSheetDatamap = null;
 		String recordsPerPageStr = (String) session.getAttribute(Constants.RESULTS_PER_PAGE);
-		int recordsPerPage = new Integer(recordsPerPageStr);
+		int recordsPerPage = Integer.valueOf((recordsPerPageStr));
 		QueryOutputSpreadsheetBizLogic outputSpreadsheetBizLogic = new QueryOutputSpreadsheetBizLogic();
 		String actualParentNodeId = idOfClickedNode.substring(idOfClickedNode.lastIndexOf(Constants.NODE_SEPARATOR) + 2, idOfClickedNode.length());
 		String actualId = actualParentNodeId.substring(actualParentNodeId.lastIndexOf("_")+1, actualParentNodeId.length());
@@ -79,7 +79,6 @@ public class ShowGridAction extends BaseAction
 		
 		else
 		{
-			String randomNumber = (String) session.getAttribute(Constants.RANDOM_NUMBER);
 			if (idOfClickedNode.endsWith(Constants.LABEL_TREE_NODE))
 			{
 				spreadSheetDatamap = outputSpreadsheetBizLogic.processSpreadsheetForLabelNode(

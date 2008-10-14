@@ -21,7 +21,7 @@ import edu.wustl.query.util.global.Constants;
 public class QueryTreeViewAction extends Action
 {
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
+	{ 
 		HttpSession session = request.getSession();
 		Long noOfTrees = (Long)session.getAttribute(Constants.NO_OF_TREES);
 		for(int i=0; i<noOfTrees ;i++)

@@ -53,8 +53,6 @@ public class QueryCsmBizLogic
 			dataList = dao.executeQuery(selectSql, queryDetailsObj.getSessionData(),
 					queryDetailsObj.getSessionData().isSecurityRequired(),
 					hasConditionOnIdentifiedField, queryResulObjectDataMap);
-			System.out.println("Here in Query CSM User Bizlogic");
-			System.out.println("Here in Query CSM User Bizlogic*****2");
 			dao.commit();
 			dao.closeSession();
 		}
@@ -64,13 +62,11 @@ public class QueryCsmBizLogic
 		}*/
 		catch(DAOException t)
 		{
-			System.out.println("DAOException occured in CSMQueryBizLogic");
 			t.printStackTrace();
 		}
 		
 		catch(Exception e)
 		{
-			System.out.println("Exception occured in CSMQueryBizLogic");
 			e.printStackTrace();
 		}
 		finally

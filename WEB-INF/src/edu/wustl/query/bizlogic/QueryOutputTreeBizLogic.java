@@ -101,7 +101,7 @@ public class QueryOutputTreeBizLogic
 			treeDataVector = addNodeToTree(index,dataList,treeNode, root, treeDataVector);
 		}
 		return treeDataVector;
-			}
+ }
 	/**
 	 * @param treeNo
 	 * @param root
@@ -336,7 +336,7 @@ public class QueryOutputTreeBizLogic
 			String indexStr = columnNameIndexMap.get(Constants.INDEX);
 			if ((indexStr != null) && (!indexStr.equalsIgnoreCase(Constants.NULL)))
 			{
-				index = new Integer(indexStr);
+				index = Integer.valueOf(indexStr);
 			}
 			//columnNames = columnNames.substring(0, columnNames.lastIndexOf(";"));
 			selectSql = "select distinct " + columnNames;
@@ -356,7 +356,7 @@ public class QueryOutputTreeBizLogic
 			String indexStr = selectSql.substring(selectSql.indexOf(Constants.NODE_SEPARATOR)+2,selectSql.length());
 			if (!indexStr.equalsIgnoreCase(Constants.NULL))
 			{
-				index = new Integer(indexStr);
+				index = Integer.valueOf(indexStr);
 			}
 			selectSql = selectSql.substring(0,selectSql.indexOf(Constants.NODE_SEPARATOR));
 		}

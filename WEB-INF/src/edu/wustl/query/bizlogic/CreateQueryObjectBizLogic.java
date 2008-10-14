@@ -640,7 +640,9 @@ public class CreateQueryObjectBizLogic
 		for(ICondition removalEntity : removalList)
 		{
 			if(!deafultConditions.contains(removalEntity))
+			{	
 				rule.removeCondition(removalEntity);
+			}	
 		}
 		return errorMessage;
 	}

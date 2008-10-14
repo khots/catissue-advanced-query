@@ -49,7 +49,7 @@ public class LoadDefineSearchRulesAction extends Action
 	/*	Map searchedEntitiesMap = (Map) request.getSession().getAttribute(Constants.SEARCHED_ENTITIES_MAP);
 		if (searchedEntitiesMap != null)
 		{
-	*/		Entity entity = (Entity) EntityCache.getCache().getEntityById(new Long(entityName));
+	*/		Entity entity = (Entity) EntityCache.getCache().getEntityById(Long.valueOf((entityName)));
 			if (entity != null)
 			{
 				html = addLimitsBizLogic.generateHTML(entity,null);

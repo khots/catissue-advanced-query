@@ -58,7 +58,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
         try
         {
             dynamicList = retrieve(EntityMap.class.getName(), "staticEntityId",
-                    new Long(staticEntityId));
+                    Long.valueOf(staticEntityId));
             if (dynamicList != null && !dynamicList.isEmpty())
             {
                 for (EntityMap entityMap : dynamicList)
@@ -88,7 +88,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
         try
         {
             dynamicList = retrieve(EntityMap.class.getName(), "staticEntityId",
-                    new Long(staticEntityId));
+                     Long.valueOf(staticEntityId));
         }
         catch (DAOException e)
         {
@@ -119,8 +119,8 @@ public class AnnotationBizLogic extends DefaultBizLogic
                 "staticRecordId"};
         ;
         String[] whereColumnCondition = {"=", "=", "="};
-        Object[] whereColumnValue = {new Long(staticEntityId),
-                new Long(typeId), new Long(staticRecordId)};
+        Object[] whereColumnValue = {Long.valueOf(staticEntityId),
+                Long.valueOf(typeId),  Long.valueOf(staticRecordId)};
         String joinCondition = Constants.AND_JOIN_CONDITION;
 
         try
@@ -176,7 +176,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
             Long entityMapId = entityRecord.getFormContext().getEntityMap().getId();
             Long staticEntityRecordId = entityRecord.getStaticEntityRecordId();
             Long dynExtRecordId = entityRecord.getDynamicEntityRecordId();
-            associateRecords(entityMapId,new Long (staticEntityRecordId), new Long(dynExtRecordId));
+            associateRecords(entityMapId, Long.valueOf(staticEntityRecordId), Long.valueOf(dynExtRecordId));
         }
         catch (BizLogicException e)
         {
@@ -212,9 +212,9 @@ public class AnnotationBizLogic extends DefaultBizLogic
                   	DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
     				List<CategoryEntity> entityList = defaultBizLogic.retrieve(CategoryEntity.class.getName(),"id",dynamicEntityId);
     				if(entityList!=null && entityList.size()>0)
-                	dynamicEntityId = entityList.get(0).getEntity().getId();
-    				
-                
+    				{
+    					dynamicEntityId = entityList.get(0).getEntity().getId();
+    				}
                 } 
                 //root category entity id .take that entity from cache
                 
@@ -309,7 +309,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
         String[] whereColumnName = {"containerId"};
         ;
         String[] whereColumnCondition = {"="};
-        Object[] whereColumnValue = {new Long(dynamicEntityContainerId)};
+        Object[] whereColumnValue = {Long.valueOf(dynamicEntityContainerId)};
         String joinCondition = null;
 
         try
@@ -340,7 +340,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
         try
         {
             dynamicList = retrieve(EntityMap.class.getName(), "containerId",
-                    new Long(dynamicEntityContainerId));
+                     Long.valueOf(dynamicEntityContainerId));
         }
         catch (DAOException e)
         {
@@ -388,7 +388,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
             Long entityMapId = (Long) iter.next();
             if (entityMapId != null)
             {
-                Object[] whereColumnValue = {new Long(staticRecordId),
+                Object[] whereColumnValue = {Long.valueOf(staticRecordId),
                         entityMapId};
                 try
                 {
@@ -422,8 +422,8 @@ public class AnnotationBizLogic extends DefaultBizLogic
         String[] whereColumnName = {"formContext.entityMap.id", "dynamicEntityRecordId"};
         ;
         String[] whereColumnCondition = {"=", "="};
-        Object[] whereColumnValue = {new Long(entityMapId),
-                new Long(dynamicEntityRecordId)};
+        Object[] whereColumnValue = {Long.valueOf(entityMapId),
+                Long.valueOf(dynamicEntityRecordId)};
         String joinCondition = Constants.AND_JOIN_CONDITION;
 
         try
@@ -583,7 +583,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 
         try
         {
-            dynamicList = retrieve(EntityMap.class.getName(), "containerId", new Long(
+            dynamicList = retrieve(EntityMap.class.getName(), "containerId", Long.valueOf(
                     containerId));
         }
         catch (DAOException e)
@@ -634,7 +634,6 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		if(idList.size()>0)
 		{
 			return ((Category)idList.get(0)).getName();
-			
 		}
 		return null;
 	}

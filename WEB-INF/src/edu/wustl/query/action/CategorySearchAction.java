@@ -175,33 +175,31 @@ public class CategorySearchAction extends Action
 		String permissiblevaluesCheckBoxChecked = searchForm.getPermissibleValuesChecked();
 		String includeDescriptionChecked = searchForm.getIncludeDescriptionChecked();
 		List<Integer> target = new ArrayList<Integer>();
-		System.out.println();
-
 		if (classCheckBoxChecked != null && (classCheckBoxChecked.equalsIgnoreCase("on") || classCheckBoxChecked.equalsIgnoreCase("true")))
 		{
 			if(includeDescriptionChecked !=null && (includeDescriptionChecked.equalsIgnoreCase("on")|| includeDescriptionChecked.equalsIgnoreCase("true")))
 			{
-				target.add(new Integer(Constants.CLASS_WITH_DESCRIPTION));
+				target.add(Integer.valueOf((Constants.CLASS_WITH_DESCRIPTION)));
 			}
 			else
 			{
-				target.add(new Integer(Constants.CLASS));
+				target.add(Integer.valueOf((Constants.CLASS)));
 			}
 		}
 		if (attributeCheckBoxChecked != null && (attributeCheckBoxChecked.equalsIgnoreCase("on") || attributeCheckBoxChecked.equalsIgnoreCase("true")))
 		{
 			if(includeDescriptionChecked !=null && (includeDescriptionChecked.equalsIgnoreCase("on")|| includeDescriptionChecked.equalsIgnoreCase("true")))
 			{
-				target.add(new Integer(Constants.ATTRIBUTE_WITH_DESCRIPTION));
+				target.add(Integer.valueOf((Constants.ATTRIBUTE_WITH_DESCRIPTION)));
 			}
 			else
 			{
-				target.add(new Integer(Constants.ATTRIBUTE));
+				target.add(Integer.valueOf((Constants.ATTRIBUTE)));
 			}
 		}
 		if (permissiblevaluesCheckBoxChecked != null && (permissiblevaluesCheckBoxChecked.equalsIgnoreCase("on") || permissiblevaluesCheckBoxChecked.equalsIgnoreCase("true")))
 		{
-			target.add(new Integer(Constants.PV));
+			target.add(Integer.valueOf((Constants.PV)));
 		}
 		int[] searchTarget = new int[target.size()];
 		for (int i = 0; i < target.size(); i++)

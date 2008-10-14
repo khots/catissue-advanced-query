@@ -50,7 +50,7 @@ public class QueryWizardAction extends Action
 		 if(sessionBean == null)
 		 {
 			// HttpSession newSession = request.getSession(true);
-			 Long userId = new Long(1);
+			 Long userId = Long.valueOf((1));
 	         String ipAddress = request.getRemoteAddr();
 	         SessionDataBean sessionData = new SessionDataBean();
 			 

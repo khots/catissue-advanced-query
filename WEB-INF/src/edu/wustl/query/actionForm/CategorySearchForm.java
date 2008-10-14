@@ -18,6 +18,10 @@ import edu.wustl.common.beans.NameValueBean;
 public class CategorySearchForm extends ActionForm
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * String to store the text field value.
 	 */
 	private String textField = null;
