@@ -420,4 +420,5 @@ public class Constants extends edu.wustl.common.util.global.Constants
     
     public static final int CHARACTERS_IN_ONE_LINE = 110;
     public static final String SINGLE_QUOTE_ESCAPE_SEQUENCE = "&#096;";
+    public static final String ViewSearchResultsAction = "ViewSearchResultsAction.do";
 }
