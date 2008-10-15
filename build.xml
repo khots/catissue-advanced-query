@@ -379,6 +379,7 @@
 		    	<include name = "DynamicExtensionsHibernate.cfg.xml"/>
 		    	<include name = "dbutil.properties"/>
 		    	<include name = "dynamicUI.xml"/>
+		    	<include name = "ApplicationResources.properties"/>
 		    </fileset>
 		</copy>
 		
