@@ -16,7 +16,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.querysuite.queryobject.impl.OutputTreeDataNode;
+import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.query.util.global.Constants;

@@ -1,7 +1,7 @@
 package edu.wustl.query.querysuite;
 
+import edu.wustl.common.query.impl.SqlGenerator;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
-import edu.wustl.common.querysuite.queryengine.impl.SqlGenerator;
 import edu.wustl.common.querysuite.queryobject.ArithmeticOperator;
 import edu.wustl.common.querysuite.queryobject.IArithmeticOperand;
 import edu.wustl.common.querysuite.queryobject.IConnector;

@@ -3,9 +3,9 @@ package edu.wustl.query.util.querysuite;
 import java.util.List;
 import java.util.Map;
 
+import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
-import edu.wustl.common.querysuite.queryobject.impl.OutputTreeDataNode;
 
 public class TemporalColumnUIBean {
 	OutputTreeDataNode node;

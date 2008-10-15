@@ -9,7 +9,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.wustl.common.querysuite.queryobject.impl.OutputTreeDataNode;
+import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.bizlogic.QueryOutputTreeBizLogic;
 import edu.wustl.query.util.global.Constants;

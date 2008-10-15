@@ -10,7 +10,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.querysuite.queryobject.impl.OutputTreeDataNode;
+import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.query.util.global.Constants;
 
 /**

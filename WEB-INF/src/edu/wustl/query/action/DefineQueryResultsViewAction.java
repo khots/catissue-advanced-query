@@ -14,8 +14,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.beans.NameValueBean;
-import edu.wustl.common.querysuite.queryobject.impl.OutputTreeDataNode;
-import edu.wustl.common.querysuite.queryobject.impl.metadata.SelectedColumnsMetadata;
+import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
+import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.tree.QueryTreeNodeData;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.bizlogic.DefineGridViewBizLogic;

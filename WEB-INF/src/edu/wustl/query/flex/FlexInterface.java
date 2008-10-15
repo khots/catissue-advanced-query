@@ -17,7 +17,7 @@ import edu.wustl.common.cde.CDEManager;
 import edu.wustl.common.cde.PermissibleValue;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.metadata.path.Path;
-import edu.wustl.common.querysuite.queryengine.impl.CommonPathFinder;
+import edu.wustl.common.query.impl.CommonPathFinder;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.util.global.Constants;
 import edu.wustl.query.flex.dag.CustomFormulaNode;
