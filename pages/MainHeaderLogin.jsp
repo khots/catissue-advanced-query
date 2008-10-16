@@ -1,7 +1,7 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ page
-	import="edu.wustl.common.util.global.ApplicationProperties,edu.wustl.catissuecore.util.global.Variables;"%>
+	import="edu.wustl.common.util.global.ApplicationProperties,edu.wustl.query.util.global.Variables;"%>
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
