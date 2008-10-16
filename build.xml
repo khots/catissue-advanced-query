@@ -402,20 +402,25 @@
 		<copy todir="${zip.dir}/pages" overwrite="true"> 
 		    <fileset dir ="${base.dir}/pages" />
 		</copy> 
-
+		
+		<!--Copying the flex related files from WEB-INF/flex -->
+        <copy todir="${zip.dir}/flex">
+		     <fileset dir = "${base.dir}/WEB-INF/flex"/>
+		</copy>
+		
 		<!-- Copying flex components-->
 		<copy todir="${zip.dir}/flexclient" overwrite="true"> 
 			<fileset dir ="${base.dir}/flexclient" />
 		</copy> 
 		
 		<!--Added By Baljeet for meta data loading -->
-		<copy todir ="${zip.dir}/csv" overwrite="true">
+		<!--copy todir ="${zip.dir}/csv" overwrite="true">
 			<fileset dir="${base.dir}/csv" />
 		</copy>
 		
 		<copy todir ="${zip.dir}/xmi" overwrite="true">
 			<fileset dir="${base.dir}/xmi" />	 
-        </copy> 
+        </copy --> 
 		
 		<!--Baljeet's changes ends here -->
 		
