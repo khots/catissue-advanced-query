@@ -393,6 +393,11 @@
 		    <fileset dir ="${base.dir}/jss" />
 		</copy> 
 		
+		<!--Coying Images -->
+		<copy todir="${zip.dir}/images" overwrite="true">
+			<fileset dir = "${base.dir}/images"/>
+		</copy>
+		
 		<!--Copying pages -->
 		<copy todir="${zip.dir}/pages" overwrite="true"> 
 		    <fileset dir ="${base.dir}/pages" />
@@ -427,11 +432,6 @@
 		<copy todir="${zip.dir}/SQL" overwrite="true">
 			<fileset dir="${base.dir}/SQL" />
 		</copy>
-
-        <!--Copying Images -->
-		<copy todir="${zip.dir}/images" overwrite="true">
-			<fileset file="${base.dir}/images" />
-		</copy > 
 		
 		<!-- DE conf files -->
 		<copy todir="${zip.dir}/DE_conf" overwrite="true">
