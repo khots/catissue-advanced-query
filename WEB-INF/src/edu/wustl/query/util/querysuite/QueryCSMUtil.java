@@ -188,7 +188,7 @@ public abstract class QueryCSMUtil
 	 * @param entity
 	 * @param mainEntityList
 	 */
-	private static List<EntityInterface> getAllMainEntities(EntityInterface entity,
+	public static List<EntityInterface> getAllMainEntities(EntityInterface entity,
 			List<EntityInterface> mainEntityList) 
 	{
 		try
