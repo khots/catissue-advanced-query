@@ -218,6 +218,7 @@ public class ImportXmi
 			System.out.println("Fatal error reading XMI.");
 			System.out.println("------------------------ERROR:--------------------------------\n");
 			System.out.println(e.getMessage());		
+			e.printStackTrace();
 			System.out.println("\n--------------------------------------------------------------");
 		}
 		finally
