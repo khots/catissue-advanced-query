@@ -75,6 +75,7 @@ import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.global.Variables;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.query.queryengine.impl.IQueryGenerator;
 
 /**
  * To generate SQL from the given Query Object.
@@ -82,7 +83,7 @@ import edu.wustl.common.util.logger.Logger;
  * @author prafull_kadam
  * 
  */
-public class SqlGenerator implements edu.wustl.common.query.ISqlGenerator {
+public class SqlGenerator implements IQueryGenerator {
 
     /**
      * This map holds integer value that will be appended to each table alias in
@@ -161,7 +162,7 @@ public class SqlGenerator implements edu.wustl.common.query.ISqlGenerator {
      * @throws SqlException When there is error in the passed IQuery object.
      * @see edu.wustl.common.querysuite.queryengine.ISqlGenerator#generateSQL(edu.wustl.common.querysuite.queryobject.IQuery)
      */
-    public String generateSQL(IQuery query) throws MultipleRootsException, SqlException, RuntimeException {
+    public String generateQuery(IQuery query) throws MultipleRootsException, SqlException, RuntimeException {
         Logger.out.debug("Srarted SqlGenerator.generateSQL().....");
         String sql = buildQuery(query);
         Logger.out.debug("Finished SqlGenerator.generateSQL()...SQL:" + sql);

@@ -11,6 +11,7 @@ public class Variables extends edu.wustl.common.util.global.Variables
 {
 	 public static int maximumTreeNodeLimit;
 	 public static Map<String, String> aliasAndPageOfMap = new HashMap<String, String>();
+	 public static String queryGeneratorClassName="";
      
 	 public static String prepareColTypes(List dataColl)
 	 {

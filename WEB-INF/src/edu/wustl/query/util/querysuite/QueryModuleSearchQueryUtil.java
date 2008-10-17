@@ -14,14 +14,13 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
 import edu.wustl.common.bizlogic.QueryBizLogic;
 import edu.wustl.common.dao.QuerySessionData;
-import edu.wustl.common.query.impl.SqlGenerator;
+import edu.wustl.common.query.factory.QueryGeneratorFactory;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.query.queryobject.util.QueryObjectProcessor;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
-import edu.wustl.common.querysuite.factory.SqlGeneratorFactory;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
@@ -34,7 +33,7 @@ import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
 import edu.wustl.query.bizlogic.QueryOutputTreeBizLogic;
-import edu.wustl.query.querysuite.QuerySqlGenerator;
+import edu.wustl.query.queryengine.impl.IQueryGenerator;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
 
@@ -221,11 +220,11 @@ public class QueryModuleSearchQueryUtil
 	 */
 	private void processSaveQuery() throws QueryModuleException
 	{	
-		QuerySqlGenerator sqlGenerator = new QuerySqlGenerator();
+		IQueryGenerator sqlGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
 		QueryModuleException queryModExp;
 		try
 		{ 
-			session.setAttribute(Constants.SAVE_GENERATED_SQL, sqlGenerator.generateSQL(query));
+			session.setAttribute(Constants.SAVE_GENERATED_SQL, sqlGenerator.generateQuery(query));
 			Map<AttributeInterface, String> attributeColumnNameMap = sqlGenerator.getAttributeColumnNameMap();
 			session.setAttribute(Constants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
 			session.setAttribute(Constants.OUTPUT_TERMS_COLUMNS,sqlGenerator.getOutputTermsColumns());
@@ -279,7 +278,7 @@ public class QueryModuleSearchQueryUtil
 	    QueryOutputSpreadsheetBizLogic outputSpreadsheetBizLogic  = new QueryOutputSpreadsheetBizLogic();
 	    try
 	    { 	// deepti change
-	    	SqlGenerator sqlGenerator = (SqlGenerator) SqlGeneratorFactory.getInstance();
+	    	IQueryGenerator sqlGenerator = (IQueryGenerator) QueryGeneratorFactory.getDefaultQueryGenerator();
 	    	Map<String, IOutputTerm> outputTermsColumns = sqlGenerator.getOutputTermsColumns();
 			if(outputTermsColumns == null)
 			{

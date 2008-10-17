@@ -1,7 +1,11 @@
 package edu.wustl.query.util.listener;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
+import java.util.Properties;
 
 import javax.naming.InitialContext;
 import javax.servlet.ServletContext;
@@ -25,8 +29,7 @@ public class QueryCoreServletContextListener implements ServletContextListener
 	
 	public void contextInitialized(ServletContextEvent sce)
     {
-    	try{
-    		//logger.info("Initializing catissue application");
+    	try{  
 	    	ServletContext servletContext = sce.getServletContext();
 	    	Variables.applicationHome = sce.getServletContext().getRealPath("");
 	    	Logger.configDefaultLogger(servletContext);
@@ -36,11 +39,6 @@ public class QueryCoreServletContextListener implements ServletContextListener
 			//Added by Baljeet....This method caches all the Meta data
 			initEntityCache(); 
 			
-			// initCatissueParams();
-			//logApplnInfo();
-			//initCDEManager();
-			//DefaultValueManager.validateAndInitDefaultValueMap();
-			//logger.info("Initialization complete");
     	}
     	catch(Exception e)
     	{
@@ -67,7 +65,7 @@ public class QueryCoreServletContextListener implements ServletContextListener
 		
 	}
 	private void setGlobalVariable() throws Exception
-	{
+	{  
 		String path = System.getProperty("app.propertiesFile");
     	XMLPropertyHandler.init(path);
     	File propetiesDirPath = new File(path);
@@ -77,6 +75,8 @@ public class QueryCoreServletContextListener implements ServletContextListener
         Variables.applicationVersion = ApplicationProperties.getValue("app.version");
 		int maximumTreeNodeLimit = Integer.parseInt(XMLPropertyHandler.getValue(Constants.MAXIMUM_TREE_NODE_LIMIT));
 		Variables.maximumTreeNodeLimit = maximumTreeNodeLimit;
+		setQueryGeneratorClass();
+ 	    path = System.getProperty("app.propertiesFile");
 	}
 
 	
@@ -95,5 +95,29 @@ public class QueryCoreServletContextListener implements ServletContextListener
 			//e.printStackTrace();
 		}
 	 }
-
+	
+	public void setQueryGeneratorClass()
+	{
+		File file = new File(Variables.applicationHome + System.getProperty("file.separator")
+				+ "WEB-INF" + System.getProperty("file.separator") + "classes"
+				+ System.getProperty("file.separator") + "query.properties");
+		if (file.exists())
+		{
+			Properties queryProperties = new Properties();
+			try
+			{
+				queryProperties.load(new FileInputStream(file));
+				Variables.queryGeneratorClassName = queryProperties
+						.getProperty("query.queryGeneratorClassName");
+			}
+			catch (FileNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
 }

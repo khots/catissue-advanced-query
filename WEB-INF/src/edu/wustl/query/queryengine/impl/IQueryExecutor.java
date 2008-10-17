@@ -1,5 +1,5 @@
 
-package edu.wustl.common.query;
+package edu.wustl.query.queryengine.impl;
 
 import edu.wustl.common.querysuite.queryobject.IQuery;
 

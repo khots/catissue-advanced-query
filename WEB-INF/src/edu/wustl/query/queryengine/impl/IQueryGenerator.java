@@ -2,11 +2,12 @@
  * 
  */
 
-package edu.wustl.common.query;
+package edu.wustl.query.queryengine.impl;
 
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
@@ -19,7 +20,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
  * @author prafull_kadam
  * 
  */
-public interface ISqlGenerator {
+public interface IQueryGenerator {
 
     /**
      * Generates SQL for the given Query Object.
@@ -30,7 +31,7 @@ public interface ISqlGenerator {
      *             graph.
      * @throws SqlException When there is error in the passed IQuery object.
      */
-    String generateSQL(IQuery query) throws MultipleRootsException, SqlException;
+    String generateQuery(IQuery query) throws MultipleRootsException, SqlException;
 
     List<OutputTreeDataNode> getRootOutputTreeNodeList();
 
@@ -39,4 +40,7 @@ public interface ISqlGenerator {
      *         that column represents.
      */
     Map<String, IOutputTerm> getOutputTermsColumns();
+    
+    Map<AttributeInterface, String> getAttributeColumnNameMap();
+    
 }

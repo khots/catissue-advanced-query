@@ -8,7 +8,12 @@ import javax.servlet.http.HttpSession;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.common.query.impl.SqlGenerator;
+import edu.wustl.query.queryengine.impl.IQueryGenerator;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.QueryCSMUtil;
+import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleUtil;
+import edu.wustl.common.query.factory.QueryGeneratorFactory;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.util.QueryObjectProcessor;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
@@ -19,11 +24,6 @@ import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
-import edu.wustl.query.querysuite.QuerySqlGenerator;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.querysuite.QueryCSMUtil;
-import edu.wustl.query.util.querysuite.QueryDetails;
-import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 /**
  * When the user searches or saves a query , the query is checked for the conditions like DAG should not be empty , is there 
@@ -50,7 +50,6 @@ public class ValidateQueryBizLogic {
 		if (!isRulePresentInDag)
 		{	
 			validationMessage = ApplicationProperties.getValue("query.noLimit.error");
-		//	validationMessage = ""+validationMessage+"";			
 			return validationMessage;
 		}
 		IConstraints constraints = query.getConstraints();
@@ -58,10 +57,6 @@ public class ValidateQueryBizLogic {
 		for(IExpression expression : constraints)
 		{
 		
-		//while(expressionIds.hasMoreElements())
-		//{
-			//IExpressionId nextElement = expressionIds.nextElement();	
-			//IExpression expression = constraints.getExpression(nextElement);
 			if(expression.isInView())
 			{
 				noExpressionInView = false;
@@ -76,16 +71,16 @@ public class ValidateQueryBizLogic {
 		try   
 		{ 
 			HttpSession session = request.getSession(); 
-			SqlGenerator sqlGenerator = new QuerySqlGenerator();
-			String selectSql = sqlGenerator.generateSQL(query);
-			Map<AttributeInterface, String> attributeColumnNameMap = sqlGenerator.getAttributeColumnNameMap();
+			IQueryGenerator queryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
+			String selectSql = queryGenerator.generateQuery(query);
+			Map<AttributeInterface, String> attributeColumnNameMap = queryGenerator.getAttributeColumnNameMap();
 			session.setAttribute(Constants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
-			Map<String, IOutputTerm> outputTermsColumns = sqlGenerator.getOutputTermsColumns();
+			Map<String, IOutputTerm> outputTermsColumns = queryGenerator.getOutputTermsColumns();
 
 			QueryDetails queryDetailsObj = new QueryDetails(session);
 			session.setAttribute(Constants.OUTPUT_TERMS_COLUMNS,outputTermsColumns);
 			session.setAttribute(Constants.SAVE_GENERATED_SQL,selectSql);
-			List<OutputTreeDataNode> rootOutputTreeNodeList = sqlGenerator
+			List<OutputTreeDataNode> rootOutputTreeNodeList = queryGenerator
 			.getRootOutputTreeNodeList();
 			session.setAttribute(Constants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
 			session.setAttribute(Constants.NO_OF_TREES, Long.valueOf(rootOutputTreeNodeList.size()));
