@@ -17,6 +17,7 @@
 	<property name="csm.dir" value="${temp.dir}/tempcsm" />
 	<property name="lib.dir" value="${base.dir}/WEB-INF/lib" />
 	<property name="mysql.sql.dir" value="${base.dir}/SQL/MySql" />
+	<property name="db2.sql.dir" value="${base.dir}/SQL/DB2" />
 	<property name="dbupgrade.sql.dir" value="${base.dir}/SQL/DBUpgrade" />
 	<property name="oracle.sql.dir" value="${base.dir}/SQL/Oracle" />
 	<property name="common.sql.dir" value="${base.dir}/SQL/Common" />
@@ -24,6 +25,8 @@
 	<property name="mysql.dialect.string" value="org.hibernate.dialect.MySQLDialect" />
 	<property name="oracle.driver.string" value="oracle.jdbc.driver.OracleDriver" />
 	<property name="mysql.driver.string" value="org.gjt.mm.mysql.Driver" />
+	<property name="db2.dialect.string" value="org.hibernate.dialect.DB2Dialect"/>
+	<property name="db2.driver.string" value="com.ibm.db2.jcc.DB2Driver" />
 
 	<property name="mysql.lib" value="mysql-connector-java-5.0.8-bin.jar" />
 	
@@ -69,6 +72,7 @@
 			<or>
 				<equals arg1="mysql" arg2="${database.type}" />
 				<equals arg1="oracle" arg2="${database.type}" />
+				<equals arg1="db2" arg2="${database.type}" />
 			</or>
 			<then />
 			<else>
@@ -556,6 +560,12 @@
 					
 				</then>
 			</elseif>
+			<elseif>
+				<equals arg1="db2" arg2="${database.type}" />
+				<then>
+					<antcall target="db2_config" />
+				</then>
+			</elseif>								
 		</if>
 		
 		<antcall target="build_war" />
@@ -603,11 +613,35 @@
 					<antcall target="deploy_db_oracle" />
 				</then>
 			</elseif>
+			<elseif>
+				<equals arg1="db2" arg2="${database.type}" />
+				<then>
+					<antcall target="deploy_db_db2" />
+				</then>
+			</elseif>
 			<else>
 				<echo message="DATABASE INITIALIZATION FAILED PLEASE CHECK DATABASE.TYPE PROPERTY" level="error" />
 			</else>
 		</if>
 				
+	</target>
+	
+	<!--DB2 Database Creation -->
+	<target name="deploy_db_db2">
+		<echo message="Initializing DB2 Database for caTissue Suite v1.1 Application..." />
+		<sql driver="${db2.driver.string}" url="jdbc:db2://${database.host}:${database.port}/${database.name}" userid="${database.username}" password="${database.password}" onerror="continue">
+			<transaction src="${db2.sql.dir}/query/csm_query.sql" />
+			<transaction src="${db2.sql.dir}/query/DynamicExtension_DB2.sql" /> 
+			<transaction src="${db2.sql.dir}/query/metadata_schema_script.sql" /> 
+			<transaction src="${db2.sql.dir}/query/query_schema_script.sql" />
+			<transaction src="${db2.sql.dir}/query/caB2B Table Generation Script.sql" />
+			<transaction>commit;</transaction>
+			<classpath>
+				<fileset dir="./extra_lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</sql>
 	</target>
 	
 	<!--MySQL Database Creation -->
@@ -1019,6 +1053,17 @@ Thanking You,
 					</replace>
 				</then>
 			</elseif>
+			<elseif>
+				<equals arg1="db2" arg2="${database.type}" />
+				<then>
+					<replace dir="${temp.dir}/query/WEB-INF/classes">
+						<include name="*.cfg.xml" />
+						<replacefilter token="@@DIALECT@@" value="${db2.dialect.string}" />
+						<replacefilter token="@@DRIVER@@" value="${db2.driver.string}" />
+						<replacefilter token="@@URL@@" value="jdbc:db2://${database.host}:${database.port}/${database.name}" />
+					</replace>
+				</then>
+			</elseif>
 		</if>
 		<echo>Replacing ...</echo>
 		<replace dir="${temp.dir}/query/WEB-INF/classes">
@@ -1062,7 +1107,44 @@ Thanking You,
 		</delete --> 
 	</target>
 
+	<target name="db2_config">
+		<echo message="Modifying query DB2 specific Configuration File..." />
+		<replace dir="${temp.dir}/query-properties" propertyfile="queryInstall.properties">
+			<include name="QueryHibernate.cfg.xml" />
+			<replacefilter token="${mysql.dialect.string}" value="${db2.dialect.string}" />
+		</replace>
 
+		<!-- Configuring Data Source File-->
+		<replace dir="${temp.dir}" propertyfile="queryInstall.properties">
+			<include name="query-ds.xml" />
+			<include name="login-config.xml" />
+			<replacefilter token="@@databaseurl@@" value="jdbc:db2://${database.host}:${database.port}/${database.name}"/>
+			<replacefilter token="@@username@@" value="${database.username}" />
+			<replacefilter token="@@password@@" value="${database.password}" />
+			<replacefilter token="@@databasedriver@@" value="${db2.driver.string}" />
+		</replace>
+		<replace file="${temp.dir}/query/WEB-INF/classes/QueryHibernate.cfg.xml">
+			<replacefilter token="${mysql.dialect.string}" value="${db2.dialect.string}" />
+		</replace>
+		
+		<replace file="${temp.dir}/query/WEB-INF/classes/DynamicExtensionsHibernate.cfg.xml">
+			<replacefilter token="${mysql.dialect.string}" value="${db2.dialect.string}" />
+			<replacefilter token="&lt;!-- My sql settings -->" value="&lt;!-- My sql settings " />
+			<replacefilter token="&lt;!-- My sql settings end -->" value="My sql settings end -->" />
+		</replace>
+		
+		<replace file="${temp.dir}/dynamicExtensions/WEB-INF/classes/DynamicExtensionsHibernate.cfg.xml">
+			<replacefilter token="${mysql.dialect.string}" value="${db2.dialect.string}" />
+			<replacefilter token="&lt;!-- My sql settings -->" value="&lt;!-- My sql settings " />
+			<replacefilter token="&lt;!-- My sql settings end -->" value="My sql settings end -->" />
+		</replace>
+		
+		<replace file="${temp.dir}/dynamicExtensionsjar/DynamicExtensionsHibernate.cfg.xml">
+			<replacefilter token="${mysql.dialect.string}" value="${db2.dialect.string}" />
+			<replacefilter token="&lt;!-- My sql settings -->" value="&lt;!-- My sql settings " />
+			<replacefilter token="&lt;!-- My sql settings end -->" value="My sql settings end -->" />
+		</replace>
+	</target>
 	
 	<target name="upgrade_db_demodel" >
 		<if>
@@ -1074,6 +1156,12 @@ Thanking You,
 			<equals arg1="oracle" arg2="${database.type}" />
 			<then>
 				<antcall target="upgrade_db_demodel_oracle" />
+			</then>
+		</elseif>
+		<elseif>
+			<equals arg1="db2" arg2="${database.type}" />
+			<then>
+				<antcall target="upgrade_db_demodel_db2" />
 			</then>
 		</elseif>
 		<else>
