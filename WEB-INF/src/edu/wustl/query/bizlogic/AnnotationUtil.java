@@ -481,9 +481,9 @@ public class AnnotationUtil
 					+ maxPathId
 					+ ","
 					+ staticEntityId
-					+ ","
+					+ ",'"
 					+ intraModelAssociationId
-					+ ","
+					+ "',"
 					+ dynamicEntityId + ")";
 
 			List<String> list = new ArrayList<String>();
