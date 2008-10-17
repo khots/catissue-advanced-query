@@ -7,92 +7,92 @@
 <tiles-definitions> 
 
 	<!-- Home tab pages definitions start -->
-	<definition name=".catissuecore.mainTitlePageDef" path="/pages/Layout.jsp">
+	<definition name=".query.mainTitlePageDef" path="/pages/QueryLayout.jsp">
 		<put name="title" value="Query v 1.0" />
-		<put name="header" value="/pages/MainHeaderLogin.jsp" />
-		<put name="applicationheader" value="/pages/ApplicationHeaderLogin.jsp" />
+		<put name="header" value="/pages/QueryMainHeaderLogin.jsp" />
+		<put name="applicationheader" value="/pages/QueryApplicationHeaderLogin.jsp" />
 		<put name="mainmenu" value="/pages/mainMenu/HomeLogo.jsp" />
-		<put name="content" value="/pages/content/home/Home.jsp" />
+		<put name="content" value="/pages/content/home/QueryHome.jsp" />
 	</definition>
 
 	<!-- Home tab pages definitions start -->
-	<definition name=".catissuecore.homePageDef" path="/pages/Layout.jsp">
-		<put name="title" value="Quuery v 1.0" />
-		<put name="header" value="/pages/MainHeader.jsp" />
-		<put name="applicationheader" value="/pages/ApplicationHeader.jsp"/> 
-		<put name="mainmenu" value="/pages/mainMenu/Home.jsp" />
-		<put name="content" value="/pages/content/home/Home.jsp" />
+	<definition name=".query.homePageDef" path="/pages/QueryLayout.jsp">
+		<put name="title" value="Query v 1.0" />
+		<put name="header" value="/pages/QueryMainHeader.jsp" />
+		<put name="applicationheader" value="/pages/QueryApplicationHeader.jsp"/> 
+		<put name="mainmenu" value="/pages/mainMenu/QueryHome.jsp" />
+		<put name="content" value="/pages/content/home/QueryHome.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.titliSearchResultPage" extends=".catissuecore.homePageDef">
+	<definition name=".query.titliSearchResultPage" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/TitliResultUpdatable.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.reportProblemDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.reportProblemDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/ReportProblem.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.reportProblemSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.reportProblemSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.forgotPasswordDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.forgotPasswordDef" extends=".query.homePageDef">
 		
 		<put name="content" value="/pages/content/common/ForgotPassword.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.forgotPasswordSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.forgotPasswordSuccessDef" extends=".query.homePageDef">
 		
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.userSignUpDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.userSignUpDef" extends=".query.homePageDef">
 		
 		<put name="content" value="/pages/content/manageAdministrativeData/User.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.errorPageDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.errorPageDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/home/Error.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.error.details" extends=".catissuecore.homePageDef">
+	<definition name=".query.error.details" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/home/ErrorDetails.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.userProfileDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.userProfileDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/User.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.changePasswordDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.changePasswordDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/home/ChangePassword.jsp" />
 	</definition>
 	
 	
-	<definition name=".catissuecore.userProfileSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.userProfileSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.redirectToLoginPageDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.redirectToLoginPageDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/common/RedirectToLoginPage.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.RedirectToHelp" extends=".catissuecore.homePageDef">
+	<definition name=".query.RedirectToHelp" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/Help.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.contactUsDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.contactUsDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/ApplicationFooterTab.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.accessibilityDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.accessibilityDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/ApplicationFooterTab.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.disclaimerDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.disclaimerDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/ApplicationFooterTab.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.privacyNoticeDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.privacyNoticeDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/ApplicationFooterTab.jsp" />
 	</definition>
 	
@@ -101,599 +101,599 @@
 	<!-- Manage Administrative Data tab pages definitions start -->
 
 	
-	<definition name=".catissuecore.manageAdminDataHomeDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.manageAdminDataHomeDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/Home.jsp"/>
 	</definition>
 	
-	<definition name=".catissuecore.userDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.userDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/User.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.userAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.userAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.userEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.userEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.institutionDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.institutionDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/Institution.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.institutionAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.institutionAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.institutionEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.institutionEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.approveUserDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.approveUserDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ApproveUser.jsp" />
 	</definition>
-	<definition name=".catissuecore.userDetailsDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.userDetailsDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/UserDetails.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.reportedProblemDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.reportedProblemDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ReportedProblem.jsp" />
 	</definition>
-	<definition name=".catissuecore.problemDetailsDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.problemDetailsDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ProblemDetails.jsp" />
 	</definition>
 
 	<!-- Storage Type -->
-	<definition name=".catissuecore.storageTypeDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.storageTypeDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/StorageType.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.storageTypeAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.storageTypeAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.storageTypeEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.storageTypeEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	<!-- Storage Type -->
 	
 	<!-- Storage Container -->
-	<definition name=".catissuecore.storageContainerDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.storageContainerDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/StorageContainer.jsp" />
 	</definition>
 	
-    <definition name=".catissuecore.storageContainerBaseDef" extends=".catissuecore.homePageDef">
+    <definition name=".query.storageContainerBaseDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/StorageContainerBase.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.arrayTypeDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.arrayTypeDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/SpecimenArrayType.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.storageContainerAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.storageContainerAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.storageContainerEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.storageContainerEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	<!-- Storage Container -->
 	
 	<!-- Site -->
-	<definition name=".catissuecore.siteDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.siteDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/Site.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.siteAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.siteAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.siteEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.siteEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	<!-- Site -->
 	
 	<!-- Biohazard -->
-	<definition name=".catissuecore.biohazardDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.biohazardDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/Biohazard.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.biohazardAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.biohazardAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.biohazardEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.biohazardEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	<!-- Biohazard -->
 	
-	<definition name=".catissuecore.mainCollectionProtocolDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.mainCollectionProtocolDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/CollectionProtocolBase.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.collectionProtocolDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.collectionProtocolDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/CollectionProtocol.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.collectionProtocolAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.collectionProtocolAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.collectionProtocolEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.collectionProtocolEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.departmentDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.departmentDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/Department.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.departmentAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.departmentAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.departmentEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.departmentEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.cancerResearchGroupDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.cancerResearchGroupDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/CancerResearchGroup.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.cancerResearchGroupAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.cancerResearchGroupAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.cancerResearchGroupEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.cancerResearchGroupEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.distributionProtocolDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.distributionProtocolDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/DistributionProtocol.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.distributionProtocolAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.distributionProtocolAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.distributionProtocolEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.distributionProtocolEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.reportProblemEditDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.reportProblemEditDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/ReportProblem.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.editSearchPageDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.editSearchPageDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/search/SimpleQueryInterface.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.editSearchResultsFrameDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.editSearchResultsFrameDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/DataViewFrame.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.queryDataViewDef" path="/pages/content/search/ContentLayout.jsp">
+	<definition name=".query.queryDataViewDef" path="/pages/content/search/ContentLayout.jsp">
 	</definition>
-	<definition name=".catissuecore.queryHomeViewDef" path="/pages/content/search/ContentLayout.jsp">
+	<definition name=".query.queryHomeViewDef" path="/pages/content/search/ContentLayout.jsp">
 		<put name="content" value="/pages/content/manageBioSpecimen/CPQueryHome.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.commonErrorDetailsDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.commonErrorDetailsDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/common/ErrorDetails.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.editSearchResultsDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.editSearchResultsDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/search/DataView.jsp" />
 	</definition>
 	
 	<!-- Manage Administrative Data tab pages definitions end -->
 
 	<!-- Manage BioSpecimen tab pages definitions start -->
-	<definition name=".catissuecore.manageBioSpecimenHomeDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.manageBioSpecimenHomeDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/Home.jsp" />
 	</definition>
 
 	<!-- Bulk operations pages definitions start -->
 	
-	<definition name=".catissuecore.bulkTransferEventsDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.bulkTransferEventsDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/bulkOperations/BulkTransferEvents.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.bulkDisposalEventsDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.bulkDisposalEventsDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/bulkOperations/BulkDisposalEvents.jsp" />
 	</definition>
 	
 	<!-- Bulk operations pages definitions end -->
 	
-	<definition name=".catissuecore.participantDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.participantDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/Participant.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.participantAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.participantAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.participantEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.participantEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.viewParticipantSurgicalPathologyReportDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.viewParticipantSurgicalPathologyReportDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/ViewParticipantSPR.jsp" />
 	</definition>
 
 
 	<!--Ajay For collection protocol reg-->
-	<definition name=".catissuecore.collectionProtocolRegistrationDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.collectionProtocolRegistrationDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/CollectionProtocolRegistration.jsp" />
 	</definition>
 	<!--Deepti  For collection protocol reg from CP based view -->
-	<definition name=".catissuecore.collectionProtocolRegistrationDefCPBased" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.collectionProtocolRegistrationDefCPBased" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/CollectionProtocolRegistration.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.collectionProtocolRegistrationAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.collectionProtocolRegistrationAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.collectionProtocolRegistrationEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.collectionProtocolRegistrationEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	
 	
-	<definition name=".catissuecore.accessionDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.accessionDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/Accession.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.accessionAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.accessionAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.accessionEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.accessionEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
 	<!-- NEW SPECIMEN EVENT PARAMETERS -->
-	<definition name=".catissuecore.newSpecimenEventParametersDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.newSpecimenEventParametersDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.newSpecimenEventParametersCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.newSpecimenEventParametersCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SpecimenEventParameters.jsp" />
 	</definition>
 
 	<!-- NEW SPECIMEN EVENT PARAMETERS -->
 	
 	<!-- NEW SPECIMEN -->
-	<definition name=".catissuecore.newSpecimenDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.newSpecimenDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/NewSpecimen.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.newSpecimenAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.newSpecimenAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.newSpecimenEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.newSpecimenEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	<!-- NEW SPECIMEN -->
 	
 	
 	<!-- CREATE SPECIMEN -->
-	<definition name=".catissuecore.createSpecimenDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.createSpecimenDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/CreateSpecimen.jsp" />
 	</definition>
 
 
-	<definition name=".catissuecore.createSpecimenAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.createSpecimenAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.createSpecimenEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.createSpecimenEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	<!-- CREATE SPECIMEN -->
 	
 	
 	<!-- SpecimenCollectionGroup Parameters -->
-	<definition name=".catissuecore.specimenCollectionGroupDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.specimenCollectionGroupDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SpecimenCollectionGroup.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.specimenCollectionGroupAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.specimenCollectionGroupAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.specimenCollectionGroupEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.specimenCollectionGroupEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.viewSurgicalPathologyReportDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.viewSurgicalPathologyReportDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/ViewSPR.jsp" />
 	</definition>
 	<!-- SpecimenCollectionGroup Parameters -->
 
 	<!-- FrozenEventParameters -->
-	<definition name=".catissuecore.frozenEventParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.frozenEventParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/FrozenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.frozenEventParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.frozenEventParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.frozenEventParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.frozenEventParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- FrozenEventParameters end -->
 
 	<!-- CheckInCheckOutEventParameters -->
-	<definition name=".catissuecore.checkInCheckOutEventParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.checkInCheckOutEventParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/CheckInCheckOutEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.checkInCheckOutEventParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.checkInCheckOutEventParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.checkInCheckOutEventParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.checkInCheckOutEventParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- CheckInCheckOut EventParameters end -->
 
 	<!-- ReceivedOutEventParameters -->
-	<definition name=".catissuecore.receivedEventParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.receivedEventParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/ReceivedEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.receivedEventParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.receivedEventParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.receivedEventParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.receivedEventParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- Received EventParameters end -->
 	
 	<!-- FluidSpecimenReviewEventParameters -->
-	<definition name=".catissuecore.fluidSpecimenReviewEventParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.fluidSpecimenReviewEventParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/FluidSpecimenReviewEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.fluidSpecimenReviewEventParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.fluidSpecimenReviewEventParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.fluidSpecimenReviewEventParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.fluidSpecimenReviewEventParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- FluidSpecimenReviewEventParameters end -->
 	
 	<!-- CellSpecimenReviewParameters -->
-	<definition name=".catissuecore.cellSpecimenReviewParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.cellSpecimenReviewParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/CellSpecimenReviewParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.cellSpecimenReviewParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.cellSpecimenReviewParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.cellSpecimenReviewParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.cellSpecimenReviewParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- CellSpecimenReviewParameters end -->
 
 	<!-- TissueSpecimenReviewEventParameters -->
-	<definition name=".catissuecore.tissueSpecimenReviewEventParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.tissueSpecimenReviewEventParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/TissueSpecimenReviewEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.tissueSpecimenReviewEventParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.tissueSpecimenReviewEventParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.tissueSpecimenReviewEventParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.tissueSpecimenReviewEventParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- TissueSpecimenReviewEventParameters end -->
 
 	<!-- DisposalEventParameters -->
-	<definition name=".catissuecore.disposalEventParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.disposalEventParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/DisposalEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.disposalEventParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.disposalEventParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.disposalEventParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.disposalEventParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- DisposalEventParameters end -->
 	
 	<!-- ThawEventParameters -->
-	<definition name=".catissuecore.thawEventParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.thawEventParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/ThawEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.thawEventParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.thawEventParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.thawEventParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.thawEventParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- ThawEventParameters end -->
 
 		<!-- collectionEventParameters -->
-	<definition name=".catissuecore.collectionEventParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.collectionEventParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/CollectionEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.collectionEventParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.collectionEventParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.collectionEventParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.collectionEventParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- collectionEventParameters end -->
 	
 	<!-- TransferEventParameters -->
-	<definition name=".catissuecore.transferEventParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.transferEventParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/TransferEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.transferEventParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.transferEventParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.transferEventParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.transferEventParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- transferEventParameters end -->
 
 	<!-- SpunEventParameters -->
-	<definition name=".catissuecore.spunEventParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.spunEventParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SpunEventParameters.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.spunEventParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.spunEventParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.spunEventParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.spunEventParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- SpunEventParameters end -->
 	<!-- EmbeddedEventParameters -->
-	<definition name=".catissuecore.embeddedEventParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.embeddedEventParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/EmbeddedEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.embeddedEventParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.embeddedEventParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.embeddedEventParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.embeddedEventParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- EmbeddedEventParameters end -->
 	
 		<!-- fixedEventParameters -->
-	<definition name=".catissuecore.fixedEventParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.fixedEventParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/FixedEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.fixedEventParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.fixedEventParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.fixedEventParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.fixedEventParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- fixedEventParameters end -->
 
 	<!-- procedureEventParameters -->
-	<definition name=".catissuecore.procedureEventParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.procedureEventParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/ProcedureEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.procedureEventParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.procedureEventParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.procedureEventParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.procedureEventParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- procedureEventParameters end -->
 
 	<!-- MolecularSpecimenReviewParameters -->
-	<definition name=".catissuecore.molecularSpecimenReviewParametersDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.molecularSpecimenReviewParametersDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/MolecularSpecimenReviewParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.molecularSpecimenReviewParametersAddSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.molecularSpecimenReviewParametersAddSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.molecularSpecimenReviewParametersEditSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.molecularSpecimenReviewParametersEditSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/RedirectSpecimenEventParameters.jsp" />
 	</definition>
 	<!-- MolecularSpecimenReviewEventParameters end -->
 	
 	<!-- Distribution -->
-	<definition name=".catissuecore.distributionDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.distributionDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/Distribution.jsp" />
 	</definition>
 
 
-	<definition name=".catissuecore.distributionAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.distributionAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.distributionEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.distributionEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.configurationSuccessDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.configurationSuccessDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/ConfigureResultView.jsp" />
 	</definition>
 
 
-	<definition name=".catissuecore.distributionReportSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.distributionReportSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/search/DistributionReport.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.multipleSpecimenFlexDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.multipleSpecimenFlexDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/MultipleSpecimenFlex.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.multipleSpecimenFlexCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.multipleSpecimenFlexCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/MultipleSpecimenFlex.jsp" />
 	</definition>
 
 
-	<definition name=".catissuecore.initMultipleSpecimenDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.initMultipleSpecimenDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/InitMultipleSpecimen.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.multipleSpecimenDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.multipleSpecimenDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/MultipleSpecimen.jsp" />
 	</definition>
 <!-- Mandar: 07Nov06: Entryfor MultipleSpecimen StorageLocation. -->
-	<definition name=".catissuecore.multipleSpecimenStorageLocationDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.multipleSpecimenStorageLocationDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/MultipleSpecimenStorageLocation.jsp" />
 	</definition>
 
 	
-	<definition name=".catissuecore.multipleSpecimenAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.multipleSpecimenAddSuccessDef" extends=".query.homePageDef">
             <put name="content" value="/pages/content/manageBioSpecimen/SpecimenReport.jsp" />
     </definition>
 	
 	<!-- Distribution end -->
 
 	<!-- specimenEventParameters -->
-	<definition name=".catissuecore.specimenEventParametersDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.specimenEventParametersDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SpecimenEventParameterLinks.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.specimenEventParametersAddSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.specimenEventParametersAddSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.specimenEventParametersEditSuccessDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.specimenEventParametersEditSuccessDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	<!-- specimenEventParameters end -->
 	
-	<definition name=".catissuecore.editBioSpecimenSearchPageDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.editBioSpecimenSearchPageDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/search/SimpleQueryInterface.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.editBioSpecimenSearchResultsDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.editBioSpecimenSearchResultsDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/search/DataView.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.editSpecimenArrayTypeSearchPageDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.editSpecimenArrayTypeSearchPageDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/search/DataView.jsp" />
 	</definition>
 	
@@ -701,175 +701,175 @@
 
 	<!-- Search tab pages definitions start -->
 	
-	<definition name=".catissuecore.queryResultsTreeViewDef" path="/pages/content/search/TreeView.jsp">
+	<definition name=".query.queryResultsTreeViewDef" path="/pages/content/search/TreeView.jsp">
 	</definition>
 	
 	<!--Added By Pallavi Mistry -->	
 	<!--TreeNode view for DHTMLX tree grid view of storage container-->
-	<definition name=".catissuecore.queryResultsTreeViewNodeDef" path="/pages/content/search/TreeNodeView.jsp">
+	<definition name=".query.queryResultsTreeViewNodeDef" path="/pages/content/search/TreeNodeView.jsp">
 	</definition>
 	
-	<definition name=".catissuecore.storageContainerTreeDef" path="/pages/content/manageAdministrativeData/StorageContainerTree.jsp">
+	<definition name=".query.storageContainerTreeDef" path="/pages/content/manageAdministrativeData/StorageContainerTree.jsp">
 	</definition>
 			
-	<definition name=".catissuecore.searchHomeDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.searchHomeDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/search/Home.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.searchAddSuccessDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.searchAddSuccessDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 
 	
-	<definition name=".catissuecore.conflictResolverDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.conflictResolverDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ConflictView.jsp" />
 	</definition>
 	
 	
-	<definition name=".catissuecore.simpleSearchResultsDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.simpleSearchResultsDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/SimpleSearchDataView.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.simpleSearchDepartmentDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.simpleSearchDepartmentDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/Department.jsp" />
 	</definition>
 		
-	<definition name=".catissuecore.simpleQueryInterfaceDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.simpleQueryInterfaceDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/SimpleQueryInterface.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.simpleSearchSpecimenArrayTypeDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.simpleSearchSpecimenArrayTypeDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/SpecimenArrayType.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.simpleSearchSpecimenArrayDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.simpleSearchSpecimenArrayDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SpecimenArray.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.advanceQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.advanceQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/AdvanceQuery.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.queryResultsDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.queryResultsDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/QueryResultsView.jsp" />
 	</definition>
 
 	<!-- Query edit pages definitions begin -->
-	<definition name=".catissuecore.queryParticipantViewDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.queryParticipantViewDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/Participant.jsp" />
 	</definition>
-	<definition name=".catissuecore.queryCollectionProtocolViewDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.queryCollectionProtocolViewDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/CollectionProtocol.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.querySpecimenCollectionGroupViewDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.querySpecimenCollectionGroupViewDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SpecimenCollectionGroup.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.querySpecimenViewDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.querySpecimenViewDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/NewSpecimen.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.queryResultsSpreadsheetViewDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.queryResultsSpreadsheetViewDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/SimpleSearchDataView.jsp"/>
 	</definition>
-	<definition name=".catissuecore.queryCollectionProtocolRegistrationDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.queryCollectionProtocolRegistrationDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/CollectionProtocolRegistration.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.storageLocationViewDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.storageLocationViewDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/StorageContainerLocationView.jsp" />
 	</definition>
 	
 	
-	<definition name=".catissuecore.storageLocationGridViewDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.storageLocationGridViewDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/StorageContainerGridView.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.storageLocationMapViewDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.storageLocationMapViewDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ViewStorageContainerMap.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.participantEditDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.participantEditDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/Participant.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.collectionProtocolEditDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.collectionProtocolEditDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/CollectionProtocol.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.specimenCollectionGroupEditDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.specimenCollectionGroupEditDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SpecimenCollectionGroup.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.specimenEditDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.specimenEditDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/NewSpecimen.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.createCPSpecimenDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.createCPSpecimenDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/CreateSpecimen.jsp" />
 	</definition>
 	
 		
 	<!-- ShoppingCart -->
-	<definition name=".catissuecore.shoppingCartDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.shoppingCartDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/querysuite/QueryShoppingCart.jsp" />
 	</definition>
 	<!-- ShoppingCart -->
 	
 	<!-- ASSIGN PRIVILEGES -->
-	<definition name=".catissuecore.assignPrivilegesPageDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.assignPrivilegesPageDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/search/AssignPrivileges.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.assignPrivilegesDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.assignPrivilegesDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
 	<!-- ASSIGN PRIVILEGES -->
 	
 	<!-- ADVANCE QUERY INTERFACE -->
 	
-	<definition name=".catissuecore.advanceQueryInterfaceDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.advanceQueryInterfaceDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/AdvanceQueryInterface.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.participantSearchDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.participantSearchDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/AdvanceSearchUI.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.specimenSearchDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.specimenSearchDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/SpecimenSearch.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.specimenCollectionGroupSearchDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.specimenCollectionGroupSearchDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/AdvanceSearchUI.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.collectionProtocolSearchDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.collectionProtocolSearchDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/AdvanceSearchUI.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.defaultSearchDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.defaultSearchDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/AdvanceQueryInterfaceDefaultPage.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.advanceQueryViewDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.advanceQueryViewDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/AdvanceQueryView.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.advanceQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.advanceQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/AdvanceQuery.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.advanceQueryResultsDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.advanceQueryResultsDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/AdvanceQueryInterface.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.advanceQueryRedirectDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.advanceQueryRedirectDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/RedirectAdvancedSearch.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.advanceConfigurationSuccessDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.advanceConfigurationSuccessDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/ConfigureResultView.jsp" />
 	</definition>
 
@@ -882,249 +882,249 @@
 	<!-- Search tab pages definitions end -->
 	
 	<!-- Summary tab pages definitions Begin -->
-	<definition name=".catissuecore.summaryHomeDef" extends=".catissuecore.homePageDef">		
+	<definition name=".query.summaryHomeDef" extends=".query.homePageDef">		
 		<put name="content" value="/pages/content/summary/Home.jsp" />
 	</definition>
 	<!-- Summary tab pages definitions End -->
 	
 	<!-- Help tab pages definitions Begin -->
-	<definition name=".catissuecore.helpHomeDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.helpHomeDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/help/Home.jsp" />
 	</definition>
 	<!-- Help tab pages definitions End -->
 	
 	<!-- Summary tab pages definitions Begin -->
-	<definition name=".catissuecore.summaryLoggedInDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.summaryLoggedInDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/summary/Home.jsp" />
 	</definition>
 	<!-- Summary tab pages definitions End -->
 	
 	<!-- Help tab pages definitions Begin -->
-	<definition name=".catissuecore.helpLoggedInDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.helpLoggedInDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/help/Home.jsp" />
 	</definition>
 	<!-- Help tab pages definitions End -->
 	
 	<!-- CREATE SPECIMEN -->
-	<definition name=".catissuecore.aliquotDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.aliquotDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/Aliquots.jsp" />
 	</definition>
 	
 
 	<!-- ALIQUOT SUMMARY -->
-	<definition name=".catissuecore.aliquotSummaryDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.aliquotSummaryDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/AliquotSummary.jsp" />
 	</definition>
 
 	
 	<!-- CREATE SPECIMEN ARRAY ALIQUOTS -->
-	<definition name=".catissuecore.specimenArrayAliquotDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.specimenArrayAliquotDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SpecimenArrayAliquots.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.specimenArrayAliquotSummaryDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.specimenArrayAliquotSummaryDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SpecimenArrayAliquotsSummary.jsp" />
 	</definition>
 
 	<!--  QuickEvents -->
-	<definition name=".catissuecore.quickEventsDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.quickEventsDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/QuickEvents.jsp" />
 	</definition>
 	
 	<!-- SIMILAR CONTAINERS -->
-	<definition name=".catissuecore.similarContainersDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.similarContainersDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/SimilarContainers.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.similarContainersList" extends=".catissuecore.homePageDef">
+	<definition name=".query.similarContainersList" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/SimilarContainersList.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.arrayDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.arrayDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SpecimenArray.jsp" />
 	</definition>
 	
 		
-	<definition name=".catissuecore.querySpecimenArrayViewDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.querySpecimenArrayViewDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SpecimenArray.jsp" />
 	</definition>
 	
 
-	<definition name=".catissuecore.cpBasedSearchDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.cpBasedSearchDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/CPBasedSearchResults.jsp" />
 	</definition>
-	<definition name=".participantAddSuccess" extends=".catissuecore.homePageDef">
+	<definition name=".participantAddSuccess" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/CPBasedSearchResultsDirect.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.newSpecimenEventParametersCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.newSpecimenEventParametersCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SpecimenEventParameters.jsp" />
 	</definition>
-	<definition name=".catissuecore.createSpecimenCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.createSpecimenCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/CreateSpecimen.jsp" />
 	</definition>
-	<definition name=".catissuecore.distributionCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.distributionCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/Distribution.jsp" />
 	</definition>
-	<definition name=".catissuecore.configurationSuccessCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.configurationSuccessCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/ConfigureResultView.jsp" />
 	</definition>
-	<definition name=".catissuecore.distributionReportSuccessCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.distributionReportSuccessCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/DistributionReport.jsp" />
 	</definition>
-	<definition name=".catissuecore.distributionReportSuccessCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.distributionReportSuccessCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/DistributionReport.jsp" />
 	</definition>
-	<definition name=".catissuecore.aliquotCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.aliquotCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/Aliquots.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.aliquotSummaryCpQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.aliquotSummaryCpQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/AliquotSummary.jsp" />
 	</definition>
-	<definition name=".catissuecore.collectionProtocolRegistrationCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.collectionProtocolRegistrationCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/CollectionProtocolRegistration.jsp" />
 	</definition>
 	<!-- Sub Protocol -->
-	<definition name=".catissuecore.subcollectionProtocolRegistrationCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.subcollectionProtocolRegistrationCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SubCollectionProtocolRegistration.jsp" />
 	</definition>
 	<!-- Sub Protocol -->
-	<definition name=".catissuecore.initMultipleSpecimenCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.initMultipleSpecimenCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/InitMultipleSpecimen.jsp" />
 	</definition>
-	<definition name=".catissuecore.multipleSpecimenStorageLocationCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.multipleSpecimenStorageLocationCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/MultipleSpecimenStorageLocation.jsp" />
 	</definition>
-	<definition name=".catissuecore.multipleSpecimenAddSuccessCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.multipleSpecimenAddSuccessCPQueryDef" extends=".query.queryDataViewDef">
             <put name="content" value="/pages/content/manageBioSpecimen/SpecimenReport.jsp" />
     </definition>
-	<definition name=".catissuecore.multipleSpecimenCPQueryDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.multipleSpecimenCPQueryDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/MultipleSpecimen.jsp" />
 	</definition>
-	<definition name=".catissuecore.specimenCollectionGroupTechDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.specimenCollectionGroupTechDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/CPQuerySCGForTechnician.jsp" />
 	</definition>
 <!--P.G. - Start 24May07:Bug 4291-->
-	<definition name=".catissuecore.bioBlankDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.bioBlankDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/blank.jsp" />
 	</definition>
 <!--P.G. - End -->	
 
 <!-- Added for Specimen disposal bug #5013	-->
-	<definition name=".catissuecore.homeDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.homeDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/Home.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.managehomedef" extends=".catissuecore.homePageDef">
+	<definition name=".query.managehomedef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/Home.jsp" />
 	</definition>
 <!--bug #5013. - End -->
 
 <!-- for ordering consents: kalpana-->
 
-<definition name=".catissuecore.OrderingConsentsDef" path="/pages/content/ConsentTracking/OrderingSpecimen.jsp"> 
+<definition name=".query.OrderingConsentsDef" path="/pages/content/ConsentTracking/OrderingSpecimen.jsp"> 
 </definition>
 
-<definition name=".catissuecore.ViewAllOrderingConsentsDef" path="/pages/content/ConsentTracking/ViewAllOrderingConsents.jsp"> 
+<definition name=".query.ViewAllOrderingConsentsDef" path="/pages/content/ConsentTracking/ViewAllOrderingConsents.jsp"> 
 </definition>
 
 <!--end-->
 		
 <!--Orderering System-->
 	<!--Added By Deepti request order page -->
-	<definition name=".catissuecore.orderDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.orderDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/orderingsystem/RequestOrder.jsp" />
 	</definition>
 	
 	<!--Added By Deepti  ordering page -->
-	<definition name=".catissuecore.orderingsystem.orderItem" path="/pages/content/orderingsystem/OrderItem.jsp">
+	<definition name=".query.orderingsystem.orderItem" path="/pages/content/orderingsystem/OrderItem.jsp">
 	</definition>
 	
-	<definition name=".catissuecore.orderingsystem.orderList" path="/pages/content/orderingsystem/OrderList.jsp">
+	<definition name=".query.orderingsystem.orderList" path="/pages/content/orderingsystem/OrderList.jsp">
 	</definition>
 
-	<definition name=".catissuecore.orderingsystem.orderbiospecimenarray" path="/pages/content/orderingsystem/OrderBiospecimenArray.jsp">
+	<definition name=".query.orderingsystem.orderbiospecimenarray" path="/pages/content/orderingsystem/OrderBiospecimenArray.jsp">
 	</definition>
 	
-	<definition name=".catissuecore.orderingsystem.orderMain" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.orderingsystem.orderMain" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/orderingsystem/OrderingSystemMain.jsp" />		
 	</definition>
 	
-	<definition name=".catissuecore.orderingsystem.definearray" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.orderingsystem.definearray" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/orderingsystem/DefineArray.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.orderingsystem.requestOrder" path="/pages/content/orderingsystem/OrderSpecimen.jsp">
+	<definition name=".query.orderingsystem.requestOrder" path="/pages/content/orderingsystem/OrderSpecimen.jsp">
 	</definition>
 	
-	<definition name=".catissuecore.orderingsystem.orderpathologycase" path="/pages/content/orderingsystem/OrderPathologyCase.jsp">
+	<definition name=".query.orderingsystem.orderpathologycase" path="/pages/content/orderingsystem/OrderPathologyCase.jsp">
 	</definition>
 	
 
-	<definition name=".catissuecore.requestListDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.requestListDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/orderingsystem/RequestListView.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.requestDetailsDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.requestDetailsDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/orderingsystem/RequestDetails.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.arrayRequestsDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.arrayRequestsDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/orderingsystem/ArrayRequests.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.myListTabDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.myListTabDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/MyListTabPage.jsp" />
 	</definition>
 	
    
    <!--Change By Virender for PopUp on Submit Button Click -->
 	
-	<definition name=".catissuecore.DistributingConsentsDef" path="/pages/content/ConsentTracking/DistributingSpecimen.jsp"> 
+	<definition name=".query.DistributingConsentsDef" path="/pages/content/ConsentTracking/DistributingSpecimen.jsp"> 
 	</definition>
 	
-	<definition name=".catissuecore.ViewAllConsentsDef" path="/pages/content/ConsentTracking/ViewAllConsents.jsp"> 
+	<definition name=".query.ViewAllConsentsDef" path="/pages/content/ConsentTracking/ViewAllConsents.jsp"> 
 	</definition>
 	<!--Change By Virender -->	
 	<!--Specimen tree view for Ordering System.-->
-	<!-- definition name=".catissuecore.requestDetailsTreeViewDef" path="/pages/content/search/TreeView.jsp" -->
-	<definition name=".catissuecore.requestDetailsTreeViewDef" path="/pages/content/orderingsystem/SpecimenTreeView.jsp">
+	<!-- definition name=".query.requestDetailsTreeViewDef" path="/pages/content/search/TreeView.jsp" -->
+	<definition name=".query.requestDetailsTreeViewDef" path="/pages/content/orderingsystem/SpecimenTreeView.jsp">
 	</definition>
 	
 <!-- Conflict Resolver :kalpana -->
-	<definition name=".catissuecore.conflictViewDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.conflictViewDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ConflictView.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.conflictDetailsViewDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.conflictDetailsViewDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ConflictDetailsView.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.conflictCommonDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.conflictCommonDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ConflictCommonView.jsp" />
 	</definition>
 	
 	
-	<definition name=".catissuecore.conflictParticipantDataDetailsDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.conflictParticipantDataDetailsDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ConflictParticipantDataDetailsView.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.conflictSCGDataDetailsDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.conflictSCGDataDetailsDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ConflictSCGDataDetailsView.jsp" />
 	</definition>
 	
 	
-	<definition name=".catissuecore.conflictParticipantSCGTreeDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.conflictParticipantSCGTreeDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ConflictParticipantSCGTreeView.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.conflictSCGDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.conflictSCGDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ConflictSCGView.jsp" />
 	</definition>
 	
 	
-	<definition name=".catissuecore.conflictReportDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.conflictReportDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ConflictReportView.jsp" />
 	</definition>
 	
@@ -1133,128 +1133,128 @@
 <!--Conflict Resolver :end -->
 	
 	<!-- For ViewSpr on Specimen Page -->
-	<definition name=".catissuecore.newSpecimenViewSPRDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.newSpecimenViewSPRDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/NewSpecimenViewSPR.jsp" />
 	</definition>	
-	<definition name=".catissuecore.newSpecimenEditViewSPRDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.newSpecimenEditViewSPRDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/NewSpecimenViewSPR.jsp" />
 	</definition>
 	
 	 <!-- Definition code : Mandar Shidhore : 06/11/06 -->
-	<definition name=".catissuecore.searchCategory" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.searchCategory" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/querysuite/AddLimits.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.viewSearchResults" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.viewSearchResults" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/querysuite/ViewResults.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.collectQueryParameter" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.collectQueryParameter" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/querysuite/ParameterizedQueryExecutePage.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.defineSearchResultsView" extends=".catissuecore.searchHomeDef">
-		<put name="content" value=".catissuecore.defineSearchResultsWizard" />
+	<definition name=".query.defineSearchResultsView" extends=".query.searchHomeDef">
+		<put name="content" value=".query.defineSearchResultsWizard" />
 	</definition>
 
-	<definition name=".catissuecore.defineSearchResultsWizard" path="/pages/content/search/querysuite/DefineSearchResultsView.jsp">
+	<definition name=".query.defineSearchResultsWizard" path="/pages/content/search/querysuite/DefineSearchResultsView.jsp">
 		<put name="content" value="/pages/content/search/querysuite/DefineSearchResultsViewDefineTree.jsp"/>
 	</definition>			
 	
-	<definition name=".catissuecore.gridViewReport" path="/pages/content/search/querysuite/GridViewReport.jsp">
+	<definition name=".query.gridViewReport" path="/pages/content/search/querysuite/GridViewReport.jsp">
 		<put name="content" value="/pages/content/search/querysuite/GridViewReport.jsp"/>
 	</definition>
 	
-	<definition name=".catissuecore.defineSearchResultsViewBNT" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.defineSearchResultsViewBNT" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/querysuite/DefineSearchResultsViewBuildNewTree.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.queryViewPageDef" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.queryViewPageDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/querysuite/QueryListView.jsp" />
 	</definition>
 	 <!-- Definition code : Deepti Shelar : For pagination : 20/07/2007 -->
-	<definition name=".catissuecore.queryTreeViewDef" path="/pages/content/search/querysuite/QueryTreeView.jsp">
+	<definition name=".query.queryTreeViewDef" path="/pages/content/search/querysuite/QueryTreeView.jsp">
 	</definition>
-	<definition name=".catissuecore.defineQueryResultsView" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.defineQueryResultsView" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/search/querysuite/DefineGridResultsView.jsp" />
 	</definition>
-	<definition name=".catissuecore.openDecisionMakingPage" extends=".catissuecore.searchHomeDef">
+	<definition name=".query.openDecisionMakingPage" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/querysuite/DecisionMaking.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.participantConsentsDef" path="/pages/content/ConsentTracking/ParticipantConsentTracking.jsp"> 
+	<definition name=".query.participantConsentsDef" path="/pages/content/ConsentTracking/ParticipantConsentTracking.jsp"> 
 	</definition>
 	
-<!--	<definition name=".catissuecore.defineSearchResultsView" extends=".catissuecore.searchHomeDef">
+<!--	<definition name=".query.defineSearchResultsView" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/content/search/querysuite/DefineSearchResultsView.jsp" />
 	</definition> -->
 
 	<!--Annotation defs-->
-	<definition name=".catissuecore.annotationDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.annotationDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/DefineAnnotations.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.DefineAnnotationsInformationPage" extends=".catissuecore.homePageDef">
+	<definition name=".query.DefineAnnotationsInformationPage" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/DefineAnnotationsInformationPage.jsp" />
 	</definition>
 	
 	
-	<definition name=".catissuecore.dynamicFormDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.dynamicFormDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/DynamicExtensionsHome.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.viewSpecimenAnnotationCPQuery" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.viewSpecimenAnnotationCPQuery" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/NewSpecimenAnnotation.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.viewSpecimenAnnotation" extends=".catissuecore.homePageDef">
+	<definition name=".query.viewSpecimenAnnotation" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/NewSpecimenAnnotation.jsp" />
 	</definition>
 
-	<definition name=".catissuecore.specimenCollectionGroupViewSPRDef" extends=".catissuecore.homePageDef">
+	<definition name=".query.specimenCollectionGroupViewSPRDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SCGViewSPR.jsp" />
 	</definition>	
-	<definition name=".catissuecore.specimenCollectionGroupEditViewSPRDef" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.specimenCollectionGroupEditViewSPRDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/SCGViewSPR.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.viewSpecimenCollectionGroupAnnotation" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.viewSpecimenCollectionGroupAnnotation" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageBioSpecimen/NewSpecimenCollectioGroupAnnotation.jsp" />
 	</definition>
 	<!--Annotation defs End-->
 	
-	<definition name=".catissuecore.DefineEvents" extends=".catissuecore.homePageDef">
+	<definition name=".query.DefineEvents" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/DefineEvents.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.ProtocolEventsDetails" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.ProtocolEventsDetails" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ProtocolEventDetails.jsp" />
 	</definition>
 	
-	<definition name=".catissuecore.CreateSpecimenTemplate" extends=".catissuecore.queryDataViewDef">
+	<definition name=".query.CreateSpecimenTemplate" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/CreateSpecimenTemplate.jsp" />
 	</definition>
 	
 	<!-- for specimen summary -->
-	<definition name=".catissuecore.viewSpecimenSummary" extends=".catissuecore.homePageDef">
+	<definition name=".query.viewSpecimenSummary" extends=".query.homePageDef">
 		<put name="content" value="/pages/AnticipatorySpecimens.jsp" />
 	</definition>
-	<definition name=".catissuecore.specimenSummaryView" extends=".catissuecore.manageBioSpecimenHomeDef">
+	<definition name=".query.specimenSummaryView" extends=".query.manageBioSpecimenHomeDef">
 		<put name="content" value="/pages/SpecimenSummary.jsp" />
 	</definition>
 	
 	<!-- For Admini View -->
-	<definition name=".catissuecore.ReviewQuarantineRequests" extends=".catissuecore.homePageDef">
+	<definition name=".query.ReviewQuarantineRequests" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/ReviewQuarantineRequests.jsp" />
 	</definition>
-	<definition name=".catissuecore.ViewSPR" extends=".catissuecore.homePageDef">
+	<definition name=".query.ViewSPR" extends=".query.homePageDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/AdministratorViewSPR.jsp" />
 	</definition>
-	<definition name=".catissuecore.NoPendingSPRRequest" extends=".catissuecore.manageAdminDataHomeDef">
+	<definition name=".query.NoPendingSPRRequest" extends=".query.manageAdminDataHomeDef">
 		<put name="content" value="/pages/content/manageAdministrativeData/NoPendingSPRRequest.jsp" />
 	</definition>
 	<!-- For Admini View -->
 	
-	<definition name=".catissuecore.SpecimenCollectionRequirementGroupEditDef" path="/pages/content/common/success.jsp">
+	<definition name=".query.SpecimenCollectionRequirementGroupEditDef" path="/pages/content/common/success.jsp">
 	</definition>
 </tiles-definitions>
