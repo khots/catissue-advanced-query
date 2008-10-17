@@ -6,10 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,13 +21,8 @@ import edu.common.dynamicextensions.domaininterface.DateTypeInformationInterface
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.LongTypeInformationInterface;
-import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManager;
-import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
-import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
@@ -41,16 +33,12 @@ import edu.wustl.common.querysuite.queryobject.IExpressionOperand;
 import edu.wustl.common.querysuite.queryobject.IOutputEntity;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.IRule;
-import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.Expression;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
-import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.queryengine.impl.IQueryGenerator;
-import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
 import edu.wustl.common.query.exeptions.SQLXMLException;
 
@@ -123,9 +111,9 @@ public class XQueryGenerator implements IQueryGenerator
      */
     
 	// Connection Parameters
-	private Connection conn = null;
-	private Statement stmt = null;
-	private ResultSet result =null;
+//	private Connection conn = null;
+//	private Statement stmt = null;
+//	private ResultSet result =null;
 	
     private Map<String, IOutputTerm> outputTermsColumns;
     
@@ -233,12 +221,10 @@ public class XQueryGenerator implements IQueryGenerator
 		}
 		catch (IOException e)
 		{
-			Logger.out.error(e.getMessage(), e);
 			copy = null;
 		}
 		catch (ClassNotFoundException cnfe)
 		{
-			Logger.out.error(cnfe.getMessage(), cnfe);
 			copy = null;
 		}
 		return copy;
