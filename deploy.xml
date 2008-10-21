@@ -6,7 +6,7 @@
 	<!--define require dir and Properties -->
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
-			<pathelement location="./WEB-INF/lib/ant-contrib.jar" />
+			<pathelement location="./lib/ant-contrib.jar" />
 		</classpath>
 	</taskdef>
 	
