@@ -653,14 +653,15 @@
 			<!--<transaction src="${common.sql.dir}/initDB_Insert_Common.sql" /> -->
 			<!--<transaction src="${common.sql.dir}/AlterTable.sql" /> -->
 			<!--<transaction src="${common.sql.dir}/CDE_DummyData_Common.sql" /> -->
-			<transaction src="${mysql.sql.dir}/csm_query.sql" />
+			<!--<transaction src="${mysql.sql.dir}/csm_query.sql" />-->
 			<!--<transaction src="${common.sql.dir}/insert_default_data.sql" /> -->
 			<!--<transaction src="${common.sql.dir}/indexes.sql" /> -->
-			<transaction src="${mysql.sql.dir}/dynamicextension.sql" />
-			<transaction src="${mysql.sql.dir}/query/metadata_schema_script.sql" /> 
-			<transaction src="${mysql.sql.dir}/query/query_schema_script.sql" />
-			<transaction src="${mysql.sql.dir}/query/caB2B Table Generation Script.sql" />
-			<!-- <transaction src="${mysql.sql.dir}/query/csm.sql" /> -->
+			<!--<transaction src="${mysql.sql.dir}/dynamicextension.sql" />-->
+			<!--<transaction src="${mysql.sql.dir}/query/metadata_schema_script.sql" />--> 
+			<!--<transaction src="${mysql.sql.dir}/query/query_schema_script.sql" />-->
+			<!--<transaction src="${mysql.sql.dir}/query/caB2B Table Generation Script.sql" />-->
+			<!-- <transaction src="${mysql.sql.dir}/query/csm.sql" />-->
+			<transaction src="${mysql.sql.dir}/query/initDb.sql" />
 
 			<transaction>commit;</transaction>
 			<classpath>
@@ -671,7 +672,7 @@
 		</sql>
 		<!--<antcall target="temp_update_metadata_for_clob_support_mysql" /> -->
 		<!--<antcall target="insert_entity_group_metadata_mysql" /> -->
-		<antcall target="upgrade_db_demodel_mysql" />
+		<!--<antcall target="upgrade_db_demodel_mysql" /> -->
 		<!--<antcall target="update_metadata_for_model_changes" /> -->
 	</target>
 	
