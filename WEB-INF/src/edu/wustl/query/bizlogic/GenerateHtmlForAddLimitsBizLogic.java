@@ -784,7 +784,7 @@ public class GenerateHtmlForAddLimitsBizLogic
 				.append("<td class='standardLabelQuery' valign='top' height=\"2%\" colspan=\"8\" bgcolor=\"#EAEAEA\" ><font face=\"Arial\" size=\"2\" color=\"#000000\"><b>");
 		generatedPreHTML.append(header + " '" + entityName + "'</b></font>");
 		generatedPreHTML.append("\n</td>");
-		
+		generatedPreHTML.append("####");
 		boolean isTopButton = true;
 		if (conditions != null)
 		{
@@ -1250,7 +1250,7 @@ public class GenerateHtmlForAddLimitsBizLogic
 		if (isTopButton)
 		{
 			buttonId = "TopAddLimitButton";
-			html.append("\n<td bgcolor=\"#EAEAEA\" colspan=\"2\" height=\"2%\"valign=\"top\">");
+			html.append("\n<td bgcolor=\"#EAEAEA\" colspan=\"2\" height=\"2%\" valign=\"top\" align=\"right\" >");
 		}
 		else
 		{
