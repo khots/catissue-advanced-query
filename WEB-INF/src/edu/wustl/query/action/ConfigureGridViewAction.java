@@ -72,7 +72,6 @@ public class ConfigureGridViewAction extends BaseAction
 		QueryOutputSpreadsheetBizLogic queryOutputSpreadsheetBizLogic = new QueryOutputSpreadsheetBizLogic();
 
 		String sql = querySessionData.getSql();
-		SessionDataBean sessionData = getSessionData(request);
 		session.removeAttribute(Constants.EXPORT_DATA_LIST);
 		session.removeAttribute(Constants.ENTITY_IDS_MAP);
 
@@ -97,7 +96,6 @@ public class ConfigureGridViewAction extends BaseAction
 					selectedColumnsMetadata.getSelectedAttributeMetaDataList(), selectedColumnNames,
 						queryResultObjecctDataMap, queryDetailsObj, outputTermsColumns,nodeData);
 			spreadSheetDataMap.put(Constants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
-			QueryShoppingCart cart = (QueryShoppingCart)session.getAttribute(Constants.QUERY_SHOPPING_CART);
 			// gets the message and sets it in the session.
 			//String message = QueryModuleUtil.getMessageIfIdNotPresentForOrderableEntities(selectedColumnsMetadata,cart);
 			//session.setAttribute(Constants.VALIDATION_MESSAGE_FOR_ORDERING, message);
@@ -162,7 +160,7 @@ public class ConfigureGridViewAction extends BaseAction
 
 	private String getClickedNodeData(String sql) {
 		
-		int index = sql.lastIndexOf("=");
+		int index = sql.lastIndexOf('=');
 		String clickedData = "";
 		if(index != -1)
 		{

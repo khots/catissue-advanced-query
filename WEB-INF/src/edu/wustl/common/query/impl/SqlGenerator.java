@@ -293,12 +293,12 @@ public class SqlGenerator implements IQueryGenerator {
                     // required in case of Pseudo-Anded expressions.
                     ICondition condition = QueryObjectFactory.createCondition(attributeObj, RelationalOperator.IsNull,
                             null);
-                    extraWherePAnd.append("(").append(getSQL(condition, expression)).append(" OR ");
+                    extraWherePAnd.append('(').append(getSQL(condition, expression)).append(" OR ");
 
                     // creating activityStatus != disabled condition.
                     condition = createActivityStatusCondition(attributeObj);
                     extraWherePAnd.append(getSQL(condition, expression));
-                    extraWherePAnd.append(")").append(LogicalOperator.And).append(" ");
+                    extraWherePAnd.append(')').append(LogicalOperator.And).append(' ');
                 }
             }
             // expression.getQueryEntity()
@@ -477,7 +477,6 @@ public class SqlGenerator implements IQueryGenerator {
      */
     String getFromPartSQL(IExpression expression, String leftAlias, Set<Integer> processedAlias) throws SqlException {
         StringBuffer buffer = new StringBuffer("");
-        int parentExpressionId = expression.getExpressionId();
 
         if (processedAlias.isEmpty()) // this will be true only for root node.
         {
@@ -525,11 +524,11 @@ public class SqlGenerator implements IQueryGenerator {
                     String primaryKeyColumnName = primaryKey.getColumnProperties().getName();
                     String subClassAlias = getAliasFor(expression, theLeftEntity);
                     String superClassAlias = getAliasFor(expression, superClassEntity);
-                    buffer.append(" left join " + superClassEntity.getTableProperties().getName() + " "
+                    buffer.append(" left join " + superClassEntity.getTableProperties().getName() + ' '
                             + superClassAlias + " on ");
                     String leftAttribute = subClassAlias + "." + primaryKeyColumnName;
                     String rightAttribute = superClassAlias + "." + primaryKeyColumnName;
-                    buffer.append("(" + leftAttribute + "=" + rightAttribute + ")");
+                    buffer.append('(' + leftAttribute + '=' + rightAttribute + ')');
                 }
                 theLeftEntity = superClassEntity;
                 superClassEntity = superClassEntity.getParentEntity();

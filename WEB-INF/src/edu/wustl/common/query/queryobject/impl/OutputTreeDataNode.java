@@ -214,7 +214,9 @@ public class OutputTreeDataNode implements Serializable
 		for (QueryOutputTreeAttributeMetadata attributeMetadata: attributes)
 		{
 			if (attributeMetadata.getAttribute().equals(attribute))
+			{
 				return attributeMetadata;
+			}
 		}
 		return null;
 	}

@@ -66,7 +66,9 @@ public class CommonPathFinder implements IPathFinder
 				try
 				{
 					if (connection != null)
+					{
 						connection.close();
+					}
 				}
 				catch (SQLException e)
 				{

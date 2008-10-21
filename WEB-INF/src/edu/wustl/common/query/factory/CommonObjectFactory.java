@@ -25,7 +25,9 @@ public class CommonObjectFactory
     public static CommonObjectFactory getInstance()
     {
         if (clientFactory == null)
+        {
             clientFactory = new CommonObjectFactory();
+        }
         
         return clientFactory;
     }

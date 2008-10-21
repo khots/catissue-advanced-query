@@ -491,8 +491,8 @@ public class AdvanceSearchForm extends ActionForm
 			{
 				String value = (String)eventMap.get(eventValue + i);
 				
-				String fieldName = column.substring(column.indexOf(".")+1,column.lastIndexOf("."));
-				String dataType = column.substring(column.lastIndexOf(".")+1);
+				String fieldName = column.substring(column.indexOf('.')+1,column.lastIndexOf('.'));
+				String dataType = column.substring(column.lastIndexOf('.')+1);
 				String errorKey = name + "." + fieldName;
 				
 				if(eventParameterDisplayNames != null && eventParameterDisplayNames.get(errorKey) != null)

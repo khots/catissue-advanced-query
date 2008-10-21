@@ -62,7 +62,9 @@ public class LoadSaveQueryPageAction extends Action
 					: Constants.SHOW_ALL_ATTRIBUTE;
 			request.setAttribute(Constants.SHOW_ALL_LINK, showAllLink);
 			if (!isShowAll)
+			{
 				request.setAttribute(Constants.SHOW_ALL, Constants.TRUE);
+			}
 			target = Constants.SUCCESS;
 			if (queryObject.getId() != null && queryObject instanceof ParameterizedQuery)
 			{
