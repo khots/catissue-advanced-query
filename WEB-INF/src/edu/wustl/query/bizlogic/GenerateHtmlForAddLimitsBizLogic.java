@@ -1359,7 +1359,7 @@ public class GenerateHtmlForAddLimitsBizLogic
 						&& editLimitPermissibleValues.contains(value) || isAttributeBold(value.toLowerCase()))
 				{
 					html.append("\n<option class=\"PermissibleValuesQuery\" title=\"" + value
-							+ "\" value=\"" + value + "\" style=\"background:#808080\" SELECTED>" + value + "</option>");
+							+ "\" value=\"" + value + "\" SELECTED>" + value + "</option>");
 				}
 				else
 				{
