@@ -199,6 +199,8 @@ Application
 	{		
 		var errorMessage:ErrorMessage = event.message as ErrorMessage;	
 		AlertManager.showError("Fault occur at server please contact Administrator.");
+		trace(errorMessage.faultString);
+		trace(errorMessage);
 		rpcService.removeEventListener("result",linkNodesHandler);
 		CursorManager.removeBusyCursor();	
 	}
@@ -892,10 +894,10 @@ Application
 			nodeColor =0xFFFFAA;
 			toolTipStr=node.toolTip;
 		}
-		if(mainPanel.getChildren().length==1)
+		if(mainPanel.getChildren().length==0)
 		{
 			x = 20;
-			y = (mainPanel.y+40);
+			y = (mainPanel.y+50);
 		}
 		else
 		{ 
@@ -903,8 +905,9 @@ Application
 			x = 20;
 			y = (mainPanel.y+50)+(40*length);
 		}
-		newNode.dagpathList = new ArrayCollection();			
-		
+		newNode.dagpathList = new ArrayCollection();
+		trace("mainPanel.y = " + mainPanel.y);			
+		trace("DAG X= " + x + "Y= " + y + "name=" + name);
 		newNode.initializeNode(node.nodeName,node.nodeType,node.expressionId,toolTipStr,x,y,nodeColor);
 		newNode.addEventListener(MouseEvent.MOUSE_MOVE,doDrag);
 		newNode.addEventListener(MouseEvent.CLICK,updateNodeSelection);
