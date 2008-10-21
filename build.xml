@@ -152,7 +152,6 @@
 			duplicate="preserve" manifest="${base.dir}/MANIFEST.MF" >
 			
 			<fileset dir="${base.dir}">
-				<!--include name="Applet/**" / -->
 				<include name="css/**" />
 				<include name="images/**" />
 				<include name="jss/**" />
@@ -339,8 +338,8 @@
 
 		<mkdir dir="${zip.dir}" />
 
-		<!--<copy file="query.war" todir="${zip.dir}" overwrite="true" /> -->
-		<!-- <copy file="dynamicExtensions.war" todir="${zip.dir}" overwrite="true" /> -->
+		<copy file="query.war" todir="${zip.dir}" overwrite="true" />
+		<copy file="dynamicExtensions.war" todir="${zip.dir}" overwrite="true" />
 		<copy file="query-ds.xml" todir="${zip.dir}" overwrite="true" />
 		<copy file="log4j.properties" todir="${zip.dir}" overwrite="true" />
 		<copy file="queryInstall.properties" todir="${zip.dir}" overwrite="true" />
@@ -699,7 +698,7 @@
 
 		
 	<!-- flex related targets -->
-	<taskdef resource="flexTasks.tasks" classpath="${basedir}/extra_lib/flexTasks.jar" />   
+	<taskdef resource="flexTasks.tasks" classpath="${basedir}/lib/flexTasks.jar" />   
 	
 	<target name="compile_dag_flex">
 		         <mxmlc file="${FLEX_APP_ROOT}/dag/Dag.mxml" keep-generated-actionscript="true">

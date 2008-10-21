@@ -15,7 +15,7 @@
 	<property name="base.dir" value="." />
 	<property name="temp.dir" value="./deploytempQuery" />
 	<property name="csm.dir" value="${temp.dir}/tempcsm" />
-	<property name="lib.dir" value="${base.dir}/WEB-INF/lib" />
+	<property name="lib.dir" value="${base.dir}/lib" />
 	<property name="mysql.sql.dir" value="${base.dir}/SQL/MySql" />
 	<property name="db2.sql.dir" value="${base.dir}/SQL/DB2" />
 	<property name="dbupgrade.sql.dir" value="${base.dir}/SQL/DBUpgrade" />
@@ -193,7 +193,6 @@
 		<echo message="Initializing installation..." />
 
 		<unwar src="${base.dir}/query.war" dest="${temp.dir}/query" /> 
-		<unwar src="${base.dir}/dynamicExtensions.war" dest="${temp.dir}/dynamicExtensions" />
 		<unjar src="${temp.dir}/query/WEB-INF/lib/DynamicExtensions.jar" dest="${temp.dir}/dynamicExtensionsjar" />
 		<copy  todir="${temp.dir}/query/WEB-INF/classes" overwrite="true">
 			<fileset dir="${base.dir}">
@@ -264,13 +263,6 @@
 			<!--Added By Baljeet-->
 			<replacefilter token="@@dataSource@@" value="${datasource}"/>
 		</replace>
-		
-		<replace file="${temp.dir}/dynamicExtensions/WEB-INF/classes/DynamicExtensionsHibernate.cfg.xml">
-			<replacefilter token="${mysql.dialect.string}" value="${mysql.dialect.string}" />
-			<!--Added By Baljeet--> 
-			<replacefilter token="@@dataSource@@" value="${datasource}"/>
-		</replace>
-		
 		<replace file="${temp.dir}/dynamicExtensionsjar/DynamicExtensionsHibernate.cfg.xml">
 			<replacefilter token="${mysql.dialect.string}" value="${mysql.dialect.string}" />
 			<!--Added By Baljeet-->
@@ -345,8 +337,6 @@
 		<delete file="${temp.dir}/query.war" />
 		<delete file="${temp.dir}/dynamicExtensions.war" />
 		<delete file="${temp.dir}/dynamicExtensions.jar" />
-		
-
 		<delete file="${base.dir}/MANIFEST.MF"/>
 		
 		<manifest file="${base.dir}/MANIFEST.MF"> 	
@@ -381,17 +371,7 @@
 		</war>
 
 		<copy file="${temp.dir}/query/WEB-INF/classes/DynamicExtensionsHibernate.cfg.xml" todir="${temp.dir}/dynamicExtensions/WEB-INF/classes" overwrite="true" />
-		<!-- commenting this target for DE war 
-		<antcall target="copydeletedjars">
-			<param name="delPath" value="${temp.dir}/dynamicExtensions/WEB-INF/lib"/>
-		</antcall>
-		-->
-
-		<war destfile="${temp.dir}/dynamicExtensions.war" webxml="${temp.dir}/dynamicExtensions/WEB-INF/web.xml">
-			<fileset dir="${temp.dir}/dynamicExtensions">
-				<include name="**/**/**.*" />
-			</fileset>
-		</war>
+		
 	</target>
 
 	
@@ -637,7 +617,7 @@
 			<transaction src="${db2.sql.dir}/query/caB2B Table Generation Script.sql" />
 			<transaction>commit;</transaction>
 			<classpath>
-				<fileset dir="./extra_lib">
+				<fileset dir="${lib.dir}">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
@@ -665,7 +645,7 @@
 
 			<transaction>commit;</transaction>
 			<classpath>
-				<fileset dir="./extra_lib">
+				<fileset dir="${lib.dir}">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
