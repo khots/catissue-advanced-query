@@ -70,28 +70,30 @@
 							<td>
 								<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="30%" bordercolorlight="#000000" class='tbBordersAllbordersBlack'>
 							
-												<tr  id="rowMsg">
+												<tr id="rowMsg">
 													<td id="validationMessagesSection"  class='validationMessageCss'>
 														<div id="validationMessagesRow"   class='validationMessageCss' style="overflow:auto; height:30;display:none"></div>
 													</td>
 												</tr>												
-												
-												<tr id="AddLimitsButtonMsg" style="color:#000000" border="0">
-													<td id="AddLimitsButtonSection" height="30" >
-														<div id="AddLimitsButtonRow"  border="0" style="height:25;color:#000000;display:none;border-bottom:1px solid #5C5C5C;"></div>
+												<tr id="AddLimitsButtonMsg" border="0">
+													<td id="AddLimitsButtonSection" height="10" >
+														<div id="AddLimitsMsgRow"  border="0"></div>
 													</td>
 												</tr>
-									
 												<tr>
 													<td height="200" width="100%" id="addLimitsSection">
 													<div id="addLimits" style="overflow:auto; height:100%;width:100%"></div></td>
-												</tr>
-						</table>
+												</tr>	
+								</table>
 							</td>
-							</tr>
-							
-							<tr>
-							<td  height="40%" valign="top">
+							</tr>							
+							<tr id="AddLimitsButtonMsg" border="0">
+								<td valign="top" id="AddLimitsButtonSection">
+										<div id="AddLimitsButtonRow" align="right" border="0"></div>
+								</td>
+							</tr>							
+							<tr>							
+							<td valign="top">								
 								<table border="1" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%" bordercolorlight="#000000">
 								<tr>
 										<td height="400px">											

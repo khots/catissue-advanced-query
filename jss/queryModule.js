@@ -550,18 +550,19 @@
 		row.innerHTML = "";	
 		row.style.display = 'none';		
 		var element = document.getElementById('addLimits');
+		var addLimitsMsgElement = document.getElementById('AddLimitsMsgRow');
 		var addLimitsButtonElement = document.getElementById('AddLimitsButtonRow');
 		if(text.indexOf("####") != -1)
 		{
 			var htmlArray = text.split('####');
-			addLimitsButtonElement.style.display = 'block';
-			//addLimitsButtonElement.height = "30";
-			addLimitsButtonElement.innerHTML = htmlArray[0];
-			element.innerHTML =htmlArray[1];
+			addLimitsMsgElement.style.display = 'block';
+			addLimitsMsgElement.innerHTML = htmlArray[0];
+			addLimitsButtonElement.innerHTML = htmlArray[1];
+			element.innerHTML =htmlArray[2];
 		} else 
 		{
 			element.innerHTML = "";
-			addLimitsButtonElement.innerHTML = text;
+			addLimitsMsgElement.innerHTML = text;
 		}
 		hideCursor();
 	}
