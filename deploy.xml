@@ -1114,12 +1114,6 @@ Thanking You,
 			<replacefilter token="&lt;!-- My sql settings end -->" value="My sql settings end -->" />
 		</replace>
 		
-		<replace file="${temp.dir}/dynamicExtensions/WEB-INF/classes/DynamicExtensionsHibernate.cfg.xml">
-			<replacefilter token="${mysql.dialect.string}" value="${db2.dialect.string}" />
-			<replacefilter token="&lt;!-- My sql settings -->" value="&lt;!-- My sql settings " />
-			<replacefilter token="&lt;!-- My sql settings end -->" value="My sql settings end -->" />
-		</replace>
-		
 		<replace file="${temp.dir}/dynamicExtensionsjar/DynamicExtensionsHibernate.cfg.xml">
 			<replacefilter token="${mysql.dialect.string}" value="${db2.dialect.string}" />
 			<replacefilter token="&lt;!-- My sql settings -->" value="&lt;!-- My sql settings " />
