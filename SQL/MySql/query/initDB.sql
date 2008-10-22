@@ -6812,4 +6812,4 @@ CREATE TABLE `query_to_parameters` (
 
 /*Data for the table `query_to_parameters` */
 
-SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS = 1;
