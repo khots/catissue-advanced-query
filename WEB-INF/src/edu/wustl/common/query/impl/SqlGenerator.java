@@ -846,8 +846,8 @@ public class SqlGenerator implements IQueryGenerator {
                 if (entity.getParentEntity() != null
                         && InheritanceStrategy.TABLE_PER_HEIRARCHY.equals(entity.getInheritanceStrategy())) {
                     String descriminatorCondition = getDescriminatorCondition(entity, getAliasFor(expression, entity));
-                    buffer.insert(0, "(");
-                    buffer.append(")");
+                    buffer.insert(0, '(');
+                    buffer.append(')');
                     buffer.append(descriminatorCondition);
                 }
             }
@@ -874,9 +874,9 @@ public class SqlGenerator implements IQueryGenerator {
             AssociationInterface eavAssociation) throws SqlException {
         String pseudoAndSQL;
         EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
-        String tableName = entity.getTableProperties().getName() + " ";
+        String tableName = entity.getTableProperties().getName() + ' ';
         String leftAlias = getAliasName(expression);
-        String selectAttribute = leftAlias + ".";
+        String selectAttribute = leftAlias + '.';
 
         ConstraintPropertiesInterface constraintProperties = eavAssociation.getConstraintProperties();
         if (constraintProperties.getSourceEntityKey() != null && constraintProperties.getTargetEntityKey() != null)// Many
@@ -886,13 +886,13 @@ public class SqlGenerator implements IQueryGenerator {
         {
             // This will start FROM part of SQL from the parent table.
             selectAttribute = getAliasName(parentExpression)
-                    + "."
+                    + '.'
                     + getPrimaryKey(parentExpression.getQueryEntity().getDynamicExtensionsEntity())
                             .getColumnProperties().getName();
             pseudoAndSQL = "Select " + selectAttribute;
             Set<Integer> processedAlias = new HashSet<Integer>();
             String fromPart = getFromPartSQL(parentExpression, leftAlias, processedAlias);
-            pseudoAndSQL += " " + fromPart + " where ";
+            pseudoAndSQL += ' ' + fromPart + " where ";
         } else {
             if (constraintProperties.getTargetEntityKey() == null) {
                 selectAttribute += getPrimaryKey(entity).getColumnProperties().getName();
@@ -904,7 +904,7 @@ public class SqlGenerator implements IQueryGenerator {
             processedAlias.add(aliasAppenderMap.get(expression));
             String fromPart = getFromPartSQL(expression, leftAlias, processedAlias);
             StringBuffer buffer = new StringBuffer();
-            buffer.append(" From ").append(tableName).append(" ").append(leftAlias);
+            buffer.append(" From ").append(tableName).append(' ').append(leftAlias);
             createFromPartForDerivedEntity(expression, buffer);
             buffer.append(fromPart).append(" where ");
             pseudoAndSQL += buffer.toString();
@@ -1340,9 +1340,9 @@ public class SqlGenerator implements IQueryGenerator {
             String value = modifyValueforDataType(valueList.get(i), dataType);
 
             if (i == valueList.size() - 1) {
-                buffer.append(value + ")");
+                buffer.append(value + ')');
             } else {
-                buffer.append(value + ",");
+                buffer.append(value + ',');
             }
         }
         return buffer.toString();
@@ -1374,7 +1374,7 @@ public class SqlGenerator implements IQueryGenerator {
         String firstValue = modifyValueforDataType(values.get(0), dataType);
         String secondValue = modifyValueforDataType(values.get(1), dataType);
 
-        buffer.append("(" + attributeName);
+        buffer.append('(' + attributeName);
         buffer.append(RelationalOperator.getSQL(RelationalOperator.GreaterThanOrEquals) + firstValue);
         buffer.append(" " + LogicalOperator.And + " " + attributeName
                 + RelationalOperator.getSQL(RelationalOperator.LessThanOrEquals) + secondValue + ")");
