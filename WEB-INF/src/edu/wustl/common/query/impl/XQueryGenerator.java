@@ -494,6 +494,9 @@ public class XQueryGenerator implements IQueryGenerator
 	{
 		String sourceEntity = "";
 		String tableName = "";
+		String newActualPath = actualPath;
+		String newPath = path; 
+		
 		List<AssociationInterface> associationList = QueryCSMUtil
 				.getIncomingContainmentAssociations(entity);
 		if (associationList.size() != 0)
@@ -508,35 +511,34 @@ public class XQueryGenerator implements IQueryGenerator
 						tableName = entity.getTableProperties().getName();
 						if (tableName.substring(3).equalsIgnoreCase("DE_"))
 						{
-							break;
+							newActualPath = sourceEntity;
 						}
 						else
 						{
-							actualPath = tableName + actualPath;
+							newActualPath = tableName + newActualPath;
 						}
 					}
 					catch (Exception e)
 					{
 						e.printStackTrace();
 					}
-					actualPath = sourceEntity;
 				}
 				else
 				{
-					path = "/" + sourceEntity;
-					entity = associations.getEntity();
-					actualPath = getAppropriatePath(entity, path, EntityList, actualPath) + path
-							+ actualPath;
+					newPath = "/" + sourceEntity;
+					EntityInterface newEntity = associations.getEntity();
+					newActualPath = getAppropriatePath(newEntity, newPath, EntityList, newActualPath) + newPath
+							;
 				}
 			}
 		}
 		else
 		{
 			tableName = entity.getTableProperties().getName();
-			actualPath = tableName + actualPath;
+			newActualPath = tableName + newActualPath;
 		}
 
-		return actualPath;
+		return newActualPath;
 	}
 
 	private String getForTree(EntityInterface entity, String rootVariable)
@@ -572,6 +574,8 @@ public class XQueryGenerator implements IQueryGenerator
 
 	private String getTableName(EntityInterface entity, String mainEntity)
 	{
+		String newMainEntity = mainEntity;
+		
 		try
 		{
 			List<AssociationInterface> associationList = QueryCSMUtil
@@ -580,19 +584,19 @@ public class XQueryGenerator implements IQueryGenerator
 			{
 				for (AssociationInterface assocoation : associationList)
 				{
-					mainEntity = getTableName(assocoation.getEntity(), mainEntity);
+					newMainEntity = getTableName(assocoation.getEntity(), newMainEntity);
 				}
 			}
 			else
 			{
-				mainEntity = entity.getTableProperties().getName();
+				newMainEntity = entity.getTableProperties().getName();
 			}
 		}
 		catch (DynamicExtensionsSystemException deExeption)
 		{
 			deExeption.printStackTrace();
 		}
-		return mainEntity;
+		return newMainEntity;
 	}
 
 	private String getReturnClause()
@@ -751,30 +755,31 @@ public class XQueryGenerator implements IQueryGenerator
 		return sqlXmlCond;
 	}
 
-	private String getActualValue(String Operator, String attributeName, String value)
+	private String getActualValue(String operator, String attributeName, String value)
 	{
-		String valueNull = "";
-		if (Operator.equalsIgnoreCase("is NOT NULL"))
+		String newOperator = "";
+		
+		if (operator.equalsIgnoreCase("is NOT NULL"))
 		{
-			Operator = "exists($" + attributeName + ")";
-			return Operator;
+			newOperator = "exists($" + attributeName + ")";
+			return newOperator;
 		}
-		else if (Operator.equalsIgnoreCase("Contains"))
+		else if (operator.equalsIgnoreCase("Contains"))
 		{
-			Operator = "contains($" + attributeName + ",\"" + value + "\")";
-			return Operator;
+			newOperator = "contains($" + attributeName + ",\"" + value + "\")";
+			return newOperator;
 		}
-		else if (Operator.equalsIgnoreCase("StartsWith"))
+		else if (operator.equalsIgnoreCase("StartsWith"))
 		{
-			Operator = "starts-with($" + attributeName + ",\"" + value + "\")";
-			return Operator;
+			newOperator = "starts-with($" + attributeName + ",\"" + value + "\")";
+			return newOperator;
 		}
-		else if (Operator.equalsIgnoreCase("EndsWith"))
+		else if (operator.equalsIgnoreCase("EndsWith"))
 		{
-			Operator = "ends-with($" + attributeName + ",\"" + value + "\")";
-			return Operator;
+			newOperator = "ends-with($" + attributeName + ",\"" + value + "\")";
+			return newOperator;
 		}
-		return valueNull;
+		return newOperator;
 	}
 
 	private String getValueForType(ICondition condition, String value)
@@ -795,29 +800,32 @@ public class XQueryGenerator implements IQueryGenerator
 
 	private String getXPath(EntityInterface entity, String XPath)
 	{
+		String newXPath = XPath;
+		EntityInterface newEntity = entity;
+		
 		try
 		{
 			List<AssociationInterface> associationList = QueryCSMUtil
-					.getIncomingContainmentAssociations(entity);
+					.getIncomingContainmentAssociations(newEntity);
 			if (associationList.size() != 0)
 			{
 				for (AssociationInterface assocoation : associationList)
 				{
-					XPath = "/" + assocoation.getTargetEntity().getName() + XPath;
-					entity = assocoation.getEntity();
-					XPath = getXPath(entity, XPath);
+					newXPath = "/" + assocoation.getTargetEntity().getName() + newXPath;
+					newEntity = assocoation.getEntity();
+					newXPath = getXPath(newEntity, newXPath);
 				}
 			}
 			else
 			{
-				XPath = entity.getName() + XPath;
+				newXPath = newEntity.getName() + newXPath;
 			}
 		}
 		catch (DynamicExtensionsSystemException deExeption)
 		{
 			deExeption.printStackTrace();
 		}
-		return XPath;
+		return newXPath;
 	}
 
 	private List<AttributeInterface> getAttributes(IExpression expression)
@@ -911,11 +919,13 @@ public class XQueryGenerator implements IQueryGenerator
 
 	private String removeLastComma(String select)
 	{
-		if (select.endsWith(" ,"))
+		String newSelect = select;
+		
+		if (newSelect.endsWith(" ,"))
 		{
-			select = select.substring(0, select.length() - 2);
+			newSelect = newSelect.substring(0, newSelect.length() - 2);
 		}
-		return select;
+		return newSelect;
 	}
 
 	private String getDataTypeInformation(AttributeInterface attribute)
