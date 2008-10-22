@@ -88,7 +88,7 @@ public class XQueryGenerator implements IQueryGenerator
 	/**
 	 * List of Roots of the output tree node.
 	 */
-	List<OutputTreeDataNode> rootOutputTreeNodeList;
+	private List<OutputTreeDataNode> rootOutputTreeNodeList;
 
 	/**
 	 * This map is used in output tree creation logic. It is map of alias
@@ -96,7 +96,7 @@ public class XQueryGenerator implements IQueryGenerator
 	 * duplicate output tree node is created for the expressions having same
 	 * alias appender.
 	 */
-	Map<Integer, OutputTreeDataNode> outputTreeNodeMap;
+	private Map<Integer, OutputTreeDataNode> outputTreeNodeMap;
 
 	/**
 	 * This map contains information about the tree node ids, attributes & their
@@ -415,8 +415,8 @@ public class XQueryGenerator implements IQueryGenerator
 		String xmlLetClause = "";
 		String xmlreturnClause = "";
 		StringBuffer xmlGetLetQueryPart = new StringBuffer();
-		StringBuffer xmlGetForQueryPart = new StringBuffer();
-		StringBuffer selectAttribute = new StringBuffer();
+		StringBuffer xmlGetForQueryPart = new StringBuffer(256);
+		StringBuffer selectAttribute = new StringBuffer(256);
 		List<AttributeInterface> attributes = new ArrayList<AttributeInterface>();
 		List<String> EntityList = new ArrayList<String>();
 		String actualPath = "";
@@ -439,7 +439,7 @@ public class XQueryGenerator implements IQueryGenerator
 			EntityInterface entity = expressions.getQueryEntity().getDynamicExtensionsEntity();
 			List<AssociationInterface> associationList = QueryCSMUtil
 					.getIncomingContainmentAssociations(entity);
-			if (associationList.size() != 0)
+			if (!associationList.isEmpty())
 			{
 				for (AssociationInterface associations : associationList)
 				{
@@ -495,11 +495,11 @@ public class XQueryGenerator implements IQueryGenerator
 		String sourceEntity = "";
 		String tableName = "";
 		String newActualPath = actualPath;
-		String newPath = path; 
-		
+		String newPath = path;
+
 		List<AssociationInterface> associationList = QueryCSMUtil
 				.getIncomingContainmentAssociations(entity);
-		if (associationList.size() != 0)
+		if (!associationList.isEmpty())
 		{
 			for (AssociationInterface associations : associationList)
 			{
@@ -527,8 +527,9 @@ public class XQueryGenerator implements IQueryGenerator
 				{
 					newPath = "/" + sourceEntity;
 					EntityInterface newEntity = associations.getEntity();
-					newActualPath = getAppropriatePath(newEntity, newPath, EntityList, newActualPath) + newPath
-							;
+					newActualPath = getAppropriatePath(newEntity, newPath, EntityList,
+							newActualPath)
+							+ newPath;
 				}
 			}
 		}
@@ -552,7 +553,7 @@ public class XQueryGenerator implements IQueryGenerator
 
 		List<AssociationInterface> associationList = QueryCSMUtil
 				.getIncomingContainmentAssociations(entity);
-		if (associationList.size() != 0)
+		if (!associationList.isEmpty())
 		{
 			for (AssociationInterface association : associationList)
 			{
@@ -575,12 +576,12 @@ public class XQueryGenerator implements IQueryGenerator
 	private String getTableName(EntityInterface entity, String mainEntity)
 	{
 		String newMainEntity = mainEntity;
-		
+
 		try
 		{
 			List<AssociationInterface> associationList = QueryCSMUtil
 					.getIncomingContainmentAssociations(entity);
-			if (associationList.size() != 0)
+			if (!associationList.isEmpty())
 			{
 				for (AssociationInterface assocoation : associationList)
 				{
@@ -601,7 +602,7 @@ public class XQueryGenerator implements IQueryGenerator
 
 	private String getReturnClause()
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuffer buffer = new StringBuffer(128);
 		buffer.append(" return <return>");
 		for (IExpression expression : constraints)
 		{
@@ -680,7 +681,7 @@ public class XQueryGenerator implements IQueryGenerator
 	* @throws SQLException 
 	* @throws SQLXMLException 
 	*/
-	String getQueryCondition(IRule rule) throws SQLException, SQLXMLException
+	private String getQueryCondition(IRule rule) throws SQLException, SQLXMLException
 	{
 		StringBuffer buffer = new StringBuffer("");
 
@@ -713,7 +714,8 @@ public class XQueryGenerator implements IQueryGenerator
 	 * @throws SQLException
 	 */
 
-	String getQueryCondition(ICondition condition, IExpression expression) throws SQLException
+	private String getQueryCondition(ICondition condition, IExpression expression)
+			throws SQLException
 	{
 		String query = null;
 
@@ -758,7 +760,7 @@ public class XQueryGenerator implements IQueryGenerator
 	private String getActualValue(String operator, String attributeName, String value)
 	{
 		String newOperator = "";
-		
+
 		if (operator.equalsIgnoreCase("is NOT NULL"))
 		{
 			newOperator = "exists($" + attributeName + ")";
@@ -802,12 +804,12 @@ public class XQueryGenerator implements IQueryGenerator
 	{
 		String newXPath = XPath;
 		EntityInterface newEntity = entity;
-		
+
 		try
 		{
 			List<AssociationInterface> associationList = QueryCSMUtil
 					.getIncomingContainmentAssociations(newEntity);
-			if (associationList.size() != 0)
+			if (!associationList.isEmpty())
 			{
 				for (AssociationInterface assocoation : associationList)
 				{
@@ -920,7 +922,7 @@ public class XQueryGenerator implements IQueryGenerator
 	private String removeLastComma(String select)
 	{
 		String newSelect = select;
-		
+
 		if (newSelect.endsWith(" ,"))
 		{
 			newSelect = newSelect.substring(0, newSelect.length() - 2);
