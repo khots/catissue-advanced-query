@@ -1,3 +1,4 @@
+
 package edu.wustl.query.util.listener;
 
 import java.io.File;
@@ -21,69 +22,70 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
 
-
 public class QueryCoreServletContextListener implements ServletContextListener
 {
-	
-	String DATASOURCE_JNDI_NAME = "java:/query";
-	
-	public void contextInitialized(ServletContextEvent sce)
-    {
-    	try{  
-	    	ServletContext servletContext = sce.getServletContext();
-	    	Variables.applicationHome = sce.getServletContext().getRealPath("");
-	    	Logger.configDefaultLogger(servletContext);
-	        ApplicationProperties.initBundle(servletContext.getInitParameter("resourcebundleclass"));
-			setGlobalVariable();
-			
-			//Added by Baljeet....This method caches all the Meta data
-			initEntityCache(); 
-			
-    	}
-    	catch(Exception e)
-    	{
-    		//logger.error("Application failed to initialize");
-    		throw new RuntimeException( e.getLocalizedMessage(), e);
 
-    	}
-    }
-	
+	String DATASOURCE_JNDI_NAME = "java:/query";
+
+	public void contextInitialized(ServletContextEvent sce)
+	{
+		try
+		{
+			ServletContext servletContext = sce.getServletContext();
+			Variables.applicationHome = sce.getServletContext().getRealPath("");
+			Logger.configDefaultLogger(servletContext);
+			ApplicationProperties
+					.initBundle(servletContext.getInitParameter("resourcebundleclass"));
+			setGlobalVariable();
+
+			//Added by Baljeet....This method caches all the Meta data
+			initEntityCache();
+
+		}
+		catch (Exception e)
+		{
+			//logger.error("Application failed to initialize");
+			throw new RuntimeException(e.getLocalizedMessage(), e);
+
+		}
+	}
+
 	private void initEntityCache()
 	{
 		try
 		{
-            //Added for initializing PathFinder and EntityCache
+			//Added for initializing PathFinder and EntityCache
 			InitialContext ctx = new InitialContext();
-	        DataSource ds = (DataSource)ctx.lookup(DATASOURCE_JNDI_NAME);
-	        Connection conn = ds.getConnection();
+			DataSource ds = (DataSource) ctx.lookup(DATASOURCE_JNDI_NAME);
+			Connection conn = ds.getConnection();
 			PathFinder.getInstance(conn);
 		}
 		catch (Exception e)
 		{
 			//logger.debug("Exception occured while initialising entity cache");
 		}
-		
-	}
-	private void setGlobalVariable() throws Exception
-	{  
-		String path = System.getProperty("app.propertiesFile");
-    	XMLPropertyHandler.init(path);
-    	File propetiesDirPath = new File(path);
-    	Variables.propertiesDirPath = propetiesDirPath.getParent();
 
-        Variables.applicationName = ApplicationProperties.getValue("app.name");
-        Variables.applicationVersion = ApplicationProperties.getValue("app.version");
-		int maximumTreeNodeLimit = Integer.parseInt(XMLPropertyHandler.getValue(Constants.MAXIMUM_TREE_NODE_LIMIT));
+	}
+
+	private void setGlobalVariable() throws Exception
+	{
+		String path = System.getProperty("app.propertiesFile");
+		XMLPropertyHandler.init(path);
+		File propetiesDirPath = new File(path);
+		Variables.propertiesDirPath = propetiesDirPath.getParent();
+
+		Variables.applicationName = ApplicationProperties.getValue("app.name");
+		Variables.applicationVersion = ApplicationProperties.getValue("app.version");
+		int maximumTreeNodeLimit = Integer.parseInt(XMLPropertyHandler
+				.getValue(Constants.MAXIMUM_TREE_NODE_LIMIT));
 		Variables.maximumTreeNodeLimit = maximumTreeNodeLimit;
 		setQueryGeneratorClass();
- 	    path = System.getProperty("app.propertiesFile");
+		path = System.getProperty("app.propertiesFile");
 	}
 
-	
-	
 	public void contextDestroyed(ServletContextEvent sce)
-    {
-    	//  shutting down the cacheManager
+	{
+		//  shutting down the cacheManager
 		try
 		{
 			//CatissueCoreCacheManager catissueCoreCacheManager = CatissueCoreCacheManager.getInstance();
@@ -94,8 +96,8 @@ public class QueryCoreServletContextListener implements ServletContextListener
 			//logger.debug("Exception occured while shutting instance of CatissueCoreCacheManager");
 			//e.printStackTrace();
 		}
-	 }
-	
+	}
+
 	public void setQueryGeneratorClass()
 	{
 		File file = new File(Variables.applicationHome + System.getProperty("file.separator")

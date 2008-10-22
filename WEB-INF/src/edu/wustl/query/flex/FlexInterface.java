@@ -15,9 +15,9 @@ import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.cde.CDE;
 import edu.wustl.common.cde.CDEManager;
 import edu.wustl.common.cde.PermissibleValue;
+import edu.wustl.common.query.impl.CommonPathFinder;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.metadata.path.Path;
-import edu.wustl.common.query.impl.CommonPathFinder;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.util.global.Constants;
 import edu.wustl.query.flex.dag.CustomFormulaNode;
@@ -29,6 +29,7 @@ import edu.wustl.query.flex.dag.SingleNodeCustomFormulaNode;
 
 public class FlexInterface
 {
+
 	public FlexInterface()
 	{
 
@@ -46,13 +47,15 @@ public class FlexInterface
 
 	public List<String> getTissueSidePVList()
 	{
-		List<NameValueBean> aList = CDEManager.getCDEManager().getPermissibleValueList("Tissue Side", null);
+		List<NameValueBean> aList = CDEManager.getCDEManager().getPermissibleValueList(
+				"Tissue Side", null);
 		return toStrList(aList);
 	}
 
 	public List<String> getPathologicalStatusPVList()
 	{
-		List<NameValueBean> aList = CDEManager.getCDEManager().getPermissibleValueList("Pathological Status", null);
+		List<NameValueBean> aList = CDEManager.getCDEManager().getPermissibleValueList(
+				"Pathological Status", null);
 		return toStrList(aList);
 	}
 
@@ -146,7 +149,7 @@ public class FlexInterface
 		return null;
 	}
 
-		//--------------DAG-----------------------------
+	//--------------DAG-----------------------------
 	public void restoreQueryObject()
 	{
 		if (dagPanel == null)
@@ -174,7 +177,7 @@ public class FlexInterface
 	 * Repaints DAG
 	 * @return
 	 */
-	public Map <String,Object> repaintDAG()
+	public Map<String, Object> repaintDAG()
 	{
 		return dagPanel.repaintDAG();
 	}
@@ -220,7 +223,7 @@ public class FlexInterface
 		DAGNode dagNode = dagPanel.createQueryObject(strToCreateQueryObject, entityName, "Edit");
 		return dagNode;
 	}
-	
+
 	/**
 	 * Checks validity of nodes for query
 	 * @param linkedNodeList
@@ -228,54 +231,58 @@ public class FlexInterface
 	 */
 	public boolean checkIfNodesAreValid(List<DAGNode> linkedNodeList)
 	{
-		boolean areNodesValid =  false;
-		
-		areNodesValid =  dagPanel.checkForValidAttributes(linkedNodeList);
-		
+		boolean areNodesValid = false;
+
+		areNodesValid = dagPanel.checkForValidAttributes(linkedNodeList);
+
 		return areNodesValid;
 	}
-	
+
 	public boolean checkIfSingleNodeValid(List<DAGNode> linkedNodeList)
 	{
-		boolean isNodeValid =  false;
-		isNodeValid =dagPanel.checkForNodeValidAttributes(linkedNodeList.get(0));
+		boolean isNodeValid = false;
+		isNodeValid = dagPanel.checkForNodeValidAttributes(linkedNodeList.get(0));
 		return isNodeValid;
 	}
-	
+
 	public Map getSingleNodeQueryDate(List<DAGNode> linkedNodeList)
 	{
 		DAGNode sourceNode = linkedNodeList.get(0);
-		Map singleNodeDataMap = dagPanel.getSingleNodeQueryData(sourceNode.getExpressionId(), sourceNode.getNodeName());
-		
+		Map singleNodeDataMap = dagPanel.getSingleNodeQueryData(sourceNode.getExpressionId(),
+				sourceNode.getNodeName());
+
 		return singleNodeDataMap;
 	}
-	
+
 	public Map getSingleNodeEditData(SingleNodeCustomFormulaNode customNode)
 	{
-		Map singleNodeDataMap = dagPanel.getSingleNodeQueryData(customNode.getNodeExpressionId(), customNode.getEntityName());
+		Map singleNodeDataMap = dagPanel.getSingleNodeQueryData(customNode.getNodeExpressionId(),
+				customNode.getEntityName());
 		return singleNodeDataMap;
 	}
-	
+
 	public Map retrieveQueryData(List<DAGNode> linkedNodeList)
 	{
 		DAGNode sourceNode = linkedNodeList.get(0);
 		DAGNode destinationNode = linkedNodeList.get(1);
-		Map queryDataMap = dagPanel.getQueryData(sourceNode.getExpressionId(),destinationNode.getExpressionId(),sourceNode.getNodeName(),destinationNode.getNodeName());
+		Map queryDataMap = dagPanel.getQueryData(sourceNode.getExpressionId(), destinationNode
+				.getExpressionId(), sourceNode.getNodeName(), destinationNode.getNodeName());
 		return queryDataMap;
 	}
-	
+
 	public Map retrieveEditQueryData(CustomFormulaNode customNode)
 	{
-		Map queryDataMap = dagPanel.getQueryData(customNode.getFirstNodeExpId(),customNode.getSecondNodeExpId(), customNode.getFirstNodeName(),customNode.getSecondNodeName());
+		Map queryDataMap = dagPanel.getQueryData(customNode.getFirstNodeExpId(), customNode
+				.getSecondNodeExpId(), customNode.getFirstNodeName(), customNode
+				.getSecondNodeName());
 		return queryDataMap;
 	}
-	
+
 	public void removeCustomFormula(String nodeID)
-	{		
+	{
 		dagPanel.removeCustomFormula(nodeID);
 	}
-	
-	
+
 	/**
 	 * Deletes node from output view
 	 * @param expId
@@ -335,6 +342,7 @@ public class FlexInterface
 		}
 		return pathsListStr;
 	}
+
 	/**
 	 * Gets association(path) between 2 nodes
 	 * @param linkedNodeList
@@ -342,13 +350,15 @@ public class FlexInterface
 	 */
 	public CustomFormulaNode formTemporalQuery(CustomFormulaNode customFormulaNode, String operation)
 	{
-		return dagPanel.formTemporalQuery(customFormulaNode,operation);
+		return dagPanel.formTemporalQuery(customFormulaNode, operation);
 	}
-	
-	public SingleNodeCustomFormulaNode formSingleNodeFormula(SingleNodeCustomFormulaNode node,String operation)
+
+	public SingleNodeCustomFormulaNode formSingleNodeFormula(SingleNodeCustomFormulaNode node,
+			String operation)
 	{
-		return dagPanel.formSingleNodeFormula(node,operation);
+		return dagPanel.formSingleNodeFormula(node, operation);
 	}
+
 	/**
 	 * Links 2 nodes
 	 * @param linkedNodeList

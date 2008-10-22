@@ -1,3 +1,4 @@
+
 package edu.wustl.query.action;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.query.bizlogic.ValidateQueryBizLogic;
 import edu.wustl.query.util.global.Constants;
+
 /**
  * When the user searches or saves a query , the query is checked for the conditions like DAG should not be empty , is there 
  * at least one node in view on define view page and does the query contain the main object. If all the conditions are satisfied 
@@ -20,33 +22,37 @@ import edu.wustl.query.util.global.Constants;
  * @author shrutika_chintal
  *
  */
-public class ValidateQueryAction extends Action {
+public class ValidateQueryAction extends Action
+{
 
 	@Override
-	public ActionForward execute(ActionMapping mapping,
-			ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		
-		String buttonClicked = (String)request.getParameter(Constants.BUTTON_CLICKED);
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+
+		String buttonClicked = request.getParameter(Constants.BUTTON_CLICKED);
 		// dataKey defines that ajax call from SimpleSearchDataView.jsp is made to get the updated message.
-		String dataKey = (String)request.getParameter(Constants.UPDATE_SESSION_DATA); 
+		String dataKey = request.getParameter(Constants.UPDATE_SESSION_DATA);
 		HttpSession session = request.getSession();
 		if (dataKey != null && dataKey.equals(Constants.UPDATE_SESSION_DATA))
 		{
 			//if dataKey is not null retrieve the data from the session and send it to the jsp
-			String message = (String) session.getAttribute(Constants.VALIDATION_MESSAGE_FOR_ORDERING);
+			String message = (String) session
+					.getAttribute(Constants.VALIDATION_MESSAGE_FOR_ORDERING);
 			String isListEmpty = (String) session.getAttribute(Constants.IS_LIST_EMPTY);
-			
+
 			if ((isListEmpty != null && isListEmpty.equals(Constants.FALSE)) || message == null)
 			{
-				message = " ";		//if empty string is returned mac+safari gives problem and if message is set to null mozilla gives problem.
+				message = " "; //if empty string is returned mac+safari gives problem and if message is set to null mozilla gives problem.
 			}
 			response.setContentType("text/html");
 			response.getWriter().write(message);
 			return null;
 		}
-		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) session.getAttribute(Constants.QUERY_OBJECT);
-		String validationMessage = ValidateQueryBizLogic.getValidationMessage(request, parameterizedQuery);
+		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) session
+				.getAttribute(Constants.QUERY_OBJECT);
+		String validationMessage = ValidateQueryBizLogic.getValidationMessage(request,
+				parameterizedQuery);
 		if (validationMessage != null)
 		{
 			response.setContentType("text/html");

@@ -27,6 +27,7 @@ import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.bizlogic.GenerateHtmlForAddLimitsBizLogic;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
+
 /**
  * 
  * @author Chetan Patil
@@ -38,14 +39,15 @@ public class FetchQueryAction extends Action
 	/**
 	 * This action fetch saved query and loads the parameterized conditions
 	 */
+	@Override
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
-	{      
+	{
 		String target = Constants.FAILURE;
 		Long queryId = null;
 		SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
 		if (request.getAttribute("queryId") == null)
-		{ 
+		{
 			queryId = saveQueryForm.getQueryId();
 		}
 		else
@@ -67,13 +69,12 @@ public class FetchQueryAction extends Action
 			{
 				List<IParameterizedQuery> queryList = bizLogic.retrieve(ParameterizedQuery.class
 						.getName(), "id", queryId);
-				if (queryList!=null && !queryList.isEmpty())
+				if (queryList != null && !queryList.isEmpty())
 				{
 					IParameterizedQuery parameterizedQuery = queryList.get(0);
-					request.getSession().setAttribute(Constants.QUERY_OBJECT,
-							parameterizedQuery);
-//					Map<IExpression, Collection<IParameterizedCondition>> expressionIdConditionCollectionMap = QueryUtility
-//							.getAllParameterizedConditions(parameterizedQuery);
+					request.getSession().setAttribute(Constants.QUERY_OBJECT, parameterizedQuery);
+					//					Map<IExpression, Collection<IParameterizedCondition>> expressionIdConditionCollectionMap = QueryUtility
+					//							.getAllParameterizedConditions(parameterizedQuery);
 
 					if (parameterizedQuery.getParameters().isEmpty())
 					{
@@ -81,12 +82,14 @@ public class FetchQueryAction extends Action
 					}
 					else
 					{
-						Map<Integer,ICustomFormula> customFormulaIndexMap = new HashMap<Integer, ICustomFormula>();
+						Map<Integer, ICustomFormula> customFormulaIndexMap = new HashMap<Integer, ICustomFormula>();
 						String htmlContents = new GenerateHtmlForAddLimitsBizLogic(null)
 								.getHTMLForSavedQuery(parameterizedQuery, false,
-										Constants.EXECUTE_QUERY_PAGE,customFormulaIndexMap);
+										Constants.EXECUTE_QUERY_PAGE, customFormulaIndexMap);
 						request.setAttribute(Constants.HTML_CONTENTS, htmlContents);
-						request.getSession().setAttribute(QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP, customFormulaIndexMap);
+						request.getSession().setAttribute(
+								QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP,
+								customFormulaIndexMap);
 						saveQueryForm.setQueryString(htmlContents);
 						target = Constants.SUCCESS;
 					}

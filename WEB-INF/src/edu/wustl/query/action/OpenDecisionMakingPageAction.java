@@ -1,3 +1,4 @@
+
 package edu.wustl.query.action;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.QueryModuleSearchQueryUtil;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
+
 /**
  * 
  * @author deepti_shelar
@@ -24,6 +26,7 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
  */
 public class OpenDecisionMakingPageAction extends Action
 {
+
 	/**
 	 * This method loads define results jsp.
 	 * @param mapping mapping
@@ -33,19 +36,21 @@ public class OpenDecisionMakingPageAction extends Action
 	 * @throws Exception Exception
 	 * @return ActionForward actionForward
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-	throws Exception
+	@Override
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		CategorySearchForm actionForm = (CategorySearchForm)form;
+		CategorySearchForm actionForm = (CategorySearchForm) form;
 		HttpSession session = request.getSession();
-		IQuery query = (IQuery)session.getAttribute(Constants.QUERY_OBJECT);
-		String noOfResults = (String)session.getAttribute(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS);
+		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
+		String noOfResults = (String) session
+				.getAttribute(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS);
 		String option = actionForm.getOptions();
 		QueryModuleSearchQueryUtil QMSearchQuery = new QueryModuleSearchQueryUtil(request, query);
-		
-		if(option != null)
+
+		if (option != null)
 		{
-			boolean isRulePresentInDag = QueryModuleUtil.checkIfRulePresentInDag(query) ;
+			boolean isRulePresentInDag = QueryModuleUtil.checkIfRulePresentInDag(query);
 			if (isRulePresentInDag)
 			{
 				QMSearchQuery.searchQuery(option);
@@ -53,7 +58,8 @@ public class OpenDecisionMakingPageAction extends Action
 			return mapping.findForward(Constants.VIEW_ALL_RECORDS);
 		}
 		ActionErrors errors = new ActionErrors();
-		ActionError addMsg = new ActionError("query.decision.making.message", noOfResults,Variables.maximumTreeNodeLimit);
+		ActionError addMsg = new ActionError("query.decision.making.message", noOfResults,
+				Variables.maximumTreeNodeLimit);
 		errors.add(ActionErrors.GLOBAL_ERROR, addMsg);
 		saveErrors(request, errors);
 		return mapping.findForward(Constants.SUCCESS);

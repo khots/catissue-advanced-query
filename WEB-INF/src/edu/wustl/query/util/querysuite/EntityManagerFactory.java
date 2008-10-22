@@ -1,3 +1,4 @@
+
 package edu.wustl.query.util.querysuite;
 
 import edu.common.dynamicextensions.entitymanager.EntityManager;
@@ -10,6 +11,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
  */
 public class EntityManagerFactory
 {
+
 	/**
 	 * 
 	 * @return EntityManager EntityManagerInstance

@@ -35,29 +35,34 @@ public class ExecuteQueryAction extends Action
 	/**
 	 * This action process the input from the UI and executes parameterized query with the input values.
 	 */
+	@Override
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
-	{ 
-		String target = Constants.FAILURE;        
+	{
+		String target = Constants.FAILURE;
 		//request.setAttribute(Constants.IS_SAVED_QUERY, Constants.TRUE);
 		HttpSession session = request.getSession();
 		session.removeAttribute(Constants.SELECTED_COLUMN_META_DATA);
 		session.removeAttribute(Constants.EXPORT_DATA_LIST);
 		session.removeAttribute(Constants.ENTITY_IDS_MAP);
-		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) session.getAttribute(Constants.QUERY_OBJECT);
+		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) session
+				.getAttribute(Constants.QUERY_OBJECT);
 		IParameterizedQuery parameterizedQuery1 = ObjectCloner.clone(parameterizedQuery);
-		
+
 		String conditionstr = request.getParameter("conditionList");
 		String rhsList = request.getParameter(QueryModuleConstants.STR_TO_FORM_TQ);
 		session.setAttribute(Constants.IS_SAVED_QUERY, Constants.TRUE);
-		Map<Integer,ICustomFormula> customFormulaIndexMap = (Map<Integer,ICustomFormula>)session.getAttribute(QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP);
+		Map<Integer, ICustomFormula> customFormulaIndexMap = (Map<Integer, ICustomFormula>) session
+				.getAttribute(QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP);
 		session.removeAttribute(QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP);
-		if (conditionstr != null) 
+		if (conditionstr != null)
 		{
 			CreateQueryObjectBizLogic bizLogic = new CreateQueryObjectBizLogic();
-			String errorMessage = bizLogic.setInputDataToQuery(conditionstr, parameterizedQuery1.getConstraints(), null,parameterizedQuery);
-			errorMessage = bizLogic.setInputDataToTQ(parameterizedQuery1, Constants.EXECUTE_QUERY_PAGE, rhsList,customFormulaIndexMap);
-			if (errorMessage.trim().length()>0)
+			String errorMessage = bizLogic.setInputDataToQuery(conditionstr, parameterizedQuery1
+					.getConstraints(), null, parameterizedQuery);
+			errorMessage = bizLogic.setInputDataToTQ(parameterizedQuery1,
+					Constants.EXECUTE_QUERY_PAGE, rhsList, customFormulaIndexMap);
+			if (errorMessage.trim().length() > 0)
 			{
 				ActionErrors errors = new ActionErrors();
 				ActionError error = new ActionError("errors.item", errorMessage);
@@ -68,15 +73,15 @@ public class ExecuteQueryAction extends Action
 				return actionMapping.findForward(target);
 			}
 		}
-		
+
 		String errorMessage = QueryModuleUtil.executeQuery(request, parameterizedQuery1);
 		session.setAttribute(Constants.QUERY_OBJECT, parameterizedQuery);
-		
+
 		if (errorMessage == null)
 		{
 			target = Constants.SUCCESS;
 		}
-		else if(errorMessage.equalsIgnoreCase(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS))
+		else if (errorMessage.equalsIgnoreCase(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS))
 		{
 			target = Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS;
 			return actionMapping.findForward(target);
@@ -88,7 +93,7 @@ public class ExecuteQueryAction extends Action
 			errors.add(ActionErrors.GLOBAL_ERROR, error);
 			saveErrors(request, errors);
 		}
-		
+
 		return actionMapping.findForward(target);
 	}
 }

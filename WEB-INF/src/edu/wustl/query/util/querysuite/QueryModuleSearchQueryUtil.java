@@ -1,3 +1,4 @@
+
 package edu.wustl.query.util.querysuite;
 
 import java.util.ArrayList;
@@ -43,13 +44,14 @@ import edu.wustl.query.util.global.Variables;
  */
 public class QueryModuleSearchQueryUtil
 {
+
 	private HttpServletRequest request;
 	private HttpSession session;
 	private IQuery query;
 	boolean isSavedQuery;
 
 	QueryDetails queryDetailsObj;
-	
+
 	/**
 	 * @param request
 	 * @param query
@@ -59,11 +61,11 @@ public class QueryModuleSearchQueryUtil
 		this.request = request;
 		this.session = request.getSession();
 		this.query = query;
-		
-		isSavedQuery = Boolean.valueOf( (String) session.getAttribute(Constants.IS_SAVED_QUERY));
+
+		isSavedQuery = Boolean.valueOf((String) session.getAttribute(Constants.IS_SAVED_QUERY));
 		queryDetailsObj = new QueryDetails(session);
 	}
-	
+
 	/**
 	 * This method extracts query object and forms results for tree and grid.
 	 * @param option
@@ -75,26 +77,26 @@ public class QueryModuleSearchQueryUtil
 		QueryModuleError status = QueryModuleError.SUCCESS;
 		try
 		{
-				session.setAttribute(Constants.QUERY_OBJECT, query);			
-				if(isSavedQuery)
-				{
-					processSaveQuery();
-				}
-				if (queryDetailsObj.getSessionData() != null)
-				{
-					QueryOutputTreeBizLogic outputTreeBizLogic = auditQuery();		
-					boolean hasCondOnIdentifiedField = edu.wustl.common.querysuite
-						.security.utility.Utility.isConditionOnIdentifiedField(query);
-					setDataInSession(option, outputTreeBizLogic, hasCondOnIdentifiedField);
-				}
+			session.setAttribute(Constants.QUERY_OBJECT, query);
+			if (isSavedQuery)
+			{
+				processSaveQuery();
+			}
+			if (queryDetailsObj.getSessionData() != null)
+			{
+				QueryOutputTreeBizLogic outputTreeBizLogic = auditQuery();
+				boolean hasCondOnIdentifiedField = edu.wustl.common.querysuite.security.utility.Utility
+						.isConditionOnIdentifiedField(query);
+				setDataInSession(option, outputTreeBizLogic, hasCondOnIdentifiedField);
+			}
 		}
-		catch (QueryModuleException e) 
+		catch (QueryModuleException e)
 		{
-			status= e.getKey();
+			status = e.getKey();
 		}
 		return status;
 	}
-	
+
 	/**
 	 * @param option
 	 * @param outputTreeBizLogic
@@ -102,38 +104,38 @@ public class QueryModuleSearchQueryUtil
 	 * @throws QueryModuleException
 	 */
 	private void setDataInSession(String option, QueryOutputTreeBizLogic outputTreeBizLogic,
-			boolean hasCondOnIdentifiedField) throws  QueryModuleException 
-   {
+			boolean hasCondOnIdentifiedField) throws QueryModuleException
+	{
 		int initialValue = 0;
 		QueryModuleException queryModExp;
 		try
-		{ 
+		{
 			for (OutputTreeDataNode outnode : queryDetailsObj.getRootOutputTreeNodeList())
-			{ 
-				Vector<QueryTreeNodeData> treeData= null;			
-				treeData = outputTreeBizLogic.createDefaultOutputTreeData(initialValue, outnode, 
+			{
+				Vector<QueryTreeNodeData> treeData = null;
+				treeData = outputTreeBizLogic.createDefaultOutputTreeData(initialValue, outnode,
 						hasCondOnIdentifiedField, queryDetailsObj);
 				initialValue = setTreeData(option, initialValue, treeData);
 			}
-		} 
+		}
 		catch (DAOException e)
 		{
-				queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
-				throw queryModExp;
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
 		}
 		catch (ClassNotFoundException e)
 		{
-			queryModExp = new QueryModuleException(e.getMessage(),QueryModuleError.CLASS_NOT_FOUND);
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.CLASS_NOT_FOUND);
 			throw queryModExp;
 		}
-		
+
 		session.setAttribute(Constants.TREE_ROOTS, queryDetailsObj.getRootOutputTreeNodeList());
 		Long noOfTrees = Long.valueOf(queryDetailsObj.getRootOutputTreeNodeList().size());
 		session.setAttribute(Constants.NO_OF_TREES, noOfTrees);
 		OutputTreeDataNode node = queryDetailsObj.getRootOutputTreeNodeList().get(0);
 		processRecords(queryDetailsObj, node, hasCondOnIdentifiedField);
 	}
-	
+
 	/**
 	 * @param option
 	 * @param initialValue
@@ -141,55 +143,55 @@ public class QueryModuleSearchQueryUtil
 	 * @return int
 	 * @throws QueryModuleException 
 	 */
-	private int setTreeData(String option, int initialValue,
-			Vector<QueryTreeNodeData> treeData) throws QueryModuleException
-	{		
+	private int setTreeData(String option, int initialValue, Vector<QueryTreeNodeData> treeData)
+			throws QueryModuleException
+	{
 		int resultsSize = treeData.size();
-		if(option == null)
+		if (option == null)
 		{
 			if (resultsSize == 0)
 			{
 				throw new QueryModuleException("Query Returns Zero Results",
 						QueryModuleError.NO_RESULT_PRESENT);
 			}
-			else if(resultsSize-1 > Variables.maximumTreeNodeLimit)
+			else if (resultsSize - 1 > Variables.maximumTreeNodeLimit)
 			{
-				String resultSizeStr = String.valueOf(resultsSize-1);
-				session.setAttribute(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS,
-				resultSizeStr);
+				String resultSizeStr = String.valueOf(resultsSize - 1);
+				session.setAttribute(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS, resultSizeStr);
 				throw new QueryModuleException("Query Results Exceeded The Limit",
 						QueryModuleError.RESULTS_MORE_THAN_LIMIT);
 			}
 		}
-		else if(Constants.VIEW_LIMITED_RECORDS.equals(option))
+		else if (Constants.VIEW_LIMITED_RECORDS.equals(option))
 		{
-			List<QueryTreeNodeData> limitedRecordsList = treeData.subList(0, Variables.maximumTreeNodeLimit+1);
+			List<QueryTreeNodeData> limitedRecordsList = treeData.subList(0,
+					Variables.maximumTreeNodeLimit + 1);
 			Vector<QueryTreeNodeData> limitedTreeData = new Vector<QueryTreeNodeData>();
 			limitedTreeData.addAll(limitedRecordsList);
 			treeData = limitedTreeData;
 		}
 		session.setAttribute(Constants.TREE_DATA + Constants.UNDERSCORE + initialValue, treeData);
-				initialValue += 1;
+		initialValue += 1;
 		return initialValue;
 	}
-	
+
 	/**
 	 * @return
 	 * @throws QueryModuleException
 	 */
-	private QueryOutputTreeBizLogic auditQuery() throws QueryModuleException 
+	private QueryOutputTreeBizLogic auditQuery() throws QueryModuleException
 	{
 		QueryBizLogic queryBizLogic = null;
 		QueryModuleException queryModExp;
-		QueryOutputTreeBizLogic outputTreeBizLogic = new QueryOutputTreeBizLogic();		
+		QueryOutputTreeBizLogic outputTreeBizLogic = new QueryOutputTreeBizLogic();
 		try
 		{
 			//Commneted out By Baljeet......
 			/*queryBizLogic = (QueryBizLogic)AbstractBizLogicFactory.getBizLogic(
 			    	ApplicationProperties.getValue("app.bizLogicFactory"),
 					"getBizLogic", Constants.QUERY_INTERFACE_ID);*/
-			String selectSql = (String)session.getAttribute(Constants.SAVE_GENERATED_SQL);		
-			
+			String selectSql = (String) session.getAttribute(Constants.SAVE_GENERATED_SQL);
+
 			//Commneted out By Baljeet......
 			//queryBizLogic.insertQuery(selectSql, queryDetailsObj.getSessionData());*/
 			outputTreeBizLogic.createOutputTreeTable(selectSql, queryDetailsObj);
@@ -200,8 +202,7 @@ public class QueryModuleSearchQueryUtil
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
 			throw queryModExp;
 		}*/
-		
-		
+
 		/*catch (ClassNotFoundException e) 
 		{
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.CLASS_NOT_FOUND);
@@ -212,29 +213,31 @@ public class QueryModuleSearchQueryUtil
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
 			throw queryModExp;
 		}
-			return outputTreeBizLogic;
+		return outputTreeBizLogic;
 	}
-	
+
 	/**
 	 * @throws QueryModuleException
 	 */
 	private void processSaveQuery() throws QueryModuleException
-	{	
+	{
 		IQueryGenerator sqlGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
 		QueryModuleException queryModExp;
 		try
-		{ 
+		{
 			session.setAttribute(Constants.SAVE_GENERATED_SQL, sqlGenerator.generateQuery(query));
-			Map<AttributeInterface, String> attributeColumnNameMap = sqlGenerator.getAttributeColumnNameMap();
+			Map<AttributeInterface, String> attributeColumnNameMap = sqlGenerator
+					.getAttributeColumnNameMap();
 			session.setAttribute(Constants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
-			session.setAttribute(Constants.OUTPUT_TERMS_COLUMNS,sqlGenerator.getOutputTermsColumns());
+			session.setAttribute(Constants.OUTPUT_TERMS_COLUMNS, sqlGenerator
+					.getOutputTermsColumns());
 		}
-		catch(MultipleRootsException e)
+		catch (MultipleRootsException e)
 		{
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.MULTIPLE_ROOT);
 			throw queryModExp;
 		}
-		catch(SqlException e)
+		catch (SqlException e)
 		{
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
 			throw queryModExp;
@@ -243,14 +246,14 @@ public class QueryModuleSearchQueryUtil
 		session.setAttribute(Constants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
 		queryDetailsObj.setRootOutputTreeNodeList(rootOutputTreeNodeList);
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
-			.getAllChildrenNodes(rootOutputTreeNodeList);
+				.getAllChildrenNodes(rootOutputTreeNodeList);
 		queryDetailsObj.setUniqueIdNodesMap(uniqueIdNodesMap);
 		session.setAttribute(Constants.ID_NODES_MAP, uniqueIdNodesMap);
 		Map<EntityInterface, List<EntityInterface>> mainEntityMap = QueryCSMUtil
-			.setMainObjectErrorMessage(query, request.getSession(), queryDetailsObj);
+				.setMainObjectErrorMessage(query, request.getSession(), queryDetailsObj);
 		queryDetailsObj.setMainEntityMap(mainEntityMap);
 	}
-	
+
 	/**
 	 * @param QueryDetailsObj
 	 * @param node
@@ -258,68 +261,68 @@ public class QueryModuleSearchQueryUtil
 	 * @throws QueryModuleException
 	 */
 	public void processRecords(QueryDetails QueryDetailsObj, OutputTreeDataNode node,
-			boolean hasCondOnIdentifiedField) throws  QueryModuleException
+			boolean hasCondOnIdentifiedField) throws QueryModuleException
 	{
-		SelectedColumnsMetadata selectedColumnsMetadata = getAppropriateSelectedColumnMetadata(query,
-				(SelectedColumnsMetadata) session.getAttribute(Constants.SELECTED_COLUMN_META_DATA));
+		SelectedColumnsMetadata selectedColumnsMetadata = getAppropriateSelectedColumnMetadata(
+				query, (SelectedColumnsMetadata) session
+						.getAttribute(Constants.SELECTED_COLUMN_META_DATA));
 		selectedColumnsMetadata.setCurrentSelectedObject(node);
 		QueryModuleException queryModExp;
 		int recordsPerPage = setRecordsPerPage();
-		if(query.getId() != null && isSavedQuery )
+		if (query.getId() != null && isSavedQuery)
 		{
 			getSelectedColumnsMetadata(QueryDetailsObj, selectedColumnsMetadata);
 		}
-		
+
 		QueryResultObjectDataBean queryResulObjectDataBean = QueryCSMUtil
-		.getQueryResulObjectDataBean(node, QueryDetailsObj);
-	    Map<Long,QueryResultObjectDataBean> queryResultObjDataBeanMap = new HashMap<Long,
-		QueryResultObjectDataBean>();
-	    queryResultObjDataBeanMap.put(node.getId(), queryResulObjectDataBean);
-	    QueryOutputSpreadsheetBizLogic outputSpreadsheetBizLogic  = new QueryOutputSpreadsheetBizLogic();
-	    try
-	    { 	// deepti change
-	    	IQueryGenerator sqlGenerator = (IQueryGenerator) QueryGeneratorFactory.getDefaultQueryGenerator();
-	    	Map<String, IOutputTerm> outputTermsColumns = sqlGenerator.getOutputTermsColumns();
-			if(outputTermsColumns == null)
+				.getQueryResulObjectDataBean(node, QueryDetailsObj);
+		Map<Long, QueryResultObjectDataBean> queryResultObjDataBeanMap = new HashMap<Long, QueryResultObjectDataBean>();
+		queryResultObjDataBeanMap.put(node.getId(), queryResulObjectDataBean);
+		QueryOutputSpreadsheetBizLogic outputSpreadsheetBizLogic = new QueryOutputSpreadsheetBizLogic();
+		try
+		{ // deepti change
+			IQueryGenerator sqlGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
+			Map<String, IOutputTerm> outputTermsColumns = sqlGenerator.getOutputTermsColumns();
+			if (outputTermsColumns == null)
 			{
-				outputTermsColumns = (Map<String, IOutputTerm>)session.getAttribute(Constants
-						.OUTPUT_TERMS_COLUMNS);
+				outputTermsColumns = (Map<String, IOutputTerm>) session
+						.getAttribute(Constants.OUTPUT_TERMS_COLUMNS);
 			}
 			session.setAttribute(Constants.OUTPUT_TERMS_COLUMNS, outputTermsColumns);
-	    	Map<String, List<String>> spreadSheetDatamap = outputSpreadsheetBizLogic
-				.createSpreadsheetData(Constants.TREENO_ZERO, node, QueryDetailsObj,
-				null, recordsPerPage, selectedColumnsMetadata, queryResultObjDataBeanMap,
-				hasCondOnIdentifiedField, query.getConstraints(), outputTermsColumns);
-	    	setQuerySessionData(selectedColumnsMetadata, spreadSheetDatamap);
-	    }
-	    catch(DAOException e)
-	    {
-	    	queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
-	    	throw queryModExp;
-	     }
-	    catch (ClassNotFoundException e)
-	    {
+			Map<String, List<String>> spreadSheetDatamap = outputSpreadsheetBizLogic
+					.createSpreadsheetData(Constants.TREENO_ZERO, node, QueryDetailsObj, null,
+							recordsPerPage, selectedColumnsMetadata, queryResultObjDataBeanMap,
+							hasCondOnIdentifiedField, query.getConstraints(), outputTermsColumns);
+			setQuerySessionData(selectedColumnsMetadata, spreadSheetDatamap);
+		}
+		catch (DAOException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
+		}
+		catch (ClassNotFoundException e)
+		{
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.CLASS_NOT_FOUND);
 			throw queryModExp;
 		}
 	}
-	
+
 	/**
 	 * @param query
 	 * @param selectedColumnsMetadata
 	 * @return
 	 */
-	private static SelectedColumnsMetadata getAppropriateSelectedColumnMetadata(IQuery query, 
+	private static SelectedColumnsMetadata getAppropriateSelectedColumnMetadata(IQuery query,
 			SelectedColumnsMetadata selectedColumnsMetadata)
 	{
 		boolean isQueryChanged = false;
-		if(query != null && selectedColumnsMetadata != null)
+		if (query != null && selectedColumnsMetadata != null)
 		{
 			List<Integer> expressionIdsInQuery = new ArrayList<Integer>();
 			IConstraints constraints = query.getConstraints();
 			List<QueryOutputTreeAttributeMetadata> selAttributeMetaDataList = selectedColumnsMetadata
-				.getSelectedAttributeMetaDataList();
-			for(IExpression expression : constraints)
+					.getSelectedAttributeMetaDataList();
+			for (IExpression expression : constraints)
 			{
 				if (expression.isInView())
 				{
@@ -327,28 +330,28 @@ public class QueryModuleSearchQueryUtil
 				}
 			}
 			int expressionId;
-			for(QueryOutputTreeAttributeMetadata element :selAttributeMetaDataList)
+			for (QueryOutputTreeAttributeMetadata element : selAttributeMetaDataList)
 			{
-					expressionId = element.getTreeDataNode().getExpressionId();
-					if(!expressionIdsInQuery.contains(Integer.valueOf(expressionId)))
-					{
-						isQueryChanged = true;
-						break;
-					}
+				expressionId = element.getTreeDataNode().getExpressionId();
+				if (!expressionIdsInQuery.contains(Integer.valueOf(expressionId)))
+				{
+					isQueryChanged = true;
+					break;
+				}
 			}
 		}
-		if(isQueryChanged || selectedColumnsMetadata == null)
+		if (isQueryChanged || selectedColumnsMetadata == null)
 		{
 			selectedColumnsMetadata = new SelectedColumnsMetadata();
 			selectedColumnsMetadata.setDefinedView(false);
 		}
 		return selectedColumnsMetadata;
 	}
-	
+
 	/** It will set the results per page.
 	 * @return int
 	 */
-	private int setRecordsPerPage() 
+	private int setRecordsPerPage()
 	{
 		int recordsPerPage;
 		String recordsPerPgSessionValue = (String) session.getAttribute(Constants.RESULTS_PER_PAGE);
@@ -361,7 +364,7 @@ public class QueryModuleSearchQueryUtil
 		recordsPerPage = Integer.valueOf(recordsPerPgSessionValue);
 		return recordsPerPage;
 	}
-	
+
 	/**
 	 * Set the data in session.
 	 * @param selectedColumnsMetadata
@@ -375,10 +378,10 @@ public class QueryModuleSearchQueryUtil
 		int totalNoOfRecords = querySessionData.getTotalNumberOfRecords();
 		session.setAttribute(Constants.QUERY_SESSION_DATA, querySessionData);
 		session.setAttribute(Constants.TOTAL_RESULTS, Integer.valueOf(totalNoOfRecords));
-//		QueryShoppingCart cart = (QueryShoppingCart)session.getAttribute(Constants.QUERY_SHOPPING_CART);
-//		String message = QueryModuleUtil.getMessageIfIdNotPresentForOrderableEntities(
-//				selectedColumnsMetadata, cart);
-//		session.setAttribute(Constants.VALIDATION_MESSAGE_FOR_ORDERING, message);
+		//		QueryShoppingCart cart = (QueryShoppingCart)session.getAttribute(Constants.QUERY_SHOPPING_CART);
+		//		String message = QueryModuleUtil.getMessageIfIdNotPresentForOrderableEntities(
+		//				selectedColumnsMetadata, cart);
+		//		session.setAttribute(Constants.VALIDATION_MESSAGE_FOR_ORDERING, message);
 		session.setAttribute(Constants.PAGINATION_DATA_LIST, spreadSheetDatamap
 				.get(Constants.SPREADSHEET_DATA_LIST));
 		session.setAttribute(Constants.SPREADSHEET_COLUMN_LIST, spreadSheetDatamap
@@ -387,10 +390,10 @@ public class QueryModuleSearchQueryUtil
 				.get(Constants.SELECTED_COLUMN_META_DATA));
 		session.setAttribute(Constants.QUERY_REASUL_OBJECT_DATA_MAP, spreadSheetDatamap
 				.get(Constants.QUERY_REASUL_OBJECT_DATA_MAP));
-		session.setAttribute(Constants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP, spreadSheetDatamap
-				.get(Constants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP));
+		session.setAttribute(Constants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
+				spreadSheetDatamap.get(Constants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP));
 	}
-	
+
 	/**
 	 * @param QueryDetailsObj
 	 * @param selectedColumnsMetadata
@@ -403,12 +406,12 @@ public class QueryModuleSearchQueryUtil
 		{
 			ParameterizedQuery savedQuery = (ParameterizedQuery) query;
 			selAttributeList = savedQuery.getOutputAttributeList();
-			if(!selAttributeList.isEmpty())
+			if (!selAttributeList.isEmpty())
 			{
 				DefineGridViewBizLogic gridViewBizLogic = new DefineGridViewBizLogic();
 				selectedColumnsMetadata.setSelectedOutputAttributeList(selAttributeList);
 				gridViewBizLogic.getSelectedColumnMetadataForSavedQuery(QueryDetailsObj
-				.getUniqueIdNodesMap().values(), selAttributeList, selectedColumnsMetadata);
+						.getUniqueIdNodesMap().values(), selAttributeList, selectedColumnsMetadata);
 				selectedColumnsMetadata.setDefinedView(true);
 			}
 		}

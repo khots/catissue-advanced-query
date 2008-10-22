@@ -11,6 +11,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.util.global.Constants;
+
 /**
  * This is a action called whern user clicks on search button from addlimits .jsp. The result data lists are already
  * stored in session through an applet action ViewSearchResultsAction. This class just forwards the control to ViewSearchResults.jsp.
@@ -29,12 +30,13 @@ public class ViewSearchResultsJSPAction extends Action
 	 * @throws Exception Exception
 	 * @return ActionForward actionForward
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-			throws Exception
+	@Override
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		CategorySearchForm actionForm = (CategorySearchForm)form;
+		CategorySearchForm actionForm = (CategorySearchForm) form;
 		String nextOperation = actionForm.getNextOperation();
-		if(nextOperation != null && nextOperation.equalsIgnoreCase(Constants.SHOW_ERROR_PAGE))
+		if (nextOperation != null && nextOperation.equalsIgnoreCase(Constants.SHOW_ERROR_PAGE))
 		{
 			return mapping.findForward(Constants.FAILURE);
 		}

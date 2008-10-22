@@ -1,3 +1,4 @@
+
 package edu.wustl.query.action;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
+
 /**
  * This is a action class to load Define Search Results View screen.
  * @author deepti_shelar
@@ -18,6 +20,7 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
  */
 public class DefineSearchResultsViewAction extends Action
 {
+
 	/**
 	 * This method loads define results jsp.
 	 * @param mapping mapping
@@ -27,8 +30,9 @@ public class DefineSearchResultsViewAction extends Action
 	 * @throws Exception Exception
 	 * @return ActionForward actionForward
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-	throws Exception
+	@Override
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		request.setAttribute(Constants.CURRENT_PAGE, Constants.DEFINE_RESULTS_VIEW);
 		CategorySearchForm searchForm = (CategorySearchForm) form;
@@ -36,4 +40,3 @@ public class DefineSearchResultsViewAction extends Action
 		return mapping.findForward(Constants.SUCCESS);
 	}
 }
-

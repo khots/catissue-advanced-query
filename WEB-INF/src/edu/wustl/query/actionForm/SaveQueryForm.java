@@ -16,6 +16,7 @@ import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.global.Validator;
+
 /**
  * @author chetan_patil
  * @created Sep 12, 2007, 10:28:02 PM
@@ -45,11 +46,13 @@ public class SaveQueryForm extends AbstractActionForm
 		this.queryString = queryString;
 	}
 
+	@Override
 	public int getFormId()
 	{
 		return 0;
 	}
 
+	@Override
 	protected void reset()
 	{
 
@@ -115,6 +118,7 @@ public class SaveQueryForm extends AbstractActionForm
 	 * @param request HttpServletRequest request
 	 * @return ActionErrors
 	 * */
+	@Override
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request)
 	{
 		ActionErrors errors = new ActionErrors();

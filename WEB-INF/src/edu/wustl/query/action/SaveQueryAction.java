@@ -26,12 +26,12 @@ import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
 import edu.wustl.common.hibernate.HibernateCleanser;
+import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.ObjectCloner;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -48,11 +48,12 @@ import edu.wustl.query.util.querysuite.QueryModuleConstants;
  * @created Sep 11, 2007, 3:50:16 PM
  */
 public class SaveQueryAction extends BaseAction
-{ 
+{
 
+	@Override
 	protected ActionForward executeAction(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
-	{      
+	{
 		HttpSession session = request.getSession();
 		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
 		String target = Constants.FAILURE;
@@ -66,57 +67,57 @@ public class SaveQueryAction extends BaseAction
 			 * See also: 1-4 
 			 * Description : Calling bizlogic insert and update
 			 */
-			
+
 			IParameterizedQuery parameterizedQuery = populateParameterizedQueryData(query,
 					actionForm, request);
-			if(parameterizedQuery != null)
+			if (parameterizedQuery != null)
 			{
-			try
-			{
-				IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
-						.getValue("app.bizLogicFactory"), "getBizLogic",
-						Constants.QUERY_INTERFACE_BIZLOGIC_ID);
-                IParameterizedQuery queryClone = ObjectCloner.clone(parameterizedQuery);
-                new HibernateCleanser(queryClone).clean();
-                bizLogic.insert(queryClone, Constants.HIBERNATE_DAO);
-				target = Constants.SUCCESS;
-				ActionErrors errors = new ActionErrors();
-				ActionError error = new ActionError("query.saved.success");
-				errors.add(ActionErrors.GLOBAL_ERROR, error);
-				saveErrors(request, errors);
-				
-				request.setAttribute(Constants.QUERY_SAVED, Constants.TRUE);
-			}
-			catch (BizLogicException bizLogicException)
-			{
-				setActionError(request, bizLogicException.getMessage());
-				Logger.out.error(bizLogicException.getMessage(), bizLogicException);
-			}
-			catch (UserNotAuthorizedException userNotAuthorizedException)
-			{
-				SessionDataBean sessionDataBean = getSessionData(request);
-				String userName = "";
-				if (sessionDataBean != null)
+				try
 				{
-					userName = sessionDataBean.getUserName();
+					IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
+							.getValue("app.bizLogicFactory"), "getBizLogic",
+							Constants.QUERY_INTERFACE_BIZLOGIC_ID);
+					IParameterizedQuery queryClone = ObjectCloner.clone(parameterizedQuery);
+					new HibernateCleanser(queryClone).clean();
+					bizLogic.insert(queryClone, Constants.HIBERNATE_DAO);
+					target = Constants.SUCCESS;
+					ActionErrors errors = new ActionErrors();
+					ActionError error = new ActionError("query.saved.success");
+					errors.add(ActionErrors.GLOBAL_ERROR, error);
+					saveErrors(request, errors);
+
+					request.setAttribute(Constants.QUERY_SAVED, Constants.TRUE);
 				}
+				catch (BizLogicException bizLogicException)
+				{
+					setActionError(request, bizLogicException.getMessage());
+					Logger.out.error(bizLogicException.getMessage(), bizLogicException);
+				}
+				catch (UserNotAuthorizedException userNotAuthorizedException)
+				{
+					SessionDataBean sessionDataBean = getSessionData(request);
+					String userName = "";
+					if (sessionDataBean != null)
+					{
+						userName = sessionDataBean.getUserName();
+					}
 
-				ActionErrors errors = new ActionErrors();
-				ActionError error = new ActionError("access.addedit.object.denied", userName,
-						parameterizedQuery.getClass().getName());
-				errors.add(ActionErrors.GLOBAL_ERROR, error);
-				saveErrors(request, errors);
+					ActionErrors errors = new ActionErrors();
+					ActionError error = new ActionError("access.addedit.object.denied", userName,
+							parameterizedQuery.getClass().getName());
+					errors.add(ActionErrors.GLOBAL_ERROR, error);
+					saveErrors(request, errors);
 
-				Logger.out.error(userNotAuthorizedException.getMessage(),
-						userNotAuthorizedException);
+					Logger.out.error(userNotAuthorizedException.getMessage(),
+							userNotAuthorizedException);
+				}
 			}
 		}
-	}
 		else
 		{
 			// Handle null query 
 			String errorMsg = ApplicationProperties.getValue("query.noLimit.error");
-			setActionError(request,errorMsg);
+			setActionError(request, errorMsg);
 		}
 		return actionMapping.findForward(target);
 	}
@@ -144,10 +145,10 @@ public class SaveQueryAction extends BaseAction
 	 */
 	private IParameterizedQuery populateParameterizedQueryData(IQuery query, ActionForm actionForm,
 			HttpServletRequest request)
-	{    
+	{
 		SaveQueryForm saveActionForm = (SaveQueryForm) actionForm;
 		String error = "";
-		
+
 		/**
 		 * Name: Abhishek Mehta
 		 * Reviewer Name : Deepti 
@@ -156,14 +157,14 @@ public class SaveQueryAction extends BaseAction
 		 * See also: 1-4 
 		 * Description : Creating IParameterizedQuery's new instance only if it new query else type casting IQuery to IParameterizedQuery. 
 		 */
-		 
-		IParameterizedQuery parameterizedQuery = (IParameterizedQuery)query;
-		
+
+		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) query;
+
 		if (query.getId() == null)
 		{
 			parameterizedQuery = QueryObjectFactory.createParameterizedQuery(query);
 		}
-		
+
 		HttpSession session = request.getSession();
 		String queryTitle = saveActionForm.getTitle();
 		if (queryTitle != null)
@@ -179,54 +180,57 @@ public class SaveQueryAction extends BaseAction
 		else
 		{
 			parameterizedQuery.setDescription("");
-		} 
-		
-//		if(parameterizedQuery.getOutputTerms()!=null)
-//		{
-//			parameterizedQuery.getOutputTerms().clear();
-//	     	parameterizedQuery.getOutputTerms().addAll(query.getOutputTerms());
-//		}
-		
+		}
+
+		//		if(parameterizedQuery.getOutputTerms()!=null)
+		//		{
+		//			parameterizedQuery.getOutputTerms().clear();
+		//	     	parameterizedQuery.getOutputTerms().addAll(query.getOutputTerms());
+		//		}
+
 		CreateQueryObjectBizLogic bizLogic = new CreateQueryObjectBizLogic();
 		String conditionList = request.getParameter(Constants.CONDITIONLIST);
 		String cfRHSList = request.getParameter(QueryModuleConstants.STR_TO_FORM_TQ);
-		Map<Integer,ICustomFormula> customFormulaIndexMap = (Map<Integer,ICustomFormula>)session.getAttribute(QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP);
+		Map<Integer, ICustomFormula> customFormulaIndexMap = (Map<Integer, ICustomFormula>) session
+				.getAttribute(QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP);
 		session.removeAttribute(QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP);
 		Map<String, String> displayNameMap = getDisplayNamesForConditions(saveActionForm, request);
 		error = bizLogic.setInputDataToQuery(conditionList, parameterizedQuery.getConstraints(),
-				displayNameMap,parameterizedQuery);
-		error = bizLogic.setInputDataToTQ(parameterizedQuery, Constants.SAVE_QUERY_PAGE, cfRHSList,customFormulaIndexMap);
+				displayNameMap, parameterizedQuery);
+		error = bizLogic.setInputDataToTQ(parameterizedQuery, Constants.SAVE_QUERY_PAGE, cfRHSList,
+				customFormulaIndexMap);
 		if (error != null && error.trim().length() > 0)
 		{
 			setActionError(request, error);
 			return null;
 		}
 		// Saving view 
-		SelectedColumnsMetadata selectedColumnsMetadata = (SelectedColumnsMetadata)session.getAttribute(Constants.SELECTED_COLUMN_META_DATA);
+		SelectedColumnsMetadata selectedColumnsMetadata = (SelectedColumnsMetadata) session
+				.getAttribute(Constants.SELECTED_COLUMN_META_DATA);
 		List<IOutputAttribute> selectedOutputAttributeList = new ArrayList<IOutputAttribute>();
-		if(selectedColumnsMetadata != null)
+		if (selectedColumnsMetadata != null)
 		{
 			selectedOutputAttributeList = selectedColumnsMetadata.getSelectedOutputAttributeList();
 		}
 		//parameterizedQuery.getOutputTerms().clear();
-     	parameterizedQuery.getOutputTerms();//.addAll(query.getOutputTerms()); 
+		parameterizedQuery.getOutputTerms();//.addAll(query.getOutputTerms()); 
 		parameterizedQuery.setOutputAttributeList(selectedOutputAttributeList);
 		return parameterizedQuery;
 	}
-	
-/**
- * This method returns the map<expressionid+attributeId,displayname> containing the displaynames entered by user for 
- * parameterized conditions 
- * @param saveActionForm
- * @param request
- * @return
- */
-	
+
+	/**
+	 * This method returns the map<expressionid+attributeId,displayname> containing the displaynames entered by user for 
+	 * parameterized conditions 
+	 * @param saveActionForm
+	 * @param request
+	 * @return
+	 */
+
 	private Map<String, String> getDisplayNamesForConditions(SaveQueryForm saveActionForm,
 			HttpServletRequest request)
 	{
 		Map<String, String> displayNameMap = new HashMap<String, String>();
-	
+
 		String queryString = saveActionForm.getQueryString();
 		if (queryString != null)
 		{
@@ -234,7 +238,8 @@ public class SaveQueryAction extends BaseAction
 			while (strtokenizer.hasMoreTokens())
 			{
 				String token = strtokenizer.nextToken();
-				String displayName = request.getParameter(token + Constants.DISPLAY_NAME_FOR_CONDITION);
+				String displayName = request.getParameter(token
+						+ Constants.DISPLAY_NAME_FOR_CONDITION);
 				displayNameMap.put(token, displayName);
 			}
 		}

@@ -1,3 +1,4 @@
+
 package edu.wustl.query.querysuite;
 
 import edu.wustl.common.query.impl.SqlGenerator;
@@ -13,193 +14,237 @@ import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.TermType;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
 
-public class QuerySqlGenerator extends SqlGenerator {
-    @Override
-    protected String getCustomFormulaString(ICustomFormula formula) {
-        formula = modifyForRounding(formula);
-        return super.getCustomFormulaString(formula);
-    }
+public class QuerySqlGenerator extends SqlGenerator
+{
 
-    private static class CaTissueFormula {
-        private IArithmeticOperand lhsOpnd1;
+	@Override
+	protected String getCustomFormulaString(ICustomFormula formula)
+	{
+		formula = modifyForRounding(formula);
+		return super.getCustomFormulaString(formula);
+	}
 
-        private ArithmeticOperator lhsOper;
+	private static class CaTissueFormula
+	{
 
-        private IArithmeticOperand lhsOpnd2;
+		private IArithmeticOperand lhsOpnd1;
 
-        private RelationalOperator relOper;
+		private ArithmeticOperator lhsOper;
 
-        private IArithmeticOperand rhs;
+		private IArithmeticOperand lhsOpnd2;
 
-        private QueryType queryType;
+		private RelationalOperator relOper;
 
-        private enum QueryType {
-            rhsDate, rhsOffset;
-            private static QueryType fromTermType(TermType termType) {
-                return TermType.isInterval(termType) ? rhsOffset : rhsDate;
-            }
-        }
+		private IArithmeticOperand rhs;
 
-        CaTissueFormula(ICustomFormula formula) {
-            if (!formula.isValid()) {
-                throw new IllegalArgumentException("invalid custom formula.");
-            }
-            rhs = formula.getAllRhs().get(0).getOperand(0);
-            lhsOpnd1 = formula.getLhs().getOperand(0);
-            lhsOpnd2 = formula.getLhs().getOperand(1);
-            lhsOper = formula.getLhs().getConnector(0, 1).getOperator();
-            relOper = formula.getOperator();
+		private QueryType queryType;
 
-            queryType = QueryType.fromTermType(rhs.getTermType());
-        }
+		private enum QueryType {
+			rhsDate, rhsOffset;
 
-        NormalizedFormula normalizedForm() {
-            NormalizedFormula res = new NormalizedFormula();
-            res.relOper = relOper;
-            switch (queryType) {
-                case rhsDate :
-                    res.rhsDate = rhs;
-                    res.lhsOper = lhsOper;
-                    // formula is valid; assume +/- are correct.
-                    if (lhsOpnd1.getTermType() == TermType.Date) {
-                        res.lhsDate = lhsOpnd1;
-                        res.lhsOffset = lhsOpnd2;
-                    } else {
-                        res.lhsDate = lhsOpnd2;
-                        res.lhsOffset = lhsOpnd1;
-                    }
-                    break;
-                case rhsOffset :
-                    res.rhsDate = lhsOpnd2;
-                    res.lhsDate = lhsOpnd1;
-                    res.lhsOffset = rhs;
-                    res.lhsOper = ArithmeticOperator.Minus;
-                    break;
-                default :
-                    throw new RuntimeException("can't occur.");
-            }
-            return res;
-        }
-    }
+			private static QueryType fromTermType(TermType termType)
+			{
+				return TermType.isInterval(termType) ? rhsOffset : rhsDate;
+			}
+		}
 
-    private static class NormalizedFormula {
-        // date (+/-) Interval = date
-        private IArithmeticOperand lhsDate;
+		CaTissueFormula(ICustomFormula formula)
+		{
+			if (!formula.isValid())
+			{
+				throw new IllegalArgumentException("invalid custom formula.");
+			}
+			rhs = formula.getAllRhs().get(0).getOperand(0);
+			lhsOpnd1 = formula.getLhs().getOperand(0);
+			lhsOpnd2 = formula.getLhs().getOperand(1);
+			lhsOper = formula.getLhs().getConnector(0, 1).getOperator();
+			relOper = formula.getOperator();
 
-        private ArithmeticOperator lhsOper;
+			queryType = QueryType.fromTermType(rhs.getTermType());
+		}
 
-        private IArithmeticOperand lhsOffset;
+		NormalizedFormula normalizedForm()
+		{
+			NormalizedFormula res = new NormalizedFormula();
+			res.relOper = relOper;
+			switch (queryType)
+			{
+				case rhsDate :
+					res.rhsDate = rhs;
+					res.lhsOper = lhsOper;
+					// formula is valid; assume +/- are correct.
+					if (lhsOpnd1.getTermType() == TermType.Date)
+					{
+						res.lhsDate = lhsOpnd1;
+						res.lhsOffset = lhsOpnd2;
+					}
+					else
+					{
+						res.lhsDate = lhsOpnd2;
+						res.lhsOffset = lhsOpnd1;
+					}
+					break;
+				case rhsOffset :
+					res.rhsDate = lhsOpnd2;
+					res.lhsDate = lhsOpnd1;
+					res.lhsOffset = rhs;
+					res.lhsOper = ArithmeticOperator.Minus;
+					break;
+				default :
+					throw new RuntimeException("can't occur.");
+			}
+			return res;
+		}
+	}
 
-        private IArithmeticOperand rhsDate;
+	private static class NormalizedFormula
+	{
 
-        private RelationalOperator relOper;
+		// date (+/-) Interval = date
+		private IArithmeticOperand lhsDate;
 
-        private TimeInterval<?> timeInterval() {
-            if (lhsOffset.getTermType() == TermType.Numeric) {
-                return TimeInterval.Day;
-            }
-            return ((IDateOffset) lhsOffset).getTimeInterval();
-        }
+		private ArithmeticOperator lhsOper;
 
-        private ICustomFormula roundedGenericForm() {
-            ICustomFormula res = QueryObjectFactory.createCustomFormula();
-            res.getLhs().addOperand(lhsDate);
-            res.getLhs().addOperand(conn(lhsOper), lhsOffset);
+		private IArithmeticOperand lhsOffset;
 
-            if (relOper == RelationalOperator.Equals || relOper == RelationalOperator.NotEquals) {
-                res.setOperator(relOper == RelationalOperator.Equals
-                        ? RelationalOperator.Between
-                        : RelationalOperator.NotBetween);
-                res.addRhs(rhsLower());
-                res.addRhs(rhsUpper());
-                return res;
-            }
-            res.setOperator(relOper);
-            ITerm rhs;
-            if (relOper == RelationalOperator.LessThanOrEquals) {
-                rhs = rhsUpper();
-            } else if (relOper == RelationalOperator.GreaterThanOrEquals) {
-                rhs = rhsLower();
-            } else {
-                rhs = rhsTerm();
-            }
-            res.addRhs(rhs);
-            return res;
-        }
+		private IArithmeticOperand rhsDate;
 
-        private ITerm rhsUpper() {
-            ITerm term = rhsTerm();
-            term.addOperand(conn(ArithmeticOperator.Plus), roundingOffset());
-            return term;
-        }
+		private RelationalOperator relOper;
 
-        private ITerm rhsLower() {
-            ITerm term = rhsTerm();
-            term.addOperand(conn(ArithmeticOperator.Minus), roundingOffset());
-            return term;
-        }
+		private TimeInterval<?> timeInterval()
+		{
+			if (lhsOffset.getTermType() == TermType.Numeric)
+			{
+				return TimeInterval.Day;
+			}
+			return ((IDateOffset) lhsOffset).getTimeInterval();
+		}
 
-        private ITerm rhsTerm() {
-            ITerm term = QueryObjectFactory.createTerm();
-            term.addOperand(rhsDate);
-            // term.addOperand(conn(ArithmeticOperator.Unknown),
-            // roundingOffset());
-            return term;
-        }
+		private ICustomFormula roundedGenericForm()
+		{
+			ICustomFormula res = QueryObjectFactory.createCustomFormula();
+			res.getLhs().addOperand(lhsDate);
+			res.getLhs().addOperand(conn(lhsOper), lhsOffset);
 
-        private IArithmeticOperand roundingOffset() {
-            TimeInterval<?> timeInterval = timeInterval();
-            if (timeInterval.equals(TimeInterval.Second)) {
-                return offset(0, TimeInterval.Second);
-            }
-            if (timeInterval.equals(TimeInterval.Minute)) {
-                return offset(30, TimeInterval.Second);
-            }
-            if (timeInterval.equals(TimeInterval.Hour)) {
-                return offset(30, TimeInterval.Minute);
-            }
-            if (timeInterval.equals(TimeInterval.Day)) {
-                return offset(12, TimeInterval.Hour);
-            }
-            if (timeInterval.equals(TimeInterval.Week)) {
-                // 3.5 * 24
-                return offset(84, TimeInterval.Hour);
-            }
-            if (timeInterval.equals(TimeInterval.Month)) {
-                return offset(15, TimeInterval.Day);
-            }
-            if (timeInterval.equals(TimeInterval.Quarter)) {
-                return offset(45, TimeInterval.Day);
-            }
-            if (timeInterval.equals(TimeInterval.Year)) {
-                return offset(6, TimeInterval.Month);
-            }
-            throw new RuntimeException("won't occur.");
-        }
+			if (relOper == RelationalOperator.Equals || relOper == RelationalOperator.NotEquals)
+			{
+				res.setOperator(relOper == RelationalOperator.Equals
+						? RelationalOperator.Between
+						: RelationalOperator.NotBetween);
+				res.addRhs(rhsLower());
+				res.addRhs(rhsUpper());
+				return res;
+			}
+			res.setOperator(relOper);
+			ITerm rhs;
+			if (relOper == RelationalOperator.LessThanOrEquals)
+			{
+				rhs = rhsUpper();
+			}
+			else if (relOper == RelationalOperator.GreaterThanOrEquals)
+			{
+				rhs = rhsLower();
+			}
+			else
+			{
+				rhs = rhsTerm();
+			}
+			res.addRhs(rhs);
+			return res;
+		}
 
-        private static IDateOffsetLiteral offset(int offset, TimeInterval<?> timeInterval) {
-            return QueryObjectFactory.createDateOffsetLiteral(String.valueOf(offset), timeInterval);
-        }
+		private ITerm rhsUpper()
+		{
+			ITerm term = rhsTerm();
+			term.addOperand(conn(ArithmeticOperator.Plus), roundingOffset());
+			return term;
+		}
 
-        private static IConnector<ArithmeticOperator> conn(ArithmeticOperator oper) {
-            return QueryObjectFactory.createArithmeticConnector(oper, 0);
-        }
-    }
+		private ITerm rhsLower()
+		{
+			ITerm term = rhsTerm();
+			term.addOperand(conn(ArithmeticOperator.Minus), roundingOffset());
+			return term;
+		}
 
-    private ICustomFormula modifyForRounding(ICustomFormula formula) {
-        if (formula.getAllRhs().isEmpty()) {
-            return formula;
-        }
-        CaTissueFormula caTissueFormula = new CaTissueFormula(formula);
-        if (!isTemporal(caTissueFormula)) {
-            return formula;
-        }
-        NormalizedFormula normalizedFormula = caTissueFormula.normalizedForm();
-        return normalizedFormula.roundedGenericForm();
-    }
+		private ITerm rhsTerm()
+		{
+			ITerm term = QueryObjectFactory.createTerm();
+			term.addOperand(rhsDate);
+			// term.addOperand(conn(ArithmeticOperator.Unknown),
+			// roundingOffset());
+			return term;
+		}
 
-    private boolean isTemporal(CaTissueFormula caTissueFormula) {
-        TermType rhsType = caTissueFormula.rhs.getTermType();
-        return TermType.isInterval(rhsType) || rhsType == TermType.Timestamp || rhsType == TermType.Date;
-    }
+		private IArithmeticOperand roundingOffset()
+		{
+			TimeInterval<?> timeInterval = timeInterval();
+			if (timeInterval.equals(TimeInterval.Second))
+			{
+				return offset(0, TimeInterval.Second);
+			}
+			if (timeInterval.equals(TimeInterval.Minute))
+			{
+				return offset(30, TimeInterval.Second);
+			}
+			if (timeInterval.equals(TimeInterval.Hour))
+			{
+				return offset(30, TimeInterval.Minute);
+			}
+			if (timeInterval.equals(TimeInterval.Day))
+			{
+				return offset(12, TimeInterval.Hour);
+			}
+			if (timeInterval.equals(TimeInterval.Week))
+			{
+				// 3.5 * 24
+				return offset(84, TimeInterval.Hour);
+			}
+			if (timeInterval.equals(TimeInterval.Month))
+			{
+				return offset(15, TimeInterval.Day);
+			}
+			if (timeInterval.equals(TimeInterval.Quarter))
+			{
+				return offset(45, TimeInterval.Day);
+			}
+			if (timeInterval.equals(TimeInterval.Year))
+			{
+				return offset(6, TimeInterval.Month);
+			}
+			throw new RuntimeException("won't occur.");
+		}
+
+		private static IDateOffsetLiteral offset(int offset, TimeInterval<?> timeInterval)
+		{
+			return QueryObjectFactory.createDateOffsetLiteral(String.valueOf(offset), timeInterval);
+		}
+
+		private static IConnector<ArithmeticOperator> conn(ArithmeticOperator oper)
+		{
+			return QueryObjectFactory.createArithmeticConnector(oper, 0);
+		}
+	}
+
+	private ICustomFormula modifyForRounding(ICustomFormula formula)
+	{
+		if (formula.getAllRhs().isEmpty())
+		{
+			return formula;
+		}
+		CaTissueFormula caTissueFormula = new CaTissueFormula(formula);
+		if (!isTemporal(caTissueFormula))
+		{
+			return formula;
+		}
+		NormalizedFormula normalizedFormula = caTissueFormula.normalizedForm();
+		return normalizedFormula.roundedGenericForm();
+	}
+
+	private boolean isTemporal(CaTissueFormula caTissueFormula)
+	{
+		TermType rhsType = caTissueFormula.rhs.getTermType();
+		return TermType.isInterval(rhsType) || rhsType == TermType.Timestamp
+				|| rhsType == TermType.Date;
+	}
 }

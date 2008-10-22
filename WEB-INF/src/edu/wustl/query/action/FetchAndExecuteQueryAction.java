@@ -4,8 +4,6 @@
 
 package edu.wustl.query.action;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -34,6 +32,7 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
 public class FetchAndExecuteQueryAction extends Action
 {
 
+	@Override
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
@@ -50,7 +49,7 @@ public class FetchAndExecuteQueryAction extends Action
 
 			if (object != null)
 			{
-				IParameterizedQuery parameterizedQuery = (ParameterizedQuery)object;
+				IParameterizedQuery parameterizedQuery = (ParameterizedQuery) object;
 				HttpSession session = request.getSession();
 				session.setAttribute(Constants.QUERY_OBJECT, parameterizedQuery);
 
@@ -59,7 +58,7 @@ public class FetchAndExecuteQueryAction extends Action
 				{
 					target = Constants.SUCCESS;
 				}
-				else if(errorMessage.equalsIgnoreCase(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS))
+				else if (errorMessage.equalsIgnoreCase(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS))
 				{
 					target = Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS;
 					return actionMapping.findForward(target);

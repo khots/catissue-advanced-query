@@ -1,3 +1,4 @@
+
 package edu.wustl.query.action;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import edu.wustl.query.util.querysuite.QueryDetails;
  */
 public class BuildQueryOutputTreeAction extends Action
 {
+
 	/**
 	 * This method loads the data required for Query Output tree. 
 	 * With the help of QueryOutputTreeBizLogic it generates a string which will be then passed to client side and tree is formed accordingly. 
@@ -32,34 +34,38 @@ public class BuildQueryOutputTreeAction extends Action
 	 * @throws Exception Exception
 	 * @return ActionForward actionForward
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-	throws Exception
+	@Override
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		//Map<String,OutputTreeDataNode> idNodesMap = (Map<String,OutputTreeDataNode>)session.getAttribute(Constants.ID_NODES_MAP);
-		boolean hasConditionOnIdentifiedField = (Boolean)session.getAttribute(Constants.HAS_CONDITION_ON_IDENTIFIED_FIELD);
+		boolean hasConditionOnIdentifiedField = (Boolean) session
+				.getAttribute(Constants.HAS_CONDITION_ON_IDENTIFIED_FIELD);
 		//Map<EntityInterface ,List<EntityInterface>> mainEntityMap =(Map<EntityInterface ,List<EntityInterface>>)session.getAttribute(Constants.MAIN_ENTITY_MAP);
-		CategorySearchForm actionForm = (CategorySearchForm)form;
+		CategorySearchForm actionForm = (CategorySearchForm) form;
 		//SessionDataBean sessionData = getSessionData(request);
 		String outputTreeStr = "";
-		String nodeId = actionForm.getNodeId();	
+		String nodeId = actionForm.getNodeId();
 		QueryOutputTreeBizLogic outputTreeBizLogic = new QueryOutputTreeBizLogic();
-		String actualParentNodeId = nodeId.substring(nodeId.lastIndexOf(Constants.NODE_SEPARATOR)+2,nodeId.length());
+		String actualParentNodeId = nodeId.substring(
+				nodeId.lastIndexOf(Constants.NODE_SEPARATOR) + 2, nodeId.length());
 		String[] nodeIds = actualParentNodeId.split(Constants.UNDERSCORE);
 		String treeNo = nodeIds[0];
-		String treeNodeId = nodeIds[1]; 
-		String uniqueId = treeNo+"_"+treeNodeId;
+		String treeNodeId = nodeIds[1];
+		String uniqueId = treeNo + "_" + treeNodeId;
 		OutputTreeDataNode parentNode = queryDetailsObj.getUniqueIdNodesMap().get(uniqueId);
-		if(nodeId.endsWith(Constants.LABEL_TREE_NODE))
+		if (nodeId.endsWith(Constants.LABEL_TREE_NODE))
 		{
-			outputTreeStr = outputTreeBizLogic.updateTreeForLabelNode(nodeId,queryDetailsObj,
+			outputTreeStr = outputTreeBizLogic.updateTreeForLabelNode(nodeId, queryDetailsObj,
 					hasConditionOnIdentifiedField);
 		}
 		else
 		{
 			String data = nodeIds[2];
-			outputTreeStr = outputTreeBizLogic.updateTreeForDataNode(nodeId,parentNode, data, queryDetailsObj);	
+			outputTreeStr = outputTreeBizLogic.updateTreeForDataNode(nodeId, parentNode, data,
+					queryDetailsObj);
 		}
 		response.setContentType("text/html");
 		response.getWriter().write(outputTreeStr);

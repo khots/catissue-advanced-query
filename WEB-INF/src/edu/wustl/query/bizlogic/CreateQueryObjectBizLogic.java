@@ -51,6 +51,7 @@ import edu.wustl.query.util.querysuite.TemporalQueryUtility;
  */
 public class CreateQueryObjectBizLogic
 {
+
 	/**
 	 * Gets the map which holds the data to create the rule object and add it to query.
 	 * 
@@ -63,8 +64,9 @@ public class CreateQueryObjectBizLogic
 	 * @throws DynamicExtensionsApplicationException
 	 *             DynamicExtensionsApplicationException
 	 */
-	public Map getRuleDetailsMap(String strToCreateQueryObject, Collection<AttributeInterface> attrCollection)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Map getRuleDetailsMap(String strToCreateQueryObject,
+			Collection<AttributeInterface> attrCollection) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		Map ruleDetailsMap = new HashMap();
 		if (attrCollection != null)
@@ -74,14 +76,14 @@ public class CreateQueryObjectBizLogic
 		}
 		return ruleDetailsMap;
 	}
-	
+
 	/** 
 	 * This method get the entity details and populates the rule details map.
 	 * @param attrCollection
 	 * @param conditionsMap
 	 * @return Map rules details
 	 */
-	private Map getEntityDetails(Collection<AttributeInterface> attrCollection, Map conditionsMap) 
+	private Map getEntityDetails(Collection<AttributeInterface> attrCollection, Map conditionsMap)
 	{
 		String errorMessage = "";
 		Map ruleDetailsMap = new HashMap();
@@ -93,7 +95,7 @@ public class CreateQueryObjectBizLogic
 			List<String> secondAttributeValues = new ArrayList<String>();
 			ArrayList<ArrayList<String>> conditionValues = new ArrayList<ArrayList<String>>();
 			String[] params;
-			for(AttributeInterface attr : attrCollection)
+			for (AttributeInterface attr : attrCollection)
 			{
 				params = paramsValue(conditionsMap, attr);
 				if (params != null)
@@ -104,21 +106,22 @@ public class CreateQueryObjectBizLogic
 					secondAttributeValues.add(params[QueryModuleConstants.INDEX_PARAM_TWO]);
 					ArrayList<String> attributeValues = getConditionValuesList(params);
 					errorMessage = errorMessage
-					+ validateAttributeValues(attr.getDataType().trim(), attributeValues);
-					if("".equals(errorMessage))
+							+ validateAttributeValues(attr.getDataType().trim(), attributeValues);
+					if ("".equals(errorMessage))
 					{
-						if (QueryModuleConstants.Between.equals(params[QueryModuleConstants
-						                                               .INDEX_PARAM_ZERO]))
+						if (QueryModuleConstants.Between
+								.equals(params[QueryModuleConstants.INDEX_PARAM_ZERO]))
 						{
 							attributeValues = Utility.getAttributeValuesInProperOrder(attr
-							.getDataType(),attributeValues.get(QueryModuleConstants
-							.ARGUMENT_ZERO), attributeValues.get(1));
+									.getDataType(), attributeValues
+									.get(QueryModuleConstants.ARGUMENT_ZERO), attributeValues
+									.get(1));
 						}
 						conditionValues.add(attributeValues);
 					}
 				}
 			}
-			if("".equals(errorMessage))
+			if ("".equals(errorMessage))
 			{
 				ruleDetailsMap.put(Constants.ATTRIBUTES, attributes);
 				ruleDetailsMap.put(Constants.ATTRIBUTE_OPERATORS, attributeOperators);
@@ -128,7 +131,7 @@ public class CreateQueryObjectBizLogic
 			}
 			ruleDetailsMap.put(Constants.ERROR_MESSAGE, errorMessage);
 		}
-	       return ruleDetailsMap;
+		return ruleDetailsMap;
 	}
 
 	/** 
@@ -153,13 +156,15 @@ public class CreateQueryObjectBizLogic
 		ArrayList<String> attributeValues = new ArrayList<String>();
 		if (params[1] != null)
 		{
-				String[] values = params[1].split(QueryModuleConstants.QUERY_VALUES_DELIMITER);
-				int len = values.length;
-				for (int i = 0; i < len; i++)
+			String[] values = params[1].split(QueryModuleConstants.QUERY_VALUES_DELIMITER);
+			int len = values.length;
+			for (int i = 0; i < len; i++)
+			{
+				if (!"".equals(values[i]))
 				{
-					if(!"".equals(values[i]))
-						attributeValues.add(values[i].trim());
+					attributeValues.add(values[i].trim());
 				}
+			}
 		}
 		if (params[2] != null)
 		{
@@ -182,43 +187,44 @@ public class CreateQueryObjectBizLogic
 	{
 		Validator validator = new Validator();
 		String errorMessages = "";
-		for(String enteredValue : attrvalues)
+		for (String enteredValue : attrvalues)
 		{
 			if (Constants.MISSING_TWO_VALUES.equalsIgnoreCase(enteredValue))
 			{
 				errorMessages = getErrorMessageForBetweenOperator(errorMessages, enteredValue);
 			}
-			else if ((QueryModuleConstants.BIG_INT.equalsIgnoreCase(dataType) 
-					|| QueryModuleConstants.INTEGER.equalsIgnoreCase(dataType))
+			else if ((QueryModuleConstants.BIG_INT.equalsIgnoreCase(dataType) || QueryModuleConstants.INTEGER
+					.equalsIgnoreCase(dataType))
 					|| QueryModuleConstants.LONG.equalsIgnoreCase(dataType))
 			{
 				Logger.out.debug(" Check for integer");
-				
+
 				if (validator.convertToLong(enteredValue) == null)
 				{
-					errorMessages = errorMessages + ApplicationProperties
-					.getValue("simpleQuery.intvalue.required");
+					errorMessages = errorMessages
+							+ ApplicationProperties.getValue("simpleQuery.intvalue.required");
 					Logger.out.debug(enteredValue + " is not a valid integer");
 				}
-				else if (!validator.isPositiveNumeric(enteredValue, QueryModuleConstants.ARGUMENT_ZERO))
+				else if (!validator.isPositiveNumeric(enteredValue,
+						QueryModuleConstants.ARGUMENT_ZERO))
 				{
 					errorMessages = getErrorMessageForPositiveNum(errorMessages, enteredValue);
 				}
 
 			}// integer
-			else if ((QueryModuleConstants.DOUBLE.equalsIgnoreCase(dataType)) && !validator
-					.isDouble(enteredValue, false))
+			else if ((QueryModuleConstants.DOUBLE.equalsIgnoreCase(dataType))
+					&& !validator.isDouble(enteredValue, false))
 			{
-				errorMessages = errorMessages + ApplicationProperties
-				.getValue("simpleQuery.decvalue.required");
+				errorMessages = errorMessages
+						+ ApplicationProperties.getValue("simpleQuery.decvalue.required");
 			} // double
 			else if (QueryModuleConstants.TINY_INT.equalsIgnoreCase(dataType))
 			{
 				if (!QueryModuleConstants.BOOLEAN_YES.equalsIgnoreCase(enteredValue.trim())
 						&& !QueryModuleConstants.BOOLEAN_NO.equalsIgnoreCase(enteredValue.trim()))
 				{
-					errorMessages = errorMessages + ApplicationProperties
-					.getValue("simpleQuery.tinyint.format");
+					errorMessages = errorMessages
+							+ ApplicationProperties.getValue("simpleQuery.tinyint.format");
 				}
 			}
 			else if (Constants.FIELD_TYPE_TIMESTAMP_TIME.equalsIgnoreCase(dataType))
@@ -242,8 +248,9 @@ public class CreateQueryObjectBizLogic
 	 */
 	private String getErrorMessageForPositiveNum(String errorMessages, String enteredValue)
 	{
-		errorMessages = errorMessages + "<li><font color\\='red'>" + ApplicationProperties
-		.getValue("simpleQuery.intvalue.poisitive.required")+"</font></li>";
+		errorMessages = errorMessages + "<li><font color\\='red'>"
+				+ ApplicationProperties.getValue("simpleQuery.intvalue.poisitive.required")
+				+ "</font></li>";
 		Logger.out.debug(enteredValue + " is not a positive integer");
 		return errorMessages;
 	}
@@ -256,7 +263,8 @@ public class CreateQueryObjectBizLogic
 	 */
 	private String getErrorMessageForBetweenOperator(String errorMessages, String enteredValue)
 	{
-		errorMessages = errorMessages + "<li><font color\\='red'>" + ApplicationProperties.getValue("simpleQuery.twovalues.required")+"</font></li>";
+		errorMessages = errorMessages + "<li><font color\\='red'>"
+				+ ApplicationProperties.getValue("simpleQuery.twovalues.required") + "</font></li>";
 		Logger.out.debug(enteredValue + " two values required for 'Between' operator ");
 		return errorMessages;
 	}
@@ -268,11 +276,13 @@ public class CreateQueryObjectBizLogic
 	 * @param enteredValue
 	 * @return String Message
 	 */
-	private String getErrorMessageForTimeFormat(Validator validator, String errorMessages, String enteredValue)
+	private String getErrorMessageForTimeFormat(Validator validator, String errorMessages,
+			String enteredValue)
 	{
 		if (!validator.isValidTime(enteredValue, Constants.TIME_PATTERN_HH_MM_SS))
 		{
-			errorMessages = errorMessages + "<li><font color\\='red'>" +ApplicationProperties.getValue("simpleQuery.time.format")+"</font></li>";
+			errorMessages = errorMessages + "<li><font color\\='red'>"
+					+ ApplicationProperties.getValue("simpleQuery.time.format") + "</font></li>";
 		}
 		return errorMessages;
 	}
@@ -284,11 +294,13 @@ public class CreateQueryObjectBizLogic
 	 * @param enteredValue
 	 * @return String Message
 	 */
-	private String getErrorMessageForDateFormat(Validator validator, String errorMessages, String enteredValue)
+	private String getErrorMessageForDateFormat(Validator validator, String errorMessages,
+			String enteredValue)
 	{
 		if (!validator.checkDate(enteredValue))
 		{
-			errorMessages = errorMessages + "<li><font color\\='red'>" + ApplicationProperties.getValue("simpleQuery.date.format")+"</font></li>";
+			errorMessages = errorMessages + "<li><font color\\='red'>"
+					+ ApplicationProperties.getValue("simpleQuery.date.format") + "</font></li>";
 		}
 		return errorMessages;
 	}
@@ -310,15 +322,15 @@ public class CreateQueryObjectBizLogic
 		String[] conditions = queryString.split(QueryModuleConstants.QUERY_CONDITION_DELIMITER);
 		String[] attrParams;
 		String condition;
-		int len= conditions.length;
+		int len = conditions.length;
 		for (int i = 0; i < len; i++)
 		{
 			attrParams = new String[QueryModuleConstants.INDEX_LENGTH];
 			condition = conditions[i];
 			if (!condition.equals(""))
 			{
-				condition = condition.substring(QueryModuleConstants.ARGUMENT_ZERO,
-						condition.indexOf(QueryModuleConstants.ENTITY_SEPARATOR));
+				condition = condition.substring(QueryModuleConstants.ARGUMENT_ZERO, condition
+						.indexOf(QueryModuleConstants.ENTITY_SEPARATOR));
 				String attrName = null;
 				StringTokenizer tokenizer = new StringTokenizer(condition,
 						QueryModuleConstants.QUERY_OPERATOR_DELIMITER);
@@ -334,8 +346,8 @@ public class CreateQueryObjectBizLogic
 							attrParams[1] = tokenizer.nextToken();
 							if (RelationalOperator.Between.toString().equals(operator))
 							{
-								attrParams[QueryModuleConstants.INDEX_PARAM_TWO]
-								= tokenizer.nextToken();
+								attrParams[QueryModuleConstants.INDEX_PARAM_TWO] = tokenizer
+										.nextToken();
 							}
 						}
 					}
@@ -346,7 +358,6 @@ public class CreateQueryObjectBizLogic
 		return conditionsMap;
 	}
 
-
 	/**
 	 * This method process the input values for the conditions and set it to the conditions in the query
 	 * also replaces the conditions with the parameterized conditions
@@ -356,111 +367,117 @@ public class CreateQueryObjectBizLogic
 	 * @return String Message
 	 */
 	public String setInputDataToQuery(String queryInputString, IConstraints constraints,
-			Map<String, String> displayNamesMap,IQuery query )
-	{   
+			Map<String, String> displayNamesMap, IQuery query)
+	{
 		String errorMessage = "";
 		Map<String, String[]> newConditions = null;
 		if (queryInputString != null)
 		{
 			newConditions = createConditionsMap(queryInputString);
 		}
-		for(IExpression expression : constraints) {
+		for (IExpression expression : constraints)
+		{
 			int no_of_oprds = expression.numberOfOperands();
 			IExpressionOperand operand;
 			for (int i = 0; i < no_of_oprds; i++)
 			{
 				operand = expression.getOperand(i);
-					if(operand instanceof IRule)
+				if (operand instanceof IRule)
+				{
+					int expId = expression.getExpressionId();
+					IRule rule = (IRule) operand;
+					errorMessage = componentValues(displayNamesMap, errorMessage, newConditions,
+							expId, rule, query);
+					if (displayNamesMap == null && (Collections.list((IRule) operand)).size() == 0)
 					{
-						int expId = expression.getExpressionId();
-						IRule rule = (IRule) operand;
-						errorMessage = componentValues(displayNamesMap, errorMessage,
-							newConditions, expId,  rule,query);
-							if(displayNamesMap == null && (Collections.list((IRule) operand)).size()==0)
-						{
-							IExpression expression1 = rule.getContainingExpression();
-					        AttributeInterface attributeObj = getIdNotNullAttribute(expression1.getQueryEntity()
-					                .getDynamicExtensionsEntity());
+						IExpression expression1 = rule.getContainingExpression();
+						AttributeInterface attributeObj = getIdNotNullAttribute(expression1
+								.getQueryEntity().getDynamicExtensionsEntity());
 
-					        if (attributeObj != null) 
-					        {
-					            ICondition condition = createIdNotNullCondition(attributeObj);
-					            rule.addCondition(condition);
-					        }
+						if (attributeObj != null)
+						{
+							ICondition condition = createIdNotNullCondition(attributeObj);
+							rule.addCondition(condition);
 						}
 					}
+				}
 			}
 		}
 		return errorMessage;
 	}
-	 
-	public String setInputDataToTQ(IQuery query,String pageOf,String rhsList,Map<Integer,ICustomFormula> customFormulaIndexMap)
-	{ 
+
+	public String setInputDataToTQ(IQuery query, String pageOf, String rhsList,
+			Map<Integer, ICustomFormula> customFormulaIndexMap)
+	{
 		String errorMsg = "";
-		if(customFormulaIndexMap!=null && !customFormulaIndexMap.isEmpty())
-		{   
-		
-		Map<String, String[]> newRHSMap = getNewRHSMap(rhsList);
-	    ParameterizedQuery pQuery = null;
-		if (query instanceof ParameterizedQuery)
+		if (customFormulaIndexMap != null && !customFormulaIndexMap.isEmpty())
 		{
-			pQuery = (ParameterizedQuery) query;
-			 
-		}
-		for (String key : newRHSMap.keySet())
-		{
-			String[] newRHSValues = newRHSMap.get(key);
-			ICustomFormula customFormula = customFormulaIndexMap.get(Integer.parseInt(key));
-			String value = "";
-			if(customFormula!=null)
+
+			Map<String, String[]> newRHSMap = getNewRHSMap(rhsList);
+			ParameterizedQuery pQuery = null;
+			if (query instanceof ParameterizedQuery)
 			{
-			ITerm rhsTerm = QueryObjectFactory.createTerm();
-			if((customFormula.getLhs().getTermType()).equals(TermType.DSInterval))
-			 {
-				value = setDateOffsetRHS(newRHSValues, rhsTerm);
-			 }
-			else if((customFormula.getLhs().getTermType()).equals(TermType.Timestamp))
+				pQuery = (ParameterizedQuery) query;
+
+			}
+			for (String key : newRHSMap.keySet())
 			{
-				Date date;
-				try
+				String[] newRHSValues = newRHSMap.get(key);
+				ICustomFormula customFormula = customFormulaIndexMap.get(Integer.parseInt(key));
+				String value = "";
+				if (customFormula != null)
 				{
-					IDateLiteral rhsDateLiteral = null;
-					if(newRHSValues.length!=QueryModuleConstants.INDEX_PARAM_TWO)
+					ITerm rhsTerm = QueryObjectFactory.createTerm();
+					if ((customFormula.getLhs().getTermType()).equals(TermType.DSInterval))
 					{
-								date = Utility.parseDate(newRHSValues[QueryModuleConstants.INDEX_PARAM_TWO], QueryModuleConstants.DATE_FORMAT);
+						value = setDateOffsetRHS(newRHSValues, rhsTerm);
+					}
+					else if ((customFormula.getLhs().getTermType()).equals(TermType.Timestamp))
+					{
+						Date date;
+						try
+						{
+							IDateLiteral rhsDateLiteral = null;
+							if (newRHSValues.length != QueryModuleConstants.INDEX_PARAM_TWO)
+							{
+								date = Utility.parseDate(
+										newRHSValues[QueryModuleConstants.INDEX_PARAM_TWO],
+										QueryModuleConstants.DATE_FORMAT);
 								rhsDateLiteral = QueryObjectFactory
 										.createDateLiteral(new java.sql.Date(date.getTime()));
 								value = newRHSValues[QueryModuleConstants.INDEX_PARAM_TWO];
+							}
+							else
+							{
+								rhsDateLiteral = QueryObjectFactory.createDateLiteral();
+								value = "";
+							}
+							rhsTerm.addOperand(rhsDateLiteral);
+
+						}
+						catch (ParseException e)
+						{
+							e.printStackTrace();
+							errorMsg = e.getMessage();
+						}
+
 					}
-					else
+					customFormula
+							.setOperator(TemporalQueryUtility
+									.getRelationalOperator(newRHSValues[QueryModuleConstants.INDEX_PARAM_ONE]));
+					customFormula.getAllRhs().clear();
+					customFormula.addRhs(rhsTerm);
+					if (pageOf.equalsIgnoreCase(Constants.EXECUTE_QUERY_PAGE))
 					{
-						rhsDateLiteral = QueryObjectFactory.createDateLiteral();
-						value = "";
+						updateCFForExecuteQuery(pQuery, customFormula, value);
 					}
-					 rhsTerm.addOperand(rhsDateLiteral);
-					
+
+					if (pageOf.equalsIgnoreCase(Constants.SAVE_QUERY_PAGE))
+					{
+						pQuery = insertParamaters(query, pQuery, customFormula);
+					}
 				}
-				catch (ParseException e)
-				{
-					e.printStackTrace();
-					errorMsg = e.getMessage();
-				}
-				
-			}     
-			customFormula.setOperator(TemporalQueryUtility.getRelationalOperator(newRHSValues[QueryModuleConstants.INDEX_PARAM_ONE]));
-			customFormula.getAllRhs().clear();
-			customFormula.addRhs(rhsTerm);
-			if(pageOf.equalsIgnoreCase(Constants.EXECUTE_QUERY_PAGE))
-			{
-			updateCFForExecuteQuery(pQuery, customFormula, value);
 			}
-			
-			if(pageOf.equalsIgnoreCase(Constants.SAVE_QUERY_PAGE))
-			{
-				pQuery = insertParamaters(query, pQuery, customFormula);
-			}
-		  }
-		}
 		}
 		return errorMsg;
 	}
@@ -473,7 +490,9 @@ public class CreateQueryObjectBizLogic
 	private String setDateOffsetRHS(String[] newRHSValues, ITerm rhsTerm)
 	{
 		String value;
-		IDateOffsetLiteral rhsDateOffsetLiteral = QueryObjectFactory.createDateOffsetLiteral(newRHSValues[QueryModuleConstants.INDEX_PARAM_TWO],TemporalQueryUtility.getTimeInterval(newRHSValues[QueryModuleConstants.INDEX_PARAM_THREE]));
+		IDateOffsetLiteral rhsDateOffsetLiteral = QueryObjectFactory.createDateOffsetLiteral(
+				newRHSValues[QueryModuleConstants.INDEX_PARAM_TWO], TemporalQueryUtility
+						.getTimeInterval(newRHSValues[QueryModuleConstants.INDEX_PARAM_THREE]));
 		rhsTerm.addOperand(rhsDateOffsetLiteral);
 		value = newRHSValues[QueryModuleConstants.INDEX_PARAM_TWO];
 		return value;
@@ -488,11 +507,12 @@ public class CreateQueryObjectBizLogic
 	private ParameterizedQuery insertParamaters(IQuery query, ParameterizedQuery pQuery,
 			ICustomFormula customFormula)
 	{
-		if(query instanceof ParameterizedQuery)
+		if (query instanceof ParameterizedQuery)
 		{
-			pQuery = (ParameterizedQuery)query;
+			pQuery = (ParameterizedQuery) query;
 		}
-		IParameter<ICustomFormula> parameter = QueryObjectFactory.createParameter(customFormula, null);
+		IParameter<ICustomFormula> parameter = QueryObjectFactory.createParameter(customFormula,
+				null);
 		pQuery.getParameters().add(parameter);
 		return pQuery;
 	}
@@ -505,63 +525,71 @@ public class CreateQueryObjectBizLogic
 	private void updateCFForExecuteQuery(ParameterizedQuery pQuery, ICustomFormula customFormula,
 			String value)
 	{
-		Collection<ICustomFormula> allParameterizedCustomFormulas = QueryUtility.getAllParameterizedCustomFormulas(pQuery);
-		for(ICustomFormula cf :allParameterizedCustomFormulas)
+		Collection<ICustomFormula> allParameterizedCustomFormulas = QueryUtility
+				.getAllParameterizedCustomFormulas(pQuery);
+		for (ICustomFormula cf : allParameterizedCustomFormulas)
 		{
-			if(cf.getId().equals(customFormula.getId()))
+			if (cf.getId().equals(customFormula.getId()))
 			{
 				Set<IExpression> expressionsInFormula = QueryUtility.getExpressionsInFormula(cf);
-				for(IExpression exp : expressionsInFormula)
-				{ 
+				for (IExpression exp : expressionsInFormula)
+				{
 					boolean removeOperand = exp.removeOperand(cf);
-					if(removeOperand && !(value.trim().equals("")))
-						exp.addOperand(QueryObjectFactory.createLogicalConnector(LogicalOperator.And),customFormula);
+					if (removeOperand && !(value.trim().equals("")))
+					{
+						exp.addOperand(QueryObjectFactory
+								.createLogicalConnector(LogicalOperator.And), customFormula);
+					}
 				}
 			}
 		}
 	}
-	
-	private Map<String,String[]> getNewRHSMap(String rhsList)
-	{ 
-		Map<String,String[]> newRHSMap = new HashMap<String, String[]>();
+
+	private Map<String, String[]> getNewRHSMap(String rhsList)
+	{
+		Map<String, String[]> newRHSMap = new HashMap<String, String[]>();
 		String[] rhsArray = rhsList.split(QueryModuleConstants.QUERY_CONDITION_DELIMITER);
-		for (int i = 1; i <rhsArray.length; i++)
+		for (int i = 1; i < rhsArray.length; i++)
 		{
 			String[] split = rhsArray[i].split(QueryModuleConstants.QUERY_PARAMETER_DELIMITER);
 			newRHSMap.put(split[0], split);
 		}
 		return newRHSMap;
 	}
-	
+
 	/**
-     * Check if identifier present in entity.
-     * 
-     * @param entityInterfaceObj The Entity for which it is required to check if
-     *            identifier present.
-     * @return Reference to the AttributeInterface if identifier attribute is
-     *         present in the entity, else null.
-     */
-	private AttributeInterface getIdNotNullAttribute(EntityInterface entityInterfaceObj) 
-	{	
-		Collection<AttributeInterface> attributes = entityInterfaceObj.getEntityAttributesForQuery();
-        for (AttributeInterface attribute : attributes) {
-            if (attribute.getName().equals(Constants.ID)) {
-                return attribute;
-            }
-        }
-        return null;
+	 * Check if identifier present in entity.
+	 * 
+	 * @param entityInterfaceObj The Entity for which it is required to check if
+	 *            identifier present.
+	 * @return Reference to the AttributeInterface if identifier attribute is
+	 *         present in the entity, else null.
+	 */
+	private AttributeInterface getIdNotNullAttribute(EntityInterface entityInterfaceObj)
+	{
+		Collection<AttributeInterface> attributes = entityInterfaceObj
+				.getEntityAttributesForQuery();
+		for (AttributeInterface attribute : attributes)
+		{
+			if (attribute.getName().equals(Constants.ID))
+			{
+				return attribute;
+			}
+		}
+		return null;
 	}
 
 	/**
-     * Creates condition identifier != null'
-     * @param attributeObj The attribute on which the condition has to be created(In this case its 'identifier')
-     * @return condition that is created on identifier
-     */
-	private ICondition createIdNotNullCondition(AttributeInterface attributeObj) 
+	 * Creates condition identifier != null'
+	 * @param attributeObj The attribute on which the condition has to be created(In this case its 'identifier')
+	 * @return condition that is created on identifier
+	 */
+	private ICondition createIdNotNullCondition(AttributeInterface attributeObj)
 	{
-        ICondition condition = QueryObjectFactory.createCondition(attributeObj, RelationalOperator.IsNotNull, null);
-        return condition;
-    }
+		ICondition condition = QueryObjectFactory.createCondition(attributeObj,
+				RelationalOperator.IsNotNull, null);
+		return condition;
+	}
 
 	/**
 	 * @param displayNamesMap
@@ -572,17 +600,17 @@ public class CreateQueryObjectBizLogic
 	 * @return String Message
 	 */
 	private String componentValues(Map<String, String> displayNamesMap, String errorMessage,
-			Map<String, String[]> newConditions, int expId, IRule rule ,IQuery query)
-	{ 
+			Map<String, String[]> newConditions, int expId, IRule rule, IQuery query)
+	{
 		ICondition condition;
 		String componentName;
 		ArrayList<ICondition> removalList = new ArrayList<ICondition>();
 		List<ICondition> deafultConditions = new ArrayList<ICondition>();
-		int size = rule.size(); 
+		int size = rule.size();
 		ParameterizedQuery pQuery = null;
-		if(query instanceof ParameterizedQuery)
+		if (query instanceof ParameterizedQuery)
 		{
-			pQuery = (ParameterizedQuery)query;
+			pQuery = (ParameterizedQuery) query;
 		}
 		for (int j = 0; j < size; j++)
 		{
@@ -592,85 +620,93 @@ public class CreateQueryObjectBizLogic
 			{
 				String[] params = newConditions.get(componentName);
 				ArrayList<String> attributeValues = getConditionValuesList(params);
-				errorMessage = errorMessage + validateAttributeValues(condition
-						.getAttribute().getDataType().toString(),attributeValues);
-				
-				if(displayNamesMap!=null && !(displayNamesMap.containsKey(componentName)))
-				{}
+				errorMessage = errorMessage
+						+ validateAttributeValues(
+								condition.getAttribute().getDataType().toString(), attributeValues);
+
+				if (displayNamesMap != null && !(displayNamesMap.containsKey(componentName)))
+				{
+				}
 				else
 				{
 					condition.setValues(attributeValues);
-					condition.setRelationalOperator(RelationalOperator.getOperatorForStringRepresentation(
-							params[QueryModuleConstants.INDEX_PARAM_ZERO]));
+					condition
+							.setRelationalOperator(RelationalOperator
+									.getOperatorForStringRepresentation(params[QueryModuleConstants.INDEX_PARAM_ZERO]));
 				}
 			}
-			if((!newConditions.containsKey(componentName)) && (displayNamesMap == null))
+			if ((!newConditions.containsKey(componentName)) && (displayNamesMap == null))
 			{
 				removalList.add(condition);
-				if(query instanceof ParameterizedQuery)
+				if (query instanceof ParameterizedQuery)
 				{
-					pQuery = (ParameterizedQuery)query;
-					List<IParameter<?>> parameterList = pQuery.getParameters(); 
+					pQuery = (ParameterizedQuery) query;
+					List<IParameter<?>> parameterList = pQuery.getParameters();
 					boolean isparameter = false;
-					if(parameterList !=null)
+					if (parameterList != null)
 					{
-					 for (IParameter<?> parameter : parameterList) 
-					 {
-				            if (parameter.getParameterizedObject() instanceof ICondition) 
-				            {
-				            	ICondition paramCondition = (ICondition) parameter.getParameterizedObject();
-				                if(paramCondition.getId().equals(condition.getId()))
-				                	isparameter = true;
-				             }
-				        }
-					}
-					if(!isparameter)
+						for (IParameter<?> parameter : parameterList)
+						{
+							if (parameter.getParameterizedObject() instanceof ICondition)
 							{
-								deafultConditions.add(condition);
+								ICondition paramCondition = (ICondition) parameter
+										.getParameterizedObject();
+								if (paramCondition.getId().equals(condition.getId()))
+								{
+									isparameter = true;
+								}
 							}
+						}
+					}
+					if (!isparameter)
+					{
+						deafultConditions.add(condition);
+					}
 				}
 			}
 			if (displayNamesMap != null && displayNamesMap.containsKey(componentName))
 			{
-				
-				IParameter<ICondition> parameter = QueryObjectFactory.createParameter(condition, displayNamesMap.get(componentName));
+
+				IParameter<ICondition> parameter = QueryObjectFactory.createParameter(condition,
+						displayNamesMap.get(componentName));
 				pQuery.getParameters().add(parameter);
 			}
 		}
-		for(ICondition removalEntity : removalList)
+		for (ICondition removalEntity : removalList)
 		{
-			if(!deafultConditions.contains(removalEntity))
-			{	
+			if (!deafultConditions.contains(removalEntity))
+			{
 				rule.removeCondition(removalEntity);
-			}	
+			}
 		}
 		return errorMessage;
 	}
-	
-	
-//	private IParameter<?> isParameterized(ICondition condition, List<IParameter<?>> parameterList)
-//	{
-//		if(parameterList !=null)
-//		{
-//		 for (IParameter<?> parameter : parameterList) 
-//		 {
-//	            if (parameter.getParameterizedObject() instanceof ICondition) 
-//	            {
-//	            	ICondition paramCondition = (ICondition) parameter.getParameterizedObject();
-//	                if(paramCondition.getId()==condition.getId())
-//	                    return parameter;
-//	             }
-//	        }
-//		}
-//		return null;
-//	}
+
+	//	private IParameter<?> isParameterized(ICondition condition, List<IParameter<?>> parameterList)
+	//	{
+	//		if(parameterList !=null)
+	//		{
+	//		 for (IParameter<?> parameter : parameterList) 
+	//		 {
+	//	            if (parameter.getParameterizedObject() instanceof ICondition) 
+	//	            {
+	//	            	ICondition paramCondition = (ICondition) parameter.getParameterizedObject();
+	//	                if(paramCondition.getId()==condition.getId())
+	//	                    return parameter;
+	//	             }
+	//	        }
+	//		}
+	//		return null;
+	//	}
 
 	/**
 	 * This Method generates component name as expressionId_attributeId.
 	 */
-	private String generateComponentName(int expressionId, AttributeInterface attribute) {
-		String componentId = expressionId + QueryModuleConstants.UNDERSCORE + attribute.getId().toString();
+	private String generateComponentName(int expressionId, AttributeInterface attribute)
+	{
+		String componentId = expressionId + QueryModuleConstants.UNDERSCORE
+				+ attribute.getId().toString();
 		return componentId;
 	}
-	
+
 }

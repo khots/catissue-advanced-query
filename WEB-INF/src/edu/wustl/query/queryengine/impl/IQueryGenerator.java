@@ -20,27 +20,28 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
  * @author prafull_kadam
  * 
  */
-public interface IQueryGenerator {
+public interface IQueryGenerator
+{
 
-    /**
-     * Generates SQL for the given Query Object.
-     * 
-     * @param query The Reference to Query Object.
-     * @return the String representing SQL for the given Query object.
-     * @throws MultipleRootsException When there are multpile roots present in a
-     *             graph.
-     * @throws SqlException When there is error in the passed IQuery object.
-     */
-    String generateQuery(IQuery query) throws MultipleRootsException, SqlException;
+	/**
+	 * Generates SQL for the given Query Object.
+	 * 
+	 * @param query The Reference to Query Object.
+	 * @return the String representing SQL for the given Query object.
+	 * @throws MultipleRootsException When there are multpile roots present in a
+	 *             graph.
+	 * @throws SqlException When there is error in the passed IQuery object.
+	 */
+	String generateQuery(IQuery query) throws MultipleRootsException, SqlException;
 
-    List<OutputTreeDataNode> getRootOutputTreeNodeList();
+	List<OutputTreeDataNode> getRootOutputTreeNodeList();
 
-    /**
-     * @return map with key as sql's column name and value as the term which
-     *         that column represents.
-     */
-    Map<String, IOutputTerm> getOutputTermsColumns();
-    
-    Map<AttributeInterface, String> getAttributeColumnNameMap();
-    
+	/**
+	 * @return map with key as sql's column name and value as the term which
+	 *         that column represents.
+	 */
+	Map<String, IOutputTerm> getOutputTermsColumns();
+
+	Map<AttributeInterface, String> getAttributeColumnNameMap();
+
 }

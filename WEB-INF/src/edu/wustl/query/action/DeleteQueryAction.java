@@ -1,5 +1,5 @@
-package edu.wustl.query.action;
 
+package edu.wustl.query.action;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,23 +22,28 @@ import edu.wustl.query.util.global.Constants;
 
 public class DeleteQueryAction extends Action
 {
-	private static final String QUERY_ID="queryId";
+
+	private static final String QUERY_ID = "queryId";
+
 	/**
 	 * Action Handler for Deletes Save query from database 
 	 */
+	@Override
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
 		String target = Constants.FAILURE;
 
 		String queryIdStr = request.getParameter(QUERY_ID);
 		HttpSession session = request.getSession();
-		String queryDeletedInLastRequest = (String)session.getAttribute(Constants.QUERY_ALREADY_DELETED);
+		String queryDeletedInLastRequest = (String) session
+				.getAttribute(Constants.QUERY_ALREADY_DELETED);
 		Long queryId = Long.parseLong(queryIdStr);
 		if (queryId != null)
 		{
-			if(!queryIdStr.equalsIgnoreCase(queryDeletedInLastRequest))
+			if (!queryIdStr.equalsIgnoreCase(queryDeletedInLastRequest))
 			{
-				session.setAttribute(Constants.QUERY_ALREADY_DELETED,queryIdStr);
+				session.setAttribute(Constants.QUERY_ALREADY_DELETED, queryIdStr);
 				IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
 						.getValue("app.bizLogicFactory"), "getBizLogic",
 						Constants.QUERY_INTERFACE_BIZLOGIC_ID);
@@ -47,11 +52,12 @@ public class DeleteQueryAction extends Action
 					Object object = bizLogic.retrieve(ParameterizedQuery.class.getName(), queryId);
 					if (object != null)
 					{
-						IParameterizedQuery parameterizedQuery = (ParameterizedQuery)object;
-						bizLogic.delete(parameterizedQuery,Constants.HIBERNATE_DAO);
-						target = Constants.SUCCESS; 
-						setActionError(request, ApplicationProperties.getValue("query.deletedSuccessfully.message"));
-						session.setAttribute(Constants.QUERY_ALREADY_DELETED,queryIdStr );
+						IParameterizedQuery parameterizedQuery = (ParameterizedQuery) object;
+						bizLogic.delete(parameterizedQuery, Constants.HIBERNATE_DAO);
+						target = Constants.SUCCESS;
+						setActionError(request, ApplicationProperties
+								.getValue("query.deletedSuccessfully.message"));
+						session.setAttribute(Constants.QUERY_ALREADY_DELETED, queryIdStr);
 					}
 					else
 					{

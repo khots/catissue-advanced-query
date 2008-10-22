@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package edu.wustl.query.bizlogic;
 
 import java.sql.Connection;
@@ -22,14 +23,13 @@ import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryDetails;
 
-
 /**
  * @author supriya_dankh
  *
  */
 public class QueryCsmBizLogic
 {
- 
+
 	/**
 	 * @param selectSql
 	 * @param sessionData
@@ -41,14 +41,14 @@ public class QueryCsmBizLogic
 	 * @throws ClassNotFoundException 
 	 */
 	public List executeCSMQuery(String selectSql, QueryDetails queryDetailsObj,
-			Map<Long, QueryResultObjectDataBean> queryResulObjectDataMap,
-			OutputTreeDataNode root, boolean hasConditionOnIdentifiedField)
+			Map<Long, QueryResultObjectDataBean> queryResulObjectDataMap, OutputTreeDataNode root,
+			boolean hasConditionOnIdentifiedField)
 	//throws DAOException, ClassNotFoundException
-	{  
+	{
 		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 		List<List<String>> dataList = new ArrayList<List<String>>();
 		try
-		{ 
+		{
 			dao.openSession(queryDetailsObj.getSessionData());
 			dataList = dao.executeQuery(selectSql, queryDetailsObj.getSessionData(),
 					queryDetailsObj.getSessionData().isSecurityRequired(),
@@ -60,66 +60,76 @@ public class QueryCsmBizLogic
 		{
 			
 		}*/
-		catch(DAOException t)
+		catch (DAOException t)
 		{
 			t.printStackTrace();
 		}
-		
-		catch(Exception e)
+
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 		finally
 		{
-			
+
 		}
 		return dataList;
 	}
-	
+
 	/**
 	 * Retrieves the main entity list if the entity is Abstract
 	 * @param firstEntity Abstract Entity
 	 * @param lastEntity The entity on which the query has been fired
 	 * @return List of main entities
 	 */
-	public static List<EntityInterface> getMainEntityList(
-			EntityInterface firstEntity, EntityInterface lastEntity) 
+	public static List<EntityInterface> getMainEntityList(EntityInterface firstEntity,
+			EntityInterface lastEntity)
 	{
-		
+
 		Long id1 = firstEntity.getId();
 		Long id2 = lastEntity.getId();
-		
+
 		Connection conn = DBUtil.getConnection();
 		Statement stmt = null;
 		ResultSet rs = null;
 		List<Long> firstEntityIdList = new ArrayList<Long>();
 		List<EntityInterface> mainEntityList = new ArrayList<EntityInterface>();
-		try 
-		{		
+		try
+		{
 			stmt = conn.createStatement();
-			rs = stmt.executeQuery("Select FIRST_ENTITY_ID from PATH where INTERMEDIATE_PATH in (Select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID = "+id1+" and LAST_ENTITY_ID = "+id2+") and LAST_ENTITY_ID = "+id2);
-			while(rs.next())
+			rs = stmt
+					.executeQuery("Select FIRST_ENTITY_ID from PATH where INTERMEDIATE_PATH in (Select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID = "
+							+ id1
+							+ " and LAST_ENTITY_ID = "
+							+ id2
+							+ ") and LAST_ENTITY_ID = "
+							+ id2);
+			while (rs.next())
 			{
-				if(rs.getInt(1) != id1)
-					firstEntityIdList.add(rs.getLong(1));
-			}
-			Collection<EntityInterface> allEntities = (Collection<EntityInterface>)firstEntity.getEntityGroup().getEntityCollection();
-			for(Long firstEntityId : firstEntityIdList)
-			{
-				for(EntityInterface tempEntity : allEntities)
+				if (rs.getInt(1) != id1)
 				{
-					if(Integer.parseInt(tempEntity.getId().toString()) == Integer.parseInt(firstEntityId.toString()))
+					firstEntityIdList.add(rs.getLong(1));
+				}
+			}
+			Collection<EntityInterface> allEntities = firstEntity.getEntityGroup()
+					.getEntityCollection();
+			for (Long firstEntityId : firstEntityIdList)
+			{
+				for (EntityInterface tempEntity : allEntities)
+				{
+					if (Integer.parseInt(tempEntity.getId().toString()) == Integer
+							.parseInt(firstEntityId.toString()))
 					{
 						mainEntityList.add(tempEntity);
 						break;
 					}
 				}
 			}
-		} 
+		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-		} 
+		}
 		finally
 		{
 			try

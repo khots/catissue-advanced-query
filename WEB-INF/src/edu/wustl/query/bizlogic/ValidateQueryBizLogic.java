@@ -1,3 +1,4 @@
+
 package edu.wustl.query.bizlogic;
 
 import java.util.List;
@@ -8,11 +9,6 @@ import javax.servlet.http.HttpSession;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.query.queryengine.impl.IQueryGenerator;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.querysuite.QueryCSMUtil;
-import edu.wustl.query.util.querysuite.QueryDetails;
-import edu.wustl.query.util.querysuite.QueryModuleUtil;
 import edu.wustl.common.query.factory.QueryGeneratorFactory;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.util.QueryObjectProcessor;
@@ -24,6 +20,11 @@ import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.query.queryengine.impl.IQueryGenerator;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.QueryCSMUtil;
+import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 /**
  * When the user searches or saves a query , the query is checked for the conditions like DAG should not be empty , is there 
@@ -33,8 +34,9 @@ import edu.wustl.common.util.logger.Logger;
  * @author shrutika_chintal
  *
  */
-public class ValidateQueryBizLogic {
-	
+public class ValidateQueryBizLogic
+{
+
 	/**
 	 * 
 	 * @param request - 
@@ -45,19 +47,19 @@ public class ValidateQueryBizLogic {
 	 */
 	public static String getValidationMessage(HttpServletRequest request, IQuery query)
 	{
-		String validationMessage = null;  				
+		String validationMessage = null;
 		boolean isRulePresentInDag = QueryModuleUtil.checkIfRulePresentInDag(query);
 		if (!isRulePresentInDag)
-		{	
+		{
 			validationMessage = ApplicationProperties.getValue("query.noLimit.error");
 			return validationMessage;
 		}
 		IConstraints constraints = query.getConstraints();
 		boolean noExpressionInView = true;
-		for(IExpression expression : constraints)
+		for (IExpression expression : constraints)
 		{
-		
-			if(expression.isInView())
+
+			if (expression.isInView())
 			{
 				noExpressionInView = false;
 				break;
@@ -65,54 +67,66 @@ public class ValidateQueryBizLogic {
 		}
 		if (noExpressionInView)
 		{
-			validationMessage = ApplicationProperties.getValue("query.defineView.noExpression.message");
+			validationMessage = ApplicationProperties
+					.getValue("query.defineView.noExpression.message");
 			return validationMessage;
 		}
-		try   
-		{ 
-			HttpSession session = request.getSession(); 
+		try
+		{
+			HttpSession session = request.getSession();
 			IQueryGenerator queryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
 			String selectSql = queryGenerator.generateQuery(query);
-			Map<AttributeInterface, String> attributeColumnNameMap = queryGenerator.getAttributeColumnNameMap();
+			Map<AttributeInterface, String> attributeColumnNameMap = queryGenerator
+					.getAttributeColumnNameMap();
 			session.setAttribute(Constants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
 			Map<String, IOutputTerm> outputTermsColumns = queryGenerator.getOutputTermsColumns();
 
 			QueryDetails queryDetailsObj = new QueryDetails(session);
-			session.setAttribute(Constants.OUTPUT_TERMS_COLUMNS,outputTermsColumns);
-			session.setAttribute(Constants.SAVE_GENERATED_SQL,selectSql);
+			session.setAttribute(Constants.OUTPUT_TERMS_COLUMNS, outputTermsColumns);
+			session.setAttribute(Constants.SAVE_GENERATED_SQL, selectSql);
 			List<OutputTreeDataNode> rootOutputTreeNodeList = queryGenerator
-			.getRootOutputTreeNodeList();
+					.getRootOutputTreeNodeList();
 			session.setAttribute(Constants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
-			session.setAttribute(Constants.NO_OF_TREES, Long.valueOf(rootOutputTreeNodeList.size()));
+			session
+					.setAttribute(Constants.NO_OF_TREES, Long
+							.valueOf(rootOutputTreeNodeList.size()));
 			Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
-			.getAllChildrenNodes(rootOutputTreeNodeList);
+					.getAllChildrenNodes(rootOutputTreeNodeList);
 			queryDetailsObj.setUniqueIdNodesMap(uniqueIdNodesMap);
 			//This method will check if main objects for all the dependant objects are present in query or not.
-			Map<EntityInterface, List<EntityInterface>> mainEntityMap = QueryCSMUtil.setMainObjectErrorMessage(
-					query, session, queryDetailsObj);
+			Map<EntityInterface, List<EntityInterface>> mainEntityMap = QueryCSMUtil
+					.setMainObjectErrorMessage(query, session, queryDetailsObj);
 			session.setAttribute(Constants.ID_NODES_MAP, uniqueIdNodesMap);
 			// if no main object is present in the map show the error message set in the session.
-			if(mainEntityMap == null)
+			if (mainEntityMap == null)
 			{
 				//return NO_MAIN_OBJECT_IN_QUERY;
-				validationMessage = (String)session.getAttribute(Constants.NO_MAIN_OBJECT_IN_QUERY);
-				validationMessage = "<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>"+validationMessage+"</font></li>";
+				validationMessage = (String) session
+						.getAttribute(Constants.NO_MAIN_OBJECT_IN_QUERY);
+				validationMessage = "<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>"
+						+ validationMessage + "</font></li>";
 			}
 		}
 		catch (MultipleRootsException e)
 		{
 			Logger.out.error(e);
-			validationMessage = "<li><font color='red'> " + ApplicationProperties.getValue("errors.executeQuery.multipleRoots") + "</font></li>";
+			validationMessage = "<li><font color='red'> "
+					+ ApplicationProperties.getValue("errors.executeQuery.multipleRoots")
+					+ "</font></li>";
 		}
 		catch (SqlException e)
 		{
 			Logger.out.error(e);
-			validationMessage = "<li><font color='red'> " + ApplicationProperties.getValue("errors.executeQuery.genericmessage") + "</font></li>";
+			validationMessage = "<li><font color='red'> "
+					+ ApplicationProperties.getValue("errors.executeQuery.genericmessage")
+					+ "</font></li>";
 		}
 		catch (RuntimeException e)
 		{
 			Logger.out.error(e);
-			validationMessage = "<li><font color='red'> " + ApplicationProperties.getValue("errors.executeQuery.genericmessage") + "</font></li>";
+			validationMessage = "<li><font color='red'> "
+					+ ApplicationProperties.getValue("errors.executeQuery.genericmessage")
+					+ "</font></li>";
 			e.printStackTrace();
 		}
 		return validationMessage;

@@ -27,6 +27,7 @@ public class PathObject implements Serializable
 	 * This method checks whether path has been added between the source entity and target entity.
 	 * @return boolean true if path has been added else false. 
 	 */
+	@Override
 	public boolean equals(Object obj)
 	{
 
@@ -85,6 +86,7 @@ public class PathObject implements Serializable
 		this.targetEntity = targetEntity;
 	}
 
+	@Override
 	public int hashCode()
 	{
 

@@ -1,3 +1,4 @@
+
 package edu.wustl.query.querysuite.metadata;
 
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.util.List;
 
 public class AddSpecimenClassAttributeMetadata extends BaseMetadata
 {
+
 	private Connection connection = null;
 
 	public void addSpecimenClass() throws SQLException, IOException
@@ -17,17 +19,19 @@ public class AddSpecimenClassAttributeMetadata extends BaseMetadata
 		populateAttributeColumnNameMap();
 		populateAttributeDatatypeMap();
 		populateAttributePrimaryKeyMap();
-		
-		AddAttribute addAttribute = new AddAttribute(connection,entityNameAttributeNameMap,attributeColumnNameMap,attributeDatatypeMap,attributePrimarkeyMap,entityList);
+
+		AddAttribute addAttribute = new AddAttribute(connection, entityNameAttributeNameMap,
+				attributeColumnNameMap, attributeDatatypeMap, attributePrimarkeyMap, entityList);
 		addAttribute.addAttribute();
 	}
 
-	private void populateEntityAttributeMap() 
+	private void populateEntityAttributeMap()
 	{
 		List<String> attributes = new ArrayList<String>();
 		attributes.add("specimenClass");
 
-		entityNameAttributeNameMap.put("edu.wustl.catissuecore.domain.AbstractSpecimen",attributes);
+		entityNameAttributeNameMap
+				.put("edu.wustl.catissuecore.domain.AbstractSpecimen", attributes);
 	}
 
 	private void populateAttributeColumnNameMap()
@@ -39,10 +43,12 @@ public class AddSpecimenClassAttributeMetadata extends BaseMetadata
 	{
 		attributeDatatypeMap.put("specimenClass", "string");
 	}
-	private void populateAttributePrimaryKeyMap() 
+
+	private void populateAttributePrimaryKeyMap()
 	{
 		attributePrimarkeyMap.put("specimenClass", "0");
 	}
+
 	private void populateEntityList()
 	{
 		entityList.add("edu.wustl.catissuecore.domain.AbstractSpecimen");

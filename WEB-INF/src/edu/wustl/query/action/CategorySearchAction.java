@@ -35,6 +35,7 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 public class CategorySearchAction extends Action
 {
+
 	/**
 	 * This method loads the data required for categorySearch.jsp
 	 * @param mapping mapping
@@ -44,11 +45,12 @@ public class CategorySearchAction extends Action
 	 * @throws Exception Exception
 	 * @return ActionForward actionForward
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-	throws Exception
-	{ 
-		String isQuery =(String) request.getParameter("isQuery");
-		if(isQuery!=null)
+	@Override
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		String isQuery = request.getParameter("isQuery");
+		if (isQuery != null)
 		{
 			request.setAttribute("isQuery", isQuery);
 		}
@@ -58,25 +60,25 @@ public class CategorySearchAction extends Action
 		}
 		CategorySearchForm searchForm = (CategorySearchForm) form;
 		String currentPage = searchForm.getCurrentPage();
-		if(currentPage != null && currentPage.equalsIgnoreCase("resultsView"))
+		if (currentPage != null && currentPage.equalsIgnoreCase("resultsView"))
 		{
 			searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
 			return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
 		}
 		String textfieldValue = searchForm.getTextField();
-		if(currentPage != null && currentPage.equalsIgnoreCase("prevToAddLimits"))
+		if (currentPage != null && currentPage.equalsIgnoreCase("prevToAddLimits"))
 		{
 			textfieldValue = "";
 		}
 		if (textfieldValue != null && !textfieldValue.equals(""))
 		{
 			int[] searchTarget = prepareSearchTarget(searchForm);
-			
+
 			/* 
 			 * Bug #5131 : Disabling function call and supplying value directly
 			 * until the Concept-Code search is fixed
 			 */
-            // int basedOn = prepareBaseOn(searchForm.getSelected());
+			// int basedOn = prepareBaseOn(searchForm.getSelected());
 			int basedOn = Constants.BASED_ON_TEXT;
 			Set<EntityInterface> entityCollection = new HashSet<EntityInterface>();
 			String[] searchString = null;
@@ -98,14 +100,11 @@ public class CategorySearchAction extends Action
 				String entityId = entity.getId().toString();
 				String description = entity.getDescription();
 				entitiesString = entitiesString
-						+ edu.wustl.query.util.global.Constants.ENTITY_SEPARATOR
-						+ entityName
-						+ edu.wustl.query.util.global.Constants.ATTRIBUTE_SEPARATOR
-						+ entityId
-						+ edu.wustl.query.util.global.Constants.ATTRIBUTE_SEPARATOR
-						+ description;
+						+ edu.wustl.query.util.global.Constants.ENTITY_SEPARATOR + entityName
+						+ edu.wustl.query.util.global.Constants.ATTRIBUTE_SEPARATOR + entityId
+						+ edu.wustl.query.util.global.Constants.ATTRIBUTE_SEPARATOR + description;
 			}
-			
+
 			if (entitiesString.equals(""))
 			{
 				entitiesString = ApplicationProperties.getValue("query.noResultFoundMessage");
@@ -114,10 +113,15 @@ public class CategorySearchAction extends Action
 			{
 				String KeySeparator = edu.wustl.query.util.global.Constants.KEY_CODE;
 				String key = request.getParameter(KeySeparator);
-				entitiesString = entitiesString + edu.wustl.query.util.global.Constants.KEY_SEPARATOR + key;
-				entitiesString = entitiesString + edu.wustl.query.util.global.Constants.KEY_SEPARATOR + textfieldValue;
-				entitiesString = entitiesString + edu.wustl.query.util.global.Constants.KEY_SEPARATOR + attributeChecked;
-				entitiesString = entitiesString + edu.wustl.query.util.global.Constants.KEY_SEPARATOR + permissibleValuesChecked;
+				entitiesString = entitiesString
+						+ edu.wustl.query.util.global.Constants.KEY_SEPARATOR + key;
+				entitiesString = entitiesString
+						+ edu.wustl.query.util.global.Constants.KEY_SEPARATOR + textfieldValue;
+				entitiesString = entitiesString
+						+ edu.wustl.query.util.global.Constants.KEY_SEPARATOR + attributeChecked;
+				entitiesString = entitiesString
+						+ edu.wustl.query.util.global.Constants.KEY_SEPARATOR
+						+ permissibleValuesChecked;
 			}
 			response.setContentType("text/html");
 			response.getWriter().write(entitiesString);
@@ -125,7 +129,6 @@ public class CategorySearchAction extends Action
 		}
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
 	}
-	
 
 	/**
 	 * Prepares a String to be sent to AdvancedSearch logic.
@@ -175,9 +178,13 @@ public class CategorySearchAction extends Action
 		String permissiblevaluesCheckBoxChecked = searchForm.getPermissibleValuesChecked();
 		String includeDescriptionChecked = searchForm.getIncludeDescriptionChecked();
 		List<Integer> target = new ArrayList<Integer>();
-		if (classCheckBoxChecked != null && (classCheckBoxChecked.equalsIgnoreCase("on") || classCheckBoxChecked.equalsIgnoreCase("true")))
+		if (classCheckBoxChecked != null
+				&& (classCheckBoxChecked.equalsIgnoreCase("on") || classCheckBoxChecked
+						.equalsIgnoreCase("true")))
 		{
-			if(includeDescriptionChecked !=null && (includeDescriptionChecked.equalsIgnoreCase("on")|| includeDescriptionChecked.equalsIgnoreCase("true")))
+			if (includeDescriptionChecked != null
+					&& (includeDescriptionChecked.equalsIgnoreCase("on") || includeDescriptionChecked
+							.equalsIgnoreCase("true")))
 			{
 				target.add(Integer.valueOf((Constants.CLASS_WITH_DESCRIPTION)));
 			}
@@ -186,9 +193,13 @@ public class CategorySearchAction extends Action
 				target.add(Integer.valueOf((Constants.CLASS)));
 			}
 		}
-		if (attributeCheckBoxChecked != null && (attributeCheckBoxChecked.equalsIgnoreCase("on") || attributeCheckBoxChecked.equalsIgnoreCase("true")))
+		if (attributeCheckBoxChecked != null
+				&& (attributeCheckBoxChecked.equalsIgnoreCase("on") || attributeCheckBoxChecked
+						.equalsIgnoreCase("true")))
 		{
-			if(includeDescriptionChecked !=null && (includeDescriptionChecked.equalsIgnoreCase("on")|| includeDescriptionChecked.equalsIgnoreCase("true")))
+			if (includeDescriptionChecked != null
+					&& (includeDescriptionChecked.equalsIgnoreCase("on") || includeDescriptionChecked
+							.equalsIgnoreCase("true")))
 			{
 				target.add(Integer.valueOf((Constants.ATTRIBUTE_WITH_DESCRIPTION)));
 			}
@@ -197,17 +208,18 @@ public class CategorySearchAction extends Action
 				target.add(Integer.valueOf((Constants.ATTRIBUTE)));
 			}
 		}
-		if (permissiblevaluesCheckBoxChecked != null && (permissiblevaluesCheckBoxChecked.equalsIgnoreCase("on") || permissiblevaluesCheckBoxChecked.equalsIgnoreCase("true")))
+		if (permissiblevaluesCheckBoxChecked != null
+				&& (permissiblevaluesCheckBoxChecked.equalsIgnoreCase("on") || permissiblevaluesCheckBoxChecked
+						.equalsIgnoreCase("true")))
 		{
 			target.add(Integer.valueOf((Constants.PV)));
 		}
 		int[] searchTarget = new int[target.size()];
 		for (int i = 0; i < target.size(); i++)
 		{
-			searchTarget[i] = ((Integer) (target.get(i))).intValue();
+			searchTarget[i] = ((target.get(i))).intValue();
 		}
 		return searchTarget;
 	}
-
 
 }

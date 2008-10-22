@@ -1,17 +1,18 @@
+
 package edu.wustl.query.flex.dag;
 
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 
-
 public class CustomFormulaUIBean
 {
+
 	private ICustomFormula cf;
 	private CustomFormulaNode twoNode;
 	private SingleNodeCustomFormulaNode singleNode;
 	private boolean isCalculatedResult = false;
-	private IOutputTerm outputTerm ;
-	
+	private IOutputTerm outputTerm;
+
 	/**
 	 * @return Returns the isCalculatedResult.
 	 */
@@ -19,7 +20,7 @@ public class CustomFormulaUIBean
 	{
 		return isCalculatedResult;
 	}
-	
+
 	/**
 	 * @param isCalculatedResult The isCalculatedResult to set.
 	 */
@@ -27,7 +28,7 @@ public class CustomFormulaUIBean
 	{
 		this.isCalculatedResult = isCalculatedResult;
 	}
-	
+
 	/**
 	 * @return Returns the outputTerm.
 	 */
@@ -35,7 +36,7 @@ public class CustomFormulaUIBean
 	{
 		return outputTerm;
 	}
-	
+
 	/**
 	 * @param outputTerm The outputTerm to set.
 	 */
@@ -43,13 +44,16 @@ public class CustomFormulaUIBean
 	{
 		this.outputTerm = outputTerm;
 	}
-	public CustomFormulaUIBean(ICustomFormula cf,CustomFormulaNode twoNode,SingleNodeCustomFormulaNode singleNode, IOutputTerm outputTerm)
+
+	public CustomFormulaUIBean(ICustomFormula cf, CustomFormulaNode twoNode,
+			SingleNodeCustomFormulaNode singleNode, IOutputTerm outputTerm)
 	{
-		this.cf =cf;
+		this.cf = cf;
 		this.singleNode = singleNode;
 		this.twoNode = twoNode;
-		this.outputTerm = outputTerm; 
+		this.outputTerm = outputTerm;
 	}
+
 	/**
 	 * @return Returns the cf.
 	 */
@@ -57,7 +61,7 @@ public class CustomFormulaUIBean
 	{
 		return cf;
 	}
-	
+
 	/**
 	 * @param cf The cf to set.
 	 */
@@ -65,7 +69,7 @@ public class CustomFormulaUIBean
 	{
 		this.cf = cf;
 	}
-	
+
 	/**
 	 * @return Returns the singleNode.
 	 */
@@ -73,7 +77,7 @@ public class CustomFormulaUIBean
 	{
 		return singleNode;
 	}
-	
+
 	/**
 	 * @param singleNode The singleNode to set.
 	 */
@@ -81,7 +85,7 @@ public class CustomFormulaUIBean
 	{
 		this.singleNode = singleNode;
 	}
-	
+
 	/**
 	 * @return Returns the twoNode.
 	 */
@@ -89,13 +93,13 @@ public class CustomFormulaUIBean
 	{
 		return twoNode;
 	}
-	
+
 	/**
 	 * @param twoNode The twoNode to set.
 	 */
 	public void setTwoNode(CustomFormulaNode twoNode)
 	{
 		this.twoNode = twoNode;
-	} 
+	}
 
 }

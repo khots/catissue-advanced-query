@@ -1,17 +1,18 @@
+
 package edu.wustl.query.util.querysuite;
 
 public class QueryModuleException extends Exception
 {
-	
+
 	private String message;
 	private QueryModuleError key;
-	
+
 	public QueryModuleException(String message)
 	{
 		super();
 		this.message = message;
 	}
-	
+
 	public QueryModuleException(String message, QueryModuleError key)
 	{
 		super(message);
@@ -22,7 +23,7 @@ public class QueryModuleException extends Exception
 	/**
 	 * @return the key
 	 */
-	public QueryModuleError getKey() 
+	public QueryModuleError getKey()
 	{
 		return key;
 	}

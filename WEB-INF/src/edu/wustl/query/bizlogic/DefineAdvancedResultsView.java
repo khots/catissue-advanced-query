@@ -34,6 +34,7 @@ import edu.wustl.common.util.global.Constants;
  */
 public class DefineAdvancedResultsView
 {
+
 	/**
 	 * constructor for DefineAdvancedResultsView
 	 *
@@ -50,8 +51,9 @@ public class DefineAdvancedResultsView
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Map<String, Vector<QueryTreeNodeData>> getTreeForThisCategory(List<EntityInterface> ListOfEntitiesInQuery)
-	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Map<String, Vector<QueryTreeNodeData>> getTreeForThisCategory(
+			List<EntityInterface> ListOfEntitiesInQuery) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		Map<String, Vector<QueryTreeNodeData>> treesMap = new HashMap<String, Vector<QueryTreeNodeData>>();
 		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
@@ -64,15 +66,15 @@ public class DefineAdvancedResultsView
 			String[] whereColumnNames = {"SEARCH_CATEGORY_ID"};
 			String[] whereColumnCondition = {"="};
 			Object[] whereColumnValue = {searchedEntityId};
-			List<List<String>> entitiesList = getEntitiesListFromDatabase(tableName, selectColumnNames, whereColumnNames, whereColumnCondition,
-					whereColumnValue);
+			List<List<String>> entitiesList = getEntitiesListFromDatabase(tableName,
+					selectColumnNames, whereColumnNames, whereColumnCondition, whereColumnValue);
 			for (List<String> objList : entitiesList)
 			{
-				String id = (String) objList.get(0);
+				String id = objList.get(0);
 				EntityInterface entityInterface = entityManagerInterface.getEntityByIdentifier(id);
 				Vector<QueryTreeNodeData> treeData = new Vector<QueryTreeNodeData>();
 				treeData = generateTreeData(null, entityInterface, treeData);
-				String treeName = (String) objList.get(1);
+				String treeName = objList.get(1);
 				treesMap.put(treeName, treeData);
 			}
 		}
@@ -88,9 +90,10 @@ public class DefineAdvancedResultsView
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private Vector<QueryTreeNodeData> generateTreeData(EntityInterface parentEntityInterface, EntityInterface entityInterface,
-			Vector<QueryTreeNodeData> treeData) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-			{
+	private Vector<QueryTreeNodeData> generateTreeData(EntityInterface parentEntityInterface,
+			EntityInterface entityInterface, Vector<QueryTreeNodeData> treeData)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
 		QueryTreeNodeData node = new QueryTreeNodeData();
 		node.setIdentifier(entityInterface.getId().toString());
 		node.setObjectName(entityInterface.getName());
@@ -108,7 +111,8 @@ public class DefineAdvancedResultsView
 			node.setParentObjectName(parentEntityInterface.getName());
 		}
 		treeData.add(node);
-		if (entityInterface.getAssociationCollection() != null && entityInterface.getAssociationCollection().isEmpty())
+		if (entityInterface.getAssociationCollection() != null
+				&& entityInterface.getAssociationCollection().isEmpty())
 		{
 			return treeData;
 		}
@@ -131,7 +135,8 @@ public class DefineAdvancedResultsView
 			}
 		}
 		return treeData;
-			}
+	}
+
 	/**
 	 * This method gets the Entities List From Database according to the parameters passed to it.
 	 * @param tableName name of the table
@@ -141,20 +146,22 @@ public class DefineAdvancedResultsView
 	 * @param whereColumnValue whereColumnValue list
 	 * @return List EntitiesListFromDatabase
 	 */
-	private List<List<String>> getEntitiesListFromDatabase(String tableName, String[] selectColumnNames, String[] whereColumnNames,
-			String[] whereColumnCondition, Object[] whereColumnValue)
-			{
+	private List<List<String>> getEntitiesListFromDatabase(String tableName,
+			String[] selectColumnNames, String[] whereColumnNames, String[] whereColumnCondition,
+			Object[] whereColumnValue)
+	{
 		List entityList = new ArrayList();
 		JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 		try
 		{
 			jdbcDao.openSession(null);
-			entityList = jdbcDao.retrieve(tableName, selectColumnNames, whereColumnNames, whereColumnCondition, whereColumnValue, null);
+			entityList = jdbcDao.retrieve(tableName, selectColumnNames, whereColumnNames,
+					whereColumnCondition, whereColumnValue, null);
 		}
 		catch (DAOException e)
 		{
 			e.printStackTrace();
 		}
-		return (List<List<String>>) entityList;
-		}
+		return entityList;
+	}
 }

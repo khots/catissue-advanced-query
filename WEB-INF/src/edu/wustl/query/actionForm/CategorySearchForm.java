@@ -1,5 +1,5 @@
-package edu.wustl.query.actionForm;
 
+package edu.wustl.query.actionForm;
 
 import java.util.List;
 
@@ -17,6 +17,7 @@ import edu.wustl.common.beans.NameValueBean;
 
 public class CategorySearchForm extends ActionForm
 {
+
 	/**
 	 * 
 	 */
@@ -80,20 +81,20 @@ public class CategorySearchForm extends ActionForm
 	/**
 	 * 
 	 */
-    private String booleanAttribute = null;
-    
-    private String []selectedColumnNames;
-    private String []columnNames;
-    private List<NameValueBean> selectedColumnNameValueBeanList;
-    /**
+	private String booleanAttribute = null;
+
+	private String[] selectedColumnNames;
+	private String[] columnNames;
+	private List<NameValueBean> selectedColumnNameValueBeanList;
+	/**
 	 * String to store currentSelectedObject
 	 */
 	private String currentSelectedObject = null;
-	 /**
-	 * String to store currentSelectedObject
-	 */
+	/**
+	* String to store currentSelectedObject
+	*/
 	private String currentSelectedNodeInTree = null;
-	
+
 	/**
 	 * @return the currentPage
 	 */
@@ -101,6 +102,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return currentPage;
 	}
+
 	/**
 	 * @param currentPage the currentPage to set
 	 */
@@ -108,6 +110,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.currentPage = currentPage;
 	}
+
 	/**
 	 * @return the nextOperation
 	 */
@@ -115,6 +118,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return nextOperation;
 	}
+
 	/**
 	 * @param nextOperation the nextOperation to set
 	 */
@@ -122,6 +126,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.nextOperation = nextOperation;
 	}
+
 	/**
 	 * @return the searchButton
 	 */
@@ -129,6 +134,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return searchButton;
 	}
+
 	/**
 	 * @param searchButton the searchButton to set
 	 */
@@ -136,6 +142,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.searchButton = searchButton;
 	}
+
 	/**
 	 * @return the errors
 	 */
@@ -143,6 +150,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return errors;
 	}
+
 	/**
 	 * @param errors the errors to set
 	 */
@@ -150,6 +158,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.errors = errors;
 	}
+
 	/**
 	 * @return the stringToCreateQueryObject
 	 */
@@ -157,6 +166,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return stringToCreateQueryObject;
 	}
+
 	/**
 	 * @param stringToCreateQueryObject the stringToCreateQueryObject to set
 	 */
@@ -164,6 +174,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.stringToCreateQueryObject = stringToCreateQueryObject;
 	}
+
 	/**
 	 * @return the selected
 	 */
@@ -171,6 +182,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return selected;
 	}
+
 	/**
 	 * @param selected the selected to set
 	 */
@@ -178,6 +190,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.selected = selected;
 	}
+
 	/**
 	 * @return the textField
 	 */
@@ -185,6 +198,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return textField;
 	}
+
 	/**
 	 * @param textField the textField to set
 	 */
@@ -192,6 +206,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.textField = textField;
 	}
+
 	/**
 	 * @return the attributeChecked
 	 */
@@ -199,6 +214,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return attributeChecked;
 	}
+
 	/**
 	 * @param attributeChecked the attributeChecked to set
 	 */
@@ -206,6 +222,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.attributeChecked = attributeChecked;
 	}
+
 	/**
 	 * @return the classChecked
 	 */
@@ -213,6 +230,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return classChecked;
 	}
+
 	/**
 	 * @param classChecked the classChecked to set
 	 */
@@ -220,6 +238,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.classChecked = classChecked;
 	}
+
 	/**
 	 * @return the permissibleValuesChecked
 	 */
@@ -227,6 +246,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return permissibleValuesChecked;
 	}
+
 	/**
 	 * @param permissibleValuesChecked the permissibleValuesChecked to set
 	 */
@@ -234,6 +254,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.permissibleValuesChecked = permissibleValuesChecked;
 	}
+
 	/**
 	 * @return the entityName
 	 */
@@ -241,6 +262,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return entityName;
 	}
+
 	/**
 	 * @param entityName the entityName to set
 	 */
@@ -248,6 +270,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.entityName = entityName;
 	}
+
 	/**
 	 * @return the nodeId
 	 */
@@ -255,6 +278,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return nodeId;
 	}
+
 	/**
 	 * @param nodeId the nodeId to set
 	 */
@@ -262,6 +286,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.nodeId = nodeId;
 	}
+
 	/**
 	 * @return the booleanAttribute
 	 */
@@ -269,6 +294,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return booleanAttribute;
 	}
+
 	/**
 	 * @param booleanAttribute the booleanAttribute to set
 	 */
@@ -276,14 +302,17 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.booleanAttribute = booleanAttribute;
 	}
-	public String getIncludeDescriptionChecked() 
+
+	public String getIncludeDescriptionChecked()
 	{
 		return includeDescriptionChecked;
 	}
-	public void setIncludeDescriptionChecked(String includeDescriptionChecked) 
+
+	public void setIncludeDescriptionChecked(String includeDescriptionChecked)
 	{
 		this.includeDescriptionChecked = includeDescriptionChecked;
 	}
+
 	/**
 	 * @return the columnNames
 	 */
@@ -291,6 +320,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return columnNames;
 	}
+
 	/**
 	 * @param columnNames the columnNames to set
 	 */
@@ -298,6 +328,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.columnNames = columnNames;
 	}
+
 	/**
 	 * @return the selectedColumnNames
 	 */
@@ -305,6 +336,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return selectedColumnNames;
 	}
+
 	/**
 	 * @param selectedColumnNames the selectedColumnNames to set
 	 */
@@ -312,6 +344,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.selectedColumnNames = selectedColumnNames;
 	}
+
 	/**
 	 * @return the currentSelectedObject
 	 */
@@ -319,6 +352,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return currentSelectedObject;
 	}
+
 	/**
 	 * @param currentSelectedObject the currentSelectedObject to set
 	 */
@@ -326,6 +360,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.currentSelectedObject = currentSelectedObject;
 	}
+
 	/**
 	 * @return the currentSelectedNodeInTree
 	 */
@@ -333,6 +368,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return currentSelectedNodeInTree;
 	}
+
 	/**
 	 * @param currentSelectedNodeInTree the currentSelectedNodeInTree to set
 	 */
@@ -340,6 +376,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		this.currentSelectedNodeInTree = currentSelectedNodeInTree;
 	}
+
 	/**
 	 * @return the selectedColumnNameValueBeanList
 	 */
@@ -347,13 +384,16 @@ public class CategorySearchForm extends ActionForm
 	{
 		return selectedColumnNameValueBeanList;
 	}
+
 	/**
 	 * @param selectedColumnNameValueBeanList the selectedColumnNameValueBeanList to set
 	 */
-	public void setSelectedColumnNameValueBeanList(List<NameValueBean> selectedColumnNameValueBeanList)
+	public void setSelectedColumnNameValueBeanList(
+			List<NameValueBean> selectedColumnNameValueBeanList)
 	{
 		this.selectedColumnNameValueBeanList = selectedColumnNameValueBeanList;
 	}
+
 	/**
 	 * @return the options
 	 */
@@ -361,6 +401,7 @@ public class CategorySearchForm extends ActionForm
 	{
 		return options;
 	}
+
 	/**
 	 * @param options the options to set
 	 */

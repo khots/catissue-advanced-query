@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package edu.wustl.query.action;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +23,8 @@ public class QueryShoppingCartViewAction extends Action
 	 * @see edu.wustl.common.action.BaseAction#executeAction(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public ActionForward execute(ActionMapping arg0, ActionForm arg1,
-			HttpServletRequest arg2, HttpServletResponse arg3) throws Exception
+	public ActionForward execute(ActionMapping arg0, ActionForm arg1, HttpServletRequest arg2,
+			HttpServletResponse arg3) throws Exception
 	{
 		// TODO Auto-generated method stub
 		return null;

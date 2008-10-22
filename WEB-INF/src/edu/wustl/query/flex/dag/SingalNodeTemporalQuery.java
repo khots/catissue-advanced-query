@@ -1,3 +1,4 @@
+
 package edu.wustl.query.flex.dag;
 
 import java.text.ParseException;
@@ -20,39 +21,41 @@ import edu.wustl.common.querysuite.queryobject.TimeInterval;
 import edu.wustl.common.util.Utility;
 import edu.wustl.query.util.global.Constants;
 
-
 public class SingalNodeTemporalQuery
 {
+
 	private IDateOffsetAttribute dateOffsetAttr = null;
-	private IExpressionAttribute attributeIExpression =  null;
+	private IExpressionAttribute attributeIExpression = null;
 	private AttributeInterface attributeById = null;
-	private IDateOffsetLiteral lhsDateOffSetLiteral =  null;
+	private IDateOffsetLiteral lhsDateOffSetLiteral = null;
 	private IDateOffsetLiteral rhsDateOffSetLiteral = null;
 	private ILiteral lhsDateLiteral = null;
-	private ILiteral rhsDateLiteral =  null;
-	
+	private ILiteral rhsDateLiteral = null;
+
 	private ITerm lhsTerm = null;
 	private ITerm rhsTerm = null;
 	private IConnector iCon = null;
 	private ICustomFormula customFormula = null;
 	private IExpression entityIExpression = null;
-	private int entityExpressionId =  0;
-	
+	private int entityExpressionId = 0;
+
 	private ArithmeticOperator arithOp = null;
 	private RelationalOperator relOp = null;
 
 	private String attributeType = null;
 	private TimeInterval rhsTimeInterval = null;
-    private TimeInterval lhsTimeInterval = null;
-    
-    private TimeInterval qAttrInterval = null;
+	private TimeInterval lhsTimeInterval = null;
+
+	private TimeInterval qAttrInterval = null;
 	private SimpleDateFormat formatter;
-	
-	public TimeInterval getQAttrInterval() {
+
+	public TimeInterval getQAttrInterval()
+	{
 		return qAttrInterval;
 	}
 
-	public void setQAttrInterval(TimeInterval attrInterval) {
+	public void setQAttrInterval(TimeInterval attrInterval)
+	{
 		qAttrInterval = attrInterval;
 	}
 
@@ -63,7 +66,7 @@ public class SingalNodeTemporalQuery
 	{
 		return arithOp;
 	}
-	
+
 	/**
 	 * @param arithOp The arithOp to set.
 	 */
@@ -71,7 +74,7 @@ public class SingalNodeTemporalQuery
 	{
 		this.arithOp = arithOp;
 	}
-	
+
 	/**
 	 * @return Returns the attributeIExpression.
 	 */
@@ -79,7 +82,7 @@ public class SingalNodeTemporalQuery
 	{
 		return attributeIExpression;
 	}
-	
+
 	/**
 	 * @param attributeIExpression The attributeIExpression to set.
 	 */
@@ -87,7 +90,7 @@ public class SingalNodeTemporalQuery
 	{
 		this.attributeIExpression = attributeIExpression;
 	}
-	
+
 	/**
 	 * @return Returns the attributeType.
 	 */
@@ -95,7 +98,7 @@ public class SingalNodeTemporalQuery
 	{
 		return attributeType;
 	}
-	
+
 	/**
 	 * @param attributeType The attributeType to set.
 	 */
@@ -103,7 +106,7 @@ public class SingalNodeTemporalQuery
 	{
 		this.attributeType = attributeType;
 	}
-	
+
 	/**
 	 * @return Returns the customFormula.
 	 */
@@ -111,7 +114,7 @@ public class SingalNodeTemporalQuery
 	{
 		return customFormula;
 	}
-	
+
 	/**
 	 * @param customFormula The customFormula to set.
 	 */
@@ -119,9 +122,7 @@ public class SingalNodeTemporalQuery
 	{
 		this.customFormula = customFormula;
 	}
-	
-	
-	
+
 	/**
 	 * @return Returns the lhsDateLiteral.
 	 */
@@ -130,7 +131,6 @@ public class SingalNodeTemporalQuery
 		return lhsDateLiteral;
 	}
 
-	
 	/**
 	 * @param lhsDateLiteral The lhsDateLiteral to set.
 	 */
@@ -139,7 +139,6 @@ public class SingalNodeTemporalQuery
 		this.lhsDateLiteral = lhsDateLiteral;
 	}
 
-	
 	/**
 	 * @return Returns the rhsDateLiteral.
 	 */
@@ -148,7 +147,6 @@ public class SingalNodeTemporalQuery
 		return rhsDateLiteral;
 	}
 
-	
 	/**
 	 * @param rhsDateLiteral The rhsDateLiteral to set.
 	 */
@@ -164,7 +162,7 @@ public class SingalNodeTemporalQuery
 	{
 		return dateOffsetAttr;
 	}
-	
+
 	/**
 	 * @param dateOffsetAttr The dateOffsetAttr to set.
 	 */
@@ -173,8 +171,6 @@ public class SingalNodeTemporalQuery
 		this.dateOffsetAttr = dateOffsetAttr;
 	}
 
-
-	
 	/**
 	 * @return Returns the lhsDateOffSetLiteral.
 	 */
@@ -183,7 +179,6 @@ public class SingalNodeTemporalQuery
 		return lhsDateOffSetLiteral;
 	}
 
-	
 	/**
 	 * @param lhsDateOffSetLiteral The lhsDateOffSetLiteral to set.
 	 */
@@ -192,7 +187,6 @@ public class SingalNodeTemporalQuery
 		this.lhsDateOffSetLiteral = lhsDateOffSetLiteral;
 	}
 
-	
 	/**
 	 * @return Returns the rhsDateOffSetLiteral.
 	 */
@@ -201,7 +195,6 @@ public class SingalNodeTemporalQuery
 		return rhsDateOffSetLiteral;
 	}
 
-	
 	/**
 	 * @param rhsDateOffSetLiteral The rhsDateOffSetLiteral to set.
 	 */
@@ -217,7 +210,7 @@ public class SingalNodeTemporalQuery
 	{
 		return entityIExpression;
 	}
-	
+
 	/**
 	 * @param entityIExpression The entityIExpression to set.
 	 */
@@ -225,7 +218,7 @@ public class SingalNodeTemporalQuery
 	{
 		this.entityIExpression = entityIExpression;
 	}
-	
+
 	/**
 	 * @return Returns the iCon.
 	 */
@@ -233,7 +226,7 @@ public class SingalNodeTemporalQuery
 	{
 		return iCon;
 	}
-	
+
 	/**
 	 * @param con The iCon to set.
 	 */
@@ -241,7 +234,7 @@ public class SingalNodeTemporalQuery
 	{
 		iCon = con;
 	}
-	
+
 	/**
 	 * @return Returns the lhsTerm.
 	 */
@@ -249,7 +242,7 @@ public class SingalNodeTemporalQuery
 	{
 		return lhsTerm;
 	}
-	
+
 	/**
 	 * @param lhsTerm The lhsTerm to set.
 	 */
@@ -257,7 +250,7 @@ public class SingalNodeTemporalQuery
 	{
 		this.lhsTerm = lhsTerm;
 	}
-	
+
 	/**
 	 * @return Returns the lhsTimeInterval.
 	 */
@@ -265,7 +258,7 @@ public class SingalNodeTemporalQuery
 	{
 		return lhsTimeInterval;
 	}
-	
+
 	/**
 	 * @param lhsTimeInterval The lhsTimeInterval to set.
 	 */
@@ -273,7 +266,7 @@ public class SingalNodeTemporalQuery
 	{
 		this.lhsTimeInterval = lhsTimeInterval;
 	}
-	
+
 	/**
 	 * @return Returns the relOp.
 	 */
@@ -281,7 +274,7 @@ public class SingalNodeTemporalQuery
 	{
 		return relOp;
 	}
-	
+
 	/**
 	 * @param relOp The relOp to set.
 	 */
@@ -289,7 +282,7 @@ public class SingalNodeTemporalQuery
 	{
 		this.relOp = relOp;
 	}
-	
+
 	/**
 	 * @return Returns the rhsTerm.
 	 */
@@ -297,7 +290,7 @@ public class SingalNodeTemporalQuery
 	{
 		return rhsTerm;
 	}
-	
+
 	/**
 	 * @param rhsTerm The rhsTerm to set.
 	 */
@@ -305,7 +298,7 @@ public class SingalNodeTemporalQuery
 	{
 		this.rhsTerm = rhsTerm;
 	}
-	
+
 	/**
 	 * @return Returns the rhsTimeInterval.
 	 */
@@ -313,7 +306,7 @@ public class SingalNodeTemporalQuery
 	{
 		return rhsTimeInterval;
 	}
-	
+
 	/**
 	 * @param rhsTimeInterval The rhsTimeInterval to set.
 	 */
@@ -322,7 +315,6 @@ public class SingalNodeTemporalQuery
 		this.rhsTimeInterval = rhsTimeInterval;
 	}
 
-	
 	/**
 	 * @return Returns the entityExpressionId.
 	 */
@@ -331,7 +323,6 @@ public class SingalNodeTemporalQuery
 		return entityExpressionId;
 	}
 
-	
 	/**
 	 * @param entityExpressionId The entityExpressionId to set.
 	 */
@@ -340,7 +331,6 @@ public class SingalNodeTemporalQuery
 		this.entityExpressionId = entityExpressionId;
 	}
 
-	
 	/**
 	 * @return Returns the attributeById.
 	 */
@@ -349,7 +339,6 @@ public class SingalNodeTemporalQuery
 		return attributeById;
 	}
 
-	
 	/**
 	 * @param attributeById The attributeById to set.
 	 */
@@ -357,109 +346,113 @@ public class SingalNodeTemporalQuery
 	{
 		this.attributeById = attributeById;
 	}
-	
+
 	public void createOnlyLHS()
 	{
 		lhsTerm = QueryObjectFactory.createTerm();
-	    //Updating lhsTerm
-	    if(lhsDateLiteral != null)
-        {
-        	//if DatePicker exists on LHS
-        	lhsTerm.addOperand(lhsDateLiteral);
-        	addSecondLhsOperand();
-        }
-        else
-        {
-        	//If DatePicker doesn't exists on LHS
-        	lhsTerm.addOperand(lhsDateOffSetLiteral);
-        	addSecondLhsOperand();
-        }
+		//Updating lhsTerm
+		if (lhsDateLiteral != null)
+		{
+			//if DatePicker exists on LHS
+			lhsTerm.addOperand(lhsDateLiteral);
+			addSecondLhsOperand();
+		}
+		else
+		{
+			//If DatePicker doesn't exists on LHS
+			lhsTerm.addOperand(lhsDateOffSetLiteral);
+			addSecondLhsOperand();
+		}
 
-		
 	}
-	
+
 	public void createLHSAndRHS()
 	{
 		lhsTerm = QueryObjectFactory.createTerm();
-	    rhsTerm = 	QueryObjectFactory.createTerm();
-        
-	    //Updating lhsTerm
-	    if(lhsDateLiteral != null)
-        {
-        	//if DatePicker exists on LHS
-        	lhsTerm.addOperand(lhsDateLiteral);
-        	addSecondLhsOperand();
-        }
-        else
-        {
-        	//If DatePicker doesn't exists on LHS
-        	lhsTerm.addOperand(lhsDateOffSetLiteral);
-        	addSecondLhsOperand();
-        }
-	    
-	    //Updating rhsTerm
-	    if(rhsDateLiteral != null)
-	    {
-	    	//IF DatePicker on RHS
-	    	rhsTerm.addOperand(rhsDateLiteral);
-	    }
-	    else
-	    {
-	    	//If No datePciker
-	    	rhsTerm.addOperand(rhsDateOffSetLiteral);
-	    }
-	    
-	}
-	private void addSecondLhsOperand()
-	{
-    	if(attributeIExpression != null)
-    	{
-            //If attribute selected is of type Date
-    		lhsTerm.addOperand(iCon,attributeIExpression);
-    	}
-    	else
-    	{
-    		//If attribute selected is Int type
-    		lhsTerm.addOperand(iCon,dateOffsetAttr);                      		
-    	}
+		rhsTerm = QueryObjectFactory.createTerm();
+
+		//Updating lhsTerm
+		if (lhsDateLiteral != null)
+		{
+			//if DatePicker exists on LHS
+			lhsTerm.addOperand(lhsDateLiteral);
+			addSecondLhsOperand();
+		}
+		else
+		{
+			//If DatePicker doesn't exists on LHS
+			lhsTerm.addOperand(lhsDateOffSetLiteral);
+			addSecondLhsOperand();
+		}
+
+		//Updating rhsTerm
+		if (rhsDateLiteral != null)
+		{
+			//IF DatePicker on RHS
+			rhsTerm.addOperand(rhsDateLiteral);
+		}
+		else
+		{
+			//If No datePciker
+			rhsTerm.addOperand(rhsDateOffSetLiteral);
+		}
 
 	}
-	
+
+	private void addSecondLhsOperand()
+	{
+		if (attributeIExpression != null)
+		{
+			//If attribute selected is of type Date
+			lhsTerm.addOperand(iCon, attributeIExpression);
+		}
+		else
+		{
+			//If attribute selected is Int type
+			lhsTerm.addOperand(iCon, dateOffsetAttr);
+		}
+
+	}
+
 	/**
 	 * 
 	 *
 	 */
 	public void createExpressions()
 	{
-		if(attributeType.equals(Constants.DATE_TYPE))
+		if (attributeType.equals(Constants.DATE_TYPE))
 		{
 			//Means Attribute is of Date type , then it is Expression attribute
-			attributeIExpression = QueryObjectFactory.createExpressionAttribute(entityIExpression,attributeById);			
+			attributeIExpression = QueryObjectFactory.createExpressionAttribute(entityIExpression,
+					attributeById);
 		}
 		else
 		{
 			//It will be DateOffSetLiteral
-//			dateOffsetAttr = QueryObjectFactory.createDateOffsetAttribute(entityIExpression,attributeById,TimeInterval.Day);
-			if(qAttrInterval !=null)
+			//			dateOffsetAttr = QueryObjectFactory.createDateOffsetAttribute(entityIExpression,attributeById,TimeInterval.Day);
+			if (qAttrInterval != null)
 			{
-				dateOffsetAttr = QueryObjectFactory.createDateOffsetAttribute(entityIExpression,attributeById,qAttrInterval);
+				dateOffsetAttr = QueryObjectFactory.createDateOffsetAttribute(entityIExpression,
+						attributeById, qAttrInterval);
 			}
 			else
 			{
-				dateOffsetAttr = QueryObjectFactory.createDateOffsetAttribute(entityIExpression,attributeById,TimeInterval.Day);	
+				dateOffsetAttr = QueryObjectFactory.createDateOffsetAttribute(entityIExpression,
+						attributeById, TimeInterval.Day);
 			}
-			
+
 		}
 	}
-	
+
 	public void createRhsDateOffSetLiteral(String rhsTimeInterval)
 	{
-		if((!rhsTimeInterval.equals(DAGConstant.NULL_STRING)))
+		if ((!rhsTimeInterval.equals(DAGConstant.NULL_STRING)))
 		{
 			this.rhsTimeInterval = getTimeInterval(rhsTimeInterval);
 			rhsDateOffSetLiteral = QueryObjectFactory.createDateOffsetLiteral(this.rhsTimeInterval);
 		}
 	}
+
 	/**
 	 * 
 	 * @param rhsTimeValue
@@ -467,11 +460,13 @@ public class SingalNodeTemporalQuery
 	 */
 	public void createRightLiterals(String rhsTimeValue, String rhsTimeInterval)
 	{
-		if((!rhsTimeValue.equals(DAGConstant.NULL_STRING)) && (!rhsTimeInterval.equals(DAGConstant.NULL_STRING)))
+		if ((!rhsTimeValue.equals(DAGConstant.NULL_STRING))
+				&& (!rhsTimeInterval.equals(DAGConstant.NULL_STRING)))
 		{
 			//It  means there exists TextInput and Time Intervals on LHS, so create dateOffSetLiteral
 			this.rhsTimeInterval = getTimeInterval(rhsTimeInterval);
-			rhsDateOffSetLiteral = QueryObjectFactory.createDateOffsetLiteral(rhsTimeValue, this.rhsTimeInterval);
+			rhsDateOffSetLiteral = QueryObjectFactory.createDateOffsetLiteral(rhsTimeValue,
+					this.rhsTimeInterval);
 		}
 		else
 		{
@@ -481,15 +476,16 @@ public class SingalNodeTemporalQuery
 
 	private void generateRhsTimeValue(String rhsTimeValue, String rhsTimeInterval)
 	{
-		if((!rhsTimeValue.equals(DAGConstant.NULL_STRING)) && (rhsTimeInterval.equals(DAGConstant.NULL_STRING)))
+		if ((!rhsTimeValue.equals(DAGConstant.NULL_STRING))
+				&& (rhsTimeInterval.equals(DAGConstant.NULL_STRING)))
 		{
 			//It  means there exists TextInput and Time Intervals on LHS, so create dateOffSetLiteral
-			Date date=null;
-			String pattern="";
-			try 
+			Date date = null;
+			String pattern = "";
+			try
 			{
 				//Date date = Utility.parseDate(rhsTimeValue, "MM/dd/yyyy HH:MM:SS");
-				if(attributeType.equals("DateTime"))
+				if (attributeType.equals("DateTime"))
 				{
 					pattern = "MM/dd/yyyy HH:mm:ss";
 				}
@@ -497,17 +493,19 @@ public class SingalNodeTemporalQuery
 				{
 					pattern = "MM/dd/yyyy";
 				}
-				
-				formatter = new SimpleDateFormat(pattern);						
+
+				formatter = new SimpleDateFormat(pattern);
 				date = formatter.parse(rhsTimeValue);
-				rhsDateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
-			} catch (ParseException e) 
-			{				    
-				e.printStackTrace();					
+				rhsDateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date
+						.getTime()));
+			}
+			catch (ParseException e)
+			{
+				e.printStackTrace();
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param lhsTimeValue
@@ -515,11 +513,13 @@ public class SingalNodeTemporalQuery
 	 */
 	public void createLeftLiterals(String lhsTimeValue, String lhsTimeInterval)
 	{
-		if((!lhsTimeValue.equals(DAGConstant.NULL_STRING)) && (!lhsTimeInterval.equals(DAGConstant.NULL_STRING)))
+		if ((!lhsTimeValue.equals(DAGConstant.NULL_STRING))
+				&& (!lhsTimeInterval.equals(DAGConstant.NULL_STRING)))
 		{
 			//It  means there exists TextInput and Time Intervals on LHS, so create dateOffSetLiteral
 			this.lhsTimeInterval = getTimeInterval(lhsTimeInterval);
-			lhsDateOffSetLiteral = QueryObjectFactory.createDateOffsetLiteral(lhsTimeValue, this.lhsTimeInterval);
+			lhsDateOffSetLiteral = QueryObjectFactory.createDateOffsetLiteral(lhsTimeValue,
+					this.lhsTimeInterval);
 		}
 		else
 		{
@@ -529,20 +529,23 @@ public class SingalNodeTemporalQuery
 
 	private void dateFormatter(String lhsTimeValue, String lhsTimeInterval)
 	{
-		if((!lhsTimeValue.equals(DAGConstant.NULL_STRING)) && (lhsTimeInterval.equals(DAGConstant.NULL_STRING)))
+		if ((!lhsTimeValue.equals(DAGConstant.NULL_STRING))
+				&& (lhsTimeInterval.equals(DAGConstant.NULL_STRING)))
 		{
 			//This is the case when there exists DataPicker on LHS, so create only Date Literal
-			try 
-			{					
-				Date date = Utility.parseDate(lhsTimeValue, "MM/dd/yyyy");
-				lhsDateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
-			} catch (ParseException e) 
+			try
 			{
-			   e.printStackTrace();					
-			}				
+				Date date = Utility.parseDate(lhsTimeValue, "MM/dd/yyyy");
+				lhsDateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date
+						.getTime()));
+			}
+			catch (ParseException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param timeIntervalValue
@@ -551,11 +554,11 @@ public class SingalNodeTemporalQuery
 	public TimeInterval getTimeInterval(String timeIntervalValue)
 	{
 		TimeInterval timeInterval = null;
-		for(TimeInterval time: TimeInterval.values())
+		for (TimeInterval time : TimeInterval.values())
 		{
-			if(timeIntervalValue.equals(time.name() + "s"))
+			if (timeIntervalValue.equals(time.name() + "s"))
 			{
-			    timeInterval = time;
+				timeInterval = time;
 				break;
 			}
 		}

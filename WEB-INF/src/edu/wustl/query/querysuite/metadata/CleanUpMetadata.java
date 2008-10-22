@@ -1,3 +1,4 @@
+
 package edu.wustl.query.querysuite.metadata;
 
 import java.io.IOException;
@@ -15,18 +16,19 @@ import edu.wustl.common.util.dbManager.DBUtil;
  * @author pooja_deshpande
  * Class to delete all the invalid curated paths between 2 entities.
  */
-public class CleanUpMetadata 
+public class CleanUpMetadata
 {
+
 	private static Connection connection;
 
 	public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException
 	{
-		Connection connection=DBUtil.getConnection();
-		
+		Connection connection = DBUtil.getConnection();
+
 		CleanUpMetadata cleanUpMetadata = new CleanUpMetadata(connection);
 		cleanUpMetadata.cleanMetadata();
 	}
-	
+
 	public List<String> cleanMetadata() throws SQLException
 	{
 		StringTokenizer st;
@@ -34,26 +36,27 @@ public class CleanUpMetadata
 		String nextToken;
 		List<String> deletePaths = new ArrayList<String>();
 		List<String> deleteSQLList = new ArrayList<String>();
-		
+
 		String sql = "Select INTERMEDIATE_PATH from PATH";
-		
+
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
-		
-		while(rs.next())
+
+		while (rs.next())
 		{
 			intermediatePath = rs.getString(1);
-			st = new StringTokenizer(intermediatePath,"_");
-			
-			while(st.hasMoreTokens())
+			st = new StringTokenizer(intermediatePath, "_");
+
+			while (st.hasMoreTokens())
 			{
 				nextToken = st.nextToken();
 				int associationId = Integer.valueOf(nextToken);
-				String sql1 = "Select ASSOCIATION_ID from intra_model_association where ASSOCIATION_ID = "+associationId;
+				String sql1 = "Select ASSOCIATION_ID from intra_model_association where ASSOCIATION_ID = "
+						+ associationId;
 				Statement stmt1 = connection.createStatement();
 				ResultSet rs1 = stmt1.executeQuery(sql1);
-				
-				if(rs1.next())
+
+				if (rs1.next())
 				{
 					stmt1.close();
 					continue;
@@ -66,13 +69,13 @@ public class CleanUpMetadata
 				}
 			}
 		}
-		for(String deletePath : deletePaths)
+		for (String deletePath : deletePaths)
 		{
-			deleteSQLList.add("delete from PATH where INTERMEDIATE_PATH = '"+deletePath+"'");
+			deleteSQLList.add("delete from PATH where INTERMEDIATE_PATH = '" + deletePath + "'");
 		}
 		return deleteSQLList;
 	}
-	
+
 	public CleanUpMetadata(Connection connection)
 	{
 		super();

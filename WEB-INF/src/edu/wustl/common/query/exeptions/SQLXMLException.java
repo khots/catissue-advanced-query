@@ -1,5 +1,5 @@
-package edu.wustl.common.query.exeptions;
 
+package edu.wustl.common.query.exeptions;
 
 /**
  * @author Siddharth Shah
@@ -27,9 +27,5 @@ public class SQLXMLException extends Exception
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 
 }
-
-

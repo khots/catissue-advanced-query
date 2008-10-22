@@ -32,20 +32,24 @@ import edu.wustl.query.util.global.Utility;
  * @author vijay_pande
  *
  */
-final public  class QueryModuleUtil
+final public class QueryModuleUtil
 {
-	private QueryModuleUtil(){}
-		/**
-	 * Takes data from the map and generates out put data accordingly so that spreadsheet will be updated.
-	 * @param spreadSheetDatamap map which holds data for columns and records.
-	 * @return this string consists of two strings seperated by '&', first part is for column names
-	 * to be displayed in spreadsheet and the second part is data in the spreadsheet.
-	 */
+
+	private QueryModuleUtil()
+	{
+	}
+
+	/**
+	* Takes data from the map and generates out put data accordingly so that spreadsheet will be updated.
+	* @param spreadSheetDatamap map which holds data for columns and records.
+	* @return this string consists of two strings seperated by '&', first part is for column names
+	* to be displayed in spreadsheet and the second part is data in the spreadsheet.
+	*/
 	public static String prepareOutputSpreadsheetDataString(final Map spreadSheetDtmap)
 	{
 		List<List<String>> dataList = (List<List<String>>) spreadSheetDtmap
 				.get(Constants.SPREADSHEET_DATA_LIST);
-		StringBuffer dataStr = new StringBuffer();		
+		StringBuffer dataStr = new StringBuffer();
 		String columns = getColumnsAsString(spreadSheetDtmap);
 		dataStr.append(columns).append("&");
 		getGridDetails(dataList, dataStr);
@@ -56,7 +60,7 @@ final public  class QueryModuleUtil
 	 * @param dataList
 	 * @param dataStr
 	 */
-	private static void getGridDetails(List<List<String>> dataList, StringBuffer dataStr) 
+	private static void getGridDetails(List<List<String>> dataList, StringBuffer dataStr)
 	{
 		StringBuffer gridStrBuff = new StringBuffer();
 		Object gridObj;
@@ -65,10 +69,10 @@ final public  class QueryModuleUtil
 		{
 			for (Object columnData : row)
 			{
-				gridObj = (Object) Utility.toNewGridFormat(columnData);
+				gridObj = Utility.toNewGridFormat(columnData);
 				gridStr = gridObj.toString();
 				gridStrBuff.append(gridStr);
-				gridStrBuff.append(',');	
+				gridStrBuff.append(',');
 			}
 			dataStr.append('|').append(gridStrBuff.toString());
 		}
@@ -78,7 +82,7 @@ final public  class QueryModuleUtil
 	 * @param spreadSheetDtmap
 	 * @return String
 	 */
-	private static String getColumnsAsString(final Map spreadSheetDtmap) 
+	private static String getColumnsAsString(final Map spreadSheetDtmap)
 	{
 		List columnsList = (List) spreadSheetDtmap.get(Constants.SPREADSHEET_COLUMN_LIST);
 		String columns = columnsList.toString();
@@ -86,7 +90,7 @@ final public  class QueryModuleUtil
 		columns = columns.replace("]", "");
 		return columns;
 	}
-	
+
 	/**
 	 * Forms select part of the query.
 	 * @param attributes
@@ -94,18 +98,19 @@ final public  class QueryModuleUtil
 	 * @param queryResultObjectDataBean
 	 * @return String having all columnnames for select part.
 	 */
-	public static Map<String, String> getColumnNamesForSelectpart(List<QueryOutputTreeAttributeMetadata> attributes,
-			QueryDetails queryDetailsObj, QueryResultObjectDataBean queryResultObjectDataBean)
+	public static Map<String, String> getColumnNamesForSelectpart(
+			List<QueryOutputTreeAttributeMetadata> attributes, QueryDetails queryDetailsObj,
+			QueryResultObjectDataBean queryResultObjectDataBean)
 	{
 		String columnNames = "";
 		String idColumnName = null;
-		String dspNameColName = null;		
+		String dspNameColName = null;
 		String index = null;
 		String columnName;
 		int columIndex = 0;
 		AttributeInterface attribute;
-		Vector<Integer> objectColumnIdsVector = new Vector<Integer>();		
-		Vector<Integer> idvector = new Vector<Integer>();		
+		Vector<Integer> objectColumnIdsVector = new Vector<Integer>();
+		Vector<Integer> idvector = new Vector<Integer>();
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
 			attribute = attributeMetaData.getAttribute();
@@ -117,25 +122,26 @@ final public  class QueryModuleUtil
 			if (Constants.ID.equals(attribute.getName()))
 			{
 				idColumnName = columnName;
-				if(queryResultObjectDataBean.isMainEntity())
+				if (queryResultObjectDataBean.isMainEntity())
 				{
-					   queryResultObjectDataBean.setMainEntityIdentifierColumnId(0);
+					queryResultObjectDataBean.setMainEntityIdentifierColumnId(0);
 				}
-					else
-					   {
-						queryResultObjectDataBean.setEntityId(0);
-					   }
+				else
+				{
+					queryResultObjectDataBean.setEntityId(0);
+				}
 				objectColumnIdsVector.add(0);
-				columIndex++;				
+				columIndex++;
 			}
-			else if (isPresentInArray(attribute.getName(), Constants.ATTRIBUTE_NAMES_FOR_TREENODE_LABEL))
+			else if (isPresentInArray(attribute.getName(),
+					Constants.ATTRIBUTE_NAMES_FOR_TREENODE_LABEL))
 			{
 				index = columnName.substring(Constants.COLUMN_NAME.length(), columnName.length());
-				if(attribute.getIsIdentified()!=null)
+				if (attribute.getIsIdentified() != null)
 				{
-				 idvector.add(1);
+					idvector.add(1);
 				}
-				objectColumnIdsVector.add(1);				
+				objectColumnIdsVector.add(1);
 				queryResultObjectDataBean.setIdentifiedDataColumnIds(idvector);
 				dspNameColName = columnName;
 				columIndex++;
@@ -144,24 +150,24 @@ final public  class QueryModuleUtil
 		queryResultObjectDataBean.setObjectColumnIds(objectColumnIdsVector);
 		if (dspNameColName != null)
 		{
-			columnNames = idColumnName + " , " + dspNameColName;	// + " , " + columnNames;
+			columnNames = idColumnName + " , " + dspNameColName; // + " , " + columnNames;
 		}
 		else
 		{
 			columnNames = idColumnName;
 		}
-	//	columnNames = columnNames.substring(0, columnNames.lastIndexOf(","));
-		Map<EntityInterface, Integer> entityIdIndexMap =new HashMap<EntityInterface, Integer>();
-		if(queryResultObjectDataBean.getIdentifiedDataColumnIds().size()!=0)
+		//	columnNames = columnNames.substring(0, columnNames.lastIndexOf(","));
+		Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
+		if (queryResultObjectDataBean.getIdentifiedDataColumnIds().size() != 0)
 		{
-		  queryResultObjectDataBean.setHasAssociatedIdentifiedData(true);
+			queryResultObjectDataBean.setHasAssociatedIdentifiedData(true);
 		}
 		if (!queryResultObjectDataBean.isMainEntity())
 		{
-			columnNames = QueryCSMUtil.updateEntityIdIndexMap(queryResultObjectDataBean, columIndex,
-					columnNames, null, entityIdIndexMap, queryDetailsObj);
+			columnNames = QueryCSMUtil.updateEntityIdIndexMap(queryResultObjectDataBean,
+					columIndex, columnNames, null, entityIdIndexMap, queryDetailsObj);
 		}
-		Map<String,String> colNameIndexMap = new HashMap<String,String>();
+		Map<String, String> colNameIndexMap = new HashMap<String, String>();
 		colNameIndexMap.put(Constants.COLUMN_NAMES, columnNames);
 		colNameIndexMap.put(Constants.INDEX, index);
 		return colNameIndexMap;
@@ -174,7 +180,7 @@ final public  class QueryModuleUtil
 	 * @return true if the attribute name can be used to form label for tree node otherwise returns false
 	 */
 	public static boolean isPresentInArray(String objectName, String[] stringArray)
-	{	
+	{
 		boolean isPresentInArray = false;
 		int strLen = stringArray.length;
 		for (int i = 0; i < strLen; i++)
@@ -185,8 +191,9 @@ final public  class QueryModuleUtil
 				isPresentInArray = true;
 			}
 		}
-		return isPresentInArray ;
+		return isPresentInArray;
 	}
+
 	/**
 	 * This is used to set the default selections for the UI components when 
 	 * the screen is loaded for the first time.
@@ -246,7 +253,7 @@ final public  class QueryModuleUtil
 	 */
 	public static String getParentIdColumnName(OutputTreeDataNode node)
 	{
-		String getParenIdColName=null;
+		String getParenIdColName = null;
 		if (node != null)
 		{
 			List<QueryOutputTreeAttributeMetadata> attributes = node.getAttributes();
@@ -294,10 +301,11 @@ final public  class QueryModuleUtil
 		session.setAttribute(Constants.SELECTED_COLUMN_META_DATA, selColumnsMdata);
 		session.setAttribute(Constants.QUERY_REASUL_OBJECT_DATA_MAP, spreadSheetDtmap
 				.get(Constants.QUERY_REASUL_OBJECT_DATA_MAP));
-		session.setAttribute(Constants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,spreadSheetDtmap
+		session.setAttribute(Constants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP, spreadSheetDtmap
 				.get(Constants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP));
-		session.setAttribute(Constants.MAIN_ENTITY_MAP, spreadSheetDtmap.get(Constants.MAIN_ENTITY_MAP));
-		String pageOf = (String) request.getParameter(Constants.PAGEOF);
+		session.setAttribute(Constants.MAIN_ENTITY_MAP, spreadSheetDtmap
+				.get(Constants.MAIN_ENTITY_MAP));
+		String pageOf = request.getParameter(Constants.PAGEOF);
 		if (pageOf == null)
 		{
 			pageOf = Constants.PAGE_OF_QUERY_MODULE;
@@ -310,14 +318,14 @@ final public  class QueryModuleUtil
 	 * @param query
 	 * @return boolean
 	 */
-	public static boolean checkIfRulePresentInDag(IQuery query) 
+	public static boolean checkIfRulePresentInDag(IQuery query)
 	{
 		boolean isRulePresentInDag = false;
 
 		if (query != null)
 		{
 			IConstraints constraints = query.getConstraints();
-			for(IExpression expression : constraints) 
+			for (IExpression expression : constraints)
 			{
 				if (expression.containsRule())
 				{
@@ -329,7 +337,6 @@ final public  class QueryModuleUtil
 		return isRulePresentInDag;
 	}
 
-
 	/**
 	 * checks if the current view contains any orderable entity and if the 'id' attribute of the entity is 
 	 * included in the view.
@@ -337,120 +344,124 @@ final public  class QueryModuleUtil
 	 * @param cart - gives the attribute list of the entities present in the cart.
 	 * @return message if if the 'id' attribute of the orderable entity is not included in view.
 	 */
-//	public static String getMessageIfIdNotPresentForOrderableEntities(SelectedColumnsMetadata
-//			selectedColumnsMetadata, QueryShoppingCart cart)
-//	{
-//		String message = null;
-//		QueryShoppingCartBizLogic queryShoppingCartBizLogic = new QueryShoppingCartBizLogic();
-//		boolean areListsequal = true;
-//		boolean isOrderableEntityPresent = false;
-//		boolean isAttribIdIncludedInView = false;
-//		List<String> orderableEntityNameList = Arrays.asList(Constants.entityNameArray);
-//		List<QueryOutputTreeAttributeMetadata> selectedAttributeMetaDataList = selectedColumnsMetadata
-//				.getSelectedAttributeMetaDataList();
-//		List<AttributeInterface> currentAttributeList = selectedColumnsMetadata.getAttributeList();
-//		// check if the cart view and the defined view are same
-//		if (cart != null)
-//		{
-//			List<AttributeInterface> cartAttributeList = cart.getCartAttributeList();
-//			if (cartAttributeList != null)
-//			{
-//				int indexArray[] = queryShoppingCartBizLogic
-//					.getNewAttributeListIndexArray(cartAttributeList, currentAttributeList);
-//				if (indexArray == null)
-//				{
-//					areListsequal = false;
-//				}
-//			}
-//		}
-//		if (areListsequal)
-//		{		 
-//			//if the two views are same checks if orderable entity is present and id attribute is present
-//			Iterator<QueryOutputTreeAttributeMetadata> iterator = selectedAttributeMetaDataList.iterator();
-//			QueryOutputTreeAttributeMetadata element;
-//			while (iterator.hasNext())
-//			{
-//				 element = (QueryOutputTreeAttributeMetadata) iterator.next();
-//				if (orderableEntityNameList.contains(element.getAttribute().getEntity().getName()))
-//				{
-//					isOrderableEntityPresent = true;
-//					if(element.getAttribute().getName().equals(Constants.ID))
-//					{
-//						isAttribIdIncludedInView = true;
-//						break;
-//					}
-//				}
-//			}
-//			if ((isOrderableEntityPresent) && (!isAttribIdIncludedInView))
-//			{			
-//				message = ApplicationProperties.getValue("query.defineGridResultsView.messageForPopup");
-//			}
-//		}
-//		return null;
-//  }
+	//	public static String getMessageIfIdNotPresentForOrderableEntities(SelectedColumnsMetadata
+	//			selectedColumnsMetadata, QueryShoppingCart cart)
+	//	{
+	//		String message = null;
+	//		QueryShoppingCartBizLogic queryShoppingCartBizLogic = new QueryShoppingCartBizLogic();
+	//		boolean areListsequal = true;
+	//		boolean isOrderableEntityPresent = false;
+	//		boolean isAttribIdIncludedInView = false;
+	//		List<String> orderableEntityNameList = Arrays.asList(Constants.entityNameArray);
+	//		List<QueryOutputTreeAttributeMetadata> selectedAttributeMetaDataList = selectedColumnsMetadata
+	//				.getSelectedAttributeMetaDataList();
+	//		List<AttributeInterface> currentAttributeList = selectedColumnsMetadata.getAttributeList();
+	//		// check if the cart view and the defined view are same
+	//		if (cart != null)
+	//		{
+	//			List<AttributeInterface> cartAttributeList = cart.getCartAttributeList();
+	//			if (cartAttributeList != null)
+	//			{
+	//				int indexArray[] = queryShoppingCartBizLogic
+	//					.getNewAttributeListIndexArray(cartAttributeList, currentAttributeList);
+	//				if (indexArray == null)
+	//				{
+	//					areListsequal = false;
+	//				}
+	//			}
+	//		}
+	//		if (areListsequal)
+	//		{		 
+	//			//if the two views are same checks if orderable entity is present and id attribute is present
+	//			Iterator<QueryOutputTreeAttributeMetadata> iterator = selectedAttributeMetaDataList.iterator();
+	//			QueryOutputTreeAttributeMetadata element;
+	//			while (iterator.hasNext())
+	//			{
+	//				 element = (QueryOutputTreeAttributeMetadata) iterator.next();
+	//				if (orderableEntityNameList.contains(element.getAttribute().getEntity().getName()))
+	//				{
+	//					isOrderableEntityPresent = true;
+	//					if(element.getAttribute().getName().equals(Constants.ID))
+	//					{
+	//						isAttribIdIncludedInView = true;
+	//						break;
+	//					}
+	//				}
+	//			}
+	//			if ((isOrderableEntityPresent) && (!isAttribIdIncludedInView))
+	//			{			
+	//				message = ApplicationProperties.getValue("query.defineGridResultsView.messageForPopup");
+	//			}
+	//		}
+	//		return null;
+	//  }
+	/**
+	 * Method to call searchQuery and to set appropriate error message
+	 * @param request object of HttpServletRequest
+	 * @param parameterizedQuery object of IParameterizedQuery
+	 * @return errorMessage String value for errorMessage
+	 */
+	public static String executeQuery(HttpServletRequest request, IQuery parameterizedQuery)
+	{
+		String errorMessage;
+		boolean isRulePresentInDag = checkIfRulePresentInDag(parameterizedQuery);
+		QueryModuleError errorCode = null;
+		QueryModuleSearchQueryUtil QMSearchQuery = new QueryModuleSearchQueryUtil(request,
+				parameterizedQuery);
+		if (isRulePresentInDag)
+		{
+			errorCode = QMSearchQuery.searchQuery(null);
+		}
+		else
+		{
+			errorCode = QueryModuleError.EMPTY_DAG;
+		}
+		switch (errorCode)
+		{
+			case EMPTY_DAG :
+				errorMessage = "<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>"
+						+ ApplicationProperties.getValue("query.empty.dag") + "</font></li>";
+				break;
+			case MULTIPLE_ROOT :
+				errorMessage = "<li><font color='red'> "
+						+ ApplicationProperties.getValue("errors.executeQuery.multipleRoots")
+						+ "</font></li>";
+				break;
+			case NO_RESULT_PRESENT :
+				errorMessage = ApplicationProperties.getValue("query.zero.records.present");
+				break;
+			case SQL_EXCEPTION :
+			case DAO_EXCEPTION :
+			case CLASS_NOT_FOUND :
+				errorMessage = ApplicationProperties.getValue("errors.executeQuery.genericmessage");
+				break;
+			case RESULTS_MORE_THAN_LIMIT :
+				errorMessage = Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS;
+				break;
+			default :
+				errorMessage = null;
+		}
+		return errorMessage;
+	}
 
-	 /**
-	  * Method to call searchQuery and to set appropriate error message
-	  * @param request object of HttpServletRequest
-	  * @param parameterizedQuery object of IParameterizedQuery
-	  * @return errorMessage String value for errorMessage
-	  */
-	 public static String executeQuery(HttpServletRequest request, IQuery parameterizedQuery)
-	 {
-		 String errorMessage;
-		 boolean isRulePresentInDag = checkIfRulePresentInDag(parameterizedQuery) ;
-		 QueryModuleError errorCode = null;
-		 QueryModuleSearchQueryUtil QMSearchQuery = new QueryModuleSearchQueryUtil(request, parameterizedQuery);
-		 if (isRulePresentInDag)
-		 {
-			 errorCode = QMSearchQuery.searchQuery(null);
-		 }
-		 else
-		 {
-			 errorCode = QueryModuleError.EMPTY_DAG;
-		 }	
-		 switch (errorCode)
-		 {
-			 case EMPTY_DAG :
-				 errorMessage = "<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>" + ApplicationProperties.getValue("query.empty.dag")+ "</font></li>";
-				 break;
-			 case MULTIPLE_ROOT :
-				 errorMessage = "<li><font color='red'> " + ApplicationProperties.getValue("errors.executeQuery.multipleRoots") + "</font></li>";
-				 break;
-			 case NO_RESULT_PRESENT :
-				 errorMessage = ApplicationProperties.getValue("query.zero.records.present");
-				 break;
-			 case SQL_EXCEPTION :
-			 case DAO_EXCEPTION :
-			 case CLASS_NOT_FOUND :
-				 errorMessage = ApplicationProperties.getValue("errors.executeQuery.genericmessage");
-				 break;
-			 case RESULTS_MORE_THAN_LIMIT :
-				 errorMessage = Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS;
-				 break;
-			default:
-				 errorMessage= null;
-		 }
-		 return errorMessage;
-	 }
-	 
-		/**
-		 *  It will generate ramdom number
-		 * @param session
-		 * @return String
-		 */
-		public static String generateRandomNumber(HttpSession session){
-			String randomNumber="";
-			if(session.getAttribute(Constants.RANDOM_NUMBER) == null)
-			{
-				int number =(int) (Math.random()*100000);
-				randomNumber = Constants.UNDERSCORE + Integer.toString(number);			
-				session.setAttribute(Constants.RANDOM_NUMBER, randomNumber);
-			}
-			else
-			{
-				randomNumber = (String)session.getAttribute(Constants.RANDOM_NUMBER);
-			}
-			return randomNumber;
-		}		
-}		
+	/**
+	 *  It will generate ramdom number
+	 * @param session
+	 * @return String
+	 */
+	public static String generateRandomNumber(HttpSession session)
+	{
+		String randomNumber = "";
+		if (session.getAttribute(Constants.RANDOM_NUMBER) == null)
+		{
+			int number = (int) (Math.random() * 100000);
+			randomNumber = Constants.UNDERSCORE + Integer.toString(number);
+			session.setAttribute(Constants.RANDOM_NUMBER, randomNumber);
+		}
+		else
+		{
+			randomNumber = (String) session.getAttribute(Constants.RANDOM_NUMBER);
+		}
+		return randomNumber;
+	}
+}

@@ -1,3 +1,4 @@
+
 package edu.wustl.query.flex.dag;
 
 import java.util.ArrayList;
@@ -15,83 +16,101 @@ import edu.wustl.common.querysuite.metadata.path.ICuratedPath;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.util.logger.Logger;
 
-public class DAGResolveAmbiguity {
-    private Vector<AmbiguityObject> m_ambiguityObjects;
+public class DAGResolveAmbiguity
+{
 
-    private Map<AmbiguityObject, List<IPath>> m_ambiguityObjectToPathsMap = new HashMap<AmbiguityObject, List<IPath>>();
+	private Vector<AmbiguityObject> m_ambiguityObjects;
 
-    private IPathFinder m_pathFinder;
+	private Map<AmbiguityObject, List<IPath>> m_ambiguityObjectToPathsMap = new HashMap<AmbiguityObject, List<IPath>>();
 
-    public DAGResolveAmbiguity(Vector<AmbiguityObject> ambiguityObjects, IPathFinder pathFinder) {
-        m_ambiguityObjects = ambiguityObjects;
-        m_pathFinder = pathFinder;
-    }
+	private IPathFinder m_pathFinder;
 
-    public DAGResolveAmbiguity(AmbiguityObject ambiguityObject, IPathFinder pathFinder) {
-        m_ambiguityObjects = new Vector<AmbiguityObject>();
-        m_ambiguityObjects.add(ambiguityObject);
-        m_pathFinder = pathFinder;
-    }
+	public DAGResolveAmbiguity(Vector<AmbiguityObject> ambiguityObjects, IPathFinder pathFinder)
+	{
+		m_ambiguityObjects = ambiguityObjects;
+		m_pathFinder = pathFinder;
+	}
 
-    public Map<AmbiguityObject, List<IPath>> getPathsForAllAmbiguities() {
-        for (int i = 0; i < m_ambiguityObjects.size(); i++) {
-            AmbiguityObject ambiguityObject = m_ambiguityObjects.get(i);
-            Map<String, List<IPath>> allPathMap = getPaths(ambiguityObject.getSourceEntity(),
-                                                           ambiguityObject.getTargetEntity());
+	public DAGResolveAmbiguity(AmbiguityObject ambiguityObject, IPathFinder pathFinder)
+	{
+		m_ambiguityObjects = new Vector<AmbiguityObject>();
+		m_ambiguityObjects.add(ambiguityObject);
+		m_pathFinder = pathFinder;
+	}
 
-            List<IPath> curratedPathList = allPathMap.get(Constants.CURATED_PATH);
-            List<IPath> generalPathList = allPathMap.get(Constants.GENERAL_PATH);
-            
-            if (curratedPathList.size() == 1) {
-                m_ambiguityObjectToPathsMap.put(ambiguityObject, curratedPathList);
-            } else {
-                m_ambiguityObjectToPathsMap.put(ambiguityObject, generalPathList);
-            } 
-                       
-        }
-        return m_ambiguityObjectToPathsMap;
-    }
-   
+	public Map<AmbiguityObject, List<IPath>> getPathsForAllAmbiguities()
+	{
+		for (int i = 0; i < m_ambiguityObjects.size(); i++)
+		{
+			AmbiguityObject ambiguityObject = m_ambiguityObjects.get(i);
+			Map<String, List<IPath>> allPathMap = getPaths(ambiguityObject.getSourceEntity(),
+					ambiguityObject.getTargetEntity());
 
-    /**
-     * Method to get all possible paths for given source and destination entity
-     * 
-     * @param sourceEntity
-     * @param destinationEntity
-     * @return
-     */
-    public Map<String, List<IPath>> getPaths(EntityInterface sourceEntity, EntityInterface destinationEntity) {
-        Set<ICuratedPath> allCuratedPaths = m_pathFinder.getCuratedPaths(sourceEntity, destinationEntity);
-        Logger.out.debug("  getCuratedPaths() executed : " + allCuratedPaths.size());
+			List<IPath> curratedPathList = allPathMap.get(Constants.CURATED_PATH);
+			List<IPath> generalPathList = allPathMap.get(Constants.GENERAL_PATH);
 
-        List<IPath> selectedPaths = new ArrayList<IPath>();
-        List<IPath> curatedPaths = new ArrayList<IPath>();
-        for (ICuratedPath iCuratedPaths : allCuratedPaths) {
-            Set<IPath> iPathSet = iCuratedPaths.getPaths();
-            getCuratedPaths(selectedPaths, curatedPaths, iCuratedPaths, iPathSet);
-        }
+			if (curratedPathList.size() == 1)
+			{
+				m_ambiguityObjectToPathsMap.put(ambiguityObject, curratedPathList);
+			}
+			else
+			{
+				m_ambiguityObjectToPathsMap.put(ambiguityObject, generalPathList);
+			}
 
-        List<IPath> generalPaths = m_pathFinder.getAllPossiblePaths(sourceEntity, destinationEntity);
+		}
+		return m_ambiguityObjectToPathsMap;
+	}
 
-        Map<String, List<IPath>> allPathMap = new HashMap<String, List<IPath>>(3);
-        allPathMap.put(Constants.SELECTED_PATH, selectedPaths);
-        allPathMap.put(Constants.CURATED_PATH, curatedPaths);
-        allPathMap.put(Constants.GENERAL_PATH, generalPaths);
+	/**
+	 * Method to get all possible paths for given source and destination entity
+	 * 
+	 * @param sourceEntity
+	 * @param destinationEntity
+	 * @return
+	 */
+	public Map<String, List<IPath>> getPaths(EntityInterface sourceEntity,
+			EntityInterface destinationEntity)
+	{
+		Set<ICuratedPath> allCuratedPaths = m_pathFinder.getCuratedPaths(sourceEntity,
+				destinationEntity);
+		Logger.out.debug("  getCuratedPaths() executed : " + allCuratedPaths.size());
 
-        return allPathMap;
-    }
+		List<IPath> selectedPaths = new ArrayList<IPath>();
+		List<IPath> curatedPaths = new ArrayList<IPath>();
+		for (ICuratedPath iCuratedPaths : allCuratedPaths)
+		{
+			Set<IPath> iPathSet = iCuratedPaths.getPaths();
+			getCuratedPaths(selectedPaths, curatedPaths, iCuratedPaths, iPathSet);
+		}
+
+		List<IPath> generalPaths = m_pathFinder
+				.getAllPossiblePaths(sourceEntity, destinationEntity);
+
+		Map<String, List<IPath>> allPathMap = new HashMap<String, List<IPath>>(3);
+		allPathMap.put(Constants.SELECTED_PATH, selectedPaths);
+		allPathMap.put(Constants.CURATED_PATH, curatedPaths);
+		allPathMap.put(Constants.GENERAL_PATH, generalPaths);
+
+		return allPathMap;
+	}
 
 	private void getCuratedPaths(List<IPath> selectedPaths, List<IPath> curatedPaths,
 			ICuratedPath iCuratedPaths, Set<IPath> iPathSet)
 	{
-		if (iPathSet != null && !iPathSet.isEmpty()) {
-		    for (IPath iPath : iPathSet) {
-		        if (iCuratedPaths.isSelected()) {
-		            selectedPaths.add(iPath);
-		        } else {
-		            curatedPaths.add(iPath);
-		        }
-		    }
+		if (iPathSet != null && !iPathSet.isEmpty())
+		{
+			for (IPath iPath : iPathSet)
+			{
+				if (iCuratedPaths.isSelected())
+				{
+					selectedPaths.add(iPath);
+				}
+				else
+				{
+					curatedPaths.add(iPath);
+				}
+			}
 		}
 	}
 }

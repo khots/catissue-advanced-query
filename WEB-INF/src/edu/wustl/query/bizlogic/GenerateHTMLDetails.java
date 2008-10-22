@@ -1,3 +1,4 @@
+
 package edu.wustl.query.bizlogic;
 
 import java.util.StringTokenizer;
@@ -6,8 +7,9 @@ import java.util.StringTokenizer;
  * @author vijay_pande
  * Class to hold details related to Generate HTML logic
  */
-public class GenerateHTMLDetails 
+public class GenerateHTMLDetails
 {
+
 	private String searchString;
 	private boolean attributeChecked;
 	private boolean permissibleValuesChecked;
@@ -17,66 +19,66 @@ public class GenerateHTMLDetails
 	 * Method to get String value of searchString
 	 * @return searchString value of searchString
 	 */
-	public String getSearchString() 
+	public String getSearchString()
 	{
 		return searchString;
 	}
-	
+
 	/**
 	 * Method set value of searchString
 	 * @param searchString 
 	 */
-	public void setSearchString(String searchString) 
+	public void setSearchString(String searchString)
 	{
 		this.searchString = searchString;
 		this.searcStrings = prepareSearchString(searchString);
 	}
-	
+
 	/**
 	 * Method to get value of attributeChecked
 	 * @return attributeChecked
 	 */
-	public boolean isAttributeChecked() 
+	public boolean isAttributeChecked()
 	{
 		return attributeChecked;
 	}
-	
+
 	/**
 	 * Method to set value of attributeChecked
 	 * @param attributeChecked
 	 */
-	public void setAttributeChecked(boolean attributeChecked) 
+	public void setAttributeChecked(boolean attributeChecked)
 	{
 		this.attributeChecked = attributeChecked;
 	}
-	
+
 	/**
 	 * Method to get value of permissibleValuesChecked
 	 * @return permissibleValuesChecked
 	 */
-	public boolean isPermissibleValuesChecked() 
+	public boolean isPermissibleValuesChecked()
 	{
 		return permissibleValuesChecked;
 	}
-	
+
 	/**
 	 * Method to set value of permissibleValuesChecked
 	 * @param permissibleValuesChecked
 	 */
-	public void setPermissibleValuesChecked(boolean permissibleValuesChecked) 
+	public void setPermissibleValuesChecked(boolean permissibleValuesChecked)
 	{
 		this.permissibleValuesChecked = permissibleValuesChecked;
 	}
-	
+
 	/**
 	 * Method to get String[]  of searcStrings
 	 * @return
 	 */
-	public String[] getSearcStrings() 
+	public String[] getSearcStrings()
 	{
 		return searcStrings;
 	}
-	
+
 	/**
 	 * Prepares a String to be sent to AdvancedSearch logic.
 	 * @param searchString String

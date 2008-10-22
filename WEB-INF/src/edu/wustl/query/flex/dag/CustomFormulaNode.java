@@ -1,3 +1,4 @@
+
 package edu.wustl.query.flex.dag;
 
 import java.io.Externalizable;
@@ -5,47 +6,46 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-
 public class CustomFormulaNode implements Externalizable
 {
+
 	/**
 	 * Default Serial Version ID
 	 */
 	private static final long serialVersionUID = 1L;
 
 	private String name = "";
-	private String firstNodeName =  "";
+	private String firstNodeName = "";
 	private String secondNodeName = "";
-	
+
 	private int firstNodeExpId = 0;
 	private int secondNodeExpId = 0;
-	
+
 	private String firstSelectedAttrName = "";
-	private String secondSelectedAttrName =  "";
-	
+	private String secondSelectedAttrName = "";
+
 	private String firstSelectedAttrId = "";
-	private String secondSelectedAttrId =  "";
-	
+	private String secondSelectedAttrId = "";
+
 	private String firstSelectedAttrType = "";
 	private String secondSelectedAttrType = "";
-	
+
 	private String selectedArithmeticOp = "";
 	private String selectedLogicalOp = "";
-		
+
 	private String timeValue = "";
 	private String timeInterval = "";
-	
+
 	private String operation = "";
-	
-	private String customColumnName  = "";
+
+	private String customColumnName = "";
 	private int x;
 	private int y;
-	private String nodeView ="";
+	private String nodeView = "";
 	private String qAttrInterval1 = "";
 	private String qAttrInterval2 = "";
-	private String ccInterval ="";
-	
-	
+	private String ccInterval = "";
+
 	/**
 	 * @return Returns the ccInterval.
 	 */
@@ -54,7 +54,6 @@ public class CustomFormulaNode implements Externalizable
 		return ccInterval;
 	}
 
-	
 	/**
 	 * @param ccInterval The ccInterval to set.
 	 */
@@ -70,26 +69,26 @@ public class CustomFormulaNode implements Externalizable
 	{
 		return nodeView;
 	}
-	
-	public String getQAttrInterval1() {
+
+	public String getQAttrInterval1()
+	{
 		return qAttrInterval1;
 	}
 
-	public void setQAttrInterval1(String attrInterval) {
+	public void setQAttrInterval1(String attrInterval)
+	{
 		qAttrInterval1 = attrInterval;
 	}
-	
 
-	public String getQAttrInterval2() {
+	public String getQAttrInterval2()
+	{
 		return qAttrInterval2;
 	}
 
-	public void setQAttrInterval2(String attrInterval2) {
+	public void setQAttrInterval2(String attrInterval2)
+	{
 		qAttrInterval2 = attrInterval2;
 	}
-
-
-
 
 	/**
 	 * @param nodeView The nodeView to set.
@@ -99,9 +98,6 @@ public class CustomFormulaNode implements Externalizable
 		this.nodeView = nodeView;
 	}
 
-
-
-
 	/**
 	 * @return Returns the customColumnName.
 	 */
@@ -110,9 +106,6 @@ public class CustomFormulaNode implements Externalizable
 		return customColumnName;
 	}
 
-
-
-	
 	/**
 	 * @param customColumnName The customColumnName to set.
 	 */
@@ -120,8 +113,6 @@ public class CustomFormulaNode implements Externalizable
 	{
 		this.customColumnName = customColumnName;
 	}
-
-
 
 	/**
 	 * @return Returns the x.
@@ -131,8 +122,6 @@ public class CustomFormulaNode implements Externalizable
 		return x;
 	}
 
-
-	
 	/**
 	 * @param x The x to set.
 	 */
@@ -141,8 +130,6 @@ public class CustomFormulaNode implements Externalizable
 		this.x = x;
 	}
 
-
-	
 	/**
 	 * @return Returns the y.
 	 */
@@ -151,8 +138,6 @@ public class CustomFormulaNode implements Externalizable
 		return y;
 	}
 
-
-	
 	/**
 	 * @param y The y to set.
 	 */
@@ -160,7 +145,6 @@ public class CustomFormulaNode implements Externalizable
 	{
 		this.y = y;
 	}
-
 
 	/**
 	 * @return Returns the firstNodeExpId.
@@ -170,7 +154,6 @@ public class CustomFormulaNode implements Externalizable
 		return firstNodeExpId;
 	}
 
-	
 	/**
 	 * @param firstNodeExpId The firstNodeExpId to set.
 	 */
@@ -179,7 +162,6 @@ public class CustomFormulaNode implements Externalizable
 		this.firstNodeExpId = firstNodeExpId;
 	}
 
-	
 	/**
 	 * @return Returns the firstNodeName.
 	 */
@@ -188,7 +170,6 @@ public class CustomFormulaNode implements Externalizable
 		return firstNodeName;
 	}
 
-	
 	/**
 	 * @param firstNodeName The firstNodeName to set.
 	 */
@@ -197,7 +178,6 @@ public class CustomFormulaNode implements Externalizable
 		this.firstNodeName = firstNodeName;
 	}
 
-	
 	/**
 	 * @return Returns the firstSelectedAttrId.
 	 */
@@ -206,7 +186,6 @@ public class CustomFormulaNode implements Externalizable
 		return firstSelectedAttrId;
 	}
 
-	
 	/**
 	 * @param firstSelectedAttrId The firstSelectedAttrId to set.
 	 */
@@ -215,7 +194,6 @@ public class CustomFormulaNode implements Externalizable
 		this.firstSelectedAttrId = firstSelectedAttrId;
 	}
 
-	
 	/**
 	 * @return Returns the firstSelectedAttrName.
 	 */
@@ -224,7 +202,6 @@ public class CustomFormulaNode implements Externalizable
 		return firstSelectedAttrName;
 	}
 
-	
 	/**
 	 * @param firstSelectedAttrName The firstSelectedAttrName to set.
 	 */
@@ -233,7 +210,6 @@ public class CustomFormulaNode implements Externalizable
 		this.firstSelectedAttrName = firstSelectedAttrName;
 	}
 
-	
 	/**
 	 * @return Returns the firstSelectedAttrType.
 	 */
@@ -242,7 +218,6 @@ public class CustomFormulaNode implements Externalizable
 		return firstSelectedAttrType;
 	}
 
-	
 	/**
 	 * @param firstSelectedAttrType The firstSelectedAttrType to set.
 	 */
@@ -251,7 +226,6 @@ public class CustomFormulaNode implements Externalizable
 		this.firstSelectedAttrType = firstSelectedAttrType;
 	}
 
-	
 	/**
 	 * @return Returns the name.
 	 */
@@ -260,7 +234,6 @@ public class CustomFormulaNode implements Externalizable
 		return name;
 	}
 
-	
 	/**
 	 * @param name The name to set.
 	 */
@@ -269,7 +242,6 @@ public class CustomFormulaNode implements Externalizable
 		this.name = name;
 	}
 
-	
 	/**
 	 * @return Returns the secondNodeExpId.
 	 */
@@ -278,7 +250,6 @@ public class CustomFormulaNode implements Externalizable
 		return secondNodeExpId;
 	}
 
-	
 	/**
 	 * @param secondNodeExpId The secondNodeExpId to set.
 	 */
@@ -287,7 +258,6 @@ public class CustomFormulaNode implements Externalizable
 		this.secondNodeExpId = secondNodeExpId;
 	}
 
-	
 	/**
 	 * @return Returns the secondNodeName.
 	 */
@@ -296,7 +266,6 @@ public class CustomFormulaNode implements Externalizable
 		return secondNodeName;
 	}
 
-	
 	/**
 	 * @param secondNodeName The secondNodeName to set.
 	 */
@@ -305,7 +274,6 @@ public class CustomFormulaNode implements Externalizable
 		this.secondNodeName = secondNodeName;
 	}
 
-	
 	/**
 	 * @return Returns the secondSelectedAttrId.
 	 */
@@ -314,7 +282,6 @@ public class CustomFormulaNode implements Externalizable
 		return secondSelectedAttrId;
 	}
 
-	
 	/**
 	 * @param secondSelectedAttrId The secondSelectedAttrId to set.
 	 */
@@ -323,7 +290,6 @@ public class CustomFormulaNode implements Externalizable
 		this.secondSelectedAttrId = secondSelectedAttrId;
 	}
 
-	
 	/**
 	 * @return Returns the secondSelectedAttrName.
 	 */
@@ -332,7 +298,6 @@ public class CustomFormulaNode implements Externalizable
 		return secondSelectedAttrName;
 	}
 
-	
 	/**
 	 * @param secondSelectedAttrName The secondSelectedAttrName to set.
 	 */
@@ -341,7 +306,6 @@ public class CustomFormulaNode implements Externalizable
 		this.secondSelectedAttrName = secondSelectedAttrName;
 	}
 
-	
 	/**
 	 * @return Returns the secondSelectedAttrType.
 	 */
@@ -350,7 +314,6 @@ public class CustomFormulaNode implements Externalizable
 		return secondSelectedAttrType;
 	}
 
-	
 	/**
 	 * @param secondSelectedAttrType The secondSelectedAttrType to set.
 	 */
@@ -359,7 +322,6 @@ public class CustomFormulaNode implements Externalizable
 		this.secondSelectedAttrType = secondSelectedAttrType;
 	}
 
-	
 	/**
 	 * @return Returns the selectedArithmeticOp.
 	 */
@@ -368,7 +330,6 @@ public class CustomFormulaNode implements Externalizable
 		return selectedArithmeticOp;
 	}
 
-	
 	/**
 	 * @param selectedArithmeticOp The selectedArithmeticOp to set.
 	 */
@@ -377,7 +338,6 @@ public class CustomFormulaNode implements Externalizable
 		this.selectedArithmeticOp = selectedArithmeticOp;
 	}
 
-	
 	/**
 	 * @return Returns the selectedLogicalOp.
 	 */
@@ -386,7 +346,6 @@ public class CustomFormulaNode implements Externalizable
 		return selectedLogicalOp;
 	}
 
-	
 	/**
 	 * @param selectedLogicalOp The selectedLogicalOp to set.
 	 */
@@ -395,7 +354,6 @@ public class CustomFormulaNode implements Externalizable
 		this.selectedLogicalOp = selectedLogicalOp;
 	}
 
-	
 	/**
 	 * @return Returns the timeInterval.
 	 */
@@ -404,7 +362,6 @@ public class CustomFormulaNode implements Externalizable
 		return timeInterval;
 	}
 
-	
 	/**
 	 * @param timeInterval The timeInterval to set.
 	 */
@@ -413,7 +370,6 @@ public class CustomFormulaNode implements Externalizable
 		this.timeInterval = timeInterval;
 	}
 
-	
 	/**
 	 * @return Returns the timeValue.
 	 */
@@ -422,7 +378,6 @@ public class CustomFormulaNode implements Externalizable
 		return timeValue;
 	}
 
-	
 	/**
 	 * @param timeValue The timeValue to set.
 	 */
@@ -434,7 +389,7 @@ public class CustomFormulaNode implements Externalizable
 	/**
 	 * Reading searilized data
 	 */
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException 
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		name = in.readUTF();
 		firstNodeName = in.readUTF();
@@ -453,18 +408,18 @@ public class CustomFormulaNode implements Externalizable
 		timeInterval = in.readUTF();
 		operation = in.readUTF();
 		customColumnName = in.readUTF();
-	    x = in.readInt();
-	    y = in.readInt();
-	    nodeView = in.readUTF();
-	    qAttrInterval1 = in.readUTF();
-	    qAttrInterval2 = in.readUTF();
-	    ccInterval = in.readUTF();
+		x = in.readInt();
+		y = in.readInt();
+		nodeView = in.readUTF();
+		qAttrInterval1 = in.readUTF();
+		qAttrInterval2 = in.readUTF();
+		ccInterval = in.readUTF();
 	}
-	
+
 	/**
 	 * Writing seraialized Id
 	 */
-	public void writeExternal(ObjectOutput out) throws IOException 
+	public void writeExternal(ObjectOutput out) throws IOException
 	{
 		out.writeUTF(name);
 		out.writeUTF(firstNodeName);
@@ -491,9 +446,6 @@ public class CustomFormulaNode implements Externalizable
 		out.writeUTF(ccInterval);
 	}
 
-
-
-	
 	/**
 	 * @return Returns the operation.
 	 */
@@ -502,9 +454,6 @@ public class CustomFormulaNode implements Externalizable
 		return operation;
 	}
 
-
-
-	
 	/**
 	 * @param operation The operation to set.
 	 */
@@ -512,6 +461,5 @@ public class CustomFormulaNode implements Externalizable
 	{
 		this.operation = operation;
 	}
-	
 
 }

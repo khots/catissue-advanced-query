@@ -33,6 +33,7 @@ import edu.wustl.query.util.global.Constants;
 public class RetrieveQueryAction extends Action
 {
 
+	@Override
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
@@ -50,11 +51,11 @@ public class RetrieveQueryAction extends Action
 			session.removeAttribute(Constants.ENTITY_IDS_MAP);
 			session.removeAttribute(DAGConstant.TQUIMap);
 			SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
-			Collection<IParameterizedQuery> parameterizedQueryCollection = (Collection<IParameterizedQuery>) HibernateUtility
+			Collection<IParameterizedQuery> parameterizedQueryCollection = HibernateUtility
 					.executeHQL(HibernateUtility.GET_PARAMETERIZED_QUERIES_DETAILS);
 
 			String message = null;
-			
+
 			if (parameterizedQueryCollection != null)
 			{
 				saveQueryForm.setParameterizedQueryCollection(parameterizedQueryCollection);
@@ -77,8 +78,9 @@ public class RetrieveQueryAction extends Action
 		{
 			actionForward = actionMapping.findForward(Constants.FAILURE);
 		}
-		
-		request.setAttribute(Constants.POPUP_MESSAGE, ApplicationProperties.getValue("query.confirmBox.message"));
+
+		request.setAttribute(Constants.POPUP_MESSAGE, ApplicationProperties
+				.getValue("query.confirmBox.message"));
 		return actionForward;
 	}
 
