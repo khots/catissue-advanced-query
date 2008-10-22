@@ -1062,10 +1062,10 @@ Thanking You,
 			
 			<classpath>
 				<pathelement location="${temp.dir}/query/WEB-INF/classes" />
-				<!--fileset dir="${temp.dir}/query/WEB-INF/lib">
+				<fileset dir="${temp.dir}/query/WEB-INF/lib">
 					<include name="*.jar" />
 					<exclude name="uml-1.3.jar" />
-				</fileset -->
+				</fileset>
 				<fileset dir="${lib.dir}">
 						<include name="*.jar" /> 
 					   <!--exclude name="commonpackage.jar" />
