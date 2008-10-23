@@ -58,7 +58,6 @@ public class AddPermissibleValue
 			throws SQLException, IOException
 	{
 		List<String> deleteSQL = new ArrayList<String>();
-		String sql;
 
 		String dataType = getDataTypeOfAttribute(attribute.getName());
 		String tableName = null;

@@ -4,7 +4,6 @@ package edu.wustl.query.querysuite.metadata;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,6 @@ public class AddRaceMetadata extends BaseMetadata
 {
 
 	private Connection connection = null;
-	private Statement stmt = null;
 
 	public void addRaceMetadata() throws SQLException, IOException
 	{
@@ -27,7 +25,6 @@ public class AddRaceMetadata extends BaseMetadata
 		populateAttributeDatatypeMap();
 		populateAttributePrimaryKeyMap();
 
-		stmt = connection.createStatement();
 		AddEntity addEntity = new AddEntity(connection);
 		addEntity.addEntity(entityList, "CATISSUE_RACE", "NULL", 3, 0);
 
@@ -81,6 +78,5 @@ public class AddRaceMetadata extends BaseMetadata
 	public AddRaceMetadata(Connection connection) throws SQLException
 	{
 		this.connection = connection;
-		this.stmt = connection.createStatement();
 	}
 }
