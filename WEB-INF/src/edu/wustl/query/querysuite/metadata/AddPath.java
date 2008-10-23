@@ -22,106 +22,22 @@ public class AddPath
 
 	public static void initData()
 	{
-		List<String> subClassesList = new ArrayList<String>();
-		subClassesList.add("edu.wustl.catissuecore.domain.CellSpecimen");
-		subClassesList.add("edu.wustl.catissuecore.domain.FluidSpecimen");
-		subClassesList.add("edu.wustl.catissuecore.domain.MolecularSpecimen");
-		subClassesList.add("edu.wustl.catissuecore.domain.TissueSpecimen");
-		superClassAndSubClassesMap.put("edu.wustl.catissuecore.domain.Specimen", subClassesList);
+//		List<String> subClassesList = new ArrayList<String>();
+//		subClassesList.add("edu.wustl.catissuecore.domain.CellSpecimen");
+//		subClassesList.add("edu.wustl.catissuecore.domain.FluidSpecimen");
+//		subClassesList.add("edu.wustl.catissuecore.domain.MolecularSpecimen");
+//		subClassesList.add("edu.wustl.catissuecore.domain.TissueSpecimen");
+//		superClassAndSubClassesMap.put("edu.wustl.catissuecore.domain.Specimen", subClassesList);
+//
+//		List<String> associationsList = new ArrayList<String>();
+//		associationsList.add("edu.wustl.catissuecore.domain.SpecimenRequirement");
+//		associationsList.add("edu.wustl.catissuecore.domain.SpecimenPosition");
+//		associationsList.add("edu.wustl.catissuecore.domain.SpecimenArrayContent");
+//		associationsList.add("edu.wustl.catissuecore.domain.DistributedItem");
+//		superClassAndAssociationsMap
+//				.put("edu.wustl.catissuecore.domain.Specimen", associationsList);
 
-		List<String> associationsList = new ArrayList<String>();
-		associationsList.add("edu.wustl.catissuecore.domain.SpecimenRequirement");
-		associationsList.add("edu.wustl.catissuecore.domain.SpecimenPosition");
-		associationsList.add("edu.wustl.catissuecore.domain.SpecimenArrayContent");
-		associationsList.add("edu.wustl.catissuecore.domain.DistributedItem");
-		superClassAndAssociationsMap
-				.put("edu.wustl.catissuecore.domain.Specimen", associationsList);
-
-		subClassesList = new ArrayList<String>();
-		subClassesList.add("edu.wustl.catissuecore.domain.Specimen");
-		subClassesList.add("edu.wustl.catissuecore.domain.CellSpecimen");
-		subClassesList.add("edu.wustl.catissuecore.domain.FluidSpecimen");
-		subClassesList.add("edu.wustl.catissuecore.domain.MolecularSpecimen");
-		subClassesList.add("edu.wustl.catissuecore.domain.TissueSpecimen");
-		superClassAndSubClassesMap.put("edu.wustl.catissuecore.domain.AbstractSpecimen",
-				subClassesList);
-
-		associationsList = new ArrayList<String>();
-		associationsList.add("edu.wustl.catissuecore.domain.SpecimenCharacteristics");
-		associationsList.add("edu.wustl.catissuecore.domain.SpecimenEventParameters");
-		associationsList.add("edu.wustl.catissuecore.domain.AbstractSpecimen");
-		superClassAndAssociationsMap.put("edu.wustl.catissuecore.domain.AbstractSpecimen",
-				associationsList);
-
-		subClassesList = new ArrayList<String>();
-		subClassesList.add("edu.wustl.catissuecore.domain.CellSpecimenRequirement");
-		subClassesList.add("edu.wustl.catissuecore.domain.FluidSpecimenRequirement");
-		subClassesList.add("edu.wustl.catissuecore.domain.MolecularSpecimenRequirement");
-		subClassesList.add("edu.wustl.catissuecore.domain.TissueSpecimenRequirement");
-		superClassAndSubClassesMap.put("edu.wustl.catissuecore.domain.SpecimenRequirement",
-				subClassesList);
-
-		associationsList = new ArrayList<String>();
-		associationsList.add("edu.wustl.catissuecore.domain.CollectionProtocolEvent");
-		associationsList.add("edu.wustl.catissuecore.domain.Specimen");
-		superClassAndAssociationsMap.put("edu.wustl.catissuecore.domain.SpecimenRequirement",
-				associationsList);
-
-		subClassesList = new ArrayList<String>();
-		subClassesList.add("edu.wustl.catissuecore.domain.CollectionEventParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.FrozenEventParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.FixedEventParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.CheckInCheckOutEventParameter");
-		subClassesList.add("edu.wustl.catissuecore.domain.ProcedureEventParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.SpunEventParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.TransferEventParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.ReceivedEventParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.EmbeddedEventParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.ThawEventParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.ReviewEventParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.CellSpecimenReviewParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.TissueSpecimenReviewEventParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.FluidSpecimenReviewEventParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.MolecularSpecimenReviewParameters");
-		subClassesList.add("edu.wustl.catissuecore.domain.DisposalEventParameters");
-		superClassAndSubClassesMap.put("edu.wustl.catissuecore.domain.SpecimenEventParameters",
-				subClassesList);
-		eventParametersSubClassesMap.put("edu.wustl.catissuecore.domain.SpecimenEventParameters",
-				subClassesList);
-
-		associationsList = new ArrayList<String>();
-		associationsList.add("edu.wustl.catissuecore.domain.AbstractSpecimen");
-		superClassAndAssociationsMap.put("edu.wustl.catissuecore.domain.SpecimenEventParameters",
-				associationsList);
-
-		subClassesList = new ArrayList<String>();
-		subClassesList.add("edu.wustl.catissuecore.domain.SpecimenOrderItem");
-		subClassesList.add("edu.wustl.catissuecore.domain.SpecimenArrayOrderItem");
-		subClassesList.add("edu.wustl.catissuecore.domain.ExistingSpecimenOrderItem");
-		subClassesList.add("edu.wustl.catissuecore.domain.NewSpecimenOrderItem");
-		subClassesList.add("edu.wustl.catissuecore.domain.DerivedSpecimenOrderItem");
-		subClassesList.add("edu.wustl.catissuecore.domain.PathologicalCaseOrderItem");
-		subClassesList.add("edu.wustl.catissuecore.domain.NewSpecimenArrayOrderItem");
-		subClassesList.add("edu.wustl.catissuecore.domain.ExistingSpecimenArrayOrderItem");
-		superClassAndSubClassesMap.put("edu.wustl.catissuecore.domain.OrderItem", subClassesList);
-
-		associationsList = new ArrayList<String>();
-		associationsList.add("edu.wustl.catissuecore.domain.DistributedItem");
-		superClassAndAssociationsMap.put("edu.wustl.catissuecore.domain.OrderItem",
-				associationsList);
-
-		subClassesList = new ArrayList<String>();
-		subClassesList.add("edu.wustl.catissuecore.domain.shippingtracking.ShipmentRequest");
-		subClassesList.add("edu.wustl.catissuecore.domain.shippingtracking.Shipment");
-		superClassAndSubClassesMap.put(
-				"edu.wustl.catissuecore.domain.shippingtracking.BaseShipment", subClassesList);
-
-		associationsList = new ArrayList<String>();
-		associationsList.add("edu.wustl.catissuecore.domain.User");
-		associationsList.add("edu.wustl.catissuecore.domain.Site");
-		associationsList.add("edu.wustl.catissuecore.domain.StorageContainer");
-		superClassAndAssociationsMap.put(
-				"edu.wustl.catissuecore.domain.shippingtracking.BaseShipment", associationsList);
+		
 
 	}
 
