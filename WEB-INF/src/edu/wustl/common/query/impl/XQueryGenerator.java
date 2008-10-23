@@ -6,10 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +41,7 @@ import edu.wustl.common.querysuite.queryobject.impl.Expression;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.queryengine.impl.IQueryGenerator;
+import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
 
 public class XQueryGenerator implements IQueryGenerator
@@ -54,13 +52,6 @@ public class XQueryGenerator implements IQueryGenerator
 	* the sql.
 	*/
 	private Map<IExpression, Integer> aliasAppenderMap = new HashMap<IExpression, Integer>();
-
-	/**
-	 * This map holds the alias name generated for each fully Qualified
-	 * className, where className id key & value is the aliasName generated for
-	 * that className.
-	 */
-	private Map<String, String> aliasNameMap = new HashMap<String, String>();
 
 	/**
 	 * reference to the joingraph object present in the query object.
@@ -81,8 +72,6 @@ public class XQueryGenerator implements IQueryGenerator
 	 * any Rule
 	 */
 	private Set<IExpression> emptyExpressions;// Set of Empty Expressions.
-
-	private Set<IExpression> pAndExpressions;// Set of Empty Expressions.
 
 	//Variables required for output tree.
 	/**
@@ -113,11 +102,6 @@ public class XQueryGenerator implements IQueryGenerator
 	/**
 	 * Default Constructor to instantiate SQL generator object.
 	 */
-
-	// Connection Parameters
-	private Connection conn;
-	private Statement stmt;
-	private ResultSet resultl;
 
 	private Map<String, IOutputTerm> outputTermsColumns;
 
@@ -182,8 +166,6 @@ public class XQueryGenerator implements IQueryGenerator
 
 		emptyExpressions = new HashSet<IExpression>();
 		isEmptyExpression(rootExpression.getExpressionId());
-
-		pAndExpressions = new HashSet<IExpression>();
 
 		// Generating output tree.
 		createTree();
@@ -633,8 +615,21 @@ public class XQueryGenerator implements IQueryGenerator
 
 	private String getConditions() throws SQLException, SQLXMLException
 	{
-		String operandRule = processOperands();
-		return operandRule;
+		StringBuilder operandRule = new StringBuilder(processOperands());
+
+		operandRule.append(" ");
+		operandRule.append(Variables.properties.getProperty("xquery.wherecondition.activeUpiFlag"));
+		operandRule.append(" and ");
+		operandRule
+				.append(Variables.properties.getProperty("xquery.wherecondition.researchOptOut"));
+		operandRule.append(" and ");
+		operandRule
+				.append(Variables.properties.getProperty("xquery.wherecondition.startTimeStamp"));
+		operandRule.append(" and ");
+		operandRule.append(Variables.properties.getProperty("xquery.wherecondition.endTimeStamp"));
+		operandRule.append(" ");
+
+		return operandRule.toString();
 	}
 
 	private String processOperands() throws SQLException, SQLXMLException
