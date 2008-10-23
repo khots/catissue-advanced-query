@@ -932,28 +932,37 @@ public class GenerateHtmlForAddLimitsBizLogic
 			{
 				PermissibleValue permValue = (PermissibleValue) permissibleValueInterface.next();
 				if (permValue instanceof StringValueInterface)
+				{
 					permissibleValues.add(((StringValueInterface) permValue));
-
+				}
 				else if (permValue instanceof ShortValueInterface)
+				{
 					permissibleValues.add(((ShortValueInterface) permValue));
-
+				}
 				else if (permValue instanceof LongValueInterface)
+				{
 					permissibleValues.add(((LongValueInterface) permValue));
-
+				}
 				else if (permValue instanceof DateValueInterface)
+				{
 					permissibleValues.add(((DateValueInterface) permValue));
-
+				}
 				else if (permValue instanceof BooleanValueInterface)
+				{
 					permissibleValues.add(((BooleanValueInterface) permValue));
-
+				}
 				else if (permValue instanceof IntegerValueInterface)
+				{
 					permissibleValues.add(((IntegerValueInterface) permValue));
-
+				}
 				else if (permValue instanceof DoubleValueInterface)
+				{
 					permissibleValues.add((DoubleValueInterface) permValue);
-
+				}
 				else if (permValue instanceof FloatValueInterface)
+				{
 					permissibleValues.add(((FloatValueInterface) permValue));
+				}
 			}
 		}
 		return permissibleValues;
@@ -1154,7 +1163,9 @@ public class GenerateHtmlForAddLimitsBizLogic
 				valueStr = valueStr.replace("[", "");
 				valueStr = valueStr.replace("]", "");
 				if(values.get(0) == null)
+				{
 					valueStr = "";
+				}
 				html.append("<input style=\"width:150px; display:block;\" type=\"text\" name=\""
 						+ textBoxId + "\" id=\"" + textBoxId + "\" value=\"" + valueStr + "\">");
 			}
@@ -1287,7 +1298,7 @@ public class GenerateHtmlForAddLimitsBizLogic
 			boolean isBetween, String cssClass)
 	{
 		String componentId = generateComponentName(attribute);
-		String innerStr = "";
+		StringBuffer innerStr = new StringBuffer("");
 		// String divId = "overDiv" + (i + 1);
 		
 		if (isFirst)
@@ -1297,8 +1308,8 @@ public class GenerateHtmlForAddLimitsBizLogic
 			String imgStr = "\n<img id=\"calendarImg\" src=\"images/calendar.gif\" width=\"24\" height=\"22\"" +
 					" border=\"0\" onclick='scwShow("+ textBoxId + ",event);'>";
 			
-			innerStr = "\n<td width='3%' class='"+ cssClass +"' valign='top' id=\"" + calendarId + "\">" 
-						+ "\n" + imgStr ;
+			innerStr = innerStr.append("\n<td width='3%' class='"+ cssClass +"' valign='top' id=\"" + calendarId + "\">" 
+						+ "\n" + imgStr);
 		}
 		else
 		{
@@ -1316,11 +1327,11 @@ public class GenerateHtmlForAddLimitsBizLogic
 				style = "display:none";
 			}
 			
-			innerStr = "\n<td width='3%' class='"+ cssClass +"' valign='top' id=\"" + calendarId1 + "\" style=\"" + style
+			innerStr = innerStr.append("\n<td width='3%' class='"+ cssClass +"' valign='top' id=\"" + calendarId1 + "\" style=\"" + style
 						+ "\">" 
-						+ "\n" + imgStr ;
+						+ "\n" + imgStr) ;
 		}
-		innerStr = innerStr + "\n</td>";
+		innerStr = innerStr.append("\n</td>");
 		return innerStr.toString();
 	}
 

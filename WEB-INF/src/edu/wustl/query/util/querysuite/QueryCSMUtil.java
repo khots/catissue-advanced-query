@@ -98,14 +98,14 @@ public abstract class QueryCSMUtil
 					{
 						//get the names of all the main entities for the dependent entity
 						String name = entity.getName();
-						name = name.substring(name.lastIndexOf(".") + 1, name.length()); //TODO: use Utility Method for getting className
+						name = name.substring(name.lastIndexOf('.') + 1, name.length()); //TODO: use Utility Method for getting className
 						mainEntityNames = mainEntityNames + name + " or ";
 					}
 					mainEntityNames = mainEntityNames.substring(0,
-							mainEntityNames.lastIndexOf("r") - 1);
+							mainEntityNames.lastIndexOf('r') - 1);
 					String message = ApplicationProperties.getValue("query.mainObjectError");
 					String entityName = mapEntity.getName();
-					entityName = entityName.substring(entityName.lastIndexOf(".") + 1, entityName
+					entityName = entityName.substring(entityName.lastIndexOf('.') + 1, entityName
 							.length());//TODO: use Utility Method for getting className
 					Object[] arguments = new Object[]{entityName, mainEntityNames};
 					errorMsg = MessageFormat.format(message, arguments);
