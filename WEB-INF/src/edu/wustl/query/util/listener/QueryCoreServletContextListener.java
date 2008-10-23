@@ -79,8 +79,37 @@ public class QueryCoreServletContextListener implements ServletContextListener
 		int maximumTreeNodeLimit = Integer.parseInt(XMLPropertyHandler
 				.getValue(Constants.MAXIMUM_TREE_NODE_LIMIT));
 		Variables.maximumTreeNodeLimit = maximumTreeNodeLimit;
-		setQueryGeneratorClass();
+		readProperties();
 		path = System.getProperty("app.propertiesFile");
+	}
+
+	private void readProperties()
+	{
+		File file = new File(Variables.applicationHome + System.getProperty("file.separator")
+				+ "WEB-INF" + System.getProperty("file.separator") + "classes"
+				+ System.getProperty("file.separator") + "query.properties");
+		if (file.exists())
+		{
+			Properties queryProperties = new Properties();
+			try
+			{
+				queryProperties.load(new FileInputStream(file));
+
+				Variables.queryGeneratorClassName = queryProperties
+						.getProperty("query.queryGeneratorClassName");
+
+				Variables.properties = queryProperties;
+			}
+			catch (FileNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	public void contextDestroyed(ServletContextEvent sce)
@@ -98,28 +127,4 @@ public class QueryCoreServletContextListener implements ServletContextListener
 		}
 	}
 
-	public void setQueryGeneratorClass()
-	{
-		File file = new File(Variables.applicationHome + System.getProperty("file.separator")
-				+ "WEB-INF" + System.getProperty("file.separator") + "classes"
-				+ System.getProperty("file.separator") + "query.properties");
-		if (file.exists())
-		{
-			Properties queryProperties = new Properties();
-			try
-			{
-				queryProperties.load(new FileInputStream(file));
-				Variables.queryGeneratorClassName = queryProperties
-						.getProperty("query.queryGeneratorClassName");
-			}
-			catch (FileNotFoundException e)
-			{
-				e.printStackTrace();
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
 }

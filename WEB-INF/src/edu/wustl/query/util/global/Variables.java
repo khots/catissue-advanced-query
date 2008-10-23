@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 public class Variables extends edu.wustl.common.util.global.Variables
 {
@@ -13,6 +14,7 @@ public class Variables extends edu.wustl.common.util.global.Variables
 	public static int maximumTreeNodeLimit;
 	public static Map<String, String> aliasAndPageOfMap = new HashMap<String, String>();
 	public static String queryGeneratorClassName = "";
+	public static Properties properties;
 
 	public static String prepareColTypes(List dataColl)
 	{
