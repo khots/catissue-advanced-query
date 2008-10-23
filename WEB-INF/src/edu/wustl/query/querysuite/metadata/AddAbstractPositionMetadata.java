@@ -12,7 +12,6 @@ public class AddAbstractPositionMetadata extends BaseMetadata
 {
 
 	private Connection connection = null;
-	private Statement stmt = null;
 
 	public void addContainerMetadata() throws SQLException, IOException
 	{
@@ -22,7 +21,6 @@ public class AddAbstractPositionMetadata extends BaseMetadata
 		populateAttributeDatatypeMap();
 		populateAttributePrimaryKeyMap();
 
-		stmt = connection.createStatement();
 		AddEntity addEntity = new AddEntity(connection);
 		addEntity.addEntity(entityList, "CATISSUE_ABSTRACT_POSITION", "NULL", 3, 0);
 		AddAttribute addAttribute = new AddAttribute(connection, entityNameAttributeNameMap,
@@ -70,6 +68,5 @@ public class AddAbstractPositionMetadata extends BaseMetadata
 	public AddAbstractPositionMetadata(Connection connection) throws SQLException
 	{
 		this.connection = connection;
-		this.stmt = connection.createStatement();
 	}
 }
