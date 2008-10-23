@@ -433,7 +433,7 @@ public class XQueryGenerator implements IQueryGenerator
 					+ ".XMLDATA\") ,");
 		}
 
-		for (IExpression expressions : constraints)
+		/*for (IExpression expressions : constraints)
 		{
 			String XPath = "";
 			EntityInterface entity = expressions.getQueryEntity().getDynamicExtensionsEntity();
@@ -454,7 +454,7 @@ public class XQueryGenerator implements IQueryGenerator
 				//xmlGetForQueryPart.append("$" + 
 			}
 
-		}
+		}*/
 
 		for (IExpression expressions : constraints)
 		{
