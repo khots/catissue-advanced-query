@@ -334,7 +334,7 @@ public class QueryOutputSpreadsheetBizLogic
 		Vector<Integer> objectDataColumnIds = new Vector<Integer>();
 		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAtrributeIndexMetadataMap = new HashMap<Integer, QueryOutputTreeAttributeMetadata>();
 		int columnIndex = 0;
-		int totalFileTypeAttributes = 0;
+//		int totalFileTypeAttributes = 0;
 
 		List<QueryOutputTreeAttributeMetadata> attributes = node.getAttributes();
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
@@ -387,13 +387,13 @@ public class QueryOutputSpreadsheetBizLogic
 		}
 		if (queryResultObjectDataBean.isClobeType())
 		{
-			totalFileTypeAttributes = fileTypeAtrributeIndexMetadataMap.size();
+//			totalFileTypeAttributes = fileTypeAtrributeIndexMetadataMap.size();
 			queryResultObjectDataBean
 					.setFileTypeAtrributeIndexMetadataMap(fileTypeAtrributeIndexMetadataMap);
 		}
 		if (!selectedColumnMetaData.isDefinedView())
 		{
-			selectSql = selectSql.substring(0, selectSql.lastIndexOf(","));
+			selectSql = selectSql.substring(0, selectSql.lastIndexOf(','));
 			spreadSheetDataMap.put(Constants.SPREADSHEET_COLUMN_LIST, columnsList);
 			selectedColumnMetaData.setSelectedAttributeMetaDataList(attributes);
 		}
@@ -1132,7 +1132,7 @@ public class QueryOutputSpreadsheetBizLogic
 		if (!selectedColumnMetaData.isDefinedView())
 		{
 			spreadSheetDataMap.put(Constants.SPREADSHEET_COLUMN_LIST, columnsList);
-			selectSql = selectSql.substring(0, selectSql.lastIndexOf(","));
+			selectSql = selectSql.substring(0, selectSql.lastIndexOf(','));
 			if (!outputTermsColumns.isEmpty())
 			{
 				IConstraints constraints = queryDetailsObj.getQuery().getConstraints();

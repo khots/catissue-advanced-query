@@ -34,8 +34,6 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
 public class QueryOutputTreeBizLogic
 {
 
-	private static long lastId = 0;
-
 	/**
 	 * Creates new table which has the same structure and also same data , as the output tree structurs has.  
 	 * @param String selectSql , from this sql , new table will be created .
@@ -168,7 +166,6 @@ public class QueryOutputTreeBizLogic
 		while (dataListIterator.hasNext())
 		{
 			rowList = (List) dataListIterator.next();
-			boolean isNodeAlreadyPresentInTree = false;
 			QueryTreeNodeData treeNode = null;
 			String data = (String) rowList.get(0);
 			String currentNodeId = uniqueNodeId + Constants.UNDERSCORE + data;
@@ -178,18 +175,7 @@ public class QueryOutputTreeBizLogic
 			}
 			String nodeIdToSet = parentNodeId + Constants.NODE_SEPARATOR + currentNodeId;
 			nodeIdToSet = encryptId(nodeIdToSet);
-			//			Iterator iterTreeData = treeDataVector.iterator();
-			//			while (iterTreeData.hasNext())
-			//			{
-			//				QueryTreeNodeData nodeInTree = (QueryTreeNodeData) iterTreeData.next();
-			//				if (nodeInTree.getIdentifier().equals(nodeIdToSet))
-			//				{
-			//					isNodeAlreadyPresentInTree = true;
-			//					break;
-			//				}
-			//			}
-			//			if (!isNodeAlreadyPresentInTree)
-			//			{
+			
 			treeNode = new QueryTreeNodeData();
 			treeNode.setIdentifier(nodeIdToSet);
 			EntityInterface dynExtEntity = node.getOutputEntity().getDynamicExtensionsEntity();
@@ -291,7 +277,7 @@ public class QueryOutputTreeBizLogic
 				selectSql = selectSql + sqlColumnName + ",";
 			}
 		}
-		selectSql = selectSql.substring(0, selectSql.lastIndexOf(","));
+		selectSql = selectSql.substring(0, selectSql.lastIndexOf(','));
 		selectSql = selectSql + Constants.FROM + tableName;
 		if (parentNodeId != null)
 		{
@@ -366,9 +352,9 @@ public class QueryOutputTreeBizLogic
 			//columnNames = columnNames.substring(0, columnNames.lastIndexOf(";"));
 			selectSql = "select distinct " + columnNames;
 			String idColumnOfCurrentNode = columnNames;
-			if (columnNames.indexOf(",") != -1)
+			if (columnNames.indexOf(',') != -1)
 			{
-				idColumnOfCurrentNode = columnNames.substring(0, columnNames.indexOf(","));
+				idColumnOfCurrentNode = columnNames.substring(0, columnNames.indexOf(','));
 			}
 			selectSql = selectSql + " from " + tableName + " where (" + parentIdColumnName + " = '"
 					+ parentData + "' " + LogicalOperator.And + " " + idColumnOfCurrentNode + " "
