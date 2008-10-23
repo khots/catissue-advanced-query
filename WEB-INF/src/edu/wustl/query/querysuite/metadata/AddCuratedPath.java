@@ -19,7 +19,7 @@ import edu.wustl.common.util.dbManager.DBUtil;
 public class AddCuratedPath
 {
 
-	private static Connection connection;
+	private Connection connection;
 	private List<String> entityList;
 
 	public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException

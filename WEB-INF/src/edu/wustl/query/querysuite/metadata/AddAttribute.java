@@ -16,7 +16,6 @@ public class AddAttribute extends BaseMetadata
 {
 
 	private Connection connection = null;
-	private Statement stmt = null;
 
 	public void addAttribute() throws SQLException, IOException
 	{
@@ -199,7 +198,6 @@ public class AddAttribute extends BaseMetadata
 	public AddAttribute(Connection connection) throws SQLException
 	{
 		this.connection = connection;
-		this.stmt = connection.createStatement();
 
 		populateEntityList();
 		populateEntityAttributeMap();
