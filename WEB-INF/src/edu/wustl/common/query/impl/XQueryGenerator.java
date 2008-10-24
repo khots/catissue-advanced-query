@@ -414,8 +414,8 @@ public class XQueryGenerator implements IQueryGenerator
 
 		for (String tableName : TableList)
 		{
-			xmlGetForQueryPart.append("$" + tableName + " in db2-fn:xmlcolumn(\"CIDERWU." + tableName
-					+ ".XMLDATA\") ,");
+			xmlGetForQueryPart.append("$" + tableName + " in db2-fn:xmlcolumn(\"CIDERWU."
+					+ tableName + ".XMLDATA\") ,");
 		}
 
 		/*for (IExpression expressions : constraints)
@@ -533,8 +533,7 @@ public class XQueryGenerator implements IQueryGenerator
 					newActualPath.append(newPath);
 					newActualPath.insert(0, getAppropriatePath(newEntity, newPath, EntityList,
 							newActualPath.toString()));
-					
-					
+
 				}
 			}
 		}
@@ -575,7 +574,8 @@ public class XQueryGenerator implements IQueryGenerator
 		}
 		else
 		{
-			forTree.append(" for $").append(entityName).append(" in ").append(rootVariable).append("/").append(entityName);
+			forTree.append(" for $").append(entityName).append(" in ").append(rootVariable).append(
+					"/").append(entityName);
 		}
 
 		return forTree.toString();
@@ -642,24 +642,29 @@ public class XQueryGenerator implements IQueryGenerator
 
 	private String getConditions() throws SQLException, SQLXMLException
 	{
-		
+
 		StringBuilder operandRule = new StringBuilder(processOperands());
 
 		operandRule.append(" ");
-		if(TableList.contains("DEMOGRAPHICS"))
+		if (TableList.contains("DEMOGRAPHICS"))
 		{
-		operandRule.append(Variables.properties.getProperty("xquery.wherecondition.activeUpiFlag"));
-		operandRule.append(" and ");
-		operandRule
-				.append(Variables.properties.getProperty("xquery.wherecondition.researchOptOut"));
-		operandRule.append(" and ");
+			operandRule.append(Variables.properties
+					.getProperty("xquery.wherecondition.activeUpiFlag"));
+			operandRule.append(" and ");
+			operandRule.append(Variables.properties
+					.getProperty("xquery.wherecondition.researchOptOut"));
+			operandRule.append(" and ");
 		}
-		operandRule
-				.append(Variables.properties.getProperty("xquery.wherecondition.startTimeStamp"));
-		operandRule.append(" and ");
-		operandRule.append(Variables.properties.getProperty("xquery.wherecondition.endTimeStamp"));
-		operandRule.append(" ");
-
+		if (TableList.contains(Variables.properties
+				.getProperty("xquery.whereCondition.person.table")))
+		{
+			operandRule.append(Variables.properties
+					.getProperty("xquery.wherecondition.person.startTimeStamp"));
+			operandRule.append(" and ");
+			operandRule.append(Variables.properties
+					.getProperty("xquery.wherecondition.person.endTimeStamp"));
+			operandRule.append(" ");
+		}
 		return operandRule.toString();
 	}
 
@@ -667,22 +672,22 @@ public class XQueryGenerator implements IQueryGenerator
 	{
 		StringBuffer operandQuery = new StringBuffer();
 
-		for(IExpression expressions : constraints)
+		for (IExpression expressions : constraints)
 		{
-		int noOfRules = expressions.numberOfOperands();
-		for (int i = 0; i < noOfRules; i++)
-		{
-			IExpressionOperand operand = expressions.getOperand(i);
-			if (operand instanceof IRule)
+			int noOfRules = expressions.numberOfOperands();
+			for (int i = 0; i < noOfRules; i++)
 			{
-				operandQuery.append(getQueryCondition((IRule) operand) + " and "); // Processing Rule.
+				IExpressionOperand operand = expressions.getOperand(i);
+				if (operand instanceof IRule)
+				{
+					operandQuery.append(getQueryCondition((IRule) operand) + " and "); // Processing Rule.
 
+				}
+				else if (operand instanceof IExpression)
+				{
+					operandQuery.append("");
+				}
 			}
-			else if (operand instanceof IExpression)
-			{
-				operandQuery.append("");
-			}
-		}
 		}
 
 		return operandQuery.toString();
@@ -768,19 +773,21 @@ public class XQueryGenerator implements IQueryGenerator
 		{
 			value.append(values.get(i)).append(" ,");
 		}
-		
+
 		value = new StringBuilder(removeLastComma(value.toString()));
 
 		value = new StringBuilder(getValueForType(condition, value.toString()));
 
 		value.insert(0, "(").append(")");
-		StringBuilder Operator = new StringBuilder(getActualValue(RelationalOperator.getSQL(operator), attributeName, value.toString()));
-		
+		StringBuilder Operator = new StringBuilder(getActualValue(RelationalOperator
+				.getSQL(operator), attributeName, value.toString()));
+
 		if (Operator.toString().equalsIgnoreCase(""))
 		{
-			Operator.append("$").append(attributeName).append(" ").append(RelationalOperator.getSQL(operator)).append(" ").append(value);
+			Operator.append("$").append(attributeName).append(" ").append(
+					RelationalOperator.getSQL(operator)).append(" ").append(value);
 		}
-		
+
 		return Operator.toString();
 	}
 
@@ -791,24 +798,24 @@ public class XQueryGenerator implements IQueryGenerator
 		if (operator.equalsIgnoreCase("is NOT NULL"))
 		{
 			newOperator = "exists($" + attributeName + ")";
-			
+
 		}
 		else if (operator.equalsIgnoreCase("Contains"))
 		{
 			newOperator = "contains($" + attributeName + ",\"" + value + "\")";
-			
+
 		}
 		else if (operator.equalsIgnoreCase("StartsWith"))
 		{
 			newOperator = "starts-with($" + attributeName + ",\"" + value + "\")";
-			
+
 		}
 		else if (operator.equalsIgnoreCase("EndsWith"))
 		{
 			newOperator = "ends-with($" + attributeName + ",\"" + value + "\")";
-			
+
 		}
-		
+
 		return newOperator;
 	}
 
@@ -817,7 +824,7 @@ public class XQueryGenerator implements IQueryGenerator
 		AttributeTypeInformationInterface dataType = condition.getAttribute()
 				.getAttributeTypeInformation();
 		StringBuilder actualValue = new StringBuilder();
-		
+
 		if (dataType instanceof StringTypeInformationInterface)
 		{
 			actualValue.append("\"").append(value).append("\"");
@@ -825,13 +832,13 @@ public class XQueryGenerator implements IQueryGenerator
 		else if (dataType instanceof DateTypeInformationInterface)
 		{
 			String actualYear = value.substring(6);
-        	String actualMonth = value.substring(0,2);
-        	String actualDate = value.substring(3,5);
-        	StringBuilder newValue = new StringBuilder(actualYear);
-        	newValue.append("-");
-        	newValue.append(actualMonth);
-        	newValue.append("-");
-        	newValue.append(actualDate);
+			String actualMonth = value.substring(0, 2);
+			String actualDate = value.substring(3, 5);
+			StringBuilder newValue = new StringBuilder(actualYear);
+			newValue.append("-");
+			newValue.append(actualMonth);
+			newValue.append("-");
+			newValue.append(actualDate);
 			actualValue.append("xs:dateTime(\"").append(newValue.toString()).append("T23:59:59\")");
 		}
 		else
@@ -854,8 +861,9 @@ public class XQueryGenerator implements IQueryGenerator
 			{
 				for (AssociationInterface assocoation : associationList)
 				{
-					int maxCardinality = assocoation.getTargetRole().getMaximumCardinality().getValue();
-					if(maxCardinality == 1)
+					int maxCardinality = assocoation.getTargetRole().getMaximumCardinality()
+							.getValue();
+					if (maxCardinality == 1)
 					{
 						newXPath.append("/").append(assocoation.getTargetRole().getName());
 					}
@@ -863,18 +871,20 @@ public class XQueryGenerator implements IQueryGenerator
 					{
 						String firstChar = assocoation.getTargetEntity().getName().substring(0, 1);
 						String originalTargetEntity = firstChar.toLowerCase();
-						String newTargetEntity = assocoation.getTargetEntity().getName().replaceFirst(firstChar, originalTargetEntity);
+						String newTargetEntity = assocoation.getTargetEntity().getName()
+								.replaceFirst(firstChar, originalTargetEntity);
 						StringBuilder intermediatePart = new StringBuilder("/");
-						intermediatePart.append(assocoation.getTargetRole().getName()).append("/").append(newTargetEntity);
+						intermediatePart.append(assocoation.getTargetRole().getName()).append("/")
+								.append(newTargetEntity);
 						newXPath.insert(0, intermediatePart);
 					}
 					newEntity = assocoation.getEntity();
-					newXPath = new StringBuilder(getXPath(newEntity,newXPath.toString()));
+					newXPath = new StringBuilder(getXPath(newEntity, newXPath.toString()));
 				}
 			}
 			else
 			{
-				newXPath.insert(0,newEntity.getName());
+				newXPath.insert(0, newEntity.getName());
 			}
 		}
 		catch (DynamicExtensionsSystemException deExeption)
@@ -987,15 +997,15 @@ public class XQueryGenerator implements IQueryGenerator
 	private String getDataTypeInformation(AttributeInterface attribute)
 	{
 		String returnValue = null;
-		
+
 		AttributeTypeInformationInterface dataType = attribute.getAttributeTypeInformation();
 		if (dataType instanceof StringTypeInformationInterface)
 		{
-			returnValue =  "varchar(500)";
+			returnValue = "varchar(500)";
 		}
 		else if (dataType instanceof DateTypeInformationInterface)
 		{
-			returnValue =  "varchar(500)";
+			returnValue = "varchar(500)";
 		}
 		else if (dataType instanceof LongTypeInformationInterface)
 		{
@@ -1005,7 +1015,7 @@ public class XQueryGenerator implements IQueryGenerator
 		{
 			returnValue = "varchar(500)";
 		}
-		
+
 		return returnValue;
 	}
 
