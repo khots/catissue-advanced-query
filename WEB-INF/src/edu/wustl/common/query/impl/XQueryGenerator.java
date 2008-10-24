@@ -102,6 +102,9 @@ public class XQueryGenerator implements IQueryGenerator
 	/**
 	 * Default Constructor to instantiate SQL generator object.
 	 */
+	private List<String> TableList;
+
+	private Set<IExpression> pAndExpressions;
 
 	private Map<String, IOutputTerm> outputTermsColumns;
 
@@ -406,12 +409,12 @@ public class XQueryGenerator implements IQueryGenerator
 		xmlGetForQueryPart.append("for ");
 		xmlGetLetQueryPart.append(" let ");
 
-		List<String> TableList = getTableNameList();
+		TableList = getTableNameList();
 		selectAttribute.append("Select distinct " + getAtrributeList() + " from xmltable('");
 
 		for (String tableName : TableList)
 		{
-			xmlGetForQueryPart.append("$" + tableName + " in $" + "db2-fn:xmlcolumn(\"" + tableName
+			xmlGetForQueryPart.append("$" + tableName + " in db2-fn:xmlcolumn(\"CIDERWU." + tableName
 					+ ".XMLDATA\") ,");
 		}
 
@@ -471,12 +474,30 @@ public class XQueryGenerator implements IQueryGenerator
 		return selectAttribute.toString();
 	}
 
+	/**
+	 * Adds an pseudo anded expression & all its child expressions to
+	 * pAndExpressions set.
+	 * 
+	 * @param expression pAnd expression
+	 */
+	private void addpAndExpression(IExpression expression)
+	{
+		List<IExpression> childList = joinGraph.getChildrenList(expression);
+		pAndExpressions.add(expression);
+
+		for (IExpression newExp : childList)
+		{
+			addpAndExpression(newExp);
+		}
+
+	}
+
 	private String getAppropriatePath(EntityInterface entity, String path, List<String> EntityList,
 			String actualPath) throws DynamicExtensionsSystemException
 	{
 		String sourceEntity = "";
 		String tableName = "";
-		String newActualPath = actualPath;
+		StringBuilder newActualPath = new StringBuilder(actualPath);
 		String newPath = path;
 
 		List<AssociationInterface> associationList = QueryCSMUtil
@@ -493,11 +514,11 @@ public class XQueryGenerator implements IQueryGenerator
 						tableName = entity.getTableProperties().getName();
 						if (tableName.substring(3).equalsIgnoreCase("DE_"))
 						{
-							newActualPath = sourceEntity;
+							newActualPath.append(sourceEntity);
 						}
 						else
 						{
-							newActualPath = tableName + newActualPath;
+							newActualPath.insert(0, tableName);
 						}
 					}
 					catch (Exception e)
@@ -509,19 +530,21 @@ public class XQueryGenerator implements IQueryGenerator
 				{
 					newPath = "/" + sourceEntity;
 					EntityInterface newEntity = associations.getEntity();
-					newActualPath = getAppropriatePath(newEntity, newPath, EntityList,
-							newActualPath)
-							+ newPath;
+					newActualPath.append(newPath);
+					newActualPath.insert(0, getAppropriatePath(newEntity, newPath, EntityList,
+							newActualPath.toString()));
+					
+					
 				}
 			}
 		}
 		else
 		{
 			tableName = entity.getTableProperties().getName();
-			newActualPath = tableName + newActualPath;
+			newActualPath.insert(0, tableName);
 		}
 
-		return newActualPath;
+		return newActualPath.toString();
 	}
 
 	private String getForTree(EntityInterface entity, String rootVariable)
@@ -529,7 +552,7 @@ public class XQueryGenerator implements IQueryGenerator
 	{
 		String entityName = entity.getName();
 
-		String forTree = null;
+		StringBuilder forTree = new StringBuilder();
 
 		EntityInterface parentEntity = null;
 
@@ -540,18 +563,22 @@ public class XQueryGenerator implements IQueryGenerator
 			for (AssociationInterface association : associationList)
 			{
 				parentEntity = association.getEntity();
-				forTree = " for $" + entityName + " in $" + parentEntity.getName() + "/"
-						+ entityName;
-				forTree = getForTree(parentEntity, rootVariable) + forTree;
+				forTree.append(" for $");
+				forTree.append(entityName);
+				forTree.append(" in $");
+				forTree.append(parentEntity.getName());
+				forTree.append("/");
+				forTree.append(entityName);
+				forTree.insert(0, getForTree(parentEntity, rootVariable));
 
 			}
 		}
 		else
 		{
-			forTree = " for $" + entityName + " in " + rootVariable + "/" + entityName;
+			forTree.append(" for $").append(entityName).append(" in ").append(rootVariable).append("/").append(entityName);
 		}
 
-		return forTree;
+		return forTree.toString();
 
 	}
 
@@ -615,14 +642,18 @@ public class XQueryGenerator implements IQueryGenerator
 
 	private String getConditions() throws SQLException, SQLXMLException
 	{
+		
 		StringBuilder operandRule = new StringBuilder(processOperands());
 
 		operandRule.append(" ");
+		if(TableList.contains("DEMOGRAPHICS"))
+		{
 		operandRule.append(Variables.properties.getProperty("xquery.wherecondition.activeUpiFlag"));
 		operandRule.append(" and ");
 		operandRule
 				.append(Variables.properties.getProperty("xquery.wherecondition.researchOptOut"));
 		operandRule.append(" and ");
+		}
 		operandRule
 				.append(Variables.properties.getProperty("xquery.wherecondition.startTimeStamp"));
 		operandRule.append(" and ");
@@ -636,22 +667,22 @@ public class XQueryGenerator implements IQueryGenerator
 	{
 		StringBuffer operandQuery = new StringBuffer();
 
-		for (IExpression expressions : constraints)
+		for(IExpression expressions : constraints)
 		{
-			int noOfRules = expressions.numberOfOperands();
-			for (int i = 0; i < noOfRules; i++)
+		int noOfRules = expressions.numberOfOperands();
+		for (int i = 0; i < noOfRules; i++)
+		{
+			IExpressionOperand operand = expressions.getOperand(i);
+			if (operand instanceof IRule)
 			{
-				IExpressionOperand operand = expressions.getOperand(i);
-				if (operand instanceof IRule)
-				{
-					operandQuery.append(getQueryCondition((IRule) operand) + " and "); // Processing Rule.
+				operandQuery.append(getQueryCondition((IRule) operand) + " and "); // Processing Rule.
 
-				}
-				else if (operand instanceof IExpression)
-				{
-					operandQuery.append("");
-				}
 			}
+			else if (operand instanceof IExpression)
+			{
+				operandQuery.append("");
+			}
+		}
 		}
 
 		return operandQuery.toString();
@@ -732,24 +763,25 @@ public class XQueryGenerator implements IQueryGenerator
 
 		RelationalOperator operator = condition.getRelationalOperator();
 		List<String> values = condition.getValues();
-		String value = "";
+		StringBuilder value = new StringBuilder();
 		for (int i = 0; i < values.size(); ++i)
 		{
-			value += values.get(i) + " ,";
+			value.append(values.get(i)).append(" ,");
 		}
-		value = removeLastComma(value);
+		
+		value = new StringBuilder(removeLastComma(value.toString()));
 
-		value = getValueForType(condition, value);
+		value = new StringBuilder(getValueForType(condition, value.toString()));
 
-		value = "(" + value + ")";
-		String Operator = getActualValue(RelationalOperator.getSQL(operator), attributeName, value);
-		if (!Operator.equalsIgnoreCase(""))
+		value.insert(0, "(").append(")");
+		StringBuilder Operator = new StringBuilder(getActualValue(RelationalOperator.getSQL(operator), attributeName, value.toString()));
+		
+		if (Operator.toString().equalsIgnoreCase(""))
 		{
-			return Operator;
+			Operator.append("$").append(attributeName).append(" ").append(RelationalOperator.getSQL(operator)).append(" ").append(value);
 		}
-		String sqlXmlCond = "$" + attributeName + " " + RelationalOperator.getSQL(operator) + " "
-				+ value;
-		return sqlXmlCond;
+		
+		return Operator.toString();
 	}
 
 	private String getActualValue(String operator, String attributeName, String value)
@@ -759,23 +791,24 @@ public class XQueryGenerator implements IQueryGenerator
 		if (operator.equalsIgnoreCase("is NOT NULL"))
 		{
 			newOperator = "exists($" + attributeName + ")";
-			return newOperator;
+			
 		}
 		else if (operator.equalsIgnoreCase("Contains"))
 		{
 			newOperator = "contains($" + attributeName + ",\"" + value + "\")";
-			return newOperator;
+			
 		}
 		else if (operator.equalsIgnoreCase("StartsWith"))
 		{
 			newOperator = "starts-with($" + attributeName + ",\"" + value + "\")";
-			return newOperator;
+			
 		}
 		else if (operator.equalsIgnoreCase("EndsWith"))
 		{
 			newOperator = "ends-with($" + attributeName + ",\"" + value + "\")";
-			return newOperator;
+			
 		}
+		
 		return newOperator;
 	}
 
@@ -783,21 +816,34 @@ public class XQueryGenerator implements IQueryGenerator
 	{
 		AttributeTypeInformationInterface dataType = condition.getAttribute()
 				.getAttributeTypeInformation();
-		String actualValue = value;
+		StringBuilder actualValue = new StringBuilder();
+		
 		if (dataType instanceof StringTypeInformationInterface)
 		{
-			actualValue = "\"" + actualValue + "\"";
+			actualValue.append("\"").append(value).append("\"");
 		}
 		else if (dataType instanceof DateTypeInformationInterface)
 		{
-			actualValue = "xs:dateTime(\"" + actualValue + "\")";
+			String actualYear = value.substring(6);
+        	String actualMonth = value.substring(0,2);
+        	String actualDate = value.substring(3,5);
+        	StringBuilder newValue = new StringBuilder(actualYear);
+        	newValue.append("-");
+        	newValue.append(actualMonth);
+        	newValue.append("-");
+        	newValue.append(actualDate);
+			actualValue.append("xs:dateTime(\"").append(newValue.toString()).append("T23:59:59\")");
 		}
-		return actualValue;
+		else
+		{
+			actualValue.append(value);
+		}
+		return actualValue.toString();
 	}
 
 	private String getXPath(EntityInterface entity, String XPath)
 	{
-		String newXPath = XPath;
+		StringBuilder newXPath = new StringBuilder(XPath);
 		EntityInterface newEntity = entity;
 
 		try
@@ -808,21 +854,34 @@ public class XQueryGenerator implements IQueryGenerator
 			{
 				for (AssociationInterface assocoation : associationList)
 				{
-					newXPath = "/" + assocoation.getTargetEntity().getName() + newXPath;
+					int maxCardinality = assocoation.getTargetRole().getMaximumCardinality().getValue();
+					if(maxCardinality == 1)
+					{
+						newXPath.append("/").append(assocoation.getTargetRole().getName());
+					}
+					else
+					{
+						String firstChar = assocoation.getTargetEntity().getName().substring(0, 1);
+						String originalTargetEntity = firstChar.toLowerCase();
+						String newTargetEntity = assocoation.getTargetEntity().getName().replaceFirst(firstChar, originalTargetEntity);
+						StringBuilder intermediatePart = new StringBuilder("/");
+						intermediatePart.append(assocoation.getTargetRole().getName()).append("/").append(newTargetEntity);
+						newXPath.insert(0, intermediatePart);
+					}
 					newEntity = assocoation.getEntity();
-					newXPath = getXPath(newEntity, newXPath);
+					newXPath = new StringBuilder(getXPath(newEntity,newXPath.toString()));
 				}
 			}
 			else
 			{
-				newXPath = newEntity.getName() + newXPath;
+				newXPath.insert(0,newEntity.getName());
 			}
 		}
 		catch (DynamicExtensionsSystemException deExeption)
 		{
 			deExeption.printStackTrace();
 		}
-		return newXPath;
+		return newXPath.toString();
 	}
 
 	private List<AttributeInterface> getAttributes(IExpression expression)
@@ -927,24 +986,27 @@ public class XQueryGenerator implements IQueryGenerator
 
 	private String getDataTypeInformation(AttributeInterface attribute)
 	{
+		String returnValue = null;
+		
 		AttributeTypeInformationInterface dataType = attribute.getAttributeTypeInformation();
 		if (dataType instanceof StringTypeInformationInterface)
 		{
-			return "varchar(50)";
+			returnValue =  "varchar(500)";
 		}
 		else if (dataType instanceof DateTypeInformationInterface)
 		{
-			return "timestamp";
+			returnValue =  "varchar(500)";
 		}
 		else if (dataType instanceof LongTypeInformationInterface)
 		{
-			return "double";
+			returnValue = "varchar(500)";
 		}
 		else if (dataType instanceof IntegerTypeInformationInterface)
 		{
-			return "integer";
+			returnValue = "varchar(500)";
 		}
-		return null;
+		
+		return returnValue;
 	}
 
 }
