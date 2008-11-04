@@ -622,6 +622,7 @@
 				</fileset>
 			</classpath>
 		</sql>
+		<antcall target="import_xmi" />
 	</target>
 	
 	<!--MySQL Database Creation -->
@@ -1054,11 +1055,11 @@ Thanking You,
 
 		<echo>Importing</echo>
 		<java classname="edu.wustl.query.annotations.xmi.ImportXmi" fork="true">
-			<arg value="${filename}" />
-			<arg value="${hookentity}" />
-			<arg value="${mainContainerList}" />
-			<arg value="${package}" />
-			<arg value="${condition}" />
+			<arg value="cider.xmi" />
+			<arg value="none" />
+			<arg value="demographics.csv" />
+			<arg value="edu.wustl.cider.domain.discrete.demographics" />
+			<arg value="none" />
 			
 			<classpath>
 				<pathelement location="${temp.dir}/query/WEB-INF/classes" />
