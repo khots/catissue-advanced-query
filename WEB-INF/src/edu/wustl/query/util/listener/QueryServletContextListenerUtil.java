@@ -1,4 +1,3 @@
-
 package edu.wustl.query.util.listener;
 
 import java.io.File;
@@ -9,12 +8,9 @@ import java.sql.Connection;
 import java.util.Properties;
 
 import javax.naming.InitialContext;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 
-import net.sf.ehcache.CacheException;
 import edu.wustl.cab2b.server.path.PathFinder;
 import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -22,41 +18,29 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
 
-public class QueryCoreServletContextListener implements ServletContextListener
+
+public class QueryServletContextListenerUtil
 {
 
-	String DATASOURCE_JNDI_NAME = "java:/query";
-
-	public void contextInitialized(ServletContextEvent sce)
+	public static void initializeQuery(ServletContextEvent sce, String datasourceJNDIName) throws Exception
 	{
-		try
-		{
-			ServletContext servletContext = sce.getServletContext();
-			Variables.applicationHome = sce.getServletContext().getRealPath("");
-			Logger.configDefaultLogger(servletContext);
-			ApplicationProperties
-					.initBundle(servletContext.getInitParameter("resourcebundleclass"));
-			setGlobalVariable();
+		Logger.configDefaultLogger(sce.getServletContext());
+		Variables.applicationHome = sce.getServletContext().getRealPath("");
+		
+		setGlobalVariable();
 
-			//Added by Baljeet....This method caches all the Meta data
-			initEntityCache();
+		//Added by Baljeet....This method caches all the Meta data
+		initEntityCache(datasourceJNDIName);
 
-		}
-		catch (Exception e)
-		{
-			//logger.error("Application failed to initialize");
-			throw new RuntimeException(e.getLocalizedMessage(), e);
-
-		}
 	}
-
-	private void initEntityCache()
+	
+	private static void initEntityCache(String datasourceJNDIName)
 	{
 		try
 		{
 			//Added for initializing PathFinder and EntityCache
 			InitialContext ctx = new InitialContext();
-			DataSource ds = (DataSource) ctx.lookup(DATASOURCE_JNDI_NAME);
+			DataSource ds = (DataSource) ctx.lookup(datasourceJNDIName);
 			Connection conn = ds.getConnection();
 			PathFinder.getInstance(conn);
 		}
@@ -67,7 +51,7 @@ public class QueryCoreServletContextListener implements ServletContextListener
 
 	}
 
-	private void setGlobalVariable() throws Exception
+	private static void setGlobalVariable() throws Exception
 	{
 		String path = System.getProperty("app.propertiesFile");
 		XMLPropertyHandler.init(path);
@@ -83,7 +67,7 @@ public class QueryCoreServletContextListener implements ServletContextListener
 		path = System.getProperty("app.propertiesFile");
 	}
 
-	private void readProperties()
+	private static void readProperties()
 	{
 		File file = new File(Variables.applicationHome + System.getProperty("file.separator")
 				+ "WEB-INF" + System.getProperty("file.separator") + "classes"
@@ -111,20 +95,4 @@ public class QueryCoreServletContextListener implements ServletContextListener
 		}
 
 	}
-
-	public void contextDestroyed(ServletContextEvent sce)
-	{
-		//  shutting down the cacheManager
-		try
-		{
-			//CatissueCoreCacheManager catissueCoreCacheManager = CatissueCoreCacheManager.getInstance();
-			//catissueCoreCacheManager.shutdown();
-		}
-		catch (CacheException e)
-		{
-			//logger.debug("Exception occured while shutting instance of CatissueCoreCacheManager");
-			//e.printStackTrace();
-		}
-	}
-
 }

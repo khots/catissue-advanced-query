@@ -11,7 +11,7 @@ import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.util.global.Constants;
 
-public class QueryCoreSessionListener implements HttpSessionListener
+public class QuerySessionListener implements HttpSessionListener
 {
 
 	public void sessionCreated(HttpSessionEvent arg0)
