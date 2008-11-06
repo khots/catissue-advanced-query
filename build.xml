@@ -398,8 +398,8 @@
 		</copy>
 		
 		<!--Copying pages -->
-		<copy todir="${zip.dir}/pages" overwrite="true"> 
-		    <fileset dir ="${base.dir}/pages" />
+		<copy todir="${zip.dir}/pages/advancequery/content/search" overwrite="true"> 
+		    <fileset dir ="${base.dir}/pages/advancequery/content/search" />
 		</copy> 
 		
 		<!--Copying the flex related files from WEB-INF/flex -->

@@ -33,7 +33,7 @@ PUBLIC
 		 			<forward name="success" path=".query.homePageDef" /> 
 		</action>
 		
-		<action path="/RedirectHome"
+		<action path="/QueryHome"
 					type="org.apache.struts.actions.ForwardAction"
 					parameter=".query.mainTitlePageDef" />
 		

@@ -25,10 +25,10 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
   </context-param>
  <!-- Listener Configuration -->
   <listener>
-  	<listener-class>edu.wustl.query.util.listener.QueryCoreServletContextListener</listener-class>
+  	<listener-class>edu.wustl.query.util.listener.QueryServletContextListener</listener-class>
   </listener>
   <listener>
-  	<listener-class>edu.wustl.query.util.listener.QueryCoreSessionListener</listener-class>
+  	<listener-class>edu.wustl.query.util.listener.QuerySessionListener</listener-class>
   </listener>
 
 <!--Environment entry for datasource JNDI name -->
