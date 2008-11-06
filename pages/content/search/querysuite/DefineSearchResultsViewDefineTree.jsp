@@ -49,19 +49,7 @@
 												</embed>
 
 						</object>
-				<!--		<APPLET
-							CODEBASE = "<%=Constants.APPLET_CODEBASE%>"
-							ARCHIVE = "dagViewApplet.jar, cab2bStandAlone.jar,commonpackage.jar,swingx-2006_10_08.jar,org-netbeans-graph-vmd.jar,org-netbeans-graph.jar,org-openide-util.jar,DynamicExtensions.jar,struts.jar,hibernate2.1.7c.jar,odmg.jar,log4j-1.2.9.jar"
-							CODE = "<%=Constants.QUERY_DAG_VIEW_APPLET%>"
-							ALT = "Dag view Applet"
-							NAME = "<%=Constants.QUERY_DAG_VIEW_APPLET_NAME%>"
-							width="100%" height="100%" MAYSCRIPT>
-							<PARAM name="type" value="application/x-java-applet;jpi-version=1.5.0_08">
-							<PARAM name="name" value="<%=Constants.QUERY_DAG_VIEW_APPLET_NAME%>">
-							<PARAM name="session_id" value="<%=session.getId()%>">					
-							<PARAM name = "<%=Constants.APPLET_SERVER_URL_PARAM_NAME%>" value="<%=Constants.APPLET_SERVER_HTTP_START_STR%><%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath()%>">
-							<PARAM name="isForView" value="true">">
-						</APPLET> -->
+				
 					</div>
 				</td>
 			</tr>
