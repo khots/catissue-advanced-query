@@ -10,8 +10,8 @@
 <%@ page import="edu.wustl.query.util.global.Variables"%>
 <%@ page language="java" isELIgnored="false"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<script src="jss/script.js"></script>
-<script type="text/javascript" src="jss/ajax.js"></script> 
+<script src="jss/advancequery/script.js"></script>
+<script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
 <style>
 .active-column-0 {width:30px}
 tr#hiddenCombo
@@ -264,7 +264,7 @@ function checkAllOnThisPageResponse()
 		}
 	%>
 	<!-- Mandar : 434 : for tooltip -->
-	<script language="JavaScript" type="text/javascript" src="jss/javaScript.js"></script>
+	<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
 </head>
 <body onload="setCheckBoxState()">
 
@@ -282,7 +282,7 @@ function checkAllOnThisPageResponse()
 					</span>
 				</td>
 		        <td>
-					<img src="images/uIEnhancementImages/table_title_corner2.gif" alt="Page Title - Search Results" width="31" height="24" hspace="0" vspace="0" />
+					<img src="images/advancequery/uIEnhancementImages/table_title_corner2.gif" alt="Page Title - Search Results" width="31" height="24" hspace="0" vspace="0" />
 				</td>
 		      </tr>
 		    </table>
@@ -302,7 +302,7 @@ function checkAllOnThisPageResponse()
 	<table width="100%" border="0" cellpadding="3" cellspacing="0" class="whitetable_bg">
       
       <tr>
-        <td align="left" ><%@ include file="/pages/content/common/ActionErrors.jsp" %></td>
+        <td align="left" ><%@ include file="/pages/advancequery/content/common/ActionErrors.jsp" %></td>
       </tr>
       <tr>
         <td align="left" class="tr_bg_blue1"><span class="blue_ar_b"> &nbsp;<bean:message key="<%=title%>" />&nbsp;</span></td>
@@ -382,7 +382,7 @@ function checkAllOnThisPageResponse()
 					var useDefaultRowClickHandler =1;
 					var useFunction = "search";	
 				</script>
-				<%@ include file="/pages/content/search/AdvanceGrid.jsp" %> 
+				<%@ include file="/pages/advancequery/content/search/AdvanceGrid.jsp" %> 
 <!--  **************  Code for New Grid  *********************** -->
 			</td>
 		</tr>
@@ -422,7 +422,7 @@ function checkAllOnThisPageResponse()
 					<%if(pageOf.equals(Constants.PAGEOF_QUERY_RESULTS) || pageOf.equals(Constants.PAGEOF_QUERY_MODULE) ){
 						
 					%>
-						<img src="images/b_add_list.gif" width="100" hspace="3" onclick="getData()"/>&nbsp;
+						<img src="images/advancequery/b_add_list.gif" width="100" hspace="3" onclick="getData()"/>&nbsp;
 				                        
 					<%}else
 				       {%>
@@ -430,13 +430,13 @@ function checkAllOnThisPageResponse()
 					<%}%>
 					</td>
 					<td width="5%" nowrap align="right" valign="top">
-						<img src="images/b_exp.gif" width="57"  hspace="3" onclick="onExport()"/>&nbsp;
+						<img src="images/advancequery/b_exp.gif" width="57"  hspace="3" onclick="onExport()"/>&nbsp;
 					</td>
 					<td width="5%" nowrap align="right" valign="top">
-						<img src="images/b_def_view.gif" width="88" hspace="3" onclick="<%=configAction%>"/>&nbsp;
+						<img src="images/advancequery/b_def_view.gif" width="88" hspace="3" onclick="<%=configAction%>"/>&nbsp;
 					</td>
 					<td width="5%" nowrap align="right" valign="top">
-						<img src="images/b_red_query.gif" width="107" hspace="3" onclick="<%=redefineQueryAction%>"/>&nbsp;
+						<img src="images/advancequery/b_red_query.gif" width="107" hspace="3" onclick="<%=redefineQueryAction%>"/>&nbsp;
 					</td>
 			</tr>
 			</table>

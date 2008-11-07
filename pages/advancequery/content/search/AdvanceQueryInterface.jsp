@@ -65,7 +65,7 @@
 			<table width="100%" height="100%">
 			<tr>
 				<td width="100%">
-		        	<%@ include file="/pages/content/common/ActionErrors.jsp" %>
+		        	<%@ include file="/pages/advancequery/content/common/ActionErrors.jsp" %>
 				</td>
 			</tr>
 			</table>

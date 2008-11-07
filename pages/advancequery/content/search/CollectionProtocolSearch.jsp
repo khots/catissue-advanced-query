@@ -30,13 +30,13 @@
 %>
 
 <head>
-	<script src="jss/script.js" type="text/javascript"></script>
-	<script src="jss/AdvancedSearchScripts.js" type="text/javascript"></script>
+	<script src="jss/advancequery/script.js" type="text/javascript"></script>
+	<script src="jss/advancequery/AdvancedSearchScripts.js" type="text/javascript"></script>
 <!-- Mandar : 434 : for tooltip -->
-<script language="JavaScript" type="text/javascript" src="jss/javaScript.js"></script>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
 </head>
 
-<%@ include file="/pages/content/common/ActionErrors.jsp" %>
+<%@ include file="/pages/advancequery/content/common/ActionErrors.jsp" %>
 
 <html:form action="<%=Constants.ADVANCED_SEARCH_ACTION%>">
 <table summary="" cellpadding="5" cellspacing="0" border="0" width="600">
@@ -48,7 +48,7 @@
 <tr>
 	
 	<td class="formTitle" height="25" nowrap >
-	&nbsp;<img src="images/CollectionProtocol.GIF" alt="CollectionProtocol" />&nbsp;<bean:message key="collectionProtocol.queryRule"/>
+	&nbsp;<img src="images/advancequery/CollectionProtocol.GIF" alt="CollectionProtocol" />&nbsp;<bean:message key="collectionProtocol.queryRule"/>
 	</td>
 	<td class="formTitle" nowrap align="right" colspan="2">
 		<html:submit property="addRule" styleClass="actionButton" >
@@ -170,7 +170,7 @@
 		<html:text styleClass="formDateSized10" size="10" styleId="startDate2" property="<%=startDate2%>" disabled="true"/>
 					 &nbsp;
 		<a href="javascript:onDate('startDate','advanceSearchForm.startDate2',true);">
-			<img src="images\calendar.gif" width=24 height=22 border=0>
+			<img src="images\advancequery\calendar.gif" width=24 height=22 border=0>
 		</a>
 	</td>
 </tr>
@@ -194,13 +194,13 @@
 		<html:text styleClass="formDateSized10" size="10" styleId="endDate1" property="<%=endDate%>" disabled="true"/>
 					 &nbsp;
 		<a href="javascript:onDate('endDate','advanceSearchForm.endDate1',false);">
-			<img src="images\calendar.gif" width=24 height=22 border=0>
+			<img src="images\advancequery\calendar.gif" width=24 height=22 border=0>
 		</a>
 					&nbsp;To&nbsp;
 		<html:text styleClass="formDateSized10" size="10" styleId="endDate2" property="<%=endDate2%>" disabled="true"/>
 					 &nbsp;
 		<a href="javascript:onDate('endDate','advanceSearchForm.endDate2',true);">
-			<img src="images\calendar.gif" width=24 height=22 border=0>
+			<img src="images\advancequery\calendar.gif" width=24 height=22 border=0>
 		</a>
 	</td>
 </tr>
@@ -243,13 +243,13 @@
 		<html:text styleClass="formDateSized10" size="10" styleId="regDate1" property="<%=regDate%>" disabled="true"/>
 					 &nbsp;
 		<a href="javascript:onDate('regDate','advanceSearchForm.regDate1',false);">
-			<img src="images\calendar.gif" width=24 height=22 border=0>
+			<img src="images\advancequery\calendar.gif" width=24 height=22 border=0>
 		</a>
 					&nbsp;To&nbsp;
 		<html:text styleClass="formDateSized10" size="10" styleId="regDate2" property="<%=regDate2%>" disabled="true"/>
 					 &nbsp;
 		<a href="javascript:onDate('regDate','advanceSearchForm.regDate2',true);">
-			<img src="images\calendar.gif" width=24 height=22 border=0>
+			<img src="images\advancequery\calendar.gif" width=24 height=22 border=0>
 		</a>
 	</td>
 </tr>

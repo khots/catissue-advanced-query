@@ -9,7 +9,7 @@
 
 <head>
 <!-- Mandar : 434 : for tooltip -->
-<script language="JavaScript" type="text/javascript" src="jss/javaScript.js"></script>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
 <%
 List usersForUse = (List) request.getAttribute(Constants.USERS_FOR_USE_PRIVILEGE);
 List usersForRead = (List) request.getAttribute(Constants.USERS_FOR_READ_PRIVILEGE);
@@ -113,7 +113,7 @@ AssignPrivilegesForm form = (AssignPrivilegesForm)request.getAttribute("assignPr
 	</SCRIPT>
 </head>
 
-<%@ include file="/pages/content/common/ActionErrors.jsp" %>
+<%@ include file="/pages/advancequery/content/common/ActionErrors.jsp" %>
 
 <html:form action="<%=Constants.ASSIGN_PRIVILEGES_ACTION%>">
 <table summary="" cellpadding="5" cellspacing="0" border="0" width="500">

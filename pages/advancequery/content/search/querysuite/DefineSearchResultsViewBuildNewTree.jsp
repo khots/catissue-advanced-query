@@ -6,7 +6,7 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 
 <link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTree.css">
-<script src="jss/queryModule.js"></script>
+<script src="jss/advancequery/queryModule.js"></script>
 <script language="JavaScript" type="javascript" src="dhtml_comp/jss/dhtmXTreeCommon.js"></script>
 <script language="JavaScript" type="javascript" src="dhtml_comp/jss/dhtmlXTree.js"></script>
 <script>
@@ -73,7 +73,7 @@ function showTree(selectedCategories, flag)
 </script>
 <html>
 <body>
-<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
+<link rel="stylesheet" type="text/css" href="advancequery/css/styleSheet.css" />
 <table border="0" width="100%" id="table3" height="100%" cellspacing="0" cellpadding="0">
 	<tr  height="5%" valign="center" width="100%">
 		<td width="25%" height="10%" colspan="2" valign="center"  class="queryModuleTabSelected">
@@ -93,7 +93,7 @@ function showTree(selectedCategories, flag)
 			
 					
 						<td valign="top" width="25%" height="76%">
-						<%@ include file="/pages/content/search/querysuite/ChooseSearchCategory.jsp" %>
+						<%@ include file="/pages/advancequery/content/search/querysuite/ChooseSearchCategory.jsp" %>
 						</td>
 						
 						<td align="center" valign="middle">
@@ -109,7 +109,7 @@ function showTree(selectedCategories, flag)
 						</td>
 						
 						<td valign="top" width="25%" height="76%" >
-						<%@ include file="/pages/content/search/querysuite/BuildCustomTree.jsp" %>
+						<%@ include file="/pages/advancequery/content/search/querysuite/BuildCustomTree.jsp" %>
 						</td>
 				
 				</tr>

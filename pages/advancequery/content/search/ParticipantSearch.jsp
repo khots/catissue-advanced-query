@@ -29,13 +29,13 @@
 %>
 
 <head>
-	<script src="jss/script.js" type="text/javascript"></script>
-	<script src="jss/AdvancedSearchScripts.js" type="text/javascript"></script>
+	<script src="jss/advancequery/script.js" type="text/javascript"></script>
+	<script src="jss/advancequery/AdvancedSearchScripts.js" type="text/javascript"></script>
 <!-- Mandar : 434 : for tooltip -->
-<script language="JavaScript" type="text/javascript" src="jss/javaScript.js"></script>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
 </head>
 
-<%@ include file="/pages/content/common/ActionErrors.jsp" %>
+<%@ include file="/pages/advancequery/content/common/ActionErrors.jsp" %>
 
 <html:form action="AdvanceSearch.do">
 <table summary="" cellpadding="5" cellspacing="0" border="0" width="600">
@@ -46,7 +46,7 @@
 <!--  MAIN TITLE ROW -->
 <tr>
 	<td class="formTitle" height="25" >
-	    &nbsp;<img src="images/Participant.GIF" alt="Participant" /> &nbsp;
+	    &nbsp;<img src="images/advancequery/Participant.GIF" alt="Participant" /> &nbsp;
 	    <bean:message key="participant.queryRule"/>
 	</td>
 	<td class="formTitle" nowrap align="right" colspan="2">
@@ -140,13 +140,13 @@
 		<html:text styleClass="formDateSized10" size="10" styleId="birthDate1" property="<%=birthDate%>" disabled="true"/>
 					 &nbsp;
 		<a href="javascript:onDate('birthDate','advanceSearchForm.birthDate1',false);">
-			<img src="images\calendar.gif" width=24 height=22 border=0>
+			<img src="images\advancequery\calendar.gif" width=24 height=22 border=0>
 		</a>
 					&nbsp;To&nbsp;
 		<html:text styleClass="formDateSized10" size="10" styleId="birthDate2" property="<%=birthDate2%>" disabled="true"/>
 					 &nbsp;
 		<a href="javascript:onDate('birthDate','advanceSearchForm.birthDate2',true);">
-			<img src="images\calendar.gif" width=24 height=22 border=0>
+			<img src="images\advancequery\calendar.gif" width=24 height=22 border=0>
 		</a>
 	</td>
 </tr>

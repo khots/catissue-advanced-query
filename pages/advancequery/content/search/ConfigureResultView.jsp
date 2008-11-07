@@ -294,7 +294,7 @@
 	
 </script>
 <!-- Mandar : 434 : for tooltip -->
-<script language="JavaScript" type="text/javascript" src="jss/javaScript.js"></script>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
 </head>
 <html:errors/>
 <html:form action="<%=callAction%>">

@@ -9,7 +9,7 @@
 
 
 <!-- Make the Ajax javascript available -->
-<script type="text/javascript" src="jss/ajax.js"></script> 
+<script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
 <html:errors />
 <html:messages id="messageKey" message="true" header="messages.header" footer="messages.footer">
 <%=messageKey%>
@@ -21,7 +21,7 @@
 <table summary="" cellpadding="0" cellspacing="0" border="0" height="20" class="tabPage" width="600">
 	<tr>
 		<td class="tabField" colspan="6">
-		<%@   include file="/pages/content/manageBioSpecimen/ViewSurgicalPathologyReport.jsp" %>
+		<%@   include file="/pages/advancequery/content/manageBioSpecimen/ViewSurgicalPathologyReport.jsp" %>
 		</td>
 	</tr>
 </table>

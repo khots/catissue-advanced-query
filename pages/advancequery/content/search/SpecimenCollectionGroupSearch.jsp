@@ -23,13 +23,13 @@
 %>
 
 <head>
-	<script src="jss/script.js" type="text/javascript"></script>
-	<script src="jss/AdvancedSearchScripts.js" type="text/javascript"></script>
+	<script src="jss/advancequery/script.js" type="text/javascript"></script>
+	<script src="jss/advancequery/AdvancedSearchScripts.js" type="text/javascript"></script>
 <!-- Mandar : 434 : for tooltip -->
-<script language="JavaScript" type="text/javascript" src="jss/javaScript.js"></script>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
 </head>
 
-<%@ include file="/pages/content/common/ActionErrors.jsp" %>
+<%@ include file="/pages/advancequery/content/common/ActionErrors.jsp" %>
 
 <html:form action="AdvanceSearch.do">
 <table summary="" cellpadding="5" cellspacing="0" border="0" width="600">
@@ -40,7 +40,7 @@
 <!--  MAIN TITLE ROW -->
 <tr>
 	<td class="formTitle" height="25" nowrap>
-	    &nbsp;<img src="images/SpecimenCollectionGroup.GIF" alt="Participant" /> &nbsp;
+	    &nbsp;<img src="images/advancequery/SpecimenCollectionGroup.GIF" alt="Participant" /> &nbsp;
 	    <bean:message key="spg.queryRule"/>
 	</td>
 	<td class="formTitle" nowrap align="right" colspan="2">

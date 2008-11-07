@@ -12,7 +12,7 @@
 <%@ page import="java.util.ArrayList"%>
 
 
-<script src="jss/script.js"></script>
+<script src="jss/advancequery/script.js"></script>
 
 <style>
 .active-column-0 {width:30px}
@@ -119,7 +119,7 @@ function checkAll(element)
 }
 	</script>
 </head>
-<%@ include file="/pages/content/common/ActionErrors.jsp" %>  
+<%@ include file="/pages/advancequery/content/common/ActionErrors.jsp" %>  
 <html:form action="<%=Constants.SHOPPING_CART_OPERATION%>">
 
 <table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
@@ -186,7 +186,7 @@ function checkAll(element)
 					var useDefaultRowClickHandler =2;
 					var useFunction = "shopingcart";	
 			</script>
-			<%@ include file="/pages/content/search/AdvanceGrid.jsp" %>
+			<%@ include file="/pages/advancequery/content/search/AdvanceGrid.jsp" %>
 <!--  **************  Code for New Grid  *********************** -->
 		</td>
 	</tr>

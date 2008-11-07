@@ -4,8 +4,8 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <html>
 <head>
-<script src="jss/queryModule.js"></script>
-<script type="text/javascript" src="jss/ajax.js"></script> 
+<script src="jss/advancequery/queryModule.js"></script>
+<script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
 <script>
 <%
 String height = "";
@@ -81,7 +81,7 @@ else
 
 <html:form method="GET" action="SearchCategory.do" focus="textField">
 <html:hidden property="currentPage" value=""/>
-	<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%" bordercolorlight="#000000" id="table11">
+	<table border="1" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%" bordercolorlight="#000000" id="table11">
 		<tr>
 			<td valign="top"> 
 				<table border="0" width="100%" valign="top" cellspacing="0" height="100%">
@@ -104,7 +104,7 @@ else
 							<b><font face="Arial" size="2"><bean:message key="query.advancedSearchHeader"/></font></b>									
 						</td>
 						<th id="imageContainer" valign="center" align="right" height="1%" bgcolor="#EAEAEA" style="border-top:solid 1px;border-bottom:solid 1px;border-right:solid 1px;bordercolorlight:#EAEAEA;">
-							<a id="image" onClick="expand()" style="display:block"> <img src="images/nolines_plus.gif" hspace="3" vspace="3"/> </a>
+							<a id="image" onClick="expand()" style="display:block"> <img src="advancequery/images/nolines_plus.gif" hspace="3" vspace="3"/> </a>
 						</th>
 						<td  height="1%">&nbsp;</td>
 					</tr>
@@ -143,7 +143,7 @@ else
 						<td  height="1%">&nbsp;</td>
 						<td colspan="2"  height="1%" valign="top" bgcolor="#EAEAEA"  class="tdWithoutBottomBorder">
 							
-							<img src="images/ic_search.gif" hspace="1" vspace="1"/>
+							<img src="images/advancequery/ic_search.gif" hspace="1" vspace="1"/>
 							<b><font face="Arial" size="2"><bean:message key="query.searchResults"/></font>	</b>				
 						</td>
 						<td  height="1%">&nbsp;</td>

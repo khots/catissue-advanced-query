@@ -6,10 +6,10 @@
 <html>
 <head>
 <title><tiles:getAsString name="title" ignore="true"/></title>
-<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
-<script src="jss/script.js" type="text/javascript"></script>
-<script src="jss/overlib_mini.js" type="text/javascript"></script>
-<script src="jss/calender.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
+<script src="jss/advancequery/script.js" type="text/javascript"></script>
+<script src="jss/advancequery/overlib_mini.js" type="text/javascript"></script>
+<script src="jss/advancequery/calender.js" type="text/javascript"></script>
 
 </head>
 <body>

@@ -8,7 +8,7 @@
 <head>
 <meta http-equiv="Content-Language" content="en-us">
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-<script src="jss/queryModule.js">
+<script src="jss/advancequery/queryModule.js">
 	</script>
 </head>
 <body onload="checkItDefault()" onunload='closeWaitPage()'>
@@ -19,13 +19,13 @@
 <table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" bordercolor="#000000" id="table2" >		
 	<tr>	
 		<td width="33%" align="center" class="bgWizardImage">
-			<img src="images/1_inactive.gif" /> 
+			<img src="images/advancequery/1_inactive.gif" /> 
 		</td>
 		<td width="33%" align="center" class="bgWizardImage">
-			<img src="images/2_inactive.gif" /> 
+			<img src="images/advancequery/2_inactive.gif" /> 
 		</td>
 		<td width="33%" align="center" class="bgWizardImage">
-			<img src="images/3_active.gif" /> 
+			<img src="images/advancequery/3_active.gif" /> 
 		</td>
 	</tr>
 	<tr height="5%" >

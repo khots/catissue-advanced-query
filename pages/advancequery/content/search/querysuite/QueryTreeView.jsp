@@ -6,17 +6,17 @@
 <%@ page import="edu.wustl.common.tree.QueryTreeNodeData"%>
 <html >
 <head>
-	<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
+	<link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
 	<title>DHTML Tree samples. dhtmlXTree - Action handlers</title>
 	<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTree.css">
 	<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmXTreeCommon.js"></script>
 	<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlXTree.js"></script>
-	<script language="JavaScript" type="text/javascript" src="jss/javaScript.js"></script>
+	<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
 	<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXGrid.css"/>
 	<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTree.css">
 	<script  src="dhtml_comp/jss/dhtmlXCommon.js"></script>
-    <script type="text/javascript" src="jss/ajax.js"></script> 
-<script src="jss/queryModule.js"></script>
+    <script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
+<script src="jss/advancequery/queryModule.js"></script>
 
 <script type="text/javascript">
 function divHeight(treeNumber, currentNumber)

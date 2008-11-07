@@ -9,8 +9,8 @@
 
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/jss/dhtmXTreeCommon.js"></script>
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/jss/dhtmlXTree.js"></script>
-<script src="jss/queryModule.js"></script>
-<script type="text/javascript" src="jss/ajax.js"></script> 
+<script src="jss/advancequery/queryModule.js"></script>
+<script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
 <script>
 function moveNodeUp()
 {

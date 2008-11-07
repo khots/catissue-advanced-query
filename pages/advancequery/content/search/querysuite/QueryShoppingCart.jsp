@@ -8,10 +8,10 @@
 <%@ page import="edu.wustl.catissuecore.util.global.Utility"%>
 <%@ page import="edu.wustl.catissuecore.util.global.Variables"%>
 
-<%@ include file="/pages/content/common/AutocompleterCommon.jsp" %> 
-<link href="css/catissue_suite.css" rel="stylesheet" type="text/css" /> 
+<%@ include file="/pages/advancequery/content/common/AutocompleterCommon.jsp" %> 
+<link href="css/advancequery/catissue_suite.css" rel="stylesheet" type="text/css" /> 
 
-<script src="jss/script.js"></script>
+<script src="jss/advancequery/script.js"></script>
 
 <style>
 .active-column-0 {width:30px}
@@ -321,7 +321,7 @@ function checkAll(element)
     <td class="td_color_bfdcf3"><table border="0" cellpadding="0" cellspacing="0">
       <tr>
         <td class="td_table_head"><span class="wh_ar_b"><bean:message key="shoppingCart.title"/></span></td>
-        <td><img src="images/uIEnhancementImages/table_title_corner2.gif" alt="Page Title - My List" width="31" height="24" /></td>
+        <td><img src="images/advancequery/uIEnhancementImages/table_title_corner2.gif" alt="Page Title - My List" width="31" height="24" /></td>
       </tr>
     </table></td>
   </tr>
@@ -336,7 +336,7 @@ function checkAll(element)
       
      <tr>
         <td colspan="2" align="left" class="toptd">
-		<%@ include file="/pages/content/common/ActionErrors.jsp" %>
+		<%@ include file="/pages/advancequery/content/common/ActionErrors.jsp" %>
 		</td>
       </tr>
       
@@ -373,7 +373,7 @@ function checkAll(element)
 					var useDefaultRowClickHandler =2;
 					var useFunction = "queryshopingcart";	
 			 </script>
-			<%@ include file="/pages/content/search/AdvanceGrid.jsp" %> </td>
+			<%@ include file="/pages/advancequery/content/search/AdvanceGrid.jsp" %> </td>
            </tr>
    <!--  **************  Code for New Grid  *********************** -->
 		</table></td>

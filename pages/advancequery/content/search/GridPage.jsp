@@ -1,6 +1,6 @@
 <!-- dataList and columnList are to be set in the main JSP file -->
 <link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXGrid.css"/>
-<link href="css/catissue_suite.css" rel="stylesheet" type="text/css" />
+<link href="css/advancequery/catissue_suite.css" rel="stylesheet" type="text/css" />
 <script  src="dhtml_comp/js/dhtmlXCommon.js"></script>
 <script  src="dhtml_comp/js/dhtmlXGrid.js"></script>		
 <script  src="dhtml_comp/js/dhtmlXGridCell.js"></script>	

@@ -73,8 +73,8 @@
 	
 </style>
 <!-- Mandar : 434 : for tooltip -->
-<script language="JavaScript" type="text/javascript" src="jss/javaScript.js"></script>
-<script language="JavaScript" type="text/javascript"	src="jss/caTissueSuite.js"></script>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
+<script language="JavaScript" type="text/javascript"	src="jss/advancequery/caTissueSuite.js"></script>
 
 <html:form action="<%=Constants.CONFIGURE_DISTRIBUTION_ACTION%>">
 <html:hidden property="distributionId" />
@@ -86,7 +86,7 @@
       <tr>
         <td class="td_table_head"><span class="wh_ar_b"><bean:message key="distribution.name"/>
 		</span></td>
-        <td><img src="images/uIEnhancementImages/table_title_corner2.gif" alt="Page Title - Distribution" width="31" height="24"></td>
+        <td><img src="images/advancequery/uIEnhancementImages/table_title_corner2.gif" alt="Page Title - Distribution" width="31" height="24"></td>
       </tr>
     </table></td>
   </tr>
@@ -95,8 +95,8 @@
 	<logic:equal name="pageOf" value="<%=Constants.PAGE_OF_DISTRIBUTION%>">
       <tr>
         <td class="td_tab_bg" >
-			<img src="images/uIEnhancementImages/spacer.gif" alt="spacer" width="50" height="1"></td>
-			 <td valign="bottom" ><img src="images/uIEnhancementImages/tab_specimen_user_selected.gif" alt="Specimen Report" width="126" height="22" border="0" /></td>
+			<img src="images/advancequery/uIEnhancementImages/spacer.gif" alt="spacer" width="50" height="1"></td>
+			 <td valign="bottom" ><img src="images/advancequery/uIEnhancementImages/tab_specimen_user_selected.gif" alt="Specimen Report" width="126" height="22" border="0" /></td>
 			 <td valign="bottom">
 				<a href="SimpleQueryInterface.do?pageOf=pageOfArrayDistribution&aliasName=Distribution_array"> <img src="images/uIEnhancementImages/tab_array_user.gif" alt="Array Report" width="107" height="22" /></a></td>
 	</logic:equal>
@@ -104,9 +104,9 @@
 		<logic:equal name="pageOf" value="<%=Constants.PAGE_OF_DISTRIBUTION_ARRAY%>">
 			    <tr>
         <td class="td_tab_bg" >
-			<img src="images/uIEnhancementImages/spacer.gif" alt="spacer" width="50" height="1"></td>
+			<img src="images/advancequery/uIEnhancementImages/spacer.gif" alt="spacer" width="50" height="1"></td>
 			 <td valign="bottom" ><a href="SimpleQueryInterface.do?pageOf=pageOfDistribution&aliasName=Distribution"><img src="images/uIEnhancementImages/tab_specimen_user.gif" alt="Specimen Report" width="126" height="22" border="0" /></a></td>
-                     <td valign="bottom"><img src="images/uIEnhancementImages/tab_array_user_selected.gif" alt="Array Report" width="107" height="22" /></td>
+                     <td valign="bottom"><img src="images/advancequery/uIEnhancementImages/tab_array_user_selected.gif" alt="Array Report" width="107" height="22" /></td>
                     
 		</logic:equal>
 			<td width="90%" valign="bottom" class="td_tab_bg">&nbsp;</td>
@@ -199,7 +199,7 @@
 			<td>&nbsp;</td>
 			<td colspan="<%=columnNames.length%>" align="right" nowrap >
 		  
-						<img src="images/uIEnhancementImages/viewall_icon.gif" alt="View All" />
+						<img src="images/advancequery/uIEnhancementImages/viewall_icon.gif" alt="View All" />
 						<a href="#" onclick="changeActionOnConfig()" class="view">
 						<span class="view">
 						<bean:message  key="buttons.configure" /></span></a>

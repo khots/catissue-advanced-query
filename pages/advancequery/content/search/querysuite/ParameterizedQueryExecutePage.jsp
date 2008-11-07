@@ -14,9 +14,9 @@
 	import="edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery"%>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
-<script src="jss/queryModule.js"></script>
-<script src="jss/calender.js"></script>
+<link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
+<script src="jss/advancequery/queryModule.js"></script>
+<script src="jss/advancequery/calender.js"></script>
 <script>
 		   function GotoRetriveAction()
 		   {

@@ -10,15 +10,15 @@
 <link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTree.css">
 <meta http-equiv="Content-Language" content="en-us">
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-<script src="jss/queryModule.js"></script>
-<script type="text/javascript" src="jss/wz_tooltip.js"></script>
+<script src="jss/advancequery/queryModule.js"></script>
+<script type="text/javascript" src="jss/advancequery/wz_tooltip.js"></script>
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/jss/dhtmXTreeCommon.js"></script>
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/jss/dhtmlXTree.js"></script>
 
 </head>
 <body onunload='closeWaitPage()'>
 <!-- Make the Ajax javascript available -->
-<script type="text/javascript" src="jss/ajax.js"></script> 
+<script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
 <html:errors />
 <%
 	String formAction = Constants.ViewSearchResultsAction;
@@ -39,13 +39,13 @@
 							<tr  height="10" >
 								
 								<td width="33%" align="center" class="bgWizardImage">
-									<img src="images/1_inactive.gif" /> <!-- width="118" height="25" /-->
+									<img src="images/advancequery/1_inactive.gif" /> <!-- width="118" height="25" /-->
 								</td>
 								<td width="33%" align="center" class="bgWizardImage">
-									<img src="images/2_active.gif" /> <!-- width="199" height="38" /-->
+									<img src="images/advancequery/2_active.gif" /> <!-- width="199" height="38" /-->
 								</td>
 								<td width="33%" align="center" class="bgWizardImage">
-									<img src="images/3_inactive.gif" /> <!--  width="139" height="38" /-->
+									<img src="images/advancequery/3_inactive.gif" /> <!--  width="139" height="38" /-->
 								</td>
 							</tr>
 							<tr height="1">
@@ -75,8 +75,8 @@
 						<td width="50%" align="left">
 						  <table border="0" cellspacing="0" cellpadding="0">
 							<tr>
-							  <td><img src="images/b_save.gif" width="51"  hspace="3" onclick="validateQuery('save');"/></td>
-							  <td><img src="images/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td>
+							  <td><img src="images/advancequery/b_save.gif" width="51"  hspace="3" onclick="validateQuery('save');"/></td>
+							  <td><img src="images/advancequery/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td>
 							</tr>
 						  </table>
 						</td>
@@ -84,8 +84,8 @@
 						<td width="50%" align="right">
 						  <table border="0" cellspacing="0" cellpadding="0">
 						  <tr>
-							<td><img src="images/b_prev.gif" width="72"  hspace="3" onclick="previousFromDefineResults()"/></td>
-							<td><img src="images/b_next.gif"   hspace="3" onclick="validateQuery('search');" /></td>
+							<td><img src="images/advancequery/b_prev.gif" width="72"  hspace="3" onclick="previousFromDefineResults()"/></td>
+							<td><img src="images/advancequery/b_next.gif"   hspace="3" onclick="validateQuery('search');" /></td>
 						  </tr>
 						</table>
 					   </td>

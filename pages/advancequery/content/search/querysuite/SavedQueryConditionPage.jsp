@@ -20,11 +20,11 @@
 
 <html:html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
-		<script language="JavaScript" type="text/javascript" src="jss/queryModule.js"></script>
-		<script language="JavaScript" type="text/javascript" src="jss/script.js"></script>
-		<script language="JavaScript" type="text/javascript" src="jss/overlib_mini.js"></script>
-		<script language="JavaScript" type="text/javascript" src="jss/calender.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
+		<script language="JavaScript" type="text/javascript" src="jss/advancequery/queryModule.js"></script>
+		<script language="JavaScript" type="text/javascript" src="jss/advancequery/script.js"></script>
+		<script language="JavaScript" type="text/javascript" src="jss/advancequery/overlib_mini.js"></script>
+		<script language="JavaScript" type="text/javascript" src="jss/advancequery/calender.js"></script>
 		
 		<script>
 			function closeSaveQueryWindow()

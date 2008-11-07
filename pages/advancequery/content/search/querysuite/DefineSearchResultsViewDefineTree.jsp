@@ -14,7 +14,7 @@
 			</tr>
 			<tr valign="top" width="100%" height="80%" align="left">
 				<td valign="top" height="100%" align="left" >
-					<%@ include file="/pages/content/search/querysuite/ChooseSearchCategory.jsp" %>
+					<%@ include file="/pages/advancequery/content/search/querysuite/ChooseSearchCategory.jsp" %>
 				</td>
 			</tr>
 		</table>
@@ -32,12 +32,12 @@
 					<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 												id="DAG" width="100%" height="100%"
 												codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-												<param name="movie" value="flexclient/dag/DAG.swf?view=Result"/>
+												<param name="movie" value="flexclient/advancequery/dag/DAG.swf?view=Result"/>
 												<param name="quality" value="high" />
 												<param name="bgcolor" value="#869ca7" />
 												
 												<param name="allowScriptAccess" value="sameDomain"/>
-												<embed src="flexclient/dag/DAG.swf?view=Result" quality="high" bgcolor="#869ca7"
+												<embed src="flexclient/advancequery/dag/DAG.swf?view=Result" quality="high" bgcolor="#869ca7"
 													width="100%" height="100%" name="DAG" align="middle"
 													play="true"
 													loop="false"

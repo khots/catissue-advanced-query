@@ -9,12 +9,13 @@
 <head>
 <meta http-equiv="Content-Language" content="en-us">
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-<script src="jss/queryModule.js"></script>
-<script type="text/javascript" src="jss/wz_tooltip.js"></script>
-<script type="text/javascript" src="jss/ajax.js"></script> 
+<script src="jss/advancequery/queryModule.js"></script>
+<script src="jss/advancequery/script.js"></script>
+<script type="text/javascript" src="jss/advancequery/wz_tooltip.js"></script>
+<script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
 </head>
 <body onunload='closeWaitPage()'>
-<script type='text/JavaScript' src='jss/scwcalendar.js'></script>
+<script type='text/JavaScript' src='jss/advancequery/scwcalendar.js'></script>
 <html:errors />
 <%
 
@@ -37,13 +38,13 @@
 		
 		<tr>	
 			<td width="33%" align="center" class="bgWizardImage" valign="top">
-				<img src="images/1_active.gif"/> <!-- width="118" height="25" /-->
+				<img src="images/advancequery/1_active.gif"/> <!-- width="118" height="25" /-->
 			</td>
 			<td width="33%" align="center" class="bgWizardImage" valign="top">
-				<img src="images/2_inactive.gif" /> <!-- width="199" height="38" /-->
+				<img src="images/advancequery/2_inactive.gif" /> <!-- width="199" height="38" /-->
 			</td>
 			<td width="33%" align="center" class="bgWizardImage" valign="top">
-				<img src="images/3_inactive.gif" /> <!--  width="139" height="38" /-->
+				<img src="images/advancequery/3_inactive.gif" /> <!--  width="139" height="38" /-->
 			</td>
 		</tr>
 	<tr>
@@ -58,7 +59,7 @@
 				<table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3">			
 					<tr>
 						<td valign="top" width="10%" >
-						<%@ include file="/pages/content/search/querysuite/ChooseSearchCategory.jsp" %>
+						<%@ include file="/pages/advancequery/content/search/querysuite/ChooseSearchCategory.jsp" %>
 						</td>
 					
 					
@@ -101,12 +102,12 @@
 											<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 												id="DAG" width="100%" height="100%"
 												codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-												<param name="movie" value="flexclient/dag/DAG.swf?view=AddLimit&isQuery=<%=isQuery%>"/>
+												<param name="movie" value="flexclient/advancequery/dag/DAG.swf?view=AddLimit&isQuery=<%=isQuery%>"/>
 												<param name="quality" value="high" />
 												
 												<param name="bgcolor" value="#869ca7" />
 												<param name="allowScriptAccess" value="sameDomain"/>
-												<embed src="flexclient/dag/DAG.swf?view=AddLimit&isQuery=<%=isQuery%>" quality="high" bgcolor="#869ca7"
+												<embed src="flexclient/advancequery/dag/DAG.swf?view=AddLimit&isQuery=<%=isQuery%>" quality="high" bgcolor="#869ca7"
 													width="100%" height="100%" name="DAG" align="middle"
 													play="true"
 													loop="false" 
@@ -140,14 +141,14 @@
 			</tr>
 			<tr>
 					<td colspan="4">
-					<table border="0" width="100%" cellspacing="0" cellpadding="0" height="24" background="images/bot_bg_wiz.gif">
+					<table border="0" width="100%" cellspacing="0" cellpadding="0" height="24" background="images/advancequery/bot_bg_wiz.gif">
 					<tr valign="bottom">
 					 <td width="2%" valign="bottom">&nbsp;</td>
 					 <td width="50%" align="left">
 					  <table border="0" cellspacing="0" cellpadding="0">
 						<tr>
-							<td><img src="images/b_save.gif" width="51"  hspace="3" onclick="validateQuery('save');"/></td>
-							 <td><img src="images/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td>
+							<td><img src="images/advancequery/b_save.gif" width="51"  hspace="3" onclick="validateQuery('save');"/></td>
+							 <td><img src="images/advancequery/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td>
 						</tr>
 					 </table>
 					</td>
@@ -155,7 +156,7 @@
 					<td width="50%" align="right">
 					 <table border="0" cellspacing="0" cellpadding="0">
 					  <tr>
-							<td><img src="images/b_next.gif"   hspace="3" onclick="saveClientQueryToServer('next');" /></td>
+							<td><img src="images/advancequery/b_next.gif"   hspace="3" onclick="saveClientQueryToServer('next');" /></td>
 						</tr>
 					</table>
 					 </td>
@@ -167,7 +168,8 @@
 			</table>          
 			</td></tr>
 
-</table>               
+</table>
+<div class="push"></div>               
 </html:form>
 </body>
 </html> 

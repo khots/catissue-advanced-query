@@ -15,12 +15,12 @@
 <meta http-equiv="Content-Language" content="en-us">
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 </head>
-	<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
+	<link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
 	<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTree.css">
 	<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmXTreeCommon.js"></script>
 	<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlXTree.js"></script>
 	<script  src="dhtml_comp/jss/dhtmlXCommon.js"></script>
-	<script src="jss/script.js"></script>
+	<script src="jss/advancequery/script.js"></script>
 	<%
 	String callAction=Constants.CONFIGURE_GRID_VIEW_ACTION;
 	CategorySearchForm form = (CategorySearchForm)request.getAttribute("categorySearchForm");

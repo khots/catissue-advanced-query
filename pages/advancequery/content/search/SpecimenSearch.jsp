@@ -9,7 +9,7 @@
 <%@ page import="edu.wustl.catissuecore.util.global.Constants"%>
 <%@ page import="edu.wustl.common.query.Operator"%>
 
-<%@ include file="/pages/content/common/SpecimenCommonScripts.jsp" %>
+<%@ include file="/pages/advancequery/content/common/SpecimenCommonScripts.jsp" %>
 
 <%
 		
@@ -53,14 +53,14 @@
 %>
 
 <head>
-	<script src="jss/script.js" type="text/javascript"></script>
-	<script src="jss/Hashtable.js" type="text/javascript"></script>
-	<script src="jss/AdvancedSearchScripts.js" type="text/javascript"></script>
-	<script src="jss/calendarComponent.js"></script>
+	<script src="jss/advancequery/script.js" type="text/javascript"></script>
+	<script src="jss/advancequery/Hashtable.js" type="text/javascript"></script>
+	<script src="jss/advancequery/AdvancedSearchScripts.js" type="text/javascript"></script>
+	<script src="jss/advancequery/calendarComponent.js"></script>
 	<SCRIPT>var imgsrc="images/";</SCRIPT>
-	<LINK href="css/calanderComponent.css" type=text/css rel=stylesheet>
+	<LINK href="css/advancequery/calanderComponent.css" type=text/css rel=stylesheet>
 <!-- Mandar : 434 : for tooltip -->
-<script language="JavaScript" type="text/javascript" src="jss/javaScript.js"></script>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
 		
 	<script language="JavaScript">
 		//This function changes the unit as per the class name selected. It also enbles the concentration fields
@@ -400,7 +400,7 @@
 					calendarShow.value = "Show";
 					var innerStr = "<div id='"+ overDiv +"' style='position:absolute; visibility:hidden; z-index:1000;'></div>";
 					innerStr = innerStr + "<a href=\"javascript:show_calendar('"+fieldValue+"',null,null,'MM-DD-YYYY');\">";
-					innerStr = innerStr + "<img src=\"images\\calendar.gif\" width=24 height=22 border=0>";
+					innerStr = innerStr + "<img src=\"images\\advancequery\\calendar.gif\" width=24 height=22 border=0>";
 					innerStr = innerStr + "</a>";
 					td.innerHTML = innerStr;
 				}
@@ -417,7 +417,7 @@
 	</script>
 </head>
 
-<%@ include file="/pages/content/common/ActionErrors.jsp" %>
+<%@ include file="/pages/advancequery/content/common/ActionErrors.jsp" %>
 
 <html:form action="AdvanceSearchS.do">
 <table summary="" cellpadding="5" cellspacing="0" border="0" width="650">
@@ -430,7 +430,7 @@
 <!--  MAIN TITLE ROW -->
 <tr>
 	<td class="formTitle" height="25" nowrap>
-	&nbsp;<img src="images/Specimen.GIF" alt="Specimen" /> &nbsp;<bean:message key="specimen.queryRule"/>
+	&nbsp;<img src="images/advancequery/Specimen.GIF" alt="Specimen" /> &nbsp;<bean:message key="specimen.queryRule"/>
 	</td>
 	<td nowrap align="right"  colspan="2" class="formTitle">
 		<html:submit property="addRule" styleClass="actionButton" >
@@ -559,7 +559,7 @@
 		%>
 		<!--  Patch ID: Bug#3090_29 -->
 		<a href="#" onclick="javascript:NewWindow('<%=url%>','name','360','525','no');return false">
-			<img src="images\Tree.gif" border="0" width="24" height="18">
+			<img src="images\advancequery\Tree.gif" border="0" width="24" height="18">
 		</a>
 	</td>
 </tr>
@@ -1015,7 +1015,7 @@
 	%>
 	<div id="<%=overDiv%>" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 	<a href="javascript:show_calendar('<%=fieldName%>',null,null,'MM-DD-YYYY');">
-		<img src="images\calendar.gif" width=24 height=22 border=0>
+		<img src="images\advancequery\calendar.gif" width=24 height=22 border=0>
 	</a>
 	<%		
 		}

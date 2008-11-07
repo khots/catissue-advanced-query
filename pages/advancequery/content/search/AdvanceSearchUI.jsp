@@ -42,18 +42,18 @@
 
 <head>
 <!-- Mandar : 434 : for tooltip -->
-<script language="JavaScript" type="text/javascript" src="jss/javaScript.js"></script>
-	<script src="jss/script.js" type="text/javascript"></script>
-	<script src="jss/AdvancedSearchScripts.js" type="text/javascript"></script>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
+	<script src="jss/advancequery/script.js" type="text/javascript"></script>
+	<script src="jss/advancequery/AdvancedSearchScripts.js" type="text/javascript"></script>
 <!-- Mandar 21-Aug-06 : For calendar changes -->
-<script src="jss/calendarComponent.js"></script>
+<script src="jss/advancequery/calendarComponent.js"></script>
 <SCRIPT>var imgsrc="images/";</SCRIPT>
-<LINK href="css/calanderComponent.css" type=text/css rel=stylesheet>
+<LINK href="css/advancequery/calanderComponent.css" type=text/css rel=stylesheet>
 <!-- Mandar 21-Aug-06 : calendar changes end -->
 
 </head>
 
-<%@ include file="/pages/content/common/ActionErrors.jsp" %>
+<%@ include file="/pages/advancequery/content/common/ActionErrors.jsp" %>
 <html:form action="<%=actionName%>">
 <table summary="" cellpadding="5" cellspacing="0" border="0" width="600">
 <tr>

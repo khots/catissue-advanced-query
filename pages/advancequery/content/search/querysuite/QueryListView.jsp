@@ -23,9 +23,9 @@ function QueryWizard()
 
 <head>
 	
-	<script language="JavaScript" type="text/javascript" src="jss/queryModule.js"></script>
-	<script type="text/javascript" src="jss/wz_tooltip.js"></script>
-	<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
+	<script language="JavaScript" type="text/javascript" src="jss/advancequery/queryModule.js"></script>
+	<script type="text/javascript" src="jss/advancequery/wz_tooltip.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
 	
 </head>
 
@@ -55,18 +55,18 @@ int queryCount = 0;%>
 			<tr valign="center" class="bgImage"> 
 				<td width="10" >&nbsp;</td>			
 				<td  align="left" width="60%" class="bgImage">
-					<img src="images/ic_saved_queries.gif" alt="Saved Queries"   width="38" height="48" hspace="5" align="absmiddle"/>
+					<img src="images/advancequery/ic_saved_queries.gif" alt="Saved Queries"   width="38" height="48" hspace="5" align="absmiddle"/>
 					<span class="savedQueryHeading" > <bean:message key="query.savedQueries.label"/> </span>
 				</td>
 				<td  width="130" align="left" class="bgImage" > 					
 					<span class="savedQueryHeading" ><%= message %> </span>					
 				</td>
 				<td width="1" valign="middle" class="bgImage" align="right">
-					<img src="images/dot.gif" width="1" height="25" />
+					<img src="images/advancequery/dot.gif" width="1" height="25" />
 				</td>
 				<td width="130" align="right" valign="middle" class="bgImage">
 					<!--a href="javascript:QueryWizard()"> <img src="images/add.gif" width="125" height="18" /> </a-->
-					<img src="images/add.gif" width="125" height="18" onclick="QueryWizard()"/>
+					<img src="images/advancequery/add.gif" width="125" height="18" onclick="QueryWizard()"/>
 				</td>
 			</tr>
 			
@@ -107,7 +107,7 @@ int queryCount = 0;%>
 									</td>
 									<td valign="center" height='20' align="right">
 										<%target = "deleteQueryPopup('"+parameterizedQuery.getId()+"','"+popupMessage+"')"; %>
-										<html:image src="images/ic_trash.gif" alt="Delete" onclick='<%=target%>' />
+										<html:image src="images/advancequery/ic_trash.gif" alt="Delete" onclick='<%=target%>' />
 									</td>
 								</tr>
 								<tr><td colspan='3' class="saveQuery">&nbsp;</td></tr>

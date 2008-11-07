@@ -2,8 +2,7 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/nlevelcombo.tld" prefix="ncombo"%>
-<%@ page
-	import="edu.wustl.catissuecore.util.global.Constants,edu.wustl.common.actionForm.SimpleQueryInterfaceForm,java.util.List,edu.wustl.common.beans.NameValueBean"%>
+<%@ page import="edu.wustl.catissuecore.util.global.Constants,edu.wustl.common.actionForm.SimpleQueryInterfaceForm,java.util.List,edu.wustl.common.beans.NameValueBean"%>
 <%@ page import="edu.wustl.common.query.Operator"%>
 <%@ page import="edu.wustl.catissuecore.util.global.Utility"%>
 <%@ page import="edu.wustl.common.util.global.ApplicationProperties"%>
@@ -18,10 +17,8 @@
 }
 </style>
 <!-- Mandar : 434 : for tooltip -->
-<script language="JavaScript" type="text/javascript"
-	src="jss/javaScript.js"></script>
-<script language="JavaScript" type="text/javascript"
-	src="jss/scwcalendar.js"></script>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/scwcalendar.js"></script>
 </head>
 <%
 			String[] attributeConditionArray = (String[]) request
@@ -88,7 +85,7 @@ function showDateColumn(element,valueField,columnID,showCalendarID,fieldValue,ov
 			calendarShow.value = "Show";
 			var innerStr = "<div id='"+ overDiv +"' style='position:absolute; visibility:hidden; z-index:1000;'></div>";
 			//innerStr = innerStr + "<a href=\"javascript:show_calendar('"+fieldValue+"',null,null,'MM-DD-YYYY');\">";
-			innerStr = innerStr + "<img src=\"images\\calendar.gif\" width=24 height=22 border=0 onclick='scwShow("+ fieldValue + ",event);'>";
+			innerStr = innerStr + "<img src=\"images\\advancequery\\calendar.gif\" width=24 height=22 border=0 onclick='scwShow("+ fieldValue + ",event);'>";
 			//innerStr = innerStr + "</a>";
 			td.innerHTML = innerStr;
 		}
@@ -196,7 +193,7 @@ function vieMapTabSelected(){
 	       String pageTitle= "Page Title - "+ApplicationProperties.getValue(header);
 	  %> 	   
 		
-		<td align="right"><img src="images/uIEnhancementImages/table_title_corner2.gif" alt="<%=pageTitle%>"  width="31" height="24" /></td>
+		<td align="right"><img src="images/advancequery/uIEnhancementImages/table_title_corner2.gif" alt="<%=pageTitle%>"  width="31" height="24" /></td>
       </tr>
     </table></td>
   </tr>
@@ -204,26 +201,26 @@ function vieMapTabSelected(){
     <td class="tablepadding"><table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<logic:notEqual name="pageOf" value="<%=Constants.PAGEOF_SIMPLE_QUERY_INTERFACE%>">
 	<tr>
-	<td class="td_tab_bg" ><img src="images/uIEnhancementImages/spacer.gif" alt="spacer" width="50" height="1"></td>
+	<td class="td_tab_bg" ><img src="images/advancequery/uIEnhancementImages/spacer.gif" alt="spacer" width="50" height="1"></td>
 	<!----Add tab hidden for the Specimen Search----->
 		<logic:notEqual name="pageOf" value="<%=Constants.PAGEOF_NEW_SPECIMEN%>">
         <td valign="bottom"><html:link href="#" onclick="callSerachAction('CommonTab.do')">
-		<img src="images/uIEnhancementImages/tab_add_notSelected.jpg" alt="Add" width="57" height="22" /></html:link></td>
+		<img src="images/advancequery/uIEnhancementImages/tab_add_notSelected.jpg" alt="Add" width="57" height="22" /></html:link></td>
 		</logic:notEqual>
        
-		<td valign="bottom"><img src="images/uIEnhancementImages/tab_edit_selected.jpg" alt="Edit" width="59" height="22" border="0" /></td>
+		<td valign="bottom"><img src="images/advancequery/uIEnhancementImages/tab_edit_selected.jpg" alt="Edit" width="59" height="22" border="0" /></td>
 		<logic:equal name="pageOf" value="<%=Constants.PAGEOF_USER_ADMIN%>">
-        <td valign="bottom"><html:link page="/ApproveUserShow.do?pageNum=1"><img src="images/uIEnhancementImages/tab_approve_user.jpg" alt="Approve New Users" width="139" height="22" border="0" /></html:link></td>
+        <td valign="bottom"><html:link page="/ApproveUserShow.do?pageNum=1"><img src="images/advancequery/uIEnhancementImages/tab_approve_user.jpg" alt="Approve New Users" width="139" height="22" border="0" /></html:link></td>
 		</logic:equal>
 		<logic:equal name="pageOf" value="pageOfStorageContainer">
-		<td  valign="bottom"><a href="#"><img src="images/uIEnhancementImages/view_map2.gif" alt="View Map"width="76" height="22" border="0" onclick="vieMapTabSelected()"/></a></td>
+		<td  valign="bottom"><a href="#"><img src="images/advancequery/uIEnhancementImages/view_map2.gif" alt="View Map"width="76" height="22" border="0" onclick="vieMapTabSelected()"/></a></td>
 		</logic:equal>
 <!-- These tabs are visible in case of specimen page--->
 		 <logic:equal name="pageOf" value="<%=Constants.PAGEOF_NEW_SPECIMEN%>">
-			<td valign="bottom"><html:link page="/CreateSpecimen.do?operation=add&amp;pageOf=&virtualLocated=true">	<img src="images/uIEnhancementImages/tab_derive2.gif" alt="Derive" width="56" height="22" border="0"/>	</html:link></td>
-			<td valign="bottom"><html:link page="/Aliquots.do?pageOf=pageOfAliquot"><img src="images/uIEnhancementImages/tab_aliquot2.gif" alt="Aliquot" width="66" height="22" border="0" >		</html:link></td>
-			<td valign="bottom"><html:link page="/QuickEvents.do?operation=add"><img src="images/uIEnhancementImages/tab_events2.gif" alt="Events" width="56" height="22" border="0" />		</html:link></td>
-			<td valign="bottom"><html:link page="/MultipleSpecimenFlexInitAction.do?pageOf=pageOfMultipleSpWithMenu"><img src="images/uIEnhancementImages/tab_multiple2.gif" alt="Multiple" width="66" height="22" border="0" />	</html:link></td>
+			<td valign="bottom"><html:link page="/CreateSpecimen.do?operation=add&amp;pageOf=&virtualLocated=true">	<img src="images/advancequery/uIEnhancementImages/tab_derive2.gif" alt="Derive" width="56" height="22" border="0"/>	</html:link></td>
+			<td valign="bottom"><html:link page="/Aliquots.do?pageOf=pageOfAliquot"><img src="images/advancequery/uIEnhancementImages/tab_aliquot2.gif" alt="Aliquot" width="66" height="22" border="0" >		</html:link></td>
+			<td valign="bottom"><html:link page="/QuickEvents.do?operation=add"><img src="images/advancequery/uIEnhancementImages/tab_events2.gif" alt="Events" width="56" height="22" border="0" />		</html:link></td>
+			<td valign="bottom"><html:link page="/MultipleSpecimenFlexInitAction.do?pageOf=pageOfMultipleSpWithMenu"><img src="images/advancequery/uIEnhancementImages/tab_multiple2.gif" alt="Multiple" width="66" height="22" border="0" />	</html:link></td>
 		</logic:equal>
 		<td width="90%" valign="bottom" class="td_tab_bg">&nbsp;</td>
 
@@ -238,7 +235,7 @@ function vieMapTabSelected(){
       <table width="100%" border="0" cellpadding="3" cellspacing="0" class="whitetable_bg">
       
       <tr>
-        <td colspan="2" align="left" class="bottomtd"><%@ include file="/pages/content/common/ActionErrors.jsp" %></td>
+        <td colspan="2" align="left" class="bottomtd"><%@ include file="/pages/advancequery/content/common/ActionErrors.jsp" %></td>
       </tr>
       <tr>
         <td colspan="2" align="left" class="tr_bg_blue1"><span class="blue_ar_b"> &nbsp;<bean:message key="<%=title%>" /></span></td>
@@ -253,7 +250,7 @@ function vieMapTabSelected(){
       <tr>
         <td align="right"><table width="100%" border="0" cellspacing="0" cellpadding="2">
             <tr>
-              <td width="94%" align="right" nowrap><img src="images/uIEnhancementImages/viewall_icon.gif" alt="View All" /></td>
+              <td width="94%" align="right" nowrap><img src="images/advancequery/uIEnhancementImages/viewall_icon.gif" alt="View All" /></td>
               <td width="6%" align="right" nowrap="nowrap"><span class="link"><html:link href="#" onclick="<%=configAction%>" styleClass="view">Define View</html:link></span></td>
             </tr>
         </table></td>
@@ -548,7 +545,7 @@ function vieMapTabSelected(){
 											style="position:absolute; visibility:hidden; z-index:1000;"></div>
 										<a
 											href="javascript:show_calendar('<%=fieldName%>',null,null,'MM-DD-YYYY');">
-										<img src="images\calendar.gif" width=24 height=22 border=0>
+										<img src="images\advancequery\calendar.gif" width=24 height=22 border=0>
 										</a> <%
  } else {
  %> &nbsp; <%
