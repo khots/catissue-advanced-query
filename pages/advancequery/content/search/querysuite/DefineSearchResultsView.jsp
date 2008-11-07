@@ -14,7 +14,10 @@
 <script type="text/javascript" src="jss/advancequery/wz_tooltip.js"></script>
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/jss/dhtmXTreeCommon.js"></script>
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/jss/dhtmlXTree.js"></script>
-
+<link rel="STYLESHEET" type="text/css" href="css/advancequery/dhtmlxtabbar.css" />
+<link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
+<link rel="stylesheet" type="text/css" href="css/advancequery/CascadeMenu.css" />
+<link rel="stylesheet" type="text/css" href="css/advancequery/catissue_suite.css" />
 </head>
 <body onunload='closeWaitPage()'>
 <!-- Make the Ajax javascript available -->

@@ -13,6 +13,10 @@
 <script src="jss/advancequery/script.js"></script>
 <script type="text/javascript" src="jss/advancequery/wz_tooltip.js"></script>
 <script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
+<link rel="STYLESHEET" type="text/css" href="css/advancequery/dhtmlxtabbar.css" />
+<link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
+<link rel="stylesheet" type="text/css" href="css/advancequery/CascadeMenu.css" />
+<link rel="stylesheet" type="text/css" href="css/advancequery/catissue_suite.css" />
 </head>
 <body onunload='closeWaitPage()'>
 <script type='text/JavaScript' src='jss/advancequery/scwcalendar.js'></script>
@@ -95,7 +99,7 @@
 							</tr>							
 							<tr>							
 							<td valign="top">								
-								<table border="1" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%" bordercolorlight="#000000">
+								<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%" bordercolorlight="#000000">
 								<tr>
 										<td height="400px">											
 											<div id="queryTableTd" style="overflow:auto;height:400;width:100%">
@@ -168,8 +172,7 @@
 			</table>          
 			</td></tr>
 
-</table>
-<div class="push"></div>               
+</table>               
 </html:form>
 </body>
 </html> 

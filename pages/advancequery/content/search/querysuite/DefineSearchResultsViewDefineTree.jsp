@@ -1,6 +1,11 @@
 <%@ page import="java.util.*"%>
 <%@ page import="edu.wustl.query.util.global.Constants"%>
+
 <html>
+<link rel="STYLESHEET" type="text/css" href="css/advancequery/dhtmlxtabbar.css" />
+<link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
+<link rel="stylesheet" type="text/css" href="css/advancequery/CascadeMenu.css" />
+<link rel="stylesheet" type="text/css" href="css/advancequery/catissue_suite.css" />
 <body>
 <table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3" valign="top">
 	
