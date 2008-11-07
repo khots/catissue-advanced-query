@@ -246,7 +246,7 @@ public class GenerateHtmlForAddLimitsBizLogic
 							+  componentId + "\" id=\"" +componentId+"_textbox"  + "\">");
     			generateHTML.append("</td>");
     			
-    			String imgStr = "\n<img id=\"calendarImg\" src=\"images/calendar.gif\" width=\"24\" height=\"22\"" +
+    			String imgStr = "\n<img id=\"calendarImg\" src=\"images/advancequery/calendar.gif\" width=\"24\" height=\"22\"" +
     					" border=\"0\"  onclick='scwShow("+ textBoxId + ",event);'>";
     			
     			String innerStr = "\n<td width='3%' class='"+ cssClass +"' valign='top' id=\"" + calendarId + "\">" 
@@ -1305,7 +1305,7 @@ public class GenerateHtmlForAddLimitsBizLogic
 		{
 			String textBoxId = componentId + "_textBox";
 			String calendarId = componentId + "_calendar";
-			String imgStr = "\n<img id=\"calendarImg\" src=\"images/calendar.gif\" width=\"24\" height=\"22\"" +
+			String imgStr = "\n<img id=\"calendarImg\" src=\"images/advancequery/calendar.gif\" width=\"24\" height=\"22\"" +
 					" border=\"0\" onclick='scwShow("+ textBoxId + ",event);'>";
 			
 			innerStr = innerStr.append("\n<td width='3%' class='"+ cssClass +"' valign='top' id=\"" + calendarId + "\">" 
@@ -1315,7 +1315,7 @@ public class GenerateHtmlForAddLimitsBizLogic
 		{
 			String textBoxId1 = componentId + "_textBox1";
 			String calendarId1 = componentId + "_calendar1";
-			String imgStr = "\n<img id=\"calendarImg\" src=\"images/calendar.gif\" width=\"24\" height=\"22\" border='0'" +
+			String imgStr = "\n<img id=\"calendarImg\" src=\"images/advancequery/calendar.gif\" width=\"24\" height=\"22\" border='0'" +
 					" onclick='scwShow(" + textBoxId1 + ",event);'>";
 			String style = "";
 			if (isBetween)
