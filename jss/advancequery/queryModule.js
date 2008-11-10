@@ -558,7 +558,6 @@
 		   
 		   element.style.width="512px";
 		 }
-		}
 		if(text.indexOf("####") != -1)
 		{
 			var htmlArray = text.split('####');
