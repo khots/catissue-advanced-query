@@ -223,7 +223,7 @@ treeNo = treeNo + 1;
 <table bordercolor="#000000" border="0" width="100%" cellspacing="2" cellpadding="2"  height="100%">
 	<tr>
 	<td>
-	<table border="1" width="100%" cellspacing="0" cellpadding="0" height="100%" id="table1">
+	<table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" id="table1">
 	<tr>
 		<td>
 		<table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" bordercolor="#000000" id="table1" >

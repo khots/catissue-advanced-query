@@ -81,7 +81,7 @@ else
 
 <html:form method="GET" action="SearchCategory.do" focus="textField">
 <html:hidden property="currentPage" value=""/>
-	<table border="1" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%" bordercolorlight="#000000" id="table11">
+	<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%" bordercolorlight="#000000" id="table11">
 		<tr>
 			<td valign="top"> 
 				<table border="0" width="100%" valign="top" cellspacing="0" height="100%">
