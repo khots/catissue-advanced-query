@@ -7,7 +7,6 @@ import javax.servlet.ServletContextListener;
 
 import net.sf.ehcache.CacheException;
 import edu.wustl.common.util.global.ApplicationProperties;
-import edu.wustl.common.util.logger.Logger;
 
 public class QueryServletContextListener implements ServletContextListener
 {
