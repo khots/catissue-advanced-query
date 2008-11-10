@@ -1,6 +1,16 @@
 <!-- dataList and columnList are to be set in the main JSP file -->
 <link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXGrid.css"/>
 <link rel="stylesheet" type="text/css" href="css/catissue_suite.css" />
+<style type="text/css" media="screen"> 
+  #gridbox
+  {
+	  width:100%;
+	  height:100%; 
+	  border:0 red;
+	  background-color:#d7d7d7;
+	  overflow:hidden;
+  }
+ </style>
 <%@ page import="edu.wustl.query.util.global.Constants"%>
 
 <script  src="dhtml_comp/js/dhtmlXCommon.js"></script>
@@ -189,9 +199,9 @@ function setEditableChkbox(checkAllPages)
 
 
 
-<table width="100%" valign="top" border="0">
-	<tr valign="top">
-		<td valign="top">
+<table width="100%" valign="top" border="0" height="100%">
+	<tr valign="top" height="100%" width="100%">
+		<td valign="top" height="100%" width="100%">
 			<!-- 
 				Patch ID: Bug#3090_25
 				Description: The height of the gridbox is increased to eliminate the blank space
@@ -201,7 +211,8 @@ function setEditableChkbox(checkAllPages)
 							 screen, the div runs out of the frame, and there was no way to scroll
 							 down, as we had disabled the scrollbar.
 			-->
-			<div id='gridbox' width='100%' height='<%=gridDivHeight%>' border='0' style='background-color:#d7d7d7;overflow:hidden'>
+			
+			<div id='gridbox' >
 			</div>
 		</td>
 	</tr>	
@@ -211,6 +222,9 @@ function setEditableChkbox(checkAllPages)
 	mygrid = new dhtmlXGridObject('gridbox');
 	mygrid.setImagePath("dhtml_comp/imgs/");
 
+     if(useFunction == "search"){
+       mygrid.entBox.style.width="100%";
+	 }	
 	if(useFunction == "participant")
 	{
 		//alert("test");

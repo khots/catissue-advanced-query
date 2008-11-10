@@ -28,7 +28,7 @@
 	    <table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3" valign="top">
 			<tr  id="rowMsg" class='validationMessageCss'>
 				<td id="validationMessagesSection"  width="80%" class='validationMessageCss'>
-					<div id="validationMessagesRow"   style="overflow:auto; width:820; height:50;display:none"></div>
+					<div id="validationMessagesRow"   style="overflow:auto; width:100%; height:50;display:none"></div>
 				</td>
 			</tr>
 			<tr>

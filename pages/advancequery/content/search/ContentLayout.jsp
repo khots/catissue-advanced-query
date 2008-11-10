@@ -16,10 +16,9 @@
 
 
 <table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
-
-<tr>
+<tr height="100%">
 	<td width="100%" valign="top">
-    	<!-- target of anchor to skip menus --><a name="content" />
+    	<!-- target of anchor to skip menus -->
         <tiles:insert attribute="content"></tiles:insert>
 	</td>
 </tr>

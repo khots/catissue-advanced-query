@@ -23,20 +23,13 @@ function divHeight(treeNumber, currentNumber)
 {
 	
 	var treeName = "treebox" + currentNumber;
-  if(navigator.appName == "Microsoft Internet Explorer")
-  {
+ 
 	  var divHt = 100 / treeNumber;
 	  divHt = divHt + "%";
-    document.getElementById("table1").style.height="100%";
-    document.getElementById("treebox0").style.height=divHt;
-      }
-  else
-  {
-	  var divHt = 396 / treeNumber;    
-	  divHt = divHt + "px";
-    document.getElementById("table1").style.height="400px";
-	document.getElementById(treeName).style.height=divHt;
-  }
+      document.getElementById("table1").style.height="100%";
+      document.getElementById(treeName).style.height=divHt;
+     
+  
 }
 //style="position: relative;zoom: 1;"
 </script> 
@@ -133,14 +126,14 @@ treeNo = treeNo + 1;
 <html:hidden property="currentPage" value=""/>
 <html:hidden property="stringToCreateQueryObject" value="" />
 
-<table id="table1" border="0"  cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="width:100%;" bordercolorlight="#000000" class='tbBordersAllbordersBlack'>
+<table id="table1" border="0" height="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="width:100%;" bordercolorlight="#000000" class='tbBordersAllbordersBlack'>
 	<tr>
 		<td valign="top" width="90%" height="100%">
 			<%  for(int i=0;i<noOfTrees;i++) {
 			String divId = "treebox"+i;
 			%>
 
-				<div id="<%=divId%>"  style="width:100%;background-color:white;overflow:auto;">
+				<div id="<%=divId%>"  style="width:100%;background-color:white;">
 				</div>
 			<% } %>
 		</td>

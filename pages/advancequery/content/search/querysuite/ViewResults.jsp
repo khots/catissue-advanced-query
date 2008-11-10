@@ -18,8 +18,8 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
     }
 %>
 
-<table border="0" width="100%" cellspacing="0" cellpadding="0" height="<%=height%>" bordercolor="#000000" id="table1" >
-<html:form method="GET" action="<%=formAction%>" style="margin:0;padding:0;">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" height="98%" bordercolor="#000000" id="table1" >
+<html:form method="GET" action="<%=formAction%>" style="margin:0;padding:0;height:100%">
 		<tr>	
 			<td width="33%" align="center" class="bgWizardImage">
 				<img src="images/advancequery/1_inactive.gif" /> <!-- width="118" height="25" /-->
@@ -31,16 +31,16 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 				<img src="images/advancequery/3_active.gif" /> <!--  width="139" height="38" /-->
 			</td>
 		</tr>
-		<tr height="100%">
+		<tr height="90%" valign="top">
 		<td colspan="4" height="100%">
-<table border="0" height="100%" width="100%">
+<table border="0" height="98%" width="100%">
 	<tr height="100%">
-		<td width="25%" colspan="1" valign="top">
+		<td width="25%" colspan="1" valign="top" height="100%">
 			<iframe id="<%=Constants.TREE_VIEW_FRAME%>" src="<%=Constants.QUERY_TREE_VIEW_ACTION%>?pageOf=pageOfQueryResults" scrolling="auto" frameborder="0" width="100%" height="100%">
 				Your Browser doesn't support IFrames.
 			</iframe>
 		</td>
-		<td width="75%" colspan="3" valign="top">
+		<td width="75%" colspan="3" valign="top" height="100%" >
 			<iframe name="<%=Constants.GRID_DATA_VIEW_FRAME%>" src="<%=Constants.QUERY_GRID_VIEW_ACTION%>?pageOf=pageOfQueryModule" <%=Constants.VIEW_TYPE%>=<%=Constants.SPREADSHEET_VIEW%>" scrolling="auto" frameborder="0" width="100%" height="100%">
 				Your Browser doesn't support IFrames.
 			</iframe>
@@ -49,9 +49,9 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 </table>
 </td>
 </tr>
-<tr bgcolor="#DFE9F3" height="30" valign="top"> 
+<tr bgcolor="#DFE9F3" height="5%" valign="top"> 
 		<td colspan="4" valign="bottom" height="10%">
-		<table border="0"  width="100%" cellspacing="0" cellpadding="0"  background="advancequery/images/bot_bg_wiz.gif" height="24"  >
+		<table border="0"  width="100%" cellspacing="0" cellpadding="0"  background="images/advancequery/bot_bg_wiz.gif" height="24"  >
 		<tr height="1%" valign="bottom">
 		 <td width="2%" valign="bottom" >&nbsp;</td>
 		 <td valign="bottom" align="left" width="90-%" >

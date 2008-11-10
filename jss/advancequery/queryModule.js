@@ -552,6 +552,13 @@
 		var element = document.getElementById('addLimits');
 		var addLimitsMsgElement = document.getElementById('AddLimitsMsgRow');
 		var addLimitsButtonElement = document.getElementById('AddLimitsButtonRow');
+		var resoln= screen.width; 
+		  if(resoln<=800)
+		{
+		   
+		   element.style.width="512px";
+		 }
+		}
 		if(text.indexOf("####") != -1)
 		{
 			var htmlArray = text.split('####');
@@ -1477,7 +1484,7 @@ var jsReady = false;
 	var myWindow;
 	function showWaitPage()
 	{			
-		var popupContent = "<table width='400' height='200' border='0' align='center' cellpadding='0' cellspacing='0' bgcolor='#FFFFFF'><tr><td height='85' align='center' valign='top'><img src='images/loading_bg.jpg' alt='Query Search' width='400' height='85' /></td></tr><tr><td align='center' valign='top'><img src='images/loading.gif' alt='Loading...' width='50' height='50' vspace='5' /></td></tr></table>";
+		var popupContent = "<table width='400' height='200' border='0' align='center' cellpadding='0' cellspacing='0' bgcolor='#FFFFFF'><tr><td height='85' align='center' valign='top'><img src='images/advancequery/loading_bg.jpg' alt='Query Search' width='400' height='85' /></td></tr><tr><td align='center' valign='top'><img src='images/advancequery/loading.gif' alt='Loading...' width='50' height='50' vspace='5' /></td></tr></table>";
 		myWindow=window.open('','','left=400,top=400,width=420,height=200,modal=yes');
 		myWindow.document.write(popupContent);
 		myWindow.focus();

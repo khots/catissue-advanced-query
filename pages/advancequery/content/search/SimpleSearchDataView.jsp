@@ -266,15 +266,26 @@ function checkAllOnThisPageResponse()
 	<!-- Mandar : 434 : for tooltip -->
 	<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
 </head>
-<body onload="setCheckBoxState()">
+<body onload="setCheckBoxState()" height="100%">
 
 <!-------new--->
  <!--Prafull:Added errors tag inside the table-->
-<table width="100%" border="0" cellpadding="0" cellspacing="0" class="maintable">
-<tr>
+
+<logic:notEqual name="pageOf" value="<%=Constants.PAGEOF_SIMPLE_QUERY_INTERFACE%>">
+ <table id="table1" width="100%" border="0" height="96%" cellpadding="0" cellspacing="0" class="maintable" >
+ 
+	<tr height="100%">
 		<td class="td_color_bfdcf3">
+ 
+</logic:notEqual>
+
+
 <logic:equal name="pageOf" value="<%=Constants.PAGEOF_SIMPLE_QUERY_INTERFACE%>">
-			<table border="0" cellpadding="0" cellspacing="0">
+		 <table   width="100%" border="0" height="90%" cellpadding="0" cellspacing="0" class="maintable" >
+          <tr height="6%" valign="top">
+		   <td class="td_color_bfdcf3">	
+			<table border="0" cellpadding="0" cellspacing="0"   
+			valign="top">
 		      <tr>
 				<td class="td_table_head">
 					<span class="wh_ar_b">
@@ -286,12 +297,11 @@ function checkAllOnThisPageResponse()
 				</td>
 		      </tr>
 		    </table>
-          </logic:equal>
 		</td>
 	  </tr>
-	   <tr>
+	   <tr height="90%">
 		<td class="tablepadding">
-			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0" height="5%" >
 			
       <tr>
         <td width="90%" valign="bottom" class="td_tab_bg">&nbsp;</td>
@@ -299,12 +309,33 @@ function checkAllOnThisPageResponse()
 	 
     </table>
 	
-	<table width="100%" border="0" cellpadding="3" cellspacing="0" class="whitetable_bg">
-      
-      <tr>
-        <td align="left" ><%@ include file="/pages/advancequery/content/common/ActionErrors.jsp" %></td>
+	
+	<table id="table2" width="100%" border="0"  cellpadding="3" height="92%" cellspacing="0" class="whitetable_bg">
+  <script> 
+	if(navigator.appName == "Microsoft Internet Explorer")
+   {
+	   document.getElementById("table2").style.height="100%"; 
+	    
+    }
+</script>
+   
+   </logic:equal>
+   <logic:notEqual name="pageOf" value="<%=Constants.PAGEOF_SIMPLE_QUERY_INTERFACE%>">
+	 <table id="table2" width="100%" border="0"  cellpadding="3" height="98%" cellspacing="0" class="whitetable_bg">
+   </logic:notEqual>
+	
+   <script> 
+	if(navigator.appName == "Microsoft Internet Explorer")
+   {
+	   document.getElementById("table2").style.height="100%"; 
+	   document.getElementById("table1").style.height="100%"; 
+   }
+   </script>
+	  
+	  <tr height="4%">
+        <td align="left" ><%@ include file="/pages/common/ActionErrors.jsp" %></td>
       </tr>
-      <tr>
+      <tr height="6%">
         <td align="left" class="tr_bg_blue1"><span class="blue_ar_b"> &nbsp;<bean:message key="<%=title%>" />&nbsp;</span></td>
 
       </tr>
@@ -315,7 +346,7 @@ function checkAllOnThisPageResponse()
 		
 	</td>
 </tr>-->
-<html:form action="QueryWizard.do" style="margin:0;padding:0;">
+<html:form action="QueryWizard.do" style="margin:0;padding:0;height:100%;">
 <html:hidden property="checkAllPages" value=""/>	
 
 	<%
@@ -338,7 +369,7 @@ function checkAllOnThisPageResponse()
 			 </td>
 		</tr>--%>	
 		
-		<tr>
+		<tr height="5%">
 			<td class="black_ar" >					
 				<custom:test name="" pageNum="<%=pageNum%>" totalResults="<%=totalResults%>" numResultsPerPage="<%=numResultsPerPage%>" pageName="<%=pageName%>"  showPageSizeCombo="<%=true%>" recordPerPageList="<%=Constants.RESULT_PERPAGE_OPTIONS%>" />
 				<html:hidden property="<%=Constants.PAGEOF%>" value="<%=pageOf%>"/>
@@ -370,8 +401,8 @@ function checkAllOnThisPageResponse()
 		<% } 
 		%>
 		
-		<tr valign="top" width="100%">
-			<td  width="100%" valign="top" >
+		<tr valign="top" width="100%" height="69%">
+			<td  width="100%" valign="top" height="100%">
 <!--  **************  Code for New Grid  *********************** -->
 				<script>
 					/* 
@@ -387,7 +418,7 @@ function checkAllOnThisPageResponse()
 			</td>
 		</tr>
 
-		<tr width="100%" valign="top">
+		<tr width="100%" valign="top" height="15%">
 		
 		<td width="90%">
 		
@@ -445,9 +476,9 @@ function checkAllOnThisPageResponse()
 		</tr>
 	<% } %>
 
-	<tr>
-		<td><html:hidden property="operation" value=""/></td>
-	</tr>
+	
+		<html:hidden property="operation" value=""/>
+	
 	<input type="hidden" name="isQuery" value="true">
 </html:form>
 </table>

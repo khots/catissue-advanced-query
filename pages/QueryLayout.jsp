@@ -135,8 +135,8 @@
 
 </head>
 <body>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-	<tr>
+<table width="100%" height="98%" border="0" cellspacing="0" cellpadding="0" >
+	<tr height="6%">
 		<td>
 		<table width="100%" border="0" cellpadding="0" cellspacing="0"
 			bgcolor="#FFFFFF">
@@ -155,12 +155,11 @@
 		</table>
 		</td>
 	</tr>
-	<tr>
-		<td>
-			<table width="100%" border="0" cellspacing="0" cellpadding="0" height="475">
-				<tr>
-					<td colspan="2" width="100%" valign="top"><!-- target of anchor to skip menus -->
-					<a name="content" /> <tiles:insert attribute="content"></tiles:insert></td>
+	<tr height="93%">
+		<td height="100%">
+			<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0" >
+				<tr height="100%"> <!-- target of anchor to skip menus -->
+					<td colspan="2" width="100%" valign="top" height="100%"><tiles:insert attribute="content"></tiles:insert> </td>
 				</tr>
 			</table>
 		</td>
