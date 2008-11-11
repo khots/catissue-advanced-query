@@ -16,7 +16,7 @@
 	<property name="temp.dir" value="./deploytempQuery" />
 	<property name="csm.dir" value="${temp.dir}/tempcsm" />
 	<property name="lib.dir" value="${base.dir}/lib" />
-	<property name="mysql.sql.dir" value="${base.dir}/SQL/advancequery/MySql" />
+	<property name="mysql.sql.dir" value="${base.dir}/SQL/MySql" />
 	<property name="db2.sql.dir" value="${base.dir}/SQL/DB2" />
 	<property name="dbupgrade.sql.dir" value="${base.dir}/SQL/DBUpgrade" />
 	<property name="oracle.sql.dir" value="${base.dir}/SQL/Oracle" />
