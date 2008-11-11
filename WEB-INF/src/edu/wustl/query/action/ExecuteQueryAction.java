@@ -20,6 +20,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.ObjectCloner;
+import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
@@ -47,7 +48,7 @@ public class ExecuteQueryAction extends Action
 		session.removeAttribute(Constants.ENTITY_IDS_MAP);
 		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) session
 				.getAttribute(Constants.QUERY_OBJECT);
-		IParameterizedQuery parameterizedQuery1 = ObjectCloner.clone(parameterizedQuery);
+		IParameterizedQuery parameterizedQuery1 = new DyExtnObjectCloner().clone(parameterizedQuery);
 
 		String conditionstr = request.getParameter("conditionList");
 		String rhsList = request.getParameter(QueryModuleConstants.STR_TO_FORM_TQ);

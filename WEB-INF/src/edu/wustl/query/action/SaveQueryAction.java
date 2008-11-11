@@ -36,6 +36,7 @@ import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.ObjectCloner;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.util.global.Constants;
@@ -77,7 +78,7 @@ public class SaveQueryAction extends BaseAction
 					IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
 							.getValue("app.bizLogicFactory"), "getBizLogic",
 							Constants.QUERY_INTERFACE_BIZLOGIC_ID);
-					IParameterizedQuery queryClone = ObjectCloner.clone(parameterizedQuery);
+					IParameterizedQuery queryClone = new DyExtnObjectCloner().clone(parameterizedQuery);
 					new HibernateCleanser(queryClone).clean();
 					bizLogic.insert(queryClone, Constants.HIBERNATE_DAO);
 					target = Constants.SUCCESS;
