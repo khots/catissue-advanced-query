@@ -379,6 +379,7 @@
 		    	<include name = "dbutil.properties"/>
 		    	<include name = "dynamicUI.xml"/>
 		    	<include name = "ApplicationResources.properties"/>
+		    	<include name = "query.properties"/>
 		    </fileset>
 		</copy>
 		
@@ -402,6 +403,25 @@
 		    <fileset dir ="${base.dir}/pages/advancequery/content/search" />
 		</copy> 
 		
+		<copy todir="${zip.dir}/pages/common" overwrite="true"> 
+		    <fileset dir ="${base.dir}/pages/common" />
+		</copy> 
+		
+		<copy todir="${zip.dir}/pages/home" overwrite="true"> 
+		    <fileset dir ="${base.dir}/pages/home" />
+		</copy> 
+		
+		<copy todir="${zip.dir}/pages/mainMenu" overwrite="true"> 
+		    <fileset dir ="${base.dir}/pages/mainMenu" />
+		</copy> 
+		
+		<copy todir="${zip.dir}/pages" overwrite="true"> 
+		    <fileset dir ="${base.dir}/pages" />
+		</copy> 
+		
+		<copy todir="${zip.dir}/pages/advancequery/content/search/querysuite" overwrite="true"> 
+		    <fileset dir ="${base.dir}/pages/advancequery/content/search/querysuite" />
+		</copy> 
 		<!--Copying the flex related files from WEB-INF/flex -->
         <copy todir="${zip.dir}/flex">
 		     <fileset dir = "${base.dir}/WEB-INF/flex"/>
