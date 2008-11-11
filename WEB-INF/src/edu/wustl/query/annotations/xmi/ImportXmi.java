@@ -91,7 +91,7 @@ public class ImportXmi
 			File file = new File(fileName);
 
 			System.out.println("--------------------------------------------------\n");
-			System.out.println("Filename = " + file.getName());
+			System.out.println("Filename = " + file.getAbsolutePath());
 			System.out.println("Hook Entity = " + hookEntity);
 
 			String packageName = "";
