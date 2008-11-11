@@ -114,7 +114,7 @@ PUBLIC
             name="saveQueryForm"
             validate="false"
             scope="request">
-            <forward name="success" path="/pages/content/search/querysuite/SavedQueryConditionPage.jsp"/>
+            <forward name="success" path="/pages/advancequery/content/search/querysuite/SavedQueryConditionPage.jsp"/>
         </action>
         <action path="/SaveQueryAction"
 			type="edu.wustl.query.action.SaveQueryAction"
