@@ -16,7 +16,7 @@
 	<property name="temp.dir" value="./deploytempQuery" />
 	<property name="csm.dir" value="${temp.dir}/tempcsm" />
 	<property name="lib.dir" value="${base.dir}/lib" />
-	<property name="mysql.sql.dir" value="${base.dir}/SQL/MySql" />
+	<property name="mysql.sql.dir" value="${base.dir}/SQL/advancequery/MySql" />
 	<property name="db2.sql.dir" value="${base.dir}/SQL/DB2" />
 	<property name="dbupgrade.sql.dir" value="${base.dir}/SQL/DBUpgrade" />
 	<property name="oracle.sql.dir" value="${base.dir}/SQL/Oracle" />
@@ -1185,4 +1185,139 @@ Thanking You,
 		</sql>
 	</target>
 				
+	<!-- Mysql Database Creation -->
+	<target name="aq_deploy_db_mysql">
+		<echo
+			message="Initializing MySQL Database for caTissue Suite v1.1 Application..." />
+		<sql driver="${mysql.driver.string}"
+			url="jdbc:mysql://${database.host}:${database.port}/${database.name}"
+			userid="${database.username}" password="${database.password}">
+			<!--
+				It is commented out for time being as we will be using the dump
+				cretaed for Advance Query , uploading cider meta data
+			-->
+			<transaction src="${mysql.sql.dir}/query/initDB.sql" />
+			<!--
+				transaction src="${temp.dir}/AdvanceQuery/SQL/MySql/csm_query.sql"
+				/> <transaction
+				src="${temp.dir}/AdvanceQuery/SQL/MySql/dynamicextension.sql" />
+				<transaction
+				src="${temp.dir}/AdvanceQuery/SQL/MySql/query/metadata_schema_script.sql"
+				/> <transaction
+				src="${temp.dir}/AdvanceQuery/SQL/MySql/query/query_schema_script.sql"
+				/> <transaction src="${temp.dir}/AdvanceQuery/SQL/MySql/query/caB2B
+				Table Generation Script.sql" /
+			-->
+			<transaction>commit;</transaction>
+			<classpath>
+				<fileset dir="./lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</sql>
+	</target>
+	<!-- Oracle Database Creation -->
+	<target name="aq_deploy_db_oracle">
+		<echo
+			message="Initializing Oracle Database for caTissue Suite v1.1 Application..." />
+		<sql driver="${oracle.driver.string}"
+			url="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}"
+			userid="${database.username}" password="${database.password}" rdbms="oracle">
+			<transaction src="${oracle.sql.dir}/query.sql" />
+			<transaction src="${oracle.sql.dir}/InitDB_CreateTable.sql" />
+			<transaction src="${common.sql.dir}/initDB_Insert_Common.sql" />
+			<transaction src="${oracle.sql.dir}/AlterTable.sql" />
+			<transaction src="${common.sql.dir}/CDE_DummyData_Common.sql" />
+			<transaction src="${oracle.sql.dir}/CSM_Create_Oracle.sql" />
+			<transaction src="${oracle.sql.dir}/insert_default_data.sql" />
+			<transaction src="${common.sql.dir}/indexes.sql" />
+			<transaction src="${oracle.sql.dir}/dynamicextension.sql" />
+			<transaction
+				src="${oracle.sql.dir}/query/caB2B Table Generation Script.sql" />
+			<transaction src="${oracle.sql.dir}/query/metadata_schema_script.sql" />
+			<transaction src="${oracle.sql.dir}/query/query_schema_script.sql" />
+			<transaction>commit;</transaction>
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</sql>
+		<antcall target="insertQueryMetadata" />
+		<sql driver="${oracle.driver.string}"
+			url="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}"
+			userid="${database.username}" password="${database.password}" rdbms="oracle"
+			delimiter="/" delimitertype="row">
+			<transaction src="${oracle.sql.dir}/CSM_Trigger_Oracle.sql" />
+			<transaction src="${oracle.sql.dir}/DBUtility.sql" />
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</sql>
+		<sql driver="${oracle.driver.string}"
+			url="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}"
+			userid="${database.username}" password="${database.password}" rdbms="oracle">
+			<transaction src="${oracle.sql.dir}/CSM_InsertData_Oracle.sql" />
+			<transaction src="${oracle.sql.dir}/CSM_AddConstraints_Oracle.sql" />
+			<transaction>commit;</transaction>
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</sql>
+		<antcall target="temp_update_metadata_for_clob_support_oracle" />
+		<antcall target="insert_entity_group_metadata_oracle" />
+		<antcall target="upgrade_db_demodel_oracle" />
+		<antcall target="update_metadata_for_model_changes" />
+		<antcall target="alter_CA_model_Tables" />
+		<sql driver="${oracle.driver.string}"
+			url="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}"
+			userid="${database.username}" password="${database.password}" rdbms="oracle">
+			<transaction src="${oracle.sql.dir}/query/dropDESequence.SQL" />
+			<transaction>commit;</transaction>
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</sql>
+		<sql driver="${oracle.driver.string}"
+			url="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}"
+			userid="${database.username}" password="${database.password}"
+			delimiter="/" delimitertype="row" keepformat="yes" rdbms="oracle">
+			<transaction src="${oracle.sql.dir}/query/resetDESequence.SQL" />
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</sql>
+	</target>
+	<!-- Deploying Advance Query db -->
+	<target name="aq_deploy_db" >
+		<echo message="Deploying Advance Query db ...." />
+		<!--unzip src="AdvanceQuery_Installable.zip" dest="${temp.dir}/AdvanceQuery"
+			overwrite="true" /-->
+		<if>
+			<equals arg1="mysql" arg2="${database.type}" />
+			<then>
+				<antcall target="aq_deploy_db_mysql" />
+			</then>
+			<elseif>
+				<equals arg1="oracle" arg2="${database.type}" />
+				<then>
+					<antcall target="aq_deploy_db_oracle" />
+				</then>
+			</elseif>
+			<else>
+				<echo
+					message="DATABASE INITIALIZATION FAILED PLEASE CHECK DATABASE.TYPE PROPERTY"
+					level="error" />
+			</else>
+		</if>
+		<delete dir="${temp.dir}" />
+	</target>
 </project>
