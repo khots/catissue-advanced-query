@@ -1210,10 +1210,12 @@ Thanking You,
 			-->
 			<transaction>commit;</transaction>
 			<classpath>
-				<fileset dir="./lib">
-					<include name="*.jar" />
+				<fileset dir="${lib.dir}">
+						<include name="*.jar" />
 				</fileset>
 			</classpath>
+
+			
 		</sql>
 	</target>
 	<!-- Oracle Database Creation -->

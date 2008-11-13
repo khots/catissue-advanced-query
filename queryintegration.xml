@@ -1,5 +1,7 @@
 <?xml version ="1.0"?>
 <project name="Query Integration">
+	
+	<!--define require dir and Properties -->
 	<property name="cider.struts.config.file" value="struts-config.xml" />
 	<property name="cider.hibernate.config.file" value="hibernate.cfg.xml" />
 	<property name="cider.tiles.def.file" value="tiles-defs.xml" />
@@ -7,16 +9,8 @@
 	<property name="database.type" value="mysql" />
 	<property name="oracle.dialect.string" value="org.hibernate.dialect.Oracle9Dialect" />
 	<property name="mysql.dialect.string" value="org.hibernate.dialect.MySQLDialect" />
+
 	
-	<!--define require dir and Properties -->
-	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
-		<classpath>
-			<pathelement location="./lib/ant-contrib.jar" />
-		</classpath>
-	</taskdef>
-	
-	<!-- importing advance query deploy.xml for ant call --> 
-		
 	<!--Advance Query Related  Start-->
 	<!--
 		Check user selected deploy.AdvanceQuery to true and
@@ -48,18 +42,14 @@
 			</else>
 		</if>
 	</target>
+	
 	<target name="aq_integrate_app">
-		<echo>deployment dir ${deploy.temp.dir}</echo>
-		<echo>${deploy.temp.dir}/${war.dir}/WEB-INF/flex</echo>
 		<echo message="Integrating Advance Query Application ...." />
-		<unzip src="AdvanceQuery_Installable.zip" dest="${deploy.temp.dir}/AdvanceQuery"
-			overwrite="true" />
 		<echo message="Unzip of Advance Query Module done" />
-				<!-- Inject db specific information to configuration files -->
+		<!-- Inject db specific information to configuration files -->
 		<if>
 			<equals arg1="mysql" arg2="${database.type}" />
-			<then>
-				<echo message="${database.type}" />
+			<then>				
 				<antcall target="aq_mysql_config" />
 			</then>
 			<elseif>
@@ -75,7 +65,12 @@
 					level="error" />
 			</else>
 		</if>
-				<!--Copying the Advance Query jar file to deploytempCider -->
+		<!--Copying the Query property file to cider classes -->
+		<copy file="query.properties" todir="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/"
+					overwrite="true" />
+		
+		<!--Copying the Advance Query jar file to deploytempCider -->
+		
 		<copy file="AdvanceQuery.jar" todir="${deploy.temp.dir}/${war.dir}/WEB-INF/lib"
 			overwrite="true" />
 		<echo message="Copied Advance Query Jar file" />
@@ -86,8 +81,6 @@
 		<copy todir="${deploy.temp.dir}/${war.dir}/WEB-INF/classes"
 			overwrite="true">
 			<fileset dir=".">
-			             <!--For time being don't copy the application resource properties -->		
-						<!--<include name="ApplicationResources.properties" /> -->
 				<include name="QueryHibernate.cfg.xml" />
 				<include name="DynamicExtensionsHibernate.cfg.xml" />
 			</fileset>
@@ -98,45 +91,44 @@
 				<include name="AdvanceQuery-tiles-defs.xml" />
 			</fileset>
 		</copy>
-				
-				<!--Copying css files -->
+
+		<!--Copying css files -->
 		<copy todir="${deploy.temp.dir}/${war.dir}/css" overwrite="true">
 			<fileset dir="css" />
 		</copy>
-				
-				<!--Copying jss files -->
+
+		<!--Copying jss files -->
 		<copy todir="${deploy.temp.dir}/${war.dir}/jss" overwrite="true">
 			<fileset dir="jss" />
 		</copy>
-				
-				<!--Copying JSP Pages -->
+
+		<!--Copying JSP Pages -->
 		<copy todir="${deploy.temp.dir}/${war.dir}/pages" overwrite="false">
 			<fileset dir="pages" />
 		</copy>
-				
-				<!--Copying Images -->
-		<echo message="${base.dir}/../.." />
+
+		<!--Copying Images -->		
 		<copy todir="${deploy.temp.dir}/${war.dir}/images" overwrite="false">
 			<fileset dir="images" />
 		</copy>
-				
-				<!--Copying the  flex client files for advance query-->
+
+		<!--Copying the  flex client files for advance query-->
 		<copy todir="${deploy.temp.dir}/${war.dir}/flexclient" overwrite="true">
 			<fileset dir="flexclient" />
 		</copy>
 		<copy todir="${deploy.temp.dir}/${war.dir}/WEB-INF/flex"
 			overwrite="true">
-			<fileset dir="WEB-INF/flex" />
+			<fileset dir="flex" />
 		</copy>
-				<!-- 3) Inject advancequery-struts-config.xml entry in cider web.xml -->
-		<replace file="${deploy.temp.dir}/AdvanceQuery/WEB-INF/web.xml">
+		<!-- 3) Inject advancequery-struts-config.xml entry in cider web.xml -->
+		<replace file="${deploy.temp.dir}/${war.dir}/WEB-INF/web.xml">
 			<replacefilter token="/WEB-INF/${cider.struts.config.file}"
 				value="/WEB-INF/${cider.struts.config.file}, /WEB-INF/advancequery-struts-config.xml" />
 		</replace>
-				
-				<!-- 4 ) Inject db-util.properties entry in cider db-util.properties -->
+
+		<!-- 4 ) Inject db-util.properties entry in cider db-util.properties -->
 		<replace
-			file="${deploy.temp.dir}/AdvanceQuery/WEB-INF/classes/dbutil.properties">
+			file="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/dbutil.properties">
 			<replacefilter token="${cider.hibernate.config.file}"
 				value="${cider.hibernate.config.file}, QueryHibernate.cfg.xml, DynamicExtensionsHibernate.cfg.xml" />
 		</replace>
@@ -157,65 +149,50 @@
 		<concat
 			destfile="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/ApplicationResources.properties"
 			append="true">
-			<filelist dir="." files="ApplicationResources.properties" />
-						<!--filterchain>
-							<headfilter lines="155"/ -->
-			<!--
-				concatfilter
-				append="${temp.dir}/AdvanceQuery/ApplicationResources.properties"/>
-				</filterchain
-			-->
+			<fileset file="ApplicationResources.properties" />			
 		</concat>
+		
+		<echo message="Advance Query is ready to use." />
 	</target>
-		<!-- Modify Advance Query configuration For MySQL -->
+	<!-- Modify Advance Query configuration For MySQL -->
 	<target name="aq_mysql_config">
-		<replace file="${deploy.temp.dir}/AdvanceQuery/QueryHibernate.cfg.xml">
+		<replace file="QueryHibernate.cfg.xml">
 			<replacefilter token="${mysql.dialect.string}" value="${mysql.dialect.string}" />
 			<replacefilter token="@@dataSource@@" value="${datasource}" />
 		</replace>
-				
-				<!-- Modifying the data source for DynamicExtensionsHibernate.cfg.xml-->
-		<replace
-			file="${deploy.temp.dir}/AdvanceQuery/DynamicExtensionsHibernate.cfg.xml">
+
+		<!-- Modifying the data source for DynamicExtensionsHibernate.cfg.xml-->
+		<replace file="DynamicExtensionsHibernate.cfg.xml">
 			<replacefilter token="${mysql.dialect.string}" value="${mysql.dialect.string}" />
 			<replacefilter token="@@dataSource@@" value="${datasource}" />
 		</replace>
 	</target>
-				
-			<!-- Modify Advance Query configuration For ORACLE -->
+
+	<!-- Modify Advance Query configuration For ORACLE -->
 	<target name="aq_oracle_config">
 		<replace file="QueryHibernate.cfg.xml">
 			<replacefilter token="${mysql.dialect.string}" value="${oracle.dialect.string}" />
 			<replacefilter token="@@dataSource@@" value="${datasource}" />
 		</replace>
-				
-					<!-- Modifying the data source for DynamicExtensionsHibernate.cfg.xml-->
+
+		<!-- Modifying the data source for DynamicExtensionsHibernate.cfg.xml-->
 		<replace file="DynamicExtensionsHibernate.cfg.xml">
 			<replacefilter token="@@dataSource@@" value="${datasource}" />
 		</replace>
 	</target>
-	<!--
-		target name="aq_integrate_app"> <ant dir="." inheritAll="false"
-		antfile="deploy.xml" target="aq_integrate_app" /> </target
-	-->
-	<target name="advquery_integrate_app">
-		<antcall target="aq_integrate_app">
-			<param name="deploy.temp.dir" value="deploytempCider" />
-			<param name="war.dir" value="cider" />
-		</antcall>
-	</target>
+	
 	<target name="aq_deploy_db_mysql">
-	<!-- Oracle mysql Creation -->
+		<!-- Oracle mysql Creation -->
 		<ant dir="." inheritAll="false" antfile="deploy.xml" target="aq_deploy_db_mysql" />
 	</target>
 	<target name="aq_deploy_db_oracle">
-	<!-- Oracle Database Creation -->
+		<!-- Oracle Database Creation -->
 		<ant dir="." inheritAll="false" antfile="deploy.xml" target="aq_deploy_db_oracle" />
 	</target>
 	<target name="aq_deploy_db">
-	<!-- Deploying Advance Query db -->
+		<!-- Deploying Advance Query db -->
 		<ant dir="." inheritAll="false" antfile="deploy.xml" target="aq_deploy_db" />
 	</target>
-	
+
 	<!--Advance Query Related  End -->
 </project>
