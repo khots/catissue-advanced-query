@@ -5,12 +5,23 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.servlet.http.HttpServletRequest;
+
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
+import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
+import edu.wustl.query.util.global.Constants;
 import edu.wustl.common.beans.QueryResultObjectData;
+import edu.wustl.common.beans.QueryResultObjectDataBean;
+import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.bizlogic.QueryBizLogic;
+import edu.wustl.common.dao.QuerySessionData;
+import edu.wustl.common.dao.queryExecutor.PagenatedResultData;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 
 public class Utility extends edu.wustl.common.util.Utility
@@ -233,5 +244,43 @@ public class Utility extends edu.wustl.common.util.Utility
 		// for '
 		return tooltip;
 	}
+	
+	public static List getPaginationDataList(HttpServletRequest request,
+			SessionDataBean sessionData, int recordsPerPage, int pageNum,
+			QuerySessionData querySessionData) throws DAOException {
+		List paginationDataList;
+		querySessionData.setRecordsPerPage(recordsPerPage);
+		int startIndex = recordsPerPage * (pageNum - 1);
+		QueryBizLogic qBizLogic = new QueryBizLogic();
+		PagenatedResultData pagenatedResultData = qBizLogic.execute(
+				sessionData, querySessionData, startIndex);
+		paginationDataList = pagenatedResultData.getResult();
+		String isSimpleSearch = (String)request.getSession().getAttribute(edu.wustl.common.util.global.Constants.IS_SIMPLE_SEARCH);
+		if (isSimpleSearch == null || (!isSimpleSearch.equalsIgnoreCase(Constants.TRUE)))
+		{
+			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap = querySessionData.getQueryResultObjectDataMap();
+			if(queryResultObjectDataBeanMap!=null)
+			{	
+				for (Iterator<Long> beanMapIterator = queryResultObjectDataBeanMap.keySet().iterator() ; beanMapIterator.hasNext() ; )
+				{
+					Long id = beanMapIterator.next();
+					QueryResultObjectDataBean bean = queryResultObjectDataBeanMap.get(id);
+					if (bean.isClobeType())
+					{
+						List<String> columnsList = (List<String>)request.getSession().getAttribute(Constants.SPREADSHEET_COLUMN_LIST);
+						QueryOutputSpreadsheetBizLogic queryBizLogic = new QueryOutputSpreadsheetBizLogic();
+						Map<Integer, Integer> fileTypeIndexMainEntityIndexMap = queryBizLogic.updateSpreadSheetColumnList(columnsList, queryResultObjectDataBeanMap);
+						//	QueryOutputSpreadsheetBizLogic.updateDataList(paginationDataList, fileTypeIndexMainEntityIndexMap);
+						Map exportMetataDataMap = QueryOutputSpreadsheetBizLogic.updateDataList(paginationDataList, fileTypeIndexMainEntityIndexMap);
+						request.getSession().setAttribute(Constants.ENTITY_IDS_MAP,exportMetataDataMap.get(Constants.ENTITY_IDS_MAP));
+						request.getSession().setAttribute(Constants.EXPORT_DATA_LIST,exportMetataDataMap.get(Constants.EXPORT_DATA_LIST));
+						break;
+					}
+				}
+			}
+		}
+		return paginationDataList;
+	}
+
 
 }

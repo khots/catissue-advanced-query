@@ -417,4 +417,11 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final int CHARACTERS_IN_ONE_LINE = 110;
 	public static final String SINGLE_QUOTE_ESCAPE_SEQUENCE = "&#096;";
 	public static final String ViewSearchResultsAction = "ViewSearchResultsAction.do";
+
+	
+	//Constants related to Export functionality
+	public static final String SEARCH_RESULT = "SearchResult.csv";
+	public static final String ZIP_FILE_EXTENTION = ".zip";
+	public static final String CSV_FILE_EXTENTION = ".csv";
+	public static final String EXPORT_ZIP_NAME = "SearchResult.zip";
 }
