@@ -36,7 +36,7 @@ public class CIDERPermissibleValueManager implements IPermissibleValueManager
 		return false;
 	}
 	
-	public List<Concept> getPermissibleValues(AttributeInterface attribute,String vocabulary)
+	public List getPermissibleValues(AttributeInterface attribute,String vocabulary)
 	{
 		//Check if attribute.getEntity has tag CONCEPT_LOOKUP_TABLE and attribute.getEntity has tag PV_FILTER and attribute.name=="name"
 		//get MED concept codes from MED lookup table using filter.
