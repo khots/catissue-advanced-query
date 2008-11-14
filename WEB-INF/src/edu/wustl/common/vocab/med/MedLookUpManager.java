@@ -37,11 +37,11 @@ public class MedLookUpManager
 	private void init()
 	{
 		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		List<List<String>> dataList = new ArrayList<List<String>>();
+		//List<List<String>> dataList = new ArrayList<List<String>>();
 		try
 		{
 			dao.openSession(null);
-			dataList = dao.executeQuery("select * from MED_LOOKUP_VIEW", null, false, false, null);
+			List<List<String>> dataList = (List)dao.executeQuery("select * from MED_LOOKUP_VIEW", null, false, false, null);
 			if(!dataList.isEmpty())
 			{
 				pvMap = new HashMap<String, List<String>>();
@@ -49,11 +49,13 @@ public class MedLookUpManager
 				{
 					if(pvMap.containsKey(dataList.get(0)))
 					{
-						((List)pvMap.get(dataList.get(0))).add(dataList.get(1));
+						pvMap.get(dataList.get(0).get(0)).add(dataList.get(0).get(1));
 					}
 					else
 					{
-						pvMap.put(dataList.get(0), new ArrayList<String>().add(dataList.get(1)));
+						List<String> pvList = new ArrayList<String>();
+						pvList.add(dataList.get(0).get(1));
+						pvMap.put(dataList.get(0).get(0),pvList);
 					}
 				}
 			}
