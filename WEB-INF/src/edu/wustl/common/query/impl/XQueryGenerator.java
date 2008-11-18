@@ -283,7 +283,6 @@ public class XQueryGenerator extends QueryGenerator
 		xQuery.append(buildXQueryForClause());
 		xQuery.append(buildXQueryLetClause());
 		xQuery.append(buildXQueryWhereClause());
-		xQuery.append(buildXQueryOrderByClause());
 		xQuery.append(buildXQueryReturnClause());
 
 		return xQuery.toString();
@@ -388,7 +387,7 @@ public class XQueryGenerator extends QueryGenerator
 			String path = entry.getValue();
 
 			for (AttributeInterface attribute : expression.getQueryEntity()
-					.getDynamicExtensionsEntity().getAllAttributes())
+					.getDynamicExtensionsEntity().getAttributeCollection())
 			{
 				String attributeVariable = attributeAliases.get(attribute);
 
@@ -416,12 +415,7 @@ public class XQueryGenerator extends QueryGenerator
 
 	}
 
-	private String buildXQueryOrderByClause()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	private String buildXQueryReturnClause()
 	{
 		StringBuilder xqueryReturnClause = new StringBuilder(128);
@@ -552,7 +546,7 @@ public class XQueryGenerator extends QueryGenerator
 			{
 				String variableName = new StringBuilder().append(Constants.QUERY_DOLLAR).append(
 						getAliasName(childExpression)).toString();
-				forTree.append(variableName).append(" := ");
+				forTree.append(variableName).append(' ').append(Constants.IN).append(' ');
 				forTree.append(xpath).append('/').append(eavAssociation.getTargetRole().getName())
 						.append('/').append(childEntityName).append(Constants.QUERY_COMMA);
 
@@ -617,7 +611,7 @@ public class XQueryGenerator extends QueryGenerator
 
 	private String getApplicationConditions() throws SQLXMLException
 	{
-		return null;
+		return "";
 		/*
 		StringBuilder operandRule = new StringBuilder(processOperands());
 
@@ -757,7 +751,7 @@ public class XQueryGenerator extends QueryGenerator
 			{
 				EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
 
-				for (AttributeInterface attribute : entity.getAllAttributes())
+				for (AttributeInterface attribute : entity.getAttributeCollection())
 				{
 					String attributeAlias = getAliasFor(attribute, expression);
 					attributeAliases.put(attribute, attributeAlias);
