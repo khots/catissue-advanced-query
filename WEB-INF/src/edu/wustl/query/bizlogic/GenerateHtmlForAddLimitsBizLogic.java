@@ -1157,7 +1157,7 @@ public class GenerateHtmlForAddLimitsBizLogic
 		else
 		{
 			String valueStr = "";
-			if (op.equalsIgnoreCase(Constants.In) || op.equalsIgnoreCase(Constants.Not_In))
+			if (op.equalsIgnoreCase(Constants.IN) || op.equalsIgnoreCase(Constants.Not_In))
 			{
 				valueStr = values.toString();
 				valueStr = valueStr.replace("[", "");

@@ -1110,7 +1110,7 @@ public class QueryOutputSpreadsheetBizLogic
 			{
 				objectColumnIds.add(columnIndex);
 				selectSql = selectSql + sqlColumnName + ",";
-				sqlColumnName = sqlColumnName.substring(SqlGenerator.COLUMN_NAME.length(),
+				sqlColumnName = sqlColumnName.substring(Constants.COLUMN_NAME.length(),
 						sqlColumnName.length());
 				String attrLabel = Utility.getDisplayLabel(attribute.getName());
 				columnsList.add(attrLabel + " : " + className);

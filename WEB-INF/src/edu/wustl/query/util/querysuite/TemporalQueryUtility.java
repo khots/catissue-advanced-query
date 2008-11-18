@@ -31,7 +31,7 @@ public class TemporalQueryUtility
 			if ((!operator.getStringRepresentation().equals(Constants.Contains))
 					&& (!operator.getStringRepresentation().equals(Constants.STRATS_WITH))
 					&& (!operator.getStringRepresentation().equals(Constants.ENDS_WITH))
-					&& (!operator.getStringRepresentation().equals(Constants.In))
+					&& (!operator.getStringRepresentation().equals(Constants.IN))
 					&& (!operator.getStringRepresentation().equals(Constants.Between))
 					&& (!operator.getStringRepresentation().equals(Constants.Not_In))
 					&& (!operator.getStringRepresentation().equalsIgnoreCase(Constants.IS_NULL))
