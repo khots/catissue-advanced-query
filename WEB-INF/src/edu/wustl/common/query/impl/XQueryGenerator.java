@@ -32,6 +32,7 @@ import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
+import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
 
@@ -72,8 +73,7 @@ public class XQueryGenerator extends QueryGenerator
 	public String generateQuery(IQuery query) throws MultipleRootsException, SqlException
 	{
 		StringBuilder formedQuery = new StringBuilder();
-		char queryType = 'N';
-
+		
 		try
 		{
 			IQuery queryClone = new DyExtnObjectCloner().clone(query);
@@ -93,7 +93,7 @@ public class XQueryGenerator extends QueryGenerator
 			// Generating output tree.
 			//createTree();
 
-			formedQuery.append(buildSelectPart(queryType));
+			formedQuery.append(buildSelectPart());
 			formedQuery.append(buildFromPart());
 
 		}
@@ -264,7 +264,7 @@ public class XQueryGenerator extends QueryGenerator
 		}
 	}*/
 
-	private String buildSelectPart(char queryType) throws SQLXMLException
+	private String buildSelectPart() throws SQLXMLException
 	{
 
 		StringBuffer selectClause = new StringBuffer(256);
@@ -343,6 +343,13 @@ public class XQueryGenerator extends QueryGenerator
 					.append(rootPath).append(Constants.QUERY_COMMA);
 
 			xqueryForClause.append(getForTree(mainExpression, mainVariable));
+		}
+			
+			removeLastComma(xqueryForClause);
+			return xqueryForClause.toString();
+	}
+		
+	
 
 			/*
 			//for repeated for's
@@ -366,11 +373,8 @@ public class XQueryGenerator extends QueryGenerator
 					//xmlGetForQueryPart.append("$" + 
 				}*/
 
-		}
-
-		removeLastComma(xqueryForClause);
-		return xqueryForClause.toString();
-	}
+			
+	
 
 	private String buildXQueryLetClause()
 	{
@@ -531,7 +535,7 @@ public class XQueryGenerator extends QueryGenerator
 			//skip main expressions
 			if (mainExpressions.contains(childExpression))
 			{
-				return null;
+				continue;
 			}
 
 			String childEntityName = deCapitalize(childExpression.getQueryEntity().getDynamicExtensionsEntity()
@@ -546,7 +550,7 @@ public class XQueryGenerator extends QueryGenerator
 
 			if (cardinality > 1)
 			{
-				String variableName = new StringBuilder(Constants.QUERY_DOLLAR).append(
+				String variableName = new StringBuilder().append(Constants.QUERY_DOLLAR).append(
 						getAliasName(childExpression)).toString();
 				forTree.append(variableName).append(" := ");
 				forTree.append(xpath).append('/').append(eavAssociation.getTargetRole().getName())
@@ -567,6 +571,8 @@ public class XQueryGenerator extends QueryGenerator
 		}
 
 		return forTree.toString();
+		
+	}
 
 		/*
 		 StringBuilder forTree = new StringBuilder();
@@ -597,7 +603,7 @@ public class XQueryGenerator extends QueryGenerator
 
 		return forTree.toString();*/
 
-	}
+	
 
 	
 	private String deCapitalize(String name)
@@ -648,6 +654,7 @@ public class XQueryGenerator extends QueryGenerator
 		return selectString;
 	}
 
+	/*
 	private String getActualValue(String operator, String attributeName, String value)
 	{
 		StringBuilder newOperator = new StringBuilder();
@@ -686,6 +693,8 @@ public class XQueryGenerator extends QueryGenerator
 
 		return newOperator.toString();
 	}
+	
+	*/
 
 	protected String modifyValueForDataType(String value, AttributeTypeInformationInterface dataType)
 	{
@@ -714,14 +723,7 @@ public class XQueryGenerator extends QueryGenerator
 		return actualValue.toString();
 	}
 
-	private List<AttributeInterface> getAttributes(IExpression expression)
-	{
-		List<AttributeInterface> attributes = new ArrayList<AttributeInterface>();
-		EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
-		attributes = (List<AttributeInterface>) entity.getAllAttributes();
-		return attributes;
-	}
-
+	
 	private void setMainExpressions()
 	{
 		mainExpressions = new HashSet<IExpression>();
@@ -795,70 +797,43 @@ public class XQueryGenerator extends QueryGenerator
 	private String getDataTypeInformation(AttributeInterface attribute)
 			throws DataTypeFactoryInitializationException
 	{
-
 		String returnValue = null;
 
 		DataTypeFactory type = DataTypeFactory.getInstance();
-		
-		
 		AttributeTypeInformationInterface dataType = attribute.getAttributeTypeInformation();
 
 		if (dataType instanceof StringTypeInformationInterface)
-
 		{
-
 			returnValue = type
 					.getDatabaseDataType(EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE);
-
 		}
-
 		else if (dataType instanceof DateTypeInformationInterface)
-
 		{
-
 			returnValue = type
 					.getDatabaseDataType(EntityManagerConstantsInterface.DATE_TIME_ATTRIBUTE_TYPE);
-
 		}
-
 		else if (dataType instanceof LongTypeInformationInterface)
-
 		{
-
 			returnValue = type
 					.getDatabaseDataType(EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE);
-
 		}
-
 		else if (dataType instanceof DoubleTypeInformationInterface)
-
 		{
-
 			returnValue = type
 					.getDatabaseDataType(EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE);
-
 		}
-
 		else if (dataType instanceof IntegerTypeInformationInterface)
-
 		{
-
 			returnValue = type
 					.getDatabaseDataType(EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE);
-
 		}
-
 		else if (dataType instanceof BooleanTypeInformationInterface)
-
 		{
-
 			returnValue = type
 					.getDatabaseDataType(EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE);
-
 		}
 
 		return returnValue;
-
 	}
 
 	@Override

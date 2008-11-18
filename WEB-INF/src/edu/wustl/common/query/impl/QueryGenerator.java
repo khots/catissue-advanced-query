@@ -65,7 +65,6 @@ import edu.wustl.query.util.global.Constants;
  */
 public abstract class QueryGenerator implements IQueryGenerator
 {
-
 	/**
 	 * This map holds integer value that will be appended to each table alias in
 	 * the query.

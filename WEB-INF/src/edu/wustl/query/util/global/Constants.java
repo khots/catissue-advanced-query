@@ -130,7 +130,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String SELECT = "SELECT ";
 	public static final String FILE_TYPE = "file";
 	public static final String FROM = " from ";
-	public static final String WHERE = " WHERE ";
+	public static final String WHERE = " where ";
 	public static final String LIKE = " LIKE ";
 	public static final String LEFT_JOIN = " LEFT JOIN ";
 	public static final String INNER_JOIN = " INNER JOIN ";
@@ -250,7 +250,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 		+ ")";
 	}
 	
-	/Constants related to Export functionality
+	//Constants related to Export functionality
 	public static final String SEARCH_RESULT = "SearchResult.csv";
 	public static final String ZIP_FILE_EXTENTION = ".zip";
 	public static final String CSV_FILE_EXTENTION = ".csv";
