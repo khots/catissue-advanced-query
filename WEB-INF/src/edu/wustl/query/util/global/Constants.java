@@ -69,13 +69,13 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String[] ATTRIBUTE_NAMES_FOR_TREENODE_LABEL = {"firstName", "lastName",
 			"title", "name", "label", "shorttitle"};
 	public static final String COLUMN_NAME = "Column";
-	public static final String ON = "on";
+	public static final String ON = " ON ";
 	public static final String OFF = "off";
 	public static final String PAGE_OF_QUERY_MODULE = "pageOfQueryModule";
 	public static final String RANDOM_NUMBER = "randomNumber";
 	public static final String IS_NOT_NULL = "is not null";
 	public static final String IS_NULL = "is null";
-	public static final String In = "In";
+	public static final String IN = "in";
 	public static final String Not_In = "Not In";
 	public static final String Equals = "Equals";
 	public static final String Not_Equals = "Not Equals";
@@ -127,9 +127,13 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String NULL_ID = "NULL";
 	public static final String UNIQUE_ID_SEPARATOR = "UQ";
 	public static final String SELECT_DISTINCT = "select distinct ";
+	public static final String SELECT = "SELECT ";
 	public static final String FILE_TYPE = "file";
 	public static final String FROM = " from ";
-	public static final String WHERE = " where ";
+	public static final String WHERE = " WHERE ";
+	public static final String LIKE = " LIKE ";
+	public static final String LEFT_JOIN = " LEFT JOIN ";
+	public static final String INNER_JOIN = " INNER JOIN ";
 	public static final String HASHED_OUT = "####";
 	public static final String DYNAMIC_UI_XML = "dynamicUI.xml";
 	public static final String DATE = "date";
@@ -156,213 +160,11 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String TIME_INTERVALS_LIST = "timeIntervals";
 	public static final String ENTITY_LABEL_LIST = "entityList";
 
-	/**
-	 * Array grid component key used in map.
-	 */
-	String ARRAY_GRID_COMPONENT_KEY = "arrayGridComponentKey";
-
-	/**
-	 * selected cell color 
-	 */
-	Color CELL_SELECTION_COLOR = Color.blue;
-
-	/**
-	 * delimiter 
-	 */
-	String delimiter = "_";
-
-	/**
-	 * key prefix 
-	 */
-	String ARRAY_CONTENT_KEY_PREFIX = "SpecimenArrayContent:";
-	/**
-	 * Arrau specimen prefix
-	 */
-	String SPECIMEN_PREFIX = "Specimen:";
-
-	/**
-	 * Array specimen prefix
-	 */
-	String ARRAY_CONTENT_SPECIMEN_PREFIX = "Specimen_";
-
-	/**
-	 * Array specimen prefix
-	 */
-	String ARRAY_CONTENT_QUANTITY_PREFIX = "initialQuantity";
-
-	String VIRTUALLY_LOCATED_CHECKBOX = "virtuallyLocatedCheckBox";
-
-	/**
-	 * array attributes name
-	 */
-	String[] ARRAY_CONTENT_ATTRIBUTE_NAMES = {ARRAY_CONTENT_SPECIMEN_PREFIX + "label",
-			ARRAY_CONTENT_SPECIMEN_PREFIX + "barcode", ARRAY_CONTENT_QUANTITY_PREFIX,
-			"concentrationInMicrogramPerMicroliter", "positionDimensionOne",
-			"positionDimensionTwo", "id"};
-	// ,ARRAY_CONTENT_SPECIMEN_PREFIX + "id"
-
-	/**
-	 * Specify the ARRAY_CONTENT_ATTR_LABEL_INDEX field 
-	 */
-	int ARRAY_CONTENT_ATTR_LABEL_INDEX = 0;
-
-	/**
-	 * Specify the ARRAY_CONTENT_ATTR_BARCODE_INDEX field 
-	 */
-	int ARRAY_CONTENT_ATTR_BARCODE_INDEX = 1;
-
-	/**
-	 * Specify the ARRAY_CONTENT_ATTR_QUANTITY_INDEX field 
-	 */
-	int ARRAY_CONTENT_ATTR_QUANTITY_INDEX = 2;
-
-	/**
-	 * Specify the ARRAY_CONTENT_ATTR_CONC_INDEX field 
-	 */
-	int ARRAY_CONTENT_ATTR_CONC_INDEX = 3;
-
-	/**
-	 * Specify the ARRAY_CONTENT_ATTR_POS_DIM_ONE_INDEX field 
-	 */
-	int ARRAY_CONTENT_ATTR_POS_DIM_ONE_INDEX = 4;
-
-	/**
-	 * Specify the ARRAY_CONTENT_ATTR_POS_DIM_TWO_INDEX field 
-	 */
-	int ARRAY_CONTENT_ATTR_POS_DIM_TWO_INDEX = 5;
-
-	/**
-	 * Specify the ARRAY_CONTENT_ATTR_ID_INDEX field 
-	 */
-	int ARRAY_CONTENT_ATTR_ID_INDEX = 6;
-
-	/**
-	 * Specify the ARRAY_CONTENT_ATTR_QUANTITY_ID_INDEX field 
-	 */
-	int ARRAY_CONTENT_ATTR_QUANTITY_ID_INDEX = 7;
-
-	/**
-	 * Specify the SPECIMEN_ARRAY_APPLET_ACTION field 
-	 */
-	String SPECIMEN_ARRAY_APPLET_ACTION = "/SpecimenArrayAppletAction.do";
-
-	/**
-	 * Specify the ADD_TO_LIMIT_ACTION field 
-	 */
-	String ADD_TO_LIMIT_ACTION = "/addToLimitSet.do";
-	/**
-	 * Specify the GET_SEARCH_RESULTS field 
-	 */
-	String GET_SEARCH_RESULTS = "/ViewSearchResultsAction.do";
-	/**
-	 * Specify the PATH_FINDER field 
-	 */
-	String PATH_FINDER = "/PathFinderAction.do";
-	/**
-	 * Specify the ADD_TO_LIMIT_ACTION field 
-	 */
-	String GET_DAG_VIEW_DATA = "/getDagViewDataAction.do";
-	/**
-	 * 
-	 */
-	public static final String RESOURCE_BUNDLE_PATH = "dagViewApplet.jar/ApplicationResources.properties";
+	
+	
 	public static final String DefineSearchResultsViewAction = "/DefineSearchResultsView.do";
-	/**
-	 * Specify the ADD_TO_LIMIT_ACTION field 
-	 */
-	String DAG_VIEW_DATA = "dagViewData";
-	/**
-	 * Specify the ADD_TO_LIMIT_ACTION field 
-	 */
-	String ENTITY_MAP = "entity_map";
-	/**
-	 * Specify the ADD_TO_LIMIT_ACTION field 
-	 */
-	public static final String ENTITY_STR = "entity_str";
-
-	/**
-	 * Specimen Attributes Row Nos
-	 * */
-	short SPECIMEN_CHECKBOX_ROW_NO = 0; //	FOR CHECKBOXES
-	short SPECIMEN_COLLECTION_GROUP_ROW_NO = 1;
-	short SPECIMEN_PARENT_ROW_NO = 2;
-	short SPECIMEN_LABEL_ROW_NO = 3;
-	short SPECIMEN_BARCODE_ROW_NO = 4;
-	short SPECIMEN_CLASS_ROW_NO = 5;
-	short SPECIMEN_TYPE_ROW_NO = 6;
-	short SPECIMEN_TISSUE_SITE_ROW_NO = 7;
-	short SPECIMEN_TISSUE_SIDE_ROW_NO = 8;
-
-	/**
-	 * Patch ID: 3835_1_14
-	 * See also: 1_1 to 1_5
-	 * Description : Added created date row and changed below row no accordingly. 
-	 */
-
-	short SPECIMEN_PATHOLOGICAL_STATUS_ROW_NO = 9;
-	short SPECIMEN_CREATED_DATE_ROW_NO = 10;
-	short SPECIMEN_QUANTITY_ROW_NO = 11;
-	short SPECIMEN_CONCENTRATION_ROW_NO = 12;
-	short SPECIMEN_COMMENTS_ROW_NO = 13;
-	short SPECIMEN_EVENTS_ROW_NO = 14;
-	short SPECIMEN_EXTERNAL_IDENTIFIERS_ROW_NO = 15;
-	short SPECIMEN_BIOHAZARDS_ROW_NO = 16;
-	short SPECIMEN_DERIVE_ROW_NO = 17;
-
-	//	Mandar: 06Nov06: location removed since auto allocation will take place.
-	//	short SPECIMEN_STORAGE_LOCATION_ROW_NO = 11;
-
-	String NO_OF_SPECIMENS = "NO_OF_SPECIMENS";
-	// this is key to put specimen map in session.
-
-	String APPLET_ACTION_PARAM_NAME = "method";
-
-	//Constants for buttons
-	public static final String MULTIPLE_SPECIMEN_EXTERNAL_IDENTIFIERS = "Add";
-	public static final String MULTIPLE_SPECIMEN_BIOHAZARDS = "Add";
-	public static final String MULTIPLE_SPECIMEN_EVENTS = "Add";
-	public static final String MULTIPLE_SPECIMEN_DERIVE = "Add";
-	public static final String MULTIPLE_SPECIMEN_MAP = "Map";
-	public static final String MULTIPLE_SPECIMEN_COMMENTS = "Add";
-	public static final String ADD = "Add";
-	public static final String EDIT = "Edit";
-
-	public static final String MULTIPLE_SPECIMEN_EXTERNAL_IDENTIFIERS_STRING = "external";
-	public static final String MULTIPLE_SPECIMEN_BIOHAZARDS_STRING = "biohazard";
-	public static final String MULTIPLE_SPECIMEN_EVENTS_STRING = "event";
-	public static final String MULTIPLE_SPECIMEN_DERIVE_STRING = "derive";
-	public static final String MULTIPLE_SPECIMEN_COMMENTS_STRING = "comment";
-
-	public static final String MULTIPLE_SPECIMEN_ADD_SPECIMEN = "More";
-	public static final String MULTIPLE_SPECIMEN_COPY = "Copy";
-	public static final String MULTIPLE_SPECIMEN_PASTE = "Paste";
-	public static final String MULTIPLE_SPECIMEN_MANDATORY = "*";
-	public static final String MULTIPLE_SPECIMEN_SUBMIT = "Submit";
-	public static final String MULTIPLE_SPECIMEN_DELETE_LAST = "Delete Last";
-
-	public static final String MULTIPLE_SPECIMEN_LOCATION_LABEL = "Containerlabel_temp";
-	public static final String MULTIPLE_SPECIMEN_ROW_COLUMN_SEPARATOR = "@";
-	public static final String MULTIPLE_SPECIMEN_BUTTON_MAP_KEY_SEPARATOR = "@";
-	//for parent specimen enable
-	public static final String MULTIPLE_SPECIMEN_COLLECTION_GROUP_RADIOMAP = "collectionGroupRadioMap";
-
-	public static final String COPY_OPERATION = "copy";
-	public static final String PASTE_OPERATION = "paste";
-	public static final String VALIDATOR_MODEL = "validatorModel";
-
-	public static final String ARRAY_COPY_OPTION_LABELBAR = "Label/Barcode";
-	public static final String ARRAY_COPY_OPTION_QUANTITY = "Quantity";
-	public static final String ARRAY_COPY_OPTION_CONCENTRATION = "Concentration";
-	public static final String ARRAY_COPY_OPTION_ALL = "All";
-	public static final int LINK_BUTTON_WIDTH = 70;
-
+		
 	public static final Color BG_COLOR = new Color(0xf4f4f5);
-
-	public static final char MULTIPLE_SPECIMEN_COPY_ACCESSKEY = 'C';
-	public static final char MULTIPLE_SPECIMEN_PASTE_ACCESSKEY = 'P';
-	public static final char MULTIPLE_SPECIMEN_DELETE_LAST_ACCESSKEY = 'D';
-
-	public static final String MULTIPLE_SPECIMEN_CHECKBOX_LABEL = "Specimen ";
 
 	// Dagviewapplet constants
 	public static final String QUERY_OBJECT = "queryObject";
@@ -417,11 +219,41 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final int CHARACTERS_IN_ONE_LINE = 110;
 	public static final String SINGLE_QUOTE_ESCAPE_SEQUENCE = "&#096;";
 	public static final String ViewSearchResultsAction = "ViewSearchResultsAction.do";
-
 	
-	//Constants related to Export functionality
+	
+	public static final String QUERY_COLUMN_NAME = "Column";
+	public static final String QUERY_OPENING_PARENTHESIS = "(";
+	public static final String QUERY_CLOSING_PARENTHESIS = ")";
+	public static final String QUERY_DOT = ".";
+	public static final String QUERY_UNDERSCORE = "_";
+	public static final String QUERY_COMMA = " ,";
+	public static final String QUERY_EQUALS = " = ";
+	public static final String QUERY_FILE = "file";
+	public static final String STR_TO_DATE = "STR_TO_DATE";
+	
+	public static final String QUERY_FROM_XMLTABLE =  " from xmltable";
+	public static final String QUERY_FOR = " for ";
+	public static final String QUERY_LET = " let ";
+	public static final String QUERY_ORDER_BY = " order by ";
+	public static final String QUERY_RETURN = " return ";
+	
+	public static final char QUERY_DOLLAR = '$';
+	public static final String QUERY_XMLCOLUMN = "db2-fn:xmlcolumn";
+	public static final String QUERY_XMLDATA = "XMLDATA";
+	public static final String QUERY_AND = " and ";
+	
+	
+	public static final String getOracleTermString(String s)
+	{
+		return "extract(day from " + s + ")*86400 + extract(hour from " + s
+		+ ")*3600 + extract(minute from " + s + ")*60 + extract(second from " + s
+		+ ")";
+	}
+	
+	/Constants related to Export functionality
 	public static final String SEARCH_RESULT = "SearchResult.csv";
 	public static final String ZIP_FILE_EXTENTION = ".zip";
 	public static final String CSV_FILE_EXTENTION = ".csv";
 	public static final String EXPORT_ZIP_NAME = "SearchResult.zip";
+	
 }
