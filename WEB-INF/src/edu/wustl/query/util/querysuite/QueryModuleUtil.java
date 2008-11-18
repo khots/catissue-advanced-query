@@ -99,7 +99,7 @@ final public class QueryModuleUtil
 	 * @return String having all columnnames for select part.
 	 */
 	public static Map<String, String> getColumnNamesForSelectpart(
-			List<QueryOutputTreeAttributeMetadata> attributes, QueryDetails queryDetailsObj,
+			OutputTreeDataNode root, QueryDetails queryDetailsObj,
 			QueryResultObjectDataBean queryResultObjectDataBean)
 	{
 		String columnNames = "";
@@ -111,17 +111,27 @@ final public class QueryModuleUtil
 		AttributeInterface attribute;
 		Vector<Integer> objectColumnIdsVector = new Vector<Integer>();
 		Vector<Integer> idvector = new Vector<Integer>();
+		List<QueryOutputTreeAttributeMetadata> attributes = root.getAttributes();
+		List<String> primaryKeyList = Utility.getPrimaryKey(root.getOutputEntity().getDynamicExtensionsEntity());
+
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
 			attribute = attributeMetaData.getAttribute();
 			columnName = attributeMetaData.getColumnName();
-			if (idColumnName != null && dspNameColName != null)
+//			if (idColumnName != null && dspNameColName != null)
+//			{
+//				break;
+//			}
+			if (primaryKeyList.contains(attribute.getName()))
 			{
-				break;
-			}
-			if (Constants.ID.equals(attribute.getName()))
-			{
-				idColumnName = columnName;
+				if(idColumnName==null)
+				{
+					idColumnName = columnName;
+				}
+				else
+				{
+					idColumnName = idColumnName + ',' + columnName;
+				}
 				if (queryResultObjectDataBean.isMainEntity())
 				{
 					queryResultObjectDataBean.setMainEntityIdentifierColumnId(0);
@@ -170,6 +180,7 @@ final public class QueryModuleUtil
 		Map<String, String> colNameIndexMap = new HashMap<String, String>();
 		colNameIndexMap.put(Constants.COLUMN_NAMES, columnNames);
 		colNameIndexMap.put(Constants.INDEX, index);
+		colNameIndexMap.put(Constants.ID_COLUMN_NAME, idColumnName);
 		return colNameIndexMap;
 	}
 
@@ -253,19 +264,25 @@ final public class QueryModuleUtil
 	 */
 	public static String getParentIdColumnName(OutputTreeDataNode node)
 	{
-		String getParenIdColName = null;
+		String getParenIdColName = "";
+		List<String> primaryKeyList = Utility.getPrimaryKey(node.getOutputEntity().getDynamicExtensionsEntity());
+		
 		if (node != null)
 		{
 			List<QueryOutputTreeAttributeMetadata> attributes = node.getAttributes();
 			for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 			{
 				AttributeInterface attribute = attributeMetaData.getAttribute();
-				if (Constants.ID.equals(attribute.getName()))
+				if (primaryKeyList.contains(attribute.getName()))
 				{
 					String sqlColumnName = attributeMetaData.getColumnName();
-					getParenIdColName = sqlColumnName;
+					getParenIdColName = getParenIdColName + "," +sqlColumnName;
 				}
 			}
+		}
+		if(getParenIdColName.charAt(0)==',')
+		{
+			getParenIdColName = getParenIdColName.substring(1,getParenIdColName.length());
 		}
 		return getParenIdColName;
 	}

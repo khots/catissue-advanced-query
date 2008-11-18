@@ -30,8 +30,6 @@ import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.ITerm;
-import edu.wustl.common.querysuite.queryobject.LogicalOperator;
-import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.Utility;
@@ -334,6 +332,7 @@ public class QueryOutputSpreadsheetBizLogic
 		Vector<Integer> objectDataColumnIds = new Vector<Integer>();
 		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAtrributeIndexMetadataMap = new HashMap<Integer, QueryOutputTreeAttributeMetadata>();
 		int columnIndex = 0;
+		List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(node.getOutputEntity().getDynamicExtensionsEntity());
 //		int totalFileTypeAttributes = 0;
 
 		List<QueryOutputTreeAttributeMetadata> attributes = node.getAttributes();
@@ -351,9 +350,11 @@ public class QueryOutputSpreadsheetBizLogic
 				queryResultObjectDataBean.setIdentifiedDataColumnIds(identifiedDataColumnIds);
 				queryResultObjectDataBean.setHasAssociatedIdentifiedData(true);
 			}
-			if (attribute.getName().equals(Constants.ID))
+			
+			//TODO primary key column
+			if (primaryKeyList.contains(attribute.getName()))
 			{
-				idColumnOfCurrentNode = sqlColumnName;
+				idColumnOfCurrentNode = idColumnOfCurrentNode+','+sqlColumnName;
 				if (!selectedColumnMetaData.isDefinedView())
 				{
 					if (queryResultObjectDataBean.isMainEntity())
@@ -365,6 +366,10 @@ public class QueryOutputSpreadsheetBizLogic
 						queryResultObjectDataBean.setEntityId(columnIndex);
 					}
 				}
+			}
+			if(idColumnOfCurrentNode.length()>0 && idColumnOfCurrentNode.charAt(0)==',')
+			{
+				idColumnOfCurrentNode = idColumnOfCurrentNode.substring(1,idColumnOfCurrentNode.length());
 			}
 			if (!attribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase("file"))
 
@@ -433,18 +438,8 @@ public class QueryOutputSpreadsheetBizLogic
 				}
 			}
 		}
-		selectSql = selectSql + " from " + tableName;
-		if (parentData != null)
-		{
-			selectSql = selectSql + " where (" + parentIdColumnName + " = '" + parentData + "' "
-					+ LogicalOperator.And + " " + idColumnOfCurrentNode + " "
-					+ RelationalOperator.getSQL(RelationalOperator.IsNotNull) + ")";
-		}
-		else
-		{
-			selectSql = selectSql + " where " + idColumnOfCurrentNode + " "
-					+ RelationalOperator.getSQL(RelationalOperator.IsNotNull);
-		}
+		selectSql = edu.wustl.query.util.global.Utility.getSQLForNode(parentData, tableName, parentIdColumnName, selectSql,
+				idColumnOfCurrentNode);
 		if (!selectedColumnMetaData.isDefinedView())
 		{
 			if (identifiedDataColumnIds.size() != 0)
@@ -469,9 +464,21 @@ public class QueryOutputSpreadsheetBizLogic
 	private String getIdColumnName(IExpression expression,
 			Map<AttributeInterface, String> attributeColumnNameMap)
 	{
-		AttributeInterface idAttribute = expression.getQueryEntity().getDynamicExtensionsEntity()
-				.getAttributeByName(Constants.ID);
-		String columnName = attributeColumnNameMap.get(idAttribute);
+		// TODO primary key column name
+		List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(expression.getQueryEntity().getDynamicExtensionsEntity());
+		Collection<AttributeInterface> attributeCollection = expression.getQueryEntity().getDynamicExtensionsEntity().getAttributeCollection();
+		String columnName = "";
+		for(AttributeInterface attribute : attributeCollection)
+		{
+			if(primaryKeyList.contains(attribute.getName()))
+			{
+				columnName = columnName + ',' + attributeColumnNameMap.get(attribute);
+			}
+		}
+		if(columnName.charAt(0)==',')
+		{
+			columnName = columnName.substring(1, columnName.length());
+		}
 		return columnName;
 	}
 
@@ -764,7 +771,8 @@ public class QueryOutputSpreadsheetBizLogic
 		int addedFileTypeAttributes = 0;
 		List<EntityInterface> defineViewNodeList = new ArrayList<EntityInterface>();
 		List<NameValueBean> selectedColumnNameValue = new ArrayList<NameValueBean>();
-
+		List<String> primaryKeyList;
+		
 		for (QueryOutputTreeAttributeMetadata metaData : selectedAttributeMetaDataList)
 		{
 			AttributeInterface attribute = metaData.getAttribute();
@@ -785,11 +793,13 @@ public class QueryOutputSpreadsheetBizLogic
 							.getTreeDataNode(), queryDetailsObj);
 					defineViewNodeList.add(attribute.getEntity());
 				}
-
-				if (attribute.getName().equalsIgnoreCase(Constants.ID))
+				// TODO primary key column name
+				primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(queryResultObjectDataBean.getEntity());
+				if (primaryKeyList.contains(attribute.getName()))
 				{
 					if (queryResultObjectDataBean.isMainEntity())
 					{
+						//TODO update queryResultObjectDataBean for setMainEntityIdentifierColumnId
 						queryResultObjectDataBean.setMainEntityIdentifierColumnId(columnIndex);
 					}
 					else
@@ -1080,6 +1090,8 @@ public class QueryOutputSpreadsheetBizLogic
 		List resultList = new ArrayList();
 		int columnIndex = 0;
 		int addedFileTypeAttributes = 0;
+		List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(node.getOutputEntity().getDynamicExtensionsEntity());
+		
 		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAtrributeIndexMetadataMap = new HashMap<Integer, QueryOutputTreeAttributeMetadata>();
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
@@ -1087,10 +1099,10 @@ public class QueryOutputSpreadsheetBizLogic
 			String className = attribute.getEntity().getName();
 			className = Utility.parseClassName(className);
 			String sqlColumnName = attributeMetaData.getColumnName();
-
-			if (attribute.getName().equalsIgnoreCase(Constants.ID))
+			// TODO primary key column name
+			if (primaryKeyList.contains(attribute.getName()))
 			{
-				idColumnOfCurrentNode = sqlColumnName;
+				idColumnOfCurrentNode = idColumnOfCurrentNode + ',' +sqlColumnName;
 				if (queryResultObjectDataBean.isMainEntity())
 				{
 					queryResultObjectDataBean.setMainEntityIdentifierColumnId(columnIndex);
@@ -1100,6 +1112,7 @@ public class QueryOutputSpreadsheetBizLogic
 					queryResultObjectDataBean.setEntityId(columnIndex);
 				}
 			}
+			
 			if (attribute.getIsIdentified() != null && attribute.getIsIdentified())
 			{
 				identifiedDataColumnIds.add(columnIndex);
@@ -1168,18 +1181,8 @@ public class QueryOutputSpreadsheetBizLogic
 				queryResultObjectDataBean.setMainEntityIdentifierColumnId(-1);
 			}
 		}
-		selectSql = selectSql + " from " + tableName;
-		if (parentData != null)
-		{
-			selectSql = selectSql + " where (" + parentIdColumnName + " = '" + parentData + "' "
-					+ LogicalOperator.And + " " + idColumnOfCurrentNode + " "
-					+ RelationalOperator.getSQL(RelationalOperator.IsNotNull) + ")";
-		}
-		else
-		{
-			selectSql = selectSql + " where " + idColumnOfCurrentNode + " "
-					+ RelationalOperator.getSQL(RelationalOperator.IsNotNull);
-		}
+		selectSql = edu.wustl.query.util.global.Utility.getSQLForNode(parentData, tableName, parentIdColumnName, selectSql,
+				idColumnOfCurrentNode);
 		//return selectSql;
 		if (identifiedDataColumnIds.size() != 0)
 		{

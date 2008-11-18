@@ -4,11 +4,13 @@ package edu.wustl.query.util.querysuite;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.dao.QuerySessionData;
+import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
@@ -93,22 +95,26 @@ final public class QueryModuleSqlUtil
 	{
 		//		Map<String,String> columnNameIndexMap = getColumnNamesForSelectpart(root,queryResulObjectDataMap,uniqueIdNodesMap2);
 		String columnNames = columnNameIndexMap.get(Constants.COLUMN_NAMES);
+		StringBuffer selectSql = new StringBuffer();
+		selectSql.append("select distinct ").append(columnNames).append(" from ").append(tableName)
+				.append(" where ");
 		String indexStr = columnNameIndexMap.get(Constants.INDEX);
+		
 		int index = -1;
 		if (indexStr != null && !Constants.NULL.equals(indexStr))
 		{
 			index = Integer.valueOf(indexStr);
 		}
-		String idColumnName = columnNames;
-		if (columnNames.indexOf(',') != -1)
+		String idColumnName = columnNameIndexMap.get(Constants.ID_COLUMN_NAME);
+		StringTokenizer stringTokenizer = new StringTokenizer(idColumnName,",");
+		while(stringTokenizer.hasMoreElements())
 		{
-			idColumnName = columnNames.substring(0, columnNames.indexOf(','));
+			selectSql.append(" "+stringTokenizer.nextElement()).append(" is not null "+LogicalOperator.And);
 		}
-		//		String selectSql = "select distinct " + columnNames + " from " + tableName + " where "
-		//				+ idColumnName + " is not null";
-		StringBuffer selectSql = new StringBuffer();
-		selectSql.append("select distinct ").append(columnNames).append(" from ").append(tableName)
-				.append(" where ").append(idColumnName).append(" is not null");
+		if(selectSql.substring(selectSql.length()-3).equals(LogicalOperator.And.toString()))
+		{
+			selectSql = new StringBuffer(selectSql.substring(0,selectSql.length()-3));
+		}
 		selectSql = selectSql.append(Constants.NODE_SEPARATOR).append(index);
 		//selectSql = selectSql + Constants.NODE_SEPARATOR + index;
 		return selectSql.toString();

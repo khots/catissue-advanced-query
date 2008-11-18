@@ -255,5 +255,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String ZIP_FILE_EXTENTION = ".zip";
 	public static final String CSV_FILE_EXTENTION = ".csv";
 	public static final String EXPORT_ZIP_NAME = "SearchResult.zip";
+	public static final String PRIMARY_KEY_TAG_NAME = "PRIMARY_KEY";
+	public static final String ID_COLUMN_NAME = "ID_COLUMN_NAME";
+	public static final String PRIMARY_KEY_ATTRIBUTE_SEPARATOR = "!~!~!";
 	
 }

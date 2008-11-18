@@ -4,6 +4,7 @@ package edu.wustl.query.util.global;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -12,17 +13,20 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
-import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
-import edu.wustl.query.util.global.Constants;
 import edu.wustl.common.beans.QueryResultObjectData;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.QueryBizLogic;
 import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.dao.queryExecutor.PagenatedResultData;
+import edu.wustl.common.querysuite.queryobject.LogicalOperator;
+import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
 
 public class Utility extends edu.wustl.common.util.Utility
 {
@@ -244,36 +248,46 @@ public class Utility extends edu.wustl.common.util.Utility
 		// for '
 		return tooltip;
 	}
-	
+
 	public static List getPaginationDataList(HttpServletRequest request,
 			SessionDataBean sessionData, int recordsPerPage, int pageNum,
-			QuerySessionData querySessionData) throws DAOException {
+			QuerySessionData querySessionData) throws DAOException
+	{
 		List paginationDataList;
 		querySessionData.setRecordsPerPage(recordsPerPage);
 		int startIndex = recordsPerPage * (pageNum - 1);
 		QueryBizLogic qBizLogic = new QueryBizLogic();
-		PagenatedResultData pagenatedResultData = qBizLogic.execute(
-				sessionData, querySessionData, startIndex);
+		PagenatedResultData pagenatedResultData = qBizLogic.execute(sessionData, querySessionData,
+				startIndex);
 		paginationDataList = pagenatedResultData.getResult();
-		String isSimpleSearch = (String)request.getSession().getAttribute(edu.wustl.common.util.global.Constants.IS_SIMPLE_SEARCH);
+		String isSimpleSearch = (String) request.getSession().getAttribute(
+				edu.wustl.common.util.global.Constants.IS_SIMPLE_SEARCH);
 		if (isSimpleSearch == null || (!isSimpleSearch.equalsIgnoreCase(Constants.TRUE)))
 		{
-			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap = querySessionData.getQueryResultObjectDataMap();
-			if(queryResultObjectDataBeanMap!=null)
-			{	
-				for (Iterator<Long> beanMapIterator = queryResultObjectDataBeanMap.keySet().iterator() ; beanMapIterator.hasNext() ; )
+			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap = querySessionData
+					.getQueryResultObjectDataMap();
+			if (queryResultObjectDataBeanMap != null)
+			{
+				for (Iterator<Long> beanMapIterator = queryResultObjectDataBeanMap.keySet()
+						.iterator(); beanMapIterator.hasNext();)
 				{
 					Long id = beanMapIterator.next();
 					QueryResultObjectDataBean bean = queryResultObjectDataBeanMap.get(id);
 					if (bean.isClobeType())
 					{
-						List<String> columnsList = (List<String>)request.getSession().getAttribute(Constants.SPREADSHEET_COLUMN_LIST);
+						List<String> columnsList = (List<String>) request.getSession()
+								.getAttribute(Constants.SPREADSHEET_COLUMN_LIST);
 						QueryOutputSpreadsheetBizLogic queryBizLogic = new QueryOutputSpreadsheetBizLogic();
-						Map<Integer, Integer> fileTypeIndexMainEntityIndexMap = queryBizLogic.updateSpreadSheetColumnList(columnsList, queryResultObjectDataBeanMap);
+						Map<Integer, Integer> fileTypeIndexMainEntityIndexMap = queryBizLogic
+								.updateSpreadSheetColumnList(columnsList,
+										queryResultObjectDataBeanMap);
 						//	QueryOutputSpreadsheetBizLogic.updateDataList(paginationDataList, fileTypeIndexMainEntityIndexMap);
-						Map exportMetataDataMap = QueryOutputSpreadsheetBizLogic.updateDataList(paginationDataList, fileTypeIndexMainEntityIndexMap);
-						request.getSession().setAttribute(Constants.ENTITY_IDS_MAP,exportMetataDataMap.get(Constants.ENTITY_IDS_MAP));
-						request.getSession().setAttribute(Constants.EXPORT_DATA_LIST,exportMetataDataMap.get(Constants.EXPORT_DATA_LIST));
+						Map exportMetataDataMap = QueryOutputSpreadsheetBizLogic.updateDataList(
+								paginationDataList, fileTypeIndexMainEntityIndexMap);
+						request.getSession().setAttribute(Constants.ENTITY_IDS_MAP,
+								exportMetataDataMap.get(Constants.ENTITY_IDS_MAP));
+						request.getSession().setAttribute(Constants.EXPORT_DATA_LIST,
+								exportMetataDataMap.get(Constants.EXPORT_DATA_LIST));
 						break;
 					}
 				}
@@ -282,5 +296,68 @@ public class Utility extends edu.wustl.common.util.Utility
 		return paginationDataList;
 	}
 
+	/**
+	 * @param entity entity for which Primary Key list is required
+	 * @return List<String> primary key list
+	 */
+	public static List<String> getPrimaryKey(EntityInterface entity)
+	{
+		Collection<TaggedValueInterface> taggedValueCollection = entity.getTaggedValueCollection();
+		List<String> primaryKeyList = new ArrayList<String>();
+		for (TaggedValueInterface tag : taggedValueCollection)
+		{
+			if (Constants.PRIMARY_KEY_TAG_NAME.equals(tag.getKey()))
+			{
+				StringTokenizer stringTokenizer = new StringTokenizer(tag.getValue(), ",");
+				for (int i = 0; stringTokenizer.hasMoreTokens(); i++)
+				{
+					primaryKeyList.add(stringTokenizer.nextToken());
+				}
+			}
+		}
+		return primaryKeyList;
+	}
+
+	/**
+	 * Method to generate SQL for Node
+	 * @param parentNodeId parent node id which contains data
+	 * @param tableName temporary table name
+	 * @param parentIdColumnName parent node ID column names (, separated)
+	 * @param selectSql SQL 
+	 * @param idColumnOfCurrentNode id column name (, separated) of current node
+	 * @return SQL for current node
+	 */
+	public static String getSQLForNode(String parentNodeId, String tableName,
+			String parentIdColumnName, String selectSql, String idColumnOfCurrentNode)
+	{
+		selectSql = selectSql + Constants.FROM + tableName;
+		if (parentNodeId != null)
+		{
+			selectSql = selectSql + Constants.WHERE + " (";
+			StringTokenizer stringTokenizerParentID = new StringTokenizer(parentIdColumnName, ",");
+			StringTokenizer stringTokenizerParentNodeID = new StringTokenizer(parentNodeId,
+					Constants.PRIMARY_KEY_ATTRIBUTE_SEPARATOR);
+			while (stringTokenizerParentID.hasMoreElements())
+			{
+				selectSql = selectSql + stringTokenizerParentID.nextElement() + " = '"
+						+ stringTokenizerParentNodeID.nextElement() + "' " + LogicalOperator.And
+						+ " ";
+			}
+			StringTokenizer stringTokenizerIDofCurrentNode = new StringTokenizer(
+					idColumnOfCurrentNode, ",");
+			while (stringTokenizerIDofCurrentNode.hasMoreElements())
+			{
+				selectSql = selectSql + " " + stringTokenizerIDofCurrentNode.nextElement() + " "
+						+ RelationalOperator.getSQL(RelationalOperator.IsNotNull) + " "
+						+ LogicalOperator.And;
+			}
+			if (selectSql.substring(selectSql.length() - 3).equals(LogicalOperator.And.toString()))
+			{
+				selectSql = selectSql.substring(0, selectSql.length() - 3);
+			}
+			selectSql = selectSql + ")";
+		}
+		return selectSql;
+	}
 
 }
