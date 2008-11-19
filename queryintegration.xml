@@ -42,7 +42,8 @@
 		<echo message="Integrating Advance Query Application ...." />
 		<echo message="Unzip of Advance Query Module done" />
 		<!-- Inject db specific information to configuration files -->
-		<if>
+		<echo message="datatype : ${database.type}" />
+		<if>			
 			<equals arg1="mysql" arg2="${database.type}" />
 			<then>				
 				<antcall target="aq_mysql_config" />
@@ -53,6 +54,13 @@
 					<echo message="${database.type}" />
 					<antcall target="aq_oracle_config" />
 				</then>
+			</elseif>
+			<elseif>
+				<equals arg1="db2" arg2="${database.type}" />
+					<then>
+						<echo message="${database.type}" />
+						<antcall target="aq_db2_config" />
+					</then>
 			</elseif>
 			<else>
 				<echo
@@ -179,7 +187,20 @@
 			<replacefilter token="@@dataSource@@" value="${datasource}" />
 		</replace>
 	</target>
-	
+					
+	<!-- Modify Advance Query configuration For ORACLE -->
+	<target name="aq_db2_config">
+		<replace file="QueryHibernate.cfg.xml">
+			<replacefilter token="${mysql.dialect.string}" value="${db2.dialect.string}" />
+			<replacefilter token="@@dataSource@@" value="${datasource}" />
+		</replace>
+
+		<!-- Modifying the data source for DynamicExtensionsHibernate.cfg.xml-->
+		<replace file="DynamicExtensionsHibernate.cfg.xml">
+			<replacefilter token="${mysql.dialect.string}" value="${db2.dialect.string}" />
+			<replacefilter token="@@dataSource@@" value="${datasource}" />
+		</replace>
+	</target>
 
 	<target name="aq_deploy_db">
 		<!-- Deploying Advance Query db -->
@@ -188,6 +209,7 @@
 			<property name="database.host" value="${database.host}" />
 			<property name="database.port" value="${database.port}" />
 			<property name="database.name" value="${database.name}" />
+			<property name="database.username" value="${database.username}" />
 			<property name="database.password" value="${database.password}" />
 		</ant>
 	</target>
