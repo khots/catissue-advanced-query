@@ -200,7 +200,7 @@
 			advancedSearchHeaderTd.style.borderBottom = "1px solid #000000";
             imageContainer.style.borderBottom = "1px solid #000000";
 			dataObj.style.display = 'none';				
-			switchObj.innerHTML = '<img src="images/nolines_plus.gif" border="0" hspace="3" vspace="3"/>';
+			switchObj.innerHTML = '<img src="images/advancequery/nolines_plus.gif" border="0" hspace="3" vspace="3"/>';
 			if(navigator.appName == "Microsoft Internet Explorer")
 			{					
 				resultSetDivObj.height = "530";
@@ -231,7 +231,7 @@
 				resultSetDivObj.height = "420";
 			}
 			resultSetDiv.style.height = "420"+'px'
-			switchObj.innerHTML = '<img src="images/nolines_minus.gif" border="0" hspace="3" vspace="3"/>';
+			switchObj.innerHTML = '<img src="images/advancequery/nolines_minus.gif" border="0" hspace="3" vspace="3"/>';
 		}
 	}
 	
