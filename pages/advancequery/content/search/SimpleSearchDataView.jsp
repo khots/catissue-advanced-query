@@ -116,25 +116,25 @@ tr#hiddenCombo
 			}
 		}
 		
-		//function onExport()
-		//{
-			//var isChecked = updateHiddenFields();
-			  //var pageNum = "<%=pageNum%>";
-			//var chkBox = document.getElementById('checkAll');
-			//var isCheckAllAcrossAllChecked = chkBox.checked;
-		    //if(isChecked == "true")
-		    //{
-				//var action = "SpreadsheetExport.do?pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked ;
-				//document.forms[0].operation.value="export";
-				//document.forms[0].action = action;
-				//document.forms[0].target = "_blank";
-				//document.forms[0].submit();
-			//}
-			//else
-			//{
-				//alert("Please select at least one checkbox");
-			//}
-		//}
+		function onExport()
+		{
+			var isChecked = updateHiddenFields();
+			  var pageNum = "<%=pageNum%>";
+			var chkBox = document.getElementById('checkAll');
+			var isCheckAllAcrossAllChecked = chkBox.checked;
+		    if(isChecked == "true")
+		    {
+				var action = "SpreadsheetExport.do?pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked ;
+				document.forms[0].operation.value="export";
+				document.forms[0].action = action;
+				document.forms[0].target = "_blank";
+				document.forms[0].submit();
+			}
+			else
+			{
+				alert("Please select at least one checkbox");
+			}
+		}
 		//function that is called on click of Define View button for the configuration of search results
 		function onSimpleConfigure()
 		{
