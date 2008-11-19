@@ -96,6 +96,14 @@ public abstract class QueryGenerator implements IQueryGenerator
 	 * List of Roots of the output tree node.
 	 */
 	protected List<OutputTreeDataNode> rootOutputTreeNodeList;
+	
+	// Variables required for output tree.
+	/**
+	 * List of Roots of the output tree node.
+	 */
+	protected List<OutputTreeDataNode> attributeOutputTreeNodeList;
+	
+
 
 	/**
 	 * This map is used in output tree creation logic. It is map of alias
@@ -116,6 +124,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	 */
 	// List<Map<Long, Map<AttributeInterface, String>>> columnMapList;
 	private int treeNo; // this count represents number of output trees formed.
+	private int allExpressionTreeNo;
 	protected Map<AttributeInterface, String> attributeColumnNameMap = new HashMap<AttributeInterface, String>();
 	protected boolean containsCLOBTypeColumn = false;
 
@@ -709,21 +718,30 @@ public abstract class QueryGenerator implements IQueryGenerator
 				childNode = outputTreeNodeMap.get(childAliasAppender);
 				if (childNode == null)
 				{
-					if (parentOutputTreeNode == null)
-					{
+//					if (parentOutputTreeNode == null)
+//					{
 						// New root node for output tree found, so create root
 						// node & add it in the rootOutputTreeNodeList.
 						childNode = new OutputTreeDataNode(childOutputEntity, childExp
 								.getExpressionId(), treeNo++);
 						rootOutputTreeNodeList.add(childNode);
-					}
-					else
-					{
-						childNode = parentOutputTreeNode.addChild(childOutputEntity, childExp
-								.getExpressionId());
-					}
+//					}
+//					else
+//					{
+//						childNode = parentOutputTreeNode.addChild(childOutputEntity, childExp
+//								.getExpressionId());
+//					}
 					outputTreeNodeMap.put(childAliasAppender, childNode);
+					attributeOutputTreeNodeList.add(childNode);
+					
 				}
+			}
+			else
+			{
+				IOutputEntity childOutputEntity = getOutputEntity(childExp);
+				childNode = new OutputTreeDataNode(childOutputEntity, childExp
+						.getExpressionId(), allExpressionTreeNo++);
+				attributeOutputTreeNodeList.add(childNode);
 			}
 			completeTree(childExp, childNode);
 		}
@@ -780,9 +798,11 @@ public abstract class QueryGenerator implements IQueryGenerator
 	{
 		IExpression rootExpression = joinGraph.getRoot();
 		rootOutputTreeNodeList = new ArrayList<OutputTreeDataNode>();
+		attributeOutputTreeNodeList = new ArrayList<OutputTreeDataNode>();
 		outputTreeNodeMap = new HashMap<Integer, OutputTreeDataNode>();
 		OutputTreeDataNode rootOutputTreeNode = null;
 		treeNo = 0;
+		allExpressionTreeNo = 0;
 		if (rootExpression.isInView())
 		{
 			IOutputEntity rootOutputEntity = getOutputEntity(rootExpression);
@@ -790,6 +810,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 					.getExpressionId(), treeNo++);
 
 			rootOutputTreeNodeList.add(rootOutputTreeNode);
+			attributeOutputTreeNodeList.add(rootOutputTreeNode);
 			outputTreeNodeMap.put(aliasAppenderMap.get(rootExpression), rootOutputTreeNode);
 		}
 		completeTree(rootExpression, rootOutputTreeNode);
