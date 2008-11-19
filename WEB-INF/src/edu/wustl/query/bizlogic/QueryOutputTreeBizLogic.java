@@ -39,14 +39,24 @@ public class QueryOutputTreeBizLogic
 	 * @param String tableName 
 	 * @throws Exception Exception
 	 */
+	//Siddharth Shah
+//	public void createOutputTreeTable(String selectSql, QueryDetails queryDetailsObj)
+//			throws DAOException
+//	{
+//		String tableName = Constants.TEMP_OUPUT_TREE_TABLE_NAME
+//				+ queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
+//		String createTableSql = Constants.CREATE_TABLE + tableName + " " + Constants.AS + " "
+//				+ selectSql;
+//		QueryModuleSqlUtil.executeCreateTable(tableName, createTableSql, queryDetailsObj);
+//	}
+	
 	public void createOutputTreeTable(String selectSql, QueryDetails queryDetailsObj)
-			throws DAOException
+	throws DAOException
+	
 	{
 		String tableName = Constants.TEMP_OUPUT_TREE_TABLE_NAME
-				+ queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
-		String createTableSql = Constants.CREATE_TABLE + tableName + " " + Constants.AS + " "
-				+ selectSql;
-		QueryModuleSqlUtil.executeCreateTable(tableName, createTableSql, queryDetailsObj);
+		+ queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
+		QueryModuleSqlUtil.executeCreateTable(tableName, selectSql, queryDetailsObj);	
 	}
 
 	/**
