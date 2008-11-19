@@ -9,6 +9,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	//Shopping cart related
 	public static final String QUERY_SHOPPING_CART = "queryShoppingCart";
 	public static final String CHECK_ALL_ACROSS_ALL_PAGES = "isCheckAllAcrossAllChecked";
+	public static final String CHECK_ALL_PAGES = "checkAllPages";
 	public static final String SELECTED_COLUMN_META_DATA = "selectedColumnMetaData";
 	public static final String DELETE = "delete";
 
@@ -40,6 +41,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String CONTAINTMENT_ASSOCIATION = "CONTAINTMENT";
 	public static final String MAIN_ENTITY_MAP = "mainEntityMap";
 
+	public static final String SPECIMENT_VIEW_ATTRIBUTE = "defaultViewAttribute";
 	public static final String PAGEOF_SPECIMEN_COLLECTION_REQUIREMENT_GROUP = "pageOfSpecimenCollectionRequirementGroup";
 	public static final String NO_MAIN_OBJECT_IN_QUERY = "noMainObjectInQuery";
 	public static final String QUERY_ALREADY_DELETED = "queryAlreadyDeleted";
@@ -242,6 +244,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String QUERY_XMLDATA = "XMLDATA";
 	public static final String QUERY_AND = " and ";
 	
+	public static final String TRUE = "true";
+	public static final String Is_PAGING = "isPaging";
 	
 	public static final String getOracleTermString(String s)
 	{
@@ -249,7 +253,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 		+ ")*3600 + extract(minute from " + s + ")*60 + extract(second from " + s
 		+ ")";
 	}
-	
+	     
 	//Constants related to Export functionality
 	public static final String SEARCH_RESULT = "SearchResult.csv";
 	public static final String ZIP_FILE_EXTENTION = ".zip";
