@@ -9,7 +9,7 @@ PUBLIC
 	<form-beans>
 		<!--Query-->		
 		<form-bean name="categorySearchForm" type="edu.wustl.query.actionForm.CategorySearchForm"/>
-		<!--<form-bean name="advanceSearchForm" type="edu.wustl.query.actionForm.AdvanceSearchForm"/> --> 
+		<form-bean name="advanceSearchForm" type="edu.wustl.query.actionForm.AdvanceSearchForm"/>  
 		<form-bean name="saveQueryForm" type="edu.wustl.query.actionForm.SaveQueryForm"/>
 				
 	</form-beans>
@@ -393,7 +393,19 @@ PUBLIC
             <forward name="success"  path="/RetrieveQueryAction.do" />
         </action>   
 	   					
-
+         <action path="/SpreadsheetExport"
+			type="edu.wustl.query.action.SpreadsheetExportAction"
+			name="advanceSearchForm"
+			validate="false"
+			scope="request">
+		</action>
+       <!--Added By Rinku to change num of records per page -->
+         <action path="/SpreadsheetView"
+           type="edu.wustl.query.action.SpreadsheetViewAction"
+	       scope="request">
+	      <forward name="pageOfQueryResults" path=".query.queryResultsSpreadsheetViewDef" />	
+		  <forward name="pageOfQueryModule" path=".query.queryResultsSpreadsheetViewDef" />
+	    </action>
 	</action-mappings>
 	
 	<controller processorClass="edu.wustl.common.struts.ApplicationRequestProcessor" />
