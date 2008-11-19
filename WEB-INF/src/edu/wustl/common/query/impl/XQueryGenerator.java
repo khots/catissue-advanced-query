@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import com.sun.msv.grammar.xmlschema.XPath;
+
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
@@ -23,14 +25,19 @@ import edu.common.dynamicextensions.entitymanager.DataTypeFactory;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.wustl.common.query.Operator;
+import edu.wustl.common.query.Query;
 import edu.wustl.common.query.exeptions.SQLXMLException;
 import edu.wustl.common.query.queryobject.util.QueryObjectProcessor;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.metadata.associations.IAssociation;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
+import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.querysuite.queryobject.LogicalOperator;
+import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.util.global.Constants;
@@ -73,7 +80,7 @@ public class XQueryGenerator extends QueryGenerator
 	public String generateQuery(IQuery query) throws MultipleRootsException, SqlException
 	{
 		StringBuilder formedQuery = new StringBuilder();
-		
+
 		try
 		{
 			IQuery queryClone = new DyExtnObjectCloner().clone(query);
@@ -343,37 +350,32 @@ public class XQueryGenerator extends QueryGenerator
 
 			xqueryForClause.append(getForTree(mainExpression, mainVariable));
 		}
-			
-			removeLastComma(xqueryForClause);
-			return xqueryForClause.toString();
+
+		removeLastComma(xqueryForClause);
+		return xqueryForClause.toString();
 	}
-		
-	
 
-			/*
-			//for repeated for's
-			for (IExpression expressions : constraints)
+	/*
+	//for repeated for's
+	for (IExpression expressions : constraints)
+	{
+		EntityInterface entity = expressions.getQueryEntity().getDynamicExtensionsEntity();
+		List<AssociationInterface> associationList = QueryCSMUtil
+				.getIncomingContainmentAssociations(entity);
+		if (!associationList.isEmpty())
+		{
+			for (AssociationInterface associations : associationList)
 			{
-				EntityInterface entity = expressions.getQueryEntity().getDynamicExtensionsEntity();
-				List<AssociationInterface> associationList = QueryCSMUtil
-						.getIncomingContainmentAssociations(entity);
-				if (!associationList.isEmpty())
+				int i = associations.getTargetRole().getMaximumCardinality().getValue();
+				if (i > 1)
 				{
-					for (AssociationInterface associations : associationList)
-					{
-						int i = associations.getTargetRole().getMaximumCardinality().getValue();
-						if (i > 1)
-						{
-							XPath = getAppropriatePath(entity, XPath, EntityList, actualPath);
-							xmlGetForQueryPart.append("$" + associations.getTargetEntity().getName()
-									+ " in " + XPath + "/" + associations.getTargetEntity().getName());
-						}
-					}
-					//xmlGetForQueryPart.append("$" + 
-				}*/
-
-			
-	
+					XPath = getAppropriatePath(entity, XPath, EntityList, actualPath);
+					xmlGetForQueryPart.append("$" + associations.getTargetEntity().getName()
+							+ " in " + XPath + "/" + associations.getTargetEntity().getName());
+				}
+			}
+			//xmlGetForQueryPart.append("$" + 
+		}*/
 
 	private String buildXQueryLetClause()
 	{
@@ -392,8 +394,8 @@ public class XQueryGenerator extends QueryGenerator
 				String attributeVariable = attributeAliases.get(attribute);
 
 				String statement = new StringBuilder().append(Constants.QUERY_DOLLAR).append(
-						attributeVariable).append(" := ").append(path).append('/').append(attribute.getName())
-						.append(Constants.QUERY_COMMA).toString();
+						attributeVariable).append(" := ").append(path).append('/').append(
+						attribute.getName()).append(Constants.QUERY_COMMA).toString();
 				xqueryLetClause.append(statement);
 			}
 
@@ -415,7 +417,6 @@ public class XQueryGenerator extends QueryGenerator
 
 	}
 
-	
 	private String buildXQueryReturnClause()
 	{
 		StringBuilder xqueryReturnClause = new StringBuilder(128);
@@ -532,8 +533,8 @@ public class XQueryGenerator extends QueryGenerator
 				continue;
 			}
 
-			String childEntityName = deCapitalize(childExpression.getQueryEntity().getDynamicExtensionsEntity()
-					.getName());
+			String childEntityName = deCapitalize(childExpression.getQueryEntity()
+					.getDynamicExtensionsEntity().getName());
 
 			IAssociation association = joinGraph.getAssociation(expression, childExpression);
 
@@ -565,49 +566,45 @@ public class XQueryGenerator extends QueryGenerator
 		}
 
 		return forTree.toString();
-		
+
 	}
 
-		/*
-		 StringBuilder forTree = new StringBuilder();
-		EntityInterface parentEntity = null;
+	/*
+	 StringBuilder forTree = new StringBuilder();
+	EntityInterface parentEntity = null;
 
-		List<AssociationInterface> associationList = QueryCSMUtil
-				.getIncomingContainmentAssociations(entity);
-		if (!associationList.isEmpty())
+	List<AssociationInterface> associationList = QueryCSMUtil
+			.getIncomingContainmentAssociations(entity);
+	if (!associationList.isEmpty())
+	{
+		for (AssociationInterface association : associationList)
 		{
-			for (AssociationInterface association : associationList)
-			{
-				parentEntity = association.getEntity();
-				forTree.append(Constants.QUERY_FOR).append(Constants.QUERY_DOLLAR);
-				forTree.append(entityName);
-				forTree.append(Constants.IN).append(Constants.QUERY_DOLLAR);
-				forTree.append(parentEntity.getName());
-				forTree.append("/");
-				forTree.append(entityName);
-				forTree.insert(0, getForTree(parentEntity, rootVariable));
+			parentEntity = association.getEntity();
+			forTree.append(Constants.QUERY_FOR).append(Constants.QUERY_DOLLAR);
+			forTree.append(entityName);
+			forTree.append(Constants.IN).append(Constants.QUERY_DOLLAR);
+			forTree.append(parentEntity.getName());
+			forTree.append("/");
+			forTree.append(entityName);
+			forTree.insert(0, getForTree(parentEntity, rootVariable));
 
-			}
 		}
-		else
-		{
-			forTree.append(Constants.QUERY_FOR).append(Constants.QUERY_DOLLAR).append(entityName)
-					.append(Constants.IN).append(rootVariable).append("/").append(entityName);
-		}
+	}
+	else
+	{
+		forTree.append(Constants.QUERY_FOR).append(Constants.QUERY_DOLLAR).append(entityName)
+				.append(Constants.IN).append(rootVariable).append("/").append(entityName);
+	}
 
-		return forTree.toString();*/
+	return forTree.toString();*/
 
-	
-
-	
 	private String deCapitalize(String name)
 	{
 		StringBuilder builder = new StringBuilder(name);
-		String firstLetter = name.substring(0 ,1).toLowerCase();
+		String firstLetter = name.substring(0, 1).toLowerCase();
 		builder.replace(0, 1, firstLetter);
 		return builder.toString();
 	}
-	
 
 	private String getApplicationConditions() throws SQLXMLException
 	{
@@ -717,7 +714,6 @@ public class XQueryGenerator extends QueryGenerator
 		return actualValue.toString();
 	}
 
-	
 	private void setMainExpressions()
 	{
 		mainExpressions = new HashSet<IExpression>();
@@ -851,6 +847,106 @@ public class XQueryGenerator extends QueryGenerator
 	protected boolean shouldAddNodeFor(IExpression expression)
 	{
 		return super.shouldAddNodeFor(expression) && mainExpressions.contains(expression);
+	}
+
+	protected String processBetweenOperator(ICondition condition, String attributeName)
+			throws SqlException
+	{
+		StringBuilder builder = new StringBuilder("");
+		List<String> values = condition.getValues();
+
+		if (values.size() != 2)
+		{
+			throw new SqlException("Incorrect number of operand for Between oparator in condition:"
+					+ condition);
+		}
+
+		AttributeTypeInformationInterface dataType = condition.getAttribute()
+				.getAttributeTypeInformation();
+
+		if (!(dataType instanceof DateTypeInformationInterface
+				|| dataType instanceof IntegerTypeInformationInterface
+				|| dataType instanceof LongTypeInformationInterface || dataType instanceof DoubleTypeInformationInterface))
+		{
+			throw new SqlException(
+					"Incorrect Data type of operand for Between oparator in condition:" + condition);
+		}
+
+		String firstValue = modifyValueForDataType(values.get(0), dataType);
+		String secondValue = modifyValueForDataType(values.get(1), dataType);
+
+		builder.append(attributeName);
+		builder.append("[." + RelationalOperator.getSQL(RelationalOperator.GreaterThanOrEquals)
+				+ firstValue);
+
+		builder.append(" " + LogicalOperator.And + "."
+				+ RelationalOperator.getSQL(RelationalOperator.LessThanOrEquals) + secondValue
+				+ "])");
+
+		return builder.toString();
+
+	}
+
+	protected String processInOperator(ICondition condition, String attributeName)
+			throws SqlException
+	{
+		StringBuilder builder = new StringBuilder(attributeName).append(' ').append(Constants.Equals).append(' ');
+		builder.append(Constants.QUERY_OPENING_PARENTHESIS);
+		
+		for(String value :condition.getValues())
+		{
+			builder.append(value).append(Constants.QUERY_COMMA);
+		}
+		
+		removeLastComma(builder);
+		builder.append(Constants.QUERY_CLOSING_PARENTHESIS);
+		
+		return builder.toString();
+
+	}
+
+	protected String processNullCheckOperators(ICondition condition, String attributeName)
+			throws SqlException
+	{
+		String operator = condition.getRelationalOperator().getStringRepresentation();
+		String newOperator = null;
+		
+		if (operator.equalsIgnoreCase("Is Not Null") || operator.equalsIgnoreCase("IsNotNull"))
+        {
+              newOperator = "string(" + attributeName + ") != \"\"";
+        }
+        else if (operator.equalsIgnoreCase("is Null") || operator.equalsIgnoreCase("isNull"))
+        {
+              newOperator = "string(" + attributeName + ") = \"\"";
+        }
+		
+		return newOperator;
+	}
+	
+	
+
+	protected String processLikeOperators(ICondition condition, String attributeName)
+			throws SqlException
+	{
+		String operator = condition.getRelationalOperator().getStringRepresentation();
+		String newOperator = null;
+		String value = condition.getValue();
+		
+		if (operator.equalsIgnoreCase("Contains"))
+        {
+              newOperator = "contains(string(" + attributeName + ")," + value + ")";
+        }
+		else if (operator.equalsIgnoreCase("Starts With") || operator.equalsIgnoreCase("StartsWith"))
+        {
+              newOperator = "starts-with(string(" + attributeName + ")," + value + ")";
+        }
+        else if (operator.equalsIgnoreCase("Ends With") || operator.equalsIgnoreCase("EndsWith"))
+        {
+              newOperator = "ends-with(string(" + attributeName + ")," + value + ")";
+        }
+		
+		return newOperator;
+
 	}
 
 }

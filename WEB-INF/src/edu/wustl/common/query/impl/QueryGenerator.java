@@ -323,7 +323,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 						int newNestingNumber = newConnector.getNestingNumber();
 						currentNestingCounter = attachOperandquery(buffer, currentNestingCounter,
 								operandquery, newNestingNumber);
-						buffer.append(" " + newConnector.getOperator());
+						buffer.append(" " + newConnector.getOperator().toString().toLowerCase());
 					}
 					i = nextIndex - 1;
 				}
@@ -331,7 +331,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 				{
 					currentNestingCounter = attachOperandquery(buffer, currentNestingCounter,
 							operandquery, nestingNumber);
-					buffer.append(" " + connector.getOperator());
+					buffer.append(" " + connector.getOperator().toString().toLowerCase());
 				}
 			}
 			else
@@ -974,7 +974,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	* @throws SqlException when: 1. value list contains more/less than 1 value.
 	*             2. other than = ,!= operator present for String data type.
 	*/
-	private String processComparisionOperator(ICondition condition, String attributeName)
+	protected String processComparisionOperator(ICondition condition, String attributeName)
 			throws SqlException
 	{
 		AttributeTypeInformationInterface dataType = condition.getAttribute()
@@ -1021,7 +1021,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	* @throws SqlException when 1. The datatype of attribute is not String. 2.
 	*             The value list empty or more than 1 value.
 	*/
-	private String processLikeOperators(ICondition condition, String attributeName)
+	protected String processLikeOperators(ICondition condition, String attributeName)
 			throws SqlException
 	{
 		RelationalOperator operator = condition.getRelationalOperator();
@@ -1072,7 +1072,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	* @return SQL representation for given condition.
 	* @throws SqlException when the value list is not empty.
 	*/
-	private String processNullCheckOperators(ICondition condition, String attributeName)
+	protected String processNullCheckOperators(ICondition condition, String attributeName)
 			throws SqlException
 	{
 		String operatorStr = RelationalOperator.getSQL(condition.getRelationalOperator());
@@ -1095,7 +1095,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	* @throws SqlException when the value list is empty or problem in parsing
 	*             any of the value.
 	*/
-	private String processInOperator(ICondition condition, String attributeName)
+	protected String processInOperator(ICondition condition, String attributeName)
 			throws SqlException
 	{
 		StringBuffer buffer = new StringBuffer();
@@ -1144,7 +1144,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	* @throws SqlException when: 1. value list does not have 2 values 2.
 	*             Datatype is not date 3. problem in parsing date.
 	*/
-	private String processBetweenOperator(ICondition condition, String attributeName)
+	protected String processBetweenOperator(ICondition condition, String attributeName)
 			throws SqlException
 	{
 		StringBuffer buffer = new StringBuffer();
