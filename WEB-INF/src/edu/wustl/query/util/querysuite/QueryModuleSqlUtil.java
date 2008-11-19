@@ -14,6 +14,7 @@ import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Variables;
 
 /**
  * @author santhoshkumar_c
@@ -62,16 +63,57 @@ final public class QueryModuleSqlUtil
 		 * @param sessionData session data.
 		 * @throws DAOException DAOException 
 		 */
+	//Siddharth Shah
+//	public static void executeCreateTable(final String tableName, final String createTableSql,
+//			QueryDetails queryDetailsObj) throws DAOException
+//	{
+//		JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+//		try
+//		{
+//			jdbcDao.openSession(queryDetailsObj.getSessionData());
+//			jdbcDao.delete(tableName);
+//			jdbcDao.executeUpdate(createTableSql);
+//			jdbcDao.commit();
+//		}
+//		catch (DAOException e)
+//		{
+//			Logger.out.error(e);
+//			//			e.printStackTrace();
+//			//			throw e;
+//		}
+//		finally
+//		{
+//			jdbcDao.closeSession();
+//		}
+//	}
+	
 	public static void executeCreateTable(final String tableName, final String createTableSql,
 			QueryDetails queryDetailsObj) throws DAOException
 	{
-		JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+		JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);	
 		try
 		{
 			jdbcDao.openSession(queryDetailsObj.getSessionData());
-			jdbcDao.delete(tableName);
-			jdbcDao.executeUpdate(createTableSql);
-			jdbcDao.commit();
+			if(Variables.databaseName.trim().equalsIgnoreCase("DB2"))
+			{
+				String newCreateTableSql = Constants.CREATE_TABLE + " " + tableName + " " + Constants.AS + " "
+				+ "(" + createTableSql + ")" + "WITH NO DATA";
+				String newInsertTableSql = "insert into " + tableName + " (" + createTableSql + ")";
+				String newSetSession = "set current schema = " + Constants.SCHEMA_NAME;				
+				jdbcDao.executeUpdate(newSetSession);
+//				jdbcDao.delete(tableName);
+				jdbcDao.executeUpdate(newCreateTableSql);
+				jdbcDao.executeUpdate(newInsertTableSql);
+				jdbcDao.commit();
+			}
+			else
+			{
+				String newCreateTableSql = Constants.CREATE_TABLE + tableName + " " + Constants.AS + " "
+				+ createTableSql;
+				jdbcDao.delete(tableName);
+				jdbcDao.executeUpdate(newCreateTableSql);
+				jdbcDao.commit();
+			}
 		}
 		catch (DAOException e)
 		{
@@ -84,6 +126,7 @@ final public class QueryModuleSqlUtil
 			jdbcDao.closeSession();
 		}
 	}
+
 
 	/**
 		 * @param tableName
