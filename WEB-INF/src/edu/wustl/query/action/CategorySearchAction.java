@@ -179,11 +179,11 @@ public class CategorySearchAction extends Action
 		String includeDescriptionChecked = searchForm.getIncludeDescriptionChecked();
 		List<Integer> target = new ArrayList<Integer>();
 		if (classCheckBoxChecked != null
-				&& (classCheckBoxChecked.equalsIgnoreCase("on") || classCheckBoxChecked
+				&& (classCheckBoxChecked.equalsIgnoreCase(edu.wustl.query.util.global.Constants.ON) || classCheckBoxChecked
 						.equalsIgnoreCase("true")))
 		{
 			if (includeDescriptionChecked != null
-					&& (includeDescriptionChecked.equalsIgnoreCase("on") || includeDescriptionChecked
+					&& (includeDescriptionChecked.equalsIgnoreCase(edu.wustl.query.util.global.Constants.ON) || includeDescriptionChecked
 							.equalsIgnoreCase("true")))
 			{
 				target.add(Integer.valueOf((Constants.CLASS_WITH_DESCRIPTION)));
@@ -194,11 +194,11 @@ public class CategorySearchAction extends Action
 			}
 		}
 		if (attributeCheckBoxChecked != null
-				&& (attributeCheckBoxChecked.equalsIgnoreCase("on") || attributeCheckBoxChecked
+				&& (attributeCheckBoxChecked.equalsIgnoreCase(edu.wustl.query.util.global.Constants.ON) || attributeCheckBoxChecked
 						.equalsIgnoreCase("true")))
 		{
 			if (includeDescriptionChecked != null
-					&& (includeDescriptionChecked.equalsIgnoreCase("on") || includeDescriptionChecked
+					&& (includeDescriptionChecked.equalsIgnoreCase(edu.wustl.query.util.global.Constants.ON) || includeDescriptionChecked
 							.equalsIgnoreCase("true")))
 			{
 				target.add(Integer.valueOf((Constants.ATTRIBUTE_WITH_DESCRIPTION)));
@@ -209,7 +209,7 @@ public class CategorySearchAction extends Action
 			}
 		}
 		if (permissiblevaluesCheckBoxChecked != null
-				&& (permissiblevaluesCheckBoxChecked.equalsIgnoreCase("on") || permissiblevaluesCheckBoxChecked
+				&& (permissiblevaluesCheckBoxChecked.equalsIgnoreCase(edu.wustl.query.util.global.Constants.ON) || permissiblevaluesCheckBoxChecked
 						.equalsIgnoreCase("true")))
 		{
 			target.add(Integer.valueOf((Constants.PV)));

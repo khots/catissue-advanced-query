@@ -113,16 +113,16 @@ else
 						<td colspan="2" valign="top" height="1px" >
 							<table valign="top" class="collapsableTable" style="display:none" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" id="collapsableTable">
 								<tr id="class_view">
-									<td class="standardTextQuery"><html:checkbox  property="classChecked" onclick="setIncludeDescriptionValue()" value="on"> <bean:message key="query.class"/></html:checkbox></td>
+									<td class="standardTextQuery"><html:checkbox  property="classChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>'> <bean:message key="query.class"/></html:checkbox></td>
 								</tr>
 								<tr id="attribute_view" >
-									<td class="standardTextQuery"><html:checkbox  property="attributeChecked" onclick="setIncludeDescriptionValue()" value="on" > <bean:message key="query.attribute"/></html:checkbox></td>
+									<td class="standardTextQuery"><html:checkbox  property="attributeChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>' > <bean:message key="query.attribute"/></html:checkbox></td>
 								</tr>
 								<tr id="permissible_view" >
-									<td class="standardTextQuery"><html:checkbox property="permissibleValuesChecked" onclick="permissibleValuesSelected(this)" value="on" > <bean:message key="query.permissibleValues"/></html:checkbox></td>
+									<td class="standardTextQuery"><html:checkbox property="permissibleValuesChecked" onclick="permissibleValuesSelected(this)" value='<%=Constants.ON%>'> <bean:message key="query.permissibleValues"/></html:checkbox></td>
 								</tr>
 								<tr id="description_view" >
-									<td class="standardTextQuery"><html:checkbox  property="includeDescriptionChecked" value="on" ><bean:message key="query.includeDescription"/> </html:checkbox></td>
+									<td class="standardTextQuery"><html:checkbox  property="includeDescriptionChecked" value='<%=Constants.ON%>'><bean:message key="query.includeDescription"/> </html:checkbox></td>
 								</tr>
 								<tr><td>&nbsp;</td></tr>
 								<tr id="radio_view" >
