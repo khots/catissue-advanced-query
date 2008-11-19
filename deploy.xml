@@ -999,16 +999,17 @@ Thanking You,
 	<property name="package" value="" />
 
 	<target name="import_xmi">
+		<property name="temp.query" value="querytemp" />
 		<delete quiet="true" includeemptydirs="true">
-			<fileset dir="${temp.dir}/query">
+			<fileset dir="${temp.query}">
 				<include name="**/*" />
 			</fileset>
 		</delete>
 
-		<unwar src="${base.dir}/query.war" dest="${temp.dir}/query" />
+		<unwar src="${base.dir}/query.war" dest="querytemp" />
 
-		<copy file="${base.dir}/DE_conf/QueryHibernate.cfg.xml" todir="${temp.dir}/query/WEB-INF/classes" overwrite="true" />
-		<copy file="${base.dir}/DE_conf/DynamicExtensionsHibernate.cfg.xml" todir="${temp.dir}/query/WEB-INF/classes" overwrite="true" />
+		<copy file="DE_conf/QueryHibernate.cfg.xml" todir="${temp.query}/WEB-INF/classes" overwrite="true" />
+		<copy file="DE_conf/DynamicExtensionsHibernate.cfg.xml" todir="${temp.query}/WEB-INF/classes" overwrite="true" />
 
 		<echo>Configuring logger ...</echo>
 		<!--<antcall target="configure_log4j" /> -->
@@ -1016,7 +1017,7 @@ Thanking You,
 		<if>
 			<equals arg1="mysql" arg2="${database.type}" />
 			<then>
-				<replace dir="${temp.dir}/query/WEB-INF/classes">
+				<replace dir="${temp.query}/WEB-INF/classes">
 					<include name="*.cfg.xml" />
 					<replacefilter token="@@DIALECT@@" value="${mysql.dialect.string}" />
 					<replacefilter token="@@DRIVER@@" value="com.mysql.jdbc.Driver" />
@@ -1026,7 +1027,7 @@ Thanking You,
 			<elseif>
 				<equals arg1="oracle" arg2="${database.type}" />
 				<then>
-					<replace dir="${temp.dir}/query/WEB-INF/classes">
+					<replace dir="${temp.query}/WEB-INF/classes">
 						<include name="*.cfg.xml" />
 						<replacefilter token="@@DIALECT@@" value="${oracle.dialect.string}" />
 						<replacefilter token="@@DRIVER@@" value="${oracle.driver.string}" />
@@ -1037,7 +1038,7 @@ Thanking You,
 			<elseif>
 				<equals arg1="db2" arg2="${database.type}" />
 				<then>
-					<replace dir="${temp.dir}/query/WEB-INF/classes">
+					<replace dir="${temp.query}/WEB-INF/classes">
 						<include name="*.cfg.xml" />
 						<replacefilter token="@@DIALECT@@" value="${db2.dialect.string}" />
 						<replacefilter token="@@DRIVER@@" value="${db2.driver.string}" />
@@ -1047,7 +1048,7 @@ Thanking You,
 			</elseif>
 		</if>
 		<echo>Replacing ...</echo>
-		<replace dir="${temp.dir}/query/WEB-INF/classes">
+		<replace dir="${temp.query}/WEB-INF/classes">
 			<include name="*.cfg.xml" />
 			<replacefilter token="@@DATABASE_USERNAME@@" value="${database.username}" />
 			<replacefilter token="@@DATABASE_PASSWORD@@" value="${database.password}" />
@@ -1057,13 +1058,13 @@ Thanking You,
 		<java classname="edu.wustl.query.annotations.xmi.ImportXmi" fork="true">
 			<arg value="cider.xmi" />
 			<arg value="none" />
-			<arg value="demographics.csv" />
-			<arg value="edu.wustl.cider.domain.discrete.demographics" />
+			<arg value="cider.csv" />
+			<arg value="edu.wustl.cider.domain" />
 			<arg value="none" />
 			
 			<classpath>
-				<pathelement location="${temp.dir}/query/WEB-INF/classes" />
-				<fileset dir="${temp.dir}/query/WEB-INF/lib">
+				<pathelement location="${temp.query}/WEB-INF/classes" />
+				<fileset dir="${temp.query}/WEB-INF/lib">
 					<include name="*.jar" />
 					<exclude name="uml-1.3.jar" />
 				</fileset>
@@ -1081,11 +1082,9 @@ Thanking You,
 			</classpath>
 		</java>
 
-		<!--delete includeemptydirs="true">
-			<fileset dir="${temp.dir}/query">
-				<include name="**/*" />
-			</fileset>
-		</delete --> 
+		<delete quiet="true" includeemptydirs="true">
+			<fileset dir="${temp.query}" />
+		</delete>
 	</target>
 
 	<target name="db2_config">
