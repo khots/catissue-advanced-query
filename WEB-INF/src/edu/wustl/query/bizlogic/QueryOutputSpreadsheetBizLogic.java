@@ -256,7 +256,7 @@ public class QueryOutputSpreadsheetBizLogic
 			boolean hasConditionOnIdentifiedField, IConstraints constraints,
 			Map<String, IOutputTerm> outputTermsColumns) throws DAOException,
 			ClassNotFoundException
-	{
+	{ 
 		this.selectedColumnMetaData = selectedColumnsMetadata;
 		Map spreadSheetDataMap = updateSpreadsheetData(queryDetailsObj, parentData, node,
 				recordsPerPage, queryResultObjectDataBeanMap, hasConditionOnIdentifiedField,
@@ -417,7 +417,7 @@ public class QueryOutputSpreadsheetBizLogic
 
 		if (!selectedColumnMetaData.isDefinedView())
 		{
-			if (!outputTermsColumns.isEmpty())
+			if (outputTermsColumns!=null && !outputTermsColumns.isEmpty())
 			{
 				TemporalColumnUIBean temporalColumnUIBean = new TemporalColumnUIBean(node,
 						selectSql, columnsList, outputTermsColumns, columnIndex, constraints);
@@ -839,7 +839,7 @@ public class QueryOutputSpreadsheetBizLogic
 		this.selectedColumnMetaData.setSelectedColumnNameValueBeanList(selectedColumnNameValue);
 		int lastindexOfComma = sqlColumnNames.lastIndexOf(",");
 		String sql = sqlColumnNames.toString();
-		if (!outputTermsColumns.isEmpty())
+		if (outputTermsColumns!=null && outputTermsColumns.isEmpty())
 		{
 			IConstraints constraints = queryDetailsObj.getQuery().getConstraints();
 			TemporalColumnUIBean temporalColumnUIBean = new TemporalColumnUIBean(null, selectSql,
@@ -1146,7 +1146,7 @@ public class QueryOutputSpreadsheetBizLogic
 		{
 			spreadSheetDataMap.put(Constants.SPREADSHEET_COLUMN_LIST, columnsList);
 			selectSql = selectSql.substring(0, selectSql.lastIndexOf(','));
-			if (!outputTermsColumns.isEmpty())
+			if (outputTermsColumns!=null && !outputTermsColumns.isEmpty())
 			{
 				IConstraints constraints = queryDetailsObj.getQuery().getConstraints();
 				TemporalColumnUIBean temporalColumnUIBean = new TemporalColumnUIBean(node,

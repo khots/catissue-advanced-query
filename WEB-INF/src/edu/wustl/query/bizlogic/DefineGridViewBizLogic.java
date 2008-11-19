@@ -386,8 +386,8 @@ public class DefineGridViewBizLogic
 		{
 			sql = selectedColumnNames.substring(0, selectedColumnNames
 					.lastIndexOf(Constants.DELIMETER));
-		}
-		if (!outputTermsColumns.isEmpty())
+		} 
+		if (outputTermsColumns!=null && !outputTermsColumns.isEmpty())
 		{
 			QueryOutputSpreadsheetBizLogic gridBizLogic = new QueryOutputSpreadsheetBizLogic();
 			IConstraints constraints = queryDetailsObj.getQuery().getConstraints();
