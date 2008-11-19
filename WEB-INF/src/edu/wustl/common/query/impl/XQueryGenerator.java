@@ -277,12 +277,14 @@ public class XQueryGenerator extends QueryGenerator
 	private String buildSelectPart() throws SQLXMLException
 	{
 
-		StringBuffer selectClause = new StringBuffer(256);
+		StringBuilder selectClause = new StringBuilder(256);
 		selectClause.append(Constants.SELECT_DISTINCT);
-		for (OutputTreeDataNode rootOutputTreeNode : rootOutputTreeNodeList)
+		attributeAliases = new HashMap<AttributeInterface, String>();
+		for (OutputTreeDataNode rootOutputTreeNode : attributeOutputTreeNodeList)
 		{
 			selectClause.append(setSelectedAtrributes(rootOutputTreeNode));
 		}
+		removeLastComma(selectClause);
 
 		return selectClause.toString();
 	}
@@ -395,7 +397,7 @@ public class XQueryGenerator extends QueryGenerator
 			String path = entry.getValue();
 
 			for (AttributeInterface attribute : expression.getQueryEntity()
-					.getDynamicExtensionsEntity().getAttributeCollection())
+					.getDynamicExtensionsEntity().getAllAttributes())
 			{
 				String attributeVariable = attributeAliases.get(attribute);
 
@@ -420,7 +422,8 @@ public class XQueryGenerator extends QueryGenerator
 		Set<Integer> processedAlias = new HashSet<Integer>();
 
 		xqueryWhereClause.append(buildWherePart(constraints.getRootExpression(), null));
-		xqueryWhereClause.append(getApplicationConditions());
+		xqueryWhereClause.append(Constants.QUERY_AND);
+//		xqueryWhereClause.append(getApplicationConditions());		
 		xqueryWhereClause.append(processChildExpressions(leftAlias, processedAlias, parentExpression));
 
 		return removeLastAnd(xqueryWhereClause.toString());
@@ -434,11 +437,8 @@ public class XQueryGenerator extends QueryGenerator
 
 		for (String attributeAlias : attributeAliases.values())
 		{
-			xqueryReturnClause.append('<').append(attributeAlias).append('>');
 			xqueryReturnClause.append('{').append(Constants.QUERY_DOLLAR).append(attributeAlias)
 					.append('}');
-			xqueryReturnClause.append("</").append(attributeAlias).append('>');
-
 		}
 
 		xqueryReturnClause.append(" </return>");
@@ -747,11 +747,12 @@ public class XQueryGenerator extends QueryGenerator
 	private String setSelectedAtrributes(OutputTreeDataNode treeNode)
 	{
 		StringBuilder selectPart = new StringBuilder();
+
 		IExpression expression = constraints.getExpression(treeNode.getExpressionId());
 
 		IOutputEntity outputEntity = treeNode.getOutputEntity();
 		List<AttributeInterface> attributes = outputEntity.getSelectedAttributes();
-		attributeAliases = new HashMap<AttributeInterface, String>();
+		
 		
 		for (AttributeInterface attribute : attributes)
 		{
@@ -773,7 +774,6 @@ public class XQueryGenerator extends QueryGenerator
 		{
 			selectPart.append(setSelectedAtrributes(childTreeNode));
 		}
-		removeLastComma(selectPart);
 		return selectPart.toString();
 	}
 
@@ -789,7 +789,7 @@ public class XQueryGenerator extends QueryGenerator
 
 			String dataType = getDataTypeInformation(attribute);
 			columnsPart.append(attributeAlias).append(' ').append(dataType).append(" path '")
-					.append(attributeAlias).append("'").append(Constants.QUERY_COMMA);
+					.append(attribute.getName()).append("'").append(Constants.QUERY_COMMA);
 		}
 
 		removeLastComma(columnsPart);
@@ -926,7 +926,7 @@ public class XQueryGenerator extends QueryGenerator
 	protected String processNullCheckOperators(ICondition condition, String attributeName)
 			throws SqlException
 	{
-		String operator = condition.getRelationalOperator().getStringRepresentation();
+		RelationalOperator operator = condition.getRelationalOperator();
 		String newOperator = null;
 		
 		if (operator.equals(RelationalOperator.IsNotNull))
@@ -948,19 +948,19 @@ public class XQueryGenerator extends QueryGenerator
 	protected String processLikeOperators(ICondition condition, String attributeName)
 			throws SqlException
 	{
-		String operator = condition.getRelationalOperator().getStringRepresentation();
+		RelationalOperator operator = condition.getRelationalOperator();
 		String newOperator = null;
 		String value = condition.getValue();
 		
-		if (operator.equalsIgnoreCase("Contains"))
+		if (operator.equals(RelationalOperator.Contains))
         {
               newOperator = "contains(string(" + attributeName + "),\"" + value + "\")";
         }
-		else if (operator.equalsIgnoreCase("Starts With") || operator.equalsIgnoreCase("StartsWith"))
+		else if (operator.equals(RelationalOperator.StartsWith))
         {
               newOperator = "starts-with(string(" + attributeName + "),\"" + value + "\")";
         }
-        else if (operator.equalsIgnoreCase("Ends With") || operator.equalsIgnoreCase("EndsWith"))
+        else if (operator.equals(RelationalOperator.EndsWith))
         {
               newOperator = "ends-with(string(" + attributeName + "),\"" + value + "\")";
         }
@@ -1057,7 +1057,7 @@ public class XQueryGenerator extends QueryGenerator
 	                        buffer.append("(" + leftAttribute + "=" + rightAttribute);
 	                        buffer.append(")");
 	                    }
-	                    buffer.append(LogicalOperator.And.toString().toLowerCase());
+	                    buffer.append(Constants.QUERY_AND);
 	                }
 	                // append from part SQLXML for the next Expressions.
 	                buffer.append(processChildExpressions(actualRightAlias, processedAlias, childExpression));
