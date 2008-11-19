@@ -263,4 +263,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String ID_COLUMN_NAME = "ID_COLUMN_NAME";
 	public static final String PRIMARY_KEY_ATTRIBUTE_SEPARATOR = "!~!~!";
 	
+	//Siddharth Shah
+	
+	public static final String SCHEMA_NAME = "ADMINISTRATOR";
+	
 }
