@@ -17,10 +17,10 @@
 	<property name="csm.dir" value="${temp.dir}/tempcsm" />
 	<property name="lib.dir" value="${base.dir}/lib" />
 	<property name="mysql.sql.dir" value="${base.dir}/SQL/advancequery/MySql" />
-	<property name="db2.sql.dir" value="${base.dir}/SQL/DB2" />
-	<property name="dbupgrade.sql.dir" value="${base.dir}/SQL/DBUpgrade" />
-	<property name="oracle.sql.dir" value="${base.dir}/SQL/Oracle" />
-	<property name="common.sql.dir" value="${base.dir}/SQL/Common" />
+	<property name="db2.sql.dir" value="${base.dir}/SQL/advancequery/DB2" />
+	<property name="dbupgrade.sql.dir" value="${base.dir}/SQL/advancequery/DBUpgrade" />
+	<property name="oracle.sql.dir" value="${base.dir}/SQL/advancequery/Oracle" />
+	<property name="common.sql.dir" value="${base.dir}/SQL/advancequery/Common" />
 	<property name="oracle.dialect.string" value="org.hibernate.dialect.Oracle9Dialect" />
 	<property name="mysql.dialect.string" value="org.hibernate.dialect.MySQLDialect" />
 	<property name="oracle.driver.string" value="oracle.jdbc.driver.OracleDriver" />
@@ -580,12 +580,11 @@
 	</target>
 	
 	<!--Target for Database Creation-->
-	<target name="deploy_db">		
+	<target name="deploy_db">
 		<if>
 			<equals arg1="mysql" arg2="${database.type}" />
 			<then>
 				<antcall target="deploy_db_mysql" />
-				
 			</then>
 			<elseif>
 				<equals arg1="oracle" arg2="${database.type}" />
@@ -608,13 +607,14 @@
 	
 	<!--DB2 Database Creation -->
 	<target name="deploy_db_db2">
-		<echo message="Initializing DB2 Database for caTissue Suite v1.1 Application..." />
+		<echo message="Initializing DB2 Database for caTissue Suite v1.1 Application..." />		
 		<sql driver="${db2.driver.string}" url="jdbc:db2://${database.host}:${database.port}/${database.name}" userid="${database.username}" password="${database.password}" onerror="continue">
 			<transaction src="${db2.sql.dir}/query/csm_query.sql" />
+			<transaction src="${db2.sql.dir}/query/caB2B Table Generation Script.sql" />
 			<transaction src="${db2.sql.dir}/query/DynamicExtension_DB2.sql" /> 
 			<transaction src="${db2.sql.dir}/query/metadata_schema_script.sql" /> 
 			<transaction src="${db2.sql.dir}/query/query_schema_script.sql" />
-			<transaction src="${db2.sql.dir}/query/caB2B Table Generation Script.sql" />
+			<!--transaction src="${db2.sql.dir}/query/initDB2DB.sql" /-->
 			<transaction>commit;</transaction>
 			<classpath>
 				<fileset dir="${lib.dir}">
@@ -622,7 +622,7 @@
 				</fileset>
 			</classpath>
 		</sql>
-		<antcall target="import_xmi" />
+		<!--antcall target="import_xmi" / -->
 	</target>
 	
 	<!--MySQL Database Creation -->
@@ -630,10 +630,10 @@
 		<echo message="Initializing MySQL Database for caTissue Suite v1.1 Application..." />
 		<sql driver="${mysql.driver.string}" url="jdbc:mysql://${database.host}:${database.port}/${database.name}" userid="${database.username}" password="${database.password}">
 			<transaction src="${mysql.sql.dir}/csm_query.sql" />
-			<transaction src="${mysql.sql.dir}/dynamicextension.sql" />
-			<transaction src="${mysql.sql.dir}/query/metadata_schema_script.sql" /> 
-			<transaction src="${mysql.sql.dir}/query/query_schema_script.sql" />
 			<transaction src="${mysql.sql.dir}/query/caB2B Table Generation Script.sql" />
+			<transaction src="${mysql.sql.dir}/dynamicextension.sql" />			
+			<transaction src="${mysql.sql.dir}/query/metadata_schema_script.sql" /> 
+			<transaction src="${mysql.sql.dir}/query/query_schema_script.sql" />			
 			<transaction>commit;</transaction>
 			<classpath>
 				<fileset dir="${lib.dir}">
