@@ -466,7 +466,8 @@ public class XQueryGenerator extends QueryGenerator
 
 		xqueryWhereClause.append(buildWherePart(constraints.getRootExpression(), null));
 		xqueryWhereClause.append(Constants.QUERY_AND);
-//		xqueryWhereClause.append(getApplicationConditions());		
+//		xqueryWhereClause.append(getApplicationConditions());	
+//		xqueryWhereClause.append(Constants.QUERY_AND);
 		xqueryWhereClause.append(processChildExpressions(leftAlias, processedAlias, parentExpression));
 
 		return removeLastAnd(xqueryWhereClause.toString());
@@ -679,23 +680,28 @@ public class XQueryGenerator extends QueryGenerator
 	{
 		return "";
 		/*
-		StringBuilder operandRule = new StringBuilder();
+		StringBuilder operandRule = new StringBuilder(processOperands());
 
 		operandRule.append(" ");
+		if (tableNames.contains("DEMOGRAPHICS"))
+		{
 			operandRule.append(Variables.properties
 					.getProperty("xquery.wherecondition.activeUpiFlag"));
 			operandRule.append(Constants.QUERY_AND);
 			operandRule.append(Variables.properties
 					.getProperty("xquery.wherecondition.researchOptOut"));
 			operandRule.append(Constants.QUERY_AND);
-	
+		}
+		if (tableNames.contains(Variables.properties
+				.getProperty("xquery.whereCondition.person.table")))
+		{
 			operandRule.append(Variables.properties
 					.getProperty("xquery.wherecondition.person.startTimeStamp"));
 			operandRule.append(Constants.QUERY_AND);
 			operandRule.append(Variables.properties
 					.getProperty("xquery.wherecondition.person.endTimeStamp"));
 			operandRule.append(" ");
-	
+		}
 		return operandRule.toString(); */
 	}
 
@@ -803,8 +809,7 @@ public class XQueryGenerator extends QueryGenerator
 	{
 		StringBuilder selectPart = new StringBuilder();
 		IExpression expression = constraints.getExpression(treeNode.getExpressionId());
-		IOutputEntity outputEntity = treeNode.getOutputEntity();
-		Collection<AttributeInterface> attributes = expression.getQueryEntity().getDynamicExtensionsEntity().getAttributeCollection();
+		Collection<AttributeInterface> attributes =  expression.getQueryEntity().getDynamicExtensionsEntity().getAttributeCollection();
 		
 		
 		for (AttributeInterface attribute : attributes)
@@ -1161,8 +1166,9 @@ public class XQueryGenerator extends QueryGenerator
 	                        } else
 	                        // One Side
 	                        {
-	                            AttributeInterface primaryKey = getPrimaryKey(leftEntity);
-	                            leftAttribute = "$" + getAliasName(parentExpression) + "/" + primaryKey.getColumnProperties().getName();
+	                            List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(rightEntity);
+	                            String primaryKey = (String)primaryKeyList.get(0);
+	                            leftAttribute = "$" + getAliasName(childExpression) + "/"  + primaryKey;
 	                            rightAttribute = "$" + getAliasName(childExpression) + "/"  + constraintProperties.getTargetEntityKey();
 	                        }
 	                        buffer.append("(" + leftAttribute + "=" + rightAttribute);

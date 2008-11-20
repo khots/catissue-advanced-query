@@ -733,19 +733,19 @@ public abstract class QueryGenerator implements IQueryGenerator
 				childNode = outputTreeNodeMap.get(childAliasAppender);
 				if (childNode == null)
 				{
-//					if (parentOutputTreeNode == null)
-//					{
-						// New root node for output tree found, so create root
-						// node & add it in the rootOutputTreeNodeList.
+					if (parentOutputTreeNode == null)
+					{
+//						 New root node for output tree found, so create root
+//						 node & add it in the rootOutputTreeNodeList.
 						childNode = new OutputTreeDataNode(childOutputEntity, childExp
 								.getExpressionId(), treeNo++);
 						rootOutputTreeNodeList.add(childNode);
-//					}
-//					else
-//					{
-//						childNode = parentOutputTreeNode.addChild(childOutputEntity, childExp
-//								.getExpressionId());
-//					}
+					}
+					else
+					{
+						childNode = parentOutputTreeNode.addChild(childOutputEntity, childExp
+								.getExpressionId());
+					}
 					outputTreeNodeMap.put(childAliasAppender, childNode);
 					attributeOutputTreeNodeList.add(childNode);
 					
@@ -1155,6 +1155,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 		}
 		for (int i = 0; i < valueList.size(); i++)
 		{
+
 			String value = modifyValueForDataType(valueList.get(i), dataType);
 
 			if (i == valueList.size() - 1)
