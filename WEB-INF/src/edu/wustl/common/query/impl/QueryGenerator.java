@@ -346,7 +346,10 @@ public abstract class QueryGenerator implements IQueryGenerator
 			else
 			{
 				buffer.append(operandquery);
-				buffer.append(getParenthesis(currentNestingCounter,
+				buffer.append(' ');
+				
+				buffer = new StringBuffer(removeLastAnd(buffer.toString()));
+				buffer.append( getParenthesis(currentNestingCounter,
 						Constants.QUERY_CLOSING_PARENTHESIS));
 				// Finishing
 				// query
@@ -361,6 +364,18 @@ public abstract class QueryGenerator implements IQueryGenerator
 		}
 		return buffer.toString();
 	}
+	
+	
+	protected String removeLastAnd(String select)
+	{
+		String selectString = select;
+		if (select.endsWith(Constants.QUERY_AND))
+		{
+			selectString = selectString.substring(0, selectString.length() - 5);
+		}
+		return selectString;
+	}
+
 
 	protected abstract String getDescriminatorCondition(EntityInterface entity, String aliasFor);
 
@@ -1140,7 +1155,6 @@ public abstract class QueryGenerator implements IQueryGenerator
 		}
 		for (int i = 0; i < valueList.size(); i++)
 		{
-
 			String value = modifyValueForDataType(valueList.get(i), dataType);
 
 			if (i == valueList.size() - 1)

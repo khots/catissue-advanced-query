@@ -2,6 +2,7 @@
 package edu.wustl.common.query.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -465,8 +466,7 @@ public class XQueryGenerator extends QueryGenerator
 
 		xqueryWhereClause.append(buildWherePart(constraints.getRootExpression(), null));
 		xqueryWhereClause.append(Constants.QUERY_AND);
-//		xqueryWhereClause.append(getApplicationConditions());	
-//		xqueryWhereClause.append(Constants.QUERY_AND);
+//		xqueryWhereClause.append(getApplicationConditions());		
 		xqueryWhereClause.append(processChildExpressions(leftAlias, processedAlias, parentExpression));
 
 		return removeLastAnd(xqueryWhereClause.toString());
@@ -679,44 +679,24 @@ public class XQueryGenerator extends QueryGenerator
 	{
 		return "";
 		/*
-		StringBuilder operandRule = new StringBuilder(processOperands());
+		StringBuilder operandRule = new StringBuilder();
 
 		operandRule.append(" ");
-		if (tableNames.contains("DEMOGRAPHICS"))
-		{
 			operandRule.append(Variables.properties
 					.getProperty("xquery.wherecondition.activeUpiFlag"));
 			operandRule.append(Constants.QUERY_AND);
 			operandRule.append(Variables.properties
 					.getProperty("xquery.wherecondition.researchOptOut"));
 			operandRule.append(Constants.QUERY_AND);
-		}
-		if (tableNames.contains(Variables.properties
-				.getProperty("xquery.whereCondition.person.table")))
-		{
+	
 			operandRule.append(Variables.properties
 					.getProperty("xquery.wherecondition.person.startTimeStamp"));
 			operandRule.append(Constants.QUERY_AND);
 			operandRule.append(Variables.properties
 					.getProperty("xquery.wherecondition.person.endTimeStamp"));
 			operandRule.append(" ");
-		}
+	
 		return operandRule.toString(); */
-	}
-
-	/**
-	 * 
-	 * @param Will remove the Last and from the where portion
-	 * @return
-	 */
-	private String removeLastAnd(String select)
-	{
-		String selectString = select;
-		if (select.endsWith(Constants.QUERY_AND))
-		{
-			selectString = selectString.substring(0, selectString.length() - 5);
-		}
-		return selectString;
 	}
 
 	/*
@@ -824,7 +804,7 @@ public class XQueryGenerator extends QueryGenerator
 		StringBuilder selectPart = new StringBuilder();
 		IExpression expression = constraints.getExpression(treeNode.getExpressionId());
 		IOutputEntity outputEntity = treeNode.getOutputEntity();
-		List<AttributeInterface> attributes = (List<AttributeInterface>) expression.getQueryEntity().getDynamicExtensionsEntity().getAttributeCollection();
+		Collection<AttributeInterface> attributes = expression.getQueryEntity().getDynamicExtensionsEntity().getAttributeCollection();
 		
 		
 		for (AttributeInterface attribute : attributes)
