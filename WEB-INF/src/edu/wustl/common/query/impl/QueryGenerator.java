@@ -65,6 +65,7 @@ import edu.wustl.query.util.global.Constants;
  */
 public abstract class QueryGenerator implements IQueryGenerator
 {
+
 	/**
 	 * This map holds integer value that will be appended to each table alias in
 	 * the query.
@@ -96,14 +97,12 @@ public abstract class QueryGenerator implements IQueryGenerator
 	 * List of Roots of the output tree node.
 	 */
 	protected List<OutputTreeDataNode> rootOutputTreeNodeList;
-	
+
 	// Variables required for output tree.
 	/**
 	 * List of Roots of the output tree node.
 	 */
 	protected List<OutputTreeDataNode> attributeOutputTreeNodeList;
-	
-
 
 	/**
 	 * This map is used in output tree creation logic. It is map of alias
@@ -347,9 +346,9 @@ public abstract class QueryGenerator implements IQueryGenerator
 			{
 				buffer.append(operandquery);
 				buffer.append(' ');
-				
+
 				buffer = new StringBuffer(removeLastAnd(buffer.toString()));
-				buffer.append( getParenthesis(currentNestingCounter,
+				buffer.append(getParenthesis(currentNestingCounter,
 						Constants.QUERY_CLOSING_PARENTHESIS));
 				// Finishing
 				// query
@@ -364,8 +363,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 		}
 		return buffer.toString();
 	}
-	
-	
+
 	protected String removeLastAnd(String select)
 	{
 		String selectString = select;
@@ -375,7 +373,6 @@ public abstract class QueryGenerator implements IQueryGenerator
 		}
 		return selectString;
 	}
-
 
 	protected abstract String getDescriminatorCondition(EntityInterface entity, String aliasFor);
 
@@ -719,7 +716,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 		for (IExpression childExp : children)
 		{
 			OutputTreeDataNode childNode = parentOutputTreeNode;
-			
+
 			if (shouldAddNodeFor(childExp))
 			{
 				IOutputEntity childOutputEntity = getOutputEntity(childExp);
@@ -735,8 +732,8 @@ public abstract class QueryGenerator implements IQueryGenerator
 				{
 					if (parentOutputTreeNode == null)
 					{
-//						 New root node for output tree found, so create root
-//						 node & add it in the rootOutputTreeNodeList.
+						//						 New root node for output tree found, so create root
+						//						 node & add it in the rootOutputTreeNodeList.
 						childNode = new OutputTreeDataNode(childOutputEntity, childExp
 								.getExpressionId(), treeNo++);
 						rootOutputTreeNodeList.add(childNode);
@@ -748,14 +745,14 @@ public abstract class QueryGenerator implements IQueryGenerator
 					}
 					outputTreeNodeMap.put(childAliasAppender, childNode);
 					attributeOutputTreeNodeList.add(childNode);
-					
+
 				}
 			}
 			else
 			{
 				IOutputEntity childOutputEntity = getOutputEntity(childExp);
-				childNode = new OutputTreeDataNode(childOutputEntity, childExp
-						.getExpressionId(), allExpressionTreeNo++);
+				childNode = new OutputTreeDataNode(childOutputEntity, childExp.getExpressionId(),
+						allExpressionTreeNo++);
 				attributeOutputTreeNodeList.add(childNode);
 			}
 			completeTree(childExp, childNode);
