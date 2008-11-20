@@ -101,7 +101,7 @@ final public class QueryModuleSqlUtil
 				String newInsertTableSql = "insert into " + tableName + " (" + createTableSql + ")";
 				String newSetSession = "set current schema = " + Constants.SCHEMA_NAME;				
 				jdbcDao.executeUpdate(newSetSession);
-//				jdbcDao.delete(tableName);
+				jdbcDao.delete(tableName);
 				jdbcDao.executeUpdate(newCreateTableSql);
 				jdbcDao.executeUpdate(newInsertTableSql);
 				jdbcDao.commit();
