@@ -3561,7 +3561,11 @@ insert into path (PATH_ID,FIRST_ENTITY_ID,INTERMEDIATE_PATH,LAST_ENTITY_ID) valu
 insert into path (PATH_ID,FIRST_ENTITY_ID,INTERMEDIATE_PATH,LAST_ENTITY_ID) values (88,284,'88',134);
 insert into path (PATH_ID,FIRST_ENTITY_ID,INTERMEDIATE_PATH,LAST_ENTITY_ID) values (89,284,'89',100);
 
-
+/*Inser tagged values for primary key start */
+insert into dyextn_tagged_value select Max(IDENTIFIER)+1, 'PRIMARY_KEY','personUpi',23 from dyextn_tagged_value;
+insert into dyextn_tagged_value select Max(IDENTIFIER)+1, 'PRIMARY_KEY','accessionNumber',106 from dyextn_tagged_value;
+insert into dyextn_tagged_value select Max(IDENTIFIER)+1, 'PRIMARY_KEY','patientAccountNumber',289 from dyextn_tagged_value;
+/*Inser tagged values for primary key start */
 
 /*Meta data Loading ends*/
 
