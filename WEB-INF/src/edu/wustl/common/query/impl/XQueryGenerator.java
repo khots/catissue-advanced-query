@@ -1180,7 +1180,7 @@ public class XQueryGenerator extends QueryGenerator
 								List<String> primaryKeyList = edu.wustl.query.util.global.Utility
 										.getPrimaryKey(rightEntity);
 								String primaryKey = (String) primaryKeyList.get(0);
-								leftAttribute = "$" + getAliasName(childExpression) + "/"
+								leftAttribute = "$" + getAliasName(parentExpression) + "/"
 										+ primaryKey;
 								rightAttribute = "$" + getAliasName(childExpression) + "/"
 										+ constraintProperties.getTargetEntityKey();
