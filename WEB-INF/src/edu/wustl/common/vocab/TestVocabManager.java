@@ -16,7 +16,6 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.query.factory.PermissibleValueManagerFactory;
-import edu.wustl.common.query.pvmanager.ConceptValueInteface;
 import edu.wustl.common.query.pvmanager.impl.CIDERPermissibleValueManager;
 import edu.wustl.common.query.pvmanager.impl.ConceptValue;
 
