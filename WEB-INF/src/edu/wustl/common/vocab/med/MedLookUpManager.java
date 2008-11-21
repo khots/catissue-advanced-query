@@ -5,12 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.global.Utility;
 
 public class MedLookUpManager
 {
@@ -27,7 +25,7 @@ public class MedLookUpManager
 		if(medLookUpManager == null)
 		{
 			medLookUpManager = new MedLookUpManager();
-			medLookUpManager.init();
+			//medLookUpManager.init();
 		}
 		
 		return medLookUpManager;
@@ -37,25 +35,26 @@ public class MedLookUpManager
 	private void init()
 	{
 		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		//List<List<String>> dataList = new ArrayList<List<String>>();
+		
 		try
 		{
 			dao.openSession(null);
-			List<List<String>> dataList = (List)dao.executeQuery("select * from MED_LOOKUP_VIEW", null, false, false, null);
+			List<List<String>> dataList = dao.executeQuery("select synonym,id from MED_LOOKUP_TABLE", null, false, false, null);
 			if(!dataList.isEmpty())
 			{
 				pvMap = new HashMap<String, List<String>>();
+				
 				for(int i=0; i < dataList.size(); i++)
 				{
-					if(pvMap.containsKey(dataList.get(0)))
+					if(pvMap.containsKey(dataList.get(i).get(0)))
 					{
-						pvMap.get(dataList.get(0).get(0)).add(dataList.get(0).get(1));
+						pvMap.get(dataList.get(i).get(0)).add(dataList.get(i).get(1));
 					}
 					else
 					{
 						List<String> pvList = new ArrayList<String>();
-						pvList.add(dataList.get(0).get(1));
-						pvMap.put(dataList.get(0).get(0),pvList);
+						pvList.add(dataList.get(i).get(1));
+						pvMap.put(dataList.get(i).get(0),pvList);
 					}
 				}
 			}
@@ -75,10 +74,35 @@ public class MedLookUpManager
 	
 	public List<String> getPermissibleValues(String pvFilter)
 	{
-		if(pvMap != null)
-			return pvMap.get(pvFilter);
-		else
-			return null;
+		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+		
+		List<String> pvList = null;
+		try
+		{
+			dao.openSession(null);
+			List<List<String>> dataList = dao.executeQuery("select synonym,id from MED_LOOKUP_TABLE where synonym like '" + pvFilter + "'", null, false, false, null);
+			if(!dataList.isEmpty())
+			{
+				pvList = new ArrayList<String>();
+				
+				for(int i=0; i < dataList.size(); i++)
+				{
+						pvList.add(dataList.get(i).get(1));
+				}
+			}
+		}
+		catch (DAOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (ClassNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return pvList;
 
 	}
 }
