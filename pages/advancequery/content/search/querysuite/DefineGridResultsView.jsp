@@ -42,7 +42,7 @@
 	<tr >
 		<td width="1px">&nbsp;	</td>
 		<td valign="top" colspan="8" width="100%" >
-		<bean:message key="query.defineGridResultsView.message"/>
+		<!-- <bean:message key="query.defineGridResultsView.message"/> -->
 		</td>
 	</tr>
 	
