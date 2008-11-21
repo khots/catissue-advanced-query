@@ -453,7 +453,7 @@ function checkAllOnThisPageResponse()
 					<%if(pageOf.equals(Constants.PAGEOF_QUERY_RESULTS) || pageOf.equals(Constants.PAGEOF_QUERY_MODULE) ){
 						
 					%>
-						<img src="images/advancequery/b_add_list.gif" width="100" hspace="3" onclick="getData()"/>&nbsp;
+					 <!-- <img src="images/advancequery/b_add_list.gif" width="100" hspace="3" onclick="getData()"/>&nbsp; -->
 				                        
 					<%}else
 				       {%>
