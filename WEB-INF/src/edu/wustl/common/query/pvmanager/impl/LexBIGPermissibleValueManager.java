@@ -22,7 +22,7 @@ import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.global.Variables;
 
-public class CIDERPermissibleValueManager implements IPermissibleValueManager
+public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 {
 	
 	/**
