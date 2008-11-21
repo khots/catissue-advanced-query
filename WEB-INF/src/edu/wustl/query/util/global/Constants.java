@@ -266,5 +266,6 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	//Siddharth Shah
 	
 	public static final String SCHEMA_NAME = "ADMINISTRATOR";
+	public static final Object PERMISSIBLEVALUEFILTER = "PV_FILTER";
 	
 }
