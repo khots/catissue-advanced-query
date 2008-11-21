@@ -8,9 +8,6 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 
 public interface IPermissibleValueManager
 {
-	public List<PermissibleValueInterface> getPermissibleValueList(AttributeInterface attribute);
-	public boolean showListBoxForPV(AttributeInterface attribute);
-	public boolean isEnumerated(AttributeInterface attribute);
 	public List<PermissibleValueInterface> getPermissibleValueList(AttributeInterface attribute,EntityInterface entity);
 	public boolean showListBoxForPV(AttributeInterface attribute,EntityInterface entity);
 	public boolean isEnumerated(AttributeInterface attribute,EntityInterface entity);
