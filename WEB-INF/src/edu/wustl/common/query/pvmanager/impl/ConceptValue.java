@@ -1,7 +1,6 @@
 package edu.wustl.common.query.pvmanager.impl;
 
 import edu.common.dynamicextensions.domain.PermissibleValue;
-import edu.wustl.common.query.pvmanager.ConceptValueInteface;
 
 /**
  * This class is a wrapper for a  concept code in LexBig

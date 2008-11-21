@@ -23,9 +23,9 @@ import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
 public class LocalDEPermissibleValueManager implements IPermissibleValueManager
 {
 
-	public List<PermissibleValueInterface> getPermissibleValueList(AttributeInterface attribute)
+
+	public List<PermissibleValueInterface> getPermissibleValueList(AttributeInterface attribute, EntityInterface entity)
 	{
-		// TODO Auto-generated method stub
 		UserDefinedDE userDefineDE = (UserDefinedDE) attribute.getAttributeTypeInformation().getDataElement();
 		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
 		if (userDefineDE != null && userDefineDE.getPermissibleValueCollection() != null)
@@ -70,24 +70,6 @@ public class LocalDEPermissibleValueManager implements IPermissibleValueManager
 		}
 		return permissibleValues;
 				
-	}
-
-	public boolean isEnumerated(AttributeInterface attribute)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean showListBoxForPV(AttributeInterface attribute)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public List<PermissibleValueInterface> getPermissibleValueList(AttributeInterface attribute, EntityInterface entity)
-	{
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public boolean isEnumerated(AttributeInterface attribute, EntityInterface entity)
