@@ -20,6 +20,7 @@ import edu.wustl.common.vocab.VocabularyManager;
 import edu.wustl.common.vocab.med.MedLookUpManager;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
+import edu.wustl.query.util.global.Variables;
 
 public class CIDERPermissibleValueManager implements IPermissibleValueManager
 {
@@ -46,9 +47,9 @@ public class CIDERPermissibleValueManager implements IPermissibleValueManager
 			if(medPermissibleValueList != null) {
 
 				VocabularyManager vocabMngr = VocabularyManager.getVocabularyManager();
-				Properties vocabProperties = Utility.loadVocabProperties();
-				vocabName=vocabProperties.getProperty("sourceVocabularyName");
-				vocabVersion=vocabProperties.getProperty("sourceVocabularyVersion");
+				
+				vocabName=Variables.properties.getProperty("sourceVocabularyName");
+				vocabVersion=Variables.properties.getProperty("sourceVocabularyVersion");
 
 				//list of coded entries !!!
 				permissiblevalueList   = vocabMngr.getConceptCode(vocabName,vocabVersion ,medPermissibleValueList);
