@@ -16,7 +16,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.query.factory.PermissibleValueManagerFactory;
-import edu.wustl.common.query.pvmanager.impl.CIDERPermissibleValueManager;
+import edu.wustl.common.query.pvmanager.impl.LexBIGPermissibleValueManager;
 import edu.wustl.common.query.pvmanager.impl.ConceptValue;
 
 
@@ -53,7 +53,7 @@ public class TestVocabManager
 		EntityInterface entity= EntityManager.getInstance().getEntityByName(entityName);
 		AttributeInterface attribute = entity.getAttributeByName("name");
 		
-		CIDERPermissibleValueManager ciderPVManager = new CIDERPermissibleValueManager();
+		LexBIGPermissibleValueManager ciderPVManager = new LexBIGPermissibleValueManager();
 		Map<String,List<PermissibleValueInterface>> mappedConcepts = ciderPVManager.getMappings(attribute,"med", "snomed", entity);
 		Set<String> keySet = mappedConcepts.keySet();
 		Iterator<String> iterator = keySet.iterator();
