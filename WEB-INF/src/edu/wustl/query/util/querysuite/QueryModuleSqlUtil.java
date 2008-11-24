@@ -99,7 +99,7 @@ final public class QueryModuleSqlUtil
 				String newCreateTableSql = Constants.CREATE_TABLE + " " + tableName + " " + Constants.AS + " "
 				+ "(" + createTableSql + ")" + "WITH NO DATA";
 				String newInsertTableSql = "insert into " + tableName + " (" + createTableSql + ")";
-				String newSetSession = "set current schema = " + Constants.SCHEMA_NAME;				
+				String newSetSession = "set current schema = " + Variables.properties.getProperty("xquery.schemaName");				
 				jdbcDao.executeUpdate(newSetSession);
 				jdbcDao.delete(tableName);
 				jdbcDao.executeUpdate(newCreateTableSql);
