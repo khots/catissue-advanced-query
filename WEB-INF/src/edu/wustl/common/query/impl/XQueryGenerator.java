@@ -1012,7 +1012,7 @@ public class XQueryGenerator extends QueryGenerator
 			throws SqlException
 	{
 		StringBuilder builder = new StringBuilder(attributeName).append(' ').append(
-				Constants.Equals).append(' ');
+				" = ").append(' ');
 		builder.append(Constants.QUERY_OPENING_PARENTHESIS);
 
 		for (String value : condition.getValues())
