@@ -53,8 +53,7 @@ public class QueryCsmBizLogic
 			dataList = dao.executeQuery(selectSql, queryDetailsObj.getSessionData(),
 					queryDetailsObj.getSessionData().isSecurityRequired(),
 					hasConditionOnIdentifiedField, queryResulObjectDataMap);
-			dao.commit();
-			dao.closeSession();
+			dao.commit();			
 		}
 		/*catch(ClassNotFoundException e)
 		{
@@ -71,7 +70,15 @@ public class QueryCsmBizLogic
 		}
 		finally
 		{
-
+			try
+			{
+				dao.closeSession();
+			}
+			catch (DAOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return dataList;
 	}
