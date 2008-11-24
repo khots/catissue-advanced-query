@@ -84,7 +84,7 @@ public class ConceptValue extends PermissibleValue //implements ConceptValueInte
 	 * written as an helper for UI
 	 */
 	public String toString() {
-		return "\t" + conceptCode + "\t: \t" + conceptDescription;
+		return conceptCode + ":" + conceptDescription;
 
 	}
 
