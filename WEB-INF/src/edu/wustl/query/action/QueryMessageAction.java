@@ -34,13 +34,14 @@ public class QueryMessageAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		String message = (String) request.getSession().getAttribute(
-				Constants.NO_MAIN_OBJECT_IN_QUERY);
-		message = "<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>" + message
-				+ "</font></li>";
+		StringBuffer message = new StringBuffer((String) request.getSession().getAttribute(
+				Constants.NO_MAIN_OBJECT_IN_QUERY));
+		 message = message.append("<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>");
+		 message = message.append(message);
+		 message = message.append("</font></li>");
 		request.getSession().removeAttribute(Constants.NO_MAIN_OBJECT_IN_QUERY);
-		response.setContentType("text/html");
-		response.getWriter().write(message);
+		response.setContentType(Constants.CONTENT_TYPE_TEXT);
+		response.getWriter().write(message.toString());
 		return null;
 	}
 

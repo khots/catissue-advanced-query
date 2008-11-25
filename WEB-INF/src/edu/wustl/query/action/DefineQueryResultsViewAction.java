@@ -1,8 +1,8 @@
 
 package edu.wustl.query.action;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,14 +54,14 @@ public class DefineQueryResultsViewAction extends Action
 				.getSelectedColumnNameValueBeanList();
 		if (!selectedColumnsMetadata.isDefinedView())
 		{
-			prevSelectedColumnNameValueBeanList = null;
+			prevSelectedColumnNameValueBeanList=null;
 		}
 		OutputTreeDataNode currentSelectedObject = selectedColumnsMetadata
 				.getCurrentSelectedObject();
 		request.setAttribute(Constants.categorySearchForm, categorySearchForm);
 
 		//Map<Long,OutputTreeDataNode> uniqueIdNodesMap = (Map<Long,OutputTreeDataNode>) session.getAttribute(Constants.ID_NODES_MAP);
-		Vector<QueryTreeNodeData> treeDataVector = new Vector<QueryTreeNodeData>();
+		List<QueryTreeNodeData> treeDataVector = new ArrayList<QueryTreeNodeData>();
 		DefineGridViewBizLogic defineGridViewBizLogic = new DefineGridViewBizLogic();
 		defineGridViewBizLogic.createTree(categorySearchForm, queryDetailsObj, treeDataVector,
 				currentSelectedObject, prevSelectedColumnNameValueBeanList);

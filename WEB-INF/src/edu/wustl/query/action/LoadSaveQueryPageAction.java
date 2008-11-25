@@ -23,6 +23,7 @@ import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.bizlogic.GenerateHtmlForAddLimitsBizLogic;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
 
 public class LoadSaveQueryPageAction extends Action
@@ -38,43 +39,15 @@ public class LoadSaveQueryPageAction extends Action
 		IQuery queryObject = (IQuery) request.getSession().getAttribute(
 				Constants.QUERY_OBJECT);
 		String target = Constants.FAILURE;
-		/**
-		 * Name: Abhishek Mehta
-		 * Reviewer Name : Deepti 
-		 * Bug ID: 5661
-		 * Patch ID: 5661_2
-		 * See also: 1-4 
-		 * Description : Loading save and update query page
-		 */
+		
 		
 		boolean isDagEmpty = true;
 		if (queryObject != null)
 		{
 			boolean isShowAll = request.getParameter(Constants.SHOW_ALL) == null ? false : true;
-			GenerateHtmlForAddLimitsBizLogic htmlGenerator = new GenerateHtmlForAddLimitsBizLogic(null);
-			Map<Integer,ICustomFormula> customFormulaIndexMap = new HashMap<Integer, ICustomFormula>();
-			String htmlContents = htmlGenerator.getHTMLForSavedQuery(queryObject, isShowAll,
-					Constants.SAVE_QUERY_PAGE,customFormulaIndexMap);
-			request.getSession().setAttribute(QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP, customFormulaIndexMap);
-			request.setAttribute(Constants.HTML_CONTENTS, htmlContents);
-			String showAllLink = isShowAll
-					? Constants.SHOW_SELECTED_ATTRIBUTE
-					: Constants.SHOW_ALL_ATTRIBUTE;
-			request.setAttribute(Constants.SHOW_ALL_LINK, showAllLink);
-			if (!isShowAll)
-			{
-				request.setAttribute(Constants.SHOW_ALL, Constants.TRUE);
-			}
-			target = Constants.SUCCESS;
-			if (queryObject.getId() != null && queryObject instanceof ParameterizedQuery)
-			{
-				SaveQueryForm savedQueryForm = (SaveQueryForm)form;
-				savedQueryForm.setDescription(((ParameterizedQuery)queryObject).getDescription());
-				savedQueryForm.setTitle(((ParameterizedQuery)queryObject).getName());
-			}
-			
-			IConstraints c = queryObject.getConstraints();
-			for(IExpression exp: c)
+			target = loadPage(form, request, queryObject,isShowAll);			
+			IConstraints constraints = queryObject.getConstraints();
+			for(IExpression exp: constraints)
 			{
 				isDagEmpty = false;
 			}
@@ -82,31 +55,66 @@ public class LoadSaveQueryPageAction extends Action
 		if(isDagEmpty)
 		{
 			// Handle null query 
+			
 			target = Constants.SUCCESS;
 			String errorMsg = ApplicationProperties.getValue("query.noLimit.error");
-			setActionError(request, errorMsg);
+			ActionErrors errors = Utility.setActionError(errorMsg,"errors.item");
+			saveErrors(request, errors);
 			request.setAttribute(Constants.IS_QUERY_SAVED,Constants.IS_QUERY_SAVED);
 		}
-		String errorMessage = (String) request.getSession().getAttribute("errorMessageForEditQuery");
-		if (errorMessage != null)
-		{
-			setActionError(request, errorMessage);
-			request.getSession().removeAttribute("errorMessageForEditQuery");
-		}
+		setErrorMessage(request);
 		
 		return mapping.findForward(target);
 	}
+
+	
 	/**
-	 * This method sets the error action 
+	 * This Method generates Html for Save query page 
+	 * @param form
 	 * @param request
-	 * @param errorMessage
+	 * @param queryObject
+	 * @param isShowAll
+	 * @return
 	 */
-	private void setActionError(HttpServletRequest request, String errorMessage)
+	private String loadPage(ActionForm form, HttpServletRequest request,
+			IQuery queryObject,boolean isShowAll)
 	{
-		ActionErrors errors = new ActionErrors();
-		ActionError error = new ActionError("errors.item", errorMessage);
-		errors.add(ActionErrors.GLOBAL_ERROR, error);
-		saveErrors(request, errors);
+		String target;
+		GenerateHtmlForAddLimitsBizLogic htmlGenerator = new GenerateHtmlForAddLimitsBizLogic(null);
+		Map<Integer,ICustomFormula> customFormulaIndexMap = new HashMap<Integer, ICustomFormula>();
+		String htmlContents = htmlGenerator.getHTMLForSavedQuery(queryObject, isShowAll,
+				Constants.SAVE_QUERY_PAGE,customFormulaIndexMap);
+		request.getSession().setAttribute(QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP, customFormulaIndexMap);
+		request.setAttribute(Constants.HTML_CONTENTS, htmlContents);
+		String showAllLink = isShowAll
+				? Constants.SHOW_SELECTED_ATTRIBUTE
+				: Constants.SHOW_ALL_ATTRIBUTE;
+		request.setAttribute(Constants.SHOW_ALL_LINK, showAllLink);
+		if (!isShowAll)
+		{
+			request.setAttribute(Constants.SHOW_ALL, Constants.TRUE);
+		}
+		target = Constants.SUCCESS;
+		if (queryObject.getId() != null && queryObject instanceof ParameterizedQuery)
+		{
+			SaveQueryForm savedQueryForm = (SaveQueryForm)form;
+			savedQueryForm.setDescription(((ParameterizedQuery)queryObject).getDescription());
+			savedQueryForm.setTitle(((ParameterizedQuery)queryObject).getName());
+		}
+		return target;
 	}
+	
+	private void setErrorMessage(HttpServletRequest request)
+	{
+		String errorMessage = (String) request.getSession().getAttribute("errorMessageForEditQuery");
+		if (errorMessage != null)
+		{
+			ActionErrors errors = Utility.setActionError(errorMessage,"errors.item");
+			saveErrors(request, errors);
+			request.getSession().removeAttribute("errorMessageForEditQuery");
+		}
+	}
+	
+	
 
 }

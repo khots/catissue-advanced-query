@@ -46,22 +46,27 @@ public class OpenDecisionMakingPageAction extends Action
 		String noOfResults = (String) session
 				.getAttribute(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS);
 		String option = actionForm.getOptions();
+		String forward=Constants.SUCCESS;
 		QueryModuleSearchQueryUtil QMSearchQuery = new QueryModuleSearchQueryUtil(request, query);
 
-		if (option != null)
+		if (option == null)
 		{
-			boolean isRulePresentInDag = QueryModuleUtil.checkIfRulePresentInDag(query);
+			 ActionErrors errors = new ActionErrors();
+			 ActionError addMsg = new ActionError("query.decision.making.message", noOfResults,
+					Variables.maximumTreeNodeLimit);
+			errors.add(ActionErrors.GLOBAL_ERROR, addMsg);
+			saveErrors(request, errors);
+			
+		}
+	   else
+	   {
+		   final boolean isRulePresentInDag = QueryModuleUtil.checkIfRulePresentInDag(query);
 			if (isRulePresentInDag)
 			{
 				QMSearchQuery.searchQuery(option);
 			}
-			return mapping.findForward(Constants.VIEW_ALL_RECORDS);
-		}
-		ActionErrors errors = new ActionErrors();
-		ActionError addMsg = new ActionError("query.decision.making.message", noOfResults,
-				Variables.maximumTreeNodeLimit);
-		errors.add(ActionErrors.GLOBAL_ERROR, addMsg);
-		saveErrors(request, errors);
-		return mapping.findForward(Constants.SUCCESS);
+			forward=Constants.VIEW_ALL_RECORDS;
+	   }
+		return mapping.findForward(forward);
 	}
 }

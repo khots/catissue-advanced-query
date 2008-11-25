@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.bizlogic.IBizLogic;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
@@ -26,6 +27,7 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.bizlogic.GenerateHtmlForAddLimitsBizLogic;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
 
 /**
@@ -46,9 +48,23 @@ public class FetchQueryAction extends Action
 		String target = Constants.FAILURE;
 		Long queryId = null;
 		SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
-		if (request.getAttribute("queryId") == null)
+		if (request.getAttribute(Constants.QUERY_ID) == null)
 		{
 			queryId = saveQueryForm.getQueryId();
+			
+			Logger.out.debug("Fetching query having identifier as " + queryId);
+			if (queryId == null)
+			{
+				target = Constants.SUCCESS;
+				ActionErrors errors = Utility.setActionError(Constants.QUERY_IDENTIFIER_NOT_VALID,"errors.item");
+				saveErrors(request, errors);
+			}
+		
+			else
+			{
+				target = fetchQuery(request, queryId, saveQueryForm);
+			}
+	
 		}
 		else
 		{
@@ -56,56 +72,55 @@ public class FetchQueryAction extends Action
 			String htmlContent = saveQueryForm.getQueryString();
 			request.setAttribute(Constants.HTML_CONTENTS, htmlContent);
 			target = Constants.SUCCESS;
-			return actionMapping.findForward(target);
 		}
+	
+		return actionMapping.findForward(target);
+	}
 
-		Logger.out.debug("Fetching query having identifier as " + queryId);
-		if (queryId != null)
+	private String fetchQuery(HttpServletRequest request, Long queryId,
+			 SaveQueryForm saveQueryForm) throws BizLogicException
+	{
+		String target = Constants.FAILURE;
+		 IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
+				.getValue("app.bizLogicFactory"), "getBizLogic",
+				Constants.QUERY_INTERFACE_BIZLOGIC_ID);
+		try
 		{
-			IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
-					.getValue("app.bizLogicFactory"), "getBizLogic",
-					Constants.QUERY_INTERFACE_BIZLOGIC_ID);
-			try
+		final List<IParameterizedQuery> queryList = bizLogic.retrieve(ParameterizedQuery.class
+					.getName(), Constants.ID, queryId);
+			if (queryList != null && !queryList.isEmpty())
 			{
-				List<IParameterizedQuery> queryList = bizLogic.retrieve(ParameterizedQuery.class
-						.getName(), "id", queryId);
-				if (queryList != null && !queryList.isEmpty())
-				{
-					IParameterizedQuery parameterizedQuery = queryList.get(0);
-					request.getSession().setAttribute(Constants.QUERY_OBJECT, parameterizedQuery);
-					//					Map<IExpression, Collection<IParameterizedCondition>> expressionIdConditionCollectionMap = QueryUtility
-					//							.getAllParameterizedConditions(parameterizedQuery);
+			 IParameterizedQuery parameterizedQuery = queryList.get(0);
+				request.getSession().setAttribute(Constants.QUERY_OBJECT, parameterizedQuery);
+				//					Map<IExpression, Collection<IParameterizedCondition>> expressionIdConditionCollectionMap = QueryUtility
+				//							.getAllParameterizedConditions(parameterizedQuery);
 
-					if (parameterizedQuery.getParameters().isEmpty())
-					{
-						target = Constants.EXECUTE_QUERY;
-					}
-					else
-					{
-						Map<Integer, ICustomFormula> customFormulaIndexMap = new HashMap<Integer, ICustomFormula>();
-						String htmlContents = new GenerateHtmlForAddLimitsBizLogic(null)
-								.getHTMLForSavedQuery(parameterizedQuery, false,
-										Constants.EXECUTE_QUERY_PAGE, customFormulaIndexMap);
-						request.setAttribute(Constants.HTML_CONTENTS, htmlContents);
-						request.getSession().setAttribute(
-								QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP,
-								customFormulaIndexMap);
-						saveQueryForm.setQueryString(htmlContents);
-						target = Constants.SUCCESS;
-					}
+				if (parameterizedQuery.getParameters().isEmpty())
+				{
+					target = Constants.EXECUTE_QUERY;
+				}
+				else
+				{
+				 Map<Integer, ICustomFormula> customFormulaIndexMap = new HashMap<Integer, ICustomFormula>();
+				 String htmlContents = new GenerateHtmlForAddLimitsBizLogic(null)
+							.getHTMLForSavedQuery(parameterizedQuery, false,
+									Constants.EXECUTE_QUERY_PAGE, customFormulaIndexMap);
+					request.setAttribute(Constants.HTML_CONTENTS, htmlContents);
+					request.getSession().setAttribute(
+							QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP,
+							customFormulaIndexMap);
+					saveQueryForm.setQueryString(htmlContents);
+					target = Constants.SUCCESS;
 				}
 			}
-			catch (DAOException daoException)
-			{
-				setActionError(request, daoException.getMessage());
-			}
 		}
-		else
+		catch (DAOException daoException)
 		{
-			target = Constants.SUCCESS;
-			setActionError(request, "Query identifier is not valid.");
+			ActionErrors errors = Utility.setActionError(daoException.getMessage(),"errors.item");
+			saveErrors(request, errors);
+			
 		}
-		return actionMapping.findForward(target);
+		return target;
 	}
 
 	/**
@@ -113,11 +128,5 @@ public class FetchQueryAction extends Action
 	 * @param request
 	 * @param errorMessage
 	 */
-	private void setActionError(HttpServletRequest request, String errorMessage)
-	{
-		ActionErrors errors = new ActionErrors();
-		ActionError error = new ActionError("errors.item", errorMessage);
-		errors.add(ActionErrors.GLOBAL_ERROR, error);
-		saveErrors(request, errors);
-	}
+	
 }

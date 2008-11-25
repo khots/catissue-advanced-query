@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -23,6 +22,7 @@ import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 /**
@@ -34,7 +34,7 @@ public class FetchAndExecuteQueryAction extends Action
 
 	@Override
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-			HttpServletRequest request, HttpServletResponse response) throws Exception
+			HttpServletRequest request,HttpServletResponse response) throws Exception
 	{
 		String target = Constants.FAILURE;
 
@@ -47,50 +47,63 @@ public class FetchAndExecuteQueryAction extends Action
 					Constants.QUERY_INTERFACE_BIZLOGIC_ID);
 			Object object = bizLogic.retrieve(ParameterizedQuery.class.getName(), queryId);
 
-			if (object != null)
+			if (object == null)
 			{
-				IParameterizedQuery parameterizedQuery = (ParameterizedQuery) object;
-				HttpSession session = request.getSession();
-				session.setAttribute(Constants.QUERY_OBJECT, parameterizedQuery);
-
-				String errorMessage = QueryModuleUtil.executeQuery(request, parameterizedQuery);
-				if (errorMessage == null)
-				{
-					target = Constants.SUCCESS;
-				}
-				else if (errorMessage.equalsIgnoreCase(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS))
-				{
-					target = Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS;
-					return actionMapping.findForward(target);
-				}
-				else
-				{
-					setActionError(request, errorMessage);
-				}
+				ActionErrors errors = Utility.setActionError(Constants.NO_RESULT_FOUND,"errors.item");
+				saveErrors(request, errors);
 			}
 			else
 			{
-				setActionError(request, "No result found.");
+				target = executeQuery(request, object);
 			}
 		}
 		catch (NumberFormatException numberFormatException)
 		{
-			setActionError(request, "Query identifier is not valid.");
+			ActionErrors errors = Utility.setActionError(Constants.QUERY_IDENTIFIER_NOT_VALID,"errors.item");
+			saveErrors(request, errors);
+			
 		}
 		catch (DAOException daoException)
 		{
-			setActionError(request, daoException.getMessage());
+			ActionErrors errors = Utility.setActionError(daoException.getMessage(),"errors.item");
+			saveErrors(request, errors);
+			
 		}
 
 		return actionMapping.findForward(target);
 	}
 
-	private void setActionError(HttpServletRequest request, String errorMessage)
+	/**
+	 * Method to execute a query
+	 * @param request
+	 * @param object
+	 * @return
+	 */
+	private String executeQuery(HttpServletRequest request, Object object)
 	{
-		ActionErrors errors = new ActionErrors();
-		ActionError error = new ActionError("errors.item", errorMessage);
-		errors.add(ActionErrors.GLOBAL_ERROR, error);
-		saveErrors(request, errors);
+		String target = Constants.FAILURE;
+		IParameterizedQuery parameterizedQuery = (ParameterizedQuery) object;
+		HttpSession session = request.getSession();
+		session.setAttribute(Constants.QUERY_OBJECT, parameterizedQuery);
+
+		String errorMessage = QueryModuleUtil.executeQuery(request, parameterizedQuery);
+		if (errorMessage == null)
+		{
+			target = Constants.SUCCESS;
+		}
+		else if (errorMessage.equalsIgnoreCase(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS))
+		{
+			target = Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS;
+			
+		}
+		else
+		{
+			ActionErrors errors = Utility.setActionError(errorMessage,"errors.item");
+			saveErrors(request, errors);
+		}
+	  return target;
 	}
+
+	
 
 }

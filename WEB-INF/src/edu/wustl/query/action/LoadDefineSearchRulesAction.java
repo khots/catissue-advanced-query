@@ -14,6 +14,7 @@ import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.bizlogic.GenerateHTMLDetails;
 import edu.wustl.query.bizlogic.GenerateHtmlForAddLimitsBizLogic;
+import edu.wustl.query.util.global.Constants;
 
 /**
  * When the Link representing the searched entity is clicked, the UI for Add Limits section is generated with help of
@@ -59,7 +60,7 @@ public class LoadDefineSearchRulesAction extends Action
 			html = addLimitsBizLogic.generateHTML(entity, null);
 		}
 		//	}
-		response.setContentType("text/html");
+		response.setContentType(Constants.CONTENT_TYPE_TEXT);
 		response.getWriter().write(html);
 		return null;
 	}

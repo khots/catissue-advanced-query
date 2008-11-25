@@ -19,10 +19,10 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
-import edu.wustl.common.util.ObjectCloner;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
@@ -65,19 +65,32 @@ public class ExecuteQueryAction extends Action
 					Constants.EXECUTE_QUERY_PAGE, rhsList, customFormulaIndexMap);
 			if (errorMessage.trim().length() > 0)
 			{
-				ActionErrors errors = new ActionErrors();
-				ActionError error = new ActionError("errors.item", errorMessage);
-				errors.add(ActionErrors.GLOBAL_ERROR, error);
+				ActionErrors errors = Utility.setActionError(errorMessage, "errors.item");
 				saveErrors(request, errors);
 				target = Constants.INVALID_CONDITION_VALUES;
 				request.setAttribute("queryId", parameterizedQuery.getId());
-				return actionMapping.findForward(target);
 			}
 		}
 
+	 if(!(target.equals(Constants.INVALID_CONDITION_VALUES))){
 		String errorMessage = QueryModuleUtil.executeQuery(request, parameterizedQuery1);
 		session.setAttribute(Constants.QUERY_OBJECT, parameterizedQuery);
 
+		target = checkError(request,errorMessage);
+	 } 
+		return actionMapping.findForward(target);
+	}
+
+	/**
+	 * This Method checks for any error present and if present it will save the error
+	 * @param request
+	 * @param errorMessage
+	 * @return
+	 */
+	private String checkError(HttpServletRequest request, 
+			final String errorMessage)
+	{
+		String target =	Constants.FAILURE;
 		if (errorMessage == null)
 		{
 			target = Constants.SUCCESS;
@@ -85,16 +98,12 @@ public class ExecuteQueryAction extends Action
 		else if (errorMessage.equalsIgnoreCase(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS))
 		{
 			target = Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS;
-			return actionMapping.findForward(target);
 		}
 		else
 		{
-			ActionErrors errors = new ActionErrors();
-			ActionError error = new ActionError("errors.item", errorMessage);
-			errors.add(ActionErrors.GLOBAL_ERROR, error);
-			saveErrors(request, errors);
+			ActionErrors errors = Utility.setActionError(errorMessage, "errors.item"); 
+				saveErrors(request, errors);
 		}
-
-		return actionMapping.findForward(target);
+		return target;
 	}
 }
