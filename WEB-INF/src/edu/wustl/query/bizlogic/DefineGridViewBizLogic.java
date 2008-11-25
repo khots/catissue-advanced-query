@@ -73,7 +73,7 @@ public class DefineGridViewBizLogic
 	 * @param prevSelectedColumnNameValueBeanList 
 	 */
 	public void createTree(CategorySearchForm categorySearchForm, QueryDetails queryDetailsObj,
-			Vector<QueryTreeNodeData> treeDataVector, OutputTreeDataNode currentSelectedObject,
+			List<QueryTreeNodeData> treeDataVector, OutputTreeDataNode currentSelectedObject,
 			List<NameValueBean> prevSelectedColumnNameValueBeanList)
 	{
 		this.prevSelectedColumnNameValueBeanList = prevSelectedColumnNameValueBeanList;
@@ -103,7 +103,7 @@ public class DefineGridViewBizLogic
 	 * Adds root node to the tree, its a just a label node saying classes present in query.
 	 * @param treeDataVector  vector to store tree data
 	 */
-	private void addRootNode(Vector<QueryTreeNodeData> treeDataVector)
+	private void addRootNode(List<QueryTreeNodeData> treeDataVector)
 	{
 		QueryTreeNodeData classTreeNode = new QueryTreeNodeData();
 		String rootNodeId = Constants.ROOT;
@@ -123,7 +123,7 @@ public class DefineGridViewBizLogic
 	 * @param categorySearchForm action form
 	 * @param currentSelectedObject  OutputTreeDataNode
 	 */
-	private void addClassAndAttributeNodes(Vector<QueryTreeNodeData> treeDataVector,
+	private void addClassAndAttributeNodes(List<QueryTreeNodeData> treeDataVector,
 			OutputTreeDataNode node, CategorySearchForm categorySearchForm,
 			OutputTreeDataNode currentSelectedObject)
 	{
@@ -166,7 +166,7 @@ public class DefineGridViewBizLogic
 	 * @param attributeMetadataList  Metadata to be added
 	 * @param isSelectedObject whether the object is selected
 	 */
-	private void addAttributeNodes(Vector<QueryTreeNodeData> treeDataVector, String className,
+	private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String className,
 			String treeClassNodeId, CategorySearchForm categorySearchForm,
 			List<QueryOutputTreeAttributeMetadata> attributeMetadataList, boolean isSelectedObject)
 	{
