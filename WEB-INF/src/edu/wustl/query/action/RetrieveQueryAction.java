@@ -56,15 +56,15 @@ public class RetrieveQueryAction extends Action
 
 			String message = null;
 
-			if (parameterizedQueryCollection != null)
-			{
-				saveQueryForm.setParameterizedQueryCollection(parameterizedQueryCollection);
-				message = parameterizedQueryCollection.size() + "";
-			}
-			else
+			if (parameterizedQueryCollection == null)
 			{
 				saveQueryForm.setParameterizedQueryCollection(new ArrayList<IParameterizedQuery>());
 				message = "No";
+			}
+			else
+			{
+				saveQueryForm.setParameterizedQueryCollection(parameterizedQueryCollection);
+				message = String.valueOf(parameterizedQueryCollection.size());
 			}
 
 			ActionMessages actionMessages = new ActionMessages();

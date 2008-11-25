@@ -22,6 +22,7 @@ import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.security.utility.Utility;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
 import edu.wustl.query.bizlogic.QueryOutputTreeBizLogic;
 import edu.wustl.query.util.global.Constants;
@@ -50,57 +51,35 @@ public class ShowGridAction extends BaseAction
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
-		QueryDetails queryDetailsObj = new QueryDetails(session);
-		Map<String, IOutputTerm> outputTermsColumns = (Map<String, IOutputTerm>) session
-				.getAttribute(Constants.OUTPUT_TERMS_COLUMNS);
-		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
-		boolean hasConditionOnIdentifiedField = Utility.isConditionOnIdentifiedField(query);
-		session.setAttribute(Constants.HAS_CONDITION_ON_IDENTIFIED_FIELD,
-				hasConditionOnIdentifiedField);
+		
+	
 		Map<EntityInterface, List<EntityInterface>> mainEntityMap = (Map<EntityInterface, List<EntityInterface>>) session
 				.getAttribute(Constants.MAIN_ENTITY_MAP);
-		Map<Long, QueryResultObjectDataBean> queryResultObjectDataMap = (Map<Long, QueryResultObjectDataBean>) session
-				.getAttribute(Constants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP);
+		
 		//Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map<String, OutputTreeDataNode>) session.getAttribute(Constants.ID_NODES_MAP);
-		Map<Long, Map<AttributeInterface, String>> columnMap = (Map<Long, Map<AttributeInterface, String>>) session
-				.getAttribute(Constants.ID_COLUMNS_MAP);
+		
 		//List<OutputTreeDataNode> rootOutputTreeNodeList = (List<OutputTreeDataNode>)session.getAttribute(Constants.TREE_ROOTS);
 		//SessionDataBean sessionData = getSessionData(request);
-		SelectedColumnsMetadata selectedColumnsMetadata = (SelectedColumnsMetadata) session
-				.getAttribute(Constants.SELECTED_COLUMN_META_DATA);
+		
 		String idOfClickedNode = request.getParameter(Constants.TREE_NODE_ID);
 		QueryOutputTreeBizLogic treeBizLogic = new QueryOutputTreeBizLogic();
 		idOfClickedNode = treeBizLogic.decryptId(idOfClickedNode);
 		Map spreadSheetDatamap = null;
-		String recordsPerPageStr = (String) session.getAttribute(Constants.RESULTS_PER_PAGE);
-		int recordsPerPage = Integer.valueOf((recordsPerPageStr));
-		QueryOutputSpreadsheetBizLogic outputSpreadsheetBizLogic = new QueryOutputSpreadsheetBizLogic();
 		String actualParentNodeId = idOfClickedNode.substring(idOfClickedNode
 				.lastIndexOf(Constants.NODE_SEPARATOR) + 2, idOfClickedNode.length());
-		String actualId = actualParentNodeId.substring(actualParentNodeId.lastIndexOf("_") + 1,
+		String actualId = actualParentNodeId.substring(actualParentNodeId.lastIndexOf('_') + 1,
 				actualParentNodeId.length());
+		
+		String forward = Constants.SUCCESS;
 		if (actualId != null && actualId.equals(Constants.HASHED_NODE_ID))
 		{
 			getErrorMessageUserNotAuthorized(request);
-			return mapping.findForward(Constants.FAILURE);
+			forward= Constants.FAILURE;
 		}
 
 		else
 		{
-			if (idOfClickedNode.endsWith(Constants.LABEL_TREE_NODE))
-			{
-				spreadSheetDatamap = outputSpreadsheetBizLogic.processSpreadsheetForLabelNode(
-						queryDetailsObj, columnMap, idOfClickedNode, recordsPerPage,
-						selectedColumnsMetadata, hasConditionOnIdentifiedField,
-						queryResultObjectDataMap, query.getConstraints(), outputTermsColumns);
-			}
-			else
-			{
-				spreadSheetDatamap = outputSpreadsheetBizLogic.processSpreadsheetForDataNode(
-						queryDetailsObj, actualParentNodeId, recordsPerPage,
-						selectedColumnsMetadata, hasConditionOnIdentifiedField,
-						queryResultObjectDataMap, query.getConstraints(), outputTermsColumns);
-			}
+			spreadSheetDatamap = getspreadSheetDataMap(session, idOfClickedNode, actualParentNodeId);
 			spreadSheetDatamap.put(Constants.MAIN_ENTITY_MAP, mainEntityMap);
 			request.getSession().setAttribute(Constants.ENTITY_IDS_MAP,
 					spreadSheetDatamap.get(Constants.ENTITY_IDS_MAP));
@@ -110,18 +89,64 @@ public class ShowGridAction extends BaseAction
 			QueryModuleUtil.setGridData(request, spreadSheetDatamap);
 		}
 
-		return mapping.findForward(Constants.SUCCESS);
+		return mapping.findForward(forward);
+	}
+
+	/**
+	 * This Method returns the Map containing the results to be displayed on spreadsheet
+	 * @param session
+	 * @param idOfClickedNode
+	 * @param actualParentNodeId
+	 * @return
+	 * @throws DAOException
+	 * @throws ClassNotFoundException
+	 */
+	private Map getspreadSheetDataMap(HttpSession session, String idOfClickedNode,
+			String actualParentNodeId) throws DAOException, ClassNotFoundException
+	{
+		Map spreadSheetDatamap;
+		Map<Long, QueryResultObjectDataBean> queryResultObjectDataMap = (Map<Long, QueryResultObjectDataBean>) session
+		.getAttribute(Constants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP);
+		SelectedColumnsMetadata selectedColumnsMetadata = (SelectedColumnsMetadata) session
+		.getAttribute(Constants.SELECTED_COLUMN_META_DATA);
+		Map<String, IOutputTerm> outputTermsColumns = (Map<String, IOutputTerm>) session
+		.getAttribute(Constants.OUTPUT_TERMS_COLUMNS);
+		String recordsPerPageStr = (String) session.getAttribute(Constants.RESULTS_PER_PAGE);
+		int recordsPerPage = Integer.valueOf((recordsPerPageStr));
+		Map<Long, Map<AttributeInterface, String>> columnMap = (Map<Long, Map<AttributeInterface, String>>) session
+		.getAttribute(Constants.ID_COLUMNS_MAP);
+		QueryDetails queryDetailsObj = new QueryDetails(session);
+		QueryOutputSpreadsheetBizLogic outputSpreadsheetBizLogic = new QueryOutputSpreadsheetBizLogic();
+		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
+		boolean hasConditionOnIdentifiedField = Utility.isConditionOnIdentifiedField(query);
+		session.setAttribute(Constants.HAS_CONDITION_ON_IDENTIFIED_FIELD,
+				hasConditionOnIdentifiedField);
+		if (idOfClickedNode.endsWith(Constants.LABEL_TREE_NODE))
+		{
+			spreadSheetDatamap = outputSpreadsheetBizLogic.processSpreadsheetForLabelNode(
+					queryDetailsObj, columnMap, idOfClickedNode, recordsPerPage,
+					selectedColumnsMetadata, hasConditionOnIdentifiedField,
+					queryResultObjectDataMap, query.getConstraints(), outputTermsColumns);
+		}
+		else
+		{
+			spreadSheetDatamap = outputSpreadsheetBizLogic.processSpreadsheetForDataNode(
+					queryDetailsObj, actualParentNodeId, recordsPerPage,
+					selectedColumnsMetadata, hasConditionOnIdentifiedField,
+					queryResultObjectDataMap, query.getConstraints(), outputTermsColumns);
+		}
+		return spreadSheetDatamap;
 	}
 
 	/**Method that will add an error message in action errors when id perticular data node is -1 i.e. user is not authorized to see 
-	 * this perticular record. 
+	 * this particular record. 
 	 * @param request
 	 */
 	private void getErrorMessageUserNotAuthorized(HttpServletRequest request)
 	{
 		ActionErrors errors = new ActionErrors();
 		ActionError error = new ActionError("query.userNotAuthorizedError");
-		errors.add(ActionErrors.GLOBAL_ERROR, error);
+		 errors.add(ActionErrors.GLOBAL_ERROR, error);
 		saveErrors(request, errors);
 	}
 }

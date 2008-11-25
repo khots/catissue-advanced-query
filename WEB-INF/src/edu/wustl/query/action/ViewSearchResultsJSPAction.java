@@ -34,12 +34,13 @@ public class ViewSearchResultsJSPAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+		String target=Constants.SUCCESS;
 		CategorySearchForm actionForm = (CategorySearchForm) form;
 		String nextOperation = actionForm.getNextOperation();
 		if (nextOperation != null && nextOperation.equalsIgnoreCase(Constants.SHOW_ERROR_PAGE))
 		{
-			return mapping.findForward(Constants.FAILURE);
+			target=Constants.FAILURE;
 		}
-		return mapping.findForward(Constants.SUCCESS);
+		return mapping.findForward(target);
 	}
 }
