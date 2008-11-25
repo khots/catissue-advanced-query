@@ -158,10 +158,10 @@ function setEditableChkbox(checkAllPages)
 				];
 
 	var columns = <%="\""%><%int col;%><%for(col=0;col<(columnList.size()-1);col++){%><%=columnList.get(col)%>,<%}%><%=columnList.get(col)%><%="\""%>;
-	var colWidth = "<%=Utility.getColumnWidth(columnList)%>";
+    var colWidth = "<%=Utility.getColumnWidth(columnList)%>";
 	var colTypes = <%="\""%><%=Variables.prepareColTypes(dataList,true)%><%="\""%>;
 	var colDataTypes = colTypes;
-
+	
 	while(colDataTypes.indexOf("str") !=-1)
 	{
 		colDataTypes=colDataTypes.replace(/str/,"ro");
@@ -247,7 +247,22 @@ function setEditableChkbox(checkAllPages)
 	mygrid.setHeader(columns);
 	//mygrid.setEditable("FALSE");
 	mygrid.enableAutoHeigth(false);
-	mygrid.setInitWidths(colWidth);
+	
+   if(navigator.userAgent.toString().toLowerCase().indexOf("firefox")!= -1)
+  {
+     <% if(columnList.size()<=10) { %>
+       var colWidthP = "<%=Utility.getColumnWidthP(columnList)%>";
+       mygrid.setInitWidthsP(colWidthP);
+
+      <% } else { %>
+         mygrid.setInitWidths(colWidth);
+      <%}%>
+  }
+  else
+  {
+     mygrid.setInitWidths(colWidth);
+  }
+
 	mygrid.setColTypes(colDataTypes);
     mygrid.enableRowsHover(true,'grid_hover')
 	mygrid.enableMultiselect(true);
@@ -286,9 +301,10 @@ function setEditableChkbox(checkAllPages)
 			// Patch ID: SimpleSearchEdit_11
 			// Changing delimeter for the dhtml grid 
 
-			data = "0<%=Constants.DHTMLXGRID_DELIMETER%>"+myData[row];
+			data = "<%=Constants.DHTMLXGRID_DELIMETER%>"+myData[row];
 		}
 
+		
 		mygrid.addRow(row+1,data,row+1);
 	}
 	
