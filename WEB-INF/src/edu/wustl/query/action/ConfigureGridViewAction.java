@@ -60,7 +60,7 @@ public class ConfigureGridViewAction extends BaseAction
 		OutputTreeDataNode currentSelectedObject = selectedColumnsMetadata.getCurrentSelectedObject();
 		QuerySessionData querySessionData = (QuerySessionData) session.getAttribute(Constants.QUERY_SESSION_DATA);
 		String recordsPerPageStr = (String) session.getAttribute(Constants.RESULTS_PER_PAGE);
-		int recordsPerPage = new Integer(recordsPerPageStr);
+		int recordsPerPage =Integer.valueOf(recordsPerPageStr);
 		
 		Boolean hasConditionOnIdentifiedField = (Boolean)session.getAttribute(Constants.HAS_CONDITION_ON_IDENTIFIED_FIELD);
 		//Map<EntityInterface ,List<EntityInterface>> mainEntityMap =(Map<EntityInterface ,List<EntityInterface>>)session.getAttribute(Constants.MAIN_ENTITY_MAP);
