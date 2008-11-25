@@ -222,7 +222,9 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String SINGLE_QUOTE_ESCAPE_SEQUENCE = "&#096;";
 	public static final String ViewSearchResultsAction = "ViewSearchResultsAction.do";
 	
-	
+	public static final String QUERY_IDENTIFIER_NOT_VALID="Query identifier is not valid.";
+	public static final String NO_RESULT_FOUND= "No result found.";
+	public static final String QUERY_ID = "queryId";
 	public static final String QUERY_COLUMN_NAME = "Column";
 	public static final String QUERY_OPENING_PARENTHESIS = "(";
 	public static final String QUERY_CLOSING_PARENTHESIS = ")";
@@ -245,7 +247,9 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String QUERY_AND = " and ";
 	
 	public static final String TRUE = "true";
+	public static final String FALSE= "false";
 	public static final String Is_PAGING = "isPaging";
+	public static final String CONTENT_TYPE_TEXT="text/html";
 	
 	public static final String getOracleTermString(String s)
 	{
