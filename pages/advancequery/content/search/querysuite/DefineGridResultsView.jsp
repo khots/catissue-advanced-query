@@ -335,7 +335,7 @@ function initTreeView()
 	    tree.enableThreeStateCheckboxes(true);
 				
 <%
-Vector treeData = (Vector)request.getSession().getAttribute(Constants.TREE_DATA);
+ArrayList treeData = (ArrayList)request.getSession().getAttribute(Constants.TREE_DATA);
 	if(treeData != null && treeData.size() != 0)
 	{
 		
