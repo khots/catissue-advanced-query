@@ -13,6 +13,10 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.Action;
+
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
@@ -307,8 +311,10 @@ public class Utility extends edu.wustl.common.util.Utility
 	public static String getColumnWidth(List columnNames)
 	{
 		String colWidth = getColumnWidth((String) columnNames.get(0));
-
-		for (int col = 1; col < columnNames.size(); col++)
+        
+		int size = columnNames.size(); 
+		
+		for (int col = 1; col < size; col++)
 		{
 			String columnName = (String) columnNames.get(col);
 			colWidth = colWidth + "," + getColumnWidth(columnName);
@@ -339,6 +345,27 @@ public class Utility extends edu.wustl.common.util.Utility
 			columnWidth = "80";
 		}
 		return columnWidth;
+	}
+
+	public static String getColumnWidthP(List columnNames)
+	{
+		StringBuffer colWidth=new StringBuffer("");
+        
+		int size = columnNames.size(); 
+		double temp= 97.5f;
+		for (int col = 0; col < size; col++)
+		{
+			String columnName = (String) columnNames.get(col);
+			 if(" ".equals(columnName))
+			 {
+				 colWidth = colWidth.append("2.5");
+			 }
+			 else{
+			      colWidth = colWidth .append(",");
+			      colWidth = colWidth .append(String.valueOf(temp/(size-1)));
+			 }
+		}
+		return colWidth.toString();
 	}
 
 	/**
@@ -488,5 +515,12 @@ public class Utility extends edu.wustl.common.util.Utility
 		}
 		return selectSql;
 	}
-
+	
+	public static ActionErrors setActionError(String errorMessage, String key)
+	{
+		ActionErrors errors = new ActionErrors();
+		ActionError error = new ActionError("errors.item", errorMessage);
+		errors.add(ActionErrors.GLOBAL_ERROR, error);
+		return errors;
+	}
 }
