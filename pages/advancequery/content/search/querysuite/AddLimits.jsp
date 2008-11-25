@@ -146,7 +146,7 @@
 			<tr>
 					<td colspan="4">
 					<table border="0" width="100%" cellspacing="0" cellpadding="0" height="24" background="images/advancequery/bot_bg_wiz.gif">
-					<tr valign="bottom">
+					<tr valign="top">
 					 <td width="2%" valign="bottom">&nbsp;</td>
 					 <td width="50%" align="left">
 					  <table border="0" cellspacing="0" cellpadding="0">
