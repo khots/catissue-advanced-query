@@ -64,7 +64,7 @@ import edu.wustl.common.util.Collections;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
-import edu.wustl.query.bizlogic.GenerateHtmlForAddLimitsBizLogic;
+import edu.wustl.query.htmlprovider.HtmlProvider;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleSearchQueryUtil;
@@ -1887,7 +1887,7 @@ public class DAGPanel
 		IExpression expression = m_queryObject.getQuery().getConstraints().getExpression(
 				expressionId);
 		EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
-		GenerateHtmlForAddLimitsBizLogic generateHTMLBizLogic = new GenerateHtmlForAddLimitsBizLogic(
+		HtmlProvider generateHTMLBizLogic = new HtmlProvider(
 				null);
 		Rule rule = ((Rule) (expression.getOperand(0)));
 		List<ICondition> conditions = Collections.list(rule);
