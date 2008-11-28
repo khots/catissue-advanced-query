@@ -272,4 +272,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
 
 	public static final Object PERMISSIBLEVALUEFILTER = "PV_FILTER";
 	
+	public static final String[] NUMBER = {"long","double","short","integer","float"};
+	public static final String NEWLINE = "\n";
+	public static final String DATATYPE_BOOLEAN = "boolean";
+	public static final String DATATYPE_NUMBER= "number";
+	public static final int MAX_PV_SIZE = 500;
+	public static final int MAX_SIZE = 500;
 }
