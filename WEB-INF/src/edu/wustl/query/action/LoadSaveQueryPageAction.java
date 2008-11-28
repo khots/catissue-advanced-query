@@ -21,7 +21,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.SaveQueryForm;
-import edu.wustl.query.bizlogic.GenerateHtmlForAddLimitsBizLogic;
+import edu.wustl.query.htmlprovider.SavedQueryHtmlProvider;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
@@ -80,9 +80,8 @@ public class LoadSaveQueryPageAction extends Action
 			IQuery queryObject,boolean isShowAll)
 	{
 		String target;
-		GenerateHtmlForAddLimitsBizLogic htmlGenerator = new GenerateHtmlForAddLimitsBizLogic(null);
 		Map<Integer,ICustomFormula> customFormulaIndexMap = new HashMap<Integer, ICustomFormula>();
-		String htmlContents = htmlGenerator.getHTMLForSavedQuery(queryObject, isShowAll,
+		String htmlContents = new SavedQueryHtmlProvider().getHTMLForSavedQuery(queryObject, isShowAll,
 				Constants.SAVE_QUERY_PAGE,customFormulaIndexMap);
 		request.getSession().setAttribute(QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP, customFormulaIndexMap);
 		request.setAttribute(Constants.HTML_CONTENTS, htmlContents);

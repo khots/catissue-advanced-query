@@ -25,7 +25,7 @@ import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.actionForm.SaveQueryForm;
-import edu.wustl.query.bizlogic.GenerateHtmlForAddLimitsBizLogic;
+import edu.wustl.query.htmlprovider.SavedQueryHtmlProvider;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
@@ -102,7 +102,7 @@ public class FetchQueryAction extends Action
 				else
 				{
 				 Map<Integer, ICustomFormula> customFormulaIndexMap = new HashMap<Integer, ICustomFormula>();
-				 String htmlContents = new GenerateHtmlForAddLimitsBizLogic(null)
+				 String htmlContents = new SavedQueryHtmlProvider()
 							.getHTMLForSavedQuery(parameterizedQuery, false,
 									Constants.EXECUTE_QUERY_PAGE, customFormulaIndexMap);
 					request.setAttribute(Constants.HTML_CONTENTS, htmlContents);

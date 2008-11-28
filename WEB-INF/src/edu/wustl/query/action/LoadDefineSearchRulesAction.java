@@ -12,8 +12,8 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.query.actionForm.CategorySearchForm;
-import edu.wustl.query.bizlogic.GenerateHTMLDetails;
-import edu.wustl.query.bizlogic.GenerateHtmlForAddLimitsBizLogic;
+import edu.wustl.query.htmlprovider.GenerateHTMLDetails;
+import edu.wustl.query.htmlprovider.HtmlProvider;
 import edu.wustl.query.util.global.Constants;
 
 /**
@@ -47,7 +47,7 @@ public class LoadDefineSearchRulesAction extends Action
 		generateHTMLDetails.setPermissibleValuesChecked(Boolean.valueOf(searchForm
 				.getPermissibleValuesChecked()));
 
-		GenerateHtmlForAddLimitsBizLogic addLimitsBizLogic = new GenerateHtmlForAddLimitsBizLogic(
+		HtmlProvider addLimitsBizLogic = new HtmlProvider(
 				generateHTMLDetails);
 
 		String html = "";
