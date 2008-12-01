@@ -271,6 +271,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	//Taraben Khoiwala
 
 	public static final Object PERMISSIBLEVALUEFILTER = "PV_FILTER";
+	public static final int ADVANCE_QUERY_INTERFACE_ID = 24;
+	public static final String PUBLIC_QUERY_PROTECTION_GROUP="Public_Query_Protection_Group";
+	public static final String MY_QUERIES = "MyQueries";
+
 	
 	public static final String[] NUMBER = {"long","double","short","integer","float"};
 	public static final String NEWLINE = "\n";
@@ -278,4 +282,6 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String DATATYPE_NUMBER= "number";
 	public static final int MAX_PV_SIZE = 500;
 	public static final int MAX_SIZE = 500;
+	
+	public static final int WORKFLOW_BIZLOGIC_ID = 101;
 }

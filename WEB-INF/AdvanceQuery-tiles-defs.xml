@@ -205,6 +205,9 @@
 		<put name="content" value="/pages/advancequery/content/search/querysuite/QueryListView.jsp" />
 	</definition>
 	
+	<definition name=".query.querySavedQueryListDef" path="/pages/advancequery/content/search/querysuite/SavedQueryListView.jsp">
+	</definition>
+	
 	 <!-- Definition code : Deepti Shelar : For pagination : 20/07/2007 -->
 	<definition name=".query.queryTreeViewDef" path="/pages/advancequery/content/search/querysuite/QueryTreeView.jsp">
 	</definition>
@@ -222,5 +225,13 @@
 	
 	<definition name=".query.redirectToLoginPageDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/common/RedirectToLoginPage.jsp" />
+	</definition>
+	
+	
+	<definition name=".query.queryWorkFlowWizardDef" path="/pages/advancequery/content/search/querysuite/Workflow.jsp">
+	</definition>
+	
+	<definition name=".query.redirectToWorkflowPageDef" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/workflow/Workflow.jsp" />
 	</definition>
 </tiles-definitions>

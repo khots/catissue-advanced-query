@@ -11,6 +11,7 @@ PUBLIC
 		<form-bean name="categorySearchForm" type="edu.wustl.query.actionForm.CategorySearchForm"/>
 		<form-bean name="advanceSearchForm" type="edu.wustl.query.actionForm.AdvanceSearchForm"/>  
 		<form-bean name="saveQueryForm" type="edu.wustl.query.actionForm.SaveQueryForm"/>
+		<form-bean name="workflowForm" type="edu.wustl.query.actionForm.WorkflowForm"/>		
 				
 	</form-beans>
 	
@@ -132,6 +133,7 @@ PUBLIC
 			scope="request">
 			<forward name="success" path=".query.queryViewPageDef"/>
 			<forward name="failure" path=".query.errorPageDef"/>
+			<forward name="MyQueries" path=".query.querySavedQueryListDef"/>
 		</action>
 		<action path="/ExecuteQueryAction"
 			type="edu.wustl.query.action.ExecuteQueryAction"
@@ -406,6 +408,26 @@ PUBLIC
 	      <forward name="pageOfQueryResults" path=".query.queryResultsSpreadsheetViewDef" />	
 		  <forward name="pageOfQueryModule" path=".query.queryResultsSpreadsheetViewDef" />
 	    </action>
+	    
+	            <!--  To Do  change the action  class name --> 
+        <action path="/QueryWorkflowWizard" 
+        type="edu.wustl.query.action.QueryAction">
+        	<forward name="success" path=".query.queryWorkFlowWizardDef"/>
+        </action>
+        
+         <action path="/Workflow"
+             type="org.apache.struts.actions.ForwardAction"
+             parameter=".query.redirectToWorkflowPageDef" />
+        
+        <action path="/WorkflowAction1"  
+        		type="edu.wustl.query.action.WorkflowAction" 
+        		name="workflowForm"
+        		validate="false"
+				scope="request">
+        		<forward name="success" path=".query.redirectToWorkflowPageDef" />
+        </action>
+        
+	   				
 	</action-mappings>
 	
 	<controller processorClass="edu.wustl.common.struts.ApplicationRequestProcessor" />

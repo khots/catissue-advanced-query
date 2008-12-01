@@ -92,6 +92,10 @@
 		      <div  style="width:100%; max-height:300px; min-height:50px; overflow-y:auto;">
 			    <%=request.getAttribute(Constants.HTML_CONTENTS)%>
 			   </div>
+			   <html:checkbox property="shareQuery" styleId="shareQuery"/>				
+			   <bean:message
+						key="query.shareQuery.permission" /></td>
+
 			</td> 
 		   </tr>
 		   <tr>

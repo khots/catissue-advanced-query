@@ -35,6 +35,16 @@ public class SaveQueryForm extends AbstractActionForm
 	private Long queryId;
 
 	private String queryString;
+	
+	private boolean  shareQuery;
+
+	public boolean isShareQuery() {
+		return shareQuery;
+	}
+
+	public void setShareQuery(boolean shareQuery) {
+		this.shareQuery = shareQuery;
+	}
 
 	public String getQueryString()
 	{

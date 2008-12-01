@@ -22,7 +22,6 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.action.BaseAction;
 import edu.wustl.common.beans.SessionDataBean;
-import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
 import edu.wustl.common.hibernate.HibernateCleanser;
@@ -32,7 +31,9 @@ import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.security.PrivilegeUtility;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
@@ -40,6 +41,8 @@ import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
+import gov.nih.nci.security.authorization.domainobjects.User;
+import gov.nih.nci.security.exceptions.CSException;
 
 /**
  * This class saves the Query in Dag into database.
@@ -78,7 +81,7 @@ public class SaveQueryAction extends BaseAction
 					actionForm, request);
 			if(parameterizedQuery!=null)
 			{
-				target = saveQuery(request, parameterizedQuery);
+				target = saveQuery(request, parameterizedQuery,actionForm);
 			}
 		}
 
@@ -86,24 +89,24 @@ public class SaveQueryAction extends BaseAction
 	}
 
 	private String saveQuery(HttpServletRequest request, 
-			IParameterizedQuery parameterizedQuery)
+			IParameterizedQuery parameterizedQuery, ActionForm actionForm) throws CSException, DAOException
 	{
 		String target=Constants.FAILURE;
-		
 			try
 			{
-				IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
-						.getValue("app.bizLogicFactory"), "getBizLogic",
-						Constants.QUERY_INTERFACE_BIZLOGIC_ID);
+				edu.wustl.query.bizlogic.QueryBizLogic bizLogic = (edu.wustl.query.bizlogic.QueryBizLogic) AbstractBizLogicFactory.getBizLogic(ApplicationProperties
+							.getValue("app.bizLogicFactory"), "getBizLogic",
+							Constants.ADVANCE_QUERY_INTERFACE_ID);
+				SessionDataBean sessionDataBean = (SessionDataBean)request.getSession().getAttribute(Constants.SESSION_DATA);
+				User user = new PrivilegeUtility().getUserProvisioningManager().getUser(sessionDataBean.getUserName());
+				sessionDataBean.setCsmUserId(user.getUserId().toString());
 				IParameterizedQuery queryClone = new DyExtnObjectCloner().clone(parameterizedQuery);
 				new HibernateCleanser(queryClone).clean();
-				bizLogic.insert(queryClone, Constants.HIBERNATE_DAO);
+				
+				bizLogic.insertSavedQueries(queryClone, sessionDataBean, 
+						((SaveQueryForm)actionForm).isShareQuery(),user);
 				target = Constants.SUCCESS;
-				ActionErrors errors = new ActionErrors();
-				ActionError error = new ActionError("query.saved.success");
-				errors.add(ActionErrors.GLOBAL_ERROR, error);
-				saveErrors(request, errors);
-
+				setActionErrors(request);
 				request.setAttribute(Constants.QUERY_SAVED, Constants.TRUE);
 			}
 			catch (BizLogicException bizLogicException)
@@ -111,25 +114,46 @@ public class SaveQueryAction extends BaseAction
 				setActionError(request, bizLogicException.getMessage());
 				Logger.out.error(bizLogicException.getMessage(), bizLogicException);
 			}
-			catch (UserNotAuthorizedException userNotAuthorizedException)
+			catch (UserNotAuthorizedException exception)
 			{
-				final SessionDataBean sessionDataBean = getSessionData(request);
-				String userName = "";
-				if (sessionDataBean != null)
-				{
-					userName = sessionDataBean.getUserName();
-				}
-
-				final ActionErrors errors = new ActionErrors();
-				final ActionError error = new ActionError("access.addedit.object.denied", userName,
-						parameterizedQuery.getClass().getName());
-				errors.add(ActionErrors.GLOBAL_ERROR, error);
-				saveErrors(request, errors);
-
-				Logger.out.error(userNotAuthorizedException.getMessage(),
-						userNotAuthorizedException);
+				setErrors(request, parameterizedQuery, exception, setUser(request));
 			}
 		return target;
+	}
+
+
+	private String setUser(HttpServletRequest request)
+	{
+		final SessionDataBean sessionDataBean = getSessionData(request);
+		String userName = "";
+		if (sessionDataBean != null)
+		{
+			userName = sessionDataBean.getUserName();
+		}
+		return userName;
+	}
+
+
+	private void setActionErrors(HttpServletRequest request)
+	{
+		ActionErrors errors = new ActionErrors();
+		ActionError error = new ActionError("query.saved.success");
+		errors.add(ActionErrors.GLOBAL_ERROR, error);
+		saveErrors(request, errors);
+	}
+
+
+	private void setErrors(HttpServletRequest request, IParameterizedQuery parameterizedQuery,
+			UserNotAuthorizedException exception, String userName)
+	{
+		final ActionErrors errors = new ActionErrors();
+		final ActionError error = new ActionError("access.addedit.object.denied", userName,
+				parameterizedQuery.getClass().getName());
+		errors.add(ActionErrors.GLOBAL_ERROR, error);
+		saveErrors(request, errors);
+
+		Logger.out.error(exception.getMessage(),
+				exception);
 	}
 
 	/**
@@ -214,7 +238,8 @@ public class SaveQueryAction extends BaseAction
 				displayNameMap, parameterizedQuery);
 		error = bizLogic.setInputDataToTQ(parameterizedQuery, Constants.SAVE_QUERY_PAGE, cfRHSList,
 				customFormulaIndexMap);
-		if (error != null && error.trim().length() > 0)
+		String tmpError= error.trim();
+		if (error != null && tmpError.length() > 0)
 		{
 			setActionError(request, error);
 		    isError=true;
