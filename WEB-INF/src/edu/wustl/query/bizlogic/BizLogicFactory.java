@@ -42,15 +42,19 @@ public class BizLogicFactory
 				bizLogic = new QueryBizLogic();
 				break;
 
-			/*case Constants.ADVANCE_QUERY_INTERFACE_ID:
-				bizLogic = new AdvanceQueryBizlogic();
-				break;*/
+			case Constants.ADVANCE_QUERY_INTERFACE_ID:
+				bizLogic = new edu.wustl.query.bizlogic.QueryBizLogic();
+				break;
 			case Constants.QUERY_INTERFACE_ID :
 				bizLogic = new QueryBizLogic();
 				break;
 
 			case Constants.QUERY_INTERFACE_BIZLOGIC_ID :
 				bizLogic = new QueryBizLogic();
+				break;
+				
+			case Constants.WORKFLOW_BIZLOGIC_ID :
+				bizLogic = new WorkflowBizLogic();
 				break;
 		}
 		return bizLogic;
