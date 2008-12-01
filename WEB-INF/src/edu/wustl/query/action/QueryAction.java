@@ -22,6 +22,7 @@ public class QueryAction extends Action
 			HttpServletRequest request, HttpServletResponse response)
 	{
 		HttpSession session = request.getSession();
+		request.setAttribute("pageOf", (String) request.getParameter("pageOf"));
 		session.removeAttribute(Constants.QUERY_OBJECT);
 		session.removeAttribute(Constants.SELECTED_COLUMN_META_DATA);
 		session.removeAttribute(Constants.IS_SAVED_QUERY);
@@ -36,7 +37,7 @@ public class QueryAction extends Action
 				.getAttribute(Constants.SESSION_DATA);
 		if (sessionBean == null)
 		{
-			Long userId = Long.valueOf(1);
+			final Long userId = Long.valueOf(1);
 			final String ipAddress = request.getRemoteAddr();
 			SessionDataBean sessionData = new SessionDataBean();
 			sessionData.setUserName("admin@admin.com");
