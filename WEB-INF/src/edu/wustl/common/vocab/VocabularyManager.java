@@ -11,22 +11,31 @@ import java.util.Map;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.CodedEntry;
 import org.LexGrid.concepts.Concepts;
-import org.LexGrid.LexBIG.DataModel.Core.Association;
+
+import edu.wustl.query.util.global.Variables;
 /**
  * 
  * @author namita_hardikar
@@ -139,33 +148,24 @@ public final class VocabularyManager
 	}
 
 	/**
-	 * utility method to return a coding scheme given a codingscheme name
+	 * get coding scheme with the given name and version
+	 * @param codingSchemeName
+	 * @param version
+	 * @return
 	 */
-	// TODO version next iteration
-	public CodingScheme getCodingSchemeWithName(final String codingSchemeName)
+	public CodingScheme getCodingSchemeWithName(final String codingSchemeName, final String version)
 	{
-		CodingSchemeSummary csSummary = null;
+		
 		CodingScheme codingScheme = null;
 		CodingSchemeVersionOrTag csVersion = new CodingSchemeVersionOrTag();
 		try
 		{
-			CodingSchemeRenderingList supportedCodingSchemes = lbservice
-					.getSupportedCodingSchemes();
-			CodingSchemeRendering csRenderedArray[] = supportedCodingSchemes
-					.getCodingSchemeRendering();
-			for (int i = 0; i < csRenderedArray.length; i++)
-			{
-
-				csSummary = csRenderedArray[i].getCodingSchemeSummary();
-				if (csSummary.getFormalName().equals(codingSchemeName))
-				{
-
-					csVersion.setVersion(csSummary.getRepresentsVersion());
-					codingScheme = lbservice.resolveCodingScheme(csSummary.getLocalName(), csVersion);
-					break;
-				}
-			}
+					csVersion.setVersion(version);
+					codingScheme = lbservice.resolveCodingScheme(codingSchemeName, csVersion);
+					
+				
 		}
+		
 		catch (LBException lbe)
 		{// logger
 
@@ -180,55 +180,82 @@ public final class VocabularyManager
 	 * @param targetVocab
 	 *            target vocabulary name
 	 * @param conceptCode
-	 *            array od conceptcode anmes whose mappings are to be fetched
+	 *            array of concept code names whose mappings are to be fetched
 	 * @return a list of maps.Each map has key = the concept code name value =
 	 *         list of the mappings for the concept code.
 	 */
 
-	public Map<String, List<CodedEntry>> getMappedConcepts(final String sourceVocab,
-			final String targetVocab, final List<String> conceptCode)
+	public Map<String, List<CodedEntry>> getMappedConcepts(final String sourceVocab,final String srcVocabVersion,
+			final String targetVocab,final String targetVocabVersion,final String relationType, final List<String> conceptCode)
 	{
 
 		Map<String, List<CodedEntry>> mappings = new HashMap<String, List<CodedEntry>>();
 
 		try
 		{
-			CodingScheme codingSch = getCodingSchemeWithName(sourceVocab);
+			CodingScheme codingSch = getCodingSchemeWithName(sourceVocab,srcVocabVersion);
 			CodingSchemeVersionOrTag csVersion = new CodingSchemeVersionOrTag();
 			String urn = "";
-			csVersion.setVersion(codingSch.getRepresentsVersion());
+			csVersion.setVersion(srcVocabVersion);
 			// get source coding scheme URN
-			CodingSchemeRenderingList csRenderLst = lbservice.getSupportedCodingSchemes();
-			CodingSchemeRendering[] rendering = csRenderLst.getCodingSchemeRendering();
-			for (int y = 0; y < rendering.length; y++)
-			{
-				if (rendering[y].getCodingSchemeSummary().getFormalName().equalsIgnoreCase(
-						sourceVocab)
-						|| rendering[y].getCodingSchemeSummary().getLocalName().equalsIgnoreCase(
-								sourceVocab))
-				{
-					urn = rendering[y].getCodingSchemeSummary().getCodingSchemeURN();
-					break;
-				}
-			}
+			urn = getCodingSchemeURN(sourceVocab, srcVocabVersion);
+			//get the target coding scheme URN 
+			String targetCodingSchURN = getCodingSchemeURN(targetVocab,targetVocabVersion);
 			// Fetch Mapping for each concept in the list
 			ListIterator<String> conceptItr = conceptCode.listIterator();
 			while (conceptItr.hasNext())
 			{
 				String currentConceptCode = conceptItr.next();
+				//get the target coding scheme URN
 				List<CodedEntry> mappedConceptList = getMappedConceptCode(currentConceptCode, urn,
-						csVersion);
-				mappings.put(currentConceptCode, mappedConceptList);
+						csVersion,targetCodingSchURN,relationType);
+				if(mappedConceptList != null )
+				{
+					mappings.put(currentConceptCode, mappedConceptList);
+				}
 			}
 		}
 		catch (Exception e)
 		{
 			// logger
 		}
-
+		if(mappings.size()== 0) {
+			mappings = null;
+		}
 		return mappings;
 	}
 
+	/**
+	 * this method will return the URN of the coding scheme
+	 * @param coding scheme name
+	 * @param coding scheme version
+	 */
+	private String getCodingSchemeURN(String sourceVocab, String srcVocabVersion) 
+	{
+		String urn = null;
+		CodingSchemeRenderingList csRenderLst;
+		try
+		{
+			csRenderLst = lbservice.getSupportedCodingSchemes();
+			CodingSchemeRendering[] rendering = csRenderLst.getCodingSchemeRendering();
+			for (int y = 0; y < rendering.length; y++)
+			{
+				if (rendering[y].getCodingSchemeSummary().getLocalName().equalsIgnoreCase(sourceVocab) 
+						&& 
+						rendering[y].getCodingSchemeSummary().getRepresentsVersion().equalsIgnoreCase(srcVocabVersion))
+				{
+					urn = rendering[y].getCodingSchemeSummary().getCodingSchemeURN();
+					break;
+				}
+			}
+		}
+		catch (LBInvocationException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return urn;
+	}
 	/**
 	 * this method takes the concept code , the source vocabulary urn and its
 	 * version to return a list of coded entries for the mapped concepts found
@@ -240,17 +267,25 @@ public final class VocabularyManager
 	 * @throws LBException
 	 */
 	protected List<CodedEntry> getMappedConceptCode(final String code, final String schemeURN,
-			final CodingSchemeVersionOrTag csvt) throws LBException
+			final CodingSchemeVersionOrTag csvt,final String targetSchURN,final String relationType) throws LBException
 	{
 
-		List<CodedEntry> mappedConcepts = new ArrayList<CodedEntry>();
-
+		//List<CodedEntry> mappedConcepts = new ArrayList<CodedEntry>();
+		List<CodedEntry> mappedConcepts = null;
+		NameAndValue nameAndvalue = new NameAndValue();
+		NameAndValueList nvList = new NameAndValueList();
+		nameAndvalue.setName(relationType);
+		nvList.addNameAndValue(nameAndvalue);
+		
 		ResolvedConceptReferenceList matches = lbservice.getNodeGraph(schemeURN, csvt, null)
+	//TODO : 	//restrict to association type
+				.restrictToAssociations(nvList, null)
 				.resolveAsList(ConvenienceMethods.createConceptReference(code, schemeURN), true,
 						false, 1, 1, new LocalNameList(), null, null, 1024);
 
 		if (matches.getResolvedConceptReferenceCount() > 0)
 		{
+			mappedConcepts = new ArrayList<CodedEntry>();
 			ResolvedConceptReference ref = (ResolvedConceptReference) matches
 					.enumerateResolvedConceptReference().nextElement();
 
@@ -264,19 +299,23 @@ public final class VocabularyManager
 				for (int j = 0; j < assoConcepts.length; j++)
 				{
 					AssociatedConcept assoConcept = assoConcepts[j];
+					//TODO://if assoConcept.getCodingScheme()== target and assoConcept.getCodingSchemeVersion()==target version
+					if(assoConcept.getCodingSchemeURN().equals(targetSchURN)) // check URN instead
+					{
 					mappedConcepts.add(assoConcept.getReferencedEntry());
+					}
 				}
 			}
 		}
 		return mappedConcepts;
 	}
-
+	
 	/**
-	 * Utility method to return a list of codedentries
+	 * Utility method to return a list of coded entries
 	 */
-	public List<CodedEntry> getCodedEntriesForNames(final String codingschemeName, final List<String> codes)
+	public List<CodedEntry> getCodedEntriesForNames(final String codingschemeName,final String codingSchemeVersion, final List<String> codes)
 	{
-		CodingScheme codingSch = getCodingSchemeWithName(codingschemeName);
+		CodingScheme codingSch = getCodingSchemeWithName(codingschemeName, codingSchemeVersion);
 		Concepts concepts = codingSch.getConcepts();
 		CodedEntry allEntries[] = concepts.getConcept();
 		Iterator<String> iterator = codes.iterator();
@@ -293,7 +332,6 @@ public final class VocabularyManager
 		}
 		return listOfCodedEntries;
 	}
-
 	/**
 	 * method to return conceptcodes for an array of Ids passed
 	 * 
@@ -336,10 +374,70 @@ public final class VocabularyManager
 		}
 		catch (LBException e)
 		{
-			// logger;
+			e.printStackTrace();
 		}
 
 		return cvList;
 	}
+	
+	/**
+	 * method to search
+	 */
+	
+	public List<String> search(String term, String codingSchemeName ,String codingSchemeVersion) {
+		
+		List<String> matchedTerms = null;
+	
+	
+		String matchAlgorithm =Variables.properties.getProperty("matchAlgorithm"); 
+		String primarySortOption =  Variables.properties.getProperty("primarySortOption"); 
+		String secondarySortOption =  Variables.properties.getProperty("code");
+		CodingSchemeVersionOrTag csVersionTag = new CodingSchemeVersionOrTag();
+		csVersionTag.setVersion(codingSchemeVersion);
+		
+		try
+		{
+			lbservice.getSupportedCodingSchemes();
+			CodedNodeSet matchingConcepts = lbservice.getCodingSchemeConcepts(codingSchemeName, csVersionTag)
+			.restrictToStatus(ActiveOption.ALL, null)
+			.restrictToMatchingDesignations(term,SearchDesignationOption.ALL,
+			matchAlgorithm,
+				null);
+			
+			// Sort by search engine recommendation & code ... can be configured
+			SortOptionList sortCriteria =
+			    Constructors.createSortOptionList(new String[]{primarySortOption, secondarySortOption}); 
+			
+			// Analyze the result ...
+			ResolvedConceptReferenceList matches =
+				matchingConcepts.resolveToList(sortCriteria, null, null, 10);
+			ResolvedConceptReference conceptRef[] = matches.getResolvedConceptReference();
+			if (conceptRef .length !=0 ) {
+					matchedTerms = new ArrayList<String>();
+					for(int refCount =0 ; refCount < conceptRef.length ; refCount ++)
+					{
+						matchedTerms.add(conceptRef[refCount].getEntityDescription().getContent()  );
+					}
+			}
+		 }
+		
+		catch (LBInvocationException e)
+		{
+			
+			e.printStackTrace();
+		}
+		catch (LBParameterException e)
+		{
+			
+			e.printStackTrace();
+		}
+		catch (LBException e)
+		{
+			
+			e.printStackTrace();
+		}
+		return matchedTerms;
+	}
+
 
 }
