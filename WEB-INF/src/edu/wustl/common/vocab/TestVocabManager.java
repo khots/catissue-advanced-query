@@ -54,7 +54,7 @@ public class TestVocabManager
 		AttributeInterface attribute = entity.getAttributeByName("name");
 		
 		LexBIGPermissibleValueManager ciderPVManager = new LexBIGPermissibleValueManager();
-		Map<String,List<PermissibleValueInterface>> mappedConcepts = ciderPVManager.getMappings(attribute,"med", "snomed", entity);
+		Map<String,List<PermissibleValueInterface>> mappedConcepts = ciderPVManager.getMappings(attribute,"med","1.0","snomed","1.0", entity);
 		Set<String> keySet = mappedConcepts.keySet();
 		Iterator<String> iterator = keySet.iterator();
 		String conceptCodeName;
@@ -93,6 +93,8 @@ public class TestVocabManager
 	{
 		try
 		{
+			//temporary
+			System.setProperty("LG_CONFIG_FILE","E:\\LexBIG\\2.2.0\\resources\\config\\config.props");
 			TestVocabManager testVocabManager = new TestVocabManager();
 			testVocabManager.displayPermissibleValues(args[0]);
 			testVocabManager.displayMapping(args[0]);
