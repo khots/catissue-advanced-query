@@ -1011,8 +1011,8 @@ public class XQueryGenerator extends QueryGenerator
 	protected String processInOperator(ICondition condition, String attributeName)
 			throws SqlException
 	{
-		StringBuilder builder = new StringBuilder(attributeName).append(' ').append(" = ").append(' ').append(
-				Constants.QUERY_OPENING_PARENTHESIS);
+		StringBuilder builder = new StringBuilder(attributeName).append(' ').append(" = ").append(
+				' ').append(Constants.QUERY_OPENING_PARENTHESIS);
 
 		for (String value : condition.getValues())
 		{
@@ -1037,7 +1037,7 @@ public class XQueryGenerator extends QueryGenerator
 	{
 		RelationalOperator operator = condition.getRelationalOperator();
 		StringBuilder builder = new StringBuilder();
-				
+
 		if (operator.equals(RelationalOperator.IsNotNull))
 		{
 			builder.append("exists");
@@ -1047,7 +1047,7 @@ public class XQueryGenerator extends QueryGenerator
 			builder.append("empty");
 		}
 
-		builder.append(	Constants.QUERY_OPENING_PARENTHESIS).append(attributeName).append(
+		builder.append(Constants.QUERY_OPENING_PARENTHESIS).append(attributeName).append(
 				Constants.QUERY_CLOSING_PARENTHESIS);
 
 		return builder.toString();
