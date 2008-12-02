@@ -86,6 +86,28 @@ public class TestVocabManager
 		}
 		return pvList;
 	}
+	
+	/**
+	 * method to search the given term in the given vocabulary.
+	 * @param term       : term to be searched
+	 * @param vocabName  : vocabulary name
+	 * @param vocabVersion :vocabulary version
+	 */
+	public void search(String term , String vocabName, String vocabVersion)
+	{
+		VocabularyManager vm = VocabularyManager.getVocabularyManager();
+		List<String> matchingTerms = vm.search(term,vocabName, vocabVersion);
+		if(matchingTerms != null )
+		{
+			ListIterator<String> itr = matchingTerms.listIterator();
+			System.out.println("Matching terms are :: ");
+			while(itr.hasNext())
+			{
+				System.out.println(itr.next());
+			}
+		}
+	}
+	
 	/**
 	 * @param args
 	 */
@@ -98,7 +120,7 @@ public class TestVocabManager
 			TestVocabManager testVocabManager = new TestVocabManager();
 			testVocabManager.displayPermissibleValues(args[0]);
 			testVocabManager.displayMapping(args[0]);
-			
+			//search method invoke.
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
