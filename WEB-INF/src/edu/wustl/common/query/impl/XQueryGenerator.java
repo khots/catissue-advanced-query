@@ -1011,9 +1011,8 @@ public class XQueryGenerator extends QueryGenerator
 	protected String processInOperator(ICondition condition, String attributeName)
 			throws SqlException
 	{
-		StringBuilder builder = new StringBuilder(attributeName).append(' ').append(
-				" = ").append(' ');
-		builder.append(Constants.QUERY_OPENING_PARENTHESIS);
+		StringBuilder builder = new StringBuilder(attributeName).append(' ').append(" = ").append(' ').append(
+				Constants.QUERY_OPENING_PARENTHESIS);
 
 		for (String value : condition.getValues())
 		{
@@ -1037,18 +1036,21 @@ public class XQueryGenerator extends QueryGenerator
 			throws SqlException
 	{
 		RelationalOperator operator = condition.getRelationalOperator();
-		String newOperator = null;
-
+		StringBuilder builder = new StringBuilder();
+				
 		if (operator.equals(RelationalOperator.IsNotNull))
 		{
-			newOperator = "string(" + attributeName + ") != \"\"";
+			builder.append("exists");
 		}
 		else if (operator.equals(RelationalOperator.IsNull))
 		{
-			newOperator = "string(" + attributeName + ") = \"\"";
+			builder.append("empty");
 		}
 
-		return newOperator;
+		builder.append(	Constants.QUERY_OPENING_PARENTHESIS).append(attributeName).append(
+				Constants.QUERY_CLOSING_PARENTHESIS);
+
+		return builder.toString();
 	}
 
 	protected String processLikeOperators(ICondition condition, String attributeName)
@@ -1076,16 +1078,16 @@ public class XQueryGenerator extends QueryGenerator
 	}
 
 	/**
-	     * To process all child expression of the given Expression & get their SQL
-	     * representation for where part.
-	     * 
-	     * @param leftAlias left table alias in join.
-	     * @param processedAlias The list of precessed alias.
-	     * @param parentExpressionId The reference to expression whose children to
-	     *            be processed.
-	     * @return the left join sql for children expression.
-	     * @throws SqlException when there is error in the passed IQuery object.
-	     */
+	 * To process all child expression of the given Expression & get their SQL
+	 * representation for where part.
+	 * 
+	 * @param leftAlias left table alias in join.
+	 * @param processedAlias The list of precessed alias.
+	 * @param parentExpressionId The reference to expression whose children to
+	 *            be processed.
+	 * @return the left join sql for children expression.
+	 * @throws SqlException when there is error in the passed IQuery object.
+	 */
 	private String processChildExpressions(String leftAlias, Set<Integer> processedAlias,
 			IExpression parentExpression) throws SqlException
 	{
