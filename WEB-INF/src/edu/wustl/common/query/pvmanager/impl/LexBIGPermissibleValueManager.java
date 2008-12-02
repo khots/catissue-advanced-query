@@ -163,27 +163,32 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 	/**
 	 * method to getMappings of permissible values
 	 */
-	public Map<String,List<PermissibleValueInterface>> getMappings(AttributeInterface attribute,String sourceVocabulary,String targetVocabulary,EntityInterface entity )
+	public Map<String,List<PermissibleValueInterface>> getMappings(AttributeInterface attribute,String sourceVocabulary,String srcVocabVersion , String targetVocabulary,
+			                                                        String targetVocabVersion, EntityInterface entity )
 	{
 
 		Map<String,List<CodedEntry>> mappingsFromVocabMngr = null;
-		Map<String,List<PermissibleValueInterface>> mappings = new HashMap<String,List<PermissibleValueInterface>>();
+		Map<String,List<PermissibleValueInterface>> mappings = null; 
+		String relationType = Variables.properties.getProperty("relationType");
 		if(isEnumerated(attribute,entity)){
 			String pvFilter = getPVFilterValueForAttribute(attribute,entity);
 			MedLookUpManager medManager = MedLookUpManager.instance();
 			List<String> conceptCodes = medManager.getPermissibleValues(pvFilter);
 			//String[] conceptCodes =(String[]) toReturn.toArray();
 			VocabularyManager vocabMngr = VocabularyManager.getVocabularyManager();
-			mappingsFromVocabMngr = vocabMngr.getMappedConcepts(sourceVocabulary, targetVocabulary, conceptCodes);
-			Set<String> keySet = mappingsFromVocabMngr.keySet();
-			Iterator<String> setIt = keySet.iterator();
-			while(setIt.hasNext()){
-				String currentKey =(String) setIt.next(); 
-				List<CodedEntry> tempList = mappingsFromVocabMngr.get(currentKey);
-				List<PermissibleValueInterface> listInFormOfPVI = convertToPermissiblevalue(tempList);
-				mappings.put(currentKey,listInFormOfPVI);
-			}
-			
+			mappingsFromVocabMngr = vocabMngr.getMappedConcepts(sourceVocabulary,srcVocabVersion ,targetVocabulary,targetVocabVersion,relationType, conceptCodes);
+			if(mappingsFromVocabMngr != null) 
+			{
+					mappings = new HashMap<String,List<PermissibleValueInterface>>();
+					Set<String> keySet = mappingsFromVocabMngr.keySet();
+					Iterator<String> setIt = keySet.iterator();
+					while(setIt.hasNext()){
+					String currentKey =(String) setIt.next(); 
+					List<CodedEntry> tempList = mappingsFromVocabMngr.get(currentKey);
+					List<PermissibleValueInterface> listInFormOfPVI = convertToPermissiblevalue(tempList);
+					mappings.put(currentKey,listInFormOfPVI);
+				}
+			}	
 		}
 
 		return mappings;
