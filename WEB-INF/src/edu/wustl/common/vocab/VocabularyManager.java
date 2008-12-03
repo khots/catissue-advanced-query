@@ -123,14 +123,11 @@ public final class VocabularyManager
 
 		CodingSchemeVersionOrTag version = new CodingSchemeVersionOrTag();
 		version.setVersion(codingSchemeVersion);
-		CodedNodeSet.PropertyType[] propType = {CodedNodeSet.PropertyType.GENERIC,
-				CodedNodeSet.PropertyType.COMMENT, CodedNodeSet.PropertyType.PRESENTATION,
-				CodedNodeSet.PropertyType.INSTRUCTION};
-		try
+	try
 		{
 			CodedNodeSet codes = lbservice.getCodingSchemeConcepts(codingSchemeName, version);
 			ResolvedConceptReferenceList resolvedConcepts = codes.resolveToList(null, null,
-					propType, 100);
+					null, 100);
 			ResolvedConceptReference[] resolvedRef = resolvedConcepts.getResolvedConceptReference();
 
 			for (int i = 0; i < resolvedRef.length; i++)
@@ -353,9 +350,6 @@ public final class VocabularyManager
 
 		CodingSchemeVersionOrTag version = new CodingSchemeVersionOrTag();
 		version.setVersion(codingSchemeVersion);
-		CodedNodeSet.PropertyType[] propType = {CodedNodeSet.PropertyType.GENERIC,
-				CodedNodeSet.PropertyType.COMMENT, CodedNodeSet.PropertyType.PRESENTATION,
-				CodedNodeSet.PropertyType.INSTRUCTION};
 		SortOptionList sortBy = new SortOptionList();
 		sortBy.addEntry(ConvenienceMethods.createSortOption("entityDescription", Boolean.TRUE));
 		
@@ -363,7 +357,7 @@ public final class VocabularyManager
 		{
 			CodedNodeSet codes = lbservice.getCodingSchemeConcepts(codingSchemeName, version);
 			ResolvedConceptReferenceList resolvedConcepts = codes.resolveToList(sortBy, null,
-					propType, 100);
+					null, 100);
 			ResolvedConceptReference[] resolvedRef = resolvedConcepts.getResolvedConceptReference();
 
 			for (int i = 0; i < resolvedRef.length; i++)
