@@ -103,6 +103,7 @@ public final class VocabularyManager
 		catch (LBException lbe)
 		{
 			// logger
+			lbe.printStackTrace();
 		}
 		return csSummaryList;
 	}
@@ -139,10 +140,9 @@ public final class VocabularyManager
 			}
 
 		}
-		catch (LBException e)
+		catch (LBException lbe)
 		{
-			// 
-			// logger
+			lbe.printStackTrace();
 		}
 		return conValueList;
 	}
@@ -168,7 +168,7 @@ public final class VocabularyManager
 		
 		catch (LBException lbe)
 		{// logger
-
+			lbe.printStackTrace();
 		}
 		return codingScheme;
 	}
@@ -193,7 +193,7 @@ public final class VocabularyManager
 
 		try
 		{
-			CodingScheme codingSch = getCodingSchemeWithName(sourceVocab,srcVocabVersion);
+			//CodingScheme codingSch = getCodingSchemeWithName(sourceVocab,srcVocabVersion);
 			CodingSchemeVersionOrTag csVersion = new CodingSchemeVersionOrTag();
 			String urn = "";
 			csVersion.setVersion(srcVocabVersion);
@@ -218,8 +218,9 @@ public final class VocabularyManager
 		catch (Exception e)
 		{
 			// logger
+			e.printStackTrace();
 		}
-		if(mappings.size()== 0) {
+		if(mappings.isEmpty()) {
 			mappings = null;
 		}
 		return mappings;
@@ -230,7 +231,7 @@ public final class VocabularyManager
 	 * @param coding scheme name
 	 * @param coding scheme version
 	 */
-	private String getCodingSchemeURN(String sourceVocab, String srcVocabVersion) 
+	private String getCodingSchemeURN(final String sourceVocab, final String srcVocabVersion) 
 	{
 		String urn = null;
 		CodingSchemeRenderingList csRenderLst;
@@ -278,7 +279,7 @@ public final class VocabularyManager
 		nvList.addNameAndValue(nameAndvalue);
 		
 		ResolvedConceptReferenceList matches = lbservice.getNodeGraph(schemeURN, csvt, null)
-	//TODO : 	//restrict to association type
+	
 				.restrictToAssociations(nvList, null)
 				.resolveAsList(ConvenienceMethods.createConceptReference(code, schemeURN), true,
 						false, 1, 1, new LocalNameList(), null, null, 1024);
@@ -299,13 +300,17 @@ public final class VocabularyManager
 				for (int j = 0; j < assoConcepts.length; j++)
 				{
 					AssociatedConcept assoConcept = assoConcepts[j];
-					//TODO://if assoConcept.getCodingScheme()== target and assoConcept.getCodingSchemeVersion()==target version
+					
 					if(assoConcept.getCodingSchemeURN().equals(targetSchURN)) // check URN instead
 					{
-					mappedConcepts.add(assoConcept.getReferencedEntry());
+						
+						mappedConcepts.add(assoConcept.getReferencedEntry());
 					}
 				}
 			}
+		}
+		if(mappedConcepts.isEmpty()){
+			mappedConcepts = null;
 		}
 		return mappedConcepts;
 	}
