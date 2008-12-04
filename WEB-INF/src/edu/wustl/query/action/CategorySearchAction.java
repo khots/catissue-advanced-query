@@ -3,6 +3,7 @@ package edu.wustl.query.action;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +18,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.wustl.cab2b.client.metadatasearch.MetadataSearch;
 import edu.wustl.cab2b.common.beans.MatchedClass;
 import edu.wustl.cab2b.common.exception.CheckedException;
@@ -111,11 +113,11 @@ public class CategorySearchAction extends Action
 	{
 		final int[] searchTarget = prepareSearchTarget(searchForm);
 
-		/* 
+		/*
 		 * Bug #5131 : Disabling function call and supplying value directly
 		 * until the Concept-Code search is fixed
 		 */
-		
+
 		int basedOn = Constants.BASED_ON_TEXT;
 		Set<EntityInterface> entityCollection = new HashSet<EntityInterface>();
 		String[] searchString = null;
@@ -127,6 +129,7 @@ public class CategorySearchAction extends Action
 		MatchedClass matchedClass = advancedSearch.search(searchTarget, searchString, basedOn);
 		entityCollection = matchedClass.getEntityCollection();
 		List<EntityInterface> resultList = new ArrayList<EntityInterface>(entityCollection);
+		removeEntitiesNotSearchable(resultList);
 		StringBuffer entitiesString = prepareEntitiesString(resultList);
 
 		if ("".equals(entitiesString))
@@ -155,8 +158,29 @@ public class CategorySearchAction extends Action
 		return entitiesString.toString();
 	}
 
-	
-	
+	/**
+	 * Modifies list without entities that are not searchable.
+	 * @param resultList list of matching entities
+	 */
+	private void removeEntitiesNotSearchable(List<EntityInterface> resultList)
+	{
+		List<EntityInterface> notSearchableList = new ArrayList<EntityInterface>();
+		for(EntityInterface entity : resultList)
+		{
+			Collection<TaggedValueInterface> taggedValueCollection = entity.getTaggedValueCollection();
+			for(TaggedValueInterface tagValue : taggedValueCollection)
+			{
+				if(tagValue.getKey().equals(
+					edu.wustl.query.util.global.Constants.TAGGED_VALUE_NOT_SEARCHABLE))
+				{
+					notSearchableList.add(entity);
+				}
+			}
+		}
+		resultList.removeAll(notSearchableList);
+	}
+
+
 	/**
 	 * This Method prepares a String of all resulted entities with adding seprator between each Entity.
 	 * This Method also adds separator between name, id and description of each entity.
@@ -170,8 +194,8 @@ public class CategorySearchAction extends Action
 		{
 			EntityInterface entity = (EntityInterface) resultList.get(i);
 			String fullyQualifiedEntityName = entity.getName();
-			String entityName = Utility.parseClassName(fullyQualifiedEntityName);
-			entityName = Utility.getDisplayLabel(entityName);
+			StringBuffer fullEntityName = new StringBuffer(Utility.parseClassName(fullyQualifiedEntityName));
+			StringBuffer entityName = new StringBuffer(Utility.getDisplayLabel(fullEntityName.toString()));
 			String entityId = entity.getId().toString();
 			String description = entity.getDescription();
 			entitiesString = entitiesString
