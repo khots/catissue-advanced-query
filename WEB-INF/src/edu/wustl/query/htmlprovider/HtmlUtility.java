@@ -1,6 +1,7 @@
 package edu.wustl.query.htmlprovider;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,6 +12,7 @@ import edu.common.dynamicextensions.domain.PermissibleValue;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.common.util.ParseXMLFile;
@@ -238,5 +240,24 @@ public class HtmlUtility
 	        }
 		}
 		return tempParameter;
+	}
+	/**
+	 * Checks if Attribute is searchable or not.
+	 * @param attribute attribute that needs to be checked.
+	 * @return isNotSearchable
+	 */
+	public static boolean isAttrNotSearchable(AttributeInterface attribute)
+	{
+		boolean isNotSearchable = false;
+		Collection<TaggedValueInterface> taggedValueCollection = attribute.getTaggedValueCollection();
+		for(TaggedValueInterface tagValue : taggedValueCollection)
+		{
+			if(tagValue.getKey().equals(Constants.TAGGED_VALUE_NOT_SEARCHABLE))
+			{
+				isNotSearchable = true;
+				break;
+			}
+		}
+		return isNotSearchable;
 	}
 }
