@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+<entity-group>
+<name>cider</name>
+<entity>
+	<name>Demographics</name>
+	<attribute>
+		<name>effectiveStartTimeStamp</name>
+		<tag-name>NOT_SEARCHABLE</tag-name>
+	</attribute>
+	<attribute>
+		<name>effectiveEndTimeStamp</name>
+		<tag-name>NOT_SEARCHABLE</tag-name>
+	</attribute>
+</entity>
+<entity>
+	<name>LaboratoryProcedure</name>
+	<attribute>
+		<name>procedureSynonym</name>
+		<tag-name>NOT_SEARCHABLE</tag-name>
+	</attribute>
+</entity>
+<entity>
+	<name>LaboratoryProcedureDetails</name>
+	<attribute>
+		<name>effectiveEndTimeStamp</name>
+		<tag-name>NOT_SEARCHABLE</tag-name>
+	</attribute>
+	<attribute>
+		<name>effectiveStartTimeStamp</name>
+		<tag-name>NOT_SEARCHABLE</tag-name>
+	</attribute>
+</entity>
+<entity>
+	<name>EncounterDetails</name>
+	<attribute>
+		<name>effectingStartTimeStamp</name>
+		<tag-name>NOT_SEARCHABLE</tag-name>
+	</attribute>
+	<attribute>
+		<name>effectingEndTimeStamp</name>
+		<tag-name>NOT_SEARCHABLE</tag-name>
+	</attribute>
+</entity>
+<entity>
+	<name>MedicalRecordNumber</name>
+	<attribute>
+		<name>Type</name>
+		<tag-name>NOT_SEARCHABLE</tag-name>
+	</attribute>
+</entity>
+<entity>
+	<name>LaboratoryResult</name>
+	<attribute>
+		<name>testSynonym</name>
+		<tag-name>NOT_SEARCHABLE</tag-name>
+	</attribute>
+</entity>
+<entity>
+	<name>ActiveUpiFlag</name>
+	<tag-name>NOT_SEARCHABLE</tag-name>
+</entity>
+<entity>
+	<name>ResearchOptOut</name>
+	<tag-name>NOT_SEARCHABLE</tag-name>
+</entity>
+<entity>
+	<name>Diagnosis</name>
+	<tag-name>NOT_SEARCHABLE</tag-name>
+</entity>
+<entity>
+	<name>Application</name>
+	<tag-name>NOT_SEARCHABLE</tag-name>
+</entity>
+</entity-group>
+</xml>
