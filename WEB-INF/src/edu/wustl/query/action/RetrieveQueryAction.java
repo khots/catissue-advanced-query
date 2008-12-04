@@ -116,7 +116,14 @@ public class RetrieveQueryAction extends Action
 	{
 		ActionForward actionForward;
 		actionForward = actionMapping.findForward(Constants.SUCCESS);
-		if(pageOf!= null)
+		//for displaying in work flow pop up
+		if(pageOf!=null&&(Constants.MY_QUERIES_FOR_WORKFLOW.equals(pageOf)
+				||Constants.PUBLIC_QUERIES_FOR_WORKFLOW.equals(pageOf)))
+		{
+			actionForward = actionMapping.findForward(Constants.DISPLAY_QUERIES_IN_POPUP);
+		}
+		else if(pageOf!= null&& (Constants.PUBLIC_QUERY_PROTECTION_GROUP.equals(pageOf)||
+				Constants.PAGE_OF_MY_QUERIES.equals(pageOf)))
 		{
 			actionForward = actionMapping.findForward(Constants.MY_QUERIES);
 		}
@@ -169,7 +176,8 @@ public class RetrieveQueryAction extends Action
 			Collection<IParameterizedQuery> authorizedQueryCollection,
 			Collection<IParameterizedQuery> sharedQueryCollection)
 	{
-		if(pageOf !=null && Constants.PUBLIC_QUERY_PROTECTION_GROUP.equals(pageOf))
+		if(pageOf !=null && (Constants.PUBLIC_QUERY_PROTECTION_GROUP.equals(pageOf)||
+				Constants.PUBLIC_QUERIES_FOR_WORKFLOW.equals(pageOf)))
 		{
 			saveQueryForm.setParameterizedQueryCollection(sharedQueryCollection);
 		}
