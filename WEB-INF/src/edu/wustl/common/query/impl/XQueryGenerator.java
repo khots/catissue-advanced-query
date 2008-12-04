@@ -96,6 +96,7 @@ public class XQueryGenerator extends QueryGenerator
 			// IQuery queryClone = query;
 			constraints = queryClone.getConstraints();
 			QueryObjectProcessor.replaceMultipleParents(constraints);
+			IExpression rootExpression = constraints.getRootExpression();
 
 			this.joinGraph = (JoinGraph) constraints.getJoinGraph();
 			aliasAppenderMap = new HashMap<IExpression, Integer>();
@@ -104,6 +105,7 @@ public class XQueryGenerator extends QueryGenerator
 			createTree();
 
 			emptyExpressions = new HashSet<IExpression>();
+			checkForEmptyExpression(rootExpression.getExpressionId());
 			//isEmptyExpression(rootExpression.getExpressionId());
 
 			// Generating output tree.
