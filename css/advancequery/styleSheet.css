@@ -2019,3 +2019,7 @@ tr#hiddenCombo
 {
  display:none;
 }
+.td_blue_highlight {
+     background-color: #d8e8f8;
+     height: 25px;
+}
