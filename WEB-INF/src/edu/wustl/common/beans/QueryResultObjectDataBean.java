@@ -19,7 +19,7 @@ import edu.wustl.security.privilege.PrivilegeType;
  * A class that will have information related CSM for every entity in query.Such as Entity name ,if this entity is 
  * main entity(for which CSM data is inserted in CSM tables) if not a main entity ,then which is main entity etc..   
  */
-public class QueryResultObjectDataBean implements QueryDataBean
+public class QueryResultObjectDataBean
 {
 
 	//Particular entity from query for which QueryResultObjectDataBean has to be set.
