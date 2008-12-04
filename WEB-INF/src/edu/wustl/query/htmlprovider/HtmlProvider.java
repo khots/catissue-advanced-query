@@ -20,6 +20,7 @@ import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.common.util.ParseXMLFile;
 import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 
 /**
@@ -81,7 +82,7 @@ public class HtmlProvider
 			}
 			catch (CheckedException e)
 			{
-				e.printStackTrace();
+				Logger.out.debug(e.getStackTrace());
 			}
 		}
 	}
@@ -197,18 +198,20 @@ public class HtmlProvider
 		GenerateHtml.getTags(generatedHTML);
 		if (!attributeCollection.isEmpty())
 		{
-			boolean isBold;
-			StringBuffer attrLabel;
 			List<AttributeInterface> attributes =
 				new ArrayList<AttributeInterface>(attributeCollection);
 			Collections.sort(attributes, new AttributeInterfaceComparator());
 			for (int i = 0; i < attributes.size(); i++)
 			{
 				AttributeInterface attribute = (AttributeInterface) attributes.get(i);
+				if(HtmlUtility.isAttrNotSearchable(attribute))
+				{
+					continue;
+				}
 				getAttributeDetails(attribute,conditions,null);
-				attrLabel = new StringBuffer
+				StringBuffer attrLabel = new StringBuffer
 					(Utility.getDisplayLabel(attributeDetails.getAttrName()));
-				isBold = checkAttributeBold(attributeChecked, permissibleValuesChecked,
+				boolean isBold = checkAttributeBold(attributeChecked, permissibleValuesChecked,
 						attribute, attributeDetails.getAttrName());
 				if(isBold)
 				{
@@ -216,7 +219,7 @@ public class HtmlProvider
 				}
 				String componentId = generateComponentName(attribute);
 				attributesList = attributesList + ";" + componentId;
-				isBGColor = GenerateHtml.getAlternateCss(generatedHTML, isBGColor, componentId);
+				isBGColor = GenerateHtml.getAlternateCss(generatedHTML, isBGColor, componentId,isBold);
 				generatedHTML.append(attrLabel).append(space);
 				GenerateHtml.getDateFormat(generatedHTML, isBold, attribute);
 				generatedHTML.append(":&nbsp;&nbsp;&nbsp;&nbsp;</td>\n");
@@ -440,6 +443,10 @@ public class HtmlProvider
 			for (int i = 0; i < attributes.size(); i++)
 			{
 				AttributeInterface attribute = (AttributeInterface) attributes.get(i);
+				if(HtmlUtility.isAttrNotSearchable(attribute))
+				{
+					continue;
+				}
 				//String attrName = attribute.getName();
 				String componentId = generateComponentName(attribute);
 				attributesList.append(semicolon).append(componentId);
@@ -555,8 +562,6 @@ public class HtmlProvider
 		StringBuffer generatedPreHTML = new StringBuffer();
 		Collection<AttributeInterface> attributeCollection = entity.getEntityAttributesForQuery();
 		Collection<AttributeInterface> collection = new ArrayList<AttributeInterface>();
-		// String attributesList = "";
-		//boolean isParameterizedCondition = false;
 		boolean isBGColor = false;
 		boolean isEditLimits = isEditLimits(conditions);
 		if (!attributeCollection.isEmpty())
@@ -569,6 +574,10 @@ public class HtmlProvider
 			GenerateHtml.getHtmlAddEditPage(forPage, generatedHTML);
 			for(AttributeInterface attribute : attributes)
 			{
+				if(HtmlUtility.isAttrNotSearchable(attribute))
+				{
+					continue;
+				}
 				getAttributeDetails(attribute, conditions, parameterList);
 				String attrName = attributeDetails.getAttrName();
 				Map<String, ICondition> attributeNameConditionMap =
@@ -588,13 +597,27 @@ public class HtmlProvider
 
 			generatedPreHTML.append(getHtml(entity, generatedHTML,collection,isEditLimits));
 		}
+		generatedHTML = getAddEditPageHtml(generatedHTML, generatedPreHTML);
+		return generatedHTML;
+	}
+
+	/**
+	 * Modify html for Add/Edit page of Query.
+	 * @param generatedHTML StringBuffer
+	 * @param generatedPreHTML StringBuffer
+	 * @return modified html
+	 */
+	private StringBuffer getAddEditPageHtml(StringBuffer generatedHTML,
+			StringBuffer generatedPreHTML)
+	{
+		StringBuffer html = new StringBuffer();
 		if (forPage.equalsIgnoreCase(Constants.ADD_EDIT_PAGE))
 		{
 			generatedPreHTML.append("####");
 			generatedPreHTML.append(generatedHTML);
-			generatedHTML = generatedPreHTML;
+			html = generatedPreHTML;
 		}
-		return generatedHTML;
+		return html;
 	}
 	/**
 	 * Edit Limit case if Conditions on attribute is not null.
