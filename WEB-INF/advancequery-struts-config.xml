@@ -411,7 +411,7 @@ PUBLIC
 	    
 	            <!--  To Do  change the action  class name --> 
         <action path="/QueryWorkflowWizard" 
-        type="edu.wustl.query.action.QueryAction">
+        		type="edu.wustl.query.action.QueryAction">
         	<forward name="success" path=".query.queryWorkFlowWizardDef"/>
         </action>
         
@@ -419,14 +419,13 @@ PUBLIC
              type="org.apache.struts.actions.ForwardAction"
              parameter=".query.redirectToWorkflowPageDef" />
         
-        <action path="/WorkflowAction1"  
-        		type="edu.wustl.query.action.WorkflowAction" 
+        <action path="/SaveWorkflow"  
+        		type="edu.wustl.common.action.CommonAddEditAction" 
         		name="workflowForm"
         		validate="false"
 				scope="request">
         		<forward name="success" path=".query.redirectToWorkflowPageDef" />
         </action>
-        
 	   				
 	</action-mappings>
 	
