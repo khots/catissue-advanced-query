@@ -275,7 +275,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
                 <tr>
                   <td height="40" align="left" valign="middle" ><table border="0" cellspacing="0" cellpadding="0">
                     <tr>
-                      <td align="left"><img src="images/b_save.gif" alt="Save" width="55" height="23"></td>
+                      <td align="left"><a href="SaveWorkflow.do?operation=add"><img src="images/b_save.gif" alt="Save" width="55" height="23"></a></td>
                       <td width="76" align="right"><img src="images/b_cancel.gif" alt="Cancel" width="66" height="23"></td>
                     </tr>
                   </table></td>
