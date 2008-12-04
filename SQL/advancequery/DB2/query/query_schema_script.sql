@@ -133,3 +133,6 @@ alter table QUERY_TO_OUTPUT_TERMS add constraint FK8A70E2565E5B9430 foreign key 
 alter table QUERY_TO_PARAMETERS add constraint FK8060DAD739F0A314 foreign key (QUERY_ID) references QUERY_PARAMETERIZED_QUERY;
 alter table QUERY_TO_PARAMETERS add constraint FK8060DAD7F84B9027 foreign key (PARAMETER_ID) references QUERY_PARAMETER;
 alter table QUERY_UNION add constraint FK804AC458E201AD1D foreign key (IDENTIFIER) references QUERY_OPERATION;
+alter table QUERY_WORKFLOW_ITEM add constraint FK63FE103CA19B1E45 foreign key (QUERY_ID) references QUERY_ABSTRACT_QUERY (IDENTIFIER);
+alter table QUERY_WORKFLOW_ITEM add constraint FK63FE103C40018CD foreign key (WORKFLOW_ID) references QUERY_WORKFLOW (IDENTIFIER);
+
