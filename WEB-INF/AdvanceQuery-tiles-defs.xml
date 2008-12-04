@@ -208,6 +208,8 @@
 	<definition name=".query.querySavedQueryListDef" path="/pages/advancequery/content/search/querysuite/SavedQueryListView.jsp">
 	</definition>
 	
+	<definition name=".query.queryWorkFlowPopup" path="/pages/advancequery/content/search/querysuite/WorkflowPopup.jsp">
+	</definition>
 	 <!-- Definition code : Deepti Shelar : For pagination : 20/07/2007 -->
 	<definition name=".query.queryTreeViewDef" path="/pages/advancequery/content/search/querysuite/QueryTreeView.jsp">
 	</definition>
@@ -233,5 +235,8 @@
 	
 	<definition name=".query.redirectToWorkflowPageDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/workflow/Workflow.jsp" />
+	</definition>
+	
+	<definition name=".query.querySearchWizardDef" path="/pages/advancequery/content/search/querysuite/NewSearch.jsp">
 	</definition>
 </tiles-definitions>
