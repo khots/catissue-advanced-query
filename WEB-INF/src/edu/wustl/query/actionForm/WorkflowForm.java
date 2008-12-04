@@ -2,7 +2,9 @@ package edu.wustl.query.actionForm;
 
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
+import edu.wustl.common.util.Utility;
 import edu.wustl.query.domain.Workflow;
+import edu.wustl.query.util.global.Constants;
 
 /**
  * 
@@ -18,7 +20,7 @@ public class WorkflowForm extends AbstractActionForm
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * Name of the workflow
+	 * Name of the workFlow
 	 * */
 	private String name;
 
@@ -37,7 +39,7 @@ public class WorkflowForm extends AbstractActionForm
 	@Override
 	public int getFormId()
 	{
-		return 0;
+		return Constants.WORKFLOW_FORM_ID;
 	}
 
 	@Override
@@ -48,10 +50,11 @@ public class WorkflowForm extends AbstractActionForm
 
 	public void setAllValues(AbstractDomainObject abstractDomain)
 	{
-		/*Workflow workflow = (Workflow) abstractDomain;
+		Workflow workflow = (Workflow) abstractDomain;
 		
 		this.id = workflow.getId();
-		this.name = workflow.getName();*/
+		this.name = Utility.toString(workflow.getName());
+		this.name = "Workflow1";
 	}
 
 }
