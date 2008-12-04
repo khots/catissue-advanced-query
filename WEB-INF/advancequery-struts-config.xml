@@ -134,6 +134,7 @@ PUBLIC
 			<forward name="success" path=".query.queryViewPageDef"/>
 			<forward name="failure" path=".query.errorPageDef"/>
 			<forward name="MyQueries" path=".query.querySavedQueryListDef"/>
+			<forward name="displayQueriesInPopup" path=".query.queryWorkFlowPopup"/>
 		</action>
 		<action path="/ExecuteQueryAction"
 			type="edu.wustl.query.action.ExecuteQueryAction"
@@ -425,6 +426,12 @@ PUBLIC
         		validate="false"
 				scope="request">
         		<forward name="success" path=".query.redirectToWorkflowPageDef" />
+        </action>
+        
+        <!-- TO DO  -->
+      <action path="/QuerySearchWizard" 
+        type="edu.wustl.query.action.QueryAction">
+        	<forward name="success" path=".query.querySearchWizardDef"/>
         </action>
 	   				
 	</action-mappings>

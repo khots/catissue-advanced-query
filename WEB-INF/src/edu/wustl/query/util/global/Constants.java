@@ -283,6 +283,11 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final int MAX_SIZE = 500;
 	
 	public static final int WORKFLOW_BIZLOGIC_ID = 101;
+	public static final String MY_QUERIES_FOR_WORKFLOW="myQueriesForWorkFlow";
+	public static final String PUBLIC_QUERIES_FOR_WORKFLOW="publicQueryForWorkFlow";
+	public static final String  DISPLAY_QUERIES_IN_POPUP="displayQueriesInPopup";
+	public static final String PAGE_OF_MY_QUERIES="MyQueries";
+	
 	public static final int WORKFLOW_FORM_ID = 101;
 	
 	public static final String ELEMENT_ENTITY_GROUP = "entity-group";
