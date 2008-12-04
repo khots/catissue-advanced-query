@@ -44,7 +44,7 @@
 		<mapping resource="edu/wustl/common/hbm/JoinGraph.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/ModelAssociation.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/OutputAttribute.hbm.xml" />
-		<mapping resource="edu/wustl/common/hbm/Query.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/AbstractQuery.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/QueryEntity.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/QueryHQL.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/Term.hbm.xml" />
@@ -53,7 +53,10 @@
 		<mapping resource="edu/wustl/common/hbm/OutputTerm.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/PersistentGraph.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/Parameter.hbm.xml" />
-		
+		<mapping resource="edu/wustl/common/hbm/Operation.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/ResultView.hbm.xml" />
+		<mapping resource="edu/wustl/query/hbm/Workflow.hbm.xml" />
+		<mapping resource="edu/wustl/query/hbm/WorkflowItem.hbm.xml" />
     </session-factory>
     
 </hibernate-configuration>
