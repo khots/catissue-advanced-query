@@ -41,7 +41,10 @@ public class GenerateHtml
 	 * css for permissible values.
 	 */
 	public static final String CSS_PV= "PermissibleValuesQuery";
-
+	/**
+	 * css for highlighted background.
+	 */
+	public static final String CSS_HIGHLIGHT= "td_blue_highlight";
 	/**
 	 * This method generates html for RadioButton.
 	 * @param componentId
@@ -54,11 +57,6 @@ public class GenerateHtml
 	{
 		String cssClass=CSS_TEXT;
 		StringBuffer html = new StringBuffer(Constants.MAX_SIZE);
-		//String componentId = generateComponentName(attribute) + "_radioButton";
-		/*String componentName = componentId + "_booleanAttribute";
-		String radioButtonTrueId = componentId + "_true";
-		String radioButtonFalseId = componentId + "_false";*/
-
 		html.append("\n<td class='" + cssClass + "' >");
 		if (values == null)
 		{
@@ -688,7 +686,10 @@ public class GenerateHtml
 	 */
 	public static StringBuffer getBoldLabel(String attrLabel)
 	{
-		StringBuffer label = new StringBuffer("<b>");
+		String imgStr = "\n<img id=\"arrowImg\" " +
+		"src=\"images/advancequery/ic_black_arrow.gif\" />";
+		StringBuffer label = new StringBuffer(imgStr);
+		label.append("  <b>");
 		label.append(attrLabel).append("</b>");
 		return label;
 	}
@@ -704,11 +705,15 @@ public class GenerateHtml
 	 * @return boolean
 	 */
 	public static boolean getAlternateCss(StringBuffer generatedHTML, boolean isBGColor,
-			String componentId)
+			String componentId,boolean isBold)
 	{
 		String styleSheetClass="";
 		boolean bgColor = isBGColor;
-		if (bgColor)
+		if(isBold)
+		{
+			styleSheetClass = CSS_HIGHLIGHT;
+		}
+		else if (bgColor)
 		{
 			styleSheetClass = CSS_BGGREY;
 		}
@@ -758,11 +763,12 @@ public class GenerateHtml
 		if (attribute.getDataType().equalsIgnoreCase(Constants.DATE))
 		{
 			StringBuffer dateFormat = new StringBuffer(Constants.DATE_FORMAT);
+			StringBuffer format = new StringBuffer("<b>");
 			if(isBold)
 			{
-				dateFormat.append("<b>").append(dateFormat).append("</b>");
+				format.append(dateFormat).append("</b>");
 			}
-			generatedHTML.append("\n(" + dateFormat + ")");
+			generatedHTML.append("\n(" + format + ")");
 		}
 	}
 }
