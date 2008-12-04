@@ -610,7 +610,7 @@ public class HtmlProvider
 	private StringBuffer getAddEditPageHtml(StringBuffer generatedHTML,
 			StringBuffer generatedPreHTML)
 	{
-		StringBuffer html = new StringBuffer();
+		StringBuffer html = generatedHTML;
 		if (forPage.equalsIgnoreCase(Constants.ADD_EDIT_PAGE))
 		{
 			generatedPreHTML.append("####");
@@ -755,6 +755,7 @@ public class HtmlProvider
 		bgColor ^= true; 	//BGColor = !BGColor
 		String html = "\n<tr  class='"+styleSheetClass +"'" +
 		"  id=\"componentId\" "+" >\n";
+		
 		generatedHTML.append(html);
 		return bgColor;
 	}
