@@ -1,66 +1,99 @@
 package edu.wustl.query.domain;
 
-import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 import edu.wustl.common.actionForm.IValueObject;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
 import edu.wustl.query.actionForm.WorkflowForm;
 
-/**
- * Workflow is used to club together queries that may be required 
- * for a particular research purpose.
- * Used to batch execute get count queries or combine them using set operations
- * Also, used to execute patient data queries within the workflow.
- * 
- * @author ravindra_jain  creation date: 26th November,2008
- * @version 1.0
- */
-public class Workflow // extends AbstractDomainObject implements Serializable
+
+public class Workflow extends AbstractDomainObject
 {
 
-	/**
-	 * Serial Version Identifier
-	 */
 	private static final long serialVersionUID = 1L;
+	
+	private List<WorkflowItem> workflowItemList;
+	private Long id;
+	private String name;
+	private Date createdOn;
+//	private User createdBy;
 
-	/**
-     * System generated unique id.
-     */
-    protected Long id;
-	
-    /**
-     * Name of the Workflow (unique) 
-     */
-    protected String name;
-	
-	public Long getId()
+	public Workflow()
 	{
-		return id;
+		super();
+	}
+	
+	public Workflow(final IValueObject object) throws AssignDataException
+	{
+		this();
+		setAllValues(object);
+	}
+	
+	public String getName()
+	{
+		return name;
+	}
+
+	
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 
 	public void setId(Long id)
 	{
 		this.id = id;
 	}
-	
-	public String getName()
-    {
-        return name;
-    }
 
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-	
-	/*@Override
-	public void setAllValues(IValueObject abstractForm) throws AssignDataException
+
+	public Long getId()
 	{
-		System.out.println("In SetAllValues :::::::>>>> Workflow.java");
-		final WorkflowForm workflowForm = (WorkflowForm) abstractForm;
-		
-		this.name = workflowForm.getName();
-	}*/
+		return this.id;
+	}
+	
+	public void setWorkflowItemList(List<WorkflowItem> workflowItemList)
+	{
+		this.workflowItemList = workflowItemList;
+	}
 
+	public List<WorkflowItem> getWorkflowItemList()
+	{
+		return this.workflowItemList;
+	}	
+	
+	public Date getCreatedOn()
+	{
+		return createdOn;
+	}
+
+	public void setCreatedOn(Date createdOn)
+	{
+		this.createdOn = createdOn;
+	}
+
+//	public User getCreatedBy()
+//	{
+//		return createdBy;
+//	}
+//
+//	public void setCreatedBy(User createdBy)
+//	{
+//		this.createdBy = createdBy;
+//	}
+
+	
+	@Override
+	public void setAllValues(IValueObject form) throws AssignDataException
+	{
+		WorkflowForm workFlowForm = (WorkflowForm)form;
+		this.setName(workFlowForm.getName());
+		this.setName("Workflow1");
+	}
+	
+	 public String getMessageLabel()
+	{
+		return this.getClass().toString();
+	}
 }
