@@ -1321,4 +1321,79 @@ Thanking You,
 		</if>
 		<delete dir="${temp.dir}" />
 	</target>
+	
+	<target name="addTaggedValues">
+			<property name="temp.query" value="querytemp" />
+			<delete quiet="true" includeemptydirs="true">
+				<fileset dir="${temp.query}">
+					<include name="**/*" />
+				</fileset>
+			</delete>
+
+			<unwar src="${base.dir}/query.war" dest="querytemp" />
+
+			<copy file="DE_conf/QueryHibernate.cfg.xml" todir="${temp.query}/WEB-INF/classes" overwrite="true" />
+			<copy file="DE_conf/DynamicExtensionsHibernate.cfg.xml" todir="${temp.query}/WEB-INF/classes" overwrite="true" />
+
+			<if>
+				<equals arg1="mysql" arg2="${database.type}" />
+				<then>
+					<replace dir="${temp.query}/WEB-INF/classes">
+						<include name="*.cfg.xml" />
+						<replacefilter token="@@DIALECT@@" value="${mysql.dialect.string}" />
+						<replacefilter token="@@DRIVER@@" value="com.mysql.jdbc.Driver" />
+						<replacefilter token="@@URL@@" value="jdbc:mysql://${database.host}:${database.port}/${database.name}" />
+					</replace>
+				</then>
+				<elseif>
+					<equals arg1="oracle" arg2="${database.type}" />
+					<then>
+						<replace dir="${temp.query}/WEB-INF/classes">
+							<include name="*.cfg.xml" />
+							<replacefilter token="@@DIALECT@@" value="${oracle.dialect.string}" />
+							<replacefilter token="@@DRIVER@@" value="${oracle.driver.string}" />
+							<replacefilter token="@@URL@@" value="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}" />
+						</replace>
+					</then>
+				</elseif>
+				<elseif>
+					<equals arg1="db2" arg2="${database.type}" />
+					<then>
+						<replace dir="${temp.query}/WEB-INF/classes">
+							<include name="*.cfg.xml" />
+							<replacefilter token="@@DIALECT@@" value="${db2.dialect.string}" />
+							<replacefilter token="@@DRIVER@@" value="${db2.driver.string}" />
+							<replacefilter token="@@URL@@" value="jdbc:db2://${database.host}:${database.port}/${database.name}" />
+						</replace>
+					</then>
+				</elseif>
+			</if>
+			<replace dir="${temp.query}/WEB-INF/classes">
+				<include name="*.cfg.xml" />
+				<replacefilter token="@@DATABASE_USERNAME@@" value="${database.username}" />
+				<replacefilter token="@@DATABASE_PASSWORD@@" value="${database.password}" />
+			</replace>
+
+			<echo>Adding Tagged Values..</echo>
+			<java classname="edu.wustl.query.querysuite.metadata.AddTaggedValue" fork="true">
+				<arg value="taggedvalues.xml"/>
+				<classpath>
+					<pathelement location="${temp.query}/WEB-INF/classes" />
+					<fileset dir="${temp.query}/WEB-INF/lib">
+						<include name="*.jar" />
+					</fileset>
+					<fileset dir="${lib.dir}">
+							<include name="*.jar" /> 
+					</fileset>  	
+					<fileset dir="${jboss.server.url}/lib">
+							<include name="jboss-j2ee.jar" /> 
+					</fileset>  	
+					
+				</classpath>
+			</java>
+
+			<delete quiet="true" includeemptydirs="true">
+				<fileset dir="${temp.query}" />
+			</delete>
+		</target>
 </project>
