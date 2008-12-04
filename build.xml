@@ -358,7 +358,7 @@
 		<copy todir="${zip.dir}/query-properties" overwrite="true">
 			<fileset dir="${base.dir}/query-properties" />
 		</copy>		
-		
+		<copy file= "${base.dir}/taggedvalues.xml"  todir="${zip.dir}" overwrite="true" />
 		<!-- Copy these two config files from tokenizedFiles directory which contains the tekenized files -->
 		<copy todir="${base.dir}/WEB-INF/classes" overwrite="true">
 			<fileset dir="${base.dir}/tokenizedFiles">
