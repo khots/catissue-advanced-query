@@ -283,4 +283,5 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final int MAX_SIZE = 500;
 	
 	public static final int WORKFLOW_BIZLOGIC_ID = 101;
+	public static final int WORKFLOW_FORM_ID = 101;
 }
