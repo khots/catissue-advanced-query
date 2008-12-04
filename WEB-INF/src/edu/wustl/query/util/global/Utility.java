@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.Action;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
@@ -522,5 +521,22 @@ public class Utility extends edu.wustl.common.util.Utility
 		ActionError error = new ActionError("errors.item", errorMessage);
 		errors.add(ActionErrors.GLOBAL_ERROR, error);
 		return errors;
+	}
+	
+    /**
+     * This method returns the session data bean
+     * @param request
+     * @return
+     */
+    public static SessionDataBean getSessionData(HttpServletRequest request)
+	{
+		Object obj = request.getSession().getAttribute(Constants.SESSION_DATA);
+		SessionDataBean sessionData = null;
+		if (obj != null)
+		{
+			sessionData = (SessionDataBean) obj;
+			return sessionData;
+		}
+		return sessionData;
 	}
 }

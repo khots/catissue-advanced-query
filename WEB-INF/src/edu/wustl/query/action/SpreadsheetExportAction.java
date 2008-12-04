@@ -81,7 +81,7 @@ public class SpreadsheetExportAction  extends Action
     	}
 		
 		QuerySessionData querySessionData = (QuerySessionData)session.getAttribute(edu.wustl.common.util.global.Constants.QUERY_SESSION_DATA);
-        List dataList1 = Utility.getPaginationDataList(request, getSessionData(request), recordsPerPage, pageNum, querySessionData);
+        List dataList1 = Utility.getPaginationDataList(request, Utility.getSessionData(request), recordsPerPage, pageNum, querySessionData);
         List<List<String>> dataList = (List<List<String>>) session.getAttribute(Constants.EXPORT_DATA_LIST);
         if(dataList == null )
         	dataList = dataList1;
@@ -194,25 +194,4 @@ public class SpreadsheetExportAction  extends Action
     	
     	return null;
     }
-    
-   
-   
-    //This method is added By Baljeet to get session data
-    
-    /**
-     * This method returns the session data bean
-     * @param request
-     * @return
-     */
-    private SessionDataBean getSessionData(HttpServletRequest request)
-	{
-		Object obj = request.getSession().getAttribute(Constants.SESSION_DATA);
-		SessionDataBean sessionData = null;
-		if (obj != null)
-		{
-			sessionData = (SessionDataBean) obj;
-			return sessionData;
-		}
-		return sessionData;
-	}
 }
