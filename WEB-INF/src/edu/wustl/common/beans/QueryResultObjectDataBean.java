@@ -11,8 +11,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.common.querydatabean.QueryDataBean;
-import edu.wustl.security.privilege.PrivilegeType;
+import edu.wustl.common.querysuite.security.PrivilegeType;
 
 /**
  * @author supriya_dankh
