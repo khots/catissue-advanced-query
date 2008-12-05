@@ -66,19 +66,20 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 	public boolean showListBoxForPV(final AttributeInterface attribute, final EntityInterface entity)
 	{
 		
-		boolean showListBox = false;
-		VocabularyManager vocabMngr = VocabularyManager.getVocabularyManager();
+	boolean showListBox = false;
+	VocabularyManager vocabMngr = VocabularyManager.getVocabularyManager();
 		
+	if(isEnumerated(attribute,entity))
+	{
 		List<CodingSchemeSummary> codingSchemeList  = vocabMngr.getAllCodingSchemes();
 		int noOfCodingSchemes = codingSchemeList.size();
-
 		String pvFilter = getPVFilterValueForAttribute(attribute,entity);
 		MedLookUpManager medManager = MedLookUpManager.instance();
 		List<String> toReturn = medManager.getPermissibleValues(pvFilter);
-
-		if(toReturn.size() < 5 && noOfCodingSchemes ==1) {
+		if(toReturn!=null && toReturn.size() < 5 && noOfCodingSchemes ==1) {
 			showListBox =true;
 		}
+	}
 		return showListBox;
 
 	}
