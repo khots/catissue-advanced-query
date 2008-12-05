@@ -763,9 +763,11 @@ public class GenerateHtml
 		if (attribute.getDataType().equalsIgnoreCase(Constants.DATE))
 		{
 			StringBuffer dateFormat = new StringBuffer(Constants.DATE_FORMAT);
-			StringBuffer format = new StringBuffer("<b>");
+			StringBuffer format = dateFormat;
 			if(isBold)
 			{
+				format = new StringBuffer();
+				format.append("<b>");
 				format.append(dateFormat).append("</b>");
 			}
 			generatedHTML.append("\n(" + format + ")");
