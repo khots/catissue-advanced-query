@@ -239,7 +239,13 @@ PUBLIC
 			<forward name="success" path=".query.openDecisionMakingPage"/>		
 			<forward name="viewAllRecords" path=".query.viewSearchResults"/>		
 		</action>
-								
+		<action path="/SearchPermissibleValues"
+			type="edu.wustl.query.action.SearchPermissibleValuesAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path="/pages/advancequery/content/search/SearchPermissibleValues.jsp"/>
+		</action>			
 	<!--Commented out By Baljeet as it is related to Shopping Cart -->
 	<!--	<action path="/ViewCart"
 			type="edu.wustl.query.action.querysuite.ViewCartAction"
