@@ -1,7 +1,11 @@
 
 package edu.wustl.query.htmlprovider;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
+
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 
 /**
  * @author vijay_pande
@@ -27,7 +31,7 @@ public class GenerateHTMLDetails
 	 *
 	 */
 	private String[] searcStrings;
-
+	
 	/**
 	 * Method to get String value of searchString.
 	 * @return searchString value of searchString
@@ -109,4 +113,18 @@ public class GenerateHTMLDetails
 		}
 		return searchStrings;
 	}
+
+	/**
+	 * enumratedAttributeMap for storing the AttributeInterface object in session which has Permissible Values
+	 */
+	Map<String,AttributeInterface> enumratedAttributeMap= new HashMap<String,AttributeInterface>();
+	
+	public Map<String, AttributeInterface> getEnumratedAttributeMap() {
+		return enumratedAttributeMap;
+	}
+
+	public void setEnumratedAttributeMap(Map<String, AttributeInterface> enumratedAttributeMap) {
+		this.enumratedAttributeMap = enumratedAttributeMap;
+	}
+	
 }
