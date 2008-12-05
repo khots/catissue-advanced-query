@@ -47,19 +47,21 @@ public class LoadDefineSearchRulesAction extends Action
 		generateHTMLDetails.setPermissibleValuesChecked(Boolean.valueOf(searchForm
 				.getPermissibleValuesChecked()));
 
-		HtmlProvider addLimitsBizLogic = new HtmlProvider(
-				generateHTMLDetails);
+		HtmlProvider htmlProvider = new HtmlProvider(generateHTMLDetails);
 
 		String html = "";
 		/*	Map searchedEntitiesMap = (Map) request.getSession().getAttribute(Constants.SEARCHED_ENTITIES_MAP);
 			if (searchedEntitiesMap != null)
 			{
 		*/Entity entity = (Entity) EntityCache.getCache().getEntityById(Long.valueOf((entityName)));
+		
 		if (entity != null)
 		{
-			html = addLimitsBizLogic.generateHTML(entity, null);
+			html = htmlProvider.generateHTML(entity, null,generateHTMLDetails);
 		}
 		//	}
+		request.getSession().setAttribute(Constants.ENUMRATED_ATTRIBUTE, generateHTMLDetails.getEnumratedAttributeMap());
+		request.getSession().setAttribute(Constants.ENTITY_NAME, entityName);
 		response.setContentType(Constants.CONTENT_TYPE_TEXT);
 		response.getWriter().write(html);
 		return null;
