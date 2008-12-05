@@ -329,7 +329,7 @@ public class HtmlProvider
 		}
 		if(!isBold && permissibleValuesChecked)
 		{
-			isBold = isPerValueAttributeBold(HtmlUtility.getPermissibleValuesList(attribute));
+			isBold = isPerValueAttributeBold(HtmlUtility.getPermissibleValuesList(attribute,null));
 		}
 		return isBold;
 	}
@@ -482,7 +482,7 @@ public class HtmlProvider
 	private void generateHTMLForConditionNull(StringBuffer generatedHTML,
 			AttributeInterface attribute,AttributeDetails attributeDetails)
 	{
-		List<PermissibleValueInterface> permissibleValues =getPermissibleValuesList(attribute,entity);
+		List<PermissibleValueInterface> permissibleValues =HtmlUtility.getPermissibleValuesList(attribute,entity);
 		String componentId = generateComponentName(attribute);
 		boolean isDate = false;
 		AttributeTypeInformationInterface attrTypeInfo = attribute
@@ -493,7 +493,7 @@ public class HtmlProvider
 		}
 		generatedHTML.append(Constants.NEWLINE).append(
 				GenerateHtml.generateHTMLForOperators(componentId,isDate,attributeDetails));
-		if (showListBoxForPV(attribute))//!permissibleValues.isEmpty() && permissibleValues.size() < Constants.MAX_PV_SIZE)
+		if (HtmlUtility.showListBoxForPV(attribute,entity))
 		{
 			generatedHTML.append(Constants.NEWLINE).append(
 					generateHTMLForEnumeratedValues(componentId, permissibleValues,
@@ -933,33 +933,6 @@ public class HtmlProvider
 		enumratedAttributeMap.put(Constants.ATTRIBUTE_INTERFACE+componentId, attributeInterface);
 		
 	}
-	/**
-	 * 
-	 * @param attribute
-	 * @return boolean
-	 * added by amit_doshi
-	 */
-	private boolean showListBoxForPV(AttributeInterface attribute)
-	{
-		IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
-		boolean status=false;
-		status= permissibleValueManager.showListBoxForPV(attribute,entity);
-		return status;
-		
-	}
-	/**
-	 * returns PermissibleValuesList' list for attribute
-	 * 
-	 * @param attribute     AttributeInterface
-	 * @return List of permissible values for the passed attribute
-	 * added amit_doshi 
-	 */
-	private List<PermissibleValueInterface> getPermissibleValuesList(AttributeInterface attribute,EntityInterface entity)
-	{
-		IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
-		List<PermissibleValueInterface> permissibleValues = null;
-		permissibleValues = permissibleValueManager.getPermissibleValueList(attribute,entity);
-		return permissibleValues;
-	}
+	
 
 }

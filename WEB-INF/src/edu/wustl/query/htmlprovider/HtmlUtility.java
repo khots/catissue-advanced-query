@@ -11,8 +11,11 @@ import java.util.Map;
 import edu.common.dynamicextensions.domain.PermissibleValue;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.wustl.common.query.factory.PermissibleValueManagerFactory;
+import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.common.util.ParseXMLFile;
@@ -152,31 +155,7 @@ public class HtmlUtility
 		}
 		return attributeNameConditionMap;
 	}
-	/**
-	 * returns PermissibleValuesList' list for attribute.
-	 * @param attribute
-	 *            AttributeInterface
-	 * @return List of permissible values for the passed attribute
-	 */
-	public static List<PermissibleValueInterface> getPermissibleValuesList(AttributeInterface attribute)
-	{
-		UserDefinedDE userDefineDE = (UserDefinedDE) attribute.getAttributeTypeInformation()
-				.getDataElement();
-		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
-		if (userDefineDE != null && userDefineDE.getPermissibleValueCollection() != null)
-		{
-			Iterator<PermissibleValueInterface> permissibleValueInterface = userDefineDE
-					.getPermissibleValueCollection().iterator();
-			while (permissibleValueInterface.hasNext())
-			{
-				PermissibleValue permValue = (PermissibleValue) permissibleValueInterface.next();
-				//getPermissibleValue(permissibleValues, permValue);
-				permissibleValues.add(permValue);
-			}
-		}
-		return permissibleValues;
-	}
-
+	
 	/*private static void getPermissibleValue(List<PermissibleValueInterface> permissibleValues,
 			PermissibleValue permValue)
 	{
@@ -259,5 +238,33 @@ public class HtmlUtility
 			}
 		}
 		return isNotSearchable;
+	}
+	/**
+	 * 
+	 * @param attribute
+	 * @return boolean
+	 * added by amit_doshi
+	 */
+	public static boolean showListBoxForPV(AttributeInterface attribute,EntityInterface entity)
+	{
+		IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
+		boolean status=false;
+		status= permissibleValueManager.showListBoxForPV(attribute,entity);
+		return status;
+		
+	}
+	/**
+	 * returns PermissibleValuesList' list for attribute
+	 * 
+	 * @param attribute     AttributeInterface
+	 * @return List of permissible values for the passed attribute
+	 * added amit_doshi 
+	 */
+	public static List<PermissibleValueInterface> getPermissibleValuesList(AttributeInterface attribute,EntityInterface entity)
+	{
+		IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
+		List<PermissibleValueInterface> permissibleValues = null;
+		permissibleValues = permissibleValueManager.getPermissibleValueList(attribute,entity);
+		return permissibleValues;
 	}
 }
