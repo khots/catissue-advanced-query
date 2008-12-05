@@ -56,6 +56,10 @@ public class BizLogicFactory
 			case Constants.WORKFLOW_BIZLOGIC_ID :
 				bizLogic = new WorkflowBizLogic();
 				break;
+			
+			case Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID :
+				bizLogic = new SearchPermissibleValuesFromVocabBizlogic();
+				break;
 		}
 		return bizLogic;
 	}
