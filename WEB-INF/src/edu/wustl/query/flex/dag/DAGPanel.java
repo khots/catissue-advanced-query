@@ -1891,7 +1891,7 @@ public class DAGPanel
 				null);
 		Rule rule = ((Rule) (expression.getOperand(0)));
 		List<ICondition> conditions = Collections.list(rule);
-		String html = generateHTMLBizLogic.generateHTML(entity, conditions);
+		String html = generateHTMLBizLogic.generateHTML(entity, conditions,null);
 		map.put(DAGConstant.HTML_STR, html);
 		map.put(DAGConstant.EXPRESSION, expression);
 		return map;
