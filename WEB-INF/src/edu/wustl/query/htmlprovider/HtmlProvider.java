@@ -4,6 +4,7 @@ package edu.wustl.query.htmlprovider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.wustl.cab2b.common.exception.CheckedException;
 import edu.wustl.cab2b.common.util.AttributeInterfaceComparator;
 import edu.wustl.cab2b.common.util.PermissibleValueComparator;
+import edu.wustl.common.query.factory.PermissibleValueManagerFactory;
+import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.common.util.ParseXMLFile;
@@ -52,7 +55,17 @@ public class HtmlProvider
 	 * attribute details for each attribute.
 	 */
 	private AttributeDetails attributeDetails;
-
+	/**
+	 * 
+	 */
+	private EntityInterface entity;
+	/**
+	 * 
+	 */
+	Map<String,AttributeInterface> enumratedAttributeMap= new HashMap<String,AttributeInterface>();
+	/**
+	 * 
+	 */
 	/**
 	 *	For page set to SAVE_QUERY/ADD_EDIT/EXECUTE_QUERY depending upon
 	 *  which page the request has come from.
@@ -157,10 +170,11 @@ public class HtmlProvider
 	 * 		For adding linits this parameter is null
 	 * @return String html generated for Add Limits section.
 	 */
-	public String generateHTML(EntityInterface entity, List<ICondition> conditions)
+	public String generateHTML(EntityInterface entity, List<ICondition> conditions,GenerateHTMLDetails generateHTMLDetails)
 	{
 		boolean attributeChecked = this.generateHTMLDetails.isAttributeChecked();
 		boolean permissibleValuesChecked = this.generateHTMLDetails.isPermissibleValuesChecked();
+		this.entity=entity;
 		Collection<AttributeInterface> attributeCollection = entity.getEntityAttributesForQuery();
 		String nameOfTheEntity = entity.getName();
 		String entityId = entity.getId().toString();
@@ -174,6 +188,10 @@ public class HtmlProvider
 					(entityName.toString(),entityId,attributesStr,isEditLimits);
 		generatedHTML = getHtmlAttributes(conditions, attributeChecked, permissibleValuesChecked,
 				attributeCollection);
+		if(generateHTMLDetails!=null)
+		{
+			generateHTMLDetails.setEnumratedAttributeMap(enumratedAttributeMap);
+		}
 		return generatedPreHTML.toString() + "####" + generatedHTML.toString();
 	}
 
@@ -464,7 +482,7 @@ public class HtmlProvider
 	private void generateHTMLForConditionNull(StringBuffer generatedHTML,
 			AttributeInterface attribute,AttributeDetails attributeDetails)
 	{
-		List<PermissibleValueInterface> permissibleValues =HtmlUtility.getPermissibleValuesList(attribute);
+		List<PermissibleValueInterface> permissibleValues =getPermissibleValuesList(attribute,entity);
 		String componentId = generateComponentName(attribute);
 		boolean isDate = false;
 		AttributeTypeInformationInterface attrTypeInfo = attribute
@@ -475,7 +493,7 @@ public class HtmlProvider
 		}
 		generatedHTML.append(Constants.NEWLINE).append(
 				GenerateHtml.generateHTMLForOperators(componentId,isDate,attributeDetails));
-		if (!permissibleValues.isEmpty() && permissibleValues.size() < Constants.MAX_PV_SIZE)
+		if (showListBoxForPV(attribute))//!permissibleValues.isEmpty() && permissibleValues.size() < Constants.MAX_PV_SIZE)
 		{
 			generatedHTML.append(Constants.NEWLINE).append(
 					generateHTMLForEnumeratedValues(componentId, permissibleValues,
@@ -496,6 +514,13 @@ public class HtmlProvider
 						GenerateHtml.generateHTMLForTextBox(
 								componentId,attributeDetails));
 			}
+			
+			IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
+			if(permissibleValueManager.isEnumerated(attribute,entity))
+				{
+					showEnumeratedAttibutesWithIcon(generatedHTML,attribute);
+				}
+			
 		}
 	}
 
@@ -891,4 +916,50 @@ public class HtmlProvider
 		}
 		return expressionEntityString;
 	}
+	/**
+	 * 
+	 * @param generatedHTML
+	 * @param attributeInterface
+	 * added by amit_doshi for Vocabulary Interface
+	 */
+	private void showEnumeratedAttibutesWithIcon(StringBuffer generatedHTML, AttributeInterface attributeInterface) 
+	{
+		/* Need to get the attribute interface of of ID attribute because we have to set all the concept code to the
+		 ID Attribute*/
+		AttributeInterface attributeIDInterface=entity.getAttributeByName(Constants.ID);
+		String componentIdOfID=generateComponentName(attributeIDInterface);
+		String componentId = generateComponentName(attributeInterface);
+		generatedHTML.append("\n<td valign='top' width='1%'><a onclick=\"openPermissibleValuesConfigWindow('" + componentId	+ "','"+entity.getName()+"','"+componentIdOfID+"')\" ><img src=\"images/advancequery/b_new_search.gif\"  /></a> </td>");
+		enumratedAttributeMap.put(Constants.ATTRIBUTE_INTERFACE+componentId, attributeInterface);
+		
+	}
+	/**
+	 * 
+	 * @param attribute
+	 * @return boolean
+	 * added by amit_doshi
+	 */
+	private boolean showListBoxForPV(AttributeInterface attribute)
+	{
+		IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
+		boolean status=false;
+		status= permissibleValueManager.showListBoxForPV(attribute,entity);
+		return status;
+		
+	}
+	/**
+	 * returns PermissibleValuesList' list for attribute
+	 * 
+	 * @param attribute     AttributeInterface
+	 * @return List of permissible values for the passed attribute
+	 * added amit_doshi 
+	 */
+	private List<PermissibleValueInterface> getPermissibleValuesList(AttributeInterface attribute,EntityInterface entity)
+	{
+		IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
+		List<PermissibleValueInterface> permissibleValues = null;
+		permissibleValues = permissibleValueManager.getPermissibleValueList(attribute,entity);
+		return permissibleValues;
+	}
+
 }
