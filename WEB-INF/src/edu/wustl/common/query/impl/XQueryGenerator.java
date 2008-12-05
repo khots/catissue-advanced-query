@@ -969,7 +969,17 @@ public class XQueryGenerator extends QueryGenerator
 
 	protected boolean shouldAddNodeFor(IExpression expression)
 	{
-		return super.shouldAddNodeFor(expression) && mainExpressions.contains(expression);
+		return super.shouldAddNodeFor(expression) ;
+	}
+	
+	protected boolean isContainedExpresion(IExpression expression)
+	{
+		boolean isContainedExpresion = false;
+		if(mainExpressions.contains(expression))
+		{
+			isContainedExpresion = true;
+		}
+		return isContainedExpresion;
 	}
 
 	protected String processBetweenOperator(ICondition condition, String attributeName)

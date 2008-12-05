@@ -702,6 +702,11 @@ public abstract class QueryGenerator implements IQueryGenerator
 			aliasAppenderMap.put(expr, expr.getExpressionId());
 		}
 	}
+	
+	protected boolean isContainedExpresion(IExpression expression)
+	{
+		return false;
+	}
 
 	/**
 	 * TO create the output tree from the constraints.
@@ -721,6 +726,12 @@ public abstract class QueryGenerator implements IQueryGenerator
 			{
 				IOutputEntity childOutputEntity = getOutputEntity(childExp);
 				Integer childAliasAppender = aliasAppenderMap.get(childExp);
+				
+				//Set containment object to true if expression is contained.
+				if(isContainedExpresion(childExp))
+				{
+					childNode.setContainedObject(true);
+				}
 
 				/**
 				 * Check whether output tree node for expression with the same

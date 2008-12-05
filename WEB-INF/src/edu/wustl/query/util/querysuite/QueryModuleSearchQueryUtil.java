@@ -72,7 +72,7 @@ public class QueryModuleSearchQueryUtil
 	 * @return status
 	 */
 	public QueryModuleError searchQuery(String option)
-	{
+	{  
 		session.removeAttribute(Constants.HYPERLINK_COLUMN_MAP);
 		QueryModuleError status = QueryModuleError.SUCCESS;
 		try
@@ -113,8 +113,11 @@ public class QueryModuleSearchQueryUtil
 			for (OutputTreeDataNode outnode : queryDetailsObj.getRootOutputTreeNodeList())
 			{
 				Vector<QueryTreeNodeData> treeData = null;
+				if(!outnode.isContainedObject())
+				{
 				treeData = outputTreeBizLogic.createDefaultOutputTreeData(initialValue, outnode,
 						hasCondOnIdentifiedField, queryDetailsObj);
+				}
 				initialValue = setTreeData(option, initialValue, treeData);
 			}
 		}
@@ -171,6 +174,7 @@ public class QueryModuleSearchQueryUtil
 			treeData = limitedTreeData;
 		}
 		session.setAttribute(Constants.TREE_DATA + Constants.UNDERSCORE + initialValue, treeData);
+		session.setAttribute(Constants.RANDOM_NUMBER, queryDetailsObj.getRandomNumber());
 		initialValue += 1;
 		return initialValue;
 	}

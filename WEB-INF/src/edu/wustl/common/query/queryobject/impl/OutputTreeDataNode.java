@@ -35,6 +35,7 @@ public class OutputTreeDataNode implements Serializable
 	IOutputEntity outputEntity;
 	private int treeNo;
 	private int expressionId;
+	private boolean isContainedObject = false;
 	
 	private List<QueryOutputTreeAttributeMetadata> attributes = new ArrayList<QueryOutputTreeAttributeMetadata>();
 	
@@ -220,5 +221,18 @@ public class OutputTreeDataNode implements Serializable
 		}
 		return null;
 	}
+
+	
+	public boolean isContainedObject()
+	{
+		return isContainedObject;
+	}
+
+	
+	public void setContainedObject(boolean isContainedObject)
+	{
+		this.isContainedObject = isContainedObject;
+	}
+	
 	
 }
