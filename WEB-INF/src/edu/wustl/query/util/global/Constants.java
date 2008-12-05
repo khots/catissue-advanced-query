@@ -301,4 +301,17 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String CONTAINMENT_OBJECTS_MAP = "containmentObjectMap";
 	public static final String ENTITY_EXPRESSION_ID_MAP = "entityExpressionIdMap";
 	
+	//added by amit_doshi
+	public static final String PV_TREE_VECTOR ="PermissibleValueTreeVector";
+	
+	public static final String PROPERTIESFILENAME = "vocab.properties";
+	public static final int SEARCH_PV_FROM_VOCAB_BILOGIC_ID = 12;
+	public static final String ATTRIBUTE_INTERFACE = "AttributeInterface";
+	public static final String ENTITY_INTERFACE = "EntityInterface";
+	public static final String VOCABULIRES = "Vocabulries";
+	public static final String ENUMRATED_ATTRIBUTE = "EnumratedAttribute";
+	public static final String COMPONENT_ID = "componentId";
+	public static final String NO_RESULT = "No results found";
+	public static final String MED_PV_HTML = "MEDPVHTML";
+	
 }
