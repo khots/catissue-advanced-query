@@ -19,6 +19,8 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
+import edu.wustl.query.htmlprovider.HtmlUtility;
+import edu.wustl.query.util.global.Constants;
 
 public class LocalDEPermissibleValueManager implements IPermissibleValueManager
 {
@@ -26,46 +28,18 @@ public class LocalDEPermissibleValueManager implements IPermissibleValueManager
 
 	public List<PermissibleValueInterface> getPermissibleValueList(AttributeInterface attribute, EntityInterface entity)
 	{
-		UserDefinedDE userDefineDE = (UserDefinedDE) attribute.getAttributeTypeInformation().getDataElement();
+		UserDefinedDE userDefineDE = (UserDefinedDE) attribute.getAttributeTypeInformation()
+		.getDataElement();
 		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
 		if (userDefineDE != null && userDefineDE.getPermissibleValueCollection() != null)
 		{
-			Iterator<PermissibleValueInterface> permissibleValueInterface = userDefineDE.getPermissibleValueCollection().iterator();
+			Iterator<PermissibleValueInterface> permissibleValueInterface = userDefineDE
+					.getPermissibleValueCollection().iterator();
 			while (permissibleValueInterface.hasNext())
 			{
 				PermissibleValue permValue = (PermissibleValue) permissibleValueInterface.next();
-				if (permValue instanceof StringValueInterface)
-				{
-					permissibleValues.add(((StringValueInterface) permValue));
-				}
-				else if (permValue instanceof ShortValueInterface)
-				{
-					permissibleValues.add(((ShortValueInterface) permValue));
-				}
-				else if (permValue instanceof LongValueInterface)
-				{
-					permissibleValues.add(((LongValueInterface) permValue));
-				}
-				else if (permValue instanceof DateValueInterface)
-				{
-					permissibleValues.add(((DateValueInterface) permValue));
-				}
-				else if (permValue instanceof BooleanValueInterface)
-				{
-					permissibleValues.add(((BooleanValueInterface) permValue));
-				}
-				else if (permValue instanceof IntegerValueInterface)
-				{
-					permissibleValues.add(((IntegerValueInterface) permValue));
-				}
-				else if (permValue instanceof DoubleValueInterface)
-				{
-					permissibleValues.add((DoubleValueInterface) permValue);
-				}
-				else if (permValue instanceof FloatValueInterface)
-				{
-					permissibleValues.add(((FloatValueInterface) permValue));
-				}
+				//getPermissibleValue(permissibleValues, permValue);
+				permissibleValues.add(permValue);
 			}
 		}
 		return permissibleValues;
@@ -80,8 +54,15 @@ public class LocalDEPermissibleValueManager implements IPermissibleValueManager
 
 	public boolean showListBoxForPV(AttributeInterface attribute, EntityInterface entity)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		List<PermissibleValueInterface> permissibleValues =getPermissibleValueList(attribute,entity);
+		if( !permissibleValues.isEmpty() && permissibleValues.size() < Constants.MAX_PV_SIZE)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 }
