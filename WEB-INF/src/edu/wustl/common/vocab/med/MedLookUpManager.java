@@ -1,10 +1,10 @@
 package edu.wustl.common.vocab.med;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.util.dbManager.DAOException;
@@ -15,7 +15,7 @@ public class MedLookUpManager
 	Map<String,List<String> > pvMap = null;
 	private static MedLookUpManager medLookUpManager = null;
 	
-	private MedLookUpManager()
+	public MedLookUpManager()
 	{
 		
 	}
@@ -32,45 +32,7 @@ public class MedLookUpManager
 		
 	}
 	
-	private void init()
-	{
-		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		
-		try
-		{
-			dao.openSession(null);
-			List<List<String>> dataList = dao.executeQuery("select synonym,id from MED_LOOKUP_TABLE", null, false, false, null);
-			if(!dataList.isEmpty())
-			{
-				pvMap = new HashMap<String, List<String>>();
-				
-				for(int i=0; i < dataList.size(); i++)
-				{
-					if(pvMap.containsKey(dataList.get(i).get(0)))
-					{
-						pvMap.get(dataList.get(i).get(0)).add(dataList.get(i).get(1));
-					}
-					else
-					{
-						List<String> pvList = new ArrayList<String>();
-						pvList.add(dataList.get(i).get(1));
-						pvMap.put(dataList.get(i).get(0),pvList);
-					}
-				}
-			}
-		}
-		catch (DAOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (ClassNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
+	
 	
 	public List<String> getPermissibleValues(String pvFilter)
 	{
@@ -79,7 +41,16 @@ public class MedLookUpManager
 		List<String> pvList = null;
 		try
 		{
-			dao.openSession(null);
+			SessionDataBean sessionData = new SessionDataBean(); 
+			Long userId = Long.valueOf((1));
+			sessionData.setUserName("admin@admin.com");
+			sessionData.setIpAddress("10.88.88.24");
+			sessionData.setUserId(userId);
+			sessionData.setFirstName("admin@admin.com");
+			sessionData.setLastName("admin@admin.com");
+			sessionData.setAdmin(true);
+			sessionData.setSecurityRequired(false);
+			dao.openSession(sessionData);
 			List<List<String>> dataList = dao.executeQuery("select synonym,id from MED_LOOKUP_TABLE where synonym like '" + pvFilter + "'", null, false, false, null);
 			if(!dataList.isEmpty())
 			{
@@ -90,6 +61,7 @@ public class MedLookUpManager
 						pvList.add(dataList.get(i).get(1));
 				}
 			}
+			dao.closeSession();
 		}
 		catch (DAOException e)
 		{
