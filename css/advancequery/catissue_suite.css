@@ -79,7 +79,12 @@ body {
 	padding-top:7px;
 
 }
-
+.black_ar_tt {
+	font-family: verdana;
+	font-size: 11px;
+	color: #000000;
+	vertical-align:top;
+}
 
 .black_new{
 	font-family: verdana;
