@@ -1496,3 +1496,48 @@ var jsReady = false;
 			myWindow.close();
 		}
 	}
+	
+	function openPermissibleValuesConfigWindow(componentId,entityName,componentIdOfID)
+	{
+	   compId= componentId;
+	   compIdOfID=componentIdOfID;
+	   pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'SearchPermissibleValues.do?componentId='+componentId,'Search Permissible Values for \"'+entityName+'\"', 'width=930px,height=510px,center=1,resize=0,scrolling=1')
+	   pvwindow.onclose=function()
+	      { 
+	            return true;
+	      }
+	}
+
+	function getValueFromChild(pvList,pvNameList)
+	{
+		
+			var componentId=compId + "_textBox";
+			var componentIdOfID=compIdOfID + "_textBox";
+			//set the concept code to the ID attribute
+			var permValuesWithCode=pvList.split('#');
+			var medConceptCodeList="";
+			var pvValueList="";
+			for(i=0;i<permValuesWithCode.length;i++)
+			{
+				
+				if(permValuesWithCode[i]!="")
+				{
+					permValuesWithCodeArray=permValuesWithCode[i].split(':');
+					if(permValuesWithCodeArray[0]!="")
+					{
+						medConceptCodeList=medConceptCodeList+permValuesWithCodeArray[1]+",";
+					}
+					/*if(permValuesWithCodeArray[1]!="")
+					{
+						pvValueList=pvValueList+permValuesWithCodeArray[0]+",";
+					}*/
+				}
+			}
+			
+			document.getElementById(componentIdOfID).value = medConceptCodeList.substring(0,medConceptCodeList.lastIndexOf(','));  
+	        document.getElementById(componentId).value = pvNameList.substring(0,pvNameList.lastIndexOf(','));
+	       
+	}	
+	
+	
+	
