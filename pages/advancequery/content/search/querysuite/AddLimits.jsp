@@ -17,6 +17,9 @@
 <link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
 <link rel="stylesheet" type="text/css" href="css/advancequery/CascadeMenu.css" />
 <link rel="stylesheet" type="text/css" href="css/advancequery/catissue_suite.css" />
+
+<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlwindow.js"></script>
+<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/modal.js"></script>
 </head>
 <body onunload='closeWaitPage()'>
 <script type='text/JavaScript' src='jss/advancequery/scwcalendar.js'></script>
