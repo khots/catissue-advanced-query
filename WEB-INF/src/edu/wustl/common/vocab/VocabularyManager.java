@@ -306,7 +306,7 @@ public final class VocabularyManager
 				}
 			}
 		}
-		if(mappedConcepts.isEmpty()){
+		if(mappedConcepts!=null && mappedConcepts.isEmpty()){
 			mappedConcepts = null;
 		}
 		return mappedConcepts;
