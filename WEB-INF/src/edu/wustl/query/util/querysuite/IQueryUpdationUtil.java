@@ -111,8 +111,8 @@ public abstract class IQueryUpdationUtil
 			}
 				//mainEntityContainmentList.addAll(list);
 			partentChildEntityMap.put(containmentEntity, uniqueEntityList);
+			count++;
 		}
-		count++;
 	}
 	
 	private static List<EntityInterface> getContainmentAssociations(EntityInterface entity)
