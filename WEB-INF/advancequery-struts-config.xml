@@ -431,7 +431,7 @@ PUBLIC
         		name="workflowForm"
         		validate="false"
 				scope="request">
-        		<forward name="success" path=".query.redirectToWorkflowPageDef" />
+        		<forward name="success" path=".query.queryWorkFlowWizardDef" />
         </action>
         
         <!-- TO DO  -->
