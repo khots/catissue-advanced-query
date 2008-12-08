@@ -121,7 +121,7 @@ function addQuery()
 			rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+counter,queryIds[counter].innerText);
 		}*/
 		
-		var operatorsTdContent="NONE";
+		var operatorsTdContent="None";
 	
 		//create a table containing tbody with id "table1"
 		addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent);	
