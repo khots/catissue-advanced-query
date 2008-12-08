@@ -136,8 +136,9 @@ function createHiddenElement(name,id,content)
 	hiddenControl.name=name;
 	hiddenControl.value=content;
 //	alert('hiddenControl type ='+hiddenControl.type);
-	//alert('hiddenControl id ='+hiddenControl.id);
-	//alert('hiddenControl value ='+hiddenControl.value);
+//	alert("hiddenControl.name="name);
+//	alert('hiddenControl id ='+hiddenControl.id);
+//	alert('hiddenControl value ='+hiddenControl.value);
 	return hiddenControl;
 }
 
