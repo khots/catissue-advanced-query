@@ -1,13 +1,13 @@
 package edu.wustl.query.domain;
 
-import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
 
 
 public class WorkflowItem
 {
 	private Long id;
 	private int position;
-	private IQuery query;
+	private IAbstractQuery query;
 
 	public Long getId()
 	{
@@ -29,12 +29,12 @@ public class WorkflowItem
 		this.position = position;
 	}
 	
-	public IQuery getQuery()
+	public IAbstractQuery getQuery()
 	{
 		return query;
 	}
 
-	public void setQuery(IQuery query)
+	public void setQuery(IAbstractQuery query)
 	{
 		this.query = query;
 	}
