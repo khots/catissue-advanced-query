@@ -1,8 +1,9 @@
-<html>
-<head>
-<title>CIDER: Clinical Investigation Data Exploration Repository</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
+<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
+<%@ page import="edu.wustl.cider.util.global.CiderConstants"%>
+<%@ taglib uri="/WEB-INF/nlevelcombo.tld" prefix="ncombo"%>
+<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 
 <link href="css/advancequery/workflow.css" rel="stylesheet" type="text/css" />
 <script src="jss/advancequery/workflows.js"></script>	
@@ -119,6 +120,11 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 	addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent);	
 }
 
+function submitWorflow()
+{
+	document.forms[0].submit();
+}
+
 //-->
 </script>
 <script type="text/javascript">
@@ -136,11 +142,11 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 //-->
 </script>
 <link href="css/advancequery/inside.css" rel="stylesheet" type="text/css" media="screen">
-</head>
-<body onLoad="MM_preloadImages('images/m_home_act.gif')">
 <script type="text/javascript" src="wz_tooltip.js"></script>
 
-<form name="form1" method="post" action="">
+<html:form action="SaveWorkflow">
+
+<html:hidden property="operation" styleId="operation"/>
 
 <div id="welcome_links">
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -287,7 +293,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 								</select>
 								<select name="queryType" id="queryType" style="display:none">
 								</select>
-								<input type="button" name="btn" id="btn" onclick="updateUI()" style="display:none">
+								 <input type="button" name="btn" id="btn" onclick="updateUI()" style="display:none"> 
                               <tr>
                                 <td><table width="100%" border="0" cellpadding="2" cellspacing="1">
                                   <tr class="td_bgcolor_grey">
@@ -330,7 +336,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
                 <tr>
                   <td height="40" align="left" valign="middle" ><table border="0" cellspacing="0" cellpadding="0">
                     <tr>
-                      <td align="left"><a href="SaveWorkflow.do?operation=add"><img src="images/advancequery/b_save.gif" alt="Save" width="55" height="23"></a></td>
+                      <td align="left"><a href="javascript:submitWorflow()"><img src="images/advancequery/b_save.gif" alt="Save" width="55" height="23"></a></td>
                       <td width="76" align="right"><img src="images/advancequery/b_cancel.gif" alt="Cancel" width="66" height="23"></td>
                     </tr>
                   </table></td>
@@ -357,8 +363,4 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
   </table>
 </div>
 
-</form>
-
-</body>
-</html>
-
+</html:form>
