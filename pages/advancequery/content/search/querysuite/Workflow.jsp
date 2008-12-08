@@ -1,10 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
-<%@ page import="edu.wustl.cider.util.global.CiderConstants"%>
 <%@ taglib uri="/WEB-INF/nlevelcombo.tld" prefix="ncombo"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
-
+<%@page import="edu.wustl.query.util.global.CompositeQueryOperations"%>
 <link href="css/advancequery/workflow.css" rel="stylesheet" type="text/css" />
 <script src="jss/advancequery/workflows.js"></script>	
 <script type="text/JavaScript">
@@ -31,17 +30,17 @@ function updateUI()
 function unionQueries()
 {
 		//alert('in update');
-	addCQToList("Union");
+	addCQToList("<%=CompositeQueryOperations.UNION.getOperation()%>");
 }
 
 function intersectQueries()
 {
-	addCQToList("Intersection");
+	addCQToList("<%=CompositeQueryOperations.INTERSECTION.getOperation()%>");
 }
 
 function minusQueries()
 {
-	addCQToList("minus");
+	addCQToList("<%=CompositeQueryOperations.MINUS.getOperation()%>");
 }
 
 function addCQToList(operation)
@@ -89,12 +88,12 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 			if(cqQueryId=='')
 			{
 				cqQueryId="("+document.getElementById("selectedqueryId_"+queryIds[counter]).value+")";
-				operandsTdContent="("+document.getElementById("selectedqueryId_"+queryIds[counter]).value+")";
+				operandsTdContent=document.getElementById("selectedqueryId_"+queryIds[counter]).value;
 			}
 			else
 			{
 				cqQueryId=cqQueryId+"_"+operation+"_("+document.getElementById("selectedqueryId_"+queryIds[counter]).value+")";
-				operandsTdContent=operandsTdContent+"_("+document.getElementById("selectedqueryId_"+queryIds[counter]).value+")";
+				operandsTdContent=operandsTdContent+"_"+document.getElementById("selectedqueryId_"+queryIds[counter]).value;
 			}
 		}
 	}
@@ -144,9 +143,11 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <link href="css/advancequery/inside.css" rel="stylesheet" type="text/css" media="screen">
 <script type="text/javascript" src="wz_tooltip.js"></script>
 
+<%@ include file="/pages/content/common/ActionErrors.jsp" %>
+
 <html:form action="SaveWorkflow">
 
-<html:hidden property="operation" styleId="operation"/>
+<html:hidden property="operation" styleId="operation" value="${requestScope.operation}"/>
 
 <div id="welcome_links">
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -307,21 +308,10 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
                                     <td width="55" valign="middle" class="grid_header_text">Re-order</td>
                                   </tr>
 											<tbody id="table1">
-		
 											</tbody>
-									
-       
-
-                                  
-
                                   </tr>
-
-                                 
-
                                   </tr>
-
                                 </table>
-
                                 </td>
                               </tr>
                           </table></td>
@@ -336,7 +326,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
                 <tr>
                   <td height="40" align="left" valign="middle" ><table border="0" cellspacing="0" cellpadding="0">
                     <tr>
-                      <td align="left"><a href="javascript:submitWorflow()"><img src="images/advancequery/b_save.gif" alt="Save" width="55" height="23"></a></td>
+                      <td align="left"><a href="javascript:submitWorflow()"><img src="images/advancequery/b_save.gif" alt="Save" width="55" height="23" border="0"></a></td>
                       <td width="76" align="right"><img src="images/advancequery/b_cancel.gif" alt="Cancel" width="66" height="23"></td>
                     </tr>
                   </table></td>
