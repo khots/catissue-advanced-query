@@ -18,7 +18,7 @@
 		<many-to-one
             name="query"
             class="edu.wustl.common.querysuite.queryobject.impl.AbstractQuery"
-            cascade="none"
+            cascade="save-update"
             update="true"
             insert="true"
             column="QUERY_ID"

@@ -41,7 +41,7 @@
         /-->
 
 		<list name="workflowItemList" table="QUERY_WORKFLOW_ITEM"
-			lazy="false" inverse="false" cascade="all-delete-orphan">
+			lazy="false" inverse="false" cascade="all">
 			<cache usage="read-write" />
 			<key column="WORKFLOW_ID" />
 			<index column="POSITION" type="int" />
