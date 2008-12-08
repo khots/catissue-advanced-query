@@ -1,29 +1,22 @@
 package edu.wustl.query.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import com.hp.hpl.jena.sparql.algebra.op.OpReduced;
-
-import edu.stanford.smi.protegex.owl.swrl.bridge.UnionOfRestrictionInfo;
 import edu.wustl.common.actionForm.IValueObject;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
 import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
 import edu.wustl.common.querysuite.queryobject.IOperation;
-import edu.wustl.common.querysuite.queryobject.IWorkFlow;
 import edu.wustl.common.querysuite.queryobject.impl.CompositeQuery;
 import edu.wustl.common.querysuite.queryobject.impl.Intersection;
 import edu.wustl.common.querysuite.queryobject.impl.Minus;
 import edu.wustl.common.querysuite.queryobject.impl.Operation;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
-import edu.wustl.common.querysuite.queryobject.impl.Query;
 import edu.wustl.common.querysuite.queryobject.impl.Union;
 import edu.wustl.query.actionForm.WorkflowForm;
 import edu.wustl.query.util.global.CompositeQueryOperations;
-import edu.wustl.query.util.global.Constants;
 
 
 /**
