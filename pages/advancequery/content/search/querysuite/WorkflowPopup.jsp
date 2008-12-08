@@ -139,7 +139,7 @@ int queryCount = 0;%>
 <html:messages id="messageKey" message="true" >
 <% message = messageKey;    %>
 </html:messages>
-<html:form styleId='saveQueryForm' action='<%=Constants.FETCH_QUERY_ACTION%>' style="margin:0;padding:0;">
+<html:form action="SaveWorkflow">
 <table width="100%" border="0" cellspacing="0" cellpadding="4">
 			<tr >
 				<td colspan='5' ><html:errors /></td>
@@ -229,7 +229,7 @@ int queryCount = 0;%>
 										<c:set var="checkboxControl">checkbox_<%=queryCount%></c:set>
 										<jsp:useBean id="checkboxControl" type="java.lang.String"/>
 
-									<input type="checkbox"  name="chkbox" id="<%=checkboxControl%>"/>
+									<html:checkbox property="chkbox" styleId="<%=checkboxControl%>"/>
 									
 									<td height="25" valign="top" class="content_txt" >
 										<%=newTitle%>
@@ -239,18 +239,18 @@ int queryCount = 0;%>
 									 </td>
 									 	<c:set var="queryTitleControlId">queryTitleControl_<%=queryCount%></c:set>
 										<jsp:useBean id="queryTitleControlId" type="java.lang.String"/>
-										<input type="hidden" name="queryTitleControl" id="<%=queryTitleControlId%>"
+										<html:hidden property="queryTitleControl" styleId="<%=queryTitleControlId%>"
 										value="<%=newTitle%>"/>
 
 										<c:set var="queryIdControl">queryIdControl_<%=queryCount%></c:set>
 										<jsp:useBean id="queryIdControl" type="java.lang.String"/>
-										<input type="hidden" name="queryIdControl" id="<%=queryIdControl%>"
+										<html:hidden property="queryIdControl" styleId="<%=queryIdControl%>"
 										value="<%=queryId%>"/>
 
 										
 										<c:set var="queryTypeControl">queryTypeControl_<%=queryCount%></c:set>
 										<jsp:useBean id="queryTypeControl" type="java.lang.String"/>
-										<input type="hidden" name="queryTypeControl" id="<%=queryTypeControl%>"
+										<html:hidden property="queryTypeControl" styleId="<%=queryTypeControl%>"
 										value="Get Count"/>
 
 								</tr>
