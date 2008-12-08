@@ -418,7 +418,7 @@ PUBLIC
 	    
 	            <!--  To Do  change the action  class name --> 
         <action path="/QueryWorkflowWizard" 
-        		type="edu.wustl.query.action.QueryAction">
+        		type="edu.wustl.query.action.WorkflowAction">
         	<forward name="success" path=".query.queryWorkFlowWizardDef"/>
         </action>
         
