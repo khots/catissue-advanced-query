@@ -2,9 +2,10 @@
 <head>
 <title>CIDER: Clinical Investigation Data Exploration Repository</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+
 <link href="css/advancequery/workflow.css" rel="stylesheet" type="text/css" />
 <script src="jss/advancequery/workflows.js"></script>	
-
 <script type="text/JavaScript">
 <!--
 
@@ -23,9 +24,101 @@ function showPopUp(pageOf){
 
 function updateUI()
 {
-	alert('dsfsdfs');
 	addQuery();
 }
+
+function unionQueries()
+{
+		//alert('in update');
+	addCQToList("Union");
+}
+
+function intersectQueries()
+{
+	addCQToList("Intersection");
+}
+
+function minusQueries()
+{
+	addCQToList("minus");
+}
+
+function addCQToList(operation)
+{
+//	alert('in add cq');
+	var queryIdsToAdd='';
+	var queryControls=document.getElementsByName("selectedqueryId");
+//	alert('queryControls='+queryControls.length);
+	var queryCount=0;
+	if(queryControls!=null && queryControls!=undefined)
+	{
+		queryCount=queryControls.length;
+	}
+
+	for(var counter=0;counter<queryCount;counter++)
+	{
+		var checkboxControl=document.getElementById("checkbox_"+(counter));
+		if(checkboxControl!=null && checkboxControl!=undefined && checkboxControl.checked==true)
+		{
+			queryIdsToAdd=queryIdsToAdd+","+counter;
+		}
+	}
+//	alert('queryIdsToAdd='+queryIdsToAdd);
+	createCQ(queryIdsToAdd,operation,queryCount);		
+}
+
+function createCQ(queryIdsToAdd,operation,queryCount)
+{
+	var queryIds=queryIdsToAdd.split(",");
+	var operandsTdContent="";
+	var cqTitle="";
+	var cqQueryId="";
+	for(var counter=0;counter<queryIds.length;counter++)
+	{
+		if(queryIds[counter]!=null && queryIds[counter]!='')
+		{
+			if( cqTitle=='')
+			{
+				cqTitle=document.getElementById("displayQueryTitle_"+queryIds[counter]).value;
+			}
+			else
+			{
+				cqTitle=cqTitle+" "+operation+" "+document.getElementById("displayQueryTitle_"+queryIds[counter]).value;
+			}
+			if(cqQueryId=='')
+			{
+				cqQueryId="("+document.getElementById("selectedqueryId_"+queryIds[counter]).value+")";
+				operandsTdContent="("+document.getElementById("selectedqueryId_"+queryIds[counter]).value+")";
+			}
+			else
+			{
+				cqQueryId=cqQueryId+"_"+operation+"_("+document.getElementById("selectedqueryId_"+queryIds[counter]).value+")";
+				operandsTdContent=operandsTdContent+"_("+document.getElementById("selectedqueryId_"+queryIds[counter]).value+")";
+			}
+		}
+	}
+	var cqType="Composite Query";
+	var cqId="";
+	
+	var rowContents=new Array(5);
+	rowContents[0]=createCheckBox("chkbox","checkbox_"+queryCount,'');
+	rowContents[1]=createTextElement(cqTitle);
+	rowContents[2]=createTextElement(cqType);
+	rowContents[3]=createTextElement(operandsTdContent);
+	rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+queryCount,operandsTdContent);
+
+	/*alert('rowContents[0]='+rowContents[0]);
+	alert('rowContents[1]='+rowContents[1]);
+	alert('rowContents[2]='+rowContents[2]);
+	alert('rowContents[3]='+rowContents[3]);
+	alert('rowContents[4]='+rowContents[4]);*/
+	
+	var operatorsTdContent='Union';
+//alert('before call');
+	//create a table containing tbody with id "table1"
+	addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent);	
+}
+
 //-->
 </script>
 <script type="text/javascript">
@@ -46,6 +139,9 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 </head>
 <body onLoad="MM_preloadImages('images/m_home_act.gif')">
 <script type="text/javascript" src="wz_tooltip.js"></script>
+
+<form name="form1" method="post" action="">
+
 <div id="welcome_links">
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
@@ -164,9 +260,9 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
                             <tr>
                               <td width="2" ></td>
                               <td width="2" ></td>
-                              <td align="left"><img src="images/advancequery/b_union-copy.gif" alt="Union" width="60" height="23"></td>
-                              <td width="116" align="center"><img src="images/advancequery/b_intersection.gif" alt="Intersection" width="96" height="23"></td>
-                              <td align="right"><img src="images/advancequery/b_minus.gif" alt="Minus" width="63" height="23"></td>
+                              <td align="left"><a href="javascript:unionQueries()"><img src="images/advancequery/b_union-copy.gif" alt="Union" width="60" height="23" border="0"></a></td>
+                              <td width="116" align="center"><a href="javascript:intersectQueries()"><img src="images/advancequery/b_intersection.gif" alt="Intersection" width="96" height="23" border="0"></a></td>
+                              <td align="right"><a href="javascript:minusQueries()"><img src="images/advancequery/b_minus.gif" alt="Minus" width="63" height="23" border="0"></a></td>
                             </tr>
                         </table></td>
                         <td align="right"><table border="0" cellpadding="4" cellspacing="0">
@@ -185,15 +281,15 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
                         <td colspan="2" align="center" valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
                           </table>
                             <table width="99%" border="0" cellpadding="0" cellspacing="0" bgcolor="#EAEAEA">
-								<select name="queryId" id="queryId">
+								<select name="queryId" id="queryId" style="display:none">
 								</select>
-								<select name="queryTitle" id="queryTitle">
+								<select name="queryTitle" id="queryTitle" style="display:none">
 								</select>
-								<select name="queryType" id="queryType">
+								<select name="queryType" id="queryType" style="display:none">
 								</select>
-								<input type="button" name="btn" id="btn" onclick="updateUI()">
+								<input type="button" name="btn" id="btn" onclick="updateUI()" style="display:none">
                               <tr>
-                                <td><form name="form1" method="post" action=""><table width="100%" border="0" cellpadding="2" cellspacing="1">
+                                <td><table width="100%" border="0" cellpadding="2" cellspacing="1">
                                   <tr class="td_bgcolor_grey">
                                     <td width="10" height="25" valign="middle" ><input type="checkbox" name="checkbox8" value="checkbox">                                    </td>
 
@@ -204,7 +300,6 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
                                     <td width="90" valign="middle" class="grid_header_text">&nbsp;</td>
                                     <td width="55" valign="middle" class="grid_header_text">Re-order</td>
                                   </tr>
-								        
 											<tbody id="table1">
 		
 											</tbody>
@@ -221,7 +316,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 
                                 </table>
 
-                                </form></td>
+                                </td>
                               </tr>
                           </table></td>
                       </tr>
@@ -261,6 +356,9 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
     </tr>
   </table>
 </div>
+
+</form>
+
 </body>
 </html>
 

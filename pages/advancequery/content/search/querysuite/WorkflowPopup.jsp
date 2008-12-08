@@ -15,8 +15,6 @@
 <script>
 function closePopup()
 {
-	
-		
 	var checkboxArray=document.getElementsByName('chkbox');
 	clearSelBoxList(top.opener.document.getElementById("queryId"));
 	clearSelBoxList(top.opener.document.getElementById("queryTitle"));
@@ -24,7 +22,6 @@ function closePopup()
 	
 	if(checkboxArray!=null)
 	{
-		
 			var numOfRows =checkboxArray.length;
 		
 			for(var count = 1; count <= numOfRows; count++)
@@ -35,23 +32,12 @@ function closePopup()
 					if(document.getElementById(id).checked)
 					{
 						addOption(top.opener.document.getElementById("queryId"),document.getElementById("queryIdControl_"+count).value,count);
-					alert('1');	
 						addOption(top.opener.document.getElementById("queryTitle"),""+document.getElementById("queryTitleControl_"+count).value,count);
-					
-						alert('2');	addOption(top.opener.document.getElementById("queryType"),""+document.getElementById("queryTypeControl_"+count).value,count);
-					
-						//addOption(top.opener.document.getElementById("queryId"),document.getElementById("queryIdControl_"+co//unt).value,document.getElementById("queryIdControl_"+count).value);
-					alert('3');	
+						addOption(top.opener.document.getElementById("queryType"),""+document.getElementById("queryTypeControl_"+count).value,count);
 					}
 					
 			}
 	}
-	
-
-	//addOption(top.opener.document.getElementById("queryId"),'y','1');
-	//addOption(top.opener.document.getElementById("queryId"),'w','2');
-	//addOption(top.opener.document.getElementById("queryId"),'s','3');
-	
 	updateOpenerUI();
 	window.close();
 }
@@ -69,36 +55,20 @@ function clearSelBoxList(selBoxObj)
 
 
 function updateOpenerUI() { 
-       var evt = null, 
-           elm = null; 
-
-
-       if(document.getElementById) { 
+  if(document.getElementById) { 
          elm = top.opener.document.getElementById("btn");
        } 
-       if(document.createEvent) { 
-         evt = top.opener.document.createEvent('MouseEvents'); 
-       } 
-       if(elm && elm.dispatchEvent && evt && evt.initMouseEvent) { 
-         evt.initMouseEvent( 
-           'click', 
-           true,     // Click events bubble 
-           true,     // and they can be cancelled 
-           top.opener.document.defaultView,  // Use the default view 
-           1,        // Just a single click 
-           0,        // Don't bother with co-ordinates 
-           0, 
-           0, 
-           0, 
-           false,    // Don't apply any key modifiers 
-           false, 
-           false, 
-           false, 
-           0,        // 0 - left, 1 - middle, 2 - right 
-           null);    // Click events don't have any targets other than 
-                     // the recipient of the click 
-         elm.dispatchEvent(evt); 
-       } 
+
+	if (document.all)
+		{
+			elm.fireEvent('onclick');
+		}
+	else
+		{
+		var clickEvent = window.document.createEvent('MouseEvent');
+        clickEvent.initEvent('click', false, true);
+        elm.dispatchEvent(clickEvent);
+		}
      } 
 
 
@@ -119,11 +89,6 @@ function addOption(theSel, theText, theValue)
 	theSel.options.add(optn);	
 }
 
-
-function parentvalues()
-{
-	alert(top.opener.document.getElementById("queryId"));
-}
 </script>
 <head>
 <title>CIDER: Clinical Investigation Data Exploration Repository</title>
