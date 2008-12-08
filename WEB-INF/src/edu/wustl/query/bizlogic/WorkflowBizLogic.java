@@ -29,8 +29,7 @@ public class WorkflowBizLogic extends DefaultBizLogic
 		}
 		catch (UserNotAuthorizedException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new DAOException("Could not insert Workflow:"+e.getMessage()+e);
 		}
 	}
 	

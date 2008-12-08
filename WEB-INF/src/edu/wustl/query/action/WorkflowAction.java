@@ -9,11 +9,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.query.actionForm.WorkflowForm;
-import edu.wustl.query.bizlogic.BizLogicFactory;
-import edu.wustl.query.bizlogic.WorkflowBizLogic;
-import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.global.Utility;
 
 /**
  * 
@@ -29,14 +25,9 @@ public class WorkflowAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		System.out.println("In Workflow Action");
 		final WorkflowForm workflowForm = (WorkflowForm) form;
 		
-		Workflow workflow = new Workflow();
-		workflow.setName(workflowForm.getName());
-		
-		WorkflowBizLogic bizLogic = (WorkflowBizLogic)BizLogicFactory.getInstance().getBizLogic(Constants.WORKFLOW_BIZLOGIC_ID);
-		bizLogic.insert(workflow, Utility.getSessionData(request), Constants.HIBERNATE_DAO);
+		request.setAttribute(Constants.OPERATION, Constants.ADD);
 		
 		return mapping.findForward(Constants.SUCCESS);
 	}
