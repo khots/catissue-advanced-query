@@ -21,14 +21,22 @@ public class WorkflowForm extends AbstractActionForm
 	
 	/**
 	 * Name of the workFlow
-	 * */
+	 */
 	private String name;
 
+	/**
+	 * Method to get name of the workflow
+	 * @return name of type String
+	 */
 	public String getName()
 	{
 		return (this.name);
 	}
 
+	/**
+	 * Method to set name of the workflow
+	 * @param name of type String
+	 */
 	public void setName(String name)
 	{
 		this.name = name;
@@ -36,18 +44,26 @@ public class WorkflowForm extends AbstractActionForm
 	
 	
 	
-	@Override
+	/**
+	 * Method to get form id
+	 * @return name of type String
+	 */
 	public int getFormId()
 	{
 		return Constants.WORKFLOW_FORM_ID;
 	}
 
-	@Override
+	/**
+	 * reset method to set default values
+	 */
 	protected void reset()
 	{
 		
 	}
 
+	/**
+	 * Method to populate formBean from domain object
+	 */
 	public void setAllValues(AbstractDomainObject abstractDomain)
 	{
 		Workflow workflow = (Workflow) abstractDomain;
