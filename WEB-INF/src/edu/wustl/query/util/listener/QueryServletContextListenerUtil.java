@@ -1,3 +1,4 @@
+
 package edu.wustl.query.util.listener;
 
 import java.io.File;
@@ -18,7 +19,6 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
 
-
 public class QueryServletContextListenerUtil
 {
 
@@ -26,14 +26,14 @@ public class QueryServletContextListenerUtil
 	{
 		Logger.configDefaultLogger(sce.getServletContext());
 		Variables.applicationHome = sce.getServletContext().getRealPath("");
-		
+
 		setGlobalVariable();
 
 		//Added by Baljeet....This method caches all the Meta data
 		initEntityCache(datasourceJNDIName);
 
 	}
-	
+
 	private static void initEntityCache(String datasourceJNDIName)
 	{
 		try
@@ -60,18 +60,23 @@ public class QueryServletContextListenerUtil
 
 		Variables.applicationName = ApplicationProperties.getValue("app.name");
 		Variables.applicationVersion = ApplicationProperties.getValue("app.version");
-		int maximumTreeNodeLimit = Integer.parseInt(XMLPropertyHandler
-				.getValue(Constants.MAXIMUM_TREE_NODE_LIMIT));
+		int maximumTreeNodeLimit = Integer.parseInt(XMLPropertyHandler.getValue(Constants.MAXIMUM_TREE_NODE_LIMIT));
 		Variables.maximumTreeNodeLimit = maximumTreeNodeLimit;
 		readProperties();
 		path = System.getProperty("app.propertiesFile");
+
+		String vocabPropFile = Variables.applicationHome + System.getProperty("file.separator") + "WEB-INF" + System.getProperty("file.separator")
+				+ "classes" + System.getProperty("file.separator") + "vocab.properties";
+
+		System.setProperty("VOCAB_PROP_FILE", vocabPropFile);
+
 	}
 
 	private static void readProperties()
 	{
-		File file = new File(Variables.applicationHome + System.getProperty("file.separator")
-				+ "WEB-INF" + System.getProperty("file.separator") + "classes"
-				+ System.getProperty("file.separator") + "query.properties");
+		File file = new File(Variables.applicationHome + System.getProperty("file.separator") + "WEB-INF" + System.getProperty("file.separator")
+				+ "classes" + System.getProperty("file.separator") + "query.properties");
+
 		if (file.exists())
 		{
 			Properties queryProperties = new Properties();
@@ -79,8 +84,7 @@ public class QueryServletContextListenerUtil
 			{
 				queryProperties.load(new FileInputStream(file));
 
-				Variables.queryGeneratorClassName = queryProperties
-						.getProperty("query.queryGeneratorClassName");
+				Variables.queryGeneratorClassName = queryProperties.getProperty("query.queryGeneratorClassName");
 
 				Variables.properties = queryProperties;
 			}
