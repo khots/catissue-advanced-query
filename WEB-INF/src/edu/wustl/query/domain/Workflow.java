@@ -165,7 +165,6 @@ public class Workflow extends AbstractDomainObject
 		
 		
 		this.setName(workFlowForm.getName());
-		this.setName("Workflow1");
 		this.setCreatedOn(new Date());
 		
 		
