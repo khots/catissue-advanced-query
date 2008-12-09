@@ -33,6 +33,7 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 			//call taras method to get concept codes from MED lookup table
 			MedLookUpManager medManager = MedLookUpManager.instance();
 			List<String> medPermissibleValueList = medManager.getPermissibleValues(filter);
+			permissibleValueList = new ArrayList<PermissibleValueInterface>();
 			for(String conceptCode:medPermissibleValueList)
 			{
 				StringValue pv= new StringValue();
