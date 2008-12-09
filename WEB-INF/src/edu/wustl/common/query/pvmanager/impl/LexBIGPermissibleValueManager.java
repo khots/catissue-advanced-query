@@ -1,85 +1,107 @@
+
 package edu.wustl.common.query.pvmanager.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
-import org.LexGrid.concepts.CodedEntry;
+
+import edu.common.dynamicextensions.domain.StringValue;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
-import edu.wustl.common.vocab.VocabularyManager;
-import edu.wustl.common.vocab.med.MedLookUpManager;
+import edu.wustl.common.vocab.IConcept;
+import edu.wustl.common.vocab.IVocabulary;
+import edu.wustl.common.vocab.IVocabularyManager;
+import edu.wustl.common.vocab.impl.VocabularyManager;
 import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.global.Utility;
-import edu.wustl.query.util.global.Variables;
 
 public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 {
-	
-	/**
-	 * get permissible value list for a given attribute
-	 * @param attribute
-	 */
-	public List<PermissibleValueInterface> getPermissibleValueList(final AttributeInterface attribute) {
-		return null;
+	public List<PermissibleValueInterface> getPermissibleValueList(final AttributeInterface attribute, final EntityInterface entity) 
+	{
+
+		List<PermissibleValueInterface> permissibleValueList = null;
+		
+		
+		if (isEnumerated(attribute, entity))
+		{
+			String filter = getPVFilterValueForAttribute(attribute, entity);
+			//call taras method to get concept codes from MED lookup table
+			MedLookUpManager medManager = MedLookUpManager.instance();
+			List<String> medPermissibleValueList = medManager.getPermissibleValues(filter);
+			for(String conceptCode:medPermissibleValueList)
+			{
+				StringValue pv= new StringValue();
+				pv.setValue(conceptCode);				
+				permissibleValueList.add(pv);
+			}
+			
+		}
+		return permissibleValueList;
+
 	}
 
-	public List<PermissibleValueInterface> getPermissibleValueList(final AttributeInterface attribute, final EntityInterface entity) {
+	/*public List<PermissibleValueInterface> getPermissibleValueList(final AttributeInterface attribute, final EntityInterface entity) 
+	{
 
-		List<String> medPermissibleValueList =new ArrayList<String>();
-		List<CodedEntry> permissiblevalueList = new ArrayList<CodedEntry>();
-		String vocabName="";
-		String vocabVersion="";
-		if(isEnumerated(attribute,entity)) {
-			String filter = getPVFilterValueForAttribute(attribute,entity);
+		List<String> medPermissibleValueList = new ArrayList<String>();
+		List<IConcept> permissiblevalueList = null;
+		
+		if (isEnumerated(attribute, entity))
+		{
+			String filter = getPVFilterValueForAttribute(attribute, entity);
 			//call taras method to get concept codes from MED lookup table
 			MedLookUpManager medManager = MedLookUpManager.instance();
 			medPermissibleValueList = medManager.getPermissibleValues(filter);
-			if(medPermissibleValueList != null) {
+			if (medPermissibleValueList != null)
+			{
 
-				VocabularyManager vocabMngr = VocabularyManager.getVocabularyManager();
-				
-				vocabName=Variables.properties.getProperty("sourceVocabularyName");
-				vocabVersion=Variables.properties.getProperty("sourceVocabularyVersion");
+				IVocabularyManager vocabMngr = VocabularyManager.getInstance();
 
+				Properties vocabProps = VocabUtil.getVocabProperties();
 				//list of coded entries !!!
-				permissiblevalueList   = vocabMngr.getConceptCode(vocabName,vocabVersion ,medPermissibleValueList);
+				try
+				{
+					permissiblevalueList = vocabMngr.getConceptDetails(medPermissibleValueList, new Vocabulary(vocabProps
+							.getProperty("source.vocab.name"), vocabProps.getProperty("source.vocab.version")));
+				}
+				catch (VocabularyException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 			}
 		}
 		return convertToPermissiblevalue(permissiblevalueList);
 
-	}
+	}*/
 
 	/**
 	 * method to decide whether to show a listbox for the permissible values
 	 */
-	public boolean showListBoxForPV(final AttributeInterface attribute, final EntityInterface entity)
+	public boolean showListBoxForPV(AttributeInterface attribute, EntityInterface entity)
 	{
-		
-	boolean showListBox = false;
-	VocabularyManager vocabMngr = VocabularyManager.getVocabularyManager();
-		
-	if(isEnumerated(attribute,entity))
-	{
-		List<CodingSchemeSummary> codingSchemeList  = vocabMngr.getAllCodingSchemes();
-		int noOfCodingSchemes = codingSchemeList.size();
-		String pvFilter = getPVFilterValueForAttribute(attribute,entity);
-		MedLookUpManager medManager = MedLookUpManager.instance();
-		List<String> toReturn = medManager.getPermissibleValues(pvFilter);
-		if(toReturn!=null && toReturn.size() < 5 && noOfCodingSchemes ==1) {
-			showListBox =true;
+
+		boolean showListBox = false;
+		IVocabularyManager vocabMngr = VocabularyManager.getInstance();
+
+		if (isEnumerated(attribute, entity))
+		{
+			List<IVocabulary> vocabularies = vocabMngr.getVocabularies();
+			int noOfCodingSchemes = vocabularies.size();
+			String pvFilter = getPVFilterValueForAttribute(attribute, entity);
+			MedLookUpManager medManager = MedLookUpManager.instance();
+			List<String> toReturn = medManager.getPermissibleValues(pvFilter);
+			if (toReturn != null && toReturn.size() < 5 && noOfCodingSchemes == 1)
+			{
+				showListBox = true;
+			}
 		}
-	}
 		return showListBox;
 
 	}
@@ -90,17 +112,20 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 	 */
 	public boolean isEnumerated(AttributeInterface attribute,EntityInterface entity)
 	{
-		Collection<TaggedValueInterface> tagList =  entity.getTaggedValueCollection();
+		Collection<TaggedValueInterface> tagList = entity.getTaggedValueCollection();
 		Iterator<TaggedValueInterface> tagIterator = tagList.iterator();
-		boolean isEnumerated = false; 
+		boolean isEnumerated = false;
 		//for now considering attribute as NAME , can be made configurable
-		if(attribute.getName().equals(Constants.NAME)){
-			while(tagIterator.hasNext()){
+		if (attribute.getName().equals(Constants.NAME))
+		{
+			while (tagIterator.hasNext())
+			{
 				TaggedValueInterface temp = (TaggedValueInterface) tagIterator.next();
 
-				if(temp.getKey().toString().equals(Constants.PERMISSIBLEVALUEFILTER)) {
+				if (temp.getKey().toString().equals(Constants.PERMISSIBLEVALUEFILTER))
+				{
 
-					isEnumerated= true;
+					isEnumerated = true;
 					break;
 				}
 			}
@@ -115,22 +140,22 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 	 * @param inputList
 	 * @return
 	 */
-	private List<PermissibleValueInterface> convertToPermissiblevalue(List<CodedEntry> inputList){
-		ListIterator<CodedEntry> iterator = inputList.listIterator();
+	private List<PermissibleValueInterface> convertToPermissiblevalue(List<IConcept> inputList)
+	{
+		ListIterator<IConcept> iterator = inputList.listIterator();
 		List<PermissibleValueInterface> pvList = new ArrayList<PermissibleValueInterface>();
-		while(iterator.hasNext()) {
-			CodedEntry cEntry = iterator.next();
+		while (iterator.hasNext())
+		{
+			IConcept concept = iterator.next();
 			ConceptValue conceptV = new ConceptValue();
 			//assign the values from coded entry to concept values
-			conceptV.setConceptCode(cEntry.getConceptCode());
-			conceptV.setConceptDescription(cEntry.getEntityDescription().getContent());
+			conceptV.setConceptCode(concept.getCode());
+			conceptV.setConceptDescription(concept.getDescription());
 
-			pvList.add((PermissibleValueInterface)conceptV);
+			pvList.add((PermissibleValueInterface) conceptV);
 		}
 		return pvList;
 	}
-
-	
 
 	/**
 	 * Get the permissible value filter for an attribute
@@ -138,84 +163,20 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 	 * @return
 	 */
 	//TODO make method more generic
-	public  String getPVFilterValueForAttribute(AttributeInterface attribute,EntityInterface entity) {
+	public String getPVFilterValueForAttribute(final AttributeInterface attribute, final EntityInterface entity)
+	{
 		String pvFilterValue = null;
-		Collection<TaggedValueInterface> tagList =  entity.getTaggedValueCollection();
+		Collection<TaggedValueInterface> tagList = entity.getTaggedValueCollection();
 		Iterator<TaggedValueInterface> tagIterator = tagList.iterator();
-		while(tagIterator.hasNext()){
+		while (tagIterator.hasNext())
+		{
 			TaggedValueInterface temp = (TaggedValueInterface) tagIterator.next();
-			if(temp.getKey().toString().equals(Constants.PERMISSIBLEVALUEFILTER)) {
+			if (temp.getKey().toString().equals(Constants.PERMISSIBLEVALUEFILTER))
+			{
 				pvFilterValue = temp.getValue();
 				break;
 			}
 		}
 		return pvFilterValue;
 	}
-
-
-	/**
-	 * whether to show ListBox for permissible values
-	 */
-	public boolean showListBoxForPV(AttributeInterface attribute) {
-		return false;
-	}
-
-
-	/**
-	 * method to getMappings of permissible values
-	 */
-	public Map<String,List<PermissibleValueInterface>> getMappings(AttributeInterface attribute,String sourceVocabulary,String srcVocabVersion , String targetVocabulary,
-			                                                        String targetVocabVersion, EntityInterface entity )
-	{
-
-		Map<String,List<CodedEntry>> mappingsFromVocabMngr = null;
-		Map<String,List<PermissibleValueInterface>> mappings = null; 
-		String relationType = Variables.properties.getProperty("relationType");
-		if(isEnumerated(attribute,entity)){
-			String pvFilter = getPVFilterValueForAttribute(attribute,entity);
-			MedLookUpManager medManager = MedLookUpManager.instance();
-			List<String> conceptCodes = medManager.getPermissibleValues(pvFilter);
-			//String[] conceptCodes =(String[]) toReturn.toArray();
-			VocabularyManager vocabMngr = VocabularyManager.getVocabularyManager();
-			mappingsFromVocabMngr = vocabMngr.getMappedConcepts(sourceVocabulary,srcVocabVersion ,targetVocabulary,targetVocabVersion,relationType, conceptCodes);
-			if(mappingsFromVocabMngr != null) 
-			{
-					mappings = new HashMap<String,List<PermissibleValueInterface>>();
-					Set<String> keySet = mappingsFromVocabMngr.keySet();
-					Iterator<String> setIt = keySet.iterator();
-					while(setIt.hasNext()){
-					String currentKey =(String) setIt.next(); 
-					List<CodedEntry> tempList = mappingsFromVocabMngr.get(currentKey);
-					List<PermissibleValueInterface> listInFormOfPVI = convertToPermissiblevalue(tempList);
-					mappings.put(currentKey,listInFormOfPVI);
-				}
-			}	
-		}
-
-		return mappings;
-	}
-
-	/**
-	 * 
-	 * @return list of names of vocabularies available
-	 */
-	public List<String> getVocabularies()
-	{
-		VocabularyManager vocabMngr = VocabularyManager.getVocabularyManager();
-		List<CodingSchemeSummary> csSummaryList = vocabMngr.getAllCodingSchemes();
-		List<String>  listOfVocabularies = new ArrayList<String>();
-		CodingSchemeSummary csSummary = null;
-		ListIterator<CodingSchemeSummary> summaryItr = csSummaryList.listIterator();
-		while(summaryItr.hasNext()) {
-			csSummary = (CodingSchemeSummary)summaryItr.next();
-			listOfVocabularies.add(csSummary.getFormalName() + " "+csSummary.getRepresentsVersion());
-		}
-		return listOfVocabularies;
-	}
-
-	public boolean isEnumerated(AttributeInterface attribute) {
-		return false;
-	}
-
-	
 }
