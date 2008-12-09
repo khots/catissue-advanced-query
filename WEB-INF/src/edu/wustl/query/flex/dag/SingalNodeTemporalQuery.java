@@ -19,6 +19,7 @@ import edu.wustl.common.querysuite.queryobject.ITerm;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
 import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 
 public class SingalNodeTemporalQuery
@@ -501,7 +502,7 @@ public class SingalNodeTemporalQuery
 			}
 			catch (ParseException e)
 			{
-				e.printStackTrace();
+				Logger.out.debug(e.getStackTrace());
 			}
 		}
 	}
@@ -541,7 +542,7 @@ public class SingalNodeTemporalQuery
 			}
 			catch (ParseException e)
 			{
-				e.printStackTrace();
+				Logger.out.debug(e.getStackTrace());
 			}
 		}
 	}
