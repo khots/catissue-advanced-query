@@ -1,7 +1,6 @@
 package edu.wustl.common.query.factory;
 
 import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
-import edu.wustl.common.query.pvmanager.impl.LocalDEPermissibleValueManager;
 import edu.wustl.common.util.Utility;
 import edu.wustl.query.util.global.Variables;
 
