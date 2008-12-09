@@ -8,6 +8,7 @@ import java.util.Map;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 
 public final class MedLookUpManager
@@ -63,12 +64,12 @@ public final class MedLookUpManager
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		catch (ClassNotFoundException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		
 	}

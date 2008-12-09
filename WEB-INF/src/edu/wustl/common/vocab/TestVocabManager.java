@@ -16,8 +16,9 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.query.factory.PermissibleValueManagerFactory;
-import edu.wustl.common.query.pvmanager.impl.LexBIGPermissibleValueManager;
 import edu.wustl.common.query.pvmanager.impl.ConceptValue;
+import edu.wustl.common.query.pvmanager.impl.LexBIGPermissibleValueManager;
+import edu.wustl.common.util.logger.Logger;
 
 
 public class TestVocabManager
@@ -26,24 +27,24 @@ public class TestVocabManager
 	{
 		EntityInterface entity= EntityManager.getInstance().getEntityByName(entityName);
 		AttributeInterface attribute = entity.getAttributeByName("name");
-		System.out.println("Got the attribute name of race" + attribute.getName());
-		System.out.println("Tags of the entity=====>" ); 
+		Logger.out.info("Got the attribute name of race" + attribute.getName());
+		Logger.out.info("Tags of the entity=====>" ); 
 		Collection<TaggedValueInterface> taggCollection=entity.getTaggedValueCollection();
 		Iterator<TaggedValueInterface> iter = taggCollection.iterator();
 		while(iter.hasNext())
 		{
 			TaggedValueInterface tagValue = (TaggedValueInterface)iter.next();
-			System.out.println(tagValue.getKey() + "-->" + tagValue.getValue());
+			Logger.out.info(tagValue.getKey() + "-->" + tagValue.getValue());
 		}
 		List<PermissibleValueInterface> pvList = new PermissibleValueManagerFactory().getPermissibleValueManager().getPermissibleValueList(attribute,entity);
-		System.out.println("Permissible values of " + entity.getName() + " are:");
-		System.out.println("==========================================================================");
-		System.out.println("Concept Code\t\t\tConcept Name");
-		System.out.println("\n");
+		Logger.out.info("Permissible values of " + entity.getName() + " are:");
+		Logger.out.info("==========================================================================");
+		Logger.out.info("Concept Code\t\t\tConcept Name");
+		Logger.out.info("\n");
 		
 		for(PermissibleValueInterface perValue: pvList)
 		{
-			System.out.println(perValue.getValueAsObject().toString());
+			Logger.out.info(perValue.getValueAsObject().toString());
 		}
 		
 	}
@@ -65,7 +66,7 @@ public class TestVocabManager
 			 conceptCodeName = iterator.next();
 			 listOfMappingsForThisCode = mappedConcepts.get(conceptCodeName);
 			 mappedConceptDetails = convertPVIObjToString(listOfMappingsForThisCode);
-			System.out.println(" *** "+conceptCodeName + "\t\t\t"+mappedConceptDetails);
+			 Logger.out.info(" *** "+conceptCodeName + "\t\t\t"+mappedConceptDetails);
 		}
 		
 	}
@@ -100,10 +101,10 @@ public class TestVocabManager
 		if(matchingTerms != null )
 		{
 			ListIterator<String> itr = matchingTerms.listIterator();
-			System.out.println("Matching terms are :: ");
+			Logger.out.info("Matching terms are :: ");
 			while(itr.hasNext())
 			{
-				System.out.println(itr.next());
+				Logger.out.info(itr.next());
 			}
 		}
 	}
@@ -124,11 +125,11 @@ public class TestVocabManager
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		
 		

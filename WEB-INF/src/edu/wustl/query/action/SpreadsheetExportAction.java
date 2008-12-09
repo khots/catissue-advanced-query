@@ -26,7 +26,6 @@ import edu.wustl.query.actionForm.AdvanceSearchForm;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.global.Variables;
-import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.util.ExportReport;
 import edu.wustl.common.util.SendFile;
@@ -71,8 +70,8 @@ public class SpreadsheetExportAction  extends Action
 	    {
 	    	request.setAttribute(Constants.PAGE_NUMBER,pageNo);
 	    }
-    	int recordsPerPage = new Integer(recordsPerPageStr);
-		int pageNum = new Integer(pageNo);
+    	int recordsPerPage = Integer.valueOf(recordsPerPageStr);
+		int pageNum = Integer.valueOf(pageNo);
 		if(isCheckAllAcrossAllChecked != null && isCheckAllAcrossAllChecked.equalsIgnoreCase("true"))
     	{
 			Integer totalRecords = (Integer)session.getAttribute(Constants.TOTAL_RESULTS);
@@ -84,7 +83,9 @@ public class SpreadsheetExportAction  extends Action
         List dataList1 = Utility.getPaginationDataList(request, Utility.getSessionData(request), recordsPerPage, pageNum, querySessionData);
         List<List<String>> dataList = (List<List<String>>) session.getAttribute(Constants.EXPORT_DATA_LIST);
         if(dataList == null )
+        {
         	dataList = dataList1;
+        }
         //List<String> entityIdsList = (List<String>) session.getAttribute(Constants.ENTITY_IDS_LIST);
         Map<Integer, List<String>> entityIdsMap = (Map<Integer, List<String>>)session.getAttribute(Constants.ENTITY_IDS_MAP);
     	//Mandar 06-Apr-06 Bugid:1165 : Extra ID columns displayed.  start

@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * To locate the DAG nodes, so that they will appear on the Dag As Sirected routed aCyclic graph.
@@ -92,7 +92,6 @@ public class QueryNodeLocator
 
 	/**
 	 * This method will count visible node at each level.
-	 * @throws MultipleRootsException
 	 */
 	private int countNodeAtLevel()
 	{
@@ -209,7 +208,7 @@ public class QueryNodeLocator
 			Position position = positionMap2.get(expId);
 			String name = constraints2.getExpression(expId).getQueryEntity()
 					.getDynamicExtensionsEntity().getName();
-			System.out.println(expId + "." + name + ":" + position.getX() + "," + position.getY());
+			Logger.out.info(expId + "." + name + ":" + position.getX() + "," + position.getY());
 		}
 	}
 

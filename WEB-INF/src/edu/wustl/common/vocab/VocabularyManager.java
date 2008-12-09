@@ -35,6 +35,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.CodedEntry;
 import org.LexGrid.concepts.Concepts;
 
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Variables;
 /**
  * 
@@ -103,7 +104,7 @@ public final class VocabularyManager
 		catch (LBException lbe)
 		{
 			// logger
-			lbe.printStackTrace();
+			Logger.out.debug(lbe.getStackTrace());
 		}
 		return csSummaryList;
 	}
@@ -139,7 +140,7 @@ public final class VocabularyManager
 		}
 		catch (LBException lbe)
 		{
-			lbe.printStackTrace();
+			Logger.out.debug(lbe.getStackTrace());
 		}
 		return conValueList;
 	}
@@ -165,7 +166,7 @@ public final class VocabularyManager
 		
 		catch (LBException lbe)
 		{// logger
-			lbe.printStackTrace();
+			Logger.out.debug(lbe.getStackTrace());
 		}
 		return codingScheme;
 	}
@@ -215,7 +216,7 @@ public final class VocabularyManager
 		catch (Exception e)
 		{
 			// logger
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		if(mappings.isEmpty()) {
 			mappings = null;
@@ -250,7 +251,7 @@ public final class VocabularyManager
 		catch (LBInvocationException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		return urn;
 	}
@@ -373,7 +374,7 @@ public final class VocabularyManager
 		}
 		catch (LBException e)
 		{
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 
 		return cvList;
@@ -422,18 +423,15 @@ public final class VocabularyManager
 		
 		catch (LBInvocationException e)
 		{
-			
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		catch (LBParameterException e)
 		{
-			
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		catch (LBException e)
 		{
-			
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		return matchedTerms;
 	}
