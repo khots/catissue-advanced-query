@@ -467,14 +467,12 @@ Array.prototype.inArray = function (value,caseSensitive)
 						</tr>
 								<%for(int i=0;i<vocabs1.size();i++)
 								{
-						
-								String vacabNameWithoutVer=vocabs1.get(i).substring(0,vocabs1.get(i).indexOf(" "));
-								String vacabName=vocabs1.get(i);
-								if( ! vacabNameWithoutVer.equalsIgnoreCase(srcVocabName))
+									
+									if(!vocabs1.get(i).getName().equalsIgnoreCase(srcVocabName) && !vocabs1.get(i).getVersion().equalsIgnoreCase(srcVocabVersion))
 								{%>
 						<tr>
 							  <td valign="top">
-								<div id="div_<%=vacabNameWithoutVer%>" style="width:250;">
+								<div id="div_<%=vocabs1.get(i).getName()%>" style="width:250;">
 								
 								</div>
 							 </td>
@@ -531,9 +529,7 @@ Array.prototype.inArray = function (value,caseSensitive)
 							<%for(int i=0;i<vocabs1.size();i++)
 								{
 						
-								String vacabNameWithoutVer=vocabs1.get(i).substring(0,vocabs1.get(i).indexOf(" "));
-								String vacabName=vocabs1.get(i);
-								System.out.println(vacabNameWithoutVer.toUpperCase());
+								String vacabNameWithoutVer=vocabs1.get(i).getName();
 								%>
 							<tr><td><div id = "selectedPermValues_Div_<%=vacabNameWithoutVer.toUpperCase()%>" style="display:none">
 							<table border = "0" id = "selectedPermValues_<%=vacabNameWithoutVer.toUpperCase()%>" cellpadding ="3" cellspacing ="0" width="100%">
