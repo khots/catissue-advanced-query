@@ -3,6 +3,8 @@
 <%@ page import="java.util.*"%>
 <%@ page import="edu.wustl.query.util.global.Variables"%>
 
+<%@page import="edu.wustl.common.vocab.IVocabulary"%>
+<%@page import="edu.wustl.common.vocab.utility.VocabUtil"%>
 <html>
 <head>
 	
@@ -392,21 +394,21 @@ Array.prototype.inArray = function (value,caseSensitive)
 	<tr>
 		<td colspan="3" class="content_txt_bold" valign="middle">Select Vocabulary:&nbsp;&nbsp;
 		<%
-			List<String> vocabs1 = (ArrayList)request.getSession().getAttribute("Vocabulries");
-			String srcVocabName=Variables.properties.getProperty("sourceVocabularyName");
+			List<IVocabulary> vocabs1 = (ArrayList)request.getSession().getAttribute("Vocabulries");
+			String srcVocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
+			String srcVocabVersion = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
 			for(int i=0;i<vocabs1.size();i++)
 			{
 				
-				String vacabNameWithoutVer=vocabs1.get(i).substring(0,vocabs1.get(i).indexOf(" "));
-				String vacabName=vocabs1.get(i);
-				if(vacabNameWithoutVer.equalsIgnoreCase(srcVocabName))
+				String vocabNameWithVersion=vocabs1.get(i).getName() + " " +vocabs1.get(i).getVersion();
+				if(vocabs1.get(i).getName().equalsIgnoreCase(srcVocabName) && vocabs1.get(i).getVersion().equalsIgnoreCase(srcVocabVersion))
 				{
 					
 				
 				%>
-	  	<input  type="checkbox" checked="true"  id="<%=vacabName%>" value="<%=vacabName%>"  onclick= "refreshMEDDiv(this.id);"><span class="content_txt" valign="middle">&nbsp;<%=vocabs1.get(i).toUpperCase()%> &nbsp;&nbsp;&nbsp;&nbsp;</span>
+	  	<input  type="checkbox" checked="true"  id="<%=vocabNameWithVersion%>" value="<%=vocabNameWithVersion%>"  onclick= "refreshMEDDiv(this.id);"><span class="content_txt" valign="middle">&nbsp;<%=vocabNameWithVersion.toUpperCase()%> &nbsp;&nbsp;&nbsp;&nbsp;</span>
 		<%}else{%>
-		<input type="checkbox"  id="<%=vacabName%>" value="<%=vacabName%>" onclick= "refreshWindow(this.id);"><font class="content_txt" valign="middle">&nbsp;<%=vocabs1.get(i).toUpperCase()%>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+		<input type="checkbox"  id="<%=vocabNameWithVersion%>" value="<%=vocabNameWithVersion%>" onclick= "refreshWindow(this.id);"><font class="content_txt" valign="middle">&nbsp;<%=vocabNameWithVersion.toUpperCase()%>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 		<%}
 		}%>
 		</td>
