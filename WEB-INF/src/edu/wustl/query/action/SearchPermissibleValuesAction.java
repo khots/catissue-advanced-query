@@ -22,6 +22,8 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.query.pvmanager.impl.ConceptValue;
+import edu.wustl.common.vocab.IConcept;
+import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.bizlogic.SearchPermissibleValuesFromVocabBizlogic;
 import edu.wustl.query.util.global.Constants;
@@ -73,15 +75,15 @@ public class SearchPermissibleValuesAction extends Action {
 	private void generatePermValueHTMLForMED(AttributeInterface attribute, EntityInterface entity, String componentId,HttpServletRequest request) {
 		
 		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		List<PermissibleValueInterface> premValueList=bizLogic.getPermissibleValueList(attribute, entity);
-		String vocabName=Variables.properties.getProperty("sourceVocabularyName").toUpperCase();
+		List<IConcept> premValueList=bizLogic.getPermissibleValueList(attribute, entity);
+		String vocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name").toUpperCase();
 		StringBuffer html=new StringBuffer();
 		html.append(getRootVocabularyNodeHTML(vocabName));
 		for(int i=0;i<premValueList.size();i++)
 		{
-			ConceptValue permValue=(ConceptValue)premValueList.get(i);
-			String id=vocabName+":"+permValue.getConceptCode();
-			html.append(getMappedVocabularyPVChildAsHTML(vocabName, permValue, id));
+			IConcept concept=(IConcept)premValueList.get(i);
+			String id=vocabName+":"+concept.getCode();
+			html.append(getMappedVocabularyPVChildAsHTML(vocabName, concept, id));
 		}
 		html.append("</table></div></td></tr></table>");
 		request.getSession().setAttribute(Constants.MED_PV_HTML, html.toString());
@@ -107,7 +109,7 @@ public class SearchPermissibleValuesAction extends Action {
 				
 				String vocabName=targetVocabName.toUpperCase();
 				html.append(getRootVocabularyNodeHTML(vocabName));
-				Map<String,List<PermissibleValueInterface>> vocabMappings=bizLogic.getMappings(attribute, sourceVocabulary,sourceVocabVer,targetVocabName,targetVocabVer, entity);
+				Map<String,List<IConcept>> vocabMappings=bizLogic.getMappedConcepts(attribute,targetVocabName,targetVocabVer, entity);
 				getMappingDataAsHTML(html, vocabName, vocabMappings);
 				
 			}
@@ -117,7 +119,7 @@ public class SearchPermissibleValuesAction extends Action {
 	
 	}
 	private void getMappingDataAsHTML(StringBuffer html, String vocabName,
-			Map<String, List<PermissibleValueInterface>> vocabMappings) {
+			Map<String, List<IConcept>> vocabMappings) {
 		
 		if(vocabMappings!=null)
 		{
@@ -126,11 +128,11 @@ public class SearchPermissibleValuesAction extends Action {
 			while (iterator.hasNext())
 			{
 				String conceptCode =iterator.next();
-				List<ConceptValue> mappingList=(ArrayList)vocabMappings.get(conceptCode);
-				ListIterator<ConceptValue> mappingListItr = mappingList.listIterator();
+				List<IConcept> mappingList=(ArrayList)vocabMappings.get(conceptCode);
+				ListIterator<IConcept> mappingListItr = mappingList.listIterator();
 				while(mappingListItr.hasNext())
 				{
-					ConceptValue permValue = (ConceptValue)mappingListItr.next();
+					IConcept permValue = (IConcept)mappingListItr.next();
 					String checkboxId=vocabName+":"+conceptCode;//we need to use the MED Concept code with mapped values
 					html.append(getMappedVocabularyPVChildAsHTML(vocabName, permValue,checkboxId));
 					
@@ -146,9 +148,9 @@ public class SearchPermissibleValuesAction extends Action {
 	private String getNoMappingFoundHTML() {
 		return "<tr><td>&nbsp;</td><td class='black_ar_tt'>"+Constants.NO_RESULT+"<td></tr>";
 	}
-	private String getMappedVocabularyPVChildAsHTML(String vocabName,ConceptValue permValue, String checkboxId) {
+	private String getMappedVocabularyPVChildAsHTML(String vocabName,IConcept concept, String checkboxId) {
 		return "<tr><td>&nbsp;</td><td class='black_ar_tt'> \n" +
-				"<input type='checkbox' name='"+vocabName+"' id='"+checkboxId+"' value='"+permValue.getValueAsObject().toString()+"' onclick=\"getCheckedBoxId('"+checkboxId+"');\">"+permValue.getValueAsObject().toString()+"\n" +
+				"<input type='checkbox' name='"+vocabName+"' id='"+checkboxId+"' value='"+concept.getCode()+":"+concept.getDescription()+"' onclick=\"getCheckedBoxId('"+checkboxId+"');\">"+concept.getCode()+":"+concept.getDescription()+"\n" +
 				"</input><td></tr>";
 	}
 	private String getRootVocabularyNodeHTML(String vocabName) {
