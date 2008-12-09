@@ -43,6 +43,7 @@ import edu.wustl.cab2b.server.path.PathConstants;
 import edu.wustl.cab2b.server.path.PathFinder;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.dbManager.DBUtil;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.annotations.xmi.PathObject;
 
 /**
@@ -88,7 +89,7 @@ public class AnnotationUtil
 		catch (HibernateException e1)
 		{
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			Logger.out.debug(e1.getStackTrace());
 			throw new BizLogicException("", e1);
 		}
 		AssociationInterface association = null;
@@ -132,6 +133,7 @@ public class AnnotationUtil
 					staticEntity, true, false, association);
 
 			Long end = Long.valueOf(System.currentTimeMillis());
+			Logger.out.info("Time required to persist one entity is " + (end - start) / 1000 + "seconds");
 			//Add the column related to the association to the entity table of the associated entities.
 			EntityManager.getInstance().addAssociationColumn(association);
 
@@ -155,7 +157,7 @@ public class AnnotationUtil
 		catch (HibernateException e1)
 		{
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			Logger.out.debug(e1.getStackTrace());
 			throw new BizLogicException("", e1);
 		}
 		finally
@@ -167,7 +169,7 @@ public class AnnotationUtil
 			catch (HibernateException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.out.debug(e.getStackTrace());
 				throw new BizLogicException("", e);
 
 			}
@@ -238,7 +240,6 @@ public class AnnotationUtil
 			EntityInterface staticEntity, Long associationId, Long staticEntityId,
 			Set<PathObject> processedPathList) throws BizLogicException
 	{
-		Long start = Long.valueOf(System.currentTimeMillis());
 		if (staticEntity != null)
 		{
 			PathObject pathObject = new PathObject();
@@ -268,7 +269,6 @@ public class AnnotationUtil
 			//			AnnotationUtil.addPathsForQuery(dynamicEntity.getId(), associationInteface
 			//					.getTargetEntity().getId(), associationInteface.getId());
 		}
-		//Long end = Long.valueOf(System.currentTimeMillis());
 	}
 
 	/**
@@ -287,14 +287,14 @@ public class AnnotationUtil
 			{
 				InitialContext ctx = new InitialContext();
 				String DATASOURCE_JNDI_NAME = "java:/catissuecore";
-				DataSource ds = (DataSource) ctx.lookup(DATASOURCE_JNDI_NAME);
-				conn = ds.getConnection();
+				DataSource dataSource = (DataSource) ctx.lookup(DATASOURCE_JNDI_NAME);
+				conn = dataSource.getConnection();
 				PathFinder.getInstance().refreshCache(conn, true);
 			}
 			catch (Exception e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.out.debug(e.getStackTrace());
 			}
 			finally
 			{
@@ -308,12 +308,12 @@ public class AnnotationUtil
 				catch (HibernateException e)
 				{
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Logger.out.debug(e.getStackTrace());
 				}
 				catch (SQLException e)
 				{
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Logger.out.debug(e.getStackTrace());
 				}
 			}
 
@@ -328,13 +328,13 @@ public class AnnotationUtil
 	private static ConstraintPropertiesInterface getConstraintProperties(
 			EntityInterface staticEntity, EntityInterface dynamicEntity)
 	{
-		ConstraintPropertiesInterface cp = DomainObjectFactory.getInstance()
+		ConstraintPropertiesInterface constrProp = DomainObjectFactory.getInstance()
 				.createConstraintProperties();
-		cp.setName(dynamicEntity.getTableProperties().getName());
-		cp.setTargetEntityKey("DYEXTN_AS_" + staticEntity.getId().toString() + "_"
+		constrProp.setName(dynamicEntity.getTableProperties().getName());
+		constrProp.setTargetEntityKey("DYEXTN_AS_" + staticEntity.getId().toString() + "_"
 				+ dynamicEntity.getId().toString());
-		cp.setSourceEntityKey(null);
-		return cp;
+		constrProp.setSourceEntityKey(null);
+		return constrProp;
 	}
 
 	/**
@@ -437,7 +437,7 @@ public class AnnotationUtil
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		finally
 		{
@@ -450,7 +450,7 @@ public class AnnotationUtil
 			catch (SQLException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.out.debug(e.getStackTrace());
 			}
 
 		}
@@ -502,7 +502,7 @@ public class AnnotationUtil
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		finally
 		{
@@ -513,7 +513,7 @@ public class AnnotationUtil
 			catch (HibernateException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.out.debug(e.getStackTrace());
 			}
 		}
 	}
@@ -638,7 +638,7 @@ public class AnnotationUtil
 		catch (SQLException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 
 		finally
@@ -650,7 +650,7 @@ public class AnnotationUtil
 			catch (SQLException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.out.debug(e.getStackTrace());
 			}
 		}
 	}
@@ -681,7 +681,7 @@ public class AnnotationUtil
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		finally
 		{
@@ -695,12 +695,12 @@ public class AnnotationUtil
 			catch (HibernateException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.out.debug(e.getStackTrace());
 			}
 			catch (SQLException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.out.debug(e.getStackTrace());
 			}
 		}
 		return null;

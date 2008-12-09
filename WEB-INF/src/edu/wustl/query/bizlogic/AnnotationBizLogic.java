@@ -33,6 +33,7 @@ import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.Constants;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * @author sandeep_chinta
@@ -70,7 +71,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 
 		return list;
@@ -93,7 +94,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 
 		return dynamicList;
@@ -112,7 +113,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		List dynamicList = new ArrayList();
 
 		String[] selectColumnName = {"containerId"};
-		String[] whereColumnName = {"staticEntityId", "typeId", "staticRecordId"};;
+		String[] whereColumnName = {"staticEntityId", "typeId", "staticRecordId"};
 		String[] whereColumnCondition = {"=", "=", "="};
 		Object[] whereColumnValue = {Long.valueOf(staticEntityId), Long.valueOf(typeId),
 				Long.valueOf(staticRecordId)};
@@ -126,7 +127,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 
 		return dynamicList;
@@ -147,12 +148,12 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (BizLogicException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		catch (UserNotAuthorizedException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 	}
 
@@ -176,12 +177,12 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (BizLogicException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		catch (UserNotAuthorizedException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 	}
 
@@ -210,7 +211,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 					DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
 					List<CategoryEntity> entityList = defaultBizLogic.retrieve(CategoryEntity.class
 							.getName(), "id", dynamicEntityId);
-					if (entityList != null && entityList.size() > 0)
+					if (entityList != null && !entityList.isEmpty())
 					{
 						dynamicEntityId = entityList.get(0).getEntity().getId();
 					}
@@ -264,12 +265,12 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (BizLogicException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		catch (UserNotAuthorizedException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 	}
 
@@ -294,7 +295,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 
 	}
@@ -310,7 +311,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		List dynamicList = new ArrayList();
 
 		String[] selectColumnName = {"staticEntityId"};
-		String[] whereColumnName = {"containerId"};;
+		String[] whereColumnName = {"containerId"};
 		String[] whereColumnCondition = {"="};
 		Object[] whereColumnValue = {Long.valueOf(dynamicEntityContainerId)};
 		String joinCondition = null;
@@ -323,7 +324,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 
 		return dynamicList;
@@ -347,7 +348,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 
 		return dynamicList;
@@ -369,7 +370,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 
 		return map;
@@ -403,7 +404,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 				catch (DAOException e)
 				{
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Logger.out.debug(e.getStackTrace());
 				}
 			}
 
@@ -417,7 +418,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		List dynamicList = new ArrayList();
 
 		String[] selectColumnName = null;
-		String[] whereColumnName = {"formContext.entityMap.id", "dynamicEntityRecordId"};;
+		String[] whereColumnName = {"formContext.entityMap.id", "dynamicEntityRecordId"};
 		String[] whereColumnCondition = {"=", "="};
 		Object[] whereColumnValue = {Long.valueOf(entityMapId), Long.valueOf(dynamicEntityRecordId)};
 		String joinCondition = Constants.AND_JOIN_CONDITION;
@@ -430,7 +431,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 
 		if (dynamicList != null && !dynamicList.isEmpty())
@@ -445,12 +446,12 @@ public class AnnotationBizLogic extends DefaultBizLogic
 			catch (UserNotAuthorizedException e1)
 			{
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				Logger.out.debug(e1.getStackTrace());
 			}
 			catch (BizLogicException e1)
 			{
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				Logger.out.debug(e1.getStackTrace());
 			}
 		}
 	}
@@ -471,7 +472,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 			/*   throw new BizLogicException(ApplicationProperties
 			           .getValue("app.annotatations.errors.deleteRecord"), e);*/
 		}
@@ -587,7 +588,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 
 		return dynamicList;
@@ -605,8 +606,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		}
 		catch (Exception e)
 		{
-
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 
 	}
@@ -614,8 +614,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 	//Function added by Preeti :  to get all entitymap entries for a dynamic entity container
 	public Collection getEntityMapsForContainer(Long deContainerId) throws DAOException
 	{
-		List entityMaps = retrieve(EntityMap.class.getName(), "containerId", deContainerId);
-		return entityMaps;
+		return retrieve(EntityMap.class.getName(), "containerId", deContainerId);
 	}
 
 	/**
@@ -630,7 +629,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 	{
 		//Select from dyextn_category table where the  category_entity_id is the given id ,there is only one entry for it .Thats the name of category  
 		List idList = retrieve(Category.class.getName(), "rootCategoryElement.id", categoryEntityId);
-		if (idList.size() > 0)
+		if (!idList.isEmpty())
 		{
 			return ((Category) idList.get(0)).getName();
 		}

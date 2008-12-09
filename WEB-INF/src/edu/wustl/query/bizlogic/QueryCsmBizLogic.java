@@ -20,6 +20,7 @@ import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryDetails;
 
@@ -61,12 +62,12 @@ public class QueryCsmBizLogic
 		}*/
 		catch (DAOException t)
 		{
-			t.printStackTrace();
+			Logger.out.debug(t.getStackTrace());
 		}
 
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		finally
 		{
@@ -77,7 +78,7 @@ public class QueryCsmBizLogic
 			catch (DAOException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.out.debug(e.getStackTrace());
 			}
 		}
 		return dataList;
@@ -135,7 +136,7 @@ public class QueryCsmBizLogic
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			Logger.out.debug(e.getStackTrace());
 		}
 		finally
 		{
@@ -147,7 +148,7 @@ public class QueryCsmBizLogic
 			}
 			catch (SQLException e)
 			{
-				e.printStackTrace();
+				Logger.out.debug(e.getStackTrace());
 			}
 		}
 		return mainEntityList;

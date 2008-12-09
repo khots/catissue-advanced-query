@@ -10,8 +10,6 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -29,20 +27,13 @@ import org.openide.util.Lookup;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.AbstractMetadata;
-import edu.common.dynamicextensions.domain.integration.EntityMap;
-import edu.common.dynamicextensions.domain.integration.EntityMapCondition;
-import edu.common.dynamicextensions.domain.integration.FormContext;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.xmi.XMIUtilities;
 import edu.common.dynamicextensions.xmi.importer.XMIImportProcessor;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
-import edu.wustl.common.exception.BizLogicException;
-import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
-import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.query.bizlogic.AnnotationBizLogic;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.AnnotationUtil;
 import edu.wustl.query.util.global.Constants;
 
@@ -71,7 +62,8 @@ public class ImportXmi
 	 */
 	public static void main(String[] args)
 	{
-		FileInputStream in = null;
+		Logger.configure("");
+		FileInputStream fileInputStream = null;
 		try
 		{
 			//validate(args);
@@ -90,12 +82,12 @@ public class ImportXmi
 
 			File file = new File(fileName);
 
-			System.out.println("--------------------------------------------------\n");
-			System.out.println("Filename = " + file.getAbsolutePath());
-			System.out.println("Hook Entity = " + hookEntity);
+			Logger.out.info("--------------------------------------------------\n");
+			Logger.out.info("Filename = " + file.getAbsolutePath());
+			Logger.out.info("Hook Entity = " + hookEntity);
 
 			String packageName = "";
-			String conditionRecordObjectCsvFileName = "";
+			//String conditionRecordObjectCsvFileName = "";
 			String pathCsvFileName = "";
 
 			int indexOfExtension = file.getName().lastIndexOf(".");
@@ -110,8 +102,8 @@ public class ImportXmi
 				domainModelName = file.getName().substring(0, indexOfExtension);
 			}
 
-			System.out.println("Name of the file = " + domainModelName);
-			System.out.println("\n--------------------------------------------------\n");
+			Logger.out.info("Name of the file = " + domainModelName);
+			Logger.out.info("\n--------------------------------------------------\n");
 			// get the default repository
 			rep = MDRManager.getDefault().getDefaultRepository();
 			// create an XMIReader
@@ -119,13 +111,13 @@ public class ImportXmi
 
 			init();
 
-			in = new FileInputStream(file);
+			fileInputStream = new FileInputStream(file);
 
 			// start a read-only transaction
 			rep.beginTrans(true);
 
 			// read the document
-			reader.read(in, null, uml);
+			reader.read(fileInputStream, null, uml);
 			pathCsvFileName = "cider.csv";
 			if (args.length > 2)
 			{
@@ -137,11 +129,11 @@ public class ImportXmi
 				packageName = args[3];
 			}
 
-			if (args.length > 4)
+			/*if (args.length > 4)
 			{
 				conditionRecordObjectCsvFileName = args[4];
-			}
-			if (packageName.equals(""))
+			}*/
+			if (("").equals(packageName))
 			{
 				throw new Exception(
 						"Package name is mandatory parameter. If no package is present please specify 'Default'.");
@@ -167,18 +159,18 @@ public class ImportXmi
 				}
 			}*/
 
-			EntityInterface staticEntity = null;
+			//EntityInterface staticEntity = null;
 			if (!hookEntity.equalsIgnoreCase(AnnotationConstants.NONE))
 			{
 				DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
 				List staticEntityList = defaultBizLogic.retrieve(AbstractMetadata.class.getName(),
 						Constants.NAME, hookEntity);
-				if (staticEntityList == null || staticEntityList.size() == 0)
+				if (staticEntityList == null || staticEntityList.isEmpty())
 				{
 					throw new DynamicExtensionsSystemException(
 							"Please enter correct Hook Entity name.");
 				}
-				staticEntity = (EntityInterface) staticEntityList.get(0);
+				//staticEntity = (EntityInterface) staticEntityList.get(0);
 			}
 
 			boolean isEntityGroupSystemGenerated = false;
@@ -194,12 +186,12 @@ public class ImportXmi
 					domainModelName, packageName, containerNames, isEntityGroupSystemGenerated);
 
 			boolean isEditedXmi = xmiImportProcessor.isEditedXmi;
-			System.out.println("\n--------------------------------------------------\n");
-			System.out.println("Package name = " + packageName);
-			System.out.println("isEditedXmi = " + isEditedXmi);
-			System.out.println("Forms have been created !!!!");
-			System.out.println("Associating with hook entity.");
-			System.out.println("\n--------------------------------------------------\n");
+			Logger.out.info("\n--------------------------------------------------\n");
+			Logger.out.info("Package name = " + packageName);
+			Logger.out.info("isEditedXmi = " + isEditedXmi);
+			Logger.out.info("Forms have been created !!!!");
+			Logger.out.info("Associating with hook entity.");
+			Logger.out.info("\n--------------------------------------------------\n");
 			//List<ContainerInterface> mainContainerList = getMainContainerList(pathCsvFileName,entityNameVsContainers);
 			if (!hookEntity.equalsIgnoreCase(AnnotationConstants.NONE))
 			{//Integrating with hook entity
@@ -219,16 +211,15 @@ public class ImportXmi
 							null, processedPathList);
 				}
 			}
-			System.out.println("--------------- Done ------------");
+			Logger.out.info("--------------- Done ------------");
 
 		}
 		catch (Exception e)
 		{
-			System.out.println("Fatal error reading XMI.");
-			System.out.println("------------------------ERROR:--------------------------------\n");
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			System.out.println("\n--------------------------------------------------------------");
+			Logger.out.info("Fatal error reading XMI.");
+			Logger.out.info("------------------------ERROR:--------------------------------\n");
+			Logger.out.info(e.getStackTrace());
+			Logger.out.info("\n--------------------------------------------------------------");
 		}
 		finally
 		{
@@ -237,11 +228,11 @@ public class ImportXmi
 			MDRManager.getDefault().shutdownAll();
 			try
 			{
-				in.close();
+				fileInputStream.close();
 			}
 			catch (IOException io)
 			{
-				System.out.println("Error. Specified file does not exist.");
+				Logger.out.debug("Error. Specified file does not exist.");
 			}
 			XMIUtilities.cleanUpRepository();
 
@@ -251,7 +242,7 @@ public class ImportXmi
 	/**
 	 * @param args
 	 * @throws Exception
-	 */
+	 *//*
 	private static void validate(String[] args) throws Exception
 	{
 		if (args.length == 0)
@@ -270,7 +261,7 @@ public class ImportXmi
 		{
 			throw new Exception("Please Specify the name of the Package to be imported");
 		}
-	}
+	}*/
 
 	/**
 	 * @param path
@@ -300,11 +291,11 @@ public class ImportXmi
 		//read each line of text file
 		while ((line = bufRdr.readLine()) != null)
 		{
-			StringTokenizer st = new StringTokenizer(line, ",");
-			while (st.hasMoreTokens())
+			StringTokenizer tokens = new StringTokenizer(line, ",");
+			while (tokens.hasMoreTokens())
 			{
 				//get next token and store it in the array
-				containerNames.add(st.nextToken());
+				containerNames.add(tokens.nextToken());
 			}
 		}
 		return containerNames;
@@ -358,7 +349,7 @@ public class ImportXmi
 		for (Iterator it = umlMM.getMofPackage().refAllOfClass().iterator(); it.hasNext();)
 		{
 			MofPackage pkg = (MofPackage) it.next();
-			System.out.println("\n\nName = " + pkg.getName());
+			Logger.out.info("\n\nName = " + pkg.getName());
 			// is the package topmost and is it named "UML"?
 			if (pkg.getContainer() == null && "UML".equals(pkg.getName()))
 			{
@@ -378,7 +369,7 @@ public class ImportXmi
 	 * @throws DynamicExtensionsApplicationException 
 	 * 
 	 */
-	private static void associateHookEntity(List<ContainerInterface> mainContainerList,
+	/*private static void associateHookEntity(List<ContainerInterface> mainContainerList,
 			List<Long> conditionObjectIds, EntityInterface staticEntity, boolean isEditedXmi)
 			throws DAOException, DynamicExtensionsSystemException, BizLogicException,
 			UserNotAuthorizedException, DynamicExtensionsApplicationException
@@ -417,7 +408,7 @@ public class ImportXmi
 				createIntegrationObjects(container, staticEntity, conditionObjectIds, typeId);
 			}
 		}
-	}
+	}*/
 
 	/**
 	* @param entityMap
@@ -426,7 +417,7 @@ public class ImportXmi
 	* @throws DynamicExtensionsSystemException
 	* @throws DAOException
 	*/
-	private static void editConditions(EntityMap entityMap, List<Long> conditionObjectIds,
+	/*private static void editConditions(EntityMap entityMap, List<Long> conditionObjectIds,
 			Object typeId) throws DynamicExtensionsSystemException, DAOException
 	{
 		Collection<FormContext> formContextColl = entityMap.getFormContextCollection();
@@ -455,7 +446,7 @@ public class ImportXmi
 			}
 			formContext.setEntityMapConditionCollection(entityMapCondColl);
 		}
-	}
+	}*/
 
 	/**
 	 * @param container
@@ -468,7 +459,7 @@ public class ImportXmi
 	 * @throws UserNotAuthorizedException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private static void createIntegrationObjects(ContainerInterface container,
+	/*private static void createIntegrationObjects(ContainerInterface container,
 			EntityInterface staticEntity, List<Long> conditionObjectIds, Object typeId)
 			throws DynamicExtensionsSystemException, DAOException, BizLogicException,
 			UserNotAuthorizedException, DynamicExtensionsApplicationException
@@ -483,7 +474,7 @@ public class ImportXmi
 		annotation.insert(entityMap, Constants.HIBERNATE_DAO);
 		AnnotationUtil.addAssociation(staticEntity.getId(), container.getId(), true);
 
-	}
+	}*/
 
 	/**
 	 * @param entityMap
@@ -493,7 +484,7 @@ public class ImportXmi
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DAOException
 	 */
-	private static Collection<FormContext> getFormContext(EntityMap entityMap,
+	/*private static Collection<FormContext> getFormContext(EntityMap entityMap,
 			List<Long> conditionObjectIds, Object typeId) throws DynamicExtensionsSystemException,
 			DAOException
 	{
@@ -516,7 +507,7 @@ public class ImportXmi
 		formContextColl.add(formContext);
 
 		return formContextColl;
-	}
+	}*/
 
 	/**
 	 * @param formContext
@@ -526,7 +517,7 @@ public class ImportXmi
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DAOException
 	 */
-	private static EntityMapCondition getEntityMapCondition(FormContext formContext,
+	/*private static EntityMapCondition getEntityMapCondition(FormContext formContext,
 			Long conditionObjectId, Object typeId) throws DynamicExtensionsSystemException,
 			DAOException
 	{
@@ -543,13 +534,13 @@ public class ImportXmi
 		return entityMapCondition;
 	}
 
-	/**
+	*//**
 	 * @param container
 	 * @param hookEntityName
 	 * @return
 	 * @throws DAOException
 	 * @throws DynamicExtensionsSystemException
-	 */
+	 *//*
 	private static EntityMap getEntityMap(ContainerInterface container, Object staticEntityId)
 			throws DAOException, DynamicExtensionsSystemException
 	{
@@ -564,11 +555,11 @@ public class ImportXmi
 		return entityMap;
 	}
 
-	/**
+	*//**
 	 * @param hookEntityName
 	 * @return
 	 * @throws DAOException
-	 */
+	 *//*
 	private static Object getObjectIdentifier(String whereColumnValue, String selectObjName,
 			String whereColumnName) throws DAOException
 	{
@@ -580,11 +571,12 @@ public class ImportXmi
 		String joinCondition = Constants.AND_JOIN_CONDITION;
 		List id = defaultBizLogic.retrieve(selectObjName, selectColName, whereColName,
 				whereColCondition, whereColValue, joinCondition);
+		Object object = null;
 		if (id != null && id.size() > 0)
 		{
-			return id.get(0);
+			 object = id.get(0);
 		}
-		return null;
-	}
+		return object;
+	}*/
 
 }
