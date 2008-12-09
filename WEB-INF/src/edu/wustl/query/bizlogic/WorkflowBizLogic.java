@@ -3,10 +3,12 @@ package edu.wustl.query.bizlogic;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.DAO;
+import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.domain.Workflow;
+import edu.wustl.query.domain.WorkflowItem;
 
 
 /**
@@ -25,6 +27,14 @@ public class WorkflowBizLogic extends DefaultBizLogic
 		logger.info("#### Workflow Name #### ::  "+workflow.getName());
 		try
 		{
+			for(WorkflowItem workflowItem : workflow.getWorkflowItemList())
+			{
+				IAbstractQuery query = workflowItem.getQuery();
+				if(query.getId()==null)
+				{
+					dao.insert(query, sessionDataBean, false, true);
+				}
+			}		
 			dao.insert(workflow, sessionDataBean, false, false);
 		}
 		catch (UserNotAuthorizedException e)
