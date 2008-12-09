@@ -351,6 +351,7 @@
 		<copy file="login-config.xml" todir="${zip.dir}" overwrite="true" />
 		<copy file="properties-service.xml" todir="${zip.dir}" overwrite="true" />
 		<copy file="${base.dir}/WEB-INF/classes/query.properties" todir="${zip.dir}" overwrite="true" />
+		<copy file="${base.dir}/WEB-INF/classes/vocab.properties" todir="${zip.dir}" overwrite="true" />
 		<!--Copying the advance query jar to Zip file -->
 		<copy file= "AdvanceQuery.jar"  todir="${zip.dir}" overwrite="true" />
 		<copy file= "${base.dir}/cider.csv"  todir="${zip.dir}" overwrite="true" />
