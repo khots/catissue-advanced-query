@@ -1515,7 +1515,8 @@ var jsReady = false;
 			var componentIdOfID=compIdOfID + "_textBox";
 			//set the concept code to the ID attribute
 			var permValuesWithCode=pvList.split('#');
-			var medConceptCodeList="";
+			var medConceptCodeList=new Array();
+			var j=0;
 			var pvValueList="";
 			for(i=0;i<permValuesWithCode.length;i++)
 			{
@@ -1525,7 +1526,9 @@ var jsReady = false;
 					permValuesWithCodeArray=permValuesWithCode[i].split(':');
 					if(permValuesWithCodeArray[0]!="")
 					{
-						medConceptCodeList=medConceptCodeList+permValuesWithCodeArray[1]+",";
+						
+						medConceptCodeList[j]=permValuesWithCodeArray[1];
+						j++;
 					}
 					/*if(permValuesWithCodeArray[1]!="")
 					{
@@ -1533,11 +1536,26 @@ var jsReady = false;
 					}*/
 				}
 			}
-			
-			document.getElementById(componentIdOfID).value = medConceptCodeList.substring(0,medConceptCodeList.lastIndexOf(','));  
+			medConceptCodeList=medConceptCodeList.unique()
+			document.getElementById(componentIdOfID).value = medConceptCodeList;
 	        document.getElementById(componentId).value = pvNameList.substring(0,pvNameList.lastIndexOf(','));
 	       
 	}	
 	
-	
+			//returns the unique elements of the array. because we need to made predicate of query for MED concept code.
+			  Array.prototype.unique = function () {
+			var r = new Array();
+			o:for(var i = 0, n = this.length; i < n; i++)
+			{
+				for(var x = 0, y = r.length; x < y; x++)
+				{
+					if(r[x]==this[i])
+					{
+						continue o;
+					}
+				}
+				r[r.length] = this[i];
+			}
+			return r;
+			}
 	
