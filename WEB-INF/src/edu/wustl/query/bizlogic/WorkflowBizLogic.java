@@ -4,6 +4,7 @@ import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.DAO;
 import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
+import edu.wustl.common.querysuite.queryobject.ICompositeQuery;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
@@ -32,7 +33,7 @@ public class WorkflowBizLogic extends DefaultBizLogic
 				IAbstractQuery query = workflowItem.getQuery();
 				if(query.getId()==null)
 				{
-					dao.insert(query, sessionDataBean, false, true);
+					saveCompositeQuery(dao, sessionDataBean, (ICompositeQuery)query);
 				}
 			}		
 			dao.insert(workflow, sessionDataBean, false, false);
@@ -44,6 +45,28 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	}
 	
 	
+	/**
+	 * Method to save compositeQuery object
+	 * @param dao Object of DAO
+	 * @param sessionDataBean object of SessionDataBean
+	 * @param query object of ICompositeQuery to be saved
+	 * @throws UserNotAuthorizedException User not authorized exception
+	 * @throws DAOException DAO exception
+	 */
+	private void saveCompositeQuery(DAO dao, SessionDataBean sessionDataBean, ICompositeQuery query) throws UserNotAuthorizedException, DAOException
+	{
+		if(query.getOperation().getOperandOne().getId()==null)
+		{
+			saveCompositeQuery(dao, sessionDataBean, (ICompositeQuery)query.getOperation().getOperandOne());
+		}
+		if(query.getOperation().getOperandTwo().getId()==null)
+		{
+			saveCompositeQuery(dao, sessionDataBean, (ICompositeQuery)query.getOperation().getOperandTwo());
+		}
+		dao.insert(query, sessionDataBean, false, true);		
+	}
+
+
 	protected void update(DAO dao, Object obj, Object oldObj, SessionDataBean sessionDataBean) throws DAOException, UserNotAuthorizedException
 	{
 		
