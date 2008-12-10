@@ -18,6 +18,7 @@ import edu.wustl.common.vocab.VocabularyException;
 import edu.wustl.common.vocab.impl.Vocabulary;
 import edu.wustl.common.vocab.impl.VocabularyManager;
 import edu.wustl.common.vocab.utility.VocabUtil;
+import edu.wustl.query.util.global.Constants;
 
 /**
  * @author amit_doshi
@@ -91,12 +92,31 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 		}
 
 		return conceptCodes;
-	}
-	
+	}	
 	public List<IConcept> searchConcept(String term,String vocabName,String vocabVersion)
 	{
 		IVocabulary vocabulary = new Vocabulary(vocabName,vocabVersion);
 		return vocabularyManager.searchConcept(term, vocabulary);
 		
+	}
+	public String getNoMappingFoundHTML() {
+		return "<tr><td>&nbsp;</td><td class='black_ar_tt'>"+Constants.NO_RESULT+"<td></tr>";
+	}
+	public String getMappedVocabularyPVChildAsHTML(String vocabName,IConcept concept, String checkboxId) {
+		return "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class='black_ar_tt'> \n" +
+				"<input type='checkbox' name='"+vocabName+"' id='"+checkboxId+"' value='"+concept.getCode()+":"+concept.getDescription()+"' onclick=\"getCheckedBoxId('"+checkboxId+"');\">"+concept.getCode()+":"+concept.getDescription()+"\n" +
+				"</input><td></tr>";
+	}
+	public String getRootVocabularyNodeHTML(String vocabName,String vocabVer) {
+		
+		return "<table><tr><td colspan='2' class='grid_header_text'><a id=\"image_"+vocabName+"\" \n" +
+				"onClick=\"showHide('inner_div_"+vocabName+"','image_"+vocabName+"');\" > \n" +
+						"<img src=\"images/advancequery/nolines_minus.gif\"/ align='absmiddle'> </a><input type='checkbox' name='"+vocabName+"' id='"+vocabName+"' value='"+vocabName+"' onclick=\"setStatusOfAllCheckBox('"+vocabName+"');\">"+vocabName+" "+vocabVer+"\n" +
+								"</input></td></tr>" +
+								"<tr><td><div id='inner_div_"+vocabName+"'  ><table>";
+	}
+	
+	public String getEndHTML() {
+		return "</table></div></td></tr></table>";
 	}
 }
