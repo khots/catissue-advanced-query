@@ -75,15 +75,16 @@ public class SearchPermissibleValuesAction extends Action {
 		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		List<IConcept> premValueList=bizLogic.getPermissibleValueList(attribute, entity);
 		String vocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name").toUpperCase();
+		String vocabVer=VocabUtil.getVocabProperties().getProperty("source.vocab.version").toUpperCase();
 		StringBuffer html=new StringBuffer();
-		html.append(getRootVocabularyNodeHTML(vocabName));
+		html.append(bizLogic.getRootVocabularyNodeHTML(vocabName,vocabVer));
 		for(int i=0;i<premValueList.size();i++)
 		{
 			IConcept concept=(IConcept)premValueList.get(i);
 			String id=vocabName+":"+concept.getCode();
-			html.append(getMappedVocabularyPVChildAsHTML(vocabName, concept, id));
+			html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, concept, id));
 		}
-		html.append("</table></div></td></tr></table>");
+		html.append(bizLogic.getEndHTML());
 		request.getSession().setAttribute(Constants.MED_PV_HTML, html.toString());
 		request.getSession().setAttribute(Constants.VOCABULIRES, bizLogic.getVocabulries());
 		if(componentId!=null)
@@ -91,6 +92,7 @@ public class SearchPermissibleValuesAction extends Action {
 			request.getSession().setAttribute(Constants.COMPONENT_ID,componentId );
 		}
 	}
+	
 	
 	private String getMappedVacbulariesDataAsHTML(String targetVocab,AttributeInterface attribute,EntityInterface entity) 
 	{
@@ -106,7 +108,7 @@ public class SearchPermissibleValuesAction extends Action {
 			{
 				
 				String vocabName=targetVocabName.toUpperCase();
-				html.append(getRootVocabularyNodeHTML(vocabName));
+				html.append(bizLogic.getRootVocabularyNodeHTML(vocabName,targetVocabVer));
 				Map<String,List<IConcept>> vocabMappings=bizLogic.getMappedConcepts(attribute,targetVocabName,targetVocabVer, entity);
 				getMappingDataAsHTML(html, vocabName, vocabMappings);
 				
@@ -118,7 +120,7 @@ public class SearchPermissibleValuesAction extends Action {
 	}
 	private void getMappingDataAsHTML(StringBuffer html, String vocabName,
 			Map<String, List<IConcept>> vocabMappings) {
-		
+		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		if(vocabMappings!=null)
 		{
 			Set<String> keySet = vocabMappings.keySet();
@@ -132,33 +134,18 @@ public class SearchPermissibleValuesAction extends Action {
 				{
 					IConcept permValue = (IConcept)mappingListItr.next();
 					String checkboxId=vocabName+":"+conceptCode;//we need to use the MED Concept code with mapped values
-					html.append(getMappedVocabularyPVChildAsHTML(vocabName, permValue,checkboxId));
+					html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, permValue,checkboxId));
 					
 				}
 			}
 		}
 		else
 		{
-			html.append(getNoMappingFoundHTML());
+			html.append(bizLogic.getNoMappingFoundHTML());
 		}
-		html.append("</table></div></td></tr></table>");
+		html.append(bizLogic.getEndHTML());
 	}
-	private String getNoMappingFoundHTML() {
-		return "<tr><td>&nbsp;</td><td class='black_ar_tt'>"+Constants.NO_RESULT+"<td></tr>";
-	}
-	private String getMappedVocabularyPVChildAsHTML(String vocabName,IConcept concept, String checkboxId) {
-		return "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class='black_ar_tt'> \n" +
-				"<input type='checkbox' name='"+vocabName+"' id='"+checkboxId+"' value='"+concept.getCode()+":"+concept.getDescription()+"' onclick=\"getCheckedBoxId('"+checkboxId+"');\">"+concept.getCode()+":"+concept.getDescription()+"\n" +
-				"</input><td></tr>";
-	}
-	private String getRootVocabularyNodeHTML(String vocabName) {
-		
-		return "<table><tr><td colspan='2' class='grid_header_text'><a id=\"image_"+vocabName+"\" \n" +
-				"onClick=\"showHide('div_"+vocabName+"','image_"+vocabName+"');\" > \n" +
-						"<img src=\"images/advancequery/nolines_minus.gif\"/ align='absmiddle'> </a><input type='checkbox' name='"+vocabName+"' id='"+vocabName+"' value='"+vocabName+"' onclick=\"setStatusOfAllCheckBox('"+vocabName+"');\">"+vocabName+"\n" +
-								"</input></td></tr>" +
-								"<tr><td><div id='inner_div_"+vocabName+"'  ><table>";
-	}
+	
 
 
 	
