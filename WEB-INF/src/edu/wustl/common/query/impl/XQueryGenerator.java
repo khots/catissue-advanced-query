@@ -40,6 +40,7 @@ import edu.wustl.common.querysuite.queryobject.IOutputEntity;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
+import edu.wustl.common.querysuite.queryobject.impl.Expression;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
 import edu.wustl.common.util.Utility;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
@@ -150,7 +151,7 @@ public class XQueryGenerator extends QueryGenerator
 	}
 
 	/**
-	 * To assign alias to each tablename in the Expression. It will generate
+	 * To assign alias to each table name in the Expression. It will generate
 	 * alias that will be assigned to each entity in Expression.
 	 * 
 	 * @param expression the Root Expression of the Query.
@@ -160,7 +161,7 @@ public class XQueryGenerator extends QueryGenerator
 	 * @param pathMap The map of path verses the ExpressionId. entry in this map
 	 *            means, for such path, there is already alias assigned to some
 	 *            Expression.
-	 * @return The int representing the modified alias appender count that will
+	 * @return The integer representing the modified alias appender count that will
 	 *         be used for further processing.
 	 * @throws MultipleRootsException if there are multpile roots present in
 	 *             join graph.
@@ -972,14 +973,18 @@ public class XQueryGenerator extends QueryGenerator
 		return super.shouldAddNodeFor(expression) ;
 	}
 	
-	protected boolean isContainedExpresion(IExpression expression)
-	{
-		boolean isContainedExpresion = false;
-		if(mainExpressions.contains(expression))
+	protected boolean isContainedExpresion(int expressionId)
+	{ 
+		boolean isMainExpression = false;
+		for (IExpression  exp: mainExpressions)
 		{
-			isContainedExpresion = true;
+			if(exp.getExpressionId()==expressionId)
+			{
+				isMainExpression = true;
+				break;
+			}
 		}
-		return isContainedExpresion;
+		return !(isMainExpression);
 	}
 
 	protected String processBetweenOperator(ICondition condition, String attributeName)

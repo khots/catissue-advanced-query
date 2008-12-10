@@ -7,6 +7,7 @@ package edu.wustl.common.query.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -144,6 +145,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	public QueryGenerator()
 	{
 		aliasAppenderMap = new HashMap<IExpression, Integer>();
+		emptyExpressions = new HashSet<IExpression>();
 	}
 
 	/**
@@ -703,7 +705,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 		}
 	}
 	
-	protected boolean isContainedExpresion(IExpression expression)
+	protected boolean isContainedExpresion(int expressionId)
 	{
 		return false;
 	}
@@ -728,7 +730,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 				Integer childAliasAppender = aliasAppenderMap.get(childExp);
 				
 				//Set containment object to true if expression is contained.
-				if(isContainedExpresion(childExp))
+				if(isContainedExpresion(childNode.getExpressionId()))
 				{
 					childNode.setContainedObject(true);
 				}

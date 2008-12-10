@@ -242,7 +242,7 @@ public class QueryOutputTreeBizLogic
 	 */
 	public String updateTreeForDataNode(String id, OutputTreeDataNode node, String parentNodeId,
 			QueryDetails queryDetailsObj) throws ClassNotFoundException, DAOException
-	{
+	{ 
 		String tableName = Constants.TEMP_OUPUT_TREE_TABLE_NAME
 				+ queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
 		String parentIdColumnName = QueryModuleUtil.getParentIdColumnName(node);
@@ -250,6 +250,8 @@ public class QueryOutputTreeBizLogic
 		String outputTreeStr = "";
 		for (OutputTreeDataNode childNode : children)
 		{
+			if(!childNode.isContainedObject())
+			{
 			String selectSql = getSql(parentNodeId, tableName, parentIdColumnName, childNode);
 			String name = childNode.getOutputEntity().getDynamicExtensionsEntity().getName();
 			name = Utility.parseClassName(name);
@@ -273,6 +275,7 @@ public class QueryOutputTreeBizLogic
 				outputTreeStr = outputTreeStr + "|" + nodeId + "," + displayName + "," + objectName
 						+ "," + id + "," + parentObjectName;
 			}
+			}
 		}
 		return outputTreeStr;
 	}
@@ -291,6 +294,7 @@ public class QueryOutputTreeBizLogic
 	{
 		String selectSql = Constants.SELECT_DISTINCT;
 		String idColumnOfCurrentNode = "";
+		
 		List<QueryOutputTreeAttributeMetadata> attributes = childNode.getAttributes();
 		String sqlColumnName = "";
 		List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(childNode
@@ -318,6 +322,7 @@ public class QueryOutputTreeBizLogic
 		selectSql = selectSql.substring(0, selectSql.lastIndexOf(','));
 		selectSql = edu.wustl.query.util.global.Utility.getSQLForNode(parentNodeId, tableName, parentIdColumnName, selectSql,
 				idColumnOfCurrentNode);
+		
 		return selectSql;
 	}
 
