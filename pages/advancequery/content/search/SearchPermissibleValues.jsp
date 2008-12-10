@@ -209,9 +209,9 @@ Array.prototype.inArray = function (value,caseSensitive)
         return false;
    }
    //This method will be called when user clicks on the vocabulary check box
-   function refreshWindow(vocabCheckBoxId)
+   function refreshWindow(vocabCheckBoxId,vocabName,vocabVer)
    {
-   
+	
 		var request = newXMLHTTPReq(); 
 		var selectedCheckBox="";
 		if(request == null)
@@ -220,20 +220,22 @@ Array.prototype.inArray = function (value,caseSensitive)
 			return;
 		}
 			
-			var selectedCheckedBoxVocabValue=document.getElementById(vocabCheckBoxId).value;
-			var selectedCheckedBoxVocabDivID=selectedCheckedBoxVocabValue.substring(0,selectedCheckedBoxVocabValue.indexOf(" "));
+			var selectedCheckedBoxVocabDivID="main_div_"+vocabCheckBoxId;
+			//var selectedCheckedBoxVocabDivID=selectedCheckedBoxVocabValue.substring(0,selectedCheckedBoxVocabValue.indexOf(" "));
+			
 			if(document.getElementById(vocabCheckBoxId).checked)
 			{
-				 if(document.getElementById("div_"+selectedCheckedBoxVocabDivID).style.display == 'none')
+			
+				 if(document.getElementById(selectedCheckedBoxVocabDivID).style.display == 'none')
 				 {
-					 document.getElementById("div_"+selectedCheckedBoxVocabDivID).style.display = '';
+					 document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
 				 }
 				 else
 				 {
 					// send request only first time when user click on the check box for other click  just hide and show the div 
-					var param = "selectedCheckBox"+"="+selectedCheckedBoxVocabValue;
+					var param = "selectedCheckBox"+"="+vocabName+":"+vocabVer;
 					var actionUrl="SearchPermissibleValues.do";
-					request.onreadystatechange=function(){setSelectedVocabDataInDIV(request,selectedCheckedBoxVocabValue)};
+					request.onreadystatechange=function(){setSelectedVocabDataInDIV(request,selectedCheckedBoxVocabDivID)};
 					request.open("POST",actionUrl,true);
 					request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 					request.send(param);
@@ -242,14 +244,14 @@ Array.prototype.inArray = function (value,caseSensitive)
 			else if (! document.getElementById(vocabCheckBoxId).checked)
 			{
 				
-				 document.getElementById("div_"+selectedCheckedBoxVocabDivID).style.display = 'none';
+				 document.getElementById(selectedCheckedBoxVocabDivID).style.display = 'none';
 			}
 		
 		
 	
    }
 	 /* used to set the data in the div based the which checked box clicked */
-	 function setSelectedVocabDataInDIV(request,selectedCheckedBoxVocabValue)
+	 function setSelectedVocabDataInDIV(request,selectedCheckedBoxVocabDivID)
 	 {
 		
 		if(request.readyState == 4)  
@@ -257,8 +259,8 @@ Array.prototype.inArray = function (value,caseSensitive)
 			if(request.status == 200)
 			{	
 			var responseTextValue =  request.responseText;	
-			var selectedCheckedBoxVocabDivID=selectedCheckedBoxVocabValue.substring(0,selectedCheckedBoxVocabValue.indexOf(" "));
-			document.getElementById("div_"+selectedCheckedBoxVocabDivID).innerHTML=responseTextValue;
+		//	var selectedCheckedBoxVocabDivID=selectedCheckedBoxVocabValue.substring(0,selectedCheckedBoxVocabValue.indexOf(" "));
+			document.getElementById(selectedCheckedBoxVocabDivID).innerHTML=responseTextValue;
 			}
 		}
 	 };
@@ -400,15 +402,13 @@ Array.prototype.inArray = function (value,caseSensitive)
 			for(int i=0;i<vocabs1.size();i++)
 			{
 				
-				String vocabNameWithVersion=vocabs1.get(i).getName() + " " +vocabs1.get(i).getVersion();
+				String vocabNameWithVersion=vocabs1.get(i).getName() + vocabs1.get(i).getVersion();
 				if(vocabs1.get(i).getName().equalsIgnoreCase(srcVocabName) && vocabs1.get(i).getVersion().equalsIgnoreCase(srcVocabVersion))
 				{
-					
-				
 				%>
-	  	<input  type="checkbox" checked="true"  id="<%=vocabNameWithVersion%>" value="<%=vocabNameWithVersion%>"  onclick= "refreshMEDDiv(this.id);"><span class="content_txt" valign="middle">&nbsp;<%=vocabNameWithVersion.toUpperCase()%> &nbsp;&nbsp;&nbsp;&nbsp;</span>
+	  	<input  type="checkbox" checked="true"  id="<%=vocabNameWithVersion%>" value="<%=vocabNameWithVersion%>"  onclick= "refreshMEDDiv(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"><span class="content_txt" valign="middle">&nbsp;<%=vocabNameWithVersion.toUpperCase()%> &nbsp;&nbsp;&nbsp;&nbsp;</span>
 		<%}else{%>
-		<input type="checkbox"  id="<%=vocabNameWithVersion%>" value="<%=vocabNameWithVersion%>" onclick= "refreshWindow(this.id);"><font class="content_txt" valign="middle">&nbsp;<%=vocabNameWithVersion.toUpperCase()%>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+		<input type="checkbox"  id="<%=vocabNameWithVersion%>" value="<%=vocabNameWithVersion%>" onclick= "refreshWindow(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"><font class="content_txt" valign="middle">&nbsp;<%=vocabNameWithVersion.toUpperCase()%>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 		<%}
 		}%>
 		</td>
@@ -467,13 +467,14 @@ Array.prototype.inArray = function (value,caseSensitive)
 						</tr>
 								<%for(int i=0;i<vocabs1.size();i++)
 								{
-									
-									if(!vocabs1.get(i).getName().equalsIgnoreCase(srcVocabName) && !vocabs1.get(i).getVersion().equalsIgnoreCase(srcVocabVersion))
-								{%>
+									System.out.println(vocabs1.get(i).getName()+ vocabs1.get(i).getVersion()+"________"+srcVocabName + srcVocabVersion );
+									if(!vocabs1.get(i).getName().equalsIgnoreCase(srcVocabName) || !vocabs1.get(i).getVersion().equalsIgnoreCase(srcVocabVersion))
+								{
+								System.out.println(vocabs1.get(i).getName()+ vocabs1.get(i).getVersion() );
+								%>
 						<tr>
 							  <td valign="top">
-								<div id="div_<%=vocabs1.get(i).getName()%>" style="width:250;">
-								
+								<div id="main_div_<%=vocabs1.get(i).getName()+vocabs1.get(i).getVersion()%>" style="width:250;">
 								</div>
 							 </td>
 						</tr>
