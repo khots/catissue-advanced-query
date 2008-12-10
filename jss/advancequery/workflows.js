@@ -11,10 +11,11 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	//alert('11 tableObj='+tableObj);
 	var rowObj=document.createElement("tr");
 //	alert('13 rowObj='+rowObj);
-	rowObj.className="content_txt";
+	rowObj.className="trbgcolor";
 //	alert('15 rowObj='+rowObj);
 	var columnObj;
 	var columnCount=columnContents.length;
+
 	//alert('18 columnCount='+columnCount);
 	for(var counter=0;counter<columnCount;counter++)
 	{
@@ -23,7 +24,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 		{
 			columnObj=document.createElement("td");
 	//		alert('24 columnObj='+columnObj);
-			columnObj.className="td_align";
+			columnObj.className="tdalign";
 		///	alert('26 columnObj='+columnObj);
 	//		alert('27 columnContents[counter]='+columnContents[counter]);
 			columnObj.appendChild(columnContents[counter]);
@@ -32,7 +33,13 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 		//	alert('31 rowObj='+rowObj);
 		}
 	}
-	
+		var selectObject=document.createElement("select");
+		var optn = parent.window.document.createElement("OPTION");
+		optn.text="person";
+		optn.value="person";
+		selectObject.options.add(optn);	
+		
+	rowObj.appendChild(selectObject);
 	//Create all the hidden controls and add them to a "td"
 	var operandsTd=document.createElement("td");
 //alert('37 operandsTd='+operandsTd);
@@ -71,7 +78,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	//alert('55 queryTitleControl='+queryTitleControl);
 	operandsTd.appendChild(queryTitleControl);
 	operandsTd.appendChild(queryTypeControl);
-			
+//	rowObj.appendChild(document.createElement("td"));
 	var trImgup=new Image ( );
 	trImgup.src = "images/advancequery/ic_up.gif";
 	operandsTd.appendChild(trImgup);
