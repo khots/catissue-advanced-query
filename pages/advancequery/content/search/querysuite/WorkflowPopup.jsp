@@ -16,9 +16,9 @@
 function closePopup()
 {
 	var checkboxArray=document.getElementsByName('chkbox');
-	clearSelBoxList(top.opener.document.getElementById("queryId"));
-	clearSelBoxList(top.opener.document.getElementById("queryTitle"));
-	clearSelBoxList(top.opener.document.getElementById("queryType"));
+	clearSelBoxList(parent.window.document.getElementById("queryId"));
+	clearSelBoxList(parent.window.document.getElementById("queryTitle"));
+	clearSelBoxList(parent.window.document.getElementById("queryType"));
 	
 	if(checkboxArray!=null)
 	{
@@ -31,17 +31,23 @@ function closePopup()
 				
 					if(document.getElementById(id).checked)
 					{
-						addOption(top.opener.document.getElementById("queryId"),document.getElementById("queryIdControl_"+count).value,count);
-						addOption(top.opener.document.getElementById("queryTitle"),""+document.getElementById("queryTitleControl_"+count).value,count);
-						addOption(top.opener.document.getElementById("queryType"),""+document.getElementById("queryTypeControl_"+count).value,count);
+						addOption(parent.window.document.getElementById("queryId"),document.getElementById("queryIdControl_"+count).value,count);
+						addOption(parent.window.document.getElementById("queryTitle"),""+document.getElementById("queryTitleControl_"+count).value,count);
+						addOption(parent.window.document.getElementById("queryType"),""+document.getElementById("queryTypeControl_"+count).value,count);
 					}
 					
 			}
 	}
 	updateOpenerUI();
-	window.close();
+	closeModalWindow();
+
 }
 
+function closeModalWindow()
+{
+	parent.pvwindow.hide();
+
+}
 function clearSelBoxList(selBoxObj)
 {	
 	if(selBoxObj != null)
@@ -56,7 +62,7 @@ function clearSelBoxList(selBoxObj)
 
 function updateOpenerUI() { 
   if(document.getElementById) { 
-         elm = top.opener.document.getElementById("btn");
+         elm = parent.window.document.getElementById("btn");
        } 
 
 	if (document.all)
@@ -83,7 +89,7 @@ function selectAllOptions(control)
 
 function addOption(theSel, theText, theValue)
 {
-	var optn = top.opener.document.createElement("OPTION");
+	var optn = parent.window.document.createElement("OPTION");
 	optn.text=theText;
 	optn.value=theValue;
 	theSel.options.add(optn);	
@@ -93,9 +99,8 @@ function addOption(theSel, theText, theValue)
 <head>
 <title>CIDER: Clinical Investigation Data Exploration Repository</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<script type="text/JavaScript">
-<script language="JavaScript" type="text/javascript" src="jss/advancequery/queryModule.js"></script>
-<script type="text/javascript" src="jss/advancequery/wz_tooltip.js"></script>
+<script type="JavaScript"></script>
+<script type="javascript" src="jss/advancequery/wz_tooltip.js"></script>
 <link href="css/advancequery/workflow.css" rel="stylesheet" type="text/css" />
 <!--
 
@@ -106,8 +111,8 @@ function MM_preloadImages() { //v3.0
     if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
 }
 //-->
-</script>
-<script type="text/javascript">
+
+<script type="javascript">
 <!--
 function MM_reloadPage(init) {  //reloads the window if Nav4 resized
   if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
@@ -119,7 +124,7 @@ MM_reloadPage(true);
 </script>
 <link href="css/advancequery/inside.css" rel="stylesheet" type="text/css" media="screen">
 </head>
-<body onLoad="MM_preloadImages('images/advancequery/m_home_act.gif')" onunload='closeWaitPage()'>
+<body  onunload='closeWaitPage()'>
 
 <% 
 boolean mac = false;
@@ -155,7 +160,7 @@ int queryCount = 0;%>
             <td class="grey_bold_big"> (5) </td>
           </tr>
         </table></td>
-        <td align="right" background="images/advancequery/bg_content_header.gif" ><A href="javascript: self.close ()"><img src="images/advancequery/close_window.gif" alt="Close Window" width="87" height="28" border="0"></a></td>
+        <td align="right" background="images/advancequery/bg_content_header.gif" ><A href="javascript: closeModalWindow()"><img src="images/advancequery/close_window.gif" alt="Close Window" width="87" height="28" border="0"></a></td>
 	
       </tr>
 

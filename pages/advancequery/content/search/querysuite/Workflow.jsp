@@ -5,9 +5,11 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@page import="edu.wustl.query.util.global.CompositeQueryOperations"%>
 <link href="css/advancequery/workflow.css" rel="stylesheet" type="text/css" />
-<script src="jss/advancequery/workflows.js"></script>	
+<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlwindow.js"></script>
+<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/modal.js"></script>
+<link rel="stylesheet" type="text/css" href="css/advancequery/catissue_suite.css" />
+<script  src="jss/advancequery/workflows.js"></script>	
 <script type="text/JavaScript">
-<!--
 
 
 function MM_preloadImages() { //v3.0
@@ -16,10 +18,12 @@ function MM_preloadImages() { //v3.0
     if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
 }
 
-function showPopUp(pageOf){
-	//window.open("QueryAction.do?pageOf="+pageOf+"&queryId=queryId&queryTitle=queryTitle&queryType=queryType","left=400,top=400,width=600,height=600,modal=yes");
-
-	window.open("QueryAction.do?pageOf="+pageOf+'&queryId=queryId&queryTitle=queryTitle&queryType=queryType','','height=365,width=530,center=1,scrollbars=1,resizable=0,modal=yes');
+function showPopUp(pageOf)
+{
+	//window.open("QueryAction.do?pageOf="+pageOf+'&queryId=queryId&queryTitle=queryTitle&queryType=queryType','','height=365,width=530,center=1,scrollbars=1,resizable=0,modal=yes');
+	//pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'SearchPermissibleValues.do?componentId='+componentId,'Search Permissible Values for \"'+entityName+'\"', 'width=930px,height=510px,center=1,resize=0,scrolling=1')
+	var url='QueryAction.do?pageOf='+pageOf+'&queryId=queryId&queryTitle=queryTitle&queryType=queryType';
+	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select queries', 'width=930px,height=510px,center=1,resize=0,scrolling=1');
 }
 
 function updateUI()
@@ -79,11 +83,11 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 		{
 			if( cqTitle=='')
 			{
-				cqTitle=document.getElementById("displayQueryTitle_"+queryIds[counter]).value;
+				cqTitle="[Query:"+document.getElementById("selectedqueryId_"+queryIds[counter]).value+"]";
 			}
 			else
 			{
-				cqTitle=cqTitle+" "+operation+" "+document.getElementById("displayQueryTitle_"+queryIds[counter]).value;
+				cqTitle=cqTitle+" "+operation+" "+ "[Query:"+document.getElementById("selectedqueryId_"+queryIds[counter]).value+"]";
 			}
 			if(cqQueryId=='')
 			{
@@ -196,7 +200,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
                         <table width="100%" border="0" cellspacing="0" cellpadding="0">
                           <tr>
                             <td><span class="content_txt_bold">Workflow Name</span><span class="red_star">*</span>:<span class="content_txt">
-                            <input name="textfield222" type="text" class="textfield_undefined" value="Lung Cancer Queries " size="80" >
+                            <html:text styleId="name" property="name" styleClass="textfield_undefined" size="80"/>
                             &nbsp;&nbsp;</span></td>
                           </tr>
                         </table></td>
@@ -276,7 +280,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
                           <tr>
                             <td align="right"><span class="content_txt_bold">Select Project:
                               <select name="select2" class="texttype">
-                                    <option>Lung Cancer Project</option>
+                                    <option>Select...</option>
                                   </select>
                             </span></td>
                             <td width="167" align="right" valign="middle" ><a href="#" class="bluelink">Execute Get Count Queries</a>&nbsp;</td>
