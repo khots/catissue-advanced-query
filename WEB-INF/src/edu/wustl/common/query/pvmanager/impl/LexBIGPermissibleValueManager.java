@@ -24,9 +24,7 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 	public List<PermissibleValueInterface> getPermissibleValueList(final AttributeInterface attribute, final EntityInterface entity) 
 	{
 
-		List<PermissibleValueInterface> permissibleValueList = null;
-		
-		
+		List<PermissibleValueInterface> permissibleValueList = new ArrayList<PermissibleValueInterface>();
 		if (isEnumerated(attribute, entity))
 		{
 			String filter = getPVFilterValueForAttribute(attribute, entity);
