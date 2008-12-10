@@ -25,8 +25,6 @@ public class WorkflowAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-//		final WorkflowForm workflowForm = (WorkflowForm) form;
-		
 		request.setAttribute(Constants.OPERATION, Constants.ADD);
 		
 		return mapping.findForward(Constants.SUCCESS);
