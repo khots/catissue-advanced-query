@@ -107,27 +107,11 @@ function addQuery()
 		var operandsTdContent="";
 		var rowContents=new Array(6);
 		rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter),'');
-		//alert('hasInnerText(='+hasInnerText());
-/*		if(!hasInnerText())
-		{
-			alert('in if'); */
-			operandsTdContent=queryIds[counter].textContent;
-			rowContents[1]=createTextElement(getText(queryTitles[counter]));
-			rowContents[2]=createTextElement(getText(queryTypes[counter]));
-			rowContents[3]=getSelectObjectControl();
-			rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+counter,getText(queryIds[counter]));
-	//	}
-	/*	else
-		{
-			alert('in else');
-			alert('queryTitles[counter].innerText='+queryTitles[counter].innerText);
-			operandsTdContent=queryIds[counter].innerText;
-			rowContents[1]=createTextElement(queryTitles[counter].innerText);
-			rowContents[2]=createTextElement(queryTypes[counter].innerText);
-			rowContents[3]=createTextElement(queryIds[counter].innerText);
-			rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+counter,queryIds[counter].innerText);
-		}*/
-		
+		operandsTdContent=getText(queryIds[counter]);	
+		rowContents[1]=createTextElement(getText(queryTitles[counter]));
+		rowContents[2]=createTextElement(getText(queryTypes[counter]));
+		rowContents[3]=getSelectObjectControl();
+		rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+counter,getText(queryIds[counter]));
 		var operatorsTdContent="None";
 	
 		//create a table containing tbody with id "table1"
@@ -142,6 +126,7 @@ function getSelectObjectControl()
 	optn.text="person";
 	optn.value="person";
 	selectObject.options.add(optn);
+	selectObject.name="selectObject";
 	return selectObject;
 }
 
