@@ -294,7 +294,9 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String ELEMENT_ENTITY = "entity";
 	public static final String ELEMENT_NAME = "name";
 	public static final String ELEMENT_ATTRIBUTE = "attribute";
+	public static final String ELEMENT_TAG = "tag";
 	public static final String ELEMENT_TAG_NAME = "tag-name";
+	public static final String ELEMENT_TAG_VALUE = "tag-value";
 	public static final String TAGGED_VALUE_NOT_SEARCHABLE = "NOT_SEARCHABLE";
 	public static final String TAGGED_VALUE_NOT_VIEWABLE = "NOT_VIEWABLE";
 	
