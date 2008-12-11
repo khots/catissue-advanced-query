@@ -1756,15 +1756,15 @@ queryLink{ /* for the text links in the Search category page */
   color:#000000; /* constant: black */
 }
 .tdWithoutBottomBorder{ /* for block table with border 1 */
-  border-top:1px  solid #000000;/* constant: dark gray */
-  border-left:1px solid #000000; /* constant: dark gray */
-  border-right:1px solid #000000; /* constant: dark gray */
+  border-bottom:1px  solid #cccccc;/* constant: dark gray */
+  border-left:1px solid #cccccc; /* constant: dark gray */
+  border-right:1px solid #cccccc; /* constant: dark gray */
 
 }
 .tdWithoutTopBorder{ /* for block table with border 1 */
-  border-bottom:1px  solid #000000;/* constant: dark gray */
-  border-left:1px solid #000000; /* constant: dark gray */
-  border-right:1px solid #000000; /* constant: dark gray */
+  border-bottom:1px  solid #cccccc;/* constant: dark gray */
+  border-left:1px solid #cccccc; /* constant: dark gray */
+  border-right:1px solid #cccccc; /* constant: dark gray */
 
 }
 
@@ -2022,4 +2022,11 @@ tr#hiddenCombo
 .td_blue_highlight {
      background-color: #d8e8f8;
      height: 25px;
+}
+
+A.bluelink:link {
+	color: #297cc7;
+	Text-Decoration: underline;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size: 12px;
 }
