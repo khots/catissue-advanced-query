@@ -433,7 +433,7 @@ PUBLIC
         		name="workflowForm"
         		validate="false"
 				scope="request">
-        		<forward name="success" path="/QueryWorkflowWizard.do" />
+        		<forward name="success" path=".query.queryWorkFlowConfirmMsgDef" />
         </action>
         
         <!-- TO DO  -->

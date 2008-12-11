@@ -230,7 +230,12 @@
 	</definition>
 	
 	
-	<definition name=".query.queryWorkFlowWizardDef" path="/pages/advancequery/content/search/querysuite/Workflow.jsp">
+	<definition name=".query.queryWorkFlowWizardDef" extends=".query.mainTitlePageDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/Workflow.jsp"/>
+	</definition>
+	
+	<definition name=".query.queryWorkFlowConfirmMsgDef" extends=".query.mainTitlePageDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/WorkflowConfirmationMsg.jsp"/>
 	</definition>
 	
 	<definition name=".query.redirectToWorkflowPageDef" extends=".query.searchHomeDef">
