@@ -13,7 +13,7 @@ body {
 	margin: 0px;
 	padding: 0px;
 	background-color: #ffffff;
-	background-image:url(../images/bg_fullpage.gif);
+	background-image:url(../../images/bg_fullpage.gif);
 }
 #container{
 	width:100%;
@@ -94,9 +94,7 @@ font-family:Arial, Helvetica, sans-serif;
 	width: 342px;
 }
 .login_box_bg {
-
 	width:100%;
-
 	border: 1px solid #cccccc;
 	background-color: #ffffff;
 }
@@ -295,7 +293,7 @@ font-family:Arial, Helvetica, sans-serif;
 
 }
 .td_subtitle {
-	background-image: url(../images/bg_subtitle.gif);
+	background-image: url(../../images/bg_subtitle.gif);
 }
 
 .orange_title {

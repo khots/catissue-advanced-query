@@ -11,7 +11,8 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	//alert('11 tableObj='+tableObj);
 	var rowObj=document.createElement("tr");
 //	alert('13 rowObj='+rowObj);
-	rowObj.className="trbgcolor";
+	//rowObj.bgcolor="#ffffff";
+	rowObj.className="td_bgcolor_white";
 //	alert('15 rowObj='+rowObj);
 	var columnObj;
 	var columnCount=columnContents.length;
@@ -24,7 +25,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 		{
 			columnObj=document.createElement("td");
 	//		alert('24 columnObj='+columnObj);
-			columnObj.className="tdalign";
+			columnObj.className="content_txt";
 		///	alert('26 columnObj='+columnObj);
 	//		alert('27 columnContents[counter]='+columnContents[counter]);
 			columnObj.appendChild(columnContents[counter]);
@@ -33,13 +34,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 		//	alert('31 rowObj='+rowObj);
 		}
 	}
-		var selectObject=document.createElement("select");
-		var optn = parent.window.document.createElement("OPTION");
-		optn.text="person";
-		optn.value="person";
-		selectObject.options.add(optn);	
 		
-	rowObj.appendChild(selectObject);
 	//Create all the hidden controls and add them to a "td"
 	var operandsTd=document.createElement("td");
 //alert('37 operandsTd='+operandsTd);
@@ -78,14 +73,19 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	//alert('55 queryTitleControl='+queryTitleControl);
 	operandsTd.appendChild(queryTitleControl);
 	operandsTd.appendChild(queryTypeControl);
-//	rowObj.appendChild(document.createElement("td"));
+	operandsTd.appendChild(createLink("Execute ","#"));
+	operandsTd.appendChild(createLink("Delete ","#"));
+	rowObj.appendChild(operandsTd);
+	
+	var reorderTd=document.createElement("td");
 	var trImgup=new Image ( );
 	trImgup.src = "images/advancequery/ic_up.gif";
-	operandsTd.appendChild(trImgup);
+	reorderTd.appendChild(trImgup);
 	var trImgDown=new Image ( );
 	trImgDown.src = "images/advancequery/ic_down.gif";
-	operandsTd.appendChild(trImgDown);
-	rowObj.appendChild(operandsTd);
+	reorderTd.appendChild(trImgDown);
+//	rowObj.appendChild(document.createElement("td"));
+	rowObj.appendChild(reorderTd);
 	
 	tableObj.appendChild(rowObj);
 }
@@ -105,7 +105,7 @@ function addQuery()
 	for(var counter=0;counter<queryIds.length;counter++)
 	{
 		var operandsTdContent="";
-		var rowContents=new Array(5);
+		var rowContents=new Array(6);
 		rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter),'');
 		//alert('hasInnerText(='+hasInnerText());
 /*		if(!hasInnerText())
@@ -114,7 +114,7 @@ function addQuery()
 			operandsTdContent=queryIds[counter].textContent;
 			rowContents[1]=createTextElement(getText(queryTitles[counter]));
 			rowContents[2]=createTextElement(getText(queryTypes[counter]));
-			rowContents[3]=createTextElement(getText(queryIds[counter]));
+			rowContents[3]=getSelectObjectControl();
 			rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+counter,getText(queryIds[counter]));
 	//	}
 	/*	else
@@ -133,6 +133,25 @@ function addQuery()
 		//create a table containing tbody with id "table1"
 		addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent);	
 	}
+}
+
+function getSelectObjectControl()
+{
+	var selectObject=parent.window.document.createElement("select");
+	var optn = parent.window.document.createElement("OPTION");
+	optn.text="person";
+	optn.value="person";
+	selectObject.options.add(optn);
+	return selectObject;
+}
+
+function createImageElement(srcPath)
+{
+	var image=document.createElement("img");
+	image.setAttribute("src",srcPath);
+	image.setAttribute("border","0");
+	image.setAttribute("align","absmiddle");
+	return image;
 }
 
 function createHiddenElement(name,id,content)
@@ -166,16 +185,39 @@ function createCheckBox(name,id,displayValue)
 		return chkbox;
 }
 
+function createLink(displayValue,url)
+{
+	var link=document.createElement('a');
+	link.className="bluelink";
+	link.href=url;
+	var text=createTextElement(displayValue);
+	link.appendChild(text);
+	return link;
+}
+
 function getText(control)
 {
-	if (document.all)
+       var browser=navigator.appName;
+       if(browser=="Microsoft Internet Explorer")
+       {
+    	   return control.innerText;
+       }
+       else if(navigator.userAgent.indexOf('Safari')!=-1)
+       {
+    	   return control.innerText;
+       }
+       else
+       {
+    	   return control.textContent;
+       }    
+	/*if (document.all)
 	{
 	return control.innerText;
 	}
 	else 
 	{
 	return control.textContent;
-	}
+	}*/
 }
 
 

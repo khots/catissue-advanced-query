@@ -12,6 +12,7 @@
 %>
 <%@ page import="org.apache.struts.action.ActionMessages, edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.Constants"%>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/newReleaseMsg.js"></script>
 <script>
 function closePopup()
 {
@@ -102,29 +103,9 @@ function addOption(theSel, theText, theValue)
 <script type="JavaScript"></script>
 <script type="javascript" src="jss/advancequery/wz_tooltip.js"></script>
 <link href="css/advancequery/workflow.css" rel="stylesheet" type="text/css" />
-<!--
-
-
-function MM_preloadImages() { //v3.0
-  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
-    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
-    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
-}
-//-->
-
-<script type="javascript">
-<!--
-function MM_reloadPage(init) {  //reloads the window if Nav4 resized
-  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
-    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
-  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
-}
-MM_reloadPage(true);
-//-->
-</script>
 <link href="css/advancequery/inside.css" rel="stylesheet" type="text/css" media="screen">
 </head>
-<body  onunload='closeWaitPage()'>
+<body>
 
 <% 
 boolean mac = false;
@@ -157,10 +138,10 @@ int queryCount = 0;%>
         <td height="2" background="images/advancequery/bg_content_header.gif" ><table border="0" cellspacing="0" cellpadding="0">
           <tr>
             <td><img src="images/advancequery/t_myqueries.gif" alt="My Queries " width="99" height="26"></td>
-            <td class="grey_bold_big"> (5) </td>
+            <td class="grey_bold_big"> </td>
           </tr>
         </table></td>
-        <td align="right" background="images/advancequery/bg_content_header.gif" ><A href="javascript: closeModalWindow()"><img src="images/advancequery/close_window.gif" alt="Close Window" width="87" height="28" border="0"></a></td>
+        <td align="right" background="images/advancequery/bg_content_header.gif" ></td>
 	
       </tr>
 
@@ -176,24 +157,23 @@ int queryCount = 0;%>
           <tr>
             <td width="12" valign="middle">&nbsp;</td>
             <td width="18" align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle"></td>
-            <td valign="top"><a href="#" class="blacklink"><b>My Queries  (5)
-            </b></a></td>
+            <td valign="top"><a href="javascript:showNextReleaseMsg()" class="blacklink"><bean:message key="workflow.myqueries"/> 
+            </a></td>
           </tr>
           <tr>
             <td width="12" valign="middle">&nbsp;</td>
             <td align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle"></td>
-            <td valign="top"><a href="#" class="blacklink">Shared Queries  <b>(100)
-            </b></a></td>
+            <td valign="top"><a href="javascript:showNextReleaseMsg()" class="blacklink"><bean:message key="workflow.sharedqueries"/></a></td>
           </tr>
 
         </table></td>
         <td width="1" rowspan="2" valign="middle" class="td_bgcolor_grey" ></td>
-        <td align="left" valign="middle">&nbsp;<a href="#" class="bluelink">Delete</a>&nbsp;<span class="content_txt">|</span>&nbsp;<a href="javascript:closePopup()" class="bluelink">Add to Workflow</a></td>
+        <td align="left" valign="middle">&nbsp;<a href="javascript:showNextReleaseMsg()" class="bluelink">Delete</a>&nbsp;<span class="content_txt">|</span>&nbsp;<a href="javascript:closePopup()" class="bluelink"><bean:message key="workflow.add"/></a></td>
         <td align="right" valign="middle">
           <table border="0" cellspacing="0" cellpadding="4">
             <tr>
-              <td class="content_txt">Show :</td>
-              <td><select name="select" class="textfield_undefined">
+              <td class="content_txt"><bean:message key="workflow.show"/></td>
+              <td><select name="select" class="textfield_undefined" disabled="true">
                 <option>All</option>
                 <option>Get Count</option>
                 <option>Get Patient Data</option>
@@ -209,8 +189,8 @@ int queryCount = 0;%>
               <tr class="td_bgcolor_grey">
                 <td width="10" height="25" valign="middle" ><input type="checkbox" name="checkbox8" value="checkbox">                </td>
 
-                <td valign="middle" class="grid_header_text">Query Title</td>
-                <td width="111" valign="middle" class="grid_header_text">Query Type</td>
+                <td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
+                <td width="111" valign="middle" class="grid_header_text"><bean:message key="workflow.querytype"/></td>
                 </tr>
 					<div  id="searchDiv">
 							<c:set var="parameterizedQueryCollection" value="${saveQueryForm.parameterizedQueryCollection}" />
@@ -280,13 +260,12 @@ int queryCount = 0;%>
         <td height="30" align="left" valign="middle" class="tr_color_lgrey"></td>
         <td height="30" colspan="2" align="left" valign="middle" class="tr_color_lgrey"><table width="100%" border="0" cellspacing="0" cellpadding="0">
           <tr>
-            <td width="13">&nbsp;</td>
-            <td width="125"><span class="content_txt">Show Last: </span>
-                <select name="select2" class="textfield_undefined">
+            <td width="125" align="left" class="content_txt">Show Last:&nbsp;
+                <select name="select2" class="textfield_undefined" disabled="true">
                   <option>25</option>
               </select></td>
-            <td  align="center" class="content_txt">Displaying 1-25 of 140 </td>
-            <td align="right" valign="middle"><span class="orange_title">1</span><span class="content_txt"> | </span><a href="#" class="bluelink">2</a> <span class="content_txt">|</span> <a href="#" class="bluelink">3</a> <span class="content_txt">|</span> <a href="#" class="bluelink">4</a> <span class="content_txt">|</span> <a href="#" class="bluelink">5</a> <span class="content_txt">|</span> <a href="#" class="bluelink">&gt;&gt;</a><img src="images/advancequery/spacer.gif" width="5" height="5" align="absmiddle"></td>
+          <td  align="center" class="content_txt"></td> 
+            
             </tr>
         </table></td>
         </tr>
