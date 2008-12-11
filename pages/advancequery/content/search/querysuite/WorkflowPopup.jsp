@@ -130,152 +130,144 @@ int queryCount = 0;%>
 <% message = messageKey;    %>
 </html:messages>
 <html:form action="SaveWorkflow">
+
 <table width="100%" border="0" cellspacing="0" cellpadding="4">
+<tr>
+	<td>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="login_box_bg">
 			<tr >
-				<td colspan='5' ><html:errors /></td>
+				<td width="20%" align="left" valign="top" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_explore.gif" alt="Explore" width="64" height="26" valign="absmiddle"></td>
+				<td valign="top" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_myqueries.gif" alt="My Queries " width="99" height="26" valign="absmiddle"></td>
 			</tr>
-  <tr>
-    <td><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0"  class="login_box_bg">
-      <tr>
-        <td width="20%" align="left" valign="middle" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_explore.gif" alt="Explore" width="64" height="26"></td>
-        <td width="1" height="28" valign="middle" background="images/advancequery/bg_content_header.gif" class="td_bgcolor_grey" ></td>
-        <td height="2" background="images/advancequery/bg_content_header.gif" ><table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-            <td><img src="images/advancequery/t_myqueries.gif" alt="My Queries " width="99" height="26"></td>
-            <td class="grey_bold_big"> </td>
-          </tr>
-        </table></td>
-        <td align="right" background="images/advancequery/bg_content_header.gif" ></td>
-	
-      </tr>
-
-      <tr>
-        <td width="22%" rowspan="2" align="center" valign="top"><table width="99%" border="0" cellpadding="0" cellspacing="0">
-          <tr>
-            <td height="5" colspan="3" valign="middle"></td>
-          </tr>
-          <tr>
-            <td width="12" valign="middle">&nbsp;</td>
-            <td colspan="2" valign="bottom" class="blue_title">Queries</td>
-          </tr>
-          <tr>
-            <td width="12" valign="middle">&nbsp;</td>
-            <td width="18" align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle"></td>
-            <td valign="top"><a href="javascript:showNextReleaseMsg()" class="blacklink"><bean:message key="workflow.myqueries"/> 
-            </a></td>
-          </tr>
-          <tr>
-            <td width="12" valign="middle">&nbsp;</td>
-            <td align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle"></td>
-            <td valign="top"><a href="javascript:showNextReleaseMsg()" class="blacklink"><bean:message key="workflow.sharedqueries"/></a></td>
-          </tr>
-
-        </table></td>
-        <td width="1" rowspan="2" valign="middle" class="td_bgcolor_grey" ></td>
-        <td align="left" valign="middle">&nbsp;<a href="javascript:showNextReleaseMsg()" class="bluelink">Delete</a>&nbsp;<span class="content_txt">|</span>&nbsp;<a href="javascript:closePopup()" class="bluelink"><bean:message key="workflow.add"/></a></td>
-        <td align="right" valign="middle">
-          <table border="0" cellspacing="0" cellpadding="4">
-            <tr>
-              <td class="content_txt"><bean:message key="workflow.show"/></td>
-              <td><select name="select" class="textfield_undefined" disabled="true">
-                <option>All</option>
-                <option>Get Count</option>
-                <option>Get Patient Data</option>
-              </select></td>
-            </tr>
-          </table>
-    </td>
-      </tr>
-      <tr>
-        <td colspan="2" align="center" valign="top"><table width="99%" border="0" cellpadding="0" cellspacing="0" bgcolor="#EAEAEA">
-          <tr>
-            <td><table width="100%" border="0" cellpadding="2" cellspacing="1">
-              <tr class="td_bgcolor_grey">
-                <td width="10" height="25" valign="middle" ><input type="checkbox" name="checkbox8" value="checkbox">                </td>
-
-                <td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
-                <td width="111" valign="middle" class="grid_header_text"><bean:message key="workflow.querytype"/></td>
-                </tr>
-					<div  id="searchDiv">
-							<c:set var="parameterizedQueryCollection" value="${saveQueryForm.parameterizedQueryCollection}" />
-							<jsp:useBean id="parameterizedQueryCollection" type="java.util.Collection" />
-					
-							<c:forEach items="${parameterizedQueryCollection}" var="parameterizedQuery" varStatus="queries">
-							<jsp:useBean id="parameterizedQuery" type="edu.wustl.common.querysuite.queryobject.IParameterizedQuery" />
-							
-
-									<%String target = "executeQuery('"+parameterizedQuery.getId()+"')"; 
-									  String queryId=parameterizedQuery.getId()+"";
-									  String title = parameterizedQuery.getName();
-									  String newTitle = Utility.getQueryTitle(title);
-									  
-									  String tooltip = Utility.getTooltip(title);
-									  String function = "Tip('"+tooltip+"', WIDTH, 700)";
-									  queryCount++;
-									%>
-									<tr bgcolor="#FFFFFF">
-									<td height="25" valign="top">
-										<c:set var="checkboxControl">checkbox_<%=queryCount%></c:set>
-										<jsp:useBean id="checkboxControl" type="java.lang.String"/>
-
-									<html:checkbox property="chkbox" styleId="<%=checkboxControl%>"/>
-									
-									<td height="25" valign="top" class="content_txt" >
-										<%=newTitle%>
-									</td>
-									  <td height="25" valign="top" class="content_txt">Get Count</td>
-									 
-									 </td>
-									 	<c:set var="queryTitleControlId">queryTitleControl_<%=queryCount%></c:set>
-										<jsp:useBean id="queryTitleControlId" type="java.lang.String"/>
-										<html:hidden property="queryTitleControl" styleId="<%=queryTitleControlId%>"
-										value="<%=newTitle%>"/>
-
-										<c:set var="queryIdControl">queryIdControl_<%=queryCount%></c:set>
-										<jsp:useBean id="queryIdControl" type="java.lang.String"/>
-										<html:hidden property="queryIdControl" styleId="<%=queryIdControl%>"
-										value="<%=queryId%>"/>
-
-										
-										<c:set var="queryTypeControl">queryTypeControl_<%=queryCount%></c:set>
-										<jsp:useBean id="queryTypeControl" type="java.lang.String"/>
-										<html:hidden property="queryTypeControl" styleId="<%=queryTypeControl%>"
-										value="Get Count"/>
-
+			<tr>
+				<td valign="top" style="border-right:1px solid #DDDDDD; border-bottom:1px solid #DDDDDD;" height="300px">
+					<table width="99%" border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td height="5" colspan="3" valign="middle"></td>
+						</tr>
+						<tr>
+							<td width="12" valign="middle">&nbsp;</td>
+							<td colspan="2" valign="bottom" class="blue_title">Queries</td>
+						</tr>
+						<tr>
+							<td width="12" valign="middle">&nbsp;</td>
+							<td width="18" align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle"></td>
+							<td valign="top"><a href="javascript:showNextReleaseMsg()" class="blacklink"><bean:message key="workflow.myqueries"/> 
+						</a></td>
+						</tr>
+						<tr>
+							<td width="12" valign="middle">&nbsp;</td>
+							<td align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle"></td>
+							<td valign="top"><a href="javascript:showNextReleaseMsg()" class="blacklink"><bean:message key="workflow.sharedqueries"/></a></td>
+						</tr>
+					</table>		
+				</td>
+				<td style="border-bottom:1px solid #DDDDDD;" valign="top">
+					<table width="100%" border="0" cellspacing="0" cellpadding="4">
+						<tr>
+						<td align="left" valign="top">&nbsp;<a href="javascript:showNextReleaseMsg()" class="bluelink">Delete</a>&nbsp;<span class="content_txt">|</span>&nbsp;<a href="javascript:closePopup()" class="bluelink"><bean:message key="workflow.add"/></a></td>
+						<td align="right">
+							<table border="0" cellspacing="0" cellpadding="4">
+								<tr>
+								  <td class="content_txt"><bean:message key="workflow.show"/></td>
+								  <td><select name="select" class="textfield_undefined" disabled="true">
+									<option>All</option>
+									<option>Get Count</option>
+									<option>Get Patient Data</option>
+								  </select></td>
 								</tr>
-							</c:forEach>
-					</div>
+						  </table>
+						</td>
+						</tr>
+					</table>
 
-                </tr>
-            </table></td>
-          </tr>
-        </table></td>
-      </tr>
-      <tr>
-        <td width="20%" align="center" valign="top">&nbsp;</td>
-        <td width="1" valign="middle" class="td_bgcolor_grey" ></td>
-        <td height="5" colspan="2" ></td>
-      </tr>
-      <tr>
-        <td height="1" colspan="4" align="right" valign="middle" class="td_bgcolor_grey"></td>
-      </tr>
-      <tr>
-        <td height="30" align="left" valign="middle" class="tr_color_lgrey">&nbsp;</td>
-        <td height="30" align="left" valign="middle" class="tr_color_lgrey"></td>
-        <td height="30" colspan="2" align="left" valign="middle" class="tr_color_lgrey"><table width="100%" border="0" cellspacing="0" cellpadding="0">
-          <tr>
-            <td width="125" align="left" class="content_txt">Show Last:&nbsp;
-                <select name="select2" class="textfield_undefined" disabled="true">
-                  <option>25</option>
-              </select></td>
-          <td  align="center" class="content_txt"></td> 
-            
-            </tr>
-        </table></td>
-        </tr>
-    </table></td>
-  </tr>
+					<table width="100%" border="0" cellspacing="0" cellpadding="4">
+						<tr>
+							<td>
+								<table width="100%" border="0" cellpadding="2" cellspacing="1" bgcolor="#EAEAEA">
+									  <tr class="td_bgcolor_grey">
+										<td width="10" height="25" valign="middle" ><input type="checkbox" name="checkbox8" value="checkbox">                </td>
+
+										<td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
+										<td width="111" valign="middle" class="grid_header_text"><bean:message key="workflow.querytype"/></td>
+										</tr>
+											<div  id="searchDiv">
+													<c:set var="parameterizedQueryCollection" value="${saveQueryForm.parameterizedQueryCollection}" />
+													<jsp:useBean id="parameterizedQueryCollection" type="java.util.Collection" />
+											
+													<c:forEach items="${parameterizedQueryCollection}" var="parameterizedQuery" varStatus="queries">
+													<jsp:useBean id="parameterizedQuery" type="edu.wustl.common.querysuite.queryobject.IParameterizedQuery" />
+													
+
+															<%String target = "executeQuery('"+parameterizedQuery.getId()+"')"; 
+															  String queryId=parameterizedQuery.getId()+"";
+															  String title = parameterizedQuery.getName();
+															  String newTitle = Utility.getQueryTitle(title);
+															  
+															  String tooltip = Utility.getTooltip(title);
+															  String function = "Tip('"+tooltip+"', WIDTH, 700)";
+															  queryCount++;
+															%>
+															<tr bgcolor="#FFFFFF">
+															<td height="25" valign="top">
+																<c:set var="checkboxControl">checkbox_<%=queryCount%></c:set>
+																<jsp:useBean id="checkboxControl" type="java.lang.String"/>
+
+															<html:checkbox property="chkbox" styleId="<%=checkboxControl%>"/>
+															
+															<td height="25" valign="top" class="content_txt" >
+																<%=newTitle%>
+															</td>
+															  <td height="25" valign="top" class="content_txt">Get Count</td>
+															 
+															 </td>
+																<c:set var="queryTitleControlId">queryTitleControl_<%=queryCount%></c:set>
+																<jsp:useBean id="queryTitleControlId" type="java.lang.String"/>
+																<html:hidden property="queryTitleControl" styleId="<%=queryTitleControlId%>"
+																value="<%=newTitle%>"/>
+
+																<c:set var="queryIdControl">queryIdControl_<%=queryCount%></c:set>
+																<jsp:useBean id="queryIdControl" type="java.lang.String"/>
+																<html:hidden property="queryIdControl" styleId="<%=queryIdControl%>"
+																value="<%=queryId%>"/>
+
+																
+																<c:set var="queryTypeControl">queryTypeControl_<%=queryCount%></c:set>
+																<jsp:useBean id="queryTypeControl" type="java.lang.String"/>
+																<html:hidden property="queryTypeControl" styleId="<%=queryTypeControl%>"
+																value="Get Count"/>
+
+														</tr>
+													</c:forEach>
+											</div>
+
+										</tr>
+									</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+			<td class="tr_color_lgrey" height="25px">&nbsp;</td>
+			<td class="tr_color_lgrey">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			  <tr>
+				<td width="125" align="left" class="content_txt">Show Last:&nbsp;
+					<select name="select2" class="textfield_undefined" disabled="true">
+					  <option>25</option>
+				  </select></td>
+			  <td  align="center" class="content_txt"></td> 
+				
+				</tr>
+			</table>
+			</td>
+			</tr>
+		</table>
+	</td>
+</tr>
 </table>
+
 </html:form>
 </body>
 

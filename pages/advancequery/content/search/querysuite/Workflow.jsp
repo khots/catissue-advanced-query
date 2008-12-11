@@ -25,7 +25,7 @@ function showPopUp(pageOf)
 	//window.open("QueryAction.do?pageOf="+pageOf+'&queryId=queryId&queryTitle=queryTitle&queryType=queryType','','height=365,width=530,center=1,scrollbars=1,resizable=0,modal=yes');
 	//pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'SearchPermissibleValues.do?componentId='+componentId,'Search Permissible Values for \"'+entityName+'\"', 'width=930px,height=510px,center=1,resize=0,scrolling=1')
 	var url='QueryAction.do?pageOf='+pageOf+'&queryId=queryId&queryTitle=queryTitle&queryType=queryType';
-	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select queries', 'width=930px,height=510px,center=1,resize=0,scrolling=1');
+	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select queries', 'width=930px,height=400px,center=1,resize=0,scrolling=1');
 }
 
 function updateUI()
@@ -211,7 +211,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 	<td>
 	<table  width="100%" border="0" cellspacing="0" cellpadding="0">
 		<tr>
-			<td width="160px" class="tr_color_lgrey" style="border-right:1px solid #dddddd;" valign="top">
+			<td width="160px" height="240px" class="tr_color_lgrey" style="border-right:1px solid #dddddd;" valign="top">
 				<table width="100%" border="0" cellpadding="0" cellspacing="0">
 					<tr>
 						<td height="5" colspan="3" valign="middle">
