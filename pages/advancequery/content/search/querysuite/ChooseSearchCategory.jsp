@@ -88,22 +88,22 @@ else
 					
 					<tr bordercolorlight="#000000" >
 						<td  height="1%">&nbsp;</td>
-						<td width="75%" valign="top" ><html:text property="textField" onkeydown="setFocusOnSearchButton(event)"/></td>
+						<td width="75%" valign="top" ><html:text property="textField" onkeydown="setFocusOnSearchButton(event)" size="30"/></td>
 						<td width="25%" valign="top" >
 					
-							<input type="button"  value="      Go       " name="searchButton" id="searchButton" onclick="retriveSearchedEntities('<%= SearchCategory %>','<%=formName%>','<%=currentPage%>');"/>
+							<img src="images/advancequery/b_go_blue.gif" width="44"  hspace="3" onclick="retriveSearchedEntities('<%= SearchCategory %>','<%=formName%>','<%=currentPage%>');"/>
 					    </td>
 					</tr>
 					<tr  height="1%">
 					    <td  height="1%">&nbsp;</td>
-						<td  height="1%" align="left" valign="top" colspan="3"><font face="Arial" size="2"><bean:message key="query.chooseCategoryLable"/></font></td>
+						<td  height="1%" align="left" valign="top" colspan="3" class="small_txt_grey"><bean:message key="query.chooseCategoryLable"/></font></td>
 					</tr>
-					<tr id="collapsableHeader" valign="top" class="row" width="97%">
+					<tr id="collapsableHeader" valign="top" class="tr_color_lgrey" width="97%">
 						<td valign="top"  height="1%">&nbsp;</td>
-						<td id="advancedSearchHeaderTd" height="1%" valign="top" bgcolor="#EAEAEA" style="border-left:solid 1px;border-top:solid 1px;border-bottom:solid 1px;bordercolorlight:#EAEAEA">
-							<b><font face="Arial" size="2"><bean:message key="query.advancedSearchHeader"/></font></b>									
+						<td id="advancedSearchHeaderTd" height="1%" valign="top" bgcolor="#EAEAEA" style="border-left:solid #cccccc 1px #cccccc;border-top:solid 1px #cccccc ;border-bottom:solid 1px #cccccc;bordercolorlight:#EAEAEA">
+							<b><bean:message key="query.advancedSearchHeader"/></font></b>									
 						</td>
-						<th id="imageContainer" valign="center" align="right" height="1%" bgcolor="#EAEAEA" style="border-top:solid 1px;border-bottom:solid 1px;border-right:solid 1px;bordercolorlight:#EAEAEA;">
+						<th id="imageContainer" valign="center" align="right" height="1%" bgcolor="#EAEAEA" style="border-top:solid 1px #cccccc;border-bottom:solid 1px #cccccc;border-right:solid 1px #cccccc;bordercolorlight:#EAEAEA;">
 							<a id="image" onClick="expand()" style="display:block"> <img src="images/advancequery/nolines_plus.gif" hspace="3" vspace="3"/> </a>
 						</th>
 						<td  height="1%">&nbsp;</td>
@@ -150,7 +150,7 @@ else
 					</tr>
 					<tr valign="top" class="row" width="100" height="400">
 						<td width="100" height="400">&nbsp;</td>
-						<td height="400" width="100" colspan="2" id='resultSetTd' class="tdWithoutTopBorder">
+						<td height="400" width="100" colspan="2" id='resultSetTd' class="tdWithoutTopBorder" bordercolor="#cccccc">
 							<div id="resultSet"  style="border : padding : 4px; width : 230px; height : 550px; overflow : auto; "></div>
 						</td>
 						<td >&nbsp;</td>
