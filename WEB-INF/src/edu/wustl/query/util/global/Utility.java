@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
@@ -538,5 +539,25 @@ public class Utility extends edu.wustl.common.util.Utility
 			return sessionData;
 		}
 		return sessionData;
+	}
+    
+    /**
+     * Method checks if attribute is not viewable in results view of Query.
+     * @param attribute
+     * @return isNotViewable
+     */
+    public static boolean isNotViewable(AttributeInterface attribute)
+	{
+		boolean isNotViewable = false;
+		Collection<TaggedValueInterface> taggedValueCollection = attribute.getTaggedValueCollection();
+		for(TaggedValueInterface tagValue : taggedValueCollection)
+		{
+			if(tagValue.getKey().equals(Constants.TAGGED_VALUE_NOT_VIEWABLE))
+			{
+				isNotViewable = true;
+				break;
+			}
+		}
+		return isNotViewable;
 	}
 }
