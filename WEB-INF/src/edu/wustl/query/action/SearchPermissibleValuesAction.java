@@ -16,6 +16,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.ibm.icu.util.StringTokenizer;
+
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -46,6 +48,8 @@ public class SearchPermissibleValuesAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		final String targetVocab=request.getParameter("selectedCheckBox");
+		String searchTerm=request.getParameter("searchTerm");
+		String targetVocabsForSearchTerm=request.getParameter("targetVocabsForSearchTerm");
 		//get the id of the component on which user click to search for PVs
 		String componentId=request.getParameter("componentId");
 		if(componentId==null)
@@ -61,14 +65,51 @@ public class SearchPermissibleValuesAction extends Action {
 		
 		if(targetVocab!=null)
 		{
-			// Ajax Request handler for Get Mapping data for source to target vocabulries
-			String html=getMappedVacbulariesDataAsHTML(targetVocab,attribute,entity);
+			// Ajax Request handler for Getting Mapping data for source to target vocabulries
+			String html=getMappedVocabDataAsHTML(targetVocab,attribute,entity);
 			response.getWriter().write(html);
 			return null;
+		}
+		if(searchTerm!=null && targetVocabsForSearchTerm!=null)
+		{
+			// Ajax Request handler for Getting search term Result data for source to target vocabulries
+			String html=getSearchedVocabDataAsHTML(searchTerm,targetVocabsForSearchTerm);
+			response.getWriter().write(html);
+			return  null;
 		}
 		
 		generatePermValueHTMLForMED(attribute,entity,componentId,request);
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
+	}
+	private String getSearchedVocabDataAsHTML(String searchTerm,String targetVocabsForSearchTerm) 
+	{
+		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
+		StringBuffer html=new StringBuffer();
+		StringTokenizer token=new StringTokenizer(targetVocabsForSearchTerm,"@");
+		while(token.hasMoreTokens())
+		{
+			String vocabFullName[]=token.nextToken().split(":");
+			String vocabName=vocabFullName[0];
+			String vocabVersion=vocabFullName[1]; 
+			html.append(bizLogic.getRootVocabularyHTMLForSearch("srh_"+vocabName, vocabVersion));
+			List<IConcept> conceptList=bizLogic.searchConcept(searchTerm, vocabName, vocabVersion);
+			if(conceptList!=null)
+			{
+				for(int i=0;i<conceptList.size();i++)
+				{
+					IConcept concept=conceptList.get(i);
+					String checkboxId=vocabName+vocabVersion+":"+concept.getCode();//TODO need to change into MED concept code when API will be completed
+					html.append(bizLogic.getMappedVocabularyPVChildAsHTML("srh_"+vocabName,vocabVersion, concept, checkboxId));
+				}
+			}
+			else
+			{
+				html.append(bizLogic.getNoMappingFoundHTML());
+			}
+			
+			html.append(bizLogic.getEndHTML());
+		}
+		return html.toString();
 	}
 	private void generatePermValueHTMLForMED(AttributeInterface attribute, EntityInterface entity, String componentId,HttpServletRequest request) {
 		
@@ -81,8 +122,8 @@ public class SearchPermissibleValuesAction extends Action {
 		for(int i=0;i<premValueList.size();i++)
 		{
 			IConcept concept=(IConcept)premValueList.get(i);
-			String id=vocabName+":"+concept.getCode();
-			html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, concept, id));
+			String id=vocabName+vocabVer+":"+concept.getCode();
+			html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName,vocabVer, concept, id));
 		}
 		html.append(bizLogic.getEndHTML());
 		request.getSession().setAttribute(Constants.MED_PV_HTML, html.toString());
@@ -94,7 +135,7 @@ public class SearchPermissibleValuesAction extends Action {
 	}
 	
 	
-	private String getMappedVacbulariesDataAsHTML(String targetVocab,AttributeInterface attribute,EntityInterface entity) 
+	private String getMappedVocabDataAsHTML(String targetVocab,AttributeInterface attribute,EntityInterface entity) 
 	{
 		
 		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
@@ -110,7 +151,7 @@ public class SearchPermissibleValuesAction extends Action {
 				String vocabName=targetVocabName.toUpperCase();
 				html.append(bizLogic.getRootVocabularyNodeHTML(vocabName,targetVocabVer));
 				Map<String,List<IConcept>> vocabMappings=bizLogic.getMappedConcepts(attribute,targetVocabName,targetVocabVer, entity);
-				getMappingDataAsHTML(html, vocabName, vocabMappings);
+				getMappingDataAsHTML(html, vocabName,targetVocabVer, vocabMappings);
 				
 			}
 			
@@ -118,7 +159,7 @@ public class SearchPermissibleValuesAction extends Action {
 		return html.toString();
 	
 	}
-	private void getMappingDataAsHTML(StringBuffer html, String vocabName,
+	private void getMappingDataAsHTML(StringBuffer html, String vocabName,String vocabversoin,
 			Map<String, List<IConcept>> vocabMappings) {
 		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		if(vocabMappings!=null)
@@ -132,9 +173,9 @@ public class SearchPermissibleValuesAction extends Action {
 				ListIterator<IConcept> mappingListItr = mappingList.listIterator();
 				while(mappingListItr.hasNext())
 				{
-					IConcept permValue = (IConcept)mappingListItr.next();
-					String checkboxId=vocabName+":"+conceptCode;//we need to use the MED Concept code with mapped values
-					html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, permValue,checkboxId));
+					IConcept concept = (IConcept)mappingListItr.next();
+					String checkboxId=vocabName+vocabversoin+":"+conceptCode;//we need to use the MED Concept code with mapped values
+					html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName,vocabversoin, concept,checkboxId));
 					
 				}
 			}
