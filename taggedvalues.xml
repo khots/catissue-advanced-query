@@ -94,7 +94,7 @@
 <entity>
 	<name>MedicalRecordNumber</name>
 	<attribute>
-		<name>Type</name>
+		<name>type</name>
 		<tag>
 			<tag-name>NOT_SEARCHABLE</tag-name>
 			<tag-value>NOT_SEARCHABLE</tag-value>
