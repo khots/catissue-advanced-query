@@ -102,18 +102,38 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 	public String getNoMappingFoundHTML() {
 		return "<tr><td>&nbsp;</td><td class='black_ar_tt'>"+Constants.NO_RESULT+"<td></tr>";
 	}
-	public String getMappedVocabularyPVChildAsHTML(String vocabName,IConcept concept, String checkboxId) {
+	public String getMappedVocabularyPVChildAsHTML(String vocabName,String vocabversoin, IConcept concept, String checkboxId) {
 		return "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class='black_ar_tt'> \n" +
-				"<input type='checkbox' name='"+vocabName+"' id='"+checkboxId+"' value='"+concept.getCode()+":"+concept.getDescription()+"' onclick=\"getCheckedBoxId('"+checkboxId+"');\">"+concept.getCode()+":"+concept.getDescription()+"\n" +
+				"<input type='checkbox' name='"+vocabName+vocabversoin+"' id='"+checkboxId+"' value='"+concept.getCode()+":"+concept.getDescription()+"' onclick=\"getCheckedBoxId('"+checkboxId+"');\">&nbsp;&nbsp;"+concept.getCode()+":"+concept.getDescription()+"\n" +
 				"</input><td></tr>";
 	}
 	public String getRootVocabularyNodeHTML(String vocabName,String vocabVer) {
-		
-		return "<table><tr><td colspan='2' class='grid_header_text'><a id=\"image_"+vocabName+"\" \n" +
-				"onClick=\"showHide('inner_div_"+vocabName+"','image_"+vocabName+"');\" > \n" +
-						"<img src=\"images/advancequery/nolines_minus.gif\"/ align='absmiddle'> </a><input type='checkbox' name='"+vocabName+"' id='"+vocabName+"' value='"+vocabName+"' onclick=\"setStatusOfAllCheckBox('"+vocabName+"');\">"+vocabName+" "+vocabVer+"\n" +
+		String style="display:none";
+		String imgpath= "src=\"images/advancequery/nolines_plus.gif\"/";
+		String srcvocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
+		String srcvocabVer=VocabUtil.getVocabProperties().getProperty("source.vocab.version");
+		if(srcvocabName.equalsIgnoreCase(vocabName) && srcvocabVer.equalsIgnoreCase(vocabVer))
+		{
+			//to show MED vocabulary tree or data expanded mode 
+			style="display:";
+			imgpath="src=\"images/advancequery/nolines_minus.gif\"/";
+		}
+		return "<table><tr><td colspan='2' class='grid_header_text'><a id=\"image_"+vocabName+vocabVer+"\"\n" +
+				"onClick=\"showHide('inner_div_"+vocabName+vocabVer+"','image_"+vocabName+vocabVer+"');\">\n" +
+						"<img "+imgpath+" align='absmiddle'/></a><input type='checkbox' name='"+vocabName+vocabVer+"' id='root_"+vocabName+vocabVer+"' value='"+vocabName+"' onclick=\"setStatusOfAllCheckBox(this.id);\">&nbsp;&nbsp;"+vocabName+vocabVer+"\n" +
 								"</input></td></tr>" +
-								"<tr><td><div id='inner_div_"+vocabName+"'  ><table>";
+								"<tr><td><div id='inner_div_"+vocabName+vocabVer+"' style='"+style+"'><table>";
+	}
+	public String getRootVocabularyHTMLForSearch(String vocabName,String vocabVer) {
+		
+		String style="display:none";
+		String imgpath= "src=\"images/advancequery/nolines_plus.gif\"/";
+		
+		return "<table><tr><td colspan='2' class='grid_header_text'><a id=\"image_"+vocabName+vocabVer+"\"\n" +
+				"onClick=\"showHide('inner_div_"+vocabName+vocabVer+"','image_"+vocabName+vocabVer+"');\">\n" +
+						"<img "+imgpath+"align='absmiddle'></a><input type='checkbox' name='"+vocabName+vocabVer+"' id='root_"+vocabName+vocabVer+"' value='"+vocabName+"' onclick=\"setStatusOfAllCheckBox(this.id);\">&nbsp;&nbsp;"+vocabName.replace("srh_","")+vocabVer.replace("srh_","")+"\n" +
+								"</input></td></tr>" +
+								"<tr><td><div id='inner_div_"+vocabName+vocabVer+"' style='"+style+"'><table>";
 	}
 	
 	public String getEndHTML() {
