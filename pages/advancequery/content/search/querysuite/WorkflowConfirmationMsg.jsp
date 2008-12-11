@@ -17,9 +17,11 @@
 	      </tr>
 		  <tr>
 			<td align="left" valign="top" class="content_txt">
+				<br/>
 				<bean:message key="workflow.save.success"/>
 				<br/>
 				<bean:message key="message.helpDeskNumber"/>
+				<br/>
 			</td>
 		  </tr>
 	    </table>
