@@ -26,6 +26,7 @@
 	selectedPvsCheckedBox=0;
 	numberOfPvs=0;
 	vocabIndex=0;
+	set_mode="Mapping";
 	
 	/*to close the model widow*/
 	function cancelWindow()
@@ -55,13 +56,9 @@
 					document.getElementById('selectedPermValues_Div_'+vocabName[0]).style.display = '';;
 					}
 					
-					//Inserting 0nd cell as td
-					var cell0 = row.insertCell(0);
-					cell0.className="black_ar_tt"; 
-					cell0.innerHTML= '&nbsp';
 					//inserting cell as checkbox
-					var cell1 = row.insertCell(1);
-					cell1.className="black_ar_tt";
+					var cell1 = row.insertCell(0);
+					cell1.className="black_ar_td";
 					var chkBox = document.createElement('input');
 					chkBox.setAttribute('type', 'checkbox');
 					chkBox.setAttribute('name', 'checkboxName_'+vocabName[0]);
@@ -71,8 +68,8 @@
 					cell1.appendChild(chkBox);
 
 					//Inserting 2nd cell as textBox
-					var cell2 = row.insertCell(2);
-					cell2.className="black_ar_tt"; 
+					var cell2 = row.insertCell(1);
+					cell2.className="black_ar_td"; 
 					cell2.innerHTML= document.getElementById(selectedPvsCheckedBoxIdArray[j]).value;
 						
 					row.myRow = new rowObj(chkBox);
@@ -211,7 +208,10 @@ Array.prototype.inArray = function (value,caseSensitive)
    //This method will be called when user clicks on the vocabulary check box
    function refreshWindow(vocabCheckBoxId,vocabName,vocabVer)
    {
-	
+		if(set_mode=="Mapping")
+		{
+			document.getElementById("divForMappingMode").style.display = '';
+			document.getElementById("divForSearchingMode").style.display = 'none';
 		var request = newXMLHTTPReq(); 
 		var selectedCheckBox="";
 		if(request == null)
@@ -225,21 +225,24 @@ Array.prototype.inArray = function (value,caseSensitive)
 			
 			if(document.getElementById(vocabCheckBoxId).checked)
 			{
-			
-				 if(document.getElementById(selectedCheckedBoxVocabDivID).style.display == 'none')
+				var innerData=document.getElementById(selectedCheckedBoxVocabDivID).innerHTML;
+				 if(document.getElementById(selectedCheckedBoxVocabDivID).style.display == 'none' && innerData.length==0)
 				 {
 					 document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
-				 }
-				 else
-				 {
-					// send request only first time when user click on the check box for other click  just hide and show the div 
+					 // send request only first time when user click on the check box for other click  just hide and show the div 
 					var param = "selectedCheckBox"+"="+vocabName+":"+vocabVer;
 					var actionUrl="SearchPermissibleValues.do";
 					request.onreadystatechange=function(){setSelectedVocabDataInDIV(request,selectedCheckedBoxVocabDivID)};
 					request.open("POST",actionUrl,true);
 					request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 					request.send(param);
+					 
 				 }
+				 else if(innerData.length>0)
+				 {
+				  document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
+				 }
+				 
 			}
 			else if (! document.getElementById(vocabCheckBoxId).checked)
 			{
@@ -247,7 +250,7 @@ Array.prototype.inArray = function (value,caseSensitive)
 				 document.getElementById(selectedCheckedBoxVocabDivID).style.display = 'none';
 			}
 		
-		
+		}
 	
    }
 	 /* used to set the data in the div based the which checked box clicked */
@@ -259,12 +262,23 @@ Array.prototype.inArray = function (value,caseSensitive)
 			if(request.status == 200)
 			{	
 			var responseTextValue =  request.responseText;	
-		//	var selectedCheckedBoxVocabDivID=selectedCheckedBoxVocabValue.substring(0,selectedCheckedBoxVocabValue.indexOf(" "));
+		
 			document.getElementById(selectedCheckedBoxVocabDivID).innerHTML=responseTextValue;
 			}
 		}
 	 };
- 
+	function refreshMEDDiv(medCheckBoxId)
+	{
+		
+		if (document.getElementById(medCheckBoxId).checked==true)
+		{
+			document.getElementById("medDivId").style.display = '';
+		} 
+		else 
+		{
+			document.getElementById("medDivId").style.display = 'none';
+		}
+	}
 	 /*store all the ids of selected checkbox in the array*/
 	 function getCheckedBoxId(checkedBoxId)
 	 {
@@ -281,10 +295,12 @@ Array.prototype.inArray = function (value,caseSensitive)
 		
 		if(document.getElementById(rootCheckedBoxId).checked)
 		{
-				checkallAndAddToArray(rootCheckedBoxId)
+			rootCheckedBoxId=rootCheckedBoxId.replace("root_","");
+			checkallAndAddToArray(rootCheckedBoxId)
 		}
 		else
 		{
+				rootCheckedBoxId=rootCheckedBoxId.replace("root_","");
 				uncheckAllAndDeleteFromArray(rootCheckedBoxId)
 		}
 	  }
@@ -348,33 +364,6 @@ Array.prototype.inArray = function (value,caseSensitive)
 					}
 				}
 	}
-	/** method to show hide div*/
-	function showHide(elementid,imageId)
-	{
-		switchObj = document.getElementById(imageId);
-		if (document.getElementById(elementid).style.display == 'none')
-		{
-			document.getElementById(elementid).style.display = '';
-			switchObj.innerHTML = '<img src="images/advancequery/nolines_minus.gif"/>';
-		} else {
-			document.getElementById(elementid).style.display = 'none';
-			switchObj.innerHTML = '<img src="images/advancequery/nolines_plus.gif"/>';
-			
-		}
-	}
-	
-	function refreshMEDDiv(medCheckBoxId)
-	{
-		
-		if (document.getElementById(medCheckBoxId).checked==true)
-		{
-			document.getElementById("medDivId").style.display = '';
-		} 
-		else 
-		{
-			document.getElementById("medDivId").style.display = 'none';
-		}
-	}
 	function checkedUncheckedAllPvs(vocabName)
 	{
 		if(document.getElementById("pvSelectedCB_"+vocabName).checked)
@@ -386,75 +375,162 @@ Array.prototype.inArray = function (value,caseSensitive)
 			uncheckAllSelectedPVs('checkboxName_'+vocabName);
 		}
 	}
+	
+	/***************************************************** Searching  Term Methods*******************************/
+	//searched t
+	function serachForTermInVocab()
+	{
+		 label=document.getElementById("searhLabel");
+		 label.innerHTML="  Searching .... Please Wait";
+		var targetVocabsForSearchTerm="";
+		void(d=document);
+		void(vocabCheckboxes=d.getElementsByName("vocabNameAndVersionCheckbox"));
+		for(i=0;i<vocabCheckboxes.length;i++)
+		{
+			if(vocabCheckboxes[i].checked==1)
+			{
+					targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocabCheckboxes[i].value+"@"
+			}
+		}
+		var searchTerm=document.getElementById("searchtextfield").value;
+			
+		var request = newXMLHTTPReq(); 
+		if(request == null)
+		{
+			alert ("Your browser does not support AJAX!");
+			return;
+		}
+		// send request only first time when user click on the check box for other click  just hide and show the div 
+		var param = "searchTerm="+searchTerm+"&targetVocabsForSearchTerm="+targetVocabsForSearchTerm;
+		var actionUrl="SearchPermissibleValues.do";
+		request.onreadystatechange=function(){getSearchTermResult(request)};
+		request.open("POST",actionUrl,true);
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		request.send(param);
+		
+	}
+	
+	 function getSearchTermResult(request)
+	 {
+		
+		if(request.readyState == 4)  
+		{	  		
+			if(request.status == 200)
+			{	
+			var responseTextValue =  request.responseText;
+			set_mode="Searching"
+			document.getElementById("divForMappingMode").style.display = 'none';
+			document.getElementById("divForSearchingMode").style.display = '';
+			document.getElementById("divForSearchingMode").innerHTML=responseTextValue;
+			label.innerHTML="";
+			}
+		}
+	 };
+	 function restoreDefault()
+	 {
+		set_mode="Mapping";
+		document.getElementById("divForMappingMode").style.display = '';
+		document.getElementById("divForSearchingMode").style.display = 'none';
+	 }
+	 /******************************* Common Methods *******************************/
+	 /** method to show hide div*/
+	function showHide(elementid,imageId)
+	{
+		switchObj = document.getElementById(imageId);
+		if (document.getElementById(elementid).style.display == 'none')
+		{
+			document.getElementById(elementid).style.display = '';
+			switchObj.innerHTML = '<img src="images/advancequery/nolines_minus.gif" align="absmiddle"/>';
+		} else {
+			document.getElementById(elementid).style.display = 'none';
+				switchObj.innerHTML = '<img src="images/advancequery/nolines_plus.gif" align="absmiddle"/>';
+			
+		}
+	}
 	</script>
 </head>
 
 <body>
 <link rel='STYLESHEET' type='text/css' href='../common/style.css'>
-<table width="100%"  border="0" cellspacing="0" cellpadding="4"><tr><td>
-<table width="100%" border="0" align="center" cellpadding="2" cellspacing="0"  class="login_box_bg">
+<table width="100%"  border="0" cellspacing="0" cellpadding="7"><tr><td>
+<table width="100%" border="0" align="center" cellpadding="2" cellspacing="0">
 	<tr>
-		<td colspan="3" class="content_txt_bold" valign="middle">Select Vocabulary:&nbsp;&nbsp;
+		<td colspan="3" >
+		<table>
+			<tr>
+			<td class="content_txt_bold">Select Vocabulary: &nbsp;&nbsp;</td>
 		<%
 			List<IVocabulary> vocabs1 = (ArrayList)request.getSession().getAttribute("Vocabulries");
 			String srcVocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
 			String srcVocabVersion = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
 			for(int i=0;i<vocabs1.size();i++)
 			{
-				
+				String value=vocabs1.get(i).getName() +":"+ vocabs1.get(i).getVersion();
 				String vocabNameWithVersion=vocabs1.get(i).getName() + vocabs1.get(i).getVersion();
 				if(vocabs1.get(i).getName().equalsIgnoreCase(srcVocabName) && vocabs1.get(i).getVersion().equalsIgnoreCase(srcVocabVersion))
 				{
+				
 				%>
-	  	<input  type="checkbox" checked="true"  id="<%=vocabNameWithVersion%>" value="<%=vocabNameWithVersion%>"  onclick= "refreshMEDDiv(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"><span class="content_txt" valign="middle">&nbsp;<%=vocabNameWithVersion.toUpperCase()%> &nbsp;&nbsp;&nbsp;&nbsp;</span>
+	  	<td><input  type="checkbox" name="vocabNameAndVersionCheckbox" checked="true"  id="<%=vocabNameWithVersion%>" value="<%=value%>"  onclick= "refreshMEDDiv(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"></td><td class="content_txt">&nbsp;<%=vocabNameWithVersion.toUpperCase()%> &nbsp;&nbsp;&nbsp;&nbsp;</td>
 		<%}else{%>
-		<input type="checkbox"  id="<%=vocabNameWithVersion%>" value="<%=vocabNameWithVersion%>" onclick= "refreshWindow(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"><font class="content_txt" valign="middle">&nbsp;<%=vocabNameWithVersion.toUpperCase()%>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+		<td><input type="checkbox"  name="vocabNameAndVersionCheckbox" id="<%=vocabNameWithVersion%>" value="<%=value%>" onclick= "refreshWindow(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"></td><td class="content_txt">&nbsp;<%=vocabNameWithVersion.toUpperCase()%>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 		<%}
 		}%>
+		</tr>
+		</table>
 		</td>
-	</tr>
-	<tr>
-		<td colspan="3" ></td>
 	</tr>
 	<tr>
 	    <td height="35" valign="top">
 			<table height="30" border="0" cellpadding="0" cellspacing="0">
-		     <tr><td><label><input name="textfield" type="text" class="texttype" id="textfield" value="Black"></label></td>
+		     <tr><td><label><input name="searchtextfield" type="text" class="texttype" id="searchtextfield" value=""></label></td>
 				<td>&nbsp;</td>
-				<td><label><img src="images/advancequery/b_go.gif" alt="Go" width="44" height="23"></label></td>
-			</tr>
+				<td><a href='#' onclick='serachForTermInVocab();'><img src="images/advancequery/b_go.gif" border='0' alt="Go" width="44" height="23"></a></td>
+				<td><a align="center" href='#' onclick='restoreDefault();' class='cancel' style="padding-left:10px" >Restore</a></td>
+				<td id="searhLabel" class="content_txt" align="right" style="padding-left:10px">&nbsp;</td> 
+				</tr>
 			</table>
 		</td>
+		
 	</tr>
   </tr>
 	<tr>
-		<td colspan="3" >
-		<table width="98%" border="0" cellspacing="0" cellpadding="0" class="td_greydottedline_horizontal"> 
-          <tr>
-				<td valign="top" >&nbsp;</td>
-          </tr>
-         </table>
+		<td colspan="3" class="td_greydottedline_horizontal">
+		
 	     </td>
 	</tr>
 	<tr>
-		<td >
+		<td width="400px">
 	
-		<table style="width: 400px; height: 300px;border :1px solid Silver;">
+		<table cellpadding="0" cellspacing="0" width="400px" style="height: 300px; border:1px solid Silver;">
 		<tr>
-			<td class="grid_header_text" height="25" bgcolor="#EAEAEA">Search Result </td> 
+			<td class="grid_header_text" height="25" bgcolor="#EAEAEA" style="padding-left:7px;">Search Result</td> 
 		</tr>
 		<tr>
 			<td bgcolor="#FFFFFF">
-			<table bgcolor="#FFFFFF">
+			<table cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" border="0">
 			<tr>
-				<td width="48%" height="20" valign="middle" bgcolor="#FFFFFF" class="grid_header_text" >List View </td> 
-				<td width="48%" height="20" valign="middle" bgcolor="#FFFFFF" class="grid_header_text" >Tree View </td> 
+				<td width="48%" height="20" valign="middle" bgcolor="#FFFFFF" class="grid_header_text" style="padding-left:7px;">List View </td> 
+				<td width="48%" height="20" valign="middle" bgcolor="#FFFFFF" class="grid_header_text" style="padding-left:7px;">Tree View </td> 
 			</tr>
 			<tr>
-				<td valign="top">
-					<div style="width: 260px; height: 300px;border :1px solid Silver; overflow:auto;"  >
+				<td valign="top" style="padding:0 0 7px 7px;">
+					<div  id="divForMappingMode" style="width: 260px; height: 300px; border:1px solid Silver; overflow:auto;"  >
 					<table>
 					
+								<%for(int i=0;i<vocabs1.size();i++)
+								{
+									System.out.println(vocabs1.get(i).getName()+ vocabs1.get(i).getVersion()+"________"+srcVocabName + srcVocabVersion );
+									if(!vocabs1.get(i).getName().equalsIgnoreCase(srcVocabName) || !vocabs1.get(i).getVersion().equalsIgnoreCase(srcVocabVersion))
+								{
+								System.out.println(vocabs1.get(i).getName()+ vocabs1.get(i).getVersion() );
+								%>
+						<tr>
+							  <td valign="top">
+								<div id="main_div_<%=vocabs1.get(i).getName()+vocabs1.get(i).getVersion()%>" style="width:250;display:none"></div>
+							 </td>
+						</tr>
+								<%}else{%>
 						<tr>
 							
 							<td valign="top">
@@ -465,26 +541,16 @@ Array.prototype.inArray = function (value,caseSensitive)
 							</td>
 							
 						</tr>
-								<%for(int i=0;i<vocabs1.size();i++)
-								{
-									System.out.println(vocabs1.get(i).getName()+ vocabs1.get(i).getVersion()+"________"+srcVocabName + srcVocabVersion );
-									if(!vocabs1.get(i).getName().equalsIgnoreCase(srcVocabName) || !vocabs1.get(i).getVersion().equalsIgnoreCase(srcVocabVersion))
-								{
-								System.out.println(vocabs1.get(i).getName()+ vocabs1.get(i).getVersion() );
-								%>
-						<tr>
-							  <td valign="top">
-								<div id="main_div_<%=vocabs1.get(i).getName()+vocabs1.get(i).getVersion()%>" style="width:250;">
-								</div>
-							 </td>
-						</tr>
-								<%}}%>
+						<%}}%>
 					</table>
 					</div>
+				
+					<div  id="divForSearchingMode" style="width: 260px; height: 300px; border:1px solid Silver; overflow:auto;display:none"  >
+					</div>
 				</td>
-				<td valign="top">
-						<div style="width: 260px; height: 300px; overflow:auto;"  >
-						<table style="width: 250px; height: 300px;border :1px solid Silver;">
+				<td valign="top" style="padding:0 7px 7px 7px;">
+						<div style="width: 250px; height: 300px; overflow:auto;border:1px solid Silver;" >
+						<table style="width: 250px; height: 300px;">
 						<tr>
 							
 						</tr>
@@ -497,47 +563,41 @@ Array.prototype.inArray = function (value,caseSensitive)
 		</tr>
 			
 		</table>
-		
-		<td>
-			<table>
-				<tr>
-					
-						<td align="center" valign="middle"><table border="0" cellspacing="0" cellpadding="0">
+		</td>
+		<td align="center" valign="middle">
+			<table border="0" cellspacing="0" cellpadding="0">
                           <tr>
                             <td height="22"><a href="#" onclick="addPermValues();"><img src="images/advancequery/b_add.gif" alt="Add" width="63" height="18" vspace="2" border="0" align="absmiddle" /></a></td>
                           </tr>
                           <tr>
                             <td height="22"><a href="#" onclick="deleteSelectedPvsRow();"><img src="images/advancequery/b_remove.gif" alt="Remove" width="63" height="18" vspace="2" border="0"></a></td>
                           </tr>
-                      </table></td>
-					
-				<tr>
-			</table>
+                      </table>
 		</td> 
-		<td>
+		<td width="260px" valign="top">
 			
-			<table>
+			<table cellpadding="0" cellspacing="0" width="260px" style="height:313px; border:1px solid Silver;">
 				<tr>
-					<td class="grid_header_text" height="25" bgcolor="#EAEAEA">Selected Permissible Values </td> 
+					<td class="grid_header_text" height="25" bgcolor="#EAEAEA" style="padding-left:7px;">Selected Permissible Values </td> 
 				</tr>
 				<tr>
 					<td bgcolor="#FFFFFF">
 					<table bgcolor="#FFFFFF">
 					<tr>
-					<td>
-						<div style="width: 250px; height:330px;border :1px solid Silver; overflow:auto;"  >
+					<td style="padding:5px;">
+						<div style="width: 250px; height:313px; border:1px solid Silver; overflow:auto;"  >
 						<table>
 							<%for(int i=0;i<vocabs1.size();i++)
 								{
 						
-								String vacabNameWithoutVer=vocabs1.get(i).getName();
+								String vacabNameWithVer=vocabs1.get(i).getName()+vocabs1.get(i).getVersion();
 								%>
-							<tr><td><div id = "selectedPermValues_Div_<%=vacabNameWithoutVer.toUpperCase()%>" style="display:none">
-							<table border = "0" id = "selectedPermValues_<%=vacabNameWithoutVer.toUpperCase()%>" cellpadding ="3" cellspacing ="0" width="100%">
+							<tr><td><div id = "selectedPermValues_Div_<%=vacabNameWithVer.toUpperCase()%>" style="display:none">
+							<table border = "0" id = "selectedPermValues_<%=vacabNameWithVer.toUpperCase()%>" cellpadding ="3" cellspacing ="0" width="100%">
 								<tr>
 									
-									<td  align="left"><input type="checkbox" id="pvSelectedCB_<%=vacabNameWithoutVer.toUpperCase()%>" onclick="checkedUncheckedAllPvs('<%=vacabNameWithoutVer.toUpperCase()%>')"> </td>
-									<td  align="left" class="grid_header_text"><%=vacabNameWithoutVer.toUpperCase()%></td>
+									<td  align="left"><input type="checkbox" id="pvSelectedCB_<%=vacabNameWithVer.toUpperCase()%>" onclick="checkedUncheckedAllPvs('<%=vacabNameWithVer.toUpperCase()%>')"> </td>
+									<td  align="left" class="grid_header_text" ><%=vacabNameWithVer.toUpperCase()%></td>
 								</tr>	
 							</table></div>	
 							</td></tr>
@@ -554,10 +614,10 @@ Array.prototype.inArray = function (value,caseSensitive)
 		</td>
 	</tr>
     <tr>
-            <td height="35" ><table border="0" cellspacing="0" cellpadding="0">
+            <td height="35"><table border="0" cellspacing="0" cellpadding="0">
               <tr>
-                <td align="left" ><a href="#" onclick="addPvsToCondition();"><img src="images/advancequery/b_ok.gif" border="0" alt="OK" width="44" height="23"></a></td>
-                <td width="76" align="right"><a href="#" onclick= "cancelWindow()"><img src="images/advancequery/b_cancel.gif" border="0" alt="Cancel" width="66" height="23"></a></td>
+                <td align="left"><a href="#" onclick="addPvsToCondition();"><img src="images/advancequery/b_ok.gif" border="0" alt="OK" width="44" height="23"></a></td>
+                <!--<td width="76" align="right"><a href="#" onclick= "cancelWindow()"><img src="images/advancequery/b_cancel.gif" border="0" alt="Cancel" width="66" height="23"></a></td>-->
               </tr>
             </table></td>
     </tr> 
