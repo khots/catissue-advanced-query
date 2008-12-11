@@ -20,6 +20,7 @@
 				<br/>
 				<bean:message key="workflow.save.success"/>
 				<br/>
+				<br/>
 				<bean:message key="message.helpDeskNumber"/>
 				<br/>
 			</td>
