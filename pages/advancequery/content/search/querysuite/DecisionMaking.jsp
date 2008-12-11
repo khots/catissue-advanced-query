@@ -6,15 +6,15 @@
 
 <html>
 <head>
+<% String pageOf = (String)request.getAttribute("pageOf"); %>
 <meta http-equiv="Content-Language" content="en-us">
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <script src="jss/advancequery/queryModule.js">
-	</script>
+</script>
 </head>
 <body onload="checkItDefault()" onunload='closeWaitPage()'>
 <html:form method="GET" action="OpenDecisionMakingPage.do">
 <html:hidden property="noOfResults" value="" />
-
 <input type="hidden" name="isQuery" value="true">
 <table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" bordercolor="#000000" id="table2" >		
 	<tr>	
@@ -88,9 +88,14 @@
 	</td>
 	</tr>
 		<tr height="10%" valign="center" align="middle" >
-		<td valign="center" width="6%" colspan="6">
+		<logic:equal name="pageOf" value="DefineView">
+		   <script> document.forms[0].action="SearchDefineViewResults.do"; </script>
+        </logic:equal>
+		 <td valign="center" width="6%" colspan="6">
 			<html:button property="proceed" onclick="proceedClicked()"><bean:message key="query.proceed.button"/>	</html:button>
-		</td>
+		 </td>
+        
+
 	</tr>
 </table>
 </body>

@@ -21,7 +21,7 @@
 			}
 		}
 	}
-	}
+   }
 	
 	var addedNodes = "";
 	var isFirtHit = true;
@@ -1127,6 +1127,7 @@
  	}
 	function saveClientQueryToServer(action)
 	{
+	 
 		if(action=='next')
 		{
 			callFlexMethod();
@@ -1139,7 +1140,7 @@
 			}
 			else
 			{
-				defineSearchResultsView();
+			   defineSearchResultsView();
 			}
 		}
 		else if(action=='save')
@@ -1190,10 +1191,17 @@
 	
 	function defineSearchResultsView()
 	{
-		waitCursor();
-		document.forms['categorySearchForm'].action='DefineSearchResultsView.do';
-		document.forms['categorySearchForm'].submit();
-		hideCursor();
+		 
+		  waitCursor();
+			 var request = newXMLHTTPReq();			
+	         var handlerFunction = getReadyStateHandler(request,displayValidationMessage,true);	
+	         request.onreadystatechange = handlerFunction;
+		 	 var url='ValidateDefineView.do';
+			 var actionURL="";
+		     request.open("POST",url,true);	
+		     request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			  request.send(actionURL);	
+		  hideCursor();
 						
 	}
 	function showAddLimitsPage()
@@ -1206,10 +1214,10 @@
 	{
 		waitCursor();
 		var action ="SearchCategory.do";
-		document.forms['categorySearchForm'].action=action;
-		document.forms['categorySearchForm'].isQuery.value = "true";  // change for flex
-		document.forms['categorySearchForm'].currentPage.value = "prevToAddLimits";
-		document.forms['categorySearchForm'].submit();
+		document.forms[0].action=action;
+		document.forms[0].isQuery.value = "true";  // change for flex
+		document.forms[0].currentPage.value = "prevToAddLimits";
+		document.forms[0].submit();
 		hideCursor();
 	}
 	function setIncludeDescriptionValue()
@@ -1441,30 +1449,65 @@ var jsReady = false;
 		request.send(actionURL);	
 	}
 	
+	function selectOptions(element)
+	{
+		for(i=0;i<element.length;i++) 
+		{
+			element.options[i].selected=true;
+		}
+	}
+
 	function validateQuery(text)
 	{	
-		if (text != "save")
-		{
-			showWaitPage();
-		}
+		
 		var request = newXMLHTTPReq();			
 		var handlerFunction = getReadyStateHandler(request,displayValidationMessage,true);	
 		request.onreadystatechange = handlerFunction;			
 		var actionURL = "buttonClicked=" + text;		
-		var url = "ValidateQuery.do";
-		request.open("POST",url,true);	
-		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
-		request.send(actionURL);		
+		 if(text=='next')
+		{
+		  	 var selectedColumns = document.forms['categorySearchForm'].selectedColumnNames;
+			 if(selectedColumns.length==0)
+			{
+				alert("We need to add atleast one column to define view");
+				return ;
+			}
+			
+			selectOptions(document.forms['categorySearchForm'].selectedColumnNames)
+			document.forms['categorySearchForm'].action = "SearchDefineViewResults.do";	
+			document.forms['categorySearchForm'].submit();
+		}
+		
+		if (text != "save")
+		{
+			showWaitPage();
+		}
+		 else
+		{	 
+		  var url = "ValidateQuery.do";
+		  request.open("POST",url,true);	
+		  request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+		  request.send(actionURL);		
+		}
 	}
-
 	function displayValidationMessage(text)
 	{		
-		if (text == "save")
+		
+        if(text == "DefineView")
 		{
-			saveClientQueryToServer('save');
+		  waitCursor();
+		  document.forms['categorySearchForm'].action='DefineSearchResultsView.do';
+		  document.forms['categorySearchForm'].submit();
+		  hideCursor();		
 		}
-		else
-		{
+        else
+	  {
+		  if (text == "save")
+		 {
+			saveClientQueryToServer('save');
+		 }
+		  else
+		 {
 			if (text == "search")
 			{
 				//showValidationMessages("We are searching for your query. Please wait...");
@@ -1477,7 +1520,8 @@ var jsReady = false;
 					showValidationMessages(text);
 				}		
 			}
-		}
+		 }
+	  }
 	}
 
 	var myWindow;

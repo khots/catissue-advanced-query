@@ -32,25 +32,17 @@
 
 <html:form method="GET" action="<%=callAction%>">
 <html:hidden property="operation" value=""/>
-<body onload="initTreeView()">
-<table border="0" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="90%" bordercolorlight="#000000" >
+<body>
+<table border="0" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF"  bordercolorlight="#000000" >
 	<tr >
 		<td width="1px" >&nbsp;</td>
 		<td valign="top"  width="100"></td>
 	</tr>
-
-	<tr >
-		<td width="1px">&nbsp;	</td>
-		<td valign="top" colspan="8" width="100%" >
-		<!-- <bean:message key="query.defineGridResultsView.message"/> -->
-		</td>
-	</tr>
-	
 		
 	<tr>
 		<td width="1px">&nbsp;	</td>
 		<td valign="top"  width="90%" height="90%">
-			<div id="treeBox" style="background-color:white;overflow:auto;height:270;width:260;border-left:solid 1px;border-right:solid 1px;border-top:solid 1px;border-bottom:solid 1px;"></div>
+			<div id="treeBox" style="background-color:white;overflow:auto;height:370;width:240;border-left:solid 1px;border-right:solid 1px;border-top:solid 1px;border-bottom:solid 1px;"></div>
 		</td>
 		<td width="1%"> &nbsp; </td>
 		   <td align="center" valign="center" width="">
@@ -65,7 +57,7 @@
 		<td width="1%"> &nbsp; </td>
 		<td class="" valign="top" width="60" height="85%">
 <!-- Mandar : 434 : for tooltip -->
-			<html:select property="selectedColumnNames" styleClass="" size="16" multiple="true">
+			<html:select property="selectedColumnNames" styleClass="" size="16" multiple="true" style="height:370" >
 				<html:options collection="selectedColumnNameValueBeanList" labelProperty="name" property="value"/>
 			</html:select>
 		</td>
@@ -83,7 +75,7 @@
 <tr><td> &nbsp;
 </td>
 </tr>					
-<tr>
+<tr id="buttontr">
 <td colspan="6" align="left" valign="top">
   	<table border="0" cellpadding="0" cellspacing="0" width="100%">
 			<tr height="1px">
@@ -324,7 +316,7 @@
 	}
 	
 </script>
-	<script>
+    <script>
 	var tree;	 
 function initTreeView()
 {
@@ -363,11 +355,11 @@ ArrayList treeData = (ArrayList)request.getSession().getAttribute(Constants.TREE
 tree.insertNewChild("<%=parentId%>","<%=nodeId%>","<%=data.getDisplayName()%>",0,"<%=img%>","<%=img%>","<%=img%>","");
 tree.setUserData("<%=nodeId%>","<%=nodeId%>","<%=data%>");	
 tree.setItemText("<%=nodeId%>","<%=data.getDisplayName()%>","<%=data.getDisplayName()%>");
-if("<%=showSelected%>" == "true")
+/*if("<%=showSelected%>" == "true")
 {
 	tree.setCheck("<%=currentSelectedNodeInTree%>",true);
 	tree.openItem("<%=currentSelectedNodeInTree%>");
-} 
+} */
  <% if(selectedColumnNameValueBeanList!=null)
   {
 	for(int i=0;i<selectedColumnNameValueBeanList.size();i++) {
@@ -398,4 +390,5 @@ function shiftRight()
 	var list=tree.getAllChecked(); 
 	alert(list);
 }
-</script>					
+</script>
+<script> initTreeView(); </script>
