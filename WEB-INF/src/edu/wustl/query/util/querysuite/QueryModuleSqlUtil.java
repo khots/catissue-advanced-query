@@ -99,8 +99,6 @@ final public class QueryModuleSqlUtil
 				String newCreateTableSql = Constants.CREATE_TABLE + " " + tableName + " " + Constants.AS + " "
 				+ "(" + createTableSql + ")" + "WITH NO DATA";
 				String newInsertTableSql = "insert into " + tableName + " (" + createTableSql + ")";
-				String newSetSession = "set current schema = " + Variables.properties.getProperty("xquery.schemaName");				
-				jdbcDao.executeUpdate(newSetSession);
 				jdbcDao.delete(tableName);
 				jdbcDao.executeUpdate(newCreateTableSql);
 				jdbcDao.executeUpdate(newInsertTableSql);
@@ -118,8 +116,6 @@ final public class QueryModuleSqlUtil
 		catch (DAOException e)
 		{
 			Logger.out.error(e);
-			//			e.printStackTrace();
-			//			throw e;
 		}
 		finally
 		{
