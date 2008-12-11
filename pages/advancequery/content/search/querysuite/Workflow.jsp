@@ -70,7 +70,10 @@ function addCQToList(operation)
 		}
 	}
 	//alert('queryIdsToAdd='+queryIdsToAdd);
-	createCQ(queryIdsToAdd,operation,queryCount);		
+	if(queryIdsToAdd!="")
+	{
+		createCQ(queryIdsToAdd,operation,queryCount);
+	}		
 }
 
 function createCQ(queryIdsToAdd,operation,queryCount)
@@ -79,17 +82,18 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 	var operandsTdContent="";
 	var cqTitle="";
 	var cqQueryId="";
+	var operandsCounter=0;
 	for(var counter=0;counter<queryIds.length;counter++)
 	{
 		if(queryIds[counter]!=null && queryIds[counter]!='')
 		{
 			if( cqTitle=='')
 			{
-				cqTitle="[Query:"+document.getElementById("selectedqueryId_"+queryIds[counter]).value+"]";
+				cqTitle="[Query : "+document.getElementById("selectedqueryId_"+queryIds[counter]).value+"]";
 			}
 			else
 			{
-				cqTitle=cqTitle+" "+operation+" "+ "[Query:"+document.getElementById("selectedqueryId_"+queryIds[counter]).value+"]";
+				cqTitle=cqTitle+"  "+operation+"  "+ "[Query : "+document.getElementById("selectedqueryId_"+queryIds[counter]).value+"] ";
 			}
 			if(cqQueryId=='')
 			{
@@ -101,6 +105,7 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 				cqQueryId=cqQueryId+"_"+operation+"_("+document.getElementById("selectedqueryId_"+queryIds[counter]).value+")";
 				operandsTdContent=operandsTdContent+"_"+document.getElementById("selectedqueryId_"+queryIds[counter]).value;
 			}
+			operandsCounter=operandsCounter+1;
 		}
 	}
 	var cqType="Composite Query";
@@ -121,6 +126,11 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 	alert('rowContents[4]='+rowContents[4]);*/
 	
 	var operatorsTdContent=operation;
+	//uncommented for the underscore separated operation string 
+	/*for(var counter=0;counter<operandsCounter-2;counter++)
+	{
+		operatorsTdContent=operatorsTdContent+"_"+operation;
+	}*/
 //alert('before call');
 	//create a table containing tbody with id "table1"
 	addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent);	
