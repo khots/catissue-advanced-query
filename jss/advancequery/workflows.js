@@ -101,17 +101,19 @@ function addQuery()
 	var queryIds=document.getElementById("queryId").options;
 	var queryTitles=document.getElementById("queryTitle").options;
 	var queryTypes=document.getElementById("queryType").options;
+	var queryCount=document.getElementById("table1").rows.length;
 	
 	for(var counter=0;counter<queryIds.length;counter++)
 	{
+		
 		var operandsTdContent="";
 		var rowContents=new Array(6);
-		rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter),'');
+		rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'');
 		operandsTdContent=getText(queryIds[counter]);	
 		rowContents[1]=createTextElement(getText(queryTitles[counter]));
 		rowContents[2]=createTextElement(getText(queryTypes[counter]));
 		rowContents[3]=getSelectObjectControl();
-		rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+counter,getText(queryIds[counter]));
+		rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+(counter+queryCount),getText(queryIds[counter]));
 		var operatorsTdContent="None";
 	
 		//create a table containing tbody with id "table1"
