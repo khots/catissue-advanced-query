@@ -6,71 +6,181 @@
 	<name>Demographics</name>
 	<attribute>
 		<name>effectiveStartTimeStamp</name>
-		<tag-name>NOT_SEARCHABLE</tag-name>
+		<tag>
+			<tag-name>NOT_SEARCHABLE</tag-name>
+			<tag-value>NOT_SEARCHABLE</tag-value>
+		</tag>
+		<tag>
+			<tag-name>NOT_VIEWABLE</tag-name>
+			<tag-value>NOT_VIEWABLE</tag-value>
+		</tag>
 	</attribute>
 	<attribute>
 		<name>effectiveEndTimeStamp</name>
-		<tag-name>NOT_SEARCHABLE</tag-name>
+		<tag>
+			<tag-name>NOT_SEARCHABLE</tag-name>
+			<tag-value>NOT_SEARCHABLE</tag-value>
+		</tag>
+		<tag>
+			<tag-name>NOT_VIEWABLE</tag-name>
+			<tag-value>NOT_VIEWABLE</tag-value>
+		</tag>
 	</attribute>
 </entity>
 <entity>
 	<name>LaboratoryProcedure</name>
 	<attribute>
 		<name>procedureSynonym</name>
-		<tag-name>NOT_SEARCHABLE</tag-name>
+		<tag>
+			<tag-name>NOT_SEARCHABLE</tag-name>
+			<tag-value>NOT_SEARCHABLE</tag-value>
+		</tag>
+		<tag>
+			<tag-name>NOT_VIEWABLE</tag-name>
+			<tag-value>NOT_VIEWABLE</tag-value>
+		</tag>
 	</attribute>
 </entity>
 <entity>
 	<name>LaboratoryProcedureDetails</name>
 	<attribute>
 		<name>effectiveEndTimeStamp</name>
-		<tag-name>NOT_SEARCHABLE</tag-name>
+		<tag>
+			<tag-name>NOT_SEARCHABLE</tag-name>
+			<tag-value>NOT_SEARCHABLE</tag-value>
+		</tag>
+		<tag>
+			<tag-name>NOT_VIEWABLE</tag-name>
+			<tag-value>NOT_VIEWABLE</tag-value>
+		</tag>
 	</attribute>
 	<attribute>
 		<name>effectiveStartTimeStamp</name>
-		<tag-name>NOT_SEARCHABLE</tag-name>
+		<tag>
+			<tag-name>NOT_SEARCHABLE</tag-name>
+			<tag-value>NOT_SEARCHABLE</tag-value>
+		</tag>
+		<tag>
+			<tag-name>NOT_VIEWABLE</tag-name>
+			<tag-value>NOT_VIEWABLE</tag-value>
+		</tag>
 	</attribute>
 </entity>
 <entity>
 	<name>EncounterDetails</name>
 	<attribute>
 		<name>effectingStartTimeStamp</name>
-		<tag-name>NOT_SEARCHABLE</tag-name>
+		<tag>
+			<tag-name>NOT_SEARCHABLE</tag-name>
+			<tag-value>NOT_SEARCHABLE</tag-value>
+		</tag>
+		<tag>
+			<tag-name>NOT_VIEWABLE</tag-name>
+			<tag-value>NOT_VIEWABLE</tag-value>
+		</tag>
 	</attribute>
 	<attribute>
 		<name>effectingEndTimeStamp</name>
-		<tag-name>NOT_SEARCHABLE</tag-name>
+		<tag>
+			<tag-name>NOT_SEARCHABLE</tag-name>
+			<tag-value>NOT_SEARCHABLE</tag-value>
+		</tag>
+		<tag>
+			<tag-name>NOT_VIEWABLE</tag-name>
+			<tag-value>NOT_VIEWABLE</tag-value>
+		</tag>
 	</attribute>
 </entity>
 <entity>
 	<name>MedicalRecordNumber</name>
 	<attribute>
 		<name>Type</name>
-		<tag-name>NOT_SEARCHABLE</tag-name>
+		<tag>
+			<tag-name>NOT_SEARCHABLE</tag-name>
+			<tag-value>NOT_SEARCHABLE</tag-value>
+		</tag>
+		<tag>
+			<tag-name>NOT_VIEWABLE</tag-name>
+			<tag-value>NOT_VIEWABLE</tag-value>
+		</tag>
 	</attribute>
 </entity>
 <entity>
 	<name>LaboratoryResult</name>
 	<attribute>
 		<name>testSynonym</name>
-		<tag-name>NOT_SEARCHABLE</tag-name>
+		<tag>
+			<tag-name>NOT_SEARCHABLE</tag-name>
+			<tag-value>NOT_SEARCHABLE</tag-value>
+		</tag>
+		<tag>
+			<tag-name>NOT_VIEWABLE</tag-name>
+			<tag-value>NOT_VIEWABLE</tag-value>
+		</tag>
 	</attribute>
 </entity>
 <entity>
 	<name>ActiveUpiFlag</name>
-	<tag-name>NOT_SEARCHABLE</tag-name>
+	<tag>
+		<tag-name>NOT_SEARCHABLE</tag-name>
+		<tag-value>NOT_SEARCHABLE</tag-value>
+	</tag>
 </entity>
 <entity>
 	<name>ResearchOptOut</name>
-	<tag-name>NOT_SEARCHABLE</tag-name>
+	<tag>
+		<tag-name>NOT_SEARCHABLE</tag-name>
+		<tag-value>NOT_SEARCHABLE</tag-value>
+	</tag>
 </entity>
 <entity>
 	<name>Diagnosis</name>
-	<tag-name>NOT_SEARCHABLE</tag-name>
+	<tag>
+		<tag-name>NOT_SEARCHABLE</tag-name>
+		<tag-value>NOT_SEARCHABLE</tag-value>
+	</tag>
 </entity>
 <entity>
 	<name>Application</name>
-	<tag-name>NOT_SEARCHABLE</tag-name>
+	<tag>
+		<tag-name>NOT_SEARCHABLE</tag-name>
+		<tag-value>NOT_SEARCHABLE</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>Person</name>
+	<tag>
+		<tag-name>PRIMARY_KEY</tag-name>
+		<tag-value>personUpi</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>LaboratoryProcedure</name>
+	<tag>
+		<tag-name>PRIMARY_KEY</tag-name>
+		<tag-value>accessionNumber</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>Encounter</name>
+	<tag>
+		<tag-name>PRIMARY_KEY</tag-name>
+		<tag-value>patientAccountNumber</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>Race</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_U_0005^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>Gender</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_S_0001^%</tag-value>
+	</tag>
 </entity>
 </entity-group>
 </xml>
