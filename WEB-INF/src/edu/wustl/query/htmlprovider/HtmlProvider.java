@@ -929,7 +929,7 @@ public class HtmlProvider
 		AttributeInterface attributeIDInterface=entity.getAttributeByName(Constants.ID);
 		String componentIdOfID=generateComponentName(attributeIDInterface);
 		String componentId = generateComponentName(attributeInterface);
-		generatedHTML.append("\n<td valign='top' width='1%'><a onclick=\"openPermissibleValuesConfigWindow('" + componentId	+ "','"+entity.getName()+"','"+componentIdOfID+"')\" ><img src=\"images/advancequery/b_new_search.gif\"  /></a> </td>");
+		generatedHTML.append("\n<td valign='top' width='1%'><a onclick=\"openPermissibleValuesConfigWindow('" + componentId	+ "','"+entity.getName()+"','"+componentIdOfID+"')\" ><img src=\"images/advancequery/ic_lookup.gif\"  /></a> </td>");
 		enumratedAttributeMap.put(Constants.ATTRIBUTE_INTERFACE+componentId, attributeInterface);
 		
 	}
