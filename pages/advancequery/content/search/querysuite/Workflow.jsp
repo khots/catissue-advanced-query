@@ -53,14 +53,14 @@ function addCQToList(operation)
 {
 //	alert('in add cq');
 	var queryIdsToAdd='';
-	var queryControls=document.getElementsByName("selectedqueryId");
-//	alert('queryControls='+queryControls.length);
+	//var queryControls=document.getElementsByName("chkbox");
+//	alert('queryControls.len='+queryControls.length);
 	var queryCount=0;
-	if(queryControls!=null && queryControls!=undefined)
-	{
-		queryCount=queryControls.length;
-	}
-
+	//if(queryControls!=null && queryControls!=undefined)
+	//{
+		queryCount=document.getElementById("table1").rows.length;
+	//}
+//alert('queryCount='+queryCount);
 	for(var counter=0;counter<queryCount;counter++)
 	{
 		var checkboxControl=document.getElementById("checkbox_"+(counter));
@@ -69,7 +69,7 @@ function addCQToList(operation)
 			queryIdsToAdd=queryIdsToAdd+","+counter;
 		}
 	}
-//	alert('queryIdsToAdd='+queryIdsToAdd);
+	//alert('queryIdsToAdd='+queryIdsToAdd);
 	createCQ(queryIdsToAdd,operation,queryCount);		
 }
 
@@ -120,7 +120,7 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 	alert('rowContents[3]='+rowContents[3]);
 	alert('rowContents[4]='+rowContents[4]);*/
 	
-	var operatorsTdContent='Union';
+	var operatorsTdContent=operation;
 //alert('before call');
 	//create a table containing tbody with id "table1"
 	addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent);	
