@@ -211,6 +211,7 @@
 			<property name="database.name" value="${database.name}" />
 			<property name="database.username" value="${database.username}" />
 			<property name="database.password" value="${database.password}" />
+			<property name="database.schema" value="${database.schema}" />
 		</ant>
 	</target>
 
