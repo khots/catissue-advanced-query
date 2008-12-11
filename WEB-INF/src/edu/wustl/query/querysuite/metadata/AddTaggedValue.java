@@ -199,11 +199,12 @@ public  class AddTaggedValue
 	 */
 	private static void tagValueForEntity(EntityInterface entity, Element entityElement)
 	{
-		Element entityTag = entityElement.element(Constants.ELEMENT_TAG_NAME);
+		Element entityTag = entityElement.element(Constants.ELEMENT_TAG);
 		if(entityTag != null)
 		{
-			String entityTagName = entityTag.getText();
-			TaggedValueInterface taggedValue = createTagValue(entityTagName, entityTagName);
+			String entityTagName = entityTag.element(Constants.ELEMENT_TAG_NAME).getText();
+			String entityTagValue = entityTag.element(Constants.ELEMENT_TAG_VALUE).getText();
+			TaggedValueInterface taggedValue = createTagValue(entityTagName, entityTagValue);
 			entity.addTaggedValue(taggedValue);
 		}
 	}
@@ -223,10 +224,10 @@ public  class AddTaggedValue
 		{
 			Element attrElement =  attrItr.next();
 			Element attributeName = attrElement.element(Constants.ELEMENT_NAME);
-			Iterator<Element> tagValueItr = attrElement.elementIterator(Constants.ELEMENT_TAG_NAME);
+			Iterator<Element> tagItr = attrElement.elementIterator(Constants.ELEMENT_TAG);
 			String attrName = attributeName.getText();
 			//TaggedValueInterface taggedValue = null;
-			while(tagValueItr.hasNext())
+			while(tagItr.hasNext())
 			{
 				AttributeInterface attribute = entity.getAttributeByName(attrName);
 				if (attribute == null)
@@ -234,27 +235,13 @@ public  class AddTaggedValue
 					throw new DynamicExtensionsApplicationException
 					(ApplicationProperties.getValue("attribute.doesNotExist",attrName));
 				}
-				Element tagValue = (Element) tagValueItr.next();
-				String tagName = tagValue.getText();
-				checkValidTag(tagName);
-				TaggedValueInterface taggedValue = createTagValue(tagName,tagName);
+				Element tag = (Element) tagItr.next();
+				String tagName = tag.element(Constants.ELEMENT_TAG_NAME).getText();
+				String tagValue = tag.element(Constants.ELEMENT_TAG_VALUE).getText();
+				//checkValidTag(tagName);
+				TaggedValueInterface taggedValue = createTagValue(tagName,tagValue);
 				attribute.addTaggedValue(taggedValue);
 			}
-		}
-	}
-
-	/**
-	 * This method checks if tag value is valid.
-	 * @param tagName tag value in xml (NOT_SEARCHABLE/NOT_VIEWABLE)
-	 * @throws DynamicExtensionsApplicationException if invalid tag value
-	 */
-	private static void checkValidTag(String tagName) throws DynamicExtensionsApplicationException
-	{
-		if(!tagName.equals(Constants.TAGGED_VALUE_NOT_SEARCHABLE)
-				 && !tagName.equals(Constants.TAGGED_VALUE_NOT_VIEWABLE))
-		{
-			throw new DynamicExtensionsApplicationException
-			(ApplicationProperties.getValue("tagvalue.invalid",tagName));
 		}
 	}
 
