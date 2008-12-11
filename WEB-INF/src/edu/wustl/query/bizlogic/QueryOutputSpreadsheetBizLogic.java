@@ -14,6 +14,7 @@ import java.util.Vector;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
@@ -339,6 +340,11 @@ public class QueryOutputSpreadsheetBizLogic
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
 			AttributeInterface attribute = attributeMetaData.getAttribute();
+			boolean isNotViewable = edu.wustl.query.util.global.Utility.isNotViewable(attribute);
+			if(isNotViewable)
+			{
+				continue;
+			}
 			String sqlColumnName = attributeMetaData.getColumnName();
 
 			String className = attribute.getEntity().getName();
@@ -1096,6 +1102,11 @@ public class QueryOutputSpreadsheetBizLogic
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
 			AttributeInterface attribute = attributeMetaData.getAttribute();
+			boolean isNotViewable = edu.wustl.query.util.global.Utility.isNotViewable(attribute);
+			if(isNotViewable)
+			{
+				continue;
+			}
 			String className = attribute.getEntity().getName();
 			className = Utility.parseClassName(className);
 			String sqlColumnName = attributeMetaData.getColumnName();

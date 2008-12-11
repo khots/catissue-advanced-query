@@ -13,6 +13,7 @@ import java.util.Vector;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
@@ -182,6 +183,11 @@ public class DefineGridViewBizLogic
 		for (QueryOutputTreeAttributeMetadata attributeMetadata : attributeMetadataList)
 		{
 			attribute = attributeMetadata.getAttribute();
+			boolean isNotViewable = edu.wustl.query.util.global.Utility.isNotViewable(attribute);
+			if(isNotViewable)
+			{
+				continue;
+			}
 			attributeName = attribute.getName();
 			attributeDisplayName = Utility.getDisplayLabel(attributeName);
 			attributeWithClassName = attributeMetadata.getDisplayName();
