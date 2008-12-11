@@ -58,7 +58,7 @@
 								<td colspan="4" valign="top" height="100%" width="100%">
 									<table border="0" cellspacing="0" cellpadding="0" valign="top"  height="100%" width="100%">
 									<tr valign="top">
-										<td valign="top" height="600px" colspan="4" width="100%">
+										<td valign="top" height="100%" colspan="4" width="100%">
 											<!--		tiles insert -->
 											<tiles:insert attribute="content"></tiles:insert>
 										</td>
@@ -88,7 +88,7 @@
 						  <table border="0" cellspacing="0" cellpadding="0">
 						  <tr>
 							<td><img src="images/advancequery/b_prev.gif" width="72"  hspace="3" onclick="previousFromDefineResults()"/></td>
-							<td><img src="images/advancequery/b_next.gif"   hspace="3" onclick="validateQuery('search');" /></td>
+							<td><img src="images/advancequery/b_next.gif"   hspace="3" onclick="validateQuery('next');" /></td>
 						  </tr>
 						</table>
 					   </td>
