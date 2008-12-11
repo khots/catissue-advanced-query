@@ -20,7 +20,7 @@ function closePopup()
 	clearSelBoxList(parent.window.document.getElementById("queryId"));
 	clearSelBoxList(parent.window.document.getElementById("queryTitle"));
 	clearSelBoxList(parent.window.document.getElementById("queryType"));
-	
+	var isOptionAdded=false;
 	if(checkboxArray!=null)
 	{
 			var numOfRows =checkboxArray.length;
@@ -35,12 +35,16 @@ function closePopup()
 						addOption(parent.window.document.getElementById("queryId"),document.getElementById("queryIdControl_"+count).value,count);
 						addOption(parent.window.document.getElementById("queryTitle"),""+document.getElementById("queryTitleControl_"+count).value,count);
 						addOption(parent.window.document.getElementById("queryType"),""+document.getElementById("queryTypeControl_"+count).value,count);
+						isOptionAdded=true;
 					}
 					
 			}
 	}
-	updateOpenerUI();
-	closeModalWindow();
+	if(isOptionAdded==true)
+	{
+		updateOpenerUI();
+		closeModalWindow();
+	}
 
 }
 
