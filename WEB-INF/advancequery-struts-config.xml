@@ -418,7 +418,9 @@ PUBLIC
 	    
 	            <!--  To Do  change the action  class name --> 
         <action path="/QueryWorkflowWizard" 
-        		type="edu.wustl.query.action.WorkflowAction">
+        		type="edu.wustl.query.action.WorkflowAction"
+        		validate="false"
+				scope="request">>
         	<forward name="success" path=".query.queryWorkFlowWizardDef"/>
         </action>
         
@@ -431,7 +433,7 @@ PUBLIC
         		name="workflowForm"
         		validate="false"
 				scope="request">
-        		<forward name="success" path=".query.queryWorkFlowWizardDef" />
+        		<forward name="success" path="/QueryWorkflowWizard.do" />
         </action>
         
         <!-- TO DO  -->
