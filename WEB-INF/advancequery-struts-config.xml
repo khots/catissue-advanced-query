@@ -420,13 +420,13 @@ PUBLIC
         <action path="/QueryWorkflowWizard" 
         		type="edu.wustl.query.action.WorkflowAction"
         		validate="false"
-				scope="request">>
+				scope="request">
         	<forward name="success" path=".query.queryWorkFlowWizardDef"/>
         </action>
         
          <action path="/Workflow"
              type="org.apache.struts.actions.ForwardAction"
-             parameter=".query.redirectToWorkflowPageDef" />
+             parameter=".query.redirectToWorkflowPageDef"/> 
         
         <action path="/SaveWorkflow"  
         		type="edu.wustl.common.action.CommonAddEditAction" 
