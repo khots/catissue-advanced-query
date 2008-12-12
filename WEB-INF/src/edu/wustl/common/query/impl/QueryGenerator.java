@@ -447,7 +447,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 
 			if (i != noOfConditions - 1) // Intermediate Condition.
 			{
-				buffer.append(condition + " " + LogicalOperator.And + " ");
+				buffer.append(condition + " " + LogicalOperator.And.toString().toLowerCase() + " ");
 			}
 			else
 			{
