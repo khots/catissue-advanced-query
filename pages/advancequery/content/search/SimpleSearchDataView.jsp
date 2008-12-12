@@ -334,7 +334,7 @@ function checkAllOnThisPageResponse()
    </script>
 	  
 	  <tr height="4%">
-        <td align="left" ><%@ include file="/pages/common/ActionErrors.jsp" %></td>
+        <td align="left" ><%@ include file="/pages/advancequery/common/ActionErrors.jsp" %></td>
       </tr>
       <tr height="6%">
         <td align="left" class="tr_bg_blue1"><span class="blue_ar_b"> &nbsp;<bean:message key="<%=title%>" />&nbsp;</span></td>
