@@ -621,7 +621,7 @@ public class XQueryGenerator extends QueryGenerator
 			}
 			else
 			{
-				String newXPath = new StringBuilder(xpath).append('/').append(childEntityName)
+				String newXPath = new StringBuilder(xpath).append('/').append(eavAssociation.getTargetRole().getName())
 						.toString();
 
 				entityPaths.put(childExpression, newXPath);
