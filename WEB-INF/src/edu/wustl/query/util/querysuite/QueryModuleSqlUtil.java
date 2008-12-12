@@ -115,7 +115,7 @@ final public class QueryModuleSqlUtil
 		}
 		catch (DAOException e)
 		{
-			Logger.out.error(e);
+			throw e;
 		}
 		finally
 		{
