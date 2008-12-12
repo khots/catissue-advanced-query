@@ -406,8 +406,8 @@
 		    <fileset dir ="${base.dir}/pages/advancequery/content/search" />
 		</copy> 
 		
-		<copy todir="${zip.dir}/pages/common" overwrite="true"> 
-		    <fileset dir ="${base.dir}/pages/common" />
+		<copy todir="${zip.dir}/pages/advancequery/common" overwrite="true"> 
+		    <fileset dir ="${base.dir}/pages/advancequery/common" />
 		</copy> 
 		
 		<copy todir="${zip.dir}/pages/home" overwrite="true"> 
