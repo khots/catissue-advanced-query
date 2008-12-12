@@ -291,7 +291,7 @@ public class QueryOutputTreeBizLogic
 	 */
 	private String getSql(String parentNodeId, String tableName, String parentIdColumnName,
 			OutputTreeDataNode childNode)
-	{
+	{   System.out.println();
 		String selectSql = Constants.SELECT_DISTINCT;
 		String idColumnOfCurrentNode = "";
 		
@@ -308,18 +308,22 @@ public class QueryOutputTreeBizLogic
 				idColumnOfCurrentNode = idColumnOfCurrentNode + "," + sqlColumnName;
 			}
 
-			if (!attribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase(
+			/*if (!attribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase(
 					Constants.FILE_TYPE))
 			{
 				selectSql = selectSql + sqlColumnName + ",";
-			}
+			}*/
 		}
 		if (idColumnOfCurrentNode.length() > 0 && idColumnOfCurrentNode.charAt(0) == ',')
 		{
 			idColumnOfCurrentNode = idColumnOfCurrentNode.substring(1, idColumnOfCurrentNode
 					.length());
+			selectSql = selectSql + idColumnOfCurrentNode +" ";
 		}
+		if(selectSql.indexOf(',')!=-1)
+		{
 		selectSql = selectSql.substring(0, selectSql.lastIndexOf(','));
+		}
 		selectSql = edu.wustl.query.util.global.Utility.getSQLForNode(parentNodeId, tableName, parentIdColumnName, selectSql,
 				idColumnOfCurrentNode);
 		

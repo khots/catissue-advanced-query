@@ -865,30 +865,30 @@ public class QueryOutputSpreadsheetBizLogic
 			{
 				columnsInSql = columnsInSql + selectSql;
 			}
-			Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
-			columnsInSql = QueryCSMUtil.updateEntityIdIndexMap(null, columnIndex, columnsInSql,
-					defineViewNodeList, entityIdIndexMap, queryDetailsObj);
-			Iterator<QueryResultObjectDataBean> iterator = queryResultObjectDataBeanMap.values()
-					.iterator();
-			while (iterator.hasNext())
-			{
-				QueryResultObjectDataBean elem = iterator.next();
-				if (elem.getMainEntityIdentifierColumnId() == -1)
-				{
-					if (!elem.isMainEntity())
-					{
-						elem.setMainEntityIdentifierColumnId(entityIdIndexMap.get(elem
-								.getMainEntity()));
-					}
-					else
-					{
-						elem
-								.setMainEntityIdentifierColumnId(entityIdIndexMap.get(elem
-										.getEntity()));
-					}
-				}
-
-			}
+//			Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
+//			columnsInSql = QueryCSMUtil.updateEntityIdIndexMap(null, columnIndex, columnsInSql,
+//					defineViewNodeList, entityIdIndexMap, queryDetailsObj);
+//			Iterator<QueryResultObjectDataBean> iterator = queryResultObjectDataBeanMap.values()
+//					.iterator();
+//			while (iterator.hasNext())
+//			{
+//				QueryResultObjectDataBean elem = iterator.next();
+//				if (elem.getMainEntityIdentifierColumnId() == -1)
+//				{
+//					if (!elem.isMainEntity())
+//					{
+//						elem.setMainEntityIdentifierColumnId(entityIdIndexMap.get(elem
+//								.getMainEntity()));
+//					}
+//					else
+//					{
+//						elem
+//								.setMainEntityIdentifierColumnId(entityIdIndexMap.get(elem
+//										.getEntity()));
+//					}
+//				}
+//
+//			}
 			selectSql = Constants.SELECT_DISTINCT + columnsInSql;
 
 		}
