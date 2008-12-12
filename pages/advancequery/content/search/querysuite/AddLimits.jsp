@@ -11,7 +11,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <script src="jss/advancequery/queryModule.js"></script>
 <script src="jss/advancequery/script.js"></script>
-<script type="text/javascript" src="jss/advancequery/wz_tooltip.js"></script>
 <script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
 <link rel="STYLESHEET" type="text/css" href="css/advancequery/dhtmlxtabbar.css" />
 <link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
@@ -33,7 +32,7 @@
 	{
 		isQuery="false";
 	}
-	System.out.println("isQuery ====>"+isQuery);
+	
 	
 %>
 
