@@ -27,6 +27,9 @@
 	<property name="mysql.driver.string" value="org.gjt.mm.mysql.Driver" />
 	<property name="db2.dialect.string" value="org.hibernate.dialect.DB2Dialect"/>
 	<property name="db2.driver.string" value="com.ibm.db2.jcc.DB2Driver" />
+	
+	<property name="lexbig.config.path" value="pathOfJbossConfigFolder"/>
+	<property name="jboss.lexbig.config.path" value="${jboss.server.url}/data/LexBIGData/config/config.props" />
 
 	<property name="mysql.lib" value="mysql-connector-java-5.0.8-bin.jar" />
 	
@@ -206,9 +209,18 @@
 		<copy todir="${temp.dir}/query-properties" overwrite="true">
 			<fileset dir="${base.dir}/query-properties" />
 		</copy>
+		<!-- added By amit_doshi for LexBig Vocabulary Interface -->
+		<copy todir="${temp.dir}/LexBIGData" overwrite="true">
+					<fileset dir="${base.dir}/LexBIGData" />
+		</copy>
+		<replace dir="${temp.dir}/query/WEB-INF/classes" propertyfile="${temp.dir}/query/WEB-INF/classes/vocab.properties">
+								<replacefilter token="${lexbig.config.path}" value="${jboss.lexbig.config.path}" />
+		</replace>
 		<copy file="query-ds.xml" todir="${temp.dir}" overwrite="true" />
 		<copy file="login-config.xml" todir="${temp.dir}" overwrite="true" />
 		<copy file="properties-service.xml" todir="${temp.dir}" overwrite="true" />
+		
+		
 	</target>
 	
 	<target name="configure_log4j">
@@ -436,6 +448,7 @@
 	</delete>
 </target>
 	<!--Copy WAR and Configuration Files to JBOSS Directory-->
+	
 	<target name="copy_files">
 		<echo message="Copying query Application Components..." />
 
@@ -444,6 +457,13 @@
 				<include name="**/*" />
 			</fileset>
 		</copy>
+		<!-- added By amit_doshi for LexBig Vocabulary Interface -->
+		<copy todir="${jboss.server.url}/data/LexBIGData" overwrite="true">
+									<fileset dir="${temp.dir}/LexBIGData">
+										<include name="**/*" />
+									</fileset>
+		</copy>
+		
 		<copy todir="${jboss.server.url}/deploy" overwrite="true">
 			<fileset dir="${temp.dir}">
 				<include name="query.war" />
