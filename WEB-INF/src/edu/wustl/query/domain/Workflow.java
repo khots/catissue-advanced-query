@@ -171,7 +171,11 @@ public class Workflow extends AbstractDomainObject
 		String[] operators = workFlowForm.getOperators();
 		String[] operands = workFlowForm.getOperands();
 		
-		int numberOfRows = operators.length;
+		 int numberOfRows = 0;
+		 if(operators != null)
+		 {
+			numberOfRows = operators.length;
+		 }
 		for(int i=0; i<numberOfRows; i++)
 		{
 			IAbstractQuery query = getQuery(operators[i],operands[i]);
