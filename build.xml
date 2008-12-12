@@ -428,7 +428,11 @@
 		
 		<copy todir="${zip.dir}/pages/advancequery/content/search/querysuite" overwrite="true"> 
 		    <fileset dir ="${base.dir}/pages/advancequery/content/search/querysuite" />
-		</copy> 
+		</copy>
+		
+		<copy todir="${zip.dir}/pages/advancequery/common" overwrite="true"> 
+				    <fileset dir ="${base.dir}/pages/advancequery/common" />
+		</copy>
 		<!--Copying the flex related files from WEB-INF/flex -->
         <copy todir="${zip.dir}/flex">
 		     <fileset dir = "${base.dir}/WEB-INF/flex"/>
@@ -743,4 +747,11 @@
 			</manifest>
 		</jar>
 	</target>
+	
+	
+	<target name = "compile_jsps">
+     
+		
+		
+	</target>	
 </project>
