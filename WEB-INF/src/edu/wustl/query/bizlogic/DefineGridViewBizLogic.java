@@ -199,6 +199,11 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
       for (QueryOutputTreeAttributeMetadata attributeMetadata : attributeMetadataList)
       {
             attribute = attributeMetadata.getAttribute();
+            boolean isNotViewable = edu.wustl.query.util.global.Utility.isNotViewable(attribute);
+			if(isNotViewable)
+			{
+				continue;
+			}
             attributeName = attribute.getName();
             attributeDisplayName = Utility.getDisplayLabel(attributeName);
             attributeWithClassName = attributeMetadata.getDisplayName();

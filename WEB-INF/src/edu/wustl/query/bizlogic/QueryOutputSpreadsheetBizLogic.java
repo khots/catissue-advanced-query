@@ -340,11 +340,6 @@ public class QueryOutputSpreadsheetBizLogic
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
 			AttributeInterface attribute = attributeMetaData.getAttribute();
-			boolean isNotViewable = edu.wustl.query.util.global.Utility.isNotViewable(attribute);
-			if(isNotViewable)
-			{
-				continue;
-			}
 			String sqlColumnName = attributeMetaData.getColumnName();
 
 			String className = attribute.getEntity().getName();
@@ -380,14 +375,18 @@ public class QueryOutputSpreadsheetBizLogic
 			if (!attribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase("file"))
 
 			{
-				selectSql = selectSql + sqlColumnName + ",";
-				String attrLabel = Utility.getDisplayLabel(attribute.getName());
-				columnsList.add(attrLabel + " : " + className);
-				IOutputAttribute attr = new OutputAttribute(constraints.getExpression(node
-						.getExpressionId()), attribute);
-				selectedOutputAttributeList.add(attr);
-				objectDataColumnIds.add(columnIndex);
-				columnIndex++;
+				boolean isNotViewable = edu.wustl.query.util.global.Utility.isNotViewable(attribute);
+				if(!isNotViewable)
+				{
+					selectSql = selectSql + sqlColumnName + ",";
+					String attrLabel = Utility.getDisplayLabel(attribute.getName());
+					columnsList.add(attrLabel + " : " + className);
+					IOutputAttribute attr = new OutputAttribute(constraints.getExpression(node
+							.getExpressionId()), attribute);
+					selectedOutputAttributeList.add(attr);
+					objectDataColumnIds.add(columnIndex);
+					columnIndex++;
+				}
 			}
 			else
 			{
@@ -1102,11 +1101,6 @@ public class QueryOutputSpreadsheetBizLogic
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
 			AttributeInterface attribute = attributeMetaData.getAttribute();
-			boolean isNotViewable = edu.wustl.query.util.global.Utility.isNotViewable(attribute);
-			if(isNotViewable)
-			{
-				continue;
-			}
 			String className = attribute.getEntity().getName();
 			className = Utility.parseClassName(className);
 			String sqlColumnName = attributeMetaData.getColumnName();
@@ -1132,13 +1126,17 @@ public class QueryOutputSpreadsheetBizLogic
 			if (!attribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase(
 					Constants.FILE_TYPE))
 			{
-				objectColumnIds.add(columnIndex);
-				selectSql = selectSql + sqlColumnName + ",";
-				sqlColumnName = sqlColumnName.substring(Constants.COLUMN_NAME.length(),
-						sqlColumnName.length());
-				String attrLabel = Utility.getDisplayLabel(attribute.getName());
-				columnsList.add(attrLabel + " : " + className);
-				columnIndex++;
+				boolean isNotViewable = edu.wustl.query.util.global.Utility.isNotViewable(attribute);
+				if(!isNotViewable)
+				{
+					objectColumnIds.add(columnIndex);
+					selectSql = selectSql + sqlColumnName + ",";
+					sqlColumnName = sqlColumnName.substring(Constants.COLUMN_NAME.length(),
+							sqlColumnName.length());
+					String attrLabel = Utility.getDisplayLabel(attribute.getName());
+					columnsList.add(attrLabel + " : " + className);
+					columnIndex++;
+				}
 			}
 			else
 			{
