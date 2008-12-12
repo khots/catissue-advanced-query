@@ -1033,7 +1033,16 @@ public class XQueryGenerator extends QueryGenerator
 
 		for (String value : condition.getValues())
 		{
-			builder.append(value).append(Constants.QUERY_COMMA);
+			AttributeTypeInformationInterface dataType = condition.getAttribute()
+			.getAttributeTypeInformation();
+			if(dataType instanceof StringTypeInformationInterface)
+			{
+				builder.append("\"").append(value).append("\"").append(Constants.QUERY_COMMA);
+			}
+			else
+			{
+				builder.append(value).append(Constants.QUERY_COMMA);
+			}
 		}
 
 		removeLastComma(builder);
