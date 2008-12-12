@@ -108,8 +108,26 @@ PUBLIC
 			name="categorySearchForm"
 			validate="false"
 			scope="request">
-			<forward name="success" path=".query.searchCategory"/>
+		    <forward name="success" path=".query.searchCategory"/>
 		</action>
+		
+		<action path="/ValidateDefineView"
+			type="edu.wustl.query.action.ValidateDefineViewAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+		    <forward name="success" path=".query.searchCategory"/>
+		</action>
+		
+		<action path="/SearchDefineViewResults"
+			type="edu.wustl.query.action.SearchDefineViewResultsAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+		<forward name="success" path=".query.viewSearchResults"/>
+		<forward name="decisionMakingPage" path="/OpenDecisionMakingPage.do?pageOf=DefineView"/>
+		<forward name="validateResults" path ="/DefineSearchResultsView.do" />
+		</action>		
 		<action path="/LoadSaveQueryPage"
             type="edu.wustl.query.action.LoadSaveQueryPageAction"
             name="saveQueryForm"
