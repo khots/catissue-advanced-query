@@ -6,6 +6,7 @@ package edu.wustl.query.util.querysuite;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,13 +22,19 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
+
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
+
+import edu.wustl.common.querysuite.queryobject.IConstraints;
+import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.bizlogic.QueryCsmBizLogic;
+
 import edu.wustl.query.util.global.Constants;
 
 /**
@@ -55,7 +62,7 @@ public abstract class QueryCSMUtil
 		if (!errorMessg.equals(""))
 		{
 			session.setAttribute(Constants.NO_MAIN_OBJECT_IN_QUERY, errorMessg);
-			return null;
+			mainEntityMap = null;
 		}
 		else
 		{
@@ -83,9 +90,9 @@ public abstract class QueryCSMUtil
 			EntityInterface mapEntity = node.getOutputEntity().getDynamicExtensionsEntity();
 			// get the main entities list for the entity
 			List<EntityInterface> mainEntityList = queryDetailsObj.getMainEntityMap()
-					.get(mapEntity);
+					.get(mapEntity); 
 			//mainEntityList is null if the entity itself is main entity;
-			EntityInterface mainEntity = null;
+			EntityInterface mainEntity = null; 
 			if (mainEntityList != null)
 			{
 				//check if main entity of the dependent entity is present in the query
@@ -125,11 +132,16 @@ public abstract class QueryCSMUtil
 			QueryDetails queryDetailsObj)
 	{
 		Map<EntityInterface, List<EntityInterface>> mainEntityMap = new HashMap<EntityInterface, List<EntityInterface>>();
-		for (OutputTreeDataNode queryNode : queryDetailsObj.getUniqueIdNodesMap().values())
+		//IQuery query = queryDetailsObj.getQuery();
+		//IConstraints constraints = query.getConstraints();
+		
+		for(OutputTreeDataNode queryNode : queryDetailsObj.getUniqueIdNodesMap().values())
+		//for(IExpression expression : constraints)
 		{
 			List<EntityInterface> mainEntityList = new ArrayList<EntityInterface>();
-			EntityInterface dynamicExtensionsEntity = queryNode.getOutputEntity()
-					.getDynamicExtensionsEntity();
+			EntityInterface dynamicExtensionsEntity = queryNode.getOutputEntity().getDynamicExtensionsEntity();
+			
+			//EntityInterface dynamicExtensionsEntity = expression.getQueryEntity().getDynamicExtensionsEntity();
 			mainEntityList = getAllMainEntities(dynamicExtensionsEntity, mainEntityList);
 			EntityInterface tempDynamicExtensionsEntity = dynamicExtensionsEntity;
 			List<EntityInterface> tempMainEntityList;
@@ -551,4 +563,5 @@ public abstract class QueryCSMUtil
 		}
 		return null;
 	}
-}
+	
+}    

@@ -62,6 +62,7 @@ public abstract class IQueryUpdationUtil
 		}
 		session.setAttribute(Constants.CONTAINMENT_OBJECTS_MAP, containmentMap);
 		session.setAttribute(Constants.ENTITY_EXPRESSION_ID_MAP,entityExpressionIdMap);
+        session.setAttribute(Constants.MAIN_ENTITY_LIST, mainEntityList);
 		return partentChildEntityMap;
 	}
 
@@ -137,7 +138,14 @@ public abstract class IQueryUpdationUtil
 	   return containmentEntitiesList;	
 	}
 	
-	private static List<EntityInterface> getAllMainObjects(IQuery query)
+	
+	/**
+	 * This method is made public as it is also invoked from action class
+	 * @param query
+	 * @return
+	 */
+	
+	public static List<EntityInterface> getAllMainObjects(IQuery query)
 	{
 		IConstraints constraints = query.getConstraints();
 

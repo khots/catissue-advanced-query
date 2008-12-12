@@ -53,7 +53,6 @@ public class ConfigureGridViewAction extends BaseAction
 	{ 
 		CategorySearchForm categorySearchForm = (CategorySearchForm) form;
 		HttpSession session = request.getSession();
-		Map<String, IOutputTerm> outputTermsColumns = (Map<String, IOutputTerm>)session.getAttribute(Constants.OUTPUT_TERMS_COLUMNS);
 		IQuery query = (IQuery)session.getAttribute(Constants.QUERY_OBJECT);
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		SelectedColumnsMetadata selectedColumnsMetadata = (SelectedColumnsMetadata)session.getAttribute(Constants.SELECTED_COLUMN_META_DATA);
@@ -87,12 +86,12 @@ public class ConfigureGridViewAction extends BaseAction
 			selectedColumnsMetadata.setDefinedView(true);
 			Map<Long, QueryResultObjectDataBean> queryResultObjecctDataMap = new HashMap<Long, QueryResultObjectDataBean>();			
 			//defineGridViewBizLogic.getSelectedColumnsMetadata(categorySearchForm, queryDetailsObj,selectedColumnsMetadata);
-			defineGridViewBizLogic.getSelectedColumnsMetadata(categorySearchForm, queryDetailsObj, selectedColumnsMetadata,query.getConstraints());
+			defineGridViewBizLogic.getSelectedColumnsMetadata(categorySearchForm, queryDetailsObj, selectedColumnsMetadata);
 			StringBuffer selectedColumnNames = new StringBuffer();
 			String nodeData = getClickedNodeData(sql);
 			definedColumnsList = defineGridViewBizLogic.getSelectedColumnList(categorySearchForm,
 					selectedColumnsMetadata.getSelectedAttributeMetaDataList(), selectedColumnNames,
-						queryResultObjecctDataMap, queryDetailsObj, outputTermsColumns,nodeData);
+						queryResultObjecctDataMap, queryDetailsObj,nodeData);
 			spreadSheetDataMap.put(Constants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 			// gets the message and sets it in the session.
 			//String message = QueryModuleUtil.getMessageIfIdNotPresentForOrderableEntities(selectedColumnsMetadata,cart);
@@ -135,7 +134,7 @@ public class ConfigureGridViewAction extends BaseAction
 			String nodeData = getClickedNodeData(sql);
 			definedColumnsList = defineGridViewBizLogic.getSelectedColumnList(categorySearchForm, 
 					selectedColumnsMetadata.getSelectedAttributeMetaDataList(), selectedColumnNames,
-					queryResultObjecctDataMap, queryDetailsObj,outputTermsColumns,nodeData);
+					queryResultObjecctDataMap, queryDetailsObj,nodeData);
 			String SqlForSelectedColumns = defineGridViewBizLogic.createSQLForSelectedColumn(selectedColumnNames.toString(), sql);
 			spreadSheetDataMap.put(Constants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,

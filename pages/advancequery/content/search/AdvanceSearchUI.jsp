@@ -53,7 +53,7 @@
 
 </head>
 
-<%@ include file="/pages/common/ActionErrors.jsp" %>
+<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
 <html:form action="<%=actionName%>">
 <table summary="" cellpadding="5" cellspacing="0" border="0" width="600">
 <tr>

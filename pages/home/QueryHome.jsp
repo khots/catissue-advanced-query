@@ -132,7 +132,7 @@ table#browserDetailsContainer
 					</tr>
 					<tr>
 						<td colspan="3" align="left" class="showhide1">
-						<%@ include file="/pages/advancequery/content/common/ActionErrors.jsp" %>
+						<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
 						<logic:empty scope="session" name="<%=Constants.SESSION_DATA%>">
 							<html:form styleId="form1" styleClass="whitetable_bg"
 								action="/Login.do">

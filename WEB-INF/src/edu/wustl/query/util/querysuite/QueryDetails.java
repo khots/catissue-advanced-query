@@ -1,6 +1,7 @@
 
 package edu.wustl.query.util.querysuite;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.tree.QueryTreeNodeData;
 import edu.wustl.query.util.global.Constants;
 
 /**
@@ -31,8 +33,90 @@ public class QueryDetails
 	private Map<AttributeInterface, String> attributeColumnNameMap;
 	private Map<String, IOutputTerm> outputTermsColumns;
 	private IQuery query;
+	private HashMap <EntityInterface, List<EntityInterface>> containmentMap;
+	private List<EntityInterface> mainEntityList;
+	private List<QueryTreeNodeData> treeDataVector;
+	private OutputTreeDataNode currentSelectedObject;
 
 	//private HttpSession session;
+
+	
+	
+	
+	/**
+	 * @return the currentSelectedObject
+	 */
+	public OutputTreeDataNode getCurrentSelectedObject()
+	{
+		return currentSelectedObject;
+	}
+
+
+
+	
+	/**
+	 * @param currentSelectedObject the currentSelectedObject to set
+	 */
+	public void setCurrentSelectedObject(OutputTreeDataNode currentSelectedObject)
+	{
+		this.currentSelectedObject = currentSelectedObject;
+	}
+
+
+
+	/**
+	 * @return the treeDataVector
+	 */
+	public List<QueryTreeNodeData> getTreeDataVector()
+	{
+		return treeDataVector;
+	}
+
+
+	
+	/**
+	 * @param treeDataVector the treeDataVector to set
+	 */
+	public void setTreeDataVector(List<QueryTreeNodeData> treeDataVector)
+	{
+		this.treeDataVector = treeDataVector;
+	}
+
+
+	/**
+	 * @return the containmentMap
+	 */
+	public HashMap<EntityInterface, List<EntityInterface>> getContainmentMap()
+	{
+		return containmentMap;
+	}
+
+	
+	/**
+	 * @param containmentMap the containmentMap to set
+	 */
+	public void setContainmentMap(HashMap<EntityInterface, List<EntityInterface>> containmentMap)
+	{
+		this.containmentMap = containmentMap;
+	}
+
+	
+	/**
+	 * @return the mainEntityList
+	 */
+	public List<EntityInterface> getMainEntityList()
+	{
+		return mainEntityList;
+	}
+
+	
+	/**
+	 * @param mainEntityList the mainEntityList to set
+	 */
+	public void setMainEntityList(List<EntityInterface> mainEntityList)
+	{
+		this.mainEntityList = mainEntityList;
+	}
 
 	public QueryDetails(HttpSession session)
 	{

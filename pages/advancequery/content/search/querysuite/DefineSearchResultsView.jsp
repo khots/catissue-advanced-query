@@ -22,7 +22,7 @@
 <body onunload='closeWaitPage()'>
 <!-- Make the Ajax javascript available -->
 <script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
-<html:errors />
+
 <%
 	String formAction = Constants.ViewSearchResultsAction;
 	String defineSearchResultsViewAction = Constants.DefineSearchResultsViewAction;
@@ -32,7 +32,11 @@
 <html:hidden property="currentPage" value="prevToAddLimits"/>
 <input type="hidden" name="isQuery" value="true">
 <table bordercolor="#000000" border="0" width="100%" cellspacing="0" cellpadding="0"  height="100%" >
-
+	<tr>
+		<td>
+			<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
+		</td>
+	</tr>
 	<tr>
 		<td valign="top">
 			<table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" id="table1" >

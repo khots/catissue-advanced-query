@@ -42,6 +42,8 @@ public class OpenDecisionMakingPageAction extends Action
 	{
 		CategorySearchForm actionForm = (CategorySearchForm) form;
 		HttpSession session = request.getSession();
+		String pageOf = (String)request.getParameter(Constants.PAGE_OF);
+		  request.setAttribute(Constants.PAGE_OF, pageOf);
 		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
 		String noOfResults = (String) session
 				.getAttribute(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS);

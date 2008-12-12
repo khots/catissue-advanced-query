@@ -316,4 +316,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String NO_RESULT = "No results found";
 	public static final String MED_PV_HTML = "MEDPVHTML";
 	
+	public static final String DEFINE_VIEW_MSG = "DefineView";
+    public static final String ENTITY_NOT_PRESENT = "not present";
+	public static final String ENTITY_PRESENT = "present";
+	public static final String MAIN_ENTITY_MSG = "Main Entity";
+	public static final String NOT_PRESENT_MSG = " Is Not Present In DAG";
+	public static final String MAIN_ENTITY_LIST = "mainEntityList";
 }

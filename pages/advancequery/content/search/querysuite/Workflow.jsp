@@ -160,7 +160,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <script type="text/javascript" src="wz_tooltip.js"></script>
 
 <body >
-<%@ include file="/pages/content/common/ActionErrors.jsp" %>
+<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
 
 <html:form action="SaveWorkflow">
 

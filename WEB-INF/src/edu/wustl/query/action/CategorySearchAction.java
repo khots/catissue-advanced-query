@@ -98,10 +98,8 @@ public class CategorySearchAction extends Action
 		return forward;
 	}
 
-	
-	
 	/**
-	 * This Method serches all the categories related to textfeild value and checkbox checked
+	 * This Method searches all the categories related to textfeild value and checkbox checked
 	 * @param request
 	 * @param searchForm
 	 * @param textfieldValue
@@ -217,6 +215,8 @@ public class CategorySearchAction extends Action
 	 */
 	private void setIsQueryAttribute(HttpServletRequest request)
 	{
+		
+		request.getSession().removeAttribute(edu.wustl.query.util.global.Constants.SELECTED_COLUMN_META_DATA);
 		String isQuery = request.getParameter("isQuery");
 		if (isQuery == null)
 		{
