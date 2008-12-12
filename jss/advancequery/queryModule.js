@@ -1459,36 +1459,36 @@ var jsReady = false;
 
 	function validateQuery(text)
 	{	
-		
 		var request = newXMLHTTPReq();			
 		var handlerFunction = getReadyStateHandler(request,displayValidationMessage,true);	
 		request.onreadystatechange = handlerFunction;			
 		var actionURL = "buttonClicked=" + text;		
-		 if(text=='next')
-		{
+		if(text=='next')
+		{			
 		  	 var selectedColumns = document.forms['categorySearchForm'].selectedColumnNames;
 			 if(selectedColumns.length==0)
 			{
 				alert("We need to add atleast one column to define view");
 				return ;
 			}
-			
+			showWaitPage();
 			selectOptions(document.forms['categorySearchForm'].selectedColumnNames)
 			document.forms['categorySearchForm'].action = "SearchDefineViewResults.do";	
 			document.forms['categorySearchForm'].submit();
-		}
+		}else
+		{
 		
 		if (text != "save")
 		{
 			showWaitPage();
 		}
-		 else
-		{	 
+	    
 		  var url = "ValidateQuery.do";
 		  request.open("POST",url,true);	
 		  request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 		  request.send(actionURL);		
 		}
+		
 	}
 	function displayValidationMessage(text)
 	{		
