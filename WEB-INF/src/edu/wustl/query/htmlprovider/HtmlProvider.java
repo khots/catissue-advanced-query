@@ -187,7 +187,7 @@ public class HtmlProvider
 		generatedPreHTML = GenerateHtml.getHtmlHeader
 					(entityName.toString(),entityId,attributesStr,isEditLimits);
 		generatedHTML = getHtmlAttributes(conditions, attributeChecked, permissibleValuesChecked,
-				attributeCollection);
+				attributeCollection,entity);
 		if(generateHTMLDetails!=null)
 		{
 			generateHTMLDetails.setEnumratedAttributeMap(enumratedAttributeMap);
@@ -204,7 +204,7 @@ public class HtmlProvider
 	 * @return StringBuffer
 	 */
 	private StringBuffer getHtmlAttributes(List<ICondition> conditions, boolean attributeChecked,
-			boolean permissibleValuesChecked, Collection<AttributeInterface> attributeCollection)
+			boolean permissibleValuesChecked, Collection<AttributeInterface> attributeCollection,EntityInterface entity)
 	{
 		StringBuffer generatedHTML = new StringBuffer(Constants.MAX_SIZE);
 		String space = " ";
@@ -241,7 +241,7 @@ public class HtmlProvider
 				generatedHTML.append(attrLabel).append(space);
 				GenerateHtml.getDateFormat(generatedHTML, isBold, attribute);
 				generatedHTML.append(":&nbsp;&nbsp;&nbsp;&nbsp;</td>\n");
-				generateHTMLForConditions(generatedHTML,attribute);
+				generateHTMLForConditions(generatedHTML,attribute,entity);
 				generatedHTML.append("\n</tr>");
 			}
 		}
@@ -480,7 +480,7 @@ public class HtmlProvider
 	 * @param attributeDetails details of attribute
 	 */
 	private void generateHTMLForConditionNull(StringBuffer generatedHTML,
-			AttributeInterface attribute,AttributeDetails attributeDetails)
+			AttributeInterface attribute,AttributeDetails attributeDetails,EntityInterface entity)
 	{
 		List<PermissibleValueInterface> permissibleValues =HtmlUtility.getPermissibleValuesList(attribute,entity);
 		String componentId = generateComponentName(attribute);
@@ -530,18 +530,18 @@ public class HtmlProvider
 	 * @param attribute AttributeInterface
 	 */
 	private void generateHTMLForConditions(StringBuffer generatedHTML,
-			AttributeInterface attribute)
+			AttributeInterface attribute,EntityInterface entity)
 	{
 		List<ICondition> conditions = attributeDetails.getConditions();
 		if (conditions != null)
 		{
-			getHtmlConditionNotNull(generatedHTML,attribute, forPage);
+			getHtmlConditionNotNull(generatedHTML,attribute, forPage,entity);
 		}
 		if (conditions == null || (attributeDetails.getAttributeNameConditionMap()!=null
 				&& !attributeDetails.getAttributeNameConditionMap().
 				containsKey(attributeDetails.getAttrName())))
 		{
-			generateHTMLForConditionNull(generatedHTML, attribute,this.attributeDetails);
+			generateHTMLForConditionNull(generatedHTML, attribute,this.attributeDetails,entity);
 		}
 	}
 
@@ -552,7 +552,7 @@ public class HtmlProvider
 	 * @param forPage String
 	 */
 	private void getHtmlConditionNotNull(StringBuffer generatedHTML,
-			AttributeInterface attribute, String forPage)
+			AttributeInterface attribute, String forPage,EntityInterface entity)
 	{
 		if (attributeDetails.getAttributeNameConditionMap()!=null &&
 				attributeDetails.getAttributeNameConditionMap().
@@ -565,7 +565,7 @@ public class HtmlProvider
 				return;
 			}
 
-			generateHTMLForConditionNull(generatedHTML,attribute,this.attributeDetails);
+			generateHTMLForConditionNull(generatedHTML,attribute,this.attributeDetails,entity);
 		}
 	}
 	/**
@@ -745,7 +745,7 @@ public class HtmlProvider
 		{
 			generatedHTML.append("&nbsp;&nbsp;&nbsp;&nbsp;</b></td>\n");
 		}
-		generateHTMLForConditions(generatedHTML, attribute);
+		generateHTMLForConditions(generatedHTML, attribute,entity);
 		generatedHTML.append("\n</tr>");
 		return generatedHTML;
 	}
