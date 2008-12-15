@@ -1,6 +1,7 @@
 
 package edu.wustl.common.query.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,8 +44,10 @@ import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.Expression;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
 import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.IQueryUpdationUtil;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
 
 public class XQueryGenerator extends QueryGenerator
@@ -72,6 +75,8 @@ public class XQueryGenerator extends QueryGenerator
 	 */
 	private Map<AttributeInterface, String> attributeAliases;
 
+	
+	private static org.apache.log4j.Logger logger =Logger.getLogger(XQueryGenerator.class);
 	/**
 	 * Generates SQL for the given Query Object.
 	 * 
@@ -124,8 +129,24 @@ public class XQueryGenerator extends QueryGenerator
 		{
 			throw new SqlException("problem while trying to build xquery", e);
 		}
-
+		
+		log(formedQuery.toString());
 		return formedQuery.toString();
+	}
+	
+	
+	
+	private void log(String sql)
+	{
+		// TODO format.
+		try
+		{
+			new SQLLogger().log(sql);
+		}
+		catch (IOException e)
+		{
+			Logger.out.error("Error while logging sql.\n" + e);
+		}
 	}
 
 	/**
@@ -851,7 +872,8 @@ public class XQueryGenerator extends QueryGenerator
 			{
 				String attributePath = new StringBuilder(entityPath).append('/').append(
 						attribute.getName()).toString();
-				String attributeAlias = attributeAliases.get(attribute);
+//				String attributeAlias = attributeAliases.get(attribute);
+				String attributeAlias = getAliasFor(attribute, entry.getKey());
 				String dataType = getDataTypeInformation(attribute);
 				columnsPart.append(attributeAlias).append(' ').append(dataType).append(" path '")
 						.append(attributePath).append("'").append(Constants.QUERY_COMMA);
