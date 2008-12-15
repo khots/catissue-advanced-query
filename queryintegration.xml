@@ -72,11 +72,31 @@
 		<copy file="query.properties" todir="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/"
 					overwrite="true" />
 		
+		
+		<!--Copying the vocab.properties file for VI-->
+		<copy file="vocab.properties" todir="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/" overwrite="true"/>
+		
 		<!--Copying the Advance Query jar file to deploytempCider -->
 		
 		<copy file="AdvanceQuery.jar" todir="${deploy.temp.dir}/${war.dir}/WEB-INF/lib"
 			overwrite="true" />
 		<echo message="Copied Advance Query Jar file" />
+		
+		<!--Copying VI jars -->
+		<echo message="Copying VI jars..."/>
+		<copy todir="${deploy.temp.dir}/${war.dir}/WEB-INF/lib" overwrite="true">
+		   <fileset dir="${deploy.temp.dir}/AdvanceQuery/vi_jars">
+				<include name="*.*" />
+		  </fileset>
+	   </copy>
+		
+		<!-- Copying the LexBig Data to JBOSS DATA-->
+		<echo message="Copying LexBigData to JBOSS DATA"/>
+		<copy todir="${jboss.server.url}/data/LexBIGData" overwrite="true">
+			<fileset dir="LexBIGData" />
+		</copy>
+		
+		
 		<!--
 			Copy *.properties, QueryHibernate.cfg.xml, *.jsp, *.css, *.images,
 			advance query-struts-config.xml to respective folders
