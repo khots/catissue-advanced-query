@@ -24,7 +24,6 @@ function QueryWizard()
 <head>
 	
 	<script language="JavaScript" type="text/javascript" src="jss/advancequery/queryModule.js"></script>
-	<script type="text/javascript" src="jss/advancequery/wz_tooltip.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
 	
 </head>
