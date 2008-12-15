@@ -74,7 +74,7 @@ MM_reloadPage(true);
                     </tr>
                     <tr bgcolor="#FFFFFF" class="tr_color_lgrey">
                       <td valign="top" class="content_txt"><img src="images/advancequery/ic_patient_data.gif" alt="Patient Data" width="15" height="16"></td>
-                      <td height="25" valign="top" class="content_txt"><a href="#" class="bluelink"><b>Get individual patient level clinical information for my project.</b></a><br>
+                      <td height="25" valign="top" class="content_txt"><a href="QueryWizard.do" class="bluelink"><b>Get individual patient level clinical information for my project.</b></a><br>
                         Description: </td>
                     </tr>
                     <tr bgcolor="#FFFFFF">
