@@ -43,13 +43,13 @@
 <table border="0" width="100%" cellspacing="0" cellpadding="0"  height="450" >	
 		
 		<tr>	
-			<td width="33%" align="center" class="bgWizardImage" valign="top">
+			<td width="33%" align="center" valign="middle" height="36"  background="images/advancequery/top_bg_wiz.gif" >
 				<img src="images/advancequery/1_active.gif"/> <!-- width="118" height="25" /-->
 			</td>
-			<td width="33%" align="center" class="bgWizardImage" valign="top">
+			<td width="33%" align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
 				<img src="images/advancequery/2_inactive.gif" /> <!-- width="199" height="38" /-->
 			</td>
-			<td width="33%" align="center" class="bgWizardImage" valign="top">
+			<td width="33%" align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
 				<img src="images/advancequery/3_inactive.gif" /> <!--  width="139" height="38" /-->
 			</td>
 		</tr>
@@ -147,7 +147,7 @@
 			</tr>
 			<tr>
 					<td colspan="4">
-					<table border="0" width="100%" cellspacing="0" cellpadding="0" height="24" background="images/advancequery/bot_bg_wiz.gif">
+					<table border="0" width="100%" cellspacing="0" cellpadding="0" height="24">
 					<tr valign="top">
 					 <td width="2%" valign="bottom">&nbsp;</td>
 					 <td width="50%" align="left">

@@ -18,13 +18,13 @@
 <input type="hidden" name="isQuery" value="true">
 <table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" bordercolor="#000000" id="table2" >		
 	<tr>	
-		<td width="33%" align="center" class="bgWizardImage">
+		<td width="33%" align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
 			<img src="images/advancequery/1_inactive.gif" /> 
 		</td>
-		<td width="33%" align="center" class="bgWizardImage">
+		<td width="33%" align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
 			<img src="images/advancequery/2_inactive.gif" /> 
 		</td>
-		<td width="33%" align="center" class="bgWizardImage">
+		<td width="33%" align="center" background="images/advancequery/top_bg_wiz.gif" valign="middle" height="36">
 			<img src="images/advancequery/3_active.gif" /> 
 		</td>
 	</tr>

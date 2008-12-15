@@ -21,13 +21,13 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 <table border="0" width="100%" cellspacing="0" cellpadding="0" height="98%" bordercolor="#000000" id="table1" >
 <html:form method="GET" action="<%=formAction%>" style="margin:0;padding:0;height:100%">
 		<tr>	
-			<td width="33%" align="center" class="bgWizardImage">
+			<td width="33%" align="center" valign="top" background="images/advancequery/top_bg_wiz.gif">
 				<img src="images/advancequery/1_inactive.gif" /> <!-- width="118" height="25" /-->
 			</td>
-			<td width="33%" align="center" class="bgWizardImage">
+			<td width="33%" align="center" valign="top" background="images/advancequery/top_bg_wiz.gif">
 				<img src="images/advancequery/2_inactive.gif" /> <!-- width="199" height="38" /-->
 			</td>
-			<td width="33%" align="center" class="bgWizardImage">
+			<td width="33%" align="center" valign="middle" height="36" background="images/advancequery/top_bg_wiz.gif">
 				<img src="images/advancequery/3_active.gif" /> <!--  width="139" height="38" /-->
 			</td>
 		</tr>
@@ -49,9 +49,9 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 </table>
 </td>
 </tr>
-<tr bgcolor="#DFE9F3" height="5%" valign="top"> 
+<tr height="5%" valign="top"> 
 		<td colspan="4" valign="bottom" height="10%">
-		<table border="0"  width="100%" cellspacing="0" cellpadding="0"  background="images/advancequery/bot_bg_wiz.gif" height="24"  >
+		<table border="0"  width="100%" cellspacing="0" cellpadding="0"   height="24"  >
 		<tr height="1%" valign="bottom">
 		 <td width="2%" valign="bottom" >&nbsp;</td>
 		 <td valign="bottom" align="left" width="90-%" >

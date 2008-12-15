@@ -45,13 +45,13 @@
 						<table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" bordercolor="#000000" id="table2" >
 							<tr  height="10" >
 								
-								<td width="33%" align="center" class="bgWizardImage">
+								<td width="33%" align="center" valign="top" background="images/advancequery/top_bg_wiz.gif">
 									<img src="images/advancequery/1_inactive.gif" /> <!-- width="118" height="25" /-->
 								</td>
-								<td width="33%" align="center" class="bgWizardImage">
+								<td width="33%" align="center" valign="middle" height="36"  background="images/advancequery/top_bg_wiz.gif">
 									<img src="images/advancequery/2_active.gif" /> <!-- width="199" height="38" /-->
 								</td>
-								<td width="33%" align="center" class="bgWizardImage">
+								<td width="33%" align="center" valign="top" background="images/advancequery/top_bg_wiz.gif">
 									<img src="images/advancequery/3_inactive.gif" /> <!--  width="139" height="38" /-->
 								</td>
 							</tr>
@@ -74,16 +74,16 @@
 					</td>
 				</tr>
 		
-				<tr bgcolor="#EAEAEA">
+				<tr >
 					<td colspan="4" valign="top">
-					<table border="0" width="100%" cellspacing="0" cellpadding="0"  height="24" background="images/bot_bg_wiz.gif">
+					<table border="0" width="100%" cellspacing="0" cellpadding="0"  height="24">
 					<tr valign="center">
 						<td width="2%" valign="center" >&nbsp;</td>
 						<td width="50%" align="left">
 						  <table border="0" cellspacing="0" cellpadding="0">
 							<tr>
 							  <td><img src="images/advancequery/b_save.gif" width="51"  hspace="3" onclick="validateQuery('save');"/></td>
-							  <td><img src="images/advancequery/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td>
+							 <!-- <td><img src="images/advancequery/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td> -->
 							</tr>
 						  </table>
 						</td>

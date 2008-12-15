@@ -424,7 +424,7 @@ function checkAllOnThisPageResponse()
 		<td width="90%">
 		
 			<table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" valign="top">
-			<tr>
+			<tr class="tr_color_lgrey">
 					<td width="5%" nowrap valign="top" class="black_ar">
 						<input type='checkbox' name='checkAll2' id='checkAll2' onClick='checkAllOnThisPage(this)'>
 						<span class="black_ar"><bean:message key="buttons.checkAllOnThisPage" /></span>
