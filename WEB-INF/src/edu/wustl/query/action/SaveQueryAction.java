@@ -22,6 +22,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.action.BaseAction;
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
 import edu.wustl.common.hibernate.HibernateCleanser;
@@ -94,17 +95,23 @@ public class SaveQueryAction extends BaseAction
 		String target=Constants.FAILURE;
 			try
 			{
-				edu.wustl.query.bizlogic.QueryBizLogic bizLogic = (edu.wustl.query.bizlogic.QueryBizLogic) AbstractBizLogicFactory.getBizLogic(ApplicationProperties
-							.getValue("app.bizLogicFactory"), "getBizLogic",
-							Constants.ADVANCE_QUERY_INTERFACE_ID);
+				//removed for not inserting csm for query
+//				edu.wustl.query.bizlogic.QueryBizLogic bizLogic = (edu.wustl.query.bizlogic.QueryBizLogic) AbstractBizLogicFactory.getBizLogic(ApplicationProperties
+//							.getValue("app.bizLogicFactory"), "getBizLogic",
+//							Constants.ADVANCE_QUERY_INTERFACE_ID);
+				IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
+						.getValue("app.bizLogicFactory"), "getBizLogic",
+						Constants.QUERY_INTERFACE_BIZLOGIC_ID);
 				SessionDataBean sessionDataBean = (SessionDataBean)request.getSession().getAttribute(Constants.SESSION_DATA);
-				User user = new PrivilegeUtility().getUserProvisioningManager().getUser(sessionDataBean.getUserName());
-				sessionDataBean.setCsmUserId(user.getUserId().toString());
+				//removed for not inserting csm for query
+				//User user = new PrivilegeUtility().getUserProvisioningManager().getUser(sessionDataBean.getUserName());
+				//sessionDataBean.setCsmUserId(user.getUserId().toString());
 				IParameterizedQuery queryClone = new DyExtnObjectCloner().clone(parameterizedQuery);
 				new HibernateCleanser(queryClone).clean();
-				
-				bizLogic.insertSavedQueries(queryClone, sessionDataBean, 
-						((SaveQueryForm)actionForm).isShareQuery(),user);
+				//removed for not inserting csm for query
+				//bizLogic.insertSavedQueries(queryClone, sessionDataBean, 
+					//	((SaveQueryForm)actionForm).isShareQuery(),user);
+				bizLogic.insert(queryClone, Constants.HIBERNATE_DAO);
 				target = Constants.SUCCESS;
 				setActionErrors(request);
 				request.setAttribute(Constants.QUERY_SAVED, Constants.TRUE);

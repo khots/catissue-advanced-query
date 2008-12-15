@@ -94,22 +94,28 @@ public class RetrieveQueryAction extends Action
 		}
 		else
 		{
-			checkExecuteQueryPrivilege(parameterizedQueryCollection, (String) request.getAttribute("pageOf"), privilegeCache,
-					authorizedQueryCollection, sharedQueryCollection);
-			setQueryCollectionToSaveQueryForm(saveQueryForm, (String) request.getAttribute("pageOf"), authorizedQueryCollection,
-					sharedQueryCollection);
-			message = authorizedQueryCollection.size() + "";
+			//removed for saved query bug for csm
+			//checkExecuteQueryPrivilege(parameterizedQueryCollection, (String) request.getAttribute("pageOf"), privilegeCache,
+			//		authorizedQueryCollection, sharedQueryCollection);
+			//setQueryCollectionToSaveQueryForm(saveQueryForm, (String) request.getAttribute("pageOf"), authorizedQueryCollection,
+			//		sharedQueryCollection);
+			//message = authorizedQueryCollection.size() + "";
+			
+				saveQueryForm.setParameterizedQueryCollection(parameterizedQueryCollection);
+				message = String.valueOf(parameterizedQueryCollection.size());
 		}
 		return message;
 	}
 
 	private PrivilegeCache setPrivilegeCache(HttpSession session) throws CSException
 	{
-		SessionDataBean sessionDataBean = (SessionDataBean)session.getAttribute(Constants.SESSION_DATA);
-		User user = new PrivilegeUtility().getUserProvisioningManager().getUser(sessionDataBean.getUserName());
-		sessionDataBean.setCsmUserId(user.getUserId().toString());
-		PrivilegeCache privilegeCache = PrivilegeManager.getInstance().getPrivilegeCache(sessionDataBean.getUserName());
-		return privilegeCache;
+		//removed for saved query bug for csm
+//		SessionDataBean sessionDataBean = (SessionDataBean)session.getAttribute(Constants.SESSION_DATA);
+//		User user = new PrivilegeUtility().getUserProvisioningManager().getUser(sessionDataBean.getUserName());
+//		sessionDataBean.setCsmUserId(user.getUserId().toString());
+//		PrivilegeCache privilegeCache = PrivilegeManager.getInstance().getPrivilegeCache(sessionDataBean.getUserName());
+		//return privilegeCache;
+		return null;
 	}
 
 	private ActionForward setActionForward(ActionMapping actionMapping, String pageOf)
