@@ -502,7 +502,7 @@ public class SingalNodeTemporalQuery
 			}
 			catch (ParseException e)
 			{
-				Logger.out.debug(e.getStackTrace());
+				Logger.out.debug(e.getMessage(),e);
 			}
 		}
 	}
@@ -542,7 +542,7 @@ public class SingalNodeTemporalQuery
 			}
 			catch (ParseException e)
 			{
-				Logger.out.debug(e.getStackTrace());
+				Logger.out.debug(e.getMessage(),e);
 			}
 		}
 	}

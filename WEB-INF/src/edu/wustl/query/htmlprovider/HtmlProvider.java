@@ -95,7 +95,7 @@ public class HtmlProvider
 			}
 			catch (CheckedException e)
 			{
-				Logger.out.debug(e.getStackTrace());
+				Logger.out.debug(e.getMessage(),e);
 			}
 		}
 	}

@@ -89,7 +89,7 @@ public class AnnotationUtil
 		catch (HibernateException e1)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e1.getStackTrace());
+			Logger.out.debug(e1.getMessage(),e1);
 			throw new BizLogicException("", e1);
 		}
 		AssociationInterface association = null;
@@ -157,7 +157,7 @@ public class AnnotationUtil
 		catch (HibernateException e1)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e1.getStackTrace());
+			Logger.out.debug(e1.getMessages(),e1);
 			throw new BizLogicException("", e1);
 		}
 		finally

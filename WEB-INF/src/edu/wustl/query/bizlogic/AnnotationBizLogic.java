@@ -446,12 +446,12 @@ public class AnnotationBizLogic extends DefaultBizLogic
 			catch (UserNotAuthorizedException e1)
 			{
 				// TODO Auto-generated catch block
-				Logger.out.debug(e1.getStackTrace());
+				Logger.out.debug(e1.getMessage(),e1);
 			}
 			catch (BizLogicException e1)
 			{
 				// TODO Auto-generated catch block
-				Logger.out.debug(e1.getStackTrace());
+				Logger.out.debug(e1.getMessage(),e1);
 			}
 		}
 	}

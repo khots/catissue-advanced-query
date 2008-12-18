@@ -218,7 +218,7 @@ public class ImportXmi
 		{
 			Logger.out.info("Fatal error reading XMI.");
 			Logger.out.info("------------------------ERROR:--------------------------------\n");
-			Logger.out.info(e.getStackTrace());
+			Logger.out.info(e.getMessage(),e);
 			Logger.out.info("\n--------------------------------------------------------------");
 		}
 		finally
