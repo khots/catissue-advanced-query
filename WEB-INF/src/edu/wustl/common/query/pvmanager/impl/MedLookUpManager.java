@@ -8,6 +8,7 @@ import java.util.Map;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 
 public class MedLookUpManager
@@ -62,12 +63,12 @@ public class MedLookUpManager
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.error(e.getMessage(),e);
 		}
 		catch (ClassNotFoundException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.error(e.getMessage(),e);
 		}
 		
 	}
@@ -75,9 +76,13 @@ public class MedLookUpManager
 	public List<String> getPermissibleValues(String pvFilter)
 	{
 		if(pvMap != null)
+		{
 			return pvMap.get(pvFilter);
+		}
 		else
+		{
 			return null;
+		}
 
 	}
 }
