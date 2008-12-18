@@ -169,7 +169,7 @@ public class AnnotationUtil
 			catch (HibernateException e)
 			{
 				// TODO Auto-generated catch block
-				Logger.out.debug(e.getStackTrace());
+				Logger.out.debug(e.getMessage(),e);
 				throw new BizLogicException("", e);
 
 			}
@@ -294,7 +294,7 @@ public class AnnotationUtil
 			catch (Exception e)
 			{
 				// TODO Auto-generated catch block
-				Logger.out.debug(e.getStackTrace());
+				Logger.out.debug(e.getMessage(),e);
 			}
 			finally
 			{
@@ -308,12 +308,12 @@ public class AnnotationUtil
 				catch (HibernateException e)
 				{
 					// TODO Auto-generated catch block
-					Logger.out.debug(e.getStackTrace());
+					Logger.out.debug(e.getMessage(),e);
 				}
 				catch (SQLException e)
 				{
 					// TODO Auto-generated catch block
-					Logger.out.debug(e.getStackTrace());
+					Logger.out.debug(e.getMessage(),e);
 				}
 			}
 
@@ -437,7 +437,7 @@ public class AnnotationUtil
 		}
 		catch (SQLException e)
 		{
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 		finally
 		{
@@ -450,7 +450,7 @@ public class AnnotationUtil
 			catch (SQLException e)
 			{
 				// TODO Auto-generated catch block
-				Logger.out.debug(e.getStackTrace());
+				Logger.out.debug(e.getMessage(),e);
 			}
 
 		}
@@ -502,7 +502,7 @@ public class AnnotationUtil
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 		finally
 		{
@@ -513,7 +513,7 @@ public class AnnotationUtil
 			catch (HibernateException e)
 			{
 				// TODO Auto-generated catch block
-				Logger.out.debug(e.getStackTrace());
+				Logger.out.debug(e.getMessage(),e);
 			}
 		}
 	}
@@ -638,7 +638,7 @@ public class AnnotationUtil
 		catch (SQLException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 
 		finally
@@ -650,7 +650,7 @@ public class AnnotationUtil
 			catch (SQLException e)
 			{
 				// TODO Auto-generated catch block
-				Logger.out.debug(e.getStackTrace());
+				Logger.out.debug(e.getMessage(),e);
 			}
 		}
 	}
@@ -681,7 +681,7 @@ public class AnnotationUtil
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 		finally
 		{
@@ -695,12 +695,12 @@ public class AnnotationUtil
 			catch (HibernateException e)
 			{
 				// TODO Auto-generated catch block
-				Logger.out.debug(e.getStackTrace());
+				Logger.out.debug(e.getMessage(),e);
 			}
 			catch (SQLException e)
 			{
 				// TODO Auto-generated catch block
-				Logger.out.debug(e.getStackTrace());
+				Logger.out.debug(e.getMessage(),e);
 			}
 		}
 		return null;

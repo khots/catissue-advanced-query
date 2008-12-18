@@ -62,12 +62,12 @@ public class QueryCsmBizLogic
 		}*/
 		catch (DAOException t)
 		{
-			Logger.out.debug(t.getStackTrace());
+			Logger.out.debug(t.getMessage(),t);
 		}
 
 		catch (Exception e)
 		{
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 		finally
 		{
@@ -78,7 +78,7 @@ public class QueryCsmBizLogic
 			catch (DAOException e)
 			{
 				// TODO Auto-generated catch block
-				Logger.out.debug(e.getStackTrace());
+				Logger.out.debug(e.getMessage(),e);
 			}
 		}
 		return dataList;
@@ -136,7 +136,7 @@ public class QueryCsmBizLogic
 		}
 		catch (SQLException e)
 		{
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 		finally
 		{
@@ -148,7 +148,7 @@ public class QueryCsmBizLogic
 			}
 			catch (SQLException e)
 			{
-				Logger.out.debug(e.getStackTrace());
+				Logger.out.debug(e.getMessage(),e);
 			}
 		}
 		return mainEntityList;
