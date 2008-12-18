@@ -53,7 +53,7 @@ public  class AddTaggedValue
 		}
 		catch (Exception e)
 		{
-			Logger.out.error(e.getStackTrace());
+			Logger.out.error(e.getMessage(),e);
 		}
 	}
 	/**
@@ -95,11 +95,11 @@ public  class AddTaggedValue
 		}
 		catch (FileNotFoundException e)
 		{
-			Logger.out.error(e.getStackTrace());
+			Logger.out.error(e.getMessage(),e);
 		}
 		catch (DocumentException e)
 		{
-			Logger.out.error(e.getStackTrace());
+			Logger.out.error(e.getMessage(),e);
 		}
 	}
 
@@ -135,13 +135,25 @@ public  class AddTaggedValue
 			{
 				TaggedValueInterface tagValue = iterator.next();
 				String key = tagValue.getKey();
-				if(key.equals(Constants.TAGGED_VALUE_NOT_SEARCHABLE) ||
-						key.equals(Constants.TAGGED_VALUE_NOT_VIEWABLE))
+				if(checkValidTag(key))
 				{
 					iterator.remove();
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Checks if tag is for NOT SEARCHABLE/NOT_VIEWABLE/PRIMARY KEY/PV_FILTER
+	 * @param key
+	 * @return
+	 */
+	private static boolean checkValidTag(String key)
+	{
+		return key.equals(Constants.TAGGED_VALUE_NOT_SEARCHABLE) ||
+				key.equals(Constants.TAGGED_VALUE_NOT_VIEWABLE) ||
+				key.equals(Constants.TAGGED_VALUE_PRIMARY_KEY) ||
+				key.equals(Constants.TAGGED_VALUE_PV_FILTER);
 	}
 
 	/**
@@ -156,7 +168,7 @@ public  class AddTaggedValue
 		{
 			TaggedValueInterface tagValue = tagValueIter.next();
 			String key = tagValue.getKey();
-			if(key.equals(Constants.TAGGED_VALUE_NOT_SEARCHABLE))
+			if(checkValidTag(key))
 			{
 				tagValueIter.remove();
 			}
@@ -238,7 +250,7 @@ public  class AddTaggedValue
 				Element tag = (Element) tagItr.next();
 				String tagName = tag.element(Constants.ELEMENT_TAG_NAME).getText();
 				String tagValue = tag.element(Constants.ELEMENT_TAG_VALUE).getText();
-				//checkValidTag(tagName);
+				checkValidTag(tagName);
 				TaggedValueInterface taggedValue = createTagValue(tagName,tagValue);
 				attribute.addTaggedValue(taggedValue);
 			}
