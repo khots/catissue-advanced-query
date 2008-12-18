@@ -6,7 +6,6 @@ package edu.wustl.query.util.querysuite;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,19 +21,14 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
-
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
-
-import edu.wustl.common.querysuite.queryobject.IConstraints;
-import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.QueryCsmBizLogic;
-
 import edu.wustl.query.util.global.Constants;
 
 /**
@@ -223,7 +217,8 @@ public abstract class QueryCSMUtil
 		}
 		catch (DynamicExtensionsSystemException deExeption)
 		{
-			deExeption.printStackTrace();
+			//deExeption.printStackTrace();
+			Logger.out.error(deExeption.getMessage(),deExeption);
 		}
 		return mainEntityList;
 	}
