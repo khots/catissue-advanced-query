@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import edu.common.dynamicextensions.domain.StringValue;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -13,7 +12,6 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
-import edu.wustl.common.vocab.IConcept;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.IVocabularyManager;
 import edu.wustl.common.vocab.impl.VocabularyManager;
@@ -138,7 +136,7 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 	 * utility list to convert a list of codedEntries to permissiblevalues 
 	 * @param inputList
 	 * @return
-	 */
+	 *//*
 	private List<PermissibleValueInterface> convertToPermissiblevalue(List<IConcept> inputList)
 	{
 		ListIterator<IConcept> iterator = inputList.listIterator();
@@ -155,7 +153,7 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 		}
 		return pvList;
 	}
-
+*/
 	/**
 	 * Get the permissible value filter for an attribute
 	 * @param attribute
