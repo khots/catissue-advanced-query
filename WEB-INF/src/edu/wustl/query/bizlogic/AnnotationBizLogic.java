@@ -71,7 +71,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 
 		return list;
@@ -94,7 +94,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 
 		return dynamicList;
@@ -127,7 +127,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 
 		return dynamicList;
@@ -148,12 +148,12 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (BizLogicException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 		catch (UserNotAuthorizedException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 	}
 
@@ -177,12 +177,12 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (BizLogicException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 		catch (UserNotAuthorizedException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 	}
 
@@ -265,12 +265,12 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (BizLogicException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 		catch (UserNotAuthorizedException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 	}
 
@@ -295,7 +295,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 
 	}
@@ -324,7 +324,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 
 		return dynamicList;
@@ -348,7 +348,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 
 		return dynamicList;
@@ -370,7 +370,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 
 		return map;
@@ -404,7 +404,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 				catch (DAOException e)
 				{
 					// TODO Auto-generated catch block
-					Logger.out.debug(e.getStackTrace());
+					Logger.out.debug(e.getMessage(),e);
 				}
 			}
 
@@ -431,7 +431,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 
 		if (dynamicList != null && !dynamicList.isEmpty())
@@ -472,7 +472,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		}
 		catch (Exception e)
 		{
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 			/*   throw new BizLogicException(ApplicationProperties
 			           .getValue("app.annotatations.errors.deleteRecord"), e);*/
 		}
@@ -588,7 +588,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		catch (DAOException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 
 		return dynamicList;
@@ -606,7 +606,7 @@ public class AnnotationBizLogic extends DefaultBizLogic
 		}
 		catch (Exception e)
 		{
-			Logger.out.debug(e.getStackTrace());
+			Logger.out.debug(e.getMessage(),e);
 		}
 
 	}
