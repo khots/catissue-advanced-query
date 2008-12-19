@@ -87,33 +87,31 @@ else
 				<table border="0" width="100%" valign="top" cellspacing="0" height="100%">
 					
 					<tr bordercolorlight="#000000" >
-						<td  height="1%">&nbsp;</td>
-						<td width="75%" valign="top" ><html:text property="textField" onkeydown="setFocusOnSearchButton(event)" size="30"/></td>
-						<td width="25%" valign="top" >
+						<td>&nbsp;</td>
+						<td width="75%" valign="middle" ><html:text property="textField" styleClass="textfield_undefined" onkeydown="setFocusOnSearchButton(event)" size="30"/></td>
+						<td width="25%" valign="middle" >
 					
-							<img src="images/advancequery/b_go_blue.gif" width="44"  hspace="3" onclick="retriveSearchedEntities('<%= SearchCategory %>','<%=formName%>','<%=currentPage%>');"/>
+							<img src="images/advancequery/b_go_blue.gif" width="44" align="absmiddle" hspace="3" onclick="retriveSearchedEntities('<%= SearchCategory %>','<%=formName%>','<%=currentPage%>');"/>
 					    </td>
 					</tr>
-					<tr  height="1%">
-					    <td  height="1%">&nbsp;</td>
-						<td  height="1%" align="left" valign="top" colspan="3" class="small_txt_grey"><bean:message key="query.chooseCategoryLable"/></font></td>
+					<tr >
+					    <td>&nbsp;</td>
+						<td  align="left" valign="top" colspan="3" class="small_txt_grey"><bean:message key="query.chooseCategoryLable"/></font></td>
 					</tr>
-					<tr id="collapsableHeader" valign="top" class="tr_color_lgrey" width="97%">
-						<td valign="top"  height="1%">&nbsp;</td>
-						<td id="advancedSearchHeaderTd" height="1%" valign="top" bgcolor="#EAEAEA" style="border-left:solid #cccccc 1px #cccccc;border-top:solid 1px #cccccc ;border-bottom:solid 1px #cccccc;bordercolorlight:#EAEAEA">
+					<tr id="collapsableHeader" valign="top"  width="97%" height="20">
+						<td valign="top"   >&nbsp;</td>
+						<td id="advancedSearchHeaderTd" valign="top" style="border-top: 1px solid #cccccc; border-left:1px solid #cccccc;border-bottom:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif">
 							<b><bean:message key="query.advancedSearchHeader"/></font></b>									
 						</td>
-						<th id="imageContainer" valign="center" align="right" height="1%" bgcolor="#EAEAEA" style="border-top:solid 1px #cccccc;border-bottom:solid 1px #cccccc;border-right:solid 1px #cccccc;bordercolorlight:#EAEAEA;">
-							<a id="image" onClick="expand()" style="display:block"> <img src="images/advancequery/nolines_plus.gif" hspace="3" vspace="3"/> </a>
+						<th id="imageContainer" valign="middle" align="right" style="border-top: 1px solid #cccccc; border-right:1px solid #cccccc;border-bottom:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" >
+							<a id="image" onClick="expand()" style="display:block"> <img src="images/advancequery/nolines_plus.gif" /> </a>
 						</th>
-						<td  height="1%">&nbsp;</td>
+						<td  >&nbsp;</td>
 					</tr>
-					<tr valign="top" >
-						<td valign="top"  style="display:none" id="td1">&nbsp;</td>
-						<td colspan="2" valign="top" height="1px" >
-							<table valign="top" class="collapsableTable" style="display:none" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" id="collapsableTable">
+					<tr valign="top" ><td valign="top" id="td1">&nbsp;</td>
+						<td colspan="2"><table  class="collapsableTable" style="display:none" width="100%" cellspacing="0" cellpadding="0"  id="collapsableTable" >
 								<tr id="class_view">
-									<td class="standardTextQuery"><html:checkbox  property="classChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>'> <bean:message key="query.class"/></html:checkbox></td>
+									<td class="standardTextQuery" style="border-top: 1px solid #cccccc; "><html:checkbox  property="classChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>'> <bean:message key="query.class"/></html:checkbox></td>
 								</tr>
 								<tr id="attribute_view" >
 									<td class="standardTextQuery"><html:checkbox  property="attributeChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>' > <bean:message key="query.attribute"/></html:checkbox></td>
@@ -141,10 +139,9 @@ else
 				 	</tr>
 					<tr valign="top" class="row" width="98%"  height="1%">
 						<td  height="1%">&nbsp;</td>
-						<td colspan="2"  height="1%" valign="top" bgcolor="#EAEAEA"  class="tdWithoutBottomBorder">
+						<td colspan="2"  valign="top" style="border-top: 1px solid #cccccc; border-left:1px solid #cccccc;border-bottom:0px solid #cccccc;border-right:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" height="30">
 							
-							<img src="images/advancequery/ic_search.gif" hspace="1" vspace="1"/>
-							<b><font face="Arial" size="2"><bean:message key="query.searchResults"/></font>	</b>				
+							<img src="images/advancequery/t_search_results.gif" hspace="3" />			
 						</td>
 						<td  height="1%">&nbsp;</td>
 					</tr>
