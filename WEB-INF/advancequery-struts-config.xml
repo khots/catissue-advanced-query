@@ -454,6 +454,12 @@ PUBLIC
         		<forward name="success" path=".query.queryWorkFlowConfirmMsgDef" />
         </action>
         
+        <action path="/WorkflowAjaxHandler" 
+        type="edu.wustl.query.action.WorkflowAjaxHandlerAction"
+        validate="false"
+		scope="request">
+        </action>
+        
         <!-- TO DO  -->
       <action path="/QuerySearchWizard" 
         type="edu.wustl.query.action.QueryAction">
