@@ -197,10 +197,10 @@
 		 	   
 	   if(dataObj.style.display != 'none') //Clicked on - image
 		{
-			advancedSearchHeaderTd.style.borderBottom = "1px solid #000000";
-            imageContainer.style.borderBottom = "1px solid #000000";
+			advancedSearchHeaderTd.style.borderBottom = "1px solid #cccccc";
+            imageContainer.style.borderBottom = "1px solid #cccccc";
 			dataObj.style.display = 'none';				
-			switchObj.innerHTML = '<img src="images/advancequery/nolines_plus.gif" border="0" hspace="3" vspace="3"/>';
+			switchObj.innerHTML = '<img src="images/advancequery/nolines_plus.gif" border="0"/>';
 			if(navigator.appName == "Microsoft Internet Explorer")
 			{					
 				resultSetDivObj.height = "530";
@@ -231,7 +231,7 @@
 				resultSetDivObj.height = "420";
 			}
 			resultSetDiv.style.height = "420"+'px'
-			switchObj.innerHTML = '<img src="images/advancequery/nolines_minus.gif" border="0" hspace="3" vspace="3"/>';
+			switchObj.innerHTML = '<img src="images/advancequery/nolines_minus.gif" border="0" />';
 		}
 	}
 	
@@ -479,7 +479,7 @@
 				var functionCall = "addNodeToView('"+id+"')";		
 				var entityName = "<font color=#0000CC>"+name +"</font>";
 				var tooltipFunction = "Tip('"+description+"', WIDTH, 200)";				
-				row = row+'<tr><td><a  class="bluelink" onmouseover="'+tooltipFunction+'"  href="javascript:'+functionCall+'">' +entityName+ '</a></td></tr>';
+				row = row+'<tr><td><a  class="bluelink" onmouseover="'+tooltipFunction+'"  href="javascript:'+functionCall+'">' +name+ '</a></td></tr>';
 				
 			}
 			row = row+'</table>';		
@@ -517,7 +517,7 @@
 				var functionCall = "retriveEntityInformation('loadDefineSearchRules.do','categorySearchForm','"+id+"','"+textField+"','"+attributeChecked+"','"+permissibleValuesChecked+"')";		
 				var entityName = "<font color=#0000CC>"+name +"</font>";
 				var tooltipFunction = "Tip('"+description+"', WIDTH, 200)";				
-				row = row+'<tr><td ><a  class="bluelink"  onmouseover="'+tooltipFunction+'"  href="javascript:'+functionCall+'">' +entityName+ '</a></td></tr>';
+				row = row+'<tr><td ><a  class="bluelink"  onmouseover="'+tooltipFunction+'"  href="javascript:'+functionCall+'">' +name+ '</a></td></tr>';
 			}			
 			row = row+'</table>';		
 			element.innerHTML =row;
@@ -903,11 +903,13 @@
           
          } 
 
-	function produceQuery(isTopButton, url,nameOfFormToPost, entityName , attributesList) 
+	function produceQuery(isEditLimit, url,nameOfFormToPost, entityName , attributesList) 
 	{
         var strToCreateQueyObject = createQueryString(nameOfFormToPost, entityName , attributesList,'addLimit');
- 		if(navigator.appName == "Microsoft Internet Explorer")
+ 	  
+	/*	if(navigator.appName == "Microsoft Internet Explorer")
 		{
+			
 			if(isTopButton)
 			{
 				var isEditLimit = document.getElementById('TopAddLimitButton').value;
@@ -919,15 +921,16 @@
 	
 		}else
 		{
-		if(isTopButton)
-			{
-				var isEditLimit = document.forms[nameOfFormToPost].elements["TopAddLimitButton"].value;
+		    alert(document.forms[nameOfFormToPost].elements["TopAddLimitButton"].value);
+			if(isTopButton)
+		    {
+				var isEditLimit = document.forms[nameOfFormToPost].elements['TopAddLimitButton'].value;
 			}
 			else 
 			{
 				var isEditLimit = document.forms[nameOfFormToPost].elements["BottomAddLimitButton"].value;
 			}
-		}
+		}*/
 		if(isEditLimit == 'Add Limit')
 		{	
 			//document.applets[0].addExpression(strToCreateQueyObject,entityName);
@@ -1475,15 +1478,15 @@ var jsReady = false;
 			selectOptions(document.forms['categorySearchForm'].selectedColumnNames)
 			document.forms['categorySearchForm'].action = "SearchDefineViewResults.do";	
 			document.forms['categorySearchForm'].submit();
-		}else
+		}
+		else
 		{
 		
-		if (text != "save")
-		{
+		  if (text != "save")
+		  {
 			showWaitPage();
-		}
-	    
-		  var url = "ValidateQuery.do";
+		  }
+	      var url = "ValidateQuery.do";
 		  request.open("POST",url,true);	
 		  request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 		  request.send(actionURL);		
