@@ -299,7 +299,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String ELEMENT_TAG_VALUE = "tag-value";
 	public static final String TAGGED_VALUE_NOT_SEARCHABLE = "NOT_SEARCHABLE";
 	public static final String TAGGED_VALUE_NOT_VIEWABLE = "NOT_VIEWABLE";
-	
+	public static final String TAGGED_VALUE_PRIMARY_KEY = "PRIMARY_KEY";
+	public static final String TAGGED_VALUE_PV_FILTER = "PV_FILTER";
 	public static final String CONTAINMENT_OBJECTS_MAP = "containmentObjectMap";
 	public static final String ENTITY_EXPRESSION_ID_MAP = "entityExpressionIdMap";
 	
