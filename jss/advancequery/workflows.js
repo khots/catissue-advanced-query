@@ -73,7 +73,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	//alert('55 queryTitleControl='+queryTitleControl);
 	operandsTd.appendChild(queryTitleControl);
 	operandsTd.appendChild(queryTypeControl);
-	operandsTd.appendChild(createLink("Execute ","#"));
+	operandsTd.appendChild(createLink("Execute ","javascript:executeGetCountQuery('"+queryCount+"')"));
 	operandsTd.appendChild(createLink("Delete ","#"));
 	rowObj.appendChild(operandsTd);
 	
