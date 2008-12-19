@@ -71,11 +71,11 @@
 					
 
 					<td valign="top" height="60%">
-							<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%" bordercolorlight="#000000" >        
+							<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  >        
 								
 							<tr>
 							<td>
-								<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="30%" bordercolorlight="#000000" class='tbBordersAllbordersBlack'>
+								<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="30%"  class='login_box_bg'>
 							
 												<tr id="rowMsg">
 													<td id="validationMessagesSection"  class='validationMessageCss'>
@@ -95,15 +95,15 @@
 							</td>
 							</tr>							
 							<tr id="AddLimitsButtonMsg" border="0">
-								<td valign="top" id="AddLimitsButtonSection">
+								<td valign="top" id="AddLimitsButtonSection" style="padding-bottom:3px;">
 										<div id="AddLimitsButtonRow" align="right" border="0"></div>
 								</td>
 							</tr>							
 							<tr>							
-							<td valign="top">								
-								<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%" bordercolorlight="#000000">
+							<td>								
+								<table border="0" bordercolor="#cccccc" width="100%" cellspacing="0" class="login_box_bg" cellpadding="0" bgcolor="#FFFFFF" height="100%">
 								<tr>
-										<td height="400px">											
+										<td height="400px" >											
 											<div id="queryTableTd" style="overflow:auto;height:400;width:100%">
 											<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 												id="DAG" width="100%" height="100%"
@@ -153,7 +153,7 @@
 					 <td width="50%" align="left">
 					  <table border="0" cellspacing="0" cellpadding="0">
 						<tr>
-							<td><img src="images/advancequery/b_save.gif" width="51"  hspace="3" onclick="validateQuery('save');"/></td>
+							<td><img src="images/advancequery/b_save.gif"   hspace="3" onclick="validateQuery('save');"/></td>
 							 <td><img src="images/advancequery/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td>
 						</tr>
 					 </table>
@@ -173,6 +173,7 @@
 					</tr>
 			</table>          
 			</td></tr>
+			<tr height="7"> <td>&nbsp;</td></tr>
 
 </table>               
 </html:form>
