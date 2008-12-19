@@ -1619,11 +1619,10 @@ td.queryModuleTabMenuItem{ /* for the off state of the tab menu (top) cells */
 }
 .collapsableTable
   {
-  border-left:solid 1px;
-  border-top:solid 0px;
-  border-bottom:solid 1px;
-  border-right:solid 1px;
-  bordercolorlight:#EAEAEA;
+  border-left:solid 1px #cccccc;
+  border-bottom:solid 1px #cccccc; 
+  border-right:solid 1px #cccccc;
+ 
   }
   .defineResultsViewMessage
   {
@@ -1671,7 +1670,7 @@ td.queryModuleTabMenuItem{ /* for the off state of the tab menu (top) cells */
  }
  .rowBGWhiteColor
  {
-	 background-color:#F4F4F5; /*#9FA2BA;  constant: light purple ;C4E2FF : for light purple*/	 
+	 background-color:#ffffff; /*#9FA2BA;  constant: light purple ;C4E2FF : for light purple*/	 
  }
 /* .standardTextQueryWithBackColor{ /* for stand-alone text not affected by any cascading text styles 
   font-family:arial,helvetica,verdana,sans-serif;
@@ -1687,6 +1686,7 @@ td.queryModuleTabMenuItem{ /* for the off state of the tab menu (top) cells */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.8em;
   color:#000000; /* constant: black */
+  background-image:url(../images/advancequery/bg_content_header.gif);
 }
 .dropdownQuery{ /* for stand-alone text not affected by any cascading text styles */
    font-family:arial,helvetica,verdana,sans-serif;
@@ -1699,6 +1699,38 @@ td.queryModuleTabMenuItem{ /* for the off state of the tab menu (top) cells */
   border-left:1px solid #000000; /* constant: dark gray */
   border-right:1px solid #000000; /* constant: dark gray */
 
+}
+
+.textfield_undefined {
+	font-family:Arial, Helvetica, sans-serif;
+	color: #000000;
+	font-size: 12px;
+	border: 1px solid #7f9db9;
+
+}
+.td_bgcolor_grey {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #000000;
+	background-color: #E2E2E2;
+}
+.grey_bold_big {
+	font-size: 14px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: #666666;
+}
+.login_box_bg {
+
+	width:100%;
+
+	border: 1px solid #cccccc;
+	background-color: #ffffff;
+}
+.table_header {
+	background-color: #999999;
+	background-image: url(../images/advancequery/bg_content_header.gif);
 }
 style for Participant.jsp 
  <style>
@@ -1924,7 +1956,7 @@ td.formFieldNoBordersQuery{ /* for the cell that contains the form elements */
 
  .bgWizardImage
  {
-	background-image: url(../images/top_bg_wiz.gif);
+	background-image: url(../images/advancequery/top_bg_wiz.gif);
  }
 
  .errorMessageFont
@@ -2029,4 +2061,21 @@ A.bluelink:link {
 	Text-Decoration: underline;
 	font-family:Arial, Helvetica, sans-serif;
 	font-size: 12px;
+
+}
+A.bluelink:active {color: #297cc7; 
+	font-family:Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	text-decoration: underline;
+}
+A.bluelink:visited {color: #297cc7; 
+font-family:Arial, Helvetica, sans-serif;
+	font-size: 12px;
+
+	Text-Decoration: underline;
+}
+A.bluelink:hover {color: #f16c00; 
+font-family:Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	Text-Decoration: none;
 }
