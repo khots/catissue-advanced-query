@@ -151,6 +151,10 @@
 						var nodetext = tree.getItemText(selectedOption);
 						var parentId = tree.getParentId(selectedOption);
 						var parentNodeText = tree.getItemText(parentId);
+						if(parentNodeText == "")
+						{
+						   continue;
+						}
 						var displaySelectedColumn = parentNodeText + " : " + nodetext;
 						selectedText[selectedCount] = displaySelectedColumn;
 						selectedValues[selectedCount] = selectedOption;
