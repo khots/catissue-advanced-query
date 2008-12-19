@@ -10,7 +10,8 @@
 <script language="JavaScript" type="text/javascript" src="jss/advancequery/newReleaseMsg.js"></script>
 <link rel="stylesheet" type="text/css" href="css/advancequery/catissue_suite.css" />
 <link href="css/advancequery/inside.css" rel="stylesheet" type="text/css" />
-<script  src="jss/advancequery/workflows.js"></script>	
+<script  src="jss/advancequery/workflows.js"></script>
+<script src="jss/ajax.js"></script>	
 <script type="text/JavaScript">
 
 
@@ -139,6 +140,45 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 function submitWorflow()
 {
 	document.forms[0].submit();
+}
+
+function executeGetCountQuery(queryId)
+{
+	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId;
+	var request=newXMLHTTPReq();
+	//alert("after newXMLHTTPReq");
+	if(request == null)
+	{
+		alert ("Your browser does not support AJAX!");
+		return;
+	}
+	var handlerFunction = getReadyStateHandler(request,responseHandler,true); 
+	request.onreadystatechange = handlerFunction; 
+	request.open("POST",url,true);    
+	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+	request.send("");
+}
+
+function responseHandler(response)
+{
+	  var jsonResponse = eval('('+ response+')');
+          var hasValue = false;
+          if(jsonResponse.executionQueryResults!=null)
+          {
+             var num = jsonResponse.executionQueryResults.length; 
+				for(var i=0;i<num;i++)
+			  {
+					 var queryId = jsonResponse.executionQueryResults[i].queryId;
+					 var queryIndex = jsonResponse.executionQueryResults[i].queryIndex;
+					 var queryResult = jsonResponse.executionQueryResults[i].queryResult;
+					if(queryResult!=-1)
+					{
+						var object=document.getElementById("selectedqueryId_"+queryIndex);
+						var parentIObj=object.parentNode;
+						parentIObj.appendChild(createTextElement(queryResult));
+					}
+				}
+          } 
 }
 
 //-->
