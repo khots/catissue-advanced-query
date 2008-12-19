@@ -50,19 +50,19 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 </td>
 </tr>
 <tr height="5%" valign="top"> 
-		<td colspan="4" valign="bottom" height="10%">
+		<td colspan="4" valign="top" height="10%">
 		<table border="0"  width="100%" cellspacing="0" cellpadding="0"   height="24"  >
-		<tr height="1%" valign="bottom">
-		 <td width="2%" valign="bottom" >&nbsp;</td>
+		<tr height="1%" valign="top">
+		 <td width="2%" valign="top" >&nbsp;</td>
 		 <td valign="bottom" align="left" width="90-%" >
 		 <img src="images/advancequery/b_save.gif" width="51"  hspace="3" vspace="3" onclick="saveClientQueryToServer('save')" />
 	 </td>
-   	 <td align="right" valign="bottom">
+   	 <td align="right" valign="top">
 		 <img src="images/advancequery/b_prev.gif" width="72"  hspace="3" vspace="3" onclick="defineSearchResultsView()"/>
 	 </td>	
-		 
 		 <td width="2%">&nbsp;</td>
 </tr>
+<tr height="2"><td>&nbsp;</td></tr>
 
 </table>	
 
