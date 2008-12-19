@@ -350,7 +350,7 @@ public class GenerateHtml
 					"src=\"images/advancequery/calendar.gif\" width=\"24\" height=\"22\"" +
 					" border=\"0\" onclick='scwShow("+ textBoxId + ",event);'>";
 			innerStr = innerStr.append("\n<td width='3%' class='"+ cssClass
-					    + "' valign='top' id=\"" + calendarId + "\">"
+					    + "' valign='middle' align='left' id=\"" + calendarId + "\">"
 						+ "\n" + imgStr);
 		}
 		else
@@ -392,21 +392,20 @@ public class GenerateHtml
 	{
 		StringBuffer generatedPreHTML = new StringBuffer(Constants.MAX_SIZE);
 		String header = Constants.DEFINE_SEARCH_RULES;
-		String html = "<table border=\"0\" width=\"100%\" height=\"30%\" " +
-					  "cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#EAEAEA\" >" +
-					  "\n<tr height=\"2%\" bgcolor=\"#EAEAEA\" > " +
-					  "<td class='standardLabelQuery' valign='top' height=\"2%\" " +
-					  "colspan=\"8\" bgcolor=\"#EAEAEA\" ><font face=\"Arial\" size=\"2\" " +
-					  "color=\"#000000\"><b>";
-		generatedPreHTML.append(html);
-		generatedPreHTML.append(header + " '" + entityName + "'</b></font>");
+		String html = "<table border=\"0\" width=\"100%\" height=\"30%\" background=\"images/advancequery/bg_content_header.gif\" " +
+					  "cellspacing=\"0\" cellpadding=\"0\" >" +
+					  "\n<tr height=\"2%\" >" +
+					  "<td  valign='middle' height=\"2%\" class=\"grey_bold_big\" " +
+					  "colspan=\"8\" ><img src=\"images/advancequery/t_define_limits.gif\"  align=\"absmiddle\" />";
+		generatedPreHTML.append(html); 
+		generatedPreHTML.append(" '" + entityName + "'");
 		generatedPreHTML.append(endTD);
 		generatedPreHTML.append("####");
 		generatedPreHTML.append(generateHTMLForButton(entityId,attributeCollection, isEditLimits));
 		generatedPreHTML.append("\n</tr></table>");
 		return generatedPreHTML;
 	}
-	/**
+	/** 
 	 * Generates html for button.
 	 * @param entityName
 	 *            entityName
@@ -420,20 +419,23 @@ public class GenerateHtml
 	{
 		String buttonName = "addLimit";
 		String buttonId = "";
+		String imgsrc="images/advancequery/b_add_limit.gif";
 		StringBuffer html = new StringBuffer(Constants.MAX_SIZE);
-		String temp = "\n<td bgcolor=\"#EAEAEA\" colspan=\"2\" " +
-				"height=\"2%\" valign=\"top\" align=\"right\" >";
+		
+		String temp = "\n<td  colspan=\"2\" " +
+						"height=\"30\" valign=\"middle\" align=\"right\" >";
 		buttonId = "TopAddLimitButton";
 		html.append(temp);
 		String buttonCaption = "Add Limit";
 		if (isEditLimits)
 		{
 			buttonCaption = "Edit Limit";
+			imgsrc="images/advancequery/b_edit_limit.gif";
 		}
-		html.append("\n<input id=\"" + buttonId + "\" type=\"button\" name=\"" + buttonName
-				+ "\" onClick=\"produceQuery('" + buttonId
+		html.append("\n<img src=\"" + imgsrc + "\"  id=\"" + buttonId
+				+ "\" onClick=\"produceQuery('" + buttonCaption
 				+ "', 'addToLimitSet.do', 'categorySearchForm', '" + entityName + "','"
-				+ attributesStr + "')\" value=\"" + buttonCaption + "\"></input>");
+				+ attributesStr + "')\" value=\"" + buttonCaption + "\"/>");
 		html.append(endTD);
 		return html.toString();
 	}
@@ -727,9 +729,10 @@ public class GenerateHtml
 			+ "' id=\""
 			+ componentId
 			+ "\" height=\"6%\" >\n"
-			+ "<td valign='top' align='right' "
+			+ "<td valign='middle' align='right' "
 			+ "class='standardLabelQuery' nowrap='nowrap' width=\"15%\">";
 		generatedHTML.append(html);
+		
 		return bgColor;
 	}
 	/**
