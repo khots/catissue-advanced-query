@@ -78,13 +78,12 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	rowObj.appendChild(operandsTd);
 	
 	var reorderTd=document.createElement("td");
-	var trImgup=new Image ( );
+	/*var trImgup=new Image ( );
 	trImgup.src = "images/advancequery/ic_up.gif";
 	reorderTd.appendChild(trImgup);
 	var trImgDown=new Image ( );
 	trImgDown.src = "images/advancequery/ic_down.gif";
-	reorderTd.appendChild(trImgDown);
-//	rowObj.appendChild(document.createElement("td"));
+	reorderTd.appendChild(trImgDown);*/
 	rowObj.appendChild(reorderTd);
 	
 	tableObj.appendChild(rowObj);
