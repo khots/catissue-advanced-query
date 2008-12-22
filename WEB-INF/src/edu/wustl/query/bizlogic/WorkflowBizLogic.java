@@ -71,4 +71,11 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	{
 		
 	}
+	
+	
+	public Long executeGetCountQuery(Long queryId)
+	{
+		return 1000l;
+	}
+	
 }
