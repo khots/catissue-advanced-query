@@ -16,9 +16,11 @@
 	<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmXTreeCommon.js"></script>
 	<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlXTree.js"></script>
 	<script src="jss/advancequery/ajax.js" type="text/javascript"> </script>
+	<script src="jss/advancequery/VI.js" type="text/javascript"> </script>
 
 	<script>
-	
+	<%String srcVocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
+	String srcVocabVersion = VocabUtil.getVocabProperties().getProperty("source.vocab.version"); %>
 	// selectedPvs will store 
 	selectedPvs =new Array();
 	// selectedPvsCheckedBoxIdArray will store the  selected PVs from vocabulary that will deleted after clicked on add and stored in selectedPvs
@@ -33,146 +35,151 @@
 	{
 		parent.pvwindow.hide();
 	}
+	
 	//When user click on the add button to add permissible values in the selected list
-	function addPermValues()
-	{	
-		
-	var checkedNode=0;
-	//Inserting first cell as checkbox for deleting selected rows
-	for(j=0;j<selectedPvsCheckedBoxIdArray.length;j++)
-		{
-		if(!selectedPvs.inArray(selectedPvsCheckedBoxIdArray[j]) && selectedPvsCheckedBoxIdArray[j]!=''  )
-			{
-			try{
-				var vocabName=selectedPvsCheckedBoxIdArray[j].split(":");
-				if(vocabName.length>1) // No need to include Root node in list make because its has id as only MED name not CONCEPTCODE:Permissible Value
-				{
-						
-				var table = document.getElementById('selectedPermValues_'+vocabName[0]);
-				var lastRow = table.rows.length;
-				var row = table.insertRow(lastRow); 
-				if(lastRow>0)
-					{
-					document.getElementById('selectedPermValues_Div_'+vocabName[0]).style.display = '';;
-					}
-					
-					//inserting cell as checkbox
-					var cell1 = row.insertCell(0);
-					cell1.className="black_ar_td";
-					var chkBox = document.createElement('input');
-					chkBox.setAttribute('type', 'checkbox');
-					chkBox.setAttribute('name', 'checkboxName_'+vocabName[0]);
-					chkBox.setAttribute('id', selectedPvsCheckedBoxIdArray[j]);
-					chkBox.setAttribute('value', document.getElementById(selectedPvsCheckedBoxIdArray[j]).value);
-					cell1.align = 'center';
-					cell1.appendChild(chkBox);
-
-					//Inserting 2nd cell as textBox
-					var cell2 = row.insertCell(1);
-					cell2.className="black_ar_td"; 
-					cell2.innerHTML= document.getElementById(selectedPvsCheckedBoxIdArray[j]).value;
-						
-					row.myRow = new rowObj(chkBox);
-					
-					selectedPvs[numberOfPvs]=selectedPvsCheckedBoxIdArray[j];
-					numberOfPvs++;
-					
-					uncheckAllSelectedPVs(vocabName[0]);
-				}
-			 }catch(e){}
-					
-			}
-		}
+function addPermissibleValuesToList()
+{	
+	if(set_mode=="Searching")
+	{
+		alert("Searched Permissible Values  are not allowed to add to list.Only Source Vocabulary"+
+		"permissible values will be added. Please go to Restore Default option.");	
 	}
+ var checkedNode=0;
+//Inserting first cell as checkbox for deleting selected rows
+ for(j=0;j<selectedPvsCheckedBoxIdArray.length;j++)
+	{
+	if(!selectedPvs.inArray(selectedPvsCheckedBoxIdArray[j]) && selectedPvsCheckedBoxIdArray[j]!=''  )
+	{
+		try
+		{	
+			
+			var vocabName=selectedPvsCheckedBoxIdArray[j].split(":"); // selectedPvsCheckedBoxIdArray[j]  format MED1.0:52014
+			
+			if(vocabName.length>1) // No need to include Root node in list make because its has id as only MED name not CONCEPTCODE:Permissible Value
+			{
+				//alert(set_mode+"  "+vocabName[0]+"      "+ '<%=srcVocabName%>'+'<%=srcVocabVersion%>');
+				if(set_mode=="Searching" && vocabName[0].equalsIgnoreCase('<%=srcVocabName%>'+'<%=srcVocabVersion%>') ) 
+				{
+					createRows(vocabName,selectedPvsCheckedBoxIdArray[j]);
+				}
+				else if(set_mode=="Mapping")
+				{
+					createRows(vocabName,selectedPvsCheckedBoxIdArray[j]);
+				}
+			}
+		}catch(e){}
+	}
+	}
+	if(selectedPvs.length>0)
+	{
+		document.getElementById("deactivateDiv").innerHTML="<a href='javascript:addPvsToCondition();'><img id='okImage' src='images/advancequery/b_ok.gif' border='0' alt='OK' width='44' height='23'></a>"
+	}
+}
+
+function createRows(vocabName,selectedPvsCheckedBoxId)
+{
+	
+					var table = document.getElementById('selectedPermValues_'+vocabName[0]);
+					var lastRow = table.rows.length;
+					var row = table.insertRow(lastRow); 
+					if(lastRow>=0)
+						{
+						document.getElementById('selectedPermValues_Div_'+vocabName[0]).style.display = '';;
+						}
+						
+						//inserting cell as checkbox
+						var cell1 = row.insertCell(0);
+						cell1.className="black_ar_td_dy"; 
+						cell1.innerHTML= "&nbsp;&nbsp;&nbsp;&nbsp;";
+						//inserting cell as checkbox
+						var cell2 = row.insertCell(1);
+						cell2.className="black_ar_td_dy"; 
+						
+						
+						var chkBox = createNamedElement('input','checkboxName_'+vocabName[0]);
+						chkBox.setAttribute('type', 'checkbox');
+						//chkBox.setAttribute('name', 'checkboxName_'+vocabName[0]);
+						chkBox.setAttribute('id', selectedPvsCheckedBoxId);
+						chkBox.setAttribute('value', document.getElementById(selectedPvsCheckedBoxId).value);
+						cell2.className="black_ar_td_dy"; 
+						cell2.align = 'left';
+						cell2.appendChild(chkBox);
+						
+						//Inserting 2nd cell as textBox
+						var cell3 = row.insertCell(2);
+						cell3.className="black_ar_td_dy"; 
+						cell3.align = 'left';
+						cell3.innerHTML= document.getElementById(selectedPvsCheckedBoxId).value;
+							
+						row.myRow = new rowObj(chkBox);
+						
+						selectedPvs[numberOfPvs]=selectedPvsCheckedBoxId;
+						numberOfPvs++;
+						
+						//uncheckAllSelectedPVs(vocabName[0]);
+				
+}
 	function rowObj(one)
 	{
 	this.one=one;
 	}
+	
 
-Array.prototype.inArray = function (value,caseSensitive)
-		// Returns true if the passed value is found in the
-		// array. Returns false if it is not.
-		{
-			var i;
-			for (i=0; i < this.length; i++)
-			{
-				// use === to check for Matches. ie., identical (===),
-				if(caseSensitive)
-				{ //performs match even the string is case sensitive
-					if (this[i].toLowerCase() == value.toLowerCase()) {
-					return true;
-					}
-				}else{
-					if (this[i] == value) {
-					return true;
-					}
-				}
-			}
-		return false;
-		};
 	/*method is used to delete the selected row as well all row in one go*/
 	function deleteSelectedPvsRow()
 	{
-		var checkedObjArray = new Array();
+		
 		var checkedObjtodelete=new Array();
 		var cCount = 0;
-		
+		//alert(selectedPvs);
 		for(j=0;j<selectedPvs.length;j++)
 		{
 		try{
 			var vocabName=selectedPvs[j].split(":");
 			if(vocabName.length>1) // No need to include Root node in list make because its has id as only MED name not CONCEPTCODE:Permissible Value
 			{
-			
-			var table = document.getElementById('selectedPermValues_'+vocabName[0]);
-		   	
+			    var checkedObjArray = new Array();
+				var table = document.getElementById('selectedPermValues_'+vocabName[0]);
 				for (var i=0; i<table.rows.length; i++)
 				{		
-					 if (table.rows[i].myRow && table.rows[i].myRow.one.getAttribute('type') == 'checkbox' && table.rows[i].myRow.one.checked)
-					 {
-					
+					if (table.rows[i].myRow && table.rows[i].myRow.one.getAttribute('type') == 'checkbox' && table.rows[i].myRow.one.checked)
+					{
 						checkedObjArray[cCount] = table.rows[i];
 						checkedObjtodelete[cCount]=table.rows[i].myRow.one.getAttribute('id');
 						deleteFromArray(checkedObjtodelete,selectedPvs);
 						cCount++;
 					}
 				}
+				
 				deleteRows(checkedObjArray);
 				cCount=0;
-				if(table.rows.length==1)
+				if(table.rows.length==0)
 				{
-						document.getElementById('selectedPermValues_Div_'+vocabName[0]).style.display = 'none';
-						document.getElementById("pvSelectedCB_"+vocabName[0]).checked=false;
+					document.getElementById("pvSelectedCB_"+vocabName[0]).checked=false;
+					document.getElementById('selectedPermValues_Div_'+vocabName[0]).style.display = 'none';
+						
 				}
 				
 			}
 		}catch(e){}
 		}
-		 deleteFromArray(checkedObjtodelete,selectedPvs);
-		 deleteFromArray(checkedObjtodelete,selectedPvsCheckedBoxIdArray);
 		
+		deleteFromArray(checkedObjtodelete,selectedPvs);
+		selectedPvs=removeElementsFromArray(selectedPvs, isNullOrUndefined);
+		if(selectedPvs.length==0)
+			{
+				document.getElementById("deactivateDiv").innerHTML="<a href='javascript:doNothing();'><img id='okImage' src='images/advancequery/b_ok_inactive.gif' border='0' alt='OK' width='44' height='23'></a>"
+			}
 		
 	}
 	function deleteRows(rowObjArray)
 	{
-		
 		for (var i=0; i<rowObjArray.length; i++) {
 		   var rIndex = rowObjArray[i].sectionRowIndex;
-		rowObjArray[i].parentNode.deleteRow(rIndex);
+			rowObjArray[i].parentNode.deleteRow(rIndex);
 	   }
 	}
-	function deleteFromArray(deleteObj,array)
-	{
-		
-		for(var i=0;i<array.length;i++)
-		{
-			
-			if( deleteObj.inArray(array[i]))
-			{
-				delete array[i];
-			}
-		}
-	}
+	
 		//method called when user clicks on OK button
 	function addPvsToCondition()
 	{
@@ -199,12 +206,11 @@ Array.prototype.inArray = function (value,caseSensitive)
 	// this method will send the selected values to the parent window from open child window
 	function sendValueToParent(pvList,pvNameList)
     {
-       parent.window.getValueFromChild(pvList,pvNameList);
-
-        parent.pvwindow.hide();
-
-        return false;
+		parent.window.getValueFromChild(pvList,pvNameList);
+		parent.pvwindow.hide();
+		return false;
    }
+   
    //This method will be called when user clicks on the vocabulary check box
    function refreshWindow(vocabCheckBoxId,vocabName,vocabVer)
    {
@@ -249,6 +255,35 @@ Array.prototype.inArray = function (value,caseSensitive)
 				
 				 document.getElementById(selectedCheckedBoxVocabDivID).style.display = 'none';
 			}
+			
+			/* code to support one vocab at a time  START*/
+			var elements=document.getElementsByName("vocabNameAndVersionCheckbox");
+			for(var i=0;i<elements.length;i++)
+			{
+				
+				if(elements[i].id!=vocabCheckBoxId)
+				{
+					//alert(elements[i].id+"    "+vocabCheckBoxId);
+					document.getElementById("main_div_"+elements[i].id).style.display = 'none';
+					
+					uncheckAllAndDeleteFromArray(elements[i].id.replace("vocab_",""));
+					//need to delete all the rows of right hand side selected list
+					var tableid =document.getElementById("selectedPermValues_"+elements[i].id.replace("vocab_",""));
+					for(var j=0;j<tableid.rows.length;j++)
+					{
+						tableid.rows[j].myRow.one.checked=1;
+						
+					}
+					
+					deleteSelectedPvsRow();
+				}
+				else
+				{
+					document.getElementById("main_div_"+elements[i].id).style.display = '';
+				}
+				
+			}
+			/* to support one vocab at a time  ENDED*/
 		
 		}
 	
@@ -272,23 +307,28 @@ Array.prototype.inArray = function (value,caseSensitive)
 		
 		if (document.getElementById(medCheckBoxId).checked==true)
 		{
-			document.getElementById("medDivId").style.display = '';
+			document.getElementById("main_div_"+medCheckBoxId).style.display = '';
 		} 
 		else 
 		{
-			document.getElementById("medDivId").style.display = 'none';
+			document.getElementById("main_div_"+medCheckBoxId).style.display = 'none';
 		}
 	}
 	 /*store all the ids of selected checkbox in the array*/
 	 function getCheckedBoxId(checkedBoxId)
 	 {
-		if(document.getElementById(checkedBoxId).checked)
+	 	if(document.getElementById(checkedBoxId).checked)
 		{
 			selectedPvsCheckedBoxIdArray[selectedPvsCheckedBox]=checkedBoxId;
 			selectedPvsCheckedBox++;
 		}
+		else if( !document.getElementById(checkedBoxId).checked)
+		{
+			deleteValueFromArray(checkedBoxId,selectedPvsCheckedBoxIdArray);
+		}
 	 }
 
+	 /** CHECKED and UNCHECKED METHOS for CHECKBOXES */
 	 /*when user click on the root node ro checkbox of the Vocabulary*/
 	 function setStatusOfAllCheckBox(rootCheckedBoxId)
 	 {
@@ -335,7 +375,6 @@ Array.prototype.inArray = function (value,caseSensitive)
 		for(i=0;i<el.length;i++)
 		{
 			void(el[i].checked=1)
-			
 			getCheckedBoxId(el[i].id);
 		}
 	}
@@ -345,25 +384,14 @@ Array.prototype.inArray = function (value,caseSensitive)
 		
 		void(d2=document);
 		void(e2=d2.getElementsByName(rootCheckedBoxId));
-		for(i=0;i<e2.length;i++)
+		for(var i=0;i<e2.length;i++)
 		{
 			void(e2[i].checked=0)
-			
 			deleteValueFromArray(e2[i].id,selectedPvsCheckedBoxIdArray)
 			
 		}
 	}
-	function deleteValueFromArray(value,array)
-	{
-			for(var i=0;i<array.length;i++)
-				{
-					
-					if( array.inArray(value))
-					{
-						delete array[i];
-					}
-				}
-	}
+	
 	function checkedUncheckedAllPvs(vocabName)
 	{
 		if(document.getElementById("pvSelectedCB_"+vocabName).checked)
@@ -389,7 +417,8 @@ Array.prototype.inArray = function (value,caseSensitive)
 		{
 			if(vocabCheckboxes[i].checked==1)
 			{
-					targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocabCheckboxes[i].value+"@"
+					targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocabCheckboxes[i].value+"@";
+					uncheckAllAndDeleteFromArray(vocabCheckboxes[i].id.replace("vocab_",""));
 			}
 		}
 		var searchTerm=document.getElementById("searchtextfield").value;
@@ -400,6 +429,7 @@ Array.prototype.inArray = function (value,caseSensitive)
 			alert ("Your browser does not support AJAX!");
 			return;
 		}
+		
 		// send request only first time when user click on the check box for other click  just hide and show the div 
 		var param = "searchTerm="+searchTerm+"&targetVocabsForSearchTerm="+targetVocabsForSearchTerm;
 		var actionUrl="SearchPermissibleValues.do";
@@ -431,50 +461,71 @@ Array.prototype.inArray = function (value,caseSensitive)
 		set_mode="Mapping";
 		document.getElementById("divForMappingMode").style.display = '';
 		document.getElementById("divForSearchingMode").style.display = 'none';
-	 }
-	 /******************************* Common Methods *******************************/
-	 /** method to show hide div*/
-	function showHide(elementid,imageId)
-	{
-		switchObj = document.getElementById(imageId);
-		if (document.getElementById(elementid).style.display == 'none')
+		document.getElementById("divForSearchingMode").innerHTML="";
+		
+		var targetVocabsForMappingMode="";
+		void(d=document);
+		void(vocabCheckboxes=d.getElementsByName("vocabNameAndVersionCheckbox"));
+		for(l=0;l<vocabCheckboxes.length;l++)
 		{
-			document.getElementById(elementid).style.display = '';
-			switchObj.innerHTML = '<img src="images/advancequery/nolines_minus.gif" align="absmiddle"/>';
-		} else {
-			document.getElementById(elementid).style.display = 'none';
-				switchObj.innerHTML = '<img src="images/advancequery/nolines_plus.gif" align="absmiddle"/>';
+				
+			var selectedCheckedBoxVocabDivID="main_div_"+vocabCheckboxes[l].id;
+			vocabNameAndVer=vocabCheckboxes[l].value.split(':');
+			
+			if(vocabNameAndVer[0].equalsIgnoreCase('<%=srcVocabName%>') && vocabNameAndVer[1].equalsIgnoreCase('<%=srcVocabVersion%>' ) )
+			{
+				vocabCheckboxes[l].checked=1;
+				document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
+				uncheckAllAndDeleteFromArray(vocabNameAndVer[0]+vocabNameAndVer[1]);
+				
+			}
+			else
+			{
+				vocabCheckboxes[l].checked=0;
+				document.getElementById(selectedCheckedBoxVocabDivID).style.display = 'none';
+				uncheckAllAndDeleteFromArray(vocabNameAndVer[0]+vocabNameAndVer[1]);
+			
+			}
 			
 		}
-	}
+		selectedPvsCheckedBoxIdArray=new Array();
+		
+		
+	 };
+	 
+	
 	</script>
 </head>
 
-<body>
+<body onLoad="Reload()">
 <link rel='STYLESHEET' type='text/css' href='../common/style.css'>
 <table width="100%"  border="0" cellspacing="0" cellpadding="7"><tr><td>
 <table width="100%" border="0" align="center" cellpadding="2" cellspacing="0">
 	<tr>
 		<td colspan="3" >
-		<table>
+		<table >
 			<tr>
-			<td class="content_txt_bold">Select Vocabulary: &nbsp;&nbsp;</td>
+			<td class="content_txt_bold" nowrap>Select Vocabulary: &nbsp;&nbsp;</td>
 		<%
 			List<IVocabulary> vocabs1 = (ArrayList)request.getSession().getAttribute("Vocabulries");
-			String srcVocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
-			String srcVocabVersion = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
 			for(int i=0;i<vocabs1.size();i++)
 			{
 				String value=vocabs1.get(i).getName() +":"+ vocabs1.get(i).getVersion();
 				String vocabNameWithVersion=vocabs1.get(i).getName() + vocabs1.get(i).getVersion();
+				if(i!=0 && i%5==0)
+				{%>
+					
+					</tr> <tr><td class="content_txt_bold" nowrap>&nbsp;&nbsp;</td>
+				<%}
 				if(vocabs1.get(i).getName().equalsIgnoreCase(srcVocabName) && vocabs1.get(i).getVersion().equalsIgnoreCase(srcVocabVersion))
 				{
 				
 				%>
-	  	<td><input  type="checkbox" name="vocabNameAndVersionCheckbox" checked="true"  id="<%=vocabNameWithVersion%>" value="<%=value%>"  onclick= "refreshMEDDiv(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"></td><td class="content_txt">&nbsp;<%=vocabNameWithVersion.toUpperCase()%> &nbsp;&nbsp;&nbsp;&nbsp;</td>
+	  	<td><input  type="radio" name="vocabNameAndVersionCheckbox" checked="true"  id="vocab_<%=vocabNameWithVersion%>" value="<%=value%>"  onclick= "refreshWindow(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"></td><td class="content_txt"><%=vocabNameWithVersion%> &nbsp;&nbsp;&nbsp;</td>
 		<%}else{%>
-		<td><input type="checkbox"  name="vocabNameAndVersionCheckbox" id="<%=vocabNameWithVersion%>" value="<%=value%>" onclick= "refreshWindow(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"></td><td class="content_txt">&nbsp;<%=vocabNameWithVersion.toUpperCase()%>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_<%=vocabNameWithVersion%>" value="<%=value%>"   onclick= "refreshWindow(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"></td><td class="content_txt"><%=vocabNameWithVersion%>&nbsp;&nbsp;&nbsp;</td>
 		<%}
+		
 		}%>
 		</tr>
 		</table>
@@ -485,8 +536,8 @@ Array.prototype.inArray = function (value,caseSensitive)
 			<table height="30" border="0" cellpadding="0" cellspacing="0">
 		     <tr><td><label><input name="searchtextfield" type="text" class="texttype" id="searchtextfield" value=""></label></td>
 				<td>&nbsp;</td>
-				<td><a href='#' onclick='serachForTermInVocab();'><img src="images/advancequery/b_go.gif" border='0' alt="Go" width="44" height="23"></a></td>
-				<td><a align="center" href='#' onclick='restoreDefault();' class='cancel' style="padding-left:10px" >Restore</a></td>
+				<td><a  href='javascript:serachForTermInVocab();'><img src="images/advancequery/b_go.gif" border='0' alt="Go" ></a></td>
+				<td style="padding-left:10px"><a href='javascript:doNothing();' onclick='restoreDefault();' ><img src="images/advancequery/b_restore_defaults.gif" border='0' alt="Restore Default" ></a></td>
 				<td id="searhLabel" class="content_txt" align="right" style="padding-left:10px">&nbsp;</td> 
 				</tr>
 			</table>
@@ -495,9 +546,8 @@ Array.prototype.inArray = function (value,caseSensitive)
 	</tr>
   </tr>
 	<tr>
-		<td colspan="3" class="td_greydottedline_horizontal">
-		
-	     </td>
+		<td colspan="3" height='7px' class="td_greydottedline_horizontal">
+		</td>
 	</tr>
 	<tr>
 		<td width="400px">
@@ -520,21 +570,18 @@ Array.prototype.inArray = function (value,caseSensitive)
 					
 								<%for(int i=0;i<vocabs1.size();i++)
 								{
-									System.out.println(vocabs1.get(i).getName()+ vocabs1.get(i).getVersion()+"________"+srcVocabName + srcVocabVersion );
 									if(!vocabs1.get(i).getName().equalsIgnoreCase(srcVocabName) || !vocabs1.get(i).getVersion().equalsIgnoreCase(srcVocabVersion))
-								{
-								System.out.println(vocabs1.get(i).getName()+ vocabs1.get(i).getVersion() );
-								%>
+								{%>
 						<tr>
 							  <td valign="top">
-								<div id="main_div_<%=vocabs1.get(i).getName()+vocabs1.get(i).getVersion()%>" style="width:250;display:none"></div>
+								<div id="main_div_vocab_<%=vocabs1.get(i).getName()+vocabs1.get(i).getVersion()%>" style="width:250;display:none"></div>
 							 </td>
 						</tr>
 								<%}else{%>
 						<tr>
 							
 							<td valign="top">
-								<div id="medDivId" style="width:250;">
+								<div id="main_div_vocab_<%=vocabs1.get(i).getName()+vocabs1.get(i).getVersion()%>" style="width:250;">
 								<% String treeData = (String)request.getSession().getAttribute(Constants.MED_PV_HTML); %>
 								<%=treeData%>
 								</div>
@@ -550,9 +597,9 @@ Array.prototype.inArray = function (value,caseSensitive)
 				</td>
 				<td valign="top" style="padding:0 7px 7px 7px;">
 						<div style="width: 250px; height: 300px; overflow:auto;border:1px solid Silver;" >
-						<table style="width: 250px; height: 300px;">
+						<table style="width: 240px; height: 290px;">
 						<tr>
-							
+							<td class="content_txt" align="right" style="padding-left:10px">This feature will be available in Iteration 9</td> 
 						</tr>
 						</table>
 						</div>
@@ -567,10 +614,10 @@ Array.prototype.inArray = function (value,caseSensitive)
 		<td align="center" valign="middle">
 			<table border="0" cellspacing="0" cellpadding="0">
                           <tr>
-                            <td height="22"><a href="#" onclick="addPermValues();"><img src="images/advancequery/b_add.gif" alt="Add" width="63" height="18" vspace="2" border="0" align="absmiddle" /></a></td>
+                            <td height="22"><a href="javascript:addPermissibleValuesToList();"><img src="images/advancequery/b_add.gif" alt="Add" width="63" height="18" vspace="2" border="0" align="absmiddle" /></a></td>
                           </tr>
                           <tr>
-                            <td height="22"><a href="#" onclick="deleteSelectedPvsRow();"><img src="images/advancequery/b_remove.gif" alt="Remove" width="63" height="18" vspace="2" border="0"></a></td>
+                            <td height="22"><a href="javascript:deleteSelectedPvsRow();"><img src="images/advancequery/b_remove.gif" alt="Remove" width="63" height="18" vspace="2" border="0"></a></td>
                           </tr>
                       </table>
 		</td> 
@@ -593,12 +640,16 @@ Array.prototype.inArray = function (value,caseSensitive)
 								String vacabNameWithVer=vocabs1.get(i).getName()+vocabs1.get(i).getVersion();
 								%>
 							<tr><td><div id = "selectedPermValues_Div_<%=vacabNameWithVer.toUpperCase()%>" style="display:none">
-							<table border = "0" id = "selectedPermValues_<%=vacabNameWithVer.toUpperCase()%>" cellpadding ="3" cellspacing ="0" width="100%">
+						
+							<table border = "0" id = "" cellpadding ="1" cellspacing ="3" width="100%">
 								<tr>
-									
+									<td colspan="3"> <table> <tr>
 									<td  align="left"><input type="checkbox" id="pvSelectedCB_<%=vacabNameWithVer.toUpperCase()%>" onclick="checkedUncheckedAllPvs('<%=vacabNameWithVer.toUpperCase()%>')"> </td>
 									<td  align="left" class="grid_header_text" ><%=vacabNameWithVer.toUpperCase()%></td>
+									</tr></table></td>
 								</tr>	
+							</table>
+							<table border = "0" id = "selectedPermValues_<%=vacabNameWithVer.toUpperCase()%>" cellpadding ="1" cellspacing ="3" width="100%">
 							</table></div>	
 							</td></tr>
 							<%}%>
@@ -616,8 +667,8 @@ Array.prototype.inArray = function (value,caseSensitive)
     <tr>
             <td height="35"><table border="0" cellspacing="0" cellpadding="0">
               <tr>
-                <td align="left"><a href="#" onclick="addPvsToCondition();"><img src="images/advancequery/b_ok.gif" border="0" alt="OK" width="44" height="23"></a></td>
-                <!--<td width="76" align="right"><a href="#" onclick= "cancelWindow()"><img src="images/advancequery/b_cancel.gif" border="0" alt="Cancel" width="66" height="23"></a></td>-->
+                <td align="left"><div id="deactivateDiv"><a href="javascript:doNothing();"><img id="okImage" src="images/advancequery/b_ok_inactive.gif" border="0" alt="OK" width="44" height="23"></a></div></td>
+               <!-- <td width="76" align="right"><a href="#" onclick= "cancelWindow()"><img src="images/advancequery/b_ok_inactive.gif" border="0" alt="Cancel" width="66" height="23"></a></td> -->
               </tr>
             </table></td>
     </tr> 
