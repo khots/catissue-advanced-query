@@ -1543,16 +1543,12 @@ var jsReady = false;
 			myWindow.close();
 		}
 	}
-	
 	function openPermissibleValuesConfigWindow(componentId,entityName,componentIdOfID)
 	{
 	   compId= componentId;
 	   compIdOfID=componentIdOfID;
-	   pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'SearchPermissibleValues.do?componentId='+componentId,'Search Permissible Values for \"'+entityName+'\"', 'width=930px,height=510px,center=1,resize=0,scrolling=1')
-	   pvwindow.onclose=function()
-	      { 
-	            return true;
-	      }
+	   pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'SearchPermissibleValues.do?componentId='+componentId,'Search Permissible Values for \"'+entityName+'\"', 'width=930px,height=510px,center=1,resize=0,scrolling=1');
+	   refresh=false;
 	}
 
 	function getValueFromChild(pvList,pvNameList)
@@ -1577,10 +1573,7 @@ var jsReady = false;
 						medConceptCodeList[j]=permValuesWithCodeArray[1];
 						j++;
 					}
-					/*if(permValuesWithCodeArray[1]!="")
-					{
-						pvValueList=pvValueList+permValuesWithCodeArray[0]+",";
-					}*/
+					
 				}
 			}
 			medConceptCodeList=medConceptCodeList.unique()
