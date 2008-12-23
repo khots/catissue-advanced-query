@@ -68,7 +68,7 @@ public class QueryServletContextListenerUtil
 		String vocabPropFile = Variables.applicationHome + System.getProperty("file.separator") + "WEB-INF" + System.getProperty("file.separator")
 				+ "classes" + System.getProperty("file.separator") + "vocab.properties";
 
-		System.setProperty("VOCAB_PROP_FILE", vocabPropFile);
+		System.setProperty("vocab.properties.file", vocabPropFile);
 
 	}
 
