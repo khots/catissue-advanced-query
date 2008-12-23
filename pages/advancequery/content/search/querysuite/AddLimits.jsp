@@ -113,8 +113,9 @@
 												
 												<param name="bgcolor" value="#869ca7" />
 												<param name="allowScriptAccess" value="sameDomain"/>
+												<param name="wmode" value="transparent"/>
 												<embed src="flexclient/advancequery/dag/DAG.swf?view=AddLimit&isQuery=<%=isQuery%>" quality="high" bgcolor="#869ca7"
-													width="100%" height="100%" name="DAG" align="middle"
+													width="100%" height="100%" name="DAG" align="middle" wmode="transparent"
 													play="true"
 													loop="false" 
 													
