@@ -92,7 +92,11 @@ body {
 	vertical-align:top;
 	padding-left:15px;
 }
-
+.black_ar_td_dy{
+	font-family: verdana;
+	font-size: 11px;
+	color: #000000;
+}
 .black_new{
 	font-family: verdana;
 	font-size: 11px;
