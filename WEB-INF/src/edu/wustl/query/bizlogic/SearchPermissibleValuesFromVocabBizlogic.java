@@ -28,12 +28,23 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 {
 
 	private LexBIGPermissibleValueManager pvManager = (LexBIGPermissibleValueManager) PermissibleValueManagerFactory.getPermissibleValueManager();
-	private IVocabularyManager vocabularyManager = VocabularyManager.getInstance();
+	private IVocabularyManager vocabularyManager = getInstance();
 
-	public List<IVocabulary> getVocabulries()
+	public List<IVocabulary> getVocabulries() throws VocabularyException
 	{
 		return vocabularyManager.getVocabularies();
 
+	}
+
+	private IVocabularyManager getInstance() {
+		// TODO Auto-generated method stub
+		try {
+			return VocabularyManager.getInstance();
+		} catch (VocabularyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public List<IConcept> getPermissibleValueList(AttributeInterface attribute, EntityInterface entity)
@@ -57,7 +68,7 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 	}
 
 	public Map<String, List<IConcept>> getMappedConcepts(AttributeInterface attribute, String targetVocabName, String targetVocabVer,
-			EntityInterface entity)
+			EntityInterface entity) throws VocabularyException
 	{
 		IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties().getProperty("source.vocab.name"), VocabUtil.getVocabProperties()
 				.getProperty("source.vocab.version"));
@@ -93,7 +104,7 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 
 		return conceptCodes;
 	}	
-	public List<IConcept> searchConcept(String term,String vocabName,String vocabVersion)
+	public List<IConcept> searchConcept(String term,String vocabName,String vocabVersion) throws VocabularyException
 	{
 		IVocabulary vocabulary = new Vocabulary(vocabName,vocabVersion);
 		return vocabularyManager.searchConcept(term, vocabulary);
@@ -103,11 +114,11 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 		return "<tr><td>&nbsp;</td><td class='black_ar_tt'>"+Constants.NO_RESULT+"<td></tr>";
 	}
 	public String getMappedVocabularyPVChildAsHTML(String vocabName,String vocabversoin, IConcept concept, String checkboxId) {
-		return "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class='black_ar_tt'> \n" +
-				"<input type='checkbox' name='"+vocabName+vocabversoin+"' id='"+checkboxId+"' value='"+concept.getCode()+":"+concept.getDescription()+"' onclick=\"getCheckedBoxId('"+checkboxId+"');\">&nbsp;&nbsp;"+concept.getCode()+":"+concept.getDescription()+"\n" +
-				"</input><td></tr>";
+		return "<tr ><td style='padding-left:30px'>&nbsp;</td><td class='black_ar_tt'> \n" +
+				"<input type='checkbox' name='"+vocabName+vocabversoin+"' id='"+checkboxId+"' value='"+concept.getCode()+":"+concept.getDescription()+"' onclick=\"getCheckedBoxId('"+checkboxId+"');\"></td><td class='black_ar_tt'>"+concept.getCode()+":"+concept.getDescription()+"\n" +
+				"<td></tr>";
 	}
-	public String getRootVocabularyNodeHTML(String vocabName,String vocabVer) {
+	public String getRootVocabularyNodeHTML(String vocabName,String vocabVer) throws VocabularyException {
 		String style="display:none";
 		String imgpath= "src=\"images/advancequery/nolines_plus.gif\"/";
 		String srcvocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
@@ -118,22 +129,28 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 			style="display:";
 			imgpath="src=\"images/advancequery/nolines_minus.gif\"/";
 		}
-		return "<table><tr><td colspan='2' class='grid_header_text'><a id=\"image_"+vocabName+vocabVer+"\"\n" +
+		return "<table cellpadding ='0' cellspacing ='1'><tr><td>" +
+				"<table cellpadding ='0' cellspacing ='1'><tr><td class='grid_header_text'><a id=\"image_"+vocabName+vocabVer+"\"\n" +
 				"onClick=\"showHide('inner_div_"+vocabName+vocabVer+"','image_"+vocabName+vocabVer+"');\">\n" +
-						"<img "+imgpath+" align='absmiddle'/></a><input type='checkbox' name='"+vocabName+vocabVer+"' id='root_"+vocabName+vocabVer+"' value='"+vocabName+"' onclick=\"setStatusOfAllCheckBox(this.id);\">&nbsp;&nbsp;"+vocabName+vocabVer+"\n" +
-								"</input></td></tr>" +
-								"<tr><td><div id='inner_div_"+vocabName+vocabVer+"' style='"+style+"'><table>";
+				"<img "+imgpath+" align='absmiddle'/></a></td><td><input type='checkbox' name='"+vocabName+vocabVer+"' id='root_"+vocabName+vocabVer+"' " +
+				"value='"+vocabName+"' onclick=\"setStatusOfAllCheckBox(this.id);\"></td>" +
+				"<td class='grid_header_text'>"+vocabName+vocabVer+"\n" +
+				"</td></tr></table>"+
+				"</td></tr><tr><td><div id='inner_div_"+vocabName+vocabVer+"' style='"+style+"'><table cellpadding ='0' cellspacing ='1'>";
 	}
 	public String getRootVocabularyHTMLForSearch(String vocabName,String vocabVer) {
 		
 		String style="display:none";
 		String imgpath= "src=\"images/advancequery/nolines_plus.gif\"/";
 		
-		return "<table><tr><td colspan='2' class='grid_header_text'><a id=\"image_"+vocabName+vocabVer+"\"\n" +
+		return "<table cellpadding ='0' cellspacing ='1'><tr><td>" +
+				"<table cellpadding ='0' cellspacing ='1'><tr><td class='grid_header_text'><a id=\"image_"+vocabName+vocabVer+"\"\n" +
 				"onClick=\"showHide('inner_div_"+vocabName+vocabVer+"','image_"+vocabName+vocabVer+"');\">\n" +
-						"<img "+imgpath+"align='absmiddle'></a><input type='checkbox' name='"+vocabName+vocabVer+"' id='root_"+vocabName+vocabVer+"' value='"+vocabName+"' onclick=\"setStatusOfAllCheckBox(this.id);\">&nbsp;&nbsp;"+vocabName.replace("srh_","")+vocabVer.replace("srh_","")+"\n" +
-								"</input></td></tr>" +
-								"<tr><td><div id='inner_div_"+vocabName+vocabVer+"' style='"+style+"'><table>";
+				"<img "+imgpath+"align='absmiddle'></a></td><td><input type='checkbox' name='"+vocabName+vocabVer+"' id='root_"+vocabName+vocabVer+"' " +
+				"value='"+vocabName+"' onclick=\"setStatusOfAllCheckBox(this.id);\"></td>" +
+				"<td class='grid_header_text'>"+vocabName.replace("srh_","")+vocabVer+"\n" +
+				"</td></tr></table>" +
+				"</td></tr><tr><td><div id='inner_div_"+vocabName+vocabVer+"' style='"+style+"'><table cellpadding ='0' cellspacing ='1'>";
 	}
 	
 	public String getEndHTML() {
