@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.IVocabularyManager;
+import edu.wustl.common.vocab.VocabularyException;
 import edu.wustl.common.vocab.impl.VocabularyManager;
 import edu.wustl.query.util.global.Constants;
 
@@ -85,8 +86,10 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 	{
 
 		boolean showListBox = false;
-		IVocabularyManager vocabMngr = VocabularyManager.getInstance();
-
+		IVocabularyManager vocabMngr=null;
+		try {
+			vocabMngr = VocabularyManager.getInstance();
+		
 		if (isEnumerated(attribute, entity))
 		{
 			List<IVocabulary> vocabularies = vocabMngr.getVocabularies();
@@ -99,6 +102,11 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 				showListBox = true;
 			}
 		}
+		} catch (VocabularyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return showListBox;
 
 	}
