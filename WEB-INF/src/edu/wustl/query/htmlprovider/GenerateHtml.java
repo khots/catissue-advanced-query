@@ -6,8 +6,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.text.html.HTML;
+
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.common.query.factory.PermissibleValueManagerFactory;
+import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.util.Utility;
@@ -155,9 +159,11 @@ public class GenerateHtml
 	 *            String
 	 * @param attrDetails
 	 *            AttributeDetails
+	 * @param entity 
+	 * @param attribute 
 	 * @return String HTMLForTextBox
 	 */
-	public static String generateHTMLForTextBox(String componentId,AttributeDetails attrDetails)
+	public static String generateHTMLForTextBox(String componentId,AttributeDetails attrDetails, AttributeInterface attribute, EntityInterface entity)
 	{
 		String cssClass = CSS_TEXT;
 		//String componentId = generateComponentName(attributeInterface);
@@ -166,7 +172,7 @@ public class GenerateHtml
 		//String dataType = attributeInterface.getDataType();
 		StringBuffer html = new StringBuffer(Constants.MAX_SIZE);
 		String newLine = "\n";
-		html.append("<td width='15%' valign='top' class=\"standardTextQuery\">\n");
+		html.append("<td width='10%' valign='top' class=\"standardTextQuery\" >\n");
 		getHtmlValueAndOperator(
 				attrDetails.getEditValues(),attrDetails.getSelectedOperator(), textBoxId, html);
 		html.append(endTD);
@@ -176,7 +182,16 @@ public class GenerateHtml
 		}
 		else
 		{
+			// Check for attribute is enumerated type or not
+			IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
+			if(permissibleValueManager.isEnumerated(attribute,entity))
+			{
+				html.append("@TOKEN_FOR_ICON_HTML@");
+			}
+			else
+			{
 			html.append("\n<td valign='top' width='1%'>&nbsp;</td>");
+			}
 		}
 		html.append("<td width='15%'  valign='top' class=\"standardTextQuery\">\n");
 		if (isBetween(attrDetails))

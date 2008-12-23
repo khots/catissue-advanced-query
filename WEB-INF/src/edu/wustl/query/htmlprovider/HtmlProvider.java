@@ -512,15 +512,12 @@ public class HtmlProvider
 			{
 				generatedHTML.append(Constants.NEWLINE).append(
 						GenerateHtml.generateHTMLForTextBox(
-								componentId,attributeDetails));
-			}
-			
-			IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
-			if(permissibleValueManager.isEnumerated(attribute,entity))
+								componentId,attributeDetails,attribute,entity));
+				if(generatedHTML.indexOf("@")!=-1)
 				{
-					showEnumeratedAttibutesWithIcon(generatedHTML,attribute);
+					generatedHTML.replace(generatedHTML.indexOf("@"),generatedHTML.lastIndexOf("@")+1,showEnumeratedAttibutesWithIcon(attribute) );
 				}
-			
+			}
 		}
 	}
 
@@ -922,15 +919,16 @@ public class HtmlProvider
 	 * @param attributeInterface
 	 * added by amit_doshi for Vocabulary Interface
 	 */
-	private void showEnumeratedAttibutesWithIcon(StringBuffer generatedHTML, AttributeInterface attributeInterface) 
+	public  String  showEnumeratedAttibutesWithIcon(AttributeInterface attributeInterface) 
 	{
 		/* Need to get the attribute interface of of ID attribute because we have to set all the concept code to the
 		 ID Attribute*/
 		AttributeInterface attributeIDInterface=entity.getAttributeByName(Constants.ID);
 		String componentIdOfID=generateComponentName(attributeIDInterface);
 		String componentId = generateComponentName(attributeInterface);
-		generatedHTML.append("\n<td valign='top' width='1%'><a onclick=\"openPermissibleValuesConfigWindow('" + componentId	+ "','"+entity.getName()+"','"+componentIdOfID+"')\" ><img src=\"images/advancequery/ic_lookup.gif\"  /></a> </td>");
 		enumratedAttributeMap.put(Constants.ATTRIBUTE_INTERFACE+componentId, attributeInterface);
+		return "\n<td valign='top'><img  src=\"images/advancequery/ic_lookup.gif\" width=\"16\" height=\"16\" align='left' onclick=\"openPermissibleValuesConfigWindow('" + componentId	+ "','"+entity.getName()+"','"+componentIdOfID+"')\"" +
+				" border=\"0\"/ title='Search concept codes from Vocabularies'></td>";
 		
 	}
 	
