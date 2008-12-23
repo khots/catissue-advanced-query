@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.vocab.IConcept;
+import edu.wustl.common.vocab.VocabularyException;
 import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.bizlogic.SearchPermissibleValuesFromVocabBizlogic;
@@ -55,7 +56,7 @@ public class SearchPermissibleValuesAction extends Action {
 		String componentId=request.getParameter("componentId");
 		if(componentId==null)
 		{
-			//need to save componet id into the session for Ajax requests
+			//need to save componetid into the session for next Ajax requests
 			componentId=(String)request.getSession().getAttribute(Constants.COMPONENT_ID);
 		}
 		 String entityName =(String) request.getSession().getAttribute(Constants.ENTITY_NAME);
@@ -74,15 +75,22 @@ public class SearchPermissibleValuesAction extends Action {
 		if(searchTerm!=null && targetVocabsForSearchTerm!=null)
 		{
 			// Ajax Request handler for Getting search term Result data for source to target vocabulries
+			try
+			{
 			String html=getSearchedVocabDataAsHTML(searchTerm,targetVocabsForSearchTerm);
 			response.getWriter().write(html);
+			}
+			catch(VocabularyException e)
+			{
+				response.getWriter().write("<table width='100%' height='100%'><tr><td class='black_ar_tt'>Please enter valid search term<td></tr></table>");
+			}
 			return  null;
 		}
 		
 		generatePermValueHTMLForMED(attribute,entity,componentId,request);
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
 	}
-	private String getSearchedVocabDataAsHTML(String searchTerm,String targetVocabsForSearchTerm) 
+	private String getSearchedVocabDataAsHTML(String searchTerm,String targetVocabsForSearchTerm) throws VocabularyException 
 	{
 		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		StringBuffer html=new StringBuffer();
@@ -112,7 +120,7 @@ public class SearchPermissibleValuesAction extends Action {
 		}
 		return html.toString();
 	}
-	private void generatePermValueHTMLForMED(AttributeInterface attribute, EntityInterface entity, String componentId,HttpServletRequest request) {
+	private void generatePermValueHTMLForMED(AttributeInterface attribute, EntityInterface entity, String componentId,HttpServletRequest request) throws VocabularyException {
 		
 		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		List<IConcept> premValueList=bizLogic.getPermissibleValueList(attribute, entity);
@@ -136,7 +144,7 @@ public class SearchPermissibleValuesAction extends Action {
 	}
 	
 	
-	private String getMappedVocabDataAsHTML(String targetVocab,AttributeInterface attribute,EntityInterface entity) 
+	private String getMappedVocabDataAsHTML(String targetVocab,AttributeInterface attribute,EntityInterface entity) throws VocabularyException 
 	{
 		
 		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
