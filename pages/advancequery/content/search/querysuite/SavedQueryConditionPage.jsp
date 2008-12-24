@@ -44,11 +44,10 @@
 	</head>
 
 	<body>
-		<html:errors/>
 		<html:form styleId='saveQueryForm' action='<%=Constants.SAVE_QUERY_ACTION%>'>
 		<table summary="" cellpadding="0" cellspacing="0" border="0" class="contentPage" width="100%">
 		<tr>
-		  <td height="20">&nbsp;
+		  <td height="25"><html:errors/>
 		  </td>
 		 <tr>
 		  <td>
