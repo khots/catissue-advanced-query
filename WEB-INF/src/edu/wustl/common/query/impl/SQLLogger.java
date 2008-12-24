@@ -2,6 +2,7 @@
 package edu.wustl.common.query.impl;
 
 import edu.wustl.common.util.FileLogger;
+import edu.wustl.query.util.global.Variables;
 
 class SQLLogger extends FileLogger<String>
 {
@@ -20,7 +21,7 @@ class SQLLogger extends FileLogger<String>
 	@Override
 	protected String getBaseDir()
 	{
-		return System.getProperty("user.home") + "/sql_log";
+		return Variables.properties.getProperty("xquery.jbossPath")  + "/server/default/log/sql_log";
 	}
 
 	@Override
