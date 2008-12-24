@@ -400,12 +400,33 @@
 		else return true;
 		
 	}
+  
+	function checkForSplChar(textFieldValue)
+	{
+	     var splChar= new Array(',','!','@','#','$','%','^','&','*','(',')','_','-','+','=','|','{','[',']',',',':',';','/','?','.','<','>','~','`','*','"','\\'); 
+	     splCharsize = splChar.length;
+	     //alert("textFieldValue "+textFieldValue);
+	   	for( i=0; i < splCharsize ; i++)
+		{ 
+		   
+		 //  alert('<%= splChar[i] %>');
+		   if( textFieldValue.indexOf( splChar[i] ) != -1)
+		  {
+		    alert("Special Character are not allowed for search");
+			return true;
+		  }
+	   }
+	 
+		  return false;
+	}
+	
+	
 	function retriveSearchedEntities(url,nameOfFormToPost,currentPage, key) 
 	{
 		waitCursor();		
+		var textFieldValue = document.forms[0].textField.value;
 		
 		var request = newXMLHTTPReq();		
-		var textFieldValue = document.forms[0].textField.value;
 		var classCheckStatus = document.forms[0].classChecked.checked;
 		var attributeCheckStatus = document.forms[0].attributeChecked.checked;
 		var permissibleValuesCheckStatus = document.forms[0].permissibleValuesChecked.checked;
@@ -422,7 +443,11 @@
 		else if(document.forms[0].selected[1].checked)
 			radioCheckStatus = "conceptCode_radioButton";
 		*/
-
+      	 if( checkForSplChar(textFieldValue))
+		{
+		   hideCursor();
+		    return;
+		 }
 		if(currentPage == 'null')
 		{
 			var handlerFunction = getReadyStateHandler(request,onResponseUpdate,true);
