@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.domaininterface.FileTypeInformationInterface
 import edu.common.dynamicextensions.domaininterface.IntegerTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.LongTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
@@ -447,7 +448,11 @@ public abstract class QueryGenerator implements IQueryGenerator
 
 			if (i != noOfConditions - 1) // Intermediate Condition.
 			{
-				buffer.append(condition + " " + LogicalOperator.And.toString().toLowerCase() + " ");
+				if(!condition.equals(""))
+				{	
+					buffer.append(condition + " " + LogicalOperator.And.toString().toLowerCase() + " ");
+				}
+				
 			}
 			else
 			{
@@ -456,7 +461,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 				buffer.append(condition);
 			}
 		}
-		return buffer.toString();
+		return removeLastAnd(buffer.toString());
 	}
 
 	private void addActivityStausCondition(IRule rule)
@@ -963,6 +968,15 @@ public abstract class QueryGenerator implements IQueryGenerator
 			throws SqlException
 	{
 		AttributeInterface attribute = condition.getAttribute();
+		Collection<TaggedValueInterface> taggedValues = attribute.getTaggedValueCollection();
+		for(TaggedValueInterface tagValue : taggedValues)
+		{
+			if(tagValue.getKey().equalsIgnoreCase(Constants.VI_IGNORE_PREDICATE))
+			{
+				return "";
+			}
+		}
+		
 		String attributeName = getConditionAttributeName(attribute, expression);
 
 		RelationalOperator operator = condition.getRelationalOperator();
@@ -1007,7 +1021,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 		{
 			sql = processComparisionOperator(condition, attributeName);
 		}
-
+		
 		return sql;
 	}
 
