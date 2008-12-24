@@ -12,14 +12,16 @@ import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
+
+
 
 /**
  * @author santhoshkumar_c
  *
  */
+
 final public class QueryModuleSqlUtil
 {
 
@@ -62,47 +64,35 @@ final public class QueryModuleSqlUtil
 		 * @param createTableSql sql to create table
 		 * @param sessionData session data.
 		 * @throws DAOException DAOException 
+	 * @throws QueryModuleException 
 		 */
-	//Siddharth Shah
-//	public static void executeCreateTable(final String tableName, final String createTableSql,
-//			QueryDetails queryDetailsObj) throws DAOException
-//	{
-//		JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-//		try
-//		{
-//			jdbcDao.openSession(queryDetailsObj.getSessionData());
-//			jdbcDao.delete(tableName);
-//			jdbcDao.executeUpdate(createTableSql);
-//			jdbcDao.commit();
-//		}
-//		catch (DAOException e)
-//		{
-//			Logger.out.error(e);
-//			//			e.printStackTrace();
-//			//			throw e;
-//		}
-//		finally
-//		{
-//			jdbcDao.closeSession();
-//		}
-//	}
-	
+
 	public static void executeCreateTable(final String tableName, final String createTableSql,
-			QueryDetails queryDetailsObj) throws DAOException
-	{
+			QueryDetails queryDetailsObj) throws DAOException, QueryModuleException
+	{  
 		JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);	
 		try
-		{
+		{ 
 			jdbcDao.openSession(queryDetailsObj.getSessionData());
 			if(Variables.databaseName.trim().equalsIgnoreCase("DB2"))
-			{
+			{ 
 				String newCreateTableSql = Constants.CREATE_TABLE + " " + tableName + " " + Constants.AS + " "
 				+ "(" + createTableSql + ")" + "WITH NO DATA";
 				String newInsertTableSql = "insert into " + tableName + " (" + createTableSql + ")";
 				jdbcDao.delete(tableName);
-				jdbcDao.executeUpdate(newCreateTableSql);
-				jdbcDao.executeUpdate(newInsertTableSql);
-				jdbcDao.commit();
+				List<List<String>> dataList = jdbcDao.executeQuery(createTableSql, queryDetailsObj.getSessionData(), false, false,null);
+				int resultSize = dataList.size();		
+				if(resultSize > 0)
+				{
+					jdbcDao.executeUpdate(newCreateTableSql);
+					jdbcDao.executeUpdate(newInsertTableSql);
+					jdbcDao.commit();
+				}
+				else
+				{
+					QueryModuleException queryModExp = new QueryModuleException("", QueryModuleError.NO_RESULT_PRESENT);
+					throw queryModExp;
+				}		
 			}
 			else
 			{
@@ -116,6 +106,10 @@ final public class QueryModuleSqlUtil
 		catch (DAOException e)
 		{
 			throw e;
+		}
+		catch(ClassNotFoundException e)
+		{
+			e.printStackTrace();
 		}
 		finally
 		{

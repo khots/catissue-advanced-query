@@ -21,6 +21,7 @@ import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
 import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 import edu.wustl.query.util.querysuite.QueryModuleSqlUtil;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
@@ -37,6 +38,7 @@ public class QueryOutputTreeBizLogic
 	 * @param String selectSql , from this sql , new table will be created .
 	 * @param sessionData to be added to tablename to have unique table for each session user.
 	 * @param String tableName 
+	 * @throws QueryModuleException 
 	 * @throws Exception Exception
 	 */
 	//Siddharth Shah
@@ -51,7 +53,7 @@ public class QueryOutputTreeBizLogic
 //	}
 	
 	public void createOutputTreeTable(String selectSql, QueryDetails queryDetailsObj)
-	throws DAOException
+	throws DAOException, QueryModuleException
 	
 	{
 		String tableName = Constants.TEMP_OUPUT_TREE_TABLE_NAME
