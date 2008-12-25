@@ -37,14 +37,17 @@ import edu.wustl.common.querysuite.metadata.associations.IAssociation;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.common.querysuite.queryobject.IOutputEntity;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
+import edu.wustl.common.querysuite.queryobject.impl.Expression;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.IQueryUpdationUtil;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
 
 public class XQueryGenerator extends QueryGenerator
@@ -629,8 +632,9 @@ public class XQueryGenerator extends QueryGenerator
 				String variableName = new StringBuilder().append(Constants.QUERY_DOLLAR).append(
 						getAliasName(childExpression)).toString();
 				forTree.append(variableName).append(' ').append(Constants.IN).append(' ');
-				forTree.append(xpath).append('/').append(eavAssociation.getTargetRole().getName())
-						.append('/').append(childEntityName).append(Constants.QUERY_COMMA);
+				forTree.append(xpath).append('/').append(Constants.QUERY_OPENING_PARENTHESIS).append(eavAssociation.getTargetRole().getName())
+						.append('/').append(childEntityName).append(Constants.QUERY_COMMA).append(".[not(").append(eavAssociation.getTargetRole().getName())
+						.append('/').append(childEntityName).append(Constants.QUERY_CLOSING_PARENTHESIS).append("]/<nothing/>").append(Constants.QUERY_CLOSING_PARENTHESIS).append(Constants.QUERY_COMMA);
 
 				entityPaths.put(childExpression, variableName);
 				forVariables.put(childExpression, variableName);
@@ -794,6 +798,7 @@ public class XQueryGenerator extends QueryGenerator
 		}
 		return actualValue.toString();
 	}
+
 	/**
 	 * @return Create a set of expressions corresponding to the root Element
 	 * of each XML
