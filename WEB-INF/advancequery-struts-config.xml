@@ -263,7 +263,14 @@ PUBLIC
 			validate="false"
 			scope="request">
 			<forward name="success" path="/pages/advancequery/content/search/SearchPermissibleValues.jsp"/>
-		</action>			
+		</action>
+		<action path="/SelectedPermissibleValue"
+			type="edu.wustl.query.action.SelectedPermissibleValueAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path="/pages/advancequery/content/search/Refresh.jsp"/>
+		</action>		
 	<!--Commented out By Baljeet as it is related to Shopping Cart -->
 	<!--	<action path="/ViewCart"
 			type="edu.wustl.query.action.querysuite.ViewCartAction"
