@@ -58,7 +58,7 @@ function addPermissibleValuesToList()
 			if(vocabName.length>1) // No need to include Root node in list make because its has id as only MED name not CONCEPTCODE:Permissible Value
 			{
 				//alert(set_mode+"  "+vocabName[0]+"      "+ '<%=srcVocabName%>'+'<%=srcVocabVersion%>');
-				if(set_mode=="Searching" && vocabName[0].equalsIgnoreCase('<%=srcVocabName%>'+'<%=srcVocabVersion%>') ) 
+				if(set_mode=="Searching" && vocabName[0].equalsIgnoreCase('<%=srcVocabName%>'+'@<%=srcVocabVersion%>') ) 
 				{
 					createRows(vocabName,selectedPvsCheckedBoxIdArray[j]);
 				}
@@ -180,10 +180,11 @@ function createRows(vocabName,selectedPvsCheckedBoxId)
 	   }
 	}
 	
-		//method called when user clicks on OK button
+	//method called when user clicks on OK button
 	function addPvsToCondition()
 	{
-		var pvList="";
+		var pvConceptCodeList="";
+		var pvNameListWithCode="";
 		var pvNameList="";
 		for(var k=0;k<selectedPvs.length;k++)
 		{
@@ -191,8 +192,14 @@ function createRows(vocabName,selectedPvsCheckedBoxId)
 				{
 				if(document.getElementById(selectedPvs[k]).value!='undefined');
 					{
-						pvNameList=pvNameList+document.getElementById(selectedPvs[k]).value.split(':')[1]+",";
-						pvList=pvList+selectedPvs[k]+"#";
+						var selectedIdFromList=document.getElementById(selectedPvs[k]).value;
+						var selectedIdFromListWithoutCode=selectedIdFromList.substring(selectedIdFromList.indexOf(":")+1);
+						//require for UI javascript and set the values to parent window
+						pvNameList=pvNameList+selectedIdFromListWithoutCode+",";
+						pvConceptCodeList=pvConceptCodeList+selectedPvs[k]+"#";
+						//required to store in session
+						pvNameListWithCode=pvNameListWithCode+document.getElementById(selectedPvs[k]).value+",";
+						
 					}
 					
 				}catch(e)
@@ -201,16 +208,39 @@ function createRows(vocabName,selectedPvsCheckedBoxId)
 			
 		}
 		
-		sendValueToParent(pvList,pvNameList)
+		sendValueToParent(pvConceptCodeList,pvNameListWithCode,pvNameList)
 	}
 	// this method will send the selected values to the parent window from open child window
-	function sendValueToParent(pvList,pvNameList)
+	function sendValueToParent(pvConceptCodeList,pvNameListWithCode,pvNameList)
     {
-		parent.window.getValueFromChild(pvList,pvNameList);
-		parent.pvwindow.hide();
-		return false;
+		
+		var request = newXMLHTTPReq(); 
+		var param = "ConceptCodes"+"="+pvConceptCodeList+"&ConceptName="+pvNameListWithCode;
+		var actionUrl="SelectedPermissibleValue.do";
+		request.onreadystatechange=function(){setSelectedConceptCodes(request,pvConceptCodeList,pvNameList)};
+		request.open("POST",actionUrl,true);
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		request.send(param);
+		
+		
+		
    }
-   
+   function setSelectedConceptCodes(request,pvConceptCodeList,pvNameList)
+   {
+  
+	if(request.readyState == 4)  
+		{	
+			if(request.status == 200)
+			{
+					var responseTextValue =  request.responseText;	
+								
+					parent.window.getValueFromChild(pvConceptCodeList,pvNameList);
+					location.href ="Refresh.jsp";
+					parent.pvwindow.hide();
+					return false;
+			}
+		}
+   }
    //This method will be called when user clicks on the vocabulary check box
    function refreshWindow(vocabCheckBoxId,vocabName,vocabVer)
    {
@@ -268,7 +298,7 @@ function createRows(vocabName,selectedPvsCheckedBoxId)
 					
 					uncheckAllAndDeleteFromArray(elements[i].id.replace("vocab_",""));
 					//need to delete all the rows of right hand side selected list
-					var tableid =document.getElementById("selectedPermValues_"+elements[i].id.replace("vocab_",""));
+					var tableid =document.getElementById("selectedPermValues_"+elements[i].value.replace(":","@"));
 					for(var j=0;j<tableid.rows.length;j++)
 					{
 						tableid.rows[j].myRow.one.checked=1;
@@ -637,19 +667,20 @@ function createRows(vocabName,selectedPvsCheckedBoxId)
 							<%for(int i=0;i<vocabs1.size();i++)
 								{
 						
-								String vacabNameWithVer=vocabs1.get(i).getName()+vocabs1.get(i).getVersion();
+								String vNameWithVerAndToken=vocabs1.get(i).getName()+"@"+vocabs1.get(i).getVersion();
+								String vacabNameWithVer2=vocabs1.get(i).getName()+vocabs1.get(i).getVersion();
 								%>
-							<tr><td><div id = "selectedPermValues_Div_<%=vacabNameWithVer.toUpperCase()%>" style="display:none">
+							<tr><td><div id = "selectedPermValues_Div_<%=vNameWithVerAndToken.toUpperCase()%>" style="display:none">
 						
 							<table border = "0" id = "" cellpadding ="1" cellspacing ="3" width="100%">
 								<tr>
 									<td colspan="3"> <table> <tr>
-									<td  align="left"><input type="checkbox" id="pvSelectedCB_<%=vacabNameWithVer.toUpperCase()%>" onclick="checkedUncheckedAllPvs('<%=vacabNameWithVer.toUpperCase()%>')"> </td>
-									<td  align="left" class="grid_header_text" ><%=vacabNameWithVer.toUpperCase()%></td>
+									<td  align="left"><input type="checkbox" id="pvSelectedCB_<%=vNameWithVerAndToken.toUpperCase()%>" onclick="checkedUncheckedAllPvs('<%=vNameWithVerAndToken.toUpperCase()%>')"> </td>
+									<td  align="left" class="grid_header_text" ><%=vacabNameWithVer2.toUpperCase()%></td>
 									</tr></table></td>
 								</tr>	
 							</table>
-							<table border = "0" id = "selectedPermValues_<%=vacabNameWithVer.toUpperCase()%>" cellpadding ="1" cellspacing ="3" width="100%">
+							<table border = "0" id = "selectedPermValues_<%=vNameWithVerAndToken.toUpperCase()%>" cellpadding ="1" cellspacing ="3" width="100%">
 							</table></div>	
 							</td></tr>
 							<%}%>
