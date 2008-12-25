@@ -75,6 +75,7 @@ public class SearchPermissibleValuesAction extends Action {
 		if(searchTerm!=null && targetVocabsForSearchTerm!=null)
 		{
 			// Ajax Request handler for Getting search term Result data for source to target vocabulries
+			SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 			try
 			{
 			String html=getSearchedVocabDataAsHTML(searchTerm,targetVocabsForSearchTerm);
@@ -82,7 +83,7 @@ public class SearchPermissibleValuesAction extends Action {
 			}
 			catch(VocabularyException e)
 			{
-				response.getWriter().write("<table width='100%' height='100%'><tr><td class='black_ar_tt'>Please enter valid search term<td></tr></table>");
+				response.getWriter().write(bizLogic.getErrorMessageAsHTML());
 			}
 			return  null;
 		}
@@ -90,6 +91,7 @@ public class SearchPermissibleValuesAction extends Action {
 		generatePermValueHTMLForMED(attribute,entity,componentId,request);
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
 	}
+	
 	private String getSearchedVocabDataAsHTML(String searchTerm,String targetVocabsForSearchTerm) throws VocabularyException 
 	{
 		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
