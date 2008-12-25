@@ -167,4 +167,10 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 	public String getEndHTML() {
 		return "</table></div></td></tr></table>";
 	}
+	/**
+	 * @return
+	 */
+	public String getErrorMessageAsHTML() {
+		return "<table width='100%' height='100%'><tr><td class='black_ar_tt' style='color:red'>Please enter valid search term<td></tr></table>";
+	}
 }
