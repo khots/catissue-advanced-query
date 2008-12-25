@@ -182,5 +182,173 @@
 		<tag-value>T_HL7_S_0001^%</tag-value>
 	</tag>
 </entity>
+<entity>
+	<name>Religion</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_U_0006^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>RelationToPerson</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_U_0063^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>State</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_I_0014^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>Country</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_U_0171^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>AddressType</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_S_0190^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>AdvancedDirectiveExists</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_Z_0002^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>ProcedureCode</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>99601^%,99602^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>ProviderType</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_U_0443^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>InsurancePlanType</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_U_0086^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>Facility</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_I_0002^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>DiagnosisType</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_U_0052^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>DiagnosisCode</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>99600^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>DiagnosticRelatedGroup</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>99603^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>OptOutIndicator</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_S_0136^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>VipIndicator</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_U_0099^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>PatientType</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>99703^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>PatientClass</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_U_0004^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>FinancialClass</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>99700^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>Service</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_U_0069^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>FacilityDischargeDisposition</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>99702^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>DischargeDisposition</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_U_0112^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>InfectionControlCode</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_L_0007^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>Satus</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_S_0123^%</tag-value>
+	</tag>
+</entity>
+<entity>
+	<name>AbnormalFlag</name>
+	<tag>
+		<tag-name>PV_FILTER</tag-name>
+		<tag-value>T_HL7_S_0078^%</tag-value>
+	</tag>
+</entity>
 </entity-group>
 </xml>
