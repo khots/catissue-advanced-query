@@ -70,7 +70,7 @@ final public class QueryModuleSqlUtil
 	public static void executeCreateTable(final String tableName, final String createTableSql,
 			QueryDetails queryDetailsObj) throws DAOException, QueryModuleException
 	{  
-		JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);	
+	JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);	
 		try
 		{ 
 			jdbcDao.openSession(queryDetailsObj.getSessionData());
@@ -80,19 +80,9 @@ final public class QueryModuleSqlUtil
 				+ "(" + createTableSql + ")" + "WITH NO DATA";
 				String newInsertTableSql = "insert into " + tableName + " (" + createTableSql + ")";
 				jdbcDao.delete(tableName);
-				List<List<String>> dataList = jdbcDao.executeQuery(createTableSql, queryDetailsObj.getSessionData(), false, false,null);
-				int resultSize = dataList.size();		
-				if(resultSize > 0)
-				{
-					jdbcDao.executeUpdate(newCreateTableSql);
-					jdbcDao.executeUpdate(newInsertTableSql);
-					jdbcDao.commit();
-				}
-				else
-				{
-					QueryModuleException queryModExp = new QueryModuleException("", QueryModuleError.NO_RESULT_PRESENT);
-					throw queryModExp;
-				}		
+				jdbcDao.executeUpdate(newCreateTableSql);
+				jdbcDao.executeUpdate(newInsertTableSql);
+				jdbcDao.commit();
 			}
 			else
 			{
@@ -106,10 +96,6 @@ final public class QueryModuleSqlUtil
 		catch (DAOException e)
 		{
 			throw e;
-		}
-		catch(ClassNotFoundException e)
-		{
-			e.printStackTrace();
 		}
 		finally
 		{
