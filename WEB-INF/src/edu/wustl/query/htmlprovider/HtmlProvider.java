@@ -329,7 +329,7 @@ public class HtmlProvider
 		}
 		if(!isBold && permissibleValuesChecked)
 		{
-			isBold = isPerValueAttributeBold(HtmlUtility.getPermissibleValuesList(attribute,null));
+			isBold = isPerValueAttributeBold(HtmlUtility.getPermissibleValuesList(attribute,entity));
 		}
 		return isBold;
 	}
