@@ -119,16 +119,23 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 				"<td></tr>";
 	}
 	public String getRootVocabularyNodeHTML(String vocabName,String vocabVer) throws VocabularyException {
-		String style="display:none";
-		String imgpath= "src=\"images/advancequery/nolines_plus.gif\"/";
 		String srcvocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
 		String srcvocabVer=VocabUtil.getVocabProperties().getProperty("source.vocab.version");
+		
+		/*code should uncommented for multiple vocabulary support
+		String style="display:none";
+		String imgpath= "src=\"images/advancequery/nolines_plus.gif\"/";
+		
 		if(srcvocabName.equalsIgnoreCase(vocabName) && srcvocabVer.equalsIgnoreCase(vocabVer))
 		{
 			//to show MED vocabulary tree or data expanded mode 
 			style="display:";
 			imgpath="src=\"images/advancequery/nolines_minus.gif\"/";
-		}
+		}*/
+		
+		String style="display:";
+		String imgpath="src=\"images/advancequery/nolines_minus.gif\"/";
+		
 		return "<table cellpadding ='0' cellspacing ='1'><tr><td>" +
 				"<table cellpadding ='0' cellspacing ='1'><tr><td class='grid_header_text'><a id=\"image_"+vocabName+vocabVer+"\"\n" +
 				"onClick=\"showHide('inner_div_"+vocabName+vocabVer+"','image_"+vocabName+vocabVer+"');\">\n" +
@@ -139,9 +146,13 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 				"</td></tr><tr><td><div id='inner_div_"+vocabName+vocabVer+"' style='"+style+"'><table cellpadding ='0' cellspacing ='1'>";
 	}
 	public String getRootVocabularyHTMLForSearch(String vocabName,String vocabVer) {
-		
-		String style="display:none";
-		String imgpath= "src=\"images/advancequery/nolines_plus.gif\"/";
+	
+		/*code should uncommented for multiple vocabulary support
+		    String style="display:none";
+			String imgpath= "src=\"images/advancequery/nolines_pluse.gif\"/";
+		 */
+		String style="display:";
+		String imgpath= "src=\"images/advancequery/nolines_minus.gif\"/";
 		
 		return "<table cellpadding ='0' cellspacing ='1'><tr><td>" +
 				"<table cellpadding ='0' cellspacing ='1'><tr><td class='grid_header_text'><a id=\"image_"+vocabName+vocabVer+"\"\n" +
