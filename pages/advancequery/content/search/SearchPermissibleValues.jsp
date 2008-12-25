@@ -64,6 +64,7 @@ function addPermissibleValuesToList()
 				}
 				else if(set_mode=="Mapping")
 				{
+					
 					createRows(vocabName,selectedPvsCheckedBoxIdArray[j]);
 				}
 			}
@@ -492,6 +493,7 @@ function createRows(vocabName,selectedPvsCheckedBoxId)
 		document.getElementById("divForMappingMode").style.display = '';
 		document.getElementById("divForSearchingMode").style.display = 'none';
 		document.getElementById("divForSearchingMode").innerHTML="";
+		document.getElementById("searchtextfield").value="";
 		
 		var targetVocabsForMappingMode="";
 		void(d=document);
@@ -568,7 +570,7 @@ function createRows(vocabName,selectedPvsCheckedBoxId)
 				<td>&nbsp;</td>
 				<td><a  href='javascript:serachForTermInVocab();'><img src="images/advancequery/b_go.gif" border='0' alt="Go" ></a></td>
 				<td style="padding-left:10px"><a href='javascript:doNothing();' onclick='restoreDefault();' ><img src="images/advancequery/b_restore_defaults.gif" border='0' alt="Restore Default" ></a></td>
-				<td id="searhLabel" class="content_txt" align="right" style="padding-left:10px">&nbsp;</td> 
+				<td id="searhLabel" class="content_txt"  align="right" style="padding-left:10px;color:blue">&nbsp;</td> 
 				</tr>
 			</table>
 		</td>
@@ -596,7 +598,7 @@ function createRows(vocabName,selectedPvsCheckedBoxId)
 			<tr>
 				<td valign="top" style="padding:0 0 7px 7px;">
 					<div  id="divForMappingMode" style="width: 260px; height: 300px; border:1px solid Silver; overflow:auto;"  >
-					<table>
+					<table border="0" cellpadding="0" cellspacing="0">
 					
 								<%for(int i=0;i<vocabs1.size();i++)
 								{
