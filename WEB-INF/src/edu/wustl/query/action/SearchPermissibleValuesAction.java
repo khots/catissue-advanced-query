@@ -107,7 +107,7 @@ public class SearchPermissibleValuesAction extends Action {
 				for(int i=0;i<conceptList.size();i++)
 				{
 					IConcept concept=conceptList.get(i);
-					String checkboxId=vocabName+vocabVersion+":"+concept.getCode();//TODO need to change into MED concept code when API will be completed
+					String checkboxId=vocabName+"@"+vocabVersion+":"+concept.getCode();//TODO need to change into MED concept code when API will be completed
 					html.append(bizLogic.getMappedVocabularyPVChildAsHTML("srh_"+vocabName,vocabVersion, concept, checkboxId));
 				}
 			}
@@ -131,7 +131,7 @@ public class SearchPermissibleValuesAction extends Action {
 		for(int i=0;i<premValueList.size();i++)
 		{
 			IConcept concept=(IConcept)premValueList.get(i);
-			String id=vocabName+vocabVer+":"+concept.getCode();
+			String id=vocabName+"@"+vocabVer+":"+concept.getCode();
 			html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName,vocabVer, concept, id));
 		}
 		html.append(bizLogic.getEndHTML());
@@ -148,8 +148,8 @@ public class SearchPermissibleValuesAction extends Action {
 	{
 		
 		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		String sourceVocabulary=Variables.properties.getProperty("sourceVocabularyName");
-		String sourceVocabVer=Variables.properties.getProperty("sourceVocabularyVersion");
+		String sourceVocabulary=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
+		String sourceVocabVer=VocabUtil.getVocabProperties().getProperty("source.vocab.version");
 		String targetVacbArray[] = targetVocab.split(":");
 		String targetVocabName=targetVacbArray[0];
 		String targetVocabVer=targetVacbArray[1];
@@ -183,7 +183,7 @@ public class SearchPermissibleValuesAction extends Action {
 				while(mappingListItr.hasNext())
 				{
 					IConcept concept = (IConcept)mappingListItr.next();
-					String checkboxId=vocabName+vocabversoin+":"+conceptCode;//we need to use the MED Concept code with mapped values
+					String checkboxId=vocabName+"@"+vocabversoin+":"+conceptCode;//we need to use the MED Concept code with mapped values
 					html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName,vocabversoin, concept,checkboxId));
 					
 				}
