@@ -156,7 +156,7 @@ public class DAGPanel
 			query = m_queryObject.getQuery();
 		}
 		session.setAttribute(DAGConstant.QUERY_OBJECT, query);
-		
+		session.setAttribute("allLimitExpressionIds",expressionIdsList);
 		try
 		{
 			Long entityId = Long.parseLong(entityName);
