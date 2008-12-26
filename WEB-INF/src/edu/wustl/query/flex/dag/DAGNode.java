@@ -14,6 +14,7 @@ import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IRule;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
+import edu.wustl.query.htmlprovider.HtmlUtility;
 
 public class DAGNode implements Externalizable, Comparable<DAGNode>
 {
@@ -103,20 +104,25 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 
 	private void generateFormattedString(StringBuffer sb, IRule rule, int totalConditions)
 	{
+		int condnctr =0;
 		for (int i = 0; i < totalConditions; i++)
 		{
 			ICondition condition = rule.getCondition(i);
-			sb.append((i + 1) + ") ");
-			String formattedAttributeName = CommonUtils.getFormattedString(condition.getAttribute()
-					.getName());
-			sb.append(formattedAttributeName).append(' ');
-			List<String> values = condition.getValues();
-			RelationalOperator operator = condition.getRelationalOperator();
-			sb.append(
-					edu.wustl.cab2b.client.ui.query.Utility
-							.displayStringForRelationalOperator(operator)).append(' ');
-			checkEquality(sb, values);
-			sb.append('\n');
+			if(!HtmlUtility.isAttrHidden(condition.getAttribute()))
+			{
+				sb.append((condnctr + 1) + ") ");
+				String formattedAttributeName = CommonUtils.getFormattedString(condition.getAttribute()
+						.getName());
+				sb.append(formattedAttributeName).append(' ');
+				List<String> values = condition.getValues();
+				RelationalOperator operator = condition.getRelationalOperator();
+				sb.append(
+						edu.wustl.cab2b.client.ui.query.Utility
+								.displayStringForRelationalOperator(operator)).append(' ');
+				checkEquality(sb, values);
+				sb.append('\n');
+				condnctr++;
+			}
 		}
 	}
 
