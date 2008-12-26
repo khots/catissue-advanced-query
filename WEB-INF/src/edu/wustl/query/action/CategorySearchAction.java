@@ -66,6 +66,7 @@ public class CategorySearchAction extends Action
 			String textfieldValue = searchForm.getTextField();
 			if (currentPage != null && currentPage.equalsIgnoreCase("prevToAddLimits"))
 			{
+				searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
 				textfieldValue = "";
 			}
 			forward = search(request, response, searchForm, textfieldValue);
