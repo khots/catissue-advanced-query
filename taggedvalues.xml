@@ -362,5 +362,289 @@
 		<tag-value>T_HL7_S_0078^%</tag-value>
 	</tag>
 </entity>
+<entity>
+	<name>MedicalEntitiesDictionary</name>
+	<attribute>
+		<name>shortName</name>
+		<tag>
+			<tag-name>NOT_SEARCHABLE</tag-name>
+			<tag-value>NOT_SEARCHABLE</tag-value>
+		</tag>
+		<tag>
+			<tag-name>NOT_VIEWABLE</tag-name>
+			<tag-value>NOT_VIEWABLE</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>MedicalEntitiesDictionary</name>
+	<attribute>
+		<name>name</name>
+		<tag>
+			<tag-name>VI_IGNORE_PREDICATE</tag-name>
+			<tag-value>VI_IGNORE_PREDICATE</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>Race</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>Gender</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>Religion</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>RelationToPerson</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>State</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>Country</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>AddressType</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>AdvancedDirectiveExists</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>ProcedureCode</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>ProviderType</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>InsurancePlanType</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>Facility</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>DiagnosisType</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>DiagnosisCode</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>DiagnosticRelatedGroup</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>OptOutIndicator</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>VipIndicator</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>PatientType</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>PatientClass</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>FinancialClass</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>Service</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>FacilityDischargeDisposition</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>DischargeDisposition</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>InfectionControlCode</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>Satus</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
+<entity>
+	<name>AbnormalFlag</name>
+	<attribute>
+		<name>id</name>
+		<tag>
+			<tag-name>VI_HIDDEN</tag-name>
+			<tag-value>VI_HIDDEN</tag-value>
+		</tag>
+	</attribute>
+</entity>
 </entity-group>
 </xml>
