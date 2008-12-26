@@ -560,4 +560,19 @@ public class Utility extends edu.wustl.common.util.Utility
 		}
 		return isNotViewable;
 	}
+    
+    public static boolean isMainEntity(EntityInterface entity)
+	{
+		boolean isMainEntity = false;
+		Collection<TaggedValueInterface> taggedValueCollection = entity.getTaggedValueCollection();
+		for(TaggedValueInterface tagValue : taggedValueCollection)
+		{
+			if(tagValue.getKey().equals(Constants.TAGGED_VALUE_MAIN_ENTIY))
+			{
+				isMainEntity = true;
+				break;
+			}
+		}
+		return isMainEntity;
+	}
 }
