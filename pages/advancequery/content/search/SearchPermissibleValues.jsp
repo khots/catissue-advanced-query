@@ -41,8 +41,7 @@ function addPermissibleValuesToList()
 {	
 	if(set_mode=="Searching")
 	{
-		alert("Searched Permissible Values  are not allowed to add to list.Only Source Vocabulary"+
-		"permissible values will be added. Please go to Restore Default option.");	
+		alert("Adding searched concept will be available in next iteration.");	
 	}
  var checkedNode=0;
 //Inserting first cell as checkbox for deleting selected rows
@@ -544,6 +543,7 @@ function createRows(vocabName,selectedPvsCheckedBoxId)
 			{
 				String value=vocabs1.get(i).getName() +":"+ vocabs1.get(i).getVersion();
 				String vocabNameWithVersion=vocabs1.get(i).getName() + vocabs1.get(i).getVersion();
+				String vocabDisplayName=vocabs1.get(i).getDisplayName();
 				if(i!=0 && i%5==0)
 				{%>
 					
@@ -553,9 +553,9 @@ function createRows(vocabName,selectedPvsCheckedBoxId)
 				{
 				
 				%>
-	  	<td><input  type="radio" name="vocabNameAndVersionCheckbox" checked="true"  id="vocab_<%=vocabNameWithVersion%>" value="<%=value%>"  onclick= "refreshWindow(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"></td><td class="content_txt"><%=vocabNameWithVersion%> &nbsp;&nbsp;&nbsp;</td>
+	  	<td><input  type="radio" name="vocabNameAndVersionCheckbox" checked="true"  id="vocab_<%=vocabNameWithVersion%>" value="<%=value%>"  onclick= "refreshWindow(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"></td><td class="content_txt"><%=vocabDisplayName%> &nbsp;&nbsp;&nbsp;</td>
 		<%}else{%>
-		<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_<%=vocabNameWithVersion%>" value="<%=value%>"   onclick= "refreshWindow(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"></td><td class="content_txt"><%=vocabNameWithVersion%>&nbsp;&nbsp;&nbsp;</td>
+		<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_<%=vocabNameWithVersion%>" value="<%=value%>"   onclick= "refreshWindow(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>');"></td><td class="content_txt"><%=vocabDisplayName%>&nbsp;&nbsp;&nbsp;</td>
 		<%}
 		
 		}%>
@@ -665,20 +665,20 @@ function createRows(vocabName,selectedPvsCheckedBoxId)
 					<tr>
 					<td style="padding:5px;">
 						<div style="width: 250px; height:313px; border:1px solid Silver; overflow:auto;"  >
-						<table>
+						<table cellpadding="0" cellspacing="0"  border="0">
 							<%for(int i=0;i<vocabs1.size();i++)
 								{
 						
 								String vNameWithVerAndToken=vocabs1.get(i).getName()+"@"+vocabs1.get(i).getVersion();
-								String vacabNameWithVer2=vocabs1.get(i).getName()+vocabs1.get(i).getVersion();
+								String vocabDisplayName=vocabs1.get(i).getDisplayName();
 								%>
 							<tr><td><div id = "selectedPermValues_Div_<%=vNameWithVerAndToken.toUpperCase()%>" style="display:none">
 						
-							<table border = "0" id = "" cellpadding ="1" cellspacing ="3" width="100%">
+							<table border = "0" id = "" cellpadding ="0" cellspacing ="0">
 								<tr>
 									<td colspan="3"> <table> <tr>
 									<td  align="left"><input type="checkbox" id="pvSelectedCB_<%=vNameWithVerAndToken.toUpperCase()%>" onclick="checkedUncheckedAllPvs('<%=vNameWithVerAndToken.toUpperCase()%>')"> </td>
-									<td  align="left" class="grid_header_text" ><%=vacabNameWithVer2.toUpperCase()%></td>
+									<td  align="left" class="grid_header_text" ><%=vocabDisplayName%></td>
 									</tr></table></td>
 								</tr>	
 							</table>
