@@ -211,7 +211,7 @@
 			<fileset dir="${base.dir}/query-properties" />
 		</copy>
 		<!-- added By amit_doshi for LexBig Vocabulary Interface -->
-		<copy todir="${temp.dir}/LexBIGData" overwrite="true">
+		<copy todir="${temp.dir}/LexBIGData" overwrite="false">
 					<fileset dir="${base.dir}/LexBIGData" />
 		</copy>
 		<replace dir="${temp.dir}/query-properties" propertyfile="${temp.dir}/query-properties/vocab.properties">
@@ -464,7 +464,7 @@
 			</fileset>
 		</copy>
 		<!-- added By amit_doshi for LexBig Vocabulary Interface -->
-		<copy todir="${jboss.server.url}/data/LexBIGData" overwrite="true">
+		<copy todir="${jboss.server.url}/data/LexBIGData" overwrite="false">
 									<fileset dir="${temp.dir}/LexBIGData">
 										<include name="**/*" />
 									</fileset>
