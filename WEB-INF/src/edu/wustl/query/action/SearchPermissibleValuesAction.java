@@ -23,7 +23,9 @@ import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.vocab.IConcept;
+import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.VocabularyException;
 import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.bizlogic.BizLogicFactory;
@@ -102,7 +104,7 @@ public class SearchPermissibleValuesAction extends Action {
 			String vocabFullName[]=token.nextToken().split(":");
 			String vocabName=vocabFullName[0];
 			String vocabVersion=vocabFullName[1]; 
-			html.append(bizLogic.getRootVocabularyHTMLForSearch("srh_"+vocabName, vocabVersion));
+			html.append(bizLogic.getRootVocabularyHTMLForSearch("srh_"+vocabName, vocabVersion,getDisplayNameForVocab(vocabName, vocabVersion)));
 			List<IConcept> conceptList=bizLogic.searchConcept(searchTerm, vocabName, vocabVersion);
 			if(conceptList!=null)
 			{
@@ -122,14 +124,15 @@ public class SearchPermissibleValuesAction extends Action {
 		}
 		return html.toString();
 	}
-	private void generatePermValueHTMLForMED(AttributeInterface attribute, EntityInterface entity, String componentId,HttpServletRequest request) throws VocabularyException {
+	private void generatePermValueHTMLForMED(AttributeInterface attribute, EntityInterface entity, String componentId,HttpServletRequest request) throws VocabularyException, PVManagerException {
 		
 		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		List<IConcept> premValueList=bizLogic.getPermissibleValueList(attribute, entity);
-		String vocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name").toUpperCase();
-		String vocabVer=VocabUtil.getVocabProperties().getProperty("source.vocab.version").toUpperCase();
+		String vocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
+		String vocabVer=VocabUtil.getVocabProperties().getProperty("source.vocab.version");
+		String vocabDisName= getDisplayNameForVocab(vocabName, vocabVer);
 		StringBuffer html=new StringBuffer();
-		html.append(bizLogic.getRootVocabularyNodeHTML(vocabName,vocabVer));
+		html.append(bizLogic.getRootVocabularyNodeHTML(vocabName,vocabVer,vocabDisName));
 		for(int i=0;i<premValueList.size();i++)
 		{
 			IConcept concept=(IConcept)premValueList.get(i);
@@ -144,9 +147,29 @@ public class SearchPermissibleValuesAction extends Action {
 			request.getSession().setAttribute(Constants.COMPONENT_ID,componentId );
 		}
 	}
+
+	private String getDisplayNameForVocab(String vocabName, String vocabVer) throws VocabularyException
+	{
+		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
+		List<IVocabulary> vocabularies = bizLogic.getVocabulries();
+		String vocabDisName="";
+		for(IVocabulary vocabulary:vocabularies)
+		{
+			if(vocabulary.getName().equals(vocabName) && vocabulary.getVersion().equals(vocabVer))
+			{
+				vocabDisName=vocabulary.getDisplayName();
+				break;
+			}
+		}
+		if(vocabDisName.equals(""))
+		{
+			throw new VocabularyException("Could not find the vocabulary.");
+		}
+		return vocabDisName;
+	}
 	
 	
-	private String getMappedVocabDataAsHTML(String targetVocab,AttributeInterface attribute,EntityInterface entity) throws VocabularyException 
+	private String getMappedVocabDataAsHTML(String targetVocab,AttributeInterface attribute,EntityInterface entity) throws VocabularyException, PVManagerException 
 	{
 		
 		SearchPermissibleValuesFromVocabBizlogic bizLogic = (SearchPermissibleValuesFromVocabBizlogic)BizLogicFactory.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
@@ -158,11 +181,9 @@ public class SearchPermissibleValuesAction extends Action {
 		StringBuffer html=new StringBuffer();
 		if(!sourceVocabulary.equalsIgnoreCase(targetVocabName) || !sourceVocabVer.equalsIgnoreCase(targetVocabVer))
 			{
-				
-				String vocabName=targetVocabName.toUpperCase();
-				html.append(bizLogic.getRootVocabularyNodeHTML(vocabName,targetVocabVer));
+				html.append(bizLogic.getRootVocabularyNodeHTML(targetVocabName,targetVocabVer,getDisplayNameForVocab(targetVocabName, targetVocabVer)));
 				Map<String,List<IConcept>> vocabMappings=bizLogic.getMappedConcepts(attribute,targetVocabName,targetVocabVer, entity);
-				getMappingDataAsHTML(html, vocabName,targetVocabVer, vocabMappings);
+				getMappingDataAsHTML(html, targetVocabName,targetVocabVer, vocabMappings);
 				
 			}
 			

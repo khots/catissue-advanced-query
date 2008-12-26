@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IExpression;
@@ -74,9 +75,10 @@ public class LoadSaveQueryPageAction extends Action
 	 * @param queryObject
 	 * @param isShowAll
 	 * @return
+	 * @throws PVManagerException 
 	 */
 	private String loadPage(ActionForm form, HttpServletRequest request,
-			IQuery queryObject,boolean isShowAll)
+			IQuery queryObject,boolean isShowAll) throws PVManagerException
 	{
 		String target;
 		Map<Integer,ICustomFormula> customFormulaIndexMap = new HashMap<Integer, ICustomFormula>();

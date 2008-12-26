@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
+import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
@@ -77,7 +78,7 @@ public class FetchQueryAction extends Action
 	}
 
 	private String fetchQuery(HttpServletRequest request, Long queryId,
-			 SaveQueryForm saveQueryForm) throws BizLogicException
+			 SaveQueryForm saveQueryForm) throws BizLogicException, PVManagerException
 	{
 		String target = Constants.FAILURE;
 		 IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
