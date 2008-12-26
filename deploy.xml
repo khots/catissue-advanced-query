@@ -30,7 +30,8 @@
 	
 	<property name="lexbig.config.path" value="pathOfJbossConfigFolder"/>
 	<property name="jboss.lexbig.config.path" value="${jboss.server.url}/data/LexBIGData/config/config.props" />
-
+	<!--XQueryGenerator Logger property-->
+	<property name="xquery.jboss.path" value="jbossHome" /> 
 	<property name="mysql.lib" value="mysql-connector-java-5.0.8-bin.jar" />
 	
 	<!-- These properties are not required so commented out -->
@@ -213,9 +214,14 @@
 		<copy todir="${temp.dir}/LexBIGData" overwrite="true">
 					<fileset dir="${base.dir}/LexBIGData" />
 		</copy>
-		<replace dir="${temp.dir}/query/WEB-INF/classes" propertyfile="${temp.dir}/query/WEB-INF/classes/vocab.properties">
-								<replacefilter token="${lexbig.config.path}" value="${jboss.lexbig.config.path}" />
+		<replace dir="${temp.dir}/query-properties" propertyfile="${temp.dir}/query-properties/vocab.properties">
+				<replacefilter token="${lexbig.config.path}" value="${jboss.lexbig.config.path}" />
 		</replace>
+		<!--XQueryGenerator logger path token replacement-->
+		<replace dir="${base.dir}/WEB-INF/classes" propertyfile="${base.dir}/WEB-INF/classes/query.properties">
+	  		<replacefilter token="${xquery.jboss.path}" value="${jboss.server.url}" /> 
+	  	</replace>
+
 		<copy file="query-ds.xml" todir="${temp.dir}" overwrite="true" />
 		<copy file="login-config.xml" todir="${temp.dir}" overwrite="true" />
 		<copy file="properties-service.xml" todir="${temp.dir}" overwrite="true" />
@@ -589,6 +595,8 @@
 			<replacefilter token="@@app-security-file@@" value="${jboss.server.url}/query-properties/ApplicationSecurityConfig.xml" />
 			<replacefilter token="@@app-properties-file@@" value="${jboss.server.url}/query-properties/query_Properties.xml" />
 			<replacefilter token="@@app-dynamicuixml-file@@" value="${jboss.server.url}/query-properties/dynamicUI.xml" />
+			<replacefilter token="@@vocab-properties-file@@" value="${jboss.server.url}/query-properties/vocab.properties"/>
+			<replacefilter token="@@configured-vocabs-file@@" value="${jboss.server.url}/query-properties/configuredVocabs.properties"/>
 		</replace>
 
 		<copy todir="${jboss.server.url}/deploy" overwrite="true">
