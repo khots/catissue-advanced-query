@@ -1969,12 +1969,27 @@ public class DAGPanel
 		int expressionId = expId;
 		IExpression expression = m_queryObject.getQuery().getConstraints().getExpression(
 				expressionId);
-		EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
+		
 		HtmlProvider generateHTMLBizLogic = new HtmlProvider(
 				null);
+		EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
+		
+		
+
 		Rule rule = ((Rule) (expression.getOperand(0)));
 		List<ICondition> conditions = Collections.list(rule);
-		String html = generateHTMLBizLogic.generateHTML(entity, conditions,null,selectedConcepts);
+		String html=null;
+		if( entity.getParentEntity() == null)
+		{
+			html = generateHTMLBizLogic.generateHTML(entity, conditions,null,selectedConcepts);
+		}
+		else if(entity.getParentEntity().getName().equals("MedicalEntitiesDictionary"))
+		{
+			/*temporary  changes for edit option for MED entities*/
+			
+			html="<table width='100%' border='0' align='center' cellpadding='0' cellspacing='0'><tr><td class='content_txt'  align='center' style='padding-left:10px;color:blue'>" +
+					"MED Entity can not be edited. This feature will be available in next iteration.</td></tr></table>";
+		}
 		map.put(DAGConstant.HTML_STR, html);
 		map.put(DAGConstant.EXPRESSION, expression);
 		return map;
