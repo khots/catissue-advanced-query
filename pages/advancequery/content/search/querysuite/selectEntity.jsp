@@ -21,7 +21,7 @@
 	   request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 	   request.send(actionURL);	
    }
-  function responseHandler(respose)
+  function responseHandler(response)
   {
 	  tree.deleteChildItems(0);   
 	  tree.loadXML(response,deleteFile);
