@@ -16,6 +16,7 @@ import edu.wustl.common.cde.CDE;
 import edu.wustl.common.cde.CDEManager;
 import edu.wustl.common.cde.PermissibleValue;
 import edu.wustl.common.query.impl.CommonPathFinder;
+import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.metadata.path.Path;
 import edu.wustl.common.querysuite.queryobject.IExpression;
@@ -202,8 +203,9 @@ public class FlexInterface
 	 * 
 	 * @param expressionId
 	 * @return
+	 * @throws PVManagerException 
 	 */
-	public String getLimitUI(int expressionId)
+	public String getLimitUI(int expressionId) throws PVManagerException
 	{
 		Map map = dagPanel.editAddLimitUI(expressionId);
 		String htmlStr = (String) map.get(DAGConstant.HTML_STR);
