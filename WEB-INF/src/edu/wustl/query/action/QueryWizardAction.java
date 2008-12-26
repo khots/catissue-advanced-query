@@ -46,6 +46,12 @@ public class QueryWizardAction extends Action
 		session.removeAttribute(DAGConstant.TQUIMap);
 		session.removeAttribute(Constants.EXPORT_DATA_LIST);
 		session.removeAttribute(Constants.ENTITY_IDS_MAP);
+		session.removeAttribute(Constants.MAIN_ENTITY_EXPRESSIONS_MAP);
+		session.removeAttribute(Constants.MAIN_EXPRESSION_TO_ADD_CONTAINMENTS);
+		session.removeAttribute(Constants.ALL_ADD_LIMIT_EXPRESSIONS);
+		session.removeAttribute(Constants.MAIN_EXPRESSIONS_ENTITY_EXP_ID_MAP);
+		session.removeAttribute(Constants.MAIN_ENTITY_LIST);
+		
 		searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
 
 		//Added a Default session data bean......Need to be removed when there query will have login

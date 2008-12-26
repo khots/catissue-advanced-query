@@ -34,6 +34,9 @@ public class ValidateQueryAction extends Action
 		// dataKey defines that ajax call from SimpleSearchDataView.jsp is made to get the updated message.
 		String dataKey = request.getParameter(Constants.UPDATE_SESSION_DATA);
 		HttpSession session = request.getSession();
+		
+		//Added By Baljeet
+		//session.removeAttribute("allLimitExpressionIds");
 		String writeresponse= buttonClicked;
 		if (dataKey != null && dataKey.equals(Constants.UPDATE_SESSION_DATA))
 		{

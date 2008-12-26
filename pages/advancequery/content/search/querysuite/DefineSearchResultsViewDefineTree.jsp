@@ -33,7 +33,7 @@
 			</tr>
 			<tr>
 				<td valign="top" width="80%" height="100%" class="login_box_bg" align="middle">
-					<%@ include file="/pages/advancequery/content/search/querysuite/DefineGridResultsView.jsp" %>
+					<%@ include file="/pages/advancequery/content/search/querysuite/ContainmentViewTree.jsp" %>
 				</td>
 			</tr>
 		</table>

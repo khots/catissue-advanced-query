@@ -94,6 +94,26 @@ public class CategorySearchForm extends ActionForm
 	* String to store currentSelectedObject
 	*/
 	private String currentSelectedNodeInTree = null;
+	
+	private String[] selectedMainEntities = null;
+
+	
+	/**
+	 * @return the selectedMainEntities
+	 */
+	public String[] getSelectedMainEntities()
+	{
+		return selectedMainEntities;
+	}
+
+	
+	/**
+	 * @param selectedMainEntities the selectedMainEntities to set
+	 */
+	public void setSelectedMainEntities(String[] selectedMainEntities)
+	{
+		this.selectedMainEntities = selectedMainEntities;
+	}
 
 	/**
 	 * @return the currentPage

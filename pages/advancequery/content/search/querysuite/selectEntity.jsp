@@ -23,7 +23,15 @@
    }
   function responseHandler(respose)
   {
-	 // alert(tree);
+	  tree.deleteChildItems(0);   
+	  tree.loadXML(response,deleteFile);
+	  tree.closeAllItems(0);
+	  tree.openAllItems(0);
+	 
+  }
+  function deleteFile()
+  {
+
   }
 </script>
 </head>

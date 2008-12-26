@@ -113,10 +113,10 @@ public class AddCuratedPath
 	private void populateMapForPath()
 	{
 		entityList = new ArrayList<String>();
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.Specimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.CellSpecimen");
+		entityList.add("Person,Demograhics,Race");
+		entityList.add("Person,Demographics,Gender");
+		
+		/*entityList.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.CellSpecimen");
 		entityList
 				.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.FluidSpecimen");
 		entityList
@@ -209,6 +209,7 @@ public class AddCuratedPath
 				.add("edu.wustl.catissuecore.domain.OrderItem,edu.wustl.catissuecore.domain.DistributedItem,edu.wustl.catissuecore.domain.MolecularSpecimen");
 		entityList
 				.add("edu.wustl.catissuecore.domain.OrderItem,edu.wustl.catissuecore.domain.DistributedItem,edu.wustl.catissuecore.domain.TissueSpecimen");
+	*/
 	}
 
 	public AddCuratedPath(Connection connection)

@@ -210,7 +210,7 @@ public abstract class QueryCSMUtil
 					mainEntityList = getAllMainEntities(assocoation.getEntity(), mainEntityList);
 				}
 			}
-			else
+			else if(!mainEntityList.contains(entity))
 			{
 				mainEntityList.add(entity);
 			}

@@ -33,16 +33,98 @@ public class QueryDetails
 	private Map<AttributeInterface, String> attributeColumnNameMap;
 	private Map<String, IOutputTerm> outputTermsColumns;
 	private IQuery query;
-	private HashMap <EntityInterface, List<EntityInterface>> containmentMap;
 	private List<EntityInterface> mainEntityList;
 	private List<QueryTreeNodeData> treeDataVector;
 	private OutputTreeDataNode currentSelectedObject;
-
+	private Map<Integer,String> parentNodesIdMap ;
+	
+	private Map <Integer,List<EntityInterface>> eachExpressionContainmentMap ;
+    private Map <Integer,HashMap <EntityInterface,Integer>> mainExpEntityExpressionIdMap;
 	//private HttpSession session;
 
 	
 	
 	
+	
+	
+	
+	/**
+	 * @return the mainExpEntityExpressionIdMap
+	 */
+	public Map<Integer, HashMap<EntityInterface, Integer>> getMainExpEntityExpressionIdMap()
+	{
+		return mainExpEntityExpressionIdMap;
+	}
+
+
+
+
+
+
+	
+	/**
+	 * @param mainExpEntityExpressionIdMap the mainExpEntityExpressionIdMap to set
+	 */
+	public void setMainExpEntityExpressionIdMap(
+			Map<Integer, HashMap<EntityInterface, Integer>> mainExpEntityExpressionIdMap)
+	{
+		this.mainExpEntityExpressionIdMap = mainExpEntityExpressionIdMap;
+	}
+
+
+
+
+
+
+	/**
+	 * @return the eachExpressionContainmentMap
+	 */
+	public Map<Integer, List<EntityInterface>> getEachExpressionContainmentMap()
+	{
+		return eachExpressionContainmentMap;
+	}
+
+
+
+
+
+	
+	/**
+	 * @param eachExpressionContainmentMap the eachExpressionContainmentMap to set
+	 */
+	public void setEachExpressionContainmentMap(
+			Map<Integer, List<EntityInterface>> eachExpressionContainmentMap)
+	{
+		this.eachExpressionContainmentMap = eachExpressionContainmentMap;
+	}
+
+
+
+
+
+	/**
+	 * @return the parentNodesIdMap
+	 */
+	public Map<Integer, String> getParentNodesIdMap()
+	{
+		return parentNodesIdMap;
+	}
+
+
+
+
+	
+	/**
+	 * @param parentNodesIdMap the parentNodesIdMap to set
+	 */
+	public void setParentNodesIdMap(Map<Integer, String> parentNodesIdMap)
+	{
+		this.parentNodesIdMap = parentNodesIdMap;
+	}
+
+
+
+
 	/**
 	 * @return the currentSelectedObject
 	 */
@@ -80,24 +162,6 @@ public class QueryDetails
 	public void setTreeDataVector(List<QueryTreeNodeData> treeDataVector)
 	{
 		this.treeDataVector = treeDataVector;
-	}
-
-
-	/**
-	 * @return the containmentMap
-	 */
-	public HashMap<EntityInterface, List<EntityInterface>> getContainmentMap()
-	{
-		return containmentMap;
-	}
-
-	
-	/**
-	 * @param containmentMap the containmentMap to set
-	 */
-	public void setContainmentMap(HashMap<EntityInterface, List<EntityInterface>> containmentMap)
-	{
-		this.containmentMap = containmentMap;
 	}
 
 	

@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
@@ -424,6 +427,10 @@ public class FlexInterface
 		IPathFinder pathFinder = new CommonPathFinder();
 		dagPanel = new DAGPanel(pathFinder);
 		dagPanel.setQueryObject(queryObject);
+		
+		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
+		HttpSession session = request.getSession();
+		session.removeAttribute("allLimitExpressionIds");
 	}
 
 	private IClientQueryBuilderInterface queryObject = null;

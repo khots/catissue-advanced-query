@@ -141,6 +141,11 @@ public class DAGPanel
 			modifySelectedConcepts(strToCreateQueryObject, selectedConcepts);
 			session.setAttribute(Constants.SELECTED_CONCEPT_LIST, selectedConcepts);
 		}
+		List<Integer> expressionIdsList =  (List<Integer>)session.getAttribute("allLimitExpressionIds");
+	    if(expressionIdsList == null)
+	    {
+	    	expressionIdsList =  new ArrayList<Integer>();
+	    }
 		IQuery query = (IQuery) session.getAttribute(DAGConstant.QUERY_OBJECT);// Get existing Query object from server  
 		if (query != null)
 		{
