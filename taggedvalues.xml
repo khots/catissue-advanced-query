@@ -29,6 +29,10 @@
 </entity>
 <entity>
 	<name>LaboratoryProcedure</name>
+	<tag>
+		<tag-name>MAIN_ENTITY</tag-name>
+		<tag-value>MAIN_ENTITY</tag-value>
+	</tag>
 	<attribute>
 		<name>procedureSynonym</name>
 		<tag>
@@ -153,6 +157,10 @@
 		<tag-name>PRIMARY_KEY</tag-name>
 		<tag-value>personUpi</tag-value>
 	</tag>
+	<tag>
+		<tag-name>MAIN_ENTITY</tag-name>
+		<tag-value>MAIN_ENTITY</tag-value>
+	</tag>
 </entity>
 <entity>
 	<name>LaboratoryProcedure</name>
@@ -166,6 +174,10 @@
 	<tag>
 		<tag-name>PRIMARY_KEY</tag-name>
 		<tag-value>patientAccountNumber</tag-value>
+	</tag>
+	<tag>
+		<tag-name>MAIN_ENTITY</tag-name>
+		<tag-value>MAIN_ENTITY</tag-value>
 	</tag>
 </entity>
 <entity>
