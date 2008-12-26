@@ -39,7 +39,7 @@ System.out.println("currentPage         "+currentPage);
 		}
 		else
 		{
-			event.returnValue=true;
+		    event.returnValue=true;
 		}
 		retrieveEntities(key);
 	}
@@ -101,7 +101,7 @@ else
 					<tr id="collapsableHeader" valign="top"  width="97%" height="20">
 						<td valign="top"   >&nbsp;</td>
 						<td id="advancedSearchHeaderTd" valign="top" style="border-top: 1px solid #cccccc; border-left:1px solid #cccccc;border-bottom:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif">
-							<b><bean:message key="query.advancedSearchHeader"/></font></b>									
+							<img src="images/advancequery/t_adv_option.gif" height="22px"/>									
 						</td>
 						<th id="imageContainer" valign="middle" align="right" style="border-top: 1px solid #cccccc; border-right:1px solid #cccccc;border-bottom:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" >
 							<a id="image" onClick="expand()" style="display:block"> <img src="images/advancequery/nolines_plus.gif" /> </a>
@@ -111,16 +111,16 @@ else
 					<tr valign="top" ><td valign="top" id="td1">&nbsp;</td>
 						<td colspan="2"><table  class="collapsableTable" style="display:none" width="100%" cellspacing="0" cellpadding="0"  id="collapsableTable" >
 								<tr id="class_view">
-									<td class="standardTextQuery" style="border-top: 1px solid #cccccc; "><html:checkbox  property="classChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>'> <bean:message key="query.class"/></html:checkbox></td>
+									<td class="standardTextQuery" style="border-top: 1px solid #cccccc; "><html:checkbox  property="classChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.class"/></html:checkbox></td>
 								</tr>
 								<tr id="attribute_view" >
-									<td class="standardTextQuery"><html:checkbox  property="attributeChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>' > <bean:message key="query.attribute"/></html:checkbox></td>
+									<td class="standardTextQuery"><html:checkbox  property="attributeChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>' >&nbsp; <bean:message key="query.attribute"/></html:checkbox></td>
 								</tr>
 								<tr id="permissible_view" >
-									<td class="standardTextQuery"><html:checkbox property="permissibleValuesChecked" onclick="permissibleValuesSelected(this)" value='<%=Constants.ON%>'> <bean:message key="query.permissibleValues"/></html:checkbox></td>
+									<td class="standardTextQuery"><html:checkbox property="permissibleValuesChecked" disabled="true" onclick="permissibleValuesSelected(this)" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.permissibleValues"/></html:checkbox></td>
 								</tr>
 								<tr id="description_view" >
-									<td class="standardTextQuery"><html:checkbox  property="includeDescriptionChecked" value='<%=Constants.ON%>'><bean:message key="query.includeDescription"/> </html:checkbox></td>
+									<td class="standardTextQuery"><html:checkbox  property="includeDescriptionChecked" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.includeDescription"/> </html:checkbox></td>
 								</tr>
 								<tr><td>&nbsp;</td></tr>
 								<tr id="radio_view" >
@@ -141,7 +141,7 @@ else
 						<td  height="1%">&nbsp;</td>
 						<td colspan="2"  valign="top" style="border-top: 1px solid #cccccc; border-left:1px solid #cccccc;border-bottom:0px solid #cccccc;border-right:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" height="30">
 							
-							<img src="images/advancequery/t_search_results.gif" hspace="3" />			
+							<img src="images/advancequery/t_search_results.gif" />		
 						</td>
 						<td  height="1%">&nbsp;</td>
 					</tr>

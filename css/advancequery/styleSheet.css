@@ -1708,6 +1708,17 @@ td.queryModuleTabMenuItem{ /* for the off state of the tab menu (top) cells */
 	border: 1px solid #7f9db9;
 
 }
+.treeview {
+	font-family:Arial, Helvetica, sans-serif;
+	color: #000000;
+	font-size: 12px;
+	border: 1px solid #7f9db9;
+	background-color:white;
+	overflow:auto;
+	height:370;
+	width:240;
+}
+
 .td_bgcolor_grey {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 12px;
@@ -1728,6 +1739,12 @@ td.queryModuleTabMenuItem{ /* for the off state of the tab menu (top) cells */
 	border: 1px solid #cccccc;
 	background-color: #ffffff;
 }
+.content_txt {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #3c3c3c;
+}
+
 .table_header {
 	background-color: #999999;
 	background-image: url(../images/advancequery/bg_content_header.gif);
@@ -1782,7 +1799,8 @@ queryLink{ /* for the text links in the Search category page */
 }
 .validationMessageCss
 {
- font-family:arial,helvetica,verdana,sans-serif;
+  padding-top:5px;
+  font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.9em;
   /*border-top:1px  solid #000000;/* constant: dark gray */
   color:#000000; /* constant: black */

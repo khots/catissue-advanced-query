@@ -88,15 +88,15 @@
 													</td>
 												</tr>
 												<tr>
-													<td height="200" width="100%" id="addLimitsSection">
+													<td height="215" width="100%" id="addLimitsSection">
 													<div id="addLimits" style="overflow:auto; height:100%;width:100%"></div></td>
 												</tr>	
 								</table>
 							</td>
 							</tr>							
 							<tr id="AddLimitsButtonMsg" border="0">
-								<td valign="top" id="AddLimitsButtonSection" style="padding-bottom:3px;">
-										<div id="AddLimitsButtonRow" align="right" border="0"></div>
+								<td valign="top" id="AddLimitsButtonSection" style="padding-bottom:3px;padding-top:3px">
+										<div id="AddLimitsButtonRow" valign="middle" align="right" border="0"></div>
 								</td>
 							</tr>							
 							<tr>							
@@ -149,13 +149,12 @@
 			<tr>
 					<td colspan="4">
 					<table border="0" width="100%" cellspacing="0" cellpadding="0" height="24">
-					<tr valign="top">
-					 <td width="2%" valign="bottom">&nbsp;</td>
-					 <td width="50%" align="left">
-					  <table border="0" cellspacing="0" cellpadding="0">
+					<tr valign="middle">
+					 <td width="50%" align="left" colspan="2">
+					  <table border="0" cellspacing="0" cellpadding="0" >
 						<tr>
-							<td><img src="images/advancequery/b_save.gif"   hspace="3" onclick="validateQuery('save');"/></td>
-							 <td><img src="images/advancequery/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td>
+							 <td style="padding-left:7px"  ><img src="images/advancequery/b_save.gif"   hspace="3" onclick="validateQuery('save');"/></td>
+							 <td style="padding-left:4px"><img src="images/advancequery/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td>
 						</tr>
 					 </table>
 					</td>
@@ -163,7 +162,7 @@
 					<td width="50%" align="right">
 					 <table border="0" cellspacing="0" cellpadding="0">
 					  <tr>
-							<td><img src="images/advancequery/b_next.gif"   hspace="3" onclick="saveClientQueryToServer('next');" /></td>
+							<td align="right"><img src="images/advancequery/b_next.gif" onclick="saveClientQueryToServer('next');" /></td>
 						</tr>
 					</table>
 					 </td>

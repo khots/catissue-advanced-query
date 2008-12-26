@@ -44,32 +44,40 @@
 		<td valign="top"  width="90%" height="90%">
 			<div id="treeBox" style="background-color:white;overflow:auto;height:370;width:240;border-left:solid 1px;border-right:solid 1px;border-top:solid 1px;border-bottom:solid 1px;"></div>
 		</td>
+	
 		<td width="1%"> &nbsp; </td>
-		   <td align="center" valign="center" width="">
-			<html:button styleClass="actionButton" property="shiftRight"styleId ="shiftRight" onclick="moveOptionsRight(this.form.columnNames, this.form.selectedColumnNames);">
+		   <td align="center" valign="center" style="padding-left:10px;padding-right:10px;">
+		<!--	<html:button styleClass="actionButton" property="shiftRight" styleId ="shiftRight" onclick="moveOptionsRight(this.form.columnNames, this.form.selectedColumnNames);">
 				<bean:message key="buttons.addToView"/>
-			</html:button>
+			</html:button> -->
+			<img src="images/advancequery/b_add.gif"  align="absmiddle" hspace="3" property="shiftRight" styleId ="shiftRight" onclick="moveOptionsRight(document.forms[0].columnNames,document.forms[0].selectedColumnNames);"/>
 			<br/><br/>
-			<html:button styleClass="actionButton" property="shiftLeft" styleId ="shiftLeft" onclick="moveOptionsLeft(this.form.selectedColumnNames, this.form.columnNames);" >
+		 <!--	<html:button styleClass="actionButton" property="shiftLeft" styleId ="shiftLeft" onclick="moveOptionsLeft(this.form.selectedColumnNames, this.form.columnNames);" >
 				<bean:message key="buttons.deleteFromView"/>
-			</html:button>  
+			</html:button>  --> <img src="images/advancequery/b_remove.gif"  align="absmiddle" hspace="3" onclick="moveOptionsLeft(document.forms[0].selectedColumnNames, document.forms[0].columnNames);"/>
 		</td>
 		<td width="1%"> &nbsp; </td>
 		<td class="" valign="top" width="60" height="85%">
 <!-- Mandar : 434 : for tooltip -->
-			<html:select property="selectedColumnNames" styleClass="" size="16" multiple="true" style="height:370" >
-				<html:options collection="selectedColumnNameValueBeanList" labelProperty="name" property="value"/>
-			</html:select>
-		</td>
-		<td width="1%"> &nbsp; </td>
-		<td align="center" valign="center">
-			<html:button styleClass="actionButton" property="shiftUp" styleClass="actionButton" styleId ="shiftUp" onclick="moveUp(this.form.selectedColumnNames);">
-				<bean:message key="buttons.up"/>
-			</html:button>  <br/><br/>
 			
-			<html:button styleClass="actionButton" property="shiftDown" styleClass="actionButton" styleId ="shiftDown" onclick="moveDown(this.form.selectedColumnNames)" >
+			<html:select property="selectedColumnNames" styleClass="" size="16"   multiple="true" style="height:370;overflow-x:scroll;" >
+			  	
+				<html:options collection="selectedColumnNameValueBeanList" labelProperty="name" property="value"/>
+			 </html:select>
+		
+        </td>
+		<td width="1%"> &nbsp; </td>
+		<td align="center" style="padding-left:10px;padding-right:10px;" valign="center">
+		<!--	<html:button styleClass="actionButton" property="shiftUp" styleClass="actionButton" styleId ="shiftUp" onclick="moveUp(this.form.selectedColumnNames);">
+				<bean:message key="buttons.up"/>
+			</html:button> --> 
+			<img src="images/advancequery/ic_up.gif" align="absmiddle"  onclick="moveUp(document.forms[0].selectedColumnNames);"/>
+			<br/><br/>
+			
+		<!--	<html:button styleClass="actionButton" property="shiftDown" styleClass="actionButton" styleId ="shiftDown" onclick="moveDown(this.form.selectedColumnNames)" >
 				<bean:message key="buttons.down"/>
-			</html:button> 
+			</html:button> -->
+			<img src="images/advancequery/ic_down.gif"  align="absmiddle" onclick="moveDown(document.forms[0].selectedColumnNames);"/>
 		</td>
 </tr>
 <tr><td> &nbsp;
@@ -80,9 +88,9 @@
   	<table border="0" cellpadding="0" cellspacing="0" width="100%">
 			<tr height="1px">
 			<td align="center" height="2%">
-					<html:button styleClass="actionButton" property="configureButton" onclick = "onSubmit(this.form.selectedColumnNames,'back');" >
+			  <html:button styleClass="actionButton" property="configureButton" onclick = "onSubmit(this.form.selectedColumnNames,'back');" >
 							<bean:message key="query.back.button"/>
-					</html:button>
+			   </html:button> 
 			</td>	 
 			<td align="center" height="2%">
 					<html:button styleClass="actionButton" property="redefineButton" onclick = "onSubmit(this.form.selectedColumnNames,'restore');" >
@@ -156,7 +164,7 @@
 						   continue;
 						}
 						var displaySelectedColumn = parentNodeText + " : " + nodetext;
-						selectedText[selectedCount] = displaySelectedColumn;
+                        selectedText[selectedCount] = displaySelectedColumn;
 						selectedValues[selectedCount] = selectedOption;
 						//deleteOption(theSelFrom, i);
 						selectedCount++;

@@ -17,9 +17,10 @@
 					&nbsp;
 				</td>
 			</tr>
-			<tr valign="top" width="100%" height="80%" align="left">
+			<tr valign="top" width="100%" height="100%" align="left">
 				<td valign="top" height="100%" align="left" >
-				</td>
+<%@ include file="/pages/advancequery/content/search/querysuite/selectEntity.jsp" %>				
+</td>
 			</tr>
 		</table>
 	</td>
@@ -27,11 +28,11 @@
 	    <table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3" valign="top">
 			<tr  id="rowMsg" class='validationMessageCss'>
 				<td id="validationMessagesSection"  width="80%" class='validationMessageCss'>
-					<div id="validationMessagesRow"   style="overflow:auto; width:100%; height:50;display:none"></div>
+					<div id="validationMessagesRow" style="overflow:auto; width:100%; height:50;display:none"></div>
 				</td>
 			</tr>
 			<tr>
-				<td valign="top" width="80%" height="100%">
+				<td valign="top" width="80%" height="100%" class="login_box_bg" align="middle">
 					<%@ include file="/pages/advancequery/content/search/querysuite/DefineGridResultsView.jsp" %>
 				</td>
 			</tr>
@@ -40,6 +41,7 @@
 </tr>
 </table>
 <script>  
-    document.getElementById("buttontr").style.display="none";  </script>
+//to hide the button row (of defineGridView page )in define view page
+ document.getElementById("buttontr").style.display="none";  </script>
 </body>
 </html>
