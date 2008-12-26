@@ -504,7 +504,7 @@
 				var functionCall = "addNodeToView('"+id+"')";		
 				var entityName = "<font color=#0000CC>"+name +"</font>";
 				var tooltipFunction = "Tip('"+description+"', WIDTH, 200)";				
-				row = row+'<tr><td><a  class="bluelink" onmouseover="'+tooltipFunction+'"  href="javascript:'+functionCall+'">' +name+ '</a></td></tr>';
+				row = row+'<tr><td style="padding-left:10px;"><a  class="bluelink" onmouseover="'+tooltipFunction+'"  href="javascript:'+functionCall+'">' +name+ '</a></td></tr>';
 				
 			}
 			row = row+'</table>';		
@@ -542,7 +542,7 @@
 				var functionCall = "retriveEntityInformation('loadDefineSearchRules.do','categorySearchForm','"+id+"','"+textField+"','"+attributeChecked+"','"+permissibleValuesChecked+"')";		
 				var entityName = "<font color=#0000CC>"+name +"</font>";
 				var tooltipFunction = "Tip('"+description+"', WIDTH, 200)";				
-				row = row+'<tr><td ><a  class="bluelink"  onmouseover="'+tooltipFunction+'"  href="javascript:'+functionCall+'">' +name+ '</a></td></tr>';
+				row = row+'<tr><td style="padding-left:10px;" ><a  class="bluelink"  onmouseover="'+tooltipFunction+'"  href="javascript:'+functionCall+'">' +name+ '</a></td></tr>';
 			}			
 			row = row+'</table>';		
 			element.innerHTML =row;
