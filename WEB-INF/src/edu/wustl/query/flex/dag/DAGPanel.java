@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -29,7 +30,6 @@ import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.query.queryobject.locator.Position;
 import edu.wustl.common.query.queryobject.locator.QueryNodeLocator;
 import edu.wustl.common.querysuite.exceptions.CyclicException;
-import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.metadata.associations.IAssociation;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
@@ -65,8 +65,10 @@ import edu.wustl.common.util.Collections;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
+import edu.wustl.query.domain.SelectedConcept;
 import edu.wustl.query.htmlprovider.HtmlProvider;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.QueryModuleConstants;
 import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleSearchQueryUtil;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
@@ -131,12 +133,15 @@ public class DAGPanel
 		//		Map ruleDetailsMap = null;
 		//		int expressionId ;
 		DAGNode node = null;
-
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		HttpSession session = request.getSession();
-
+		List<SelectedConcept> selectedConcepts = (List<SelectedConcept>) session.getAttribute(Constants.SELECTED_CONCEPT_LIST);
+		if(selectedConcepts !=null)
+		{
+			modifySelectedConcepts(strToCreateQueryObject, selectedConcepts);
+			session.setAttribute(Constants.SELECTED_CONCEPT_LIST, selectedConcepts);
+		}
 		IQuery query = (IQuery) session.getAttribute(DAGConstant.QUERY_OBJECT);// Get existing Query object from server  
-
 		if (query != null)
 		{
 			m_queryObject.setQuery(query);
@@ -146,7 +151,7 @@ public class DAGPanel
 			query = m_queryObject.getQuery();
 		}
 		session.setAttribute(DAGConstant.QUERY_OBJECT, query);
-
+		
 		try
 		{
 			Long entityId = Long.parseLong(entityName);
@@ -157,13 +162,81 @@ public class DAGPanel
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			e.printStackTrace();
+			Logger.out.error(e.getMessage(),e);
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			e.printStackTrace();
+			Logger.out.error(e.getMessage(),e);
 		}
 		return node;
+	}
+
+	private void modifySelectedConcepts(String strToCreateQueryObject,
+			List<SelectedConcept> selectedConcepts)
+	{
+		String[] conditions = strToCreateQueryObject.split(QueryModuleConstants.QUERY_CONDITION_DELIMITER);
+		String condition;
+		String[] ids = null;
+		String[] conceptNames = null;
+		for (int i = 0; i < conditions.length; i++)
+		{
+			condition = conditions[i];
+			if (!condition.equals(""))
+			{
+				condition = condition.substring(QueryModuleConstants.ARGUMENT_ZERO, condition
+						.indexOf(QueryModuleConstants.ENTITY_SEPARATOR));
+				String attrName = null;
+				StringTokenizer tokenizer = new StringTokenizer(condition,
+						QueryModuleConstants.QUERY_OPERATOR_DELIMITER);
+				while (tokenizer.hasMoreTokens())
+				{
+					attrName = tokenizer.nextToken();
+					if (tokenizer.hasMoreTokens())
+					{
+						String opr = tokenizer.nextToken(); //get operator
+						//attrParams[QueryModuleConstants.INDEX_PARAM_ZERO] = operator;
+						if (tokenizer.hasMoreTokens())
+						{
+							//opr = tokenizer.nextToken();
+							if(attrName.startsWith(Constants.ID))
+							{
+								String id = tokenizer.nextToken();
+								ids = id.split("&");
+							}
+							else if(attrName.startsWith(Constants.NAME))
+							{
+								String conceptName = tokenizer.nextToken();
+								conceptNames = conceptName.split("&");
+							}
+						}
+					}
+				}
+			}
+		}
+		removeFromSelectedConceptList(selectedConcepts, ids, conceptNames);
+	}
+
+	private void removeFromSelectedConceptList(List<SelectedConcept> selectedConcepts,
+			String[] ids, String[] conceptNames)
+	{
+		Iterator<SelectedConcept> iterator = selectedConcepts.iterator();
+		while(iterator.hasNext())
+		{
+			SelectedConcept selectedConcept = iterator.next();
+			boolean isPresent = false;
+			for(int i=0;i<conceptNames.length && !isPresent;i++)
+			{
+				if(selectedConcept.getConceptName().equals(conceptNames[i]) &&
+						selectedConcept.getConceptCode().equals(ids[i]))
+				{
+					isPresent = true;
+				}
+			}
+			if(!isPresent)
+			{
+				iterator.remove();
+			}
+		}
 	}
 
 	private DAGNode createQueryObjectLogic(String strToCreateQueryObject, String mode,
@@ -316,7 +389,7 @@ public class DAGPanel
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.out.error(e.getMessage(),e);
 		}
 		return map.get(ambiguityObject);
 	}
@@ -403,7 +476,7 @@ public class DAGPanel
 		}
 	}
 
-	private void createSingleNodeCP(SingleNodeCustomFormulaNode node, String operation,
+	/*private void createSingleNodeCP(SingleNodeCustomFormulaNode node, String operation,
 			IQuery query, SingalNodeTemporalQuery singalNodeTq)
 	{
 		singalNodeTq.createOnlyLHS();
@@ -435,7 +508,7 @@ public class DAGPanel
 			outputTerm.setName(tqColumnName);
 			updateSingleNodeCN(node);
 		}
-	}
+	}*/
 
 	private void updateSingleNodeCN(SingleNodeCustomFormulaNode node)
 	{
@@ -1006,7 +1079,7 @@ public class DAGPanel
 
 	/**
 	 * This method removes the Custom formula from query on delete of custom Node 
-	 * @throws MultipleRootsException
+	 * 
 	 */
 	public void removeCustomFormula(String customNodeId)
 	{
@@ -1067,7 +1140,7 @@ public class DAGPanel
 		}
 		catch (CyclicException e)
 		{
-			e.printStackTrace();
+			Logger.out.error(e.getMessage(),e);
 
 		}
 	}
@@ -1884,6 +1957,9 @@ public class DAGPanel
 	 */
 	public Map editAddLimitUI(int expId) throws PVManagerException
 	{
+		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
+		HttpSession session = request.getSession();
+		List<SelectedConcept> selectedConcepts = (List<SelectedConcept>) session.getAttribute(Constants.SELECTED_CONCEPT_LIST);
 		Map<String, Object> map = new HashMap<String, Object>();
 		int expressionId = expId;
 		IExpression expression = m_queryObject.getQuery().getConstraints().getExpression(
@@ -1893,7 +1969,7 @@ public class DAGPanel
 				null);
 		Rule rule = ((Rule) (expression.getOperand(0)));
 		List<ICondition> conditions = Collections.list(rule);
-		String html = generateHTMLBizLogic.generateHTML(entity, conditions,null);
+		String html = generateHTMLBizLogic.generateHTML(entity, conditions,null,selectedConcepts);
 		map.put(DAGConstant.HTML_STR, html);
 		map.put(DAGConstant.EXPRESSION, expression);
 		return map;

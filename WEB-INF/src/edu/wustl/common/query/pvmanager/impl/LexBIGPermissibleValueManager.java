@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.IVocabularyManager;
 import edu.wustl.common.vocab.VocabularyException;
@@ -194,5 +195,35 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 			}
 		}
 		return pvFilterValueList;
+	}
+	
+	/**
+	 * 
+	 */
+	public boolean showIcon(AttributeInterface attribute, EntityInterface entity) throws PVManagerException
+	{
+		boolean showIcon = true;
+		try
+		{
+			IVocabularyManager vocabMngr = VocabularyManager.getInstance();
+			if (isEnumerated(attribute, entity))
+			{
+				List<IVocabulary> vocabularies = vocabMngr.getConfiguredVocabularies();
+				int noOfCodingSchemes = vocabularies.size();
+				List<String> pvFilter = getPVFilterValueForAttribute(attribute, entity);
+				MedLookUpManager medManager = MedLookUpManager.instance();
+				List<String> toReturn = medManager.getPermissibleValues(pvFilter);
+				if (toReturn != null && toReturn.size() < 5 && noOfCodingSchemes == 1)
+				{
+					showIcon = false;
+				}
+			}
+		}
+		catch (VocabularyException e)
+		{
+			Logger.out.error(e.getMessage(),e);
+		}
+		return showIcon;
+
 	}
 }

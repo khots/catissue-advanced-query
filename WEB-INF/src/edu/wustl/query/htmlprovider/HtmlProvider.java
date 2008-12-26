@@ -17,12 +17,15 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.wustl.cab2b.common.exception.CheckedException;
 import edu.wustl.cab2b.common.util.AttributeInterfaceComparator;
 import edu.wustl.cab2b.common.util.PermissibleValueComparator;
+import edu.wustl.common.query.factory.PermissibleValueManagerFactory;
+import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.common.util.ParseXMLFile;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.query.domain.SelectedConcept;
 import edu.wustl.query.util.global.Constants;
 
 /**
@@ -62,9 +65,6 @@ public class HtmlProvider
 	 * 
 	 */
 	Map<String,AttributeInterface> enumratedAttributeMap= new HashMap<String,AttributeInterface>();
-	/**
-	 * 
-	 */
 	/**
 	 *	For page set to SAVE_QUERY/ADD_EDIT/EXECUTE_QUERY depending upon
 	 *  which page the request has come from.
@@ -168,12 +168,10 @@ public class HtmlProvider
 	 * @param conditions List of conditions , These are required in case of edit limits,
 	 * 		For adding linits this parameter is null
 	 * @return String html generated for Add Limits section.
-	 * @throws PVManagerException 
 	 */
-	public String generateHTML(EntityInterface entity, List<ICondition> conditions,GenerateHTMLDetails generateHTMLDetails) throws PVManagerException
+	public String generateHTML(EntityInterface entity, List<ICondition> conditions,GenerateHTMLDetails generateHTMLDetails,
+			List<SelectedConcept> selectedConcepts)throws PVManagerException
 	{
-		boolean attributeChecked = this.generateHTMLDetails.isAttributeChecked();
-		boolean permissibleValuesChecked = this.generateHTMLDetails.isPermissibleValuesChecked();
 		this.entity=entity;
 		Collection<AttributeInterface> attributeCollection = entity.getEntityAttributesForQuery();
 		String nameOfTheEntity = entity.getName();
@@ -186,8 +184,7 @@ public class HtmlProvider
 		String attributesStr = getAttributesString(attributeCollection);
 		generatedPreHTML = GenerateHtml.getHtmlHeader
 					(entityName.toString(),entityId,attributesStr,isEditLimits);
-		generatedHTML = getHtmlAttributes(conditions, attributeChecked, permissibleValuesChecked,
-				attributeCollection,entity);
+		generatedHTML = getHtmlAttributes(conditions,attributeCollection,selectedConcepts);
 		if(generateHTMLDetails!=null)
 		{
 			generateHTMLDetails.setEnumratedAttributeMap(enumratedAttributeMap);
@@ -202,11 +199,12 @@ public class HtmlProvider
 	 * @param permissibleValuesChecked boolean
 	 * @param attributeCollection collection of attributes
 	 * @return StringBuffer
-	 * @throws PVManagerException 
 	 */
-	private StringBuffer getHtmlAttributes(List<ICondition> conditions, boolean attributeChecked,
-			boolean permissibleValuesChecked, Collection<AttributeInterface> attributeCollection,EntityInterface entity) throws PVManagerException
+	private StringBuffer getHtmlAttributes(List<ICondition> conditions,Collection<AttributeInterface> attributeCollection,
+			List<SelectedConcept> selectedConcepts)  throws PVManagerException
 	{
+		boolean attributeChecked = this.generateHTMLDetails.isAttributeChecked();
+		boolean permissibleValuesChecked = this.generateHTMLDetails.isPermissibleValuesChecked();
 		StringBuffer generatedHTML = new StringBuffer(Constants.MAX_SIZE);
 		String space = " ";
 		generatedHTML
@@ -227,23 +225,49 @@ public class HtmlProvider
 				{
 					continue;
 				}
-				getAttributeDetails(attribute,conditions,null);
-				StringBuffer attrLabel = new StringBuffer
-					(Utility.getDisplayLabel(attributeDetails.getAttrName()));
-				boolean isBold = checkAttributeBold(attributeChecked, permissibleValuesChecked,
-						attribute, attributeDetails.getAttrName());
-				if(isBold)
-				{
-					attrLabel = GenerateHtml.getBoldLabel(attrLabel.toString());
-				}
+				getAttributeDetails(attribute,conditions,null,selectedConcepts);
 				String componentId = generateComponentName(attribute);
-				attributesList = attributesList + ";" + componentId;
-				isBGColor = GenerateHtml.getAlternateCss(generatedHTML, isBGColor, componentId,isBold);
-				generatedHTML.append(attrLabel).append(space);
-				GenerateHtml.getDateFormat(generatedHTML, isBold, attribute);
-				generatedHTML.append(":&nbsp;&nbsp;&nbsp;&nbsp;</td>\n");
-				generateHTMLForConditions(generatedHTML,attribute,entity);
-				generatedHTML.append("\n</tr>");
+				if(HtmlUtility.isAttrHidden(attribute))
+				{
+					//generatedHTML.append("<tr>");
+					//generatedHTML.append("<td>");
+					String conceptIds = "";
+					if(selectedConcepts != null)
+					{
+						
+						for(SelectedConcept concept : selectedConcepts)
+						{
+							conceptIds = conceptIds + concept.getConceptCode() + ",";
+						}
+						conceptIds = conceptIds.substring(0, conceptIds.lastIndexOf(','));
+					}
+					String temp = "<input style=\"width:150px;\" type=\"hidden\" name=\""
+						+ componentId + "_combobox\" id=\"" + componentId + "_combobox\" value=\"In\">";
+					generatedHTML.append(temp);
+					String textBoxId = componentId + "_textBox";
+					temp = "<input style=\"width:150px;\" type=\"hidden\" name=\""
+						+ textBoxId + "\" id=\"" + textBoxId + "\" value=\"" + conceptIds + "\">";
+					generatedHTML.append(temp);
+					//generatedHTML.append("</td></tr>");
+				}
+				else
+				{
+					StringBuffer attrLabel = new StringBuffer
+						(Utility.getDisplayLabel(attributeDetails.getAttrName()));
+					boolean isBold = checkAttributeBold(attributeChecked, permissibleValuesChecked,
+							attribute, attributeDetails.getAttrName());
+					if(isBold)
+					{
+						attrLabel = GenerateHtml.getBoldLabel(attrLabel.toString());
+					}
+					attributesList = attributesList + ";" + componentId;
+					isBGColor = GenerateHtml.getAlternateCss(generatedHTML, isBGColor, componentId,isBold);
+					generatedHTML.append(attrLabel).append(space);
+					GenerateHtml.getDateFormat(generatedHTML, isBold, attribute);
+					generatedHTML.append(":&nbsp;&nbsp;&nbsp;&nbsp;</td>\n");
+					generateHTMLForConditions(generatedHTML,attribute);
+					generatedHTML.append("\n</tr>");
+				}
 			}
 		}
 		GenerateHtml.getTags(generatedHTML);
@@ -257,11 +281,11 @@ public class HtmlProvider
 	 * @param parameterList list of parameters
 	 */
 	private void getAttributeDetails(AttributeInterface attribute,
-			List<ICondition> conditions,List<IParameter<?>> parameterList)
+			List<ICondition> conditions,List<IParameter<?>> parameterList,List<SelectedConcept> selectedConcepts)
 	{
 		this.attributeDetails = new AttributeDetails();
 		attributeDetails.setAttrName(attribute.getName());
-		attributeDetails.setOperatorsList(HtmlUtility.getConditionsList(attribute,parseFile));
+		attributeDetails.setOperatorsList(HtmlUtility.getConditionsList(attribute,parseFile,this.entity));
 		if(!attributeDetails.getOperatorsList().isEmpty())
 		{
 			attributeDetails.setBetween(
@@ -286,6 +310,10 @@ public class HtmlProvider
 				(condition.getRelationalOperator().getStringRepresentation());
 		}
 		getParamaterizedCondition(parameterList, forPage);
+		if(selectedConcepts!=null)
+		{
+			attributeDetails.setSelectedConcepts(selectedConcepts);
+		}
 	}
 
 	/**
@@ -319,7 +347,7 @@ public class HtmlProvider
 	 * @param attribute AttributeInterface
 	 * @param attrName name of attribute
 	 * @return boolean
-	 * @throws PVManagerException 
+     * @throws PVManagerException 
 	 */
 	private boolean checkAttributeBold(boolean attributeChecked, boolean permissibleValuesChecked,
 			AttributeInterface attribute, String attrName) throws PVManagerException
@@ -483,7 +511,7 @@ public class HtmlProvider
 	 * @throws PVManagerException 
 	 */
 	private void generateHTMLForConditionNull(StringBuffer generatedHTML,
-			AttributeInterface attribute,AttributeDetails attributeDetails,EntityInterface entity) throws PVManagerException
+			AttributeInterface attribute,AttributeDetails attributeDetails)throws PVManagerException
 	{
 		List<PermissibleValueInterface> permissibleValues =HtmlUtility.getPermissibleValuesList(attribute,entity);
 		String componentId = generateComponentName(attribute);
@@ -494,9 +522,27 @@ public class HtmlProvider
 		{
 			isDate = true;
 		}
-		generatedHTML.append(Constants.NEWLINE).append(
-				GenerateHtml.generateHTMLForOperators(componentId,isDate,attributeDetails));
-		if (HtmlUtility.showListBoxForPV(attribute,entity))
+		if(HtmlUtility.isAttrNotQueryable(attribute))
+		{
+			AttributeInterface attributeIDInterface=entity.getAttributeByName(Constants.ID);
+			String componentIdOfID=generateComponentName(attributeIDInterface);
+			generatedHTML.append(Constants.NEWLINE).append(
+					GenerateHtml.getHtmlForOperators(componentId,attributeDetails,componentIdOfID));
+		}
+		else
+		{
+			generatedHTML.append(Constants.NEWLINE).append(
+					GenerateHtml.generateHTMLForOperators(componentId,isDate,attributeDetails));
+		}
+		IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
+		if(permissibleValueManager.isEnumerated(attribute,entity) && permissibleValueManager.showIcon(attribute, entity))
+		{
+			permissibleValues = new ArrayList<PermissibleValueInterface>();
+			generatedHTML.append(Constants.NEWLINE).append(
+					getHtmlForVIEnumeratedValues(componentId, attributeDetails.getSelectedConcepts()));
+			generatedHTML.append(showEnumeratedAttibutesWithIcon(attribute));
+		}
+		else if(permissibleValueManager.isEnumerated(attribute,entity))
 		{
 			generatedHTML.append(Constants.NEWLINE).append(
 					generateHTMLForEnumeratedValues(componentId, permissibleValues,
@@ -516,33 +562,56 @@ public class HtmlProvider
 				generatedHTML.append(Constants.NEWLINE).append(
 						GenerateHtml.generateHTMLForTextBox(
 								componentId,attributeDetails,attribute,entity));
-				if(generatedHTML.indexOf("@")!=-1)
-				{
-					generatedHTML.replace(generatedHTML.indexOf("@"),generatedHTML.lastIndexOf("@")+1,showEnumeratedAttibutesWithIcon(attribute) );
-				}
+				
 			}
 		}
+	}
+
+	private String getHtmlForVIEnumeratedValues(String componentId,
+			List<SelectedConcept> selectedConcepts)
+	{
+		StringBuffer html = new StringBuffer(Constants.MAX_SIZE);
+		AttributeInterface attributeIDInterface=entity.getAttributeByName(Constants.ID);
+		String componentIdOfID=generateComponentName(attributeIDInterface);
+		String format ="\n<td width='5%' valign='centre' colspan='4' >";
+        html.append(format);
+        String temp = "\n<select style=\"width:10em;\" MULTIPLE styleId='country' "
+        		+ "size ='10' name=\"" + componentId
+                + "_enumeratedvaluescombobox\"\" id=\"" + componentId
+                + "_enumeratedvaluescombobox\"\" onChange=\"changeId('" + componentId + "','"+componentIdOfID+"')\">";
+         html.append(temp);
+         if (selectedConcepts != null)
+   	     {
+			for (SelectedConcept concept : selectedConcepts)
+			{
+				String value = concept.getConceptName();
+				html.append("\n<option class=\"PermissibleValuesQuery\" title=\"" + value
+						+ "\" value=\"" + value + "\" id=\"" +concept.getConceptCode()+"\"+ SELECTED>" + value + "</option>");
+			}
+    	  }
+		html.append("\n</select>\n</td>");
+		return html.toString();
 	}
 
 	/**
 	 * Method for generating HTML depending on condition.
 	 * @param generatedHTML generated html
 	 * @param attribute AttributeInterface
-	 * @throws PVManagerException 
+     * @throws PVManagerException
 	 */
 	private void generateHTMLForConditions(StringBuffer generatedHTML,
-			AttributeInterface attribute,EntityInterface entity) throws PVManagerException
+			AttributeInterface attribute) throws PVManagerException
 	{
 		List<ICondition> conditions = attributeDetails.getConditions();
 		if (conditions != null)
 		{
-			getHtmlConditionNotNull(generatedHTML,attribute, forPage,entity);
+			getHtmlConditionNotNull(generatedHTML,attribute, forPage);
 		}
 		if (conditions == null || (attributeDetails.getAttributeNameConditionMap()!=null
 				&& !attributeDetails.getAttributeNameConditionMap().
 				containsKey(attributeDetails.getAttrName())))
 		{
-			generateHTMLForConditionNull(generatedHTML, attribute,this.attributeDetails,entity);
+			generateHTMLForConditionNull(generatedHTML, attribute,this.attributeDetails);
 		}
 	}
 
@@ -554,7 +623,7 @@ public class HtmlProvider
 	 * @throws PVManagerException 
 	 */
 	private void getHtmlConditionNotNull(StringBuffer generatedHTML,
-			AttributeInterface attribute, String forPage,EntityInterface entity) throws PVManagerException
+			AttributeInterface attribute, String forPage) throws PVManagerException
 	{
 		if (attributeDetails.getAttributeNameConditionMap()!=null &&
 				attributeDetails.getAttributeNameConditionMap().
@@ -567,7 +636,7 @@ public class HtmlProvider
 				return;
 			}
 
-			generateHTMLForConditionNull(generatedHTML,attribute,this.attributeDetails,entity);
+			generateHTMLForConditionNull(generatedHTML,attribute,this.attributeDetails);
 		}
 	}
 	/**
@@ -583,8 +652,9 @@ public class HtmlProvider
 	 */
 	private StringBuffer getSaveQueryPageHtml(int expressionID, EntityInterface entity,
 			List<ICondition> conditions, boolean isShowAll, Map<EntityInterface,
-			List<Integer>> entityList,List<IParameter<?>> parameterList) throws PVManagerException
+			List<Integer>> entityList,List<IParameter<?>> parameterList)throws PVManagerException
 	{
+		this.entity = entity;
 		setExpressionId(expressionID);
 		StringBuffer generatedHTML = new StringBuffer();
 		StringBuffer generatedPreHTML = new StringBuffer();
@@ -606,7 +676,7 @@ public class HtmlProvider
 				{
 					continue;
 				}
-				getAttributeDetails(attribute, conditions, parameterList);
+				getAttributeDetails(attribute, conditions, parameterList,null);
 				String attrName = attributeDetails.getAttrName();
 				Map<String, ICondition> attributeNameConditionMap =
 					attributeDetails.getAttributeNameConditionMap();
@@ -733,11 +803,12 @@ public class HtmlProvider
 	 * @param dagNodeId String
 	 * @param attribute AttributeInterface
 	 * @return generated html
-	 * @throws PVManagerException 
+ 	 * @throws PVManagerException 
 	 */
 	private StringBuffer getHtmlAttributeSavedQuery(EntityInterface entity, String dagNodeId,
 			AttributeInterface attribute) throws PVManagerException
 	{
+		this.entity = entity;
 		StringBuffer generatedHTML = new StringBuffer(Constants.MAX_SIZE);
 		String name = Utility.parseClassName(entity.getName());
 		String componentId = generateComponentName(attribute);
@@ -749,7 +820,7 @@ public class HtmlProvider
 		{
 			generatedHTML.append("&nbsp;&nbsp;&nbsp;&nbsp;</b></td>\n");
 		}
-		generateHTMLForConditions(generatedHTML, attribute,entity);
+		generateHTMLForConditions(generatedHTML, attribute);
 		generatedHTML.append("\n</tr>");
 		return generatedHTML;
 	}
@@ -888,11 +959,10 @@ public class HtmlProvider
 	 * @param parameterList list of parameters
 	 * @param generatedHTML generated html
 	 * @return expressionEntityString
-	 * @throws PVManagerException 
 	 */
 	private StringBuffer getMapsForEntity(
 			Map<Integer, Map<EntityInterface, List<ICondition>>> expressionMap, boolean isShowAll,
-			List<IParameter<?>> parameterList, StringBuffer generatedHTML) throws PVManagerException
+			List<IParameter<?>> parameterList, StringBuffer generatedHTML)  throws PVManagerException
 	{
 		String colon = ":";
 		StringBuffer expressionEntityString = new StringBuffer();
@@ -936,7 +1006,7 @@ public class HtmlProvider
 		String componentIdOfID=generateComponentName(attributeIDInterface);
 		String componentId = generateComponentName(attributeInterface);
 		enumratedAttributeMap.put(Constants.ATTRIBUTE_INTERFACE+componentId, attributeInterface);
-		return "\n<td valign='top'><img  src=\"images/advancequery/ic_lookup.gif\" width=\"16\" height=\"16\" align='left' onclick=\"openPermissibleValuesConfigWindow('" + componentId	+ "','"+entity.getName()+"','"+componentIdOfID+"')\"" +
+		return "\n<td valign='middle'><img  src=\"images/advancequery/ic_lookup.gif\" width=\"16\" height=\"16\" align='left' onclick=\"openPermissibleValuesConfigWindow('" + componentId	+ "','"+entity.getName()+"','"+componentIdOfID+"')\"" +
 				" border=\"0\"/ title='Search concept codes from Vocabularies'></td>";
 		
 	}

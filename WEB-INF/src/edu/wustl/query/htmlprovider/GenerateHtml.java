@@ -6,12 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.text.html.HTML;
-
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.common.query.factory.PermissibleValueManagerFactory;
-import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.util.Utility;
@@ -182,16 +178,7 @@ public class GenerateHtml
 		}
 		else
 		{
-			// Check for attribute is enumerated type or not
-			IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
-			if(permissibleValueManager.isEnumerated(attribute,entity))
-			{
-				html.append("@TOKEN_FOR_ICON_HTML@");
-			}
-			else
-			{
 			html.append("\n<td valign='top' width='1%'>&nbsp;</td>");
-			}
 		}
 		html.append("<td width='15%'  valign='top' class=\"standardTextQuery\">\n");
 		if (isBetween(attrDetails))
@@ -254,19 +241,22 @@ public class GenerateHtml
 	 */
 	private static void getHtmlValueNull(String operator, String textBoxId, StringBuffer html)
 	{
+		String temp ="";
 		if(operator == null)
 		{
-			html.append("<input style=\"width:150px; display:block;\" type=\"text\" name=\""
-					+ textBoxId + "\" id=\"" + textBoxId + "\">");
+			temp ="<input style=\"width:150px; display:block;\" type=\"text\" name=\""
+				+ textBoxId + "\" id=\"" + textBoxId + "\">";
+			html.append(temp);
 		}
 		else
 		{
 			if(operator.equalsIgnoreCase(Constants.IS_NOT_NULL) ||
 					operator.equalsIgnoreCase(Constants.IS_NULL))
 			{
-				html.append("<input style=\"width:150px; display:block;\" "
-						+ "type=\"text\" disabled='true' name=\""
-						+ textBoxId + "\" id=\"" + textBoxId + "\">");
+				temp="<input style=\"width:150px; display:block;\" "
+					+ "type=\"text\" disabled='true' name=\""
+					+ textBoxId + "\" id=\"" + textBoxId + "\">";
+				html.append(temp);
 			}
 
 		}
@@ -406,7 +396,7 @@ public class GenerateHtml
 			String attributeCollection, boolean isEditLimits)
 	{
 		StringBuffer generatedPreHTML = new StringBuffer(Constants.MAX_SIZE);
-		String header = Constants.DEFINE_SEARCH_RULES;
+		//String header = Constants.DEFINE_SEARCH_RULES;
 		String html = "<table border=\"0\" width=\"100%\" height=\"30%\" background=\"images/advancequery/bg_content_header.gif\" " +
 					  "cellspacing=\"0\" cellpadding=\"0\" >" +
 					  "\n<tr height=\"2%\" >" +
@@ -432,7 +422,7 @@ public class GenerateHtml
 	private static String generateHTMLForButton(String entityName, String attributesStr,
 			boolean isEditLimits)
 	{
-		String buttonName = "addLimit";
+		//String buttonName = "addLimit";
 		String buttonId = "";
 		String imgsrc="images/advancequery/b_add_limit.gif";
 		StringBuffer html = new StringBuffer(Constants.MAX_SIZE);
@@ -570,6 +560,7 @@ public class GenerateHtml
 			Map<EntityInterface, List<Integer>> entityExpressionIdMap =
 				new HashMap<EntityInterface,List<Integer>>();
 			Iterator<Integer> outerMapIterator = expressionMap.keySet().iterator();
+			List<Integer> dagIdList = new ArrayList<Integer>();
 			while (outerMapIterator.hasNext())
 			{
 				Integer expressionId = (Integer) outerMapIterator.next();
@@ -579,13 +570,12 @@ public class GenerateHtml
 					Iterator<EntityInterface> innerMapIterator = entityMap.keySet().iterator();
 					while (innerMapIterator.hasNext())
 					{
-						List<Integer> dagIdList = null;
 						EntityInterface entity = (EntityInterface)innerMapIterator.next();
 						if (!entityExpressionIdMap.containsKey(entity))
 						{
 							//if the entity is not present in the map
 							//create new list and add it to map
-							dagIdList = new ArrayList<Integer>();
+							dagIdList.clear();
 							dagIdList.add(expressionId);
 							entityExpressionIdMap.put(entity, dagIdList);
 							continue;
@@ -790,5 +780,24 @@ public class GenerateHtml
 			}
 			generatedHTML.append("\n(" + format + ")");
 		}
+	}
+	public static String getHtmlForOperators(String componentId,AttributeDetails attributeDetails,String compIdofID)
+	{
+		String cssClass=CSS_PV;
+		String temp="";
+		StringBuffer html = new StringBuffer();
+		List<String> operatorsList = attributeDetails.getOperatorsList();
+		if (operatorsList != null && !operatorsList.isEmpty())
+		{
+			temp="\n<td width='20%' class=" + cssClass + " valign='middle' >";
+			html.append(temp);
+			html.append("\n<select  class=" + cssClass
+						+ " style=\"width:150px; display:block;\" name=\"" + componentId
+						+ "_combobox\" onChange=\"changeIdOperator('" + componentId + "','"+compIdofID+"')\">");
+			getHtmlForSelectedOperator(attributeDetails, cssClass, html, operatorsList);
+			html.append("\n</select>");
+			html.append(endTD);
+		}
+		return html.toString();
 	}
 }

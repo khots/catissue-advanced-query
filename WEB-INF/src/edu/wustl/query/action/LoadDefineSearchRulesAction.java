@@ -57,7 +57,8 @@ public class LoadDefineSearchRulesAction extends Action
 		
 		if (entity != null)
 		{
-			html = htmlProvider.generateHTML(entity, null,generateHTMLDetails);
+			request.getSession().removeAttribute(edu.wustl.query.util.global.Constants.SELECTED_CONCEPT_LIST);
+			html = htmlProvider.generateHTML(entity, null,generateHTMLDetails,null);
 		}
 		//	}
 		request.getSession().setAttribute(Constants.ENUMRATED_ATTRIBUTE, generateHTMLDetails.getEnumratedAttributeMap());

@@ -302,6 +302,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String VI_IGNORE_PREDICATE= "VI_IGNORE_PREDICATE";
 	public static final String TAGGED_VALUE_PRIMARY_KEY = "PRIMARY_KEY";
 	public static final String TAGGED_VALUE_PV_FILTER = "PV_FILTER";
+	public static final String TAGGED_VALUE_VI_HIDDEN = "VI_HIDDEN";
 	public static final String CONTAINMENT_OBJECTS_MAP = "containmentObjectMap";
 	public static final String ENTITY_EXPRESSION_ID_MAP = "entityExpressionIdMap";
 	
@@ -324,4 +325,5 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String MAIN_ENTITY_MSG = "Main Entity";
 	public static final String NOT_PRESENT_MSG = " Is Not Present In DAG";
 	public static final String MAIN_ENTITY_LIST = "mainEntityList";
+	public static final String SELECTED_CONCEPT_LIST = "SELECTED_CONCEPT_LIST";
 }

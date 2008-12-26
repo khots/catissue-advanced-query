@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
@@ -91,17 +90,15 @@ public class HtmlUtility
 	 * @param parseFile xml file which contains operator list
 	 * @return List listOf operators.
 	 */
-	public static List<String> getConditionsList(AttributeInterface attributeInterface,ParseXMLFile parseFile)
+	public static List<String> getConditionsList(AttributeInterface attributeInterface,ParseXMLFile parseFile,EntityInterface entity)
 	{
 		List<String> operatorsList = new ArrayList<String>();
 		List<String> strObj = null;
 		if (attributeInterface != null)
 		{
 			String dataType = attributeInterface.getDataType();
-			UserDefinedDE userDefineDE = (UserDefinedDE) attributeInterface
-					.getAttributeTypeInformation().getDataElement();
-			if (userDefineDE != null &&
-				userDefineDE.getPermissibleValueCollection().size() < Constants.MAX_PV_SIZE)
+			IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
+			if(permissibleValueManager.isEnumerated(attributeInterface, entity))
 			{
 				operatorsList = HtmlUtility.getEnumConditionList(dataType,parseFile);
 			}
@@ -112,7 +109,6 @@ public class HtmlUtility
 			strObj = new ArrayList<String>(operatorsList);
 			operatorsList = new ArrayList<String>();
 			Collections.sort(strObj);
-			//operatorsList = getSortedOperatorList(strObj);
 		}
 		return strObj;
 	}
@@ -267,5 +263,33 @@ public class HtmlUtility
 		List<PermissibleValueInterface> permissibleValues = null;
 		permissibleValues = permissibleValueManager.getPermissibleValueList(attribute,entity);
 		return permissibleValues;
+	}
+	public static boolean isAttrHidden(AttributeInterface attribute)
+	{
+		boolean isHidden = false;
+		Collection<TaggedValueInterface> taggedValueCollection = attribute.getTaggedValueCollection();
+		for(TaggedValueInterface tagValue : taggedValueCollection)
+		{
+			if(tagValue.getKey().equals(Constants.TAGGED_VALUE_VI_HIDDEN))
+			{
+				isHidden = true;
+				break;
+			}
+		}
+		return isHidden;
+	}
+	public static boolean isAttrNotQueryable(AttributeInterface attribute)
+	{
+		boolean isHidden = false;
+		Collection<TaggedValueInterface> taggedValueCollection = attribute.getTaggedValueCollection();
+		for(TaggedValueInterface tagValue : taggedValueCollection)
+		{
+			if(tagValue.getKey().equals(Constants.VI_IGNORE_PREDICATE))
+			{
+				isHidden = true;
+				break;
+			}
+		}
+		return isHidden;
 	}
 }

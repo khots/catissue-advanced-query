@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.query.domain.SelectedConcept;
+import edu.wustl.query.util.global.Constants;
 /**
  * @author amit_doshi
  * Action Class to responsible to handle the selected permissible values from VI
@@ -52,7 +53,7 @@ public class SelectedPermissibleValueAction extends Action {
 			selectedConcept.setConceptCode(conceptCode);
 			selectedConceptList.add(selectedConcept);
 		}
-		request.getSession().setAttribute("SELECTED_CONCEPT_LIST", selectedConceptList);
+		request.getSession().setAttribute(Constants.SELECTED_CONCEPT_LIST, selectedConceptList);
 		
 		response.getWriter().write("success");
 		return null;

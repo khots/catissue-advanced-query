@@ -40,9 +40,19 @@ public class LocalDEPermissibleValueManager implements IPermissibleValueManager
 	public boolean isEnumerated(AttributeInterface attribute, EntityInterface entity)
 	{
 		// TODO Auto-generated method stub
-		return false;
+		return !getPermissibleValueList(attribute, entity).isEmpty();
 	}
-
+	
+	public boolean showIcon(AttributeInterface attribute, EntityInterface entity)
+	{
+		boolean showIcon = false;
+		List<PermissibleValueInterface> permissibleValues =getPermissibleValueList(attribute,entity);
+		if( !permissibleValues.isEmpty() && permissibleValues.size() > Constants.MAX_PV_SIZE)
+		{
+			showIcon  = true;
+		}
+		return showIcon;
+	}
 	public boolean showListBoxForPV(AttributeInterface attribute, EntityInterface entity)
 	{
 		boolean status = false;

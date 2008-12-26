@@ -380,6 +380,14 @@
 			}	
 		}
 	}
+	function changeIdOperator(componentId,compIdofID)
+	{
+		var nameOperator = componentId + "_combobox";
+		var idOperator = compIdofID + "_combobox";	 //id operator component for hidden attribute is textbox 
+		var op = document.getElementById(nameOperator).value;
+		var idOp = document.getElementById(idOperator);
+		idOp.value = op;
+	}
 	function expandCollapseDag()
 	{
 	}
@@ -1578,17 +1586,17 @@ var jsReady = false;
 
 	function getValueFromChild(pvList,pvNameList)
 	{
-		
-			var componentId=compId + "_textBox";
+			var componentId=compId + "_enumeratedvaluescombobox";
 			var componentIdOfID=compIdOfID + "_textBox";
+			var listboxName = document.getElementById(componentId);
 			//set the concept code to the ID attribute
 			var permValuesWithCode=pvList.split('#');
+			var permValuesNames = pvNameList.split(',');
 			var medConceptCodeList=new Array();
 			var j=0;
 			var pvValueList="";
 			for(i=0;i<permValuesWithCode.length;i++)
 			{
-				
 				if(permValuesWithCode[i]!="")
 				{
 					permValuesWithCodeArray=permValuesWithCode[i].split(':');
@@ -1601,10 +1609,20 @@ var jsReady = false;
 					
 				}
 			}
+			// clear list box
+			for(i=0 ; i < listboxName.options.length ; i++)
+			{
+				listboxName.options[i] = null;
+			}
+			var index = 0;
+			for(i=0;i < permValuesNames.length-1;i++)
+			{
+				listboxName.options[index] = new Option(permValuesNames[index], permValuesNames[index],true, true); 
+				listboxName.options[index].id = medConceptCodeList[index];
+				index++;
+			}
 			medConceptCodeList=medConceptCodeList.unique()
 			document.getElementById(componentIdOfID).value = medConceptCodeList;
-	        document.getElementById(componentId).value = pvNameList.substring(0,pvNameList.lastIndexOf(','));
-	       
 	}	
 	
 			//returns the unique elements of the array. because we need to made predicate of query for MED concept code.
@@ -1623,4 +1641,20 @@ var jsReady = false;
 			}
 			return r;
 			}
+	function changeId(componentId,compIdofID)
+	{
+		var nameComp = componentId + "_enumeratedvaluescombobox";
+		var idtext = compIdofID + "_textBox";
+		var listboxName = document.getElementById(nameComp);
+		var idTextBox = document.getElementById(idtext);
+		idTextBox.value = "";
+		for(i=0 ; i < listboxName.options.length ; i++)
+		{
+			if(listboxName.options[i].selected == true)
+			{
+				idTextBox.value = idTextBox.value + listboxName.options[i].id +",";
+			}
+		}
+		 idTextBox.value = idTextBox.value.substring(0,idTextBox.value.lastIndexOf(','));
+	}
 	
