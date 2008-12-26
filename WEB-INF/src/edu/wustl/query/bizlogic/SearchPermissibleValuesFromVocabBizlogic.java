@@ -11,6 +11,7 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.query.factory.PermissibleValueManagerFactory;
 import edu.wustl.common.query.pvmanager.impl.LexBIGPermissibleValueManager;
+import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.vocab.IConcept;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.IVocabularyManager;
@@ -28,26 +29,15 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 {
 
 	private LexBIGPermissibleValueManager pvManager = (LexBIGPermissibleValueManager) PermissibleValueManagerFactory.getPermissibleValueManager();
-	private IVocabularyManager vocabularyManager = getInstance();
+	private IVocabularyManager vocabularyManager = VocabularyManager.getInstance();
 
 	public List<IVocabulary> getVocabulries() throws VocabularyException
 	{
-		return vocabularyManager.getVocabularies();
+		return vocabularyManager.getConfiguredVocabularies();
 
 	}
 
-	private IVocabularyManager getInstance() {
-		// TODO Auto-generated method stub
-		try {
-			return VocabularyManager.getInstance();
-		} catch (VocabularyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public List<IConcept> getPermissibleValueList(AttributeInterface attribute, EntityInterface entity)
+	public List<IConcept> getPermissibleValueList(AttributeInterface attribute, EntityInterface entity) throws PVManagerException
 	{
 		List<IConcept> permissibleConcepts = null;
 
@@ -60,15 +50,14 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 		}
 		catch (VocabularyException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new PVManagerException("Server encountered a problem in fetching the permissible values for "+entity.getName(),e);
 		}
 
 		return permissibleConcepts;
 	}
 
 	public Map<String, List<IConcept>> getMappedConcepts(AttributeInterface attribute, String targetVocabName, String targetVocabVer,
-			EntityInterface entity) throws VocabularyException
+			EntityInterface entity) throws VocabularyException, PVManagerException
 	{
 		IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties().getProperty("source.vocab.name"), VocabUtil.getVocabProperties()
 				.getProperty("source.vocab.version"));
@@ -118,7 +107,7 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 				"<input type='checkbox' name='"+vocabName+vocabversoin+"' id='"+checkboxId+"' value='"+concept.getCode()+":"+concept.getDescription()+"' onclick=\"getCheckedBoxId('"+checkboxId+"');\"></td><td class='black_ar_tt'>"+concept.getCode()+":"+concept.getDescription()+"\n" +
 				"<td></tr>";
 	}
-	public String getRootVocabularyNodeHTML(String vocabName,String vocabVer) throws VocabularyException {
+	public String getRootVocabularyNodeHTML(String vocabName,String vocabVer,String vocabDisName) throws VocabularyException {
 		String srcvocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
 		String srcvocabVer=VocabUtil.getVocabProperties().getProperty("source.vocab.version");
 		
@@ -141,11 +130,11 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 				"onClick=\"showHide('inner_div_"+vocabName+vocabVer+"','image_"+vocabName+vocabVer+"');\">\n" +
 				"<img "+imgpath+" align='absmiddle'/></a></td><td><input type='checkbox' name='"+vocabName+vocabVer+"' id='root_"+vocabName+vocabVer+"' " +
 				"value='"+vocabName+"' onclick=\"setStatusOfAllCheckBox(this.id);\"></td>" +
-				"<td class='grid_header_text'>"+vocabName+vocabVer+"\n" +
+				"<td class='grid_header_text'>"+vocabDisName+"\n" +
 				"</td></tr></table>"+
 				"</td></tr><tr><td><div id='inner_div_"+vocabName+vocabVer+"' style='"+style+"'><table cellpadding ='0' cellspacing ='1'>";
 	}
-	public String getRootVocabularyHTMLForSearch(String vocabName,String vocabVer) {
+	public String getRootVocabularyHTMLForSearch(String vocabName,String vocabVer,String vocabDisName) {
 	
 		/*code should uncommented for multiple vocabulary support
 		    String style="display:none";
@@ -159,7 +148,7 @@ public class SearchPermissibleValuesFromVocabBizlogic extends DefaultBizLogic
 				"onClick=\"showHide('inner_div_"+vocabName+vocabVer+"','image_"+vocabName+vocabVer+"');\">\n" +
 				"<img "+imgpath+"align='absmiddle'></a></td><td><input type='checkbox' name='"+vocabName+vocabVer+"' id='root_"+vocabName+vocabVer+"' " +
 				"value='"+vocabName+"' onclick=\"setStatusOfAllCheckBox(this.id);\"></td>" +
-				"<td class='grid_header_text'>"+vocabName.replace("srh_","")+vocabVer+"\n" +
+				"<td class='grid_header_text'>"+vocabDisName+"\n" +
 				"</td></tr></table>" +
 				"</td></tr><tr><td><div id='inner_div_"+vocabName+vocabVer+"' style='"+style+"'><table cellpadding ='0' cellspacing ='1'>";
 	}
