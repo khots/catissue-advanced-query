@@ -18,7 +18,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	var columnCount=columnContents.length;
 
 	//alert('18 columnCount='+columnCount);
-	for(var counter=0;counter<columnCount;counter++)
+	for(var counter=0;counter<columnCount-2;counter++)
 	{
 	//	alert('21 counter='+counter);
 		if(columnContents[counter]!=null)
@@ -37,8 +37,20 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 		
 	//Create all the hidden controls and add them to a "td"
 	var operandsTd=document.createElement("td");
+
+	
+	var tble1=document.createElement("table");
+	var tbody1=document.createElement("tbody");
+	var operandsTr=document.createElement("tr");
+	var operandsTd1=document.createElement("td");
+	var operandsTd2=document.createElement("td");
+	var operandsTd3=document.createElement("td");
+
+
+
+
 //alert('37 operandsTd='+operandsTd);
-	var queryControls=document.getElementsByName("operands");
+	var queryControls=document.getElementById("table1").rows;
 	//alert('39 queryControls='+queryControls);
 	var queryCount=0;
 	if(queryControls!=null && queryControls!=undefined)
@@ -48,11 +60,11 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 //alert('45 queryCount='+queryCount);
 	var operandsControl=createHiddenElement("operands","operands_"+queryCount,operandsTdContent);	
 //alert('47 operandsControl='+operandsControl);
-	operandsTd.appendChild(operandsControl);
+	operandsTd2.appendChild(operandsControl);
 	
 	var operatorControl=createHiddenElement("operators","operators_"+queryCount,operatorsTdContent);
 	//alert('51 operatorControl='+operatorControl);
-	operandsTd.appendChild(operatorControl);
+	operandsTd2.appendChild(operatorControl);
 	
 	var queryTitleControl;
 	var queryTypeControl;
@@ -60,8 +72,11 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	/*if(!hasInnerText())
 	{*
 		alert('in if'+columnContents[1]);*/
-			queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,getText(columnContents[1]));
-			queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,getText(columnContents[2]));
+
+			//alert("(columnContents[5])"+(columnContents[5]));
+		//alert("(columnContents[6])"+(columnContents[6]));
+			queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,(columnContents[5]));
+			queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,(columnContents[6]));
 //	}
 /*	else
 	{
@@ -71,10 +86,19 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	}*/
 	
 	//alert('55 queryTitleControl='+queryTitleControl);
-	operandsTd.appendChild(queryTitleControl);
-	operandsTd.appendChild(queryTypeControl);
-	operandsTd.appendChild(createLink("Execute ","javascript:executeGetCountQuery('"+queryCount+"')"));
-	operandsTd.appendChild(createLink("Delete ","#"));
+	operandsTd2.appendChild(queryTitleControl);
+	operandsTd2.appendChild(queryTypeControl);
+	operandsTd2.width="4";
+	operandsTd1.appendChild(createLink("Execute ","javascript:executeGetCountQuery('"+queryCount+"')"));
+	operandsTd3.appendChild(createLink("Delete ","#"));
+
+	operandsTr.appendChild(operandsTd1);
+	operandsTr.appendChild(operandsTd2);
+	operandsTr.appendChild(operandsTd3);
+	tbody1.appendChild(operandsTr);
+	tble1.appendChild(tbody1);
+	operandsTd.appendChild(tble1);
+
 	rowObj.appendChild(operandsTd);
 	
 	var reorderTd=document.createElement("td");
@@ -106,13 +130,15 @@ function addQuery()
 	{
 		
 		var operandsTdContent="";
-		var rowContents=new Array(6);
+		var rowContents=new Array(7);
 		rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'');
 		operandsTdContent=getText(queryIds[counter]);	
 		rowContents[1]=createTextElement(getText(queryTitles[counter]));
 		rowContents[2]=createTextElement(getText(queryTypes[counter]));
-		rowContents[3]=getSelectObjectControl();
+		//rowContents[3]=getSelectObjectControl();
 		rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+(counter+queryCount),getText(queryIds[counter]));
+		rowContents[5]=getText(queryTitles[counter]);
+		rowContents[6]=getText(queryTypes[counter]);
 		var operatorsTdContent="None";
 	
 		//create a table containing tbody with id "table1"
