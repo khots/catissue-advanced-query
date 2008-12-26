@@ -326,4 +326,11 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String NOT_PRESENT_MSG = " Is Not Present In DAG";
 	public static final String MAIN_ENTITY_LIST = "mainEntityList";
 	public static final String SELECTED_CONCEPT_LIST = "SELECTED_CONCEPT_LIST";
+	public static final String TAGGED_VALUE_MAIN_ENTIY = "MAIN_ENTITY";
+	public static final String ENTITY_LIST = "entityList";
+	public static final String MAIN_ENTITY_EXPRESSIONS_MAP = "mainEntityExpressionsMap";
+    public static final String MAIN_EXPRESSION_TO_ADD_CONTAINMENTS = "expressionsToAddContainments";
+    public static final String ALL_ADD_LIMIT_EXPRESSIONS = "allLimitExpressionIds";
+    public static final String MAIN_EXPRESSIONS_ENTITY_EXP_ID_MAP = "mainExpEntityExpressionIdMap";
+
 }
