@@ -30,7 +30,10 @@
 
 	<!-- Lexbig related properties -->
 	<property name="lexbig.config.path" value="pathOfJbossConfigFolder"/>
-	 <property name="jboss.lexbig.config.path" value="${jboss.server.url}/data/LexBIGData/config/config.props" />
+	<property name="jboss.lexbig.config.path" value="${jboss.server.url}/data/LexBIGData/config/config.props" />
+	
+	<!--XQueryGenrator Logger properties-->
+	<property name="xquery.jboss.path" value="jbossHome" />
 	
 	<!-- flex related properties -->
 	<property name="FLEX_HOME" value="C:/Program Files/Adobe/Flex Builder 2/Flex SDK 2"/>
@@ -109,9 +112,14 @@
 			
 		</copy>
 		<!-- replaced the token for Lexbig config folder Path -->
-		<replace dir="${base.dir}/WEB-INF/classes" propertyfile="${base.dir}/WEB-INF/classes/vocab.properties">
-										<replacefilter token="${lexbig.config.path}" value="${jboss.lexbig.config.path}" />
-	   </replace>
+		<!--replace dir="${base.dir}/query-properties" propertyfile="${base.dir}/query-properties/vocab.properties">
+			<replacefilter token="${lexbig.config.path}" value="${jboss.lexbig.config.path}" />
+	   </replace-->
+		<!--replaced the token for XQuery logger path-->
+		<replace dir="${base.dir}/WEB-INF/classes" propertyfile="${base.dir}/WEB-INF/classes/query.properties">
+	  		<replacefilter token="${xquery.jboss.path}" value="${jboss.server.url}" /> 
+	  	</replace>
+
 	</target>
 
 	<!-- Creates the WAR (Web Application Archive) file of the application -->
@@ -358,7 +366,7 @@
 		<copy file="login-config.xml" todir="${zip.dir}" overwrite="true" />
 		<copy file="properties-service.xml" todir="${zip.dir}" overwrite="true" />
 		<copy file="${base.dir}/WEB-INF/classes/query.properties" todir="${zip.dir}" overwrite="true" />
-		<copy file="${base.dir}/WEB-INF/src/vocab.properties" todir="${zip.dir}" overwrite="true" />
+		<!--copy file="${base.dir}/WEB-INF/src/vocab.properties" todir="${zip.dir}" overwrite="true" /-->
 		<!--Copying the advance query jar to Zip file -->
 		<copy file= "AdvanceQuery.jar"  todir="${zip.dir}" overwrite="true" />
 		<copy file= "${base.dir}/cider.csv"  todir="${zip.dir}" overwrite="true" />
