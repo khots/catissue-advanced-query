@@ -157,6 +157,10 @@
 						var nodetext = tree.getItemText(selectedOption);
 						var parentId = tree.getParentId(selectedOption);
 						var parentNodeText = tree.getItemText(parentId);
+						if(parentNodeText == "")
+						{
+						   continue;
+						}
 						var displaySelectedColumn = parentNodeText + " : " + nodetext;
 						selectedText[selectedCount] = displaySelectedColumn;
 						selectedValues[selectedCount] = selectedOption;
@@ -328,7 +332,7 @@ function initTreeView()
 		tree.setImagePath("dhtml_comp/imgs/");
 		tree.setOnClickHandler();	
 		tree.enableCheckBoxes(1);
-	   //tree.enableThreeStateCheckboxes(true);
+	    tree.enableThreeStateCheckboxes(true);
 
 		
 
