@@ -454,7 +454,7 @@ insert into  dyextn_abstract_metadata  values (216,'2008-12-11','cider-Status','
 insert into  dyextn_abstract_metadata  values (217,NULL,NULL,NULL,'id',NULL);
 insert into  dyextn_abstract_metadata  values (218,NULL,NULL,NULL,'AssociationName_7',NULL);
 insert into  dyextn_abstract_metadata  values (219,NULL,NULL,NULL,'AssociationName_6',NULL);
-insert into  dyextn_abstract_metadata  values (220,'2008-12-11','cider-SpecimanType','2008-12-11','SpecimanType',NULL);
+insert into  dyextn_abstract_metadata  values (220,'2008-12-11','cider-SpecimenType','2008-12-11','SpecimanType',NULL);
 insert into  dyextn_abstract_metadata  values (221,NULL,NULL,NULL,'id',NULL);
 insert into  dyextn_abstract_metadata  values (222,NULL,NULL,NULL,'AssociationName_5',NULL);
 insert into  dyextn_abstract_metadata  values (223,'2008-12-11','cider-LaboratoryResult','2008-12-11','LaboratoryResult',NULL);
