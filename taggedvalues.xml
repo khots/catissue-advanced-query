@@ -349,7 +349,7 @@
 	</tag>
 </entity>
 <entity>
-	<name>Satus</name>
+	<name>Status</name>
 	<tag>
 		<tag-name>PV_FILTER</tag-name>
 		<tag-value>T_HL7_S_0123^%</tag-value>
@@ -627,7 +627,7 @@
 	</attribute>
 </entity>
 <entity>
-	<name>Satus</name>
+	<name>Status</name>
 	<attribute>
 		<name>id</name>
 		<tag>
