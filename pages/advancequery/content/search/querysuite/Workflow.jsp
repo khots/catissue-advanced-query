@@ -62,16 +62,19 @@ function addCQToList(operation)
 		queryCount=document.getElementById("table1").rows.length;
 	//}
 //alert('queryCount='+queryCount);
+	var selectedQueryCount=0;
 	for(var counter=0;counter<queryCount;counter++)
 	{
 		var checkboxControl=document.getElementById("checkbox_"+(counter));
 		if(checkboxControl!=null && checkboxControl!=undefined && checkboxControl.checked==true)
 		{
 			queryIdsToAdd=queryIdsToAdd+","+counter;
+			selectedQueryCount=selectedQueryCount+1;
 		}
 	}
 	//alert('queryIdsToAdd='+queryIdsToAdd);
-	if(queryIdsToAdd!="")
+	
+	if(queryIdsToAdd!=""&& selectedQueryCount>=2)
 	{
 		createCQ(queryIdsToAdd,operation,queryCount);
 	}		
@@ -109,16 +112,22 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 			operandsCounter=operandsCounter+1;
 		}
 	}
-	var cqType="Composite Query";
+	var cqType="Operation";
 	var cqId="";
 	
-	var rowContents=new Array(5);
+	var rowContents=new Array(7);
 	rowContents[0]=createCheckBox("chkbox","checkbox_"+queryCount,'');
 	rowContents[1]=createTextElement(cqTitle);
 	rowContents[2]=createTextElement(cqType);
 	//rowContents[3]=createTextElement(operandsTdContent);
-	rowContents[3]=getSelectObjectControl();
+	//rowContents[3]=getSelectObjectControl();
 	rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+queryCount,operandsTdContent);
+
+	//var queryTitles=document.getElementById("queryTitle").options;
+	//var queryTypes=document.getElementById("queryType").options;
+	//alert(queryTitles[queryCount]);
+	rowContents[5]=cqTitle;
+	rowContents[6]=cqType;
 
 	/*alert('rowContents[0]='+rowContents[0]);
 	alert('rowContents[1]='+rowContents[1]);
@@ -324,7 +333,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
                                     <option>Select..</option>
                                   </select>
                             </span></td>
-                            <td width="167" align="right" valign="middle" ><a href="javascript:showNextReleaseMsg()" class="bluelink"><bean:message key="workflow.executegetcountquery"/></a>&nbsp;</td>
+                            <td width="167" align="right" valign="middle" ><a href="javascript:showNextReleaseMsg()" class="bluelink"><bean:message key="workflow.runworkflow"/></a>&nbsp;</td>
                           </tr>
                         </table>
 					</td>
@@ -340,12 +349,56 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 
 							<td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
 							<td width="111" valign="middle" class="grid_header_text"><bean:message key="workflow.type"/></td>
-							<td width="100" valign="middle" class="grid_header_text"><bean:message key="workflow.selectObject"/> </td>
-							<td width="75" valign="middle" class="grid_header_text"><bean:message key="workflow.resultcount"/> </td>
+						
+							<td width="100" valign="middle" class="grid_header_text"><bean:message key="workflow.patientcount"/> </td>
 							<td width="90" valign="middle" class="grid_header_text">&nbsp;</td>
 							<td width="55" valign="middle" class="grid_header_text"><bean:message key="workflow.reorder"/></td>
 					  </tr>
 						   <tbody id="table1">
+						   <logic:notEmpty name="workflowForm" property="selectedqueryId">
+						   			<logic:iterate id="singleQueryId" name="workflowForm" property="selectedqueryId" indexId="queryIndex" >
+
+									<tr bgcolor="#ffffff" styleClass="td_bgcolor_white">
+						   				<td styleClass="content_txt">
+						   					<c:set var="chkId">chk_<c:out value="${queryIndex}"/></c:set>
+						   					<html:checkbox property="chkbox" styleId="checkbox_${queryIndex}"></html:checkbox>
+						   				</td>
+  										<td styleClass="content_txt">
+						   					<html:hidden property="displayQueryTitle" styleId="displayQueryTitle_${queryIndex}" value="${workflowForm.displayQueryTitle[queryIndex]}"
+						   					/>
+											${workflowForm.displayQueryTitle[queryIndex]}
+						   				</td>
+										<td styleClass="content_txt">
+											<html:hidden property="queryTypeControl" styleId="queryTypeControl_${queryIndex}" value="${workflowForm.queryTypeControl[queryIndex]}"/>
+											${workflowForm.displayQueryType[queryIndex]}
+										</td>
+
+										<td styleClass="content_txt">
+											<html:hidden property="selectedqueryId" styleId="selectedqueryId_${queryIndex}" value="${workflowForm.selectedqueryId[queryIndex]}"/>
+										</td>
+										<td>
+											<html:hidden property="operands" styleId="operands_${queryIndex}"  value="${workflowForm.operands[queryIndex]}"/>
+											<html:hidden property="operators" styleId="operators_${queryIndex}" value="${workflowForm.operators[queryIndex]}"/>
+											<html:hidden property="displayQueryType" styleId="displayQueryType_${queryIndex}" value="${workflowForm.displayQueryType[queryIndex]}"/>
+											<html:link href="javascript:executeGetCountQuery('${queryIndex}','1')" styleClass="bluelink">
+												Execute
+											</html:link>
+											&nbsp;
+											<html:link href="#" styleClass="bluelink">
+												Delete
+											</html:link>
+										</td>
+
+									<td  align="center"><table border="0" cellspacing="0" cellpadding="0">
+                                      <tr>
+                                        <td><img src="images/advancequery/ic_up.gif" onMouseOut="UnTip()"></td>
+                                        <td width="10">&nbsp;</td>
+                                        <td><img src="images/advancequery/ic_down.gif" onMouseOut="UnTip()"></td>
+                                      </tr>
+                                    </table></td>
+						   			</tr>
+									</logic:iterate>
+								</logic:notEmpty>
 						   </tbody>
                     </table>
 				</td>
