@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.domain.StringValue;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -20,13 +21,13 @@ import edu.wustl.query.util.global.Constants;
 
 public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 {
-	public List<PermissibleValueInterface> getPermissibleValueList(final AttributeInterface attribute, final EntityInterface entity) 
+	public List<PermissibleValueInterface> getPermissibleValueList(final AttributeInterface attribute, final EntityInterface entity) throws PVManagerException 
 	{
 
 		List<PermissibleValueInterface> permissibleValueList = new ArrayList<PermissibleValueInterface>();
 		if (isEnumerated(attribute, entity))
 		{
-			String filter = getPVFilterValueForAttribute(attribute, entity);
+			List<String> filter = getPVFilterValueForAttribute(attribute, entity);
 			//call taras method to get concept codes from MED lookup table
 			MedLookUpManager medManager = MedLookUpManager.instance();
 			List<String> medPermissibleValueList = medManager.getPermissibleValues(filter);
@@ -81,32 +82,36 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 
 	/**
 	 * method to decide whether to show a listbox for the permissible values
+	 * @throws PVManagerException 
+	 * @throws VocabularyException 
 	 */
-	public boolean showListBoxForPV(AttributeInterface attribute, EntityInterface entity)
+	public boolean showListBoxForPV(AttributeInterface attribute, EntityInterface entity) throws PVManagerException
 	{
 
 		boolean showListBox = false;
-		IVocabularyManager vocabMngr=null;
-		try {
-			vocabMngr = VocabularyManager.getInstance();
+		IVocabularyManager vocabMngr= VocabularyManager.getInstance();
 		
 		if (isEnumerated(attribute, entity))
 		{
-			List<IVocabulary> vocabularies = vocabMngr.getVocabularies();
+			List<IVocabulary> vocabularies;
+			try
+			{
+				vocabularies = vocabMngr.getConfiguredVocabularies();
+			}
+			catch (VocabularyException e)
+			{
+				throw new PVManagerException("Error occured while checking the available vocabularies.",e);
+			}
 			int noOfCodingSchemes = vocabularies.size();
-			String pvFilter = getPVFilterValueForAttribute(attribute, entity);
+			List<String> pvFilter = getPVFilterValueForAttribute(attribute, entity);
 			MedLookUpManager medManager = MedLookUpManager.instance();
 			List<String> toReturn = medManager.getPermissibleValues(pvFilter);
-			if (toReturn != null && toReturn.size() < 5 && noOfCodingSchemes == 1)
+			if (toReturn != null && toReturn.size() < 10 && noOfCodingSchemes == 1)
 			{
 				showListBox = true;
 			}
 		}
-		} catch (VocabularyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		
 		return showListBox;
 
 	}
@@ -168,9 +173,9 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 	 * @return
 	 */
 	//TODO make method more generic
-	public String getPVFilterValueForAttribute(final AttributeInterface attribute, final EntityInterface entity)
+	public List<String> getPVFilterValueForAttribute(final AttributeInterface attribute, final EntityInterface entity)
 	{
-		String pvFilterValue = null;
+		List<String> pvFilterValueList = null;
 		Collection<TaggedValueInterface> tagList = entity.getTaggedValueCollection();
 		Iterator<TaggedValueInterface> tagIterator = tagList.iterator();
 		while (tagIterator.hasNext())
@@ -178,10 +183,16 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 			TaggedValueInterface temp = (TaggedValueInterface) tagIterator.next();
 			if (temp.getKey().toString().equals(Constants.PERMISSIBLEVALUEFILTER))
 			{
-				pvFilterValue = temp.getValue();
+				pvFilterValueList = new ArrayList<String>();
+				String pvFilterValue = temp.getValue();
+				StringTokenizer tokenizer = new StringTokenizer(pvFilterValue,",",false);
+				while(tokenizer.hasMoreTokens())
+				{
+					pvFilterValueList.add(tokenizer.nextToken());
+				}
 				break;
 			}
 		}
-		return pvFilterValue;
+		return pvFilterValueList;
 	}
 }
