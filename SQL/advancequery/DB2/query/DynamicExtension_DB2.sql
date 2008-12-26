@@ -3158,6 +3158,8 @@ insert into  dyextn_tagged_value  values (108,'NOT_VIEWABLE','NOT_VIEWABLE',261)
 insert into  dyextn_tagged_value  values (109,'NOT_SEARCHABLE','NOT_SEARCHABLE',261);
 insert into  dyextn_tagged_value  values (110,'NOT_VIEWABLE','NOT_VIEWABLE',265);
 insert into  dyextn_tagged_value  values (111,'NOT_SEARCHABLE','NOT_SEARCHABLE',265);
+insert into  dyextn_tagged_value  values (112,'MAIN_ENTITY','MAIN_ENTITY',26);
+insert into  dyextn_tagged_value  values (113,'MAIN_ENTITY','MAIN_ENTITY',27);
 /*Data for the table  dyextn_textfield  */
 
 insert into  dyextn_textfield  values (1,20,0,0);
