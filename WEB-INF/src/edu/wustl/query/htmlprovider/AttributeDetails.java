@@ -5,6 +5,7 @@ import java.util.Map;
 
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IParameter;
+import edu.wustl.query.domain.SelectedConcept;
 
 /**
  * This class holds details of an Attribute, required to Generate Html.
@@ -67,6 +68,28 @@ public class AttributeDetails
 	 * Parameter for parameterized query.
 	 */
 	private IParameter<?> paramater;
+
+	/**
+	 * 
+	 */
+	private List<SelectedConcept> selectedConcepts;
+		
+	/**
+	 * @return the selectedConcepts
+	 */
+	public List<SelectedConcept> getSelectedConcepts()
+	{
+		return selectedConcepts;
+	}
+
+	
+	/**
+	 * @param selectedConcepts the selectedConcepts to set
+	 */
+	public void setSelectedConcepts(List<SelectedConcept> selectedConcepts)
+	{
+		this.selectedConcepts = selectedConcepts;
+	}
 
 	/**
 	 * @return the attrName
