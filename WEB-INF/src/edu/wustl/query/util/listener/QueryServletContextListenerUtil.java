@@ -65,11 +65,6 @@ public class QueryServletContextListenerUtil
 		readProperties();
 		path = System.getProperty("app.propertiesFile");
 
-		String vocabPropFile = Variables.applicationHome + System.getProperty("file.separator") + "WEB-INF" + System.getProperty("file.separator")
-				+ "classes" + System.getProperty("file.separator") + "vocab.properties";
-
-		System.setProperty("vocab.properties.file", vocabPropFile);
-
 	}
 
 	private static void readProperties()
