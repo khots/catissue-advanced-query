@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.wustl.common.query.factory.PermissibleValueManagerFactory;
 import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
+import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.common.util.ParseXMLFile;
@@ -242,8 +243,9 @@ public class HtmlUtility
 	 * @param attribute
 	 * @return boolean
 	 * added by amit_doshi
+	 * @throws PVManagerException 
 	 */
-	public static boolean showListBoxForPV(AttributeInterface attribute,EntityInterface entity)
+	public static boolean showListBoxForPV(AttributeInterface attribute,EntityInterface entity) throws PVManagerException
 	{
 		IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
 		boolean status=false;
@@ -257,8 +259,9 @@ public class HtmlUtility
 	 * @param attribute     AttributeInterface
 	 * @return List of permissible values for the passed attribute
 	 * added amit_doshi 
+	 * @throws PVManagerException 
 	 */
-	public static List<PermissibleValueInterface> getPermissibleValuesList(AttributeInterface attribute,EntityInterface entity)
+	public static List<PermissibleValueInterface> getPermissibleValuesList(AttributeInterface attribute,EntityInterface entity) throws PVManagerException
 	{
 		IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
 		List<PermissibleValueInterface> permissibleValues = null;

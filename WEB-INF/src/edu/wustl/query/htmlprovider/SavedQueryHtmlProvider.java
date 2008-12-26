@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
@@ -40,9 +41,10 @@ public class SavedQueryHtmlProvider
 	 * @param forPage page from where request is made (Saved query/Execute query)
 	 * @param customformulaIndexMap map of custom formula
 	 * @return generated html
+	 * @throws PVManagerException 
 	 */
 	public String getHTMLForSavedQuery(IQuery queryObject, boolean isShowAll,
-			String forPage,Map<Integer,ICustomFormula> customformulaIndexMap)
+			String forPage,Map<Integer,ICustomFormula> customformulaIndexMap) throws PVManagerException
 	{
 		HtmlProvider generateHtml = new HtmlProvider(null);
 		StringBuffer htmlString = new StringBuffer();

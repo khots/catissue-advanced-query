@@ -17,8 +17,7 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.wustl.cab2b.common.exception.CheckedException;
 import edu.wustl.cab2b.common.util.AttributeInterfaceComparator;
 import edu.wustl.cab2b.common.util.PermissibleValueComparator;
-import edu.wustl.common.query.factory.PermissibleValueManagerFactory;
-import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
+import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.common.util.ParseXMLFile;
@@ -169,8 +168,9 @@ public class HtmlProvider
 	 * @param conditions List of conditions , These are required in case of edit limits,
 	 * 		For adding linits this parameter is null
 	 * @return String html generated for Add Limits section.
+	 * @throws PVManagerException 
 	 */
-	public String generateHTML(EntityInterface entity, List<ICondition> conditions,GenerateHTMLDetails generateHTMLDetails)
+	public String generateHTML(EntityInterface entity, List<ICondition> conditions,GenerateHTMLDetails generateHTMLDetails) throws PVManagerException
 	{
 		boolean attributeChecked = this.generateHTMLDetails.isAttributeChecked();
 		boolean permissibleValuesChecked = this.generateHTMLDetails.isPermissibleValuesChecked();
@@ -202,9 +202,10 @@ public class HtmlProvider
 	 * @param permissibleValuesChecked boolean
 	 * @param attributeCollection collection of attributes
 	 * @return StringBuffer
+	 * @throws PVManagerException 
 	 */
 	private StringBuffer getHtmlAttributes(List<ICondition> conditions, boolean attributeChecked,
-			boolean permissibleValuesChecked, Collection<AttributeInterface> attributeCollection,EntityInterface entity)
+			boolean permissibleValuesChecked, Collection<AttributeInterface> attributeCollection,EntityInterface entity) throws PVManagerException
 	{
 		StringBuffer generatedHTML = new StringBuffer(Constants.MAX_SIZE);
 		String space = " ";
@@ -318,9 +319,10 @@ public class HtmlProvider
 	 * @param attribute AttributeInterface
 	 * @param attrName name of attribute
 	 * @return boolean
+	 * @throws PVManagerException 
 	 */
 	private boolean checkAttributeBold(boolean attributeChecked, boolean permissibleValuesChecked,
-			AttributeInterface attribute, String attrName)
+			AttributeInterface attribute, String attrName) throws PVManagerException
 	{
 		boolean isBold = false;
 		if(attributeChecked)
@@ -478,9 +480,10 @@ public class HtmlProvider
 	 * @param generatedHTML generated html
 	 * @param attribute AttributeInterface
 	 * @param attributeDetails details of attribute
+	 * @throws PVManagerException 
 	 */
 	private void generateHTMLForConditionNull(StringBuffer generatedHTML,
-			AttributeInterface attribute,AttributeDetails attributeDetails,EntityInterface entity)
+			AttributeInterface attribute,AttributeDetails attributeDetails,EntityInterface entity) throws PVManagerException
 	{
 		List<PermissibleValueInterface> permissibleValues =HtmlUtility.getPermissibleValuesList(attribute,entity);
 		String componentId = generateComponentName(attribute);
@@ -525,9 +528,10 @@ public class HtmlProvider
 	 * Method for generating HTML depending on condition.
 	 * @param generatedHTML generated html
 	 * @param attribute AttributeInterface
+	 * @throws PVManagerException 
 	 */
 	private void generateHTMLForConditions(StringBuffer generatedHTML,
-			AttributeInterface attribute,EntityInterface entity)
+			AttributeInterface attribute,EntityInterface entity) throws PVManagerException
 	{
 		List<ICondition> conditions = attributeDetails.getConditions();
 		if (conditions != null)
@@ -547,9 +551,10 @@ public class HtmlProvider
 	 * @param generatedHTML generated html
 	 * @param attribute AttributeInterface
 	 * @param forPage String
+	 * @throws PVManagerException 
 	 */
 	private void getHtmlConditionNotNull(StringBuffer generatedHTML,
-			AttributeInterface attribute, String forPage,EntityInterface entity)
+			AttributeInterface attribute, String forPage,EntityInterface entity) throws PVManagerException
 	{
 		if (attributeDetails.getAttributeNameConditionMap()!=null &&
 				attributeDetails.getAttributeNameConditionMap().
@@ -574,10 +579,11 @@ public class HtmlProvider
 	 * @param entityList list of entities
 	 * @param parameterList list of parameters
 	 * @return generated html
+	 * @throws PVManagerException 
 	 */
 	private StringBuffer getSaveQueryPageHtml(int expressionID, EntityInterface entity,
 			List<ICondition> conditions, boolean isShowAll, Map<EntityInterface,
-			List<Integer>> entityList,List<IParameter<?>> parameterList)
+			List<Integer>> entityList,List<IParameter<?>> parameterList) throws PVManagerException
 	{
 		setExpressionId(expressionID);
 		StringBuffer generatedHTML = new StringBuffer();
@@ -727,9 +733,10 @@ public class HtmlProvider
 	 * @param dagNodeId String
 	 * @param attribute AttributeInterface
 	 * @return generated html
+	 * @throws PVManagerException 
 	 */
 	private StringBuffer getHtmlAttributeSavedQuery(EntityInterface entity, String dagNodeId,
-			AttributeInterface attribute)
+			AttributeInterface attribute) throws PVManagerException
 	{
 		StringBuffer generatedHTML = new StringBuffer(Constants.MAX_SIZE);
 		String name = Utility.parseClassName(entity.getName());
@@ -838,10 +845,11 @@ public class HtmlProvider
 	 * @param forPage String
 	 * @param parameterList list of parameters
 	 * @return String html generated for Save Query section.
+	 * @throws PVManagerException 
 	 */
 	public String getHtmlForSavedQuery(
 			Map<Integer, Map<EntityInterface, List<ICondition>>>  expressionMap, boolean isShowAll,
-			String forPage,List<IParameter<?>> parameterList)
+			String forPage,List<IParameter<?>> parameterList) throws PVManagerException
 	{
 		this.forPage = forPage;
 		StringBuffer generatedHTML = new StringBuffer(Constants.MAX_SIZE);
@@ -880,10 +888,11 @@ public class HtmlProvider
 	 * @param parameterList list of parameters
 	 * @param generatedHTML generated html
 	 * @return expressionEntityString
+	 * @throws PVManagerException 
 	 */
 	private StringBuffer getMapsForEntity(
 			Map<Integer, Map<EntityInterface, List<ICondition>>> expressionMap, boolean isShowAll,
-			List<IParameter<?>> parameterList, StringBuffer generatedHTML)
+			List<IParameter<?>> parameterList, StringBuffer generatedHTML) throws PVManagerException
 	{
 		String colon = ":";
 		StringBuffer expressionEntityString = new StringBuffer();

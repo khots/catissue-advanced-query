@@ -25,6 +25,7 @@ import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.query.queryobject.locator.Position;
 import edu.wustl.common.query.queryobject.locator.QueryNodeLocator;
 import edu.wustl.common.querysuite.exceptions.CyclicException;
@@ -1879,8 +1880,9 @@ public class DAGPanel
 	 * 
 	 * @param expId
 	 * @return
+	 * @throws PVManagerException 
 	 */
-	public Map editAddLimitUI(int expId)
+	public Map editAddLimitUI(int expId) throws PVManagerException
 	{
 		Map<String, Object> map = new HashMap<String, Object>();
 		int expressionId = expId;
