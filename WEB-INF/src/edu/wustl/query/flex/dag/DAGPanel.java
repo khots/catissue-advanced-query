@@ -2034,6 +2034,15 @@ public class DAGPanel
 	{
 		int expressionId = expId;
 		m_queryObject.removeExpression(expressionId);
+		
+		//Removing the expression also from the list
+		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
+		HttpSession session = request.getSession();
+		List<Integer> expressionIdsList =  (List<Integer>)session.getAttribute("allLimitExpressionIds");
+	    if(expressionIdsList != null)
+	    {
+	    	expressionIdsList.remove(Integer.valueOf(expressionId));
+	    }
 	}
 
 	/**
