@@ -40,11 +40,11 @@ public class SelectedPermissibleValueAction extends Action {
 		for(int i=0;i<conceptcodes.length;i++)
 		{
 			SelectedConcept selectedConcept=new SelectedConcept();
-			String vocabName=conceptcodes[i].substring(0,conceptcodes[i].indexOf("@"));
-			String vocabVersion=conceptcodes[i].substring(conceptcodes[i].indexOf("@")+1,conceptcodes[i].indexOf(":"));
-			String medCode=conceptcodes[i].substring(conceptcodes[i].indexOf(":")+1);
-			String conceptCode=conceptNames[i].substring(0,conceptNames[i].indexOf(":"));
-			String conceptNam=conceptNames[i].substring(conceptNames[i].indexOf(":")+1);
+			String vocabName=conceptcodes[i].substring(0,conceptcodes[i].indexOf('@'));
+			String vocabVersion=conceptcodes[i].substring(conceptcodes[i].indexOf('@')+1,conceptcodes[i].indexOf(':'));
+			String medCode=conceptcodes[i].substring(conceptcodes[i].indexOf(':')+1);
+			String conceptCode=conceptNames[i].substring(0,conceptNames[i].indexOf(':'));
+			String conceptNam=conceptNames[i].substring(conceptNames[i].indexOf(':')+1);
 			
 			selectedConcept.setVocabName(vocabName);
 			selectedConcept.setVocabVersion(vocabVersion);
