@@ -17,13 +17,11 @@ import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
 import edu.wustl.common.query.impl.CommonPathFinder;
-import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.exceptions.CyclicException;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.flex.dag.DAGResolveAmbiguity;
 import edu.wustl.query.util.global.Constants;
@@ -53,61 +51,23 @@ public abstract class IQueryUpdationUtil
 	
 	public static Map<Integer, HashMap <EntityInterface, List<EntityInterface>>> getAllConatainmentObjects(IQuery query,HttpSession session)
 	{
-		//HashMap <EntityInterface, List<EntityInterface>> containmentMap = new HashMap<EntityInterface, List<EntityInterface>>();
-		//HashMap <EntityInterface,Integer>entityExpressionIdMap = new HashMap<EntityInterface, Integer>();
-		
 		Map<Integer, HashMap <EntityInterface, List<EntityInterface>>> eachExpressionParentChildMap = new HashMap<Integer, HashMap<EntityInterface,List<EntityInterface>>> (); 
-		
 		List<Integer> expressionIdsList =  (List<Integer>)session.getAttribute(Constants.ALL_ADD_LIMIT_EXPRESSIONS);
 		List <Integer> mainExpressionIds = new ArrayList<Integer>();
 		
-		Map <Integer,List<EntityInterface>> eachExpressionContainmentMap = (HashMap<Integer,List<EntityInterface>>)session.getAttribute(Constants.MAIN_ENTITY_EXPRESSIONS_MAP);
-		if(eachExpressionContainmentMap == null)
-		{
-			eachExpressionContainmentMap = new HashMap<Integer,List<EntityInterface>>();
-		}
+		Map<Integer, List<EntityInterface>> eachExpressionContainmentMap = getExpressionsContainmentMap(session);
 		
 		//Get the list if all main Entities present in main query
 		List<EntityInterface> mainEntityList = getAllMainObjects(query);
 		
 		//Find out all Main expressions present in IQuery
-		IConstraints constraints = query.getConstraints();
-		Iterator<Integer> itr = expressionIdsList.iterator();
-		while(itr.hasNext())
-		{
-		    int expId = itr.next().intValue();
-		    IExpression expression = constraints.getExpression(expId);
-		    EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
-			
-			//Check if this entity is main Entity or not
-			boolean ifMainObject = checkIfMainObject(entity, mainEntityList); 
-			if(ifMainObject)
-			{
-				mainExpressionIds.add(Integer.valueOf(expression.getExpressionId()));
-			}
-		}
+		IConstraints constraints = getMainExpressionsList(query, expressionIdsList,
+				mainExpressionIds, mainEntityList);
 		
 		//Here we got the list of all main  Expressions, now we need to find out for expression we need to add Containments
 		 List <Integer> expressionsToAddContainments = new ArrayList<Integer>();
-		 if(eachExpressionContainmentMap == null || eachExpressionContainmentMap.isEmpty())
-		 {
-			 //This is first time case
-			 expressionsToAddContainments.addAll(mainExpressionIds);
-		 }
-		 else
-		 {
-			 //This is the case of Previous ->Next, by this time containments of previous main entities are added  
-			 Iterator<Integer> mainExpsItr = mainExpressionIds.iterator();
-			 while(mainExpsItr.hasNext())
-			 {
-				 int mainExpId =  mainExpsItr.next().intValue();
-				 boolean isToAddContainments = checkIfToAddContainmnets(mainExpId,eachExpressionContainmentMap.keySet());
-				 if(isToAddContainments)
-				 {
-					 expressionsToAddContainments.add((Integer.valueOf(mainExpId)));
-				 }
-			 }
-		 }
+		 getExpsToAddContainments(mainExpressionIds, eachExpressionContainmentMap,
+				expressionsToAddContainments);
 		
 		 //For each expression id in the  expressionsToAddContainments, get It's Containments
          Iterator<Integer> expsToAddItr =  expressionsToAddContainments.iterator();
@@ -133,6 +93,67 @@ public abstract class IQueryUpdationUtil
 		
         //return partentChildEntityMap;
         return eachExpressionParentChildMap;   
+	}
+
+
+	private static void getExpsToAddContainments(List<Integer> mainExpressionIds,
+			Map<Integer, List<EntityInterface>> eachExpressionContainmentMap,
+			List<Integer> expressionsToAddContainments)
+	{
+		if(eachExpressionContainmentMap == null || eachExpressionContainmentMap.isEmpty())
+		 {
+			 //This is first time case
+			 expressionsToAddContainments.addAll(mainExpressionIds);
+		 }
+		 else
+		 {
+			 //This is the case of Previous ->Next, by this time containments of previous main entities are added  
+			 Iterator<Integer> mainExpsItr = mainExpressionIds.iterator();
+			 while(mainExpsItr.hasNext())
+			 {
+				 int mainExpId =  mainExpsItr.next().intValue();
+				 boolean isToAddContainments = checkIfToAddContainmnets(mainExpId,eachExpressionContainmentMap.keySet());
+				 if(isToAddContainments)
+				 {
+					 expressionsToAddContainments.add((Integer.valueOf(mainExpId)));
+				 }
+			 }
+		 }
+	}
+
+
+	private static IConstraints getMainExpressionsList(IQuery query,
+			List<Integer> expressionIdsList, List<Integer> mainExpressionIds,
+			List<EntityInterface> mainEntityList)
+	{
+		IConstraints constraints = query.getConstraints();
+		Iterator<Integer> itr = expressionIdsList.iterator();
+		while(itr.hasNext())
+		{
+		    int expId = itr.next().intValue();
+		    IExpression expression = constraints.getExpression(expId);
+		    EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
+			
+			//Check if this entity is main Entity or not
+			boolean ifMainObject = checkIfMainObject(entity, mainEntityList); 
+			if(ifMainObject)
+			{
+				mainExpressionIds.add(Integer.valueOf(expression.getExpressionId()));
+			}
+		}
+		return constraints;
+	}
+
+
+	private static Map<Integer, List<EntityInterface>> getExpressionsContainmentMap(
+			HttpSession session)
+	{
+		Map <Integer,List<EntityInterface>> eachExpressionContainmentMap = (HashMap<Integer,List<EntityInterface>>)session.getAttribute(Constants.MAIN_ENTITY_EXPRESSIONS_MAP);
+		if(eachExpressionContainmentMap == null)
+		{
+			eachExpressionContainmentMap = new HashMap<Integer,List<EntityInterface>>();
+		}
+		return eachExpressionContainmentMap;
 	}
 
 	private static void getMainEntityContainments(Map<EntityInterface, List<EntityInterface>> partentChildEntityMap,List<EntityInterface> mainEntityContainmentList, EntityInterface mainEntity)
@@ -255,21 +276,13 @@ public abstract class IQueryUpdationUtil
 	{
 		IClientQueryBuilderInterface queryObject = new ClientQueryBuilder();
 		
-		Map <Integer,HashMap <EntityInterface,Integer>> mainExpEntityExpressionIdMap = (Map <Integer,HashMap <EntityInterface,Integer>>)session.getAttribute(Constants.MAIN_EXPRESSIONS_ENTITY_EXP_ID_MAP);
-		if(mainExpEntityExpressionIdMap == null)
-		{
-			mainExpEntityExpressionIdMap = new HashMap<Integer, HashMap<EntityInterface,Integer>>();
-		}
+		Map<Integer, HashMap<EntityInterface, Integer>> mainExpEntityExpressionIdMap = getExpressionEntityMap(session);
 		//As we can't edit query directly, so we create ClientQueryBuilder object
 		queryObject.setQuery(query);
 		
 		//Not Constraints are retrieved from query clone as we will be modifying the original Query Instance 
 		IConstraints constraints = query.getConstraints();
-		//HashMap <EntityInterface, List<EntityInterface>> containmentMap  = (HashMap<EntityInterface, List<EntityInterface>>)session.getAttribute(Constants.CONTAINMENT_OBJECTS_MAP);
 		Map <Integer,List<EntityInterface>> eachExpressionContainmentMap =	 (Map <Integer,List<EntityInterface>>)session.getAttribute(Constants.MAIN_ENTITY_EXPRESSIONS_MAP);
-		
-		//List <Integer> expressionsToAddContainments = (List <Integer>)session.getAttribute("expressionsToAddContainments");
-		
 		if((eachExpressionContainmentMap != null) && (!eachExpressionContainmentMap.isEmpty()))
 		{
 			List <Integer> expressionsToAddContainments = (List <Integer>)session.getAttribute(Constants.MAIN_EXPRESSION_TO_ADD_CONTAINMENTS);
@@ -301,23 +314,19 @@ public abstract class IQueryUpdationUtil
 		}
 		session.setAttribute(Constants.MAIN_EXPRESSIONS_ENTITY_EXP_ID_MAP,mainExpEntityExpressionIdMap);
 	}
-	
-/*	private static boolean isToAddMainExpression(Integer mainExpId,List <Integer> expressionsToAddContainments)
-	{
-		 boolean isToAddMainExp = false;
-		 Iterator<Integer> itr = expressionsToAddContainments.iterator();
-		 while(itr.hasNext())
-		 {
-			 int expId = itr.next().intValue();
-			 if(mainExpId.intValue()==expId)
-			 {
-				 isToAddMainExp = true;
-				 break;
-			 }
-		 }
-		 return isToAddMainExp;
-	}*/
 
+
+	private static Map<Integer, HashMap<EntityInterface, Integer>> getExpressionEntityMap(
+			HttpSession session)
+	{
+		Map <Integer,HashMap <EntityInterface,Integer>> mainExpEntityExpressionIdMap = (Map <Integer,HashMap <EntityInterface,Integer>>)session.getAttribute(Constants.MAIN_EXPRESSIONS_ENTITY_EXP_ID_MAP);
+		if(mainExpEntityExpressionIdMap == null)
+		{
+			mainExpEntityExpressionIdMap = new HashMap<Integer, HashMap<EntityInterface,Integer>>();
+		}
+		return mainExpEntityExpressionIdMap;
+	}
+	
 	private static void addContainmentToIQuery(IClientQueryBuilderInterface queryObject,Map<EntityInterface, Integer> entityExpressionIdMap, IConstraints constraints,List <EntityInterface> containmentEntitiesList)
 	{
 		if((containmentEntitiesList != null) && (!containmentEntitiesList.isEmpty()))
