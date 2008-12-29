@@ -264,6 +264,13 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/pages/advancequery/content/search/SearchPermissibleValues.jsp"/>
 		</action>
+		<action path="/SearchMappedPV"
+			type="edu.wustl.query.action.SearchMappedPVsAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path="/pages/advancequery/content/search/SearchPermissibleValues.jsp"/>
+		</action>
 		<action path="/SelectedPermissibleValue"
 			type="edu.wustl.query.action.SelectedPermissibleValueAction"
 			name="categorySearchForm"
