@@ -7,16 +7,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.client.ui.dag.ambiguityresolver.AmbiguityObject;
@@ -77,7 +74,7 @@ public class DefineSearchResultsViewAction extends Action
 		}
 		else
 		{
-			EntityInterface entity = EntityCache.getCache().getEntityById(new Long(entityId));
+			EntityInterface entity = EntityCache.getCache().getEntityById(Long.valueOf(entityId));
 			
 			//Get the Root entity of the IQuery
 			queryDetailsObject = new QueryDetails(session);
@@ -89,7 +86,7 @@ public class DefineSearchResultsViewAction extends Action
 			List<IPath> pathsList = getPathList(entity, rootEntity);
 			if(pathsList.isEmpty())
 			{
-				System.out.println("There exists no path between the Root entity and Main Entity added");
+				
 			}
 			else
 			{
@@ -176,34 +173,17 @@ public class DefineSearchResultsViewAction extends Action
 		queryDetailsObject.setMainEntityList(mainEntityList);
 		queryDetailsObject.setEachExpressionContainmentMap(eachExpressionContainmentMap);
 		queryDetailsObject.setMainExpEntityExpressionIdMap(mainExpEntityExpressionIdMap);
-		
-		//queryDetailsObject.setContainmentMap(containmentMap);
-		
 		DefineGridViewBizLogic defineGridViewBizLogic = new DefineGridViewBizLogic();
+
 		//Create XML String instead of populating the tree data vector
 		StringBuilder xmlString = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" ?> ");
 		xmlString =  defineGridViewBizLogic.createContainmentTree(searchForm, queryDetailsObject, prevSelectedColumnNVBList, xmlString);
 		
 		//This string is appended for the root node of the tree
 		xmlString.append("</item></tree>");
-		
 		setMainEntityList(request);
-		
         session.setAttribute(Constants.SELECTED_COLUMN_NAME_VALUE_BEAN_LIST,searchForm.getSelectedColumnNameValueBeanList());
 		session.setAttribute(Constants.QUERY_OBJECT,query);
-		
-		
-		/**
-		 * to do : Removing of session attributes
-		 */
-		
-		//Removing Session attributes
-		//session.removeAttribute(Constants.CONTAINMENT_OBJECTS_MAP);
-		//session.removeAttribute(Constants.MAIN_ENTITY_LIST);
-		
-		
-		//session.removeAttribute("allLimitExpressionIds");
-		
 		String fileName = defineGridViewBizLogic.getFileName();
 		defineGridViewBizLogic.writeXML(xmlString.toString(), fileName);
 		ActionForward target = null;
@@ -219,18 +199,18 @@ public class DefineSearchResultsViewAction extends Action
 			request.setAttribute("fileName", fileName);
 			target = mapping.findForward(Constants.SUCCESS);
 		}
-		
 		return target;
 	}
 	
 	private List<IPath> getPathList(EntityInterface entity, EntityInterface rootEntity)
 	{
+		List<IPath> pathsList;
 		IPathFinder pathFinder = new CommonPathFinder();
 		AmbiguityObject ambiguityObject = new AmbiguityObject(rootEntity,entity);
 		DAGResolveAmbiguity resolveAmbigity = new DAGResolveAmbiguity(ambiguityObject,pathFinder);
 		
 		Map<AmbiguityObject, List<IPath>> map = resolveAmbigity.getPathsForAllAmbiguities();
-		List<IPath> pathsList = map.get(ambiguityObject);
+		pathsList = map.get(ambiguityObject);
 		return pathsList;
 	}
 
