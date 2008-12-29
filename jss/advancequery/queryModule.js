@@ -1580,7 +1580,7 @@ var jsReady = false;
 	{
 	   compId= componentId;
 	   compIdOfID=componentIdOfID;
-	   pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'SearchPermissibleValues.do?componentId='+componentId,'Search Permissible Values for \"'+entityName+'\"', 'width=930px,height=510px,center=1,resize=0,scrolling=1');
+	   pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'SearchMappedPV.do?componentId='+componentId,'Search Permissible Values for \"'+entityName+'\"', 'width=930px,height=510px,center=1,resize=0,scrolling=1');
 	   refresh=false;
 	}
 
