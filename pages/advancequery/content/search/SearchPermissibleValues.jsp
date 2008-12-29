@@ -267,7 +267,7 @@ function createRows(vocabName,selectedPvsCheckedBoxId)
 					 document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
 					 // send request only first time when user click on the check box for other click  just hide and show the div 
 					var param = "selectedCheckBox"+"="+vocabName+":"+vocabVer;
-					var actionUrl="SearchPermissibleValues.do";
+					var actionUrl="SearchMappedPV.do";
 					request.onreadystatechange=function(){setSelectedVocabDataInDIV(request,selectedCheckedBoxVocabDivID)};
 					request.open("POST",actionUrl,true);
 					request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
