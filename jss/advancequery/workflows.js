@@ -4,34 +4,20 @@
 // "columnContents" contains controls to be added to be added to each column
 function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdContent)
 {
-	/*alert('7 operandsTdContent='+operandsTdContent);
-		alert('8 operatorsTdContent='+operatorsTdContent);*/
 
 	var tableObj=document.getElementById(tableId);
-	//alert('11 tableObj='+tableObj);
 	var rowObj=document.createElement("tr");
-//	alert('13 rowObj='+rowObj);
-	//rowObj.bgcolor="#ffffff";
 	rowObj.className="td_bgcolor_white";
-//	alert('15 rowObj='+rowObj);
 	var columnObj;
 	var columnCount=columnContents.length;
-
-	//alert('18 columnCount='+columnCount);
 	for(var counter=0;counter<columnCount-2;counter++)
 	{
-	//	alert('21 counter='+counter);
 		if(columnContents[counter]!=null)
 		{
 			columnObj=document.createElement("td");
-	//		alert('24 columnObj='+columnObj);
 			columnObj.className="content_txt";
-		///	alert('26 columnObj='+columnObj);
-	//		alert('27 columnContents[counter]='+columnContents[counter]);
 			columnObj.appendChild(columnContents[counter]);
-		//	alert('29 columnObj='+columnObj);
 			rowObj.appendChild(columnObj);
-		//	alert('31 rowObj='+rowObj);
 		}
 	}
 		
@@ -46,51 +32,28 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	var operandsTd2=document.createElement("td");
 	var operandsTd3=document.createElement("td");
 
-
-
-
-//alert('37 operandsTd='+operandsTd);
 	var queryControls=document.getElementById("table1").rows;
-	//alert('39 queryControls='+queryControls);
 	var queryCount=0;
 	if(queryControls!=null && queryControls!=undefined)
 	{
 		queryCount=queryControls.length;
 	}
-//alert('45 queryCount='+queryCount);
+	
 	var operandsControl=createHiddenElement("operands","operands_"+queryCount,operandsTdContent);	
-//alert('47 operandsControl='+operandsControl);
 	operandsTd2.appendChild(operandsControl);
 	
 	var operatorControl=createHiddenElement("operators","operators_"+queryCount,operatorsTdContent);
-	//alert('51 operatorControl='+operatorControl);
 	operandsTd2.appendChild(operatorControl);
 	
 	var queryTitleControl;
 	var queryTypeControl;
-//	alert('hasInnerText()='+hasInnerText());
-	/*if(!hasInnerText())
-	{*
-		alert('in if'+columnContents[1]);*/
-
-			//alert("(columnContents[5])"+(columnContents[5]));
-		//alert("(columnContents[6])"+(columnContents[6]));
-			queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,(columnContents[5]));
-			queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,(columnContents[6]));
-//	}
-/*	else
-	{
-		alert('in else'+columnContents[1]);
-			queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,columnContents[1].innerTEXT);
-			queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,columnContents[2].innerTEXT);
-	}*/
-	
-	//alert('55 queryTitleControl='+queryTitleControl);
+	queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,(columnContents[5]));
+	queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,(columnContents[6]));
 	operandsTd2.appendChild(queryTitleControl);
 	operandsTd2.appendChild(queryTypeControl);
 	operandsTd2.width="4";
-	operandsTd1.appendChild(createLink("Execute ","javascript:executeGetCountQuery('"+queryCount+"')"));
-	operandsTd3.appendChild(createLink("Delete ","#"));
+	operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+queryCount+"')"));
+	operandsTd3.appendChild(createLink("Delete ","delete_"+queryCount,"javascript:deleteWorkflowItem('"+queryCount+"')"));
 
 	operandsTr.appendChild(operandsTd1);
 	operandsTr.appendChild(operandsTd2);
@@ -102,14 +65,33 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	rowObj.appendChild(operandsTd);
 	
 	var reorderTd=document.createElement("td");
-	/*var trImgup=new Image ( );
+	reorderTd.align="center";
+
+	var tble2=document.createElement("table");
+	var tbody2=document.createElement("tbody");
+	tble2.cellspacing="0";
+	tble2.cellpadding="0"
+
+	var trInsideTd=document.createElement("tr");
+	var reorderTd1=document.createElement("td");
+	var reorderTd2=document.createElement("td");
+	var reorderTd3=document.createElement("td");
+
+	var trImgup=new Image();
 	trImgup.src = "images/advancequery/ic_up.gif";
-	reorderTd.appendChild(trImgup);
-	var trImgDown=new Image ( );
+	reorderTd1.appendChild(trImgup);
+	reorderTd2.width="2";
+	var trImgDown=new Image( );
 	trImgDown.src = "images/advancequery/ic_down.gif";
-	reorderTd.appendChild(trImgDown);*/
-	rowObj.appendChild(reorderTd);
+	reorderTd3.appendChild(trImgDown);
 	
+	trInsideTd.appendChild(reorderTd1);
+	trInsideTd.appendChild(reorderTd2);
+	trInsideTd.appendChild(reorderTd3);
+	tbody2.appendChild(trInsideTd);
+	tble2.appendChild(tbody2);
+	reorderTd.appendChild(tble2);
+	rowObj.appendChild(reorderTd);
 	tableObj.appendChild(rowObj);
 }
 
@@ -125,7 +107,7 @@ function addQuery()
 	var queryTitles=document.getElementById("queryTitle").options;
 	var queryTypes=document.getElementById("queryType").options;
 	var queryCount=document.getElementById("table1").rows.length;
-	
+
 	for(var counter=0;counter<queryIds.length;counter++)
 	{
 		
@@ -173,10 +155,6 @@ function createHiddenElement(name,id,content)
 	hiddenControl.id=id;
 	hiddenControl.name=name;
 	hiddenControl.value=content;
-//	alert('hiddenControl type ='+hiddenControl.type);
-//	alert("hiddenControl.name="name);
-//	alert('hiddenControl id ='+hiddenControl.id);
-//	alert('hiddenControl value ='+hiddenControl.value);
 	return hiddenControl;
 }
 
@@ -189,7 +167,6 @@ function createTextElement(text)
 function createCheckBox(name,id,displayValue)
 {
 		var chkbox=document.createElement("input");
-
 		var text=document.createTextNode(displayValue);
 		chkbox.type="checkbox";
 		chkbox.id=id;
@@ -197,11 +174,12 @@ function createCheckBox(name,id,displayValue)
 		return chkbox;
 }
 
-function createLink(displayValue,url)
+function createLink(displayValue,test,url)
 {
 	var link=document.createElement('a');
 	link.className="bluelink";
 	link.href=url;
+	link.id=test;
 	var text=createTextElement(displayValue);
 	link.appendChild(text);
 	return link;
@@ -232,4 +210,34 @@ function getText(control)
 	}*/
 }
 
+function deleteWorkflowItem(index)
+{
+	var checkboxControl=document.getElementById("checkbox_"+(index));
+	if(checkboxControl!=null && checkboxControl!=undefined && checkboxControl.checked==true)
+	{
+		var table=document.getElementById("table1");
+		var oldNoOfRows=document.getElementById("table1").rows.length;
+		var i=index;
+		++i;
+		for(;i<=oldNoOfRows-1;i++)
+		{
+			document.getElementById("checkbox_"+i).id="checkbox_"+(i-1);
+			document.getElementById("displayQueryTitle_"+i).id="displayQueryTitle_"+(i-1);
+			//document.getElementById("queryTypeControl_"+i).id="queryTypeControl_"+(i-1);
+			document.getElementById("selectedqueryId_"+i).id="selectedqueryId_"+(i-1);
+			document.getElementById("operands_"+i).id="operands_"+(i-1);
+			document.getElementById("operators_"+i).id="operators_"+(i-1);
+			document.getElementById("displayQueryType_"+i).id="displayQueryType_"+(i-1);
+			document.getElementById("execute_"+i).href="javascript:executeGetCountQuery('"+(i-1)+"')"
+			document.getElementById("delete_"+i).href="javascript:deleteWorkflowItem('"+(i-1)+"')"
+			document.getElementById("execute_"+i).id="execute_"+(i-1);
+			document.getElementById("delete_"+i).id="delete_"+(i-1);
+		}
+	table.deleteRow(index);
+	}
+	else
+	{
+		alert("No check box is selected to delete");
+	}
+}
 
