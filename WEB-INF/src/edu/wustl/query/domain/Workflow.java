@@ -224,20 +224,21 @@ public class Workflow extends AbstractDomainObject
 			IAbstractQuery operandTwo = new ParameterizedQuery();
 			operandTwo.setId(Long.parseLong(operands.substring(operands.lastIndexOf('_')+1)));
 			
-			
-			IAbstractQuery tempCompositeQuery = getCompositeQuery(operators, operands.substring(0,operands.lastIndexOf('_')));
-			((CompositeQuery)compositeQuery).setOperation(getOperationForCompositeQuery(operators, tempCompositeQuery, operandTwo));
+			String tempOperation=operators.substring(operators.lastIndexOf('_')+1);
+			IAbstractQuery tempCompositeQuery = getCompositeQuery(operators.substring(0,operators.lastIndexOf('_')), operands.substring(0,operands.lastIndexOf('_')));
+			((CompositeQuery)compositeQuery).setOperation(getOperationForCompositeQuery(tempOperation, tempCompositeQuery, operandTwo));
 		}
 		else
 		{
 			String[] ids = operands.split("_");
+			String[] operator=operators.split("_");
 			IAbstractQuery operandOne = new ParameterizedQuery();
 			operandOne.setId(Long.parseLong(ids[0]));
 			IAbstractQuery operandTwo = new ParameterizedQuery();
 			operandTwo.setId(Long.parseLong(ids[1]));
 			
 			compositeQuery = new CompositeQuery();
-			((CompositeQuery)compositeQuery).setOperation(getOperationForCompositeQuery(operators, operandOne, operandTwo));
+			((CompositeQuery)compositeQuery).setOperation(getOperationForCompositeQuery(operator[0], operandOne, operandTwo));
 //			String name = "CompositeQuery_"+ new Date().getTime();
 //			((CompositeQuery)compositeQuery).setName(name);
 		}
