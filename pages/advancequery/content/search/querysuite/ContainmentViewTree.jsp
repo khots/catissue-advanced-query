@@ -9,9 +9,9 @@
 <%@ page import="edu.wustl.common.tree.QueryTreeNodeData"%>
 <%@ page import="edu.wustl.query.actionForm.CategorySearchForm"%>
 <%@ page import="edu.wustl.common.beans.NameValueBean"%>
+<%@ page language="java" isELIgnored="false"%>
 <html>
 <head>
-
 <meta http-equiv="Content-Language" content="en-us">
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 </head>
@@ -48,71 +48,116 @@
 	<tr>
 		<td width="1px">&nbsp;	</td>
 		<td valign="top"  width="90%" height="90%">
-			<div id="treeBox" style="background-color:white;overflow:auto;height:370;width:240;border-left:solid 1px;border-right:solid 1px;border-top:solid 1px;border-bottom:solid 1px;"></div>
+			<div id="treeBox" style="background-color:white;overflow:auto;height:378;width:240;border-left:solid 1px;border-right:solid 1px;border-top:solid 1px;border-bottom:solid 1px;"></div>
 		</td>
 		<td width="1%"> &nbsp; </td>
-		   <td align="center" valign="center" width="">
-			<html:button styleClass="actionButton" property="shiftRight"styleId ="shiftRight" onclick="moveOptionsRight(this.form.columnNames, this.form.selectedColumnNames);">
-				<bean:message key="buttons.addToView"/>
-			</html:button>
-			<br/><br/>
-			<html:button styleClass="actionButton" property="shiftLeft" styleId ="shiftLeft" onclick="moveOptionsLeft(this.form.selectedColumnNames, this.form.columnNames);" >
-				<bean:message key="buttons.deleteFromView"/>
-			</html:button>  
+		   <td align="center" valign="center" style="padding-left:10px;padding-right:10px;">
+			<img src="images/advancequery/b_add.gif"  align="absmiddle" hspace="3" property="shiftRight" styleId ="shiftRight" onclick="moveOptionsRight(document.forms[0].columnNames,document.forms[0].selectedColumnNames);"/>
+			<br><br/>
+			<img src="images/advancequery/b_remove.gif"  align="absmiddle" hspace="3" onclick="moveOptionsLeft(document.forms[0].selectedColumnNames, document.forms[0].columnNames);"/>
 		</td>
 		<td width="1%"> &nbsp; </td>
 		<td class="" valign="top" width="60" height="85%">
 <!-- Mandar : 434 : for tooltip -->
-			<html:select property="selectedColumnNames" styleClass="" size="16" multiple="true" style="height:370" >
-				<html:options collection="selectedColumnNameValueBeanList" labelProperty="name" property="value"/>
-			</html:select>
+		   <div id="emptyList" style="height:378;width:250;overflow:hidden;"> 
+		   <select name="heg" style="height:378;width:250;" multiple="true">
+				<option value="">
+			</select></div>	
+			
+		 <div id="elementList" style="OVERFLOW: auto;WIDTH:250px;HEIGHT: 378px;border:0px solid;" onscroll="OnDivScroll();"> 
+			 <select  id="lstAttributeNames" name="selectedColumnNames" styleClass="" size="22" multiple="true" style="" onfocus="OnSelectFocus();">
+			  <logic:iterate id="columnNameValue" name="selectedColumnNameValueBeanList">	
+				<option value="${columnNameValue.value}"/><span class="content_txt"> <bean:write name="columnNameValue" property="name"/></span>
+              </logic:iterate> 
+			</select>
+		   </div> 
 		</td>
 		<td width="1%"> &nbsp; </td>
-		<td align="center" valign="center">
-			<html:button styleClass="actionButton" property="shiftUp" styleClass="actionButton" styleId ="shiftUp" onclick="moveUp(this.form.selectedColumnNames);">
-				<bean:message key="buttons.up"/>
-			</html:button>  <br/><br/>
-			
-			<html:button styleClass="actionButton" property="shiftDown" styleClass="actionButton" styleId ="shiftDown" onclick="moveDown(this.form.selectedColumnNames)" >
-				<bean:message key="buttons.down"/>
-			</html:button> 
+		 <td align="center" valign="center" style="padding-left:10px;padding-right:10px;">
+				<img src="images/advancequery/ic_up.gif" align="absmiddle"  onclick="moveUp(document.forms[0].selectedColumnNames);"/>  
+			<br><br/>
+			<img src="images/advancequery/ic_down.gif"  align="absmiddle" onclick="moveDown(document.forms[0].selectedColumnNames);"/> 
 		</td>
 </tr>
 <tr><td> &nbsp;
 </td>
 </tr>					
-<tr id="buttontr">
-<td colspan="6" align="left" valign="top">
-  	<table border="0" cellpadding="0" cellspacing="0" width="100%">
-			<tr height="1px">
-			<td align="center" height="2%">
-					<html:button styleClass="actionButton" property="configureButton" onclick = "onSubmit(this.form.selectedColumnNames,'back');" >
-							<bean:message key="query.back.button"/>
-					</html:button>
-			</td>	 
-			<td align="center" height="2%">
-					<html:button styleClass="actionButton" property="redefineButton" onclick = "onSubmit(this.form.selectedColumnNames,'restore');" >
-						<bean:message key="query.restoreDefault.button"/>
-					</html:button>
-			</td>
-			<td align="center" height="2%">
-					<html:button styleClass="actionButton" property="configButton" onclick = "onSubmit(this.form.selectedColumnNames,'finish');" >
-						<bean:message key="query.finish.button"/>
-					</html:button>
-			</td>
-			<td width="40%">
-			</td>
-			</tr>
-		</table>
-	</td>
-			</tr>
+
 </table>
 </body>
 </html:form>
 
+<script> 
+      
+   if( "<%= selectedColumnNameValueBeanList.size() %>" == 0)
+   {
+      document.getElementById("emptyList").style.display="block";
+      document.getElementById("elementList").style.display="none";
+   }
+   else
+   {
+      
+	  document.getElementById("emptyList").style.display="none";
+      document.getElementById("elementList").style.display="block";
+   }
+</script>
+
 <SCRIPT LANGUAGE="JavaScript">
 
-    function addOption(theSel, theText, theValue)
+   function OnDivScroll()
+{
+   	var lstAttributeNames = document.getElementById("lstAttributeNames");
+
+    //The following two points achieves two things while scrolling
+    //a) On horizontal scrolling: To avoid vertical
+    //   scroll bar in select box when the size of 
+    //   the selectbox is 8 and the count of items
+    //   in selectbox is greater than 8.
+    //b) On vertical scrolling: To view all the items in selectbox
+
+    //Check if items in selectbox is greater than 8, 
+    //if so then making the size of the selectbox to count of
+    //items in selectbox,so that vertival scrollbar
+    // won't appear in selectbox
+    if (lstAttributeNames.options.length > 22)
+    {
+          
+		lstAttributeNames.size=lstAttributeNames.options.length;
+    }
+    else
+    {
+        lstAttributeNames.size=22;
+    }
+}
+	
+	function OnSelectFocus()
+{
+    //On focus of Selectbox, making scroll position 
+    //of DIV to very left i.e 0 if it is not. The reason behind
+    //is, in this scenario we are fixing the size of Selectbox 
+    //to 8 and if the size of items in Selecbox is greater than 8 
+    //and to implement downarrow key and uparrow key 
+    //functionality, the vertical scrollbar in selectbox will
+    //be visible if the horizontal scrollbar of DIV is exremely right.
+    if (document.getElementById("elementList").scrollLeft != 0)
+    {
+        document.getElementById("elementList").scrollLeft = 0;
+    }
+
+    var lstCollegeNames = document.getElementById('lstAttributeNames');
+    //Checks if count of items in Selectbox is greater 
+    //than 8, if yes then making the size of the selectbox to 8.
+    //So that on pressing of downarrow key or uparrowkey, 
+    //the selected item should also scroll up or down as expected.
+    if( lstCollegeNames.options.length > 22)
+    {
+        lstCollegeNames.focus();
+        lstCollegeNames.size=22;
+    }
+   removeBorder();
+}
+	
+	function addOption(theSel, theText, theValue)
     {
 	    var newOpt = new Option(theText, theValue);
 	    var selLength = theSel.length;
@@ -132,6 +177,10 @@
    
     function moveOptionsRight(theSelFrom, theSelTo)
     {
+		
+	   document.getElementById("emptyList").style.display="none";
+       document.getElementById("elementList").style.display="block";
+	      
 		var list=tree.getAllChecked(); 
 		var selectedAttrs = list.split(",");
 	    var selLength = selectedAttrs.length;
@@ -169,16 +218,28 @@
 					}
 				}
 			}
-		  
-			// Add the selected text/values in reverse order.
+		      // Add the selected text/values in reverse order.
 			// This will add the Options to the 'to' Select
 			// in the same order as they were in the 'from' Select.
+			
 			for(i=selectedCount-1; i>=0; i--)
 			{
 				addOption(theSelTo, selectedText[i], selectedValues[i]);
 			}
 		}
-    }
+        if(document.getElementById("lstAttributeNames").offsetWidth >=250)
+		   {
+		     e=document.getElementById("elementList");
+             e.style.border =1+'px solid';
+			}
+			else
+			{
+			  e=document.getElementById("elementList");
+             e.style.border =0+'px solid';
+			
+			}
+	     OnDivScroll();
+	}
    	function moveOptionsLeft(theSelFrom, theSelTo)
 	{
 		var selLength = theSelFrom.length;
@@ -192,8 +253,15 @@
 	  			deleteOption(theSelFrom, i);
     		}
 		}
+		 if(theSelFrom.length == 0)
+		 {
+		     document.getElementById("emptyList").style.display="block";
+             document.getElementById("elementList").style.display="none";
+		 }
+		  
 		if(selectedCount==0)
 			alert("Please select column name.");
+		removeBorder();
 	}
 	function deleteOption(theSel, theIndex)
     { 
@@ -206,6 +274,21 @@
 		
 	    }
    	}
+ 	
+ 
+   function removeBorder()
+	{
+	    e=document.getElementById("elementList");
+		if(document.getElementById("lstAttributeNames").offsetWidth >=250)
+		{
+		  e.style.border =1+'px solid';
+      	}
+	    else
+		{
+		  e.style.border =0+'px solid';
+		}
+	}
+	
 	function moveUpAllSelected(theSelFrom)
 	{
 		var selLength = theSelFrom.length;
@@ -333,10 +416,22 @@ function initTreeView()
 		tree.setOnClickHandler();	
 		tree.enableCheckBoxes(1);
 	    tree.enableThreeStateCheckboxes(true);
-
-		
-
 		tree.loadXML('<%= fileName %>',deleteFile);
+      //select previously selected items
+ <%
+    if(selectedColumnNameValueBeanList!=null)
+  {
+	for(int i=0;i<selectedColumnNameValueBeanList.size();i++) {
+	NameValueBean nameValueBean = (NameValueBean)selectedColumnNameValueBeanList.get(i);
+	String name = nameValueBean.getName();
+	String value = nameValueBean.getValue();
+  %>
+	    tree.setCheck("<%=value%>",true);
+		tree.openItem("<%=value%>");
+<%  
+   }//end of for
+  }%> //end of if
+		
 }
 
 
