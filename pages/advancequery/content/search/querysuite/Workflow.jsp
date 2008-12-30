@@ -23,8 +23,6 @@ function MM_preloadImages() { //v3.0
 
 function showPopUp(pageOf)
 {
-	//window.open("QueryAction.do?pageOf="+pageOf+'&queryId=queryId&queryTitle=queryTitle&queryType=queryType','','height=365,width=530,center=1,scrollbars=1,resizable=0,modal=yes');
-	//pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'SearchPermissibleValues.do?componentId='+componentId,'Search Permissible Values for \"'+entityName+'\"', 'width=930px,height=510px,center=1,resize=0,scrolling=1')
 	var url='QueryAction.do?pageOf='+pageOf+'&queryId=queryId&queryTitle=queryTitle&queryType=queryType';
 	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select queries', 'width=930px,height=400px,center=1,resize=0,scrolling=1');
 }
@@ -36,7 +34,6 @@ function updateUI()
 
 function unionQueries()
 {
-		//alert('in update');
 	addCQToList("<%=CompositeQueryOperations.UNION.getOperation()%>");
 }
 
@@ -52,16 +49,9 @@ function minusQueries()
 
 function addCQToList(operation)
 {
-//	alert('in add cq');
 	var queryIdsToAdd='';
-	//var queryControls=document.getElementsByName("chkbox");
-//	alert('queryControls.len='+queryControls.length);
 	var queryCount=0;
-	//if(queryControls!=null && queryControls!=undefined)
-	//{
-		queryCount=document.getElementById("table1").rows.length;
-	//}
-//alert('queryCount='+queryCount);
+	queryCount=document.getElementById("table1").rows.length;
 	var selectedQueryCount=0;
 	for(var counter=0;counter<queryCount;counter++)
 	{
@@ -72,8 +62,8 @@ function addCQToList(operation)
 			selectedQueryCount=selectedQueryCount+1;
 		}
 	}
-	//alert('queryIdsToAdd='+queryIdsToAdd);
-	
+
+
 	if(queryIdsToAdd!=""&& selectedQueryCount>=2)
 	{
 		createCQ(queryIdsToAdd,operation,queryCount);
@@ -122,26 +112,15 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 	//rowContents[3]=createTextElement(operandsTdContent);
 	//rowContents[3]=getSelectObjectControl();
 	rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+queryCount,operandsTdContent);
-
-	//var queryTitles=document.getElementById("queryTitle").options;
-	//var queryTypes=document.getElementById("queryType").options;
-	//alert(queryTitles[queryCount]);
 	rowContents[5]=cqTitle;
 	rowContents[6]=cqType;
-
-	/*alert('rowContents[0]='+rowContents[0]);
-	alert('rowContents[1]='+rowContents[1]);
-	alert('rowContents[2]='+rowContents[2]);
-	alert('rowContents[3]='+rowContents[3]);
-	alert('rowContents[4]='+rowContents[4]);*/
 	
 	var operatorsTdContent=operation;
 	//uncommented for the underscore separated operation string 
-	/*for(var counter=0;counter<operandsCounter-2;counter++)
+	for(var counter=0;counter<operandsCounter-2;counter++)
 	{
 		operatorsTdContent=operatorsTdContent+"_"+operation;
-	}*/
-//alert('before call');
+	}
 	//create a table containing tbody with id "table1"
 	addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent);	
 }
@@ -155,7 +134,6 @@ function executeGetCountQuery(queryId)
 {
 	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId;
 	var request=newXMLHTTPReq();
-	//alert("after newXMLHTTPReq");
 	if(request == null)
 	{
 		alert ("Your browser does not support AJAX!");
@@ -214,6 +192,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <html:form action="SaveWorkflow">
 
 <html:hidden property="operation" styleId="operation" value="${requestScope.operation}"/>
+<html:hidden property="id" styleId="id" value="${requestScope.id}"/>
 
 <select name="queryId" id="queryId" style="display:none">
 								</select>
@@ -373,6 +352,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 											${workflowForm.displayQueryType[queryIndex]}
 										</td>
 
+
 										<td styleClass="content_txt">
 											<html:hidden property="selectedqueryId" styleId="selectedqueryId_${queryIndex}" value="${workflowForm.selectedqueryId[queryIndex]}"/>
 										</td>
@@ -380,11 +360,11 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 											<html:hidden property="operands" styleId="operands_${queryIndex}"  value="${workflowForm.operands[queryIndex]}"/>
 											<html:hidden property="operators" styleId="operators_${queryIndex}" value="${workflowForm.operators[queryIndex]}"/>
 											<html:hidden property="displayQueryType" styleId="displayQueryType_${queryIndex}" value="${workflowForm.displayQueryType[queryIndex]}"/>
-											<html:link href="javascript:executeGetCountQuery('${queryIndex}','1')" styleClass="bluelink">
+											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetCountQuery('${queryIndex}','1')" styleClass="bluelink">
 												Execute
 											</html:link>
 											&nbsp;
-											<html:link href="#" styleClass="bluelink">
+											<html:link styleId="delete_${queryIndex}" href="javascript:deleteWorkflowItem(${queryIndex})" styleClass="bluelink">
 												Delete
 											</html:link>
 										</td>

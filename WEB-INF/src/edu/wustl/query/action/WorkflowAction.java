@@ -9,6 +9,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 //import edu.wustl.query.actionForm.WorkflowForm;
+import edu.wustl.query.actionForm.WorkflowForm;
 import edu.wustl.query.util.global.Constants;
 
 /**
@@ -25,8 +26,18 @@ public class WorkflowAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		request.setAttribute(Constants.OPERATION, Constants.ADD);
-		
+		if(request.getParameter(Constants.OPERATION)==null)
+		{
+			request.setAttribute(Constants.OPERATION, Constants.ADD);
+		}
+		else
+		{
+			request.setAttribute(Constants.OPERATION,"edit");
+		}
+		if(request.getParameter("id")!=null&&request.getParameter("id")!="")
+		{
+			request.setAttribute("id", request.getParameter("id"));
+		}
 		return mapping.findForward(Constants.SUCCESS);
 	}
 }

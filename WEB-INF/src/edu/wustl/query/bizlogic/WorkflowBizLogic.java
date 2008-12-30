@@ -69,7 +69,16 @@ public class WorkflowBizLogic extends DefaultBizLogic
 
 	protected void update(DAO dao, Object obj, Object oldObj, SessionDataBean sessionDataBean) throws DAOException, UserNotAuthorizedException
 	{
-		
+		Workflow workflow = (Workflow) obj;
+		for(WorkflowItem workflowItem : workflow.getWorkflowItemList())
+		{
+			IAbstractQuery query = workflowItem.getQuery();
+			if(query.getId()==null)
+			{
+				saveCompositeQuery(dao, sessionDataBean, (ICompositeQuery)query);
+			}
+		}	
+		dao.update(obj,null,false,false,false);
 	}
 	
 	
