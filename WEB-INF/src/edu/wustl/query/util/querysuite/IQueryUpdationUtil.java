@@ -251,8 +251,9 @@ public abstract class IQueryUpdationUtil
 
 		    mainEntityList = QueryCSMUtil.getAllMainEntities(entity,mainEntityList);
 		    if(mainEntityList.contains(entity))
-		     queryMainEntityList.add(entity);
-		    
+		    {
+		    	queryMainEntityList.add(entity);
+		    }
 
 		}
 	  return queryMainEntityList;	
@@ -406,7 +407,7 @@ public abstract class IQueryUpdationUtil
 			}
 		}
 	}
-	private static boolean checkIfToAddPath(IConstraints constraints, EntityInterface parentEntity, EntityInterface childEntity)
+	/*private static boolean checkIfToAddPath(IConstraints constraints, EntityInterface parentEntity, EntityInterface childEntity)
 	{
 		boolean isChildEntityPresent = isEnityPresentInQuery(constraints,childEntity);
 		boolean isParentEntityPresent = isEnityPresentInQuery(constraints,parentEntity);
@@ -420,7 +421,7 @@ public abstract class IQueryUpdationUtil
 			ifPathToAddPath = true;	
 		}
 		return ifPathToAddPath;
-	}
+	}*/
     
     //This method is made public as it is also invoked from action class
 	public static void addPath(EntityInterface parentEntity, EntityInterface childEntity, IClientQueryBuilderInterface queryObject,Map <EntityInterface,Integer>entityExpressionIdMap)
