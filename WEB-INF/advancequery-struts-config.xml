@@ -465,7 +465,7 @@ PUBLIC
         		name="workflowForm"
         		validate="false"
 				scope="request">
-        		<forward name="success" path=".query.queryWorkFlowConfirmMsgDef" />
+        		<forward name="success" path="/QueryWorkflowWizard.do" />
         </action>
         
         <action path="/WorkflowAjaxHandler" 
@@ -474,6 +474,14 @@ PUBLIC
 		scope="request">
         </action>
         
+        <action path="/WorkflowSearch"
+		    type="edu.wustl.common.action.CommonSearchAction"
+			name="workflowForm"
+			validate="false"
+			scope="request">
+			<forward name="pageOfWorkflow" path="/QueryWorkflowWizard.do?operation=edit&amp;pageOf=pageOfWorkflow"/>
+			<forward name="failure" path="/QueryWorkflowWizard.do?operation=edit&amp;pageOf=pageOfWorkflow"/>
+		</action>
         <!-- TO DO  -->
       <action path="/QuerySearchWizard" 
         type="edu.wustl.query.action.QueryAction">
