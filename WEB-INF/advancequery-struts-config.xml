@@ -465,7 +465,8 @@ PUBLIC
         		name="workflowForm"
         		validate="false"
 				scope="request">
-        		<forward name="success" path="/QueryWorkflowWizard.do" />
+        <!-- <forward name="success" path="/QueryWorkflowWizard.do" /> -->
+       		 <forward name="success" path=".query.queryWorkFlowConfirmMsgDef" />
         </action>
         
         <action path="/WorkflowAjaxHandler" 
@@ -482,12 +483,19 @@ PUBLIC
 			<forward name="pageOfWorkflow" path="/QueryWorkflowWizard.do?operation=edit&amp;pageOf=pageOfWorkflow"/>
 			<forward name="failure" path="/QueryWorkflowWizard.do?operation=edit&amp;pageOf=pageOfWorkflow"/>
 		</action>
+		<action path="/RetrieveWorkflowAction"
+			type="edu.wustl.query.action.RetrieveWorkflowAction"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".query.workflowViewPageDef"/>
+			<forward name="failure" path=".query.errorPageDef"/>
+		</action>
         <!-- TO DO  -->
       <action path="/QuerySearchWizard" 
         type="edu.wustl.query.action.QueryAction">
         	<forward name="success" path=".query.querySearchWizardDef"/>
         </action>
-	   				
+        
 	</action-mappings>
 	
 	<controller processorClass="edu.wustl.common.struts.ApplicationRequestProcessor" />
