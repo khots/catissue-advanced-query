@@ -1,14 +1,9 @@
-/**
- * 
- */
-
 package edu.wustl.query.action;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,11 +14,15 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.security.PrivilegeCache;
 import edu.wustl.common.security.PrivilegeUtility;
 import edu.wustl.common.util.Permissions;
+import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.dbManager.HibernateUtility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.SaveQueryForm;
@@ -34,6 +33,16 @@ import gov.nih.nci.security.authorization.domainobjects.ProtectionGroup;
 import gov.nih.nci.security.dao.ProtectionElementSearchCriteria;
 import gov.nih.nci.security.exceptions.CSException;
 import gov.nih.nci.security.exceptions.CSObjectNotFoundException;
+/*
+import gov.nih.nci.security.authorization.domainobjects.User;
+import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.dao.HibernateDAOImpl;
+import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.security.PrivilegeManager;
+
+import com.sun.msv.datatype.xsd.regex.REUtil;
+*/
 
 /**
  * @author chetan_patil
@@ -50,20 +59,25 @@ public class RetrieveQueryAction extends Action
 		try
 		{
 			HttpSession session = request.getSession();
+
 			removeAttributesFromSession(session);
 			SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
-			Collection<IParameterizedQuery> parameterizedQueryCollection = HibernateUtility
-					.executeHQL(HibernateUtility.GET_PARAMETERIZED_QUERIES_DETAILS);
+			 int count= setQueryCount(session);
 					
 			PrivilegeCache privilegeCache = setPrivilegeCache(session);
-			Collection<IParameterizedQuery> authorizedQueryCollection = new ArrayList<IParameterizedQuery>();
-			Collection<IParameterizedQuery> sharedQueryCollection = new ArrayList<IParameterizedQuery>();
-			
+//			Collection<IParameterizedQuery> authorizedQueryCollection = new ArrayList<IParameterizedQuery>();
+//			Collection<IParameterizedQuery> sharedQueryCollection = new ArrayList<IParameterizedQuery>();
+//			message = initializeParameterizeQueryCollection(request, saveQueryForm,
+//					 privilegeCache, authorizedQueryCollection,
+//					sharedQueryCollection);
 			message = initializeParameterizeQueryCollection(request, saveQueryForm,
-					parameterizedQueryCollection, privilegeCache, authorizedQueryCollection,
-					sharedQueryCollection);
-			setErrorMessages(request, message);
-			actionForward = setActionForward(actionMapping, (String) request.getAttribute("pageOf"));
+					 privilegeCache, new ArrayList<IParameterizedQuery>(),
+					 new ArrayList<IParameterizedQuery>());
+			//setPagiantion(request,request.getParameter("requestFor"),parameterizedQueryCollection);
+
+			
+			setErrorMessages(request,message);
+			actionForward = setActionForward(actionMapping, request.getParameter("pageOf"));
 		}
 		catch (HibernateException hibernateException)
 		{
@@ -71,19 +85,71 @@ public class RetrieveQueryAction extends Action
 		}
 		request.setAttribute(Constants.POPUP_MESSAGE, ApplicationProperties
 				.getValue("query.confirmBox.message"));
+		if(request.getParameter("pageOf")!=null)
+		{
+			request.setAttribute(Constants.PAGE_OF,  request.getParameter("pageOf"));
+		}
 		return actionForward;
 	}
 
+	private int setQueryCount(HttpSession session)
+	{
+		 
+		if(session.getAttribute("QueryCount")==null)
+		{
+		Collection prameterizedQueriesCollection=retrievePrameterizedQueries();
+		session.setAttribute("QueryCount", retrievePrameterizedQueries().size());
+		}
+		return (Integer)session.getAttribute("QueryCount");
+	}
+
+	private Collection<IParameterizedQuery> retrievePrameterizedQueries()
+	{
+		return HibernateUtility
+			.executeHQL(HibernateUtility.GET_PARAMETERIZED_QUERIES_DETAILS);
+	}
+
+	/*
+	 * sets the parameters for the pagination 
+	 */
+//	private void setPagiantion(HttpServletRequest request, String requestFor, int totalRecords)
+//	{
+//
+//		
+//		totalRecords=getTotalRecords(request,requestFor,totalRecords);
+//		int pageNum=getPageNumber(request,requestFor);
+//			
+//		int totalPages=0;
+//		int maxRecords = getRecordsPerPage(request,requestFor);
+//		if(totalRecords>0)
+//		{
+//			totalPages=totalRecords%maxRecords==0?totalRecords/maxRecords:(totalRecords/maxRecords)+1;
+//		}
+//		request.getSession().setAttribute(Constants.RESULTS_PER_PAGE,1 );
+//		request.getSession().setAttribute(Constants.PAGE_NUMBER,pageNum );
+//		request.getSession().setAttribute("totalPages",totalPages);
+//		request.getSession().setAttribute(Constants.TOTAL_RESULTS, totalRecords);
+//		
+//		List<NameValueBean> resultsPerPageOptions=new ArrayList<NameValueBean>();
+//		resultsPerPageOptions.add(new NameValueBean("50","50"));
+//		resultsPerPageOptions.add(new NameValueBean("100","100"));
+//		resultsPerPageOptions.add(new NameValueBean("200","200"));
+//		
+//		request.setAttribute("resultsPerPageOptions", resultsPerPageOptions);
+//		
+//		
+//	}
+
 	private String initializeParameterizeQueryCollection(HttpServletRequest request,
 			SaveQueryForm saveQueryForm,
-			Collection<IParameterizedQuery> parameterizedQueryCollection,
+			
 			PrivilegeCache privilegeCache,
 			Collection<IParameterizedQuery> authorizedQueryCollection,
 			Collection<IParameterizedQuery> sharedQueryCollection) throws CSException,
 			CSObjectNotFoundException
 	{
 		String message;
-		if (parameterizedQueryCollection == null)
+		if (request.getSession().getAttribute("QueryCount") == null)
 		{
 			saveQueryForm.setParameterizedQueryCollection(new ArrayList<IParameterizedQuery>());
 			message = "No";
@@ -97,10 +163,93 @@ public class RetrieveQueryAction extends Action
 			//		sharedQueryCollection);
 			//message = authorizedQueryCollection.size() + "";
 			
-				saveQueryForm.setParameterizedQueryCollection(parameterizedQueryCollection);
-				message = String.valueOf(parameterizedQueryCollection.size());
+			
+				//saveQueryForm.setParameterizedQueryCollection(parameterizedQueryCollection);
+			if(request.getParameter("pageOf")!=null&&(Constants.MY_QUERIES_FOR_WORKFLOW.equals(request.getParameter("pageOf"))
+					||Constants.PUBLIC_QUERIES_FOR_WORKFLOW.equals(request.getParameter("pageOf"))))
+			{
+				setQueryCount(request.getSession());
+				saveQueryForm=setPagiantion(request,request.getParameter("requestFor"),saveQueryForm);	
+				
+			}
+			else
+			{
+				saveQueryForm.setParameterizedQueryCollection(retrievePrameterizedQueries());
+			}
+			message = String.valueOf(saveQueryForm.getParameterizedQueryCollection().size());
+		
 		}
 		return message;
+	}
+
+
+
+	private SaveQueryForm setPagiantion(HttpServletRequest request, String requestFor,
+			SaveQueryForm saveQueryForm)
+	{
+		int totalRecords=(Integer)request.getSession().getAttribute("QueryCount");
+		
+		int recordsPerPage=1;
+		
+		int startIndex=0;
+		int pageNum=getPageNumber(request,requestFor);
+		String pageOf = request.getParameter(Constants.PAGEOF);
+		int maxRecords = getRecordsPerPage(request,requestFor);
+		if(maxRecords==-1)
+		{
+			maxRecords=10;
+		}
+		if(pageNum<1)
+		{
+			pageNum=1;
+		}
+		startIndex=maxRecords*(pageNum-1);
+		
+		int totalPages=0;
+
+		totalRecords=getTotalRecords(request,requestFor,totalRecords);
+
+		if(totalRecords>0)
+		{
+			totalPages=totalRecords%maxRecords==0?totalRecords/maxRecords:(totalRecords/maxRecords)+1;
+		}
+		request.getSession().setAttribute(Constants.RESULTS_PER_PAGE,maxRecords );
+		request.getSession().setAttribute(Constants.PAGE_NUMBER,pageNum );
+		request.getSession().setAttribute("totalPages",totalPages);
+		request.getSession().setAttribute(Constants.TOTAL_RESULTS, totalRecords);
+		
+		List<NameValueBean> resultsPerPageOptions=new ArrayList<NameValueBean>();
+		resultsPerPageOptions.add(new NameValueBean("10","10"));
+		resultsPerPageOptions.add(new NameValueBean("20","20"));
+		resultsPerPageOptions.add(new NameValueBean("30","30"));
+		
+		request.setAttribute("resultsPerPageOptions", resultsPerPageOptions);
+		
+		//to set queries to form 
+		Session session1=DBUtil.currentSession();
+		Query query = session1.getNamedQuery(HibernateUtility.GET_PARAMETERIZED_QUERIES_DETAILS);
+		query.setFirstResult(startIndex);
+		query.setMaxResults(maxRecords);
+		Collection temp=query.list();
+		saveQueryForm.setParameterizedQueryCollection(temp);
+		
+		
+		return saveQueryForm;
+	}
+
+	private int getTotalRecords(HttpServletRequest request, String requestFor, int matchingUsersCount)
+	{
+		int totalRecords=0;
+		if(requestFor!=null && request.getSession().getAttribute(Constants.TOTAL_RESULTS)!=null)
+		{
+			totalRecords=(Integer)request.getSession().getAttribute(Constants.TOTAL_RESULTS);
+		}
+		else
+		{
+			totalRecords=matchingUsersCount;
+		}
+		
+		return totalRecords;
 	}
 
 	private PrivilegeCache setPrivilegeCache(HttpSession session) throws CSException
@@ -229,5 +378,68 @@ public class RetrieveQueryAction extends Action
 		}
 		return sharedQuery;
 	}
+	
 
+	private int getRecordsPerPage(HttpServletRequest request, String requestFor)
+	{
+		Object recordsPerPageObj=getSessionAttribute(request,Constants.RESULTS_PER_PAGE);
+		int maxRecords;
+		if(recordsPerPageObj!=null && requestFor!=null)
+		{
+			maxRecords=Integer.parseInt(recordsPerPageObj.toString());
+		}
+		else
+		{
+			maxRecords=10;
+		}
+		return maxRecords;
+	}
+	private int getPageNumber(HttpServletRequest request, String requestFor)
+	{
+		Object pageNumObj=getSessionAttribute(request,Constants.PAGE_NUMBER);
+		int pageNum=0;
+		if(pageNumObj!=null && requestFor!=null)
+		{
+			pageNum=Integer.parseInt(pageNumObj.toString());
+		}
+		else
+		{
+			pageNum=1;
+		}
+		
+		return pageNum;
+	}
+
+	private Object getSessionAttribute(HttpServletRequest request, String attributeName)
+	{
+		Object object=null;
+		if(request!=null)
+		{
+			object=request.getParameter(attributeName);
+			if(object==null)
+			{
+				object=request.getAttribute(attributeName);
+				if(object==null)
+				{
+					object=request.getSession().getAttribute(attributeName);
+				}
+			}
+		}
+		
+		return object;
+	}
+//	private int getTotalRecords(HttpServletRequest request, String requestFor, int matchingUsersCount)
+//	{
+//		int totalRecords=0;
+//		if(requestFor!=null && request.getSession().getAttribute(Constants.TOTAL_RESULTS)!=null)
+//		{
+//			totalRecords=(Integer)request.getSession().getAttribute(Constants.TOTAL_RESULTS);
+//		}
+//		else
+//		{
+//			totalRecords=matchingUsersCount;
+//		}
+//		
+//		return totalRecords;
+//	}
 }
