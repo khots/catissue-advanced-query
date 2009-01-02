@@ -12,16 +12,31 @@
 		<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0"  class="login_box_bg">
 	      <tr>
 		    <td height="28" background="images/bg_content_header.gif">
-				<img src="images/advancequery/t_new_workflow.gif" alt="New Workflow" width="124" height="26" hspace="5" vspace="0">
+				<logic:equal name="workflowForm" property="operation" value="edit">
+					<img src="images/advancequery/t_edit_workflow.gif" alt="New Workflow" width="110" height="26" hspace="5" vspace="0">
+				</logic:equal>
+				<logic:equal name="workflowForm" property="operation" value="add">
+					<img src="images/advancequery/t_create_workflow.gif" alt="New Workflow" width="130" height="26" hspace="5" vspace="0">
+				</logic:equal>					
 			</td>
 	      </tr>
 		  <tr>
-			<td align="left" valign="top" class="content_txt">
+			<td align="left" valign="top" class="content_txt" style="padding-left:10px">
 				<br/>
-				<bean:message key="workflow.save.success"/>
+				
+				 <logic:notEmpty name="workflowForm" property="operation">
+				 <span class="content_txt_bold">
+					<logic:equal name="workflowForm" property="operation" value="edit">
+					<bean:message key="workflow.edit.success"/>
+					</logic:equal>
+					<logic:equal name="workflowForm" property="operation" value="add">
+					<bean:message key="workflow.save.success"/>
+					</logic:equal>
+				</logic:notEmpty>
+				</span>
 				<br/>
 				<br/>
-				<bean:message key="message.helpDeskNumber"/>
+				<p><bean:message key="message.helpDeskNumber"/></p>
 				<br/>
 			</td>
 		  </tr>
