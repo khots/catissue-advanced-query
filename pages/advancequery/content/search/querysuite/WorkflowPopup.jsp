@@ -3,13 +3,13 @@
 <%-- TagLibs --%>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
-<%@ taglib uri="/WEB-INF/c.tld" prefix="c"%>
 
 <%-- Imports --%>
 <%@
 	page language="java" contentType="text/html"
 	import="edu.wustl.query.util.global.Constants, org.apache.struts.Globals"
 %>
+<%@ page language="java" isELIgnored="false"%>
 <%@ page import="org.apache.struts.action.ActionMessages, edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.Constants"%>
 <script language="JavaScript" type="text/javascript" src="jss/advancequery/newReleaseMsg.js"></script>
@@ -20,24 +20,36 @@ function closePopup()
 	clearSelBoxList(parent.window.document.getElementById("queryId"));
 	clearSelBoxList(parent.window.document.getElementById("queryTitle"));
 	clearSelBoxList(parent.window.document.getElementById("queryType"));
+
+
 	var isOptionAdded=false;
+
 	if(checkboxArray!=null)
 	{
 			var numOfRows =checkboxArray.length;
 		
 			for(var count = 1; count <= numOfRows; count++)
 			{
-				
+					var alreadyExist=false;
 					var id = 'checkbox_'+count;
-				
-					if(document.getElementById(id).checked)
+					
+				if(document.getElementById(id).checked)
+				{
+					//checks that query already exists in parent window
+					if(checkAlreadyPresent(document.getElementById("queryIdControl_"+count).value)==false)
 					{
-						addOption(parent.window.document.getElementById("queryId"),document.getElementById("queryIdControl_"+count).value,count);
-						addOption(parent.window.document.getElementById("queryTitle"),""+document.getElementById("queryTitleControl_"+count).value,count);
-						addOption(parent.window.document.getElementById("queryType"),""+document.getElementById("queryTypeControl_"+count).value,count);
+						addOption(parent.window.document.getElementById("queryId"),document.getElementById("queryIdControl_"+count).value,document.getElementById("queryIdControl_"+count).value);
+
+						addOption(parent.window.document.getElementById("queryTitle"),""+document.getElementById("queryTitleControl_"+count).value,document.getElementById("queryIdControl_"+count).value);
+						addOption(parent.window.document.getElementById("queryType"),""+document.getElementById("queryTypeControl_"+count).value,document.getElementById("queryIdControl_"+count).value);
+
 						isOptionAdded=true;
 					}
-					
+					else
+					{
+						alert("Query with title "+(document.getElementById("queryTitleControl_"+count).value)+" already in present in workflow");
+					}
+				}	
 			}
 	}
 	if(isOptionAdded==true)
@@ -100,6 +112,52 @@ function addOption(theSel, theText, theValue)
 	theSel.options.add(optn);	
 }
 
+function selectAllCheckboxes()
+{ 
+	//alert("checkboxControl.checked");
+	var checkboxControl=document.getElementById("selectAllCheckbox");
+	//alert("checkboxControl.checked"+checkboxControl.checked);
+	if(checkboxControl!=null && checkboxControl!=undefined)// && checkboxControl.checked==true)
+	{
+			var checkboxArray=document.getElementsByName('chkbox');
+						var numOfRows =checkboxArray.length;
+		
+			for(var count = 1; count <= numOfRows; count++)
+			{
+				
+					document.getElementById( 'checkbox_'+count).checked=checkboxControl.checked;		
+			}
+
+	}
+	/*if(checkboxControl!=null && checkboxControl!=undefined && checkboxControl.checked==false)
+	{
+			var checkboxArray=document.getElementsByName('chkbox');
+						var numOfRows =checkboxArray.length;
+		
+			for(var count = 1; count <= numOfRows; count++)
+			{
+				
+					document.getElementById( 'checkbox_'+count).checked=false;
+			}
+
+	}*/
+
+}
+function checkAlreadyPresent(itemToadd)
+{
+	var noOfRows=parent.window.document.getElementById("table1").rows.length
+	var alreadyExist=false;
+
+		for(var idCount=0;idCount<noOfRows; idCount++)
+		{
+			if(parent.window.document.getElementById('selectedqueryId_'+idCount).value==itemToadd)
+			{	
+				alreadyExist=true;
+			}	
+		}	
+		return alreadyExist;
+}
+
 </script>
 <head>
 <title>CIDER: Clinical Investigation Data Exploration Repository</title>
@@ -130,7 +188,7 @@ int queryCount = 0;%>
 <% message = messageKey;    %>
 </html:messages>
 <html:form action="SaveWorkflow">
-
+<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
 <table width="100%" border="0" cellspacing="0" cellpadding="4">
 <tr>
 	<td>
@@ -186,7 +244,8 @@ int queryCount = 0;%>
 							<td>
 								<table width="100%" border="0" cellpadding="2" cellspacing="1" bgcolor="#EAEAEA">
 									  <tr class="td_bgcolor_grey">
-										<td width="10" height="25" valign="middle" ><input type="checkbox" name="checkbox8" value="checkbox">                </td>
+										<td width="10" height="25" valign="middle" ><input id="selectAllCheckbox"   type="checkbox" name="checkbox8" value="checkbox" onClick="javascript:selectAllCheckboxes()">                 
+										</td>
 
 										<td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
 										<td width="111" valign="middle" class="grid_header_text"><bean:message key="workflow.querytype"/></td>
@@ -252,11 +311,35 @@ int queryCount = 0;%>
 			<td class="tr_color_lgrey" height="25px">&nbsp;</td>
 			<td class="tr_color_lgrey">
 				<table width="100%" border="0" cellspacing="0" cellpadding="0">
-			  <tr>
+			  <tr colspan="3">
 				<td width="125" align="left" class="content_txt">Show Last:&nbsp;
-					<select name="select2" class="textfield_undefined" disabled="true">
-					  <option>25</option>
-				  </select></td>
+															<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}">
+												<html:options collection="resultsPerPageOptions" labelProperty="name" property="value"/>
+											</html:select>
+				</td>
+				<td align="middle">
+													<c:set var="pageOf" value="${requestScope.pageOf}"/>  
+														<jsp:useBean id="pageOf" type="java.lang.String"/>
+
+
+													<c:set var="totalPages" value="${sessionScope.totalPages}"/>  
+														<jsp:useBean id="totalPages" type="java.lang.Integer"/>
+													<c:forEach var="pageCoutner" begin="1" end="${totalPages}">
+															<c:set var="linkURL">
+																RetrieveQueryAction.do?pageOf=<c:out value="${pageOf}"/>&requestFor=nextPage&pageNum=<c:out value="${pageCoutner}"/>
+															</c:set>
+															<jsp:useBean id="linkURL" type="java.lang.String"/>
+															<c:if test="${sessionScope.pageNum == pageCoutner}">
+																	<c:out value="${pageCoutner}"/> 
+															</c:if>
+															<c:if test="${sessionScope.pageNum != pageCoutner}">
+																<a class="bluelink" href="<%=linkURL%>"> 
+																	|<c:out value="${pageCoutner}"/> 
+																</a>
+															</c:if>
+														</c:forEach>
+
+</td>
 			  <td  align="center" class="content_txt"></td> 
 				
 				</tr>
