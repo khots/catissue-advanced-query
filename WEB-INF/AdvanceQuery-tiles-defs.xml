@@ -241,6 +241,9 @@
 	<definition name=".query.redirectToWorkflowPageDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/workflow/Workflow.jsp" />
 	</definition>
+
+	<definition name=".query.workflowViewPageDef" path="/pages/advancequery/content/search/querysuite/WorkflowList.jsp">
+	</definition>
 	
 	<definition name=".query.querySearchWizardDef" path="/pages/advancequery/content/search/querysuite/new_search_screen.jsp">
 	</definition>
