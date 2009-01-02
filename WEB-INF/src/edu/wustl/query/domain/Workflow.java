@@ -184,51 +184,6 @@ public class Workflow extends AbstractDomainObject
 		}
 
 		this.setWorkflowItemList(workflowItemList);
-
-		//		WorkflowForm workFlowForm = (WorkflowForm)form;
-		//		this.workflowItemList = new ArrayList<WorkflowItem>();
-		//		List newWorkflowItemList=new ArrayList<WorkflowItem>();
-		//		
-		//		this.setName(workFlowForm.getName());
-		//		this.setCreatedOn(new Date());
-		//		
-		//		
-		//		String[] operators = workFlowForm.getOperators();
-		//		String[] operands = workFlowForm.getOperands();
-		//		String[] workflowItemIds=workFlowForm.getWorkflowItemIds();
-		//		
-		//		 int numberOfRows = 0;
-		//		 if(operators != null)
-		//		 {
-		//			numberOfRows = operators.length;
-		//		 }
-		//		for(int i=0; i<numberOfRows; i++)
-		//		{
-		//			IAbstractQuery query = getQuery(operators[i],operands[i]);
-		//			if(workflowItemIds[i]==null)
-		//			{
-		//				WorkflowItem workflowItem = new WorkflowItem();
-		//				workflowItem.setQuery(query);
-		//				workflowItem.setPosition(i);
-		//				newWorkflowItemList.add(workflowItem);
-		//				
-		//			}
-		//			else
-		//			{
-		//				WorkflowItem workflowItem=this.workflowItemList.get(i);
-		//				workflowItem.setQuery(query);
-		//				workflowItem.setPosition(i);
-		//				this.workflowItemList.add(workflowItem);
-		//			}
-		//
-		//			
-		//		}
-		//		if(!newWorkflowItemList.isEmpty())
-		//		{
-		//			this.workflowItemList.addAll(newWorkflowItemList);
-		//		}
-
-		//	this.setWorkflowItemList(workflowItemList);
 	}
 
 	/**
