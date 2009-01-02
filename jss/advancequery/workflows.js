@@ -7,6 +7,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 
 	var tableObj=document.getElementById(tableId);
 	var rowObj=document.createElement("tr");
+	rowObj.height="22";
 	rowObj.className="td_bgcolor_white";
 	var columnObj;
 	var columnCount=columnContents.length;
@@ -15,6 +16,11 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 		if(columnContents[counter]!=null)
 		{
 			columnObj=document.createElement("td");
+			if(counter==0)
+			{
+				columnObj.width="10";//set width for checkbox control
+
+			}
 			columnObj.className="content_txt";
 			columnObj.appendChild(columnContents[counter]);
 			rowObj.appendChild(columnObj);
@@ -23,10 +29,12 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 		
 	//Create all the hidden controls and add them to a "td"
 	var operandsTd=document.createElement("td");
-
+	operandsTd.width="100"
 	
 	var tble1=document.createElement("table");
+	tble1.depth="3";
 	var tbody1=document.createElement("tbody");
+	tbody1.depth="5";
 	var operandsTr=document.createElement("tr");
 	var operandsTd1=document.createElement("td");
 	var operandsTd2=document.createElement("td");
@@ -64,7 +72,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 
 	rowObj.appendChild(operandsTd);
 	
-	var reorderTd=document.createElement("td");
+	/*var reorderTd=document.createElement("td");
 	reorderTd.align="center";
 
 	var tble2=document.createElement("table");
@@ -77,12 +85,14 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	var reorderTd2=document.createElement("td");
 	var reorderTd3=document.createElement("td");
 
-	var trImgup=new Image();
-	trImgup.src = "images/advancequery/ic_up.gif";
+	var trImgup=createImageElement("images/advancequery/ic_up.gif","up_"+queryCount);//new Image();
+	//trImgup.src = "images/advancequery/ic_up.gif";
+	trImgup.onMouseOver="Tip('Move Up')";
 	reorderTd1.appendChild(trImgup);
 	reorderTd2.width="2";
-	var trImgDown=new Image( );
-	trImgDown.src = "images/advancequery/ic_down.gif";
+	var trImgDown=createImageElement("images/advancequery/ic_down.gif","down_"+queryCount);//new Image( );
+	//trImgDown.src = "images/advancequery/ic_down.gif";
+	//trImgDown.onMouseOver="Tip('Move Down')";
 	reorderTd3.appendChild(trImgDown);
 	
 	trInsideTd.appendChild(reorderTd1);
@@ -91,7 +101,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	tbody2.appendChild(trInsideTd);
 	tble2.appendChild(tbody2);
 	reorderTd.appendChild(tble2);
-	rowObj.appendChild(reorderTd);
+	rowObj.appendChild(reorderTd);*/
 	tableObj.appendChild(rowObj);
 }
 
@@ -114,7 +124,8 @@ function addQuery()
 		var operandsTdContent="";
 		var rowContents=new Array(7);
 		rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'');
-		operandsTdContent=getText(queryIds[counter]);	
+		//rowContents[0].setAttribute("onclick","javascript:setCheckboxCount()");
+		operandsTdContent=getText(queryIds[counter]);
 		rowContents[1]=createTextElement(getText(queryTitles[counter]));
 		rowContents[2]=createTextElement(getText(queryTypes[counter]));
 		//rowContents[3]=getSelectObjectControl();
@@ -139,12 +150,15 @@ function getSelectObjectControl()
 	return selectObject;
 }
 
-function createImageElement(srcPath)
+function createImageElement(srcPath,imageId)
 {
 	var image=document.createElement("img");
 	image.setAttribute("src",srcPath);
-	image.setAttribute("border","0");
-	image.setAttribute("align","absmiddle");
+	image.setAttribute("id",imageId);
+	image.setAttribute("id",imageId);
+
+	//image.setAttribute("border","0");
+	//image.setAttribute("align","absmiddle");
 	return image;
 }
 
@@ -173,6 +187,14 @@ function createCheckBox(name,id,displayValue)
 		chkbox.name=name;
 		return chkbox;
 }
+function createLabel(name,index)
+{
+		var label=document.createElement("label");
+		label.id="label_"+index;
+		label.appendChild(createTextElement(name));
+		return label;
+}
+
 
 function createLink(displayValue,test,url)
 {
@@ -240,4 +262,43 @@ function deleteWorkflowItem(index)
 		alert("No check box is selected to delete");
 	}
 }
+/*function setCheckboxCount()
+{
+	
+	numOfChkSelected++;
 
+	if(numOfChkSelected==2)
+	{
+		
+		enableButtons();
+	}
+}
+function enableButtons()
+{
+	//var buttonStatusDiv=document.getElementById("buttonStatusDiv");
+	var buttonStatus=document.getElementById("buttonStatus");
+	alert(document.getElementById("buttonStatus"));
+	if(buttonStatus!=null)
+	{
+		alert(numOfChkSelected);
+		
+		  while (buttonStatus.childNodes[0])
+		 {
+			alert("removing");
+			 buttonStatus.removeChild(buttonStatus.childNodes[0]);
+		}
+		buttonStatus.innerHTML="<td align='left' width='70'><a href='javascript:unionQueries()'><img align='absmiddle' src='images/advancequery/b_union-copy.gif' alt='Union' width='60' height='23' border='0'></a></td><td width='106' align='left'><a href='javascript:intersectQueries()'><img align='absmiddle' src='images/advancequery/b_intersection.gif' alt='Intersection' width='96' height='23' border='0'></a></td><td width='73' align='left'><a href='javascript:minusQueries()'><img align='absmiddle' src='images/advancequery/b_minus.gif' alt='Minus' width='63' height='23' border='0'></a></td>";
+		//buttonStatus.removeChild(document.getElementById("buttonStatusDiv"));
+		//buttonStatus.appendChild(createTextElement("<div id='buttonStatusDiv'><td align='left' width='70'><a href='javascript:unionQueries()'><img align='absmiddle' src='images/advancequery/b_union-copy.gif' alt='Union' width='60' height='23' border='0'></a></td><td width='106' align='left'><a href='javascript:intersectQueries()'><img align='absmiddle' src='images/advancequery/b_intersection.gif' alt='Intersection' width='96' height='23' border='0'></a></td><td width='73' align='left'><a href='javascript:minusQueries()'><img align='absmiddle' src='images/advancequery/b_minus.gif' alt='Minus' width='63' height='23' border='0'></a></td></div>"));
+	}
+	
+}
+function disableButtons()
+{
+	var buttonStatusDiv=document.getElementById("buttonStatusDiv");
+	var buttonStatus=document.getElementById("buttonStatus");
+	if(buttonStatus!=null)
+	{
+		buttonStatus.removeChild(document.getElementById("buttonStatusDiv"));
+	}
+}*/
