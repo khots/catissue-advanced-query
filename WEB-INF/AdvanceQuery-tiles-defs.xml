@@ -245,6 +245,7 @@
 	<definition name=".query.workflowViewPageDef" path="/pages/advancequery/content/search/querysuite/WorkflowList.jsp">
 	</definition>
 	
-	<definition name=".query.querySearchWizardDef" path="/pages/advancequery/content/search/querysuite/new_search_screen.jsp">
+	<definition name=".query.querySearchWizardDef" extends=".query.homePageDef">
+	<put name="content" value="/pages/advancequery/content/search/querysuite/new_search_screen.jsp"/>
 	</definition>
 </tiles-definitions>
