@@ -108,7 +108,7 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 	var cqId="";
 	
 	var rowContents=new Array(7);
-	rowContents[0]=createCheckBox("chkbox","checkbox_"+queryCount,'');
+	rowContents[0]=createCheckBox("chkbox","checkbox_"+queryCount,'',queryCount);
 	rowContents[1]=createTextElement(cqTitle);
 	rowContents[2]=createTextElement(cqType);
 	//rowContents[3]=createTextElement(operandsTdContent);
@@ -138,10 +138,55 @@ function submitWorflow()
 		alert("Workflow name  can not be empty");
 	}
 }
+function cancelGetCountQuery(queryId)
+{	
+	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'cancel';
+	
+	var request=newXMLHTTPReq();
+	if(request == null)
+	{
+		alert ("Your browser does not support AJAX!");
+		return;
+	}
+	var handlerFunction = getReadyStateHandler(request,cancelExecuteQuery,true); 
+	request.onreadystatechange = handlerFunction; 
+	request.open("POST",url,true);    
+	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+	request.send("");
+
+}
+function cancelExecuteQuery(response)
+{
+	  var jsonResponse = eval('('+ response+')');
+          var hasValue = false;
+          if(jsonResponse.executionQueryResults!=null)
+          {
+             var num = jsonResponse.executionQueryResults.length; 
+				for(var i=0;i<num;i++)
+				{
+					 var queryId = jsonResponse.executionQueryResults[i].queryId;
+					 var queryIndex = jsonResponse.executionQueryResults[i].queryIndex;
+					 var queryResult = jsonResponse.executionQueryResults[i].queryResult;
+					if(queryResult!=-1)
+					{
+						var object=document.getElementById("selectedqueryId_"+queryIndex);
+						var parentIObj=object.parentNode;
+						var lableObject=document.getElementById("label_"+queryIndex);
+						if(lableObject!=null)
+						{
+							parentIObj.removeChild(lableObject);
+						}
+						parentIObj.appendChild(createLabel(queryResult,queryIndex));
+						
+					}
+				}
+          } 
+}
 
 function executeGetCountQuery(queryId)
 {
-	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId;
+	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'start';
+	changeExecuteLink(queryId);
 	var request=newXMLHTTPReq();
 	if(request == null)
 	{
@@ -181,6 +226,7 @@ function responseHandler(response)
 					}
 				}
           } 
+		executeGetCountQuery(queryIndex);
 }
 function cancelWorkflow()
 {
@@ -205,10 +251,10 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 </script>
 <script type="text/javascript" src="wz_tooltip.js"></script>
 
-<body >
+<body>
 <%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
 
-<html:form action="SaveWorkflow">
+<html:form action="SaveWorkflow" >
 
 <html:hidden property="operation" styleId="operation" value="${requestScope.operation}"/>
 <html:hidden property="id" styleId="id" value="${requestScope.id}"/>
@@ -318,24 +364,25 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 					<td valign="middle">
 						<table  border="0" cellspacing="0" cellpadding="0" valign="middle">
 							<tr>
+							<!--
 							 <td align="left" width="70"><a href="javascript:unionQueries()"><img align="absmiddle" src="images/advancequery/b_union-copy.gif" alt="Union" width="60" height="23" border="0">
 							  </a></td>
 							  <td width="106" align="left"><a href="javascript:intersectQueries()"><img align="absmiddle" src="images/advancequery/b_intersection.gif" alt="Intersection" width="96" height="23" border="0">
 							  </a></td>
 							  <td width="73" align="left"><a href="javascript:minusQueries()"><img align="absmiddle" src="images/advancequery/b_minus.gif" alt="Minus" width="63" height="23" border="0">
 							  </a></td>
-							<!--
+							-->
 							<div id="buttonStatus">
-
+							<!--
 							   <td align="left" width="70"><img align="absmiddle" src="images/advancequery/b_union_inact.gif" alt="Union" width="60" height="23" border="0">
 							  </a></td>
 							  <td width="106" align="left"><img align="absmiddle" src="images/advancequery/b_intersection_inact.gif" alt="Intersection" width="96" height="23" border="0">
 							  </a></td>
 							  <td width="73" align="left"><img align="absmiddle" src="images/advancequery/b_minus_inact.gif" alt="Minus" width="63" height="23" border="0">
 							  </a></td>
-
-							</div>
 							-->
+							</div>
+							
 							</tr>
 						</table>
 					</td>
@@ -461,4 +508,18 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 	</tr>
 </table>
 </html:form>
+<script type="text/javascript">
+function setButtons()
+{
+	//var buttonStatusDiv=document.getElementById("buttonStatusDiv");
+	var buttonStatus=document.getElementById("buttonStatus");
+
+
+		buttonStatus.innerHTML= '<td align="left" width="70"><img align="absmiddle" src="images/advancequery/b_union_inact.gif" alt="Union" width="60" height="23" border="0"></td>'+
+      ' <td width="106" align="left"><img align="absmiddle" src="images/advancequery/b_intersection_inact.gif" alt="Intersection" width="96" height="23" border="0"></td><td width="73" align="left"><img align="absmiddle" src="images/advancequery/b_minus_inact.gif" alt="Minus" width="63" height="23" border="0"></td>';
+	
+
+
+}setButtons();
+</script>
 </body>

@@ -1,6 +1,11 @@
 
 package edu.wustl.query.bizlogic;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Random;
+
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.DAO;
@@ -103,9 +108,29 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	 * @param queryId=id of query for which counts will be returned
 	 * @return count value
 	 */
-	public Long executeGetCountQuery(Long queryId)
+	public HashMap<String,Long> executeGetCountQuery(ArrayList<String> idList)
 	{
-		return 1000L;
+		
+		 //Random generator2 = new Random( 19580427 );
+//		return generator2.nextInt();
+		
+		
+		//return System.currentTimeMillis();
+		
+		HashMap<String,Long> resultMap=new HashMap<String, Long>();
+		Iterator<String>  queryIdIter=idList.iterator();
+		if(queryIdIter.hasNext())
+		{
+			while(queryIdIter.hasNext())
+			{
+				resultMap.put(queryIdIter.next(), System.currentTimeMillis());
+			}
+		}
+		else
+		{
+			resultMap=null;
+		}
+		return resultMap;
 	}
 
 }

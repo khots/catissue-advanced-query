@@ -123,8 +123,7 @@ function addQuery()
 		
 		var operandsTdContent="";
 		var rowContents=new Array(7);
-		rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'');
-		//rowContents[0].setAttribute("onclick","javascript:setCheckboxCount()");
+		rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'',(counter+queryCount));
 		operandsTdContent=getText(queryIds[counter]);
 		rowContents[1]=createTextElement(getText(queryTitles[counter]));
 		rowContents[2]=createTextElement(getText(queryTypes[counter]));
@@ -178,13 +177,21 @@ function createTextElement(text)
 	return textnode;
 }
 
-function createCheckBox(name,id,displayValue)
+function createCheckBox(name,id,displayValue,count)
 {
 		var chkbox=document.createElement("input");
 		var text=document.createTextNode(displayValue);
 		chkbox.type="checkbox";
 		chkbox.id=id;
 		chkbox.name=name;
+		chkbox.onclick=function addEvent(){
+			setCheckboxCount(count,chkbox.checked);
+		}
+//			.setOnclickHandler("setCheckboxCount2");
+
+		//chkbox.setAttribute("onclick","javascript:setCheckboxCount2();");
+	//	chkbox.dhx_attachEvent("onRowDblClicked",func);
+		
 		return chkbox;
 }
 function createLabel(name,index)
@@ -262,30 +269,67 @@ function deleteWorkflowItem(index)
 		alert("No check box is selected to delete");
 	}
 }
-/*function setCheckboxCount()
-{
-	
-	numOfChkSelected++;
 
+function setCheckboxCount(chckCount,checkboxselected)
+{	
+	
+	if(checkboxselected)
+	{
+		numOfChkSelected++;
+	}
+	else
+	{
+		numOfChkSelected--;
+	}
+	//alert("numOfChkSelected"+numOfChkSelected);
+	/*if(numOfChkSelected==2&&checkboxselected)
+	{
+		enableButtons();
+		var chckbox=document.getElementById("checkbox_"+chckCount);
+		//alert("chckbox"+chckbox);
+		chckbox.onclick=function addEvent1(){
+			setOnclickEventOnDeselect(chckCount,true);
+		}
+	}*/
 	if(numOfChkSelected==2)
 	{
-		
 		enableButtons();
+		var chckbox=document.getElementById("checkbox_"+chckCount);
+		//alert("chckbox"+chckbox);
+		chckbox.onclick=function addEvent1(){
+			setOnclickEventOnDeselect(chckCount,true);
+		}
 	}
+
+	else
+	{
+			//numOfChkSelected--;
+		disableButtons();
+			var chckbox=document.getElementById("checkbox_"+chckCount);
+	//alert("chckbox"+chckbox);
+		chckbox.onclick=function addEvent1(){
+			setCheckboxCount(chckCount,document.getElementById("checkbox_"+chckCount).checked);
+		}
+	}
+
+	//chckbox.setAttribute("onclick","javascript:setOnclickEventOnDeselect("+chckCount+")");
+	
 }
 function enableButtons()
 {
 	//var buttonStatusDiv=document.getElementById("buttonStatusDiv");
 	var buttonStatus=document.getElementById("buttonStatus");
-	alert(document.getElementById("buttonStatus"));
+	//alert(document.getElementById("buttonStatus"));
 	if(buttonStatus!=null)
 	{
-		alert(numOfChkSelected);
+		//alert(numOfChkSelected);
 		
 		  while (buttonStatus.childNodes[0])
 		 {
-			alert("removing");
-			 buttonStatus.removeChild(buttonStatus.childNodes[0]);
+			
+			//alert(buttonStatus.childNodes[0].innerHTML);
+			buttonStatus.innerHTML='';
+			// buttonStatus.removeChild(buttonStatus.childNodes[0]);
 		}
 		buttonStatus.innerHTML="<td align='left' width='70'><a href='javascript:unionQueries()'><img align='absmiddle' src='images/advancequery/b_union-copy.gif' alt='Union' width='60' height='23' border='0'></a></td><td width='106' align='left'><a href='javascript:intersectQueries()'><img align='absmiddle' src='images/advancequery/b_intersection.gif' alt='Intersection' width='96' height='23' border='0'></a></td><td width='73' align='left'><a href='javascript:minusQueries()'><img align='absmiddle' src='images/advancequery/b_minus.gif' alt='Minus' width='63' height='23' border='0'></a></td>";
 		//buttonStatus.removeChild(document.getElementById("buttonStatusDiv"));
@@ -295,10 +339,51 @@ function enableButtons()
 }
 function disableButtons()
 {
-	var buttonStatusDiv=document.getElementById("buttonStatusDiv");
+	//var buttonStatusDiv=document.getElementById("buttonStatusDiv");
 	var buttonStatus=document.getElementById("buttonStatus");
+	//alert(document.getElementById("buttonStatus"));
 	if(buttonStatus!=null)
 	{
-		buttonStatus.removeChild(document.getElementById("buttonStatusDiv"));
+		//alert(numOfChkSelected);
+		
+		  while (buttonStatus.childNodes[0])
+		 {
+			
+			//alert(buttonStatus.childNodes[0].innerHTML);
+			buttonStatus.innerHTML='';
+			// buttonStatus.removeChild(buttonStatus.childNodes[0]);
+		}
+			buttonStatus.innerHTML="<td align='left' width='70'><img align='absmiddle' src='images/advancequery/b_union_inact.gif' alt='Union' width='60' height='23' border='0'></td><td width='106' align='left'><img align='absmiddle' src='images/advancequery/b_intersection_inact.gif' alt='Intersection' width='96' height='23' border='0'></td><td width='73' align='left'><img align='absmiddle' src='images/advancequery/b_minus_inact.gif' alt='Minus' width='63' height='23' border='0'></td>";
+		
 	}
-}*/
+}
+function setOnclickEventOnDeselect(chckCount,selected)
+{
+
+	if(selected)
+	{
+		numOfChkSelected--;
+	}
+	//alert("unchecked");
+	//alert("unchecked numOfChkSelected "+numOfChkSelected);
+	
+	var chckbox=document.getElementById("checkbox_"+chckCount);
+		chckbox.onclick=function addEvent2(){
+			setCheckboxCount(chckCount,true);
+		}
+	//chckbox.setAttribute("onclick","javascript:setCheckboxCount("+chckCount+")");
+	if(numOfChkSelected!=2)
+	{
+		
+		disableButtons();
+	}
+
+}
+function changeExecuteLink(index)
+{
+
+	var object=document.getElementById("execute_"+index);			
+	object.removeChild(object.lastChild);
+	object.appendChild(createTextElement("Cancel"));
+	object.href="javascript:cancelGetCountQuery('"+index+"')";
+}
