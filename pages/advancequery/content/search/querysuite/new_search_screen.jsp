@@ -39,14 +39,7 @@ MM_reloadPage(true);
 </div>
 
 <div class="wrapper">
-  <div id="header">
-    <table width="100%" border="0" cellpadding="0" cellspacing="0" background="images/advancequery/bg_header.gif">
-      <tr>
-        <td><img src="images/advancequery/s_logo.gif" alt="CIDER: Clinical Investigation Data Exploration Repository" width="375" height="100"></td>
-        <td width="325" align="right"><img src="images/advancequery/header_collage.jpg" width="325" height="100"></td>
-      </tr>
-    </table>
-  </div>
+
   <table width="100%" border="0" cellpadding="0" cellspacing="0">
     <tr>
       <td valign="top">&nbsp;</td>
@@ -101,14 +94,7 @@ MM_reloadPage(true);
   </table>
   <div class="push"></div>
 </div>
-<div class="footer">
-  <table width="100%" border="0" cellpadding="0" cellspacing="0" background="images/advancequery/bg_footer.gif">
-    <tr>
-      <td><img src="images/advancequery/logo_washu.gif" alt="Washington University in St. Louis" width="294" height="43"></td>
-      <td align="right"><img src="images/advancequery/logo_bjc.gif" alt="BJC HealthCare" width="153" height="43"></td>
-    </tr>
-  </table>
-</div>
+
 </body>
 </html>
 
