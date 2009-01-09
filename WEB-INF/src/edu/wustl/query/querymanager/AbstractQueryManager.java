@@ -3,20 +3,84 @@
  */
 package edu.wustl.query.querymanager;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.query.domain.Workflow;
+import edu.wustl.query.executionmanager.QueryExecutionThread;
 
 
 /**
  * @author supriya_dankh
  * The UI layer will use this class for all query backend related operations.
-   Specific implementations will handle application specific business logic like for CIDER adding additional predicates (like active UPI flag) into the IQuery object.
-  */
+ *  Specific implementations will handle application specific business logic 
+ *  like for CIDER adding additional predicates (like active UPI flag) into the IQuery object.
+ *  
+ *  This class is also responsible for
+ *   a.   Maintaining a list of currently running queries
+ *   b.   Spawning new threads for new queries
+ *   c.   Provide methods to get count, cancel/abort query threads etc.
+ *  
+ */
 public abstract class AbstractQueryManager
 {
-  abstract public int execute(IQuery query);
-  abstract public int execute(Workflow workflow);
-  abstract public Count getQueryCount(int query_excecution_id);
-  abstract public Count getWorkflowCount(int query_excecution_id);	
-  abstract public void abort(int query_excecution_id);
+	
+	/**
+	 * Map of QUERY_EXECUTION_ID(key) versus CORRESPONDING_THREAD(value)
+	 */
+	protected Map<Integer, QueryExecutionThread> queryThreads = new HashMap<Integer, QueryExecutionThread>();
+	
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
+	public int execute(AbstractQuery query)
+	{
+		
+		return 0;
+	}
+	
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
+	abstract public int execute(IQuery query);
+	
+	/**
+	 * 
+	 * @param workflow
+	 * @return
+	 */
+	abstract public int execute(Workflow workflow);
+	
+	/**
+	 * 
+	 * @param query_excecution_id
+	 * @return
+	 */
+	abstract public Count getQueryCount(int query_excecution_id);
+	
+	/**
+	 * 
+	 * @param query_excecution_id
+	 * @return
+	 */
+	abstract public Count getWorkflowCount(int query_excecution_id);	
+	
+	/**
+	 * 
+	 * @param query_excecution_id
+	 */
+	abstract public void abort(int query_excecution_id);
+	
+	/**
+	 * 
+	 * @param query_execution_id
+	 */
+	abstract public void cancel(int query_execution_id);
+	
 }
