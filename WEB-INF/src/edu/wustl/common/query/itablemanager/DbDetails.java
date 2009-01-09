@@ -18,6 +18,12 @@ public class DbDetails
 	private int currentBatchCount;
 	private PreparedStatement prepStmt;
 	
+	/**
+	 * 
+	 * @param con
+	 * @param currentBatchCount
+	 * @param prepStmt
+	 */
 	public DbDetails(Connection con,int currentBatchCount,PreparedStatement prepStmt)
 	{
 		this.con = con;
@@ -25,33 +31,55 @@ public class DbDetails
 		this.prepStmt = prepStmt;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Connection getCon()
 	{
 		return con;
 	}
 
+	/**
+	 * 
+	 * @param con
+	 */
 	public void setCon(Connection con)
 	{
 		this.con = con;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getCurrentBatchCount()
 	{
 		return currentBatchCount;
 	}
 
-	
+	/**
+	 * 
+	 * @param currentBatchCount
+	 */
 	public void setCurrentBatchCount(int currentBatchCount)
 	{
 		this.currentBatchCount = currentBatchCount;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public PreparedStatement getPrepStmt()
 	{
 		return prepStmt;
 	}
 
-	
+	/**
+	 * 
+	 * @param prepStmt
+	 */
 	public void setPrepStmt(PreparedStatement prepStmt)
 	{
 		this.prepStmt = prepStmt;
