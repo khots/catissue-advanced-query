@@ -45,12 +45,13 @@ public class OutputTreeDataNode implements Serializable
 	 * @param expressionId The expression id corresponding to this Output tree.
 	 * @param treeNo The integer representing tree no.
 	 */
-	public OutputTreeDataNode(IOutputEntity outputEntity, int expressionId, int treeNo)
+	public OutputTreeDataNode(IOutputEntity outputEntity, int expressionId, int treeNo,boolean isContainedObject)
 	{
 		this.outputEntity = outputEntity;
 		this.expressionId = expressionId;
 		id = lastId++;
 		this.treeNo = treeNo;
+		this.isContainedObject=isContainedObject;
 	}
 
 	/**
@@ -69,9 +70,9 @@ public class OutputTreeDataNode implements Serializable
 	 * @param expressionId The expression id corresponding to this Output tree.
 	 * @return The reference to the child node.
 	 */
-	public OutputTreeDataNode addChild(IOutputEntity outputEntity, int expressionId)
+	public OutputTreeDataNode addChild(IOutputEntity outputEntity, int expressionId,boolean isContained)
 	{
-		OutputTreeDataNode child = new OutputTreeDataNode(outputEntity,expressionId, treeNo);
+		OutputTreeDataNode child = new OutputTreeDataNode(outputEntity,expressionId, treeNo,isContained);
 		child.parentNode = this;
 		children.add(child);
 

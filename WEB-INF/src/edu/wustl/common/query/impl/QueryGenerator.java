@@ -725,6 +725,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	protected void completeTree(IExpression expression, OutputTreeDataNode parentOutputTreeNode)
 	{
 		List<IExpression> children = joinGraph.getChildrenList(expression);
+		boolean isContained = false;
 		for (IExpression childExp : children)
 		{
 			OutputTreeDataNode childNode = parentOutputTreeNode;
@@ -735,10 +736,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 				Integer childAliasAppender = aliasAppenderMap.get(childExp);
 				
 				//Set containment object to true if expression is contained.
-				if(isContainedExpresion(childNode.getExpressionId()))
-				{
-					childNode.setContainedObject(true);
-				}
+				isContained =isContainedExpresion(childExp.getExpressionId());
 
 				/**
 				 * Check whether output tree node for expression with the same
@@ -752,14 +750,15 @@ public abstract class QueryGenerator implements IQueryGenerator
 					{
 						//						 New root node for output tree found, so create root
 						//						 node & add it in the rootOutputTreeNodeList.
+						
 						childNode = new OutputTreeDataNode(childOutputEntity, childExp
-								.getExpressionId(), treeNo++);
+								.getExpressionId(), treeNo++,isContained);
 						rootOutputTreeNodeList.add(childNode);
 					}
 					else
 					{
 						childNode = parentOutputTreeNode.addChild(childOutputEntity, childExp
-								.getExpressionId());
+								.getExpressionId(),isContained);
 					}
 					outputTreeNodeMap.put(childAliasAppender, childNode);
 					attributeOutputTreeNodeList.add(childNode);
@@ -770,7 +769,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 			{
 				IOutputEntity childOutputEntity = getOutputEntity(childExp);
 				childNode = new OutputTreeDataNode(childOutputEntity, childExp.getExpressionId(),
-						allExpressionTreeNo++);
+						allExpressionTreeNo++,isContained);
 				attributeOutputTreeNodeList.add(childNode);
 			}
 			completeTree(childExp, childNode);
@@ -831,13 +830,16 @@ public abstract class QueryGenerator implements IQueryGenerator
 		attributeOutputTreeNodeList = new ArrayList<OutputTreeDataNode>();
 		outputTreeNodeMap = new HashMap<Integer, OutputTreeDataNode>();
 		OutputTreeDataNode rootOutputTreeNode = null;
+		boolean isContained = false;
 		treeNo = 0;
 		allExpressionTreeNo = 0;
+		if(isContainedExpresion(rootExpression.getExpressionId()))
+			isContained = true;
 		if (rootExpression.isInView())
 		{
 			IOutputEntity rootOutputEntity = getOutputEntity(rootExpression);
 			rootOutputTreeNode = new OutputTreeDataNode(rootOutputEntity, rootExpression
-					.getExpressionId(), treeNo++);
+					.getExpressionId(), treeNo++,isContained);
 
 			rootOutputTreeNodeList.add(rootOutputTreeNode);
 			attributeOutputTreeNodeList.add(rootOutputTreeNode);
