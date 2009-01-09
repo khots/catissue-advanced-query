@@ -332,5 +332,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String MAIN_EXPRESSION_TO_ADD_CONTAINMENTS = "expressionsToAddContainments";
     public static final String ALL_ADD_LIMIT_EXPRESSIONS = "allLimitExpressionIds";
     public static final String MAIN_EXPRESSIONS_ENTITY_EXP_ID_MAP = "mainExpEntityExpressionIdMap";
+    
+    public static final String  MAIN_ENTITY_ID= "entityId";
+    public static final String XML_FILE_NAME = "fileName";
 
 }
