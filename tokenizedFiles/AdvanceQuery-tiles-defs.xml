@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+<tiles-definitions> 
+
+	<!-- Home tab pages definitions start -->
+	<definition name=".query.mainTitlePageDef" path="/pages/QueryLayout.jsp">
+		@@tilesTitle@@
+		@@tilesHeader@@
+		@@tilesAppHeader@@
+		@@tilesMainMenu@@
+		@@tilesQuickLaunch@@	
+		@@tilesContent@@
+		@@tilesFooter@@
+	</definition>
+
+	<!-- Home tab pages definitions start -->
+	<definition name=".query.homePageDef" path="/pages/QueryLayout.jsp">
+		@@tilesTitle@@
+		@@tilesHeader@@
+		@@tilesAppHeader@@
+		@@tilesMainMenu@@
+		@@tilesQuickLaunch@@	
+		@@tilesContent@@
+		@@tilesFooter@@
+	</definition>
+
+	<definition name=".query.errorPageDef" extends=".query.homePageDef">
+		<put name="content" value="/pages/home/Error.jsp" />
+	</definition>
+	
+	<!-- Home tab pages definitions end -->
+
+	<definition name=".query.configurationSuccessDef" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/ConfigureResultView.jsp" />
+	</definition>
+
+	<definition name=".query.distributionReportSuccessDef" extends=".query.homePageDef">
+		<put name="content" value="/pages/advancequery/content/search/DistributionReport.jsp" />
+	</definition>
+		
+	<definition name=".query.editBioSpecimenSearchPageDef" extends=".query.homePageDef">
+		<put name="content" value="/pages/advancequery/content/search/SimpleQueryInterface.jsp" />
+	</definition>
+	
+	<definition name=".query.editBioSpecimenSearchResultsDef" extends=".query.homePageDef">
+		<put name="content" value="/pages/advancequery/content/search/DataView.jsp" />
+	</definition>
+	
+	<definition name=".query.editSpecimenArrayTypeSearchPageDef" extends=".query.homePageDef">
+		<put name="content" value="/pages/advancequery/content/search/DataView.jsp" />
+	</definition>
+	
+	<!-- BioSpecimen tab pages definitions end -->
+
+	<!-- Search tab pages definitions start -->
+	
+	<definition name=".query.queryResultsTreeViewDef" path="/pages/advancequery/content/search/TreeView.jsp">
+	</definition>
+	
+	<!--Added By Pallavi Mistry -->	
+	<!--TreeNode view for DHTMLX tree grid view of storage container-->
+	<definition name=".query.queryResultsTreeViewNodeDef" path="/pages/advancequery/content/search/TreeNodeView.jsp">
+	</definition>
+	
+	<definition name=".query.searchHomeDef" extends=".query.homePageDef">
+		<put name="content" value="/pages/advancequery/content/search/Home.jsp" />
+	</definition>
+	
+	<definition name=".query.simpleSearchResultsDef" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/SimpleSearchDataView.jsp" />
+	</definition>
+	
+	<definition name=".query.simpleQueryInterfaceDef" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/SimpleQueryInterface.jsp" />
+	</definition>
+
+	<definition name=".query.advanceQueryDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/AdvanceQuery.jsp" />
+	</definition>
+
+	<definition name=".query.queryResultsDef" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/QueryResultsView.jsp" />
+	</definition>
+
+		
+	<definition name=".query.queryResultsSpreadsheetViewDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/SimpleSearchDataView.jsp"/>
+	</definition>
+	
+	<!-- ShoppingCart -->
+	<definition name=".query.shoppingCartDef" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/QueryShoppingCart.jsp" />
+	</definition>
+	<!-- ShoppingCart -->
+	
+	<!-- ASSIGN PRIVILEGES -->
+	<definition name=".query.assignPrivilegesPageDef" extends=".query.homePageDef">
+		<put name="content" value="/pages/advancequery/content/search/AssignPrivileges.jsp" />
+	</definition>
+	
+	<!-- ASSIGN PRIVILEGES -->
+	
+	<!-- ADVANCE QUERY INTERFACE -->
+	
+	<definition name=".query.advanceQueryInterfaceDef" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/AdvanceQueryInterface.jsp" />
+	</definition>
+	
+	<definition name=".query.participantSearchDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/AdvanceSearchUI.jsp" />
+	</definition>
+
+	<definition name=".query.specimenSearchDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/SpecimenSearch.jsp" />
+	</definition>
+	
+	<definition name=".query.specimenCollectionGroupSearchDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/AdvanceSearchUI.jsp" />
+	</definition>
+	
+	<definition name=".query.collectionProtocolSearchDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/AdvanceSearchUI.jsp" />
+	</definition>
+
+	<definition name=".query.defaultSearchDef" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/AdvanceQueryInterfaceDefaultPage.jsp" />
+	</definition>
+
+	<definition name=".query.advanceQueryViewDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/AdvanceQueryView.jsp" />
+	</definition>
+	
+	<definition name=".query.advanceQueryDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/AdvanceQuery.jsp" />
+	</definition>
+	
+	<definition name=".query.advanceQueryResultsDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/AdvanceQueryInterface.jsp" />
+	</definition>
+	
+	<definition name=".query.advanceQueryRedirectDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/RedirectAdvancedSearch.jsp" />
+	</definition>
+	
+	<definition name=".query.advanceConfigurationSuccessDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/ConfigureResultView.jsp" />
+	</definition>
+
+	<!-- ADVANCE QUERY INTERFACE -->
+	
+	<definition name=".query.configurationSuccessCPQueryDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/ConfigureResultView.jsp" />
+	</definition>
+	
+	<definition name=".query.distributionReportSuccessCPQueryDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/DistributionReport.jsp" />
+	</definition>
+	
+	<definition name=".query.distributionReportSuccessCPQueryDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/DistributionReport.jsp" />
+	</definition>
+
+<!--P.G. - Start 24May07:Bug 4291-->
+	<definition name=".query.bioBlankDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/blank.jsp" />
+	</definition>
+<!--P.G. - End -->	
+
+	<definition name=".query.myListTabDef" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/MyListTabPage.jsp" />
+	</definition>
+	
+<!--Conflict Resolver :end -->
+	
+	 <!-- Definition code : Mandar Shidhore : 06/11/06 -->
+	<definition name=".query.searchCategory" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/AddLimits.jsp" />
+	</definition>
+	
+	<definition name=".query.viewSearchResults" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/ViewResults.jsp" />
+	</definition>
+	
+	<definition name=".query.collectQueryParameter" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/ParameterizedQueryExecutePage.jsp" />
+	</definition>
+	
+	<definition name=".query.defineSearchResultsView" extends=".query.searchHomeDef">
+		<put name="content" value=".query.defineSearchResultsWizard" />
+	</definition>
+
+	<definition name=".query.defineSearchResultsWizard" path="/pages/advancequery/content/search/querysuite/DefineSearchResultsView.jsp">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/DefineSearchResultsViewDefineTree.jsp"/>
+	</definition>			
+	
+	<definition name=".query.gridViewReport" path="/pages/advancequery/content/search/querysuite/GridViewReport.jsp">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/GridViewReport.jsp"/>
+	</definition>
+	
+	<definition name=".query.defineSearchResultsViewBNT" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/DefineSearchResultsViewBuildNewTree.jsp" />
+	</definition>
+	
+	<definition name=".query.queryViewPageDef" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/QueryListView.jsp" />
+	</definition>
+	
+	<definition name=".query.querySavedQueryListDef" path="/pages/advancequery/content/search/querysuite/SavedQueryListView.jsp">
+	</definition>
+	
+	<definition name=".query.queryWorkFlowPopup" path="/pages/advancequery/content/search/querysuite/WorkflowPopup.jsp">
+	</definition>
+	 <!-- Definition code : Deepti Shelar : For pagination : 20/07/2007 -->
+	<definition name=".query.queryTreeViewDef" path="/pages/advancequery/content/search/querysuite/QueryTreeView.jsp">
+	</definition>
+	
+	<definition name=".query.defineQueryResultsView" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/DefineGridResultsView.jsp" />
+	</definition>
+	
+	<definition name=".query.openDecisionMakingPage" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/DecisionMaking.jsp" />
+	</definition>
+	
+	<definition name=".query.queryDataViewDef" path="/pages/advancequery/content/search/ContentLayout.jsp">
+	</definition>
+	
+	<definition name=".query.redirectToLoginPageDef" extends=".query.queryDataViewDef">
+		<put name="content" value="/pages/common/RedirectToLoginPage.jsp" />
+	</definition>
+	
+	
+	<definition name=".query.queryWorkFlowWizardDef" extends=".query.mainTitlePageDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/Workflow.jsp"/>
+	</definition>
+	
+	<definition name=".query.queryWorkFlowConfirmMsgDef" extends=".query.mainTitlePageDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/WorkflowConfirmationMsg.jsp"/>
+	</definition>
+	
+	<definition name=".query.redirectToWorkflowPageDef" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/workflow/Workflow.jsp" />
+	</definition>
+
+	<definition name=".query.workflowViewPageDef" path="/pages/advancequery/content/search/querysuite/WorkflowList.jsp">
+	</definition>
+	
+	<definition name=".query.querySearchWizardDef" extends=".query.homePageDef">
+	<put name="content" value="/pages/advancequery/content/search/querysuite/new_search_screen.jsp"/>
+	</definition>
+</tiles-definitions>
