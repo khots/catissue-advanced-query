@@ -386,19 +386,20 @@
 		<copy todir="${zip.dir}" overwrite="true">
 			<fileset dir="${base.dir}/WEB-INF">
 				<include name="advancequery-struts-config.xml" />
-				<include name="AdvanceQuery-tiles-defs.xml" />
+				<!--include name="AdvanceQuery-tiles-defs.xml" /-->
 			</fileset>
 		</copy>
-		
+		<!-- copy tokenized tiles-def and applicationResources.properties files in the zip-->
+		<copy file= "${base.dir}/tokenizedFiles/AdvanceQuery-tiles-defs.xml"  todir="${zip.dir}" overwrite="true" />
+		<copy file= "${base.dir}/tokenizedFiles/ApplicationResources.properties"  todir="${zip.dir}" overwrite="true" />
 		<copy todir="${zip.dir}" overwrite="true">
-		    <fileset dir="${base.dir}/WEB-INF/classes/">
-		        <include name = "QueryHibernate.cfg.xml"/>
-		    	<include name = "DynamicExtensionsHibernate.cfg.xml"/>
-		    	<include name = "dbutil.properties"/>
-		    	<include name = "dynamicUI.xml"/>
-		    	<include name = "ApplicationResources.properties"/>
-		    	<include name = "query.properties"/>
-		    </fileset>
+		  <fileset dir="${base.dir}/WEB-INF/classes/">
+		    <include name = "QueryHibernate.cfg.xml"/>
+		  	<include name = "DynamicExtensionsHibernate.cfg.xml"/>
+		    <include name = "dbutil.properties"/>
+		    <include name = "dynamicUI.xml"/>
+		    <include name = "query.properties"/>
+		   </fileset>
 		</copy>
 		
 		<!---Copying css folder -->
