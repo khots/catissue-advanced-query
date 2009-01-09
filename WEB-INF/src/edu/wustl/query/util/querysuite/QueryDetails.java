@@ -39,7 +39,7 @@ public class QueryDetails
 	private Map<Integer,String> parentNodesIdMap ;
 	
 	private Map <Integer,List<EntityInterface>> eachExpressionContainmentMap ;
-    private Map <Integer,HashMap <EntityInterface,Integer>> mainExpEntityExpressionIdMap;
+    private Map <Integer,List<Integer>> mainExpEntityExpressionIdMap;
 	//private HttpSession session;
 
 	
@@ -51,7 +51,7 @@ public class QueryDetails
 	/**
 	 * @return the mainExpEntityExpressionIdMap
 	 */
-	public Map<Integer, HashMap<EntityInterface, Integer>> getMainExpEntityExpressionIdMap()
+	public Map<Integer,List<Integer>> getMainExpEntityExpressionIdMap()
 	{
 		return mainExpEntityExpressionIdMap;
 	}
@@ -66,7 +66,7 @@ public class QueryDetails
 	 * @param mainExpEntityExpressionIdMap the mainExpEntityExpressionIdMap to set
 	 */
 	public void setMainExpEntityExpressionIdMap(
-			Map<Integer, HashMap<EntityInterface, Integer>> mainExpEntityExpressionIdMap)
+			Map<Integer,List<Integer>> mainExpEntityExpressionIdMap)
 	{
 		this.mainExpEntityExpressionIdMap = mainExpEntityExpressionIdMap;
 	}
