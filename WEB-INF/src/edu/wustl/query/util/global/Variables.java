@@ -56,5 +56,20 @@ public class Variables extends edu.wustl.common.util.global.Variables
 		}
 		return colType;
 	}
+	
+	/**
+	 * Used for inserting data in batches - Statement.executeBatch()
+	 */
+	public static int batchSize;
 
+	/**
+	 * Query ITABLE
+	 */
+	public static String ITABLE;
+	
+	/**
+	 * QUERY EXECUTION LOG TABLE
+	 */
+	public static String EXECUTION_LOG_TABLE;
+	
 }
