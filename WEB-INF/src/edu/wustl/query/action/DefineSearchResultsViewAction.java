@@ -1,5 +1,10 @@
 package edu.wustl.query.action;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,18 +27,20 @@ import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.query.impl.CommonPathFinder;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.metadata.path.IPath;
-import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IOutputEntity;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
 import edu.wustl.query.bizlogic.ValidateQueryBizLogic;
 import edu.wustl.query.flex.dag.DAGResolveAmbiguity;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.AddContainmentsUtil;
 import edu.wustl.query.util.querysuite.IQueryUpdationUtil;
 import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
@@ -43,11 +50,16 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
  * @author deepti_shelar
  *
  */
+/**
+ * @author baljeet_dhindhwal
+ *
+ */
 public class DefineSearchResultsViewAction extends Action
 {
 
+	private static org.apache.log4j.Logger logger =Logger.getLogger(IQueryUpdationUtil.class);
 	/**
-	 * This method loads define results jsp.
+	 * This method loads define search results view jsp.
 	 * @param mapping mapping
 	 * @param form form
 	 * @param request request
@@ -63,129 +75,24 @@ public class DefineSearchResultsViewAction extends Action
 		searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
 		HttpSession session = request.getSession();
 		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
-		
-		
-		QueryDetails queryDetailsObject = null;
-		String entityId = request.getParameter("entityId");
+		String entityId = request.getParameter(Constants.MAIN_ENTITY_ID);
 		if(entityId == null)
 		{
-			//Updating the IQuery for Containment Object for Main Entities
-			updateIQueryForContainments(session, query);
+			AddContainmentsUtil.updateIQueryForContainments(session, query);
 		}
 		else
 		{
-			EntityInterface entity = EntityCache.getCache().getEntityById(Long.valueOf(entityId));
-			
-			//Get the Root entity of the IQuery
-			queryDetailsObject = new QueryDetails(session);
-			OutputTreeDataNode rootSelectedObject = queryDetailsObject.getRootOutputTreeNodeList().get(0);
-			IOutputEntity outputEntity = rootSelectedObject.getOutputEntity();
-			EntityInterface rootEntity = outputEntity.getDynamicExtensionsEntity();
-			
-			//Check if the path exists between Root entity of the IQuery and main Entity added
-			List<IPath> pathsList = getPathList(entity, rootEntity);
-			if(pathsList.isEmpty())
-			{
-				
-			}
-			else
-			{
-				IClientQueryBuilderInterface queryObject = new ClientQueryBuilder();
-				queryObject.setQuery(query);
-				
-				//Add the main entity to IQuery
-				int expressionId = ((ClientQueryBuilder) queryObject).addExpression(entity);
-				
-				//Get the list of all expression added from ADD Limit on DAG
-				List<Integer> expressionIdsList =  (List<Integer>)session.getAttribute("allLimitExpressionIds");
-				
-				//Add the main Entity to List
-				expressionIdsList.add(Integer.valueOf(expressionId));
-				
-				//Get the containments of main Entity Added
-				Map<Integer, HashMap <EntityInterface, List<EntityInterface>>> eachExpressionParentChildMap = IQueryUpdationUtil.getAllConatainmentObjects(query,session);
-				
-			
-				//Now add only the containments of main Entity added 
-				HashMap <EntityInterface,Integer>entityExpressionIdMap = new HashMap<EntityInterface, Integer>();
-				entityExpressionIdMap.put(entity, expressionId);
-				
-				//Get the map containing list of all containments of each main expression
-				Map <Integer,List<EntityInterface>> eachExpressionContainmentMap =	 (Map <Integer,List<EntityInterface>>)session.getAttribute("mainEntityExpressionsMap");
-				
-				//Get the containment list if main entity added
-				List <EntityInterface> containmentEntitiesList = eachExpressionContainmentMap.get(expressionId);
-				
-				
-				//Get the all IQuery constraints
-				IConstraints constraints = query.getConstraints();
-				
-				//Add the containments to iQuery
-				IQueryUpdationUtil.addExpressionsToIQuery(queryObject, entityExpressionIdMap, constraints, containmentEntitiesList);
-				
-				//Now update the mainExpEntityExpressionIdMap for Main Entity Added
-				Map <Integer,HashMap <EntityInterface,Integer>> mainExpEntityExpressionIdMap =  (Map <Integer,HashMap <EntityInterface,Integer>>)session.getAttribute("mainExpEntityExpressionIdMap");
-				mainExpEntityExpressionIdMap.put(expressionId, entityExpressionIdMap);
-				
-				
-				//Now add link/Associations among parent children containments
-				HashMap <EntityInterface, List<EntityInterface>> parentChildrenMap = eachExpressionParentChildMap.get(expressionId);
-				
-				//We can use above entityExpressionIdMap directly 
-				entityExpressionIdMap = mainExpEntityExpressionIdMap.get(expressionId);
-				Set <EntityInterface> parentEntitySet = parentChildrenMap.keySet();
-				Iterator<EntityInterface> itr = parentEntitySet.iterator();
-				while(itr.hasNext())
-				{
-					EntityInterface parentEntity = itr.next();
-					List<EntityInterface> childEntitiesList = parentChildrenMap.get(parentEntity);
-					Iterator<EntityInterface> childEntityItr = childEntitiesList.iterator();
-					while(childEntityItr.hasNext())
-			    	{
-			    		EntityInterface childEntity = childEntityItr.next();
-			    		IQueryUpdationUtil.addPath(parentEntity,childEntity, queryObject,entityExpressionIdMap);
-			    	}
-				}
-				
-				//Now add links Among Root entity of the IQuery and all main entities added on Define Results View Page
-				List<EntityInterface> mainEntityList = (List<EntityInterface>)session.getAttribute(Constants.MAIN_ENTITY_LIST);
-				if((mainEntityList!= null) && (!mainEntityList.contains(entity)))
-				{
-					mainEntityList.add(entity);
-				}
-				int rootExpressionId = rootSelectedObject.getExpressionId();
-				int mainEntityExpId =  entityExpressionIdMap.get(entity);
-		    	IQueryUpdationUtil.linkTwoNodes(rootExpressionId,mainEntityExpId,pathsList.get(0),queryObject);
-			}
+			AddContainmentsUtil.updateIQueryForContainments(session, query, entityId);
 		}
-
-		//Update the Selected Column Name value bean List
 		List<NameValueBean> prevSelectedColumnNVBList = setSelectedColumnList(session);
-          
         ValidateQueryBizLogic.getValidationMessage(request,query);
-		//HashMap <EntityInterface, List<EntityInterface>> containmentMap = (HashMap <EntityInterface, List<EntityInterface>>)session.getAttribute(Constants.CONTAINMENT_OBJECTS_MAP);
-		
-        Map <Integer,List<EntityInterface>> eachExpressionContainmentMap =	 (Map <Integer,List<EntityInterface>>)session.getAttribute("mainEntityExpressionsMap");
-        List<EntityInterface> mainEntityList = (List<EntityInterface>)session.getAttribute(Constants.MAIN_ENTITY_LIST);  
-        Map <Integer,HashMap <EntityInterface,Integer>> mainExpEntityExpressionIdMap = (Map <Integer,HashMap <EntityInterface,Integer>>)session.getAttribute("mainExpEntityExpressionIdMap");
-        
-        queryDetailsObject = new QueryDetails(session);
-		queryDetailsObject.setMainEntityList(mainEntityList);
-		queryDetailsObject.setEachExpressionContainmentMap(eachExpressionContainmentMap);
-		queryDetailsObject.setMainExpEntityExpressionIdMap(mainExpEntityExpressionIdMap);
-		DefineGridViewBizLogic defineGridViewBizLogic = new DefineGridViewBizLogic();
-
-		//Create XML String instead of populating the tree data vector
-		StringBuilder xmlString = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" ?> ");
-		xmlString =  defineGridViewBizLogic.createContainmentTree(searchForm, queryDetailsObject, prevSelectedColumnNVBList, xmlString);
-		
-		//This string is appended for the root node of the tree
-		xmlString.append("</item></tree>");
+        QueryDetails queryDetailsObject = getQueryDetailsObject(session);
+		StringBuilder xmlString = getConatinmentTreeXML(searchForm, prevSelectedColumnNVBList,queryDetailsObject);
 		setMainEntityList(request);
         session.setAttribute(Constants.SELECTED_COLUMN_NAME_VALUE_BEAN_LIST,searchForm.getSelectedColumnNameValueBeanList());
 		session.setAttribute(Constants.QUERY_OBJECT,query);
-		String fileName = defineGridViewBizLogic.getFileName();
-		defineGridViewBizLogic.writeXML(xmlString.toString(), fileName);
+		String fileName = getFileName();
+		writeXMLToTempFile(xmlString.toString(), fileName);
 		ActionForward target = null;
 		if(entityId != null)
 		{
@@ -195,25 +102,273 @@ public class DefineSearchResultsViewAction extends Action
 		}
 		else
 		{
-			
-			request.setAttribute("fileName", fileName);
+			request.setAttribute(Constants.XML_FILE_NAME, fileName);
 			target = mapping.findForward(Constants.SUCCESS);
 		}
 		return target;
 	}
-	
-	private List<IPath> getPathList(EntityInterface entity, EntityInterface rootEntity)
+
+	/**
+	 * This method creates XML string to create containment tree
+	 * @param searchForm
+	 * @param prevSelectedColumnNVBList
+	 * @param queryDetailsObject
+	 * @return XML String
+	 */
+	private StringBuilder getConatinmentTreeXML(CategorySearchForm searchForm,
+			List<NameValueBean> prevSelectedColumnNVBList, QueryDetails queryDetailsObject)
 	{
-		List<IPath> pathsList;
-		IPathFinder pathFinder = new CommonPathFinder();
-		AmbiguityObject ambiguityObject = new AmbiguityObject(rootEntity,entity);
-		DAGResolveAmbiguity resolveAmbigity = new DAGResolveAmbiguity(ambiguityObject,pathFinder);
+		DefineGridViewBizLogic defineGridViewBizLogic = new DefineGridViewBizLogic();
+		//Create XML String instead of populating the tree data vector
+		StringBuilder xmlString = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" ?> ");
+		xmlString =  defineGridViewBizLogic.createContainmentTree(searchForm, queryDetailsObject, prevSelectedColumnNVBList, xmlString);
 		
-		Map<AmbiguityObject, List<IPath>> map = resolveAmbigity.getPathsForAllAmbiguities();
-		pathsList = map.get(ambiguityObject);
-		return pathsList;
+		//This string is appended for the root node of the tree
+		xmlString.append("</item></tree>");
+		return xmlString;
+	}
+	
+	/**
+	 * This method returns Unique file name 
+	 * @return Unique file name
+	 */
+	private String getFileName()
+	{
+		return "loadXML_"+System.currentTimeMillis()+".xml";
+	}
+	
+	/**
+	 * This method writes XML tree to create tree to a temporary file 
+	 * @param xmlString
+	 * @param fileName
+	 * @throws BizLogicException
+	 */
+	private void writeXMLToTempFile(String xmlString,String fileName) throws BizLogicException
+	{
+		try 
+		{        
+			String path=edu.wustl.query.util.global.Variables.applicationHome+System.getProperty("file.separator");
+	        OutputStream fout= new FileOutputStream(path+fileName);
+	        OutputStream bout= new BufferedOutputStream(fout);
+	        OutputStreamWriter out = new OutputStreamWriter(bout, "8859_1");
+	        out.write(xmlString);
+	        out.flush();  
+	        out.close();
+		}
+		catch (IOException e) 
+		{
+			logger.info("Couldn't create XML file");	
+		}
+	}
+	
+	
+	/**
+	 * This method returns QueryDetails Object 
+	 * @param session
+	 * @return queryDetailsObject
+	 */
+	private QueryDetails getQueryDetailsObject(HttpSession session)
+	{
+		QueryDetails queryDetailsObject = new QueryDetails(session);
+		
+		getMainExpEntityExpressionIdMap(queryDetailsObject);
+		
+		return queryDetailsObject;
+	}
+	
+	/**
+	 * This method creates a map containing list of expression ids of all children for a particular main entity  
+	 * @param queryDetailsObject
+	 */
+	private void getMainExpEntityExpressionIdMap(QueryDetails queryDetailsObject)
+	{
+		List<OutputTreeDataNode> rootOutputTreeNodeList = queryDetailsObject.getRootOutputTreeNodeList();
+		Map <Integer,List<Integer>> mainEntityContainmentIdsMap = new HashMap<Integer, List<Integer>>();
+		Map<Integer, List<OutputTreeDataNode>> mainEntitiesContainmentMap = new HashMap<Integer, List<OutputTreeDataNode>>(); 
+		//We also need to populate the Main Entity list from the IQuery
+		List<EntityInterface> mainEntitiesList = new ArrayList<EntityInterface>();
+		Iterator<OutputTreeDataNode> rootNodeItr = rootOutputTreeNodeList.iterator();
+		 IQuery query = queryDetailsObject.getQuery();
+		
+		while(rootNodeItr.hasNext())
+		{
+			OutputTreeDataNode rootNode = rootNodeItr.next();
+			populateMainEntityList(rootNode,mainEntitiesList);
+			List<OutputTreeDataNode> childrenNodes = rootNode.getChildren();
+			List <OutputTreeDataNode> rootEntityContainmentList = new ArrayList<OutputTreeDataNode>();
+			List <OutputTreeDataNode> mainEntitiesTreeDataNodesList = new ArrayList<OutputTreeDataNode>();			
+			
+			//Now iterate over each children entity and find out if it is any containment entity or any main entity
+			separateChildrenNodes(query, childrenNodes, rootEntityContainmentList,mainEntitiesTreeDataNodesList);
+			
+			//First add the containments of the root Entity. For each containment Entity, get the containments
+			getAllConatinmentsForMainEntity(rootEntityContainmentList);
+			
+			mainEntitiesContainmentMap.put(Integer.valueOf(rootNode.getExpressionId()), rootEntityContainmentList);
+			
+			//Now for each main Entity , get the containment list
+			for(int count =0; count < mainEntitiesTreeDataNodesList.size(); count ++)
+			{
+				List <OutputTreeDataNode> mainEntityContainmentList = new ArrayList<OutputTreeDataNode>(); 
+				OutputTreeDataNode mainTreeDataNode = mainEntitiesTreeDataNodesList.get(count);
+				
+				//populate main Entity List
+				populateMainEntityList(mainTreeDataNode,mainEntitiesList);
+				
+				getAllMainEntityContainments(mainEntityContainmentList, mainTreeDataNode);
+				mainEntitiesContainmentMap.put(Integer.valueOf(mainTreeDataNode.getExpressionId()),mainEntityContainmentList);
+			}
+		}
+		populateEntityIdMap(mainEntityContainmentIdsMap,mainEntitiesContainmentMap);
+		queryDetailsObject.setMainExpEntityExpressionIdMap(mainEntityContainmentIdsMap);
+		queryDetailsObject.setMainEntityList(mainEntitiesList);
 	}
 
+
+
+	/**
+	 * This method updates rootEntityContainmentList for root entity
+	 * @param rootEntityContainmentList
+	 */
+	private void getAllConatinmentsForMainEntity(List<OutputTreeDataNode> rootEntityContainmentList)
+	{
+		for(int count = 0; count < rootEntityContainmentList.size(); count ++)
+		{
+			OutputTreeDataNode treeDataNode =  rootEntityContainmentList.get(count);
+			List <OutputTreeDataNode> list = getAllContainmentEntities(treeDataNode);
+			if(!list.isEmpty())
+			{
+				rootEntityContainmentList.addAll(list);
+			}
+		}
+	}
+
+	/**
+	 * This method updates mainEntityContainmentList for each main entity present in Query  
+	 * @param mainEntityContainmentList
+	 * @param mainTreeDataNode
+	 */
+	private void getAllMainEntityContainments(List<OutputTreeDataNode> mainEntityContainmentList,
+			OutputTreeDataNode mainTreeDataNode)
+	{
+		List <OutputTreeDataNode> childrenList  = mainTreeDataNode.getChildren();
+		if(childrenList != null && !childrenList.isEmpty())
+		{
+			mainEntityContainmentList.addAll(childrenList);
+		}
+		
+		//For each containment of Main entity , get further containments
+		if(!mainEntityContainmentList.isEmpty())
+		{
+			getAllConatinmentsForMainEntity(mainEntityContainmentList);
+		}
+	}
+
+	/**
+	 * This method separates out the containment entities and main entities
+	 * from children of root entity 
+	 * @param query
+	 * @param childrenNodes
+	 * @param rootEntityContainmentList
+	 * @param mainEntitiesTreeDataNodesList
+	 */
+	private void separateChildrenNodes(IQuery query, List<OutputTreeDataNode> childrenNodes,
+			List<OutputTreeDataNode> rootEntityContainmentList,
+			List<OutputTreeDataNode> mainEntitiesTreeDataNodesList)
+	{
+		for (OutputTreeDataNode childNode : childrenNodes)
+		{
+			if(childNode.isContainedObject())
+			{
+				rootEntityContainmentList.add(childNode);
+			}
+			else if(checkIfOneOftheMainEntity(childNode, query))
+			{
+			    mainEntitiesTreeDataNodesList.add(childNode);
+			}
+		}
+	}
+	
+	/**
+	 * This method populates main entities list present in IQuery
+	 * @param mainNode
+	 * @param mainEntitiesList
+	 */
+	private void populateMainEntityList(OutputTreeDataNode mainNode,List<EntityInterface> mainEntitiesList)
+	{
+		IOutputEntity outputEntity = mainNode.getOutputEntity();
+		EntityInterface entity = outputEntity.getDynamicExtensionsEntity();
+		mainEntitiesList.add(entity);
+	}
+	
+	/**
+	 * This method populates the map containing list of all expression ids for a main expression
+	 * @param mainEntityContainmentIdsMap
+	 * @param mainEntitiesContainmentMap
+	 */
+	private void populateEntityIdMap(Map <Integer,List<Integer>> mainEntityContainmentIdsMap,Map<Integer, List<OutputTreeDataNode>> mainEntitiesContainmentMap)
+	{
+		Set<Integer> keySet = mainEntitiesContainmentMap.keySet();
+		Iterator<Integer> keySetItr = keySet.iterator();
+		while(keySetItr.hasNext())
+		{
+			Integer mainEntityExpId = keySetItr.next();
+			List<Integer> expressionIdsList = new ArrayList<Integer>();
+			List<OutputTreeDataNode> containmentTreeDataNodes = mainEntitiesContainmentMap.get(mainEntityExpId);
+			for (OutputTreeDataNode outputTreeDataNode : containmentTreeDataNodes)
+			{
+				expressionIdsList.add(Integer.valueOf(outputTreeDataNode.getExpressionId()));
+			}
+			mainEntityContainmentIdsMap.put(mainEntityExpId,expressionIdsList);
+		}
+	}
+	
+	/**
+	 * This method returns list of all containments OutputTreeDataNodes for a node 
+	 * @param treeDataNode
+	 * @return conatainmentEntities
+	 */
+	private List <OutputTreeDataNode> getAllContainmentEntities(OutputTreeDataNode treeDataNode)
+	{
+		List <OutputTreeDataNode> conatainmentEntities = new ArrayList<OutputTreeDataNode>();
+		List <OutputTreeDataNode> list = treeDataNode.getChildren();
+		if((list != null) && (!list.isEmpty()))
+		{
+			for (OutputTreeDataNode outputTreeDataNode : list)
+			{
+			   	if(outputTreeDataNode.isContainedObject())
+			   	{
+			   		conatainmentEntities.add(outputTreeDataNode);
+			   	}
+			}
+		}
+		return conatainmentEntities;
+	}
+	
+	/**
+	 * This method checks whether entity is main entity or not
+	 * @param childNode
+	 * @param query
+	 * @return ifMainEntity
+	 */
+	private boolean checkIfOneOftheMainEntity(OutputTreeDataNode childNode, IQuery query)
+	{
+		boolean ifMainEntity = false;
+		IOutputEntity outputEntity = childNode.getOutputEntity();
+		EntityInterface entity = outputEntity.getDynamicExtensionsEntity();
+		List<EntityInterface> mainEntityList = IQueryUpdationUtil.getAllMainObjects(query);
+			if(mainEntityList.contains(entity))
+			{
+				ifMainEntity = true;
+			}
+		return ifMainEntity;
+	}
+	
+	/**
+	 * This method returns prevSelectedColumnNVBList
+	 * @param session
+	 * @return prevSelectedColumnNVBList
+	 */
 	private List<NameValueBean> setSelectedColumnList(HttpSession session)
 	{
 		List<NameValueBean> prevSelectedColumnNVBList;
@@ -229,21 +384,10 @@ public class DefineSearchResultsViewAction extends Action
 		return  prevSelectedColumnNVBList;
 	}
 
-	private void updateIQueryForContainments(HttpSession session, IQuery query)
-	{
-		if(query != null)
-	    { 
-			Map<Integer, HashMap <EntityInterface, List<EntityInterface>>> eachExpressionParentChildMap = IQueryUpdationUtil.getAllConatainmentObjects(query,session);
-			
-			//Update the IQuery with containment objects......add only those containment objects which are not present in IQuery
-			IQueryUpdationUtil.addConatinmentObjectsToIquery(query,session);
-			
-			//Add the link/association among parent and containment entities
-			IQueryUpdationUtil.addLinks(eachExpressionParentChildMap, session);
-			
-	    }
-	}
-	
+	/**
+	 * This method returns list of all main entities present in Model 
+	 * @param request
+	 */
 	private void setMainEntityList(HttpServletRequest request)
 	{
 		Collection<EntityGroupInterface> entityGroups = EntityCache.getCache().getEntityGroups();
