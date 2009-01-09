@@ -1,11 +1,6 @@
 
 package edu.wustl.query.bizlogic;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,7 +13,6 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
-import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
@@ -29,7 +23,6 @@ import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.common.tree.QueryTreeNodeData;
 import edu.wustl.common.util.Utility;
-import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
@@ -69,6 +62,13 @@ public class DefineGridViewBizLogic
 		return null;
 	}
 	
+	/**
+	 * This method returns main Entities 
+	 * @param queryDetailsObj
+	 * @param mainEntityList
+	 * @param rootEntitiesList
+	 * @return
+	 */
 	private List<String>getMainEntityIdList(QueryDetails queryDetailsObj,List<EntityInterface> mainEntityList, List<String> rootEntitiesList)
 	{
 		List<String> mainEntityIdList = new ArrayList<String>(); 
@@ -259,15 +259,15 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 }
 
 	
-/**
- * 
- * @param categorySearchForm
- * @param queryDetailsObj
- * @param prevSelectedColumnNVBList
- * @param xmlString
- * @return
- */
-public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm, QueryDetails queryDetailsObj,List<NameValueBean> prevSelectedColumnNVBList, StringBuilder xmlString)
+	/**
+	 * This method creates XML String for containment tree
+	 * @param categorySearchForm
+	 * @param queryDetailsObj
+	 * @param prevSelectedColumnNVBList
+	 * @param xmlString
+	 * @return
+	 */
+	public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm, QueryDetails queryDetailsObj,List<NameValueBean> prevSelectedColumnNVBList, StringBuilder xmlString)
 	{
 		this.prevSelectedColumnNameValueBeanList = prevSelectedColumnNVBList;
 		List<EntityInterface> mainEntityList = queryDetailsObj.getMainEntityList();
@@ -290,7 +290,6 @@ public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm
 				addIQueryRootNodeToTree(categorySearchForm,queryDetailsObj, xmlString);
 				xmlString.append("</item>");
 			}
-			
 			//Get List of all main Entity Id's, except IQuery root nodes 
 			List<String> mainEntityIdList = getMainEntityIdList(queryDetailsObj,mainEntityList,rootNodesIdsList); 
 			
@@ -301,6 +300,13 @@ public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm
 		return xmlString;
 	}
 
+	/**
+	 * This method add all main entities to containment tree except root node
+	 * @param categorySearchForm
+	 * @param queryDetailsObj
+	 * @param mainEntityIdList
+	 * @param xmlString
+	 */
 	private void addAllMainEntitiesToTree(CategorySearchForm categorySearchForm,QueryDetails queryDetailsObj,List<String> mainEntityIdList, StringBuilder xmlString)
 	{
 		OutputTreeDataNode currentSelectedObject;
@@ -313,11 +319,16 @@ public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm
 			
 			//For each main Entity add all Containment
 			addAllContainmentsOfMainExpression(queryDetailsObj,categorySearchForm, xmlString); 
-			
 			xmlString.append("</item>");
 		}
 	}
 
+	/**
+	 * This method adds the root node of IQuery to containment tree
+	 * @param categorySearchForm
+	 * @param queryDetailsObj
+	 * @param xmlString
+	 */
 	private void addIQueryRootNodeToTree(CategorySearchForm categorySearchForm,
 			QueryDetails queryDetailsObj, StringBuilder xmlString)
 	{
@@ -369,7 +380,7 @@ public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm
 		String uniqueNodeId = currentSelectedObject.getUniqueNodeId();
 		IOutputEntity outputEntity = currentSelectedObject.getOutputEntity();
 	    
-		Map <Integer,HashMap <EntityInterface,Integer>> mainExpEntityExpressionIdMap = queryDetailsObj.getMainExpEntityExpressionIdMap();
+		Map <Integer,List<Integer>> mainEntityContainmentIdsMap = queryDetailsObj.getMainExpEntityExpressionIdMap();
 		int expressionId = currentSelectedObject.getExpressionId();
 		
 		EntityInterface dynamicExtensionsEntity = outputEntity.getDynamicExtensionsEntity();
@@ -387,7 +398,7 @@ public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm
 		else
 		{
 			//If its a containment Entity
-			parentId = getParentForChildEntity(parentNodesIdMap, dynamicExtensionsEntity, expressionId,mainExpEntityExpressionIdMap);
+			parentId = getParentForChildEntity(parentNodesIdMap, dynamicExtensionsEntity, expressionId,mainEntityContainmentIdsMap);
 		}
 		xmlString.append("<item id = \""+ treeClassNodeId + "\" text = \""+ classDisplayName + "\" name= \""+ className +"\" parent= \"" + parentId + "\" parentObjName = "+ "\"\"" +">");	
 		addAttributeToClassEntity(className, treeClassNodeId, categorySearchForm, currentSelectedObject.getAttributes(),xmlString);
@@ -397,6 +408,12 @@ public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm
 		}
 	}
 	
+	/**
+	 * This method adds all containments of a main entity to containment tree
+	 * @param queryDetailsObj
+	 * @param categorySearchForm
+	 * @param xmlString
+	 */
 	private void addAllContainmentsOfMainExpression(QueryDetails queryDetailsObj, CategorySearchForm categorySearchForm,StringBuilder xmlString)
 	{
 		OutputTreeDataNode currentSelectedObject = queryDetailsObj.getCurrentSelectedObject();
@@ -422,19 +439,13 @@ public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm
 	{
 		OutputTreeDataNode currentSelectedObject;
 		List <String> containmentEntitiesIds = new ArrayList<String>();
-
-		Map <Integer,HashMap <EntityInterface,Integer>> mainExpEntityExpressionIdMap = queryDetailsObj.getMainExpEntityExpressionIdMap();
-		HashMap <EntityInterface,Integer> entityExpIdMap = mainExpEntityExpressionIdMap.get(Integer.valueOf(mainExpId));
-		Set <EntityInterface> entityKeySet = entityExpIdMap.keySet();
-		Iterator<EntityInterface> entityKeySetItr = entityKeySet.iterator();
-		
+		Map <Integer,List<Integer>> mainEntityContainmentIdsMap = queryDetailsObj.getMainExpEntityExpressionIdMap();
+		List<Integer> expressionIdsList = mainEntityContainmentIdsMap.get(Integer.valueOf(mainExpId));
+		Iterator<Integer> expsIdsItr = expressionIdsList.iterator();
 		Set<String>keySet = queryDetailsObj.getUniqueIdNodesMap().keySet();
-		
-		
-		while(entityKeySetItr.hasNext())
+		while(expsIdsItr.hasNext())
 		{
-			EntityInterface entity = entityKeySetItr.next();
-			Integer expId = entityExpIdMap.get(entity);
+			Integer expId = expsIdsItr.next();
 			String uniqueKeyId = "";
 			Iterator <String> keyItr = keySet.iterator();
 			while(keyItr.hasNext())
@@ -456,17 +467,15 @@ public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm
             String treeClassNodeId, CategorySearchForm categorySearchForm,
             List<QueryOutputTreeAttributeMetadata> attributeMetadataList,StringBuilder xmlString)
 {
-      //List<QueryOutputTreeAttributeMetadata> attributeMetadataList = node.getAttributes();
-      
       AttributeInterface attribute;
       String attributeName;
       String attributeDisplayName;
       String treeAttributeNodeId;
       List<NameValueBean> defaultSelectedColumnNameValueBeanList = categorySearchForm.getSelectedColumnNameValueBeanList(); 
-    if(defaultSelectedColumnNameValueBeanList==null)
-    {
-      defaultSelectedColumnNameValueBeanList = new ArrayList<NameValueBean>();      
-    }
+      if(defaultSelectedColumnNameValueBeanList==null)
+      {
+    	  defaultSelectedColumnNameValueBeanList = new ArrayList<NameValueBean>();      
+      }
       
       for (QueryOutputTreeAttributeMetadata attributeMetadata : attributeMetadataList)
       {
@@ -479,26 +488,8 @@ public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm
             attributeName = attribute.getName();
             attributeDisplayName = Utility.getDisplayLabel(attributeName);
             treeAttributeNodeId = attributeMetadata.getUniqueId();
-            //attributeTreeNode = new QueryTreeNodeData();
-            //attributeTreeNode.setIdentifier(treeAttributeNodeId);
-            //attributeTreeNode.setObjectName(attributeName);
-            //attributeTreeNode.setDisplayName(attributeDisplayName);
-            //attributeTreeNode.setParentIdentifier(treeClassNodeId);
-            //attributeTreeNode.setParentObjectName(className);
-            
-            
-            
             xmlString.append("<item id = \""+ treeAttributeNodeId + "\" text = \""+ attributeDisplayName + "\" name= \""+ attributeName +"\" parent= \"" + treeClassNodeId + "\" parentObjName = \""+ className + "\"" +">");
             xmlString.append("</item>");
-            
-            //treeDataVector.add(attributeTreeNode);
-             /*(if("".equals(attributeName))
-            { 
-                nameValueBean = new NameValueBean();
-                        nameValueBean.setName(attributeWithClassName);
-                        nameValueBean.setValue(treeAttributeNodeId);
-                        defaultSelectedColumnNameValueBeanList.add(nameValueBean);
-            }*/
       }
       
       if (prevSelectedColumnNameValueBeanList != null)
@@ -510,9 +501,9 @@ public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm
       {
          categorySearchForm.setSelectedColumnNameValueBeanList(defaultSelectedColumnNameValueBeanList);
       }
-}
+ }
 
-	private String getParentForChildEntity(Map<Integer, String> parentNodesIdMap,EntityInterface dynamicExtensionsEntity, int entityExpId,Map <Integer,HashMap <EntityInterface,Integer>> mainExpEntityExpressionIdMap)
+	private String getParentForChildEntity(Map<Integer, String> parentNodesIdMap,EntityInterface dynamicExtensionsEntity, int entityExpId,Map <Integer,List<Integer>> mainExpEntityExpressionIdMap)
 	{
 		//Else it will be one of the containment of the main entity, so it's parent should be main entity
 		Integer mainEntityExpId = getMainEntityIdForChildEntity(dynamicExtensionsEntity, entityExpId, mainExpEntityExpressionIdMap);
@@ -524,7 +515,7 @@ public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm
 		return parentIdString;
 	}
 
-	private Integer getMainEntityIdForChildEntity(EntityInterface dynamicExtensionsEntity, int entityExpId,Map <Integer,HashMap <EntityInterface,Integer>> mainExpEntityExpressionIdMap)
+	private Integer getMainEntityIdForChildEntity(EntityInterface dynamicExtensionsEntity, int entityExpId,Map <Integer,List<Integer>> mainExpEntityExpressionIdMap)
 	{
 		Integer mainExpressionId = null;
 		Set<Integer> mainExpskeySet = mainExpEntityExpressionIdMap.keySet();
@@ -532,14 +523,11 @@ public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm
 		while(keySetItr.hasNext())
 		{
 			Integer mainExpId = keySetItr.next();
-			HashMap <EntityInterface,Integer> entityExpIdMap = mainExpEntityExpressionIdMap.get(mainExpId);
-			
-			Set <EntityInterface> entityKeySet = entityExpIdMap.keySet();
-			Iterator<EntityInterface> entityKeySetItr = entityKeySet.iterator();
-			while(entityKeySetItr.hasNext())
+			List <Integer> expIdsList = mainExpEntityExpressionIdMap.get(mainExpId);
+			Iterator<Integer> expIdsItr = expIdsList.iterator();
+			while(expIdsItr.hasNext())
 			{
-				EntityInterface entity = entityKeySetItr.next();
-				Integer expId = entityExpIdMap.get(entity);
+				Integer expId = expIdsItr.next();
 				if(entityExpId == expId.intValue())
 				{
 					mainExpressionId = mainExpId;
@@ -871,29 +859,7 @@ public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm
 	}
 	
 	
-	public String getFileName()
-	{
-		return "loadXML_"+System.currentTimeMillis()+".xml";
-	}
 	
-	public void writeXML(String xmlString,String fileName) throws BizLogicException
-	{
-		try 
-		{        
-			String path=edu.wustl.query.util.global.Variables.applicationHome+System.getProperty("file.separator");
-	        OutputStream fout= new FileOutputStream(path+fileName);
-	        OutputStream bout= new BufferedOutputStream(fout);
-	        OutputStreamWriter out = new OutputStreamWriter(bout, "8859_1");
-	        out.write(xmlString);
-	        out.flush();  
-	        out.close();
-		}
-		catch (IOException e) 
-		{
-			Logger.out.info(e.getMessage());
-			throw new BizLogicException();
-		}
-	}
 
 	
 }
