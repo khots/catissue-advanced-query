@@ -68,6 +68,7 @@ import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.domain.SelectedConcept;
 import edu.wustl.query.htmlprovider.HtmlProvider;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.IQueryUpdationUtil;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
 import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleSearchQueryUtil;
@@ -250,7 +251,7 @@ public class DAGPanel
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map ruleDetailsMap;
-		//		int expressionId;
+		
 		if (!strToCreateQueryObject.equalsIgnoreCase(""))
 		{
 			ruleDetailsMap = queryBizLogic.getRuleDetailsMap(strToCreateQueryObject, entity
@@ -266,6 +267,7 @@ public class DAGPanel
 					conditionValues, errMsg);
 
 		}
+		
 		return node;
 	}
 
@@ -1315,9 +1317,22 @@ public class DAGPanel
 			session.setAttribute(DAGConstant.ISREPAINT, DAGConstant.ISREPAINT_TRUE);
 		}
 		HashSet<Integer> visibleExpression = new HashSet<Integer>();
+		
+		//Get the main Entities from Query
+		List<EntityInterface> mainEntityList = IQueryUpdationUtil.getAllMainObjects(query);
+	   
+		
 		for (IExpression expression : constraints)
 		{
-			if (expression.isVisible())
+			/*if (expression.isVisible())
+			{
+				visibleExpression.add(Integer.valueOf(expression.getExpressionId()));
+			}*/
+			
+			
+			//As we require expressions added on Add Limit page or main Entities added Define Search Results View   
+			EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
+			if(expression.containsRule() || IQueryUpdationUtil.checkIfMainObject(entity, mainEntityList))
 			{
 				visibleExpression.add(Integer.valueOf(expression.getExpressionId()));
 			}
@@ -1334,7 +1349,7 @@ public class DAGPanel
 			dagNode.setToolTip(exp);
 			Position position = positionMap.get(exp.getExpressionId());
 			setNodeType(exp, dagNode, position);
-			nodeform(expressionId, dagNode, constraints, new ArrayList<IIntraModelAssociation>());
+			nodeform(expressionId, dagNode, constraints, new ArrayList<IIntraModelAssociation>(),mainEntityList);
 			int numOperands = exp.numberOfOperands();
 			int numOperator = numOperands - 1;
 			for (int i = 0; i < numOperator; i++)
@@ -1370,14 +1385,16 @@ public class DAGPanel
 			dagNode.setX(position.getX());
 			dagNode.setY(position.getY());
 		}
-		if (!exp.containsRule())
+		
+		//Commented out .....Baljeet
+		/*if (!exp.containsRule())
 		{
 			dagNode.setNodeType(DAGConstant.VIEW_ONLY_NODE);
 		}
 		if (!exp.isInView())
 		{
 			dagNode.setNodeType(DAGConstant.CONSTRAINT_ONLY_NODE);
-		}
+		}*/
 	}
 
 	private void repaintFromSessionQuery(List<CustomFormulaNode> customNodeList,
@@ -1880,7 +1897,7 @@ public class DAGPanel
 	 * @param path
 	 */
 	private void nodeform(int expressionId, DAGNode node, IConstraints constraints,
-			List<IIntraModelAssociation> intraModelAssociationList)
+			List<IIntraModelAssociation> intraModelAssociationList,List<EntityInterface> mainEntityList)
 	{
 		IJoinGraph graph = constraints.getJoinGraph();
 		IExpression expression = constraints.getExpression(expressionId);
@@ -1897,9 +1914,15 @@ public class DAGPanel
 			IIntraModelAssociation association = (IIntraModelAssociation) (graph.getAssociation(
 					expression, exp));
 
+			//Added By Baljeet.....
+			intraModelAssociationList.clear();
+			
+			
 			intraModelAssociationList.add(association);
 
-			if (exp.isVisible())
+			//if (exp.isVisible())
+			EntityInterface entity = exp.getQueryEntity().getDynamicExtensionsEntity();
+			if(exp.containsRule() || IQueryUpdationUtil.checkIfMainObject(entity, mainEntityList)) 
 			{
 				IPath pathObj = m_pathFinder.getPathForAssociations(intraModelAssociationList);
 				long pathId = pathObj.getPathId();
@@ -1927,10 +1950,12 @@ public class DAGPanel
 				intraModelAssociationList.clear();
 
 			}
-			else
+			
+			//Commented out .......Baljeet
+			/*else
 			{
-				nodeform(exp.getExpressionId(), node, constraints, intraModelAssociationList);
-			}
+				nodeform(exp.getExpressionId(), node, constraints, intraModelAssociationList,mainEntityList);
+			}*/
 		}
 	}
 
