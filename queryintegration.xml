@@ -109,6 +109,8 @@
 				<include name="DynamicExtensionsHibernate.cfg.xml" />
 			</fileset>
 		</copy>
+		<antcall target="modify_query_tiles-def"/>
+		
 		<copy todir="${deploy.temp.dir}/${war.dir}/WEB-INF" overwrite="true">
 			<fileset dir=".">
 				<include name="advancequery-struts-config.xml" />
@@ -235,6 +237,23 @@
 			<property name="database.schema" value="${database.schema}" />
 		</ant>
 	</target>
+	
+	<target name="modify_query_tiles-def">
+			<!--Replacing tokens in tiles-def -->
+			<copy file= "${deploy.temp.dir}/cider/mainTiles.properties"  todir="${deploy.temp.dir}/AdvanceQuery" overwrite="true" />
+				<property file="${deploy.temp.dir}/AdvanceQuery/mainTiles.properties"></property>
+						<replace dir="${deploy.temp.dir}/AdvanceQuery/" propertyfile="mainTiles.properties"> 
+									<include name ="AdvanceQuery-tiles-defs.xml"/>
+									<replacefilter token="@@tilesTitle@@" value="${tilesTitle}"/>
+									<replacefilter token="@@tilesHeader@@" value="${tilesHeader}"/>
+									<replacefilter token="@@tilesAppHeader@@" value="${tilesAppHeader}"/>
+									<replacefilter token="@@tilesMainMenu@@" value="${tilesMainMenu}"/>
+									<replacefilter token="@@tilesQuickLaunch@@" value="${tilesQuickLaunch}"/>
+									<replacefilter token="@@tilesContent@@" value="${tilesContent}"/>
+									<replacefilter token="@@tilesFooter@@" value="${tilesFooter}"/>
+						</replace>
+			<echo message="${tilesTitle}"/>
+				</target>
 
 	<!--Advance Query Related  End -->
 </project>
