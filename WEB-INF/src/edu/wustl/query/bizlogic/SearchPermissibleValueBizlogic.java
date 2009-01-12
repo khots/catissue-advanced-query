@@ -191,7 +191,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		{
 			System.out.println(concept);
 		}*/
-		String status="false";
+		String status="true";//need to change the code as per requrement temp changes
 		if(medRelatedConcept)
 		{
 			status="true";
