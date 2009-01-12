@@ -6,11 +6,10 @@ package edu.wustl.query.querymanager;
 import java.sql.SQLException;
 
 import edu.wustl.common.query.CiderQuery;
-import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.domain.Workflow;
-import edu.wustl.query.ExecutionManager.CIDERQueryExecutionThread;
-import edu.wustl.query.ExecutionManager.QueryExecutionThread;
+import edu.wustl.query.executionmanager.CIDERQueryExecutionThread;
+import edu.wustl.query.executionmanager.QueryExecutionThread;
 
 
 /**
@@ -19,15 +18,6 @@ import edu.wustl.query.ExecutionManager.QueryExecutionThread;
  */
 public class CiderQueryManager extends AbstractQueryManager
 {
-
-	/**
-	 *  @param query
-	 *  @return
-	 */
-	public int execute(IQuery query)
-	{
-		return 0;
-	}
 
 	/**
 	 *  @param workflow
@@ -59,14 +49,6 @@ public class CiderQueryManager extends AbstractQueryManager
 		return null;
 	}
 	
-	/**
-	 * @param query_excecution_id
-	 */
-	public void abort(int query_excecution_id)
-	{
-		
-	}
-
 
 	@Override
 	/**

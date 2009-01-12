@@ -9,7 +9,7 @@ import java.util.Map;
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.query.domain.Workflow;
-import edu.wustl.query.ExecutionManager.QueryExecutionThread;
+import edu.wustl.query.executionmanager.QueryExecutionThread;
 
 
 /**
@@ -45,13 +45,6 @@ public abstract class AbstractQueryManager
 	
 	/**
 	 * 
-	 * @param query
-	 * @return
-	 */
-	abstract public int execute(IQuery query);
-	
-	/**
-	 * 
 	 * @param workflow
 	 * @return
 	 */
@@ -70,12 +63,6 @@ public abstract class AbstractQueryManager
 	 * @return
 	 */
 	abstract public Count getWorkflowCount(int query_excecution_id);	
-	
-	/**
-	 * 
-	 * @param query_excecution_id
-	 */
-	abstract public void abort(int query_excecution_id);
 	
 	/**
 	 * 
