@@ -83,7 +83,8 @@ body {
 	font-family: verdana;
 	font-size: 11px;
 	color: #000000;
-	vertical-align:top;
+	padding-top:2px;
+	
 }
 .black_ar_td{
 	font-family: verdana;
@@ -96,6 +97,7 @@ body {
 	font-family: verdana;
 	font-size: 11px;
 	color: #000000;
+	
 }
 .black_new{
 	font-family: verdana;
