@@ -211,9 +211,9 @@
 			<fileset dir="${base.dir}/query-properties" />
 		</copy>
 		<!-- added By amit_doshi for LexBig Vocabulary Interface -->
-		<copy todir="${temp.dir}/LexBIGData" overwrite="false">
+		<!--copy todir="${temp.dir}/LexBIGData" overwrite="false">
 					<fileset dir="${base.dir}/LexBIGData" />
-		</copy>
+		</copy -->
 		<replace dir="${temp.dir}/query-properties" propertyfile="${temp.dir}/query-properties/vocab.properties">
 				<replacefilter token="${lexbig.config.path}" value="${jboss.lexbig.config.path}" />
 		</replace>
@@ -464,11 +464,11 @@
 			</fileset>
 		</copy>
 		<!-- added By amit_doshi for LexBig Vocabulary Interface -->
-		<copy todir="${jboss.server.url}/data/LexBIGData" overwrite="false">
+		<!--copy todir="${jboss.server.url}/data/LexBIGData" overwrite="true">
 									<fileset dir="${temp.dir}/LexBIGData">
 										<include name="**/*" />
 									</fileset>
-		</copy>
+		</copy -->
 		
 		<copy todir="${jboss.server.url}/deploy" overwrite="true">
 			<fileset dir="${temp.dir}">
@@ -637,7 +637,7 @@
 	<target name="deploy_db_db2">
 		<echo message="Initializing DB2 Database for caTissue Suite v1.1 Application..." />		
 		<sql driver="${db2.driver.string}" url="jdbc:db2://${database.host}:${database.port}/${database.name}:currentSchema=${database.schema};" userid="${database.username}" password="${database.password}" onerror="continue">
-			<transaction src="${db2.sql.dir}/query/csm_query.sql" />
+			<!-- transaction src="${db2.sql.dir}/query/csm_query.sql" / -->
 			<transaction src="${db2.sql.dir}/query/caB2B Table Generation Script.sql" />
 			<transaction src="${db2.sql.dir}/query/DynamicExtension_DB2.sql" /> 
 			<transaction src="${db2.sql.dir}/query/metadata_schema_script.sql" /> 
