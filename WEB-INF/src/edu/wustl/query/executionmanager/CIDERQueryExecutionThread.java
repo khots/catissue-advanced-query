@@ -71,12 +71,13 @@ public class CIDERQueryExecutionThread implements Runnable
 	public void run()
 	{
 		String upi;
-		int noOfRecords = 0;
 		int patientDeid = -1;
 		DatabaseConnectionParams dbConnectionParams = null;
 
 		try
 		{
+			ITableManager manager = ITableManager.getInstance();
+			
 			if (ciderQueryObj.getQueryExecId() == 0)
 			{
 				throw new QueryExecIdNotGeneratedException("");
@@ -86,17 +87,7 @@ public class CIDERQueryExecutionThread implements Runnable
 					Constants.JDBC_DAO);
 			dbConnectionParams.openSession(null);
 
-			long queryExecutionStartTime = System.currentTimeMillis();
-
 			results = dbConnectionParams.getResultSet(ciderQueryObj.getQueryString());
-
-			long queryExecutionEndTime = System.currentTimeMillis();
-
-			System.out.println("Executing Query :: " + ciderQueryObj.getQueryString());
-			System.out.println("Time To execute query (in seconds) :: "
-					+ (queryExecutionEndTime - queryExecutionStartTime));
-
-			long stTime = System.currentTimeMillis();
 
 			// set result set JDBC pre-fetch size to ensure batch read. 
 			// Default is 10 and this should be tested with production database 
@@ -106,6 +97,7 @@ public class CIDERQueryExecutionThread implements Runnable
 			{
 				if (cancelThread)
 				{
+					manager.changeStatus("CANCELLED", ciderQueryObj.getQueryExecId());
 					break;
 				}
 				else
@@ -124,20 +116,15 @@ public class CIDERQueryExecutionThread implements Runnable
 						// patientDeid = Get Patient DEID
 
 						//	INSERTING UPI into ITABLE
-						ITableManager manager = ITableManager.getInstance();
 						manager.insertITableEntry(patientDeid, 
 								ciderQueryObj.getQueryExecId(), upi);
 					}
 				}
 			}
-
-			long edTime = System.currentTimeMillis();
-
-			System.out.println("TIME TO ITERATE OVER THE RESULT SET.... " + (edTime - stTime));
-
-			System.out.println("EXECUTION COMPLETED");
-			System.out.println(noOfRecords);
-
+			
+			// UPDATE TABLE TO CHANGE QUERY STATUS TO 'COMPLETE'
+			manager.changeStatus("COMPLETE", ciderQueryObj.getQueryExecId());
+			
 		}
 		catch (SQLException ex)
 		{
@@ -157,6 +144,7 @@ public class CIDERQueryExecutionThread implements Runnable
 			{
 				results.close();
 				dbConnectionParams.closeSession();
+				upiCache = null;
 			}
 			catch (SQLException e)
 			{
@@ -166,7 +154,6 @@ public class CIDERQueryExecutionThread implements Runnable
 			{
 				e.printStackTrace();
 			}
-			upiCache = null;
 		}
 	}
 
