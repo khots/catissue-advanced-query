@@ -72,7 +72,7 @@ public class ITableManager
 	 * @throws DAOException
 	 * @throws SQLException
 	 */
-	public int insertNewQuery(int projectId, int userId,
+	public int insertNewQuery(Long projectId, Long userId,
 								Long query_id) throws DAOException, SQLException
 	{
 		// CODE TO INSERT DATA INTO QUERY_EXECUTION_LOG Table
@@ -80,5 +80,17 @@ public class ITableManager
 		
 		// return Query_Execution_Id
 		return -1;
+	}
+	
+	/**
+	 * 
+	 * @param status
+	 * @param queryExecId
+	 * @throws SQLException 
+	 * @throws DAOException 
+	 */
+	public void changeStatus(String status, int queryExecId) throws SQLException, DAOException
+	{
+		
 	}
 }
