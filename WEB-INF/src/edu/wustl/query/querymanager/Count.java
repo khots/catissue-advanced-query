@@ -14,6 +14,13 @@ public class Count
    private int query_exection_id;
    private String status;
    
+    /**
+     * DEFAULT CONSTRUCTOR
+     */
+	public Count()
+	{
+
+	}
    /**
     * 
     * @param count
