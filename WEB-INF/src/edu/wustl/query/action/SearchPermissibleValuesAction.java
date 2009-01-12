@@ -1,7 +1,9 @@
 
 package edu.wustl.query.action;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,9 +14,15 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.vocab.IConcept;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.VocabularyException;
+import edu.wustl.common.vocab.impl.Vocabulary;
+import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.bizlogic.SearchPermissibleValueBizlogic;
 import edu.wustl.query.util.global.Constants;
@@ -57,7 +65,7 @@ public class SearchPermissibleValuesAction extends Action
 					.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 			try
 			{
-				String html = getSearchedVocabDataAsHTML(searchTerm, targetVocabsForSearchTerm);
+				String html = getSearchedVocabDataAsHTML(searchTerm, targetVocabsForSearchTerm,componentId,request);
 				response.getWriter().write(html);
 			}
 			catch (VocabularyException e)
@@ -73,16 +81,29 @@ public class SearchPermissibleValuesAction extends Action
 	 * and return the HTML for the searched result
 	 * @param searchTerm
 	 * @param targetVocabsForSearchTerm
+	 * @param request 
+	 * @param componentId 
 	 * @return
 	 * @throws VocabularyException
+	 * @throws PVManagerException 
 	 */
-	private String getSearchedVocabDataAsHTML(String searchTerm, String targetVocabsForSearchTerm)
-			throws VocabularyException
+	private String getSearchedVocabDataAsHTML(String searchTerm, String targetVocabsForSearchTerm, String componentId, HttpServletRequest request)
+			throws VocabularyException, PVManagerException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		StringBuffer html = new StringBuffer();
 		StringTokenizer token = new StringTokenizer(targetVocabsForSearchTerm, "@");
+		
+		String entityName = (String) request.getSession().getAttribute(Constants.ENTITY_NAME);
+		Entity entity = (Entity) EntityCache.getCache().getEntityById(Long.valueOf((entityName)));
+		Map<String, AttributeInterface> enumAttributeMap = (HashMap<String, AttributeInterface>)
+				request.getSession().getAttribute(Constants.ENUMRATED_ATTRIBUTE);
+		AttributeInterface attribute = (AttributeInterface) enumAttributeMap
+				.get(Constants.ATTRIBUTE_INTERFACE + componentId);
+		
+		List<IConcept> pvList=bizLogic.getPermissibleValueList(attribute, entity);
+		
 		while (token.hasMoreTokens())
 		{
 			String[] vocabFullName = token.nextToken().split(":");
@@ -96,9 +117,11 @@ public class SearchPermissibleValuesAction extends Action
 			{
 				for(IConcept concept:conceptList)
 				{
-					 String checkboxId = vocabName + "@" + vocabVersion + ":" + concept.getCode();//TODO need to change into MED concept code when API will be completed
-					html.append(bizLogic.getMappedVocabularyPVChildAsHTML("srh_" + vocabName,
-							vocabVersion, concept, checkboxId));
+					String checkboxId = vocabName + "@" + vocabVersion + ":" + concept.getCode();//TODO need to change into MED concept code when API will be completed
+					
+					boolean medRelatedConcept=isSourceVocabMappedTerm(concept,pvList) ;
+					html.append(bizLogic.getSearchedVocabPVChildAsHTML("srh_" + vocabName,
+							vocabVersion, concept, checkboxId,medRelatedConcept));
 				}
 			}
 			else
@@ -109,6 +132,44 @@ public class SearchPermissibleValuesAction extends Action
 			html.append(bizLogic.getEndHTML());
 		}
 		return html.toString();
+	}
+	/**
+	 * 
+	 * @param concept 
+	 * @param pvList 
+	 * @param componentId
+	 * @param request
+	 * @return
+	 * @throws VocabularyException 
+	 */
+	private boolean isSourceVocabMappedTerm(IConcept concept, List<IConcept> pvList) 
+					throws VocabularyException
+	{
+		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
+		.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
+		
+		String relationType =VocabUtil.getVocabProperties().getProperty("vocab.translation.association.name");
+		IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties().getProperty(
+		"source.vocab.name"), VocabUtil.getVocabProperties().getProperty(
+		"source.vocab.version"),VocabUtil.getVocabProperties().getProperty(
+		"source.vocab.urn"));
+		boolean status = false;
+		if(((Vocabulary)sourceVocabulary).equals((Vocabulary)concept.getVocabulary()))
+		{
+				status= bizLogic.isPermissibleValue(concept, pvList);
+		}
+		else
+		{
+			boolean condFirst=bizLogic.isSourceVocabCodedTerm(concept, relationType, sourceVocabulary);
+			boolean condSecond=bizLogic.isPermissibleValue(concept, pvList);;
+			
+			if(condFirst && condSecond)
+			{
+				status = true;
+			}
+
+		}
+		return status;
 	}
 	/**
 	 * This method returns the display name for given vocabulary Name and vocabulary version
