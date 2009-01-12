@@ -11,10 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -26,6 +24,7 @@ import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.query.queryobject.locator.Position;
 import edu.wustl.common.query.queryobject.locator.QueryNodeLocator;
@@ -71,9 +70,9 @@ import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.IQueryUpdationUtil;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
 import edu.wustl.query.util.querysuite.QueryModuleError;
-import edu.wustl.query.util.querysuite.QueryModuleSearchQueryUtil;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 import edu.wustl.query.util.querysuite.TemporalQueryUtility;
+import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 
 /**
  *The class is responsibel controlling all activities of Flex DAG
@@ -1230,16 +1229,20 @@ public class DAGPanel
 		IQuery query = m_queryObject.getQuery();
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		boolean isRulePresentInDag = QueryModuleUtil.checkIfRulePresentInDag(query);
-		QueryModuleSearchQueryUtil QMSearchQuery = new QueryModuleSearchQueryUtil(request, query);
+		//changed to QueryUIManager searchQuery call .
+		//QueryModuleSearchQueryUtil QMSearchQuery = new QueryModuleSearchQueryUtil(request, query);
+		AbstractQueryUIManager QUIManager = AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
+		
 		if (isRulePresentInDag)
 		{
-			status = QMSearchQuery.searchQuery(null);
+			status = QUIManager.searchQuery(null);
 		}
 		else
 		{
 			status = QueryModuleError.EMPTY_DAG;
 		}
 		return status.getErrorCode();
+
 	}
 
 	private boolean isKeySetContainsNodeName(String customNodeName, Set keySet)

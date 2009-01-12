@@ -15,6 +15,10 @@ public class Variables extends edu.wustl.common.util.global.Variables
 	public static Map<String, String> aliasAndPageOfMap = new HashMap<String, String>();
 	public static String queryGeneratorClassName = "";
 	public static Properties properties;
+	
+	public static String abstractQueryClassName = "";
+	public static String abstractQueryManagerClassName = "";
+	public static String abstractQueryUIManagerClassName = "";
 
 	public static String prepareColTypes(List dataColl)
 	{

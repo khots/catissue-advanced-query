@@ -80,7 +80,12 @@ public class QueryServletContextListenerUtil
 				queryProperties.load(new FileInputStream(file));
 
 				Variables.queryGeneratorClassName = queryProperties.getProperty("query.queryGeneratorClassName");
-
+				//Added to get AbstractQuery Implementer Class Name.
+				Variables.abstractQueryClassName = queryProperties.getProperty("query.abstractQueryClassName");
+				Variables.abstractQueryManagerClassName = queryProperties.getProperty("query.abstractQueryManagerClassName");
+				Variables.abstractQueryUIManagerClassName = queryProperties.getProperty("query.abstractQueryUIManagerClassName");
+				
+				
 				Variables.properties = queryProperties;
 			}
 			catch (FileNotFoundException e)

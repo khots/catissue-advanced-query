@@ -5,8 +5,9 @@ package edu.wustl.query.querymanager;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import edu.wustl.common.query.AbstractQuery;
+import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
+import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.ExecutionManager.QueryExecutionThread;
 
@@ -36,7 +37,7 @@ public abstract class AbstractQueryManager
 	 * @param query
 	 * @return
 	 */
-	public int execute(AbstractQuery query)
+	public int execute(AbstractQuery query)throws MultipleRootsException,SqlException
 	{
 		
 		return 0;

@@ -628,5 +628,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String  MAIN_ENTITY_ID= "entityId";
 	/**  Constant for  */
 	public static final String XML_FILE_NAME = "fileName";
+	
+	//Start : Added for changes in Query Design for CIDER Query 
+    public static final String PROJECT_ID = "projectId";
+    //End : Added for changes in Query Design for CIDER Query 
+    
 
 }
