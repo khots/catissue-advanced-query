@@ -16,6 +16,7 @@ import edu.wustl.common.vocab.IConcept;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.IVocabularyManager;
 import edu.wustl.common.vocab.VocabularyException;
+import edu.wustl.common.vocab.impl.Concept;
 import edu.wustl.common.vocab.impl.Vocabulary;
 import edu.wustl.common.vocab.impl.VocabularyManager;
 import edu.wustl.common.vocab.utility.VocabUtil;
@@ -82,13 +83,13 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @throws PVManagerException
 	 */
 	public Map<String, List<IConcept>> getMappedConcepts(AttributeInterface attribute,
-			String targetVocabName, String targetVocabVer, EntityInterface entity)
+			IVocabulary targetVocabulary, EntityInterface entity)
 			throws VocabularyException, PVManagerException
 	{
 		IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties().getProperty(
 				"source.vocab.name"), VocabUtil.getVocabProperties().getProperty(
 				"source.vocab.version"));
-		IVocabulary targetVocabulary = new Vocabulary(targetVocabName, targetVocabVer);
+		
 		List<IConcept> concepts;
 		Map<String, List<IConcept>> mappedConcepts = null;
 		try
@@ -169,6 +170,40 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 				+ concept.getDescription() + "\n" + "<td></tr>";
 	}
 	/**
+	 * This method returns the HTML for child nodes for all the vocabularies which
+	 *  contains the permissible ,concept code and check box
+	 * @param vocabName
+	 * @param vocabversoin
+	 * @param concept
+	 * @param checkboxId
+	 * @param medRelatedConcept 
+	 * @return
+	 * @throws VocabularyException 
+	 */
+	public String getSearchedVocabPVChildAsHTML(String vocabName, String vocabversoin,
+			IConcept concept, String checkboxId, boolean medRelatedConcept) throws VocabularyException
+	{
+		/*String relationType =VocabUtil.getVocabProperties().getProperty("vocab.translation.association.name");
+		IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties().getProperty(
+		"source.vocab.name"), VocabUtil.getVocabProperties().getProperty(
+		"source.vocab.version"));
+		if(isSourceVocabCodedTerm(concept, relationType, sourceVocabulary))
+		{
+			System.out.println(concept);
+		}*/
+		String status="false";
+		if(medRelatedConcept)
+		{
+			status="true";
+		}
+		return "<tr ><td style='padding-left:30px'>&nbsp;</td><td class='black_ar_tt'> \n"
+				+ "<input type='checkbox' disabled='"+status+"' name='" + vocabName + vocabversoin + "' id='"
+				+ checkboxId + "' value='" + concept.getCode() + ":" + concept.getDescription()
+				+ "' onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
+				+ "</td><td class='black_ar_tt'>" + concept.getCode() + ":"
+				+ concept.getDescription() + "\n" + "<td></tr>";
+	}
+	/**
 	 * This method will return HTML for the root node of each vocabularies that require 
 	 * while creating the tree like structure to show the result 
 	 * @param vocabName
@@ -180,26 +215,21 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	public String getRootVocabularyNodeHTML(String vocabName, String vocabVer,
 			String vocabDisName)throws VocabularyException
 	{
-		
-	/*
-		 * String srcvocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
-		 * String srcvocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
-		 * code should uncommented for multiple vocabulary support String
-		 * style="display:none"; String imgpath=
-		 * "src=\"images/advancequery/nolines_plus.gif\"/";
-		 * 
-		 * if(srcvocabName.equalsIgnoreCase(vocabName) &&
-		 * srcvocabVer.equalsIgnoreCase(vocabVer)) { //to show MED vocabulary
-		 * tree or data expanded mode style="display:";
-		 * imgpath="src=\"images/advancequery/nolines_minus.gif\"/"; }
-		 */
-
-		String style = "display:";
-		String imgpath = "src=\"images/advancequery/nolines_minus.gif\"/";
-		String table = "<table cellpadding ='0' cellspacing ='1'>";
-		return table 
+		  String srcvocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
+		  String srcvocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
+		  
+		  String style="display:none"; 
+		  String imgpath="src=\"images/advancequery/nolines_plus.gif\"/";
+		  if(srcvocabName.equalsIgnoreCase(vocabName) && srcvocabVer.equalsIgnoreCase(vocabVer)) 
+		  { 
+			  //to show MED vocabulary  tree or data expanded mode 
+			  style="display:";
+			  imgpath="src=\"images/advancequery/nolines_minus.gif\"/"; 
+		  }
+		String tableHTML = "<table cellpadding ='0' cellspacing ='1'>";
+		return tableHTML 
 				+ "<tr><td>"
-				+ table + "<tr><td class='grid_header_text'>"
+				+ tableHTML + "<tr><td class='grid_header_text'>"
 				+ "<a id=\"image_"+ vocabName+ vocabVer+ "\"\n"
 				+ "onClick=\"showHide('inner_div_"+ vocabName+ vocabVer+ "'," 
 				+"'image_"+ vocabName+ vocabVer+ "');\">\n"
@@ -208,12 +238,12 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 				+ "' id='root_"	+ vocabName+vocabVer+ "' "
 				+ "value='"	+ vocabName
 				+ "' onclick=\"setStatusOfAllCheckBox(this.id);\"></td>"
-				+ "<td class='grid_header_text'>"
+				+ "<td align='middle'  class='grid_header_text'>&nbsp;&nbsp;"
 				+ vocabDisName
 				+ "\n"
 				+ "</td></tr></table>"
 				+ "</td></tr><tr><td><div id='inner_div_"+ vocabName+vocabVer+ "'style='"+style+"'>"
-				+table;
+				+tableHTML;
 	}
 	/**
 	 * This method will return HTML for the root node of each vocabularies that require 
@@ -226,15 +256,8 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	public String getRootVocabularyHTMLForSearch(String vocabName, String vocabVer,
 			String vocabDisName)
 	{
-
-		/*
-		 * code should uncommented for multiple vocabulary support String
-		 * style="display:none"; String imgpath=
-		 * "src=\"images/advancequery/nolines_pluse.gif\"/";
-		 */
-		String style = "display:";
-		String imgpath = "src=\"images/advancequery/nolines_minus.gif\"/";
-
+		String style="display:none"; 
+		String imgpath="src=\"images/advancequery/nolines_plus.gif\"/";
 		String tableHTML = "<table cellpadding ='0' cellspacing ='1'>";
 		return tableHTML 
 				+ "<tr><td>"
@@ -247,7 +270,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 				+ "' id='root_"	+ vocabName+ vocabVer+ "' "
 				+ "value='"+ vocabName+ "'"
 				+ " onclick=\"setStatusOfAllCheckBox(this.id);\"></td>"
-				+ "<td class='grid_header_text'>"
+				+ "<td align='middle'  class='grid_header_text'>&nbsp;&nbsp;"
 				+ vocabDisName
 				+ "\n"
 				+ "</td></tr></table>"
@@ -272,5 +295,30 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		return "<table width='100%' height='100%'>"
 				+ "<tr><td class='black_ar_tt' style='color:red'>"
 				+ "Please enter valid search term<td></tr></table>";
+	}
+	/**
+	 * 
+	 * @param targetConcept
+	 * @param relationType
+	 * @param baseVocab
+	 * @return
+	 * @throws VocabularyException
+	 */
+	public boolean isSourceVocabCodedTerm(IConcept targetConcept, String relationType, IVocabulary baseVocab) throws VocabularyException
+	{
+		 List<IConcept> concepts= vocabularyManager.getSrcConceptsForTarget(targetConcept,relationType,baseVocab);
+		if(concepts!=null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	public boolean isPermissibleValue(IConcept concept,List<IConcept> pvList)
+	{
+		return pvList.contains((Concept) concept);
+		 
 	}
 }
