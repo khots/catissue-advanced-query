@@ -15,7 +15,7 @@ public abstract class AbstractQuery
 	private IQuery query;
 	private int queryExecId;
 	private String queryString;
-	private long user_id;
+	private Long user_id;
 	
 	/**
 	 * 
@@ -24,7 +24,7 @@ public abstract class AbstractQuery
 	 * @param queryString
 	 * @param user_id
 	 */
-	public AbstractQuery(IQuery query, int queryExecId, String queryString, long user_id)
+	public AbstractQuery(IQuery query, int queryExecId, String queryString, Long user_id)
 	{
 		this.query = query;
 		this.queryExecId = queryExecId;
@@ -90,7 +90,7 @@ public abstract class AbstractQuery
 	 * 
 	 * @return
 	 */
-	public long getUser_id()
+	public Long getUser_id()
 	{
 		return user_id;
 	}
@@ -99,7 +99,7 @@ public abstract class AbstractQuery
 	 * 
 	 * @param user_id
 	 */
-	public void setUser_id(long user_id)
+	public void setUser_id(Long user_id)
 	{
 		this.user_id = user_id;
 	}

@@ -13,7 +13,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 public class CiderQuery extends AbstractQuery
 {
  
-	long project_id;
+	Long project_id;
 	
 	/**
 	 * 
@@ -23,7 +23,7 @@ public class CiderQuery extends AbstractQuery
 	 * @param user_id
 	 * @param project_id
 	 */
-	public CiderQuery(IQuery query,int queryExecId, String queryString, long user_id, long project_id)
+	public CiderQuery(IQuery query,int queryExecId, String queryString, Long user_id, Long project_id)
 	{
 		super(query, queryExecId, queryString, user_id);
 		this.project_id = project_id;
@@ -33,7 +33,7 @@ public class CiderQuery extends AbstractQuery
 	 * 
 	 * @return
 	 */
-	public long getProject_id()
+	public Long getProject_id()
 	{
 		return project_id;
 	}
@@ -42,7 +42,7 @@ public class CiderQuery extends AbstractQuery
 	 * 
 	 * @param project_id
 	 */
-	public void setProject_id(long project_id)
+	public void setProject_id(Long project_id)
 	{
 		this.project_id = project_id;
 	}
