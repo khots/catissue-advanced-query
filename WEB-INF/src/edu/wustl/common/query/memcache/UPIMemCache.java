@@ -1,4 +1,4 @@
-package edu.wustl.common.query.memcache;
+package edu.wustl.common.query.memCache;
 
 import java.util.HashSet;
 

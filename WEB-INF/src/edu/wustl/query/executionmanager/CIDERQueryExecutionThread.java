@@ -1,19 +1,15 @@
 
-package edu.wustl.query.executionmanager;
+package edu.wustl.query.ExecutionManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.hp.hpl.jena.db.DBConnection;
 
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.DatabaseConnectionParams;
 import edu.wustl.common.query.CiderQuery;
 import edu.wustl.common.query.exeptions.QueryExecIdNotGeneratedException;
-import edu.wustl.common.query.itablemanager.CIDERITableManager;
 import edu.wustl.common.query.itablemanager.ITableManager;
-import edu.wustl.common.query.itablemanager.QTableManager;
-import edu.wustl.common.query.memcache.UPIMemCache;
+import edu.wustl.common.query.memCache.UPIMemCache;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.Constants;
 

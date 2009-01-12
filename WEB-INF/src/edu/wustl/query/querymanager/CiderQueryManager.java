@@ -9,8 +9,8 @@ import edu.wustl.common.query.CiderQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.domain.Workflow;
-import edu.wustl.query.executionmanager.CIDERQueryExecutionThread;
-import edu.wustl.query.executionmanager.QueryExecutionThread;
+import edu.wustl.query.ExecutionManager.CIDERQueryExecutionThread;
+import edu.wustl.query.ExecutionManager.QueryExecutionThread;
 
 
 /**
