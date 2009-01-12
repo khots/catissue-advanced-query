@@ -4,7 +4,6 @@
 package edu.wustl.common.query.itablemanager;
 
 import java.sql.SQLException;
-import java.util.Map;
 
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.querymanager.Count;

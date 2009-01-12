@@ -8,7 +8,7 @@ import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.DatabaseConnectionParams;
 import edu.wustl.common.query.CiderQuery;
 import edu.wustl.common.query.exeptions.QueryExecIdNotGeneratedException;
-import edu.wustl.common.query.itablemanager.ITableManager;
+import edu.wustl.common.query.itablemanager.CIDERITableManager;
 import edu.wustl.common.query.memCache.UPIMemCache;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.Constants;
@@ -76,7 +76,7 @@ public class CIDERQueryExecutionThread implements Runnable
 
 		try
 		{
-			ITableManager manager = ITableManager.getInstance();
+			CIDERITableManager manager = CIDERITableManager.getInstance();
 			
 			if (ciderQueryObj.getQueryExecId() == 0)
 			{
@@ -167,7 +167,7 @@ public class CIDERQueryExecutionThread implements Runnable
 	public static int getQueryExecutionId(CiderQuery ciderQueryObj) throws DAOException,
 			SQLException
 	{
-		ITableManager manager = ITableManager.getInstance();
+		CIDERITableManager manager = CIDERITableManager.getInstance();
 
 		return manager.insertNewQuery(ciderQueryObj.getProject_id(), ciderQueryObj.getUser_id(),
 				ciderQueryObj.getQuery().getId());

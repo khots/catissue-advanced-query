@@ -5,9 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import edu.wustl.common.query.AbstractQuery;
-import edu.wustl.common.query.itablemanager.CIDERITableManager;
 import edu.wustl.common.query.itablemanager.ITableManager;
-import edu.wustl.common.query.itablemanager.QTableManager;
 import edu.wustl.common.util.dbManager.DAOException;
 
 /**

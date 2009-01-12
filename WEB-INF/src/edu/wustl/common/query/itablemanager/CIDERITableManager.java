@@ -26,7 +26,22 @@ public class CIDERITableManager extends ITableManager
 
 	private static DatabaseConnectionParams sDB_CONNECTION_PARAMS = (DatabaseConnectionParams) DAOFactory
 			.getInstance().getDAO(Constants.JDBC_DAO);
-
+	
+	private static CIDERITableManager sINSTANCE; 
+	
+	/**
+	 * 
+	 * @return
+	 * @throws DAOException
+	 */
+	public static CIDERITableManager getInstance() throws DAOException
+	{
+		if(sINSTANCE == null)
+		{
+			sINSTANCE = new CIDERITableManager();
+		}
+		return sINSTANCE;
+	}
 	/**
 	 * 
 	 * @param patientDeid
