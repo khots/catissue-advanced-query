@@ -24,6 +24,7 @@ import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.vocab.IConcept;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.VocabularyException;
+import edu.wustl.common.vocab.impl.Vocabulary;
 import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.bizlogic.SearchPermissibleValueBizlogic;
@@ -100,8 +101,7 @@ public class SearchMappedPVsAction extends Action
 		for(IConcept concept:premValueList)
 		{
 			String id = vocabName + "@" + vocabVer + ":" + concept.getCode();
-			html					.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, vocabVer, concept,
-							id));
+			html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, vocabVer, concept,id));
 		}
 		html.append(bizLogic.getEndHTML());
 		request.getSession().setAttribute(Constants.MED_PV_HTML, html.toString());
@@ -156,9 +156,11 @@ public class SearchMappedPVsAction extends Action
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		String sourceVocabulary = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
 		String sourceVocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
-		String targetVacbArray[] = targetVocab.split(":");
+		String targetVacbArray[] = targetVocab.split("#");
 		String targetVocabName = targetVacbArray[0];
 		String targetVocabVer = targetVacbArray[1];
+		String targetVocabURN = targetVacbArray[2];
+		IVocabulary targetVocabulary = new Vocabulary(targetVocabName, targetVocabVer,targetVocabURN);
 		StringBuffer html = new StringBuffer();
 		if (!sourceVocabulary.equalsIgnoreCase(targetVocabName)
 				|| !sourceVocabVer.equalsIgnoreCase(targetVocabVer))
@@ -166,7 +168,7 @@ public class SearchMappedPVsAction extends Action
 			html.append(bizLogic.getRootVocabularyNodeHTML(targetVocabName, targetVocabVer,
 					getDisplayNameForVocab(targetVocabName, targetVocabVer)));
 			Map<String, List<IConcept>> vocabMappings = bizLogic.getMappedConcepts(attribute,
-					targetVocabName, targetVocabVer, entity);
+					targetVocabulary, entity);
 			getMappingDataAsHTML(html, targetVocabName, targetVocabVer, vocabMappings);
 
 		}
