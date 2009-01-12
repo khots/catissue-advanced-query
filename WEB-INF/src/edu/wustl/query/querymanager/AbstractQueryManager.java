@@ -7,9 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.wustl.common.query.AbstractQuery;
-import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.query.domain.Workflow;
-import edu.wustl.query.executionmanager.QueryExecutionThread;
+import edu.wustl.query.ExecutionManager.QueryExecutionThread;
 
 
 /**

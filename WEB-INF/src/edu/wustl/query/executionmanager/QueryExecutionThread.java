@@ -1,5 +1,5 @@
 
-package edu.wustl.query.executionmanager;
+package edu.wustl.query.ExecutionManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
