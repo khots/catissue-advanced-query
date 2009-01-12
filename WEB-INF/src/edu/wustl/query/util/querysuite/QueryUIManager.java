@@ -1,3 +1,4 @@
+
 package edu.wustl.query.util.querysuite;
 
 import java.util.List;
@@ -18,13 +19,13 @@ import edu.wustl.common.query.AbstractQuery;
 /*
  *   
  */
-public class QueryUIManager extends AbstractQueryUIManager{
+public class QueryUIManager extends AbstractQueryUIManager
+{
 
-	
 	private AbstractQuery abstractQuery;
-	
 
-	public QueryUIManager() {
+	public QueryUIManager()
+	{
 	}
 
 	QueryDetails queryDetailsObj;
@@ -33,7 +34,8 @@ public class QueryUIManager extends AbstractQueryUIManager{
 	 * @param request
 	 * @param query
 	 */
-	public QueryUIManager(HttpServletRequest request, IQuery query) {
+	public QueryUIManager(HttpServletRequest request, IQuery query)
+	{
 
 		this.request = request;
 		this.session = request.getSession();
@@ -43,35 +45,39 @@ public class QueryUIManager extends AbstractQueryUIManager{
 		this.abstractQuery = AbstractQueryFactory.getDefaultAbstractQuery();
 		this.abstractQuery.setQuery(query);
 		this.abstractQuery.setUser_id(user_id);
-		isSavedQuery = Boolean.valueOf((String) session
-				.getAttribute(Constants.IS_SAVED_QUERY));
+		isSavedQuery = Boolean.valueOf((String) session.getAttribute(Constants.IS_SAVED_QUERY));
 		queryDetailsObj = new QueryDetails(session);
 	}
-
-
 
 	/**
 	 * @throws QueryModuleException
 	 */
-	public void processQuery() throws QueryModuleException {
-		AbstractQueryManager queryManager = AbstractQueryManagerFactory.getDefaultAbstractQueryManager();
+	public void processQuery() throws QueryModuleException
+	{
+		AbstractQueryManager queryManager = AbstractQueryManagerFactory
+				.getDefaultAbstractQueryManager();
 		QueryModuleException queryModExp;
-		try {
-			 queryManager.execute(abstractQuery);
+		try
+		{
+			queryManager.execute(abstractQuery);
 
-		} catch (MultipleRootsException e) {
-			queryModExp = new QueryModuleException(e.getMessage(),
-					QueryModuleError.MULTIPLE_ROOT);
+		}
+		catch (MultipleRootsException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.MULTIPLE_ROOT);
 			throw queryModExp;
-		} catch (SqlException e) {
-			queryModExp = new QueryModuleException(e.getMessage(),
-					QueryModuleError.SQL_EXCEPTION);
+		}
+		catch (SqlException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
 			throw queryModExp;
-		} finally {
+		}
+		finally
+		{
 		}
 		Map<EntityInterface, List<EntityInterface>> mainEntityMap = QueryCSMUtil
-				.setMainObjectErrorMessage(abstractQuery.getQuery(), request
-						.getSession(), queryDetailsObj);
+				.setMainObjectErrorMessage(abstractQuery.getQuery(), request.getSession(),
+						queryDetailsObj);
 		queryDetailsObj.setMainEntityMap(mainEntityMap);
 	}
 }

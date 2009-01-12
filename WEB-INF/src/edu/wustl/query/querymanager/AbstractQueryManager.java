@@ -3,11 +3,13 @@
  */
 package edu.wustl.query.querymanager;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.ExecutionManager.QueryExecutionThread;
 
@@ -54,8 +56,10 @@ public abstract class AbstractQueryManager
 	 * 
 	 * @param query_excecution_id
 	 * @return
+	 * @throws DAOException 
+	 * @throws SQLException 
 	 */
-	abstract public Count getQueryCount(int query_excecution_id);
+	abstract public Count getQueryCount(int query_excecution_id) throws DAOException, SQLException;
 	
 	/**
 	 * 

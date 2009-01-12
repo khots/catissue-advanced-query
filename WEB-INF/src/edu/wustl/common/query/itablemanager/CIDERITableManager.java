@@ -10,6 +10,7 @@ import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.DatabaseConnectionParams;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.Constants;
+import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Variables;
 
 /**
@@ -153,5 +154,44 @@ public class CIDERITableManager extends ITableManager
 		{
 			sDB_CONNECTION_PARAMS.closeSession();
 		}
+	}
+	
+	/**
+	 * 
+	 * @param queryExecId
+	 * @return
+	 * @throws SQLException
+	 * @throws DAOException
+	 */
+	public Count getCount(int queryExecId)throws SQLException, DAOException
+	{
+		Count count = new Count();
+		try
+		{
+			sDB_CONNECTION_PARAMS.openSession(null);
+			Statement stmt = sDB_CONNECTION_PARAMS.getDatabaseStatement();
+			String query = "select count(*) from "+Variables.ITABLE +"where query_excecution_id="+queryExecId;
+			ResultSet rs = stmt.executeQuery(query);
+			count.setCount(rs.getInt(0));
+			query = "select status from "+Variables.EXECUTION_LOG_TABLE+" where query_excecution_id="+queryExecId;
+			rs = stmt.executeQuery(query);
+			String status = rs.getString(0);
+			count.setQuery_exection_id(queryExecId);
+			count.setStatus(status);
+		}
+		catch(SQLException ex)
+		{
+			throw ex;
+		}
+		catch(DAOException ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			sDB_CONNECTION_PARAMS.closeSession();
+		}
+		return count;
+		
 	}
 }

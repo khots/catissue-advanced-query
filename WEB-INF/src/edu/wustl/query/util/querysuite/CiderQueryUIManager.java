@@ -1,5 +1,6 @@
 package edu.wustl.query.util.querysuite;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +10,9 @@ import edu.wustl.common.query.CiderQuery;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.querymanager.CiderQueryManager;
+import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
 
 public class CiderQueryUIManager extends QueryUIManager {
@@ -43,25 +46,39 @@ public class CiderQueryUIManager extends QueryUIManager {
 	/**
 	 * @throws QueryModuleException
 	 */
-	public void processQuery() throws QueryModuleException {
+	public void processQuery() throws QueryModuleException
+	{
 		CiderQueryManager queryManager = new CiderQueryManager();
 		QueryModuleException queryModExp;
-		try {
-			 queryManager.execute(ciderQuery);
+		try
+		{
+			int query_execution_id = queryManager.execute(ciderQuery);
+			Count queryCount = queryManager.getQueryCount(query_execution_id);
 
-		} catch (MultipleRootsException e) {
-			queryModExp = new QueryModuleException(e.getMessage(),
-					QueryModuleError.MULTIPLE_ROOT);
+		}
+		catch (MultipleRootsException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.MULTIPLE_ROOT);
 			throw queryModExp;
-		} catch (SqlException e) {
-			queryModExp = new QueryModuleException(e.getMessage(),
-					QueryModuleError.SQL_EXCEPTION);
+		}
+		catch (SQLException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
 			throw queryModExp;
-		} finally {
+		}
+		catch (SqlException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
+			throw queryModExp;
+		}
+		catch (DAOException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
 		}
 		Map<EntityInterface, List<EntityInterface>> mainEntityMap = QueryCSMUtil
-				.setMainObjectErrorMessage(ciderQuery.getQuery(), request
-						.getSession(), queryDetailsObj);
+				.setMainObjectErrorMessage(ciderQuery.getQuery(), request.getSession(),
+						queryDetailsObj);
 		queryDetailsObj.setMainEntityMap(mainEntityMap);
 	}
 }

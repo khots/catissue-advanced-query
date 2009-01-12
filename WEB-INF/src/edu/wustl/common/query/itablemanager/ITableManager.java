@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.query.querymanager.Count;
 
 /**
  * @author supriya_dankh
@@ -93,4 +94,18 @@ public class ITableManager
 	{
 		
 	}
+	
+	/**
+	 * 
+	 * @param queryExecId
+	 * @return
+	 * @throws SQLException
+	 * @throws DAOException
+	 */
+	public Count getCount(int queryExecId)throws SQLException, DAOException
+	{
+		Count count = null;
+		return count;
+	}
+	
 }
