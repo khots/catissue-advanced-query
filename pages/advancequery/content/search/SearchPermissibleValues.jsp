@@ -237,10 +237,11 @@ function setSelectedConceptCodes(request,pvConceptCodeList,pvNameList)
 //This method will be called when user clicks on the vocabulary check box
 function refreshWindow(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 {
-	label=document.getElementById("searhLabel");
-    label.innerHTML="Please Wait.....";
+	
 	if(set_mode=="Mapping")
 	{
+		label=document.getElementById("searhLabel");
+		label.innerHTML="Please Wait.....";
 		document.getElementById("divForMappingMode").style.display = '';
 		document.getElementById("divForSearchingMode").style.display = 'none';
 		var request = newXMLHTTPReq(); 

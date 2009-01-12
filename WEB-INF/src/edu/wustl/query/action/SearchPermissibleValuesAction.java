@@ -119,7 +119,7 @@ public class SearchPermissibleValuesAction extends Action
 				{
 					String checkboxId = vocabName + "@" + vocabVersion + ":" + concept.getCode();//TODO need to change into MED concept code when API will be completed
 					
-					boolean medRelatedConcept=isSourceVocabMappedTerm(concept,pvList) ;
+					boolean medRelatedConcept=true;//isSourceVocabMappedTerm(concept,pvList) ;
 					html.append(bizLogic.getSearchedVocabPVChildAsHTML("srh_" + vocabName,
 							vocabVersion, concept, checkboxId,medRelatedConcept));
 				}

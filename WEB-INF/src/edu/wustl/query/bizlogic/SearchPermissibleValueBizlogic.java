@@ -191,13 +191,13 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		{
 			System.out.println(concept);
 		}*/
-		String status="false";//need to change the code as per requrement temp changes
+		String status="";//need to change the code as per requrement temp changes
 		if(medRelatedConcept)
 		{
-			status="false";
+			status="";
 		}
 		return "<tr ><td style='padding-left:30px'>&nbsp;</td><td class='black_ar_tt'> \n"
-				+ "<input type='checkbox' disabled='"+status+"' name='" + vocabName + vocabversoin + "' id='"
+				+ "<input type='checkbox' "+status+" name='"+ vocabName + vocabversoin + "' id='"
 				+ checkboxId + "' value='" + concept.getCode() + ":" + concept.getDescription()
 				+ "' onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
 				+ "</td><td class='black_ar_tt'>" + concept.getCode() + ":"
