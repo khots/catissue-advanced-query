@@ -7,6 +7,8 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 
 
 /**
+ * This class is used to create Cider Specific Query Object.
+ * 
  * @author supriya_dankh
  *
  */
@@ -30,6 +32,7 @@ public class CiderQuery extends AbstractQuery
 	}
 
 	/**
+	 * gets the project id
 	 * 
 	 * @return
 	 */
@@ -39,6 +42,7 @@ public class CiderQuery extends AbstractQuery
 	}
 
 	/**
+	 * sets the project id
 	 * 
 	 * @param project_id
 	 */

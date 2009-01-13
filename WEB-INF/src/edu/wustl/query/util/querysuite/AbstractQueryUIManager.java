@@ -1,5 +1,8 @@
 package edu.wustl.query.util.querysuite;
 
+/**
+ * This class is base for all QueryUIManager classes.
+ */
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import edu.wustl.query.util.global.Constants;
@@ -32,6 +35,8 @@ public abstract class AbstractQueryUIManager {
 	}
 
 	/**
+	 * This method Processes the Query by calling execute method of QueryManager.
+	 * 
 	 * @throws QueryModuleException
 	 */
 	public abstract void processQuery() throws QueryModuleException ;
