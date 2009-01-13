@@ -15,6 +15,10 @@ import edu.wustl.query.querymanager.CiderQueryManager;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
 
+
+/**
+ *   This class is Cider Specific implementation of AbstractQueryUIManager.
+ */
 public class CiderQueryUIManager extends QueryUIManager {
 
 	
@@ -44,6 +48,8 @@ public class CiderQueryUIManager extends QueryUIManager {
 
 
 	/**
+	 * This method Processes the Query by calling execute method of CiderQueryManager.
+	 * 
 	 * @throws QueryModuleException
 	 */
 	public void processQuery() throws QueryModuleException

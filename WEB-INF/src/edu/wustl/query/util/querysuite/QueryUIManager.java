@@ -15,8 +15,8 @@ import edu.wustl.query.querymanager.AbstractQueryManager;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.common.query.AbstractQuery;
 
-/*
- *   
+/**
+ *   This class is default implementation of AbstractQueryUIManager.
  */
 public class QueryUIManager extends AbstractQueryUIManager
 {
@@ -49,6 +49,8 @@ public class QueryUIManager extends AbstractQueryUIManager
 	}
 
 	/**
+	 * This method Processes the Query by calling execute method of AbstractQueryManager.
+	 * 
 	 * @throws QueryModuleException
 	 */
 	public void processQuery() throws QueryModuleException
