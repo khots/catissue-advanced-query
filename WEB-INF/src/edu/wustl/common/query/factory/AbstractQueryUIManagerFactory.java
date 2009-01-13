@@ -9,7 +9,7 @@ public class AbstractQueryUIManagerFactory {
 	 * Method to create instance of class AbstractQueryUIManager. 
 	 * @return The reference of AbstractQueryUIManager. 
 	 */
-	public static AbstractQueryUIManager getDefaultAbstractUIQueryManager()
+	public static AbstractQueryUIManager getDefaultAbstractQueryUIManager()
 	{
 		return (AbstractQueryUIManager) Utility.getObject(Variables.abstractQueryUIManagerClassName);
 	}
@@ -18,7 +18,7 @@ public class AbstractQueryUIManagerFactory {
 	 * Method to create instance of class AbstractQueryUIManager. 
 	 * @return The reference of AbstractQueryUIManager. 
 	 */
-	public static AbstractQueryUIManager ConfigureDefaultAbstractUIQueryManager(String className)
+	public static AbstractQueryUIManager ConfigureDefaultAbstractQueryUIManager(String className)
 	{
 		return (AbstractQueryUIManager) Utility.getObject(className);
 	}
