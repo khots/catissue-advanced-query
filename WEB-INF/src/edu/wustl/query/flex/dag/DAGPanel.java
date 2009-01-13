@@ -24,7 +24,6 @@ import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
 import edu.wustl.cab2b.server.cache.EntityCache;
-import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.query.queryobject.locator.Position;
 import edu.wustl.common.query.queryobject.locator.QueryNodeLocator;
@@ -63,16 +62,17 @@ import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.Collections;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.common.vocab.VocabularyException;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.domain.SelectedConcept;
 import edu.wustl.query.htmlprovider.HtmlProvider;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.CiderQueryUIManager;
 import edu.wustl.query.util.querysuite.IQueryUpdationUtil;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
 import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 import edu.wustl.query.util.querysuite.TemporalQueryUtility;
-import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 
 /**
  *The class is responsibel controlling all activities of Flex DAG
@@ -1231,8 +1231,8 @@ public class DAGPanel
 		boolean isRulePresentInDag = QueryModuleUtil.checkIfRulePresentInDag(query);
 		//changed to QueryUIManager searchQuery call .
 		//QueryModuleSearchQueryUtil QMSearchQuery = new QueryModuleSearchQueryUtil(request, query);
-		AbstractQueryUIManager QUIManager = AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
-		
+		//AbstractQueryUIManager QUIManager = AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
+		CiderQueryUIManager QUIManager = new CiderQueryUIManager(request,query);
 		if (isRulePresentInDag)
 		{
 			status = QUIManager.searchQuery(null);
@@ -1988,8 +1988,9 @@ public class DAGPanel
 	 * @param expId
 	 * @return
 	 * @throws PVManagerException 
+	 * @throws VocabularyException 
 	 */
-	public Map editAddLimitUI(int expId) throws PVManagerException
+	public Map editAddLimitUI(int expId) throws PVManagerException, VocabularyException
 	{
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		HttpSession session = request.getSession();
