@@ -103,8 +103,8 @@ public class CIDERITableManager extends ITableManager
 			// Indicate you want automatically 
 			// generated keys
 			String query = "INSERT INTO "
-					+ Variables.EXECUTION_LOG_TABLE
-					+ "(creationTime, USER_ID, status, project_id, query_execution_id, query_id) VALUES "
+					+ Variables.QUERY_EXECUTION_LOG
+					+ "(CREATIONTIME, USER_ID, STATUS, PROJECT_ID, QUERY_EXECUTION_ID, QUERY_ID) VALUES "
 					+ "(" + timestamp + "," + userId + ",in-progress" + "," + projectId + ",default,"
 					+ query_id + ")";
 	
@@ -153,7 +153,7 @@ public class CIDERITableManager extends ITableManager
 			sDB_CONNECTION_PARAMS.openSession(null);
 			Statement stmt = sDB_CONNECTION_PARAMS.getDatabaseStatement();
 			
-			String query = "UPDATE "+Variables.EXECUTION_LOG_TABLE+" SET STATUS="+status+" WHERE query_execution_id="+queryExecId;
+			String query = "UPDATE "+Variables.QUERY_EXECUTION_LOG+" SET STATUS="+status+" WHERE QUERY_EXECUTION_ID="+queryExecId;
 			
 			stmt.executeUpdate(query);
 		}
@@ -185,10 +185,10 @@ public class CIDERITableManager extends ITableManager
 		{
 			sDB_CONNECTION_PARAMS.openSession(null);
 			Statement stmt = sDB_CONNECTION_PARAMS.getDatabaseStatement();
-			String query = "select count(*) from "+Variables.ITABLE +"where query_excecution_id="+queryExecId;
+			String query = "select count(*) from "+Variables.ITABLE +"where QUERY_EXECUTION_ID="+queryExecId;
 			ResultSet rs = stmt.executeQuery(query);
 			count.setCount(rs.getInt(0));
-			query = "select status from "+Variables.EXECUTION_LOG_TABLE+" where query_excecution_id="+queryExecId;
+			query = "select STATUS from "+Variables.QUERY_EXECUTION_LOG+" where QUERY_EXECUTION_ID="+queryExecId;
 			rs = stmt.executeQuery(query);
 			String status = rs.getString(0);
 			count.setQuery_exection_id(queryExecId);

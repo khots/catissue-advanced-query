@@ -69,11 +69,11 @@ public class Variables extends edu.wustl.common.util.global.Variables
 	/**
 	 * Query ITABLE
 	 */
-	public static String ITABLE;
+	public static String ITABLE="QUERY_ITABLE";
 	
 	/**
 	 * QUERY EXECUTION LOG TABLE
 	 */
-	public static String EXECUTION_LOG_TABLE;
+	public static String QUERY_EXECUTION_LOG="QUERY_EXECUTION_LOG";
 	
 }
