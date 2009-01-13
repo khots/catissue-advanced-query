@@ -29,19 +29,92 @@ import edu.wustl.common.util.logger.Logger;
 public class CIDERQueryExecutionThread implements Runnable
 {
 
+	/** CIDER QUERY Object **/
 	private CiderQuery ciderQueryObj;
 
-	// JDBC result set for this query
+	/** JDBC result set for this query **/
 	private ResultSet results;
 
-	// UPI in memory cache for this query
+	/** UPI in memory cache for this query **/
 	private UPIMemCache upiCache = null;
-	
+
 	/**
 	 * External Condition which controls cancel
 	 * operation of a Thread
 	 */
 	protected boolean cancelThread = false;
+
+	/**
+	 * 
+	 * @return
+	 */
+	public CiderQuery getCiderQueryObj()
+	{
+		return ciderQueryObj;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public ResultSet getResults()
+	{
+		return results;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public UPIMemCache getUpiCache()
+	{
+		return upiCache;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isCancelThread()
+	{
+		return cancelThread;
+	}
+
+	/**
+	 * 
+	 * @param ciderQueryObj
+	 */
+	public void setCiderQueryObj(CiderQuery ciderQueryObj)
+	{
+		this.ciderQueryObj = ciderQueryObj;
+	}
+
+	/**
+	 * 
+	 * @param results
+	 */
+	public void setResults(ResultSet results)
+	{
+		this.results = results;
+	}
+
+	/**
+	 * 
+	 * @param upiCache
+	 */
+	public void setUpiCache(UPIMemCache upiCache)
+	{
+		this.upiCache = upiCache;
+	}
+
+	/**
+	 * 
+	 * @param cancelThread
+	 */
+	public void setCancelThread(boolean cancelThread)
+	{
+		this.cancelThread = cancelThread;
+	}
 
 	/**
 	 * PARAMETERIZED CONSTRUCTOR
@@ -78,14 +151,13 @@ public class CIDERQueryExecutionThread implements Runnable
 		try
 		{
 			CIDERITableManager manager = CIDERITableManager.getInstance();
-			
+
 			if (ciderQueryObj.getQueryExecId() == 0)
 			{
 				throw new QueryExecIdNotGeneratedException("");
 			}
 
-			dbConnectionParams = (DatabaseConnectionParams) DAOFactory.getInstance().getDAO(
-					Constants.JDBC_DAO);
+			dbConnectionParams = new DatabaseConnectionParams();
 			dbConnectionParams.openSession(null);
 
 			results = dbConnectionParams.getResultSet(ciderQueryObj.getQueryString());
@@ -117,18 +189,17 @@ public class CIDERQueryExecutionThread implements Runnable
 						// patientDeid = Get Patient DEID
 
 						//	INSERTING UPI into ITABLE
-						manager.insertITableEntry(patientDeid, 
-								ciderQueryObj.getQueryExecId(), upi);
+						manager.insertITableEntry(patientDeid, ciderQueryObj.getQueryExecId(), upi);
 					}
 				}
 			}
-			
+
 			// UPDATE TABLE TO CHANGE QUERY STATUS TO 'COMPLETE'
 			if (!cancelThread)
 			{
 				manager.changeStatus("COMPLETE", ciderQueryObj.getQueryExecId());
 			}
-			
+
 		}
 		catch (SQLException ex)
 		{

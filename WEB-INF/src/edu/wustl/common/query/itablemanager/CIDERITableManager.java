@@ -23,10 +23,10 @@ import edu.wustl.query.util.global.Variables;
  */
 public class CIDERITableManager extends ITableManager
 {
-
-	private static DatabaseConnectionParams sDB_CONNECTION_PARAMS = (DatabaseConnectionParams) DAOFactory
-			.getInstance().getDAO(Constants.JDBC_DAO);
+    /**  **/
+	private static DatabaseConnectionParams sDB_CONNECTION_PARAMS = new DatabaseConnectionParams();
 	
+	/**  **/
 	private static CIDERITableManager sINSTANCE; 
 	
 	/**
