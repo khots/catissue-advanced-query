@@ -83,7 +83,9 @@ public class QueryExecIdNotGeneratedException extends Exception
 	{
 		super.printStackTrace();
 		if (wrapException != null)
+		{
 			wrapException.printStackTrace();
+		}
 	}
 
 	/**
@@ -93,7 +95,9 @@ public class QueryExecIdNotGeneratedException extends Exception
 	{
 		super.printStackTrace(thePrintWriter);
 		if (wrapException != null)
+		{
 			wrapException.printStackTrace(thePrintWriter);
+		}
 	}
 
 	/**
@@ -103,7 +107,9 @@ public class QueryExecIdNotGeneratedException extends Exception
 	{
 		super.printStackTrace(thePrintStream);
 		if (wrapException != null)
+		{
 			wrapException.printStackTrace(thePrintStream);
+		}
 	}
 
 	/**

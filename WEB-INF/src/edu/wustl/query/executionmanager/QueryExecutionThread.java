@@ -54,7 +54,7 @@ public class QueryExecutionThread implements Runnable
 	{
 		ITableManager manager = ITableManager.getInstance();
 
-		return manager.insertNewQuery(-1L, abstractQueryObj.getUser_id(), abstractQueryObj
+		return manager.insertNewQuery(-1L, abstractQueryObj.getUserId(), abstractQueryObj
 				.getQuery().getId());
 	}
 

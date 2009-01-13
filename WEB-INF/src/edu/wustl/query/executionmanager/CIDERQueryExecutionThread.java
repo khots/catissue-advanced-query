@@ -12,6 +12,7 @@ import edu.wustl.common.query.itablemanager.CIDERITableManager;
 import edu.wustl.common.query.memCache.UPIMemCache;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.Constants;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * This class represents the Thread to execute the query
@@ -28,13 +29,13 @@ import edu.wustl.common.util.global.Constants;
 public class CIDERQueryExecutionThread implements Runnable
 {
 
-	CiderQuery ciderQueryObj;
+	private CiderQuery ciderQueryObj;
 
 	// JDBC result set for this query
-	ResultSet results;
+	private ResultSet results;
 
 	// UPI in memory cache for this query
-	UPIMemCache upiCache = null;
+	private UPIMemCache upiCache = null;
 	
 	/**
 	 * External Condition which controls cancel
@@ -123,20 +124,23 @@ public class CIDERQueryExecutionThread implements Runnable
 			}
 			
 			// UPDATE TABLE TO CHANGE QUERY STATUS TO 'COMPLETE'
-			manager.changeStatus("COMPLETE", ciderQueryObj.getQueryExecId());
+			if (!cancelThread)
+			{
+				manager.changeStatus("COMPLETE", ciderQueryObj.getQueryExecId());
+			}
 			
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			Logger.out.debug(ex.getMessage());
 		}
 		catch (DAOException ex)
 		{
-			ex.printStackTrace();
+			Logger.out.debug(ex.getMessage());
 		}
 		catch (QueryExecIdNotGeneratedException ex)
 		{
-			ex.printStackTrace();
+			Logger.out.debug(ex.getMessage());
 		}
 		finally
 		{
@@ -148,11 +152,11 @@ public class CIDERQueryExecutionThread implements Runnable
 			}
 			catch (SQLException e)
 			{
-				e.printStackTrace();
+				Logger.out.debug(e.getMessage());
 			}
 			catch (DAOException e)
 			{
-				e.printStackTrace();
+				Logger.out.debug(e.getMessage());
 			}
 		}
 	}
@@ -169,7 +173,7 @@ public class CIDERQueryExecutionThread implements Runnable
 	{
 		CIDERITableManager manager = CIDERITableManager.getInstance();
 
-		return manager.insertNewQuery(ciderQueryObj.getProject_id(), ciderQueryObj.getUser_id(),
+		return manager.insertNewQuery(ciderQueryObj.getProjectId(), ciderQueryObj.getUserId(),
 				ciderQueryObj.getQuery().getId());
 	}
 }

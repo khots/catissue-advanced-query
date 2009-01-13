@@ -4,7 +4,6 @@ package edu.wustl.query.util.querysuite;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.factory.AbstractQueryFactory;
@@ -44,7 +43,7 @@ public class QueryUIManager extends AbstractQueryUIManager
 		long user_id = sessionDataBean.getUserId();
 		this.abstractQuery = AbstractQueryFactory.getDefaultAbstractQuery();
 		this.abstractQuery.setQuery(query);
-		this.abstractQuery.setUser_id(user_id);
+		this.abstractQuery.setUserId(user_id);
 		isSavedQuery = Boolean.valueOf((String) session.getAttribute(Constants.IS_SAVED_QUERY));
 		queryDetailsObj = new QueryDetails(session);
 	}
