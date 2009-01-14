@@ -5,6 +5,8 @@ package edu.wustl.query.util.querysuite;
  */
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import edu.wustl.common.query.CiderQuery;
+import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
 
 public abstract class AbstractQueryUIManager {
@@ -20,18 +22,17 @@ public abstract class AbstractQueryUIManager {
 	 * @param option
 	 * @return status
 	 */
-	public QueryModuleError searchQuery(String option) {
+	public int searchQuery(String option) throws QueryModuleException {
 		session.removeAttribute(Constants.HYPERLINK_COLUMN_MAP);
 		QueryModuleError status = QueryModuleError.SUCCESS;
-		try {
+		int query_exec_id = 0;
+		
 
 			if (queryDetailsObj.getSessionData() != null) {
-				processQuery();
+				query_exec_id = processQuery();
 			}
-		} catch (QueryModuleException e) {
-			status = e.getKey();
-		}
-		return status;
+		
+		return query_exec_id;
 	}
 
 	/**
@@ -39,5 +40,7 @@ public abstract class AbstractQueryUIManager {
 	 * 
 	 * @throws QueryModuleException
 	 */
-	public abstract void processQuery() throws QueryModuleException ;
+	public abstract int processQuery() throws QueryModuleException ;
+	
+	public abstract Count getCount(int query_execution_id) throws QueryModuleException;
 }
