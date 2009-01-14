@@ -12,7 +12,7 @@ public abstract class AbstractQueryUIManager {
 	protected HttpServletRequest request;
 	protected HttpSession session;
 	protected boolean isSavedQuery;
-	QueryDetails queryDetailsObj;
+	protected QueryDetails queryDetailsObj;
 
 	/**
 	 * This method extracts query object and forms results .
