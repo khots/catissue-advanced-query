@@ -12,8 +12,10 @@ import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.query.querymanager.AbstractQueryManager;
+import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.common.query.AbstractQuery;
+import edu.wustl.common.query.CiderQuery;
 
 /**
  *   This class is default implementation of AbstractQueryUIManager.
@@ -52,7 +54,7 @@ public class QueryUIManager extends AbstractQueryUIManager
 	 * 
 	 * @throws QueryModuleException
 	 */
-	public void processQuery() throws QueryModuleException
+	public int processQuery() throws QueryModuleException
 	{
 		AbstractQueryManager queryManager = AbstractQueryManagerFactory
 				.getDefaultAbstractQueryManager();
@@ -72,12 +74,13 @@ public class QueryUIManager extends AbstractQueryUIManager
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
 			throw queryModExp;
 		}
-		finally
-		{
-		}
-		Map<EntityInterface, List<EntityInterface>> mainEntityMap = QueryCSMUtil
-				.setMainObjectErrorMessage(abstractQuery.getQuery(), request.getSession(),
-						queryDetailsObj);
-		queryDetailsObj.setMainEntityMap(mainEntityMap);
+		return 0;
+	}
+
+	@Override
+	public Count getCount(int query_execution_id) throws QueryModuleException
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

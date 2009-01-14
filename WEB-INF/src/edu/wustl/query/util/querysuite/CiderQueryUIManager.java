@@ -24,6 +24,11 @@ public class CiderQueryUIManager extends QueryUIManager {
 	
 	private CiderQuery ciderQuery;
 	
+	public CiderQueryUIManager() 
+	{
+
+
+	}
 
 	/**
 	 * @param request
@@ -34,13 +39,9 @@ public class CiderQueryUIManager extends QueryUIManager {
 		
 		this.request = request;
 		this.session = request.getSession();
-
 		SessionDataBean sessionDataBean = ((SessionDataBean) session.getAttribute(Constants.SESSION_DATA));
 		long user_id = sessionDataBean.getUserId();
 	    long project_id = 1;
-		
-		/*((Integer) request.getAttribute(Constants.PROJECT_ID)).intValue();*/
-		
 		this.ciderQuery = new CiderQuery(query,-1,null,user_id, project_id);
 		isSavedQuery = Boolean.valueOf((String) session.getAttribute(Constants.IS_SAVED_QUERY));
 		queryDetailsObj = new QueryDetails(session);
@@ -52,14 +53,14 @@ public class CiderQueryUIManager extends QueryUIManager {
 	 * 
 	 * @throws QueryModuleException
 	 */
-	public void processQuery() throws QueryModuleException
+	public int processQuery() throws QueryModuleException
 	{
 		CiderQueryManager queryManager = new CiderQueryManager();
 		QueryModuleException queryModExp;
+		int query_execution_id ;
 		try
 		{
-			int query_execution_id = queryManager.execute(ciderQuery);
-			Count queryCount = queryManager.getQueryCount(query_execution_id);
+			query_execution_id = queryManager.execute(ciderQuery);
 
 		}
 		catch (MultipleRootsException e)
@@ -67,24 +68,32 @@ public class CiderQueryUIManager extends QueryUIManager {
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.MULTIPLE_ROOT);
 			throw queryModExp;
 		}
-		catch (SQLException e)
-		{
-			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
-			throw queryModExp;
-		}
 		catch (SqlException e)
 		{
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
 			throw queryModExp;
 		}
+		return query_execution_id;
+	}
+	
+	public Count getCount(int query_execution_id) throws QueryModuleException
+	{  
+		CiderQueryManager queryManager = new CiderQueryManager();
+		Count queryCount;
+		try
+		{
+			queryCount = queryManager.getQueryCount(query_execution_id);
+		}
 		catch (DAOException e)
 		{
-			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			QueryModuleException queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
 			throw queryModExp;
 		}
-		Map<EntityInterface, List<EntityInterface>> mainEntityMap = QueryCSMUtil
-				.setMainObjectErrorMessage(ciderQuery.getQuery(), request.getSession(),
-						queryDetailsObj);
-		queryDetailsObj.setMainEntityMap(mainEntityMap);
+		catch (SQLException e)
+		{
+			QueryModuleException queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
+			throw queryModExp;
+		}
+		return queryCount;
 	}
 }
