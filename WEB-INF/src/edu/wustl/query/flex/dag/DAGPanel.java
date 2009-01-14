@@ -1,6 +1,7 @@
 
 package edu.wustl.query.flex.dag;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +25,7 @@ import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.query.queryobject.locator.Position;
 import edu.wustl.common.query.queryobject.locator.QueryNodeLocator;
@@ -67,10 +69,12 @@ import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.domain.SelectedConcept;
 import edu.wustl.query.htmlprovider.HtmlProvider;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.CiderQueryUIManager;
 import edu.wustl.query.util.querysuite.IQueryUpdationUtil;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
 import edu.wustl.query.util.querysuite.QueryModuleError;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 import edu.wustl.query.util.querysuite.TemporalQueryUtility;
 
@@ -1227,19 +1231,28 @@ public class DAGPanel
 	{
 		QueryModuleError status = QueryModuleError.SUCCESS;
 		IQuery query = m_queryObject.getQuery();
+		int query_exec_id = 0;
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		boolean isRulePresentInDag = QueryModuleUtil.checkIfRulePresentInDag(query);
-		//changed to QueryUIManager searchQuery call .
-		//QueryModuleSearchQueryUtil QMSearchQuery = new QueryModuleSearchQueryUtil(request, query);
-		//AbstractQueryUIManager QUIManager = AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
-		CiderQueryUIManager QUIManager = new CiderQueryUIManager(request,query);
-		if (isRulePresentInDag)
+		try
 		{
-			status = QUIManager.searchQuery(null);
+			AbstractQueryUIManager QUIManager = null;
+			QUIManager = AbstractQueryUIManagerFactory.ConfigureDefaultAbstractUIQueryManager(this
+					.getClass(), request, query);
+			if (isRulePresentInDag)
+			{
+				query_exec_id = QUIManager.searchQuery(null);
+				request.getSession().setAttribute("query_exec_id", query_exec_id);
+
+			}
+			else
+			{
+				status = QueryModuleError.EMPTY_DAG;
+			}
 		}
-		else
+		catch (QueryModuleException e)
 		{
-			status = QueryModuleError.EMPTY_DAG;
+			status = e.getKey();
 		}
 		return status.getErrorCode();
 
@@ -1988,9 +2001,8 @@ public class DAGPanel
 	 * @param expId
 	 * @return
 	 * @throws PVManagerException 
-	 * @throws VocabularyException 
 	 */
-	public Map editAddLimitUI(int expId) throws PVManagerException, VocabularyException
+	public Map editAddLimitUI(int expId) throws PVManagerException
 	{
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		HttpSession session = request.getSession();
