@@ -4,6 +4,12 @@ import edu.wustl.common.util.Utility;
 import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 
+/**
+ * Factory to return the AbstractQueryUIManager instance.
+ * 
+ * @author maninder_randhawa
+ *
+ */
 public class AbstractQueryUIManagerFactory {
 	/**
 	 * Method to create instance of class AbstractQueryUIManager. 
