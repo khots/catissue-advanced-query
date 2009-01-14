@@ -462,13 +462,13 @@ function checkAllOnThisPageResponse()
 					<%}%>
 					</td>
 					<td width="5%" nowrap align="right" valign="top">
-						<img src="images/advancequery/b_exp.gif" width="57"  hspace="3" onclick="onExport()"/>&nbsp;
+						<img src="images/advancequery/b_exp.gif"  hspace="3" onclick="onExport()"/>&nbsp;
 					</td>
 					<td width="5%" nowrap align="right" valign="top">
-						<img src="images/advancequery/b_def_view.gif" width="88" hspace="3" onclick="<%=configAction%>"/>&nbsp;
+						<img src="images/advancequery/b_def_view.gif"  hspace="3" onclick="<%=configAction%>"/>&nbsp;
 					</td>
 					<td width="5%" nowrap align="right" valign="top">
-						<img src="images/advancequery/b_red_query.gif" width="107" hspace="3" onclick="<%=redefineQueryAction%>"/>&nbsp;
+						<img src="images/advancequery/b_red_query.gif" hspace="3" onclick="<%=redefineQueryAction%>"/>&nbsp;
 					</td>
 			</tr>
 			</table>
