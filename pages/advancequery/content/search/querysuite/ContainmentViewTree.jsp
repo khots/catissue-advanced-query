@@ -48,13 +48,15 @@
 	<tr>
 		<td width="1px">&nbsp;	</td>
 		<td valign="top"  width="90%" height="90%">
-			<div id="treeBox" style="background-color:white;overflow:auto;height:378;width:240;border-left:solid 1px;border-right:solid 1px;border-top:solid 1px;border-bottom:solid 1px;"></div>
+			<div id="treeBox" style="background-color:white;overflow:auto;height:378;width:240;border-left:solid 1px;border-right:solid 1px;border-top:solid 1px;border-bottom:solid 1px;border-color:#7f9db9;"></div>
 		</td>
 		<td width="1%"> &nbsp; </td>
 		   <td align="center" valign="center" style="padding-left:10px;padding-right:10px;">
-			<img src="images/advancequery/b_add.gif"  align="absmiddle" hspace="3" property="shiftRight" styleId ="shiftRight" onclick="moveOptionsRight(document.forms[0].columnNames,document.forms[0].selectedColumnNames);"/>
-			<br><br/>
-			<img src="images/advancequery/b_remove.gif"  align="absmiddle" hspace="3" onclick="moveOptionsLeft(document.forms[0].selectedColumnNames, document.forms[0].columnNames);"/>
+			<table>
+			 <tr><td><img src="images/advancequery/b_add.gif"  align="absmiddle" hspace="3" property="shiftRight" styleId ="shiftRight" onclick="moveOptionsRight(document.forms[0].columnNames,document.forms[0].selectedColumnNames);"/></td></tr>
+			
+			<tr><td><img src="images/advancequery/b_remove.gif"  align="absmiddle" hspace="3" onclick="moveOptionsLeft(document.forms[0].selectedColumnNames, document.forms[0].columnNames);"/></td></tr>
+			</table>
 		</td>
 		<td width="1%"> &nbsp; </td>
 		<td class="" valign="top" width="60" height="85%">
@@ -64,7 +66,7 @@
 				<option value="">
 			</select></div>	
 			
-		 <div id="elementList" style="OVERFLOW: auto;WIDTH:250px;HEIGHT: 378px;border:0px solid;" onscroll="OnDivScroll();"> 
+		 <div id="elementList" style="OVERFLOW: auto;WIDTH:250px;HEIGHT: 378px;border:0px solid;border-color:#7f9db9;"  onscroll="OnDivScroll();"> 
 			 <select  id="lstAttributeNames" name="selectedColumnNames" styleClass="" size="22" multiple="true" style="" onfocus="OnSelectFocus();">
 			  <logic:iterate id="columnNameValue" name="selectedColumnNameValueBeanList">	
 				<option value="${columnNameValue.value}"/><span class="content_txt"> <bean:write name="columnNameValue" property="name"/></span>
@@ -74,9 +76,11 @@
 		</td>
 		<td width="1%"> &nbsp; </td>
 		 <td align="center" valign="center" style="padding-left:10px;padding-right:10px;">
-				<img src="images/advancequery/ic_up.gif" align="absmiddle"  onclick="moveUp(document.forms[0].selectedColumnNames);"/>  
-			<br><br/>
-			<img src="images/advancequery/ic_down.gif"  align="absmiddle" onclick="moveDown(document.forms[0].selectedColumnNames);"/> 
+		  <table>		
+				<tr><td><img src="images/advancequery/ic_up.gif" align="absmiddle"  onclick="moveUp(document.forms[0].selectedColumnNames);"/>  
+			</td></tr>
+			<tr><td><img src="images/advancequery/ic_down.gif"  align="absmiddle" onclick="moveDown(document.forms[0].selectedColumnNames);"/></td></tr>
+			</table>
 		</td>
 </tr>
 <tr><td> &nbsp;
