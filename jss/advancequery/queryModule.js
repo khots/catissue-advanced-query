@@ -1563,8 +1563,12 @@ var jsReady = false;
 	var myWindow;
 	function showWaitPage()
 	{			
-		var popupContent = "<table width='400' height='200' border='0' align='center' cellpadding='0' cellspacing='0' bgcolor='#FFFFFF'><tr><td height='85' align='center' valign='top'><img src='images/advancequery/loading_bg.jpg' alt='Query Search' width='400' height='85' /></td></tr><tr><td align='center' valign='top'><img src='images/advancequery/loading.gif' alt='Loading...' width='50' height='50' vspace='5' /></td></tr></table>";
-		myWindow=window.open('','','left=400,top=400,width=420,height=200,modal=yes');
+		var popupContent = "<table width='400' height='200' border='0' cellpadding='1' cellspacing='0' bgcolor='#CCCCCC'> <tr><td><table width='100%' height='200' border='0' align='center' cellpadding='0' cellspacing='0' bgcolor='#FFFFFF'><tr><td height='85' align='center' valign='top'><img src='images/advancequery/loading_bg.jpg' alt='Query Search' width='400' height='85' /></td></tr>"+
+		"<tr>"+
+        "<td align='center' valign='top'><img src='images/advancequery/loading.gif' alt='Loading...' width='50' height='50' vspace='5' /></td>"+
+      "</tr>"+
+    "</table></td></tr></table>";
+		myWindow=window.open('','','left=400,top=400,width=420,height=230,modal=yes');
 		myWindow.document.write(popupContent);
 		myWindow.focus();
 	}
