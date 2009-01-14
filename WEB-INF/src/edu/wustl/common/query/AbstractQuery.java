@@ -7,6 +7,8 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 
 
 /**
+ * 
+ * 
  * @author supriya_dankh
  *
  */
@@ -33,8 +35,8 @@ public abstract class AbstractQuery
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * gets query execution id
+	 * @return queryExecId
 	 */
 	public int getQueryExecId()
 	{
@@ -42,8 +44,8 @@ public abstract class AbstractQuery
 	}
 
 	/**
-	 * 
-	 * @return
+	 * gets query string
+	 * @return queryString
 	 */
 	public String getQueryString()
 	{
@@ -51,7 +53,7 @@ public abstract class AbstractQuery
 	}
 
 	/**
-	 * 
+	 * sets query execution id
 	 * @param queryExecId
 	 */
 	public void setQueryExecId(int queryExecId)
@@ -61,6 +63,7 @@ public abstract class AbstractQuery
 
 	
 	/**
+	 * sets query string
 	 * @param queryString
 	 */
 	public void setQueryString(String queryString)
@@ -69,8 +72,8 @@ public abstract class AbstractQuery
 	}
 
 	/**
-	 * 
-	 * @return
+	 * gets query object
+	 * @return query
 	 */
 	public IQuery getQuery()
 	{
@@ -78,7 +81,7 @@ public abstract class AbstractQuery
 	}
 	
 	/**
-	 * 
+	 * sets query object
 	 * @param query
 	 */
 	public void setQuery(IQuery query)
@@ -87,8 +90,8 @@ public abstract class AbstractQuery
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * gets user id 
+	 * @return  userId
 	 */
 	public Long getUserId()
 	{
@@ -96,8 +99,8 @@ public abstract class AbstractQuery
 	}
 	
 	/**
-	 * 
-	 * @param user_id
+	 * sets user id
+	 * @param userId
 	 */
 	public void setUserId(Long userId)
 	{
