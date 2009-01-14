@@ -362,7 +362,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 	{
 		//Creating the XML string
 		xmlString.append("<tree id=\"0\">");
-		xmlString.append("<item id = \""+ Constants.ROOT+ "\" text = \""+ Constants.CLASSES_PRESENT_IN_QUERY + "\" name= \""+ Constants.ROOT +"\" parent= \"" + Constants.ZERO_ID + "\" parentObjName = "+ "\"\"" +">");
+		xmlString.append("<item id = \""+ Constants.ROOT+ "\" text = \""+ Constants.CLASSES_PRESENT_IN_QUERY + "\" style=\"content_txt\" imheight=\"18\" imwidth=\"18\" name= \""+ Constants.ROOT +"\" parent= \"" + Constants.ZERO_ID + "\" parentObjName = "+ "\"\"" +">");
 	}
 
 	/**
@@ -400,7 +400,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 			//If its a containment Entity
 			parentId = getParentForChildEntity(parentNodesIdMap, dynamicExtensionsEntity, expressionId,mainEntityContainmentIdsMap);
 		}
-		xmlString.append("<item id = \""+ treeClassNodeId + "\" text = \""+ classDisplayName + "\" name= \""+ className +"\" parent= \"" + parentId + "\" parentObjName = "+ "\"\"" +">");	
+		xmlString.append("<item id = \""+ treeClassNodeId + "\" text = \""+ classDisplayName + "\" style=\"content_txt\" imheight=\"18\" imwidth=\"18\" name= \""+ className +"\" parent= \"" + parentId + "\" parentObjName = "+ "\"\"" +">");	
 		addAttributeToClassEntity(className, treeClassNodeId, categorySearchForm, currentSelectedObject.getAttributes(),xmlString);
 		if(!isMainEntity)
 		{
@@ -488,7 +488,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
             attributeName = attribute.getName();
             attributeDisplayName = Utility.getDisplayLabel(attributeName);
             treeAttributeNodeId = attributeMetadata.getUniqueId();
-            xmlString.append("<item id = \""+ treeAttributeNodeId + "\" text = \""+ attributeDisplayName + "\" name= \""+ attributeName +"\" parent= \"" + treeClassNodeId + "\" parentObjName = \""+ className + "\"" +">");
+            xmlString.append("<item id = \""+ treeAttributeNodeId + "\" text = \""+ attributeDisplayName + "\" style=\"content_txt\" imheight=\"18\" imwidtht=\"18\"  name= \""+ attributeName +"\" parent= \"" + treeClassNodeId + "\" parentObjName = \""+ className + "\"" +">");
             xmlString.append("</item>");
       }
       
