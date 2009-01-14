@@ -75,7 +75,7 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
 import edu.wustl.query.util.querysuite.TemporalQueryUtility;
 
 /**
- *The class is responsibel controlling all activities of Flex DAG
+ *The class is responsible controlling all activities of Flex DAG
  *  
  *@author aniket_pandit
  */
