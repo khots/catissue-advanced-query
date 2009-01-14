@@ -1,5 +1,8 @@
 package edu.wustl.common.query.factory;
-
+/**
+ * Factory to return the AbstractQueryManager instance.
+ * 
+ */
 import edu.wustl.common.util.Utility;
 import edu.wustl.query.querymanager.AbstractQueryManager;
 import edu.wustl.query.util.global.Variables;

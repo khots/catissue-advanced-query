@@ -3,7 +3,11 @@ package edu.wustl.common.query.factory;
 import edu.wustl.common.util.Utility;
 import edu.wustl.query.util.global.Variables;
 import edu.wustl.common.query.AbstractQuery;
-
+/**
+ * Factory to return the AbstractQuery instance.
+ * @author maninder_randhawa
+ *
+ */
 public class AbstractQueryFactory {
 
 	/**
