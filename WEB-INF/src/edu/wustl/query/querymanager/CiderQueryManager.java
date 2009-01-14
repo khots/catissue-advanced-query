@@ -18,6 +18,7 @@ import edu.wustl.query.ExecutionManager.CIDERQueryExecutionThread;
 import edu.wustl.query.ExecutionManager.QueryExecutionThread;
 
 /**
+ * This class is used to perform cider specific back end operations.
  * @author supriya_dankh
  * 
  */
@@ -35,6 +36,8 @@ public class CiderQueryManager extends AbstractQueryManager
 	}
 
 	/**
+	 * gets query count.
+	 * 
 	 * @param query_excecution_id
 	 * @return
 	 * @throws DAOException 
@@ -49,6 +52,8 @@ public class CiderQueryManager extends AbstractQueryManager
 	}
 
 	/**
+	 * gets work flow count.
+	 * 
 	 * @param query_excecution_id
 	 * @return
 	 */
@@ -74,6 +79,7 @@ public class CiderQueryManager extends AbstractQueryManager
 	}
 
 	/**
+	 * To generate the query  string from coder query object and execute it in a thread.
 	 * 
 	 * @param ciderQueryObj
 	 * @return
