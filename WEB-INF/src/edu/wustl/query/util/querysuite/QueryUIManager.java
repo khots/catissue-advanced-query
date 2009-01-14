@@ -27,8 +27,7 @@ public class QueryUIManager extends AbstractQueryUIManager
 	{
 	}
 
-	QueryDetails queryDetailsObj;
-
+	
 	/**
 	 * @param request
 	 * @param query
