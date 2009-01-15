@@ -1,0 +1,205 @@
+options
+{
+	STATIC = false;
+	FORCE_LA_CHECK = true;
+	DEBUG_PARSER = true;
+	//DEBUG_TOKEN_MANAGER = true;
+}
+
+PARSER_BEGIN(WherePartParser)
+
+package edu.wustl.common.query.impl.predicate;
+
+import java.io.*;
+
+
+public class WherePartParser
+{
+	
+	private PredicateGenerator predicateGenerator;
+	
+	public WherePartParser(String wherePart, PredicateGenerator predicateGenerator)
+	{
+		this(new StringReader(wherePart));
+		this.predicateGenerator = predicateGenerator;
+	}
+	
+	
+	public static void main(String[] args) throws ParseException, FileNotFoundException
+	{
+		InputStream in = new FileInputStream("WherePart4.txt");
+		
+		WherePartParser parser = new WherePartParser(in);
+		parser.parse();
+			
+	}
+
+
+}
+
+PARSER_END(WherePartParser)
+
+SKIP : {" " | "\t" | "\n" | "\r"}
+
+TOKEN : { <DOLLAR : "$"> }
+TOKEN : { <COMMA : ","> }
+TOKEN : {<OPENING_PARENTHESIS : "(">}
+TOKEN : {<CLOSING_PARENTHESIS : ")">}
+
+
+TOKEN : { <PREFIX_UNARY_OPERATOR : "empty(" | "exists(" >}
+TOKEN : { <PREFIX_BINARY_OPERATOR : "contains(string(" >}
+TOKEN : { <INFIX_OPERATOR : ">=" | ">" | "<" | "<=" | "="  >}
+
+
+TOKEN : { <LOGICAL_OPERATOR : "and" | "or" >}
+
+
+TOKEN : { <CONDITION_ATTRIBUTE : <DOLLAR> (~[")" , ">" , "<" , "="])* > }
+
+
+TOKEN : { <#DIGITS : (["0"-"9"])+  > }
+TOKEN : { <#NUMBER :  <DIGITS> | <DIGITS> "." <DIGITS> | "." <DIGITS> | <DIGITS> "." >}
+TOKEN : { <#STRING : "\"" (~["\""])* "\"" >}
+TOKEN : { <#CONSTANT : <STRING> | <NUMBER>  > }
+TOKEN : { <RHS : ("xs:" (~["("])*) "(" <CONSTANT> ")" | <CONSTANT>  >}
+
+
+
+
+public void parse() throws ParseException:
+{
+	Token t = null;	
+}
+{
+	ConditionTree() <EOF>
+	{
+		System.out.println("Condition Tree Parsed Successfully!");	
+	}
+	
+}
+
+
+
+private void ConditionTree() :
+{
+	
+}
+{
+	ConditionsOnOneEntity()
+	
+|
+	<OPENING_PARENTHESIS>
+	ConditionsOnOneEntity()
+	<CLOSING_PARENTHESIS>
+	(<LOGICAL_OPERATOR>
+	<OPENING_PARENTHESIS>
+	ConditionsOnChild()
+	<CLOSING_PARENTHESIS>)+
+	
+}
+
+
+private void ConditionsOnOneEntity() :
+{
+	
+}
+{
+	AtomicCondition() (<LOGICAL_OPERATOR> AtomicCondition())*	
+	
+}
+
+
+
+private void AtomicCondition() :
+{
+	
+}
+{
+	PrefixUnaryCondition()
+
+|
+
+	PrefixBinaryCondition()
+	
+|
+
+	InfixCondition()
+		
+}
+
+
+private void PrefixUnaryCondition() :
+{
+	Token conditionAttribute = null;
+	Token operator = null;
+}
+{
+		operator = <PREFIX_UNARY_OPERATOR> 
+		conditionAttribute=<CONDITION_ATTRIBUTE>
+		<CLOSING_PARENTHESIS>
+		{
+			int separator = conditionAttribute.image.indexOf("/");
+			String forVariable = conditionAttribute.image.substring(0, separator);
+			String attribute = conditionAttribute.image.substring(separator+1);
+			Predicate predicate = new PrefixUnaryPredicate(forVariable, attribute, operator.image);
+			predicateGenerator.addPredicate(forVariable, predicate);	
+							
+		} 
+	
+}
+
+
+private void PrefixBinaryCondition() :
+{
+	Token conditionAttribute = null;
+	Token operator = null;
+	Token rhs = null;
+}
+{
+	operator=<PREFIX_BINARY_OPERATOR> 
+	conditionAttribute=<CONDITION_ATTRIBUTE>
+	<CLOSING_PARENTHESIS> <COMMA> 
+	rhs=<RHS>
+	<CLOSING_PARENTHESIS>
+	{
+		int separator = conditionAttribute.image.indexOf("/");
+		String forVariable = conditionAttribute.image.substring(0, separator);
+		String attribute = conditionAttribute.image.substring(separator+1);
+		Predicate predicate = new PrefixBinaryPredicate(forVariable, attribute, operator.image, rhs.image);
+		predicateGenerator.addPredicate(forVariable, predicate);
+		
+	}
+	
+}
+
+
+private void InfixCondition() :
+{
+	Token conditionAttribute = null;
+	Token operator = null;
+	Token rhs = null;
+}
+{
+	conditionAttribute=<CONDITION_ATTRIBUTE>
+	operator=<INFIX_OPERATOR>
+	rhs=<RHS>
+	{
+		int separator = conditionAttribute.image.indexOf("/");
+		String forVariable = conditionAttribute.image.substring(0, separator);
+		String attribute = conditionAttribute.image.substring(separator+1);
+		Predicate predicate = new InfixPredicate(forVariable, attribute, operator.image, rhs.image);
+		predicateGenerator.addPredicate(forVariable, predicate);
+		
+	}
+
+}
+
+private void ConditionsOnChild() :
+{
+	
+}
+{
+	ConditionTree()
+	
+}
