@@ -575,4 +575,23 @@ public class Utility extends edu.wustl.common.util.Utility
 		}
 		return isMainEntity;
 	}
+    
+    public static String removeLastAnd(String select)
+	{
+		String selectString = select;
+		if (select.endsWith(Constants.QUERY_AND))
+		{
+			selectString = selectString.substring(0, selectString.length() - 5);
+		}
+		return selectString;
+	}
+    
+    public static void removeLastComma(StringBuilder string)
+	{
+		if (Constants.QUERY_COMMA.equals(string.substring(string.length() - 2)))
+		{
+			string.delete(string.length() - 2, string.length());
+		}
+	}
+
 }
