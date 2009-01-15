@@ -35,4 +35,13 @@ public class UPIMemCache extends MemCache
 	{
 		return upiCache.add(upi.toString());
 	}
+
+	@Override
+	/**
+	 * To clear the Cache
+	 */
+	public void clear()
+	{
+		upiCache.clear();
+	}
 }

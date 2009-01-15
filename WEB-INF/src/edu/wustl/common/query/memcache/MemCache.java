@@ -18,5 +18,10 @@ public abstract class MemCache
 	 */
 	public abstract boolean add(Object upi);
 	
+	/**
+	 * To clear the Cache
+	 */
+	public abstract void clear(); 
+	
 	
 }
