@@ -1,15 +1,25 @@
 package edu.wustl.query.util.querysuite;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.query.CiderQuery;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
+import edu.wustl.common.querysuite.factory.QueryObjectFactory;
+import edu.wustl.common.querysuite.queryobject.IConstraints;
+import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.querymanager.CiderQueryManager;
 import edu.wustl.query.querymanager.Count;
@@ -60,6 +70,7 @@ public class CiderQueryUIManager extends QueryUIManager {
 		int query_execution_id ;
 		try
 		{
+			updateQueryWithSelectedAttributes(ciderQuery);
 			query_execution_id = queryManager.execute(ciderQuery);
 
 		}
@@ -96,4 +107,34 @@ public class CiderQueryUIManager extends QueryUIManager {
 		}
 		return queryCount;
 	}
+	
+	private void updateQueryWithSelectedAttributes(AbstractQuery query)throws QueryModuleException
+	{
+		List<IOutputAttribute> selectedOutputAttributeList = new ArrayList<IOutputAttribute>();
+		ParameterizedQuery parameterizedQuery = (ParameterizedQuery)query.getQuery();
+		IConstraints constraints = parameterizedQuery.getConstraints();
+		IExpression rootExpression;
+		try
+		{
+			rootExpression = constraints.getRootExpression();
+
+			Collection<AttributeInterface> allAttributes = rootExpression.getQueryEntity()
+					.getDynamicExtensionsEntity().getAllAttributes();
+			for (AttributeInterface attributeInterface : allAttributes)
+			{
+				if (attributeInterface.getName().equalsIgnoreCase("personUpi"))
+				{
+					IOutputAttribute createOutputAttribute = QueryObjectFactory
+							.createOutputAttribute(rootExpression, attributeInterface);
+					selectedOutputAttributeList.add(createOutputAttribute);
+				}
+			}
+			parameterizedQuery.setOutputAttributeList(selectedOutputAttributeList);
+		}
+		catch (MultipleRootsException e)
+		{
+			QueryModuleException queryModuleException = new QueryModuleException(e.getMessage(),QueryModuleError.MULTIPLE_ROOT);
+			throw queryModuleException;
+		}
+}
 }
