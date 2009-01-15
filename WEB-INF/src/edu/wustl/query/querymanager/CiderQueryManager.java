@@ -18,7 +18,6 @@ import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.queryengine.impl.IQueryGenerator;
 import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.ExecutionManager.CIDERQueryExecutionThread;
-import edu.wustl.query.ExecutionManager.QueryExecutionThread;
 import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
