@@ -636,5 +636,24 @@ public class Constants extends edu.wustl.common.util.global.Constants
     /** Constant for Advanced Query 'JNDI' name **/
     public static final String JNDI_NAME = "java:/query";
     
-
+    // CONSTANTS for columns in table 'QUERY_EXECUTION_LOG'
+    /**  Constant for CREATIONTIME **/
+    public static final String CREATIONTIME = "CREATIONTIME";
+    /**  Constant for USER_ID **/
+    public static final String USER_ID = "USER_ID";
+    /**  Constant for STATUS **/
+    public static final String STATUS = "STATUS";
+    /**  Constant for PROJECT_ID **/
+    public static final String PRJCT_ID = "PROJECT_ID";
+    /**  Constant for QUERY_EXECUTION_ID **/
+    public static final String QUERY_EXECUTION_ID = "QUERY_EXECUTION_ID";
+    /**  Constant for QUERY_ID **/
+    public static final String QRY_ID = "QUERY_ID";
+    /**  Constant for QUERY_IN_PROGRESS **/
+    public static final String QUERY_IN_PROGRESS = "In Progress";
+    /**  Constant for QUERY_COMPLETED **/
+    public static final String QUERY_COMPLETED = "Completed";
+    /**  Constant for QUERY_CANCELLED **/
+    public static final String QUERY_CANCELLED = "Cancelled";
+    
 }
