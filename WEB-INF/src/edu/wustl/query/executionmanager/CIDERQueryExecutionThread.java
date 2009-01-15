@@ -4,15 +4,15 @@ package edu.wustl.query.ExecutionManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.DatabaseConnectionParams;
 import edu.wustl.common.query.CiderQuery;
 import edu.wustl.common.query.exeptions.QueryExecIdNotGeneratedException;
 import edu.wustl.common.query.itablemanager.CIDERITableManager;
 import edu.wustl.common.query.memCache.UPIMemCache;
 import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.query.querymanager.CiderQueryManager;
+import edu.wustl.query.util.global.Constants;
 
 /**
  * This class represents the Thread to execute the query
@@ -158,7 +158,7 @@ public class CIDERQueryExecutionThread implements Runnable
 			}
 
 			dbConnectionParams = new DatabaseConnectionParams();
-			dbConnectionParams.openSession(null);
+			dbConnectionParams.openSession(Constants.JNDI_NAME);
 
 			results = dbConnectionParams.getResultSet(ciderQueryObj.getQueryString());
 
@@ -166,11 +166,12 @@ public class CIDERQueryExecutionThread implements Runnable
 			// Default is 10 and this should be tested with production database 
 			// setting for various values to get the right value.
 
-			while (results.isLast())
+			while (results.next())
 			{
 				if (cancelThread)
 				{
-					manager.changeStatus("CANCELLED", ciderQueryObj.getQueryExecId());
+					manager.changeStatus("Cancelled", ciderQueryObj.getQueryExecId());
+					dbConnectionParams.commit();
 					break;
 				}
 				else
@@ -189,17 +190,20 @@ public class CIDERQueryExecutionThread implements Runnable
 						// patientDeid = Get Patient DEID
 
 						//	INSERTING UPI into ITABLE
-						manager.insertITableEntry(patientDeid, ciderQueryObj.getQueryExecId(), upi);
+						manager.insertITableEntry(patientDeid, 
+								ciderQueryObj.getQueryExecId(), upi);
 					}
 				}
 			}
-
+			
 			// UPDATE TABLE TO CHANGE QUERY STATUS TO 'COMPLETE'
 			if (!cancelThread)
 			{
-				manager.changeStatus("COMPLETE", ciderQueryObj.getQueryExecId());
+				manager.changeStatus("Completed", ciderQueryObj.getQueryExecId());
+				dbConnectionParams.commit();
+				
 			}
-
+			
 		}
 		catch (SQLException ex)
 		{
@@ -215,8 +219,9 @@ public class CIDERQueryExecutionThread implements Runnable
 		}
 		finally
 		{
-			try
+		 	try
 			{
+				new CiderQueryManager().removeThreadFromMap(ciderQueryObj.getQueryExecId());
 				results.close();
 				dbConnectionParams.closeSession();
 				upiCache = null;

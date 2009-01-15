@@ -6,11 +6,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.DatabaseConnectionParams;
 import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.global.Constants;
 import edu.wustl.query.querymanager.Count;
+import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
 
 /**
@@ -23,9 +22,6 @@ import edu.wustl.query.util.global.Variables;
  */
 public class CIDERITableManager extends ITableManager
 {
-    /**  **/
-	private static DatabaseConnectionParams sDB_CONNECTION_PARAMS = new DatabaseConnectionParams();
-	
 	/**  **/
 	private static CIDERITableManager sINSTANCE; 
 	
@@ -52,16 +48,19 @@ public class CIDERITableManager extends ITableManager
 	 */
 	public void insertITableEntry(int patientDeid, int queryExecLogId, String upi) throws DAOException, SQLException
 	{
+		DatabaseConnectionParams DB_CONNECTION_PARAMS = new DatabaseConnectionParams();
 		try
 		{
 			// CODE TO INSERT DATA INTO QUERY_ITABLE
-			sDB_CONNECTION_PARAMS.openSession(null);
+			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME);
 	
 			ArrayList<Object> columnValues = new ArrayList<Object>();
+			
 			columnValues.add(patientDeid);
-			columnValues.add(queryExecLogId);
 			columnValues.add(upi);
-			sDB_CONNECTION_PARAMS.insert(Variables.ITABLE, columnValues);
+			columnValues.add(queryExecLogId);
+			DB_CONNECTION_PARAMS.insert(Variables.ITABLE, columnValues);
+			DB_CONNECTION_PARAMS.commit();
 		}
 		catch(SQLException ex)
 		{
@@ -73,7 +72,7 @@ public class CIDERITableManager extends ITableManager
 		}
 		finally
 		{
-			sDB_CONNECTION_PARAMS.closeSession();
+			DB_CONNECTION_PARAMS.closeSession();
 		}
 	}
 
@@ -90,22 +89,21 @@ public class CIDERITableManager extends ITableManager
 	{
 		int queryExecId = -1;
 		ResultSet rs = null;
+		DatabaseConnectionParams DB_CONNECTION_PARAMS = new DatabaseConnectionParams();
 		
 		try
 		{
-			sDB_CONNECTION_PARAMS.openSession(null);
+			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME);
 	
-			Statement stmt = sDB_CONNECTION_PARAMS.getDatabaseStatement();
+			Statement stmt = DB_CONNECTION_PARAMS.getDatabaseStatement();
 			
-			java.util.Date today = new java.util.Date();
-		    java.sql.Timestamp timestamp = new java.sql.Timestamp(today.getTime());
 			// Insert a row
 			// Indicate you want automatically 
 			// generated keys
 			String query = "INSERT INTO "
 					+ Variables.QUERY_EXECUTION_LOG
 					+ "(CREATIONTIME, USER_ID, STATUS, PROJECT_ID, QUERY_EXECUTION_ID, QUERY_ID) VALUES "
-					+ "(" + timestamp + "," + userId + ",in-progress" + "," + projectId + ",default,"
+					+ "( CURRENT TIMESTAMP ," + userId + ",'In Progress'" + "," + projectId + ",default,"
 					+ query_id + ")";
 	
 			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
@@ -122,6 +120,7 @@ public class CIDERITableManager extends ITableManager
 				// value
 				System.out.println("automatically generated key value = " + queryExecId);
 			}
+			DB_CONNECTION_PARAMS.commit();
 		}
 		catch(SQLException ex)
 		{
@@ -133,7 +132,7 @@ public class CIDERITableManager extends ITableManager
 		}
 		finally
 		{
-			sDB_CONNECTION_PARAMS.closeSession();
+			DB_CONNECTION_PARAMS.closeSession();
 		}
 
 		return queryExecId;
@@ -148,14 +147,17 @@ public class CIDERITableManager extends ITableManager
 	 */
 	public void changeStatus(String status, int queryExecId) throws SQLException, DAOException
 	{
+		DatabaseConnectionParams DB_CONNECTION_PARAMS = new DatabaseConnectionParams();
+		Statement stmt = null;	
 		try
 		{
-			sDB_CONNECTION_PARAMS.openSession(null);
-			Statement stmt = sDB_CONNECTION_PARAMS.getDatabaseStatement();
+			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME);
+			stmt = DB_CONNECTION_PARAMS.getDatabaseStatement();
 			
-			String query = "UPDATE "+Variables.QUERY_EXECUTION_LOG+" SET STATUS="+status+" WHERE QUERY_EXECUTION_ID="+queryExecId;
+			String query = "UPDATE "+Variables.QUERY_EXECUTION_LOG+" SET STATUS='"+status+"' WHERE QUERY_EXECUTION_ID="+queryExecId;
 			
 			stmt.executeUpdate(query);
+			DB_CONNECTION_PARAMS.commit();
 		}
 		catch(SQLException ex)
 		{
@@ -167,7 +169,8 @@ public class CIDERITableManager extends ITableManager
 		}
 		finally
 		{
-			sDB_CONNECTION_PARAMS.closeSession();
+			stmt.close();
+			DB_CONNECTION_PARAMS.closeSession();
 		}
 	}
 	
@@ -179,18 +182,31 @@ public class CIDERITableManager extends ITableManager
 	 * @throws DAOException
 	 */
 	public Count getCount(int queryExecId)throws SQLException, DAOException
-	{
+	{ 
 		Count count = new Count();
+		int actualCount = 0;
+		String status = "";
+		ResultSet rs = null;
+		Statement stmt = null;
+		DatabaseConnectionParams DB_CONNECTION_PARAMS = new DatabaseConnectionParams();
+
 		try
 		{
-			sDB_CONNECTION_PARAMS.openSession(null);
-			Statement stmt = sDB_CONNECTION_PARAMS.getDatabaseStatement();
-			String query = "select count(*) from "+Variables.ITABLE +"where QUERY_EXECUTION_ID="+queryExecId;
-			ResultSet rs = stmt.executeQuery(query);
-			count.setCount(rs.getInt(0));
-			query = "select STATUS from "+Variables.QUERY_EXECUTION_LOG+" where QUERY_EXECUTION_ID="+queryExecId;
+			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME);
+			stmt = DB_CONNECTION_PARAMS.getDatabaseStatement();
+			String query = "select count(*) from "+Variables.ITABLE +" where QUERY_EXECUTION_ID= " + queryExecId;
 			rs = stmt.executeQuery(query);
-			String status = rs.getString(0);
+			while (rs.next())
+			{
+				actualCount = rs.getInt(1);
+			}
+			count.setCount(actualCount);
+			query = "select STATUS from "+Variables.QUERY_EXECUTION_LOG+" where QUERY_EXECUTION_ID= "+queryExecId;
+			rs = stmt.executeQuery(query);
+			while(rs.next())
+			{
+				status = rs.getString(1);
+			}
 			count.setQuery_exection_id(queryExecId);
 			count.setStatus(status);
 		}
@@ -204,7 +220,9 @@ public class CIDERITableManager extends ITableManager
 		}
 		finally
 		{
-			sDB_CONNECTION_PARAMS.closeSession();
+			rs.close();
+			stmt.close();
+			DB_CONNECTION_PARAMS.closeSession();
 		}
 		return count;
 		
