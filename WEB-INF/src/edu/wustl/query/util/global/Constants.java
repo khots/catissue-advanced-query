@@ -631,7 +631,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	
 	//Start : Added for changes in Query Design for CIDER Query 
     public static final String PROJECT_ID = "projectId";
-    //End : Added for changes in Query Design for CIDER Query 
+    //End : Added for changes in Query Design for CIDER Query
+    
+    /** Constant for Advanced Query 'JNDI' name **/
+    public static final String JNDI_NAME = "java:/query";
     
 
 }

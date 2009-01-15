@@ -75,5 +75,6 @@ public class Variables extends edu.wustl.common.util.global.Variables
 	 * QUERY EXECUTION LOG TABLE
 	 */
 	public static String QUERY_EXECUTION_LOG="QUERY_EXECUTION_LOG";
+	public static int temp = 1;
 	
 }

@@ -4,14 +4,11 @@
 package edu.wustl.query.querymanager;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.domain.Workflow;
-import edu.wustl.query.ExecutionManager.QueryExecutionThread;
 
 
 /**
@@ -28,11 +25,6 @@ import edu.wustl.query.ExecutionManager.QueryExecutionThread;
  */
 public abstract class AbstractQueryManager
 {
-	
-	/**
-	 * Map of QUERY_EXECUTION_ID(key) versus CORRESPONDING_THREAD(value)
-	 */
-	protected Map<Integer, QueryExecutionThread> queryThreads = new HashMap<Integer, QueryExecutionThread>();
 	
 	/**
 	 * 
@@ -71,7 +63,8 @@ public abstract class AbstractQueryManager
 	/**
 	 * 
 	 * @param query_execution_id
+	 * @throws SQLException 
 	 */
-	abstract public void cancel(int query_execution_id);
+	abstract public void cancel(int query_execution_id) throws SQLException;
 	
 }

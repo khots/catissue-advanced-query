@@ -5,6 +5,8 @@
 package edu.wustl.query.querymanager;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.wustl.common.query.CiderQuery;
 import edu.wustl.common.query.factory.QueryGeneratorFactory;
@@ -14,10 +16,11 @@ import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.queryengine.impl.IQueryGenerator;
-import edu.wustl.query.util.querysuite.QueryModuleError;
-import edu.wustl.query.util.querysuite.QueryModuleException;
+import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.ExecutionManager.CIDERQueryExecutionThread;
 import edu.wustl.query.ExecutionManager.QueryExecutionThread;
+import edu.wustl.query.util.querysuite.QueryModuleError;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
  * This class is used to perform cider specific back end operations.
@@ -26,6 +29,11 @@ import edu.wustl.query.ExecutionManager.QueryExecutionThread;
  */
 public class CiderQueryManager extends AbstractQueryManager
 {
+	
+	/**
+	 * Map of QUERY_EXECUTION_ID(key) versus CORRESPONDING_THREAD(value)
+	 */
+	private Map<Integer, CIDERQueryExecutionThread> queryThreads = new HashMap<Integer, CIDERQueryExecutionThread>();
 
 	/**
 	 * @param workflow
@@ -71,13 +79,11 @@ public class CiderQueryManager extends AbstractQueryManager
 	 * 
 	 * @param queryExecId
 	 */
-	public void cancel(int query_execution_id)
+	public void cancel(int query_execution_id) throws SQLException
 	{
-		// LOGIC TO UPDATE STATUS OF THREAD in iTABLE LOG
-		// Stop Thread corresponding to queryExecId
-
+		CIDERQueryExecutionThread thread = queryThreads.get(query_execution_id);
+		thread.cancel();
 		queryThreads.remove(query_execution_id);
-
 	}
 
 	/**
@@ -90,20 +96,43 @@ public class CiderQueryManager extends AbstractQueryManager
 	 */
 	public int execute(CiderQuery ciderQueryObj) throws MultipleRootsException, SqlException, QueryModuleException
 	{ 
-		//String generatedQuery = "select personUpi_1 Column0 from xmltable(' for $Person_1 in db2-fn:xmlcolumn(\"DEMOGRAPHICS.XMLDATA\")/Person where exists($Person_1/personUpi)  return <return><Person_1>{$Person_1}</Person_1></return>' columns personUpi_1 varchar(1000) path 'Person_1/Person/personUpi')";
+		String generatedQuery = "";
 		QueryModuleException queryModExp;
 		int queryExecId = -1;
 		try 
 		{
 			IQueryGenerator queryGenerator = QueryGeneratorFactory
 					.getDefaultQueryGenerator();
-			String generatedQuery = queryGenerator.generateQuery(ciderQueryObj
+			generatedQuery = queryGenerator.generateQuery(ciderQueryObj
 					.getQuery());
 			
-			//generatedQuery = "select personUpi_1 Column0 from xmltable(' for $Person_1 in db2-fn:xmlcolumn(\"DEMOGRAPHICS.XMLDATA\")/Person where exists($Person_1/personUpi)  return <return><Person_1>{$Person_1}</Person_1></return>' columns personUpi_1 varchar(1000) path 'Person_1/Person/personUpi')";
+			if(Variables.temp == 1)
+			{
+				generatedQuery = "select personUpi_1 Column0 from xmltable(' for $Person_1 in db2-fn:xmlcolumn(\"DEMOGRAPHICS.XMLDATA\")/Person where exists($Person_1/personUpi)  return <return><Person_1>{$Person_1}</Person_1></return>' columns personUpi_1 varchar(1000) path 'Person_1/Person/personUpi')";
+				Variables.temp = 2;
+				System.out.println("QUERY - PERSON UPI NOT NULL");
+			}
+			else if(Variables.temp == 2)
+			{
+				generatedQuery = "select personUpi_1 Column0 from xmltable(' for $Person_1 in db2-fn:xmlcolumn(\"DEMOGRAPHICS.XMLDATA\")/Person ,$Demographics_2 in $Person_1/demographicsCollection/demographics where (exists($Person_1/personUpi)) and($Demographics_2/dateOfBirth>xs:dateTime(\"1900-10-10T23:59:59\") )  return <return><Person_1>{$Person_1}</Person_1><Demographics_2>{$Demographics_2}</Demographics_2></return>' columns personUpi_1 varchar(1000) path 'Person_1/Person/personUpi')";
+				Variables.temp = 3;
+				System.out.println("QUERY - ON PERSON AND DEMOGRAPHICS - DOB > 10/10/1900");
+			}
+			else if(Variables.temp == 3)
+			{
+				generatedQuery = "select personUpi_1 Column0 from xmltable(' for $Person_1 in db2-fn:xmlcolumn(\"DEMOGRAPHICS.XMLDATA\")/Person ,$Demographics_2 in $Person_1/demographicsCollection/demographics where (exists($Person_1/personUpi)) and($Demographics_2/dateOfBirth>xs:dateTime(\"1940-10-10T23:59:59\") )  return <return><Person_1>{$Person_1}</Person_1><Demographics_2>{$Demographics_2}</Demographics_2></return>' columns personUpi_1 varchar(1000) path 'Person_1/Person/personUpi')";
+				Variables.temp = 4;
+				System.out.println("QUERY - ON PERSON AND DEMOGRAPHICS - DOB > 10/10/1940");
+			}
+			else if(Variables.temp == 4)
+			{
+				generatedQuery = "select personUpi_1 Column0 from xmltable(' for $Person_1 in db2-fn:xmlcolumn(\"DEMOGRAPHICS.XMLDATA\")/Person ,$Demographics_2 in $Person_1/demographicsCollection/demographics where (exists($Person_1/personUpi)) and($Demographics_2/dateOfBirth>xs:dateTime(\"1980-10-10T23:59:59\") )  return <return><Person_1>{$Person_1}</Person_1><Demographics_2>{$Demographics_2}</Demographics_2></return>' columns personUpi_1 varchar(1000) path 'Person_1/Person/personUpi')";
+				Variables.temp = 1;
+				System.out.println("QUERY - ON PERSON AND DEMOGRAPHICS - DOB > 10/10/1980");
+			}
 
 			Thread thread = null;
-			QueryExecutionThread queryExecutionThread = null;
+			CIDERQueryExecutionThread queryExecutionThread = null;
 
 			queryExecId = CIDERQueryExecutionThread.getQueryExecutionId(ciderQueryObj);
 			ciderQueryObj.setQueryExecId(queryExecId);
@@ -125,16 +154,16 @@ public class CiderQueryManager extends AbstractQueryManager
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
 			throw queryModExp;
 		}
-		finally
-		{
-			// close connection
-			// close result set
-
-			// UPDATE STATUS IN iTABLE LOG AS COMPLETED
-			// call thread.stop
-			queryThreads.remove(queryExecId);
-		}
 
 		return queryExecId;
+	}
+	
+	/**
+	 * 
+	 * @param queryExecId
+	 */
+	public void removeThreadFromMap(int queryExecId)
+	{
+		queryThreads.remove(queryExecId);
 	}
 }
