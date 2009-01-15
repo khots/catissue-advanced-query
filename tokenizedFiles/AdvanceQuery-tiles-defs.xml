@@ -7,7 +7,7 @@
 <tiles-definitions> 
 
 	<!-- Home tab pages definitions start -->
-	<definition name=".query.mainTitlePageDef" path="/pages/QueryLayout.jsp">
+	<definition name=".query.mainTitlePageDef" path="/pages/Layout.jsp">
 		@@tilesTitle@@
 		@@tilesHeader@@
 		@@tilesAppHeader@@
@@ -18,7 +18,7 @@
 	</definition>
 
 	<!-- Home tab pages definitions start -->
-	<definition name=".query.homePageDef" path="/pages/QueryLayout.jsp">
+	<definition name=".query.homePageDef" path="/pages/Layout.jsp">
 		@@tilesTitle@@
 		@@tilesHeader@@
 		@@tilesAppHeader@@
