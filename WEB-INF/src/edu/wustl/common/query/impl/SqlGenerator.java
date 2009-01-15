@@ -53,12 +53,12 @@ import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
 import edu.wustl.common.querysuite.queryobject.impl.Expression;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
-import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.global.Variables;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 
 /**
  * To generate SQL from the given Query Object.
@@ -156,7 +156,7 @@ public class SqlGenerator extends QueryGenerator
 
 		addactivityStatusToEmptExpr(rootExpression.getExpressionId());
 		// Identifying empty Expressions.
-		emptyExpressions = new HashSet<IExpression>();
+		
 		checkForEmptyExpression(rootExpression.getExpressionId());
 
 		//pAndExpressions = new HashSet<IExpression>();
@@ -175,7 +175,7 @@ public class SqlGenerator extends QueryGenerator
 			selectPart.append(Constants.QUERY_COMMA);
 		}
 		selectPart.append(getSelectForOutputTerms(queryClone.getOutputTerms()));
-		removeLastComma(selectPart);
+		Utility.removeLastComma(selectPart);
 
 		String sql = selectPart + " " + fromPart + " " + wherePart;
 
@@ -377,7 +377,7 @@ public class SqlGenerator extends QueryGenerator
 			selectAttribute.insert(0, Constants.SELECT_DISTINCT);
 		}
 		
-		removeLastComma(selectAttribute);
+		Utility.removeLastComma(selectAttribute);
 		return selectAttribute.toString();
 	}
 
@@ -997,7 +997,7 @@ public class SqlGenerator extends QueryGenerator
 			outputTermsColumns.put(columnName, term);
 		}
 		
-		removeLastComma(s);
+		Utility.removeLastComma(s);
 		return s.toString();
 		
 		

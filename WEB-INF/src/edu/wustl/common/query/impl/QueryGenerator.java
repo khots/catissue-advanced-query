@@ -56,10 +56,10 @@ import edu.wustl.common.querysuite.utils.DatabaseType;
 import edu.wustl.common.querysuite.utils.TermProcessor;
 import edu.wustl.common.querysuite.utils.TermProcessor.IAttributeAliasProvider;
 import edu.wustl.common.querysuite.utils.TermProcessor.TermString;
-import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.Variables;
 import edu.wustl.query.queryengine.impl.IQueryGenerator;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 
 /**
  * @author juberahamad_patel
@@ -147,6 +147,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	{
 		aliasAppenderMap = new HashMap<IExpression, Integer>();
 		emptyExpressions = new HashSet<IExpression>();
+		
 	}
 
 	/**
@@ -350,7 +351,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 				buffer.append(operandquery);
 				buffer.append(' ');
 
-				buffer = new StringBuffer(removeLastAnd(buffer.toString()));
+				buffer = new StringBuffer(Utility.removeLastAnd(buffer.toString()));
 				buffer.append(getParenthesis(currentNestingCounter,
 						Constants.QUERY_CLOSING_PARENTHESIS));
 				// Finishing
@@ -367,15 +368,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 		return buffer.toString();
 	}
 
-	protected String removeLastAnd(String select)
-	{
-		String selectString = select;
-		if (select.endsWith(Constants.QUERY_AND))
-		{
-			selectString = selectString.substring(0, selectString.length() - 5);
-		}
-		return selectString;
-	}
+	
 
 	protected abstract String getDescriminatorCondition(EntityInterface entity, String aliasFor);
 
@@ -461,7 +454,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 				buffer.append(condition);
 			}
 		}
-		return removeLastAnd(buffer.toString());
+		return Utility.removeLastAnd(buffer.toString());
 	}
 
 	private void addActivityStausCondition(IRule rule)
@@ -537,14 +530,6 @@ public abstract class QueryGenerator implements IQueryGenerator
 				Constants.getOracleTermString(s);
 			default :
 				throw new RuntimeException("won't occur.");
-		}
-	}
-
-	public void removeLastComma(StringBuilder string)
-	{
-		if (Constants.QUERY_COMMA.equals(string.substring(string.length() - 2)))
-		{
-			string.delete(string.length() - 2, string.length());
 		}
 	}
 
