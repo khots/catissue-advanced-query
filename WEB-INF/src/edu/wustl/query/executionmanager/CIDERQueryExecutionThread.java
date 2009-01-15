@@ -170,7 +170,7 @@ public class CIDERQueryExecutionThread implements Runnable
 			{
 				if (cancelThread)
 				{
-					manager.changeStatus("Cancelled", ciderQueryObj.getQueryExecId());
+					manager.changeStatus(Constants.QUERY_CANCELLED, ciderQueryObj.getQueryExecId());
 					dbConnectionParams.commit();
 					break;
 				}
@@ -199,11 +199,9 @@ public class CIDERQueryExecutionThread implements Runnable
 			// UPDATE TABLE TO CHANGE QUERY STATUS TO 'COMPLETE'
 			if (!cancelThread)
 			{
-				manager.changeStatus("Completed", ciderQueryObj.getQueryExecId());
+				manager.changeStatus(Constants.QUERY_COMPLETED, ciderQueryObj.getQueryExecId());
 				dbConnectionParams.commit();
-				
 			}
-			
 		}
 		catch (SQLException ex)
 		{
