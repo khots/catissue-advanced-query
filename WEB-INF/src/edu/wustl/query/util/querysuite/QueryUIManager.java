@@ -1,10 +1,7 @@
 
 package edu.wustl.query.util.querysuite;
 
-import java.util.List;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.factory.AbstractQueryFactory;
 import edu.wustl.common.query.factory.AbstractQueryManagerFactory;
@@ -15,7 +12,6 @@ import edu.wustl.query.querymanager.AbstractQueryManager;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.common.query.AbstractQuery;
-import edu.wustl.common.query.CiderQuery;
 
 /**
  *   This class is default implementation of AbstractQueryUIManager.
