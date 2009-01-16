@@ -4,11 +4,14 @@
 
 package edu.wustl.common.query.impl;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.query.impl.predicate.PredicateGenerator;
@@ -49,7 +52,8 @@ public class PassOneXQueryGenerator extends XQueryGenerator
 
 		for (IExpression expression : mainExpressions)
 		{
-			String tableName = expression.getQueryEntity().getDynamicExtensionsEntity().getTableProperties().getName();
+			String tableName = expression.getQueryEntity().getDynamicExtensionsEntity()
+					.getTableProperties().getName();
 
 			StringBuilder rootPath = new StringBuilder().append(Constants.QUERY_XMLCOLUMN).append(
 					Constants.QUERY_OPENING_PARENTHESIS).append("\"").append(tableName).append(
@@ -83,13 +87,12 @@ public class PassOneXQueryGenerator extends XQueryGenerator
 		{
 			entityName = deCapitalize(entityName);
 		}
-		
+
 		laterPart.append('/').append(entityName);
 
-		if (dummyShouldAddAllDownstreamPredicatesHere(expression))
+		if (hasVersion(expression))
 		{
-			String localPredicates = getAllDownstreamPredicates(predicateGenerator, expression,
-					"");
+			String localPredicates = getAllDownstreamPredicates(predicateGenerator, expression, "");
 			laterPart.append('[').append(localPredicates).append(']');
 			String variable = forVariables.get(expression);
 			passOneForVariables.put(expression, variable);
@@ -115,7 +118,6 @@ public class PassOneXQueryGenerator extends XQueryGenerator
 		return null;
 	}
 
-	
 	private String getAllDownstreamPredicates(PredicateGenerator predicateGenerator,
 			IExpression expression, String prefix)
 	{
@@ -184,7 +186,7 @@ public class PassOneXQueryGenerator extends XQueryGenerator
 				}
 
 				expression = joinGraph.getChildrenList(expression).get(0);
-				
+
 				//additional "../" for entities having target role eg. demographicsCollection 
 				if (targetRoles.containsKey(expression))
 				{
@@ -192,7 +194,7 @@ public class PassOneXQueryGenerator extends XQueryGenerator
 				}
 
 				relativePath.append("../");
-				
+
 			}
 		}
 
@@ -249,15 +251,19 @@ public class PassOneXQueryGenerator extends XQueryGenerator
 		return "";
 	}
 
-	public boolean dummyShouldAddAllDownstreamPredicatesHere(IExpression expression)
+	public boolean hasVersion(IExpression expression)
 	{
-		if (expression.getQueryEntity().getDynamicExtensionsEntity().getName().equalsIgnoreCase(
-				"Demographics"))
+		
+		Collection<TaggedValueInterface> taggedValues = expression.getQueryEntity().getDynamicExtensionsEntity().getTaggedValueCollection();
+		
+		for(TaggedValueInterface taggedValue : taggedValues)
 		{
-			return true;
+			if(taggedValue.getKey().equalsIgnoreCase(Constants.VERSION))
+			{
+				return true;
+			}
 		}
-
+		
 		return false;
 	}
-
 }
