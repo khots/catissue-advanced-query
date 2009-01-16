@@ -3,6 +3,7 @@ package edu.wustl.query.util.querysuite;
 /**
  * This class is base for all QueryUIManager classes.
  */
+import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import edu.wustl.common.query.CiderQuery;
@@ -43,4 +44,13 @@ public abstract class AbstractQueryUIManager {
 	public abstract int processQuery() throws QueryModuleException ;
 	
 	public abstract Count getCount(int query_execution_id) throws QueryModuleException;
+	
+	/**
+	 * This method gets the required objects (incase of Cider objects will be Projects)
+	 * based on which query results can be filtered.
+	 * @param userId get Objects based on user id. 
+	 * @return collection of required objects.
+	 * @throws QueryModuleException
+	 */
+	abstract public Collection<? extends Object> getObjects(Long userId) throws QueryModuleException;
 }
