@@ -174,6 +174,11 @@ public class ImportXmi
 			}
 
 			boolean isEntityGroupSystemGenerated = false;
+			
+			boolean isCreateTable = false;
+			// this variable indicates that the import xmi is run only to store the metaData
+			// not to create the tables
+			
 			//Baljeet........
 			//			if(hookEntity.equalsIgnoreCase(AnnotationConstants.NONE))
 			//			{
@@ -183,7 +188,7 @@ public class ImportXmi
 			List<String> containerNames = readFile(pathCsvFileName);
 			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
 			List<ContainerInterface> mainContainerList = xmiImportProcessor.processXmi(uml,
-					domainModelName, packageName, containerNames, isEntityGroupSystemGenerated);
+					domainModelName, packageName, containerNames, isEntityGroupSystemGenerated,isCreateTable);
 
 			boolean isEditedXmi = xmiImportProcessor.isEditedXmi;
 			Logger.out.info("\n--------------------------------------------------\n");

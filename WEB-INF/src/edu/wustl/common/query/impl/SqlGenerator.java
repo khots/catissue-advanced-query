@@ -26,6 +26,7 @@ import edu.common.dynamicextensions.domaininterface.DoubleTypeInformationInterfa
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
@@ -519,84 +520,99 @@ public class SqlGenerator extends QueryGenerator
 
 					ConstraintPropertiesInterface constraintProperties = eavAssociation
 							.getConstraintProperties();
-					if (constraintProperties.getSourceEntityKey() != null
-							&& constraintProperties.getTargetEntityKey() != null)// Many
+					Collection<ConstraintKeyPropertiesInterface> srcCnstrKeyPropColl=constraintProperties.getSrcEntityConstraintKeyPropertiesCollection();
+					Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyPropColl=constraintProperties.getTgtEntityConstraintKeyPropertiesCollection();
+					AttributeInterface primaryKey;
+					String leftAttribute = null;
+					String rightAttribute = null;
+					
+					if (!srcCnstrKeyPropColl.isEmpty() && !tgtCnstrKeyPropColl.isEmpty())// Many
 					// to
 					// Many
 					// Case
 					{
 
-						String leftAttribute = null;
-						String rightAttribute = null;
-
 						String middleTableName = constraintProperties.getName();
 						String middleTableAlias = getAliasForMiddleTable(childExpression,
 								middleTableName);
-
-						AttributeInterface primaryKey = getPrimaryKey(leftEntity);
-						leftAttribute = leftAlias + Constants.QUERY_DOT
-								+ primaryKey.getColumnProperties().getName();
-
-						rightAttribute = middleTableAlias + Constants.QUERY_DOT
-								+ constraintProperties.getSourceEntityKey();
-						// Forming joing with middle table.
-						buffer.append(Constants.LEFT_JOIN + middleTableName + " " + middleTableAlias
-								+ Constants.ON);
-						buffer.append(Constants.QUERY_OPENING_PARENTHESIS + leftAttribute + Constants.QUERY_EQUALS + rightAttribute);
-
-						/*
-						 * Adding descriminator column condition for the 1st
-						 * parent node while forming FROM part left joins. This
-						 * will be executed only once i.e. when only one node is
-						 * processed.
-						 */
-						if (processedAlias.size() == 1)
+						for(ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyPropColl)
 						{
-							buffer.append(getDescriminatorCondition(actualEavAssociation
-									.getEntity(), leftAlias));
-						}
-						buffer.append(Constants.QUERY_CLOSING_PARENTHESIS);
-
-						// Forming join with child table.
-						leftAttribute = middleTableAlias + Constants.QUERY_DOT
-								+ constraintProperties.getTargetEntityKey();
-						primaryKey = getPrimaryKey(rightEntity);
-						rightAttribute = rightAlias + Constants.QUERY_DOT
+							
+							primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();//getPrimaryKey(leftEntity);
+							leftAttribute = leftAlias + Constants.QUERY_DOT
 								+ primaryKey.getColumnProperties().getName();
+							rightAttribute = middleTableAlias + Constants.QUERY_DOT
+								+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+							// Forming joing with middle table.
+							buffer.append(Constants.LEFT_JOIN + middleTableName + " " + middleTableAlias
+									+ Constants.ON);
+							buffer.append(Constants.QUERY_OPENING_PARENTHESIS + leftAttribute + Constants.QUERY_EQUALS + rightAttribute);
+							/*
+							 * Adding descriminator column condition for the 1st
+							 * parent node while forming FROM part left joins. This
+							 * will be executed only once i.e. when only one node is
+							 * processed.
+							 */
+							if (processedAlias.size() == 1)
+							{
+								buffer.append(getDescriminatorCondition(actualEavAssociation
+										.getEntity(), leftAlias));
+							}
+							buffer.append(Constants.QUERY_CLOSING_PARENTHESIS);
 
-						buffer.append(Constants.LEFT_JOIN + rightEntity.getTableProperties().getName()
-								+ " " + rightAlias + Constants.ON);
-						buffer.append(Constants.QUERY_OPENING_PARENTHESIS + leftAttribute + Constants.QUERY_EQUALS + rightAttribute);
-
-						/*
-						 * Adding descriminator column condition for the child
-						 * node while forming FROM part left joins.
-						 */
-						buffer.append(getDescriminatorCondition(actualEavAssociation
-								.getTargetEntity(), rightAlias)
-								+ Constants.QUERY_CLOSING_PARENTHESIS);
+						}
+						
+						for(ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyPropColl)
+						{
+							
+							// Forming join with child table.
+							leftAttribute = middleTableAlias + Constants.QUERY_DOT
+									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+							primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();//getPrimaryKey(rightEntity);
+							rightAttribute = rightAlias + Constants.QUERY_DOT
+									+ primaryKey.getColumnProperties().getName();
+	
+							buffer.append(Constants.LEFT_JOIN + rightEntity.getTableProperties().getName()
+									+ " " + rightAlias + Constants.ON);
+							buffer.append(Constants.QUERY_OPENING_PARENTHESIS + leftAttribute + Constants.QUERY_EQUALS + rightAttribute);
+	
+							/*
+							 * Adding descriminator column condition for the child
+							 * node while forming FROM part left joins.
+							 */
+							buffer.append(getDescriminatorCondition(actualEavAssociation
+									.getTargetEntity(), rightAlias)
+									+ Constants.QUERY_CLOSING_PARENTHESIS);
+						}
 					}
 					else
 					{
-						String leftAttribute = null;
-						String rightAttribute = null;
-						if (constraintProperties.getSourceEntityKey() != null)// Many
+						
+						if (srcCnstrKeyPropColl.isEmpty())// Many
 						// Side
 						{
-							leftAttribute = leftAlias + Constants.QUERY_DOT
-									+ constraintProperties.getSourceEntityKey();
-							AttributeInterface primaryKey = getPrimaryKey(rightEntity);
-							rightAttribute = rightAlias + Constants.QUERY_DOT
-									+ primaryKey.getColumnProperties().getName();
+							for(ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyPropColl)
+							{
+								leftAttribute = leftAlias + Constants.QUERY_DOT
+								+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+								primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+								rightAttribute = rightAlias + Constants.QUERY_DOT
+										+ primaryKey.getColumnProperties().getName();
+							}
+							
+							
 						}
 						else
 						// One Side
 						{
-							AttributeInterface primaryKey = getPrimaryKey(leftEntity);
-							leftAttribute = leftAlias + Constants.QUERY_DOT
-									+ primaryKey.getColumnProperties().getName();
-							rightAttribute = rightAlias + Constants.QUERY_DOT
-									+ constraintProperties.getTargetEntityKey();
+							for(ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyPropColl)
+							{
+								primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+								leftAttribute = leftAlias + Constants.QUERY_DOT
+										+ primaryKey.getColumnProperties().getName();
+								rightAttribute = rightAlias + Constants.QUERY_DOT
+										+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+							}
 						}
 						buffer.append(Constants.LEFT_JOIN + rightEntity.getTableProperties().getName()
 								+ " " + rightAlias + Constants.ON);
@@ -778,8 +794,9 @@ public class SqlGenerator extends QueryGenerator
 
 		ConstraintPropertiesInterface constraintProperties = eavAssociation
 				.getConstraintProperties();
-		if (constraintProperties.getSourceEntityKey() != null
-				&& constraintProperties.getTargetEntityKey() != null)// Many
+		Collection<ConstraintKeyPropertiesInterface> srcCnstrKeyPopColl=constraintProperties.getSrcEntityConstraintKeyPropertiesCollection();
+		Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyPopColl=constraintProperties.getTgtEntityConstraintKeyPropertiesCollection();
+		if (!srcCnstrKeyPopColl.isEmpty() && !tgtCnstrKeyPopColl.isEmpty())// Many
 		// to
 		// many
 		// case.
@@ -796,13 +813,13 @@ public class SqlGenerator extends QueryGenerator
 		}
 		else
 		{
-			if (constraintProperties.getTargetEntityKey() == null)
+			if (tgtCnstrKeyPopColl.isEmpty())
 			{
 				selectAttribute += getPrimaryKey(entity).getColumnProperties().getName();
 			}
 			else
 			{
-				selectAttribute += constraintProperties.getTargetEntityKey();
+				selectAttribute += constraintProperties.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().getName();
 			}
 			pseudoAndSQL = Constants.SELECT + selectAttribute;
 			Set<Integer> processedAlias = new HashSet<Integer>();

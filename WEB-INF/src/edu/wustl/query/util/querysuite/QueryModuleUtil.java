@@ -1,6 +1,7 @@
 
 package edu.wustl.query.util.querysuite;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,7 +113,8 @@ final public class QueryModuleUtil
 		Vector<Integer> objectColumnIdsVector = new Vector<Integer>();
 		Vector<Integer> idvector = new Vector<Integer>();
 		List<QueryOutputTreeAttributeMetadata> attributes = root.getAttributes();
-		List<String> primaryKeyList = Utility.getPrimaryKey(root.getOutputEntity().getDynamicExtensionsEntity());
+		//List<String> primaryKeyList = Utility.getPrimaryKey(root.getOutputEntity().getDynamicExtensionsEntity());
+		Collection<AttributeInterface> PrimaryKeyAttributeColl=root.getOutputEntity().getDynamicExtensionsEntity().getPrimaryKeyAttributeCollection();
 
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
@@ -122,7 +124,7 @@ final public class QueryModuleUtil
 //			{
 //				break;
 //			}
-			if (primaryKeyList.contains(attribute.getName()))
+			if (PrimaryKeyAttributeColl.contains(attribute))
 			{
 				if(idColumnName==null)
 				{
@@ -265,7 +267,8 @@ final public class QueryModuleUtil
 	public static String getParentIdColumnName(OutputTreeDataNode node)
 	{
 		String getParenIdColName = "";
-		List<String> primaryKeyList = Utility.getPrimaryKey(node.getOutputEntity().getDynamicExtensionsEntity());
+		//List<String> primaryKeyList = Utility.getPrimaryKey(node.getOutputEntity().getDynamicExtensionsEntity());
+		Collection<AttributeInterface> PrimaryKeyAttributeColl=node.getOutputEntity().getDynamicExtensionsEntity().getPrimaryKeyAttributeCollection();
 		
 		if (node != null)
 		{
@@ -273,7 +276,7 @@ final public class QueryModuleUtil
 			for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 			{
 				AttributeInterface attribute = attributeMetaData.getAttribute();
-				if (primaryKeyList.contains(attribute.getName()))
+				if (PrimaryKeyAttributeColl.contains(attribute))
 				{
 					String sqlColumnName = attributeMetaData.getColumnName();
 					getParenIdColName = getParenIdColName + "," +sqlColumnName;

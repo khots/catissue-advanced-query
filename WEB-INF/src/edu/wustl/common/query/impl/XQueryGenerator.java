@@ -4,6 +4,7 @@ package edu.wustl.common.query.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -22,6 +23,8 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.LongTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.entitymanager.DataTypeFactory;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
@@ -147,9 +150,11 @@ public abstract class XQueryGenerator extends QueryGenerator
 			DynamicExtensionsSystemException
 	{
 		StringBuilder formedQuery = new StringBuilder();
+		
 
 		formedQuery.append(buildSelectPart());
 		String wherePart = buildWherePart(constraints.getRootExpression(), null);
+		wherePart = addJoiningTableCondition(wherePart);
 		PredicateGenerator predicateGenerator = new PredicateGenerator(forVariables, wherePart);
 
 		//isEmptyExpression(rootExpression.getExpressionId());
@@ -157,6 +162,149 @@ public abstract class XQueryGenerator extends QueryGenerator
 		formedQuery.append(buildFromPart(predicateGenerator));
 
 		return formedQuery.toString();
+	}
+
+	private String addJoiningTableCondition(String wherePart) throws MultipleRootsException, SqlException
+	{
+		StringBuilder completeWherePart = new StringBuilder(wherePart);
+		Set<Integer> processedAlias = new HashSet<Integer>();
+		IExpression parentExpression = joinGraph.getRoot();
+		String leftAlias = getAliasName(parentExpression);
+		completeWherePart.append(Constants.QUERY_AND);
+		completeWherePart.append(processChildExpressions(leftAlias, processedAlias,
+				parentExpression));
+		return Utility.removeLastAnd(completeWherePart.toString());
+	}
+	
+	/**
+	 * To process all child expression of the given Expression & get their SQL
+	 * representation for where part.
+	 * 
+	 * @param leftAlias left table alias in join.
+	 * @param processedAlias The list of precessed alias.
+	 * @param parentExpressionId The reference to expression whose children to
+	 *            be processed.
+	 * @return the left join sql for children expression.
+	 * @throws SqlException when there is error in the passed IQuery object.
+	 */
+	private String processChildExpressions(String leftAlias, Set<Integer> processedAlias,
+			IExpression parentExpression) throws SqlException
+	{
+		StringBuffer buffer = new StringBuffer();
+		List<IExpression> children = joinGraph.getChildrenList(parentExpression);
+		if (!children.isEmpty())
+		{
+			// processing all outgoing edges/nodes from the current node in the
+			// joingraph.
+			for (IExpression childExpression : children)
+			{
+				if (mainExpressions.contains(childExpression))
+				{
+					IAssociation association = joinGraph.getAssociation(parentExpression,
+							childExpression);
+					AssociationInterface actualEavAssociation = ((IIntraModelAssociation) association)
+							.getDynamicExtensionsAssociation();
+					AssociationInterface eavAssociation = actualEavAssociation;
+					EntityInterface rightEntity = eavAssociation.getTargetEntity();
+					String actualRightAlias = getAliasFor(childExpression, rightEntity);
+					if (!processedAlias.contains(aliasAppenderMap.get(childExpression)))
+					{
+//						if (InheritanceUtils.getInstance().isInherited(eavAssociation))
+//						{
+//							eavAssociation = InheritanceUtils.getInstance().getActualAassociation(
+//									eavAssociation);
+//							rightEntity = eavAssociation.getTargetEntity();
+//							leftAlias = getAliasFor(parentExpression, eavAssociation.getEntity());
+//							String rightAlias = getAliasFor(childExpression, eavAssociation
+//									.getTargetEntity());
+//						}
+//						else
+//						{
+//							leftAlias = getAliasFor(parentExpression, eavAssociation.getEntity());
+//						}
+					
+
+						EntityInterface leftEntity = eavAssociation.getEntity();
+
+						ConstraintPropertiesInterface constraintProperties = eavAssociation
+								.getConstraintProperties();
+						Collection<ConstraintKeyPropertiesInterface> srcCnstrKeyPropColl=constraintProperties.getSrcEntityConstraintKeyPropertiesCollection();
+						Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyPropColl=constraintProperties.getTgtEntityConstraintKeyPropertiesCollection();
+//						AttributeInterface primaryKey;
+						String leftAttribute = null;
+						String rightAttribute = null;
+//						if (!srcCnstrKeyPropColl.isEmpty() && !tgtCnstrKeyPropColl.isEmpty())
+//						// Many to Many case
+//						{
+//							String middleTableName = constraintProperties.getName();
+//							String middleTableAlias = getAliasForMiddleTable(childExpression,
+//									middleTableName);
+//
+//							for(ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyPropColl)
+//							{
+//								primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();//getPrimaryKey(leftEntity);
+//								leftAttribute = "$" + getAliasName(parentExpression) + "/"
+//										+ primaryKey.getColumnProperties().getName();
+//	
+//								rightAttribute = "$" + middleTableAlias + "/"
+//										+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+//								buffer.append("(" + rightAttribute + "=" + leftAttribute);
+//	
+//								buffer.append(")");
+//							}
+//
+//							// Forming join with child table.
+//							for(ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyPropColl)
+//							{
+//								
+//								leftAttribute = "$" + middleTableAlias + "/"
+//										+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+//								primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();//getPrimaryKey(rightEntity);
+//								rightAttribute = "$" + getAliasName(childExpression) + "/"
+//										+ primaryKey.getColumnProperties().getName();
+//	
+//								buffer.append("(" + rightAttribute + "=" + leftAttribute);
+//	
+//								buffer.append(")");
+//							}
+//						}
+//						else
+//						{
+							for (ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyPropColl)// Many
+							// Side
+							{
+								leftAttribute = "$" + getAliasName(parentExpression) + "/"
+										+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+								String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute().getName();
+								rightAttribute = "$" + getAliasName(childExpression) + "/"
+										+ primaryKeyName;
+							}
+							for (ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyPropColl )
+							// One Side
+							{
+								String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute().getName();
+								leftAttribute = "$" + getAliasName(parentExpression) + "/"
+										+ primaryKeyName;
+								rightAttribute = "$" + getAliasName(childExpression) + "/"
+										+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+							}
+							buffer.append("(" + rightAttribute + "=" + leftAttribute);
+							buffer.append(")");
+						}
+						buffer.append(Constants.QUERY_AND);
+//					}
+					// append from part SQLXML for the next Expressions.
+					buffer.append(processChildExpressions(actualRightAlias, processedAlias,
+							childExpression));
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
+//			}
+		return buffer.toString();
 	}
 
 	private void log(String sql)
@@ -614,37 +762,15 @@ public abstract class XQueryGenerator extends QueryGenerator
 		}
 		else if (dataType instanceof DateTypeInformationInterface)
 		{
-			String actualYear = value.substring(6,10);
+			String actualYear = value.substring(6);
 			String actualMonth = value.substring(0, 2);
 			String actualDate = value.substring(3, 5);
-			String actualTime = "";
-			try
-			{
-				actualTime = value.substring(11);
-			}
-			catch(Exception e)
-			{
-				actualTime = "";
-			}
-			if(actualTime.equals(""))
-			{
-				StringBuilder newValue = new StringBuilder(actualYear);
-				newValue.append("-");
-				newValue.append(actualMonth);
-				newValue.append("-");
-				newValue.append(actualDate);
-				actualValue.append("xs:dateTime(\"").append(newValue.toString()).append("T23:59:59\")");
-			}
-			else
-			{
-				StringBuilder newValue = new StringBuilder(actualYear);
-				newValue.append("-");
-				newValue.append(actualMonth);
-				newValue.append("-");
-				newValue.append(actualDate);
-				newValue.append("T" + actualTime);
-				actualValue.append("xs:dateTime(\"").append(newValue.toString()).append("\")");
-			}
+			StringBuilder newValue = new StringBuilder(actualYear);
+			newValue.append("-");
+			newValue.append(actualMonth);
+			newValue.append("-");
+			newValue.append(actualDate);
+			actualValue.append("xs:dateTime(\"").append(newValue.toString()).append("T23:59:59\")");
 		}
 		else
 		{
@@ -701,7 +827,7 @@ public abstract class XQueryGenerator extends QueryGenerator
 		if (dataType instanceof StringTypeInformationInterface)
 		{
 			returnValue = type
-					.getDatabaseDataType(EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE);
+					.getDatabaseDataType(EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE)  + Constants.QUERY_OPENING_PARENTHESIS + ((StringTypeInformationInterface)dataType).getSize() + Constants.QUERY_CLOSING_PARENTHESIS;
 		}
 		else if (dataType instanceof DateTypeInformationInterface)
 		{

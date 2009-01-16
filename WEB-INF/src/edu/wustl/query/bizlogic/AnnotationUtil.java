@@ -29,6 +29,7 @@ import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
@@ -328,12 +329,16 @@ public class AnnotationUtil
 	private static ConstraintPropertiesInterface getConstraintProperties(
 			EntityInterface staticEntity, EntityInterface dynamicEntity)
 	{
-		ConstraintPropertiesInterface constrProp = DomainObjectFactory.getInstance()
-				.createConstraintProperties();
+		DomainObjectFactory factory =DomainObjectFactory.getInstance();
+		ConstraintPropertiesInterface constrProp = factory.createConstraintProperties();
 		constrProp.setName(dynamicEntity.getTableProperties().getName());
-		constrProp.setTargetEntityKey("DYEXTN_AS_" + staticEntity.getId().toString() + "_"
-				+ dynamicEntity.getId().toString());
-		constrProp.setSourceEntityKey(null);
+		for(AttributeInterface primaryAttribute : staticEntity.getPrimaryKeyAttributeCollection())
+		{
+			constrProp.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().setName("DYEXTN_AS_" + staticEntity.getId().toString() + "_"
+					+ dynamicEntity.getId().toString());
+			constrProp.getTgtEntityConstraintKeyProperties().setSrcPrimaryKeyAttribute(primaryAttribute);
+			constrProp.getSrcEntityConstraintKeyPropertiesCollection().clear();
+		}
 		return constrProp;
 	}
 
@@ -344,10 +349,11 @@ public class AnnotationUtil
 	 * @param sourceRole
 	 * @param targetRole
 	 * @return
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private static AssociationInterface getAssociation(EntityInterface targetEntity,
 			AssociationDirection associationDirection, String assoName, RoleInterface sourceRole,
-			RoleInterface targetRole)
+			RoleInterface targetRole) throws DynamicExtensionsSystemException
 	{
 		AssociationInterface association = DomainObjectFactory.getInstance().createAssociation();
 		association.setTargetEntity(targetEntity);

@@ -120,15 +120,12 @@ public class CiderQueryUIManager extends QueryUIManager {
 			rootExpression = constraints.getRootExpression();
 
 			Collection<AttributeInterface> allAttributes = rootExpression.getQueryEntity()
-					.getDynamicExtensionsEntity().getAllAttributes();
+					.getDynamicExtensionsEntity().getPrimarykeyAttributeCollectionInSameEntity();
 			for (AttributeInterface attributeInterface : allAttributes)
 			{
-				if (attributeInterface.getName().equalsIgnoreCase("personUpi"))
-				{
 					IOutputAttribute createOutputAttribute = QueryObjectFactory
 							.createOutputAttribute(rootExpression, attributeInterface);
 					selectedOutputAttributeList.add(createOutputAttribute);
-				}
 			}
 			parameterizedQuery.setOutputAttributeList(selectedOutputAttributeList);
 		}

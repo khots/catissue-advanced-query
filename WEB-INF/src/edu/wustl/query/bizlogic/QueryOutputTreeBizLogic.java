@@ -2,6 +2,7 @@
 package edu.wustl.query.bizlogic;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -173,9 +174,10 @@ public class QueryOutputTreeBizLogic
 		String uniqueNodeId = node.getUniqueNodeId();
 		String parentNodeId = uniqueNodeId + Constants.UNDERSCORE + Constants.LABEL_TREE_NODE;
 
-		List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(node
-				.getOutputEntity().getDynamicExtensionsEntity());
-		int idColumnSize = primaryKeyList.size();
+//		List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(node
+//				.getOutputEntity().getDynamicExtensionsEntity());
+		Collection<AttributeInterface> primaryKeyAttributeColl=node.getOutputEntity().getDynamicExtensionsEntity().getPrimaryKeyAttributeCollection();
+		int idColumnSize = primaryKeyAttributeColl.size();
 
 		while (dataListIterator.hasNext())
 		{
@@ -299,13 +301,14 @@ public class QueryOutputTreeBizLogic
 		
 		List<QueryOutputTreeAttributeMetadata> attributes = childNode.getAttributes();
 		String sqlColumnName = "";
-		List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(childNode
-				.getOutputEntity().getDynamicExtensionsEntity());
+		/*List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(childNode
+				.getOutputEntity().getDynamicExtensionsEntity());*/
+		Collection<AttributeInterface> PrimaryKeyAttributeColl=childNode.getOutputEntity().getDynamicExtensionsEntity().getPrimaryKeyAttributeCollection();
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
 			AttributeInterface attribute = attributeMetaData.getAttribute();
 			sqlColumnName = attributeMetaData.getColumnName();
-			if (primaryKeyList.contains(attribute.getName()))
+			if (PrimaryKeyAttributeColl.contains(attribute))
 			{
 				idColumnOfCurrentNode = idColumnOfCurrentNode + "," + sqlColumnName;
 			}
@@ -449,9 +452,10 @@ public class QueryOutputTreeBizLogic
 		List<String> existingNodesList = new ArrayList<String>();
 		List rowList = new ArrayList();
 		String outputTreeStr = "";
-		List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(currentNode
-				.getOutputEntity().getDynamicExtensionsEntity());
-		int idColumnSize = primaryKeyList.size();
+		/*List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(currentNode
+				.getOutputEntity().getDynamicExtensionsEntity());*/
+		Collection<AttributeInterface> primaryKeyAttributeColl =currentNode.getOutputEntity().getDynamicExtensionsEntity().getPrimaryKeyAttributeCollection();
+		int idColumnSize = primaryKeyAttributeColl.size();
 		while (dataListIterator.hasNext())
 		{
 			rowList = (List) dataListIterator.next();

@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
@@ -333,7 +334,8 @@ public class QueryOutputSpreadsheetBizLogic
 		Vector<Integer> objectDataColumnIds = new Vector<Integer>();
 		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAtrributeIndexMetadataMap = new HashMap<Integer, QueryOutputTreeAttributeMetadata>();
 		int columnIndex = 0;
-		List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(node.getOutputEntity().getDynamicExtensionsEntity());
+		//List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(node.getOutputEntity().getDynamicExtensionsEntity());
+		Collection<AttributeInterface> PrimaryKeyAttributeColl=node.getOutputEntity().getDynamicExtensionsEntity().getPrimaryKeyAttributeCollection();
 //		int totalFileTypeAttributes = 0;
 
 		List<QueryOutputTreeAttributeMetadata> attributes = node.getAttributes();
@@ -353,7 +355,7 @@ public class QueryOutputSpreadsheetBizLogic
 			}
 			
 			//TODO primary key column
-			if (primaryKeyList.contains(attribute.getName()))
+			if (PrimaryKeyAttributeColl.contains(attribute))
 			{
 				idColumnOfCurrentNode = idColumnOfCurrentNode+','+sqlColumnName;
 				if (!selectedColumnMetaData.isDefinedView())
@@ -470,12 +472,13 @@ public class QueryOutputSpreadsheetBizLogic
 			Map<AttributeInterface, String> attributeColumnNameMap)
 	{
 		// TODO primary key column name
-		List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(expression.getQueryEntity().getDynamicExtensionsEntity());
+		//List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(expression.getQueryEntity().getDynamicExtensionsEntity());
+		Collection<AttributeInterface> PrimaryKeyAttributeColl=expression.getQueryEntity().getDynamicExtensionsEntity().getPrimaryKeyAttributeCollection();
 		Collection<AttributeInterface> attributeCollection = expression.getQueryEntity().getDynamicExtensionsEntity().getAttributeCollection();
 		String columnName = "";
 		for(AttributeInterface attribute : attributeCollection)
 		{
-			if(primaryKeyList.contains(attribute.getName()))
+			if(PrimaryKeyAttributeColl.contains(attribute))
 			{
 				columnName = columnName + ',' + attributeColumnNameMap.get(attribute);
 			}
@@ -661,13 +664,14 @@ public class QueryOutputSpreadsheetBizLogic
 				{
 					ConstraintPropertiesInterface constraintProperties = asso
 							.getConstraintProperties();
-					if (constraintProperties.getSourceEntityKey() != null
-							&& constraintProperties.getTargetEntityKey() != null)// Many to Many Case
+					Collection<ConstraintKeyPropertiesInterface> srcCnstrKeyProp=constraintProperties.getSrcEntityConstraintKeyPropertiesCollection();
+					Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyProp=constraintProperties.getTgtEntityConstraintKeyPropertiesCollection();
+					if (srcCnstrKeyProp.size()!=0 && tgtCnstrKeyProp.size()!=0)// Many to Many Case
 					{
 						//						logger.info("many to many association between "+tqEntity + 
 						//								"and "+targetEntity +"So not showing custom column name in grid");
 					}
-					else if (constraintProperties.getSourceEntityKey() != null)// Many Side
+					else if (srcCnstrKeyProp.size()!=0)// Many Side
 					{
 						//						logger.info("many to one association between "+tqEntity + 
 						//								"and "+targetEntity +"So showing custom column name in grid");
@@ -799,8 +803,9 @@ public class QueryOutputSpreadsheetBizLogic
 					defineViewNodeList.add(attribute.getEntity());
 				}
 				// TODO primary key column name
-				primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(queryResultObjectDataBean.getEntity());
-				if (primaryKeyList.contains(attribute.getName()))
+				//primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(queryResultObjectDataBean.getEntity());
+				Collection<AttributeInterface> PrimaryKeyAttributeColl=queryResultObjectDataBean.getEntity().getPrimaryKeyAttributeCollection();
+				if (PrimaryKeyAttributeColl.contains(attribute))
 				{
 					if (queryResultObjectDataBean.isMainEntity())
 					{
@@ -1095,8 +1100,8 @@ public class QueryOutputSpreadsheetBizLogic
 		List resultList = new ArrayList();
 		int columnIndex = 0;
 		int addedFileTypeAttributes = 0;
-		List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(node.getOutputEntity().getDynamicExtensionsEntity());
-		
+		//List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(node.getOutputEntity().getDynamicExtensionsEntity());
+		Collection<AttributeInterface> PrimaryKeyAttributeColl=node.getOutputEntity().getDynamicExtensionsEntity().getPrimaryKeyAttributeCollection();
 		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAtrributeIndexMetadataMap = new HashMap<Integer, QueryOutputTreeAttributeMetadata>();
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
@@ -1105,7 +1110,7 @@ public class QueryOutputSpreadsheetBizLogic
 			className = Utility.parseClassName(className);
 			String sqlColumnName = attributeMetaData.getColumnName();
 			// TODO primary key column name
-			if (primaryKeyList.contains(attribute.getName()))
+			if (PrimaryKeyAttributeColl.contains(attribute))
 			{
 				idColumnOfCurrentNode = idColumnOfCurrentNode + ',' +sqlColumnName;
 				if (queryResultObjectDataBean.isMainEntity())
