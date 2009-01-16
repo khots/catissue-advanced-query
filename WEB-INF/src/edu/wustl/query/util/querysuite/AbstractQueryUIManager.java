@@ -3,10 +3,12 @@ package edu.wustl.query.util.querysuite;
 /**
  * This class is base for all QueryUIManager classes.
  */
-import java.util.Collection;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import edu.wustl.common.query.CiderQuery;
+
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
 
@@ -52,5 +54,5 @@ public abstract class AbstractQueryUIManager {
 	 * @return collection of required objects.
 	 * @throws QueryModuleException
 	 */
-	abstract public Collection<? extends Object> getObjects(Long userId) throws QueryModuleException;
+	abstract public List<NameValueBean> getObjects(Long userId) throws QueryModuleException;
 }

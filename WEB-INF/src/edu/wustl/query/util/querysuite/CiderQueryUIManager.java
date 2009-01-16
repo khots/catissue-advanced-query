@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.query.CiderQuery;
@@ -141,7 +142,7 @@ public class CiderQueryUIManager extends QueryUIManager {
 	/**
 	 * Empty method implementation to get required objects for query.
 	 */
-	public Collection<? extends Object> getObjects(Long user_id) throws QueryModuleException
+	public List<NameValueBean> getObjects(Long user_id) throws QueryModuleException
 	{
 		return null;
 	}
