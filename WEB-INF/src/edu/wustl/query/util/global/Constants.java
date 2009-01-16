@@ -615,7 +615,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String SELECTED_CONCEPT_LIST = "SELECTED_CONCEPT_LIST";
 	/**  Constant for  */
 	public static final String TAGGED_VALUE_MAIN_ENTIY = "MAIN_ENTITY";
+	/**  Constant for  */
 	public static final String BASE_MAIN_ENTITY = "BASE_MAIN_ENTITY";
+	/**  Constant for  */
+	public static final String QUERY_NO_ROOTEXPRESSION="query.noRootExpression.message";
 	/**  Constant for  */
 	public static final String ENTITY_LIST = "entityList";
 	/**  Constant for  */
