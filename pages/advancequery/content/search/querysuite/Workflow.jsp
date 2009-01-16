@@ -183,9 +183,10 @@ function cancelExecuteQuery(response)
           } 
 }
 
-function executeGetCountQuery(queryId)
+function executeGetCountQuery(queryId,executionLogId)
 {
-	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'start';
+	var ID=document.getElementById("selectedqueryId_"+queryId).value;
+	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'start'+"&ID="+ID+"&executionLogId="+executionLogId;
 	changeExecuteLink(queryId);
 	var request=newXMLHTTPReq();
 	if(request == null)
@@ -212,6 +213,9 @@ function responseHandler(response)
 					 var queryId = jsonResponse.executionQueryResults[i].queryId;
 					 var queryIndex = jsonResponse.executionQueryResults[i].queryIndex;
 					 var queryResult = jsonResponse.executionQueryResults[i].queryResult;
+					 var status = jsonResponse.executionQueryResults[i].status;
+					 var executionLogId = jsonResponse.executionQueryResults[i].executionLogId;
+					 	 	 
 					if(queryResult!=-1)
 					{
 						var object=document.getElementById("selectedqueryId_"+queryIndex);
@@ -226,11 +230,11 @@ function responseHandler(response)
 					}
 				}
           } 
-		executeGetCountQuery(queryIndex);
+		executeGetCountQuery(queryIndex,executionLogId);
 }
 function cancelWorkflow()
 {
-	document.forms[0].action="\QuerySearchWizard.do"
+	document.forms[0].action="\ShowDashboard.do"
 	document.forms[0].submit();
 }
 //-->
