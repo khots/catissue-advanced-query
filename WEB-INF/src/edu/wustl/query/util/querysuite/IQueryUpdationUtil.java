@@ -550,26 +550,6 @@ public abstract class IQueryUpdationUtil
 		return mainExpChildrenList;
 	}
 
-	/**
-	 * 
-	 * @param constraints
-	 * @param containmentEntity
-	 * @return
-	 */
-	/*private static boolean isEnityPresentInQuery(IConstraints constraints, EntityInterface containmentEntity)
-	{
-		boolean isEntityPresent = false; 
-		for (IExpression expression : constraints)
-		{
-			EntityInterface queryEntity = expression.getQueryEntity().getDynamicExtensionsEntity();
-		    if(queryEntity.getId().toString().equalsIgnoreCase(containmentEntity.getId().toString()))
-		    {
-		    	isEntityPresent = true;
-		    	break;
-		    }
-		}	
-	  return isEntityPresent; 
-	}*/
 
 	/**
 	 * This method add links among parent and children containments for all main entities added
@@ -704,35 +684,4 @@ public abstract class IQueryUpdationUtil
 		queryObject.setLogicalConnector(parentExpressionId, destId,
 				edu.wustl.cab2b.client.ui.query.Utility.getLogicalOperator(operator), false);
 	}
-
-	/*public static Map <EntityInterface, List<EntityInterface>> getAllContainmentsOfEntity(EntityInterface entity, IQuery query, HttpSession session)
-	{
-	   Map <EntityInterface, List<EntityInterface>> containmentMap = (HashMap <EntityInterface, List<EntityInterface>>)session.getAttribute(Constants.CONTAINMENT_OBJECTS_MAP);
-	   if(containmentMap == null)
-	   {
-		   containmentMap = new HashMap<EntityInterface, List<EntityInterface>>();
-	   }
-	   HashMap <EntityInterface, List<EntityInterface>> partentChildEntityMap =  new HashMap<EntityInterface, List<EntityInterface>>(); 
-	   List <EntityInterface> mainEntityContainmentList = new ArrayList<EntityInterface>();
-	   
-	   //Check if Entity present in query....add entity to query and It's containment only if it is not present n query
-	   IConstraints constraints = query.getConstraints();
-	   boolean isEntityPresent = isEnityPresentInQuery(constraints,entity);
-	   if(!isEntityPresent)
-	   {	   
-	  
-		   //This method gives the containment of the Entity as well as it's children in complete hierarchy 
-		   getMainEntityContainments(partentChildEntityMap, mainEntityContainmentList,entity);
-	   
-		   if((mainEntityContainmentList != null) && (!mainEntityContainmentList.isEmpty()))
-		   {
-			   containmentMap.put(entity, mainEntityContainmentList);
-		   }
-		 //Set these attributes in session and return the parent child relationship map to create associations among the containments in IQuery  
-		session.setAttribute(Constants.CONTAINMENT_OBJECTS_MAP, containmentMap);  
-	   }
-	   
-	   return partentChildEntityMap;
-	}*/
-
 }

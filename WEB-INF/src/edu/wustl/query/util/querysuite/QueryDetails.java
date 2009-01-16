@@ -1,12 +1,9 @@
 
 package edu.wustl.query.util.querysuite;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpSession;
-
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.beans.SessionDataBean;
@@ -29,25 +26,17 @@ public class QueryDetails
 	private Map<EntityInterface, List<EntityInterface>> mainEntityMap;
 	private SessionDataBean sessionData;
 	private String randomNumber;
-
 	private Map<AttributeInterface, String> attributeColumnNameMap;
 	private Map<String, IOutputTerm> outputTermsColumns;
 	private IQuery query;
-	private List<EntityInterface> mainEntityList;
 	private List<QueryTreeNodeData> treeDataVector;
 	private OutputTreeDataNode currentSelectedObject;
 	private Map<Integer,String> parentNodesIdMap ;
 	
+	private List<Integer> mainEntityList;
 	private Map <Integer,List<EntityInterface>> eachExpressionContainmentMap ;
     private Map <Integer,List<Integer>> mainExpEntityExpressionIdMap;
-	//private HttpSession session;
 
-	
-	
-	
-	
-	
-	
 	/**
 	 * @return the mainExpEntityExpressionIdMap
 	 */
@@ -55,12 +44,6 @@ public class QueryDetails
 	{
 		return mainExpEntityExpressionIdMap;
 	}
-
-
-
-
-
-
 	
 	/**
 	 * @param mainExpEntityExpressionIdMap the mainExpEntityExpressionIdMap to set
@@ -168,7 +151,7 @@ public class QueryDetails
 	/**
 	 * @return the mainEntityList
 	 */
-	public List<EntityInterface> getMainEntityList()
+	public List<Integer> getMainEntityList()
 	{
 		return mainEntityList;
 	}
@@ -177,7 +160,7 @@ public class QueryDetails
 	/**
 	 * @param mainEntityList the mainEntityList to set
 	 */
-	public void setMainEntityList(List<EntityInterface> mainEntityList)
+	public void setMainEntityList(List<Integer> mainEntityList)
 	{
 		this.mainEntityList = mainEntityList;
 	}

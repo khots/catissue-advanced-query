@@ -69,27 +69,27 @@ public class DefineGridViewBizLogic
 	 * @param rootEntitiesList
 	 * @return
 	 */
-	private List<String>getMainEntityIdList(QueryDetails queryDetailsObj,List<EntityInterface> mainEntityList, List<String> rootEntitiesList)
+	private List<String>getMainEntityIdList(QueryDetails queryDetailsObj,List<Integer> mainEntityList, List<Integer> rootEntitiesList)
 	{
 		List<String> mainEntityIdList = new ArrayList<String>(); 
 		Set<String>keySet = queryDetailsObj.getUniqueIdNodesMap().keySet();
 		IOutputEntity outputEntity;
-		Iterator <EntityInterface>itr = mainEntityList.iterator();
+		Iterator <Integer>itr = mainEntityList.iterator();
 		while(itr.hasNext())
 		{
-			EntityInterface mainEntity = itr.next();
+			int mainEntityExpId = itr.next().intValue();
 			Iterator <String> iterator = keySet.iterator();
 			Object keyId;
 			while (iterator.hasNext())
 			{
 				keyId = iterator.next();
-				OutputTreeDataNode node = null;
 				String nodeId = keyId.toString();
-				node = queryDetailsObj.getUniqueIdNodesMap().get(nodeId);
-				outputEntity = node.getOutputEntity();
-				EntityInterface dynamicExtensionsEntity = outputEntity.getDynamicExtensionsEntity();
-				Long entityId = dynamicExtensionsEntity.getId();
-                if((mainEntity.getId().toString().equalsIgnoreCase(entityId.toString())) && (!isRootEntityOfQuery(entityId.toString(),rootEntitiesList)) && (!mainEntityIdList.contains(nodeId)))
+				OutputTreeDataNode node = queryDetailsObj.getUniqueIdNodesMap().get(nodeId);
+				int nodeExpId =node.getExpressionId();
+				//outputEntity = node.getOutputEntity();
+				//EntityInterface dynamicExtensionsEntity = outputEntity.getDynamicExtensionsEntity();
+				//Long entityId = dynamicExtensionsEntity.getId();
+                if(mainEntityExpId == nodeExpId  && (!isRootEntityOfQuery(nodeExpId,rootEntitiesList)) && (!mainEntityIdList.contains(nodeId)))
     			{
     				mainEntityIdList.add(nodeId);
     				break;
@@ -99,14 +99,14 @@ public class DefineGridViewBizLogic
 		return mainEntityIdList;
 	}
 	
-	private boolean isRootEntityOfQuery(String entityId,List<String> rootEntitiesList)
+	private boolean isRootEntityOfQuery(int entityExpId,List<Integer> rootEntitiesList)
 	{
 		boolean isRootEntity = false;
-		Iterator<String> itr = rootEntitiesList.iterator();
+		Iterator<Integer> itr = rootEntitiesList.iterator();
 		while(itr.hasNext())
 		{
-			String rootEntityId =itr.next();
-			if(entityId.equalsIgnoreCase(rootEntityId))
+			int rootEntityExpId =itr.next().intValue();
+			if(entityExpId == rootEntityExpId)
 			{
 				isRootEntity = true;
 				break;
@@ -115,14 +115,14 @@ public class DefineGridViewBizLogic
 		return isRootEntity;
 	}
 
-	private String getEntityTd(QueryDetails queryDetailsObj)
+	/*private String getEntityTd(QueryDetails queryDetailsObj)
 	{
 		OutputTreeDataNode currentSelectedObject = queryDetailsObj.getCurrentSelectedObject();
 		IOutputEntity outputEntity = currentSelectedObject.getOutputEntity();
 		EntityInterface rootEntity = outputEntity.getDynamicExtensionsEntity();
         String rootEntityId = rootEntity.getId().toString();
 		return rootEntityId;
-	}
+	}*/
 
 	/**
 	 * Creates tree structure data required for defining grid view.
@@ -265,36 +265,36 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 	 * @param queryDetailsObj
 	 * @param prevSelectedColumnNVBList
 	 * @param xmlString
-	 * @return
+	 * @return The method returns the XML string to create a containment tree 
 	 */
-	public StringBuilder createContainmentTree(CategorySearchForm categorySearchForm, QueryDetails queryDetailsObj,List<NameValueBean> prevSelectedColumnNVBList, StringBuilder xmlString)
+	public StringBuilder createContainmentTree(QueryDetails queryDetailsObj,StringBuilder xmlString)
 	{
-		this.prevSelectedColumnNameValueBeanList = prevSelectedColumnNVBList;
-		List<EntityInterface> mainEntityList = queryDetailsObj.getMainEntityList();
+		//this.prevSelectedColumnNameValueBeanList = prevSelectedColumnNVBList;
+		List<Integer> mainEntityExpIdsList = queryDetailsObj.getMainEntityList();
 		if (!queryDetailsObj.getUniqueIdNodesMap().isEmpty())
 		{
 			//Adding root node of tree
 			addRootNode(queryDetailsObj,xmlString);
 			
 			//This List will maintain list of all root entities in Query 
-			List <String>rootNodesIdsList = new ArrayList<String>(); 
+			List <Integer>rootNodesExpIdsList = new ArrayList<Integer>(); 
 			List<OutputTreeDataNode> rootOutputTreeNodeList = queryDetailsObj.getRootOutputTreeNodeList();
 			Iterator <OutputTreeDataNode> rootNodeItr = rootOutputTreeNodeList.iterator(); 
 			while(rootNodeItr.hasNext())
 			{
 				OutputTreeDataNode currentSelectedObject = rootNodeItr.next();
 				queryDetailsObj.setCurrentSelectedObject(currentSelectedObject);
-				rootNodesIdsList.add(getEntityTd(queryDetailsObj));
+				rootNodesExpIdsList.add(Integer.valueOf(currentSelectedObject.getExpressionId()));
 			    
 			    //Add each root node tree and it's corresponding Containment Entities
-				addIQueryRootNodeToTree(categorySearchForm,queryDetailsObj, xmlString);
+				addIQueryRootNodeToTree(queryDetailsObj, xmlString);
 				xmlString.append("</item>");
 			}
 			//Get List of all main Entity Id's, except IQuery root nodes 
-			List<String> mainEntityIdList = getMainEntityIdList(queryDetailsObj,mainEntityList,rootNodesIdsList); 
+			List<String> mainEntityIdList = getMainEntityIdList(queryDetailsObj,mainEntityExpIdsList,rootNodesExpIdsList); 
 			
 			//After IQuery tree node, Add Main Entities Nodes and their attributes to Tree, avoiding the root node of the Query
-			addAllMainEntitiesToTree(categorySearchForm, queryDetailsObj,mainEntityIdList,xmlString);
+			addAllMainEntitiesToTree(queryDetailsObj,mainEntityIdList,xmlString);
 		}
 		
 		return xmlString;
@@ -307,7 +307,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 	 * @param mainEntityIdList
 	 * @param xmlString
 	 */
-	private void addAllMainEntitiesToTree(CategorySearchForm categorySearchForm,QueryDetails queryDetailsObj,List<String> mainEntityIdList, StringBuilder xmlString)
+	private void addAllMainEntitiesToTree(QueryDetails queryDetailsObj,List<String> mainEntityIdList, StringBuilder xmlString)
 	{
 		OutputTreeDataNode currentSelectedObject;
 		for(int i=0; i<mainEntityIdList.size(); i++)
@@ -315,10 +315,10 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 			String nodeId = mainEntityIdList.get(i);
 			currentSelectedObject = queryDetailsObj.getUniqueIdNodesMap().get(nodeId);
 			queryDetailsObj.setCurrentSelectedObject(currentSelectedObject);
-			addEntityAndAttributes(queryDetailsObj, categorySearchForm,true,xmlString);
+			addEntityAndAttributes(queryDetailsObj,true,xmlString);
 			
 			//For each main Entity add all Containment
-			addAllContainmentsOfMainExpression(queryDetailsObj,categorySearchForm, xmlString); 
+			addAllContainmentsOfMainExpression(queryDetailsObj, xmlString); 
 			xmlString.append("</item>");
 		}
 	}
@@ -329,15 +329,14 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 	 * @param queryDetailsObj
 	 * @param xmlString
 	 */
-	private void addIQueryRootNodeToTree(CategorySearchForm categorySearchForm,
-			QueryDetails queryDetailsObj, StringBuilder xmlString)
+	private void addIQueryRootNodeToTree(QueryDetails queryDetailsObj, StringBuilder xmlString)
 	{
 		Map<Integer,String> parentNodesIdMap = new HashMap<Integer,String>(); 
 		queryDetailsObj.setParentNodesIdMap(parentNodesIdMap);
-		addEntityAndAttributes(queryDetailsObj, categorySearchForm,true, xmlString);
+		addEntityAndAttributes(queryDetailsObj,true, xmlString);
 		
 		//Add all the containments of the Main Entity
-		addAllContainmentsOfMainExpression(queryDetailsObj,categorySearchForm, xmlString); 
+		addAllContainmentsOfMainExpression(queryDetailsObj, xmlString); 
 	}
 
 	private void addRootNode(List<QueryTreeNodeData> treeDataVector)
@@ -362,7 +361,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 	{
 		//Creating the XML string
 		xmlString.append("<tree id=\"0\">");
-		xmlString.append("<item id = \""+ Constants.ROOT+ "\" text = \""+ Constants.CLASSES_PRESENT_IN_QUERY + "\" style=\"content_txt\" imheight=\"18\" imwidth=\"18\" name= \""+ Constants.ROOT +"\" parent= \"" + Constants.ZERO_ID + "\" parentObjName = "+ "\"\"" +">");
+		xmlString.append("<item id = \""+ Constants.ROOT+ "\" text = \""+ Constants.CLASSES_PRESENT_IN_QUERY + "\" name= \""+ Constants.ROOT +"\" parent= \"" + Constants.ZERO_ID + "\" parentObjName = "+ "\"\"" +">");
 	}
 
 	/**
@@ -372,7 +371,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 	 * @param categorySearchForm action form
 	 * @param currentSelectedObject  OutputTreeDataNode
 	 */
-	private void addEntityAndAttributes(QueryDetails queryDetailsObj, CategorySearchForm categorySearchForm,boolean isMainEntity,StringBuilder xmlString)
+	private void addEntityAndAttributes(QueryDetails queryDetailsObj,boolean isMainEntity,StringBuilder xmlString)
 	{
         //parentNodesIdMap will store expression id of main entity and it's treeClassNodeId 		
 		Map<Integer,String> parentNodesIdMap = queryDetailsObj.getParentNodesIdMap();
@@ -401,7 +400,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 			parentId = getParentForChildEntity(parentNodesIdMap, dynamicExtensionsEntity, expressionId,mainEntityContainmentIdsMap);
 		}
 		xmlString.append("<item id = \""+ treeClassNodeId + "\" text = \""+ classDisplayName + "\" style=\"content_txt\" imheight=\"18\" imwidth=\"18\" name= \""+ className +"\" parent= \"" + parentId + "\" parentObjName = "+ "\"\"" +">");	
-		addAttributeToClassEntity(className, treeClassNodeId, categorySearchForm, currentSelectedObject.getAttributes(),xmlString);
+		addAttributeToClassEntity(className, treeClassNodeId,currentSelectedObject.getAttributes(),xmlString);
 		if(!isMainEntity)
 		{
 			xmlString.append("</item>");
@@ -414,7 +413,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 	 * @param categorySearchForm
 	 * @param xmlString
 	 */
-	private void addAllContainmentsOfMainExpression(QueryDetails queryDetailsObj, CategorySearchForm categorySearchForm,StringBuilder xmlString)
+	private void addAllContainmentsOfMainExpression(QueryDetails queryDetailsObj,StringBuilder xmlString)
 	{
 		OutputTreeDataNode currentSelectedObject = queryDetailsObj.getCurrentSelectedObject();
 		
@@ -431,7 +430,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 			uniqueKeyId = itr.next();
 			currentSelectedObject = queryDetailsObj.getUniqueIdNodesMap().get(uniqueKeyId);	
 			queryDetailsObj.setCurrentSelectedObject(currentSelectedObject);
-			addEntityAndAttributes(queryDetailsObj,categorySearchForm,false,xmlString);
+			addEntityAndAttributes(queryDetailsObj,false,xmlString);
 		}
 	}
 
@@ -464,19 +463,13 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 	}
 	
 	private void addAttributeToClassEntity (String className,
-            String treeClassNodeId, CategorySearchForm categorySearchForm,
+            String treeClassNodeId, 
             List<QueryOutputTreeAttributeMetadata> attributeMetadataList,StringBuilder xmlString)
 {
       AttributeInterface attribute;
       String attributeName;
       String attributeDisplayName;
       String treeAttributeNodeId;
-      List<NameValueBean> defaultSelectedColumnNameValueBeanList = categorySearchForm.getSelectedColumnNameValueBeanList(); 
-      if(defaultSelectedColumnNameValueBeanList==null)
-      {
-    	  defaultSelectedColumnNameValueBeanList = new ArrayList<NameValueBean>();      
-      }
-      
       for (QueryOutputTreeAttributeMetadata attributeMetadata : attributeMetadataList)
       {
             attribute = attributeMetadata.getAttribute();
@@ -490,16 +483,6 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
             treeAttributeNodeId = attributeMetadata.getUniqueId();
             xmlString.append("<item id = \""+ treeAttributeNodeId + "\" text = \""+ attributeDisplayName + "\" style=\"content_txt\" imheight=\"18\" imwidtht=\"18\"  name= \""+ attributeName +"\" parent= \"" + treeClassNodeId + "\" parentObjName = \""+ className + "\"" +">");
             xmlString.append("</item>");
-      }
-      
-      if (prevSelectedColumnNameValueBeanList != null)
-      {
-            categorySearchForm
-              .setSelectedColumnNameValueBeanList(prevSelectedColumnNameValueBeanList);
-      }
-      else 
-      {
-         categorySearchForm.setSelectedColumnNameValueBeanList(defaultSelectedColumnNameValueBeanList);
       }
  }
 
