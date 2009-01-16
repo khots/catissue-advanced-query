@@ -18,6 +18,7 @@ import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.querysuite.security.utility.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.queryengine.impl.IQueryGenerator;
@@ -74,38 +75,25 @@ public class ValidateQueryBizLogic
 		try
 		{
 			HttpSession session = request.getSession();
-			IQueryGenerator queryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
-			String selectSql = queryGenerator.generateQuery(query);
-			Map<AttributeInterface, String> attributeColumnNameMap = queryGenerator
-					.getAttributeColumnNameMap();
-			session.setAttribute(Constants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
-			Map<String, IOutputTerm> outputTermsColumns = queryGenerator.getOutputTermsColumns();
-
-			QueryDetails queryDetailsObj = new QueryDetails(session);
-			session.setAttribute(Constants.OUTPUT_TERMS_COLUMNS, outputTermsColumns);
-			session.setAttribute(Constants.SAVE_GENERATED_SQL, selectSql);
-			List<OutputTreeDataNode> rootOutputTreeNodeList = queryGenerator
-					.getRootOutputTreeNodeList();
-			session.setAttribute(Constants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
-			session
-					.setAttribute(Constants.NO_OF_TREES, Long
-							.valueOf(rootOutputTreeNodeList.size()));
-			Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
-					.getAllChildrenNodes(rootOutputTreeNodeList);
-			queryDetailsObj.setUniqueIdNodesMap(uniqueIdNodesMap);
-			//This method will check if main objects for all the dependant objects are present in query or not.
-			Map<EntityInterface, List<EntityInterface>> mainEntityMap = QueryCSMUtil
-					.setMainObjectErrorMessage(query, session, queryDetailsObj);
-			session.setAttribute(Constants.ID_NODES_MAP, uniqueIdNodesMap);
-			// if no main object is present in the map show the error message set in the session.
-			if (mainEntityMap == null)
+			validationMessage = getMessageForBaseObject(validationMessage, constraints);
+			if(validationMessage == null)
 			{
-				//return NO_MAIN_OBJECT_IN_QUERY;
-				validationMessage = (String) session
-						.getAttribute(Constants.NO_MAIN_OBJECT_IN_QUERY);
-				validationMessage = "<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>"
-						+ validationMessage + "</font></li>";
+			   Map<EntityInterface, List<EntityInterface>> mainEntityMap = getMainObjectErrorMessege(query, session);
+			   if (mainEntityMap == null)
+				{
+					//return NO_MAIN_OBJECT_IN_QUERY;
+					validationMessage = (String) session
+							.getAttribute(Constants.NO_MAIN_OBJECT_IN_QUERY);
+					validationMessage = "<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>"
+							+ validationMessage + "</font></li>";
+				}
 			}
+			else
+			{
+				
+			}
+			// if no main object is present in the map show the error message set in the session.
+			
 		}
 		catch (MultipleRootsException e)
 		{
@@ -132,4 +120,44 @@ public class ValidateQueryBizLogic
 		return validationMessage;
 	}
 
+	private static Map<EntityInterface, List<EntityInterface>> getMainObjectErrorMessege(IQuery query,
+			HttpSession session) throws MultipleRootsException, SqlException
+	{
+		IQueryGenerator queryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
+		String selectSql = queryGenerator.generateQuery(query);
+		Map<AttributeInterface, String> attributeColumnNameMap = queryGenerator
+				.getAttributeColumnNameMap();
+		session.setAttribute(Constants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
+		Map<String, IOutputTerm> outputTermsColumns = queryGenerator.getOutputTermsColumns();
+
+		QueryDetails queryDetailsObj = new QueryDetails(session);
+		session.setAttribute(Constants.OUTPUT_TERMS_COLUMNS, outputTermsColumns);
+		session.setAttribute(Constants.SAVE_GENERATED_SQL, selectSql);
+		List<OutputTreeDataNode> rootOutputTreeNodeList = queryGenerator
+				.getRootOutputTreeNodeList();
+		session.setAttribute(Constants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
+		session
+				.setAttribute(Constants.NO_OF_TREES, Long
+						.valueOf(rootOutputTreeNodeList.size()));
+		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
+				.getAllChildrenNodes(rootOutputTreeNodeList);
+		queryDetailsObj.setUniqueIdNodesMap(uniqueIdNodesMap);
+		//This method will check if main objects for all the dependant objects are present in query or not.
+		Map<EntityInterface, List<EntityInterface>> mainEntityMap = QueryCSMUtil
+				.setMainObjectErrorMessage(query, session, queryDetailsObj);
+		session.setAttribute(Constants.ID_NODES_MAP, uniqueIdNodesMap);
+		return mainEntityMap;
+	}
+
+	private static String getMessageForBaseObject(String validationMessage, IConstraints constraints)
+			throws MultipleRootsException
+	{
+		EntityInterface rootEntity = constraints.getRootExpression().getQueryEntity().getDynamicExtensionsEntity();
+		boolean istagPresent = edu.wustl.query.util.global.Utility.istagPresent(rootEntity,Constants.BASE_MAIN_ENTITY);
+		if(!istagPresent)
+			validationMessage = "<li><font color='blue'> "+ApplicationProperties.getValue(Constants.QUERY_NO_ROOTEXPRESSION)+"</font></li>";
+		return validationMessage;
+	}
+
 }
+
