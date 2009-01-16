@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 
+import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
@@ -593,5 +594,20 @@ public class Utility extends edu.wustl.common.util.Utility
 			string.delete(string.length() - 2, string.length());
 		}
 	}
-
+    
+    public static boolean istagPresent(AbstractMetadataInterface entity,String tag)
+	{
+		boolean isTagPresent = false;
+		Collection<TaggedValueInterface> taggedValueCollection = entity.getTaggedValueCollection();
+		for(TaggedValueInterface tagValue : taggedValueCollection)
+		{
+			if(tagValue.getKey().equals(tag))
+			{
+				isTagPresent = true;
+				break;
+			}
+		}
+		return isTagPresent;
+	} 
+ 
 }
