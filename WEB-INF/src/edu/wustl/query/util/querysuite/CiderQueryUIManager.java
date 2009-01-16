@@ -136,5 +136,13 @@ public class CiderQueryUIManager extends QueryUIManager {
 			QueryModuleException queryModuleException = new QueryModuleException(e.getMessage(),QueryModuleError.MULTIPLE_ROOT);
 			throw queryModuleException;
 		}
-}
+	}
+	
+	/**
+	 * Empty method implementation to get required objects for query.
+	 */
+	public Collection<? extends Object> getObjects(Long user_id) throws QueryModuleException
+	{
+		return null;
+	}
 }
