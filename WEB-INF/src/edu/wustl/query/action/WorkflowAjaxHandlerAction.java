@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import com.ibm.db2.jcc.b.id;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.bizlogic.WorkflowBizLogic;
+import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
 
 /**
@@ -40,24 +42,26 @@ public class WorkflowAjaxHandlerAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String operation = request.getParameter(Constants.OPERATION);
+
+		String id=request.getParameter("ID");
 		String queryIndex = request.getParameter("queryId");
 		
 		if(request.getSession().getAttribute("idList")==null)
 		{
 		
-			request.getSession().setAttribute("idList", new ArrayList<String>());
+			request.getSession().setAttribute("idList", new HashSet<String>());
 		}
 
 		String state=request.getParameter("state");
 		if(state!=null && state.equals("cancel"))
 		{
-			ArrayList<String> idList=(ArrayList<String>) request.getSession().getAttribute("idList");
+			HashSet<String> idList=(HashSet<String>) request.getSession().getAttribute("idList");
 			idList.remove(queryIndex);
 		}
 
 		if(state!=null && state.equals("start"))
 		{
-			ArrayList<String> idList=(ArrayList<String>) request.getSession().getAttribute("idList");
+			HashSet<String> idList=(HashSet<String>) request.getSession().getAttribute("idList");
 			idList.add(queryIndex);
 		}
 
@@ -66,19 +70,30 @@ public class WorkflowAjaxHandlerAction extends Action
 		if (operation != null && "execute".equals(operation.trim()))
 		{
 			//Get all query ids
-			Long queryId = 1L;
+			Long queryId = Long.valueOf(id);
 //						
 //			Thread curr=new Thread();
 //			curr.sleep(5000);
-			
 			WorkflowBizLogic workflowBizLogic = (WorkflowBizLogic) BizLogicFactory.getInstance()
-					.getBizLogic(Constants.WORKFLOW_BIZLOGIC_ID);
-			HashMap<String,Long> resultCountMap = workflowBizLogic.executeGetCountQuery((ArrayList<String>)request.getSession().getAttribute("idList"));
+			.getBizLogic(Constants.WORKFLOW_BIZLOGIC_ID);
+			int queryExecId=Integer.valueOf(request.getParameter("executionLogId"));
+			if(queryExecId==0)
+			{
+				
+				queryExecId = workflowBizLogic.executeGetCountQuery(queryId,request);
+			}
+			
+		
+			HashMap<String,Count> resultCountMap =workflowBizLogic.getCount((HashSet<String>)request.getSession().getAttribute("idList"), queryExecId);
+			
 			String[] keyArray= (String[]) resultCountMap.keySet().toArray( new String[resultCountMap.keySet().toArray().length]);
+			
 			List<JSONObject> executionQueryResults = new ArrayList<JSONObject>();
 			for(int i=0;i<keyArray.length;i++)
 			{
-				executionQueryResults.add(createResultJSON(queryId, keyArray[i], resultCountMap.get(keyArray[i])));
+				Count count=resultCountMap.get(keyArray[i]);
+				executionQueryResults.add(createResultJSON(queryId, keyArray[i],count.getCount(),
+						count.getStatus(),count.getQuery_exection_id()));
 			}
 
 			response.setContentType("text/xml");
@@ -98,7 +113,8 @@ public class WorkflowAjaxHandlerAction extends Action
 	 * 
 	 * creates the jsonObject for input parameters
 	 */
-	private JSONObject createResultJSON(Long queryId, String queryIndex, Long resultCount)
+	private JSONObject createResultJSON(Long queryId, String queryIndex,
+			int resultCount,String status,int executionLogId)
 	{
 		JSONObject resultObject = null;
 		resultObject = new JSONObject();
@@ -106,7 +122,9 @@ public class WorkflowAjaxHandlerAction extends Action
 		{
 			resultObject.append("queryId", queryId);
 			resultObject.append("queryIndex", queryIndex);
-			resultObject.append("queryResult", resultCount.longValue());
+			resultObject.append("queryResult", resultCount);
+			resultObject.append("status", status);
+			resultObject.append("executionLogId", executionLogId);
 		}
 		catch (JSONException e)
 		{
