@@ -8,7 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.servlet.http.HttpSession;
+
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
@@ -27,6 +29,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.flex.dag.DAGResolveAmbiguity;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 
 /**
  * 
@@ -67,7 +70,7 @@ public abstract class IQueryUpdationUtil
 	 * @return eachExpressionParentChildMap
 	 */
 	public static Map<Integer, HashMap<EntityInterface, List<EntityInterface>>> getAllConatainmentObjects(
-			IQuery query, HttpSession session)
+			IQuery query, HttpSession session,boolean isDefaultConditionPresent)
 	{
 		Map<Integer, HashMap<EntityInterface, List<EntityInterface>>> eachExpressionParentChildMap = new HashMap<Integer, HashMap<EntityInterface, List<EntityInterface>>>();
 		List<Integer> expressionIdsList = getAddLimitExpressionList(session);
@@ -89,7 +92,7 @@ public abstract class IQueryUpdationUtil
 		}
 		//For each expression id in the  expressionsToAddContainments, get It's Containments
 		updateAllMaps(query, eachExpressionParentChildMap, eachExpressionContainmentMap,
-				expressionsToAddContainments);
+				expressionsToAddContainments,isDefaultConditionPresent);
 
 		session.setAttribute(Constants.MAIN_ENTITY_EXPRESSIONS_MAP, eachExpressionContainmentMap);
 		session.setAttribute(Constants.MAIN_EXPRESSION_TO_ADD_CONTAINMENTS,
@@ -109,7 +112,7 @@ public abstract class IQueryUpdationUtil
 			IQuery query,
 			Map<Integer, HashMap<EntityInterface, List<EntityInterface>>> eachExpressionParentChildMap,
 			Map<Integer, List<EntityInterface>> eachExpressionContainmentMap,
-			List<Integer> expressionsToAddContainments)
+			List<Integer> expressionsToAddContainments,boolean isDefaultConditionPresent)
 	{
 		Iterator<Integer> expsToAddItr = expressionsToAddContainments.iterator();
 		while (expsToAddItr.hasNext())
@@ -120,7 +123,7 @@ public abstract class IQueryUpdationUtil
 			EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
 			HashMap<EntityInterface, List<EntityInterface>> partentChildEntityMap = new HashMap<EntityInterface, List<EntityInterface>>();
 			ArrayList<EntityInterface> mainEntityContainmentList = new ArrayList<EntityInterface>();
-			getMainEntityContainments(partentChildEntityMap, mainEntityContainmentList, entity);
+			getMainEntityContainments(partentChildEntityMap, mainEntityContainmentList, entity,isDefaultConditionPresent);
 
 			if ((mainEntityContainmentList != null) && (!mainEntityContainmentList.isEmpty()))
 			{
@@ -233,7 +236,8 @@ public abstract class IQueryUpdationUtil
 	 */
 	private static void getMainEntityContainments(
 			Map<EntityInterface, List<EntityInterface>> partentChildEntityMap,
-			List<EntityInterface> mainEntityContainmentList, EntityInterface mainEntity)
+			List<EntityInterface> mainEntityContainmentList, EntityInterface mainEntity,
+			boolean isDefaultConditionPresent)
 	{
 		//For each Entity, get all Associations
 		List<EntityInterface> list = getContainmentAssociations(mainEntity);
@@ -244,8 +248,12 @@ public abstract class IQueryUpdationUtil
 			EntityInterface entity = itr.next();
 			if (!mainEntityContainmentList.contains(entity))
 			{
-				mainEntityContainmentList.add(entity);
-				uniqueEntityList.add(entity);
+				boolean hasDefaultCondition = Utility.istagPresent(entity,Constants.TAGGED_VALUE_DEFAULT_CONDITION);
+				if(hasDefaultCondition)
+				{
+					mainEntityContainmentList.add(entity);
+					uniqueEntityList.add(entity);
+				}
 			}
 		}
 		partentChildEntityMap.put(mainEntity, uniqueEntityList);
@@ -253,7 +261,7 @@ public abstract class IQueryUpdationUtil
 		//Now for each containment entity, get further containments till it ends
 		if (!mainEntityContainmentList.isEmpty())
 		{
-			getChildEntityContainment(partentChildEntityMap, mainEntityContainmentList);
+			getChildEntityContainment(partentChildEntityMap, mainEntityContainmentList,isDefaultConditionPresent);
 		}
 	}
 
@@ -264,7 +272,8 @@ public abstract class IQueryUpdationUtil
 	 */
 	private static void getChildEntityContainment(
 			Map<EntityInterface, List<EntityInterface>> partentChildEntityMap,
-			List<EntityInterface> mainEntityContainmentList)
+			List<EntityInterface> mainEntityContainmentList,
+			boolean isDefaultConditionPresent)
 	{
 		List<EntityInterface> list;
 		int count = 0;
@@ -279,8 +288,16 @@ public abstract class IQueryUpdationUtil
 				EntityInterface entity = itr.next();
 				if (!mainEntityContainmentList.contains(entity))
 				{
-					mainEntityContainmentList.add(entity);
-					uniqueEntityList.add(entity);
+					boolean hasDefaultCondition = true;
+					if(isDefaultConditionPresent)
+					{
+						hasDefaultCondition = Utility.istagPresent(entity,Constants.TAGGED_VALUE_DEFAULT_CONDITION);
+					}
+					if(hasDefaultCondition)
+					{
+						mainEntityContainmentList.add(entity);
+						uniqueEntityList.add(entity);
+					}
 				}
 			}
 			if (!uniqueEntityList.isEmpty())
@@ -296,6 +313,7 @@ public abstract class IQueryUpdationUtil
 	 * @param entity
 	 * @return containmentEntitiesList
 	 */
+
 	private static List<EntityInterface> getContainmentAssociations(EntityInterface entity)
 	{
 		//List to which all containment entities are added
@@ -549,7 +567,6 @@ public abstract class IQueryUpdationUtil
 		}
 		return mainExpChildrenList;
 	}
-
 
 	/**
 	 * This method add links among parent and children containments for all main entities added
