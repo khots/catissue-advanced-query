@@ -4,7 +4,6 @@
 // "columnContents" contains controls to be added to be added to each column
 function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdContent)
 {
-
 	var tableObj=document.getElementById(tableId);
 	var rowObj=document.createElement("tr");
 	rowObj.height="22";
@@ -113,10 +112,12 @@ function hasInnerText()
 
 function addQuery()
 {
+	
 	var queryIds=document.getElementById("queryId").options;
 	var queryTitles=document.getElementById("queryTitle").options;
 	var queryTypes=document.getElementById("queryType").options;
 	var queryCount=document.getElementById("table1").rows.length;
+
 
 	for(var counter=0;counter<queryIds.length;counter++)
 	{
@@ -136,6 +137,7 @@ function addQuery()
 		//create a table containing tbody with id "table1"
 		addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent);	
 	}
+
 }
 
 function getSelectObjectControl()
@@ -185,6 +187,7 @@ function createCheckBox(name,id,displayValue,count)
 		chkbox.id=id;
 		chkbox.name=name;
 		chkbox.onclick=function addEvent(){
+			
 			setCheckboxCount(count,chkbox.checked);
 		}
 //			.setOnclickHandler("setCheckboxCount2");
@@ -273,46 +276,31 @@ function deleteWorkflowItem(index)
 function setCheckboxCount(chckCount,checkboxselected)
 {	
 	
-	if(checkboxselected)
+	var checkboxArray=document.getElementsByName('chkbox');
+	var selectedCheckboxes=0;
+	if(checkboxArray!=null)
 	{
-		numOfChkSelected++;
-	}
-	else
-	{
-		numOfChkSelected--;
-	}
-	//alert("numOfChkSelected"+numOfChkSelected);
-	/*if(numOfChkSelected==2&&checkboxselected)
-	{
-		enableButtons();
-		var chckbox=document.getElementById("checkbox_"+chckCount);
-		//alert("chckbox"+chckbox);
-		chckbox.onclick=function addEvent1(){
-			setOnclickEventOnDeselect(chckCount,true);
-		}
-	}*/
-	if(numOfChkSelected==2)
-	{
-		enableButtons();
-		var chckbox=document.getElementById("checkbox_"+chckCount);
-		//alert("chckbox"+chckbox);
-		chckbox.onclick=function addEvent1(){
-			setOnclickEventOnDeselect(chckCount,true);
-		}
-	}
+			var numOfRows =checkboxArray.length;
+			for(var count = 0; count < numOfRows; count++)
+			{
 
+					var id ='checkbox_'+count;
+
+				if(document.getElementById(id).checked)
+				{
+				
+					selectedCheckboxes++;
+				}
+			}
+	}
+	if(selectedCheckboxes==2)
+	{
+		enableButtons();
+	}
 	else
 	{
-			//numOfChkSelected--;
 		disableButtons();
-			var chckbox=document.getElementById("checkbox_"+chckCount);
-	//alert("chckbox"+chckbox);
-		chckbox.onclick=function addEvent1(){
-			setCheckboxCount(chckCount,document.getElementById("checkbox_"+chckCount).checked);
-		}
 	}
-
-	//chckbox.setAttribute("onclick","javascript:setOnclickEventOnDeselect("+chckCount+")");
 	
 }
 function enableButtons()
