@@ -62,12 +62,12 @@ MM_reloadPage(true);
                   <td align="left" valign="top" ><table border="0" cellpadding="4" cellspacing="0">
                     <tr bgcolor="#FFFFFF">
                       <td width="15" valign="top" class="content_txt"><img src="images/advancequery/ic_number.gif" alt="Number" width="15" height="16"></td>
-                      <td height="25" valign="top" class="content_txt"><a href="#" class="bluelink"><b>Get the number of patients that satisfy my eligibility criteria.</b></a><br>
+                      <td height="25" valign="top" class="content_txt"><a href="QueryGetCount.do" class="bluelink"><b>Get the number of patients that satisfy my eligibility criteria.</b></a><br>
                       Description: </td>
                     </tr>
                     <tr bgcolor="#FFFFFF" class="tr_color_lgrey">
                       <td valign="top" class="content_txt"><img src="images/advancequery/ic_patient_data.gif" alt="Patient Data" width="15" height="16"></td>
-                      <td height="25" valign="top" class="content_txt"><a href="QueryWizard.do" class="bluelink"><b>Get individual patient level clinical information for my project.</b></a><br>
+                      <td height="25" valign="top" class="content_txt"><a href="#" onClick="(alert('This feature is currently not available..!'))" class="bluelink"><b>Get individual patient level clinical information for my project.</b></a><br>
                         Description: </td>
                     </tr>
                     <tr bgcolor="#FFFFFF">
