@@ -11,7 +11,7 @@ import edu.wustl.common.query.itablemanager.CIDERITableManager;
 import edu.wustl.common.query.memCache.UPIMemCache;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
-import edu.wustl.query.querymanager.CiderQueryManager;
+import edu.wustl.cider.querymanager.CiderQueryManager;
 import edu.wustl.query.util.global.Constants;
 
 /**
