@@ -1,8 +1,12 @@
 
 package edu.wustl.query.util.querysuite;
 
+import java.util.Collection;
+
 import javax.servlet.http.HttpServletRequest;
+
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.query.factory.AbstractQueryFactory;
 import edu.wustl.common.query.factory.AbstractQueryManagerFactory;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
@@ -11,12 +15,11 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.query.querymanager.AbstractQueryManager;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
-import edu.wustl.common.query.AbstractQuery;
 
 /**
  *   This class is default implementation of AbstractQueryUIManager.
  */
-public class QueryUIManager extends AbstractQueryUIManager
+public abstract class QueryUIManager extends AbstractQueryUIManager
 {
 
 	private AbstractQuery abstractQuery;
