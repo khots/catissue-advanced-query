@@ -44,7 +44,7 @@ public abstract class AddContainmentsUtil
 		if (query != null)
 		{
 			Map<Integer, HashMap<EntityInterface, List<EntityInterface>>> eachExpressionParentChildMap = IQueryUpdationUtil
-					.getAllConatainmentObjects(query, session);
+					.getAllConatainmentObjects(query, session,false);
 
 			//Update the IQuery with containment objects......add only those containment objects which are not present in IQuery
 			IQueryUpdationUtil.addConatinmentObjectsToIquery(query, session);
@@ -139,7 +139,7 @@ public abstract class AddContainmentsUtil
 
 		//Get the containments of main Entity Added
 		Map<Integer, HashMap<EntityInterface, List<EntityInterface>>> eachExpressionParentChildMap = IQueryUpdationUtil
-				.getAllConatainmentObjects(query, session);
+				.getAllConatainmentObjects(query, session,false);
 
 		//Now add only the containments of main Entity added 
 		HashMap<EntityInterface, Integer> entityExpressionIdMap = new HashMap<EntityInterface, Integer>();
