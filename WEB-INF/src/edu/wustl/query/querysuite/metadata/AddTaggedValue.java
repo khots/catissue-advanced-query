@@ -211,13 +211,17 @@ public  class AddTaggedValue
 	 */
 	private static void tagValueForEntity(EntityInterface entity, Element entityElement)
 	{
-		Element entityTag = entityElement.element(Constants.ELEMENT_TAG);
-		if(entityTag != null)
+		Iterator<Element> entityTagItr = entityElement.elementIterator(Constants.ELEMENT_TAG);
+		while(entityTagItr.hasNext())
 		{
-			String entityTagName = entityTag.element(Constants.ELEMENT_TAG_NAME).getText();
-			String entityTagValue = entityTag.element(Constants.ELEMENT_TAG_VALUE).getText();
-			TaggedValueInterface taggedValue = createTagValue(entityTagName, entityTagValue);
-			entity.addTaggedValue(taggedValue);
+			Element entityTag = (Element) entityTagItr.next();
+			if(entityTag != null)
+			{
+				String entityTagName = entityTag.element(Constants.ELEMENT_TAG_NAME).getText();
+				String entityTagValue = entityTag.element(Constants.ELEMENT_TAG_VALUE).getText();
+				TaggedValueInterface taggedValue = createTagValue(entityTagName, entityTagValue);
+				entity.addTaggedValue(taggedValue);
+			}
 		}
 	}
 
