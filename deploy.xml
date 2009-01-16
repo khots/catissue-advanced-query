@@ -643,6 +643,7 @@
 			<transaction src="${db2.sql.dir}/query/metadata_schema_script.sql" /> 
 			<transaction src="${db2.sql.dir}/query/query_schema_script.sql" />
 			<transaction src="${db2.sql.dir}/query/Query.sql" />
+			<transaction src="${db2.sql.dir}/query/audit_tables.sql" />
 			<!--transaction src="${db2.sql.dir}/query/initDB2DB.sql" /-->
 			<transaction>commit;</transaction>
 			<classpath>
