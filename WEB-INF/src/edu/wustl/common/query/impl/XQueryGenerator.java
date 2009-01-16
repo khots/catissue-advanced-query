@@ -79,9 +79,8 @@ public abstract class XQueryGenerator extends QueryGenerator
 	 */
 	protected Map<IOutputAttribute, String> attributeAliases;
 
-	
 	//private static org.apache.log4j.Logger logger =Logger.getLogger(XQueryGenerator.class);
-	
+
 	/**
 	 * Generates SQL for the given Query Object.
 	 * 
@@ -123,12 +122,13 @@ public abstract class XQueryGenerator extends QueryGenerator
 		//populate selected attributes and their aliases
 		attributeAliases = new LinkedHashMap<IOutputAttribute, String>();
 		IQuery queryClone = new DyExtnObjectCloner().clone(query);
-		for( IOutputAttribute selectedAttribute : ((ParameterizedQuery) queryClone).getOutputAttributeList())
+		for (IOutputAttribute selectedAttribute : ((ParameterizedQuery) queryClone)
+				.getOutputAttributeList())
 		{
 			String attributeAlias = getAliasFor(selectedAttribute);
 			attributeAliases.put(selectedAttribute, attributeAlias);
 		}
-		
+
 		// IQuery queryClone = query;
 		constraints = queryClone.getConstraints();
 		QueryObjectProcessor.replaceMultipleParents(constraints);
@@ -157,9 +157,7 @@ public abstract class XQueryGenerator extends QueryGenerator
 
 		return formedQuery.toString();
 	}
-	
-	
-	
+
 	private void log(String sql)
 	{
 		// TODO format.
@@ -218,11 +216,10 @@ public abstract class XQueryGenerator extends QueryGenerator
 			{
 				String childEntityName = deCapitalize(childExpression.getQueryEntity()
 						.getDynamicExtensionsEntity().getName());
-				newPath = new StringBuilder(xpath).append('/').append(childEntityName)
-						.toString();
+				newPath = new StringBuilder(xpath).append('/').append(childEntityName).toString();
 				entityPaths.put(childExpression, newPath);
 			}
-			
+
 			createEntityPaths(childExpression, newPath);
 		}
 	}
@@ -402,7 +399,7 @@ public abstract class XQueryGenerator extends QueryGenerator
 
 		StringBuilder selectClause = new StringBuilder(256);
 		selectClause.append(Constants.SELECT);
-		
+
 		for (Entry<IOutputAttribute, String> entry : attributeAliases.entrySet())
 		{
 			selectClause.append(entry.getValue());
@@ -412,36 +409,35 @@ public abstract class XQueryGenerator extends QueryGenerator
 			attributeColumnNameMap.put(entry.getKey().getAttribute(), columnAliasName);
 			suffix++;
 		}
-			
+
 		Utility.removeLastComma(selectClause);
 		return selectClause.toString();
-	
+
 	}
 
-	
 	private void addToTreeNode(Entry<IOutputAttribute, String> entry, String columnAliasName)
 	{
 		// code to get displayname. & pass it to the Constructor along with
 		// treeNode.
-		
+
 		OutputTreeDataNode treeNode = null;
-		
+
 		//find the right tree node to add the attribute to
-		for(OutputTreeDataNode node : rootOutputTreeNodeList)
+		for (OutputTreeDataNode node : rootOutputTreeNodeList)
 		{
-			if(node.getExpressionId() == entry.getKey().getExpression().getExpressionId())
+			if (node.getExpressionId() == entry.getKey().getExpression().getExpressionId())
 			{
 				treeNode = node;
 				break;
 			}
 		}
-		
-		String displayNameForColumn = Utility.getDisplayNameForColumn(entry.getKey().getAttribute());
-		treeNode.addAttribute(new QueryOutputTreeAttributeMetadata(entry.getKey().getAttribute(), columnAliasName,
-				treeNode, displayNameForColumn));
+
+		String displayNameForColumn = Utility
+				.getDisplayNameForColumn(entry.getKey().getAttribute());
+		treeNode.addAttribute(new QueryOutputTreeAttributeMetadata(entry.getKey().getAttribute(),
+				columnAliasName, treeNode, displayNameForColumn));
 	}
-	
-	
+
 	/**
 	 * 
 	 * @param predicateGenerator 
@@ -459,7 +455,7 @@ public abstract class XQueryGenerator extends QueryGenerator
 
 		xQuery.append(buildXQueryForClause(predicateGenerator));
 		xQuery.append(buildXQueryLetClause(predicateGenerator));
-		
+
 		//xQuery.append(buildXQueryWhereClause());
 
 		xQuery.append(buildXQueryReturnClause());
@@ -467,7 +463,6 @@ public abstract class XQueryGenerator extends QueryGenerator
 		return xQuery.toString();
 
 	}
-	
 
 	/**
 	 * 
@@ -478,11 +473,8 @@ public abstract class XQueryGenerator extends QueryGenerator
 	 */
 	protected abstract String buildXQueryForClause(PredicateGenerator predicateGenerator)
 			throws MultipleRootsException, DynamicExtensionsSystemException;
-	
-	
+
 	protected abstract String buildXQueryLetClause(PredicateGenerator predicateGenerator);
-	
-	
 
 	/**
 	 * 
@@ -523,8 +515,6 @@ public abstract class XQueryGenerator extends QueryGenerator
 
 	}*/
 
-	
-	
 	/**
 	 * change the first letter of the Entity Name 
 	 * to lower case
@@ -664,13 +654,11 @@ public abstract class XQueryGenerator extends QueryGenerator
 
 	}
 
-	
 	/**
 	 * 
 	 * @return the 'passing' part of SQLXML
 	 */
 	protected abstract String buildPassingPart();
-	
 
 	/**
 	 * 
@@ -678,8 +666,7 @@ public abstract class XQueryGenerator extends QueryGenerator
 	 * @throws DataTypeFactoryInitializationException
 	 */
 	protected abstract String buildColumnsPart() throws DataTypeFactoryInitializationException;
-	
-	
+
 	protected String getDataTypeInformation(AttributeInterface attribute)
 			throws DataTypeFactoryInitializationException
 	{
@@ -730,7 +717,8 @@ public abstract class XQueryGenerator extends QueryGenerator
 
 	protected String getAliasFor(IOutputAttribute attribute)
 	{
-		return attribute.getAttribute().getName() + "_" + attribute.getExpression().getExpressionId();
+		return attribute.getAttribute().getName() + "_"
+				+ attribute.getExpression().getExpressionId();
 	}
 
 	@Override
@@ -742,15 +730,15 @@ public abstract class XQueryGenerator extends QueryGenerator
 
 	protected boolean shouldAddNodeFor(IExpression expression)
 	{
-		return super.shouldAddNodeFor(expression) ;
+		return super.shouldAddNodeFor(expression);
 	}
-	
+
 	protected boolean isContainedExpresion(int expressionId)
-	{ 
+	{
 		boolean isMainExpression = false;
-		for (IExpression  exp: mainExpressions)
+		for (IExpression exp : mainExpressions)
 		{
-			if(exp.getExpressionId()==expressionId)
+			if (exp.getExpressionId() == expressionId)
 			{
 				isMainExpression = true;
 				break;
@@ -785,13 +773,12 @@ public abstract class XQueryGenerator extends QueryGenerator
 		String firstValue = modifyValueForDataType(values.get(0), dataType);
 		String secondValue = modifyValueForDataType(values.get(1), dataType);
 
-		builder.append(attributeName);
-		builder.append("[. " + RelationalOperator.getSQL(RelationalOperator.GreaterThanOrEquals)
-				+ firstValue);
-
-		builder.append(" " + LogicalOperator.And.toString().toLowerCase() + " . "
-				+ RelationalOperator.getSQL(RelationalOperator.LessThanOrEquals) + secondValue
-				+ "]");
+		builder.append(attributeName).append(
+				RelationalOperator.getSQL(RelationalOperator.GreaterThanOrEquals)).append(
+				firstValue);
+		builder.append(Constants.QUERY_AND);
+		builder.append(attributeName).append(
+				RelationalOperator.getSQL(RelationalOperator.LessThanOrEquals)).append(secondValue);
 
 		return builder.toString();
 
@@ -806,8 +793,8 @@ public abstract class XQueryGenerator extends QueryGenerator
 		for (String value : condition.getValues())
 		{
 			AttributeTypeInformationInterface dataType = condition.getAttribute()
-			.getAttributeTypeInformation();
-			if(dataType instanceof StringTypeInformationInterface)
+					.getAttributeTypeInformation();
+			if (dataType instanceof StringTypeInformationInterface)
 			{
 				builder.append("\"").append(value).append("\"").append(Constants.QUERY_COMMA);
 			}
