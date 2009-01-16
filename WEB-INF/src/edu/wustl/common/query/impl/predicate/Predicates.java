@@ -41,7 +41,9 @@ public class Predicates
 			string.append(predicate.assemble(prefix)).append(Constants.QUERY_AND);
 		}
 		
-		return Utility.removeLastAnd(string.toString());
+		return Constants.QUERY_OPENING_PARENTHESIS + Utility.removeLastAnd(string.toString()) + Constants.QUERY_CLOSING_PARENTHESIS;
+		
+		
 
 	}
 
