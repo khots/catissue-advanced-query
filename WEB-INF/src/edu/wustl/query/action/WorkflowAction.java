@@ -28,7 +28,8 @@ public class WorkflowAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		if (request.getParameter(Constants.OPERATION) != null)
+		if (request.getParameter(Constants.OPERATION) != null
+				&& request.getParameter("id") != null && (!request.getParameter("id").equals("")))
 		{
 
 			request.setAttribute(Constants.OPERATION, "edit");
