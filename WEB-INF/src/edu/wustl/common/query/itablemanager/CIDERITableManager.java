@@ -75,6 +75,7 @@ public class CIDERITableManager extends ITableManager
 		}
 		finally
 		{
+			DB_CONNECTION_PARAMS.closeConnectionParams();
 			DB_CONNECTION_PARAMS.closeSession();
 		}
 	}
@@ -93,13 +94,14 @@ public class CIDERITableManager extends ITableManager
 	{
 		int queryExecId = -1;
 		ResultSet rs = null;
+		Statement stmt = null;
 		DatabaseConnectionParams DB_CONNECTION_PARAMS = new DatabaseConnectionParams();
 
 		try
 		{
 			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME);
 
-			Statement stmt = DB_CONNECTION_PARAMS.getDatabaseStatement();
+			stmt = DB_CONNECTION_PARAMS.getDatabaseStatement();
 
 			// Insert a row
 			// Indicate you want automatically 
@@ -136,6 +138,9 @@ public class CIDERITableManager extends ITableManager
 		}
 		finally
 		{
+			rs.close();
+			stmt.close();
+			DB_CONNECTION_PARAMS.closeConnectionParams();
 			DB_CONNECTION_PARAMS.closeSession();
 		}
 
@@ -175,6 +180,7 @@ public class CIDERITableManager extends ITableManager
 		finally
 		{
 			stmt.close();
+			DB_CONNECTION_PARAMS.closeConnectionParams();
 			DB_CONNECTION_PARAMS.closeSession();
 		}
 	}
@@ -188,34 +194,38 @@ public class CIDERITableManager extends ITableManager
 	 */
 	public Count getCount(int queryExecId) throws SQLException, DAOException
 	{
+		System.out.println();
 		Count count = new Count();
 		int actualCount = 0;
 		String status = "";
 		ResultSet rs = null;
-		Statement stmt = null;
 		DatabaseConnectionParams DB_CONNECTION_PARAMS = new DatabaseConnectionParams();
 
 		try
 		{
 			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME);
-			stmt = DB_CONNECTION_PARAMS.getDatabaseStatement();
 			String query = "select count(*) from " + Variables.ITABLE + " where "
 					+ Constants.QUERY_EXECUTION_ID + "= " + queryExecId;
-			rs = stmt.executeQuery(query);
+			rs = DB_CONNECTION_PARAMS.getResultSet(query);
 			while (rs.next())
 			{
 				actualCount = rs.getInt(1);
 			}
 			count.setCount(actualCount);
+			
+			rs = null;
+			
 			query = "select " + Constants.STATUS + " from " + Variables.QUERY_EXECUTION_LOG
 					+ " where " + Constants.QUERY_EXECUTION_ID + "= " + queryExecId;
-			rs = stmt.executeQuery(query);
+			rs = DB_CONNECTION_PARAMS.getResultSet(query);
 			while (rs.next())
 			{
 				status = rs.getString(1);
 			}
 			count.setQuery_exection_id(queryExecId);
 			count.setStatus(status);
+			
+			DB_CONNECTION_PARAMS.commit();
 		}
 		catch (SQLException ex)
 		{
@@ -229,8 +239,11 @@ public class CIDERITableManager extends ITableManager
 		}
 		finally
 		{
-			rs.close();
-			stmt.close();
+			if(rs!=null)
+			{
+				rs.close();
+			}
+			DB_CONNECTION_PARAMS.closeConnectionParams();
 			DB_CONNECTION_PARAMS.closeSession();
 		}
 		return count;

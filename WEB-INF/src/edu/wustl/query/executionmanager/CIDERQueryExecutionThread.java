@@ -146,7 +146,7 @@ public class CIDERQueryExecutionThread implements Runnable
 	{
 		String upi;
 		int patientDeid = -1;
-		DatabaseConnectionParams dbConnectionParams = null;
+		DatabaseConnectionParams dbConnectionParams = new DatabaseConnectionParams();
 
 		try
 		{
@@ -157,7 +157,6 @@ public class CIDERQueryExecutionThread implements Runnable
 				throw new QueryExecIdNotGeneratedException("");
 			}
 
-			dbConnectionParams = new DatabaseConnectionParams();
 			dbConnectionParams.openSession(Constants.JNDI_NAME);
 
 			results = dbConnectionParams.getResultSet(ciderQueryObj.getQueryString());
@@ -171,7 +170,7 @@ public class CIDERQueryExecutionThread implements Runnable
 				if (cancelThread)
 				{
 					manager.changeStatus(Constants.QUERY_CANCELLED, ciderQueryObj.getQueryExecId());
-					dbConnectionParams.commit();
+					// dbConnectionParams.commit(); - commit called in changeStatus
 					break;
 				}
 				else
@@ -200,7 +199,7 @@ public class CIDERQueryExecutionThread implements Runnable
 			if (!cancelThread)
 			{
 				manager.changeStatus(Constants.QUERY_COMPLETED, ciderQueryObj.getQueryExecId());
-				dbConnectionParams.commit();
+				// dbConnectionParams.commit(); - commit called in changeStatus
 			}
 		}
 		catch (SQLException ex)
@@ -220,7 +219,11 @@ public class CIDERQueryExecutionThread implements Runnable
 		 	try
 			{
 				new CiderQueryManager().removeThreadFromMap(ciderQueryObj.getQueryExecId());
-				results.close();
+				if(results != null)
+				{
+					results.close();
+				}
+				dbConnectionParams.closeConnectionParams();
 				dbConnectionParams.closeSession();
 				upiCache = null;
 			}
