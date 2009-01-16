@@ -565,6 +565,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String TAGGED_VALUE_NOT_VIEWABLE = "NOT_VIEWABLE";
 	/**  Constant for  */
 	public static final String VI_IGNORE_PREDICATE = "VI_IGNORE_PREDICATE";
+	/** Constant for default condition tagged value**/
+	public static final String TAGGED_VALUE_DEFAULT_CONDITION = "DEFAULT_CONDITION";
 	/**  Constant for  */
 	public static final String TAGGED_VALUE_PRIMARY_KEY = "PRIMARY_KEY";
 	/**  Constant for  */
@@ -662,6 +664,15 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String QUERY_COMPLETED = "Completed";
     /**  Constant for QUERY_CANCELLED **/
     public static final String QUERY_CANCELLED = "Cancelled";
-	
-    
+    /** Constant for separator used in tag values for default conditions **/
+    public static final String DEFAULT_CONDITIONS_SEPARATOR="!=!";
+    /** Constant for default conditions current date **/
+    public static final String DEFAULT_CONDITION_CURRENT_DATE="CURRENT_DATE";
+    /** Constant for default conditions facility id **/
+    public static final String DEFAULT_CONDITION_FACILITY_ID="FACILITY_ID";
+    /** Constant for default conditions project rule research opt out **/
+    public static final String DEFAULT_CONDITION_RULES_OPT_OUT="RULES_OPT_OUT";
+    /** Constant for default conditions project rule minors **/
+    public static final String DEFAULT_CONDITION_RULES_MINOR="RULES_MINOR";
+   
 }
