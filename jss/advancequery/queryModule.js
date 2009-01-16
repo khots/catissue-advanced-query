@@ -131,7 +131,20 @@
 	{
 		tree[treeNum].deleteChildItems(id);
 		addedNodes = "";
-	}	
+	}
+	function showPopUp()
+	{
+		var project= document.forms['categorySearchForm'].selectedProject.value;
+		var url='GetCountPopUp.do?selectedProject='+project;
+		pvwindow=dhtmlmodal.open('Get Count', 'iframe', url,'Search Result', 'width=600px,height=250px,center=1,resize=0,scrolling=1,menubar=0,toolbar=0');
+	}
+	function retrieveProjectData(dropdown)
+	{
+		var selectedProject = dropdown.options[dropdown.selectedIndex].value;
+		document.forms['categorySearchForm'].selectedProject.value = selectedProject;
+		//alert("Selected project id value :"+selectedProject);
+		//alert("To Be Done");
+	}
 	function showSpreadsheetData(columnDataStr)
 	{
 		var columnData = columnDataStr.split("&");
@@ -1044,8 +1057,9 @@
 	}
 	function showViewSearchResultsJsp()
 	{
-		document.forms['categorySearchForm'].action='ViewSearchResultsJSPAction.do';
-		document.forms['categorySearchForm'].submit();			
+		showPopUp();
+	//	document.forms['categorySearchForm'].action='ViewSearchResultsJSPAction.do';
+	//	document.forms['categorySearchForm'].submit();			
 	}
 	
 	function produceSavedQuery()
@@ -1515,9 +1529,14 @@ var jsReady = false;
 		else
 		{
 		
+		  if(text=="cancel")	
+			{
+			  alert("This feature is currently not available..!");
+			  return ;
+			}
 		  if (text != "save")
 		  {
-			showWaitPage();
+	//		showWaitPage();
 		  }
 	      var url = "ValidateQuery.do";
 		  request.open("POST",url,true);	

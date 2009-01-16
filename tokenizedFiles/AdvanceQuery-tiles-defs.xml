@@ -66,6 +66,11 @@
 	<definition name=".query.queryResultsTreeViewNodeDef" path="/pages/advancequery/content/search/TreeNodeView.jsp">
 	</definition>
 	
+		<definition name=".query.getCount" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/GetCounts.jsp" />
+	</definition>
+	
+	
 	<definition name=".query.searchHomeDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/advancequery/content/search/Home.jsp" />
 	</definition>

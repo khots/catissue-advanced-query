@@ -96,6 +96,29 @@ PUBLIC
 			scope="request">
 			<forward name="success" path=".query.searchCategory"/>
 		</action>
+		
+		<action path="/QueryGetCount"
+			type="edu.wustl.query.action.QueryGetCountAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".query.getCount"/>
+		</action>
+		
+	    <action path="/GetCountPopUp"
+          type = "edu.wustl.query.action.GetCountPopUpAction"
+          name="categorySearchForm"
+          validate="false"
+		  scope="request">
+            <forward name="success"  path="/pages/advancequery/content/search/querysuite/GetCountPopUp.jsp" />
+        </action>
+        
+        <action path="/GetCountAjaxHandler"
+			type="edu.wustl.query.action.GetCountAjaxHandlerAction"
+			validate="false"
+			scope="request">
+		</action>
+		
 		<action path="/SearchCategory"
 			type="edu.wustl.query.action.CategorySearchAction"
 			name="categorySearchForm"
