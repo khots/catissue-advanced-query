@@ -157,7 +157,7 @@ public class CIDERQueryExecutionThread implements Runnable
 				throw new QueryExecIdNotGeneratedException("");
 			}
 
-			dbConnectionParams.openSession(Constants.JNDI_NAME);
+			dbConnectionParams.openSession(Constants.JNDI_NAME_CIDER);
 
 			results = dbConnectionParams.getResultSet(ciderQueryObj.getQueryString());
 

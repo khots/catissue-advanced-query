@@ -634,8 +634,9 @@ public class Constants extends edu.wustl.common.util.global.Constants
     //End : Added for changes in Query Design for CIDER Query
     
     /** Constant for Advanced Query 'JNDI' name **/
-    public static final String JNDI_NAME = "java:/query";
-    
+    public static final String JNDI_NAME_QUERY = "java:/query";
+    /** Constant for CIDER 'JNDI' name **/
+    public static final String JNDI_NAME_CIDER = "java:/cider";
     // CONSTANTS for columns in table 'QUERY_EXECUTION_LOG'
     /**  Constant for CREATIONTIME **/
     public static final String CREATIONTIME = "CREATIONTIME";

@@ -55,7 +55,7 @@ public class CIDERITableManager extends ITableManager
 		try
 		{
 			// CODE TO INSERT DATA INTO QUERY_ITABLE
-			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME);
+			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME_CIDER);
 
 			ArrayList<Object> columnValues = new ArrayList<Object>();
 
@@ -99,7 +99,7 @@ public class CIDERITableManager extends ITableManager
 
 		try
 		{
-			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME);
+			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME_CIDER);
 
 			stmt = DB_CONNECTION_PARAMS.getDatabaseStatement();
 
@@ -160,7 +160,7 @@ public class CIDERITableManager extends ITableManager
 		Statement stmt = null;
 		try
 		{
-			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME);
+			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME_CIDER);
 			stmt = DB_CONNECTION_PARAMS.getDatabaseStatement();
 
 			String query = "UPDATE " + Variables.QUERY_EXECUTION_LOG + " SET " + Constants.STATUS
@@ -203,7 +203,7 @@ public class CIDERITableManager extends ITableManager
 
 		try
 		{
-			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME);
+			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME_CIDER);
 			String query = "select count(*) from " + Variables.ITABLE + " where "
 					+ Constants.QUERY_EXECUTION_ID + "= " + queryExecId;
 			rs = DB_CONNECTION_PARAMS.getResultSet(query);
