@@ -25,11 +25,9 @@ public class AddCuratedPath
 	public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException
 	{
 		Connection connection = DBUtil.getConnection();
-
 		//		Class.forName("com.mysql.jdbc.Driver");
 		//		String url = "jdbc:mysql://localhost:3307/upgrade";
 		//		Connection connection = DriverManager.getConnection(url, "root", "pspl");
-
 		AddCuratedPath addCurratedPath = new AddCuratedPath(connection);
 		addCurratedPath.addCurratedPath();
 	}
@@ -71,7 +69,6 @@ public class AddCuratedPath
 				targetEntity = st.nextToken();
 				targetEntityId = UpdateMetadataUtil.getEntityIdByName(targetEntity, connection
 						.createStatement());
-
 				String tempPath = getIntermediatePath(sourceEntityId, targetEntityId);
 				if (intermediatePath.equals(""))
 				{
@@ -86,9 +83,12 @@ public class AddCuratedPath
 				sourceEntityId = targetEntityId;
 			}
 
-			sql = "insert into path values(" + nextIdPath + "," + mainEntityId + ",'"
+			sql = "insert into path values (" + nextIdPath + "," + mainEntityId + ",'"
 					+ intermediatePath + "'," + targetEntityId + ")";
-			UpdateMetadataUtil.executeInsertSQL(sql, connection.createStatement());
+			//UpdateMetadataUtil.executeInsertSQL(sql, connection.createStatement());
+			stmt = connection.createStatement();
+			stmt.execute(sql);
+			connection.commit();
 			nextIdPath++;
 		}
 	}
@@ -99,8 +99,8 @@ public class AddCuratedPath
 		String inetrmediatePath = null;
 		ResultSet rs;
 		Statement stmt = connection.createStatement();
-		String sql = "select INTERMEDIATE_PATH from path where FIRST_ENTITY_ID ='" + sourceEntityId
-				+ "'  and LAST_ENTITY_ID = '" + intermediateEntityId + "'";
+		String sql = "select INTERMEDIATE_PATH from path where FIRST_ENTITY_ID =" + sourceEntityId
+				+ "  and LAST_ENTITY_ID = " + intermediateEntityId + "";
 		rs = stmt.executeQuery(sql);
 		if (rs.next())
 		{
@@ -113,103 +113,41 @@ public class AddCuratedPath
 	private void populateMapForPath()
 	{
 		entityList = new ArrayList<String>();
-		entityList.add("Person,Demograhics,Race");
+		entityList.add("Person,Demographics,Race");
 		entityList.add("Person,Demographics,Gender");
+		entityList.add("Person,Demographics,Address");
+		entityList.add("Person,Demographics,AdvancedDirectiveExists");
+		entityList.add("Person,Demographics,EthnicOrigin");
+		entityList.add("Person,Demographics,MaritalStatus");
+		entityList.add("Person,Demographics,Religion");
+		entityList.add("Person,Demographics,Phone");
+		entityList.add("Person,Demographics,AssociatedPerson");
+		entityList.add("Person,Demographics,PersonName");
 		
-		/*entityList.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.CellSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.FluidSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.MolecularSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.TissueSpecimen");
-
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.pathology.DeidentifiedSurgicalPathologyReport");
-
-		entityList
-				.add("edu.wustl.catissuecore.domain.Distribution,edu.wustl.catissuecore.domain.DistributedItem,edu.wustl.catissuecore.domain.Specimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.Distribution,edu.wustl.catissuecore.domain.DistributedItem,edu.wustl.catissuecore.domain.CellSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.Distribution,edu.wustl.catissuecore.domain.DistributedItem,edu.wustl.catissuecore.domain.FluidSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.Distribution,edu.wustl.catissuecore.domain.DistributedItem,edu.wustl.catissuecore.domain.MolecularSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.Distribution,edu.wustl.catissuecore.domain.DistributedItem,edu.wustl.catissuecore.domain.TissueSpecimen");
-
-		entityList
-				.add("edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.CollectionProtocolRegistration,edu.wustl.catissuecore.domain.Participant");
-
-		entityList
-				.add("edu.wustl.catissuecore.domain.StorageContainer,edu.wustl.catissuecore.domain.SpecimenPosition,edu.wustl.catissuecore.domain.Specimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.StorageContainer,edu.wustl.catissuecore.domain.SpecimenPosition,edu.wustl.catissuecore.domain.CellSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.StorageContainer,edu.wustl.catissuecore.domain.SpecimenPosition,edu.wustl.catissuecore.domain.FluidSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.StorageContainer,edu.wustl.catissuecore.domain.SpecimenPosition,edu.wustl.catissuecore.domain.MolecularSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.StorageContainer,edu.wustl.catissuecore.domain.SpecimenPosition,edu.wustl.catissuecore.domain.TissueSpecimen");
-
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocolRegistration,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.Specimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocolRegistration,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.CellSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocolRegistration,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.FluidSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocolRegistration,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.MolecularSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocolRegistration,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.TissueSpecimen");
-
-		entityList
-				.add("edu.wustl.catissuecore.domain.Site,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.Specimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.Site,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.CellSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.Site,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.FluidSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.Site,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.MolecularSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.Site,edu.wustl.catissuecore.domain.SpecimenCollectionGroup,edu.wustl.catissuecore.domain.TissueSpecimen");
-
-		entityList
-				.add("edu.wustl.catissuecore.domain.OrderDetails,edu.wustl.catissuecore.domain.Distribution,edu.wustl.catissuecore.domain.Specimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.OrderDetails,edu.wustl.catissuecore.domain.Distribution,edu.wustl.catissuecore.domain.CellSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.OrderDetails,edu.wustl.catissuecore.domain.Distribution,edu.wustl.catissuecore.domain.FluidSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.OrderDetails,edu.wustl.catissuecore.domain.Distribution,edu.wustl.catissuecore.domain.MolecularSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.OrderDetails,edu.wustl.catissuecore.domain.Distribution,edu.wustl.catissuecore.domain.TissueSpecimen");
-
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.CollectionProtocolRegistration,edu.wustl.catissuecore.domain.Participant");
-
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.CollectionProtocolEvent,edu.wustl.catissuecore.domain.SpecimenRequirement");
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.CollectionProtocolEvent,edu.wustl.catissuecore.domain.CellSpecimenRequirement");
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.CollectionProtocolEvent,edu.wustl.catissuecore.domain.FluidSpecimenRequirement");
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.CollectionProtocolEvent,edu.wustl.catissuecore.domain.MolecularSpecimenRequirement");
-		entityList
-				.add("edu.wustl.catissuecore.domain.CollectionProtocol,edu.wustl.catissuecore.domain.CollectionProtocolEvent,edu.wustl.catissuecore.domain.TissueSpecimenRequirement");
-
-		entityList
-				.add("edu.wustl.catissuecore.domain.OrderItem,edu.wustl.catissuecore.domain.DistributedItem,edu.wustl.catissuecore.domain.Specimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.OrderItem,edu.wustl.catissuecore.domain.DistributedItem,edu.wustl.catissuecore.domain.CellSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.OrderItem,edu.wustl.catissuecore.domain.DistributedItem,edu.wustl.catissuecore.domain.FluidSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.OrderItem,edu.wustl.catissuecore.domain.DistributedItem,edu.wustl.catissuecore.domain.MolecularSpecimen");
-		entityList
-				.add("edu.wustl.catissuecore.domain.OrderItem,edu.wustl.catissuecore.domain.DistributedItem,edu.wustl.catissuecore.domain.TissueSpecimen");
-	*/
+		//Adding further paths
+		entityList.add("Person,Demographics,Address,State");
+		entityList.add("Person,Demographics,Address,Country");
+		entityList.add("Person,Demographics,Address,AddressType");
+		
+		entityList.add("Person,Demographics,AssociatedPerson,RelationToPerson");
+		
+		
+		//Adding paths for Laboratory Procedure and Containments
+		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult");
+		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,SpecimanType");
+		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,Status");
+		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,MedicalRecordNumber");
+		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,Facility");
+		
+		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,MedicalRecordNumber,Facility");
+		
+		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,LaboratoryTestType");
+		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,ResultValue");
+		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,Status");
+		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,ResultValue,Result");
+		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,ResultValue,Result,UnitsOfMeasure");
+		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,ResultValue,Result,NormalRange");
+		
 	}
 
 	public AddCuratedPath(Connection connection)
