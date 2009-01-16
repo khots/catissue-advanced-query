@@ -454,6 +454,7 @@ PUBLIC
         		validate="false"
 				scope="request">
         	<forward name="success" path=".query.queryWorkFlowWizardDef"/>
+        	<forward name="failure" path="/QueryWorkflowWizard.do"/>
         </action>
         
          <action path="/Workflow"
@@ -467,6 +468,7 @@ PUBLIC
 				scope="request">
         <!-- <forward name="success" path="/QueryWorkflowWizard.do" /> -->
        		 <forward name="success" path=".query.queryWorkFlowConfirmMsgDef" />
+       		 <forward name="failure" path="/QueryWorkflowWizard.do"/>
         </action>
         
         <action path="/WorkflowAjaxHandler" 
