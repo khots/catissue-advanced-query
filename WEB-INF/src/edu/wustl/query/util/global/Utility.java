@@ -6,12 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -27,11 +29,13 @@ import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.QueryBizLogic;
 import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.dao.queryExecutor.PagenatedResultData;
+import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
+import edu.wustl.query.util.querysuite.IQueryUpdationUtil;
 
 public class Utility extends edu.wustl.common.util.Utility
 {
@@ -609,5 +613,25 @@ public class Utility extends edu.wustl.common.util.Utility
 		}
 		return isTagPresent;
 	} 
- 
+    /**
+     * Method to update Query Objects with containments.
+     * @param session object
+     * @param query to be updated.
+     */
+    public static  void updateIQueryForContainments(HttpSession session, IQuery query,boolean isDefaultConditionPresent)
+	{
+		if(query != null)
+	    { 
+			Map<Integer, HashMap <EntityInterface, List<EntityInterface>>> eachExpressionParentChildMap = IQueryUpdationUtil.getAllConatainmentObjects(query,session,isDefaultConditionPresent);
+			
+			//Update the IQuery with containment objects......add only those containment objects which are not present in IQuery
+			IQueryUpdationUtil.addConatinmentObjectsToIquery(query,session);
+			
+			//IQueryUpdationUtil.addDefaultConditionToIquery(query,session);
+			
+			//Add the link/association among parent and containment entities
+			IQueryUpdationUtil.addLinks(eachExpressionParentChildMap, session);
+			
+	    }
+	}
 }
