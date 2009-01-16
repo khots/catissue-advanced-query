@@ -489,6 +489,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 		return "extract(day from " + s + ")*86400 + extract(hour from " + s
 				+ ")*3600 + extract(minute from " + s + ")*60 + extract(second from " + s + ")";
 	}
+	
+	public static final String VERSION = "VERSION";
 
 	//Constants related to Export functionality
 	/**  Constant for  */
@@ -656,5 +658,6 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String QUERY_COMPLETED = "Completed";
     /**  Constant for QUERY_CANCELLED **/
     public static final String QUERY_CANCELLED = "Cancelled";
+	
     
 }
