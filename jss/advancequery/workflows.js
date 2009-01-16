@@ -59,7 +59,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	operandsTd2.appendChild(queryTitleControl);
 	operandsTd2.appendChild(queryTypeControl);
 	operandsTd2.width="4";
-	operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+queryCount+"')"));
+	operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+queryCount+"','"+0+"')"));
 	operandsTd3.appendChild(createLink("Delete ","delete_"+queryCount,"javascript:deleteWorkflowItem('"+queryCount+"')"));
 
 	operandsTr.appendChild(operandsTd1);
