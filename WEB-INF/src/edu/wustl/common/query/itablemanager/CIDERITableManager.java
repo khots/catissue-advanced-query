@@ -138,7 +138,10 @@ public class CIDERITableManager extends ITableManager
 		}
 		finally
 		{
-			rs.close();
+			if(rs != null)
+			{
+				rs.close();
+			}
 			stmt.close();
 			DB_CONNECTION_PARAMS.closeConnectionParams();
 			DB_CONNECTION_PARAMS.closeSession();
