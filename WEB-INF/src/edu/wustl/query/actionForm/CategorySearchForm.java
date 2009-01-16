@@ -86,6 +86,16 @@ public class CategorySearchForm extends ActionForm
 	private String[] selectedColumnNames;
 	private String[] columnNames;
 	private List<NameValueBean> selectedColumnNameValueBeanList;
+	
+	/**
+	 * Name-ValueBean list to store Projects available.
+	 */
+	private List<NameValueBean> projectsNameValueBeanList;
+	
+	/**
+	 * String to store currentSelectedProject
+	 */
+	private String currentSelectedProject = null;
 	/**
 	 * String to store currentSelectedObject
 	 */
@@ -98,6 +108,39 @@ public class CategorySearchForm extends ActionForm
 	private String[] selectedMainEntities = null;
 
 	
+	/**
+	 * @return the projectsNameValueBeanList
+	 */
+	public List<NameValueBean> getProjectsNameValueBeanList() {
+		return projectsNameValueBeanList;
+	}
+
+
+	/**
+	 * @param projectsNameValueBeanList the projectsNameValueBeanList to set
+	 */
+	public void setProjectsNameValueBeanList(
+			List<NameValueBean> projectsNameValueBeanList) {
+		this.projectsNameValueBeanList = projectsNameValueBeanList;
+	}
+
+
+	/**
+	 * @return the currentSelectedProject
+	 */
+	public String getCurrentSelectedProject() {
+		return currentSelectedProject;
+	}
+
+
+	/**
+	 * @param currentSelectedProject the currentSelectedProject to set
+	 */
+	public void setCurrentSelectedProject(String currentSelectedProject) {
+		this.currentSelectedProject = currentSelectedProject;
+	}
+
+
 	/**
 	 * @return the selectedMainEntities
 	 */
