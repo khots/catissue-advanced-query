@@ -637,9 +637,9 @@
 	<target name="deploy_db_db2">
 		<echo message="Initializing DB2 Database for Advance Query v1.1 Application..." />		
 		<sql driver="${db2.driver.string}" url="jdbc:db2://${database.host}:${database.port}/${database.name}:currentSchema=${database.schema};" userid="${database.username}" password="${database.password}" onerror="continue">
-			<!-- transaction src="${db2.sql.dir}/query/csm_query.sql" / -->
+			<!--transaction src="${db2.sql.dir}/query/csm_query.sql" / -->
 			<transaction src="${db2.sql.dir}/query/caB2B Table Generation Script.sql" />
-			<transaction src="${db2.sql.dir}/query/DynamicExtension_DB2.sql" /> 
+			<transaction src="${db2.sql.dir}/query/DynamicExtension_DB2new.sql" /> 
 			<transaction src="${db2.sql.dir}/query/metadata_schema_script.sql" /> 
 			<transaction src="${db2.sql.dir}/query/query_schema_script.sql" />
 			<transaction src="${db2.sql.dir}/query/Query.sql" />
@@ -652,7 +652,7 @@
 				</fileset>
 			</classpath>
 		</sql>
-		<!--antcall target="import_xmi" / -->
+		<antcall target="import_xmi" />
 	</target>
 	
 	<!--MySQL Database Creation -->
