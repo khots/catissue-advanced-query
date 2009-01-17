@@ -161,6 +161,7 @@ public class SearchPermissibleValuesAction extends Action
 		else
 		{
 			boolean condFirst=bizLogic.isSourceVocabCodedTerm(concept, relationType, sourceVocabulary);
+			
 			boolean condSecond=true;//bizLogic.isPermissibleValue(concept, pvList);;
 			
 			if(condFirst && condSecond)
