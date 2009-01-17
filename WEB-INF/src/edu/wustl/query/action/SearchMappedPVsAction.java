@@ -92,18 +92,35 @@ public class SearchMappedPVsAction extends Action
 
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		List<IConcept> premValueList = bizLogic.getPermissibleValueList(attribute, entity);
-		String vocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
-		String vocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
-		String vocabDisName = getDisplayNameForVocab(vocabName, vocabVer);
+		int pvcount=bizLogic.getPermissibleValueListCout(attribute, entity);
+		int count=Integer.parseInt( VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
 		StringBuffer html = new StringBuffer();
-		html.append(bizLogic.getRootVocabularyNodeHTML(vocabName, vocabVer, vocabDisName));
-		for(IConcept concept:premValueList)
+		if(pvcount<=count)
 		{
-			String id = vocabName + "@" + vocabVer + ":" + concept.getCode();
-			html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, vocabVer, concept,id));
+			List<IConcept> premValueList = bizLogic.getPermissibleValueList(attribute, entity);
+			String vocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
+			String vocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
+			String vocabDisName = getDisplayNameForVocab(vocabName, vocabVer);
+			
+			html.append(bizLogic.getRootVocabularyNodeHTML(vocabName, vocabVer, vocabDisName));
+			for(IConcept concept:premValueList)
+			{
+				String id = vocabName + "@" + vocabVer + ":" + concept.getCode();
+				html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, vocabVer, concept,id));
+			}
+			html.append(bizLogic.getEndHTML());
+			
 		}
-		html.append(bizLogic.getEndHTML());
+		else
+		{
+			String vocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
+			String vocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
+			String vocabDisName = getDisplayNameForVocab(vocabName, vocabVer);
+			html.append(bizLogic.getRootVocabularyNodeHTML(vocabName, vocabVer, vocabDisName));
+			html.append(bizLogic.getMessage());
+			html.append(bizLogic.getEndHTML());
+			
+		}
 		request.getSession().setAttribute(Constants.MED_PV_HTML, html.toString());
 		request.getSession().setAttribute(Constants.VOCABULIRES, bizLogic.getVocabulries());
 		if (componentId != null)

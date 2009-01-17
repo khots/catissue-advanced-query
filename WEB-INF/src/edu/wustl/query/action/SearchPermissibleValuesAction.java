@@ -117,11 +117,11 @@ public class SearchPermissibleValuesAction extends Action
 			{
 				for(IConcept concept:conceptList)
 				{
-					String checkboxId = vocabName + "@" + vocabVersion + ":" + concept.getCode();//TODO need to change into MED concept code when API will be completed
-					
-					boolean medRelatedConcept=true;//isSourceVocabMappedTerm(concept,pvList) ;
+					//TODO need to change into MED concept code when API will be completed
+					String checkboxId = vocabName + "@" + vocabVersion + ":" + concept.getCode();
+					boolean medRelatedConcept=isSourceVocabMappedTerm(concept,pvList) ;
 					html.append(bizLogic.getSearchedVocabPVChildAsHTML("srh_" + vocabName,
-							vocabVersion, concept, checkboxId,medRelatedConcept));
+							vocabVersion, concept,"srh_"+checkboxId,medRelatedConcept));
 				}
 			}
 			else
@@ -161,7 +161,7 @@ public class SearchPermissibleValuesAction extends Action
 		else
 		{
 			boolean condFirst=bizLogic.isSourceVocabCodedTerm(concept, relationType, sourceVocabulary);
-			boolean condSecond=bizLogic.isPermissibleValue(concept, pvList);;
+			boolean condSecond=true;//bizLogic.isPermissibleValue(concept, pvList);;
 			
 			if(condFirst && condSecond)
 			{
