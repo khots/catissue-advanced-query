@@ -41,34 +41,32 @@ function cancelWindow()
 //When user click on the add button to add permissible values in the selected list
 function addPermissibleValuesToList()
 {	
-	if(set_mode=="Searching")
-	{
-		alert("Adding searched concept will be available in next iteration.");	
-	}
+	
  var checkedNode=0;
 //Inserting first cell as checkbox for deleting selected rows
  for(j=0;j<selectedPvsCheckedBoxIdArray.length;j++)
 	{
-	if(!selectedPvs.inArray(selectedPvsCheckedBoxIdArray[j]) && selectedPvsCheckedBoxIdArray[j]!=''  )
+	if(!selectedPvs.inArray(selectedPvsCheckedBoxIdArray[j]) && selectedPvsCheckedBoxIdArray[j]!='' && selectedPvsCheckedBoxIdArray[j]!='undefined'  )
 	{
-		try
-		{	
-			
-			var vocabName=selectedPvsCheckedBoxIdArray[j].split(":"); // selectedPvsCheckedBoxIdArray[j]  format MED1.0:52014
-			
-			if(vocabName.length>1) // No need to include Root node in list make because its has id as only MED name not CONCEPTCODE:Permissible Value
-			{
-				var conceptDetail=document.getElementById(selectedPvsCheckedBoxIdArray[j]).value;
-				if(set_mode=="Searching" && vocabName[0].equalsIgnoreCase('<%=srcVocabName%>'+'@<%=srcVocabVersion%>') ) 
+		try{
+				var vocabName=selectedPvsCheckedBoxIdArray[j].split(":"); // selectedPvsCheckedBoxIdArray[j]  format MED1.0:52014
+				
+				if(vocabName.length>1) // No need to include Root node in list make because its has id as only MED name not CONCEPTCODE:Permissible Value
 				{
-					createRows(vocabName[0],selectedPvsCheckedBoxIdArray[j],conceptDetail);
+					
+					if(set_mode=="Searching") 
+					{
+						var conceptDetail=document.getElementById("srh_"+selectedPvsCheckedBoxIdArray[j]).value;
+						createRows(vocabName[0],selectedPvsCheckedBoxIdArray[j],conceptDetail);
+					}
+					else if(set_mode=="Mapping")
+					{
+						var conceptDetail=document.getElementById(selectedPvsCheckedBoxIdArray[j]).value;
+						createRows(vocabName[0],selectedPvsCheckedBoxIdArray[j],conceptDetail);
+					}
 				}
-				else if(set_mode=="Mapping")
-				{
-					createRows(vocabName[0],selectedPvsCheckedBoxIdArray[j],conceptDetail);
-				}
-			}
-		}catch(e){}
+			}catch(e){}
+		
 	}
 	}
 	if(selectedPvs.length>0) //Check to enable 'OK'  button
@@ -79,7 +77,6 @@ function addPermissibleValuesToList()
 // method is used to create the rows in the talbe
 function createRows(vocabName,selectedPvsCheckedBoxId,conceptDetail)
 {
-	
 					var table = document.getElementById('selectedPermValues_'+vocabName);
 					var lastRow = table.rows.length;
 					var row = table.insertRow(lastRow); 
@@ -115,7 +112,9 @@ function createRows(vocabName,selectedPvsCheckedBoxId,conceptDetail)
 						var cell4 = row.insertCell(3);
 						cell4.className="black_ar_td_dy"; 
 						cell4.align = 'left';
-						cell4.innerHTML= conceptDetail;
+						
+						conceptName=conceptDetail.substring(conceptDetail.indexOf(":")+1); // to display name only
+						cell4.innerHTML= conceptName;
 							
 						row.myRow = new rowObj(chkBox);
 						
@@ -240,8 +239,7 @@ function refreshWindow(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 	
 	if(set_mode=="Mapping")
 	{
-		label=document.getElementById("searhLabel");
-		label.innerHTML="Please Wait.....";
+		
 		document.getElementById("divForMappingMode").style.display = '';
 		document.getElementById("divForSearchingMode").style.display = 'none';
 		var request = newXMLHTTPReq(); 
@@ -259,6 +257,9 @@ function refreshWindow(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 			var innerData=document.getElementById(selectedCheckedBoxVocabDivID).innerHTML;
 			 if(document.getElementById(selectedCheckedBoxVocabDivID).style.display == 'none' && innerData.length==0)
 				{
+					label=document.getElementById("searhLabel");
+					label.innerHTML="Please Wait.....";
+					
 					 document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
 					 // send request only first time when user click on the check box for other click  just hide and show the div 
 					var param = "selectedCheckBox"+"="+vocabName+"#"+vocabVer+"#"+vocabURN;
@@ -272,12 +273,14 @@ function refreshWindow(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 				else if(innerData.length>0)
 				{
 				  document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
+				  
 				}
 				 
 		}
 		else if (! document.getElementById(vocabCheckBoxId).checked)
 		{
 				 document.getElementById(selectedCheckedBoxVocabDivID).style.display = 'none';
+				
 		}
 			
 		/* code to support one vocab at a time  START*/
@@ -337,11 +340,13 @@ function getCheckedBoxId(checkedBoxId)
 {
  	if(document.getElementById(checkedBoxId).checked)
 	{
+		checkedBoxId=checkedBoxId.replace("srh_","");//if ids for search result 
 		selectedPvsCheckedBoxIdArray[selectedPvsCheckedBox]=checkedBoxId;
 		selectedPvsCheckedBox++;
 	}
 	else if( !document.getElementById(checkedBoxId).checked)
 	{
+		checkedBoxId=checkedBoxId.replace("srh_","");//if ids for search result
 		deleteValueFromArray(checkedBoxId,selectedPvsCheckedBoxIdArray);
 	}
 }
@@ -389,8 +394,11 @@ function checkallAndAddToArray(rootCheckedBoxId)
 	void(el=d.getElementsByName(rootCheckedBoxId));
 	for(i=0;i<el.length;i++)
 	{
+		if(el[i].disabled==false)
+		{
 		void(el[i].checked=1)
 		getCheckedBoxId(el[i].id);
+		}
 	}
 }
 /* to unchecked all checkboxes and delete values from array */
