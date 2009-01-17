@@ -72,6 +72,11 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		}
 		return permissibleConcepts;
 	}
+	public int getPermissibleValueListCout(AttributeInterface attribute,
+			EntityInterface entity) throws PVManagerException
+	{
+		return pvManager.getPermissibleValueListCount(attribute, entity);
+	}
 	/**
 	 * This method returns the Mapped concept code of target vocabulary with source vocabulary
 	 * @param attribute
@@ -151,6 +156,14 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		return "<tr><td>&nbsp;</td><td class='black_ar_tt'>" + Constants.NO_RESULT + "<td></tr>";
 	}
 	/**
+	 * This method returns the message no result found 
+	 * @return
+	 */
+	public String getMessage()
+	{
+		return "<tr><td>&nbsp;</td><td class='black_ar_tt'>" + Constants.MESSAGE + "<td></tr>";
+	}
+	/**
 	 * This method returns the HTML for child nodes for all the vocabularies which
 	 *  contains the permissible ,concept code and check box
 	 * @param vocabName
@@ -166,7 +179,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 				+ "<input type='checkbox' name='" + vocabName + vocabversoin + "' id='"
 				+ checkboxId + "' value='" + concept.getCode() + ":" + concept.getDescription()
 				+ "' onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
-				+ "</td><td class='black_ar_tt'>" + concept.getCode() + ":"
+				+ "</td><td class='black_ar_tt'>" /*+ concept.getCode() + ":"*/
 				+ concept.getDescription() + "\n" + "<td></tr>";
 	}
 	/**
@@ -191,7 +204,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		{
 			System.out.println(concept);
 		}*/
-		String status="";//need to change the code as per requrement temp changes
+		String status="disabled";//need to change the code as per requrement temp changes
 		if(medRelatedConcept)
 		{
 			status="";
@@ -200,7 +213,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 				+ "<input type='checkbox' "+status+" name='"+ vocabName + vocabversoin + "' id='"
 				+ checkboxId + "' value='" + concept.getCode() + ":" + concept.getDescription()
 				+ "' onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
-				+ "</td><td class='black_ar_tt'>" + concept.getCode() + ":"
+				+ "</td><td class='black_ar_tt'>" /*+ concept.getCode() + ":"*/
 				+ concept.getDescription() + "\n" + "<td></tr>";
 	}
 	/**
