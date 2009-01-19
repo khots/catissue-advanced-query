@@ -1237,7 +1237,7 @@ public class DAGPanel
 		try
 		{
 			AbstractQueryUIManager QUIManager = null;
-			QUIManager = AbstractQueryUIManagerFactory.ConfigureDefaultAbstractUIQueryManager(this
+			QUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this
 					.getClass(), request, query);
 			if (isRulePresentInDag)
 			{
