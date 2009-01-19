@@ -1,17 +1,10 @@
 package edu.wustl.common.query.factory;
 
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
-
 import javax.servlet.http.HttpServletRequest;
-
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.security.SecurityManager;
 import edu.wustl.common.util.Utility;
-import edu.wustl.common.util.dbManager.DBUtil;
-import edu.wustl.common.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryModuleError;
@@ -37,7 +30,7 @@ public class AbstractQueryUIManagerFactory {
 	 * Method to create instance of class AbstractQueryUIManager. 
 	 * @return The reference of AbstractQueryUIManager. 
 	 */
-	public static AbstractQueryUIManager ConfigureDefaultAbstractUIQueryManager(Class className,HttpServletRequest request
+	public static AbstractQueryUIManager configureDefaultAbstractUIQueryManager(Class className,HttpServletRequest request
 			, IQuery iquery) throws QueryModuleException
 	{
 		
