@@ -71,7 +71,7 @@ public class QueryExecIdNotGeneratedException extends Exception
 	/**
 	 * @param wrapException The wrapException to set.
 	 */
-	private void setWrapException(Exception wrapException)
+	public void setWrapException(Exception wrapException)
 	{
 		this.wrapException = wrapException;
 	}
