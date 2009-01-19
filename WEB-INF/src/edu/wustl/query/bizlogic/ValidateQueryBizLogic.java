@@ -18,7 +18,6 @@ import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.querysuite.security.utility.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.queryengine.impl.IQueryGenerator;
@@ -115,7 +114,6 @@ public class ValidateQueryBizLogic
 			validationMessage = "<li><font color='red'> "
 					+ ApplicationProperties.getValue("errors.executeQuery.genericmessage")
 					+ "</font></li>";
-			e.printStackTrace();
 		}
 		return validationMessage;
 	}
@@ -155,7 +153,9 @@ public class ValidateQueryBizLogic
 		EntityInterface rootEntity = constraints.getRootExpression().getQueryEntity().getDynamicExtensionsEntity();
 		boolean istagPresent = edu.wustl.query.util.global.Utility.istagPresent(rootEntity,Constants.BASE_MAIN_ENTITY);
 		if(!istagPresent)
+		{
 			validationMessage = "<li><font color='blue'> "+ApplicationProperties.getValue(Constants.QUERY_NO_ROOTEXPRESSION)+"</font></li>";
+		}
 		return validationMessage;
 	}
 
