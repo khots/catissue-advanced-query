@@ -1,8 +1,8 @@
 /**
  * 
  */
-package edu.wustl.common.query.impl.predicate;
 
+package edu.wustl.common.query.impl.predicate;
 
 /**
  * @author juberahamad_patel
@@ -24,7 +24,7 @@ public class PrefixUnaryPredicate extends Predicate
 	{
 		StringBuilder predicate = new StringBuilder();
 		predicate.append(operator).append(prefix).append(attribute).append(')');
-				
+
 		return predicate.toString();
 	}
 

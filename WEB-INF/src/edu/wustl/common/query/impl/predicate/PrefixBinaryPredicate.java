@@ -1,8 +1,8 @@
 /**
  * 
  */
-package edu.wustl.common.query.impl.predicate;
 
+package edu.wustl.common.query.impl.predicate;
 
 /**
  * @author juberahamad_patel
@@ -14,7 +14,7 @@ public class PrefixBinaryPredicate extends Predicate
 	public PrefixBinaryPredicate(String forVariable, String attribute, String operator, String rhs)
 	{
 		super(forVariable, attribute, operator, rhs);
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -24,8 +24,9 @@ public class PrefixBinaryPredicate extends Predicate
 	public String assemble(String prefix)
 	{
 		StringBuilder predicate = new StringBuilder();
-		predicate.append(operator).append(prefix).append(attribute).append("),").append(rhs).append(')');
-		
+		predicate.append(operator).append(prefix).append(attribute).append("),").append(rhs)
+				.append(')');
+
 		return predicate.toString();
 	}
 

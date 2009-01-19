@@ -1,9 +1,8 @@
 /**
  * 
  */
+
 package edu.wustl.common.query.impl.predicate;
-
-
 
 /**
  * @author juberahamad_patel
@@ -15,12 +14,12 @@ package edu.wustl.common.query.impl.predicate;
  */
 public abstract class Predicate
 {
-	
+
 	String forVariable;
 	String attribute;
 	String operator;
 	String rhs;
-	
+
 	public Predicate(String forVariable, String attribute, String operator, String rhs)
 	{
 		this.forVariable = forVariable;
@@ -28,8 +27,7 @@ public abstract class Predicate
 		this.operator = operator;
 		this.rhs = rhs;
 	}
-	
+
 	public abstract String assemble(String prefix);
-	
 
 }
