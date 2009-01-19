@@ -14,10 +14,9 @@ import edu.wustl.common.query.itablemanager.CIDERITableManager;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.query.ExecutionManager.CIDERQueryExecutionThread;
 import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.queryengine.impl.IQueryGenerator;
-import edu.wustl.query.util.global.Variables;
-import edu.wustl.query.ExecutionManager.CIDERQueryExecutionThread;
 import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 

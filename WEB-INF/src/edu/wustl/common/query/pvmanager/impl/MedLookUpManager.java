@@ -8,7 +8,6 @@ import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.global.Variables;
 
 public class MedLookUpManager
 {
@@ -190,8 +189,8 @@ public class MedLookUpManager
 		
 		StringBuffer query = new StringBuffer("select synonym,id from ");
 		query.append(pvView);
-		query.append(" where ");
-		int indx=0;
+		query.append(Constants.WHERE);
+		//int indx=0;
 //		for(; indx<pvFilterList.size()-1;indx++)
 //		{
 			query.append("synonym like '");
