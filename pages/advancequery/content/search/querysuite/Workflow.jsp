@@ -425,7 +425,8 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 									<tr bgcolor="#ffffff" class="td_bgcolor_white" height="22">
 						   				<td class="content_txt" width="10">
 						   					<c:set var="chkId">chk_<c:out value="${queryIndex}"/></c:set>
-						   					<html:checkbox property="chkbox" styleId="checkbox_${queryIndex}"></html:checkbox>
+						   					<html:checkbox property="chkbox" styleId="checkbox_${queryIndex}"
+											onclick="javascript:setCheckboxCount()"></html:checkbox>
 						   				</td>
   										<td class="content_txt">
 						   					<html:hidden property="displayQueryTitle" styleId="displayQueryTitle_${queryIndex}" value="${workflowForm.displayQueryTitle[queryIndex]}"

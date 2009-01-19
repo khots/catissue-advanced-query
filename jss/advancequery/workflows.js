@@ -112,7 +112,6 @@ function hasInnerText()
 
 function addQuery()
 {
-	
 	var queryIds=document.getElementById("queryId").options;
 	var queryTitles=document.getElementById("queryTitle").options;
 	var queryTypes=document.getElementById("queryType").options;
@@ -188,7 +187,7 @@ function createCheckBox(name,id,displayValue,count)
 		chkbox.name=name;
 		chkbox.onclick=function addEvent(){
 			
-			setCheckboxCount(count,chkbox.checked);
+			setCheckboxCount();
 		}
 //			.setOnclickHandler("setCheckboxCount2");
 
@@ -273,19 +272,17 @@ function deleteWorkflowItem(index)
 	}
 }
 
-function setCheckboxCount(chckCount,checkboxselected)
+function setCheckboxCount()
 {	
 	
-	var checkboxArray=document.getElementsByName('chkbox');
+	var checkboxArray=document.getElementById("table1").rows;
 	var selectedCheckboxes=0;
 	if(checkboxArray!=null)
 	{
 			var numOfRows =checkboxArray.length;
-			for(var count = 0; count < numOfRows; count++)
+			for(var count =0; count < numOfRows; count++)
 			{
-
-					var id ='checkbox_'+count;
-
+				var id ='checkbox_'+count;
 				if(document.getElementById(id).checked)
 				{
 				
@@ -357,7 +354,7 @@ function setOnclickEventOnDeselect(chckCount,selected)
 	
 	var chckbox=document.getElementById("checkbox_"+chckCount);
 		chckbox.onclick=function addEvent2(){
-			setCheckboxCount(chckCount,true);
+			setCheckboxCount();
 		}
 	//chckbox.setAttribute("onclick","javascript:setCheckboxCount("+chckCount+")");
 	if(numOfChkSelected!=2)
