@@ -6,9 +6,10 @@ package edu.wustl.common.query.impl.predicate;
 
 /**
  * @author juberahamad_patel
- *
+ * 
+ *  represnts a predicate involving a prefix unary operator such as 'exists'
  */
-public class PrefixUnaryPredicate extends Predicate
+public class PrefixUnaryPredicate extends AbstractPredicate
 {
 
 	public PrefixUnaryPredicate(String forVariable, String attribute, String operator)

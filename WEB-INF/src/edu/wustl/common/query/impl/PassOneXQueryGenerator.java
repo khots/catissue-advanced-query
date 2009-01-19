@@ -25,9 +25,12 @@ import edu.wustl.query.util.global.Utility;
  * @author juberahamad_patel
  *
  */
-public class PassOneXQueryGenerator extends XQueryGenerator
+public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 {
 
+	/**
+	 * map of for variables and corresponding expressions created in pass one xquery
+	 */
 	private Map<IExpression, String> passOneForVariables;
 
 	public PassOneXQueryGenerator()
@@ -36,8 +39,8 @@ public class PassOneXQueryGenerator extends XQueryGenerator
 	}
 
 	/**
-	 * 
-	 * @param predicateGenerator 
+	 * build the for clause of xquery
+	 * @param predicateGenerator  
 	 * @return the For Clause of XQuery
 	 * @throws MultipleRootsException
 	 * @throws DynamicExtensionsSystemException
@@ -70,9 +73,19 @@ public class PassOneXQueryGenerator extends XQueryGenerator
 		return xqueryForClause.toString();
 	}
 
+	
+	/**
+	 * append xquery fragments in the for clause for given expression
+	 * and its children recursively 
+	 * @param expression
+	 * @param predicateGenerator
+	 * @param laterPart
+	 * @return
+	 */
 	private String appendChildren(IExpression expression, PredicateGenerator predicateGenerator,
 			StringBuilder laterPart)
 	{
+		String variable = null;
 		String targetRole = targetRoles.get(expression);
 
 		if (targetRole != null)
@@ -93,10 +106,8 @@ public class PassOneXQueryGenerator extends XQueryGenerator
 		{
 			String localPredicates = getAllDownstreamPredicates(predicateGenerator, expression, "");
 			laterPart.append('[').append(localPredicates).append(']');
-			String variable = forVariables.get(expression);
+			variable = forVariables.get(expression);
 			passOneForVariables.put(expression, variable);
-
-			return variable;
 		}
 		else
 		{
@@ -110,13 +121,22 @@ public class PassOneXQueryGenerator extends XQueryGenerator
 			if (!joinGraph.getChildrenList(expression).isEmpty())
 			{
 				IExpression firstChild = joinGraph.getChildrenList(expression).get(0);
-				return appendChildren(firstChild, predicateGenerator, laterPart);
+				variable =  appendChildren(firstChild, predicateGenerator, laterPart);
 			}
 		}
 
-		return null;
+		return variable;
 	}
 
+	
+	/**
+	 * build the right paths for all the predicates of given expression
+	 * and all its children relative to the expression, recursively
+	 * @param predicateGenerator
+	 * @param expression
+	 * @param prefix
+	 * @return
+	 */
 	private String getAllDownstreamPredicates(PredicateGenerator predicateGenerator,
 			IExpression expression, String prefix)
 	{
@@ -158,6 +178,10 @@ public class PassOneXQueryGenerator extends XQueryGenerator
 		return downStreamPredicates.toString();
 	}
 
+	
+	/**
+	 * build the let clause
+	 */
 	protected String buildXQueryLetClause(PredicateGenerator predicateGenerator)
 	{
 		StringBuilder xqueryLetClause = new StringBuilder();
@@ -244,12 +268,23 @@ public class PassOneXQueryGenerator extends XQueryGenerator
 		return columnsPart.toString();
 	}
 
+	
+	/**
+	 * build the 'passing' clause
+	 */
 	@Override
 	protected String buildPassingPart()
 	{
 		return "";
 	}
 
+	
+	/**
+	 * decide whether the given expression has a version tagged value 
+	 * associated with it 
+	 * @param expression
+	 * @return
+	 */
 	public boolean hasVersion(IExpression expression)
 	{
 

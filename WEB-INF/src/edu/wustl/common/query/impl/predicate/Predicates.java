@@ -13,31 +13,43 @@ import edu.wustl.query.util.global.Utility;
 /**
  * @author juberahamad_patel
  *
+ *represents a collection of predicates
  */
 public class Predicates
 {
 
-	List<Predicate> predicates;
+	final private List<AbstractPredicate> predicates;
 
 	public Predicates()
 	{
-		predicates = new ArrayList<Predicate>();
+		predicates = new ArrayList<AbstractPredicate>();
 	}
 
-	public void addPredicate(Predicate predicate)
+	/**
+	 * add given predicate to this collection
+	 * @param predicate
+	 */
+	public void addPredicate(AbstractPredicate predicate)
 	{
 		predicates.add(predicate);
 	}
 
+	/**
+	 * generate xquery fragment to represent this collection of predicates
+	 * @param prefix
+	 * @return
+	 */
 	public String assemble(String prefix)
 	{
-		if (prefix == null)
+		String newPrefix = prefix;
+		
+		if (newPrefix == null)
 		{
-			prefix = "";
+			newPrefix = "";
 		}
 
 		StringBuilder string = new StringBuilder();
-		for (Predicate predicate : predicates)
+		for (AbstractPredicate predicate : predicates)
 		{
 			string.append(predicate.assemble(prefix)).append(Constants.QUERY_AND);
 		}
@@ -47,6 +59,10 @@ public class Predicates
 
 	}
 
+	/**
+	 * convenience method for creating predicates without prefix
+	 * @return
+	 */
 	public String assemble()
 	{
 		return assemble("");

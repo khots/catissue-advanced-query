@@ -11,7 +11,9 @@ import edu.wustl.common.querysuite.queryobject.IExpression;
 /**
 * @author juberahamad_patel
 * 
-* generates the predicates for XQuery
+* generates the predicates for XQuery.
+* This class acts as the middleman between XQueryGenerator
+* and WherePartParser to make sure they are loosely coupled 
 *
 */
 public class PredicateGenerator
@@ -20,13 +22,13 @@ public class PredicateGenerator
 	/**
 	 * the map of expressions that have a for variable associated with them and those varibale
 	 */
-	private Map<IExpression, String> forVariables;
+	final private Map<IExpression, String> forVariables;
 
 	/**
 	 * map of expression and corresponding predicates 
 	 *  
 	 */
-	private Map<IExpression, Predicates> predicates;
+	final private Map<IExpression, Predicates> predicates;
 
 	public PredicateGenerator(Map<IExpression, String> forVariables, String wherePart)
 			throws SQLXMLException
@@ -59,7 +61,12 @@ public class PredicateGenerator
 
 	}
 
-	public void addPredicate(String forVariable, Predicate predicate)
+	/**
+	 * add a predicate to predicates map corresponding to given for variable
+	 * @param forVariable
+	 * @param predicate
+	 */
+	public void addPredicate(String forVariable, AbstractPredicate predicate)
 	{
 		IExpression expression = null;
 

@@ -6,9 +6,11 @@ package edu.wustl.common.query.impl.predicate;
 
 /**
  * @author juberahamad_patel
+ * 
+ * represnts a predicate involving a infix  binary operator such as '>='
  *
  */
-public class InfixPredicate extends Predicate
+public class InfixPredicate extends AbstractPredicate
 {
 
 	public InfixPredicate(String forVariable, String attribute, String operator, String rhs)

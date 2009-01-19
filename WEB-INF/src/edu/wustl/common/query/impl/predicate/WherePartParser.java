@@ -131,7 +131,7 @@ public class WherePartParser implements WherePartParserConstants {
                         int separator = conditionAttribute.image.indexOf("/");
                         String forVariable = conditionAttribute.image.substring(0, separator);
                         String attribute = conditionAttribute.image.substring(separator+1);
-                        Predicate predicate = new PrefixUnaryPredicate(forVariable, attribute, operator.image);
+                        AbstractPredicate predicate = new PrefixUnaryPredicate(forVariable, attribute, operator.image);
                         predicateGenerator.addPredicate(forVariable, predicate);
     } finally {
       trace_return("PrefixUnaryCondition");
@@ -153,7 +153,7 @@ public class WherePartParser implements WherePartParserConstants {
                 int separator = conditionAttribute.image.indexOf("/");
                 String forVariable = conditionAttribute.image.substring(0, separator);
                 String attribute = conditionAttribute.image.substring(separator+1);
-                Predicate predicate = new PrefixBinaryPredicate(forVariable, attribute, operator.image, rhs.image);
+                AbstractPredicate predicate = new PrefixBinaryPredicate(forVariable, attribute, operator.image, rhs.image);
                 predicateGenerator.addPredicate(forVariable, predicate);
     } finally {
       trace_return("PrefixBinaryCondition");
@@ -172,7 +172,7 @@ public class WherePartParser implements WherePartParserConstants {
                 int separator = conditionAttribute.image.indexOf("/");
                 String forVariable = conditionAttribute.image.substring(0, separator);
                 String attribute = conditionAttribute.image.substring(separator+1);
-                Predicate predicate = new InfixPredicate(forVariable, attribute, operator.image, rhs.image);
+                AbstractPredicate predicate = new InfixPredicate(forVariable, attribute, operator.image, rhs.image);
                 predicateGenerator.addPredicate(forVariable, predicate);
     } finally {
       trace_return("InfixCondition");

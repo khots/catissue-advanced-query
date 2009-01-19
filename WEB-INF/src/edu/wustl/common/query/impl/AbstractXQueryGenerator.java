@@ -54,6 +54,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 {
 
 	protected int suffix = 0;
+	
 	/**
 	 * the set of expressions whose entites have a separate XML file, where they are the root element
 	 */
@@ -119,6 +120,12 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return formedQuery;
 	}
 
+	/**
+	 * prepare the data structures and information required to generate xquery
+	 * This is step I of xquery generation 
+	 * @param query
+	 * @throws MultipleRootsException
+	 */
 	private void prepare(IQuery query) throws MultipleRootsException
 	{
 		//populate selected attributes and their aliases
@@ -144,6 +151,16 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 
 	}
 
+	/**
+	 * form xquery using the data structures prepared in step I.
+	 * This is step II of xquery generation.
+	 *  
+	 * @return the formed xquery
+	 * @throws SqlException
+	 * @throws MultipleRootsException
+	 * @throws SQLXMLException
+	 * @throws DynamicExtensionsSystemException
+	 */
 	private String formQuery() throws SqlException, MultipleRootsException, SQLXMLException,
 			DynamicExtensionsSystemException
 	{
@@ -161,6 +178,14 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return formedQuery.toString();
 	}
 
+	/**
+	 * add the join condition for 2 tables to the "where" part
+	 * 
+	 * @param wherePart
+	 * @return "where" part that has the join condition in it
+	 * @throws MultipleRootsException
+	 * @throws SqlException
+	 */
 	private String addJoiningTableCondition(String wherePart) throws MultipleRootsException,
 			SqlException
 	{
@@ -256,6 +281,10 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return buffer.toString();
 	}
 
+	/**
+	 * log the sql
+	 * @param sql
+	 */
 	private void log(String sql)
 	{
 		try
@@ -268,6 +297,10 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		}
 	}
 
+	/**
+	 * populate entityPaths, forVariables and targetRoles 
+	 * by processing the expression hierarchy and deciding which relationships are one-many. 
+	 */
 	private void createEntityPaths()
 	{
 		entityPaths = new LinkedHashMap<IExpression, String>();
@@ -285,6 +318,12 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		}
 	}
 
+	/**
+	 * the recursive method to traverse down the expression hierachy 
+	 * and decide paths to reach each entity 
+	 * @param expression
+	 * @param xpath the path built so far to reach this point
+	 */
 	private void createEntityPaths(IExpression expression, String xpath)
 	{
 		for (IExpression childExpression : joinGraph.getChildrenList(expression))
@@ -372,6 +411,11 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 
 	}
 
+	/**
+	 * add the attribute to the appropriate node of rootOutputTreeNodeList
+	 * @param entry
+	 * @param columnAliasName
+	 */
 	private void addToTreeNode(Entry<IOutputAttribute, String> entry, String columnAliasName)
 	{
 		// code to get displayname. & pass it to the Constructor along with
@@ -553,6 +597,13 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 */
 	protected abstract String buildColumnsPart() throws DataTypeFactoryInitializationException;
 
+	/**
+	 * get the database specific data type for given attribute
+	 * 
+	 * @param attribute
+	 * @return
+	 * @throws DataTypeFactoryInitializationException
+	 */
 	protected String getDataTypeInformation(AttributeInterface attribute)
 			throws DataTypeFactoryInitializationException
 	{
@@ -598,12 +649,20 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return returnValue;
 	}
 
+	/**
+	 * get the complete name for given attribute
+	 */
 	@Override
 	protected String getConditionAttributeName(AttributeInterface attribute, IExpression expression)
 	{
 		return entityPaths.get(expression) + '/' + attribute.getName();
 	}
 
+	/**
+	 * get the alias for given attribute to identify it uniquely
+	 * @param attribute
+	 * @return
+	 */
 	protected String getAliasFor(IOutputAttribute attribute)
 	{
 		return attribute.getAttribute().getName() + "_"
@@ -636,6 +695,9 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return !(isMainExpression);
 	}
 
+	/**
+	 * create xquery fragment to represent "between" operator 
+	 */
 	protected String processBetweenOperator(ICondition condition, String attributeName)
 			throws SqlException
 	{
@@ -673,6 +735,10 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 
 	}
 
+	
+	/**
+	 * create xquery fragment to represent "in" operator 
+	 */
 	protected String processInOperator(ICondition condition, String attributeName)
 			throws SqlException
 	{
@@ -706,6 +772,10 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 
 	}
 
+	
+	/**
+	 * create xquery fragment to represent "exists" and "empty" operators 
+	 */
 	protected String processNullCheckOperators(ICondition condition, String attributeName)
 			throws SqlException
 	{
@@ -727,6 +797,11 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return builder.toString();
 	}
 
+	
+	/**
+	 * create xquery fragment to represent "contains", "starts-with" and 
+	 * "ends-with" operators 
+	 */
 	protected String processLikeOperators(ICondition condition, String attributeName)
 			throws SqlException
 	{

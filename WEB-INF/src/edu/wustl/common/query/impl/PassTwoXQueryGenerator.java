@@ -18,7 +18,7 @@ import edu.wustl.query.util.global.Utility;
  * @author juberahamad_patel
  *
  */
-public abstract class PassTwoXQueryGenerator extends XQueryGenerator
+public abstract class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 {
 
 	/**

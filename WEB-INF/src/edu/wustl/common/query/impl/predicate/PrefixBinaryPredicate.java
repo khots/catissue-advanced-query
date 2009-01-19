@@ -6,9 +6,11 @@ package edu.wustl.common.query.impl.predicate;
 
 /**
  * @author juberahamad_patel
+ * 
+ * represnts a predicate involving a prefix binary operator such as 'contains'
  *
  */
-public class PrefixBinaryPredicate extends Predicate
+public class PrefixBinaryPredicate extends AbstractPredicate
 {
 
 	public PrefixBinaryPredicate(String forVariable, String attribute, String operator, String rhs)
