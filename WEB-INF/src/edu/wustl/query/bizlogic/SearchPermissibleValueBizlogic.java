@@ -12,6 +12,7 @@ import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.query.factory.PermissibleValueManagerFactory;
 import edu.wustl.common.query.pvmanager.impl.LexBIGPermissibleValueManager;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.vocab.IConcept;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.IVocabularyManager;
@@ -107,7 +108,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		}
 		catch (VocabularyException e)
 		{
-			e.printStackTrace();
+			Logger.out.error(e.getMessage(),e);
 		}
 
 		return mappedConcepts;
