@@ -145,7 +145,7 @@ public class WorkflowBizLogic extends DefaultBizLogic
 
            		int queryExecId;
            		
-           		 qUIManager = AbstractQueryUIManagerFactory.ConfigureDefaultAbstractUIQueryManager
+           		 qUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager
            		 (this.getClass(), request, query);
            			queryExecId = qUIManager.searchQuery(null);
            	
