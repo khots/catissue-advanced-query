@@ -24,7 +24,7 @@ public class AbstractQueryFactory {
 	 * Method to create instance of class AbstractQuery. 
 	 * @return The reference of AbstractQuery. 
 	 */
-	public static AbstractQuery ConfigureAbstractQuery(String className)
+	public static AbstractQuery configureAbstractQuery(String className)
 	{
 
 		return (AbstractQuery) Utility.getObject(className);
