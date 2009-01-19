@@ -32,7 +32,6 @@ import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.security.PrivilegeUtility;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -42,7 +41,6 @@ import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
-import gov.nih.nci.security.authorization.domainobjects.User;
 import gov.nih.nci.security.exceptions.CSException;
 
 /**
@@ -102,7 +100,7 @@ public class SaveQueryAction extends BaseAction
 				IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
 						.getValue("app.bizLogicFactory"), "getBizLogic",
 						Constants.QUERY_INTERFACE_BIZLOGIC_ID);
-				SessionDataBean sessionDataBean = (SessionDataBean)request.getSession().getAttribute(Constants.SESSION_DATA);
+				//SessionDataBean sessionDataBean = (SessionDataBean)request.getSession().getAttribute(Constants.SESSION_DATA);
 				//removed for not inserting csm for query
 				//User user = new PrivilegeUtility().getUserProvisioningManager().getUser(sessionDataBean.getUserName());
 				//sessionDataBean.setCsmUserId(user.getUserId().toString());
