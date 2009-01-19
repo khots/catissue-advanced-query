@@ -18,6 +18,14 @@ public class CiderQuery extends AbstractQuery
 	private Long projectId;
 	
 	/**
+	 * Default Constructor
+	 */
+	public CiderQuery()
+	{
+		// Default Constructor
+	}
+	
+	/**
 	 * 
 	 * @param query
 	 * @param queryExecId

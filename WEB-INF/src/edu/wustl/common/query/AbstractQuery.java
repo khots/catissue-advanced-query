@@ -20,6 +20,14 @@ public abstract class AbstractQuery
 	private Long userId;
 	
 	/**
+	 * Default Constructor
+	 */
+	public AbstractQuery()
+	{
+		// Default Constructor
+	}
+	
+	/**
 	 * 
 	 * @param query
 	 * @param queryExecId
