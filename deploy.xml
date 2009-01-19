@@ -652,7 +652,7 @@
 				</fileset>
 			</classpath>
 		</sql>
-		<antcall target="import_xmi" />
+	<!--	<antcall target="import_xmi" /> -->
 	</target>
 	
 	<!--MySQL Database Creation -->
