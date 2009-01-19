@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import edu.wustl.common.dao.DatabaseConnectionParams;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
@@ -67,10 +68,12 @@ public class CIDERITableManager extends ITableManager
 		}
 		catch (SQLException ex)
 		{
+			Logger.out.error(ex.getMessage(),ex);
 			throw ex;
 		}
 		catch (DAOException ex)
 		{
+			Logger.out.error(ex.getMessage(),ex);
 			throw ex;
 		}
 		finally
@@ -124,16 +127,18 @@ public class CIDERITableManager extends ITableManager
 			{
 				queryExecId = rs.getInt(1);
 				// Get automatically generated key value
-				System.out.println("automatically generated key value = " + queryExecId);
+				Logger.out.info("automatically generated key value = " + queryExecId);
 			}
 			DB_CONNECTION_PARAMS.commit();
 		}
 		catch (SQLException ex)
 		{
+			Logger.out.error(ex.getMessage(),ex);
 			throw ex;
 		}
 		catch (DAOException ex)
 		{
+			Logger.out.error(ex.getMessage(),ex);
 			throw ex;
 		}
 		finally
@@ -174,10 +179,12 @@ public class CIDERITableManager extends ITableManager
 		}
 		catch (SQLException ex)
 		{
+			Logger.out.error(ex.getMessage(),ex);
 			throw ex;
 		}
 		catch (DAOException ex)
 		{
+			Logger.out.error(ex.getMessage(),ex);
 			throw ex;
 		}
 		finally
@@ -197,7 +204,6 @@ public class CIDERITableManager extends ITableManager
 	 */
 	public Count getCount(int queryExecId) throws SQLException, DAOException
 	{
-		System.out.println();
 		Count count = new Count();
 		int actualCount = 0;
 		String status = "";
@@ -232,12 +238,12 @@ public class CIDERITableManager extends ITableManager
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			Logger.out.error(ex.getMessage(),ex);
 			throw ex;
 		}
 		catch (DAOException ex)
 		{
-			ex.printStackTrace();
+			Logger.out.error(ex.getMessage(),ex);
 			throw ex;
 		}
 		finally
