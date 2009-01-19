@@ -445,7 +445,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 										<tbody>
 										<tr>
 										<td>
-											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetCountQuery('${queryIndex}','1')" styleClass="bluelink"
+											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetCountQuery('${queryIndex}','0')" styleClass="bluelink"
 											>
 												Execute
 											</html:link>
