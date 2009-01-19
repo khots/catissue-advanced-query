@@ -252,17 +252,18 @@ public class PassOneXQueryGenerator extends XQueryGenerator
 
 	public boolean hasVersion(IExpression expression)
 	{
-		
-		Collection<TaggedValueInterface> taggedValues = expression.getQueryEntity().getDynamicExtensionsEntity().getTaggedValueCollection();
-		
-		for(TaggedValueInterface taggedValue : taggedValues)
+
+		Collection<TaggedValueInterface> taggedValues = expression.getQueryEntity()
+				.getDynamicExtensionsEntity().getTaggedValueCollection();
+
+		for (TaggedValueInterface taggedValue : taggedValues)
 		{
-			if(taggedValue.getKey().equalsIgnoreCase(Constants.VERSION))
+			if (taggedValue.getKey().equalsIgnoreCase(Constants.VERSION))
 			{
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 }

@@ -147,7 +147,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	{
 		aliasAppenderMap = new HashMap<IExpression, Integer>();
 		emptyExpressions = new HashSet<IExpression>();
-		
+
 	}
 
 	/**
@@ -368,8 +368,6 @@ public abstract class QueryGenerator implements IQueryGenerator
 		return buffer.toString();
 	}
 
-	
-
 	protected abstract String getDescriminatorCondition(EntityInterface entity, String aliasFor);
 
 	/**
@@ -441,11 +439,12 @@ public abstract class QueryGenerator implements IQueryGenerator
 
 			if (i != noOfConditions - 1) // Intermediate Condition.
 			{
-				if(!condition.equals(""))
-				{	
-					buffer.append(condition + " " + LogicalOperator.And.toString().toLowerCase() + " ");
+				if (!condition.equals(""))
+				{
+					buffer.append(condition + " " + LogicalOperator.And.toString().toLowerCase()
+							+ " ");
 				}
-				
+
 			}
 			else
 			{
@@ -694,7 +693,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 			aliasAppenderMap.put(expr, expr.getExpressionId());
 		}
 	}
-	
+
 	protected boolean isContainedExpresion(int expressionId)
 	{
 		return false;
@@ -719,9 +718,9 @@ public abstract class QueryGenerator implements IQueryGenerator
 			{
 				IOutputEntity childOutputEntity = getOutputEntity(childExp);
 				Integer childAliasAppender = aliasAppenderMap.get(childExp);
-				
+
 				//Set containment object to true if expression is contained.
-				isContained =isContainedExpresion(childExp.getExpressionId());
+				isContained = isContainedExpresion(childExp.getExpressionId());
 
 				/**
 				 * Check whether output tree node for expression with the same
@@ -735,15 +734,15 @@ public abstract class QueryGenerator implements IQueryGenerator
 					{
 						//						 New root node for output tree found, so create root
 						//						 node & add it in the rootOutputTreeNodeList.
-						
+
 						childNode = new OutputTreeDataNode(childOutputEntity, childExp
-								.getExpressionId(), treeNo++,isContained);
+								.getExpressionId(), treeNo++, isContained);
 						rootOutputTreeNodeList.add(childNode);
 					}
 					else
 					{
 						childNode = parentOutputTreeNode.addChild(childOutputEntity, childExp
-								.getExpressionId(),isContained);
+								.getExpressionId(), isContained);
 					}
 					outputTreeNodeMap.put(childAliasAppender, childNode);
 					attributeOutputTreeNodeList.add(childNode);
@@ -754,7 +753,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 			{
 				IOutputEntity childOutputEntity = getOutputEntity(childExp);
 				childNode = new OutputTreeDataNode(childOutputEntity, childExp.getExpressionId(),
-						allExpressionTreeNo++,isContained);
+						allExpressionTreeNo++, isContained);
 				attributeOutputTreeNodeList.add(childNode);
 			}
 			completeTree(childExp, childNode);
@@ -818,13 +817,13 @@ public abstract class QueryGenerator implements IQueryGenerator
 		boolean isContained = false;
 		treeNo = 0;
 		allExpressionTreeNo = 0;
-		if(isContainedExpresion(rootExpression.getExpressionId()))
+		if (isContainedExpresion(rootExpression.getExpressionId()))
 			isContained = true;
 		if (rootExpression.isInView())
 		{
 			IOutputEntity rootOutputEntity = getOutputEntity(rootExpression);
 			rootOutputTreeNode = new OutputTreeDataNode(rootOutputEntity, rootExpression
-					.getExpressionId(), treeNo++,isContained);
+					.getExpressionId(), treeNo++, isContained);
 
 			rootOutputTreeNodeList.add(rootOutputTreeNode);
 			attributeOutputTreeNodeList.add(rootOutputTreeNode);
@@ -956,14 +955,14 @@ public abstract class QueryGenerator implements IQueryGenerator
 	{
 		AttributeInterface attribute = condition.getAttribute();
 		Collection<TaggedValueInterface> taggedValues = attribute.getTaggedValueCollection();
-		for(TaggedValueInterface tagValue : taggedValues)
+		for (TaggedValueInterface tagValue : taggedValues)
 		{
-			if(tagValue.getKey().equalsIgnoreCase(Constants.VI_IGNORE_PREDICATE))
+			if (tagValue.getKey().equalsIgnoreCase(Constants.VI_IGNORE_PREDICATE))
 			{
 				return "";
 			}
 		}
-		
+
 		String attributeName = getConditionAttributeName(attribute, expression);
 
 		RelationalOperator operator = condition.getRelationalOperator();
@@ -1008,7 +1007,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 		{
 			sql = processComparisionOperator(condition, attributeName);
 		}
-		
+
 		return sql;
 	}
 

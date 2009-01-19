@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package edu.wustl.common.query.impl;
 
 import java.util.Map.Entry;
@@ -13,15 +14,13 @@ import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 
-
-
 /**
  * @author juberahamad_patel
  *
  */
 public abstract class PassTwoXQueryGenerator extends XQueryGenerator
 {
-	
+
 	/**
 	 * 
 	 * @param predicateGenerator 
@@ -65,20 +64,17 @@ public abstract class PassTwoXQueryGenerator extends XQueryGenerator
 			}
 
 			Predicates predicates = predicateGenerator.getPredicates(expression);
-			if(predicates != null)
+			if (predicates != null)
 			{
 				xqueryForClause.append('[').append(predicates.assemble()).append(']');
 			}
-			
+
 			xqueryForClause.append(Constants.QUERY_COMMA);
 		}
 
 		Utility.removeLastComma(xqueryForClause);
 		return xqueryForClause.toString();
-		
+
 	}
-	
-		
-	
-	
+
 }
