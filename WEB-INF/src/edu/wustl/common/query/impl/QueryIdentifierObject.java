@@ -1,6 +1,5 @@
 package edu.wustl.common.query.impl;
 
-import edu.wustl.common.beans.NameValueBean;
 
 /**
  * QueryIdentifier is responsible for solely
