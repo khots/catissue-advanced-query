@@ -22,7 +22,7 @@ public class AbstractQueryManagerFactory {
 	 * Method to create instance of class AbstractQueryManager. 
 	 * @return The reference of AbstractQueryManager. 
 	 */
-	public static AbstractQueryManager ConfigureDefaultAbstractQueryManager(String className)
+	public static AbstractQueryManager configureDefaultAbstractQueryManager(String className)
 	{
 		return (AbstractQueryManager) Utility.getObject(className);
 	}
