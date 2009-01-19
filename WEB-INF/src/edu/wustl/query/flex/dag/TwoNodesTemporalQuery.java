@@ -19,6 +19,7 @@ import edu.wustl.common.querysuite.queryobject.INumericLiteral;
 import edu.wustl.common.querysuite.queryobject.ITerm;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 
 public class TwoNodesTemporalQuery
@@ -513,7 +514,7 @@ public class TwoNodesTemporalQuery
 		catch (ParseException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.error(e.getMessage(),e);
 		}
 		return date;
 	}
