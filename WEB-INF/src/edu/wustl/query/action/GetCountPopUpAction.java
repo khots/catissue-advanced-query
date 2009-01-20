@@ -57,6 +57,7 @@ public class GetCountPopUpAction extends Action
 		//retrieve the Selected Project from the GetCounts.jsp
 		String selectedProject = request.getParameter("selectedProject");
 		categorySearchForm.setCurrentSelectedProject(selectedProject);
+		request.setAttribute("selectedProject",selectedProject);
 		
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
 	}
