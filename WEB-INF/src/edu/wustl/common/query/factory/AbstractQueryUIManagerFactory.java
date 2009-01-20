@@ -34,13 +34,14 @@ public class AbstractQueryUIManagerFactory {
 			, IQuery iquery) throws QueryModuleException
 	{
 		
-         String securityManagerClass = Variables.abstractQueryUIManagerClassName;
+         String queryUIManagerClass = Variables.abstractQueryUIManagerClassName;
          QueryModuleException queryModuleException = null;
          AbstractQueryUIManager abstractQueryUIManager = null;
-         if(securityManagerClass!=null)
+         if(queryUIManagerClass!=null)
+         {
 			try
 			{
-				className = Class.forName(securityManagerClass);
+				className = Class.forName(queryUIManagerClass);
 				if(className != null)
 		         {
 		         	Constructor[] cons = className.getConstructors();
@@ -72,7 +73,7 @@ public class AbstractQueryUIManagerFactory {
 				queryModuleException = new QueryModuleException(e.getMessage(),QueryModuleError.SQL_EXCEPTION);
 				throw queryModuleException;
 			}
-         
+         }
 		return abstractQueryUIManager;
 	}
 }
