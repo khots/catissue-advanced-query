@@ -1,5 +1,5 @@
 
-package edu.wustl.query.executionmanager;
+package edu.wustl.query.queryexecutionmanager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,7 +8,7 @@ import edu.wustl.common.dao.DatabaseConnectionParams;
 import edu.wustl.common.query.CiderQuery;
 import edu.wustl.common.query.exeptions.QueryExecIdNotGeneratedException;
 import edu.wustl.common.query.itablemanager.CIDERITableManager;
-import edu.wustl.common.query.memcache.UPIMemCache;
+import edu.wustl.common.query.memcachemanager.UPIMemCache;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.cider.querymanager.CiderQueryManager;
