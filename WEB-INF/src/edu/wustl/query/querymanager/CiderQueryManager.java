@@ -110,9 +110,10 @@ public class CiderQueryManager extends AbstractQueryManager
 			queryExecId = CIDERQueryExecutionThread.getQueryExecutionId(ciderQueryObj);
 			ciderQueryObj.setQueryExecId(queryExecId);
 			ciderQueryObj.setQueryString(generatedQuery);
-
-			thread = new Thread(new CIDERQueryExecutionThread(ciderQueryObj));
-
+			
+			queryExecutionThread = new CIDERQueryExecutionThread(ciderQueryObj); 
+			
+			thread = new Thread(queryExecutionThread);
 			queryThreads.put(queryExecId, queryExecutionThread);
 
 			thread.start();
