@@ -543,15 +543,37 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		}
 		else if (dataType instanceof DateTypeInformationInterface)
 		{
-			String actualYear = value.substring(6);
+			String actualYear = value.substring(6,10);
 			String actualMonth = value.substring(0, 2);
 			String actualDate = value.substring(3, 5);
-			StringBuilder newValue = new StringBuilder(actualYear);
-			newValue.append("-");
-			newValue.append(actualMonth);
-			newValue.append("-");
-			newValue.append(actualDate);
-			actualValue.append("xs:dateTime(\"").append(newValue.toString()).append("T23:59:59\")");
+			String actualTime = "";
+			try
+			{
+				actualTime = value.substring(11);
+			}
+			catch(Exception e)
+			{
+				actualTime = "";
+			}
+			if(actualTime.equals(""))
+			{
+				StringBuilder newValue = new StringBuilder(actualYear);
+				newValue.append("-");
+				newValue.append(actualMonth);
+				newValue.append("-");
+				newValue.append(actualDate);
+				actualValue.append("xs:dateTime(\"").append(newValue.toString()).append("T23:59:59\")");
+			}
+			else
+			{
+				StringBuilder newValue = new StringBuilder(actualYear);
+				newValue.append("-");
+				newValue.append(actualMonth);
+				newValue.append("-");
+				newValue.append(actualDate);
+				newValue.append("T" + actualTime);
+				actualValue.append("xs:dateTime(\"").append(newValue.toString()).append("\")");
+			}
 		}
 		else
 		{
