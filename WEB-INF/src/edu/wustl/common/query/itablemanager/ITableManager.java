@@ -6,7 +6,6 @@ package edu.wustl.common.query.itablemanager;
 
 import java.sql.SQLException;
 
-import edu.wustl.common.dao.DatabaseConnectionParams;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.querymanager.Count;
 
@@ -67,8 +66,8 @@ public class ITableManager
 	 * @throws SQLException
 	 * @throws DAOException
 	 */
-	public void insertITableEntry(int patientDeid, int queryExecLogId, String upi,
-			DatabaseConnectionParams DB_CONNECTION_PARAMS) throws SQLException, DAOException
+	public void insertITableEntry(int patientDeid, int queryExecLogId, String upi)
+			throws SQLException, DAOException
 	{
 		// CODE TO INSERT DATA INTO QUERY_ITABLE
 

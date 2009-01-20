@@ -191,7 +191,7 @@ public class CIDERQueryExecutionThread implements Runnable
 
 						//	INSERTING UPI into ITABLE
 						manager.insertITableEntry(patientDeid, 
-								ciderQueryObj.getQueryExecId(), upi, dbConnectionParams);
+								ciderQueryObj.getQueryExecId(), upi);
 					}
 				}
 			}

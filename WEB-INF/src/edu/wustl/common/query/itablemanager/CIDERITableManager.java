@@ -78,7 +78,6 @@ public class CIDERITableManager extends ITableManager
 		}
 		finally
 		{
-			DB_CONNECTION_PARAMS.closeConnectionParams();
 			DB_CONNECTION_PARAMS.closeSession();
 		}
 	}
@@ -148,7 +147,6 @@ public class CIDERITableManager extends ITableManager
 				rs.close();
 			}
 			stmt.close();
-			DB_CONNECTION_PARAMS.closeConnectionParams();
 			DB_CONNECTION_PARAMS.closeSession();
 		}
 
@@ -190,7 +188,6 @@ public class CIDERITableManager extends ITableManager
 		finally
 		{
 			stmt.close();
-			DB_CONNECTION_PARAMS.closeConnectionParams();
 			DB_CONNECTION_PARAMS.closeSession();
 		}
 	}
@@ -252,7 +249,6 @@ public class CIDERITableManager extends ITableManager
 			{
 				rs.close();
 			}
-			DB_CONNECTION_PARAMS.closeConnectionParams();
 			DB_CONNECTION_PARAMS.closeSession();
 		}
 		return count;
