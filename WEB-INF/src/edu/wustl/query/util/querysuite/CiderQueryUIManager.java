@@ -4,12 +4,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.query.CiderQuery;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
@@ -20,6 +20,7 @@ import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
+import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.querymanager.CiderQueryManager;
 import edu.wustl.query.querymanager.Count;
@@ -71,6 +72,31 @@ public class CiderQueryUIManager extends QueryUIManager {
 		try
 		{
 			updateQueryWithSelectedAttributes(ciderQuery);
+			if(ciderQuery.getQuery().getId()==null)
+			{
+				insertDefinedQueries(ciderQuery.getQuery());
+			}
+			/*if(ciderQuery.getQuery().getId()==null)
+			{
+				//inserts Defined Query
+				DefinedQueryUtil definedQueryUtil=new DefinedQueryUtil();
+				try
+				{
+	
+						definedQueryUtil.insertQuery(ciderQuery.getQuery());
+					
+				}
+				catch (UserNotAuthorizedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch (BizLogicException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}*/
 			query_execution_id = queryManager.execute(ciderQuery);
 
 		}
@@ -141,5 +167,10 @@ public class CiderQueryUIManager extends QueryUIManager {
 	public List<NameValueBean> getObjects(Long user_id) throws QueryModuleException
 	{
 		return null;
+	}
+
+	@Override
+	public void updateQuery()
+	{
 	}
 }

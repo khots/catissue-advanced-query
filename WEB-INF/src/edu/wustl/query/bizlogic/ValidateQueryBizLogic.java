@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.query.factory.QueryGeneratorFactory;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.util.QueryObjectProcessor;
@@ -19,11 +20,13 @@ import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.global.ApplicationProperties;
-import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.queryengine.impl.IQueryGenerator;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
 import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleError;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 /**
@@ -49,6 +52,13 @@ public class ValidateQueryBizLogic
 	{
 		String validationMessage = null;
 		boolean isRulePresentInDag = QueryModuleUtil.checkIfRulePresentInDag(query);
+		String queryTile=request.getParameter("queyTitle");
+		if(queryTile==null||queryTile.equals(""))
+		{
+			validationMessage=validateQueyTitle(queryTile);
+			return validationMessage;
+		}
+
 		if (!isRulePresentInDag)
 		{
 			validationMessage = ApplicationProperties.getValue("query.noLimit.error");
@@ -77,7 +87,7 @@ public class ValidateQueryBizLogic
 			validationMessage = getMessageForBaseObject(validationMessage, constraints);
 			if(validationMessage == null)
 			{
-			   Map<EntityInterface, List<EntityInterface>> mainEntityMap = getMainObjectErrorMessege(query, session);
+			   Map<EntityInterface, List<EntityInterface>> mainEntityMap = getMainObjectErrorMessege(query, request);
 			   if (mainEntityMap == null)
 				{
 					//return NO_MAIN_OBJECT_IN_QUERY;
@@ -94,35 +104,51 @@ public class ValidateQueryBizLogic
 			// if no main object is present in the map show the error message set in the session.
 			
 		}
+		catch (QueryModuleException e)
+		{
+			switch (e.getKey())
+			{
+				case MULTIPLE_ROOT :
+					validationMessage = "<li><font color='red'> "
+						+ ApplicationProperties.getValue("errors.executeQuery.multipleRoots")
+						+ "</font></li>";
+					
+					break;
+                default :
+                	validationMessage = "<li><font color='red'> "
+						+ ApplicationProperties.getValue("errors.executeQuery.genericmessage")
+						+ "</font></li>";
+					break;
+			}
+			
+		}
+		
+		
+		return validationMessage;
+	} 
+
+	private static Map<EntityInterface, List<EntityInterface>> getMainObjectErrorMessege(IQuery query,
+			HttpServletRequest request) throws QueryModuleException
+	{ 
+		HttpSession session = request.getSession();
+		AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(ValidateQueryBizLogic.class, request, query);
+		queryUIManager.updateQuery();
+		
+		IQueryGenerator queryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
+		String selectSql=null;
+		try
+		{
+			//selectSql = "select personUpi_1 Column0 from xmltable(' for $Person_1 in db2-fn:xmlcolumn(\"DEMOGRAPHICS.XMLDATA\")/Person where exists($Person_1/personUpi)  return <return><Person_1>{$Person_1}</Person_1></return>' columns personUpi_1 varchar(1000) path 'Person_1/Person/personUpi')";
+			selectSql=queryGenerator.generateQuery(query);
+		}
 		catch (MultipleRootsException e)
 		{
-			Logger.out.error(e);
-			validationMessage = "<li><font color='red'> "
-					+ ApplicationProperties.getValue("errors.executeQuery.multipleRoots")
-					+ "</font></li>";
+			throw new QueryModuleException(e.getMessage(),QueryModuleError.MULTIPLE_ROOT);
 		}
 		catch (SqlException e)
 		{
-			Logger.out.error(e);
-			validationMessage = "<li><font color='red'> "
-					+ ApplicationProperties.getValue("errors.executeQuery.genericmessage")
-					+ "</font></li>";
+			throw new QueryModuleException(e.getMessage(),QueryModuleError.SQL_EXCEPTION);
 		}
-		catch (RuntimeException e)
-		{
-			Logger.out.error(e);
-			validationMessage = "<li><font color='red'> "
-					+ ApplicationProperties.getValue("errors.executeQuery.genericmessage")
-					+ "</font></li>";
-		}
-		return validationMessage;
-	}
-
-	private static Map<EntityInterface, List<EntityInterface>> getMainObjectErrorMessege(IQuery query,
-			HttpSession session) throws MultipleRootsException, SqlException
-	{
-		IQueryGenerator queryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
-		String selectSql = queryGenerator.generateQuery(query);
 		Map<AttributeInterface, String> attributeColumnNameMap = queryGenerator
 				.getAttributeColumnNameMap();
 		session.setAttribute(Constants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
@@ -147,16 +173,35 @@ public class ValidateQueryBizLogic
 		return mainEntityMap;
 	}
 
-	private static String getMessageForBaseObject(String validationMessage, IConstraints constraints)
-			throws MultipleRootsException
+	private static String getMessageForBaseObject(String validationMessage, IConstraints constraints) throws QueryModuleException
+			
 	{
-		EntityInterface rootEntity = constraints.getRootExpression().getQueryEntity().getDynamicExtensionsEntity();
+		EntityInterface rootEntity;
+		try
+		{
+			rootEntity = constraints.getRootExpression().getQueryEntity().getDynamicExtensionsEntity();
+		}
+		catch (MultipleRootsException e)
+		{
+			throw new QueryModuleException(e.getMessage(),QueryModuleError.MULTIPLE_ROOT);
+		}
 		boolean istagPresent = edu.wustl.query.util.global.Utility.istagPresent(rootEntity,Constants.BASE_MAIN_ENTITY);
 		if(!istagPresent)
 		{
 			validationMessage = "<li><font color='blue'> "+ApplicationProperties.getValue(Constants.QUERY_NO_ROOTEXPRESSION)+"</font></li>";
 		}
 		return validationMessage;
+	}
+
+	/**
+	* validates Query title for defined queries
+	* @param request
+	* @return
+	*/
+	private static String validateQueyTitle(String queryTitle)
+	{
+		
+		return ApplicationProperties.getValue("query.title.madatory");
 	}
 
 }

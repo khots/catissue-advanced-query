@@ -6,12 +6,14 @@ import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.query.factory.AbstractQueryFactory;
 import edu.wustl.common.query.factory.AbstractQueryManagerFactory;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.query.querymanager.AbstractQueryManager;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
@@ -82,4 +84,27 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public void insertDefinedQueries(IQuery query)
+	{
+		
+			//inserts Defined Query
+			DefinedQueryUtil definedQueryUtil=new DefinedQueryUtil();
+			try
+			{
+
+					definedQueryUtil.insertQuery(query);
+				
+			}
+			catch (UserNotAuthorizedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (BizLogicException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 }

@@ -55,4 +55,10 @@ public abstract class AbstractQueryUIManager {
 	 * @throws QueryModuleException
 	 */
 	abstract public List<NameValueBean> getObjects(Long userId) throws QueryModuleException;
+	
+	/**
+	 * This method updates the query object with default conditions
+	 * @throws QueryModuleException
+	 */
+	abstract public void updateQuery() throws QueryModuleException;
 }
