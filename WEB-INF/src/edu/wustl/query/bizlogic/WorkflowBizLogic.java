@@ -1,7 +1,6 @@
 
 package edu.wustl.query.bizlogic;
-import edu.wustl.query.querymanager.Count;
-import edu.wustl.query.util.global.Constants;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,13 +8,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import edu.wustl.cider.util.CiderQueryUIManager;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.exception.BizLogicException;
-import edu.wustl.common.query.CiderQuery;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
 import edu.wustl.common.querysuite.queryobject.ICompositeQuery;
@@ -27,8 +26,9 @@ import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.domain.WorkflowItem;
+import edu.wustl.query.querymanager.Count;
+import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
-import edu.wustl.query.util.querysuite.CiderQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
