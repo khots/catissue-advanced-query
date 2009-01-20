@@ -12,9 +12,9 @@ package edu.wustl.common.query.impl.predicate;
 public class PrefixUnaryPredicate extends AbstractPredicate
 {
 
-	public PrefixUnaryPredicate(String forVariable, String attribute, String operator)
+	public PrefixUnaryPredicate(String attribute, String operator)
 	{
-		super(forVariable, attribute, operator, null);
+		super(attribute, operator, null);
 	}
 
 	/* (non-Javadoc)

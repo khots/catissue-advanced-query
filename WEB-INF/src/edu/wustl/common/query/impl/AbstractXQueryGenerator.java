@@ -50,9 +50,19 @@ import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
 
+/**
+ * 
+ * @author juberahamad_patel
+ * 
+ * abstract class from which the xquery generator classes extend
+ *
+ */
 public abstract class AbstractXQueryGenerator extends QueryGenerator
 {
 
+	/**
+	 * the suffix used to generate sql column names on the fly, like column0, column1 etc.
+	 */
 	protected int suffix = 0;
 	
 	/**

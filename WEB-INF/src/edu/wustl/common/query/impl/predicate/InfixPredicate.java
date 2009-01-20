@@ -13,9 +13,9 @@ package edu.wustl.common.query.impl.predicate;
 public class InfixPredicate extends AbstractPredicate
 {
 
-	public InfixPredicate(String forVariable, String attribute, String operator, String rhs)
+	public InfixPredicate(String attribute, String operator, String rhs)
 	{
-		super(forVariable, attribute, operator, rhs);
+		super(attribute, operator, rhs);
 	}
 
 	/* (non-Javadoc)

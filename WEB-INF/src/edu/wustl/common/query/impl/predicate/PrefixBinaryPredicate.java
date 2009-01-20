@@ -13,9 +13,9 @@ package edu.wustl.common.query.impl.predicate;
 public class PrefixBinaryPredicate extends AbstractPredicate
 {
 
-	public PrefixBinaryPredicate(String forVariable, String attribute, String operator, String rhs)
+	public PrefixBinaryPredicate(String attribute, String operator, String rhs)
 	{
-		super(forVariable, attribute, operator, rhs);
+		super(attribute, operator, rhs);
 
 	}
 

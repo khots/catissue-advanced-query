@@ -16,15 +16,23 @@ package edu.wustl.common.query.impl.predicate;
  */
 public abstract class AbstractPredicate
 {
-	
-	protected String forVariable;
+	/**
+	 * the attribute on which this predicate is.
+	 */
 	protected String attribute;
+	
+	/**
+	 * operator involved in the predicate
+	 */
 	protected String operator;
+	
+	/**
+	 * right hand side of the predicate
+	 */
 	protected String rhs;
 	
-	public AbstractPredicate(String forVariable, String attribute, String operator, String rhs)
+	public AbstractPredicate(String attribute, String operator, String rhs)
 	{
-		this.forVariable = forVariable;
 		this.attribute = attribute;
 		this.operator = operator;
 		this.rhs = rhs;
