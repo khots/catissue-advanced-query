@@ -16,7 +16,6 @@ import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
-import edu.wustl.query.util.querysuite.CiderQueryUIManager;
 
 /**
  * This is a action class to handle the Azax call for Get Count from GetCountPopUp.jsp (called at onLoad of jsp)
@@ -50,7 +49,7 @@ public class GetCountAjaxHandlerAction extends Action
 
 		//retrieve count with query execution id
 		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
-		Count countObject =((CiderQueryUIManager)qUIManager).getCount(queryExecID);
+		Count countObject =qUIManager.getCount(queryExecID);
 
 		//create json object by count object adding Query status, count and execution id
 		JSONObject resultObject = createResultJSON(countObject);
