@@ -11,11 +11,12 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
+import edu.wustl.query.util.querysuite.DefinedQueryUtil;
 import edu.wustl.query.util.querysuite.QueryModuleSearchQueryUtil;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
@@ -50,7 +51,11 @@ public class OpenDecisionMakingPageAction extends Action
 		String option = actionForm.getOptions();
 		String forward=Constants.SUCCESS;
 		QueryModuleSearchQueryUtil QMSearchQuery = new QueryModuleSearchQueryUtil(request, query);
-
+		//inserts Defined Query
+		DefinedQueryUtil definedQueryUtil=new DefinedQueryUtil();
+		ParameterizedQuery parameterizedQuery=(ParameterizedQuery)query;
+		parameterizedQuery.setName(actionForm.getQueryTitle());
+		definedQueryUtil.insertQuery(parameterizedQuery);
 		if (option == null)
 		{
 			 ActionErrors errors = new ActionErrors();
@@ -71,4 +76,5 @@ public class OpenDecisionMakingPageAction extends Action
 	   }
 		return mapping.findForward(forward);
 	}
+
 }
