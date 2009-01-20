@@ -17,7 +17,7 @@ public class WherePartParser implements WherePartParserConstants {
 
         public static void main(String[] args) throws ParseException, FileNotFoundException
         {
-                InputStream in = new FileInputStream("WherePart4.txt");
+                InputStream in = new FileInputStream("WherePart1.txt");
 
                 WherePartParser parser = new WherePartParser(in);
                 parser.parse();
@@ -46,15 +46,9 @@ public class WherePartParser implements WherePartParserConstants {
         ConditionsOnOneEntity();
         break;
       case OPENING_PARENTHESIS:
-        jj_consume_token(OPENING_PARENTHESIS);
-        ConditionsOnOneEntity();
-        jj_consume_token(CLOSING_PARENTHESIS);
+        ParenthesizedConditionsOnOneEntity();
         label_1:
         while (true) {
-          jj_consume_token(LOGICAL_OPERATOR);
-          jj_consume_token(OPENING_PARENTHESIS);
-          ConditionsOnChild();
-          jj_consume_token(CLOSING_PARENTHESIS);
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case LOGICAL_OPERATOR:
             ;
@@ -63,6 +57,10 @@ public class WherePartParser implements WherePartParserConstants {
             jj_la1[0] = jj_gen;
             break label_1;
           }
+          jj_consume_token(LOGICAL_OPERATOR);
+          jj_consume_token(OPENING_PARENTHESIS);
+          ConditionsOnChild();
+          jj_consume_token(CLOSING_PARENTHESIS);
         }
         break;
       default:
@@ -72,6 +70,17 @@ public class WherePartParser implements WherePartParserConstants {
       }
     } finally {
       trace_return("ConditionTree");
+    }
+  }
+
+  final private void ParenthesizedConditionsOnOneEntity() throws ParseException {
+    trace_call("ParenthesizedConditionsOnOneEntity");
+    try {
+      jj_consume_token(OPENING_PARENTHESIS);
+      ConditionsOnOneEntity();
+      jj_consume_token(CLOSING_PARENTHESIS);
+    } finally {
+      trace_return("ParenthesizedConditionsOnOneEntity");
     }
   }
 

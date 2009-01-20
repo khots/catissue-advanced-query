@@ -87,15 +87,24 @@ private void ConditionTree() :
 }
 {
 	ConditionsOnOneEntity()
-	
+		
 |
-	<OPENING_PARENTHESIS>
-	ConditionsOnOneEntity()
-	<CLOSING_PARENTHESIS>
+	ParenthesizedConditionsOnOneEntity()
 	(<LOGICAL_OPERATOR>
 	<OPENING_PARENTHESIS>
 	ConditionsOnChild()
-	<CLOSING_PARENTHESIS>)+
+	<CLOSING_PARENTHESIS>)*
+	
+}
+
+private void ParenthesizedConditionsOnOneEntity() :
+{
+	
+}
+{
+	<OPENING_PARENTHESIS>
+	ConditionsOnOneEntity()
+	<CLOSING_PARENTHESIS>
 	
 }
 
@@ -142,7 +151,7 @@ private void PrefixUnaryCondition() :
 			int separator = conditionAttribute.image.indexOf("/");
 			String forVariable = conditionAttribute.image.substring(0, separator);
 			String attribute = conditionAttribute.image.substring(separator+1);
-			Predicate predicate = new PrefixUnaryPredicate(forVariable, attribute, operator.image);
+			AbstractPredicate predicate = new PrefixUnaryPredicate(forVariable, attribute, operator.image);
 			predicateGenerator.addPredicate(forVariable, predicate);	
 							
 		} 
@@ -166,7 +175,7 @@ private void PrefixBinaryCondition() :
 		int separator = conditionAttribute.image.indexOf("/");
 		String forVariable = conditionAttribute.image.substring(0, separator);
 		String attribute = conditionAttribute.image.substring(separator+1);
-		Predicate predicate = new PrefixBinaryPredicate(forVariable, attribute, operator.image, rhs.image);
+		AbstractPredicate predicate = new PrefixBinaryPredicate(forVariable, attribute, operator.image, rhs.image);
 		predicateGenerator.addPredicate(forVariable, predicate);
 		
 	}
@@ -188,7 +197,7 @@ private void InfixCondition() :
 		int separator = conditionAttribute.image.indexOf("/");
 		String forVariable = conditionAttribute.image.substring(0, separator);
 		String attribute = conditionAttribute.image.substring(separator+1);
-		Predicate predicate = new InfixPredicate(forVariable, attribute, operator.image, rhs.image);
+		AbstractPredicate predicate = new InfixPredicate(forVariable, attribute, operator.image, rhs.image);
 		predicateGenerator.addPredicate(forVariable, predicate);
 		
 	}
