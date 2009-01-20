@@ -1,10 +1,12 @@
 /**
  * 
  */
+
 package edu.wustl.common.query.itablemanager;
 
 import java.sql.SQLException;
 
+import edu.wustl.common.dao.DatabaseConnectionParams;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.querymanager.Count;
 
@@ -14,9 +16,17 @@ import edu.wustl.query.querymanager.Count;
  */
 public class ITableManager
 {
+
+	/**
+	 * To be used for batch inserts  
+	 */
 	private int batchSize;
-	private static ITableManager sINSTANCE; 
-	
+
+	/**
+	 * To return Singleton instance of 'ITableManager'
+	 */
+	private static ITableManager sINSTANCE;
+
 	/**
 	 * 
 	 * @return
@@ -24,13 +34,13 @@ public class ITableManager
 	 */
 	public static ITableManager getInstance() throws DAOException
 	{
-		if(sINSTANCE == null)
+		if (sINSTANCE == null)
 		{
 			sINSTANCE = new ITableManager();
 		}
 		return sINSTANCE;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -39,7 +49,7 @@ public class ITableManager
 	{
 		return batchSize;
 	}
-	
+
 	/**
 	 * 
 	 * @param batchSize
@@ -48,7 +58,7 @@ public class ITableManager
 	{
 		this.batchSize = batchSize;
 	}
-	
+
 	/**
 	 * 
 	 * @param patientDeid
@@ -57,12 +67,13 @@ public class ITableManager
 	 * @throws SQLException
 	 * @throws DAOException
 	 */
-	public void insertITableEntry(int patientDeid, int queryExecLogId, String upi) throws SQLException, DAOException
+	public void insertITableEntry(int patientDeid, int queryExecLogId, String upi,
+			DatabaseConnectionParams DB_CONNECTION_PARAMS) throws SQLException, DAOException
 	{
 		// CODE TO INSERT DATA INTO QUERY_ITABLE
-		
+
 	}
-	
+
 	/**
 	 * 
 	 * @param projectId
@@ -72,16 +83,15 @@ public class ITableManager
 	 * @throws DAOException
 	 * @throws SQLException
 	 */
-	public int insertNewQuery(Long projectId, Long userId,
-								Long query_id) throws DAOException, SQLException
+	public int insertNewQuery(Long projectId, Long userId, Long query_id) throws DAOException,
+			SQLException
 	{
 		// CODE TO INSERT DATA INTO QUERY_EXECUTION_LOG Table
-		
-		
+
 		// return Query_Execution_Id
 		return -1;
 	}
-	
+
 	/**
 	 * 
 	 * @param status
@@ -91,9 +101,9 @@ public class ITableManager
 	 */
 	public void changeStatus(String status, int queryExecId) throws SQLException, DAOException
 	{
-		
+
 	}
-	
+
 	/**
 	 * 
 	 * @param queryExecId
@@ -101,10 +111,10 @@ public class ITableManager
 	 * @throws SQLException
 	 * @throws DAOException
 	 */
-	public Count getCount(int queryExecId)throws SQLException, DAOException
+	public Count getCount(int queryExecId) throws SQLException, DAOException
 	{
 		Count count = null;
 		return count;
 	}
-	
+
 }

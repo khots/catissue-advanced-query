@@ -63,11 +63,11 @@ public class QueryGetCountAction extends Action
 
 		SessionDataBean sessionBean = (SessionDataBean) session
 				.getAttribute(Constants.SESSION_DATA);
-		Long userId = sessionBean.getUserId();
+		Long userId = null;
 		if (sessionBean == null)
 		{
 			// HttpSession newSession = request.getSession(true);
-
+			userId = 1L;
 			String ipAddress = request.getRemoteAddr();
 			SessionDataBean sessionData = new SessionDataBean();
 
@@ -81,7 +81,10 @@ public class QueryGetCountAction extends Action
 
 			session.setAttribute(Constants.SESSION_DATA, sessionData);
 		}
-		
+		else
+		{
+			userId = sessionBean.getUserId();
+		}
 		//Retrieve the Project list
 		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
 		List<NameValueBean> projectList = qUIManager.getObjects(userId);
