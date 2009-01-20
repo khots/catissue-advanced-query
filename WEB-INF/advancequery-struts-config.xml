@@ -12,6 +12,7 @@ PUBLIC
 		<form-bean name="advanceSearchForm" type="edu.wustl.query.actionForm.AdvanceSearchForm"/>  
 		<form-bean name="saveQueryForm" type="edu.wustl.query.actionForm.SaveQueryForm"/>
 		<form-bean name="workflowForm" type="edu.wustl.query.actionForm.WorkflowForm"/>		
+		<form-bean name="showRetrieveRecentForm" type="edu.wustl.query.actionForm.ShowRetrieveRecentForm"/>		
 				
 	</form-beans>
 	
@@ -500,6 +501,12 @@ PUBLIC
 		scope="request">
         </action>
         
+        <action path="/RecentQueriesAjaxHandler" 
+        type="edu.wustl.query.action.RecentQueriesAjaxHandlerAction"
+        validate="false"
+		scope="request">
+        </action>
+        
         <action path="/WorkflowSearch"
 		    type="edu.wustl.common.action.CommonSearchAction"
 			name="workflowForm"
@@ -521,6 +528,13 @@ PUBLIC
         	<forward name="success" path=".query.querySearchWizardDef"/>
         </action>
         
+        <action path="/RetrieveRecentQueries"
+			type="edu.wustl.query.action.RetrieveRecentQueriesAction"
+			name="showRetrieveRecentForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".query.recentQueryListDef"/>
+		</action>
 	</action-mappings>
 	
 	<controller processorClass="edu.wustl.common.struts.ApplicationRequestProcessor" />

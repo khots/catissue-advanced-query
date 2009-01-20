@@ -1246,7 +1246,7 @@
 			 var request = newXMLHTTPReq();			
 	         var handlerFunction = getReadyStateHandler(request,displayValidationMessage,true);	
 	         request.onreadystatechange = handlerFunction;
-		 	 var url='ValidateDefineView.do';
+		 	 var url='ValidateDefineView.do?queyTitle='+(document.getElementById("queryTitle1").value);
 			 var actionURL="";
 		     request.open("POST",url,true);	
 		     request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
@@ -1538,7 +1538,7 @@ var jsReady = false;
 		  {
 	//		showWaitPage();
 		  }
-	      var url = "ValidateQuery.do";
+	      var url = "ValidateQuery.do?queyTitle="+(document.getElementById("queryTitle1").value);
 		  request.open("POST",url,true);	
 		  request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 		  request.send(actionURL);		

@@ -41,7 +41,14 @@
 	<html:hidden property="nextOperation" value="" />
 
 <table border="0" width="100%" cellspacing="0" cellpadding="0"  height="450" >	
+		<tr>
+			<bean:message key="getcountquery.name"/><span class="red_star">*</span>
+			<html:text styleClass="formFieldSized"   styleId="queryTitle1" property="queryTitle" />
+					
+		</tr>
 		
+
+
 		<tr>	
 			<td width="33%" align="center" valign="middle" height="36"  background="images/advancequery/top_bg_wiz.gif" >
 				<img src="images/advancequery/1_active.gif"/> <!-- width="118" height="25" /-->

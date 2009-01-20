@@ -64,6 +64,12 @@ function responseHandler(response)
 		if(status!="Completed")
 			callGetCountAjaxAction(executionId);
 }
+function retrieveRecentQueries()
+{
+	parent.pvwindow.hide();
+	parent.document.forms[0].action="\RetrieveRecentQueries.do"
+	parent.document.forms[0].submit();
+}
 //-->
 </script>
 <script type="text/javascript">
@@ -92,7 +98,9 @@ MM_reloadPage(true);
           <tr >
             <td height="25" valign="middle" nowrap><span class="content_txt">Execution Status: <strong id="StatusId"></strong></span></td>
             <td align="right" valign="middle"><form name="form1" method="post" action="">
+			<a href="javascript:retrieveRecentQueries()">
               <img src="images/advancequery/b_abort_execution.gif" alt="Abort Execution" width="116" height="23">&nbsp;<img src="images/advancequery/b_notify_me.gif" alt="Notify me when done" width="146" height="23">
+			  </a>
             </form></td>
           </tr>
           <tr>

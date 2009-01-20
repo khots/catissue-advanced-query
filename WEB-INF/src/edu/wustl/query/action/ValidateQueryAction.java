@@ -47,8 +47,8 @@ public class ValidateQueryAction extends Action
 		else{	
 		    IParameterizedQuery parameterizedQuery = (IParameterizedQuery)session
 				.getAttribute(Constants.QUERY_OBJECT);
-		    String validationMessage = ValidateQueryBizLogic.getValidationMessage(request,
-				parameterizedQuery);
+		    parameterizedQuery.setName(request.getParameter("queyTitle"));
+		    String validationMessage = ValidateQueryBizLogic.getValidationMessage(request,parameterizedQuery);
 		    if (validationMessage != null)
 		   {
 			 response.setContentType(Constants.CONTENT_TYPE_TEXT);

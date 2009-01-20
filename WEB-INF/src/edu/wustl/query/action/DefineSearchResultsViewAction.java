@@ -22,6 +22,7 @@ import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
@@ -82,6 +83,13 @@ public class DefineSearchResultsViewAction extends Action
 		//Set the selected column name value bean list to Form
 		setSelectedColumnsNVBeanList(searchForm, prevSelectedColumnNVBList);
 	    session.setAttribute(Constants.SELECTED_COLUMN_NAME_VALUE_BEAN_LIST,searchForm.getSelectedColumnNameValueBeanList());
+
+		/*
+		 * changes made for defined Query
+		 */
+        ((ParameterizedQuery)query).setName(searchForm.getQueryTitle());
+        
+
 		session.setAttribute(Constants.QUERY_OBJECT,query);
 		String fileName = getFileName();
 		writeXMLToTempFile(xmlString.toString(), fileName);

@@ -106,6 +106,8 @@ public class CategorySearchForm extends ActionForm
 	private String currentSelectedNodeInTree = null;
 	
 	private String[] selectedMainEntities = null;
+	
+	private String queryTitle;
 
 	
 	/**
@@ -471,5 +473,15 @@ public class CategorySearchForm extends ActionForm
 	public void setOptions(String options)
 	{
 		this.options = options;
+	}
+
+	public String getQueryTitle()
+	{
+		return queryTitle;
+	}
+
+	public void setQueryTitle(String queryTitle)
+	{
+		this.queryTitle = queryTitle;
 	}
 }
