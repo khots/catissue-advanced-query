@@ -27,7 +27,7 @@ public class WherePartParser
 	
 	public static void main(String[] args) throws ParseException, FileNotFoundException
 	{
-		InputStream in = new FileInputStream("WherePart4.txt");
+		InputStream in = new FileInputStream("WherePartChitra.txt");
 		
 		WherePartParser parser = new WherePartParser(in);
 		parser.parse();
@@ -61,8 +61,9 @@ TOKEN : { <CONDITION_ATTRIBUTE : <DOLLAR> (~[")" , ">" , "<" , "="])* > }
 TOKEN : { <#DIGITS : (["0"-"9"])+  > }
 TOKEN : { <#NUMBER :  <DIGITS> | <DIGITS> "." <DIGITS> | "." <DIGITS> | <DIGITS> "." >}
 TOKEN : { <#STRING : "\"" (~["\""])* "\"" >}
-TOKEN : { <#CONSTANT : <STRING> | <NUMBER>  > }
-TOKEN : { <RHS : ("xs:" (~["("])*) "(" <CONSTANT> ")" | <CONSTANT>  >}
+TOKEN : { <CONSTANT : <STRING> | <NUMBER>  > }
+
+TOKEN : { <FUNCTION_CALL : ("xs:" (~["("])*) "(" <CONSTANT> ")" >}
 
 
 
@@ -151,7 +152,7 @@ private void PrefixUnaryCondition() :
 			int separator = conditionAttribute.image.indexOf("/");
 			String forVariable = conditionAttribute.image.substring(0, separator);
 			String attribute = conditionAttribute.image.substring(separator+1);
-			AbstractPredicate predicate = new PrefixUnaryPredicate(forVariable, attribute, operator.image);
+			AbstractPredicate predicate = new PrefixUnaryPredicate(attribute, operator.image);
 			predicateGenerator.addPredicate(forVariable, predicate);	
 							
 		} 
@@ -163,19 +164,19 @@ private void PrefixBinaryCondition() :
 {
 	Token conditionAttribute = null;
 	Token operator = null;
-	Token rhs = null;
+	String rhs = null;
 }
 {
 	operator=<PREFIX_BINARY_OPERATOR> 
 	conditionAttribute=<CONDITION_ATTRIBUTE>
 	<CLOSING_PARENTHESIS> <COMMA> 
-	rhs=<RHS>
+	rhs = RHS()
 	<CLOSING_PARENTHESIS>
 	{
 		int separator = conditionAttribute.image.indexOf("/");
 		String forVariable = conditionAttribute.image.substring(0, separator);
 		String attribute = conditionAttribute.image.substring(separator+1);
-		AbstractPredicate predicate = new PrefixBinaryPredicate(forVariable, attribute, operator.image, rhs.image);
+		AbstractPredicate predicate = new PrefixBinaryPredicate(attribute, operator.image, rhs);
 		predicateGenerator.addPredicate(forVariable, predicate);
 		
 	}
@@ -187,17 +188,17 @@ private void InfixCondition() :
 {
 	Token conditionAttribute = null;
 	Token operator = null;
-	Token rhs = null;
+	String rhs = null;
 }
 {
 	conditionAttribute=<CONDITION_ATTRIBUTE>
 	operator=<INFIX_OPERATOR>
-	rhs=<RHS>
+	rhs = RHS()
 	{
 		int separator = conditionAttribute.image.indexOf("/");
 		String forVariable = conditionAttribute.image.substring(0, separator);
 		String attribute = conditionAttribute.image.substring(separator+1);
-		AbstractPredicate predicate = new InfixPredicate(forVariable, attribute, operator.image, rhs.image);
+		AbstractPredicate predicate = new InfixPredicate(attribute, operator.image, rhs);
 		predicateGenerator.addPredicate(forVariable, predicate);
 		
 	}
@@ -212,3 +213,58 @@ private void ConditionsOnChild() :
 	ConditionTree()
 	
 }
+
+
+private String RHS() :
+{
+	Token rhsToken = null;
+	String rhs = null;
+}
+{
+	rhsToken = <FUNCTION_CALL>
+	{
+	 	return rhsToken.image;
+	} 
+	
+|
+	rhsToken = <CONSTANT>
+	{
+	 	return rhsToken.image;
+	} 
+	
+|
+	 rhs = CSV()
+	 {
+	 	return rhs;
+	 } 	
+	
+}
+
+
+private String CSV() :
+{
+	StringBuilder rhs = new StringBuilder();
+	Token constant = null;
+}
+{
+	"("
+	{
+		rhs.append('(');	
+	} 
+	constant=<CONSTANT>
+	{
+		rhs.append(constant.image);
+	}
+	(<COMMA> constant=<CONSTANT>)*
+	{
+		rhs.append(',').append(constant.image);
+	}
+	 ")"
+	{
+		rhs.append(')');
+		return rhs.toString();	
+	} 
+	
+	
+}	
+

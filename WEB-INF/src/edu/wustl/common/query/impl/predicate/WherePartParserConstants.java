@@ -37,7 +37,7 @@ public interface WherePartParserConstants {
   /** RegularExpression Id. */
   int CONSTANT = 17;
   /** RegularExpression Id. */
-  int RHS = 18;
+  int FUNCTION_CALL = 18;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -62,7 +62,7 @@ public interface WherePartParserConstants {
     "<NUMBER>",
     "<STRING>",
     "<CONSTANT>",
-    "<RHS>",
+    "<FUNCTION_CALL>",
   };
 
 }
