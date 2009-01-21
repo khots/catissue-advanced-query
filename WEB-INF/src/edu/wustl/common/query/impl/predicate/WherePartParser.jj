@@ -55,7 +55,7 @@ TOKEN : { <INFIX_OPERATOR : ">=" | ">" | "<" | "<=" | "="  >}
 TOKEN : { <LOGICAL_OPERATOR : "and" | "or" >}
 
 
-TOKEN : { <CONDITION_ATTRIBUTE : <DOLLAR> (~[")" , ">" , "<" , "="])* > }
+TOKEN : { <CONDITION_ATTRIBUTE : <DOLLAR> (~[")" , ">" , "<" , "=", " " , "\t" , "\n" , "\r"])* > }
 
 
 TOKEN : { <#DIGITS : (["0"-"9"])+  > }
@@ -172,7 +172,7 @@ private void PrefixBinaryCondition() :
 	<CLOSING_PARENTHESIS> <COMMA> 
 	rhs = RHS()
 	<CLOSING_PARENTHESIS>
-	{
+	{		
 		int separator = conditionAttribute.image.indexOf("/");
 		String forVariable = conditionAttribute.image.substring(0, separator);
 		String attribute = conditionAttribute.image.substring(separator+1);
@@ -233,6 +233,12 @@ private String RHS() :
 	} 
 	
 |
+	rhsToken = <CONDITION_ATTRIBUTE>
+	{
+		return rhsToken.image;
+	}
+	
+|
 	 rhs = CSV()
 	 {
 	 	return rhs;
@@ -244,20 +250,24 @@ private String RHS() :
 private String CSV() :
 {
 	StringBuilder rhs = new StringBuilder();
-	Token constant = null;
+	Token constant1 = null;
+	Token constant2 = null;
 }
 {
 	"("
 	{
 		rhs.append('(');	
 	} 
-	constant=<CONSTANT>
+	constant1=<CONSTANT>
 	{
-		rhs.append(constant.image);
+		rhs.append(constant1.image);
 	}
-	(<COMMA> constant=<CONSTANT>)*
+	(<COMMA> constant2=<CONSTANT>)*
 	{
-		rhs.append(',').append(constant.image);
+		if(constant2 != null)
+		{
+			rhs.append(',').append(constant2.image);
+		}
 	}
 	 ")"
 	{

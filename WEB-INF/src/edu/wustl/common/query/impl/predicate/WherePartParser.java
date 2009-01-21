@@ -211,6 +211,10 @@ public class WherePartParser implements WherePartParserConstants {
         rhsToken = jj_consume_token(CONSTANT);
                 {if (true) return rhsToken.image;}
         break;
+      case CONDITION_ATTRIBUTE:
+        rhsToken = jj_consume_token(CONDITION_ATTRIBUTE);
+                {if (true) return rhsToken.image;}
+        break;
       case OPENING_PARENTHESIS:
         rhs = CSV();
                 {if (true) return rhs;}
@@ -230,11 +234,12 @@ public class WherePartParser implements WherePartParserConstants {
     trace_call("CSV");
     try {
         StringBuilder rhs = new StringBuilder();
-        Token constant = null;
+        Token constant1 = null;
+        Token constant2 = null;
       jj_consume_token(OPENING_PARENTHESIS);
                 rhs.append('(');
-      constant = jj_consume_token(CONSTANT);
-                rhs.append(constant.image);
+      constant1 = jj_consume_token(CONSTANT);
+                rhs.append(constant1.image);
       label_3:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -246,9 +251,12 @@ public class WherePartParser implements WherePartParserConstants {
           break label_3;
         }
         jj_consume_token(COMMA);
-        constant = jj_consume_token(CONSTANT);
+        constant2 = jj_consume_token(CONSTANT);
       }
-                rhs.append(',').append(constant.image);
+                if(constant2 != null)
+                {
+                        rhs.append(',').append(constant2.image);
+                }
       jj_consume_token(CLOSING_PARENTHESIS);
                 rhs.append(')');
                 {if (true) return rhs.toString();}
@@ -273,7 +281,7 @@ public class WherePartParser implements WherePartParserConstants {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x1000,0x2680,0x1000,0x2600,0x60080,0x40,};
+      jj_la1_0 = new int[] {0x1000,0x2680,0x1000,0x2600,0x62080,0x40,};
    }
 
   /** Constructor with InputStream. */

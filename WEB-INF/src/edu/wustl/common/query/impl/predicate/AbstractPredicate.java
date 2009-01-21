@@ -45,6 +45,24 @@ public abstract class AbstractPredicate
 	 * @return
 	 */
 	public abstract String assemble(String prefix);
+
+	
+	/**
+	 * @return the rhs
+	 */
+	public String getRhs()
+	{
+		return rhs;
+	}
+
+	
+	/**
+	 * @param rhs the rhs to set
+	 */
+	public void setRhs(String rhs)
+	{
+		this.rhs = rhs;
+	}
 	
 
 }

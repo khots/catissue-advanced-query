@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -155,7 +156,9 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		this.joinGraph = (JoinGraph) constraints.getJoinGraph();
 		aliasAppenderMap = new HashMap<IExpression, Integer>();
 		createAliasAppenderMap();
-		setMainExpressions();
+		
+		mainExpressions = new LinkedHashSet<IExpression>();
+		setMainExpressions(joinGraph.getRoot());
 		createTree();
 		createEntityPaths();
 
@@ -336,14 +339,8 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 */
 	private void createEntityPaths(IExpression expression, String xpath)
 	{
-		for (IExpression childExpression : joinGraph.getChildrenList(expression))
+		for (IExpression childExpression : getNonMainChildren(expression))
 		{
-			//skip main expressions
-			if (mainExpressions.contains(childExpression))
-			{
-				continue;
-			}
-
 			String newPath = null;
 			IAssociation association = joinGraph.getAssociation(expression, childExpression);
 			AssociationInterface eavAssociation = ((IIntraModelAssociation) association)
@@ -593,15 +590,11 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	}
 
 	/**
-	 * @return Create a set of expressions corresponding to the root Element
-	 * of each XML
+	 * populate the set of main expressions by
+	 * traversing expression tree recursively
 	 */
-	private void setMainExpressions()
+	private void setMainExpressions(IExpression expression)
 	{
-		mainExpressions = new HashSet<IExpression>();
-
-		for (IExpression expression : constraints)
-		{
 			List<EntityInterface> mainEntityList = new ArrayList<EntityInterface>();
 			EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
 
@@ -612,9 +605,13 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 			{
 				mainExpressions.add(expression);
 			}
-		}
-
+			
+			for(IExpression child : joinGraph.getChildrenList(expression))
+			{
+				setMainExpressions(child);
+			}
 	}
+	
 
 	/**
 	 * 
@@ -856,6 +853,20 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 
 		return newOperator;
 
+	}
+	
+	
+	/**
+	 * get the list of children of given expression which are not main expressions
+	 *   
+	 * @param expression
+	 * @return
+	 */
+	protected List<IExpression> getNonMainChildren(IExpression expression)
+	{
+		List<IExpression> nonMainChildren = new ArrayList<IExpression>(joinGraph.getChildrenList(expression));
+		nonMainChildren.removeAll(mainExpressions);
+		return nonMainChildren;
 	}
 
 }

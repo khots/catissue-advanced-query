@@ -68,4 +68,13 @@ public class Predicates
 		return assemble("");
 	}
 
+	
+	/**
+	 * @return the predicates
+	 */
+	public List<AbstractPredicate> getPredicates()
+	{
+		return predicates;
+	}
+
 }

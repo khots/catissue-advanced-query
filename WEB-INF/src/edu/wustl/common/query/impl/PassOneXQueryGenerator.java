@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.wustl.common.query.impl.predicate.AbstractPredicate;
 import edu.wustl.common.query.impl.predicate.PredicateGenerator;
 import edu.wustl.common.query.impl.predicate.Predicates;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
@@ -49,11 +50,14 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			throws MultipleRootsException, DynamicExtensionsSystemException
 	{
 
-		StringBuilder laterPart = new StringBuilder(1024);
+		
 		StringBuilder xqueryForClause = new StringBuilder(1024);
+
+		setPassOneForVariables();
 
 		for (IExpression expression : mainExpressions)
 		{
+			StringBuilder laterPart = new StringBuilder(1024);
 			String tableName = expression.getQueryEntity().getDynamicExtensionsEntity()
 					.getTableProperties().getName();
 
@@ -73,7 +77,23 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		return xqueryForClause.toString();
 	}
 
-	
+	/**
+	 * set the for variables used in pass one xquery
+	 * the assumption is that pass one for variables are present among general for variables
+	 */
+	private void setPassOneForVariables()
+	{
+		for (IExpression expression : forVariables.keySet())
+		{
+			if (hasVersion(expression))
+			{
+				String variable = forVariables.get(expression);
+				passOneForVariables.put(expression, variable);
+			}
+		}
+
+	}
+
 	/**
 	 * append xquery fragments in the for clause for given expression
 	 * and its children recursively 
@@ -106,8 +126,8 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		{
 			String localPredicates = getAllDownstreamPredicates(predicateGenerator, expression, "");
 			laterPart.append('[').append(localPredicates).append(']');
-			variable = forVariables.get(expression);
-			passOneForVariables.put(expression, variable);
+			variable = passOneForVariables.get(expression);
+
 		}
 		else
 		{
@@ -115,20 +135,21 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 
 			if (predicates != null)
 			{
+				replaceRhsForVariables(predicates);
 				laterPart.append('[').append(predicates.assemble()).append(']');
 			}
 
-			if (!joinGraph.getChildrenList(expression).isEmpty())
+			List<IExpression> children = getNonMainChildren(expression);
+			if (!children.isEmpty())
 			{
-				IExpression firstChild = joinGraph.getChildrenList(expression).get(0);
-				variable =  appendChildren(firstChild, predicateGenerator, laterPart);
+				IExpression firstChild = children.get(0);
+				variable = appendChildren(firstChild, predicateGenerator, laterPart);
 			}
 		}
 
 		return variable;
 	}
 
-	
 	/**
 	 * build the right paths for all the predicates of given expression
 	 * and all its children relative to the expression, recursively
@@ -148,9 +169,10 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			return "";
 		}
 
+		replaceRhsForVariables(localPredicates);
 		downStreamPredicates.append(localPredicates.assemble(prefix)).append(Constants.QUERY_AND);
 
-		List<IExpression> children = joinGraph.getChildrenList(expression);
+		List<IExpression> children = getNonMainChildren(expression);
 
 		//end recursion
 		if (children.isEmpty())
@@ -178,7 +200,6 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		return downStreamPredicates.toString();
 	}
 
-	
 	/**
 	 * build the let clause
 	 */
@@ -195,7 +216,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			IExpression expression = entry.getKey().getExpression();
 
 			//traverse down the hierarchy of the expression to find an expresssion which is in passOneForVariables
-			//this could also be theoritically up the hierarchy but not in our xmls
+			//this could also be theoratically up the hierarchy but not in our xmls
 
 			StringBuilder relativePath = new StringBuilder();
 			while (true)
@@ -208,7 +229,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 					break;
 				}
 
-				expression = joinGraph.getChildrenList(expression).get(0);
+				expression = getNonMainChildren(expression).get(0);
 
 				//additional "../" for entities having target role eg. demographicsCollection 
 				if (targetRoles.containsKey(expression))
@@ -268,7 +289,6 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		return columnsPart.toString();
 	}
 
-	
 	/**
 	 * build the 'passing' clause
 	 */
@@ -278,7 +298,101 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		return "";
 	}
 
-	
+	/**
+	 *  replace the RHS for variables in (eg. in joining conditions) in each predicate with 
+	 *  a valid pass one for variable
+	 *    
+	 */
+	private void replaceRhsForVariables(Predicates predicates)
+	{
+
+		List<AbstractPredicate> predicateList = predicates.getPredicates();
+
+		for (AbstractPredicate predicate : predicateList)
+		{
+			String rhs = predicate.getRhs();
+			rhs = replaceRhsForVariable(rhs);
+			predicate.setRhs(rhs);
+
+		}
+	}
+
+	/**
+	 * replace the for variable in the rhs with appropriate pass one for variable.
+	 * the old for variable is replaced with an xpath expression involving an exisiting 
+	 * pass one for variable
+	 * 
+	 * @param rhs
+	 * @return
+	 */
+	private String replaceRhsForVariable(String rhs)
+	{
+		String newRhs = null;
+
+		//return unchanegd 
+		if (rhs == null || !rhs.startsWith(String.valueOf(Constants.QUERY_DOLLAR)))
+		{
+			newRhs = rhs;
+		}
+		else
+		{
+			String forVariable = rhs.substring(0, rhs.indexOf('/'));
+			String attribute = rhs.substring(rhs.indexOf('/')+1);
+
+			//return unchanged
+			if (passOneForVariables.containsValue(forVariable))
+			{
+				newRhs = rhs;
+			}
+			else
+			{
+
+				//traverse down the hierarchy of the expression to find an expresssion which is in passOneForVariables
+				//this could also be theoratically up the hierarchy but not in our xmls
+				IExpression expression = null;
+				StringBuilder relativePath = new StringBuilder();
+				StringBuilder path = new StringBuilder();
+
+				//find the expression corresponding to the for variable
+				for (Entry<IExpression, String> entry : forVariables.entrySet())
+				{
+					if (forVariable.equals(entry.getValue()))
+					{
+						expression = entry.getKey();
+						break;
+					}
+				}
+
+				//build the relative path and the complete replacement of for variable
+				while (true)
+				{
+					if (passOneForVariables.containsValue(forVariable))
+					{
+						path.append(forVariable).append('/');
+						path.append(relativePath.toString());
+						path.append(attribute);
+						newRhs = path.toString();
+						break;
+					}
+
+					expression = getNonMainChildren(expression).get(0);
+					forVariable = forVariables.get(expression);
+
+					//additional "../" for entities having target role eg. demographicsCollection 
+					if (targetRoles.containsKey(expression))
+					{
+						relativePath.append("../");
+					}
+
+					relativePath.append("../");
+				}
+			}
+		}
+
+		return newRhs;
+
+	}
+
 	/**
 	 * decide whether the given expression has a version tagged value 
 	 * associated with it 
