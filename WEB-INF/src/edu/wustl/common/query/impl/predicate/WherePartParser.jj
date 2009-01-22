@@ -27,7 +27,7 @@ public class WherePartParser
 	
 	public static void main(String[] args) throws ParseException, FileNotFoundException
 	{
-		InputStream in = new FileInputStream("WherePartChitra.txt");
+		InputStream in = new FileInputStream("WherePart4.txt");
 		
 		WherePartParser parser = new WherePartParser(in);
 		parser.parse();
@@ -55,7 +55,7 @@ TOKEN : { <INFIX_OPERATOR : ">=" | ">" | "<" | "<=" | "="  >}
 TOKEN : { <LOGICAL_OPERATOR : "and" | "or" >}
 
 
-TOKEN : { <CONDITION_ATTRIBUTE : <DOLLAR> (~[")" , ">" , "<" , "=", " " , "\t" , "\n" , "\r"])* > }
+TOKEN : { <CONDITION_ATTRIBUTE : <DOLLAR> (~[".", ")" , ">" , "<" , "=", " " , "\t" , "\n" , "\r"])* (".)")? > }
 
 
 TOKEN : { <#DIGITS : (["0"-"9"])+  > }

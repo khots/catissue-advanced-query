@@ -17,7 +17,7 @@ public class WherePartParser implements WherePartParserConstants {
 
         public static void main(String[] args) throws ParseException, FileNotFoundException
         {
-                InputStream in = new FileInputStream("WherePartChitra.txt");
+                InputStream in = new FileInputStream("WherePart4.txt");
 
                 WherePartParser parser = new WherePartParser(in);
                 parser.parse();
