@@ -48,7 +48,7 @@ TOKEN : {<CLOSING_PARENTHESIS : ")">}
 
 
 TOKEN : { <PREFIX_UNARY_OPERATOR : "empty(" | "exists(" >}
-TOKEN : { <PREFIX_BINARY_OPERATOR : "contains(string(" >}
+TOKEN : { <PREFIX_BINARY_OPERATOR : "contains(string(" | "starts-with(string(" | "ends-with(string(" >}
 TOKEN : { <INFIX_OPERATOR : ">=" | ">" | "<" | "<=" | "="  >}
 
 

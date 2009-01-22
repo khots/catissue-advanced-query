@@ -54,7 +54,7 @@ public interface WherePartParserConstants {
     "\"(\"",
     "\")\"",
     "<PREFIX_UNARY_OPERATOR>",
-    "\"contains(string(\"",
+    "<PREFIX_BINARY_OPERATOR>",
     "<INFIX_OPERATOR>",
     "<LOGICAL_OPERATOR>",
     "<CONDITION_ATTRIBUTE>",
