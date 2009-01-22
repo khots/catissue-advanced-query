@@ -118,8 +118,17 @@ public class SearchPermissibleValuesAction extends Action
 				for(IConcept concept:conceptList)
 				{
 					//TODO need to change into MED concept code when API will be completed
-					String checkboxId = vocabName + "@" + vocabVersion + ":" + concept.getCode();
-					boolean medRelatedConcept=isSourceVocabMappedTerm(concept,pvList) ;
+					IConcept medRelatedConcept=isSourceVocabMappedTerm(concept,pvList) ;
+					String checkboxId=null;
+					if(medRelatedConcept==null)
+					{
+						checkboxId = vocabName + "@" + vocabVersion + ":" + concept.getCode();// concept.getCode();
+					}
+					else
+					{
+					checkboxId = vocabName + "@" + vocabVersion + ":" + medRelatedConcept.getCode();// concept.getCode();
+					}
+					
 					html.append(bizLogic.getSearchedVocabPVChildAsHTML("srh_" + vocabName,
 							vocabVersion, concept,"srh_"+checkboxId,medRelatedConcept));
 				}
@@ -142,12 +151,12 @@ public class SearchPermissibleValuesAction extends Action
 	 * @return
 	 * @throws VocabularyException 
 	 */
-	private boolean isSourceVocabMappedTerm(IConcept concept, List<IConcept> pvList) 
+	private IConcept isSourceVocabMappedTerm(IConcept concept, List<IConcept> pvList) 
 					throws VocabularyException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 		.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		
+		IConcept sourceConcept=null;
 		String relationType =VocabUtil.getVocabProperties().getProperty("vocab.translation.association.name");
 		IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties().getProperty(
 		"source.vocab.name"), VocabUtil.getVocabProperties().getProperty(
@@ -156,21 +165,21 @@ public class SearchPermissibleValuesAction extends Action
 		boolean status = false;
 		if(((Vocabulary)sourceVocabulary).equals((Vocabulary)concept.getVocabulary()))
 		{
-				status= bizLogic.isPermissibleValue(concept, pvList);
+			sourceConcept= bizLogic.isPermissibleValue(concept, pvList);
+				
 		}
 		else
 		{
-			boolean condFirst=bizLogic.isSourceVocabCodedTerm(concept, relationType, sourceVocabulary);
+			List<IConcept> concepts=bizLogic.isSourceVocabCodedTerm(concept, relationType, sourceVocabulary);
 			
-			boolean condSecond=true;//bizLogic.isPermissibleValue(concept, pvList);;
-			
-			if(condFirst && condSecond)
+			if(concepts!=null)
 			{
-				status = true;
+			 sourceConcept=bizLogic.isPermissibleValue(concepts, pvList);;
 			}
+			
 
 		}
-		return status;
+		return sourceConcept;
 	}
 	/**
 	 * This method returns the display name for given vocabulary Name and vocabulary version
