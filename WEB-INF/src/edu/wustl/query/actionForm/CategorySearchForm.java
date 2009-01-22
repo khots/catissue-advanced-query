@@ -107,6 +107,9 @@ public class CategorySearchForm extends ActionForm
 	
 	private String[] selectedMainEntities = null;
 	
+	/**
+	 * title for defined queries
+	 */
 	private String queryTitle;
 
 	
@@ -475,10 +478,18 @@ public class CategorySearchForm extends ActionForm
 		this.options = options;
 	}
 
+	/**
+	 * @return title for defined queries
+	 */
 	public String getQueryTitle()
 	{
 		return queryTitle;
 	}
+
+	/**
+	 * @param queryTitle=
+	 * title for defined queries
+	 */
 
 	public void setQueryTitle(String queryTitle)
 	{
