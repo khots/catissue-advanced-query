@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<XQuery-Datatypes>
+    <XQuery-Datatype>
+		  <name>String</name>
+	  	  <datatype>fn:string(.)</datatype>
+    </XQuery-Datatype>
+    
+    <XQuery-Datatype>
+		  <name>Boolean</name>
+	  	  <datatype>xs:boolean(.)</datatype>
+    </XQuery-Datatype>
+    
+     <XQuery-Datatype>
+		  <name>Integer</name>
+	  	  <datatype>xs:integer(.)</datatype>
+    </XQuery-Datatype>
+    
+     <XQuery-Datatype>
+		  <name>Long</name>
+	  	  <datatype>xs:long(.)</datatype>
+    </XQuery-Datatype>
+    
+    <XQuery-Datatype>
+		  <name>Double</name>
+	  	  <datatype>xs:double(.)</datatype>
+    </XQuery-Datatype>
+    
+    <XQuery-Datatype>
+		  <name>Float</name>
+	  	  <datatype>xs:float(.)</datatype>
+    </XQuery-Datatype>
+    
+    <XQuery-Datatype>
+		  <name>Short</name>
+	  	  <datatype>xs:short(.)</datatype>
+    </XQuery-Datatype>
+    
+     <XQuery-Datatype>
+		  <name>Date</name>
+	  	  <datatype>xs:date(.)</datatype>
+    </XQuery-Datatype>
+    
+    <XQuery-Datatype>
+		  <name>DateTime</name>
+	  	  <datatype>xs:dateTime(.)</datatype>
+    </XQuery-Datatype>
+    
+</XQuery-Datatypes>
+
