@@ -32,11 +32,11 @@ public class QueryBizLogic extends DefaultBizLogic
 	public void insertSavedQueries(IParameterizedQuery query,SessionDataBean sessionDataBean, boolean shareQuery, User user)throws DAOException, UserNotAuthorizedException, BizLogicException
 	{
 		insert(query,edu.wustl.common.util.global.Constants.HIBERNATE_DAO);
-		HashSet<ParameterizedQuery> protectionObjects = new HashSet<ParameterizedQuery>();
-		protectionObjects.add((ParameterizedQuery) query);
-
-	SavedQueryAuthorization savedQuery = new SavedQueryAuthorization();
-	savedQuery.authenticate(protectionObjects,user.getUserId().toString(),shareQuery,user);
+//		HashSet<ParameterizedQuery> protectionObjects = new HashSet<ParameterizedQuery>();
+//		protectionObjects.add((ParameterizedQuery) query);
+//
+//	SavedQueryAuthorization savedQuery = new SavedQueryAuthorization();
+//	savedQuery.authenticate(protectionObjects,user.getUserId().toString(),shareQuery,user);
 	}
 
 }
