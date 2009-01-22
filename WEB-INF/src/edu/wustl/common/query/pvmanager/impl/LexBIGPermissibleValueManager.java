@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.domain.StringValue;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -28,12 +29,9 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 		List<PermissibleValueInterface> permissibleValueList = new ArrayList<PermissibleValueInterface>();
 		if (isEnumerated(attribute, entity))
 		{
-			//rename and getFiltersForAttribute(attribute,entity,FILTER_NAME) (pv_filer,pv_view
-			String filter = getTaggedValueForAttribute(attribute, entity,Constants.PERMISSIBLEVALUEFILTER.toString());
+			List<String> filter = getTaggedValueForAttribute(attribute, entity);
 			//fetch pv_view from here 
-			String view =	getTaggedValueForAttribute(attribute, entity,Constants.PERMISSIBLEVALUEVIEW);
-			//call taras method to get concept codes from MED lookup table
-			//entity.
+			String view =	getTaggedValueForView(attribute, entity);
 			MedLookUpManager medManager = MedLookUpManager.instance();
 			List<String> medPermissibleValueList = medManager.getPermissibleValues(filter,view);//(filter,view)
 			permissibleValueList = new ArrayList<PermissibleValueInterface>();
@@ -54,12 +52,10 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 	public int getPermissibleValueListCount(final AttributeInterface attribute, 
 			final EntityInterface entity)throws PVManagerException
 	{
-		//rename and getFiltersForAttribute(attribute,entity,FILTER_NAME) (pv_filer,pv_view
-		String filter = getTaggedValueForAttribute(attribute, entity,Constants.PERMISSIBLEVALUEFILTER.toString());
+		
+		List<String> filter = getTaggedValueForAttribute(attribute, entity);
 		//fetch pv_view from here 
-		String view =	getTaggedValueForAttribute(attribute, entity,Constants.PERMISSIBLEVALUEVIEW);
-		//call taras method to get concept codes from MED lookup table
-		//entity.
+		String view =	getTaggedValueForView(attribute, entity);
 		MedLookUpManager medManager = MedLookUpManager.instance();
 		return  medManager.getPermissibleValuesCount(filter,view);//(filter,view)
 	}
@@ -122,8 +118,8 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 				throw new PVManagerException("Error occured while checking the available vocabularies.",e);
 			}
 			int noOfCodingSchemes = vocabularies.size();
-			String pvFilter = getTaggedValueForAttribute(attribute, entity,Constants.PERMISSIBLEVALUEFILTER.toString());
-			String view =	getTaggedValueForAttribute(attribute, entity,Constants.PERMISSIBLEVALUEVIEW);
+			List<String> pvFilter = getTaggedValueForAttribute(attribute, entity);
+			String view =	getTaggedValueForView(attribute, entity);
 			MedLookUpManager medManager = MedLookUpManager.instance();
 			List<String> toReturn = medManager.getPermissibleValues(pvFilter,view);
 			if (toReturn != null && toReturn.size() < 10 && noOfCodingSchemes == 1)
@@ -194,26 +190,48 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 	 * @param attribute
 	 * @return
 	 */
-	//TODO make method more generic
-	public String getTaggedValueForAttribute(final AttributeInterface attribute, final EntityInterface entity,final String tagName)
+
+	public List<String> getTaggedValueForAttribute(final AttributeInterface attribute, final EntityInterface entity)//,final String tagName)
 	{
-		//List<String> taggedValuesList = null;
+		List<String> taggedValuesList = null;
+		//String taggedValue =""; 
+		Collection<TaggedValueInterface> tagList = entity.getTaggedValueCollection();
+		Iterator<TaggedValueInterface> tagIterator = tagList.iterator();
+		while (tagIterator.hasNext())
+		{
+			TaggedValueInterface temp = (TaggedValueInterface) tagIterator.next();
+			if (temp.getKey().toString().equals(Constants.PERMISSIBLEVALUEFILTER))
+			{
+				taggedValuesList = new ArrayList<String>();
+				String pvFilterValue = temp.getValue();
+				StringTokenizer tokenizer = new StringTokenizer(pvFilterValue,",",false);
+				while(tokenizer.hasMoreTokens())
+				{
+					taggedValuesList.add(tokenizer.nextToken());
+				}
+				break;
+				//taggedValue = temp.getValue().toString();
+			}
+		}
+		return taggedValuesList;
+	}
+	
+	/**
+	 * to fetch the view associated with the entity
+	 */
+	
+	public String getTaggedValueForView(final AttributeInterface attribute, final EntityInterface entity)
+	{
+		
 		String taggedValue =""; 
 		Collection<TaggedValueInterface> tagList = entity.getTaggedValueCollection();
 		Iterator<TaggedValueInterface> tagIterator = tagList.iterator();
 		while (tagIterator.hasNext())
 		{
 			TaggedValueInterface temp = (TaggedValueInterface) tagIterator.next();
-			if (temp.getKey().toString().equals(tagName))
+			if (temp.getKey().toString().equals(Constants.PERMISSIBLEVALUEVIEW))
 			{
-//				taggedValuesList = new ArrayList<String>();
-//				String pvFilterValue = temp.getValue();
-//				StringTokenizer tokenizer = new StringTokenizer(pvFilterValue,",",false);
-//				while(tokenizer.hasMoreTokens())
-//				{
-//					taggedValuesList.add(tokenizer.nextToken());
-//				}
-//				break;
+				
 				taggedValue = temp.getValue().toString();
 			}
 		}
@@ -233,8 +251,8 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 			{
 				List<IVocabulary> vocabularies = vocabMngr.getConfiguredVocabularies();
 				int noOfCodingSchemes = vocabularies.size();
-				String pvFilter = getTaggedValueForAttribute(attribute, entity,Constants.PERMISSIBLEVALUEFILTER.toString());
-				String view =	getTaggedValueForAttribute(attribute, entity,Constants.PERMISSIBLEVALUEVIEW);
+				List<String> pvFilter = getTaggedValueForAttribute(attribute, entity);
+				String view =	getTaggedValueForView(attribute, entity);
 				MedLookUpManager medManager = MedLookUpManager.instance();
 				List<String> toReturn = medManager.getPermissibleValues(pvFilter,view);
 				if (toReturn != null && toReturn.size() < 5 && noOfCodingSchemes == 1)

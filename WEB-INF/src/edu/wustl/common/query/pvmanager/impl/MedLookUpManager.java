@@ -82,7 +82,7 @@ public class MedLookUpManager
 	}*/
 	//change signature to accept pv_filter and pv_view.
 	//if pv_filter = null then dont go in for like condition.
-	public List<String> getPermissibleValues(String pvFilter,String pvView) throws PVManagerException 
+	public List<String> getPermissibleValues(List<String> pvFilter,String pvView) throws PVManagerException 
 	{
 		List<String> pvList = null;
 		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
@@ -134,23 +134,37 @@ public class MedLookUpManager
 		return pvList;
 
 	}
-	public int getPermissibleValuesCount(String pvFilter,String pvView) throws PVManagerException 
+	public int getPermissibleValuesCount(List<String> pvFilterList,String pvView) throws PVManagerException 
 	{
 		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		String countQuery="";
+		StringBuffer countQuery=new StringBuffer();
 		int count=0;
 		try
 		{
 			dao.openSession(null);
 			//if a pvFilter value is give i.e a synonym is given 
-			if(pvFilter != null  &&(! pvFilter.equals("")) ) {
-				countQuery="select count(*) from "+pvView+" where synonym like '"+pvFilter+"'";
+			if(pvFilterList != null  &&(! pvFilterList.isEmpty()) ) {
+				//countQuery="select count(*) from "+pvView+" where ";
+				countQuery.append("select count(*) from "+pvView+" where ");
+				//+pvFilter+"'";
+				int indx=0;
+				for(; indx<pvFilterList.size()-1;indx++)
+				{
+					countQuery.append("synonym like '");
+					countQuery.append(pvFilterList.get(indx));
+					countQuery.append("' or ");
+				}
+				countQuery.append("synonym like '");
+				countQuery.append(pvFilterList.get(indx));
+				countQuery.append("'");
+				
+				
 			}
 			else
 			{
-				countQuery="select count(*) from "+pvView;
+				countQuery.append("select count(*) from "+pvView);
 			}
-			List<List<String>> dataListCount = dao.executeQuery(countQuery, null, false, false, null);
+			List<List<String>> dataListCount = dao.executeQuery(countQuery.toString(), null, false, false, null);
 			if(!dataListCount.isEmpty())
 			{
 				count=Integer.parseInt(dataListCount.get(0).get(0));
@@ -184,21 +198,21 @@ public class MedLookUpManager
 	
 	//accept the name of the view as well
 	//rename method.
-	private String getQueryWithSynonym(String pvFilter,String pvView)
+	private String getQueryWithSynonym(List<String> pvFilterList,String pvView)
 	{
 		
 		StringBuffer query = new StringBuffer("select synonym,id from ");
 		query.append(pvView);
 		query.append(Constants.WHERE);
-		//int indx=0;
-//		for(; indx<pvFilterList.size()-1;indx++)
-//		{
+		int indx=0;
+		for(; indx<pvFilterList.size()-1;indx++)
+		{
 			query.append("synonym like '");
-			query.append(pvFilter);
-//			query.append("' or ");
-//		}
-//		query.append("synonym like '");
-//		query.append(pvFilterList.get(indx));
+			query.append(pvFilterList.get(indx));
+			query.append("' or ");
+		}
+		query.append("synonym like '");
+		query.append(pvFilterList.get(indx));
 		query.append("'");
 		
 		return query.toString();
