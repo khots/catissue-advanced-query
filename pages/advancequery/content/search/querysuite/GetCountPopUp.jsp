@@ -3,7 +3,9 @@
 <%@ page import="edu.wustl.query.actionForm.CategorySearchForm"%>
 <%@ page import="edu.wustl.common.beans.NameValueBean"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
+<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
+<script type="text/javascript" src="jss/advancequery/ajax.js"></script>
+<script src="jss/advancequery/queryModule.js"></script>
 <html>
 <head>
 <title>CIDER: Clinical Investigation Data Exploration Repository</title>
@@ -17,57 +19,14 @@ function MM_preloadImages() { //v3.0
     var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
     if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
     //Calling the GetCount Ajax function to continuosly fetch the count of the executing query
-    callGetCountAjaxAction(-1);
-}
-function callGetCountAjaxAction(executionId)
-{
-	var url="GetCountAjaxHandler.do?executionId="+executionId;
-	var request=newXMLHTTPReq();
-	if(request == null)
-	{
-		alert ("Your browser does not support AJAX!");
-		return;
-	}
-	var handlerFunction = getReadyStateHandler(request,responseHandler,true); 
-	request.onreadystatechange = handlerFunction; 
-	request.open("POST",url,true);    
-	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
-	request.send("");
+	getCountAjaxAction(-1);
 }
 
-function responseHandler(response)
-{
-	  var jsonResponse = eval('('+ response+')');
-          if(jsonResponse.resultObject!=null)
-          {
-			var queryCount = jsonResponse.resultObject.queryCount;
-			var status = jsonResponse.resultObject.status;
-			var executionId = jsonResponse.resultObject.executionId;
-					 
-			//alert("queryCount:::::= "+ queryCount + "  status:::" + status +"  executionId:::" + executionId);
-					 	 
-			if(queryCount!=-1)
-			{
-				var StatusObject=document.getElementById("StatusId");
-				var CountObject=document.getElementById("CountId");
-
-				if(StatusObject!=null)
-				{
-					StatusObject.innerHTML= status;
-				}
-				if(CountObject!=null)
-				{
-					CountObject.innerHTML= queryCount;
-				}
-			}	
-          }
-		if(status!="Completed")
-			callGetCountAjaxAction(executionId);
-}
 function retrieveRecentQueries()
 {
+	document.forms['form2'].notify.value="true";
 	parent.pvwindow.hide();
-	parent.document.forms[0].action="ShowDashboard.do"
+	parent.document.forms[0].action="\RetrieveRecentQueries.do"
 	parent.document.forms[0].submit();
 }
 //-->
@@ -97,10 +56,9 @@ MM_reloadPage(true);
           </tr>
           <tr >
             <td height="25" valign="middle" nowrap><span class="content_txt">Execution Status: <strong id="StatusId"></strong></span></td>
-            <td align="right" valign="middle"><form name="form1" method="post" action="">
-			<a href="javascript:retrieveRecentQueries()">
-              <img src="images/advancequery/b_abort_execution.gif" alt="Abort Execution" width="116" height="23">&nbsp;<img src="images/advancequery/b_notify_me.gif" alt="Notify me when done" width="146" height="23">
-			  </a>
+            <td align="right" valign="middle">
+			<form id="form1" name="form1" method="post" action="">
+              <img src="images/advancequery/b_abort_execution.gif" alt="Abort Execution" width="116" height="23" onclick="abortExecutionAjaxAction();">&nbsp;<img src="images/advancequery/b_notify_me.gif" alt="Notify me when done" width="146" height="23" onclick="retrieveRecentQueries();">
             </form></td>
           </tr>
           <tr>
@@ -117,14 +75,19 @@ MM_reloadPage(true);
                 <td valign="middle" class="content_txt">Select Project:</td>
                 <td valign="middle">&nbsp;</td>
                 <td valign="middle"><form name="form2" method="post" action="">
-				<SELECT NAME="getCount" class="textfield">
-						<c:set var="selectedProject" value="${requestScope.categorySearchForm.currentSelectedProject}"/>
-						<c:if test="${selectedProject==''}">
+				<c:set var="currentSelectedProject" value="${requestScope.categorySearchForm.currentSelectedProject}"/>
+				<html:hidden property="notify" value="false" />
+				<html:hidden property="abortExecution" value="false" />
+				<html:hidden property="executionId" value="-1" />
+				<html:hidden property="isNewQuery" value="false" />
+				<html:hidden property="selectedProject" value="${currentSelectedProject}" />
+				<SELECT NAME="getCount" class="textfield" onChange="setProjectData(this,'form2')">
+						<c:if test="${currentSelectedProject==''}">
 								<OPTION VALUE="" selected>--Select--
 						</c:if>
 						<c:forEach var="project" items="${requestScope.categorySearchForm.projectsNameValueBeanList}">
 							<c:choose>
-								<c:when test="${project.value eq selectedProject}">
+								<c:when test="${project.value eq currentSelectedProject}">
 									<OPTION VALUE="${project.value}" selected>${project.name}
 								</c:when>
 								<c:otherwise>
@@ -135,8 +98,8 @@ MM_reloadPage(true);
 				</SELECT>
 				</form></td>
                 <td valign="middle">&nbsp;</td>
-                <td valign="middle"><form name="form3" method="post" action="">
-                    <img src="images/advancequery/b_get_count_inact.gif" alt="Get Count" width="84" height="23">
+                <td valign="middle"><form id="form3" name="form3" method="post" action="">
+                    <img src="images/advancequery/b_get_count_inact.gif" alt="Get Count" width="84" height="23" onclick="">
                 </form></td>
               </tr>
             </table></td>
