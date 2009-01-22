@@ -232,12 +232,12 @@ function responseHandler(response)
 						
 
 					}
-					/*if((status=="Completed"))
+					if((status=="Completed"))
 					{
 						
 						changeExecuteLinkToExecute(queryIndex,0);
 
-					}*/
+					}
 				}
           } 
 	
