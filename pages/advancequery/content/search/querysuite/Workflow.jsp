@@ -447,12 +447,10 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 						   					/>
 											${workflowForm.displayQueryTitle[queryIndex]}
 						   				</td>
-										<td class="content_txt">
-											<html:hidden property="cancelajaxcall" styleId="cancelajaxcall_${queryIndex}" value="false"/>
-											
-										</td>
 
-											<td class="content_txt">
+
+											
+										<td class="content_txt">
 											<html:hidden property="queryTypeControl" styleId="queryTypeControl_${queryIndex}" value="${workflowForm.queryTypeControl[queryIndex]}"/>
 											${workflowForm.displayQueryType[queryIndex]}
 										</td>
@@ -480,6 +478,10 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 											<html:link styleId="delete_${queryIndex}" href="javascript:deleteWorkflowItem(${queryIndex})" styleClass="bluelink">
 												Delete
 											</html:link>
+
+														
+											<html:hidden property="cancelajaxcall" styleId="cancelajaxcall_${queryIndex}" value="false"/>
+								
 											</td>
 											</tr>
 											</tbody>

@@ -61,6 +61,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	operandsTd2.width="4";
 	operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+queryCount+"','"+0+"')"));
 	operandsTd3.appendChild(createLink("Delete ","delete_"+queryCount,"javascript:deleteWorkflowItem('"+queryCount+"')"));
+	operandsTd3.appendChild(createHiddenElement("cancelajaxcall","cancelajaxcall_"+(queryCount),'false'));
 
 	operandsTr.appendChild(operandsTd1);
 	operandsTr.appendChild(operandsTd2);
@@ -127,7 +128,7 @@ function addQuery()
 		operandsTdContent=getText(queryIds[counter]);
 		rowContents[1]=createTextElement(getText(queryTitles[counter]));
 		rowContents[2]=createTextElement(getText(queryTypes[counter]));
-		rowContents[3]=createHiddenElement("cancelajaxcall","cancelajaxcall_"+(counter+queryCount),'false');
+		//rowContents[3]=createHiddenElement("cancelajaxcall","cancelajaxcall_"+(counter+queryCount),'false');
 		rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+(counter+queryCount),getText(queryIds[counter]));
 		rowContents[5]=getText(queryTitles[counter]);
 		rowContents[6]=getText(queryTypes[counter]);
