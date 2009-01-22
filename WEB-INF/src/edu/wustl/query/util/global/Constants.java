@@ -677,5 +677,18 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String DEFAULT_CONDITION_RULES_OPT_OUT="RULES_OPT_OUT";
     /** Constant for default conditions project rule minors **/
     public static final String DEFAULT_CONDITION_RULES_MINOR="RULES_MINOR";
+	public static final String SHOW_LAST = "showLast";
+	public static final String EXECUTION_LOG_ID = "executionLogId";
+	public static final int SHOW_LAST_COUNT = 25;
+	public static final String TOTAL_PAGES = "totalPages";
+	public static final String RESULTS_PER_PAGE_OPTIONS = "resultsPerPageOptions";
+	public static final String RECENT_QUERIES_BEAN_LIST = "recentQueriesBeanList";
+	public static final int PER_PAGE_RESULTS = 10;
+	public static final String RESULT_OBJECT = "resultObject";
+	public static final String QUERY_COUNT = "queryCount";
+	public static final String GET_COUNT_STATUS = "status";
+	public static final String EXECUTION_ID = "executionId";
+	public static final int[] SHOW_LAST_OPTION = {25, 50, 100, 200};
+
    
 }
