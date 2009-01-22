@@ -507,6 +507,17 @@ insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_META
 insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3412,'NOT_SEARCHABLE','NOT_SEARCHABLE',415);
 insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3413,'PV_FILTER','99601^%,99602^%',196);
 insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3414,'PV_VIEW','MED_LOOKUP_VIEW',196);
+insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3415,'DEFAULT_CONDITION','DEFAULT_CONDITION',362);
+insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3416,'DEFAULT_CONDITION','DEFAULT_CONDITION',132);
+insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3417,'DEFAULT_CONDITION','DEFAULT_CONDITION',33);
+insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3418,'DEFAULT_CONDITION','Greater than or Equal to!=!CURRENT_DATE',366);
+insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3419,'DEFAULT_CONDITION','Less than or Equal to!=!CURRENT_DATE',367);
+insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3420,'DEFAULT_CONDITION','Less than or Equal to!=!CURRENT_DATE',220);
+insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3421,'DEFAULT_CONDITION','Greater than or Equal to!=!CURRENT_DATE',221);
+insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3422,'DEFAULT_CONDITION','Less than or Equal to!=!CURRENT_DATE',82);
+insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3423,'DEFAULT_CONDITION','Greater than or Equal to!=!CURRENT_DATE',83);
+insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3424,'DEFAULT_CONDITION','DEFAULT_CONDITION',115);
+insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3425,'DEFAULT_CONDITION','In!=!FACILITY_ID',116);
 /*Data for the table  dyextn_textarea  */
 
 /*Data for the table  dyextn_textfield  */
