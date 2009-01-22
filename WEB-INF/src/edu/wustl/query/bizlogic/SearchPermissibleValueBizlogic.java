@@ -176,7 +176,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	public String getMappedVocabularyPVChildAsHTML(String vocabName, String vocabversoin,
 			IConcept concept, String checkboxId)
 	{
-		return "<tr ><td style='padding-left:30px'>&nbsp;</td><td class='black_ar_tt'> \n"
+		return "<tr title='Concept Code: "+concept.getCode()+"'><td style='padding-left:30px'>&nbsp;</td><td class='black_ar_tt' > \n"
 				+ "<input type='checkbox' name='" + vocabName + vocabversoin + "' id='"
 				+ checkboxId + "' value='" + concept.getCode() + ":" + concept.getDescription()
 				+ "' onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
@@ -210,7 +210,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		{
 			status="";
 		}
-		return "<tr ><td style='padding-left:30px'>&nbsp;</td><td class='black_ar_tt'> \n"
+		return "<tr title='Concept Code: "+concept.getCode()+"'><td style='padding-left:30px'>&nbsp;</td><td class='black_ar_tt'> \n"
 				+ "<input type='checkbox' "+status+" name='"+ vocabName + vocabversoin + "' id='"
 				+ checkboxId + "' value='" + concept.getCode() + ":" + concept.getDescription()
 				+ "' onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
