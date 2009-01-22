@@ -7,6 +7,10 @@
 <%@page import="edu.wustl.common.vocab.utility.VocabUtil"%>
 <%@page import="edu.wustl.query.domain.SelectedConcept"%>
 
+<%@ page language="java" isELIgnored="false"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
+
 <html>
 <head>
 	
@@ -537,29 +541,25 @@ function editSelectedPV()
 		<table >
 			<tr>
 			<td class="content_txt_bold" nowrap>Select Vocabulary: &nbsp;&nbsp;</td>
-		<%
-			List<IVocabulary> vocabs1 = (ArrayList)request.getSession().getAttribute(Constants.VOCABULIRES);
-			for(int i=0;i<vocabs1.size();i++)
-			{
-				String value=vocabs1.get(i).getName() +":"+ vocabs1.get(i).getVersion();
-				String vocabNameWithVersion=vocabs1.get(i).getName() + vocabs1.get(i).getVersion();
-				String vocabDisplayName=vocabs1.get(i).getDisplayName();
-				String vocabURN=vocabs1.get(i).getURN();
-				if(i!=0 && i%5==0)
-				{%>
-					
-					</tr> <tr><td class="content_txt_bold" nowrap>&nbsp;&nbsp;</td>
-				<%}
-				if(vocabs1.get(i).getName().equalsIgnoreCase(srcVocabName) && vocabs1.get(i).getVersion().equalsIgnoreCase(srcVocabVersion))
-				{
-				
-				%>
-	  	<td><input  type="checkbox" name="vocabNameAndVersionCheckbox" checked="true"  id="vocab_<%=vocabNameWithVersion%>" value="<%=value%>"  onclick= "refreshWindow(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>','<%=vocabURN%>');"></td><td class="content_txt"><%=vocabDisplayName%> &nbsp;&nbsp;&nbsp;</td>
-		<%}else{%>
-		<td><input type="checkbox"  name="vocabNameAndVersionCheckbox" id="vocab_<%=vocabNameWithVersion%>" value="<%=value%>"   onclick= "refreshWindow(this.id,'<%=vocabs1.get(i).getName()%>','<%=vocabs1.get(i).getVersion()%>','<%=vocabURN%>');"></td><td class="content_txt"><%=vocabDisplayName%>&nbsp;&nbsp;&nbsp;</td>
-		<%}
+			<c:set var="srcVocabName" value="<%=srcVocabName%>"/>
+			<c:set var="srcVocabVer" value="<%=srcVocabVersion%>"/>
+
+			<logic:iterate name="Vocabulries" id="vocabs">
+					<c:choose>
+						<c:when test="${vocabs.name eq srcVocabName}">
+							<c:if test="${vocabs.version eq srcVocabVer}" >
+								<td><input type="checkbox"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.name}${vocabs.version}" value="${vocabs.name}:${vocabs.version}"   
+								onclick= "refreshWindow(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');" checked='true'></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;</td>			
+							</c:if>
+						</c:when>
+						<c:otherwise>
+									<td><input type="checkbox"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.name}${vocabs.version}" value="${vocabs.name}:${vocabs.version}"   
+								onclick= "refreshWindow(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');"></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;</td>		
+						</c:otherwise>
+				</c:choose>
+			
+			</logic:iterate>
 		
-		}%>
 		</tr>
 		</table>
 		</td>
@@ -601,27 +601,31 @@ function editSelectedPV()
 					<div  id="divForMappingMode" style="width: 260px; height: 300px; border:1px solid Silver; overflow:auto;"  >
 					<table border="0" cellpadding="0" cellspacing="0">
 					
-								<%for(int i=0;i<vocabs1.size();i++)
-								{
-									if(!vocabs1.get(i).getName().equalsIgnoreCase(srcVocabName) || !vocabs1.get(i).getVersion().equalsIgnoreCase(srcVocabVersion))
-								{%>
-						<tr>
-							  <td valign="top">
-								<div id="main_div_vocab_<%=vocabs1.get(i).getName()+vocabs1.get(i).getVersion()%>" style="width:250;display:none"></div>
-							 </td>
-						</tr>
-								<%}else{%>
-						<tr>
-							
-							<td valign="top">
-								<div id="main_div_vocab_<%=vocabs1.get(i).getName()+vocabs1.get(i).getVersion()%>" style="width:250;">
-								<% String treeData = (String)request.getSession().getAttribute(Constants.MED_PV_HTML); %>
-								<%=treeData%>
-								</div>
-							</td>
-							
-						</tr>
-						<%}}%>
+					<logic:iterate name="Vocabulries" id="vocabs">
+					<c:choose>
+						<c:when test="${vocabs.name eq srcVocabName}">
+							<c:if test="${vocabs.version eq srcVocabVer}" >
+								<tr>
+								<td valign="top">
+									<div id="main_div_vocab_${vocabs.name}${vocabs.version}" style="width:250;">
+									<% String treeData = (String)request.getSession().getAttribute(Constants.MED_PV_HTML); %>
+									<%=treeData%>
+									</div>
+								</td>
+								</tr>
+							</c:if>
+						</c:when>
+						<c:otherwise>
+								<tr>
+								  <td valign="top">
+									<div id="main_div_vocab_${vocabs.name}${vocabs.version}" style="width:250;display:none"></div>
+								 </td>
+								</tr>
+						</c:otherwise>
+				</c:choose>
+			
+			</logic:iterate>
+								
 					</table>
 					</div>
 				
@@ -632,7 +636,7 @@ function editSelectedPV()
 						<div style="width: 250px; height: 300px; overflow:auto;border:1px solid Silver;" >
 						<table style="width: 240px; height: 290px;">
 						<tr>
-							<td class="content_txt" align="right" style="padding-left:10px">This feature will be available in Iteration 9</td> 
+							<td class="content_txt" align="right" style="padding-left:0px" nowrap>This feature will be available in next Iteration </td> 
 						</tr>
 						</table>
 						</div>
@@ -667,34 +671,30 @@ function editSelectedPV()
 					<td style="padding:5px;">
 						<div style="width: 250px; height:313px; border:1px solid Silver; overflow:auto;"  >
 						<table cellpadding="0" cellspacing="0"  border="0">
-							<%for(int i=0;i<vocabs1.size();i++)
-								{
-						
-								String vNameWithVerAndToken=vocabs1.get(i).getName()+"@"+vocabs1.get(i).getVersion();
-								String vocabDisplayName=vocabs1.get(i).getDisplayName();
-								%>
-							<tr><td><div id = "selectedPermValues_Div_<%=vNameWithVerAndToken.toUpperCase()%>" style="display:none">
+						<logic:iterate name="Vocabulries" id="vocabs">
+							<tr><td><div id = "selectedPermValues_Div_${vocabs.name}@${vocabs.version}" style="display:none">
 						
 							<table border = "0" id = "" cellpadding ="0" cellspacing ="1">
 								<tr>
 									<td> <table border = "0" id = "" cellpadding ="0" cellspacing ="1">  <tr>
 									<td align="left" align="absmiddle">
-										<a id="image_<%=vNameWithVerAndToken.toUpperCase()%>" onclick="javascript:showHide('selectedPermValues_<%=vNameWithVerAndToken.toUpperCase()%>','image_<%=vNameWithVerAndToken.toUpperCase()%>')">
+										<a id="image_${vocabs.name}@${vocabs.version}" onclick="javascript:showHide('selectedPermValues_${vocabs.name}@${vocabs.version}','image_${vocabs.name}@${vocabs.version}')">
 										<img  src="images/advancequery/nolines_minus.gif" align="absmiddle"/></a>
 									</td>
-									<td  align="middle"><input type="checkbox" id="pvSelectedCB_<%=vNameWithVerAndToken.toUpperCase()%>" onclick="checkedUncheckedAllPvs('<%=vNameWithVerAndToken.toUpperCase()%>')"> </td>
-									<td  align="middle" class="grid_header_text" >&nbsp;&nbsp;<%=vocabDisplayName%></td>
+									<td  align="middle"><input type="checkbox" id="pvSelectedCB_${vocabs.name}@${vocabs.version}" onclick="checkedUncheckedAllPvs('${vocabs.name}@${vocabs.version}')"> </td>
+									<td  align="middle" class="grid_header_text" >&nbsp;&nbsp;${vocabs.displayName}</td>
 									</tr></table></td>
 								</tr>	
 								<tr>
 									<td>
-									<table  id = "selectedPermValues_<%=vNameWithVerAndToken.toUpperCase()%>" border = "0" cellpadding ="1.5" cellspacing ="1">
+									<table  id = "selectedPermValues_${vocabs.name}@${vocabs.version}" border = "0" cellpadding ="1.5" cellspacing ="1">
 									</table>
 									</td>
 								</tr>
 							</table>
-							</div>	</td></tr>
-							<%}%>
+							</div></td>
+						  </tr>
+						</logic:iterate>
 						</table>
 						</div>
 					</td>
