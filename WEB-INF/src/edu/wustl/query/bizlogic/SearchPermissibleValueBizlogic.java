@@ -73,10 +73,10 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		}
 		return permissibleConcepts;
 	}
-	public int getPermissibleValueListCout(AttributeInterface attribute,
+	public List<PermissibleValueInterface> getPermissibleValueListFromDB(AttributeInterface attribute,
 			EntityInterface entity) throws PVManagerException
 	{
-		return pvManager.getPermissibleValueListCount(attribute, entity);
+		return pvManager.getPermissibleValueList(attribute, entity);
 	}
 	/**
 	 * This method returns the Mapped concept code of target vocabulary with source vocabulary
