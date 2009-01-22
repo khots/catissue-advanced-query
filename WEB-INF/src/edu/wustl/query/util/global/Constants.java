@@ -637,7 +637,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	/**  Constant for  */
 	public static final String XML_FILE_NAME = "fileName";
 	public static final String PERMISSIBLEVALUEVIEW = "PV_VIEW";
-	public static final String MESSAGE = "Permissible values are more then 25. Please search for the specific term";
+	public static final String VI_INFO_MESSAGE1 = "This entity contains more than ";
+	public static final String VI_INFO_MESSAGE2 = " Permissible values.Please search for the specific term ";
 
 	
 	//Start : Added for changes in Query Design for CIDER Query 
