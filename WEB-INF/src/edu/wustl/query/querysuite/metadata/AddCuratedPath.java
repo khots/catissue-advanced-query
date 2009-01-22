@@ -128,7 +128,6 @@ public class AddCuratedPath
 		entityList.add("Person,Demographics,Address,State");
 		entityList.add("Person,Demographics,Address,Country");
 		entityList.add("Person,Demographics,Address,AddressType");
-		
 		entityList.add("Person,Demographics,AssociatedPerson,RelationToPerson");
 		
 		
@@ -138,9 +137,7 @@ public class AddCuratedPath
 		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,Status");
 		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,MedicalRecordNumber");
 		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,Facility");
-		
 		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,MedicalRecordNumber,Facility");
-		
 		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,LaboratoryTestType");
 		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,ResultValue");
 		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,Status");
@@ -148,6 +145,36 @@ public class AddCuratedPath
 		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,ResultValue,Result,UnitsOfMeasure");
 		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,ResultValue,Result,NormalRange");
 		
+		
+		//Adding curated paths for Encounter
+		entityList.add("Encounter,EncounterDetails,Insurance");
+		entityList.add("Encounter,EncounterDetails,Insurance,InsurancePlanType");
+		entityList.add("Encounter,EncounterDetails,Insurance,PersonName");
+		entityList.add("Encounter,EncounterDetails,Insurance,RelationToPerson");
+		entityList.add("Encounter,EncounterDetails,HipaaNotified");
+		entityList.add("Encounter,EncounterDetails,OptOutIndicator");
+		entityList.add("Encounter,EncounterDetails,VipIndicator");
+		entityList.add("Encounter,EncounterDetails,PatientType");
+		entityList.add("Encounter,EncounterDetails,PatientClass");
+		entityList.add("Encounter,EncounterDetails,FinancialClass");
+		entityList.add("Encounter,EncounterDetails,Service");
+		entityList.add("Encounter,EncounterDetails,FacilityDischargeDisposition");
+		entityList.add("Encounter,EncounterDetails,DischargeDisposition");
+		entityList.add("Encounter,EncounterDetails,InfectionControlCode");
+		entityList.add("Encounter,EncounterDetails,DiagnosticRelatedGroup");
+		entityList.add("Encounter,EncounterDetails,PatientLocation");
+		entityList.add("Encounter,EncounterDetails,Diagnosis");
+		entityList.add("Encounter,EncounterDetails,Diagnosis,DiagnosisCode");
+		entityList.add("Encounter,EncounterDetails,Diagnosis,DiagnosisType");
+		entityList.add("Encounter,EncounterDetails,Procedure");
+		entityList.add("Encounter,EncounterDetails,Procedure,ProcedureCodingMethod");
+		entityList.add("Encounter,EncounterDetails,Procedure,ProcedureCode");
+		entityList.add("Encounter,EncounterDetails,Procedure,Provider");
+		entityList.add("Encounter,EncounterDetails,Procedure,Provider,PersonName");
+		entityList.add("Encounter,EncounterDetails,Procedure,Provider,ProviderType");
+		entityList.add("Encounter,EncounterDetails,Provider");
+		entityList.add("Encounter,EncounterDetails,Provider,ProviderType");
+		entityList.add("Encounter,EncounterDetails,Provider,PersonName");
 	}
 
 	public AddCuratedPath(Connection connection)
