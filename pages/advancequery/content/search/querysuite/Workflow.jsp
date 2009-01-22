@@ -186,7 +186,8 @@ function cancelExecuteQuery(response)
 function executeGetCountQuery(queryId,executionLogId)
 {
 	var ID=document.getElementById("selectedqueryId_"+queryId).value;
-	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'start'+"&ID="+ID+"&executionLogId="+executionLogId;
+	var projectId=document.getElementById("selectedProject").value;
+	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'start'+"&ID="+ID+"&executionLogId="+executionLogId+"&selectedProject="+projectId;
 	changeExecuteLink(queryId);
 	var request=newXMLHTTPReq();
 	if(request == null)
@@ -393,9 +394,13 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 					<td >
 						<table  border="0" cellpadding="4" cellspacing="0" align="right">
                           <tr>
-                            <td align="right"  nowrap><span class="content_txt_bold"><bean:message  key="workflow.project"/>&nbsp;<select name="select2" class="texttype" disabled="true">
-                                    <option>Select..</option>
-                                  </select>
+                            <td align="right"  nowrap><span class="content_txt_bold"><bean:message  key="workflow.project"/>&nbsp;
+							 <SELECT name="selectedProject" id="selectedProject" class="texttype" >
+							   <option VALUE="-1">Select..</option>
+								<c:forEach var="project" items="${requestScope.projectsNameValueBeanList}">
+									<OPTION VALUE="${project.value}">${project.name}
+								</c:forEach>
+							</SELECT>
                             </span></td>
                             <td width="90" align="left" valign="middle" ><a href="javascript:showNextReleaseMsg()" class="bluelink"><bean:message key="workflow.runworkflow"/></a></td>
                           </tr>
