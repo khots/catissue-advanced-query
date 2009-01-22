@@ -67,7 +67,7 @@ function responseHandler(response)
 function retrieveRecentQueries()
 {
 	parent.pvwindow.hide();
-	parent.document.forms[0].action="\RetrieveRecentQueries.do"
+	parent.document.forms[0].action="ShowDashboard.do"
 	parent.document.forms[0].submit();
 }
 //-->
