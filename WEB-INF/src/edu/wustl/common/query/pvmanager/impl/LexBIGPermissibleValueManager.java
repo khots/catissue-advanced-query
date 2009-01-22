@@ -49,16 +49,7 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 		return permissibleValueList;
 
 	}
-	public int getPermissibleValueListCount(final AttributeInterface attribute, 
-			final EntityInterface entity)throws PVManagerException
-	{
-		
-		List<String> filter = getTaggedValueForAttribute(attribute, entity);
-		//fetch pv_view from here 
-		String view =	getTaggedValueForView(attribute, entity);
-		MedLookUpManager medManager = MedLookUpManager.instance();
-		return  medManager.getPermissibleValuesCount(filter,view);//(filter,view)
-	}
+	
 	/*public List<PermissibleValueInterface> getPermissibleValueList(final AttributeInterface attribute, final EntityInterface entity) 
 	{
 
