@@ -7,6 +7,7 @@ import java.io.*;
 public class WherePartParser implements WherePartParserConstants {
 
         private PredicateGenerator predicateGenerator;
+        private String forVariable;
 
         public WherePartParser(String wherePart, PredicateGenerator predicateGenerator)
         {
@@ -43,6 +44,7 @@ public class WherePartParser implements WherePartParserConstants {
       case PREFIX_UNARY_OPERATOR:
       case PREFIX_BINARY_OPERATOR:
       case CONDITION_ATTRIBUTE:
+      case 19:
         ConditionsOnOneEntity();
         break;
       case OPENING_PARENTHESIS:
@@ -106,30 +108,39 @@ public class WherePartParser implements WherePartParserConstants {
     }
   }
 
-  final private void AtomicCondition() throws ParseException {
+  final private AbstractPredicate AtomicCondition() throws ParseException {
     trace_call("AtomicCondition");
     try {
+        AbstractPredicate predicate = null;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PREFIX_UNARY_OPERATOR:
-        PrefixUnaryCondition();
+        predicate = PrefixUnaryCondition();
+                {if (true) return predicate;}
         break;
       case PREFIX_BINARY_OPERATOR:
-        PrefixBinaryCondition();
+        predicate = PrefixBinaryCondition();
+                {if (true) return predicate;}
         break;
       case CONDITION_ATTRIBUTE:
-        InfixCondition();
+        predicate = InfixCondition();
+                {if (true) return predicate;}
+        break;
+      case 19:
+        predicate = NegationCondition();
+                {if (true) return predicate;}
         break;
       default:
         jj_la1[3] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
+    throw new Error("Missing return statement in function");
     } finally {
       trace_return("AtomicCondition");
     }
   }
 
-  final private void PrefixUnaryCondition() throws ParseException {
+  final private AbstractPredicate PrefixUnaryCondition() throws ParseException {
     trace_call("PrefixUnaryCondition");
     try {
         Token conditionAttribute = null;
@@ -138,16 +149,18 @@ public class WherePartParser implements WherePartParserConstants {
       conditionAttribute = jj_consume_token(CONDITION_ATTRIBUTE);
       jj_consume_token(CLOSING_PARENTHESIS);
                         int separator = conditionAttribute.image.indexOf("/");
-                        String forVariable = conditionAttribute.image.substring(0, separator);
+                        forVariable = conditionAttribute.image.substring(0, separator);
                         String attribute = conditionAttribute.image.substring(separator+1);
                         AbstractPredicate predicate = new PrefixUnaryPredicate(attribute, operator.image);
                         predicateGenerator.addPredicate(forVariable, predicate);
+                        {if (true) return predicate;}
+    throw new Error("Missing return statement in function");
     } finally {
       trace_return("PrefixUnaryCondition");
     }
   }
 
-  final private void PrefixBinaryCondition() throws ParseException {
+  final private AbstractPredicate PrefixBinaryCondition() throws ParseException {
     trace_call("PrefixBinaryCondition");
     try {
         Token conditionAttribute = null;
@@ -160,16 +173,18 @@ public class WherePartParser implements WherePartParserConstants {
       rhs = RHS();
       jj_consume_token(CLOSING_PARENTHESIS);
                 int separator = conditionAttribute.image.indexOf("/");
-                String forVariable = conditionAttribute.image.substring(0, separator);
+                forVariable = conditionAttribute.image.substring(0, separator);
                 String attribute = conditionAttribute.image.substring(separator+1);
                 AbstractPredicate predicate = new PrefixBinaryPredicate(attribute, operator.image, rhs);
                 predicateGenerator.addPredicate(forVariable, predicate);
+                {if (true) return predicate;}
+    throw new Error("Missing return statement in function");
     } finally {
       trace_return("PrefixBinaryCondition");
     }
   }
 
-  final private void InfixCondition() throws ParseException {
+  final private AbstractPredicate InfixCondition() throws ParseException {
     trace_call("InfixCondition");
     try {
         Token conditionAttribute = null;
@@ -179,12 +194,30 @@ public class WherePartParser implements WherePartParserConstants {
       operator = jj_consume_token(INFIX_OPERATOR);
       rhs = RHS();
                 int separator = conditionAttribute.image.indexOf("/");
-                String forVariable = conditionAttribute.image.substring(0, separator);
+                forVariable = conditionAttribute.image.substring(0, separator);
                 String attribute = conditionAttribute.image.substring(separator+1);
                 AbstractPredicate predicate = new InfixPredicate(attribute, operator.image, rhs);
                 predicateGenerator.addPredicate(forVariable, predicate);
+                {if (true) return predicate;}
+    throw new Error("Missing return statement in function");
     } finally {
       trace_return("InfixCondition");
+    }
+  }
+
+  final private AbstractPredicate NegationCondition() throws ParseException {
+    trace_call("NegationCondition");
+    try {
+        AbstractPredicate predicate = null;
+      jj_consume_token(19);
+      predicate = AtomicCondition();
+      jj_consume_token(CLOSING_PARENTHESIS);
+                AbstractPredicate negationPredicate = new NegationPredicate(predicate);
+                predicateGenerator.addPredicate(forVariable, predicate);
+                {if (true) return negationPredicate;}
+    throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("NegationCondition");
     }
   }
 
@@ -281,7 +314,7 @@ public class WherePartParser implements WherePartParserConstants {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x1000,0x2680,0x1000,0x2600,0x62080,0x40,};
+      jj_la1_0 = new int[] {0x1000,0x82680,0x1000,0x82600,0x62080,0x40,};
    }
 
   /** Constructor with InputStream. */
@@ -400,7 +433,7 @@ public class WherePartParser implements WherePartParserConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[19];
+    boolean[] la1tokens = new boolean[20];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -414,7 +447,7 @@ public class WherePartParser implements WherePartParserConstants {
         }
       }
     }
-    for (int i = 0; i < 19; i++) {
+    for (int i = 0; i < 20; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

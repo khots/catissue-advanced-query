@@ -14,6 +14,10 @@ private final int jjStopStringLiteralDfa_0(int pos, long active0)
 {
    switch (pos)
    {
+      case 0:
+         if ((active0 & 0x20L) != 0L)
+            return 103;
+         return -1;
       default :
          return -1;
    }
@@ -40,9 +44,65 @@ private int jjMoveStringLiteralDfa0_0()
          return jjStopAtPos(0, 8);
       case 44:
          return jjStopAtPos(0, 6);
+      case 110:
+         return jjMoveStringLiteralDfa1_0(0x80000L);
       default :
          return jjMoveNfa_0(15, 0);
    }
+}
+private int jjMoveStringLiteralDfa1_0(long active0)
+{
+   try { curChar = input_stream.readChar(); }
+   catch(java.io.IOException e) {
+      jjStopStringLiteralDfa_0(0, active0);
+      return 1;
+   }
+   switch(curChar)
+   {
+      case 111:
+         return jjMoveStringLiteralDfa2_0(active0, 0x80000L);
+      default :
+         break;
+   }
+   return jjStartNfa_0(0, active0);
+}
+private int jjMoveStringLiteralDfa2_0(long old0, long active0)
+{
+   if (((active0 &= old0)) == 0L)
+      return jjStartNfa_0(0, old0);
+   try { curChar = input_stream.readChar(); }
+   catch(java.io.IOException e) {
+      jjStopStringLiteralDfa_0(1, active0);
+      return 2;
+   }
+   switch(curChar)
+   {
+      case 116:
+         return jjMoveStringLiteralDfa3_0(active0, 0x80000L);
+      default :
+         break;
+   }
+   return jjStartNfa_0(1, active0);
+}
+private int jjMoveStringLiteralDfa3_0(long old0, long active0)
+{
+   if (((active0 &= old0)) == 0L)
+      return jjStartNfa_0(1, old0);
+   try { curChar = input_stream.readChar(); }
+   catch(java.io.IOException e) {
+      jjStopStringLiteralDfa_0(2, active0);
+      return 3;
+   }
+   switch(curChar)
+   {
+      case 40:
+         if ((active0 & 0x80000L) != 0L)
+            return jjStopAtPos(3, 19);
+         break;
+      default :
+         break;
+   }
+   return jjStartNfa_0(2, active0);
 }
 private int jjStartNfaWithStates_0(int pos, int kind, int state)
 {
@@ -627,14 +687,14 @@ static final int[] jjnextStates = {
 /** Token literal values. */
 public static final String[] jjstrLiteralImages = {
 "", null, null, null, null, "\44", "\54", "\50", "\51", null, null, null, null, 
-null, null, null, null, null, null, };
+null, null, null, null, null, null, "\156\157\164\50", };
 
 /** Lexer state names. */
 public static final String[] lexStateNames = {
    "DEFAULT",
 };
 static final long[] jjtoToken = {
-   0x63fe1L, 
+   0xe3fe1L, 
 };
 static final long[] jjtoSkip = {
    0x1eL, 

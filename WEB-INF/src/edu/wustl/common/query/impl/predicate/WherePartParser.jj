@@ -17,6 +17,7 @@ public class WherePartParser
 {
 	
 	private PredicateGenerator predicateGenerator;
+	private String forVariable;
 	
 	public WherePartParser(String wherePart, PredicateGenerator predicateGenerator)
 	{
@@ -121,25 +122,40 @@ private void ConditionsOnOneEntity() :
 
 
 
-private void AtomicCondition() :
+private AbstractPredicate AtomicCondition() :
 {
-	
+	AbstractPredicate predicate = null;
 }
 {
-	PrefixUnaryCondition()
+	predicate= PrefixUnaryCondition()
+	{
+		return predicate;	
+	}
 
 |
 
-	PrefixBinaryCondition()
+	predicate=PrefixBinaryCondition()
+	{
+		return predicate;	
+	}
 	
 |
 
-	InfixCondition()
+	predicate=InfixCondition()
+	{
+		return predicate;	
+	}
+	
+|
+	predicate=NegationCondition()
+	{
+		return predicate;	
+	}
 		
 }
 
 
-private void PrefixUnaryCondition() :
+private AbstractPredicate PrefixUnaryCondition() :
 {
 	Token conditionAttribute = null;
 	Token operator = null;
@@ -150,17 +166,17 @@ private void PrefixUnaryCondition() :
 		<CLOSING_PARENTHESIS>
 		{
 			int separator = conditionAttribute.image.indexOf("/");
-			String forVariable = conditionAttribute.image.substring(0, separator);
+			forVariable = conditionAttribute.image.substring(0, separator);
 			String attribute = conditionAttribute.image.substring(separator+1);
 			AbstractPredicate predicate = new PrefixUnaryPredicate(attribute, operator.image);
 			predicateGenerator.addPredicate(forVariable, predicate);	
-							
+			return predicate;				
 		} 
 	
 }
 
 
-private void PrefixBinaryCondition() :
+private AbstractPredicate PrefixBinaryCondition() :
 {
 	Token conditionAttribute = null;
 	Token operator = null;
@@ -174,17 +190,17 @@ private void PrefixBinaryCondition() :
 	<CLOSING_PARENTHESIS>
 	{		
 		int separator = conditionAttribute.image.indexOf("/");
-		String forVariable = conditionAttribute.image.substring(0, separator);
+		forVariable = conditionAttribute.image.substring(0, separator);
 		String attribute = conditionAttribute.image.substring(separator+1);
 		AbstractPredicate predicate = new PrefixBinaryPredicate(attribute, operator.image, rhs);
 		predicateGenerator.addPredicate(forVariable, predicate);
-		
+		return predicate;
 	}
 	
 }
 
 
-private void InfixCondition() :
+private AbstractPredicate InfixCondition() :
 {
 	Token conditionAttribute = null;
 	Token operator = null;
@@ -196,14 +212,32 @@ private void InfixCondition() :
 	rhs = RHS()
 	{
 		int separator = conditionAttribute.image.indexOf("/");
-		String forVariable = conditionAttribute.image.substring(0, separator);
+		forVariable = conditionAttribute.image.substring(0, separator);
 		String attribute = conditionAttribute.image.substring(separator+1);
 		AbstractPredicate predicate = new InfixPredicate(attribute, operator.image, rhs);
 		predicateGenerator.addPredicate(forVariable, predicate);
+		return predicate;
 		
 	}
 
 }
+
+private AbstractPredicate NegationCondition() :
+{
+	AbstractPredicate predicate = null;
+}
+{
+	"not(" 
+	predicate=AtomicCondition()
+	")"
+	{
+		AbstractPredicate negationPredicate = new NegationPredicate(predicate);
+		predicateGenerator.addPredicate(forVariable, predicate);
+		return negationPredicate;	
+	}
+	
+}
+
 
 private void ConditionsOnChild() :
 {

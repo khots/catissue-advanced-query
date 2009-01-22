@@ -63,6 +63,7 @@ public interface WherePartParserConstants {
     "<STRING>",
     "<CONSTANT>",
     "<FUNCTION_CALL>",
+    "\"not(\"",
   };
 
 }

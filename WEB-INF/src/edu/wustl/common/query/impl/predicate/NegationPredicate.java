@@ -40,5 +40,22 @@ public class NegationPredicate extends AbstractPredicate
 		return predicate.toString();
 		
 	}
+	
+	/**
+	 * @return the rhs of the negated predicate
+	 */
+	public String getRhs()
+	{
+		return predicate.getRhs();
+	}
+
+	
+	/**
+	 * @param rhs the rhs to set in the negated predicate
+	 */
+	public void setRhs(String rhs)
+	{
+		predicate.setRhs(rhs);
+	}
 
 }
