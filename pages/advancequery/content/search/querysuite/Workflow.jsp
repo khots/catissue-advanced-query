@@ -448,9 +448,15 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 											${workflowForm.displayQueryTitle[queryIndex]}
 						   				</td>
 										<td class="content_txt">
+											<html:hidden property="cancelajaxcall" styleId="cancelajaxcall_${queryIndex}" value="false"/>
+											
+										</td>
+
+											<td class="content_txt">
 											<html:hidden property="queryTypeControl" styleId="queryTypeControl_${queryIndex}" value="${workflowForm.queryTypeControl[queryIndex]}"/>
 											${workflowForm.displayQueryType[queryIndex]}
 										</td>
+
 
 										<td class="content_txt">
 											<html:hidden property="selectedqueryId" styleId="selectedqueryId_${queryIndex}" value="${workflowForm.selectedqueryId[queryIndex]}"/>
