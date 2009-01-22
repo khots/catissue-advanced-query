@@ -19,6 +19,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.vocab.IConcept;
@@ -92,18 +93,18 @@ public class SearchMappedPVsAction extends Action
 
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		//int pvcount=bizLogic.getPermissibleValueListCout(attribute, entity);
-		List<IConcept> premValueList = bizLogic.getPermissibleValueList(attribute, entity);
+		List<PermissibleValueInterface> premValueList = bizLogic.getPermissibleValueListFromDB(attribute, entity);
 		int count=Integer.parseInt( VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
 		StringBuffer html = new StringBuffer();
 		if(premValueList!=null && premValueList.size()<=count)
 		{
+			List<IConcept> pvList = bizLogic.getPermissibleValueList(attribute, entity);
 			String vocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
 			String vocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
 			String vocabDisName = getDisplayNameForVocab(vocabName, vocabVer);
 			
 			html.append(bizLogic.getRootVocabularyNodeHTML(vocabName, vocabVer, vocabDisName));
-			for(IConcept concept:premValueList)
+			for(IConcept concept:pvList)
 			{
 				String id = vocabName + "@" + vocabVer + ":" + concept.getCode();
 				html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, vocabVer, concept,id));
@@ -179,7 +180,7 @@ public class SearchMappedPVsAction extends Action
 		String targetVocabURN = targetVacbArray[2];
 		IVocabulary targetVocabulary = new Vocabulary(targetVocabName, targetVocabVer,targetVocabURN);
 		StringBuffer html = new StringBuffer();
-		List<IConcept> premValueList = bizLogic.getPermissibleValueList(attribute, entity);
+		List<PermissibleValueInterface> premValueList = bizLogic.getPermissibleValueListFromDB(attribute, entity);
 		int count=Integer.parseInt( VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
 		//if Pvs are geater then specified count then no need to show the mappings
 		
