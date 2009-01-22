@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.query.domain.Workflow;
+import edu.wustl.query.util.global.Constants;
 
 
 public class RetrieveWorkflowAction extends Action
@@ -23,7 +24,7 @@ public class RetrieveWorkflowAction extends Action
 		List workflowList=defaultBizLogic.retrieve(Workflow.class.getName());
 		request.setAttribute("workflowList", workflowList);
 		
-		return mapping.findForward("success");
+		return mapping.findForward(Constants.SUCCESS);
 	}
 
 }

@@ -1,5 +1,6 @@
 
 package edu.wustl.query.bizlogic;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,7 +9,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import edu.wustl.cider.util.CiderQueryUIManager;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.AbstractDAO;
@@ -39,6 +39,7 @@ public class WorkflowBizLogic extends DefaultBizLogic
 {
 
 	private static org.apache.log4j.Logger logger = Logger.getLogger(WorkflowBizLogic.class);
+
 	/**
 	 * Inserts domain object 
 	 * @param obj The object to be inserted.
@@ -125,97 +126,95 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	 * @throws QueryModuleException 
 	 * @throws SQLException 
 	 */
-	public int executeGetCountQuery(Long queryId,HttpServletRequest request) throws BizLogicException
+	public int executeGetCountQuery(Long queryId, HttpServletRequest request)
+			throws BizLogicException
 	{
 		//TO DO 
 		/*
 		 * set the IQuery from the query ID 
 		 */
-		 IQuery query = null;
-         try
-         {
-               if (queryId != null)
-               {
-                 AbstractDAO dao = DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
-                  dao.openSession(null);
-                  query = (IParameterizedQuery) dao.retrieve(ParameterizedQuery.class.getName(), Long .valueOf(queryId));
-                  dao.closeSession();
-               }
-               AbstractQueryUIManager qUIManager = null;
+		IQuery query = null;
+		try
+		{
+			if (queryId != null)
+			{
+				AbstractDAO dao = DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+				dao.openSession(null);
+				query = (IParameterizedQuery) dao.retrieve(ParameterizedQuery.class.getName(), Long
+						.valueOf(queryId));
+				dao.closeSession();
+			}
+			AbstractQueryUIManager qUIManager = null;
 
-           		int queryExecId;
-           		
-           		 qUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager
-           		 (this.getClass(), request, query);
-           			queryExecId = qUIManager.searchQuery(null);
-           	
-           		return queryExecId;
-           		
-      }
-      catch (DAOException ex)
-      {
-            BizLogicException bizLogicException = new BizLogicException(ex.getMessage(),ex);
-            throw bizLogicException;
-      }
+			int queryExecId;
+
+			qUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this
+					.getClass(), request, query);
+			queryExecId = qUIManager.searchQuery(null);
+
+			return queryExecId;
+
+		}
+		catch (DAOException ex)
+		{
+			BizLogicException bizLogicException = new BizLogicException(ex.getMessage(), ex);
+			throw bizLogicException;
+		}
 
 		catch (QueryModuleException e)
 		{
-	        BizLogicException bizLogicException = new BizLogicException(e.getMessage(),e);
-	        throw bizLogicException;
+			BizLogicException bizLogicException = new BizLogicException(e.getMessage(), e);
+			throw bizLogicException;
 		}
- 
-
 
 	}
 
-	public HashMap<String, Count> getCount(HashSet<String> idList,int queryExecId) throws QueryModuleException 
+	public HashMap<String, Count> getCount(HashSet<String> idList, int queryExecId)
+			throws QueryModuleException
 	{
 		//CiderQueryUIManager ciderQueryUIManager = new CiderQueryUIManager();
-		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
-		Count countObject = ((CiderQueryUIManager)qUIManager).getCount(queryExecId);
-		
-		
-		HashMap<String,Count> resultMap=new HashMap<String, Count>();
-		Iterator<String>  queryIdIter=idList.iterator();
-		int count=countObject.getCount();
-		if(queryIdIter.hasNext())
+		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory
+				.getDefaultAbstractUIQueryManager();
+		Count countObject = qUIManager.getCount(queryExecId);
+
+		HashMap<String, Count> resultMap = new HashMap<String, Count>();
+		Iterator<String> queryIdIter = idList.iterator();
+		if (queryIdIter.hasNext())
 		{
-			while(queryIdIter.hasNext())
+			while (queryIdIter.hasNext())
 			{
-				resultMap.put(queryIdIter.next(),countObject);//change milli seconds to count
+				resultMap.put(queryIdIter.next(), countObject);//change milli seconds to count
 			}
 		}
 		else
 		{
-			resultMap=null;
+			resultMap = null;
 		}
 		return resultMap;
 	}
-	
-    /**
-     * Overriding the parent class's method to validate the enumerated attribute values
-     */
+
+	/**
+	 * Overriding the parent class's method to validate the enumerated attribute values
+	 */
 	protected boolean validate(Object obj, DAO dao, String operation) throws DAOException
-    {
-		Workflow workflow=(Workflow)obj;
+	{
+		Workflow workflow = (Workflow) obj;
 		//forming Query to validate workflow Name 
-		
+
 		String sourceObjectName = Workflow.class.getName();
-		String[] selectColumnName = { "id" };
-		String[] whereColumnName = { "name" };
-		String[] whereColumnCondition = { "=" };
-		Object[] whereColumnValue = { workflow.getName()};
+		String[] selectColumnName = {"id"};
+		String[] whereColumnName = {"name"};
+		String[] whereColumnCondition = {"="};
+		Object[] whereColumnValue = {workflow.getName()};
 		String joinCondition = null;
 
-		List list = dao.retrieve(sourceObjectName, selectColumnName,
-				whereColumnName, whereColumnCondition,
-				whereColumnValue, joinCondition);
-		System.out.println();
-		if (!list.isEmpty()) 
-		{	
+		List list = dao.retrieve(sourceObjectName, selectColumnName, whereColumnName,
+				whereColumnCondition, whereColumnValue, joinCondition);
+		if (!list.isEmpty())
+		{
 			throw new DAOException("Workflow with same name already exist");
 		}
 		return true;
-	    
-    }
+
+	}
 }
