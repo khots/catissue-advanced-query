@@ -178,7 +178,7 @@
 						<td style="padding-right:5px" valign="middle" class="content_txt">Select Project:</td>
 						</td>
 						<td style="padding-right:5px">
-							<SELECT NAME="dropdown" class="textfield" onChange="retrieveProjectData(this)">
+							<SELECT NAME="dropdown" class="textfield" onChange="setProjectData(this,'categorySearchForm')">
 								<OPTION VALUE="">Unspecified..
 								<c:forEach var="project" items="${requestScope.categorySearchForm.projectsNameValueBeanList}">
 									<OPTION VALUE="${project.value}">${project.name}
