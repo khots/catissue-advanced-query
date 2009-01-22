@@ -92,12 +92,12 @@ public class SearchMappedPVsAction extends Action
 
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		int pvcount=bizLogic.getPermissibleValueListCout(attribute, entity);
+		//int pvcount=bizLogic.getPermissibleValueListCout(attribute, entity);
+		List<IConcept> premValueList = bizLogic.getPermissibleValueList(attribute, entity);
 		int count=Integer.parseInt( VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
 		StringBuffer html = new StringBuffer();
-		if(pvcount<=count)
+		if(premValueList!=null && premValueList.size()<=count)
 		{
-			List<IConcept> premValueList = bizLogic.getPermissibleValueList(attribute, entity);
 			String vocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
 			String vocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
 			String vocabDisName = getDisplayNameForVocab(vocabName, vocabVer);
@@ -111,13 +111,13 @@ public class SearchMappedPVsAction extends Action
 			html.append(bizLogic.getEndHTML());
 			
 		}
-		else
+		else 
 		{
 			String vocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
 			String vocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
 			String vocabDisName = getDisplayNameForVocab(vocabName, vocabVer);
 			html.append(bizLogic.getRootVocabularyNodeHTML(vocabName, vocabVer, vocabDisName));
-			html.append(bizLogic.getMessage());
+			html.append(bizLogic.getMessage(count));
 			html.append(bizLogic.getEndHTML());
 			
 		}
@@ -179,15 +179,29 @@ public class SearchMappedPVsAction extends Action
 		String targetVocabURN = targetVacbArray[2];
 		IVocabulary targetVocabulary = new Vocabulary(targetVocabName, targetVocabVer,targetVocabURN);
 		StringBuffer html = new StringBuffer();
-		if (!sourceVocabulary.equalsIgnoreCase(targetVocabName)
-				|| !sourceVocabVer.equalsIgnoreCase(targetVocabVer))
+		List<IConcept> premValueList = bizLogic.getPermissibleValueList(attribute, entity);
+		int count=Integer.parseInt( VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
+		//if Pvs are geater then specified count then no need to show the mappings
+		
+		if(premValueList!=null && premValueList.size()<=count)
 		{
-			html.append(bizLogic.getRootVocabularyNodeHTML(targetVocabName, targetVocabVer,
-					getDisplayNameForVocab(targetVocabName, targetVocabVer)));
-			Map<String, List<IConcept>> vocabMappings = bizLogic.getMappedConcepts(attribute,
-					targetVocabulary, entity);
-			getMappingDataAsHTML(html, targetVocabName, targetVocabVer, vocabMappings);
-
+			if (!sourceVocabulary.equalsIgnoreCase(targetVocabName)
+					|| !sourceVocabVer.equalsIgnoreCase(targetVocabVer))
+			{
+				html.append(bizLogic.getRootVocabularyNodeHTML(targetVocabName, targetVocabVer,
+						getDisplayNameForVocab(targetVocabName, targetVocabVer)));
+				Map<String, List<IConcept>> vocabMappings = bizLogic.getMappedConcepts(attribute,
+						targetVocabulary, entity);
+				getMappingDataAsHTML(html, targetVocabName, targetVocabVer, vocabMappings);
+	
+			}
+		}
+		else
+		{
+			String vocabDisName = getDisplayNameForVocab(targetVocabName, targetVocabVer);
+			html.append(bizLogic.getRootVocabularyNodeHTML(targetVocabName, targetVocabVer, vocabDisName));
+			html.append(bizLogic.getMessage(count));
+			html.append(bizLogic.getEndHTML());
 		}
 
 		return html.toString();
