@@ -160,9 +160,9 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * This method returns the message no result found 
 	 * @return
 	 */
-	public String getMessage()
+	public String getMessage(int count)
 	{
-		return "<tr><td>&nbsp;</td><td class='black_ar_tt'>" + Constants.MESSAGE + "<td></tr>";
+		return "<tr><td>&nbsp;</td><td class='black_ar_tt'>" + Constants.VI_INFO_MESSAGE1 +count+Constants.VI_INFO_MESSAGE2+ "<td></tr>";
 	}
 	/**
 	 * This method returns the HTML for child nodes for all the vocabularies which
@@ -195,7 +195,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @throws VocabularyException 
 	 */
 	public String getSearchedVocabPVChildAsHTML(String vocabName, String vocabversoin,
-			IConcept concept, String checkboxId, boolean medRelatedConcept) throws VocabularyException
+			IConcept concept, String checkboxId, IConcept medRelatedConcept) throws VocabularyException
 	{
 		/*String relationType =VocabUtil.getVocabProperties().getProperty("vocab.translation.association.name");
 		IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties().getProperty(
@@ -206,7 +206,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			System.out.println(concept);
 		}*/
 		String status="disabled";//need to change the code as per requrement temp changes
-		if(medRelatedConcept)
+		if(medRelatedConcept!=null)// this is med related concept
 		{
 			status="";
 		}
@@ -318,21 +318,34 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @return
 	 * @throws VocabularyException
 	 */
-	public boolean isSourceVocabCodedTerm(IConcept targetConcept, String relationType, IVocabulary baseVocab) throws VocabularyException
+	public  List<IConcept> isSourceVocabCodedTerm(IConcept targetConcept, String relationType, IVocabulary baseVocab) throws VocabularyException
 	{
 		 List<IConcept> concepts= vocabularyManager.getSrcConceptsForTarget(targetConcept,relationType,baseVocab);
-		if(concepts!=null)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		
+		return concepts;
+		
 	}
-	public boolean isPermissibleValue(IConcept concept,List<IConcept> pvList)
+	public IConcept isPermissibleValue(IConcept concept,List<IConcept> pvList)
 	{
-		return pvList.contains((Concept) concept);
+		IConcept medConcept=null;
+		 if(pvList.contains((Concept) concept))
+		 {
+			 medConcept= concept;
+		 }
 		 
+		 return medConcept;
+	}
+	public IConcept isPermissibleValue(List<IConcept> concepts, List<IConcept> pvList)
+	{
+		IConcept concept=null;
+		for(IConcept conc:concepts)
+		{
+			if(pvList.contains(conc))
+			{
+				concept=conc;
+				break;
+			}
+		}
+		return concept;
 	}
 }
