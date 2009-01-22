@@ -44,8 +44,9 @@ public class AbstractQueryUIManagerFactory {
 				className = Class.forName(queryUIManagerClass);
 				if(className != null)
 		         {
-		         	Constructor[] cons = className.getConstructors();
-		         	abstractQueryUIManager =  (AbstractQueryUIManager)cons[0].newInstance(request,iquery);
+		         	Class[] parameterTypes = {HttpServletRequest.class,IQuery.class};
+		         	Constructor declaredConstructor = className.getDeclaredConstructor(parameterTypes);
+				   	abstractQueryUIManager =  (AbstractQueryUIManager)declaredConstructor.newInstance(request,iquery);
 		         }
 			}
 			catch (ClassNotFoundException e)
@@ -69,6 +70,11 @@ public class AbstractQueryUIManagerFactory {
 				throw queryModuleException;
 			}
 			catch (InvocationTargetException e)
+			{
+				queryModuleException = new QueryModuleException(e.getMessage(),QueryModuleError.SQL_EXCEPTION);
+				throw queryModuleException;
+			}
+			catch (NoSuchMethodException e)
 			{
 				queryModuleException = new QueryModuleException(e.getMessage(),QueryModuleError.SQL_EXCEPTION);
 				throw queryModuleException;
