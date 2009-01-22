@@ -134,16 +134,123 @@
 	}
 	function showPopUp()
 	{
-		var project= document.forms['categorySearchForm'].selectedProject.value;
-		var url='GetCountPopUp.do?selectedProject='+project;
-		pvwindow=dhtmlmodal.open('Get Count', 'iframe', url,'Search Result', 'width=600px,height=250px,center=1,resize=0,scrolling=1,menubar=0,toolbar=0');
+		var project	= document.forms['categorySearchForm'].selectedProject.value;
+		var url		='GetCountPopUp.do?selectedProject='+project;
+		pvwindow	=dhtmlmodal.open('Get Count', 'iframe', url,'Search Result', 'width=600px,height=250px,center=1,resize=0,scrolling=1,menubar=0,toolbar=0');
 	}
-	function retrieveProjectData(dropdown)
+	function setProjectData(dropdown,formName)
 	{
 		var selectedProject = dropdown.options[dropdown.selectedIndex].value;
-		document.forms['categorySearchForm'].selectedProject.value = selectedProject;
-		//alert("Selected project id value :"+selectedProject);
-		//alert("To Be Done");
+		document.forms[formName].selectedProject.value = selectedProject;
+	}
+	function getCountAjaxAction(executionId)
+	{
+		var project		= document.forms['form2'].selectedProject.value;
+		var isNewQuery	= document.forms['form2'].isNewQuery.value;
+
+		if(isNewQuery =="true")
+		{
+			var url	="GetCountAjaxHandler.do?executionId="+executionId+"&selectedProject="+project+"&isNewQuery=true";
+		}
+		else
+		{
+			var url	="GetCountAjaxHandler.do?executionId="+executionId+"&selectedProject="+project+"&isNewQuery=false";
+		}
+		var request	=newXMLHTTPReq();
+		if(request == null)
+		{
+			alert ("Your browser does not support AJAX!");
+			return;
+		}
+		var handlerFunction = getReadyStateHandler(request,getCountResponseHandler,true); 
+		request.onreadystatechange = handlerFunction; 
+		request.open("POST",url,true);    
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+		request.send("");
+	}
+	function getCountResponseHandler(response)
+	{
+		var isNewQuery = document.forms['form2'].isNewQuery.value;
+		var getCountObj		=document.getElementById("form3");
+		var abort_notifyObj =document.getElementById("form1");
+		
+		//making getcount= inactive, abort=active, notify=active
+		getCountObj.innerHTML='<img src="images/advancequery/b_get_count_inact.gif" alt="Get Count" width="84" height="23" onclick="">';
+		if(isNewQuery=="true")
+			abort_notifyObj.innerHTML='<img src="images/advancequery/b_abort_execution.gif" alt="Abort Execution" width="116" height="23" onclick="abortExecutionAjaxAction();">&nbsp;<img src="images/advancequery/b_notify_me.gif" alt="Notify me when done" width="146" height="23" onclick="retrieveRecentQueries();">';
+		document.forms['form2'].isNewQuery.value="false";
+		
+		  var executionId  		= null;
+		  var StatusObject 		= document.getElementById("StatusId");
+		  var CountObject  		= document.getElementById("CountId");
+		  var abortExecution	= document.forms['form2'].abortExecution.value;
+		  var notify 			= document.forms['form2'].notify.value;
+		  var jsonResponse 		= eval('('+ response+')');
+	          if(jsonResponse.resultObject!=null)
+	          {
+				var queryCount	= jsonResponse.resultObject.queryCount;
+				var status		= jsonResponse.resultObject.status;
+				executionId		= jsonResponse.resultObject.executionId;
+				document.forms['form2'].executionId.value = executionId;		 
+						 	 
+				if(queryCount!=-1)
+				{
+					if(StatusObject!=null)
+					{
+						StatusObject.innerHTML= status;
+					}
+					if(CountObject!=null)
+					{
+						CountObject.innerHTML= queryCount;
+					}
+				}	
+	          }
+			if(status!="Completed" && abortExecution=="false" && notify=="false")
+			{
+				getCountAjaxAction(executionId);
+			}
+			else
+			{
+				if(abortExecution=="true")
+					StatusObject.innerHTML="Cancelled";
+					
+				//making getcount=active , abort=inactive, notify=inactive
+				document.forms['form2'].isNewQuery.value="true";	
+				getCountObj.innerHTML='<img src="images/advancequery/b_get_count.gif" alt="Get Count" width="84" height="23" onclick="getCountAjaxAction('+executionId+');">';
+				abort_notifyObj.innerHTML='<img src="images/advancequery/b_abort_execution_inact.gif" alt="Abort Execution" width="116" height="23" onclick="">&nbsp;<img src="images/advancequery/b_notify_me_inact.gif" alt="Notify me when done" width="146" height="23" onclick="">';
+			}
+	}
+	function abortExecutionAjaxAction()
+	{
+		document.forms['form2'].abortExecution.value="true";
+		var executionId = document.forms['form2'].executionId.value;
+		var url			="GetCountAjaxHandler.do?executionId="+executionId+"&abortExecution=true&isNewQuery=false";
+		var request		=newXMLHTTPReq();
+		if(request == null)
+		{
+			alert ("Your browser does not support AJAX!");
+			return;
+		}
+		var handlerFunction			=getReadyStateHandler(request,abortExceutionResponseHandler,true); 
+		request.onreadystatechange	=handlerFunction; 
+		request.open("POST",url,true);    
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+		request.send("");
+	}
+	function abortExceutionResponseHandler(response)
+	{
+		var abortExecution		= document.forms['form2'].abortExecution.value;
+		var executionId			= document.forms['form2'].executionId.value;
+		var StatusObject		= document.getElementById("StatusId");
+		StatusObject.innerHTML	= "Cancelled";
+		
+		//making getcount=active, abort=inactive, notify=inactive
+		var getCountObj		=document.getElementById("form3");
+		var abort_notifyObj =document.getElementById("form1");
+		document.forms['form2'].isNewQuery.value="true";
+		document.forms['form2'].abortExecution.value="false";
+		getCountObj.innerHTML='<img src="images/advancequery/b_get_count.gif" alt="Get Count" width="84" height="23" onclick="getCountAjaxAction('+executionId+');">';
+		abort_notifyObj.innerHTML='<img src="images/advancequery/b_abort_execution_inact.gif" alt="Abort Execution" width="116" height="23" onclick="">&nbsp;<img src="images/advancequery/b_notify_me_inact.gif" alt="Notify me when done" width="146" height="23" onclick="">';
 	}
 	function showSpreadsheetData(columnDataStr)
 	{
