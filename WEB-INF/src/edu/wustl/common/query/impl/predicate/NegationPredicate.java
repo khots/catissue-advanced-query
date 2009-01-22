@@ -3,7 +3,6 @@
  */
 package edu.wustl.common.query.impl.predicate;
 
-import edu.wustl.query.util.global.Constants;
 
 
 /**
