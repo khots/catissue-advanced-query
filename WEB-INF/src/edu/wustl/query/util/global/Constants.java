@@ -690,6 +690,13 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String GET_COUNT_STATUS = "status";
 	public static final String EXECUTION_ID = "executionId";
 	public static final int[] SHOW_LAST_OPTION = {25, 50, 100, 200};
-
-   
+//Constants for Get Count
+	/**  Constant for  abortExecution*/
+	public static final String ABORT_EXECUTION="abortExecution";
+	/**  Constant for  query_exec_id*/
+	public static final String QUERY_EXEC_ID="query_exec_id";
+	/**  Constant for  isNewQuery*/
+	public static final String IS_NEW_QUERY="isNewQuery";
+	/**  Constant for selectedProject */
+	public static final String SELECTED_PROJECT="selectedProject";
 }
