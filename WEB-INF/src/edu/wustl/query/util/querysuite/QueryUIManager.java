@@ -84,9 +84,9 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public void insertDefinedQueries(IQuery query)
+	public void insertDefinedQueries(IQuery query) throws QueryModuleException
 	{
-		
+		QueryModuleException queryModExp;
 			//inserts Defined Query
 			DefinedQueryUtil definedQueryUtil=new DefinedQueryUtil();
 			try
@@ -97,13 +97,13 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 			}
 			catch (UserNotAuthorizedException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+				throw queryModExp;
 			}
 			catch (BizLogicException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+				throw queryModExp;
 			}
 		}
 
