@@ -113,9 +113,12 @@ function responseHandler(response)
 			<tr>
 				<td width="10">&nbsp;</td>
 				<td width="33%"><span class="content_txt">Show Last:
-				  </span>             
+				  </span>    
 					<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${requestScope.numResultsPerPage}">
-						<html:options collection="resultsPerPageOptions" labelProperty="name" property="value"/>
+							 <c:forEach var="item" items="${requestScope.resultsPerPageOptions}" varStatus="i">
+									<html:option value="${item}">${item}</html:option>
+							 </c:forEach>
+				
 					</html:select>
 				</td>
 				  <td width="10">&nbsp;</td>
