@@ -18,11 +18,15 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.wustl.common.query.factory.AbstractQueryManagerFactory;
+import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.bizlogic.WorkflowBizLogic;
+import edu.wustl.query.querymanager.AbstractQueryManager;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 
 /**
  * @author niharika_sharma
@@ -51,17 +55,7 @@ public class WorkflowAjaxHandlerAction extends Action
 		}
 
 		String state = request.getParameter("state");
-		if (state != null && state.equals("cancel"))
-		{
-			HashSet<String> idList = (HashSet<String>) request.getSession().getAttribute("idList");
-			idList.remove(queryIndex);
-		}
 
-		if (state != null && state.equals("start"))
-		{
-			HashSet<String> idList = (HashSet<String>) request.getSession().getAttribute("idList");
-			idList.add(queryIndex);
-		}
 
 		Writer writer = response.getWriter();
 		if (operation != null && "execute".equals(operation.trim()))
@@ -71,6 +65,7 @@ public class WorkflowAjaxHandlerAction extends Action
 
 			WorkflowBizLogic workflowBizLogic = (WorkflowBizLogic) BizLogicFactory.getInstance()
 					.getBizLogic(Constants.WORKFLOW_BIZLOGIC_ID);
+			
 			int queryExecId = Integer.valueOf(request.getParameter("executionLogId"));
 			if (queryExecId == 0)
 			{
@@ -78,20 +73,22 @@ public class WorkflowAjaxHandlerAction extends Action
 				queryExecId = workflowBizLogic.executeGetCountQuery(queryId, request);
 			}
 
-			HashMap<String, Count> resultCountMap = workflowBizLogic.getCount(
-					(HashSet<String>) request.getSession().getAttribute("idList"), queryExecId);
-
-			String[] keyArray = (String[]) resultCountMap.keySet().toArray(
-					new String[resultCountMap.keySet().toArray().length]);
+			Count countObj=	workflowBizLogic.getCount(
+					 queryExecId);
 
 			List<JSONObject> executionQueryResults = new ArrayList<JSONObject>();
-			for (int i = 0; i < keyArray.length; i++)
-			{
-				Count count = resultCountMap.get(keyArray[i]);
-				executionQueryResults.add(createResultJSON(queryId, keyArray[i], count.getCount(),
-						count.getStatus(), count.getQuery_exection_id()));
-			}
 
+				executionQueryResults.add(createResultJSON(queryId,queryIndex, countObj.getCount(),
+						countObj.getStatus(), countObj.getQuery_exection_id()));
+
+				if (state != null && state.equals("cancel"))
+				{
+					AbstractQueryManager qManager = AbstractQueryManagerFactory.getDefaultAbstractQueryManager();
+					qManager.cancel(queryExecId);
+					countObj.setStatus("Completed");
+					
+					
+				}
 			response.setContentType(Constants.CONTENT_TYPE_TEXT);
 			writer.write(new JSONObject().put("executionQueryResults", executionQueryResults)
 					.toString());

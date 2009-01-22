@@ -169,7 +169,7 @@ public class WorkflowBizLogic extends DefaultBizLogic
 
 	}
 
-	public HashMap<String, Count> getCount(HashSet<String> idList, int queryExecId)
+	public Count getCount( int queryExecId)
 			throws QueryModuleException
 	{
 		//CiderQueryUIManager ciderQueryUIManager = new CiderQueryUIManager();
@@ -177,20 +177,21 @@ public class WorkflowBizLogic extends DefaultBizLogic
 				.getDefaultAbstractUIQueryManager();
 		Count countObject = qUIManager.getCount(queryExecId);
 
-		HashMap<String, Count> resultMap = new HashMap<String, Count>();
-		Iterator<String> queryIdIter = idList.iterator();
-		if (queryIdIter.hasNext())
-		{
-			while (queryIdIter.hasNext())
-			{
-				resultMap.put(queryIdIter.next(), countObject);//change milli seconds to count
-			}
-		}
-		else
-		{
-			resultMap = null;
-		}
-		return resultMap;
+//		HashMap<String, Count> resultMap = new HashMap<String, Count>();
+//		Iterator<String> queryIdIter = idList.iterator();
+//		if (queryIdIter.hasNext())
+//		{
+//			while (queryIdIter.hasNext())
+//			{
+//				resultMap.put(queryIdIter.next(), countObject);//change milli seconds to count
+//			}
+//		}
+//		else
+//		{
+//			resultMap = null;
+//		}
+//		return resultMap;
+		return countObject;
 	}
 
 	/**

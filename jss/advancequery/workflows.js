@@ -127,7 +127,7 @@ function addQuery()
 		operandsTdContent=getText(queryIds[counter]);
 		rowContents[1]=createTextElement(getText(queryTitles[counter]));
 		rowContents[2]=createTextElement(getText(queryTypes[counter]));
-		//rowContents[3]=getSelectObjectControl();
+		rowContents[3]=createHiddenElement("cancelajaxcall","cancelajaxcall_"+(counter+queryCount),'false');
 		rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+(counter+queryCount),getText(queryIds[counter]));
 		rowContents[5]=getText(queryTitles[counter]);
 		rowContents[6]=getText(queryTypes[counter]);
@@ -205,12 +205,12 @@ function createLabel(name,index)
 }
 
 
-function createLink(displayValue,test,url)
+function createLink(displayValue,text,url)
 {
 	var link=document.createElement('a');
 	link.className="bluelink";
 	link.href=url;
-	link.id=test;
+	link.id=text;
 	var text=createTextElement(displayValue);
 	link.appendChild(text);
 	return link;
@@ -364,11 +364,27 @@ function setOnclickEventOnDeselect(chckCount,selected)
 	}
 
 }
-function changeExecuteLink(index)
+function changeLinkToCancel(index,executionLogId)
 {
 
-	var object=document.getElementById("execute_"+index);			
-	object.removeChild(object.lastChild);
-	object.appendChild(createTextElement("Cancel"));
-	object.href="javascript:cancelGetCountQuery('"+index+"')";
+	var object=document.getElementById("execute_"+index);		
+	if(object!=null&&object!=undefined)
+	{
+		var parentIObj=object.parentNode;
+		parentIObj.removeChild(object);
+		parentIObj.appendChild(createLink("Cancel ","cancel_"+index,"javascript:cancelGetCountQuery('"+index+"','"+executionLogId+"')"));
+	}
+}
+
+function changeExecuteLinkToExecute(index,executionLogId)
+{
+	
+	var object=document.getElementById("cancel_"+index);		
+	if(object!=null)
+	{
+		var parentIObj=object.parentNode;
+		parentIObj.removeChild(object);
+		parentIObj.appendChild(createLink("Execute ","execute_"+index,"javascript:executeGetCountQuery('"+index+"','"+0+"')"));
+		
+	}
 }

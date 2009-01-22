@@ -138,10 +138,13 @@ function submitWorflow()
 		alert("Workflow name  can not be empty");
 	}
 }
-function cancelGetCountQuery(queryId)
+function cancelGetCountQuery(queryId,executionLogId)
 {	
-	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'cancel';
-	
+	document.getElementById("cancelajaxcall_"+queryId).value='true';
+	var ID=document.getElementById("selectedqueryId_"+queryId).value;
+
+	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'cancel'+"&ID="+ID+"&executionLogId="+executionLogId;
+	changeExecuteLinkToExecute(queryId,0);
 	var request=newXMLHTTPReq();
 	if(request == null)
 	{
@@ -157,30 +160,20 @@ function cancelGetCountQuery(queryId)
 }
 function cancelExecuteQuery(response)
 {
-	  var jsonResponse = eval('('+ response+')');
+
+		 var jsonResponse = eval('('+ response+')');
           var hasValue = false;
           if(jsonResponse.executionQueryResults!=null)
           {
              var num = jsonResponse.executionQueryResults.length; 
 				for(var i=0;i<num;i++)
 				{
-					 var queryId = jsonResponse.executionQueryResults[i].queryId;
-					 var queryIndex = jsonResponse.executionQueryResults[i].queryIndex;
-					 var queryResult = jsonResponse.executionQueryResults[i].queryResult;
-					if(queryResult!=-1)
-					{
-						var object=document.getElementById("selectedqueryId_"+queryIndex);
-						var parentIObj=object.parentNode;
-						var lableObject=document.getElementById("label_"+queryIndex);
-						if(lableObject!=null)
-						{
-							parentIObj.removeChild(lableObject);
-						}
-						parentIObj.appendChild(createLabel(queryResult,queryIndex));
-						
-					}
+
+					var queryIndex = jsonResponse.executionQueryResults[i].queryIndex;
+					document.getElementById("cancelajaxcall_"+queryIndex).value='false';
+
 				}
-          } 
+		  }
 }
 
 function executeGetCountQuery(queryId,executionLogId)
@@ -188,7 +181,7 @@ function executeGetCountQuery(queryId,executionLogId)
 	var ID=document.getElementById("selectedqueryId_"+queryId).value;
 	var projectId=document.getElementById("selectedProject").value;
 	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'start'+"&ID="+ID+"&executionLogId="+executionLogId+"&selectedProject="+projectId;
-	changeExecuteLink(queryId);
+
 	var request=newXMLHTTPReq();
 	if(request == null)
 	{
@@ -229,9 +222,25 @@ function responseHandler(response)
 						parentIObj.appendChild(createLabel(queryResult,queryIndex));
 						
 					}
+					if((document.getElementById("cancel_"+queryIndex)==null)&&(document.getElementById("cancelajaxcall_"+queryIndex).value=='false'))
+					{
+						changeLinkToCancel(queryIndex,executionLogId);
+					}
+					if((status!="Completed")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
+					{
+						executeGetCountQuery(queryIndex,executionLogId);
+						
+
+					}
+					/*if((status=="Completed"))
+					{
+						
+						changeExecuteLinkToExecute(queryIndex,0);
+
+					}*/
 				}
           } 
-		executeGetCountQuery(queryIndex,executionLogId);
+	
 }
 function cancelWorkflow()
 {
