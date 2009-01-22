@@ -50,6 +50,8 @@ import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
+import edu.wustl.query.xquerydatatypes.XQueryAttributeType;
+import edu.wustl.query.xquerydatatypes.XQueryDataTypeInitializationException;
 
 /**
  * 
@@ -102,6 +104,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @return the String representing SQL for the given Query object.
 	 * @throws MultipleRootsException 
 	 * @throws SqlException 
+	 * @throws XQueryDataTypeInitializationException 
 	 * @see edu.wustl.common.querysuite.queryengine.ISqlGenerator#generateSQL(edu.wustl.common.querysuite.queryobject.IQuery)
 	 */
 
@@ -126,6 +129,11 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		catch (DynamicExtensionsSystemException e)
 		{
 			throw new SqlException("problem while trying to build xquery", e);
+		}
+		catch (XQueryDataTypeInitializationException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		log(formedQuery);
 		return formedQuery;
@@ -161,7 +169,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		setMainExpressions(joinGraph.getRoot());
 		createTree();
 		createEntityPaths();
-
+		checkForEmptyExpression(joinGraph.getRoot().getExpressionId());
 	}
 
 	/**
@@ -173,9 +181,10 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @throws MultipleRootsException
 	 * @throws SQLXMLException
 	 * @throws DynamicExtensionsSystemException
+	 * @throws XQueryDataTypeInitializationException 
 	 */
 	private String formQuery() throws SqlException, MultipleRootsException, SQLXMLException,
-			DynamicExtensionsSystemException
+			DynamicExtensionsSystemException, XQueryDataTypeInitializationException
 	{
 		StringBuilder formedQuery = new StringBuilder();
 
@@ -198,9 +207,10 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @return "where" part that has the join condition in it
 	 * @throws MultipleRootsException
 	 * @throws SqlException
+	 * @throws XQueryDataTypeInitializationException 
 	 */
 	private String addJoiningTableCondition(String wherePart) throws MultipleRootsException,
-			SqlException
+			SqlException, XQueryDataTypeInitializationException
 	{
 		StringBuilder completeWherePart = new StringBuilder(wherePart);
 		Set<Integer> processedAlias = new HashSet<Integer>();
@@ -222,9 +232,10 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 *            be processed.
 	 * @return the left join sql for children expression.
 	 * @throws SqlException when there is error in the passed IQuery object.
+	 * @throws XQueryDataTypeInitializationException 
 	 */
 	private String processChildExpressions(String leftAlias, Set<Integer> processedAlias,
-			IExpression parentExpression) throws SqlException
+			IExpression parentExpression) throws SqlException, XQueryDataTypeInitializationException
 	{
 		StringBuffer buffer = new StringBuffer();
 		List<IExpression> children = joinGraph.getChildrenList(parentExpression);
@@ -258,8 +269,11 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 						//many sides
 						for (ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyPropColl)
 						{
+							AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+							String xQueryDataType = getXQuerydataType(primaryKey);
 							leftAttribute = "$" + getAliasName(parentExpression) + "/"
-									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName() +  "/" + xQueryDataType;
+							
 							String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute()
 									.getName();
 							rightAttribute = "$" + getAliasName(childExpression) + "/"
@@ -268,12 +282,14 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 						// One Side
 						for (ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyPropColl)
 						{
+							AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+							String xQueryDataType = getXQuerydataType(primaryKey);
 							String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute()
 									.getName();
 							leftAttribute = "$" + getAliasName(parentExpression) + "/"
-									+ primaryKeyName;
+									+ primaryKeyName ;
 							rightAttribute = "$" + getAliasName(childExpression) + "/"
-									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName()+ "/" + xQueryDataType;
 						}
 						buffer.append(Constants.QUERY_OPENING_PARENTHESIS + rightAttribute + "=" + leftAttribute);
 						buffer.append(Constants.QUERY_CLOSING_PARENTHESIS);
@@ -292,6 +308,46 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		}
 	
 		return buffer.toString();
+	}
+
+	private String getXQuerydataType(AttributeInterface attributeType) throws XQueryDataTypeInitializationException
+	{
+		String returnValue = null;
+		AttributeTypeInformationInterface dataType = attributeType.getAttributeTypeInformation();
+		XQueryAttributeType xQueryAttributeType = XQueryAttributeType.getInstance();
+
+		if (dataType instanceof StringTypeInformationInterface)
+		{
+			returnValue = xQueryAttributeType
+					.getDataType(EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE);
+		}
+		else if (dataType instanceof DateTypeInformationInterface)
+		{
+			returnValue = xQueryAttributeType
+			.getDataType(EntityManagerConstantsInterface.DATE_TIME_ATTRIBUTE_TYPE);
+		}
+		else if (dataType instanceof LongTypeInformationInterface)
+		{
+			returnValue = xQueryAttributeType
+			.getDataType(EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE);
+		}
+		else if (dataType instanceof DoubleTypeInformationInterface)
+		{
+			returnValue = xQueryAttributeType
+			.getDataType(EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE);
+		}
+		else if (dataType instanceof IntegerTypeInformationInterface)
+		{
+			returnValue = xQueryAttributeType
+			.getDataType(EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE);
+		}
+		else if (dataType instanceof BooleanTypeInformationInterface)
+		{
+			returnValue = xQueryAttributeType
+			.getDataType(EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE);
+		}
+
+		return returnValue;
 	}
 
 	/**
