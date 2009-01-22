@@ -200,7 +200,6 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	{
 		Workflow workflow = (Workflow) obj;
 		//forming Query to validate workflow Name 
-
 		String sourceObjectName = Workflow.class.getName();
 		String[] selectColumnName = {"id"};
 		String[] whereColumnName = {"name"};
@@ -210,7 +209,17 @@ public class WorkflowBizLogic extends DefaultBizLogic
 
 		List list = dao.retrieve(sourceObjectName, selectColumnName, whereColumnName,
 				whereColumnCondition, whereColumnValue, joinCondition);
-		if (!list.isEmpty())
+		//edit
+		if(workflow.getId()!=null&&!list.isEmpty())
+		{
+			if(workflow.getId().equals(list.get(0)))
+				return true;
+			else
+			{
+				throw new DAOException("Workflow with same name already exist");
+			}
+		}
+		else if (!list.isEmpty())
 		{
 			throw new DAOException("Workflow with same name already exist");
 		}
