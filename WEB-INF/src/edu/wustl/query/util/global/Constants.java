@@ -678,7 +678,9 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String DEFAULT_CONDITION_RULES_OPT_OUT="RULES_OPT_OUT";
     /** Constant for default conditions project rule minors **/
     public static final String DEFAULT_CONDITION_RULES_MINOR="RULES_MINOR";
-	public static final String SHOW_LAST = "showLast";
+    /** Constant for space **/
+    public static final String SPACE=" ";
+    public static final String SHOW_LAST = "showLast";
 	public static final String EXECUTION_LOG_ID = "executionLogId";
 	public static final int SHOW_LAST_COUNT = 25;
 	public static final String TOTAL_PAGES = "totalPages";
