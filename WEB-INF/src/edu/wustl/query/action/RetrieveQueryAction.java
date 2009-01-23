@@ -16,6 +16,9 @@ import org.apache.struts.action.ActionMessages;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+
+import com.rsa.jsafe.asn1.SetContainer;
+
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
@@ -62,7 +65,7 @@ public class RetrieveQueryAction extends Action
 
 			removeAttributesFromSession(session);
 			SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
-			 int count= setQueryCount(session);
+			// int count= setQueryCount();
 					
 			PrivilegeCache privilegeCache = setPrivilegeCache(session);
 //			Collection<IParameterizedQuery> authorizedQueryCollection = new ArrayList<IParameterizedQuery>();
@@ -92,17 +95,18 @@ public class RetrieveQueryAction extends Action
 		return actionForward;
 	}
 
-	private int setQueryCount(HttpSession session)
+	private int setQueryCount()
 	{
-		 
-		if(session.getAttribute("QueryCount")==null)
-		{
-		Collection prameterizedQueriesCollection=retrievePrameterizedQueries();
-		session.setAttribute("QueryCount", retrievePrameterizedQueries().size());
-		}
-		return (Integer)session.getAttribute("QueryCount");
-	}
 
+		Collection prameterizedQueriesCollection=HibernateUtility
+		.executeHQL(HibernateUtility.GET_PARAMETERIZED_QUERIES_DETAILS);
+		if(prameterizedQueriesCollection!=null)
+		{
+			return prameterizedQueriesCollection.size();
+		}
+		return 0;
+	}
+//
 	private Collection<IParameterizedQuery> retrievePrameterizedQueries()
 	{
 		return HibernateUtility
@@ -149,7 +153,7 @@ public class RetrieveQueryAction extends Action
 			CSObjectNotFoundException
 	{
 		String message;
-		if (request.getSession().getAttribute("QueryCount") == null)
+		if (setQueryCount()== 0)
 		{
 			saveQueryForm.setParameterizedQueryCollection(new ArrayList<IParameterizedQuery>());
 			message = "No";
@@ -168,7 +172,7 @@ public class RetrieveQueryAction extends Action
 			if(request.getParameter("pageOf")!=null&&(Constants.MY_QUERIES_FOR_WORKFLOW.equals(request.getParameter("pageOf"))
 					||Constants.PUBLIC_QUERIES_FOR_WORKFLOW.equals(request.getParameter("pageOf"))))
 			{
-				setQueryCount(request.getSession());
+				setQueryCount();
 				saveQueryForm=setPagiantion(request,request.getParameter("requestFor"),saveQueryForm);	
 				
 			}
@@ -187,7 +191,7 @@ public class RetrieveQueryAction extends Action
 	private SaveQueryForm setPagiantion(HttpServletRequest request, String requestFor,
 			SaveQueryForm saveQueryForm)
 	{
-		int totalRecords=(Integer)request.getSession().getAttribute("QueryCount");
+		int totalRecords=setQueryCount();
 		
 		int recordsPerPage=1;
 		
