@@ -104,8 +104,8 @@ public class WherePartParser implements WherePartParserConstants {
         }
         jj_consume_token(LOGICAL_OPERATOR);
         predicate = AtomicCondition();
+                        predicateGenerator.addPredicate(forVariable, predicate);
       }
-                predicateGenerator.addPredicate(forVariable, predicate);
     } finally {
       trace_return("ConditionsOnOneEntity");
     }
@@ -266,12 +266,11 @@ public class WherePartParser implements WherePartParserConstants {
     trace_call("CSV");
     try {
         StringBuilder rhs = new StringBuilder();
-        Token constant1 = null;
-        Token constant2 = null;
+        Token constant = null;
       jj_consume_token(OPENING_PARENTHESIS);
                 rhs.append('(');
-      constant1 = jj_consume_token(CONSTANT);
-                rhs.append(constant1.image);
+      constant = jj_consume_token(CONSTANT);
+                rhs.append(constant.image);
       label_3:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -283,12 +282,9 @@ public class WherePartParser implements WherePartParserConstants {
           break label_3;
         }
         jj_consume_token(COMMA);
-        constant2 = jj_consume_token(CONSTANT);
+        constant = jj_consume_token(CONSTANT);
+                        rhs.append(',').append(constant.image);
       }
-                if(constant2 != null)
-                {
-                        rhs.append(',').append(constant2.image);
-                }
       jj_consume_token(CLOSING_PARENTHESIS);
                 rhs.append(')');
                 {if (true) return rhs.toString();}

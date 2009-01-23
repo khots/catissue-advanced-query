@@ -121,11 +121,12 @@ private void ConditionsOnOneEntity() :
 		predicateGenerator.addPredicate(forVariable, predicate);	
 	}
 	
-	(<LOGICAL_OPERATOR> predicate=AtomicCondition())*
-	{
-		predicateGenerator.addPredicate(forVariable, predicate);
-	}	
-	
+	(
+		<LOGICAL_OPERATOR> predicate=AtomicCondition()
+		{
+			predicateGenerator.addPredicate(forVariable, predicate);
+		}	
+	)*
 }
 
 
@@ -288,26 +289,24 @@ private String RHS() :
 private String CSV() :
 {
 	StringBuilder rhs = new StringBuilder();
-	Token constant1 = null;
-	Token constant2 = null;
+	Token constant = null;
 }
 {
 	"("
 	{
 		rhs.append('(');	
 	} 
-	constant1=<CONSTANT>
+	constant=<CONSTANT>
 	{
-		rhs.append(constant1.image);
+		rhs.append(constant.image);
 	}
-	(<COMMA> constant2=<CONSTANT>)*
-	{
-		if(constant2 != null)
+	(
+		<COMMA> constant=<CONSTANT>
 		{
-			rhs.append(',').append(constant2.image);
+			rhs.append(',').append(constant.image);
 		}
-	}
-	 ")"
+	)*
+	")"
 	{
 		rhs.append(')');
 		return rhs.toString();	
