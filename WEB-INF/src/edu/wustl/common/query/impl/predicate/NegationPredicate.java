@@ -24,6 +24,7 @@ public class NegationPredicate extends AbstractPredicate
 	public NegationPredicate(AbstractPredicate predicate)
 	{
 		super(null, null, null);
+		this.predicate = predicate;
 		
 	}
 

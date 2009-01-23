@@ -113,10 +113,18 @@ private void ParenthesizedConditionsOnOneEntity() :
 
 private void ConditionsOnOneEntity() :
 {
-	
+	AbstractPredicate predicate = null;
 }
 {
-	AtomicCondition() (<LOGICAL_OPERATOR> AtomicCondition())*	
+	predicate=AtomicCondition()
+	{
+		predicateGenerator.addPredicate(forVariable, predicate);	
+	}
+	
+	(<LOGICAL_OPERATOR> predicate=AtomicCondition())*
+	{
+		predicateGenerator.addPredicate(forVariable, predicate);
+	}	
 	
 }
 
@@ -127,11 +135,11 @@ private AbstractPredicate AtomicCondition() :
 	AbstractPredicate predicate = null;
 }
 {
-	predicate= PrefixUnaryCondition()
+	predicate=PrefixUnaryCondition()
 	{
-		return predicate;	
+		return predicate;
 	}
-
+	
 |
 
 	predicate=PrefixBinaryCondition()
@@ -169,7 +177,6 @@ private AbstractPredicate PrefixUnaryCondition() :
 			forVariable = conditionAttribute.image.substring(0, separator);
 			String attribute = conditionAttribute.image.substring(separator+1);
 			AbstractPredicate predicate = new PrefixUnaryPredicate(attribute, operator.image);
-			predicateGenerator.addPredicate(forVariable, predicate);	
 			return predicate;				
 		} 
 	
@@ -193,7 +200,6 @@ private AbstractPredicate PrefixBinaryCondition() :
 		forVariable = conditionAttribute.image.substring(0, separator);
 		String attribute = conditionAttribute.image.substring(separator+1);
 		AbstractPredicate predicate = new PrefixBinaryPredicate(attribute, operator.image, rhs);
-		predicateGenerator.addPredicate(forVariable, predicate);
 		return predicate;
 	}
 	
@@ -215,7 +221,6 @@ private AbstractPredicate InfixCondition() :
 		forVariable = conditionAttribute.image.substring(0, separator);
 		String attribute = conditionAttribute.image.substring(separator+1);
 		AbstractPredicate predicate = new InfixPredicate(attribute, operator.image, rhs);
-		predicateGenerator.addPredicate(forVariable, predicate);
 		return predicate;
 		
 	}
@@ -232,7 +237,6 @@ private AbstractPredicate NegationCondition() :
 	")"
 	{
 		AbstractPredicate negationPredicate = new NegationPredicate(predicate);
-		predicateGenerator.addPredicate(forVariable, predicate);
 		return negationPredicate;	
 	}
 	

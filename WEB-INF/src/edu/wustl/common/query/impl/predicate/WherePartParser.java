@@ -89,7 +89,9 @@ public class WherePartParser implements WherePartParserConstants {
   final private void ConditionsOnOneEntity() throws ParseException {
     trace_call("ConditionsOnOneEntity");
     try {
-      AtomicCondition();
+        AbstractPredicate predicate = null;
+      predicate = AtomicCondition();
+                predicateGenerator.addPredicate(forVariable, predicate);
       label_2:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -101,8 +103,9 @@ public class WherePartParser implements WherePartParserConstants {
           break label_2;
         }
         jj_consume_token(LOGICAL_OPERATOR);
-        AtomicCondition();
+        predicate = AtomicCondition();
       }
+                predicateGenerator.addPredicate(forVariable, predicate);
     } finally {
       trace_return("ConditionsOnOneEntity");
     }
@@ -152,7 +155,6 @@ public class WherePartParser implements WherePartParserConstants {
                         forVariable = conditionAttribute.image.substring(0, separator);
                         String attribute = conditionAttribute.image.substring(separator+1);
                         AbstractPredicate predicate = new PrefixUnaryPredicate(attribute, operator.image);
-                        predicateGenerator.addPredicate(forVariable, predicate);
                         {if (true) return predicate;}
     throw new Error("Missing return statement in function");
     } finally {
@@ -176,7 +178,6 @@ public class WherePartParser implements WherePartParserConstants {
                 forVariable = conditionAttribute.image.substring(0, separator);
                 String attribute = conditionAttribute.image.substring(separator+1);
                 AbstractPredicate predicate = new PrefixBinaryPredicate(attribute, operator.image, rhs);
-                predicateGenerator.addPredicate(forVariable, predicate);
                 {if (true) return predicate;}
     throw new Error("Missing return statement in function");
     } finally {
@@ -197,7 +198,6 @@ public class WherePartParser implements WherePartParserConstants {
                 forVariable = conditionAttribute.image.substring(0, separator);
                 String attribute = conditionAttribute.image.substring(separator+1);
                 AbstractPredicate predicate = new InfixPredicate(attribute, operator.image, rhs);
-                predicateGenerator.addPredicate(forVariable, predicate);
                 {if (true) return predicate;}
     throw new Error("Missing return statement in function");
     } finally {
@@ -213,7 +213,6 @@ public class WherePartParser implements WherePartParserConstants {
       predicate = AtomicCondition();
       jj_consume_token(CLOSING_PARENTHESIS);
                 AbstractPredicate negationPredicate = new NegationPredicate(predicate);
-                predicateGenerator.addPredicate(forVariable, predicate);
                 {if (true) return negationPredicate;}
     throw new Error("Missing return statement in function");
     } finally {
