@@ -91,11 +91,12 @@
 		  </fileset>
 	   </copy>
 		
-		<!-- Copying the LexBig Data to JBOSS DATA-->
+		<!-- Copying the LexBig Data to JBOSS DATA
 		<echo message="Copying LexBigData to JBOSS DATA"/>
 		<copy todir="${jboss.server.url}/data/LexBIGData" overwrite="false">
 			<fileset dir="LexBIGData" />
 		</copy>
+		-->
 		
 		
 		<!--

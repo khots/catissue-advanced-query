@@ -463,13 +463,13 @@
 				<include name="**/*" />
 			</fileset>
 		</copy>
-		<!-- added By amit_doshi for LexBig Vocabulary Interface -->
+		<!-- added By amit_doshi for LexBig Vocabulary Interface 
 		<copy todir="${jboss.server.url}/data/LexBIGData" overwrite="true">
 									<fileset dir="${base.dir}/LexBIGData">
 										<include name="**/*" />
 									</fileset>
 		</copy >
-		
+		-->
 		<copy todir="${jboss.server.url}/deploy" overwrite="true">
 			<fileset dir="${temp.dir}">
 				<include name="query.war" />
