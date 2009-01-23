@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.cider.util.CiderQueryUIManager;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.query.factory.QueryGeneratorFactory;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
@@ -132,14 +133,15 @@ public class ValidateQueryBizLogic
 	{ 
 		HttpSession session = request.getSession();
 		AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(ValidateQueryBizLogic.class, request, query);
-		queryUIManager.updateQuery();
+		//queryUIManager.updateQuery();
 		
 		IQueryGenerator queryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
 		String selectSql=null;
 		try
 		{
 			//selectSql = "select personUpi_1 Column0 from xmltable(' for $Person_1 in db2-fn:xmlcolumn(\"DEMOGRAPHICS.XMLDATA\")/Person where exists($Person_1/personUpi)  return <return><Person_1>{$Person_1}</Person_1></return>' columns personUpi_1 varchar(1000) path 'Person_1/Person/personUpi')";
-			selectSql=queryGenerator.generateQuery(query);
+			selectSql=queryGenerator.generateQuery(
+					((CiderQueryUIManager)queryUIManager).getCiderQuery().getQuery());
 		}
 		catch (MultipleRootsException e)
 		{
