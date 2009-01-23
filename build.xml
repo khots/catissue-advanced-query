@@ -412,11 +412,12 @@
 					<fileset dir = "${base.dir}/vi_jars"/>
 		</copy>
 		
-		<!-- Copying LexBIGData folder to zip -->
+		<!-- Copying LexBIGData folder to zip 
 		
 		<copy todir="${zip.dir}/LexBIGData" overwrite="true">
 							<fileset dir = "${base.dir}/LexBIGData"/>
-		</copy>
+		</copy> -->
+		
 		<!--Copying jss folder -->
 		<copy todir="${zip.dir}/jss" overwrite="true"> 
 		    <fileset dir ="${base.dir}/jss" />
