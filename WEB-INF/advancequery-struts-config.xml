@@ -281,6 +281,14 @@ PUBLIC
 			<forward name="success" path=".query.openDecisionMakingPage"/>		
 			<forward name="viewAllRecords" path=".query.viewSearchResults"/>		
 		</action>
+		<action path="/LoadingVocabularies"
+			type="edu.wustl.query.action.LoadingVocabulariesAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path="/pages/advancequery/content/search/LoadingVocabularies.jsp"/>
+		</action>
+		
 		<action path="/SearchPermissibleValues"
 			type="edu.wustl.query.action.SearchPermissibleValuesAction"
 			name="categorySearchForm"
