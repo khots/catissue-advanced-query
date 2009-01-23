@@ -1712,7 +1712,7 @@ var jsReady = false;
 	   compIdOfID=componentIdOfID;
 	   var width=930; //(screen.width * 90 )/100;
 	   var height= 510;//( screen.height * 65)/100;
-	   pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'SearchMappedPV.do?componentId='+componentId,'Search Permissible Values for \"'+entityName+'\"', 'width='+width+' height='+height+',center=1,resize=0,scrolling=1');
+	   pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'LoadingVocabularies.do?componentId='+componentId,'Search Permissible Values for \"'+entityName+'\"', 'width='+width+' height='+height+',center=1,resize=0,scrolling=1');
 	   refresh=false;
 	}
 

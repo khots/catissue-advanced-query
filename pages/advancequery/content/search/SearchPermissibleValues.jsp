@@ -231,7 +231,6 @@ function setSelectedConceptCodes(request,pvConceptCodeList,pvNameList)
 		{
 			var responseTextValue =  request.responseText;	
 			parent.window.getValueFromChild(pvConceptCodeList,pvNameList);
-			location.href ="SearchPermissibleValues.do";
 			parent.pvwindow.hide();
 			return false;
 		}
