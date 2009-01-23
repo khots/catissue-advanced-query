@@ -54,8 +54,6 @@ public class DefinedQueryUtil
 		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) query;
 		List<IOutputAttribute> outputAttributeList = parameterizedQuery.getOutputAttributeList();
 		parameterizedQuery = QueryObjectFactory.createParameterizedQuery(query);
-		parameterizedQuery.setOutputAttributeList(outputAttributeList);
-
 		return parameterizedQuery;
 	}
 
