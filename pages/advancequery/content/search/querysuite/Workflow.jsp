@@ -114,6 +114,7 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 	//rowContents[3]=createTextElement(operandsTdContent);
 	//rowContents[3]=getSelectObjectControl();
 	rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+queryCount,operandsTdContent);
+	rowContents[4].appendChild(createHiddenElement("identifier","identifier_"+operandsTdContent,operandsTdContent));
 	rowContents[5]=cqTitle;
 	rowContents[6]=cqType;
 	
@@ -140,8 +141,15 @@ function submitWorflow()
 }
 function cancelGetCountQuery(queryId,executionLogId)
 {	
-	document.getElementById("cancelajaxcall_"+queryId).value='true';
-	var ID=document.getElementById("selectedqueryId_"+queryId).value;
+	var identifier=document.getElementById("identifier_"+queryId);
+	var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
+	var selectedqueryId=object.id;
+	
+	var selectedquery=selectedqueryId.split("_");
+	index=selectedquery[1];
+
+	document.getElementById("cancelajaxcall_"+index).value='true';
+	var ID=document.getElementById("selectedqueryId_"+index).value;
 
 	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'cancel'+"&ID="+ID+"&executionLogId="+executionLogId;
 	changeExecuteLinkToExecute(queryId,0);
@@ -169,8 +177,16 @@ function cancelExecuteQuery(response)
 				for(var i=0;i<num;i++)
 				{
 
-					var queryIndex = jsonResponse.executionQueryResults[i].queryIndex;
-					document.getElementById("cancelajaxcall_"+queryIndex).value='false';
+
+					var queryId = jsonResponse.executionQueryResults[i].queryId;
+
+					var identifier=document.getElementById("identifier_"+queryId);
+					var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
+					var selectedqueryId=object.id;
+					
+					var selectedquery=selectedqueryId.split("_");
+					index=selectedquery[1];
+					document.getElementById("cancelajaxcall_"+index).value='false';
 
 				}
 		  }
@@ -178,9 +194,11 @@ function cancelExecuteQuery(response)
 
 function executeGetCountQuery(queryId,executionLogId)
 {
-	var ID=document.getElementById("selectedqueryId_"+queryId).value;
+	var ID=queryId;//document.getElementById("selectedqueryId_"+queryId).value;
+	//var identifier=(document.getElementById("selectedqueryId_"+queryId).childNode).value;
 	var projectId=document.getElementById("selectedProject").value;
 	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'start'+"&ID="+ID+"&executionLogId="+executionLogId+"&selectedProject="+projectId;
+	
 
 	var request=newXMLHTTPReq();
 	if(request == null)
@@ -205,14 +223,19 @@ function responseHandler(response)
 				for(var i=0;i<num;i++)
 				{
 					 var queryId = jsonResponse.executionQueryResults[i].queryId;
-					 var queryIndex = jsonResponse.executionQueryResults[i].queryIndex;
+					 //var queryIndex = jsonResponse.executionQueryResults[i].queryIndex;
 					 var queryResult = jsonResponse.executionQueryResults[i].queryResult;
 					 var status = jsonResponse.executionQueryResults[i].status;
 					 var executionLogId = jsonResponse.executionQueryResults[i].executionLogId;
-					 	 	 
+					 var queryIndex=-1; 	 
 					if(queryResult!=-1)
 					{
-						var object=document.getElementById("selectedqueryId_"+queryIndex);
+						var identifier=document.getElementById("identifier_"+queryId);
+						var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
+						var selectedqueryId=object.id;
+						
+						var selectedquery=selectedqueryId.split("_");
+						queryIndex=selectedquery[1];
 						var parentIObj=object.parentNode;
 						var lableObject=document.getElementById("label_"+queryIndex);
 						if(lableObject!=null)
@@ -224,18 +247,18 @@ function responseHandler(response)
 					}
 					if((document.getElementById("cancel_"+queryIndex)==null)&&(document.getElementById("cancelajaxcall_"+queryIndex).value=='false'))
 					{
-						changeLinkToCancel(queryIndex,executionLogId);
+						changeLinkToCancel(queryId,executionLogId);
 					}
 					if((status!="Completed")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
 					{
-						executeGetCountQuery(queryIndex,executionLogId);
+						executeGetCountQuery(queryId,executionLogId);
 						
 
 					}
 					if((status=="Completed"))
 					{
 						
-						changeExecuteLinkToExecute(queryIndex,0);
+						changeExecuteLinkToExecute(queryId,0);
 
 					}
 				}
@@ -457,14 +480,18 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 
 
 										<td class="content_txt">
-											<html:hidden property="selectedqueryId" styleId="selectedqueryId_${queryIndex}" value="${workflowForm.selectedqueryId[queryIndex]}"/>
+											<input type="hidden" name="selectedqueryId" id="selectedqueryId_${queryIndex}" value="${workflowForm.selectedqueryId[queryIndex]}">
+											
+												<input type="hidden" name="identifier" id="identifier_${workflowForm.identifier[queryIndex]}" value="${workflowForm.identifier[queryIndex]}"/>
+											</input>
+
 										</td>
 										<td width="100">
 										<table >
 										<tbody>
 										<tr>
 										<td>
-											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetCountQuery('${queryIndex}','0')" styleClass="bluelink"
+											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetCountQuery('${workflowForm.identifier[queryIndex]}','0')" styleClass="bluelink"
 											>
 												Execute
 											</html:link>

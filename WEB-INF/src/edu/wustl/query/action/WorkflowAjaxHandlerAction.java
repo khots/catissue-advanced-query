@@ -60,7 +60,7 @@ public class WorkflowAjaxHandlerAction extends Action
 		Writer writer = response.getWriter();
 		if (operation != null && "execute".equals(operation.trim()))
 		{
-			//Get all query ids
+
 			Long queryId = Long.valueOf(id);
 
 			WorkflowBizLogic workflowBizLogic = (WorkflowBizLogic) BizLogicFactory.getInstance()

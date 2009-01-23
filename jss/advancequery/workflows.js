@@ -10,6 +10,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	rowObj.className="td_bgcolor_white";
 	var columnObj;
 	var columnCount=columnContents.length;
+	var id=0;
 	for(var counter=0;counter<columnCount-2;counter++)
 	{
 		if(columnContents[counter]!=null)
@@ -22,6 +23,10 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 			}
 			columnObj.className="content_txt";
 			columnObj.appendChild(columnContents[counter]);
+			if(columnContents[counter].name=="selectedqueryId")
+			{
+				id=columnContents[counter].value;
+			}
 			rowObj.appendChild(columnObj);
 		}
 	}
@@ -59,7 +64,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	operandsTd2.appendChild(queryTitleControl);
 	operandsTd2.appendChild(queryTypeControl);
 	operandsTd2.width="4";
-	operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+queryCount+"','"+0+"')"));
+	operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+id+"','"+0+"')"));
 	operandsTd3.appendChild(createLink("Delete ","delete_"+queryCount,"javascript:deleteWorkflowItem('"+queryCount+"')"));
 	operandsTd3.appendChild(createHiddenElement("cancelajaxcall","cancelajaxcall_"+(queryCount),'false'));
 
@@ -130,6 +135,7 @@ function addQuery()
 		rowContents[2]=createTextElement(getText(queryTypes[counter]));
 		//rowContents[3]=createHiddenElement("cancelajaxcall","cancelajaxcall_"+(counter+queryCount),'false');
 		rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+(counter+queryCount),getText(queryIds[counter]));
+		rowContents[4].appendChild(createHiddenElement("identifier","identifier_"+getText(queryIds[counter]),getText(queryIds[counter])));
 		rowContents[5]=getText(queryTitles[counter]);
 		rowContents[6]=getText(queryTypes[counter]);
 		var operatorsTdContent="None";
@@ -260,10 +266,32 @@ function deleteWorkflowItem(index)
 			document.getElementById("operands_"+i).id="operands_"+(i-1);
 			document.getElementById("operators_"+i).id="operators_"+(i-1);
 			document.getElementById("displayQueryType_"+i).id="displayQueryType_"+(i-1);
-			document.getElementById("execute_"+i).href="javascript:executeGetCountQuery('"+(i-1)+"')"
+		/*	if(document.getElementById("execute_"+i)!=null)
+			{
+				document.getElementById("execute_"+i).href="javascript:executeGetCountQuery('"+(i-1)+"')"
+			}
+			if(document.getElementById("cancel_"+i)!=null)
+			{
+				document.getElementById("cancel_"+i).href="javascript:cancelGetCountQuery('"+(i-1)+"','"+executionLogId+"')";
+
+			}*/
+		
+			if(document.getElementById("execute_"+i)!=null)
+			{
+				document.getElementById("execute_"+i).id="execute_"+(i-1);
+			}
+			if(document.getElementById("cancel_"+i)!=null)
+			{
+				document.getElementById("cancel_"+i).id="cancel_"+(i-1);
+			}	
 			document.getElementById("delete_"+i).href="javascript:deleteWorkflowItem('"+(i-1)+"')"
-			document.getElementById("execute_"+i).id="execute_"+(i-1);
 			document.getElementById("delete_"+i).id="delete_"+(i-1);
+			document.getElementById("cancelajaxcall_"+i).id="cancelajaxcall_"+(i-1);
+			if(document.getElementById("label_"+i)!=null)
+			{
+				document.getElementById("label_"+i).id="label_"+(i-1);
+			}
+
 		}
 	table.deleteRow(index);
 	}
@@ -365,27 +393,41 @@ function setOnclickEventOnDeselect(chckCount,selected)
 	}
 
 }
-function changeLinkToCancel(index,executionLogId)
+function changeLinkToCancel(queryId,executionLogId)
 {
+
+	var identifier=document.getElementById("identifier_"+queryId);
+	var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
+	var selectedqueryId=object.id;
+	
+	var selectedquery=selectedqueryId.split("_");
+	index=selectedquery[1];
 
 	var object=document.getElementById("execute_"+index);		
 	if(object!=null&&object!=undefined)
 	{
 		var parentIObj=object.parentNode;
 		parentIObj.removeChild(object);
-		parentIObj.appendChild(createLink("Cancel ","cancel_"+index,"javascript:cancelGetCountQuery('"+index+"','"+executionLogId+"')"));
+		parentIObj.appendChild(createLink("Cancel ","cancel_"+index,"javascript:cancelGetCountQuery('"+queryId+"','"+executionLogId+"')"));
 	}
 }
 
-function changeExecuteLinkToExecute(index,executionLogId)
+function changeExecuteLinkToExecute(queryId,executionLogId)
 {
+
+	var identifier=document.getElementById("identifier_"+queryId);
+	var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
+	var selectedqueryId=object.id;
+	
+	var selectedquery=selectedqueryId.split("_");
+	index=selectedquery[1];
 	
 	var object=document.getElementById("cancel_"+index);		
 	if(object!=null)
 	{
 		var parentIObj=object.parentNode;
 		parentIObj.removeChild(object);
-		parentIObj.appendChild(createLink("Execute ","execute_"+index,"javascript:executeGetCountQuery('"+index+"','"+0+"')"));
+		parentIObj.appendChild(createLink("Execute ","execute_"+index,"javascript:executeGetCountQuery('"+queryId+"','"+0+"')"));
 		
 	}
 }

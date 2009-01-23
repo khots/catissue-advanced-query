@@ -288,6 +288,8 @@ public class WorkflowForm extends AbstractActionForm
 	 * array containing get count or composite query
 	 */
 	protected String[] queryTypeControl;
+	
+	protected Long[] identifier;
 
 	/**
 	 * array containing operand's ids
@@ -362,12 +364,18 @@ public class WorkflowForm extends AbstractActionForm
 
 		//  display title
 		String[] displayQueryTitle = new String[workflowItemList.size()];
+		Long[] identifier = new Long[workflowItemList.size()];
 		for (int i = 0; i < workflowItemList.size(); i++)
 		{
 			WorkflowItem workflowItem = workflowItemList.get(i);
+			//to initalize identifier array
+			//this.identifier[i]=workflowItem.getQuery().getId();
 			LinkedList<String> operatorsList = new LinkedList<String>();
 			LinkedList<Long> operandsList = new LinkedList<Long>();
 			IAbstractQuery abstractQuery = workflowItem.getQuery();
+
+
+			identifier[i]=abstractQuery.getId();
 			generateOperatorAndOperandList(operatorsList, operandsList, abstractQuery);
 			setoperandList(operandList, operandsList);
 			setOperatorList(opretionList, operatorsList);
@@ -396,6 +404,7 @@ public class WorkflowForm extends AbstractActionForm
 		this.operators = operators;
 		boolean[] chkbox = new boolean[workflowItemList.size()];
 		this.chkbox = chkbox;
+		this.identifier=identifier;
 
 	}
 
@@ -539,6 +548,18 @@ public class WorkflowForm extends AbstractActionForm
 			operationName = "Minus";
 		}
 		return operationName;
+	}
+
+	
+	public Long[] getIdentifier()
+	{
+		return identifier;
+	}
+
+	
+	public void setIdentifier(Long[] identifier)
+	{
+		this.identifier = identifier;
 	}
 
 }
