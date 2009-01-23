@@ -175,15 +175,21 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		downStreamPredicates.append(localPredicates.assemble(prefix)).append(Constants.QUERY_AND);
 
 		List<IExpression> children = getNonMainNonEmptyChildren(expression);
-
+		
 		//end recursion
 		if (children.isEmpty())
 		{
 			return Utility.removeLastAnd(downStreamPredicates.toString());
 		}
 
-		for (IExpression child : children)
+		for(IExpression child : children)
 		{
+			//skip children that do not have for variables
+			if(!forVariables.containsKey(child))
+			{
+				continue;
+			}
+			
 			String targetRole = targetRoles.get(child);
 			String entityName = deCapitalize(child.getQueryEntity().getDynamicExtensionsEntity()
 					.getName());
@@ -196,10 +202,11 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 
 			newPrefix.append(entityName).append('/');
 			downStreamPredicates.append(getAllDownstreamPredicates(predicateGenerator, child,
-					newPrefix.toString()));
+					newPrefix.toString())).append(Constants.QUERY_AND);
 		}
 
-		return downStreamPredicates.toString();
+		return Utility.removeLastAnd(downStreamPredicates.toString());
+		
 	}
 
 	/**
