@@ -1,8 +1,6 @@
 
 package edu.wustl.query.util.querysuite;
 
-import java.util.Collection;
-
 import javax.servlet.http.HttpServletRequest;
 
 import edu.wustl.common.beans.SessionDataBean;
@@ -25,7 +23,7 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 {
 
 	private AbstractQuery abstractQuery;
-
+	protected IQuery query;
 	public QueryUIManager()
 	{
 	}
@@ -84,16 +82,19 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public void insertDefinedQueries(IQuery query) throws QueryModuleException
+	
+	/**
+	 * This method inserts defined queries.
+	 * @throws QueryModuleException
+	 */
+	public void insertDefinedQueries() throws QueryModuleException
 	{
 		QueryModuleException queryModExp;
 			//inserts Defined Query
 			DefinedQueryUtil definedQueryUtil=new DefinedQueryUtil();
 			try
 			{
-
-					definedQueryUtil.insertQuery(query);
-				
+				definedQueryUtil.insertQuery(query);
 			}
 			catch (UserNotAuthorizedException e)
 			{
