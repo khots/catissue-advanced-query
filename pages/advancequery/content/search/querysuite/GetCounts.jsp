@@ -48,16 +48,19 @@
 	<html:hidden property="selectedProject" value="" />
 <table border="0" width="100%" cellspacing="0" cellpadding="0"  height="450" >	
 		<tr>
-			<bean:message key="getcountquery.name"/><span class="red_star">*</span>
-			<html:text styleClass="formFieldSized"   styleId="queryTitle1" property="queryTitle" />
+			&nbsp;
+			<span class="content_txt_bold"><bean:message key="getcountquery.name"/></span><span class="red_star">*</span>:<span class="content_txt">
+			<html:text styleClass="textfield_undefined" size="80" styleId="queryTitle1" property="queryTitle" />&nbsp;&nbsp;</span>
 		</tr>
 			<tr>	
-			<td width=30%" align="center" valign="middle" height="36"  background="images/advancequery/top_bg_wiz.gif" >
+			<td width=3%" align="center" valign="middle" height="36"  background="images/advancequery/top_bg_wiz.gif" >
 				<img src="images/advancequery/1_active_DefineQuery.gif"/> <!-- width="118" height="25" /-->
 			</td>
+			<!--
 			<td width="30%" align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
 				<img src="images/advancequery/2_inactive.gif" /> <!-- width="199" height="38" /-->
 			</td>
+			<!--
 			<td width="30%" align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
 				<img src="images/advancequery/3_inactive.gif" /> <!--  width="139" height="38" /-->
 			</td>
