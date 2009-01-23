@@ -625,7 +625,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 				newValue.append(actualMonth);
 				newValue.append("-");
 				newValue.append(actualDate);
-				actualValue.append("xs:dateTime(\"").append(newValue.toString()).append("T23:59:59\")");
+				actualValue.append("xs:dateTime(\"").append(newValue.toString()).append("T00:00:00\")");
 			}
 			else
 			{
