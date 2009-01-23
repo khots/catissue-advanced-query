@@ -630,7 +630,7 @@ public class Utility extends edu.wustl.common.util.Utility
 			//IQueryUpdationUtil.addDefaultConditionToIquery(query,session);
 			
 			//Add the link/association among parent and containment entities
-			IQueryUpdationUtil.addLinks(eachExpressionParentChildMap, session);
+			IQueryUpdationUtil.addLinks(eachExpressionParentChildMap, session,query);
 			
 	    }
 	}

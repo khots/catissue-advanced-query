@@ -50,7 +50,7 @@ public abstract class AddContainmentsUtil
 			IQueryUpdationUtil.addConatinmentObjectsToIquery(query, session);
 
 			//Add the link/association among parent and containment entities
-			IQueryUpdationUtil.addLinks(eachExpressionParentChildMap, session);
+			IQueryUpdationUtil.addLinks(eachExpressionParentChildMap, session,query);
 
 		}
 	}
