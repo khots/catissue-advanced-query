@@ -74,6 +74,14 @@ public abstract class IQueryUpdationUtil
 	{
 		Map<Integer, HashMap<EntityInterface, List<EntityInterface>>> eachExpressionParentChildMap = new HashMap<Integer, HashMap<EntityInterface, List<EntityInterface>>>();
 		List<Integer> expressionIdsList = getAddLimitExpressionList(session);
+		if(expressionIdsList.isEmpty() && isDefaultConditionPresent)
+		{
+			IConstraints constraints = query.getConstraints();
+			for (IExpression expression : constraints)
+			{
+				expressionIdsList.add(expression.getExpressionId());
+			}
+		}
 		List<Integer> mainExpressionIds = new ArrayList<Integer>();
 		Map<Integer, List<EntityInterface>> eachExpressionContainmentMap = getExpressionsContainmentMap(session);
 
@@ -87,8 +95,15 @@ public abstract class IQueryUpdationUtil
 			getMainExpressionsList(query, expressionIdsList, mainExpressionIds, mainEntityList);
 
 			//Here we got the list of all main  Expressions, now we need to find out for expression we need to add Containments
-			getExpsToAddContainments(mainExpressionIds, eachExpressionContainmentMap,
+			if(isDefaultConditionPresent)
+			{
+				expressionsToAddContainments.addAll(mainExpressionIds);
+			}
+			else
+			{
+				getExpsToAddContainments(mainExpressionIds, eachExpressionContainmentMap,
 					expressionsToAddContainments);
+			}
 		}
 		//For each expression id in the  expressionsToAddContainments, get It's Containments
 		updateAllMaps(query, eachExpressionParentChildMap, eachExpressionContainmentMap,
@@ -576,9 +591,9 @@ public abstract class IQueryUpdationUtil
 	@SuppressWarnings("unchecked")
 	public static void addLinks(
 			Map<Integer, HashMap<EntityInterface, List<EntityInterface>>> eachExpressionParentChildMap,
-			HttpSession session)
+			HttpSession session,IQuery query)
 	{
-		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
+		//IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
 		Map<Integer, HashMap<EntityInterface, Integer>> mainExpEntityExpressionIdMap = (Map<Integer, HashMap<EntityInterface, Integer>>) session
 				.getAttribute("mainExpEntityExpressionIdMap");
 
