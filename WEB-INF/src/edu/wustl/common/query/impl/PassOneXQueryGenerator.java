@@ -105,7 +105,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 	private String appendChildren(IExpression expression, PredicateGenerator predicateGenerator,
 			StringBuilder laterPart)
 	{
-		String variable = null;
+		String variable = "";
 		String targetRole = targetRoles.get(expression);
 
 		if (targetRole != null)
@@ -139,12 +139,14 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 				laterPart.append('[').append(predicates.assemble()).append(']');
 			}
 
-			List<IExpression> children = getNonMainChildren(expression);
-			if (!children.isEmpty())
+			List<IExpression> children = getNonMainNonEmptyChildren(expression);
+			for (IExpression child : children)
 			{
-				IExpression firstChild = children.get(0);
+				IExpression firstChild = child;
 				variable = appendChildren(firstChild, predicateGenerator, laterPart);
+
 			}
+
 		}
 
 		return variable;
@@ -172,7 +174,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		replaceRhsForVariables(localPredicates);
 		downStreamPredicates.append(localPredicates.assemble(prefix)).append(Constants.QUERY_AND);
 
-		List<IExpression> children = getNonMainChildren(expression);
+		List<IExpression> children = getNonMainNonEmptyChildren(expression);
 
 		//end recursion
 		if (children.isEmpty())
@@ -229,7 +231,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 					break;
 				}
 
-				expression = getNonMainChildren(expression).get(0);
+				expression = getNonMainNonEmptyChildren(expression).get(0);
 
 				//additional "../" for entities having target role eg. demographicsCollection 
 				if (targetRoles.containsKey(expression))
@@ -375,7 +377,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 						break;
 					}
 
-					expression = getNonMainChildren(expression).get(0);
+					expression = getNonMainNonEmptyChildren(expression).get(0);
 					forVariable = forVariables.get(expression);
 
 					//additional "../" for entities having target role eg. demographicsCollection 

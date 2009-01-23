@@ -924,5 +924,13 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		nonMainChildren.removeAll(mainExpressions);
 		return nonMainChildren;
 	}
+	
+	protected List<IExpression> getNonMainNonEmptyChildren(IExpression expression)
+	{
+		List<IExpression> children = getNonMainChildren(expression);
+		children.removeAll(emptyExpressions);
+		return children;
+		
+	}
 
 }
