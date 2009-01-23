@@ -350,7 +350,7 @@ public class DAGPanel
 				for (int i = 0; i < paths.size(); i++)
 				{
 					IPath path = paths.get(i);
-					LinkTwoNode(sourceNode, destNode, paths.get(i), new ArrayList());
+					linkTwoNode(sourceNode, destNode, paths.get(i), new ArrayList());
 					String pathStr = Long.valueOf(path.getPathId()).toString();
 					DAGPath dagPath = new DAGPath();
 					dagPath.setToolTip(getPathDisplayString(path));
@@ -651,7 +651,7 @@ public class DAGPanel
 		}
 	}
 
-	private IOutputTerm createOutputTerm(String operation, String nodeId)
+	/*private IOutputTerm createOutputTerm(String operation, String nodeId)
 	{
 		if (operation.equals(Constants.ADD))
 		{
@@ -661,9 +661,9 @@ public class DAGPanel
 		{
 			return getExistingOutputTerm(nodeId);
 		}
-	}
+	}*/
 
-	private IOutputTerm getExistingOutputTerm(String nodeId)
+	/*private IOutputTerm getExistingOutputTerm(String nodeId)
 	{
 		IOutputTerm outputTerm = null;
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
@@ -679,7 +679,7 @@ public class DAGPanel
 			}
 		}
 		return outputTerm;
-	}
+	}*/
 
 	private CustomFormulaUIBean createTQUIBean(ICustomFormula cf, CustomFormulaNode twoNode,
 			SingleNodeCustomFormulaNode singleNode, IOutputTerm outputTerm)
@@ -1130,7 +1130,7 @@ public class DAGPanel
 	 * @param path
 	 * @param intermediateExpressions
 	 */
-	private void LinkTwoNode(final DAGNode sourceNode, final DAGNode destNode, final IPath path,
+	private void linkTwoNode(final DAGNode sourceNode, final DAGNode destNode, final IPath path,
 			List<Integer> intermediateExpressions)
 	{
 
@@ -1146,7 +1146,7 @@ public class DAGPanel
 			link.setDestinationExpressionId(destexpressionId);
 			link.setSourceExpressionId(sourceexpressionId);
 			link.setPath(path);
-			updateQueryObject(link, sourceNode, destNode);
+			updateQueryObject(link, sourceNode);
 		}
 		catch (CyclicException e)
 		{
@@ -1159,9 +1159,8 @@ public class DAGPanel
 	 * Updates query object
 	 * @param link
 	 * @param sourceNode
-	 * @param destNode
 	 */
-	private void updateQueryObject(PathLink link, DAGNode sourceNode, DAGNode destNode)
+	private void updateQueryObject(PathLink link, DAGNode sourceNode)
 	{
 		//TODO required to modify code logic will not work for multiple association
 		int sourceexpressionId = sourceNode.getExpressionId();
@@ -1363,7 +1362,7 @@ public class DAGPanel
 			dagNode.setNodeName(nodeDisplayName);
 			dagNode.setToolTip(exp);
 			Position position = positionMap.get(exp.getExpressionId());
-			setNodeType(exp, dagNode, position);
+			setNodeType(dagNode, position);
 			nodeform(expressionId, dagNode, constraints, new ArrayList<IIntraModelAssociation>(),mainEntityList);
 			int numOperands = exp.numberOfOperands();
 			int numOperator = numOperands - 1;
@@ -1393,7 +1392,7 @@ public class DAGPanel
 
 	}
 
-	private void setNodeType(IExpression exp, DAGNode dagNode, Position position)
+	private void setNodeType(/*IExpression exp,*/DAGNode dagNode, Position position)
 	{
 		if (position != null)
 		{
@@ -1564,7 +1563,7 @@ public class DAGPanel
 			if (exp.containsCustomFormula())
 			{
 				Set<ICustomFormula> customFormulas = QueryUtility.getCustomFormulas(exp);
-				checkingCustomFormulas(customNodeList, SNcustomNodeList, query, constraints,
+				checkingCustomFormulas(customNodeList, SNcustomNodeList, query,
 						TQUIMap, exp, customFormulas);
 			}
 		}
@@ -1573,7 +1572,7 @@ public class DAGPanel
 
 	private void checkingCustomFormulas(List<CustomFormulaNode> customNodeList,
 			List<SingleNodeCustomFormulaNode> SNcustomNodeList, IQuery query,
-			IConstraints constraints, Map<String, CustomFormulaUIBean> TQUIMap, IExpression exp,
+			Map<String, CustomFormulaUIBean> TQUIMap, IExpression exp,
 			Set<ICustomFormula> customFormulas)
 	{
 		if (!customFormulas.isEmpty())
@@ -1583,7 +1582,7 @@ public class DAGPanel
 				Set<IExpression> expressionSet = QueryUtility.getExpressionsInFormula(c);
 				if ((!expressionSet.isEmpty()) && (expressionSet.size() == 2))
 				{
-					CustomFormulaNode customNode = populateCustomNodeInfo(c, constraints, exp);
+					CustomFormulaNode customNode = populateCustomNodeInfo(c,exp);
 					if (customNode != null)
 					{
 						savedQTwoNodesCNode(customNodeList, query, TQUIMap, c, customNode);
@@ -1591,17 +1590,17 @@ public class DAGPanel
 				}
 				else if ((!expressionSet.isEmpty()) && (expressionSet.size() == 1))
 				{
-					savedQSingleNodeCNode(SNcustomNodeList, query, constraints, TQUIMap, exp, c);
+					savedQSingleNodeCNode(SNcustomNodeList, query,TQUIMap, exp, c);
 				}
 			}
 		}
 	}
 
 	private void savedQSingleNodeCNode(List<SingleNodeCustomFormulaNode> SNcustomNodeList,
-			IQuery query, IConstraints constraints, Map<String, CustomFormulaUIBean> TQUIMap,
+			IQuery query,Map<String, CustomFormulaUIBean> TQUIMap,
 			IExpression exp, ICustomFormula c)
 	{
-		SingleNodeCustomFormulaNode singleNodeCF = populateSingleNodeInfo(c, constraints, exp);
+		SingleNodeCustomFormulaNode singleNodeCF = populateSingleNodeInfo(c,exp);
 		String singleNodeName = getCustomNodeName(singleNodeCF.getName(), TQUIMap);
 		singleNodeCF.setName(singleNodeName);
 		String customColumnName = setCustomColumnName(query);
@@ -1637,7 +1636,7 @@ public class DAGPanel
 	}
 
 	private SingleNodeCustomFormulaNode populateSingleNodeInfo(ICustomFormula c,
-			IConstraints constraints, IExpression exp)
+			IExpression exp)
 	{
 		// TODO Auto-generated method stub
 		SingleNodeCustomFormulaNode singleCNode = new SingleNodeCustomFormulaNode();
@@ -1754,8 +1753,7 @@ public class DAGPanel
 
 	}
 
-	private CustomFormulaNode populateCustomNodeInfo(ICustomFormula c, IConstraints constraints,
-			IExpression srcExp)
+	private CustomFormulaNode populateCustomNodeInfo(ICustomFormula c,IExpression srcExp)
 	{
 		CustomFormulaNode cNode = new CustomFormulaNode();
 		Set<IExpression> containingExpressions = QueryUtility.getExpressionsInFormula(c);

@@ -335,7 +335,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 						int newNestingNumber = newConnector.getNestingNumber();
 						currentNestingCounter = attachOperandquery(buffer, currentNestingCounter,
 								operandquery, newNestingNumber);
-						buffer.append(" " + newConnector.getOperator().toString().toLowerCase());
+						buffer.append(Constants.SPACE).append(newConnector.getOperator().toString().toLowerCase());
 					}
 					i = nextIndex - 1;
 				}
@@ -343,7 +343,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 				{
 					currentNestingCounter = attachOperandquery(buffer, currentNestingCounter,
 							operandquery, nestingNumber);
-					buffer.append(" " + connector.getOperator().toString().toLowerCase());
+					buffer.append(Constants.SPACE).append(connector.getOperator().toString().toLowerCase());
 				}
 			}
 			else
@@ -423,7 +423,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	{
 		StringBuffer buffer = new StringBuffer();
 
-		IExpression expression = rule.getContainingExpression();
+		//IExpression expression = rule.getContainingExpression();
 		addActivityStausCondition(rule);
 
 		int noOfConditions = rule.size();
@@ -631,8 +631,8 @@ public abstract class QueryGenerator implements IQueryGenerator
 		{
 			selectPart.append(getConditionAttributeName(attribute, expression));
 			String columnAliasName = Constants.QUERY_COLUMN_NAME + selectIndex;
-			selectPart.append(" " + columnAliasName + Constants.QUERY_COMMA);
-			// code to get displayname. & pass it to the Constructor along with
+			selectPart.append(Constants.SPACE).append(columnAliasName).append(Constants.QUERY_COMMA);
+			// code to get display name. & pass it to the Constructor along with
 			// treeNode.
 			String displayNameForColumn = Utility.getDisplayNameForColumn(attribute);
 			treeNode.addAttribute(new QueryOutputTreeAttributeMetadata(attribute, columnAliasName,
@@ -818,7 +818,9 @@ public abstract class QueryGenerator implements IQueryGenerator
 		treeNo = 0;
 		allExpressionTreeNo = 0;
 		if (isContainedExpresion(rootExpression.getExpressionId()))
+		{
 			isContained = true;
+		}
 		if (rootExpression.isInView())
 		{
 			IOutputEntity rootOutputEntity = getOutputEntity(rootExpression);
@@ -1170,11 +1172,11 @@ public abstract class QueryGenerator implements IQueryGenerator
 
 			if (i == valueList.size() - 1)
 			{
-				buffer.append(value + ')');
+				buffer.append(value).append(Constants.QUERY_CLOSING_PARENTHESIS);
 			}
 			else
 			{
-				buffer.append(value + ',');
+				buffer.append(value).append(Constants.QUERY_COMMA);
 			}
 		}
 		return buffer.toString();
@@ -1214,12 +1216,12 @@ public abstract class QueryGenerator implements IQueryGenerator
 		String firstValue = modifyValueForDataType(values.get(0), dataType);
 		String secondValue = modifyValueForDataType(values.get(1), dataType);
 
-		buffer.append(Constants.QUERY_OPENING_PARENTHESIS + attributeName);
-		buffer.append(RelationalOperator.getSQL(RelationalOperator.GreaterThanOrEquals)
-				+ firstValue);
-		buffer.append(" " + LogicalOperator.And + " " + attributeName
-				+ RelationalOperator.getSQL(RelationalOperator.LessThanOrEquals) + secondValue
-				+ Constants.QUERY_CLOSING_PARENTHESIS);
+		buffer.append(Constants.QUERY_OPENING_PARENTHESIS).append(attributeName);
+		buffer.append(RelationalOperator.getSQL(RelationalOperator.GreaterThanOrEquals))
+			.append(firstValue);
+		buffer.append(Constants.SPACE).append(LogicalOperator.And).append(Constants.SPACE)
+			  .append(attributeName).append(RelationalOperator.getSQL(RelationalOperator.LessThanOrEquals)).append(secondValue)
+			  .append(Constants.QUERY_CLOSING_PARENTHESIS);
 
 		return buffer.toString();
 	}

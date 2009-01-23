@@ -43,7 +43,6 @@ import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.metadata.category.Category;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IConnector;
-import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
@@ -214,7 +213,7 @@ public class SqlGenerator extends QueryGenerator
 		// as disabled or null
 		StringBuffer extraWherePAnd = new StringBuffer();
 
-		Set<Integer> expressionIDs = new HashSet<Integer>(); // set to hold
+		//Set<Integer> expressionIDs = new HashSet<Integer>(); // set to hold
 		// values of
 		// aliasAppender,
 		// so that
@@ -274,7 +273,7 @@ public class SqlGenerator extends QueryGenerator
 	 */
 	private void processExpressionsWithCategories(IQuery query) throws SqlException
 	{
-		if (containsCategrory(constraints))
+		if (containsCategrory())
 		{
 			Connection connection = null;
 			try
@@ -336,10 +335,9 @@ public class SqlGenerator extends QueryGenerator
 	 * To check whether there is any Expression having Constraint Entity as
 	 * category or not.
 	 * 
-	 * @param theConstraints reference to IConstraints of the Query object.
 	 * @return true if there is any constraint put on category.
 	 */
-	private boolean containsCategrory(IConstraints theConstraints)
+	private boolean containsCategrory()
 	{
 		Set<IQueryEntity> constraintEntities = constraints.getQueryEntities();
 		for (IQueryEntity entity : constraintEntities)
@@ -404,8 +402,9 @@ public class SqlGenerator extends QueryGenerator
 		{
 			EntityInterface leftEntity = expression.getQueryEntity().getDynamicExtensionsEntity();
 			leftAlias = getAliasName(expression);
-			buffer.append(Constants.FROM + leftEntity.getTableProperties().getName() + " " + leftAlias);
-
+			buffer.append(Constants.FROM);
+			buffer.append(leftEntity.getTableProperties().getName());
+			buffer.append(Constants.SPACE).append(leftAlias);
 			createFromPartForDerivedEntity(expression, buffer);
 		}
 
@@ -450,11 +449,13 @@ public class SqlGenerator extends QueryGenerator
 					String primaryKeyColumnName = primaryKey.getColumnProperties().getName();
 					String subClassAlias = getAliasFor(expression, theLeftEntity);
 					String superClassAlias = getAliasFor(expression, superClassEntity);
-					buffer.append(Constants.LEFT_JOIN + superClassEntity.getTableProperties().getName()
-							+ ' ' + superClassAlias + Constants.ON);
+					buffer.append(Constants.LEFT_JOIN);
+					buffer.append(superClassEntity.getTableProperties().getName());
+					buffer.append(' ').append(superClassAlias).append(Constants.ON);
 					String leftAttribute = subClassAlias + Constants.QUERY_DOT + primaryKeyColumnName;
 					String rightAttribute = superClassAlias + Constants.QUERY_DOT + primaryKeyColumnName;
-					buffer.append(Constants.QUERY_DOT + leftAttribute + Constants.QUERY_EQUALS + rightAttribute + Constants.QUERY_CLOSING_PARENTHESIS);
+					buffer.append(Constants.QUERY_DOT).append(leftAttribute).append(Constants.QUERY_EQUALS).
+						append(rightAttribute).append(Constants.QUERY_CLOSING_PARENTHESIS);
 				}
 				theLeftEntity = superClassEntity;
 				superClassEntity = superClassEntity.getParentEntity();
@@ -516,7 +517,7 @@ public class SqlGenerator extends QueryGenerator
 					EntityInterface childEntity = childExpression.getQueryEntity()
 							.getDynamicExtensionsEntity();
 
-					EntityInterface leftEntity = eavAssociation.getEntity();
+					//EntityInterface leftEntity = eavAssociation.getEntity();
 
 					ConstraintPropertiesInterface constraintProperties = eavAssociation
 							.getConstraintProperties();
@@ -544,9 +545,10 @@ public class SqlGenerator extends QueryGenerator
 							rightAttribute = middleTableAlias + Constants.QUERY_DOT
 								+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
 							// Forming joing with middle table.
-							buffer.append(Constants.LEFT_JOIN + middleTableName + " " + middleTableAlias
-									+ Constants.ON);
-							buffer.append(Constants.QUERY_OPENING_PARENTHESIS + leftAttribute + Constants.QUERY_EQUALS + rightAttribute);
+							buffer.append(Constants.LEFT_JOIN).append(middleTableName).append(Constants.SPACE).append(middleTableAlias)
+								.append(Constants.ON);
+							buffer.append(Constants.QUERY_OPENING_PARENTHESIS).append(leftAttribute)
+								.append(Constants.QUERY_EQUALS).append(rightAttribute);
 							/*
 							 * Adding descriminator column condition for the 1st
 							 * parent node while forming FROM part left joins. This
@@ -572,17 +574,18 @@ public class SqlGenerator extends QueryGenerator
 							rightAttribute = rightAlias + Constants.QUERY_DOT
 									+ primaryKey.getColumnProperties().getName();
 	
-							buffer.append(Constants.LEFT_JOIN + rightEntity.getTableProperties().getName()
-									+ " " + rightAlias + Constants.ON);
-							buffer.append(Constants.QUERY_OPENING_PARENTHESIS + leftAttribute + Constants.QUERY_EQUALS + rightAttribute);
+							buffer.append(Constants.LEFT_JOIN).append(rightEntity.getTableProperties().getName())
+								.append(Constants.SPACE).append(rightAlias).append(Constants.ON);
+							buffer.append(Constants.QUERY_OPENING_PARENTHESIS).append(leftAttribute)
+							.append(Constants.QUERY_EQUALS).append(rightAttribute);
 	
 							/*
 							 * Adding descriminator column condition for the child
 							 * node while forming FROM part left joins.
 							 */
 							buffer.append(getDescriminatorCondition(actualEavAssociation
-									.getTargetEntity(), rightAlias)
-									+ Constants.QUERY_CLOSING_PARENTHESIS);
+									.getTargetEntity(), rightAlias))
+									.append(Constants.QUERY_CLOSING_PARENTHESIS);
 						}
 					}
 					else
@@ -614,9 +617,10 @@ public class SqlGenerator extends QueryGenerator
 										+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
 							}
 						}
-						buffer.append(Constants.LEFT_JOIN + rightEntity.getTableProperties().getName()
-								+ " " + rightAlias + Constants.ON);
-						buffer.append(Constants.QUERY_OPENING_PARENTHESIS + leftAttribute + Constants.QUERY_EQUALS + rightAttribute);
+						buffer.append(Constants.LEFT_JOIN).append(rightEntity.getTableProperties().getName())
+							 .append(Constants.SPACE).append(rightAlias).append(Constants.ON);
+						buffer.append(Constants.QUERY_OPENING_PARENTHESIS).append(leftAttribute)
+							  .append(Constants.QUERY_EQUALS).append(rightAttribute);
 
 						/*
 						 * Adding descriminator column condition for the 1st
@@ -634,8 +638,8 @@ public class SqlGenerator extends QueryGenerator
 						 * node while forming FROM part left joins.
 						 */
 						buffer.append(getDescriminatorCondition(actualEavAssociation
-								.getTargetEntity(), rightAlias)
-								+ Constants.QUERY_CLOSING_PARENTHESIS);
+								.getTargetEntity(), rightAlias))
+								.append(Constants.QUERY_CLOSING_PARENTHESIS);
 					}
 
 					buffer.append(getParentHeirarchy(childExpression, childEntity, rightEntity));

@@ -11,18 +11,13 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
-import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
-import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
 import edu.wustl.common.bizlogic.QueryBizLogic;
 import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.dao.queryExecutor.PagenatedResultData;
-import edu.wustl.common.query.impl.SqlGenerator;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
@@ -36,6 +31,7 @@ import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
 import edu.wustl.query.util.querysuite.QueryDetails;
@@ -332,7 +328,7 @@ public class QueryOutputSpreadsheetBizLogic
 		}
 		Vector<Integer> identifiedDataColumnIds = new Vector<Integer>();
 		Vector<Integer> objectDataColumnIds = new Vector<Integer>();
-		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAtrributeIndexMetadataMap = new HashMap<Integer, QueryOutputTreeAttributeMetadata>();
+		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAtrributeMap = new HashMap<Integer, QueryOutputTreeAttributeMetadata>();
 		int columnIndex = 0;
 		//List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(node.getOutputEntity().getDynamicExtensionsEntity());
 		Collection<AttributeInterface> PrimaryKeyAttributeColl=node.getOutputEntity().getDynamicExtensionsEntity().getPrimaryKeyAttributeCollection();
@@ -392,16 +388,16 @@ public class QueryOutputSpreadsheetBizLogic
 			}
 			else
 			{
-				int fileTypeIndex = columnIndex + fileTypeAtrributeIndexMetadataMap.size();
+				int fileTypeIndex = columnIndex + fileTypeAtrributeMap.size();
 				queryResultObjectDataBean.setClobeType(true);
-				fileTypeAtrributeIndexMetadataMap.put(fileTypeIndex, attributeMetaData);
+				fileTypeAtrributeMap.put(fileTypeIndex, attributeMetaData);
 			}
 		}
 		if (queryResultObjectDataBean.isClobeType())
 		{
 //			totalFileTypeAttributes = fileTypeAtrributeIndexMetadataMap.size();
 			queryResultObjectDataBean
-					.setFileTypeAtrributeIndexMetadataMap(fileTypeAtrributeIndexMetadataMap);
+					.setFileTypeAtrributeIndexMetadataMap(fileTypeAtrributeMap);
 		}
 		if (!selectedColumnMetaData.isDefinedView())
 		{
@@ -627,11 +623,11 @@ public class QueryOutputSpreadsheetBizLogic
 		}
 		catch (DAOException e)
 		{
-			e.printStackTrace();
+			Logger.out.error(e.getMessage(),e);
 		}
 		catch (ClassNotFoundException e)
 		{
-			e.printStackTrace();
+			Logger.out.error(e.getMessage(),e);
 		}
 		Iterator iterator = list.iterator();
 		while (iterator.hasNext())
@@ -646,7 +642,7 @@ public class QueryOutputSpreadsheetBizLogic
 	/**
 	 * @param node
 	 * @param expressionsInTerm
-	 */
+	 *//*
 	private boolean isValidAssociationForTQ(OutputTreeDataNode node,
 			Set<IExpression> expressionsInTerm)
 	{
@@ -688,7 +684,7 @@ public class QueryOutputSpreadsheetBizLogic
 		}
 		return isValidAssociationForTQ;
 	}
-
+*/
 	/**
 	 * 
 	 * @param temporalColumnUIBean
@@ -727,7 +723,7 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @param node
 	 * @param expressionsInTerm
 	 * @return
-	 */
+	 *//*
 	private boolean getOtherExpressionInTQ(OutputTreeDataNode node,
 			Set<IExpression> expressionsInTerm)
 	{
@@ -739,7 +735,7 @@ public class QueryOutputSpreadsheetBizLogic
 			}
 		}
 		return false;
-	}
+	}*/
 
 	/**
 	 * @param spreadSheetDataMap
@@ -780,7 +776,7 @@ public class QueryOutputSpreadsheetBizLogic
 		int addedFileTypeAttributes = 0;
 		List<EntityInterface> defineViewNodeList = new ArrayList<EntityInterface>();
 		List<NameValueBean> selectedColumnNameValue = new ArrayList<NameValueBean>();
-		List<String> primaryKeyList;
+		//List<String> primaryKeyList;
 		
 		for (QueryOutputTreeAttributeMetadata metaData : selectedAttributeMetaDataList)
 		{
@@ -935,9 +931,9 @@ public class QueryOutputSpreadsheetBizLogic
 			{
 				List<String> columnList = (List<String>) spreadSheetDataMap
 						.get(Constants.SPREADSHEET_COLUMN_LIST);
-				Map<Integer, Integer> fileTypeIndexMainEntityIndexMap = updateSpreadSheetColumnList(
+				Map<Integer, Integer> fileTypeIndexMainEntityMap = updateSpreadSheetColumnList(
 						columnList, queryResultObjectDataBeanMap);
-				Map exportMetataDataMap = updateDataList(dataList, fileTypeIndexMainEntityIndexMap);
+				Map exportMetataDataMap = updateDataList(dataList, fileTypeIndexMainEntityMap);
 				spreadSheetDataMap.put(Constants.ENTITY_IDS_MAP, exportMetataDataMap
 						.get(Constants.ENTITY_IDS_MAP));
 				spreadSheetDataMap.put(Constants.EXPORT_DATA_LIST, exportMetataDataMap
@@ -961,10 +957,10 @@ public class QueryOutputSpreadsheetBizLogic
 	/**
 	 * if file type attribute column is present in the spreadsheet view add the column to the datalist
 	 * @param dataList
-	 * @param fileTypeIndexMainEntityIndexMap
+	 * @param fileIndexMainEntityIndexMap
 	 */
 	public static Map updateDataList(List<List<String>> dataList,
-			Map<Integer, Integer> fileTypeIndexMainEntityIndexMap)
+			Map<Integer, Integer> fileIndexMainEntityIndexMap)
 	{
 		Map<Integer, String> entityIdIndexMainEntityIdMap = new HashMap<Integer, String>();
 		Map<String, Object> exportMetataDataMap = new HashMap<String, Object>();
@@ -978,16 +974,16 @@ public class QueryOutputSpreadsheetBizLogic
 			List<String> entityIdsList = new ArrayList<String>();
 			exportRow = new ArrayList<String>();
 			exportRow.addAll(row);
-			for (Iterator<Integer> fileTypeIterator = fileTypeIndexMainEntityIndexMap.keySet()
+			for (Iterator<Integer> fileTypeIterator = fileIndexMainEntityIndexMap.keySet()
 					.iterator(); fileTypeIterator.hasNext();)
 			{
 				int fileTypeIndex = fileTypeIterator.next();
-				int mainEntityIdIndex = fileTypeIndexMainEntityIndexMap.get(fileTypeIndex);
+				int mainEntityIdIndex = fileIndexMainEntityIndexMap.get(fileTypeIndex);
 				String mainEntityId = row.get(mainEntityIdIndex);
 				entityIdIndexMainEntityIdMap.put(fileTypeIndex, mainEntityId);
 			}
 			int fileTypeIndex = 0;
-			for (Iterator<Integer> fileTypeIterator = fileTypeIndexMainEntityIndexMap.keySet()
+			for (Iterator<Integer> fileTypeIterator = fileIndexMainEntityIndexMap.keySet()
 					.iterator(); fileTypeIterator.hasNext();)
 			{
 				fileTypeIndex = fileTypeIterator.next();
@@ -1020,7 +1016,7 @@ public class QueryOutputSpreadsheetBizLogic
 			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap)
 	{
 		Map<Integer, String> fileTypeIndexColumnNameMap = new TreeMap<Integer, String>();
-		Map<Integer, Integer> fileTypeIndexMainEntityIndexMap = new TreeMap<Integer, Integer>();
+		Map<Integer, Integer> fileIndexMainEntityIndexMap = new TreeMap<Integer, Integer>();
 		// Stores all the file type attribute column names of all the entities in the map i.e. indexDisplayNameMap
 		for (Long id : queryResultObjectDataBeanMap.keySet())
 		{
@@ -1028,19 +1024,19 @@ public class QueryOutputSpreadsheetBizLogic
 					.get(id);
 			if (queryResultObjectDataBean.isClobeType())
 			{
-				Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAtrributeIndexMetadataMap = (Map<Integer, QueryOutputTreeAttributeMetadata>) queryResultObjectDataBean
+				Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAtrributeMetadataMap = (Map<Integer, QueryOutputTreeAttributeMetadata>) queryResultObjectDataBean
 						.getFileTypeAtrributeIndexMetadataMap();
 				int mainEntityIdColumn = queryResultObjectDataBean
 						.getMainEntityIdentifierColumnId();
-				for (Iterator<Integer> iterator = fileTypeAtrributeIndexMetadataMap.keySet()
+				for (Iterator<Integer> iterator = fileTypeAtrributeMetadataMap.keySet()
 						.iterator(); iterator.hasNext();)
 				{
 					int fileTypeColumnId = iterator.next();
-					QueryOutputTreeAttributeMetadata metaData = fileTypeAtrributeIndexMetadataMap
+					QueryOutputTreeAttributeMetadata metaData = fileTypeAtrributeMetadataMap
 							.get(fileTypeColumnId);
 					String displayName = metaData.getDisplayName();
 					fileTypeIndexColumnNameMap.put(fileTypeColumnId, displayName);
-					fileTypeIndexMainEntityIndexMap.put(fileTypeColumnId, mainEntityIdColumn);
+					fileIndexMainEntityIndexMap.put(fileTypeColumnId, mainEntityIdColumn);
 				}
 			}
 		}
@@ -1071,7 +1067,7 @@ public class QueryOutputSpreadsheetBizLogic
 
 			}
 		}
-		return fileTypeIndexMainEntityIndexMap;
+		return fileIndexMainEntityIndexMap;
 	}
 
 	/**
@@ -1102,7 +1098,7 @@ public class QueryOutputSpreadsheetBizLogic
 		int addedFileTypeAttributes = 0;
 		//List<String> primaryKeyList = edu.wustl.query.util.global.Utility.getPrimaryKey(node.getOutputEntity().getDynamicExtensionsEntity());
 		Collection<AttributeInterface> PrimaryKeyAttributeColl=node.getOutputEntity().getDynamicExtensionsEntity().getPrimaryKeyAttributeCollection();
-		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAtrributeIndexMetadataMap = new HashMap<Integer, QueryOutputTreeAttributeMetadata>();
+		Map<Integer, QueryOutputTreeAttributeMetadata> fileAtrributeIndexMetadataMap = new HashMap<Integer, QueryOutputTreeAttributeMetadata>();
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
 			AttributeInterface attribute = attributeMetaData.getAttribute();
@@ -1147,14 +1143,14 @@ public class QueryOutputSpreadsheetBizLogic
 			{
 				queryResultObjectDataBean.setClobeType(true);
 				int fileTypeIndex = columnIndex + addedFileTypeAttributes;
-				fileTypeAtrributeIndexMetadataMap.put(fileTypeIndex, attributeMetaData);
+				fileAtrributeIndexMetadataMap.put(fileTypeIndex, attributeMetaData);
 				addedFileTypeAttributes++;
 			}
 		}
 		if (queryResultObjectDataBean.isClobeType())
 		{
 			queryResultObjectDataBean
-					.setFileTypeAtrributeIndexMetadataMap(fileTypeAtrributeIndexMetadataMap);
+					.setFileTypeAtrributeIndexMetadataMap(fileAtrributeIndexMetadataMap);
 		}
 		if (!selectedColumnMetaData.isDefinedView())
 		{

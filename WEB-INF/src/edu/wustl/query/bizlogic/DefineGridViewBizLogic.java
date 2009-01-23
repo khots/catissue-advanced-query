@@ -40,9 +40,9 @@ public class DefineGridViewBizLogic
 {
 
 	/**
-	 * This list denotes the seleted columns in a session.
+	 * This list denotes the selected columns in a session.
 	 */
-	List<NameValueBean> prevSelectedColumnNameValueBeanList;
+	List<NameValueBean> prevSelectedColumnList;
 
 	/**
 	 * returns class name when passed a OutputTreeDataNode
@@ -73,7 +73,7 @@ public class DefineGridViewBizLogic
 	{
 		List<String> mainEntityIdList = new ArrayList<String>(); 
 		Set<String>keySet = queryDetailsObj.getUniqueIdNodesMap().keySet();
-		IOutputEntity outputEntity;
+		//IOutputEntity outputEntity;
 		Iterator <Integer>itr = mainEntityList.iterator();
 		while(itr.hasNext())
 		{
@@ -132,9 +132,9 @@ public class DefineGridViewBizLogic
 	 * @param currentSelectedObject
 	 * @param prevSelectedColumnNameValueBeanList 
 	 */
-	public void createTree(CategorySearchForm categorySearchForm, QueryDetails queryDetailsObj,List<QueryTreeNodeData> treeDataVector, OutputTreeDataNode currentSelectedObject,List<NameValueBean> prevSelectedColumnNameValueBeanList)
+	public void createTree(CategorySearchForm categorySearchForm, QueryDetails queryDetailsObj,List<QueryTreeNodeData> treeDataVector, OutputTreeDataNode currentSelectedObject,List<NameValueBean> prevSelectedColumnList)
 	{
-      this.prevSelectedColumnNameValueBeanList = prevSelectedColumnNameValueBeanList;
+      this.prevSelectedColumnList = prevSelectedColumnList;
       if (!queryDetailsObj.getUniqueIdNodesMap().isEmpty())
       {
            addRootNode(treeDataVector);
@@ -179,17 +179,17 @@ private void addClassAndAttributeNodes(List<QueryTreeNodeData> treeDataVector,
       classTreeNode.setParentIdentifier(Constants.ROOT);
       classTreeNode.setParentObjectName("");
       treeDataVector.add(classTreeNode);
-      boolean isSelectedObject = false;
+      //boolean isSelectedObject = false;
       if (selectedObjectId == id)
       {
-            isSelectedObject = true;
-            if (prevSelectedColumnNameValueBeanList == null)
+            //isSelectedObject = true;
+            if (prevSelectedColumnList == null)
             {
                   categorySearchForm.setCurrentSelectedNodeInTree(treeClassNodeId);
             }
       }
        addAttributeNodes(treeDataVector, className, treeClassNodeId, categorySearchForm, node
-                  .getAttributes(), isSelectedObject);
+                  .getAttributes());
 }
 
 /**
@@ -199,24 +199,22 @@ private void addClassAndAttributeNodes(List<QueryTreeNodeData> treeDataVector,
  * @param treeClassNodeId parentid to add to tree
  * @param categorySearchForm action form 
  * @param attributeMetadataList  Metadata to be added
- * @param isSelectedObject whether the object is selected
  */
 private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String className,
             String treeClassNodeId, CategorySearchForm categorySearchForm,
-            List<QueryOutputTreeAttributeMetadata> attributeMetadataList, boolean isSelectedObject)
+            List<QueryOutputTreeAttributeMetadata> attributeMetadataList)
 {
       //List<QueryOutputTreeAttributeMetadata> attributeMetadataList = node.getAttributes();
       
       AttributeInterface attribute;
       String attributeName;
       String attributeDisplayName;
-      String attributeWithClassName;
       String treeAttributeNodeId;
       QueryTreeNodeData attributeTreeNode;
-      List<NameValueBean> defaultSelectedColumnNameValueBeanList = categorySearchForm.getSelectedColumnNameValueBeanList(); 
-    if(defaultSelectedColumnNameValueBeanList==null)
+      List<NameValueBean> defaultSelectedColumnList = categorySearchForm.getSelectedColumnNameValueBeanList(); 
+    if(defaultSelectedColumnList==null)
     {
-      defaultSelectedColumnNameValueBeanList = new ArrayList<NameValueBean>();      
+    	defaultSelectedColumnList = new ArrayList<NameValueBean>();      
     }
       
       for (QueryOutputTreeAttributeMetadata attributeMetadata : attributeMetadataList)
@@ -229,7 +227,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 			}
             attributeName = attribute.getName();
             attributeDisplayName = Utility.getDisplayLabel(attributeName);
-            attributeWithClassName = attributeMetadata.getDisplayName();
+            //attributeWithClassName = attributeMetadata.getDisplayName();
             treeAttributeNodeId = attributeMetadata.getUniqueId();
             attributeTreeNode = new QueryTreeNodeData();
             attributeTreeNode.setIdentifier(treeAttributeNodeId);
@@ -247,14 +245,14 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
             }*/
       }
       
-      if (prevSelectedColumnNameValueBeanList != null)
+      if (prevSelectedColumnList != null)
       {
             categorySearchForm
-              .setSelectedColumnNameValueBeanList(prevSelectedColumnNameValueBeanList);
+              .setSelectedColumnNameValueBeanList(prevSelectedColumnList);
       }
       else 
       {
-         categorySearchForm.setSelectedColumnNameValueBeanList(defaultSelectedColumnNameValueBeanList);
+         categorySearchForm.setSelectedColumnNameValueBeanList(defaultSelectedColumnList);
       }
 }
 
@@ -274,7 +272,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 		if (!queryDetailsObj.getUniqueIdNodesMap().isEmpty())
 		{
 			//Adding root node of tree
-			addRootNode(queryDetailsObj,xmlString);
+			addRootNode(xmlString);
 			
 			//This List will maintain list of all root entities in Query 
 			List <Integer>rootNodesExpIdsList = new ArrayList<Integer>(); 
@@ -357,7 +355,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 	 * Adds root node to the tree, its a just a label node saying classes present in query.
 	 * @param treeDataVector  vector to store tree data
 	 */
-	private void addRootNode(QueryDetails queryDetailsObj,StringBuilder xmlString)
+	private void addRootNode(StringBuilder xmlString)
 	{
 		//Creating the XML string
 		xmlString.append("<tree id=\"0\">");
@@ -397,7 +395,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 		else
 		{
 			//If its a containment Entity
-			parentId = getParentForChildEntity(parentNodesIdMap, dynamicExtensionsEntity, expressionId,mainEntityContainmentIdsMap);
+			parentId = getParentForChildEntity(parentNodesIdMap,expressionId,mainEntityContainmentIdsMap);
 		}
 		xmlString.append("<item id = \""+ treeClassNodeId + "\" text = \""+ classDisplayName + "\" style=\"content_txt\" imheight=\"18\" imwidth=\"18\" name= \""+ className +"\" parent= \"" + parentId + "\" parentObjName = "+ "\"\"" +">");	
 		addAttributeToClassEntity(className, treeClassNodeId,currentSelectedObject.getAttributes(),xmlString);
@@ -486,10 +484,10 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
       }
  }
 
-	private String getParentForChildEntity(Map<Integer, String> parentNodesIdMap,EntityInterface dynamicExtensionsEntity, int entityExpId,Map <Integer,List<Integer>> mainExpEntityExpressionIdMap)
+	private String getParentForChildEntity(Map<Integer, String> parentNodesIdMap,int entityExpId,Map <Integer,List<Integer>> mainExpEntityExpressionIdMap)
 	{
 		//Else it will be one of the containment of the main entity, so it's parent should be main entity
-		Integer mainEntityExpId = getMainEntityIdForChildEntity(dynamicExtensionsEntity, entityExpId, mainExpEntityExpressionIdMap);
+		Integer mainEntityExpId = getMainEntityIdForChildEntity(entityExpId, mainExpEntityExpressionIdMap);
 		String parentIdString = "";
 		if(mainEntityExpId != null)
 		{
@@ -498,7 +496,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 		return parentIdString;
 	}
 
-	private Integer getMainEntityIdForChildEntity(EntityInterface dynamicExtensionsEntity, int entityExpId,Map <Integer,List<Integer>> mainExpEntityExpressionIdMap)
+	private Integer getMainEntityIdForChildEntity(int entityExpId,Map <Integer,List<Integer>> mainExpEntityExpressionIdMap)
 	{
 		Integer mainExpressionId = null;
 		Set<Integer> mainExpskeySet = mainExpEntityExpressionIdMap.keySet();
@@ -757,7 +755,7 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 		int indexOfFrom = sql.indexOf(Constants.FROM);
 		StringBuffer newSql = new StringBuffer();
 		newSql.append(sql.substring(indexOfSelectDistict, selectDistictLength));
-		newSql.append(" ");
+		newSql.append(Constants.SPACE);
 		newSql.append(columnsInSql);
 		newSql.append(sql.substring(indexOfFrom));
 		return newSql.toString();
