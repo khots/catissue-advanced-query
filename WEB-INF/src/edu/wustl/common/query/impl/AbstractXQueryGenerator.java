@@ -49,6 +49,7 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
+import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
 import edu.wustl.query.xquerydatatypes.XQueryAttributeType;
 import edu.wustl.query.xquerydatatypes.XQueryDataTypeInitializationException;
@@ -135,7 +136,10 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		log(formedQuery);
+		if(!Variables.isExecutingTCFramework)
+		{
+			log(formedQuery);
+		}
 		return formedQuery;
 	}
 
