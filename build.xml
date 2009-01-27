@@ -12,6 +12,7 @@
 	<!--define require dir and Properties -->
 	<property name="base.dir" value="." />
 	<property name="src.dir" value="${base.dir}/WEB-INF/src" />
+	<property name="test.dir" value="${base.dir}/WEB-INF/test" />
 	<property name="target.dir" value="${base.dir}/WEB-INF/classes" />
 	<property name="lib.dir" value="${base.dir}/WEB-INF/lib" />
 	<property name="hbm.dir" value="${src.dir}/edu/wustl/query/hbm" />
@@ -22,6 +23,7 @@
 	<property name="report.dir" value="${base.dir}/WEB-INF" />
 	<property name="test.src.dir" value="${base.dir}/WEB-INF/src/edu/wustl/quey/bizlogic/test" />
 	<property name="test.class.dir" value="${base.dir}/WEB-INF/classes/edu/wustl/quey/bizlogic/test" />
+	<property name="junit.report.dir" value="${test.dir}/report" />
 	<!-- csm related properties -->
 	<property name="temp.dir" value="${base.dir}/tempQuey"/>
 	<property name="project.src.domain" value="${base.dir}/WEB-INF/src/edu/wustl/query/domain/"/>
@@ -774,6 +776,93 @@
 			</manifest>
 		</jar>
 	</target>
+	
+	
+	<!-- Cobertura -->
+			  <path id="cobertura.classpath">
+			    <fileset dir="./cobertura">
+			      <include name="cobertura.jar"/>
+			    </fileset>
+			    <fileset dir="./cobertura/lib">
+			      <include name="**/*.jar"/>
+			    </fileset>
+			  </path>
+
+			  <taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
+
+		<target name="generate_codecoverage_report" >
+				<ant target="compile_test_cases"/>
+				<ant antfile="cobertura.xml" target="instrument"/>
+				<ant target="run_junit"/>
+				<ant antfile="cobertura.xml" target="coverage.report"/>
+				<ant antfile="cobertura.xml" target="coverage.check"/>
+		</target>
+		 <target name="run_junit" depends = "compile_test_cases">
+			 	<!--<delete dir="${junit.report.dir}"/> -->
+			 	<mkdir dir="${junit.report.dir}"/>
+
+		      	<junit printsummary="yes" haltonerror="no" haltonfailure="no"
+		      		fork="yes">
+
+		      		<sysproperty key="net.sourceforge.cobertura.datafile"
+		      				file="./cobertura/coverage.ser" />
+
+
+		      		<!--formatter type="plain" usefile="false"/-->
+		      		<formatter type="xml"/>
+		      		<batchtest todir="${junit.report.dir}">
+		      			<fileset dir="${test.dir}">
+							<include name="**/QueryTestSuite.java"/>
+					    </fileset>
+					</batchtest>
+
+					<classpath>
+					<!--	<pathelement location="${junit.classes.dir}"/> -->
+						<pathelement location="./cobertura/instrumented/"/>
+						<pathelement location="${target.dir}"/>
+						<pathelement location="${lib.dir}/junit-4.1.jar"/>
+						 <fileset dir="${lib.dir}">
+			                  <include name="*.jar"/>
+						 </fileset>
+					</classpath>
+
+		      		<classpath refid="cobertura.classpath" />
+		      	</junit>
+
+				<junitreport todir="${junit.report.dir}">
+					<fileset dir="${junit.report.dir}">
+						<include name="TEST-*.xml" />
+					</fileset>
+					<report todir="${junit.report.dir}" />
+				</junitreport>
+
+			 	<delete >
+					<fileset dir="${junit.report.dir}">
+						<include name="**/**/*.xml" />
+					</fileset>
+			 	</delete>
+			</target>
+
+		 <target name="compile_test_cases" depends="compile">
+		        <javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false" debug="true">
+		            <src path="${test.dir}"/>
+		            <classpath refid="app.classpath"/>
+		        </javac>
+		 		<copy file="${test.dir}/conf/QueryHibernate.cfg.xml" todir="${target.dir}" overwrite="true"/>
+		    	<copy file="${test.dir}/conf/DynamicExtensionsHibernate.cfg.xml" todir="${target.dir}" overwrite="true"/>
+				<replace dir="${target.dir}" propertyfile="queryInstall.properties"> 
+						<include name ="log4j.properties"/>
+						<include name ="QueryHibernate.cfg.xml"/>
+						<include name ="DynamicExtensionsHibernate.cfg.xml"/>
+							<replacefilter token="@@jbosshome@@" value="${jboss.server.url}"/>
+							<replacefilter token="@@databasename@@" value="${database.name}"/>
+							<replacefilter token="@@databaseschema@@" value="${database.schema}"/>
+							<replacefilter token="@@password@@" value="${database.password}"/>
+							<replacefilter token="@@host@@" value="${database.host}"/>
+							<replacefilter token="@@port@@" value="${database.port}"/>
+							<replacefilter token="@@username@@" value="${database.username}"/>
+					</replace>		 	
+		    </target>
 	
 	
 	<target name = "compile_jsps">
