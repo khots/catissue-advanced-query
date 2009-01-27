@@ -15,7 +15,7 @@ public class Variables extends edu.wustl.common.util.global.Variables
 	public static Map<String, String> aliasAndPageOfMap = new HashMap<String, String>();
 	public static String queryGeneratorClassName = "";
 	public static Properties properties;
-	
+
 	public static String abstractQueryClassName = "";
 	public static String abstractQueryManagerClassName = "";
 	public static String abstractQueryUIManagerClassName = "";
@@ -60,7 +60,7 @@ public class Variables extends edu.wustl.common.util.global.Variables
 		}
 		return colType;
 	}
-	
+
 	/**
 	 * Used for inserting data in batches - Statement.executeBatch()
 	 */
@@ -69,12 +69,16 @@ public class Variables extends edu.wustl.common.util.global.Variables
 	/**
 	 * Query ITABLE
 	 */
-	public static String ITABLE="QUERY_ITABLE";
-	
+	public static String ITABLE = "QUERY_ITABLE";
+
 	/**
 	 * QUERY EXECUTION LOG TABLE
 	 */
-	public static String QUERY_EXECUTION_LOG="QUERY_EXECUTION_LOG";
+	public static String QUERY_EXECUTION_LOG = "QUERY_EXECUTION_LOG";
+	/** temp variable **/
 	public static int temp = 1;
-	
+	/** 
+	  * for not Logging XQueries when Framework for test cases gets executed 
+	  **/
+	public static boolean isExecutingTCFramework = false;
 }
