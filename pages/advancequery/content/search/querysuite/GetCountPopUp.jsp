@@ -26,7 +26,7 @@ function retrieveRecentQueries()
 {
 	document.forms['form2'].notify.value="true";
 	parent.pvwindow.hide();
-	parent.document.forms[0].action="\RetrieveRecentQueries.do"
+	parent.document.forms[0].action="\ShowDashboard.do"
 	parent.document.forms[0].submit();
 }
 //-->
