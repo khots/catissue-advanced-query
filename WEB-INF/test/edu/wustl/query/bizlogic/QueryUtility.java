@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -40,6 +41,7 @@ import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
@@ -85,7 +87,7 @@ public class QueryUtility
 				dao.openSession(null);
 				query = (IParameterizedQuery) dao.retrieve(ParameterizedQuery.class.getName(), Long
 						.valueOf(queryId));
-				System.out.println("Step 2. Retrieving IQuery from Database.... Query_Id.... "
+				System.out.println("Step 2. Retrieving IQuery from Database.... Query Id.... "
 						+ queryId);
 
 				dao.closeSession();
@@ -125,6 +127,10 @@ public class QueryUtility
 			in = new ObjectInputStream(fis);
 			query = (IQuery) in.readObject();
 			in.close();
+
+			System.out
+					.println("Step 2. Retrieving IQuery from Serialized version from file.... File Name.... "
+							+ fileName);
 		}
 		catch (IOException ex)
 		{
@@ -153,15 +159,14 @@ public class QueryUtility
 	 * @throws MultipleRootsException
 	 * @throws SqlException
 	 * @throws DAOException 
-	 * @throws DAOException
 	 * @throws QueryModuleException 
-	 * @throws QueryModuleException
 	 */
 	public static int runQueryAndPopulateITable(IQuery query) throws MultipleRootsException,
 			SqlException, DAOException, QueryModuleException
 	{
-//		JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		
+		// JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+		int queryExecId = -1;
+
 		try
 		{
 			/*HttpServletRequest request = new MockHttpServletRequest();
@@ -172,26 +177,41 @@ public class QueryUtility
 			HttpSession session = request.getSession();
 			session.setAttribute(arg0, arg1);
 			*/
-			
+
 			String xquery = xQueryGenerator.generateQuery(query);
 			System.out.println();
 			System.out.println("XQUERY :: " + xquery);
 			System.out.println();
-			
+
+			CiderQueryManager manager = new CiderQueryManager();
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
-			int queryExecId = new CiderQueryManager().execute(ciderQueryObj);
-			
-//			jdbcDao.openSession(null);
-//			
-//			String populateTableSql = "insert into " + tempTableName + " (" + xquery + ")";
-//			jdbcDao.executeUpdate(populateTableSql);
-//			jdbcDao.commit();
-					
+			queryExecId = manager.execute(ciderQueryObj);
+
+			Count count = manager.getQueryCount(queryExecId);
+
+			while (!count.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
+			{
+				if (count.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+				{
+					System.out.println("QUERY CANCELLED.......");
+				}
+
+				count = manager.getQueryCount(queryExecId);
+			}
+
+			int noOfRecords = count.getCount();
+
+			//			jdbcDao.openSession(null);
+			//			
+			//			String populateTableSql = "insert into " + tempTableName + " (" + xquery + ")";
+			//			jdbcDao.executeUpdate(populateTableSql);
+			//			jdbcDao.commit();
+
 			// NO NEED NOW
 			// QueryModuleSqlUtil.executeCreateTable(tempTableName, xquery, null);
 			System.out.println("Step 3. Executed XQuery on DB and ITABLE Populated....");
-			
-			return queryExecId;
+			System.out.println("\t No of Records retrieved by XQuery :: " + noOfRecords);
+			System.out.println("\t QUERY EXECUTION ID :: " + queryExecId);
 		}
 		catch (MultipleRootsException ex)
 		{
@@ -231,6 +251,14 @@ public class QueryUtility
 			System.out.println("\t Remaining Steps cannot be executed....");
 			throw ex;
 		}*/
+		catch (SQLException e)
+		{
+			System.out.println("Step 3. Could not Populate Table with name.... '" + tempTableName
+					+ "'");
+			System.out.println("\t Remaining Steps cannot be executed....");
+			e.printStackTrace();
+		}
+		return queryExecId;
 	}
 
 	/**
@@ -310,7 +338,7 @@ public class QueryUtility
 		else
 		{
 			System.out.println("Step 5. Validating Results.... Test Case Result :: SUCCESS");
-			System.out.println("\t No. of Records :: " + file1Details.size());
+			// System.out.println("\t No. of Records :: " + file1Details.size());
 			System.out.println("\t ACTUAL & EXPECTED RESULTS MATCH ....");
 		}
 
@@ -323,7 +351,8 @@ public class QueryUtility
 	 * @param csvFileName CSV File in which records are to be inserted  
 	 * @throws Exception 
 	 */
-	public static void exportResultsToCSV(String tableName, String csvFileName, int queryExecId) throws Exception
+	public static void exportResultsToCSV(String tableName, String csvFileName, int queryExecId)
+			throws Exception
 	{
 		Connection con = null;
 
@@ -338,7 +367,7 @@ public class QueryUtility
 		PreparedStatement stmt1 = null;
 		ResultSet rs2 = null;
 		CallableStatement callStmt2 = null;
-		
+
 		try
 		{
 			Properties props = new Properties();
@@ -359,15 +388,19 @@ public class QueryUtility
 			String sql = "CALL SYSPROC.ADMIN_CMD(?)";
 			callStmt1 = con.prepareCall(sql);
 
-//			String param = "export to " + Constants.testHome + csvFileName;
-//			param = param + " of DEL messages on server select * from " + tableName;
+			//			String param = "export to " + Constants.testHome + csvFileName;
+			//			param = param + " of DEL messages on server select * from " + tableName;
 
 			String param = "export to " + Constants.testHome + csvFileName;
-			param = param + " of DEL messages on server select UPI from " + tableName+ " where QUERY_EXECUTION_ID="+queryExecId;
-			
+			param = param + " of DEL messages on server select UPI from " + tableName
+					+ " where QUERY_EXECUTION_ID=" + queryExecId;
+
+			//			String param = "export to "+ Constants.testHome + csvFileName;
+			//			param = param + " of DEL messages on server select * from " + tableName;
+
 			// set the input parameter
 			callStmt1.setString(1, param);
-			/////System.out.println("CALL ADMIN_CMD('" + param + "')");
+			// System.out.println("CALL ADMIN_CMD('" + param + "')");
 
 			// execute export by calling ADMIN_CMD
 			callStmt1.execute();
@@ -387,15 +420,15 @@ public class QueryUtility
 				msg_removal = rs1.getString(3);
 
 				// display the output
-				System.out.println("Step 4. Exporting Results to CSV....");
+				/*System.out.println("Step 4. Exporting Results to CSV....");
 
 				System.out.println("\t Total number of rows exported  : " + rows_exported);
-				//// System.out.println("Script for retrieving the messages: " + msg_retrieval); 
-				//// System.out.println("Script for removing the messages  : " + msg_removal);
+				System.out.println("Script for retrieving the messages: " + msg_retrieval); 
+				System.out.println("Script for removing the messages  : " + msg_removal);*/
 			}
 
 			stmt1 = con.prepareStatement(msg_retrieval);
-			//// System.out.println("\n" + "Executing " + msg_retrieval);  
+			// System.out.println("\n" + "Executing " + msg_retrieval);  
 
 			rs2 = stmt1.executeQuery();
 
@@ -404,11 +437,11 @@ public class QueryUtility
 				sqlcode = rs2.getString(1);
 
 				msg = rs2.getString(2);
-				//// System.out.println("Sqlcode : " +sqlcode);
-				//// System.out.println("Msg     : " +msg);
+				/*System.out.println("Sqlcode : " +sqlcode);
+				System.out.println("Msg     : " +msg);*/
 			}
 
-			///// System.out.println("\nExecuting " + msg_removal);
+			// System.out.println("\nExecuting " + msg_removal);
 			callStmt2 = con.prepareCall(msg_removal);
 
 			callStmt2.execute();
@@ -629,7 +662,7 @@ public class QueryUtility
 		{
 			e.printStackTrace();
 		}
-		System.out.println("XML reading done ........");
+		// System.out.println("XML reading done ........");
 	}
 
 	/**

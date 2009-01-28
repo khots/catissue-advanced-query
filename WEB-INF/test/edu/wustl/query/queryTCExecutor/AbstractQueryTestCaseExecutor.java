@@ -120,7 +120,6 @@ public abstract class AbstractQueryTestCaseExecutor implements QueryTestCaseExec
 	public boolean executeTestCase(Map<String, String> details) throws Exception
 	{
 		int queryExecId = -1;
-		System.out.println("\n");
         System.out.println("    *************************************************************");
         System.out.println("TEST CASE FOR ...."+details.get(Constants.name));
         System.out.println("TMT Test Case Id :: "+details.get(Constants.tmtTestCaseId));
