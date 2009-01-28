@@ -145,8 +145,11 @@
 	}
 	function getCountAjaxAction(executionId)
 	{
-		var project		= document.forms['form2'].selectedProject.value;
-		var isNewQuery	= document.forms['form2'].isNewQuery.value;
+		var project				= document.forms['form2'].selectedProject.value;
+		var isNewQuery			= document.forms['form2'].isNewQuery.value;
+		var abortExecution		= document.forms['form2'].abortExecution.value;
+		if(abortExecution == "true")
+			return;
 
 		if(isNewQuery =="true")
 		{
@@ -216,7 +219,7 @@
 					
 				//making getcount=active , abort=inactive, notify=inactive
 				document.forms['form2'].isNewQuery.value="true";	
-				getCountObj.innerHTML='<img src="images/advancequery/b_get_count.gif" alt="Get Count" width="84" height="23" onclick="getCountAjaxAction('+executionId+');">';
+				getCountObj.innerHTML='<img src="images/advancequery/b_get_count.gif" alt="Get Count" width="84" height="23" onclick="newGetCountAjaxAction('+executionId+');">';
 				abort_notifyObj.innerHTML='<img src="images/advancequery/b_abort_execution_inact.gif" alt="Abort Execution" width="116" height="23" onclick="">&nbsp;<img src="images/advancequery/b_notify_me_inact.gif" alt="Notify me when done" width="146" height="23" onclick="">';
 			}
 	}
@@ -248,9 +251,15 @@
 		var getCountObj		=document.getElementById("form3");
 		var abort_notifyObj =document.getElementById("form1");
 		document.forms['form2'].isNewQuery.value="true";
-		document.forms['form2'].abortExecution.value="false";
-		getCountObj.innerHTML='<img src="images/advancequery/b_get_count.gif" alt="Get Count" width="84" height="23" onclick="getCountAjaxAction('+executionId+');">';
+		//document.forms['form2'].abortExecution.value="false";
+		getCountObj.innerHTML='<img src="images/advancequery/b_get_count.gif" alt="Get Count" width="84" height="23" onclick="newGetCountAjaxAction('+executionId+');">';
 		abort_notifyObj.innerHTML='<img src="images/advancequery/b_abort_execution_inact.gif" alt="Abort Execution" width="116" height="23" onclick="">&nbsp;<img src="images/advancequery/b_notify_me_inact.gif" alt="Notify me when done" width="146" height="23" onclick="">';
+	}
+	function newGetCountAjaxAction(executionId)
+	{
+		//abortExecution.value will be made false ,only when its a new get count query fired on the pop-up
+		document.forms['form2'].abortExecution.value="false";
+		getCountAjaxAction(executionId);
 	}
 	function showSpreadsheetData(columnDataStr)
 	{
