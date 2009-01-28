@@ -76,11 +76,11 @@ public class XQueryEntityManagerMock extends EntityManager
 
 	public List<EntityInterface> entityList = new ArrayList<EntityInterface>();
 
-	public static String PERSON = "Person";
-	public static String DEMOGRAPHICS = "Demographics";
-	public static String RACE = "Race";
-	public static String GENDER = "Gender";
-	public static String LABORATORY_PROCEDURE = "LaboratoryProcedure";
+	public static final String PERSON = "Person";
+	public static final String DEMOGRAPHICS = "Demographics";
+	public static final String RACE = "Race";
+	public static final String GENDER = "Gender";
+	public static final String LABORATORY_PROCEDURE = "LaboratoryProcedure";
 
 	static long identifier = 0L;
 
