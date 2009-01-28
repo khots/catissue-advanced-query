@@ -31,7 +31,7 @@ import edu.wustl.query.util.querysuite.QueryModuleException;
 /**
  * Mock to create XQuery Objects.
  * 
- * @author ravindra_jain
+ * @author ravindra_jain, juber patel
  * @created 4th December, 2008
  * 
  */

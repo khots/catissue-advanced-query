@@ -1,4 +1,6 @@
+
 package edu.wustl.common.query.impl;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,85 +14,100 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
-public class XQueryEntityManagerMock extends EntityManager {
-    DomainObjectFactory factory = new DomainObjectFactory() {
-        @Override
-        public EntityInterface createEntity() {
-            EntityInterface entity = super.createEntity();
-            entity.setEntityGroup(entityGroup);
-            entityGroup.addEntity(entity);
-            return entity;
-        }
+/**
+ * 
+ * @author juberahamad_patel
+ *
+ */
+public class XQueryEntityManagerMock extends EntityManager
+{
 
-        @Override
-        public AttributeInterface createStringAttribute() {
-            return (setAttrId(super.createStringAttribute()));
-        }
+	DomainObjectFactory factory = new DomainObjectFactory()
+	{
 
-        @Override
-        public AttributeInterface createDoubleAttribute() {
-            return (setAttrId(super.createDoubleAttribute()));
-        }
+		@Override
+		public EntityInterface createEntity()
+		{
+			EntityInterface entity = super.createEntity();
+			entity.setEntityGroup(entityGroup);
+			entityGroup.addEntity(entity);
+			return entity;
+		}
 
-        @Override
-        public AttributeInterface createDateAttribute() {
-            return (setAttrId(super.createDateAttribute()));
-        }
+		@Override
+		public AttributeInterface createStringAttribute()
+		{
+			return (setAttrId(super.createStringAttribute()));
+		}
 
-        @Override
-        public AttributeInterface createLongAttribute() {
-            return (setAttrId(super.createLongAttribute()));
-        }
+		@Override
+		public AttributeInterface createDoubleAttribute()
+		{
+			return (setAttrId(super.createDoubleAttribute()));
+		}
 
-        private AttributeInterface setAttrId(AttributeInterface attr) {
-            attr.setId(attrId++);
-            return attr;
-        }
-    };
+		@Override
+		public AttributeInterface createDateAttribute()
+		{
+			return (setAttrId(super.createDateAttribute()));
+		}
 
-    public XQueryEntityManagerMock() {
-        entityGroup = factory.createEntityGroup();
-    }
+		@Override
+		public AttributeInterface createLongAttribute()
+		{
+			return (setAttrId(super.createLongAttribute()));
+		}
 
-    public final EntityGroupInterface entityGroup;
+		private AttributeInterface setAttrId(AttributeInterface attr)
+		{
+			attr.setId(attrId++);
+			return attr;
+		}
+	};
 
-    private long attrId = 1;
+	public XQueryEntityManagerMock()
+	{
+		entityGroup = factory.createEntityGroup();
+	}
 
-    public List<EntityInterface> entityList = new ArrayList<EntityInterface>();
+	public final EntityGroupInterface entityGroup;
 
-    public static String PERSON = "Person";
-    public static String DEMOGRAPHICS = "Demographics";
-    public static String RACE = "Race";
-    public static String GENDER = "Gender";
-    public static String LABORATORY_PROCEDURE = "LaboratoryProcedure";
-    
-    static long identifier = 0L;
+	private long attrId = 1;
 
+	public List<EntityInterface> entityList = new ArrayList<EntityInterface>();
 
-    /**
-     * @see edu.common.dynamicextensions.entitymanager.EntityManager#getAttribute(java.lang.String,
-     *      java.lang.String)
-     */
-    @Override
-    public AttributeInterface getAttribute(String entityName, String attributeName)
-            throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException 
-    {
-        EntityInterface entity = getEntityByName(entityName);
+	public static String PERSON = "Person";
+	public static String DEMOGRAPHICS = "Demographics";
+	public static String RACE = "Race";
+	public static String GENDER = "Gender";
+	public static String LABORATORY_PROCEDURE = "LaboratoryProcedure";
 
-        if (entity != null) 
-        {
-            return getSpecificAttribute(entity.getAttributeCollection(), attributeName);
-        }
-        return null;
-    }
+	static long identifier = 0L;
 
-    /**
-     * @see edu.common.dynamicextensions.entitymanager.EntityManager#getEntityByName(java.lang.String)
-     */
-    @Override
-    public EntityInterface getEntityByName(String name) throws DynamicExtensionsSystemException 
-    {
-    	EntityManagerInterface entityManager = EntityManager.getInstance();
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManager#getAttribute(java.lang.String,
+	 *      java.lang.String)
+	 */
+	@Override
+	public AttributeInterface getAttribute(String entityName, String attributeName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		EntityInterface entity = getEntityByName(entityName);
+
+		if (entity != null)
+		{
+			return getSpecificAttribute(entity.getAttributeCollection(), attributeName);
+		}
+		return null;
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManager#getEntityByName(java.lang.String)
+	 */
+	@Override
+	public EntityInterface getEntityByName(String name) throws DynamicExtensionsSystemException
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
 		EntityInterface entity = null;
 		try
 		{
@@ -100,41 +117,43 @@ public class XQueryEntityManagerMock extends EntityManager {
 		{
 			e.printStackTrace();
 		}
-    	
-		if(entity != null)
+
+		if (entity != null)
 		{
 			return entity;
 		}
-    	
-    	/*if (name.equalsIgnoreCase(PERSON)) 
-        {
-            return createPersonEntity(name);
-        }
-        else if (name.equalsIgnoreCase(DEMOGRAPHICS)) 
-        {
-            return createDemographicsEntity(name);
-        }
-        else if (name.equalsIgnoreCase(RACE)) 
-        {
-            return createRaceEntity(name);
-        }
-        else if (name.equalsIgnoreCase(GENDER)) 
-        {
-            return createGenderEntity(name);
-        }*/
 
-        return null;
-    }
+		/*if (name.equalsIgnoreCase(PERSON)) 
+		{
+		    return createPersonEntity(name);
+		}
+		else if (name.equalsIgnoreCase(DEMOGRAPHICS)) 
+		{
+		    return createDemographicsEntity(name);
+		}
+		else if (name.equalsIgnoreCase(RACE)) 
+		{
+		    return createRaceEntity(name);
+		}
+		else if (name.equalsIgnoreCase(GENDER)) 
+		{
+		    return createGenderEntity(name);
+		}*/
 
+		return null;
+	}
 
-    private AttributeInterface getSpecificAttribute(Collection<AttributeInterface> collection, String aName) 
-    {
-        for (AttributeInterface attribute : collection) {
-            if (attribute.getName().equalsIgnoreCase(aName)) {
-                return attribute;
-            }
-        }
+	private AttributeInterface getSpecificAttribute(Collection<AttributeInterface> collection,
+			String aName)
+	{
+		for (AttributeInterface attribute : collection)
+		{
+			if (attribute.getName().equalsIgnoreCase(aName))
+			{
+				return attribute;
+			}
+		}
 
-        return null;
-    }
+		return null;
+	}
 }
