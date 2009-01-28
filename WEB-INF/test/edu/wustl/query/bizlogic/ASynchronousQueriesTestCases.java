@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import edu.wustl.cider.query.CiderQuery;
 import edu.wustl.cider.querymanager.CiderQueryManager;
 import edu.wustl.common.query.impl.PassOneXQueryGenerator;
+import edu.wustl.common.query.impl.QueryUtility;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.logger.Logger;

@@ -3,14 +3,13 @@ package edu.wustl.query.queryTCExecutor;
 import java.io.IOException;
 import java.util.Map;
 
+import edu.wustl.common.query.impl.QueryUtility;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.bizlogic.Constants;
 import edu.wustl.query.bizlogic.QueryFrameworkTestCase;
-import edu.wustl.query.bizlogic.QueryUtility;
-import edu.wustl.query.bizlogic.XQueryGeneratorTestCase;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**

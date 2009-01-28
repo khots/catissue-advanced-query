@@ -12,6 +12,8 @@ import java.util.Properties;
 import junit.framework.TestCase;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.query.impl.PassOneXQueryGenerator;
+import edu.wustl.common.query.impl.QueryUtility;
+import edu.wustl.common.query.impl.XQueryEntityManagerMock;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.queryTCExecutor.QueryTestCaseExecutorFactory;
 import edu.wustl.query.queryTCExecutor.QueryTestCaseExecutorInterface;
