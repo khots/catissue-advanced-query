@@ -3,7 +3,7 @@ package edu.wustl.query.querysuite;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import edu.wustl.query.bizlogic.XQueryGeneratorTestCase;
+import edu.wustl.common.query.impl.XQueryGeneratorTestCase;
 
 
 
