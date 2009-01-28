@@ -53,7 +53,7 @@ public class RetrieveRecentQueriesAction extends Action
 		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
 				Constants.SESSION_DATA);
 		String sql = "select count(*) from  QUERY_EXECUTION_LOG where USER_ID= "
-				+ sessionDataBean.getCsmUserId();
+				+ sessionDataBean.getUserId();
 		int numberOfQueries = 0;
 		List<List<String>> resultCount = executeQuery(sql, sessionDataBean, false, false, null, -1,
 				-1);
@@ -165,7 +165,7 @@ public class RetrieveRecentQueriesAction extends Action
 			int recordsPerPage, int lastIndex) throws QueryModuleException
 	{
 		String sql = "select * from  QUERY_EXECUTION_LOG where USER_ID="
-				+ sessionDataBean.getCsmUserId() + " order by CREATIONTIME desc ";
+				+ sessionDataBean.getUserId() + " order by CREATIONTIME desc ";
 		List<List<String>> queryResultList = executeQuery(sql, sessionDataBean, false, false, null,
 				(pageNum - 1) * recordsPerPage, lastIndex);
 		return queryResultList;
