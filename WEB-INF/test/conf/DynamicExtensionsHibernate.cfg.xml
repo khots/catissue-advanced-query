@@ -11,8 +11,8 @@
       	<property name="connection.driver_class">com.ibm.db2.jcc.DB2Driver</property>
         <property name="connection.username">@@username@@</property>
         <property name="connection.password">@@password@@</property>
-         <property name="default.schema">@@databaseschema@@</property>
-        <property name="connection.url">jdbc:db2://@@host@@:@@port@@/@@databasename@@</property>
+         <!-- <property name="default.schema">@@databaseschema@@</property> -->
+        <property name="connection.url">jdbc:db2://@@host@@:@@port@@/@@databasename@@:currentSchema=@@databaseschema@@;</property>
         <property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
     	<property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
 		<property name="hibernate.jdbc.batch_size">0</property>
