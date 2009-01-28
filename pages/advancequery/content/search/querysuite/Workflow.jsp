@@ -85,11 +85,11 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 		{
 			if( cqTitle=='')
 			{
-				cqTitle="[Query : "+document.getElementById("selectedqueryId_"+queryIds[counter]).value+"]";
+				cqTitle="[Query : "+document.getElementById("displayQueryTitle_"+queryIds[counter]).value+"]";
 			}
 			else
 			{
-				cqTitle=cqTitle+"  "+operation+"  "+ "[Query : "+document.getElementById("selectedqueryId_"+queryIds[counter]).value+"] ";
+				cqTitle=cqTitle+"  "+operation+"  "+ "[Query : "+document.getElementById("displayQueryTitle_"+queryIds[counter]).value+"] ";
 			}
 			if(cqQueryId=='')
 			{
@@ -106,7 +106,7 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 	}
 	var cqType="Operation";
 	var cqId="";
-	
+
 	var rowContents=new Array(7);
 	rowContents[0]=createCheckBox("chkbox","checkbox_"+queryCount,'',queryCount);
 	rowContents[1]=createTextElement(cqTitle);
@@ -114,7 +114,7 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 	//rowContents[3]=createTextElement(operandsTdContent);
 	//rowContents[3]=getSelectObjectControl();
 	rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+queryCount,operandsTdContent);
-	rowContents[4].appendChild(createHiddenElement("identifier","identifier_"+operandsTdContent,operandsTdContent));
+	//rowContents[4].appendChild(createHiddenElement("identifier","identifier_"+operandsTdContent,operandsTdContent));
 	rowContents[5]=cqTitle;
 	rowContents[6]=cqType;
 	
@@ -143,9 +143,10 @@ function cancelGetCountQuery(queryId,executionLogId)
 {	
 	var identifier=document.getElementById("identifier_"+queryId);
 	var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
-	var selectedqueryId=object.id;
-	
+	var tdChildCollection=object.getElementsByTagName('input');
+	var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
 	var selectedquery=selectedqueryId.split("_");
+	
 	index=selectedquery[1];
 
 	document.getElementById("cancelajaxcall_"+index).value='true';
@@ -179,12 +180,13 @@ function cancelExecuteQuery(response)
 
 
 					var queryId = jsonResponse.executionQueryResults[i].queryId;
-
 					var identifier=document.getElementById("identifier_"+queryId);
 					var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
-					var selectedqueryId=object.id;
-					
+					var tdChildCollection=object.getElementsByTagName('input');
+
+					var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
 					var selectedquery=selectedqueryId.split("_");
+					
 					index=selectedquery[1];
 					document.getElementById("cancelajaxcall_"+index).value='false';
 
@@ -232,35 +234,42 @@ function responseHandler(response)
 					{
 						var identifier=document.getElementById("identifier_"+queryId);
 						var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
-						var selectedqueryId=object.id;
-						
+						var tdChildCollection=object.getElementsByTagName('input');
+
+						var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
 						var selectedquery=selectedqueryId.split("_");
+						
 						queryIndex=selectedquery[1];
-						var parentIObj=object.parentNode;
+						
+						//var parentIObj=object.parentNode;
 						var lableObject=document.getElementById("label_"+queryIndex);
 						if(lableObject!=null)
 						{
-							parentIObj.removeChild(lableObject);
+							object.removeChild(lableObject);
 						}
-						parentIObj.appendChild(createLabel(queryResult,queryIndex));
+						object.appendChild(createLabel(queryResult,queryIndex));
 						
 					}
+					
 					if((document.getElementById("cancel_"+queryIndex)==null)&&(document.getElementById("cancelajaxcall_"+queryIndex).value=='false'))
 					{
 						changeLinkToCancel(queryId,executionLogId);
 					}
+				
 					if((status!="Completed")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
 					{
 						executeGetCountQuery(queryId,executionLogId);
 						
 
 					}
+					
 					if((status=="Completed"))
 					{
 						
 						changeExecuteLinkToExecute(queryId,0);
 
 					}
+				
 				}
           } 
 	
@@ -268,6 +277,16 @@ function responseHandler(response)
 function cancelWorkflow()
 {
 	document.forms[0].action="\ShowDashboard.do"
+	document.forms[0].submit();
+}
+function getCountdata()
+{
+	document.forms[0].action="AddNewQueryToWorkflow.do?addNewForwardTo=queryGetCount&forwardTo=queryWizard&addNewFor=principalInvestigator";
+	document.forms[0].submit();
+}
+function getPatientdata()
+{
+	document.forms[0].action="AddNewQueryToWorkflow.do?addNewForwardTo=queryWizard&forwardTo=queryWizard&addNewFor=principalInvestigator";
 	document.forms[0].submit();
 }
 //-->
@@ -480,10 +499,9 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 
 
 										<td class="content_txt">
-											<input type="hidden" name="selectedqueryId" id="selectedqueryId_${queryIndex}" value="${workflowForm.selectedqueryId[queryIndex]}">
 											
-												<input type="hidden" name="identifier" id="identifier_${workflowForm.identifier[queryIndex]}" value="${workflowForm.identifier[queryIndex]}"/>
-											</input>
+											<input type="hidden" name="selectedqueryId" id="selectedqueryId_${queryIndex}" value="${workflowForm.selectedqueryId[queryIndex]}"/>						
+											<input type="hidden" name="identifier" id="identifier_${workflowForm.identifier[queryIndex]}" value="${workflowForm.identifier[queryIndex]}"/>
 
 										</td>
 										<td width="100">
