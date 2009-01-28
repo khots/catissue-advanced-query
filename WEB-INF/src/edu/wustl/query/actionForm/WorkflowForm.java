@@ -365,6 +365,7 @@ public class WorkflowForm extends AbstractActionForm
 		//  display title
 		String[] displayQueryTitle = new String[workflowItemList.size()];
 		Long[] identifier = new Long[workflowItemList.size()];
+		String[]  queryName=new String[workflowItemList.size()];
 		for (int i = 0; i < workflowItemList.size(); i++)
 		{
 			WorkflowItem workflowItem = workflowItemList.get(i);
@@ -373,12 +374,12 @@ public class WorkflowForm extends AbstractActionForm
 			LinkedList<String> operatorsList = new LinkedList<String>();
 			LinkedList<Long> operandsList = new LinkedList<Long>();
 			IAbstractQuery abstractQuery = workflowItem.getQuery();
-
-
 			identifier[i]=abstractQuery.getId();
 			generateOperatorAndOperandList(operatorsList, operandsList, abstractQuery);
 			setoperandList(operandList, operandsList);
 			setOperatorList(opretionList, operatorsList);
+			displayQueryTitle[i]=genetrateDisplayQueryTitle(workflowItem);
+		
 		}
 
 		String[] operands = new String[operandList.size()];//oprands array
@@ -386,7 +387,7 @@ public class WorkflowForm extends AbstractActionForm
 		//initialize operator and operand array 
 		opretionList.toArray(operators);
 		operandList.toArray(operands);
-		genetrateDisplayQueryTitle(operators, operands, displayQueryTitle);
+		
 
 		//starts TO DO query type value retrieve .....currently hard coded
 		// Commented as not needed
@@ -406,6 +407,31 @@ public class WorkflowForm extends AbstractActionForm
 		this.chkbox = chkbox;
 		this.identifier=identifier;
 
+	}
+
+	/**
+	 * @param workflowItem
+	 * @return query title
+	 */
+	private String genetrateDisplayQueryTitle(WorkflowItem workflowItem)
+	{
+		if(workflowItem.getQuery() instanceof CompositeQuery)
+		{
+			
+					String queryConst = "[Query";
+					String queryTitle = "";
+					
+						queryTitle = queryTitle + queryConst + " : " + ((ParameterizedQuery)(((CompositeQuery)workflowItem.getQuery()).getOperation().getOperandOne())).getName()+ "]"
+								+ setOperationForCompositeQuery(((CompositeQuery)workflowItem.getQuery()).getOperation());
+					
+					return queryTitle + queryConst + " : " + ((ParameterizedQuery)(((CompositeQuery)workflowItem.getQuery()).getOperation().getOperandOne())).getName() + "]";
+		
+		}
+		else if(workflowItem.getQuery() instanceof  ParameterizedQuery)
+		{
+			return ((ParameterizedQuery)workflowItem.getQuery()).getName();
+		}
+		return null;
 	}
 
 	private void setOperatorList(LinkedList<String> opretionList, LinkedList<String> operatorsList)
@@ -458,38 +484,6 @@ public class WorkflowForm extends AbstractActionForm
 		this.displayQueryType = displayQueryType;
 	}
 
-	/**
-	 * 
-	 * @param operators
-	 * @param operands
-	 * @param displayQueryTitle
-	 * generates the List of  displayQueryTitle
-	 */
-	private void genetrateDisplayQueryTitle(String[] operators, String[] operands,
-			String[] displayQueryTitle)
-	{
-		for (int i = 0; i < operators.length; i++)
-		{
-			String[] operatorsInRow = operators[i].split("_");
-			String[] operandsInRow = operands[i].split("_");
-			if (operandsInRow.length == 1)//PQ
-			{
-				displayQueryTitle[i] = operandsInRow[0];
-			}
-			else
-			{
-				String queryConst = "[Query";
-				String queryTitle = "";
-				int j = 0;
-				for (; j < operatorsInRow.length; j++)
-				{
-					queryTitle = queryTitle + queryConst + " : " + operandsInRow[j] + "]"
-							+ operatorsInRow[j];
-				}
-				displayQueryTitle[i] = queryTitle + queryConst + " : " + operandsInRow[j] + "]";
-			}
-		}
-	}
 
 	private void generateOperatorAndOperandList(LinkedList<String> operatorsList,
 			LinkedList<Long> operandsList, IAbstractQuery abstractQuery)

@@ -26,6 +26,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 			if(columnContents[counter].name=="selectedqueryId")
 			{
 				id=columnContents[counter].value;
+				columnObj.appendChild(createHiddenElement("identifier","identifier_"+id,id));
 			}
 			rowObj.appendChild(columnObj);
 		}
@@ -135,7 +136,7 @@ function addQuery()
 		rowContents[2]=createTextElement(getText(queryTypes[counter]));
 		//rowContents[3]=createHiddenElement("cancelajaxcall","cancelajaxcall_"+(counter+queryCount),'false');
 		rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+(counter+queryCount),getText(queryIds[counter]));
-		rowContents[4].appendChild(createHiddenElement("identifier","identifier_"+getText(queryIds[counter]),getText(queryIds[counter])));
+//		rowContents[4].appendChild(createHiddenElement("identifier","identifier_"+getText(queryIds[counter]),getText(queryIds[counter])));
 		rowContents[5]=getText(queryTitles[counter]);
 		rowContents[6]=getText(queryTypes[counter]);
 		var operatorsTdContent="None";
@@ -398,9 +399,11 @@ function changeLinkToCancel(queryId,executionLogId)
 
 	var identifier=document.getElementById("identifier_"+queryId);
 	var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
-	var selectedqueryId=object.id;
-	
+	var tdChildCollection=object.getElementsByTagName('input');
+
+	var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
 	var selectedquery=selectedqueryId.split("_");
+	
 	index=selectedquery[1];
 
 	var object=document.getElementById("execute_"+index);		
@@ -417,9 +420,11 @@ function changeExecuteLinkToExecute(queryId,executionLogId)
 
 	var identifier=document.getElementById("identifier_"+queryId);
 	var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
-	var selectedqueryId=object.id;
-	
+	var tdChildCollection=object.getElementsByTagName('input');
+
+	var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
 	var selectedquery=selectedqueryId.split("_");
+	
 	index=selectedquery[1];
 	
 	var object=document.getElementById("cancel_"+index);		
