@@ -239,6 +239,20 @@
 		</ant>
 	</target>
 	
+	<target name = "add_curated_Path">
+		<echo message="In Add curated path in Query Integraion Xml"/>
+		<ant dir="." inheritAll="false" antfile="deploy.xml" target="add_curated_Path">
+			<property name="jboss.server.url" value="${jboss.server.url}"/>
+ 			<property name="database.type" value="${database.type}" />
+			<property name="database.host" value="${database.host}" />
+			<property name="database.port" value="${database.port}" />
+			<property name="database.name" value="${database.name}" />
+			<property name="database.username" value="${database.username}" />			
+			<property name="database.password" value="${database.password}" />
+			<property name="database.schema" value="${database.schema}" />
+		</ant>
+	</target>
+	
 	<target name="modify_query_tiles-def">
 			<!--Replacing tokens in tiles-def -->
 			<copy file= "${deploy.temp.dir}/cider/mainTiles.properties"  todir="${deploy.temp.dir}/AdvanceQuery" overwrite="true" />
