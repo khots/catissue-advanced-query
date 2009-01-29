@@ -103,7 +103,7 @@ public class SearchPermissibleValuesAction extends Action
 				.get(Constants.ATTRIBUTE_INTERFACE + componentId);
 		
 		List<IConcept> pvList=bizLogic.getPermissibleValueList(attribute, entity);
-		
+		int count=Integer.parseInt(VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
 		while (token.hasMoreTokens())
 		{
 			String[] vocabFullName = token.nextToken().split(":");
@@ -113,6 +113,7 @@ public class SearchPermissibleValuesAction extends Action
 					getDisplayNameForVocab(vocabName, vocabVersion)));
 			List<IConcept> conceptList = bizLogic
 					.searchConcept(searchTerm, vocabName, vocabVersion);
+			int displayPVCount=1;
 			if (conceptList != null)
 			{
 				for(IConcept concept:conceptList)
@@ -131,8 +132,16 @@ public class SearchPermissibleValuesAction extends Action
 						checkboxId = vocabName + "@" + vocabVersion + ":" + medRelatedConcept.getCode();// concept.getCode();
 					}
 					
-					html.append(bizLogic.getSearchedVocabPVChildAsHTML("srh_" + vocabName,
+					if(displayPVCount<=count)// Need to show only specified number of Concepts on UI
+					{
+					 html.append(bizLogic.getSearchedVocabPVChildAsHTML("srh_" + vocabName,
 							vocabVersion, concept,"srh_"+checkboxId,status));
+					}
+					else
+					{
+						html.append(bizLogic.getMessage(count));
+						break;
+					}
 				}
 			}
 			else

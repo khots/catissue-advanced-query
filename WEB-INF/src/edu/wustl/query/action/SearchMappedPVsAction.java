@@ -96,22 +96,32 @@ public class SearchMappedPVsAction extends Action
 		List<PermissibleValueInterface> premValueList = bizLogic.getPermissibleValueListFromDB(attribute, entity);
 		int count=Integer.parseInt( VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
 		StringBuffer html = new StringBuffer();
-		if(premValueList!=null && premValueList.size()<=count)
-		{
+		//if(premValueList!=null && premValueList.size()<=count)
+		//{
 			List<IConcept> pvList = bizLogic.getPermissibleValueList(attribute, entity);
 			String vocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
 			String vocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
 			String vocabDisName = getDisplayNameForVocab(vocabName, vocabVer);
-			
+			int displayPVCount=1;
 			html.append(bizLogic.getRootVocabularyNodeHTML(vocabName, vocabVer, vocabDisName));
 			for(IConcept concept:pvList)
 			{
+				if(displayPVCount<=count)// Need to show only specified number of Concepts on UI
+				{
 				String id = vocabName + "@" + vocabVer + ":" + concept.getCode();
 				html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, vocabVer, concept,id));
+				displayPVCount++;
+				}
+				else
+				{
+					html.append(bizLogic.getMessage(count));
+					break;
+				}
+				
 			}
 			html.append(bizLogic.getEndHTML());
 			
-		}
+		/*}
 		else 
 		{
 			String vocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
@@ -121,7 +131,7 @@ public class SearchMappedPVsAction extends Action
 			html.append(bizLogic.getMessage(count));
 			html.append(bizLogic.getEndHTML());
 			
-		}
+		}*/
 		request.getSession().setAttribute(Constants.MED_PV_HTML, html.toString());
 		request.getSession().setAttribute(Constants.VOCABULIRES, bizLogic.getVocabulries());
 		if (componentId != null)
@@ -180,12 +190,12 @@ public class SearchMappedPVsAction extends Action
 		String targetVocabURN = targetVacbArray[2];
 		IVocabulary targetVocabulary = new Vocabulary(targetVocabName, targetVocabVer,targetVocabURN);
 		StringBuffer html = new StringBuffer();
-		List<PermissibleValueInterface> premValueList = bizLogic.getPermissibleValueListFromDB(attribute, entity);
-		int count=Integer.parseInt( VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
+		//List<PermissibleValueInterface> premValueList = bizLogic.getPermissibleValueListFromDB(attribute, entity);
+		//int count=Integer.parseInt( VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
 		//if Pvs are geater then specified count then no need to show the mappings
 		
-		if(premValueList!=null && premValueList.size()<=count)
-		{
+		/*if(premValueList!=null && premValueList.size()<=count)
+		{*/
 			if (!sourceVocabulary.equalsIgnoreCase(targetVocabName)
 					|| !sourceVocabVer.equalsIgnoreCase(targetVocabVer))
 			{
@@ -196,14 +206,14 @@ public class SearchMappedPVsAction extends Action
 				getMappingDataAsHTML(html, targetVocabName, targetVocabVer, vocabMappings);
 	
 			}
-		}
+		/*}
 		else
 		{
 			String vocabDisName = getDisplayNameForVocab(targetVocabName, targetVocabVer);
 			html.append(bizLogic.getRootVocabularyNodeHTML(targetVocabName, targetVocabVer, vocabDisName));
 			html.append(bizLogic.getMessage(count));
 			html.append(bizLogic.getEndHTML());
-		}
+		}*/
 
 		return html.toString();
 
@@ -214,12 +224,16 @@ public class SearchMappedPVsAction extends Action
 	 * @param vocabName
 	 * @param vocabversoin
 	 * @param vocabMappings
+	 * @throws VocabularyException 
+	 * @throws NumberFormatException 
 	 */
 	private void getMappingDataAsHTML(StringBuffer html, String vocabName, String vocabversoin,
-			Map<String, List<IConcept>> vocabMappings)
+			Map<String, List<IConcept>> vocabMappings) throws NumberFormatException, VocabularyException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
+		int displayPVCount=1;
+		int count=Integer.parseInt(VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
 		if (vocabMappings != null)
 		{
 			Set<String> keySet = vocabMappings.keySet();
@@ -231,10 +245,21 @@ public class SearchMappedPVsAction extends Action
 				ListIterator<IConcept> mappingListItr = mappingList.listIterator();
 				while (mappingListItr.hasNext())
 				{
+					
 					IConcept concept = (IConcept) mappingListItr.next();
-					String checkboxId = vocabName + "@" + vocabversoin + ":" + conceptCode;//we need to use the MED Concept code with mapped values
+					if(displayPVCount<=count)// Need to show only specified number of Concepts on UI
+					{
+						//we need to use the MED Concept code with mapped values
+					String checkboxId = vocabName + "@" + vocabversoin + ":" + conceptCode;
 					html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, vocabversoin,
 							concept, checkboxId));
+					displayPVCount++;
+					}
+					else
+					{
+						html.append(bizLogic.getMessage(count));
+						break;
+					}
 
 				}
 			}
