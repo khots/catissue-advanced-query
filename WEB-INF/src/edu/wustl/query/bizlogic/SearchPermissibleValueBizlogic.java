@@ -190,12 +190,12 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @param vocabversoin
 	 * @param concept
 	 * @param checkboxId
-	 * @param medRelatedConcept 
+	 * @param status 
 	 * @return
 	 * @throws VocabularyException 
 	 */
 	public String getSearchedVocabPVChildAsHTML(String vocabName, String vocabversoin,
-			IConcept concept, String checkboxId, IConcept medRelatedConcept) throws VocabularyException
+			IConcept concept, String checkboxId, String textStatus) throws VocabularyException
 	{
 		/*String relationType =VocabUtil.getVocabProperties().getProperty("vocab.translation.association.name");
 		IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties().getProperty(
@@ -205,16 +205,17 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		{
 			System.out.println(concept);
 		}*/
-		String status="disabled";//need to change the code as per requrement temp changes
-		if(medRelatedConcept!=null)// this is med related concept
+		String chkBoxStatus="";
+		String cssClass=textStatus;
+		if(textStatus.indexOf("Disabled")>-1)
 		{
-			status="";
+			chkBoxStatus="disabled";
 		}
 		return "<tr title='Concept Code: "+concept.getCode()+"'><td style='padding-left:30px'>&nbsp;</td><td class='black_ar_tt'> \n"
-				+ "<input type='checkbox' "+status+" name='"+ vocabName + vocabversoin + "' id='"
+				+ "<input type='checkbox' "+chkBoxStatus+" name='"+ vocabName + vocabversoin + "' id='"
 				+ checkboxId + "' value='" + concept.getCode() + ":" + concept.getDescription()
 				+ "' onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
-				+ "</td><td class='black_ar_tt'>" /*+ concept.getCode() + ":"*/
+				+ "</td><td class='"+cssClass+"'>" /*+ concept.getCode() + ":"*/
 				+ concept.getDescription() + "\n" + "<td></tr>";
 	}
 	/**
