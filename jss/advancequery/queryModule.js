@@ -1732,7 +1732,7 @@ var jsReady = false;
 			var listboxName = document.getElementById(componentId);
 			//set the concept code to the ID attribute
 			var permValuesWithCode=pvList.split('#');
-			var permValuesNames = pvNameList.split(',');
+			var permValuesNames = pvNameList.split('#');
 			var medConceptCodeList=new Array();
 			var j=0;
 			var pvValueList="";

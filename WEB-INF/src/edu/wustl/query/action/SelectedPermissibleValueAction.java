@@ -37,7 +37,7 @@ public class SelectedPermissibleValueAction extends Action {
 		// codes contains the actual vocab Name+@+version:med Concept code
 		String[] conceptcodes= conceptCodes.split("#");
 		// Name contains the actual selected vocab concept code:Concept Name
-		String[] conceptNames= conceptName.split(",");
+		String[] conceptNames= conceptName.split("#");
 		
 		for(int i=0;i<conceptcodes.length;i++)
 		{

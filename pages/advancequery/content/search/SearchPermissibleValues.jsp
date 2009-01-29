@@ -200,10 +200,10 @@ function addPvsToCondition()
 				var selectedIdFromList=document.getElementById(selectedPvs[k]).value;
 				var selectedIdFromListWithoutCode=selectedIdFromList.substring(selectedIdFromList.indexOf(":")+1);
 				//require for UI javascript and set the values to parent window
-				pvNameList=pvNameList+selectedIdFromListWithoutCode+",";
+				pvNameList=pvNameList+selectedIdFromListWithoutCode+"#";
 				pvConceptCodeList=pvConceptCodeList+selectedPvs[k]+"#";
 				//required to store in session
-				pvNameListWithCode=pvNameListWithCode+document.getElementById(selectedPvs[k]).value+",";
+				pvNameListWithCode=pvNameListWithCode+document.getElementById(selectedPvs[k]).value+"#";
 			}					
 		}catch(e)
 		{}
