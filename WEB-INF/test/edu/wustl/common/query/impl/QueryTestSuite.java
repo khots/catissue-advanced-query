@@ -1,11 +1,10 @@
-package edu.wustl.query.querysuite;
+package edu.wustl.common.query.impl;
 
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import edu.wustl.common.query.impl.XQueryGeneratorTest;
 
 
 @RunWith(value = Suite.class)

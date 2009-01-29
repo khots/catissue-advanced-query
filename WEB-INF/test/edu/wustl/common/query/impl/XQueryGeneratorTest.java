@@ -5,27 +5,36 @@ package edu.wustl.common.query.impl;
  * 
  */
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import edu.wustl.cab2b.server.cache.EntityCache;
-import edu.wustl.common.query.impl.PassOneXQueryGenerator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.utility.Utility;
 
 /**
- * TestCase class for XQueryGenerator.
+ * Test class for XQueryGenerator.
  * 
  * @author ravindra_jain, juber patel
  * @created 4th December, 2008
  */
-public class XQueryGeneratorTestCase extends TestCase
+public class XQueryGeneratorTest
 {
 
 	public static PassOneXQueryGenerator xQueryGenerator = new PassOneXQueryGenerator();
 
 	XQueryEntityManagerMock entityManager = new XQueryEntityManagerMock();
 
-	static
+
+	/**
+	 * this method is called only once, after which the tests are executed
+	 */
+	@BeforeClass
+	public void prepare()
 	{
 		Logger.configure();
 		try
@@ -47,30 +56,41 @@ public class XQueryGeneratorTestCase extends TestCase
 		{
 			e.printStackTrace();
 		}
+		
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see junit.framework.TestCase#setUp()
+	
+	/**
+	 * this method is called only once, when all tests have executed
 	 */
-	@Override
+	@AfterClass
+	public void wrapUp()
+	{
+		
+		
+	}
+	
+	
+	/**
+	 * this method is called once before each test
+	 * @throws Exception
+	 */
+	@Before
 	protected void setUp() throws Exception
 	{
-		super.setUp();
+
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see junit.framework.TestCase#tearDown()
+	/**
+	 * this method is called once after each test
+	 * @throws Exception
 	 */
-	@Override
+	@After
 	protected void tearDown() throws Exception
 	{
-		super.tearDown();
+
 	}
 
+	@Test
 	public void testXQuery_Test1()
 	{
 		// WRITE TEST CASE LOGIC HERE
