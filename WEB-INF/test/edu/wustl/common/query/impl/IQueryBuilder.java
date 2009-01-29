@@ -43,7 +43,7 @@ import edu.wustl.query.util.querysuite.QueryModuleException;
  * @created 4th December, 2008
  * 
  */
-public class IQueryUtility
+public class IQueryBuilder
 {
 
 	public static XQueryEntityManagerMock entityManager = new XQueryEntityManagerMock();
