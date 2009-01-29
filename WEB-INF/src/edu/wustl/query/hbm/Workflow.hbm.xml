@@ -20,7 +20,7 @@
 			type="string" 
 			update="true" 
 			insert="true"
-			column="QUERY_NAME" 
+			column="WORKFLOW_NAME" 
 			length="1024" 
 			 />
 		<property 
