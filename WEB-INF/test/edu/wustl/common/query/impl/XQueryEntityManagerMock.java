@@ -81,6 +81,8 @@ public class XQueryEntityManagerMock extends EntityManager
 	public static final String RACE = "Race";
 	public static final String GENDER = "Gender";
 	public static final String LABORATORY_PROCEDURE = "LaboratoryProcedure";
+	public static final String ADDRESS = "Address";
+	public static final String LABORATORY_PROCEDURE_DETAILS = "LaboratoryProcedureDetails";
 
 	static long identifier = 0L;
 
