@@ -93,6 +93,39 @@ body {
 	vertical-align:top;
 	padding-left:15px;
 }
+.Normal_Bold_Enabled{
+	font-family: verdana;
+	font-size: 11px;
+	font-weight:bold;
+	color: #000000;
+	padding-top:2px;
+	
+}
+.Normal_Disabled{
+	font-family: verdana;
+	font-size: 11px;
+	color: #000000;
+	padding-top:2px;
+	
+}
+.Bold_Italic_Disabled{
+	font-family: verdana;
+	font-size: 11px;
+	font-weight:bold;
+	font-style: italic;
+	color: #000000;
+	padding-top:2px;
+	
+}
+.Normal_Italic_Disabled
+{
+	font-family: verdana;
+	font-size: 11px;
+	font-style: italic;
+	color: #000000;
+	padding-top:2px;
+	
+}
 .black_ar_td_dy{
 	font-family: verdana;
 	font-size: 11px;
