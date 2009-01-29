@@ -118,7 +118,9 @@ public class SearchPermissibleValuesAction extends Action
 				for(IConcept concept:conceptList)
 				{
 					//TODO need to change into MED concept code when API will be completed
-					IConcept medRelatedConcept=isSourceVocabMappedTerm(concept,pvList) ;
+					IConcept sourceConcept=null;
+					String status=isSourceVocabMappedTerm(concept,pvList,sourceConcept) ;
+					IConcept medRelatedConcept =sourceConcept;
 					String checkboxId=null;
 					if(medRelatedConcept==null)
 					{
@@ -126,11 +128,11 @@ public class SearchPermissibleValuesAction extends Action
 					}
 					else
 					{
-					checkboxId = vocabName + "@" + vocabVersion + ":" + medRelatedConcept.getCode();// concept.getCode();
+						checkboxId = vocabName + "@" + vocabVersion + ":" + medRelatedConcept.getCode();// concept.getCode();
 					}
 					
 					html.append(bizLogic.getSearchedVocabPVChildAsHTML("srh_" + vocabName,
-							vocabVersion, concept,"srh_"+checkboxId,medRelatedConcept));
+							vocabVersion, concept,"srh_"+checkboxId,status));
 				}
 			}
 			else
@@ -141,6 +143,80 @@ public class SearchPermissibleValuesAction extends Action
 			html.append(bizLogic.getEndHTML());
 		}
 		return html.toString();
+	}
+	/**
+	 * 
+	 * @param concept 
+	 * @param pvList 
+	 * @param sourceConcept 
+	 * @param componentId
+	 * @param request
+	 * @return
+	 * @throws VocabularyException 
+	 */
+	private String isSourceVocabMappedTerm(IConcept concept, List<IConcept> pvList, IConcept sourceConcept) 
+					throws VocabularyException
+	{
+		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
+		.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
+		
+		String relationType =VocabUtil.getVocabProperties().getProperty("vocab.translation.association.name");
+		IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties().getProperty(
+		"source.vocab.name"), VocabUtil.getVocabProperties().getProperty(
+		"source.vocab.version"),VocabUtil.getVocabProperties().getProperty(
+		"source.vocab.urn"));
+		String status = "";
+		if(((Vocabulary)sourceVocabulary).equals((Vocabulary)concept.getVocabulary()))
+		{
+			sourceConcept= bizLogic.isPermissibleValue(concept, pvList);
+			if(sourceConcept!=null)
+			{
+				//If MED coded and its part of PV then show text should be bold with normal 
+				status="Normal_Bold_Enabled";
+			}
+			else
+			{
+				/*user searched on the MED and the concept is not valid for
+				 * entity text should be normal disabled 
+				 */
+				status="Normal_Disabled";
+			}
+				
+		}
+		else
+		{
+			List<IConcept> concepts=bizLogic.isSourceVocabCodedTerm(concept, relationType, sourceVocabulary);
+			if(concepts!=null)
+			{
+				sourceConcept=bizLogic.isPermissibleValue(concepts, pvList);
+			}
+			if(concepts!=null && sourceConcept!=null )
+			{
+				/*user has searched on other vocabulary and the searched concept is MED coded 
+				 * and its is  valid PV for entity then show text bold with enabled.
+				 */
+				 status="Normal_Bold_Enabled";
+			 
+			}
+			else if(concepts!=null && sourceConcept==null )
+			{
+				/*user has searched on other vocabulary and the searched concept is MED coded 
+				 * but  its is not valid PV  entity then show text Bold Italic Disabled.
+				 */
+				 status="Bold_Italic_Disabled";
+			}
+			else
+			{
+				/* user has searched on other vocabulary and the searched concept is not MED coded
+				 * then show text Italic Normal and Disabled;  
+				 */
+				 status="Normal_Italic_Disabled";
+				
+			}
+			
+
+		}
+		return status;
 	}
 	/**
 	 * 
