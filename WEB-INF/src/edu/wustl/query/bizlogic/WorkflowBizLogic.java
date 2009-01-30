@@ -203,10 +203,10 @@ public class WorkflowBizLogic extends DefaultBizLogic
 		//forming Query to validate workflow Name 
 		String sourceObjectName = Workflow.class.getName();
 		String[] selectColumnName = {"id"};
-		String[] whereColumnName = {"name"};
-		String[] whereColumnCondition = {"="};
-		Object[] whereColumnValue = {workflow.getName()};
-		String joinCondition = null;
+		String[] whereColumnName = {"name","name"};
+		String[] whereColumnCondition = {"=","="};
+		Object[] whereColumnValue = {workflow.getName().toLowerCase(),workflow.getName().toUpperCase()};
+		String joinCondition = Constants.OR_JOIN_CONDITION;
 
 		List list = dao.retrieve(sourceObjectName, selectColumnName, whereColumnName,
 				whereColumnCondition, whereColumnValue, joinCondition);
