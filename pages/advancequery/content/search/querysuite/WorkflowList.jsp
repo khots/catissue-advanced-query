@@ -5,6 +5,13 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c"%>
 
+<%
+
+	response.setHeader("Cache-Control","no-cache");
+	response.setHeader("Pragma","no-cache");
+	response.setDateHeader ("Expires", 0);
+%>
+
 <%-- Imports --%>
 <%@
 	page language="java" contentType="text/html"
