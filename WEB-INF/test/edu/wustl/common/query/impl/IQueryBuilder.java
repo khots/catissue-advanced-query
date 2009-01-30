@@ -54,15 +54,17 @@ public class IQueryBuilder
 	 * @param expression The Expression reference created by function
 	 * @return The corresponding join Graph reference.
 	 * @throws DynamicExtensionsSystemException 
+	 * @throws CyclicException 
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public static IQuery skeletalPersonQuery() throws DynamicExtensionsSystemException
+	public static IQuery skeletalPersonQuery() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, CyclicException
 	{
 		IQuery query = null;
 		query = QueryObjectFactory.createQuery();
 		IConstraints constraints = QueryObjectFactory.createConstraints();
 		query.setConstraints(constraints);
 
-		IExpression person = createExpression(constraints, XQueryEntityManagerMock.PERSON);
+		IExpression person = createExpression(constraints, null, XQueryEntityManagerMock.PERSON);
 		addBasicPersonConditions(person, "N");
 
 		return query;
@@ -85,13 +87,11 @@ public class IQueryBuilder
 		IConstraints constraints = query.getConstraints();
 		IJoinGraph joinGraph = constraints.getJoinGraph();
 
-		IExpression demographics = createExpression(constraints,
-				XQueryEntityManagerMock.DEMOGRAPHICS);
-		addBasicDemographicsConditions(demographics);
-
 		IExpression person = findExpression(XQueryEntityManagerMock.PERSON, joinGraph.getRoot(),
 				joinGraph);
-		connectExpressions(person, demographics, LogicalOperator.And, joinGraph);
+		IExpression demographics = createExpression(constraints, person,
+				XQueryEntityManagerMock.DEMOGRAPHICS);
+		addBasicDemographicsConditions(demographics);
 
 		return query;
 	}
@@ -113,13 +113,11 @@ public class IQueryBuilder
 		IConstraints constraints = query.getConstraints();
 		IJoinGraph joinGraph = constraints.getJoinGraph();
 
-		IExpression race = createExpression(constraints, XQueryEntityManagerMock.RACE);
-		IExpression gender = createExpression(constraints, XQueryEntityManagerMock.GENDER);
 		IExpression demographics = findExpression(XQueryEntityManagerMock.DEMOGRAPHICS, joinGraph
 				.getRoot(), joinGraph);
-		connectExpressions(demographics, race, LogicalOperator.And, joinGraph);
-		connectExpressions(demographics, gender, LogicalOperator.And, joinGraph);
-
+		IExpression race = createExpression(constraints, demographics, XQueryEntityManagerMock.RACE);
+		createExpression(constraints, race, XQueryEntityManagerMock.GENDER);
+		
 		return query;
 	}
 
@@ -130,22 +128,21 @@ public class IQueryBuilder
 		IConstraints constraints = query.getConstraints();
 		IJoinGraph joinGraph = constraints.getJoinGraph();
 
-		IExpression address = createExpression(constraints, XQueryEntityManagerMock.ADDRESS);
 		IExpression demographics = findExpression(XQueryEntityManagerMock.ADDRESS, joinGraph
 				.getRoot(), joinGraph);
-		connectExpressions(demographics, address, LogicalOperator.And, joinGraph);
-
+		createExpression(constraints, demographics, XQueryEntityManagerMock.ADDRESS);
+		
 		return query;
 	}
 
-	public static IQuery skeletalLabProcedureQuery() throws DynamicExtensionsSystemException
+	public static IQuery skeletalLabProcedureQuery() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, CyclicException
 	{
 		IQuery query = null;
 		query = QueryObjectFactory.createQuery();
 		IConstraints constraints = QueryObjectFactory.createConstraints();
 		query.setConstraints(constraints);
 
-		createExpression(constraints, XQueryEntityManagerMock.LABORATORY_PROCEDURE);
+		createExpression(constraints, null, XQueryEntityManagerMock.LABORATORY_PROCEDURE);
 		return query;
 	}
 
@@ -157,11 +154,11 @@ public class IQueryBuilder
 		IConstraints constraints = query.getConstraints();
 		IJoinGraph joinGraph = constraints.getJoinGraph();
 
-		IExpression labProcedureDetails = createExpression(constraints,
-				XQueryEntityManagerMock.LABORATORY_PROCEDURE_DETAILS);
 		IExpression labProcedure = findExpression(XQueryEntityManagerMock.LABORATORY_PROCEDURE,
 				joinGraph.getRoot(), joinGraph);
-		connectExpressions(labProcedure, labProcedureDetails, LogicalOperator.And, joinGraph);
+		createExpression(constraints, labProcedure,
+				XQueryEntityManagerMock.LABORATORY_PROCEDURE_DETAILS);
+		
 		return query;
 
 	}
@@ -209,8 +206,8 @@ public class IQueryBuilder
 		getRule(expression).addCondition(condition);
 	}
 
-	public static IExpression createExpression(IConstraints constraints, String expressionType)
-			throws DynamicExtensionsSystemException
+	public static IExpression createExpression(IConstraints constraints, IExpression parent, String expressionType)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, CyclicException
 	{
 		EntityInterface entity = entityManager.getEntityByName(expressionType);
 		IQueryEntity queryEntity = QueryObjectFactory.createQueryEntity(entity);
@@ -220,7 +217,12 @@ public class IQueryBuilder
 		List<ICondition> conditions = new ArrayList<ICondition>();
 		IRule rule = QueryObjectFactory.createRule(conditions);
 		expression.addOperand(rule);
-
+		
+		if(parent != null)
+		{
+			connectExpressions(parent, expression, LogicalOperator.And, constraints.getJoinGraph());
+		}
+		
 		return expression;
 	}
 
@@ -291,7 +293,7 @@ public class IQueryBuilder
 			IExpression wantedExpression = findExpression(entityName, child, joinGraph);
 			if (wantedExpression != null)
 			{
-				return null;
+				return wantedExpression;
 			}
 		}
 

@@ -137,15 +137,13 @@ public class XQueryGeneratorTest
 			IExpression person = IQueryBuilder.findExpression(XQueryEntityManagerMock.PERSON,
 					joinGraph.getRoot(), joinGraph);
 
-			IExpression lab = IQueryBuilder.createExpression(constraints,
+			IExpression lab = IQueryBuilder.createExpression(constraints, person,
 					XQueryEntityManagerMock.LABORATORY_PROCEDURE);
 			//add conditions on lab
-			IExpression labDetails = IQueryBuilder.createExpression(constraints,
+			
+			IQueryBuilder.createExpression(constraints, lab,
 					XQueryEntityManagerMock.LABORATORY_PROCEDURE_DETAILS);
 			//add conditions on details
-
-			IQueryBuilder.connectExpressions(person, lab, LogicalOperator.And, joinGraph);
-			IQueryBuilder.connectExpressions(lab, labDetails, LogicalOperator.And, joinGraph);
 
 			String xquery = xQueryGenerator.generateQuery(query);
 		}
