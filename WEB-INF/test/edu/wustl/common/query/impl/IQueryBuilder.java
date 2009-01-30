@@ -60,7 +60,7 @@ public class IQueryBuilder
 	public static IQuery skeletalPersonQuery() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, CyclicException
 	{
 		IQuery query = null;
-		query = QueryObjectFactory.createQuery();
+		query = QueryObjectFactory.createParameterizedQuery();
 		IConstraints constraints = QueryObjectFactory.createConstraints();
 		query.setConstraints(constraints);
 
@@ -116,7 +116,7 @@ public class IQueryBuilder
 		IExpression demographics = findExpression(XQueryEntityManagerMock.DEMOGRAPHICS, joinGraph
 				.getRoot(), joinGraph);
 		IExpression race = createExpression(constraints, demographics, XQueryEntityManagerMock.RACE);
-		createExpression(constraints, race, XQueryEntityManagerMock.GENDER);
+		createExpression(constraints, demographics, XQueryEntityManagerMock.GENDER);
 		
 		return query;
 	}
@@ -128,9 +128,10 @@ public class IQueryBuilder
 		IConstraints constraints = query.getConstraints();
 		IJoinGraph joinGraph = constraints.getJoinGraph();
 
-		IExpression demographics = findExpression(XQueryEntityManagerMock.ADDRESS, joinGraph
+		IExpression demographics = findExpression(XQueryEntityManagerMock.DEMOGRAPHICS, joinGraph
 				.getRoot(), joinGraph);
 		createExpression(constraints, demographics, XQueryEntityManagerMock.ADDRESS);
+		
 		
 		return query;
 	}
@@ -138,7 +139,7 @@ public class IQueryBuilder
 	public static IQuery skeletalLabProcedureQuery() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, CyclicException
 	{
 		IQuery query = null;
-		query = QueryObjectFactory.createQuery();
+		query = QueryObjectFactory.createParameterizedQuery();
 		IConstraints constraints = QueryObjectFactory.createConstraints();
 		query.setConstraints(constraints);
 

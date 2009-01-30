@@ -112,6 +112,13 @@ public class XQueryGeneratorTest
 			IExpression race = IQueryBuilder.findExpression(XQueryEntityManagerMock.RACE, joinGraph
 					.getRoot(), joinGraph);
 			IQueryBuilder.addCondition(race, "id", RelationalOperator.Equals, "2345");
+			
+			IExpression gender = IQueryBuilder.findExpression(XQueryEntityManagerMock.GENDER, joinGraph.getRoot(), joinGraph);
+			IQueryBuilder.addCondition(gender, "id", RelationalOperator.Equals, "1987");
+			
+			IExpression address = IQueryBuilder.findExpression(XQueryEntityManagerMock.ADDRESS, joinGraph.getRoot(), joinGraph);
+			IQueryBuilder.addCondition(address, "id", RelationalOperator.Equals, "3452");
+			
 
 			String xquery = xQueryGenerator.generateQuery(query);
 
@@ -125,7 +132,7 @@ public class XQueryGeneratorTest
 		}
 	}
 
-	@Test
+	
 	public void demographicsLabDetailsTest()
 	{
 		try

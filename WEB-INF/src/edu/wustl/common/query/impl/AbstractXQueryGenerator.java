@@ -41,10 +41,10 @@ import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
+import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
-import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.util.global.Constants;
@@ -154,7 +154,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		//populate selected attributes and their aliases
 		attributeAliases = new LinkedHashMap<IOutputAttribute, String>();
 		IQuery queryClone = new DyExtnObjectCloner().clone(query);
-		for (IOutputAttribute selectedAttribute : ((ParameterizedQuery) queryClone)
+		for (IOutputAttribute selectedAttribute : ((IParameterizedQuery) queryClone)
 				.getOutputAttributeList())
 		{
 			String attributeAlias = getAliasFor(selectedAttribute);

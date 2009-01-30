@@ -76,13 +76,13 @@ public class Utility
 
 			// create data source and bind to JNDI
 			DataSource ciderDS = getDataSource();
-			DataSource queryDS = getDataSource();
+			// DataSource queryDS = getDataSource();
 			initialContext.createSubcontext(Constants.JNDI_NAME_CIDER);
-			initialContext.createSubcontext(Constants.JNDI_NAME_QUERY);
-			initialContext.createSubcontext("java:/TransactionManager");
+			// initialContext.createSubcontext(Constants.JNDI_NAME_QUERY);
+			// initialContext.createSubcontext("java:/TransactionManager");
 
 			initialContext.rebind(Constants.JNDI_NAME_CIDER, ciderDS);
-			initialContext.rebind(Constants.JNDI_NAME_QUERY, queryDS);
+			// initialContext.rebind(Constants.JNDI_NAME_QUERY, queryDS);
 		}
 		catch (Exception ex)
 		{
