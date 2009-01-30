@@ -542,29 +542,18 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	protected abstract String buildXQueryForClause(PredicateGenerator predicateGenerator)
 			throws MultipleRootsException, DynamicExtensionsSystemException;
 
+	/**
+	 * 
+	 *  @return the Return Clause of SQLXML
+	 */
 	protected abstract String buildXQueryLetClause(PredicateGenerator predicateGenerator);
 
 	/**
 	 * 
 	 * @return the Return Clause of SQLXML
 	 */
-	protected String buildXQueryReturnClause()
-	{
-		StringBuilder xqueryReturnClause = new StringBuilder(Constants.QUERY_RETURN);
-		xqueryReturnClause.append("<return>");
-
-		for (String forVariable : forVariables.values())
-		{
-			String tagName = forVariable.substring(1);
-			xqueryReturnClause.append('<').append(tagName).append('>');
-			xqueryReturnClause.append('{').append(forVariable).append('}');
-			xqueryReturnClause.append("</").append(tagName).append('>');
-		}
-
-		xqueryReturnClause.append("</return>");
-		return xqueryReturnClause.toString();
-	}
-
+	protected abstract String buildXQueryReturnClause();
+	
 	/**
 	 * Adds an pseudo anded expression & all its child expressions to
 	 * pAndExpressions set.
@@ -676,8 +665,9 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	/**
 	 * 
 	 * @return the 'passing' part of SQLXML
+	 * @throws DataTypeFactoryInitializationException 
 	 */
-	protected abstract String buildPassingPart();
+	protected abstract String buildPassingPart() throws DataTypeFactoryInitializationException;
 
 	/**
 	 * 

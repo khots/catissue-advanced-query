@@ -73,7 +73,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 					laterPart.toString());
 
 		}
-
+		
 		return xqueryForClause.toString();
 	}
 
