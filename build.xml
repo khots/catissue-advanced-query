@@ -12,7 +12,7 @@
 	<!--define require dir and Properties -->
 	<property name="base.dir" value="." />
 	<property name="src.dir" value="${base.dir}/WEB-INF/src" />
-	<property name="test.dir" value="${base.dir}/WEB-INF/test" />
+	
 	<property name="target.dir" value="${base.dir}/WEB-INF/classes" />
 	<property name="lib.dir" value="${base.dir}/WEB-INF/lib" />
 	<property name="hbm.dir" value="${src.dir}/edu/wustl/query/hbm" />
@@ -21,8 +21,8 @@
 	<property name="junit.jar" value="${lib.dir}/junit-3.8.1.jar" />
 	<property name="cobertura.dir" value="${target.dir}/reports/coverage" />
 	<property name="report.dir" value="${base.dir}/WEB-INF" />
-	<property name="test.src.dir" value="${base.dir}/WEB-INF/src/edu/wustl/quey/bizlogic/test" />
-	<property name="test.class.dir" value="${base.dir}/WEB-INF/classes/edu/wustl/quey/bizlogic/test" />
+	<property name="test.dir" value="${base.dir}/WEB-INF/test" />
+	<property name="test.class.dir" value="${base.dir}/WEB-INF/classes" />
 	<property name="junit.report.dir" value="${test.dir}/report" />
 	<!-- csm related properties -->
 	<property name="temp.dir" value="${base.dir}/tempQuey"/>
@@ -554,59 +554,8 @@
 	<!-- Junit TestCases for Nightly Build  -->
 	<!-- =================================================================== -->
 	
-		<target name="compile_junit_TestCases">
-	        <javac destdir="${test.src.dir}" includes="**/*TestCases.java" includeAntRuntime="false" target="1.5">
-	            <src path="${src.dir}"/>
-	            <classpath>
-	       		  <fileset dir="${lib.dir}">
-	        			<include name="**/*.jar"/>
-	        	  </fileset>
-	            </classpath>
-	        </javac>
-	</target>
-
-
-	<target name="runJunitTestCases" depends="compile_junit_TestCases">
-        <mkdir dir="${report.dir}/Nightly_Build_Report" />
-		<mkdir dir="${report.dir}/Nightly_Build_Report/Html_reports" />
-
-		<junit printsummary="yes" fork="yes" haltonfailure="no">
-			<formatter type="xml" />
-			<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.dir}/coverage.ser" />
-			<classpath>				
-				<pathelement path="${base.dir}/query_Client/conf" />
-				<fileset dir="./query_Client/lib">
-				<include name="*.jar" />
-				</fileset>
-			</classpath>
-
-			<classpath>
-				<pathelement path="${cobertura.dir}" />
-				<pathelement path="${target.dir}" />
-				<pathelement path= "${test.class.dir}" />
-			</classpath>
-			
-			<classpath refid="junit.classpath" />
-
-			<batchtest todir="${report.dir}/Nightly_Build_Report">
-				<fileset dir="${src.dir}">
-					<include name="**/QueryTestSuite.java" />
-				</fileset>				
-			</batchtest>
-		</junit>
-	</target>
 	
-
-  <target name="runNightlyBuild" depends="runJunitTestCases">
-		
-		<junitreport todir="${report.dir}/Nightly_Build_Report">
-			<fileset dir="${report.dir}/Nightly_Build_Report">
-				<include name="TEST-*.xml" />
-			</fileset>
-			<report todir="${report.dir}/Nightly_Build_Report/Html_reports" />
-		</junitreport>
-	</target>
-	
+  
 <!-- =================================================================== -->
 <!-- JMeter TestCases for Nightly Build  -->
 <!-- =================================================================== -->
@@ -797,6 +746,8 @@
 				<ant antfile="cobertura.xml" target="coverage.report"/>
 				<ant antfile="cobertura.xml" target="coverage.check"/>
 		</target>
+	
+	
 		 <target name="run_junit" depends = "compile_test_cases">
 			 	<!--<delete dir="${junit.report.dir}"/> -->
 			 	<mkdir dir="${junit.report.dir}"/>
@@ -847,6 +798,9 @@
 		        <javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false" debug="true">
 		            <src path="${test.dir}"/>
 		            <classpath refid="app.classpath"/>
+		        	<classpath>
+		        		<pathelement location="${test.dir}\lib\jnpserver.jar"/>
+		        	</classpath>
 		        </javac>
 		 		<copy file="${test.dir}/conf/QueryHibernate.cfg.xml" todir="${target.dir}" overwrite="true"/>
 		    	<copy file="${test.dir}/conf/DynamicExtensionsHibernate.cfg.xml" todir="${target.dir}" overwrite="true"/>
