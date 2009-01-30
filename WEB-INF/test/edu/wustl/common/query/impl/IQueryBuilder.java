@@ -166,7 +166,7 @@ public class IQueryBuilder
 
 	}
 
-	private static ICondition addCondition(IExpression expression, String attributeName,
+	public static ICondition addCondition(IExpression expression, String attributeName,
 			RelationalOperator unaryOperator)
 	{
 		AttributeInterface attribute = findAttribute(expression.getQueryEntity()
@@ -178,7 +178,7 @@ public class IQueryBuilder
 		return condition;
 	}
 
-	private static void addCondition(IExpression expression, String attributeName,
+	public static void addCondition(IExpression expression, String attributeName,
 			RelationalOperator binaryOperator, String value)
 	{
 		ICondition condition = addCondition(expression, attributeName, binaryOperator);
@@ -186,7 +186,7 @@ public class IQueryBuilder
 
 	}
 
-	private static void addCondition(IExpression expression, String attributeName,
+	public static void addCondition(IExpression expression, String attributeName,
 			RelationalOperator betweenOperator, List<String> values)
 	{
 		AttributeInterface attribute = findAttribute(expression.getQueryEntity()
@@ -198,7 +198,7 @@ public class IQueryBuilder
 
 	}
 
-	private static void addCondition(IExpression expression, String attributeName,
+	public static void addCondition(IExpression expression, String attributeName,
 			RelationalOperator betweenOperator, String... values)
 	{
 		AttributeInterface attribute = findAttribute(expression.getQueryEntity()
@@ -278,7 +278,7 @@ public class IQueryBuilder
 		return null;
 	}
 
-	private static IExpression findExpression(String entityName, IExpression root,
+	public static IExpression findExpression(String entityName, IExpression root,
 			IJoinGraph joinGraph)
 	{
 		if (root.getQueryEntity().getDynamicExtensionsEntity().getName().equals(entityName))
