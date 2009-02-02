@@ -329,7 +329,7 @@ public abstract class IQueryUpdationUtil
 	 * @return containmentEntitiesList
 	 */
 
-	private static List<EntityInterface> getContainmentAssociations(EntityInterface entity)
+	public static List<EntityInterface> getContainmentAssociations(EntityInterface entity)
 	{
 		//List to which all containment entities are added
 		ArrayList<EntityInterface> containmentEntitiesList = new ArrayList<EntityInterface>();
