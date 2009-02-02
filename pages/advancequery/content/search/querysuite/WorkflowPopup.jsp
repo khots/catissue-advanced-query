@@ -4,6 +4,12 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 
+<%
+
+	response.setHeader("Cache-Control","no-cache");
+	response.setHeader("Pragma","no-cache");
+	response.setDateHeader ("Expires", 0);
+%>
 <%-- Imports --%>
 <%@
 	page language="java" contentType="text/html"
@@ -156,6 +162,13 @@ function checkAlreadyPresent(itemToadd)
 			}	
 		}	
 		return alreadyExist;
+}
+function changeResPerPage(controlId)
+{
+	var resultsPerPage=document.getElementById(controlId).value;
+	var url='RetrieveQueryAction.do?pageOf=myQueriesForWorkFlow&requestFor=nextPage&pageNum=1&numResultsPerPage='+resultsPerPage;
+	document.forms[0].action=url;
+	document.forms[0].submit();	
 }
 
 </script>
