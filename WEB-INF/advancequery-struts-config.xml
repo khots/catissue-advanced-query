@@ -167,6 +167,7 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/LoadSaveQueryPage.do"/>
 			<forward name="failure" path="/LoadSaveQueryPage.do"/>
+		<!--<forward name="workflow" path="/RedirectToWorkflow.do"/> -->
 		</action>
 		<action path="/RetrieveQueryAction"
 			type="edu.wustl.query.action.RetrieveQueryAction"
@@ -501,6 +502,7 @@ PUBLIC
         <!-- <forward name="success" path="/QueryWorkflowWizard.do" /> -->
        		 <forward name="success" path=".query.queryWorkFlowConfirmMsgDef" />
        		 <forward name="failure" path="/QueryWorkflowWizard.do"/>
+       		 <forward name="loadQueryPage" path="/LoadQueryPage.do"/>
         </action>
         
         <action path="/WorkflowAjaxHandler" 
@@ -535,6 +537,14 @@ PUBLIC
         type="edu.wustl.query.action.QueryAction">
         	<forward name="success" path=".query.querySearchWizardDef"/>
         </action>
+		
+		  <action path="/RedirectToWorkflow"
+			type="edu.wustl.query.action.RedirectToWorkflowAction"
+			name="workflowForm"
+			validate="false"
+			scope="request">
+			<forward name="queryWizard" path="/QueryWorkflowWizard.do?operation=add&amp;pageOf=workflow&amp;menuSelected=1" />
+		</action>
         
         <action path="/RetrieveRecentQueries"
 			type="edu.wustl.query.action.RetrieveRecentQueriesAction"
@@ -542,6 +552,15 @@ PUBLIC
 			validate="false"
 			scope="request">
 			<forward name="success" path=".query.recentQueryListDef"/>
+		</action>
+		
+		<action path="/LoadQueryPage"
+			type="edu.wustl.query.action.LoadQueryPageAction"
+			validate="false"
+			scope="request">
+			<forward name="queryWizard" path="/QueryWizard.do?operation=add&amp;pageOf=workflow&amp;menuSelected=1" />
+			<forward name="queryGetCount" path="/QueryGetCount.do?operation=add&amp;pageOf=workflow&amp;menuSelected=1" />
+
 		</action>
 	</action-mappings>
 	
