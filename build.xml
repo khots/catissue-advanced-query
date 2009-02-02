@@ -741,7 +741,6 @@
 			  <taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
 
 		<target name="generate_codecoverage_report" >
-				<ant target="compile_test_cases"/>
 				<ant antfile="cobertura.xml" target="instrument"/>
 				<ant target="run_junit"/>
 				<ant antfile="cobertura.xml" target="coverage.report"/>
@@ -791,11 +790,11 @@
 					<report todir="${junit.report.dir}" />
 				</junitreport>
 
-			 	<delete >
+			 	<!--<delete >
 					<fileset dir="${junit.report.dir}">
 						<include name="**/**/*.xml" />
 					</fileset>
-			 	</delete>
+			 	</delete> -->
 			</target>
 
 		 <target name="compile_test_cases" depends="compile">
