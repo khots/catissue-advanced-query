@@ -4,7 +4,6 @@
 <%@ taglib uri="/WEB-INF/nlevelcombo.tld" prefix="ncombo"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@page import="edu.wustl.query.util.global.CompositeQueryOperations"%>
-
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlwindow.js"></script>
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/js/modal.js"></script>
 <script language="JavaScript" type="text/javascript" src="jss/advancequery/newReleaseMsg.js"></script>
@@ -15,7 +14,6 @@
 <script src="jss/ajax.js"></script>	
 <script type="text/JavaScript">
 
-var numOfChkSelected=0;
 function MM_preloadImages() { //v3.0
   var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
     var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
@@ -281,12 +279,14 @@ function cancelWorkflow()
 }
 function getCountdata()
 {
-	document.forms[0].action="AddNewQueryToWorkflow.do?addNewForwardTo=queryGetCount&forwardTo=queryWizard&addNewFor=principalInvestigator";
+	document.forms[0].forwardTo.value= "loadQueryPage";
+	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextPageOf=queryGetCount";
 	document.forms[0].submit();
 }
 function getPatientdata()
 {
-	document.forms[0].action="AddNewQueryToWorkflow.do?addNewForwardTo=queryWizard&forwardTo=queryWizard&addNewFor=principalInvestigator";
+	document.forms[0].forwardTo.value= "loadQueryPage";
+	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextPageOf=queryWizard";
 	document.forms[0].submit();
 }
 //-->
@@ -314,14 +314,30 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 
 <html:hidden property="operation" styleId="operation" value="${requestScope.operation}"/>
 <html:hidden property="id" styleId="id" value="${requestScope.id}"/>
-<select name="queryId" id="queryId" style="display:none">
+<select name="queryId" id="queryId"  style="display:none">
+	<logic:notEmpty name="workflowForm" property="queryId">
+	<logic:iterate id="singleQueryId" name="workflowForm" property="queryId" indexId="queryIndex" >
+		<OPTION VALUE="${workflowForm.queryId[queryIndex]}">${workflowForm.queryId[queryIndex]}</OPTION>
+	</logic:iterate>
+	</logic:notEmpty>
 </select>
-<select name="queryTitle" id="queryTitle" style="display:none">
+<select name="queryTitle" id="queryTitle"  style="display:none">
+	<logic:notEmpty name="workflowForm" property="queryId">
+	<logic:iterate id="singleQueryId" name="workflowForm" property="queryTitle" indexId="queryIndex" >
+		<OPTION VALUE="${workflowForm.queryTitle[queryIndex]}">${workflowForm.queryTitle[queryIndex]}</OPTION>
+	</logic:iterate>
+	</logic:notEmpty>
 </select>
-<select name="queryType" id="queryType" style="display:none">
+<select name="queryType" id="queryType"  style="display:none">
+<logic:notEmpty name="workflowForm" property="queryId">
+	<logic:iterate id="singleQueryId" name="workflowForm" property="queryType" indexId="queryIndex" >
+		<OPTION VALUE="${workflowForm.queryType[queryIndex]}">${workflowForm.queryType[queryIndex]}</OPTION>
+	</logic:iterate>
+	</logic:notEmpty>
 </select>
+<html:hidden property="forwardTo"/>
 
- <input type="button" name="btn" id="btn" onclick="updateUI()" style="display:none">
+ <input type="button" name="btn" id="btn" onclick="updateUI()">
 
 <table width="99%" border="0" valign="top"  cellpadding="0" cellspacing="0" style="padding-left:10px;">
 <tr>
@@ -400,12 +416,12 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 					<tr>
 						<td width="12" valign="middle">&nbsp;</td>
 						<td width="10" valign="middle"><img src="images/advancequery/ic_arrow_small.gif" alt=""  align="absmiddle"></td>
-						 <td valign="middle"><a href="javascript:showNextReleaseMsg()" class="blacklink"><bean:message key="query.getcount"/></a></td>
+						 <td valign="middle"><a href="javascript:getCountdata()" class="blacklink"><bean:message key="query.getcount"/></a></td>
 					</tr>
 					<tr>
 						<td width="12" valign="middle">&nbsp;</td>
 						<td width="10" valign="middle"><img src="images/advancequery/ic_arrow_small.gif" alt=""  align="absmiddle"></td>
-						<td valign="middle"><a href="javascript:showNextReleaseMsg()" class="blacklink"><bean:message key="query.getpatientdata"/></a></td>
+						<td valign="middle"><a href="javascript:getPatientdata()" class="blacklink"><bean:message key="query.getpatientdata"/></a></td>
 					</tr>
 					<tr>
 						<td valign="middle">&nbsp;</td>
@@ -573,11 +589,46 @@ function setButtons()
 	var buttonStatus=document.getElementById("buttonStatus");
 
 
-		buttonStatus.innerHTML= '<table><tr><td align="left" width="70"><img align="absmiddle" src="images/advancequery/b_union_inact.gif" alt="Union" width="60" height="23" border="0"></td>'+
-      ' <td width="106" align="left"><img align="absmiddle" src="images/advancequery/b_intersection_inact.gif" alt="Intersection" width="96" height="23" border="0"></td><td width="73" align="left"><img align="absmiddle" src="images/advancequery/b_minus_inact.gif" alt="Minus" width="63" height="23" border="0"></td></tr></table>';
+		buttonStatus.innerHTML= '<table><tr><td align="left" width="70"><img align="absmiddle" src="images/advancequery/b_union_inact.gif" alt="Union" width="60" height="23" border="0">'+
+      ' <td width="106" align="left"><img align="absmiddle" src="images/advancequery/b_intersection_inact.gif" alt="Intersection" width="96" height="23" border="0"></td><td width="73" align="left"><img align="absmiddle" src="images/advancequery/b_minus_inact.gif" alt="Minus" width="63" height="23" border="0"></td> </tr></table>';
 	
 
 
 }setButtons();
+
+function updateOpenerUI() 
+{ 
+  if(document.getElementById)
+	{ 
+         elm =document.getElementById("btn");
+     } 
+
+	if (document.all)
+		{
+			elm.fireEvent('onclick');
+		}
+	else
+		{
+		var clickEvent = window.document.createEvent('MouseEvent');
+        clickEvent.initEvent('click', false, true);
+        elm.dispatchEvent(clickEvent);
+		}
+ }updateOpenerUI();
+ function forwardToWorkflow()
+{
+	
+	<%		
+		String id =(String) request.getAttribute("worflowId");
+	%>
+	
+	if(<%=id%>!=null)
+	{
+		
+		document.forms[0].action ="SearchObject.do?pageOf=pageOfWorkflow&id="+<%=id%>;
+		document.forms[0].submit();
+
+	}
+}forwardToWorkflow();
+ 
 </script>
 </body>
