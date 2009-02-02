@@ -233,6 +233,7 @@ public class SearchMappedPVsAction extends Action
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		int displayPVCount=1;
+		boolean isMsgDisplayed=false;
 		int count=Integer.parseInt(VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
 		if (vocabMappings != null)
 		{
@@ -258,9 +259,14 @@ public class SearchMappedPVsAction extends Action
 					else
 					{
 						html.append(bizLogic.getMessage(count));
-						break;
+						isMsgDisplayed=true;
+						break;//break inner loop
 					}
 
+				}
+				if(isMsgDisplayed)
+				{
+					break; //break outer loop
 				}
 			}
 		}
