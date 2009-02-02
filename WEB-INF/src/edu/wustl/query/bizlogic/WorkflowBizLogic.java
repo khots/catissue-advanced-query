@@ -2,9 +2,6 @@
 package edu.wustl.query.bizlogic;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -226,5 +223,17 @@ public class WorkflowBizLogic extends DefaultBizLogic
 		}
 		return true;
 
+	}
+	
+	public void addWorkflowItem(Long workflowId,IQuery query,SessionDataBean sessionDataBean) throws DAOException, UserNotAuthorizedException, BizLogicException
+	{
+		DefaultBizLogic defaultBizLogic=new DefaultBizLogic();
+		Workflow workflow=(Workflow)defaultBizLogic.retrieve(Workflow.class.getName(), workflowId);
+		WorkflowItem workflowItem = new WorkflowItem();
+		workflowItem.setQuery(query);
+		List workflowItemList=workflow.getWorkflowItemList();
+		workflowItemList.add(workflowItem);
+		workflow.setWorkflowItemList(workflowItemList);	
+		defaultBizLogic.update(workflow, null, Constants.HIBERNATE_DAO, sessionDataBean);//.update(DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO),  workflow, null, sessionDataBean);
 	}
 }
