@@ -27,7 +27,7 @@ public abstract class AbstractQueryUIManager {
 	 */
 	public int searchQuery(String option) throws QueryModuleException {
 		session.removeAttribute(Constants.HYPERLINK_COLUMN_MAP);
-		QueryModuleError status = QueryModuleError.SUCCESS;
+		//QueryModuleError status = QueryModuleError.SUCCESS;
 		int query_exec_id = 0;
 		
 
@@ -60,5 +60,5 @@ public abstract class AbstractQueryUIManager {
 	 * This method updates the query object with default conditions
 	 * @throws QueryModuleException
 	 */
-	abstract public void updateQuery() throws QueryModuleException;
+	abstract public void updateQueryForValidation() throws QueryModuleException;
 }
