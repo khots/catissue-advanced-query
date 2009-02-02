@@ -704,4 +704,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String MY_QUERIESFOR_DASHBOARD = "myQueriesforDashboard";
 	public static final String WORKFLOW_NAME = "worflowName";
 	public static final String WORKFLOW_ID = "worflowId";
+	public static final String FORWARD_TO_HASHMAP = "forwardToHashMap";
+	public static final String NEXT_PAGE_OF = "nextPageOf";
+	public static final String QUERYWIZARD = "queryWizard";
+	public static final String PROJECT_NAME_VALUE_BEAN = "projectsNameValueBeanList";
+	public static final String WORFLOW_ID = "worflowId";
+	public static final String WORFLOW_NAME = "worflowName";
 }
