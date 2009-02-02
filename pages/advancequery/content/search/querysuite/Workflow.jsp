@@ -25,7 +25,7 @@ function MM_preloadImages() { //v3.0
 function showPopUp(pageOf)
 {
 	var url='QueryAction.do?pageOf='+pageOf+'&queryId=queryId&queryTitle=queryTitle&queryType=queryType';
-	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select queries', 'width=930px,height=430px,center=1,resize=0,scrolling=1');
+	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select queries', 'width=930px,height=430px,center=1,resize=1,scrolling=1');
 }
 
 function updateUI()
