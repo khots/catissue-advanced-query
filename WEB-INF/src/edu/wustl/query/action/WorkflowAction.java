@@ -51,6 +51,10 @@ public class WorkflowAction extends Action
 			request.setAttribute("id", request.getParameter("id"));
 		}
 		setProjectList(request);
+		if(request.getAttribute(Constants.WORKFLOW_ID)!=null)
+		{
+			request.setAttribute(Constants.WORKFLOW_ID,  request.getAttribute(Constants.WORKFLOW_ID));
+		}
 		return mapping.findForward(Constants.SUCCESS);
 	}
 
