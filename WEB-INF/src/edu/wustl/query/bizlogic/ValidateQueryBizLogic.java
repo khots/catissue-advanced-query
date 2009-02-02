@@ -133,8 +133,7 @@ public class ValidateQueryBizLogic
 	{ 
 		HttpSession session = request.getSession();
 		AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(ValidateQueryBizLogic.class, request, query);
-		//queryUIManager.updateQuery();
-		
+		queryUIManager.updateQueryForValidation();
 		IQueryGenerator queryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
 		String selectSql=null;
 		try
