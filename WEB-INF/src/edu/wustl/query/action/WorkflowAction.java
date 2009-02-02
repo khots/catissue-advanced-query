@@ -37,18 +37,18 @@ public class WorkflowAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		if (request.getParameter(Constants.OPERATION) != null && request.getParameter("id") != null
-				&& (!request.getParameter("id").equals("")))
+				&& (!request.getParameter(Constants.ID).equals("")))
 		{
 
-			request.setAttribute(Constants.OPERATION, "edit");
+			request.setAttribute(Constants.OPERATION, edu.wustl.common.util.global.Constants.EDIT);
 		}
 		else
 		{
 			request.setAttribute(Constants.OPERATION, Constants.ADD);
 		}
-		if (request.getParameter("id") != null && (!request.getParameter("id").equals("")))
+		if (request.getParameter(Constants.ID) != null && (!request.getParameter(Constants.ID).equals("")))
 		{
-			request.setAttribute("id", request.getParameter("id"));
+			request.setAttribute(Constants.ID, request.getParameter(Constants.ID));
 		}
 		setProjectList(request);
 		if(request.getAttribute(Constants.WORKFLOW_ID)!=null)
@@ -69,7 +69,7 @@ public class WorkflowAction extends Action
 
 		if (projectList != null)
 		{
-			request.setAttribute("projectsNameValueBeanList", projectList);
+			request.setAttribute(Constants.PROJECT_NAME_VALUE_BEAN, projectList);
 		}
 	}
 }

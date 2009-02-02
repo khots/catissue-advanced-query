@@ -225,6 +225,17 @@ public class WorkflowBizLogic extends DefaultBizLogic
 
 	}
 	
+	/**
+	 * This method adds the given query to workflow.
+	 * Workflow to which query is to be added is identified
+	 * by workflow id   
+	 * @param workflowId =workflow id
+	 * @param query=query to be added in workflow
+	 * @param sessionDataBean session related data 
+	 * @throws DAOException 
+	 * @throws UserNotAuthorizedException
+	 * @throws BizLogicException
+	 */
 	public void addWorkflowItem(Long workflowId,IQuery query,SessionDataBean sessionDataBean) throws DAOException, UserNotAuthorizedException, BizLogicException
 	{
 		DefaultBizLogic defaultBizLogic=new DefaultBizLogic();
