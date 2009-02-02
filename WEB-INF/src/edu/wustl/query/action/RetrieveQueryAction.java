@@ -152,7 +152,7 @@ public class RetrieveQueryAction extends Action
 			Collection<IParameterizedQuery> sharedQueryCollection) throws CSException,
 			CSObjectNotFoundException
 	{
-		String message;
+		String message = null;
 		if (setQueryCount()== 0)
 		{
 			saveQueryForm.setParameterizedQueryCollection(new ArrayList<IParameterizedQuery>());
@@ -179,8 +179,9 @@ public class RetrieveQueryAction extends Action
 			else
 			{
 				saveQueryForm.setParameterizedQueryCollection(retrievePrameterizedQueries());
+				setPagiantion(request,request.getParameter("requestFor"),saveQueryForm);
 			}
-			message = String.valueOf(saveQueryForm.getParameterizedQueryCollection().size());
+			message = String.valueOf(setQueryCount());
 		
 		}
 		return message;
@@ -278,7 +279,8 @@ public class RetrieveQueryAction extends Action
 			actionForward = actionMapping.findForward(Constants.DISPLAY_QUERIES_IN_POPUP);
 		}
 		else if(pageOf!= null&& (Constants.PUBLIC_QUERY_PROTECTION_GROUP.equals(pageOf)||
-				Constants.PAGE_OF_MY_QUERIES.equals(pageOf)))
+				Constants.PAGE_OF_MY_QUERIES.equals(pageOf))
+				||Constants.MY_QUERIESFOR_DASHBOARD.equals(pageOf))
 		{
 			actionForward = actionMapping.findForward(Constants.MY_QUERIES);
 		}
