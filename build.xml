@@ -22,6 +22,7 @@
 	<property name="cobertura.dir" value="${target.dir}/reports/coverage" />
 	<property name="report.dir" value="${base.dir}/WEB-INF" />
 	<property name="test.dir" value="${base.dir}/WEB-INF/test" />
+	<property name="test.lib" value="${base.dir}/WEB-INF/test/lib" />
 	<property name="test.class.dir" value="${base.dir}/WEB-INF/classes" />
 	<property name="junit.report.dir" value="${test.dir}/report" />
 	<!-- csm related properties -->
@@ -763,7 +764,7 @@
 		      		<formatter type="xml"/>
 		      		<batchtest todir="${junit.report.dir}">
 		      			<fileset dir="${test.dir}">
-							<include name="**/QueryTestSuite.java"/>
+		      				<include name="**/QueryTestAll.java"/>
 					    </fileset>
 					</batchtest>
 
@@ -775,6 +776,9 @@
 						 <fileset dir="${lib.dir}">
 			                  <include name="*.jar"/>
 						 </fileset>
+						<fileset dir="${test.lib}">
+							  <include name="*.jar" />
+					    </fileset>
 					</classpath>
 
 		      		<classpath refid="cobertura.classpath" />

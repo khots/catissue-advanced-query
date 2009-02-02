@@ -266,38 +266,61 @@ public class ASynchronousQueriesTestCases extends TestCase
 	
 	
 	/**
-	 * Fire a Query which will return 0 records
-	 * Get Count
-	 * Should be zero
+	 * Fire 2 or more queries simultaneously
 	 */
-	/*public void testExecuteQueriesASynchronously()
+	public void testExecuteQueriesASynchronously()
 	{
-		int queryExecId = -1;
-		int noOfRecords = 0;
-		CiderQuery ciderQueryObj = new CiderQuery();
+		int queryExecId1 = -1;
+		int queryExecId2 = -1;
+		int noOfRecords1 = 0;
+		int noOfRecords2 = 0;
 		CiderQueryManager manager = new CiderQueryManager();
+		IQuery query = null;
+		
 		try
 		{
-			ciderQueryObj.setProjectId(-1L);
+			System.out.println("QUERY - PERSON UPI NOT NULL");
+			
+			query = Utility.getQuery(fileName1);
+			
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
 			
 			// IQuery query = QueryUtility.getQuery(1L);
 			// ciderQueryObj.setQuery(query);
 			
-			IQuery query = new ParameterizedQuery();
-			query.setId(1L);
-			ciderQueryObj.setQuery(query);
+			queryExecId1 = manager.execute(ciderQueryObj);
+			queryExecId2 = manager.execute(ciderQueryObj);
+			System.out.println("QUERY EXECUTION ID1 :::: "+queryExecId1);
+			System.out.println("QUERY EXECUTION ID2 :::: "+queryExecId2);
 			
-			queryExecId = manager.execute(ciderQueryObj);
+			Count count1 = manager.getQueryCount(queryExecId1);
+			Count count2 = manager.getQueryCount(queryExecId2);
 			
-			Count count = manager.getQueryCount(queryExecId);
-			noOfRecords = count.getCount();
-			
-			if(noOfRecords != 0)
+			while(!count1.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
 			{
-				fail("No. of Records returned > 0....");
+				if(count1.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+				{
+					fail("QUERY CANCELLED.......");
+				}
+				
+				count1 = manager.getQueryCount(queryExecId1);
 			}
 			
-			System.out.println("No of Records :: "+noOfRecords);
+			while(!count2.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
+			{
+				if(count2.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+				{
+					fail("QUERY CANCELLED.......");
+				}
+				
+				count2 = manager.getQueryCount(queryExecId2);
+			}
+			
+			noOfRecords1 = count1.getCount();
+			noOfRecords2 = count2.getCount();
+			
+			System.out.println("No of Records 1 :: "+noOfRecords1);
+			System.out.println("No of Records 2 :: "+noOfRecords2);
 			System.out.println("TEST CASE EXECUTED.....");
 		}
 		catch (Exception e)
@@ -305,6 +328,5 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
 		}
-	}*/
-
+	}
 }
