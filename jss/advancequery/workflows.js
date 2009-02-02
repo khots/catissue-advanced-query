@@ -346,7 +346,7 @@ function enableButtons()
 			buttonStatus.innerHTML='';
 			// buttonStatus.removeChild(buttonStatus.childNodes[0]);
 		}
-		buttonStatus.innerHTML="<td align='left' width='70'><a href='javascript:unionQueries()'><img align='absmiddle' src='images/advancequery/b_union-copy.gif' alt='Union' width='60' height='23' border='0'></a></td><td width='106' align='left'><a href='javascript:intersectQueries()'><img align='absmiddle' src='images/advancequery/b_intersection.gif' alt='Intersection' width='96' height='23' border='0'></a></td><td width='73' align='left'><a href='javascript:minusQueries()'><img align='absmiddle' src='images/advancequery/b_minus.gif' alt='Minus' width='63' height='23' border='0'></a></td>";
+		buttonStatus.innerHTML="<table><tr><td align='left' width='70'><a href='javascript:unionQueries()'><img align='absmiddle' src='images/advancequery/b_union-copy.gif' alt='Union' width='60' height='23' border='0'></a></td><td width='106' align='left'><a href='javascript:intersectQueries()'><img align='absmiddle' src='images/advancequery/b_intersection.gif' alt='Intersection' width='96' height='23' border='0'></a></td><td width='73' align='left'><a href='javascript:minusQueries()'><img align='absmiddle' src='images/advancequery/b_minus.gif' alt='Minus' width='63' height='23' border='0'></a></td></tr></table>";
 		//buttonStatus.removeChild(document.getElementById("buttonStatusDiv"));
 		//buttonStatus.appendChild(createTextElement("<div id='buttonStatusDiv'><td align='left' width='70'><a href='javascript:unionQueries()'><img align='absmiddle' src='images/advancequery/b_union-copy.gif' alt='Union' width='60' height='23' border='0'></a></td><td width='106' align='left'><a href='javascript:intersectQueries()'><img align='absmiddle' src='images/advancequery/b_intersection.gif' alt='Intersection' width='96' height='23' border='0'></a></td><td width='73' align='left'><a href='javascript:minusQueries()'><img align='absmiddle' src='images/advancequery/b_minus.gif' alt='Minus' width='63' height='23' border='0'></a></td></div>"));
 	}
@@ -368,7 +368,7 @@ function disableButtons()
 			buttonStatus.innerHTML='';
 			// buttonStatus.removeChild(buttonStatus.childNodes[0]);
 		}
-			buttonStatus.innerHTML="<td align='left' width='70'><img align='absmiddle' src='images/advancequery/b_union_inact.gif' alt='Union' width='60' height='23' border='0'></td><td width='106' align='left'><img align='absmiddle' src='images/advancequery/b_intersection_inact.gif' alt='Intersection' width='96' height='23' border='0'></td><td width='73' align='left'><img align='absmiddle' src='images/advancequery/b_minus_inact.gif' alt='Minus' width='63' height='23' border='0'></td>";
+			buttonStatus.innerHTML="<table><tr><td align='left' width='70'><img align='absmiddle' src='images/advancequery/b_union_inact.gif' alt='Union' width='60' height='23' border='0'></td><td width='106' align='left'><img align='absmiddle' src='images/advancequery/b_intersection_inact.gif' alt='Intersection' width='96' height='23' border='0'></td><td width='73' align='left'><img align='absmiddle' src='images/advancequery/b_minus_inact.gif' alt='Minus' width='63' height='23' border='0'></td></tr></table>";
 		
 	}
 }

@@ -420,25 +420,11 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 					<td valign="middle">
 						<table  border="0" cellspacing="0" cellpadding="0" valign="middle">
 							<tr>
-							<!--
-							 <td align="left" width="70"><a href="javascript:unionQueries()"><img align="absmiddle" src="images/advancequery/b_union-copy.gif" alt="Union" width="60" height="23" border="0">
-							  </a></td>
-							  <td width="106" align="left"><a href="javascript:intersectQueries()"><img align="absmiddle" src="images/advancequery/b_intersection.gif" alt="Intersection" width="96" height="23" border="0">
-							  </a></td>
-							  <td width="73" align="left"><a href="javascript:minusQueries()"><img align="absmiddle" src="images/advancequery/b_minus.gif" alt="Minus" width="63" height="23" border="0">
-							  </a></td>
-							-->
+							<td>
 							<div id="buttonStatus">
-							<!--
-							   <td align="left" width="70"><img align="absmiddle" src="images/advancequery/b_union_inact.gif" alt="Union" width="60" height="23" border="0">
-							  </a></td>
-							  <td width="106" align="left"><img align="absmiddle" src="images/advancequery/b_intersection_inact.gif" alt="Intersection" width="96" height="23" border="0">
-							  </a></td>
-							  <td width="73" align="left"><img align="absmiddle" src="images/advancequery/b_minus_inact.gif" alt="Minus" width="63" height="23" border="0">
-							  </a></td>
-							-->
+
 							</div>
-							
+							</td>
 							</tr>
 						</table>
 					</td>
@@ -587,8 +573,8 @@ function setButtons()
 	var buttonStatus=document.getElementById("buttonStatus");
 
 
-		buttonStatus.innerHTML= '<td align="left" width="70"><img align="absmiddle" src="images/advancequery/b_union_inact.gif" alt="Union" width="60" height="23" border="0"></td>'+
-      ' <td width="106" align="left"><img align="absmiddle" src="images/advancequery/b_intersection_inact.gif" alt="Intersection" width="96" height="23" border="0"></td><td width="73" align="left"><img align="absmiddle" src="images/advancequery/b_minus_inact.gif" alt="Minus" width="63" height="23" border="0"></td>';
+		buttonStatus.innerHTML= '<table><tr><td align="left" width="70"><img align="absmiddle" src="images/advancequery/b_union_inact.gif" alt="Union" width="60" height="23" border="0"></td>'+
+      ' <td width="106" align="left"><img align="absmiddle" src="images/advancequery/b_intersection_inact.gif" alt="Intersection" width="96" height="23" border="0"></td><td width="73" align="left"><img align="absmiddle" src="images/advancequery/b_minus_inact.gif" alt="Minus" width="63" height="23" border="0"></td></tr></table>';
 	
 
 
