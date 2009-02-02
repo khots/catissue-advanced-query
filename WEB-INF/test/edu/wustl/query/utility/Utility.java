@@ -4,6 +4,8 @@ package edu.wustl.query.utility;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -14,6 +16,8 @@ import org.jboss.naming.NamingContextFactory;
 import org.jnp.server.NamingBeanImpl;
 
 import com.ibm.db2.jcc.DB2DataSource;
+
+import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 
@@ -89,6 +93,37 @@ public class Utility
 			System.out.println("Application Initilization fail" + ex.getMessage());
 			ex.printStackTrace();
 		}
+	}
+	
+	/**
+	 * To get DeSerialized version of IQuery
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 */
+	public static IQuery getQuery(String fileName) throws IOException, ClassNotFoundException
+	{
+		InputStream is = null;
+		ObjectInputStream in = null;
+		IQuery query = null;
+
+		try
+		{
+			is = Utility.class.getClassLoader()
+			.getResourceAsStream(fileName);
+			// fis = new FileInputStream(fileName);
+			in = new ObjectInputStream(is);
+			query = (IQuery) in.readObject();
+			in.close();
+		}
+		catch (IOException ex)
+		{
+			throw ex;
+		}
+		catch (ClassNotFoundException ex)
+		{
+			throw ex;
+		}
+		return query;
 	}
 
 }

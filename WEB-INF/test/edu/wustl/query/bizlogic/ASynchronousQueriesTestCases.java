@@ -1,16 +1,12 @@
 
 package edu.wustl.query.bizlogic;
 
-import java.io.InputStream;
-import java.util.Properties;
-
 import junit.framework.TestCase;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.cider.query.CiderQuery;
 import edu.wustl.cider.querymanager.CiderQueryManager;
 import edu.wustl.common.query.impl.PassOneXQueryGenerator;
-import edu.wustl.common.query.impl.QueryUtility;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
@@ -27,23 +23,20 @@ public class ASynchronousQueriesTestCases extends TestCase
 {
 
 	public static PassOneXQueryGenerator xQueryGenerator = new PassOneXQueryGenerator();
-	public static String queryGeneratorClassName = null;
-	
-	public static InputStream is = ASynchronousQueriesTestCases.class.getClassLoader()
-	.getResourceAsStream("query.properties");
-	
+	public static String fileName1 = "query_serialized.xml";
+	public static String fileName2 = "query_UPI.xml";//"query_invalid_DOB.xml"; //"query_UPI.xml";
 	static
 	{
 		Logger.configure();
 		try
 		{
-			// EntityCache.getInstance();
+			EntityCache.getInstance();
 			Utility.initTest();
-			Properties props = new Properties();
-   	        // props.load(new FileInputStream("query.properties"));
-			props.load(is);
-   	        queryGeneratorClassName = props.getProperty("query.queryGeneratorClassName");
-   	        Variables.queryGeneratorClassName = queryGeneratorClassName;
+			/**
+			 * Indicating - Do not LOG XQueries
+			 */
+			Variables.isExecutingTCFramework = true;
+   	        Variables.queryGeneratorClassName = "edu.wustl.common.query.impl.PassOneXQueryGenerator";
 		}
 		catch (Exception e)
 		{
@@ -92,31 +85,38 @@ public class ASynchronousQueriesTestCases extends TestCase
 	{
 		int queryExecId = -1;
 		int noOfRecords = 0;
-		int expectedNoOfRecords = 0;
-		CiderQuery ciderQueryObj = new CiderQuery();
 		CiderQueryManager manager = new CiderQueryManager();
+		IQuery query = null;
+		
 		try
 		{
 			System.out.println("QUERY - PERSON UPI NOT NULL");
-			ciderQueryObj.setProjectId(-1L);
+			
+			query = Utility.getQuery(fileName1);
+			
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
 			
 			// IQuery query = QueryUtility.getQuery(1L);
 			// ciderQueryObj.setQuery(query);
 			
-			IQuery query = new ParameterizedQuery();
-			query.setId(1L);
-			ciderQueryObj.setQuery(query);
-			
 			queryExecId = manager.execute(ciderQueryObj);
 			
+			System.out.println("QUERY EXECUTION ID :::: "+queryExecId);
+		
 			Count count = manager.getQueryCount(queryExecId);
-			noOfRecords = count.getCount();
 			
-			if(noOfRecords != expectedNoOfRecords)
+			while(!count.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
 			{
-				fail("Actual & expected no. of records DO NOT MATCH");
+				if(count.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+				{
+					fail("QUERY CANCELLED.......");
+				}
+				
+				count = manager.getQueryCount(queryExecId);
 			}
 			
+			noOfRecords = count.getCount();
+
 			System.out.println("No of Records :: "+noOfRecords);
 			System.out.println("TEST CASE EXECUTED.....");
 		}
@@ -137,56 +137,75 @@ public class ASynchronousQueriesTestCases extends TestCase
 	  */
 	public void testCancelQuery()
 	{
-			// String xQuery = null;
 		int queryExecId = -1;
 		int noOfRecords = 0;
-		CiderQuery ciderQueryObj = new CiderQuery();
 		CiderQueryManager manager = new CiderQueryManager();
-		Count count = null;
+		IQuery query = null;
 		
 		try
 		{
-			// System.out.println("QUERY - PERSON UPI NOT NULL");
-			System.out.println("QUERY - ON PERSON AND DEMOGRAPHICS - DOB > 10/10/1980");
-				// xQuery = "select personUpi_1 Column0 from xmltable(' for $Person_1 in db2-fn:xmlcolumn(\"DEMOGRAPHICS.XMLDATA\")/Person where exists($Person_1/personUpi)  return <return><Person_1>{$Person_1}</Person_1></return>' columns personUpi_1 varchar(1000) path 'Person_1/Person/personUpi')";
-			ciderQueryObj.setProjectId(-1L);
-				// ciderQueryObj.setQueryString(xQuery);
-			IQuery query = QueryUtility.getQuery(1L);
-			ciderQueryObj.setQuery(query);
+			System.out.println("QUERY - PERSON UPI NOT NULL");
 			
-//					IQuery query = new ParameterizedQuery();
-//					query.setId(1L);
-//					ciderQueryObj.setQuery(query);
+			query = Utility.getQuery(fileName1);
 			
-			Variables.temp = 4;
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			
+			// IQuery query = QueryUtility.getQuery(1L);
+			// ciderQueryObj.setQuery(query);
+			
 			queryExecId = manager.execute(ciderQueryObj);
 			
-			count = manager.getQueryCount(queryExecId);
-			
-			Thread.sleep(5000);
-			manager.cancel(queryExecId);
-			
-			while(!count.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
+			System.out.println("QUERY EXECUTION ID :::: "+queryExecId);
+		
+			for(int i=0; i<20000; i++)
 			{
-				if(count.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+				for(int j=0; j<50000; j++)
 				{
-					System.out.println("No of Records :: "+count.getCount());
-					fail("QUERY CANCELLED.......");
+					// do nothing
+				}
+			}
+			
+			manager.cancel(queryExecId);
+			System.out.println("After manager.cancel()....");
+			Count count = manager.getQueryCount(queryExecId);
+			
+			while(!count.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+			{
+				if(count.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
+				{
+					fail("QUERY COMPLETED.......");
 				}
 				
 				count = manager.getQueryCount(queryExecId);
 			}
 			
 			noOfRecords = count.getCount();
-			
-			System.out.println("No of Records :: "+noOfRecords);
-			System.out.println("TEST CASE EXECUTED.....");
+
+			if(count.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+			{	
+				System.out.println("QUERY CANCELLED....");
+				assertTrue("QUERY CANCELLED....", true);
+			}
+			else if(count.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
+			{
+				System.out.println("QUERY COMPLETED.....");
+				fail("QUERY COMPLETED.....");
+			}
+			else if(count.getStatus().equalsIgnoreCase(Constants.QUERY_IN_PROGRESS))
+			{
+				System.out.println("QUERY IN PROGRESS.....");
+				fail("QUERY IN PROGRESS.....");
+			}
 		}
 		catch (Exception e)
 		{
+			fail("AN EXCEPTION HAS OCCURRED........");
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
 		}
+		
+		System.out.println("No of Records :: "+noOfRecords);
+		System.out.println("TEST CASE EXECUTED.....");
 	}
 	
 	/**
@@ -198,31 +217,45 @@ public class ASynchronousQueriesTestCases extends TestCase
 	{
 		int queryExecId = -1;
 		int noOfRecords = 0;
-		CiderQuery ciderQueryObj = new CiderQuery();
 		CiderQueryManager manager = new CiderQueryManager();
+		IQuery query = null;
+		
 		try
 		{
-			ciderQueryObj.setProjectId(-1L);
+			System.out.println("QUERY - PERSON UPI LESS THAN 1");
+			
+			query = Utility.getQuery(fileName2);
+			
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
 			
 			// IQuery query = QueryUtility.getQuery(1L);
 			// ciderQueryObj.setQuery(query);
 			
-			IQuery query = new ParameterizedQuery();
-			query.setId(1L);
-			ciderQueryObj.setQuery(query);
-			
 			queryExecId = manager.execute(ciderQueryObj);
 			
+			System.out.println("QUERY EXECUTION ID :::: "+queryExecId);
+		
 			Count count = manager.getQueryCount(queryExecId);
-			noOfRecords = count.getCount();
 			
-			if(noOfRecords != 0)
+			while(!count.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
 			{
-				fail("No. of Records returned > 0....");
+				if(count.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+				{
+					fail("QUERY CANCELLED.......");
+				}
+				
+				count = manager.getQueryCount(queryExecId);
 			}
 			
+			noOfRecords = count.getCount();
+
 			System.out.println("No of Records :: "+noOfRecords);
-			System.out.println("TEST CASE EXECUTED.....");
+			
+			if(noOfRecords > 0)
+			{
+				fail("NO OF RECORDS > 0");
+			}
+			System.out.println("SUCCESSFULL....................................");
 		}
 		catch (Exception e)
 		{
