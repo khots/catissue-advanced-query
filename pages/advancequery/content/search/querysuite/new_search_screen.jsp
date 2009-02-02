@@ -28,24 +28,9 @@ MM_reloadPage(true);
 </head>
 <body onLoad="MM_preloadImages('images/advancequery/m_home_act.gif')">
 <script type="text/javascript" src="jss/advancequery/wz_tooltip.js"></script>
-<div id="welcome_links">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="375" align="left">&nbsp;</td>
-    <td align="left" nowrap class="small_txt_black">Welcome &lt;First Name&gt; &lt;Last Name&gt; </td>
-    <td align="right" nowrap><a href="#" class="greylink">Report a Problem</a> <span class="content_txt">|</span> <a href="#" class="greylink">Contact Us</a> <span class="content_txt">|</span> <a href="#" class="greylink">Help</a>&nbsp;<span class="content_txt">|</span>&nbsp;<a href="#" class="greylink">Logout</a>&nbsp;</td>
-  </tr>
-</table>
-</div>
-
 <div class="wrapper">
 
   <table width="100%" border="0" cellpadding="0" cellspacing="0">
-    <tr>
-      <td valign="top">&nbsp;</td>
-      <td height="29" align="right" valign="middle"><a href="#" class="bluelink">User Accounts</a>&nbsp;|&nbsp;<a href="#"><img src="images/advancequery/b_new_search.gif" alt="New Search" width="90" height="23" hspace="0" vspace="3" border="0" align="absmiddle" /></a></td>
-      <td valign="top">&nbsp;</td>
-    </tr>
     <tr>
       <td width="10" valign="top">&nbsp;</td>
       <td valign="top" bgcolor="#FFFFFF"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0"  class="login_box_bg">
@@ -62,18 +47,24 @@ MM_reloadPage(true);
                   <td align="left" valign="top" ><table border="0" cellpadding="4" cellspacing="0">
                     <tr bgcolor="#FFFFFF">
                       <td width="15" valign="top" class="content_txt"><img src="images/advancequery/ic_number.gif" alt="Number" width="15" height="16"></td>
-                      <td height="25" valign="top" class="content_txt"><a href="QueryGetCount.do" class="bluelink"><b>Get the number of patients that satisfy my eligibility criteria.</b></a><br>
+                      <td height="30" valign="top" class="content_txt"><a href="QueryGetCount.do" class="bluelink"><b>Get the number of patients that satisfy my eligibility criteria.</b></a><br>
                       Description: </td>
+					  <td  height="30">
+					  </td>
                     </tr>
                     <tr bgcolor="#FFFFFF" class="tr_color_lgrey">
                       <td valign="top" class="content_txt"><img src="images/advancequery/ic_patient_data.gif" alt="Patient Data" width="15" height="16"></td>
-                      <td height="25" valign="top" class="content_txt"><a href="#" onClick="(alert('This feature is currently not available..!'))" class="bluelink"><b>Get individual patient level clinical information for my project.</b></a><br>
+                      <td height="30" valign="top" class="content_txt"><a href="#" onClick="(alert('This feature is currently not available..!'))" class="bluelink"><b>Get individual patient level clinical information for my project.</b></a><br>
                         Description: </td>
+						  <td  height="30">
+						  </td>
                     </tr>
                     <tr bgcolor="#FFFFFF">
                       <td valign="top" class="content_txt"><img src="images/advancequery/ic_worflow.gif" alt="Workflow" width="15" height="16"></td>
-                      <td height="25" valign="top" class="content_txt"><a href="QueryWorkflowWizard.do" class="bluelink"><b>Define a set of queries for a workflow.</b></a><br>
+                      <td height="30" valign="top" class="content_txt"><a href="QueryWorkflowWizard.do" class="bluelink"><b>Define a set of queries for a workflow.</b></a><br>
                         Description: </td>
+						  <td  height="30">
+						  </td>
                     </tr>
                   </table></td>
                 </tr>
