@@ -701,4 +701,5 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String IS_NEW_QUERY="isNewQuery";
 	/**  Constant for selectedProject */
 	public static final String SELECTED_PROJECT="selectedProject";
+	public static final String MY_QUERIESFOR_DASHBOARD = "myQueriesforDashboard";
 }

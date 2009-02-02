@@ -3,32 +3,36 @@
 <%-- TagLibs --%>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
-<%@ taglib uri="/WEB-INF/c.tld" prefix="c"%>
 
 <%-- Imports --%>
 <%@
 	page language="java" contentType="text/html"
 	import="edu.wustl.query.util.global.Constants, org.apache.struts.Globals"
 %>
+<%@ page language="java" isELIgnored="false"%>
 <%@ page import="org.apache.struts.action.ActionMessages, edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.Constants"%>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/newReleaseMsg.js"></script>
 <script>
-function QueryWizard()
+
+function changeResPerPage(controlId)
 {
-	var rand_no = Math.random();
-	document.forms[0].action='QueryWizard.do?random='+rand_no;
-	document.forms[0].submit();
+	var resultsPerPage=document.getElementById(controlId).value;
+	var url='RetrieveQueryAction.do?pageOf=myQueriesforDashboard&requestFor=nextPage&pageNum=1&numResultsPerPage='+resultsPerPage;
+	document.forms[0].action=url;
+	document.forms[0].submit();	
 }
+
 </script>
-
 <head>
-	
-	<script language="JavaScript" type="text/javascript" src="jss/advancequery/queryModule.js"></script>
-	<link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
-	
+<title>CIDER: Clinical Investigation Data Exploration Repository</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<script type="JavaScript"></script>
+<script type="javascript" src="jss/advancequery/wz_tooltip.js"></script>
+<link href="css/advancequery/workflow.css" rel="stylesheet" type="text/css" />
+<link href="css/advancequery/inside.css" rel="stylesheet" type="text/css" media="screen">
 </head>
-
-<body onunload='closeWaitPage()'>
+<body>
 
 <% 
 boolean mac = false;
@@ -45,61 +49,122 @@ if(mac)
 String message = null; 
 String popupMessage = (String)request.getAttribute(Constants.POPUP_MESSAGE);
 int queryCount = 0;%>
-<html:messages id="messageKey" message="true" >
-<% message = messageKey;    %>
-</html:messages>
-	<html:form styleId='saveQueryForm' action='<%=Constants.FETCH_QUERY_ACTION%>' style="margin:0;padding:0;">
-		<table cellpadding='0' cellspacing='0' border='0' height="500"  align='center' style="width:100%;"> 
-			
-		
-			<tr >
-				<td colspan='5' ><html:errors /></td>
-			</tr>
-			
-			<tr style="height:100%;">
-				<td colspan='5'>
-					<div style="width:100%; height:100%; overflow:auto; " id="searchDiv">
-						<table cellpadding='0' cellspacing='0' border='0' width='99%' class='contentPage' >
-							<c:set var="parameterizedQueryCollection" value="${saveQueryForm.parameterizedQueryCollection}" />
-							<jsp:useBean id="parameterizedQueryCollection" type="java.util.Collection" />
-					
-							<c:forEach items="${parameterizedQueryCollection}" var="parameterizedQuery" varStatus="queries">
-							<jsp:useBean id="parameterizedQuery" type="edu.wustl.common.querysuite.queryobject.IParameterizedQuery" />
-							
-								<tr>
-									<%String target = "executeQuery('"+parameterizedQuery.getId()+"')"; 
-									  String title = parameterizedQuery.getName();
-									  String newTitle = Utility.getQueryTitle(title);
-									  
-									  String tooltip = Utility.getTooltip(title);
-									  String function = "Tip('"+tooltip+"', WIDTH, 700)";
-									  queryCount++;
-									%>
-									
-									<td valign="top" height='20'width='30' style="font-size:1.2em;">
-									  <html:checkbox property="shareQuery" styleId="shareQuery"/>				
-									</td>
 
-									</td>
-									<td  height='20'  style="padding-left:0.7em; font-size:1.1em; font-family:arial; width:92%;">
-										<html:link styleClass='formQueryLink' href='#' onclick='<%=target%>'  onmouseover="<%=function%>" >
-											 <%=newTitle%>
-										</html:link><br/>
-																				
-										<b>Description: &nbsp;</b><c:out value='${parameterizedQuery.description}' />
-									</td>
-									<td valign="center" height='20' align="right">
-										<%target = "deleteQueryPopup('"+parameterizedQuery.getId()+"','"+popupMessage+"')"; %>
-									</td>
-								</tr>
-								<tr><td colspan='3' class="saveQuery">&nbsp;</td></tr>
-							</c:forEach>
-						</table>
-					</div>
+<html:form action="SaveWorkflow">
+<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
+
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="login_box_bg">
+
+			<tr>
+				<table width="100%" border="0" cellspacing="0" cellpadding="4">
+					<tr>
+						<td>
+							<table width="100%" border="0" cellpadding="2" cellspacing="1" bgcolor="#EAEAEA">
+								<tr class="td_bgcolor_grey">
+										<td width="10" height="25" valign="middle" ><input id="selectAllCheckbox"   type="checkbox" name="checkbox8" value="checkbox" onClick="javascript:selectAllCheckboxes()">                 
+										</td>
+
+										<td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
+										<td width="111" valign="middle" class="grid_header_text"><bean:message key="workflow.querytype"/></td>
+										</tr>
+											<div  id="searchDiv">
+													<c:set var="parameterizedQueryCollection" value="${saveQueryForm.parameterizedQueryCollection}" />
+												
+													<c:forEach items="${parameterizedQueryCollection}" var="parameterizedQuery" varStatus="queries">
+													<jsp:useBean id="parameterizedQuery" type="edu.wustl.common.querysuite.queryobject.IParameterizedQuery" />
+													
+
+															<%String target = "executeQuery('"+parameterizedQuery.getId()+"')"; 
+															  String queryId=parameterizedQuery.getId()+"";
+															  String title = parameterizedQuery.getName();
+															  String newTitle = Utility.getQueryTitle(title);
+															  
+															  String tooltip = Utility.getTooltip(title);
+															  String function = "Tip('"+tooltip+"', WIDTH, 700)";
+															  queryCount++;
+															%>
+															<tr bgcolor="#FFFFFF">
+															<td height="25" valign="top">
+																<c:set var="checkboxControl">checkbox_<%=queryCount%></c:set>
+																<jsp:useBean id="checkboxControl" type="java.lang.String"/>
+
+															<html:checkbox property="chkbox" styleId="<%=checkboxControl%>"/>
+															
+															<td height="25" valign="top" class="content_txt" >
+																<%=newTitle%>
+															</td>
+															  <td height="25" valign="top" class="content_txt">Get Count</td>
+															 
+							
+																<c:set var="queryTitleControlId">queryTitleControl_<%=queryCount%></c:set>
+																<jsp:useBean id="queryTitleControlId" type="java.lang.String"/>
+																<html:hidden property="queryTitleControl" styleId="<%=queryTitleControlId%>"
+																value="<%=newTitle%>"/>
+
+																<c:set var="queryIdControl">queryIdControl_<%=queryCount%></c:set>
+																<jsp:useBean id="queryIdControl" type="java.lang.String"/>
+																<html:hidden property="queryIdControl" styleId="<%=queryIdControl%>"
+																value="<%=queryId%>"/>
+
+																
+																<c:set var="queryTypeControl">queryTypeControl_<%=queryCount%></c:set>
+																<jsp:useBean id="queryTypeControl" type="java.lang.String"/>
+																<html:hidden property="queryTypeControl" styleId="<%=queryTypeControl%>"
+																value="Get Count"/>
+
+														</tr>
+													</c:forEach>
+											</div>
+
+									
+									</table>
+							</td>
+						</tr>
+					</table>
+
+			</tr>
+			<tr>
+			<td class="tr_color_lgrey" height="25px">&nbsp;</td>
+			<td class="tr_color_lgrey">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			  <tr colspan="3">
+				<td width="125" align="left" class="content_txt">Show Last:&nbsp;
+															<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}">
+												<html:options collection="resultsPerPageOptions" labelProperty="name" property="value"/>
+											</html:select>
 				</td>
+				<td align="middle">
+													<c:set var="pageOf" value="${requestScope.pageOf}"/>  
+														<jsp:useBean id="pageOf" type="java.lang.String"/>
+
+
+													<c:set var="totalPages" value="${sessionScope.totalPages}"/>  
+														<jsp:useBean id="totalPages" type="java.lang.Integer"/>
+													<c:forEach var="pageCoutner" begin="1" end="${totalPages}">
+															<c:set var="linkURL">
+																RetrieveQueryAction.do?pageOf=<c:out value="${pageOf}"/>&requestFor=nextPage&pageNum=<c:out value="${pageCoutner}"/>
+															</c:set>
+															<jsp:useBean id="linkURL" type="java.lang.String"/>
+															<c:if test="${sessionScope.pageNum == pageCoutner}">
+																	<c:out value="${pageCoutner}"/> 
+															</c:if>
+															<c:if test="${sessionScope.pageNum != pageCoutner}">
+																<a class="bluelink" href="<%=linkURL%>"> 
+																	|<c:out value="${pageCoutner}"/> 
+																</a>
+															</c:if>
+														</c:forEach>
+
+				</td>
+			  <td  align="center" class="content_txt"></td> 
+				
+				</tr>
+			</table>
+			</td>
 			</tr>
 		</table>
-		
-		<html:hidden styleId="queryId" property="queryId" />
-	</html:form>
+
+
+</html:form>
 </body>
+
