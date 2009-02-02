@@ -136,6 +136,7 @@ public class SearchPermissibleValuesAction extends Action
 					{
 					 html.append(bizLogic.getSearchedVocabPVChildAsHTML("srh_" + vocabName,
 							vocabVersion, concept,"srh_"+checkboxId,status));
+					 displayPVCount++;
 					}
 					else
 					{
