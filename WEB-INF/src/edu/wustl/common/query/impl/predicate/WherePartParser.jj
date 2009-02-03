@@ -2,7 +2,7 @@ options
 {
 	STATIC = false;
 	FORCE_LA_CHECK = true;
-	DEBUG_PARSER = true;
+	DEBUG_PARSER = false;
 	//DEBUG_TOKEN_MANAGER = true;
 }
 
@@ -76,7 +76,7 @@ public void parse() throws ParseException:
 {
 	ConditionTree() <EOF>
 	{
-		System.out.println("Condition Tree Parsed Successfully!");	
+		// System.out.println("Condition Tree Parsed Successfully!");	
 	}
 	
 }
