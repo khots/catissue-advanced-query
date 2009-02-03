@@ -13,7 +13,7 @@ public class QueryTestAll extends TestSuite
 	{
 		try
 		{
-			junit.awtui.TestRunner.run(QueryTestAll.class);
+			junit.swingui.TestRunner.run(QueryTestAll.class);
 		}
 		catch(Exception e)
 		{
