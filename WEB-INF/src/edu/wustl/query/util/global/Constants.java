@@ -705,6 +705,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String IS_NEW_QUERY="isNewQuery";
 	/**  Constant for selectedProject */
 	public static final String SELECTED_PROJECT="selectedProject";
+	/**  Constant for Query Exception */
+	public static final String QUERY_EXCEPTION="queryException";
 	public static final String MY_QUERIESFOR_DASHBOARD = "myQueriesforDashboard";
 	public static final String WORKFLOW_NAME = "worflowName";
 	public static final String WORKFLOW_ID = "worflowId";
