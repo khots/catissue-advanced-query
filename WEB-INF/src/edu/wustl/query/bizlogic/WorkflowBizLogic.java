@@ -214,12 +214,12 @@ public class WorkflowBizLogic extends DefaultBizLogic
 				return true;
 			else
 			{
-				throw new DAOException("Workflow with same name already exist");
+				throw new DAOException("Workflow with same name already exists");
 			}
 		}
 		else if (!list.isEmpty())
 		{
-			throw new DAOException("Workflow with same name already exist");
+			throw new DAOException("Workflow with same name already exists");
 		}
 		return true;
 
