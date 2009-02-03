@@ -120,10 +120,11 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			entityName = deCapitalize(entityName);
 		}
 
-		laterPart.append('/').append(entityName);
+		
 
 		if (hasVersion(expression))
 		{
+			laterPart.append('/').append(entityName);
 			String localPredicates = getAllDownstreamPredicates(predicateGenerator, expression, "");
 			laterPart.append('[').append(localPredicates).append(']');
 			variable = passOneForVariables.get(expression);
