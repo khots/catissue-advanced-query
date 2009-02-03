@@ -662,12 +662,16 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String QUERY_EXECUTION_ID = "QUERY_EXECUTION_ID";
     /**  Constant for QUERY_ID **/
     public static final String QRY_ID = "QUERY_ID";
+    /**  Constant for GENERATING_XQUERY **/
+    public static final String GENERATING_XQUERY = "Generating XQuery";
     /**  Constant for QUERY_IN_PROGRESS **/
     public static final String QUERY_IN_PROGRESS = "In Progress";
     /**  Constant for QUERY_COMPLETED **/
     public static final String QUERY_COMPLETED = "Completed";
     /**  Constant for QUERY_CANCELLED **/
     public static final String QUERY_CANCELLED = "Cancelled";
+    /**  Constant for XQUERY_FAILED **/
+    public static final String XQUERY_FAILED = "XQuery Failed";
     /** Constant for separator used in tag values for default conditions **/
     public static final String DEFAULT_CONDITIONS_SEPARATOR="!=!";
     /** Constant for default conditions current date **/
