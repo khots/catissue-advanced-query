@@ -417,8 +417,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 			}
 			else
 			{
-				String childEntityName = deCapitalize(childExpression.getQueryEntity()
-						.getDynamicExtensionsEntity().getName());
+				String childEntityName = eavAssociation.getTargetRole().getName();
 				newPath = new StringBuilder(xpath).append('/').append(childEntityName).toString();
 				entityPaths.put(childExpression, newPath);
 			}
