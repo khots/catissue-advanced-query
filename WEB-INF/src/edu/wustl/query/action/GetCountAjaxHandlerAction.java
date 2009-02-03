@@ -1,5 +1,6 @@
 package edu.wustl.query.action;
 
+import java.io.IOException;
 import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,49 +39,65 @@ public class GetCountAjaxHandlerAction extends Action
 	 */
 	@Override
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) throws Exception
+			HttpServletRequest request, HttpServletResponse response)
 	{
-		boolean abortExecution	= Boolean.valueOf(request.getParameter(Constants.ABORT_EXECUTION));
-		int queryExecID 		= 0;
-		if((Integer.valueOf(request.getParameter(Constants.EXECUTION_ID)))==-1)	//If its the first request
-		{
-			queryExecID =(Integer)request.getSession().getAttribute(Constants.QUERY_EXEC_ID);
-			request.getSession().removeAttribute(Constants.QUERY_EXEC_ID);
-		}
-		else
-		{
-			queryExecID=Integer.valueOf(request.getParameter(Constants.EXECUTION_ID));
-		}
-		//If Abort Execution is not clicked, then only keep on getting the count, else call the cancel()
-		if(!abortExecution)
-		{
-			boolean isNewQuery = Boolean.valueOf(request.getParameter(Constants.IS_NEW_QUERY));
-			if(isNewQuery)
+		try {
+			boolean abortExecution	= Boolean.valueOf(request.getParameter(Constants.ABORT_EXECUTION));
+			int queryExecID 		= 0;
+			if((Integer.valueOf(request.getParameter(Constants.EXECUTION_ID)))==-1)	//If its the first request
 			{
-				//retrieve the Selected Project from the GetCountPopUp.jsp
-				String selectedProject = request.getParameter(Constants.SELECTED_PROJECT);
-				request.setAttribute(Constants.SELECTED_PROJECT,selectedProject);
+				queryExecID =(Integer)request.getSession().getAttribute(Constants.QUERY_EXEC_ID);
+				request.getSession().removeAttribute(Constants.QUERY_EXEC_ID);
+			}
+			else
+			{
+				queryExecID=Integer.valueOf(request.getParameter(Constants.EXECUTION_ID));
+			}
+			//If Abort Execution is not clicked, then only keep on getting the count, else call the cancel()
+			if(!abortExecution)
+			{
+				boolean isNewQuery = Boolean.valueOf(request.getParameter(Constants.IS_NEW_QUERY));
+				if(isNewQuery)
+				{
+					//retrieve the Selected Project from the GetCountPopUp.jsp
+					String selectedProject = request.getParameter(Constants.SELECTED_PROJECT);
+					request.setAttribute(Constants.SELECTED_PROJECT,selectedProject);
+					
+					IQuery query = (IQuery)request.getSession().getAttribute(DAGConstant.QUERY_OBJECT);
+					AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(),request,query);
+					queryExecID	= qUIManager.searchQuery(null);
+				}
 				
-				IQuery query = (IQuery)request.getSession().getAttribute(DAGConstant.QUERY_OBJECT);
-				AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(),request,query);
-				queryExecID	= qUIManager.searchQuery(null);
+				Writer writer = response.getWriter();
+				//retrieve count with query execution id
+				AbstractQueryUIManager qUIManager	= AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
+				Count countObject = qUIManager.getCount(queryExecID);
+
+				//create json object by count object adding Query status, count and execution id
+				JSONObject resultObject = createResultJSON(countObject);
+				response.setContentType("text/xml");
+				writer.write(new JSONObject().put(Constants.RESULT_OBJECT, resultObject).toString());
+			}
+			else
+			{
+				//call cancel() of ciderquerymanager stopping the Query Execution 
+				AbstractQueryManager qManager = AbstractQueryManagerFactory.getDefaultAbstractQueryManager();
+				qManager.cancel(queryExecID);
 			}
 			
-			Writer writer = response.getWriter();
-			//retrieve count with query execution id
-			AbstractQueryUIManager qUIManager	= AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
-			Count countObject = qUIManager.getCount(queryExecID);
-	
-			//create json object by count object adding Query status, count and execution id
-			JSONObject resultObject = createResultJSON(countObject);
-			response.setContentType("text/xml");
-			writer.write(new JSONObject().put(Constants.RESULT_OBJECT, resultObject).toString());
 		}
-		else
+		//if some exception occurs anywhere while handling the Ajax call (doing getCount, aborting the execution), 
+		//a Constants.QUERY_EXCEPTION string will be sent in response to indicate the query-execution-failure.
+		catch (Exception e) 
 		{
-			//call cancel() of ciderquerymanager stopping the Query Execution 
-			AbstractQueryManager qManager = AbstractQueryManagerFactory.getDefaultAbstractQueryManager();
-			qManager.cancel(queryExecID);
+			try {
+				Writer writer = response.getWriter();
+				response.setContentType("text/xml");
+				writer.write(Constants.QUERY_EXCEPTION);
+				} 
+			catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 		return null;
 	}
