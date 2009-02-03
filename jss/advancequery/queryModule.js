@@ -173,7 +173,13 @@
 	}
 	function getCountResponseHandler(response)
 	{
-		var isNewQuery = document.forms['form2'].isNewQuery.value;
+		if(response=="queryException")
+		{
+			var executionId = document.forms['form2'].executionId.value ;
+			getCountExceptionHandler(executionId);
+			return;
+		}
+		var isNewQuery 		= document.forms['form2'].isNewQuery.value;
 		var getCountObj		=document.getElementById("form3");
 		var abort_notifyObj =document.getElementById("form1");
 		
@@ -234,14 +240,20 @@
 			alert ("Your browser does not support AJAX!");
 			return;
 		}
-		var handlerFunction			=getReadyStateHandler(request,abortExceutionResponseHandler,true); 
+		var handlerFunction			=getReadyStateHandler(request,abortExecutionResponseHandler,true); 
 		request.onreadystatechange	=handlerFunction; 
 		request.open("POST",url,true);    
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 		request.send("");
 	}
-	function abortExceutionResponseHandler(response)
+	function abortExecutionResponseHandler(response)
 	{
+		if(response=="queryException")
+		{
+			var executionId = document.forms['form2'].executionId.value ;
+			getCountExceptionHandler(executionId);
+			return;
+		}
 		var abortExecution		= document.forms['form2'].abortExecution.value;
 		var executionId			= document.forms['form2'].executionId.value;
 		var StatusObject		= document.getElementById("StatusId");
@@ -254,6 +266,21 @@
 		//document.forms['form2'].abortExecution.value="false";
 		getCountObj.innerHTML='<img src="images/advancequery/b_get_count.gif" alt="Get Count" width="84" height="23" onclick="newGetCountAjaxAction('+executionId+');">';
 		abort_notifyObj.innerHTML='<img src="images/advancequery/b_abort_execution_inact.gif" alt="Abort Execution" width="116" height="23" onclick="">&nbsp;<img src="images/advancequery/b_notify_me_inact.gif" alt="Notify me when done" width="146" height="23" onclick="">';
+	}
+	function getCountExceptionHandler(executionId)
+	{
+		var StatusObject 		= document.getElementById("StatusId");
+		if(StatusObject!=null)
+			{
+				StatusObject.innerHTML= "Error Occured";
+			}
+		
+		//making getcount=active, abort=inactive, notify=inactive
+		var getCountObj		=document.getElementById("form3");
+		var abort_notifyObj =document.getElementById("form1");
+		document.forms['form2'].isNewQuery.value="true";
+		getCountObj.innerHTML		='<img src="images/advancequery/b_get_count.gif" alt="Get Count" width="84" height="23" onclick="newGetCountAjaxAction('+executionId+');">';
+		abort_notifyObj.innerHTML	='<img src="images/advancequery/b_abort_execution_inact.gif" alt="Abort Execution" width="116" height="23" onclick="">&nbsp;<img src="images/advancequery/b_notify_me_inact.gif" alt="Notify me when done" width="146" height="23" onclick="">';
 	}
 	function newGetCountAjaxAction(executionId)
 	{
