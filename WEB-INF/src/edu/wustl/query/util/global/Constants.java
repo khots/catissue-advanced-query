@@ -714,6 +714,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String NEXT_PAGE_OF = "nextPageOf";
 	public static final String QUERYWIZARD = "queryWizard";
 	public static final String PROJECT_NAME_VALUE_BEAN = "projectsNameValueBeanList";
+	/**  Constant for WORFLOW_ID */
 	public static final String WORFLOW_ID = "worflowId";
 	public static final String WORFLOW_NAME = "worflowName";
 }
