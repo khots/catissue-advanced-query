@@ -43,10 +43,10 @@ public class LocalDEPermissibleValueManager implements IPermissibleValueManager
 		return !getPermissibleValueList(attribute, entity).isEmpty();
 	}
 	
-	public boolean showIcon(AttributeInterface attribute, EntityInterface entity)
+	public boolean showIcon(AttributeInterface attribute, EntityInterface entity,List<PermissibleValueInterface> permissibleValues)
 	{
 		boolean showIcon = false;
-		List<PermissibleValueInterface> permissibleValues =getPermissibleValueList(attribute,entity);
+	//	List<PermissibleValueInterface> permissibleValues =getPermissibleValueList(attribute,entity);
 		if( !permissibleValues.isEmpty() && permissibleValues.size() > Constants.MAX_PV_SIZE)
 		{
 			showIcon  = true;

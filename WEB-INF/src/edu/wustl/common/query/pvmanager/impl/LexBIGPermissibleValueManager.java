@@ -232,7 +232,8 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 	/**
 	 * 
 	 */
-	public boolean showIcon(AttributeInterface attribute, EntityInterface entity) throws PVManagerException
+	public boolean showIcon(AttributeInterface attribute, EntityInterface entity,
+			List<PermissibleValueInterface> permissibleValues) throws PVManagerException
 	{
 		boolean showIcon = true;
 		try
@@ -242,10 +243,11 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 			{
 				List<IVocabulary> vocabularies = vocabMngr.getConfiguredVocabularies();
 				int noOfCodingSchemes = vocabularies.size();
-				List<String> pvFilter = getTaggedValueForAttribute(attribute, entity);
+				/*List<String> pvFilter = getTaggedValueForAttribute(attribute, entity);
 				String view =	getTaggedValueForView(attribute, entity);
 				MedLookUpManager medManager = MedLookUpManager.instance();
-				List<String> toReturn = medManager.getPermissibleValues(pvFilter,view);
+				List<String> toReturn = medManager.getPermissibleValues(pvFilter,view);*/
+				List<PermissibleValueInterface> toReturn = permissibleValues;
 				if (toReturn != null && toReturn.size() < 5 && noOfCodingSchemes == 1)
 				{
 					showIcon = false;
