@@ -84,12 +84,12 @@ else
 	<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%" bordercolorlight="#000000" id="table11">
 		<tr>
 			<td valign="top"> 
-				<table border="0" width="100%" valign="top" cellspacing="0" height="100%">
+				<table border="0" width="100%" valign="top" cellpadding="0" cellspacing="0" height="100%">
 					
 					<tr bordercolorlight="#000000" >
 						<td>&nbsp;</td>
 						<td width="75%" valign="middle" ><html:text property="textField" styleClass="textfield_undefined" onkeydown="setFocusOnSearchButton(event)" size="30"/></td>
-						<td width="25%" valign="middle" >
+						<td width="25%" valign="middle" align="left" style="padding-left:4px;" >
 					
 							<img src="images/advancequery/b_go_blue.gif" width="44" align="absmiddle" hspace="3" onclick="retriveSearchedEntities('<%= SearchCategory %>','<%=formName%>','<%=currentPage%>');"/>
 					    </td>
@@ -100,29 +100,28 @@ else
 					</tr>
 					<tr id="collapsableHeader" valign="top"  width="97%" height="20">
 						<td valign="top"   >&nbsp;</td>
-						<td id="advancedSearchHeaderTd" valign="top" style="border-top: 1px solid #cccccc; border-left:1px solid #cccccc;border-bottom:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif">
-							<img src="images/advancequery/t_adv_option.gif" height="22px"/>									
+						<td id="advancedSearchHeaderTd" valign="top" style="border-top: 1px solid #cccccc; border-left:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" height="29">
+							<img src="images/advancequery/t_adv_option.gif" />									
 						</td>
-						<th id="imageContainer" valign="middle" align="right" style="border-top: 1px solid #cccccc; border-right:1px solid #cccccc;border-bottom:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" >
+						<th id="imageContainer" valign="middle" align="right" style="border-top: 1px solid #cccccc; border-right:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" >
 							<a id="image" onClick="expand()" style="display:block"> <img src="images/advancequery/nolines_plus.gif" /> </a>
 						</th>
 						<td  >&nbsp;</td>
 					</tr>
 					<tr valign="top" ><td valign="top" id="td1">&nbsp;</td>
-						<td colspan="2"><table  class="collapsableTable" style="display:none" width="100%" cellspacing="0" cellpadding="0"  id="collapsableTable" >
+						<td  colspan="2"><table  border="0" class="collapsableTable" style="display:none" width="100%" cellspacing="1" cellpadding="2"  id="collapsableTable" >
 								<tr id="class_view">
-									<td class="standardTextQuery" style="border-top: 1px solid #cccccc; "><html:checkbox  property="classChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.class"/></html:checkbox></td>
+									<td colspan="2" class="content_txt" valign="top" ><html:checkbox  property="classChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.class"/></html:checkbox></td>
 								</tr>
 								<tr id="attribute_view" >
-									<td class="standardTextQuery"><html:checkbox  property="attributeChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>' >&nbsp; <bean:message key="query.attribute"/></html:checkbox></td>
+									<td class="content_txt" valign="top"><html:checkbox  property="attributeChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>' >&nbsp; <bean:message key="query.attribute"/></html:checkbox></td>
 								</tr>
 								<tr id="permissible_view" >
-									<td class="standardTextQuery"><html:checkbox property="permissibleValuesChecked" disabled="true" onclick="permissibleValuesSelected(this)" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.permissibleValues"/></html:checkbox></td>
+									<td class="content_txt" valign="top"><html:checkbox property="permissibleValuesChecked" disabled="true" onclick="permissibleValuesSelected(this)" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.permissibleValues"/></html:checkbox></td>
 								</tr>
 								<tr id="description_view" >
-									<td class="standardTextQuery"><html:checkbox  property="includeDescriptionChecked" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.includeDescription"/> </html:checkbox></td>
+									<td class="content_txt" valign="top"><html:checkbox  property="includeDescriptionChecked" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.includeDescription"/> </html:checkbox></td>
 								</tr>
-								<tr><td>&nbsp;</td></tr>
 								<tr id="radio_view" >
 									<td class="standardTextQuery">
 										<!-- Bug #5131: Removing the radios until Concept Code search is fixed  -->
