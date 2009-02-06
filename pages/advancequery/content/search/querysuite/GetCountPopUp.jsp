@@ -83,7 +83,7 @@ MM_reloadPage(true);
 				<html:hidden property="selectedProject" value="${currentSelectedProject}" />
 				<SELECT NAME="getCount" class="textfield" onChange="setProjectData(this,'form2')">
 						<c:if test="${currentSelectedProject==''}">
-								<OPTION VALUE="" selected>--Select--
+								<OPTION VALUE="" selected>Unspecified..
 						</c:if>
 						<c:forEach var="project" items="${requestScope.categorySearchForm.projectsNameValueBeanList}">
 							<c:choose>
