@@ -136,7 +136,7 @@
 	{
 		var project	= document.forms['categorySearchForm'].selectedProject.value;
 		var url		='GetCountPopUp.do?selectedProject='+project;
-		pvwindow	=dhtmlmodal.open('Get Count', 'iframe', url,'Search Result', 'width=600px,height=250px,center=1,resize=0,scrolling=1,menubar=0,toolbar=0');
+		pvwindow	=dhtmlmodal.open('Get Count', 'iframe', url,'Search Result', 'width=600px,height=175px,center=1,resize=0,scrolling=1,menubar=0,toolbar=0');
 	}
 	function setProjectData(dropdown,formName)
 	{
@@ -1153,7 +1153,7 @@
 		callFlexMethod();
      	if(interfaceObj.isDAGEmpty())
 		{
-			var message = 	"<li> <font color='red'>Graph must have atleast one node.</font> </li>";
+			var message = 	"<font color='red'>Graph must have atleast one node.</font>";
 			showValidationMessages(message)
 		}
 		else
@@ -1182,6 +1182,9 @@
 		var textBoxId1 = document.getElementById("rowMsg");
 		var element = document.getElementById('validationMessages');
 		var row = document.getElementById(rowId);
+		var titleErrorId	= 'titleError';
+		var titleError		= document.getElementById(titleErrorId);
+		titleError.innerHTML = "";
 		closeWaitPage();
 		row.innerHTML = "";
 		if(text == "")
@@ -1200,9 +1203,16 @@
 			}	
 		}
 		else
-		{
-			row.style.display = 'block';
-			row.innerHTML = text;
+		{	
+			if(text=="Title is mandatory")
+				{	titleError.style.display = 'block';
+					titleError.innerHTML = text;
+				}
+			else
+				{
+					row.style.display = 'block';
+					row.innerHTML = text;
+				}
 		}	
 	}
 	function showErrorPage()
@@ -1341,7 +1351,7 @@
 			if(interfaceObj.isDAGEmpty())
 			{
 				//showValidationMessages("<li><font color='red'>Graph must have atleast one node.</font></li>")
-				var message = 	"<li> <font color='red'>Graph must have atleast one node.</font></li>";
+				var message = 	"<font color='red'>Graph must have atleast one node.</font>";
 				showValidationMessages(message);
 			}
 			else
