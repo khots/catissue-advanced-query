@@ -198,6 +198,10 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	{
 		Workflow workflow = (Workflow) obj;
 		//forming Query to validate workflow Name 
+		if(workflow.getName().equals(""))
+		{
+			throw new DAOException("Workflow name  can not be empty.");
+		}
 		String sourceObjectName = Workflow.class.getName();
 		String[] selectColumnName = {"id"};
 		String[] whereColumnName = {"name","name"};
