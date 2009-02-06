@@ -52,18 +52,12 @@ int queryCount = 0;%>
 
 <html:form action="SaveWorkflow">
 <%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
-
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="login_box_bg">
-
-			<tr>
-				<table width="100%" border="0" cellspacing="0" cellpadding="4">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#cccccc">
 					<tr>
 						<td>
-							<table width="100%" border="0" cellpadding="2" cellspacing="1" bgcolor="#EAEAEA">
+							<table width="100%" border="0" cellpadding="4" cellspacing="1" >
 								<tr class="td_bgcolor_grey">
-										<td width="10" height="25" valign="middle" ><input id="selectAllCheckbox"   type="checkbox" name="checkbox8" value="checkbox" onClick="javascript:selectAllCheckboxes()">                 
-										</td>
-
+										<td width="10" valign="middle" height="25"><input id="selectAllCheckbox"   type="checkbox" name="checkbox8" value="checkbox" onClick="javascript:selectAllCheckboxes()">                 </td>
 										<td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
 										<td width="111" valign="middle" class="grid_header_text"><bean:message key="workflow.querytype"/></td>
 										</tr>
@@ -84,16 +78,16 @@ int queryCount = 0;%>
 															  queryCount++;
 															%>
 															<tr bgcolor="#FFFFFF">
-															<td height="25" valign="top">
+															<td  valign="top">
 																<c:set var="checkboxControl">checkbox_<%=queryCount%></c:set>
 																<jsp:useBean id="checkboxControl" type="java.lang.String"/>
 
 															<html:checkbox property="chkbox" styleId="<%=checkboxControl%>"/>
 															
-															<td height="25" valign="top" class="content_txt" >
+															<td  valign="top" class="content_txt" >
 																<%=newTitle%>
 															</td>
-															  <td height="25" valign="top" class="content_txt">Get Count</td>
+															  <td  valign="top" class="content_txt">Get Count</td>
 															 
 							
 																<c:set var="queryTitleControlId">queryTitleControl_<%=queryCount%></c:set>
@@ -124,21 +118,17 @@ int queryCount = 0;%>
 
 			</tr>
 			<tr>
-			<td class="tr_color_lgrey" height="25px">&nbsp;</td>
-			<td class="tr_color_lgrey">
+		<td colspan="2" class="tr_color_lgrey" >
 				<table width="100%" border="0" cellspacing="0" cellpadding="0">
 			  <tr colspan="3">
-				<td width="125" align="left" class="content_txt">Show Last:&nbsp;
-															<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}">
+				<td  align="left"  height="30" style="padding-left:5px;"><span class="content_txt_bold">Show Last:</span>															<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}" styleClass="textfield_undefined">
 												<html:options collection="resultsPerPageOptions" labelProperty="name" property="value"/>
 											</html:select>
 				</td>
-				<td align="middle">
+				<td align="right" style="padding-right:5px;" class="content_txt">
 													<c:set var="pageOf" value="${requestScope.pageOf}"/>  
 														<jsp:useBean id="pageOf" type="java.lang.String"/>
-
-
-													<c:set var="totalPages" value="${sessionScope.totalPages}"/>  
+												<c:set var="totalPages" value="${sessionScope.totalPages}"/>  
 														<jsp:useBean id="totalPages" type="java.lang.Integer"/>
 													<c:forEach var="pageCoutner" begin="1" end="${totalPages}">
 															<c:set var="linkURL">
@@ -148,23 +138,14 @@ int queryCount = 0;%>
 															<c:if test="${sessionScope.pageNum == pageCoutner}">
 																	<c:out value="${pageCoutner}"/> 
 															</c:if>
-															<c:if test="${sessionScope.pageNum != pageCoutner}">
-																<a class="bluelink" href="<%=linkURL%>"> 
-																	|<c:out value="${pageCoutner}"/> 
-																</a>
+															<c:if test="${sessionScope.pageNum != pageCoutner}"> | <a class="bluelink" href="<%=linkURL%>"><c:out value="${pageCoutner}"/></a>
 															</c:if>
 														</c:forEach>
 
 				</td>
-			  <td  align="center" class="content_txt"></td> 
-				
+			 
 				</tr>
 			</table>
-			</td>
-			</tr>
-		</table>
-
-
-</html:form>
+		</html:form>
 </body>
 
