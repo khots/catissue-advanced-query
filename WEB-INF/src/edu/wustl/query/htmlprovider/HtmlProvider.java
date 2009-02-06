@@ -535,7 +535,7 @@ public class HtmlProvider
 					GenerateHtml.generateHTMLForOperators(componentId,isDate,attributeDetails));
 		}
 		IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
-		if(permissibleValueManager.isEnumerated(attribute,entity) && permissibleValueManager.showIcon(attribute, entity))
+		if(permissibleValueManager.isEnumerated(attribute,entity) && permissibleValueManager.showIcon(attribute, entity,permissibleValues))
 		{
 			permissibleValues = new ArrayList<PermissibleValueInterface>();
 			generatedHTML.append(Constants.NEWLINE).append(
