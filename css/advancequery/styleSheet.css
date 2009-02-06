@@ -1732,6 +1732,35 @@ td.queryModuleTabMenuItem{ /* for the off state of the tab menu (top) cells */
 	font-weight: bold;
 	color: #666666;
 }
+
+.td_subtitle {
+	background-image: url(../../images/bg_subtitle.gif);
+}
+.blue_title {
+font-size: 13px;
+	font-family:Arial, Helvetica, sans-serif;
+	color: #297cc7;
+	font-weight: bold;
+}
+.red_star{
+	color: #FF0000;
+	font-size: 11px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+.small_txt_grey {
+	font-family:Arial, Helvetica, sans-serif;
+	color: #666666;
+	font-size: 11px;
+}
+.td_greydottedline_horizontal {
+
+
+	background-image: url(../../images/advancequery/bg_dotted_grey.gif);
+	background-repeat: repeat-x;
+
+}
+
 .login_box_bg {
 
 	width:100%;
@@ -1799,7 +1828,6 @@ queryLink{ /* for the text links in the Search category page */
 }
 .validationMessageCss
 {
-  padding-top:5px;
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.9em;
   /*border-top:1px  solid #000000;/* constant: dark gray */
