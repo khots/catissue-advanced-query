@@ -93,45 +93,27 @@ public class SearchMappedPVsAction extends Action
 
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		List<PermissibleValueInterface> premValueList = bizLogic.getPermissibleValueListFromDB(attribute, entity);
 		int count=Integer.parseInt( VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
 		StringBuffer html = new StringBuffer();
-		//if(premValueList!=null && premValueList.size()<=count)
-		//{
-			List<IConcept> pvList = bizLogic.getPermissibleValueList(attribute, entity);
-			String vocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
-			String vocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
-			String vocabDisName = getDisplayNameForVocab(vocabName, vocabVer);
-			int displayPVCount=1;
-			html.append(bizLogic.getRootVocabularyNodeHTML(vocabName, vocabVer, vocabDisName));
-			for(IConcept concept:pvList)
+	
+		List<IConcept> pvList = bizLogic.getConfiguredPermissibleValueList(attribute, entity);
+		String vocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
+		String vocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
+		String vocabDisName = getDisplayNameForVocab(vocabName, vocabVer);
+		int displayPVCount=1;
+		html.append(bizLogic.getRootVocabularyNodeHTML(vocabName, vocabVer, vocabDisName));
+		for(IConcept concept:pvList)
 			{
-				if(displayPVCount<=count)// Need to show only specified number of Concepts on UI
-				{
 				String id = vocabName + "@" + vocabVer + ":" + concept.getCode();
 				html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, vocabVer, concept,id));
 				displayPVCount++;
-				}
-				else
-				{
-					html.append(bizLogic.getMessage(count));
-					break;
-				}
-				
 			}
-			html.append(bizLogic.getEndHTML());
-			
-		/*}
-		else 
+		if(pvList!=null && pvList.size()==count)// Need to show only specified number of Concepts on UI
 		{
-			String vocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
-			String vocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
-			String vocabDisName = getDisplayNameForVocab(vocabName, vocabVer);
-			html.append(bizLogic.getRootVocabularyNodeHTML(vocabName, vocabVer, vocabDisName));
 			html.append(bizLogic.getMessage(count));
-			html.append(bizLogic.getEndHTML());
+		}
+		html.append(bizLogic.getEndHTML());
 			
-		}*/
 		request.getSession().setAttribute(Constants.MED_PV_HTML, html.toString());
 		request.getSession().setAttribute(Constants.VOCABULIRES, bizLogic.getVocabulries());
 		if (componentId != null)
@@ -139,34 +121,7 @@ public class SearchMappedPVsAction extends Action
 			request.getSession().setAttribute(Constants.COMPONENT_ID, componentId);
 		}
 	}
-	/**
-	 * This method returns the display name for given vocabulary Name and vocabulary version
-	 * @param vocabName
-	 * @param vocabVer
-	 * @return
-	 * @throws VocabularyException
-	 */
-	private String getDisplayNameForVocab(String vocabName, String vocabVer)
-			throws VocabularyException
-	{
-		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
-				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		List<IVocabulary> vocabularies = bizLogic.getVocabulries();
-		String vocabDisName = "";
-		for (IVocabulary vocabulary : vocabularies)
-		{
-			if (vocabulary.getName().equals(vocabName) && vocabulary.getVersion().equals(vocabVer))
-			{
-				vocabDisName = vocabulary.getDisplayName();
-				break;
-			}
-		}
-		if (vocabDisName.equals(""))
-		{
-			throw new VocabularyException("Could not find the vocabulary.");
-		}
-		return vocabDisName;
-	}
+	
 	/**
 	 * This method returns the data mapped vocabularies
 	 * @param targetVocab
@@ -190,13 +145,7 @@ public class SearchMappedPVsAction extends Action
 		String targetVocabURN = targetVacbArray[2];
 		IVocabulary targetVocabulary = new Vocabulary(targetVocabName, targetVocabVer,targetVocabURN);
 		StringBuffer html = new StringBuffer();
-		//List<PermissibleValueInterface> premValueList = bizLogic.getPermissibleValueListFromDB(attribute, entity);
-		//int count=Integer.parseInt( VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
-		//if Pvs are geater then specified count then no need to show the mappings
-		
-		/*if(premValueList!=null && premValueList.size()<=count)
-		{*/
-			if (!sourceVocabulary.equalsIgnoreCase(targetVocabName)
+		if (!sourceVocabulary.equalsIgnoreCase(targetVocabName)
 					|| !sourceVocabVer.equalsIgnoreCase(targetVocabVer))
 			{
 				html.append(bizLogic.getRootVocabularyNodeHTML(targetVocabName, targetVocabVer,
@@ -206,17 +155,8 @@ public class SearchMappedPVsAction extends Action
 				getMappingDataAsHTML(html, targetVocabName, targetVocabVer, vocabMappings);
 	
 			}
-		/*}
-		else
-		{
-			String vocabDisName = getDisplayNameForVocab(targetVocabName, targetVocabVer);
-			html.append(bizLogic.getRootVocabularyNodeHTML(targetVocabName, targetVocabVer, vocabDisName));
-			html.append(bizLogic.getMessage(count));
-			html.append(bizLogic.getEndHTML());
-		}*/
 
 		return html.toString();
-
 	}
 	/**
 	 * This method returns the mapping data as HTML
@@ -277,4 +217,32 @@ public class SearchMappedPVsAction extends Action
 		html.append(bizLogic.getEndHTML());
 	}
 
+	/**
+	 * This method returns the display name for given vocabulary Name and vocabulary version
+	 * @param vocabName
+	 * @param vocabVer
+	 * @return
+	 * @throws VocabularyException
+	 */
+	private String getDisplayNameForVocab(String vocabName, String vocabVer)
+			throws VocabularyException
+	{
+		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
+				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
+		List<IVocabulary> vocabularies = bizLogic.getVocabulries();
+		String vocabDisName = "";
+		for (IVocabulary vocabulary : vocabularies)
+		{
+			if (vocabulary.getName().equals(vocabName) && vocabulary.getVersion().equals(vocabVer))
+			{
+				vocabDisName = vocabulary.getDisplayName();
+				break;
+			}
+		}
+		if (vocabDisName.equals(""))
+		{
+			throw new VocabularyException("Could not find the vocabulary.");
+		}
+		return vocabDisName;
+	}
 }
