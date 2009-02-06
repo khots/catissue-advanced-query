@@ -528,8 +528,10 @@ PUBLIC
 		<action path="/RetrieveWorkflowAction"
 			type="edu.wustl.query.action.RetrieveWorkflowAction"
 			validate="false"
+			name="workflowForm"
 			scope="request">
-			<forward name="success" path=".query.workflowViewPageDef"/>
+			<forward name="dashboardWorkflowList" path=".query.workflowViewPageDef"/>
+			<forward name="mainMenuWorkflowList" path=".query.workflowList"/>
 			<forward name="failure" path=".query.errorPageDef"/>
 		</action>
         <!-- TO DO  -->
@@ -551,7 +553,8 @@ PUBLIC
 			name="showRetrieveRecentForm"
 			validate="false"
 			scope="request">
-			<forward name="success" path=".query.recentQueryListDef"/>
+			<forward name="forDashboard" path=".query.forDasboardrecentQueryListDef"/>
+			<forward name="forMainMenu" path=".query.recentQueryListDef"/>
 		</action>
 		
 		<action path="/LoadQueryPage"
