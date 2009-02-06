@@ -128,5 +128,15 @@ function doNothing()
 
 }
 
+function waitCursor(){
+	document.body.style.cursor='wait';
+}
+function showCursor(){
+	document.body.style.cursor='hand';
+}
+
+function hideCursor(){
+	document.body.style.cursor='default';
+}
 
 

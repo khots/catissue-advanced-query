@@ -1132,6 +1132,19 @@
 			
 		}
 			hideCursor();
+		/**
+		* Bug Fixed:- 11290 (User unable to add the same permissible entity twice.)
+		*The value of compIdOfID will be store when user click on icon
+		* componentIdOfID is the id of the hidden ID field , We need to reset the Ids to add new Med 
+		* entity in the DAG panel
+		*/
+		
+		try{
+		var componentIdOfID=compIdOfID + "_textBox";
+		var EntityIds = document.getElementById(componentIdOfID);
+		EntityIds.value ="";
+		}catch(e){}
+			
 	}
 	
 	function viewSearchResults()
@@ -1786,6 +1799,7 @@ var jsReady = false;
 			for(i=0;i < permValuesNames.length-1;i++)
 			{
 				listboxName.options[index] = new Option(permValuesNames[index], permValuesNames[index],true, true); 
+				listboxName.options[index].title =permValuesNames[index];
 				listboxName.options[index].id = medConceptCodeList[index];
 				index++;
 			}
