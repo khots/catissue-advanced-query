@@ -240,6 +240,12 @@ font-size: 13px;
 	background-color: #999999;
 	background-image: url(../images/bg_content_header.gif);
 }
+
+.table_header_query {
+	background-color: #999999;
+	background-image: url(../../images/advancequery/bg_content_header.gif);
+}
+
 .tr_color_lgrey {
 	background-color: #F8F8F8;
 }
