@@ -783,15 +783,15 @@ Application
 	public function createNode(strToCreateQueyObject:String,entityName:String):void
 	{
 		
-		if(strToCreateQueyObject=="")	
+		/*if(strToCreateQueyObject=="")	
 		{
 			showValidationMessagesToUser(DAGConstants.EMPTY_LIMIT_ERROR_MESSAGE);
 		}
 		else
-		{
+		{*/
 			rpcService.addEventListener(ResultEvent.RESULT,getNodeResultHandler);
 			rpcService.createNode(strToCreateQueyObject,entityName);
-		}
+		//}
 	}
 	/**
 	* Link node Handler
