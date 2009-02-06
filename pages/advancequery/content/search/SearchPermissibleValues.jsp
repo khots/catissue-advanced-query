@@ -262,6 +262,7 @@ function refreshWindow(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 				{
 					label=document.getElementById("searhLabel");
 					label.innerHTML="Please Wait.....";
+					waitCursor();
 					
 					 document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
 					 // send request only first time when user click on the check box for other click  just hide and show the div 
@@ -322,6 +323,7 @@ function setSelectedVocabDataInDIV(request,selectedCheckedBoxVocabDivID)
 			var responseTextValue =  request.responseText;	
 			document.getElementById(selectedCheckedBoxVocabDivID).innerHTML=responseTextValue;
 			label.innerHTML="";
+			hideCursor();
 		}
 	}
 };
@@ -434,6 +436,7 @@ function serachForTermInVocab()
 {
 	label=document.getElementById("searhLabel");
     label.innerHTML="  Searching .... Please Wait";
+    waitCursor();
 	var targetVocabsForSearchTerm="";
 	void(d=document);
 	void(vocabCheckboxes=d.getElementsByName("vocabNameAndVersionCheckbox"));
@@ -473,6 +476,7 @@ function getSearchTermResult(request)
 			document.getElementById("divForSearchingMode").style.display = '';
 			document.getElementById("divForSearchingMode").innerHTML=responseTextValue;
 			label.innerHTML="";
+			hideCursor();
 		}
 	}
 };
