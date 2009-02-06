@@ -37,7 +37,7 @@ public class RetrieveRecentQueriesAction extends Action
 	{
 		populateRecentQueries(request, (ShowRetrieveRecentForm) actionForm);
 
-		return actionMapping.findForward(Constants.SUCCESS);
+		return actionMapping.findForward(request.getParameter(Constants.PAGE_OF));
 
 	}
 
@@ -119,8 +119,9 @@ public class RetrieveRecentQueriesAction extends Action
 		int pageNum = getPageNumber(request);
 
 		request.getSession().setAttribute("pageNum", pageNum);
-		request.getSession().setAttribute(Constants.TOTAL_PAGES, totalPages);//const
+		request.getSession().setAttribute(Constants.TOTAL_PAGES, totalPages);
 		request.getSession().setAttribute(Constants.TOTAL_RESULTS, totalRecords);
+		request.setAttribute(Constants.PAGE_OF,request.getParameter(Constants.PAGE_OF));
 		//drop down box
 		request.setAttribute(Constants.RESULTS_PER_PAGE_OPTIONS, Constants.SHOW_LAST_OPTION);
 
