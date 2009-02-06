@@ -517,7 +517,7 @@ insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_META
 insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3422,'DEFAULT_CONDITION','Less than or Equal to!=!CURRENT_DATE',82);
 insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3423,'DEFAULT_CONDITION','Greater than or Equal to!=!CURRENT_DATE',83);
 insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3424,'DEFAULT_CONDITION','DEFAULT_CONDITION',115);
-insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3425,'DEFAULT_CONDITION','In!=!FACILITY_ID',116);
+insert into  dyextn_tagged_value  ( IDENTIFIER , T_KEY , T_VALUE , ABSTRACT_METADATA_ID ) values (3425,'DEFAULT_CONDITION','In!=!FACILITY_ID',7);
 /*Data for the table  dyextn_textarea  */
 
 /*Data for the table  dyextn_textfield  */
