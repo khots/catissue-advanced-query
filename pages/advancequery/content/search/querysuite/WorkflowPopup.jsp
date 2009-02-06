@@ -151,6 +151,27 @@ function selectAllCheckboxes()
 }
 function checkAlreadyPresent(itemToadd)
 {
+
+/*	var noOfRows=parent.window.document.getElementById("table1").rows.length;
+				alert("noOfRows"+noOfRows);
+	var numOfRows2 =document.getElementsByName('chkbox').length;
+	alert("numOfRows2"+numOfRows2);
+		for(var idCount=0;idCount<noOfRows; idCount++)
+		{
+
+			for(var idCount2=0;idCount2<numOfRows2; idCount2++)
+			{
+					
+				alert(document.getElementById("queryTitleControl_"+idCount2));
+				var itemToadd=document.getElementById("queryTitleControl_"+idCount2);
+				alert("itemToadd"+itemToadd);
+				if(parent.window.document.getElementById('selectedqueryId_'+idCount).value==itemToadd)
+				{	
+					
+				}	
+			}
+		}	*/
+		
 	var noOfRows=parent.window.document.getElementById("table1").rows.length
 	var alreadyExist=false;
 
@@ -212,22 +233,19 @@ int queryCount = 0;%>
 			</tr>
 			<tr>
 				<td valign="top" style="border-right:1px solid #DDDDDD; border-bottom:1px solid #DDDDDD;" height="300px">
-					<table width="99%" border="0" cellpadding="0" cellspacing="0">
-						<tr>
-							<td height="5" colspan="3" valign="middle"></td>
-						</tr>
-						<tr>
-							<td width="12" valign="middle">&nbsp;</td>
+					<table width="99%" border="0" cellpadding="2" cellspacing="0">
+					<tr>
+							<td width="2" >&nbsp;</td>
 							<td colspan="2" valign="bottom" class="blue_title">Queries</td>
 						</tr>
 						<tr>
-							<td width="12" valign="middle">&nbsp;</td>
+							<td>&nbsp;</td>
 							<td width="18" align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle"></td>
 							<td valign="top"><a href="javascript:showNextReleaseMsg()" class="blacklink"><bean:message key="workflow.myqueries"/> 
 						</a></td>
 						</tr>
 						<tr>
-							<td width="12" valign="middle">&nbsp;</td>
+							<td >&nbsp;</td>
 							<td align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle"></td>
 							<td valign="top"><a href="javascript:showNextReleaseMsg()" class="blacklink"><bean:message key="workflow.sharedqueries"/></a></td>
 						</tr>
@@ -236,9 +254,9 @@ int queryCount = 0;%>
 				<td style="border-bottom:1px solid #DDDDDD;" valign="top">
 					<table width="100%" border="0" cellspacing="0" cellpadding="4">
 						<tr>
-						<td align="left" valign="top">&nbsp;<a href="javascript:showNextReleaseMsg()" class="bluelink">Delete</a>&nbsp;<span class="content_txt">|</span>&nbsp;<a href="javascript:closePopup()" class="bluelink"><bean:message key="workflow.add"/></a></td>
+						<td align="left" valign="middle">&nbsp;<a href="javascript:showNextReleaseMsg()" class="bluelink">Delete</a>&nbsp;<span class="content_txt">|</span>&nbsp;<a href="javascript:closePopup()" class="bluelink"><bean:message key="workflow.add"/></a></td>
 						<td align="right">
-							<table border="0" cellspacing="0" cellpadding="4">
+							<table border="0" cellspacing="0" cellpadding="2">
 								<tr>
 								  <td class="content_txt"><bean:message key="workflow.show"/></td>
 								  <td><select name="select" class="textfield_undefined" disabled="true">
@@ -322,15 +340,15 @@ int queryCount = 0;%>
 			</tr>
 			<tr>
 			<td class="tr_color_lgrey" height="25px">&nbsp;</td>
-			<td class="tr_color_lgrey">
+			<td class="tr_color_lgrey" height="30">
 				<table width="100%" border="0" cellspacing="0" cellpadding="0">
-			  <tr colspan="3">
-				<td width="125" align="left" class="content_txt">Show Last:&nbsp;
+			  <tr colspan="3" class="content_txt">
+				<td width="125" align="left" class="content_txt_bold">Show Last:&nbsp;
 															<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}">
 												<html:options collection="resultsPerPageOptions" labelProperty="name" property="value"/>
 											</html:select>
 				</td>
-				<td align="middle">
+				<td align="right" style="padding-right:10px">
 													<c:set var="pageOf" value="${requestScope.pageOf}"/>  
 														<jsp:useBean id="pageOf" type="java.lang.String"/>
 
@@ -345,16 +363,11 @@ int queryCount = 0;%>
 															<c:if test="${sessionScope.pageNum == pageCoutner}">
 																	<c:out value="${pageCoutner}"/> 
 															</c:if>
-															<c:if test="${sessionScope.pageNum != pageCoutner}">
-																<a class="bluelink" href="<%=linkURL%>"> 
-																	|<c:out value="${pageCoutner}"/> 
-																</a>
+															<c:if test="${sessionScope.pageNum != pageCoutner}"> | <a class="bluelink" href="<%=linkURL%>"><c:out value="${pageCoutner}"/></a>
 															</c:if>
 														</c:forEach>
 
 </td>
-			  <td  align="center" class="content_txt"></td> 
-				
 				</tr>
 			</table>
 			</td>
