@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.vocab.IConcept;
@@ -102,7 +103,7 @@ public class SearchPermissibleValuesAction extends Action
 		AttributeInterface attribute = (AttributeInterface) enumAttributeMap
 				.get(Constants.ATTRIBUTE_INTERFACE + componentId);
 		
-		List<IConcept> pvList=bizLogic.getPermissibleValueList(attribute, entity);
+		List<PermissibleValueInterface> pvList=bizLogic.getPermissibleValueListFromDB(attribute, entity);
 		int count=Integer.parseInt(VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
 		while (token.hasMoreTokens())
 		{
@@ -114,7 +115,7 @@ public class SearchPermissibleValuesAction extends Action
 			List<IConcept> conceptList = bizLogic
 					.searchConcept(searchTerm, vocabName, vocabVersion);
 			int displayPVCount=1;
-			if (conceptList != null)
+			if (conceptList != null && conceptList.size()!=0)
 			{
 				for(IConcept concept:conceptList)
 				{
@@ -164,7 +165,7 @@ public class SearchPermissibleValuesAction extends Action
 	 * @return
 	 * @throws VocabularyException 
 	 */
-	private String isSourceVocabMappedTerm(IConcept concept, List<IConcept> pvList, IConcept sourceConcept) 
+	private String isSourceVocabMappedTerm(IConcept concept, List<PermissibleValueInterface> pvList, IConcept sourceConcept) 
 					throws VocabularyException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
@@ -178,7 +179,7 @@ public class SearchPermissibleValuesAction extends Action
 		String status = "";
 		if(((Vocabulary)sourceVocabulary).equals((Vocabulary)concept.getVocabulary()))
 		{
-			sourceConcept= bizLogic.isPermissibleValue(concept, pvList);
+			sourceConcept= bizLogic.isConceptExistInPVList(concept, pvList);
 			if(sourceConcept!=null)
 			{
 				//If MED coded and its part of PV then show text should be bold with normal 
@@ -198,7 +199,7 @@ public class SearchPermissibleValuesAction extends Action
 			List<IConcept> concepts=bizLogic.isSourceVocabCodedTerm(concept, relationType, sourceVocabulary);
 			if(concepts!=null)
 			{
-				sourceConcept=bizLogic.isPermissibleValue(concepts, pvList);
+				sourceConcept=bizLogic.isConceptsExistInPVList(concepts, pvList);
 			}
 			if(concepts!=null && sourceConcept!=null )
 			{
@@ -227,45 +228,6 @@ public class SearchPermissibleValuesAction extends Action
 
 		}
 		return status;
-	}
-	/**
-	 * 
-	 * @param concept 
-	 * @param pvList 
-	 * @param componentId
-	 * @param request
-	 * @return
-	 * @throws VocabularyException 
-	 */
-	private IConcept isSourceVocabMappedTerm(IConcept concept, List<IConcept> pvList) 
-					throws VocabularyException
-	{
-		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
-		.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		IConcept sourceConcept=null;
-		String relationType =VocabUtil.getVocabProperties().getProperty("vocab.translation.association.name");
-		IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties().getProperty(
-		"source.vocab.name"), VocabUtil.getVocabProperties().getProperty(
-		"source.vocab.version"),VocabUtil.getVocabProperties().getProperty(
-		"source.vocab.urn"));
-		boolean status = false;
-		if(((Vocabulary)sourceVocabulary).equals((Vocabulary)concept.getVocabulary()))
-		{
-			sourceConcept= bizLogic.isPermissibleValue(concept, pvList);
-				
-		}
-		else
-		{
-			List<IConcept> concepts=bizLogic.isSourceVocabCodedTerm(concept, relationType, sourceVocabulary);
-			
-			if(concepts!=null)
-			{
-			 sourceConcept=bizLogic.isPermissibleValue(concepts, pvList);;
-			}
-			
-
-		}
-		return sourceConcept;
 	}
 	/**
 	 * This method returns the display name for given vocabulary Name and vocabulary version
