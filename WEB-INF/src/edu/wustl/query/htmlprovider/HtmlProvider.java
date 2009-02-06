@@ -425,7 +425,7 @@ public class HtmlProvider
 		StringBuffer html = new StringBuffer(Constants.MAX_SIZE);
 		//String attributeName = attribute.getName();
 		//String componentId = generateComponentName(attribute);
-		String format ="\n<td width='70%' valign='centre' colspan='4' >";
+		String format ="\n<td width='70%' valign='top' colspan='4' >";
 		if (permissibleValues != null && !permissibleValues.isEmpty())
 		{
             html.append(format);
@@ -573,7 +573,7 @@ public class HtmlProvider
 		StringBuffer html = new StringBuffer(Constants.MAX_SIZE);
 		AttributeInterface attributeIDInterface=entity.getAttributeByName(Constants.ID);
 		String componentIdOfID=generateComponentName(attributeIDInterface);
-		String format ="\n<td width='5%' valign='centre' colspan='4' >";
+		String format ="\n<td width='5%' valign='top' colspan='4' >";
         html.append(format);
         String temp = "\n<select style=\"width:10em;\" MULTIPLE styleId='country' "
         		+ "size ='10' name=\"" + componentId
@@ -1006,7 +1006,7 @@ public class HtmlProvider
 		String componentIdOfID=generateComponentName(attributeIDInterface);
 		String componentId = generateComponentName(attributeInterface);
 		enumratedAttributeMap.put(Constants.ATTRIBUTE_INTERFACE+componentId, attributeInterface);
-		return "\n<td valign='middle'><img  src=\"images/advancequery/ic_lookup.gif\" width=\"16\" height=\"16\" align='left' onclick=\"openPermissibleValuesConfigWindow('" + componentId	+ "','"+entity.getName()+"','"+componentIdOfID+"')\"" +
+		return "\n<td valign='top'><img  src=\"images/advancequery/ic_lookup.gif\" width=\"16\" height=\"16\" align='left' onclick=\"openPermissibleValuesConfigWindow('" + componentId	+ "','"+entity.getName()+"','"+componentIdOfID+"')\"" +
 				" border=\"0\"/ title='Search concept codes from Vocabularies'></td>";
 		
 	}
