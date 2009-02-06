@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domain.StringValue;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
@@ -73,6 +74,43 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		}
 		return permissibleConcepts;
 	}
+	/**
+	 * This method returns the list of permissible values 
+	 * @param attribute
+	 * @param entity
+	 * @return
+	 * @throws PVManagerException
+	 */
+	public List<IConcept> getConfiguredPermissibleValueList(AttributeInterface attribute,
+			EntityInterface entity) throws PVManagerException
+	{
+		List<IConcept> permissibleConcepts = null;
+		try
+		{
+			List<PermissibleValueInterface> permissibleValues = pvManager.getPermissibleValueList(
+					attribute, entity);
+			int configPVcount=Integer.parseInt(VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
+			/*If the permissible values are more than the configured value
+			 * take the subset.
+			 */
+			if(permissibleValues.size() > configPVcount)
+			{
+				permissibleValues = permissibleValues.subList(0, configPVcount);
+			}
+			IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties()
+					.getProperty("source.vocab.name"), 
+					VocabUtil.getVocabProperties().getProperty("source.vocab.version"));
+			permissibleConcepts = vocabularyManager.getConceptDetails(
+					getConceptCodeList(permissibleValues), sourceVocabulary);
+		}
+		catch (VocabularyException e)
+		{
+			throw new PVManagerException(
+					"Server encountered a problem in fetching the permissible values for "
+							+ entity.getName(), e);
+		}
+		return permissibleConcepts;
+	}
 	public List<PermissibleValueInterface> getPermissibleValueListFromDB(AttributeInterface attribute,
 			EntityInterface entity) throws PVManagerException
 	{
@@ -102,6 +140,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		{
 			List<PermissibleValueInterface> permissibleValues = pvManager.getPermissibleValueList(
 					attribute, entity);
+			
 			concepts = vocabularyManager.getConceptDetails(getConceptCodeList(permissibleValues),
 					sourceVocabulary);
 			mappedConcepts = vocabularyManager.getMappedConcepts(concepts, targetVocabulary);
@@ -326,27 +365,51 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		return concepts;
 		
 	}
-	public IConcept isPermissibleValue(IConcept concept,List<IConcept> pvList)
+	/**
+	 * 
+	 * @param concept
+	 * @param pvList
+	 * @return
+	 */
+	public IConcept isConceptExistInPVList(IConcept concept,List<PermissibleValueInterface> pvList)
 	{
 		IConcept medConcept=null;
-		 if(pvList.contains((Concept) concept))
-		 {
-			 medConcept= concept;
-		 }
-		 
+		for(PermissibleValueInterface pValue: pvList)
+		{
+			StringValue pvs= (StringValue)pValue;
+			if(pvs.getValue().equals(concept.getCode()))
+			 {
+				 medConcept= concept;
+			 }
+		}
 		 return medConcept;
 	}
-	public IConcept isPermissibleValue(List<IConcept> concepts, List<IConcept> pvList)
+	/**
+	 * 
+	 * @param concepts
+	 * @param pvList
+	 * @return
+	 */
+	public IConcept isConceptsExistInPVList(List<IConcept> concepts, List<PermissibleValueInterface> pvList)
 	{
-		IConcept concept=null;
+		IConcept sourceConcept=null;
 		for(IConcept conc:concepts)
 		{
-			if(pvList.contains(conc))
+			
+			for(PermissibleValueInterface pValue: pvList)
 			{
-				concept=conc;
+				StringValue pvs= (StringValue)pValue;
+				if(pvs.getValue().equals(conc.getCode()))
+				 {
+					sourceConcept= conc;
+					break;
+				 }
+			}
+			if(sourceConcept!=null)
+			{
 				break;
 			}
 		}
-		return concept;
+		return sourceConcept;
 	}
 }
