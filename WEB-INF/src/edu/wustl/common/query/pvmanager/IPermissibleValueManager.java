@@ -12,5 +12,5 @@ public interface IPermissibleValueManager
 	public List<PermissibleValueInterface> getPermissibleValueList(AttributeInterface attribute,EntityInterface entity) throws PVManagerException;
 	public boolean showListBoxForPV(AttributeInterface attribute,EntityInterface entity) throws PVManagerException;
 	public boolean isEnumerated(AttributeInterface attribute,EntityInterface entity);
-	public boolean showIcon(AttributeInterface attribute, EntityInterface entity)throws PVManagerException;;
+	public boolean showIcon(AttributeInterface attribute, EntityInterface entity, List<PermissibleValueInterface> permissibleValues)throws PVManagerException;;
 }
