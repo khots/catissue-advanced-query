@@ -128,14 +128,7 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 
 function submitWorflow()
 {
-	if(document.getElementById("name").value)
-	{
-		document.forms[0].submit();
-	}
-	else
-	{
-		alert("Workflow name  can not be empty");
-	}
+	document.forms[0].submit();
 }
 function cancelGetCountQuery(queryId,executionLogId)
 {	
@@ -280,13 +273,13 @@ function cancelWorkflow()
 function getCountdata()
 {
 	document.forms[0].forwardTo.value= "loadQueryPage";
-	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextPageOf=queryGetCount";
+	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextpageOf=queryGetCount";
 	document.forms[0].submit();
 }
 function getPatientdata()
 {
 	document.forms[0].forwardTo.value= "loadQueryPage";
-	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextPageOf=queryWizard";
+	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextpageOf=queryWizard";
 	document.forms[0].submit();
 }
 //-->
@@ -337,7 +330,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 </select>
 <html:hidden property="forwardTo"/>
 
- <input type="button" name="btn" id="btn" onclick="updateUI()">
+ <input type="button" name="btn" id="btn" onclick="updateUI()" style="display:none">
 
 <table width="99%" border="0" valign="top"  cellpadding="0" cellspacing="0" style="padding-left:10px;">
 <tr>
@@ -447,14 +440,14 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 					<td >
 						<table  border="0" cellpadding="4" cellspacing="0" align="right">
                           <tr>
-                            <td align="right"  nowrap><span class="content_txt_bold"><bean:message  key="workflow.project"/>&nbsp;
+                            <td align="right"  nowrap><span class="content_txt_bold"><bean:message  key="workflow.project"/></span>&nbsp;
 							 <SELECT name="selectedProject" id="selectedProject" class="texttype" >
 							   <option VALUE="-1">Select..</option>
 								<c:forEach var="project" items="${requestScope.projectsNameValueBeanList}">
 									<OPTION VALUE="${project.value}">${project.name}
 								</c:forEach>
 							</SELECT>
-                            </span></td>
+                            </td>
                             <td width="90" align="left" valign="middle" ><a href="javascript:showNextReleaseMsg()" class="bluelink"><bean:message key="workflow.runworkflow"/></a></td>
                           </tr>
                         </table>
@@ -589,8 +582,8 @@ function setButtons()
 	var buttonStatus=document.getElementById("buttonStatus");
 
 
-		buttonStatus.innerHTML= '<table><tr><td align="left" width="70"><img align="absmiddle" src="images/advancequery/b_union_inact.gif" alt="Union" width="60" height="23" border="0">'+
-      ' <td width="106" align="left"><img align="absmiddle" src="images/advancequery/b_intersection_inact.gif" alt="Intersection" width="96" height="23" border="0"></td><td width="73" align="left"><img align="absmiddle" src="images/advancequery/b_minus_inact.gif" alt="Minus" width="63" height="23" border="0"></td> </tr></table>';
+		buttonStatus.innerHTML= '<table cellpadding="0" cellspacing="0"><tr><td align="left" ><img align="absmiddle" src="images/advancequery/b_union_inact.gif" alt="Union"  border="0">'+
+      ' <td width="108" align="middle"><img align="absmiddle" src="images/advancequery/b_intersection_inact.gif" alt="Intersection" border="0"></td><td align="left"><img align="absmiddle" src="images/advancequery/b_minus_inact.gif" alt="Minus"  border="0"></td> </tr></table>';
 	
 
 
@@ -614,21 +607,6 @@ function updateOpenerUI()
         elm.dispatchEvent(clickEvent);
 		}
  }updateOpenerUI();
- function forwardToWorkflow()
-{
-	
-	<%		
-		String id =(String) request.getAttribute("worflowId");
-	%>
-	
-	if(<%=id%>!=null)
-	{
-		
-		document.forms[0].action ="SearchObject.do?pageOf=pageOfWorkflow&id="+<%=id%>;
-		document.forms[0].submit();
-
-	}
-}forwardToWorkflow();
- 
+ setCheckboxCount();
 </script>
 </body>
