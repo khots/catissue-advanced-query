@@ -355,7 +355,7 @@ public class GenerateHtml
 					"src=\"images/advancequery/calendar.gif\" width=\"24\" height=\"22\"" +
 					" border=\"0\" onclick='scwShow("+ textBoxId + ",event);'>";
 			innerStr = innerStr.append("\n<td width='3%' class='"+ cssClass
-					    + "' valign='middle' align='left' id=\"" + calendarId + "\">"
+					    + "' valign='top' align='left' id=\"" + calendarId + "\">"
 						+ "\n" + imgStr);
 		}
 		else
@@ -400,7 +400,7 @@ public class GenerateHtml
 		String html = "<table border=\"0\" width=\"100%\" height=\"30%\" background=\"images/advancequery/bg_content_header.gif\" " +
 					  "cellspacing=\"0\" cellpadding=\"0\" >" +
 					  "\n<tr height=\"2%\" >" +
-					  "<td  valign='middle' height=\"2%\" class=\"grey_bold_big\" " +
+					  "<td  valign='top' height=\"2%\" class=\"grey_bold_big\" " +
 					  "colspan=\"8\" ><img src=\"images/advancequery/t_define_limits.gif\"  align=\"absmiddle\" />";
 		generatedPreHTML.append(html); 
 		generatedPreHTML.append(" '" + entityName + "'");
@@ -428,7 +428,7 @@ public class GenerateHtml
 		StringBuffer html = new StringBuffer(Constants.MAX_SIZE);
 		
 		String temp = "\n<td  colspan=\"2\" " +
-						"height=\"30\" valign=\"middle\" align=\"right\" >";
+						"height=\"30\" valign=\"top\" align=\"right\" >";
 		buttonId = "TopAddLimitButton";
 		html.append(temp);
 		String buttonCaption = "Add Limit";
@@ -734,7 +734,7 @@ public class GenerateHtml
 			+ "' id=\""
 			+ componentId
 			+ "\" height=\"6%\" >\n"
-			+ "<td valign='middle' align='right' "
+			+ "<td valign='top' align='right' "
 			+ "class='standardLabelQuery' nowrap='nowrap' width=\"15%\">";
 		generatedHTML.append(html);
 		
@@ -789,7 +789,7 @@ public class GenerateHtml
 		List<String> operatorsList = attributeDetails.getOperatorsList();
 		if (operatorsList != null && !operatorsList.isEmpty())
 		{
-			temp="\n<td width='20%' class=" + cssClass + " valign='middle' >";
+			temp="\n<td width='20%' class=" + cssClass + " valign='top' >";
 			html.append(temp);
 			html.append("\n<select  class=" + cssClass
 						+ " style=\"width:150px; display:block;\" name=\"" + componentId
