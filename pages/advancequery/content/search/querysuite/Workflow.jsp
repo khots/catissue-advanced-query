@@ -337,8 +337,20 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 	<td>
 <table width="98%" border="0" align="center" cellpadding="0" cellspacing="0"  class="login_box_bg">
 <tr>
-	<td height="28" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_new_workflow.gif" alt="New Workflow" width="124" height="26" hspace="5" vspace="0">
-	</td>
+	<logic:equal name="workflowForm" property="operation" value="">
+		<td height="28" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_new_workflow.gif" alt="New Workflow" width="124" height="26" hspace="5" vspace="0">
+		</td>
+	</logic:equal>
+		<logic:equal name="workflowForm" property="operation" value="search">
+		<td height="28" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_edit_workflow.gif" alt="New Workflow" width="110" height="26" hspace="5" vspace="0">
+		</td>
+	</logic:equal>
+	<logic:equal name="workflowForm" property="operation" value="edit">
+		<td height="28" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_edit_workflow.gif" alt="New Workflow" width="110" height="26" hspace="5" vspace="0">
+		</td>
+	</logic:equal>
+
+
 </tr>
 <tr>
 <td >
@@ -461,10 +473,11 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 					  <tr class="td_bgcolor_grey">
 							<td width="10" height="25" valign="middle" >&nbsp;
 							</td>
+							</td>
 
 							<td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
 							<td width="111" valign="middle" class="grid_header_text"><bean:message key="workflow.type"/></td>
-						
+							
 							<td width="100" valign="middle" class="grid_header_text"><bean:message key="workflow.patientcount"/> </td>
 							<td width="90" valign="middle" class="grid_header_text">&nbsp;</td>
 							<!--<td width="55" valign="middle" class="grid_header_text"><bean:message key="workflow.reorder"/></td>-->
