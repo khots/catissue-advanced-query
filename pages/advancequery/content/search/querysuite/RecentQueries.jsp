@@ -13,8 +13,9 @@
 <script>
 function changeResPerPage(controlId)
 {
+	var pageOf ='${requestScope.pageOf}';
 	var showLast=document.getElementById(controlId).value;
-	var url='RetrieveRecentQueries.do?requestFor=nextPage&showLast='+showLast;
+	var url='RetrieveRecentQueries.do?requestFor=nextPage&showLast='+showLast+'&pageOf='+pageOf;;
 	document.forms[0].action=url;
 	document.forms[0].submit();	
 }
@@ -74,27 +75,26 @@ function responseHandler(response)
 			recentQueryAjaxCall(executionId,index);
 }
 </script>
-<body onLoad="initializeAjaxCall()">
+<body onLoad="initializeAjaxCall()" >
 	<%int count = 0;%>
 	<html:form action="RetrieveRecentQueries">
-		<table width="100%" border="0"  cellspacing="1">
-		
-              <tr class="td_bgcolor_grey">
+		 <table width="100%" bgcolor="#cccccc" cellpadding="0" cellspacing="0">
+			  <tr>
+			  <td><table width="100%" border="0"  cellspacing="1" cellpadding="4" >
+		              <tr class="td_bgcolor_grey">
                 <td width="55%"  height='25' valign="middle" class="grid_header_text">Title</td>
                 <td  width="15%" valign="middle" class="grid_header_text">Status </td>
                 <td   width="10%" valign="middle" class="grid_header_text">Result</td>
                 <td   width="20%" valign="middle" class="grid_header_text">Date</td>
-              </tr>
-
-			  <tr>
-				<table width="100%" border="0" cellpadding="4" cellspacing="1">
+             	 
+				<table width="100%" border="0" cellpadding="4" cellspacing="1" >
 					<tbody id="table1">
 					<c:forEach var="recentQueriesBean" items="${requestScope.recentQueriesBeanList}">
 						<%
 					  count++;
 					%>
 
-					 <tr class="content_txt">
+					 <tr bgcolor="ffffff" class="content_txt">
 							<td  width="55%" height='20' styleClass="content_txt"><c:out value='${recentQueriesBean.queryTitle}'/></td>
 							<td   width="15%" styleClass="content_txt">
 							<label id="StatusId_<%=count%>"></label>
@@ -108,40 +108,41 @@ function responseHandler(response)
 					  </c:forEach>	
 					</tbody>
 				</table>
+				</td>
+				</tr>
+				</table>
 			</tr>
 
-			<tr>
-				<td width="10">&nbsp;</td>
-				<td width="33%"><span class="content_txt">Show Last:
-				  </span>    
-					<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${requestScope.numResultsPerPage}">
+			</table>
+			<table width="100%" cellpadding="0" cellspacing="0">
+			<tr class="tr_color_lgrey">
+				
+				<td align="left" height="30" style="padding-left:5px;"><span class="content_txt_bold">Show Last:</span>
+				<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${requestScope.numResultsPerPage}" styleClass="textfield_undefined">
 							 <c:forEach var="item" items="${requestScope.resultsPerPageOptions}" varStatus="i">
 									<html:option value="${item}">${item}</html:option>
 							 </c:forEach>
 				
-					</html:select>
+					</html:select> 
 				</td>
-				  <td width="10">&nbsp;</td>
-				   <td width="10">&nbsp;</td>
-         </tr>
-	</table>
-	<c:set var="totalPages" value="${sessionScope.totalPages}"/>  
-		<jsp:useBean id="totalPages" type="java.lang.Integer"/>
-	<c:forEach var="pageCoutner" begin="1" end="${totalPages}">
-			<c:set var="linkURL">
+				  <td align="right" style="padding-right:5px;" class="content_txt">	
+				  <c:set var="totalPages" value="${sessionScope.totalPages}"/>  
+					<jsp:useBean id="totalPages" type="java.lang.Integer"/>
+					<c:forEach var="pageCoutner" begin="1" end="${totalPages}">
+					<c:set var="linkURL">
 				RetrieveRecentQueries.do?requestFor=nextPage&pageNum=<c:out value="${pageCoutner}"/>
-				&showLast=<c:out value="${requestScope.numResultsPerPage}"/>
+				&showLast=<c:out value="${requestScope.numResultsPerPage}"/>&pageOf=<c:out value="${requestScope.pageOf}"/>
 			</c:set>
 			<jsp:useBean id="linkURL" type="java.lang.String"/>
 			<c:if test="${sessionScope.pageNum == pageCoutner}">
 					<c:out value="${pageCoutner}"/> 
 			</c:if>
-			<c:if test="${sessionScope.pageNum != pageCoutner}">
-				<a class="bluelink" href="<%=linkURL%>"> 
-					|<c:out value="${pageCoutner}"/> 
-				</a>
+			<c:if test="${sessionScope.pageNum != pageCoutner}"> | <a class="bluelink" href="<%=linkURL%>"><c:out value="${pageCoutner}"/></a>
 			</c:if>
 		</c:forEach>
+			 </td>
+		</tr>
+		 </table>
 
 	</html:form>
 </body>
