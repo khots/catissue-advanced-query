@@ -120,8 +120,11 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			entityName = deCapitalize(entityName);
 		}
 
+		if(mainExpressions.contains(expression))
+		{
+			laterPart.append('/').append(entityName);
+		}
 		
-
 		if (hasVersion(expression))
 		{
 			laterPart.append('/').append(entityName);
