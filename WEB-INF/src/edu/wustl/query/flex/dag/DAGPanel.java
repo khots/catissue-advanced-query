@@ -70,7 +70,7 @@ import edu.wustl.query.domain.SelectedConcept;
 import edu.wustl.query.htmlprovider.HtmlProvider;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
-import edu.wustl.query.util.querysuite.IQueryUpdationUtil;
+import edu.wustl.query.util.querysuite.QueryAddContainmentsUtil;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
 import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleException;
@@ -233,7 +233,7 @@ public class DAGPanel
 		{
 			SelectedConcept selectedConcept = iterator.next();
 			boolean isPresent = false;
-			for(int i=0;i<conceptNames.length && !isPresent;i++)
+			for(int i=0;conceptNames!= null && i<conceptNames.length && !isPresent;i++)
 			{
 				if(selectedConcept.getConceptName().equals(conceptNames[i]) &&
 						selectedConcept.getConceptCode().equals(ids[i]))
@@ -269,7 +269,11 @@ public class DAGPanel
 					conditionValues, errMsg);
 
 		}
-		
+		else
+		{
+			int expressionId = m_queryObject.addExpression(entity);
+			node = createNode(expressionId, false);
+		}
 		return node;
 	}
 
@@ -1333,7 +1337,7 @@ public class DAGPanel
 		HashSet<Integer> visibleExpression = new HashSet<Integer>();
 		
 		//Get the main Entities from Query
-		List<EntityInterface> mainEntityList = IQueryUpdationUtil.getAllMainObjects(query);
+		List<EntityInterface> mainEntityList = QueryAddContainmentsUtil.getAllMainObjects(query);
 	   
 		
 		for (IExpression expression : constraints)
@@ -1346,7 +1350,7 @@ public class DAGPanel
 			
 			//As we require expressions added on Add Limit page or main Entities added Define Search Results View   
 			EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
-			if(expression.containsRule() || IQueryUpdationUtil.checkIfMainObject(entity, mainEntityList))
+			if(expression.containsRule() || QueryAddContainmentsUtil.checkIfMainObject(entity, mainEntityList))
 			{
 				visibleExpression.add(Integer.valueOf(expression.getExpressionId()));
 			}
@@ -1935,7 +1939,7 @@ public class DAGPanel
 
 			//if (exp.isVisible())
 			EntityInterface entity = exp.getQueryEntity().getDynamicExtensionsEntity();
-			if(exp.containsRule() || IQueryUpdationUtil.checkIfMainObject(entity, mainEntityList)) 
+			if(exp.containsRule() || QueryAddContainmentsUtil.checkIfMainObject(entity, mainEntityList)) 
 			{
 				IPath pathObj = m_pathFinder.getPathForAssociations(intraModelAssociationList);
 				long pathId = pathObj.getPathId();
