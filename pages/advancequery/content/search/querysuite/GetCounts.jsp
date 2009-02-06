@@ -21,7 +21,6 @@
 <link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
 <link rel="stylesheet" type="text/css" href="css/advancequery/CascadeMenu.css" />
 <link rel="stylesheet" type="text/css" href="css/advancequery/catissue_suite.css" />
-<link rel="stylesheet" type="text/css" href="css/advancequery/catissue_suite.css" />
 <link href="css/advancequery/inside.css" rel="stylesheet" type="text/css" />
 
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlwindow.js"></script>
@@ -46,26 +45,54 @@
 	<html:hidden property="stringToCreateQueryObject" value="" />
 	<html:hidden property="nextOperation" value="" />
 	<html:hidden property="selectedProject" value="" />
-<table border="0" width="100%" cellspacing="0" cellpadding="0"  height="450" >	
-		<tr>
-			&nbsp;
-			<span class="content_txt_bold"><bean:message key="getcountquery.name"/></span><span class="red_star">*</span>:<span class="content_txt">
-			<html:text styleClass="textfield_undefined" size="80" styleId="queryTitle1" property="queryTitle" />&nbsp;&nbsp;</span>
-		</tr>
+	<table border="0" width="100%" >
+	<tr><td style="padding-left:5px; padding-right:5px;">
+<table  width="100%" border="0" cellspacing="0" cellpadding="0" align="center" class="login_box_bg">
+<tr>
+	<td class="table_header_query" height="28">
+		<img src="images/advancequery/t_get_counts.gif" altText="Get Counts"/>
+	</td>
+</tr>
+<tr>
+	<td align="center">
+<table border="0"  width="100%" cellspacing="0" cellpadding="0"  bgColor="#FFFFFF" >	
+			<tr>
+				<td height="10" style="padding-left:15px;padding-top:3px" class='messagetexterror'>
+					<div id="titleError" style="overflow:auto; display:none"></div>
+				</td>
+			</tr>
+			<tr>
+			<td colspan="4" style="padding-left:5px;" height="30" class="small_txt_grey" ><span class="red_star">*</span> Denotes mandatory fields
+			<table width="100%" cellpadding="2" cellspacing="2" align="center">
+			<tr class="td_greydottedline_horizontal"><td height="1"></td></tr></table>
+			</td>
+			</tr>
+			
+			<tr >
+			<td colspan="4" >
+				&nbsp;
+				<span class="content_txt_bold"><bean:message key="getcountquery.name"/></span><span class="red_star">*</span>:<span class="content_txt">
+				<html:text styleClass="textfield_undefined" size="80" styleId="queryTitle1" property="queryTitle" />&nbsp;&nbsp;</span>
+			</td>
+			</tr>
+			<tr>
+				<td height="5">
+				</td>
+			</tr>
 			<tr>	
-			<td width=3%" align="center" valign="middle" height="36"  background="images/advancequery/top_bg_wiz.gif" >
-				<img src="images/advancequery/1_active_DefineQuery.gif"/> <!-- width="118" height="25" /-->
+			<td  width="290" align="middle" valign="middle" height="32"  background="images/advancequery/top_bg_wiz.gif" >
+				<img src="images/advancequery/tab_define_query_active.gif"/> <!-- width="118" height="25" /-->
 			</td>
-			<!--
-			<td width="30%" align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
-				<img src="images/advancequery/2_inactive.gif" /> <!-- width="199" height="38" /-->
+			
+			<td  align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
+			<!--	<img src="images/advancequery/2_inactive.gif" /> <!-- width="199" height="38" /-->
 			</td>
-			<!--
-			<td width="30%" align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
-				<img src="images/advancequery/3_inactive.gif" /> <!--  width="139" height="38" /-->
+			
+			<td  align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
+				<!--<img src="images/advancequery/3_inactive.gif" /> <!--  width="139" height="38" /-->
 			</td>
-			<td width="10%" noWrap align="right" background="images/advancequery/top_bg_wiz.gif" valign="middle">
-				<a href="#" class="greylink">Get Patient Data >> </a>&nbsp;
+			<td  noWrap align="right" background="images/advancequery/top_bg_wiz.gif" valign="middle">
+				<!--<a href="#" class="greylink">Get Patient Data >> </a>-->&nbsp;
 			</td>
 		</tr>
 	<tr>
@@ -74,32 +101,27 @@
 	<tr>
 		<td>
 		<table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" bordercolor="#000000" id="table2" >																					
-		
-		<tr>
-			<td height="60%" valign="top" width="100%" colspan="4">
-				<table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3">			
+				<tr>
+			<td height="60%" valign="top" align="left" colspan="4">
+				<table border="0"  height="100%" width="100%" >			
 					<tr>
 						<td valign="top" width="10%" >
 						<%@ include file="/pages/advancequery/content/search/querysuite/ChooseSearchCategory.jsp" %>
 						</td>
-					
-					
-
-					<td valign="top" height="60%">
-							<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  >        
-								
+										<td valign="top" height="60%" style="padding-right:7px">
+							<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  >
 							<tr>
 							<td>
-								<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="30%"  class='login_box_bg'>
-							
-												<tr id="rowMsg">
-													<td id="validationMessagesSection"  class='validationMessageCss'>
-														<div id="validationMessagesRow"   class='validationMessageCss' style="overflow:auto; height:30;display:none"></div>
-													</td>
-												</tr>												
+								<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF"   class='login_box_bg'>
+																								
 												<tr id="AddLimitsButtonMsg" border="0">
-													<td id="AddLimitsButtonSection" height="10" >
+													<td id="AddLimitsButtonSection"  >
 														<div id="AddLimitsMsgRow"  border="0"></div>
+													</td>
+												</tr>
+												<tr id="rowMsg">
+													<td id="validationMessagesSection" height="30" style="padding-left:5px" class='messagetexterror'>
+														<div id="validationMessagesRow" style="overflow:auto; display:none"></div>
 													</td>
 												</tr>
 												<tr>
@@ -149,33 +171,22 @@
 							</td>
 							</tr>
 							</table>
+					
 						</td>
 						
 					</tr>
-					
-				</table>    
-				
-			</td>
-		</tr>
-	
-			</table>		
-			</td>
-			</tr>
-			<tr>
-					<td colspan="4">
-					<table border="0" width="100%" cellspacing="0" cellpadding="0" height="24">
-					<tr valign="middle">
-					 <td width="50%" align="left" colspan="2">
-					  <table border="0" cellspacing="0" cellpadding="0" >
+					<tr><td >
+							
+					  <table  border="0" cellspacing="0" cellpadding="0" >
 						<tr>
-							 <td style="padding-left:7px"  ><img src="images/advancequery/b_save.gif"   hspace="3" onclick="validateQuery('save');"/></td>
+							 <td   align="left"  style="padding-left:4px"><img src="images/advancequery/b_save.gif"  onclick="validateQuery('save');"/></td>
 							 <td style="padding-left:4px"><img src="images/advancequery/b_cancel.gif"  hspace="3" onclick="validateQuery('cancel');"/></td>
 							<!-- <td style="padding-left:4px"><img src="images/advancequery/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td>-->
 						</tr>
 					 </table>
 					</td>
 							
-					<td width="50%" align="right">
+					<td colspan="2" align="right" style="padding-right:7px">
 					 <table border="0" cellspacing="0" cellpadding="0">
 					  <tr>
 						<td style="padding-right:5px" valign="middle" class="content_txt">Select Project:</td>
@@ -191,17 +202,34 @@
 						<td align="right"><img src="images/advancequery/b_get_count.gif" onclick="validateQuery('search');" /></td>
 					  </tr>
 					</table>
-					 </td>
-					 <td width="2%">&nbsp;</td>
+					
+					</td>
 					</tr>
-				</table>   
+					
+				</table>    
+			
+			</td>
+		</tr>
+	
+			</table>		
+			</td>
+			</tr>
+			<tr>
+					<td colspan="4">
+			  
 				</td>
 					</tr>
 			</table>          
 			</td></tr>
-			<tr height="7"> <td>&nbsp;</td></tr>
+			
 
-</table>               
+</table> 
+</td>
+</tr>
+</table> 
+</td>
+</tr>
+</table>   <br>          
 </html:form>
 </body>
 </html> 
