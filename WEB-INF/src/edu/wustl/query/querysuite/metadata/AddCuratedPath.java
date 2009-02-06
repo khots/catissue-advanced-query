@@ -113,68 +113,68 @@ public class AddCuratedPath
 	private void populateMapForPath()
 	{
 		entityList = new ArrayList<String>();
-		entityList.add("Person,Demographics,Race");
-		entityList.add("Person,Demographics,Gender");
-		entityList.add("Person,Demographics,Address");
-		entityList.add("Person,Demographics,AdvancedDirectiveExists");
-		entityList.add("Person,Demographics,EthnicOrigin");
-		entityList.add("Person,Demographics,MaritalStatus");
-		entityList.add("Person,Demographics,Religion");
-		entityList.add("Person,Demographics,Phone");
-		entityList.add("Person,Demographics,AssociatedPerson");
-		entityList.add("Person,Demographics,PersonName");
+//		entityList.add("Person,Demographics,Race");
+//		entityList.add("Person,Demographics,Gender");
+//		entityList.add("Person,Demographics,Address");
+//		entityList.add("Person,Demographics,AdvancedDirectiveExists");
+//		entityList.add("Person,Demographics,EthnicOrigin");
+//		entityList.add("Person,Demographics,MaritalStatus");
+//		entityList.add("Person,Demographics,Religion");
+//		entityList.add("Person,Demographics,Phone");
+//		entityList.add("Person,Demographics,AssociatedPerson");
+//		entityList.add("Person,Demographics,PersonName");
 		
 		//Adding further paths
-		entityList.add("Person,Demographics,Address,State");
-		entityList.add("Person,Demographics,Address,Country");
-		entityList.add("Person,Demographics,Address,AddressType");
-		entityList.add("Person,Demographics,AssociatedPerson,RelationToPerson");
+		entityList.add("Demographics,Address,State");
+		entityList.add("Demographics,Address,Country");
+		entityList.add("Demographics,Address,AddressType");
+		entityList.add("Demographics,AssociatedPerson,RelationToPerson");
 		
 		
 		//Adding paths for Laboratory Procedure and Containments
-		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult");
-		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,SpecimanType");
-		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,Status");
-		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,MedicalRecordNumber");
-		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,Facility");
-		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,MedicalRecordNumber,Facility");
-		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,LaboratoryTestType");
-		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,ResultValue");
-		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,Status");
-		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,ResultValue,Result");
-		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,ResultValue,Result,UnitsOfMeasure");
-		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult,ResultValue,Result,NormalRange");
+//		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,LaboratoryResult");
+//		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,SpecimanType");
+//		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,Status");
+//		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,MedicalRecordNumber");
+//		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,Facility");
+		entityList.add("LaboratoryProcedureDetails,MedicalRecordNumber,Facility");
+		entityList.add("LaboratoryProcedureDetails,LaboratoryResult,LaboratoryTestType");
+		entityList.add("LaboratoryProcedureDetails,LaboratoryResult,ResultValue");
+		entityList.add("LaboratoryProcedureDetails,LaboratoryResult,Status");
+		entityList.add("LaboratoryProcedureDetails,LaboratoryResult,ResultValue,Result");
+		entityList.add("LaboratoryProcedureDetails,LaboratoryResult,ResultValue,Result,UnitsOfMeasure");
+		entityList.add("LaboratoryProcedureDetails,LaboratoryResult,ResultValue,Result,NormalRange");
 		
 		
 		//Adding curated paths for Encounter
-		entityList.add("Encounter,EncounterDetails,Insurance");
-		entityList.add("Encounter,EncounterDetails,Insurance,InsurancePlanType");
-		entityList.add("Encounter,EncounterDetails,Insurance,PersonName");
-		entityList.add("Encounter,EncounterDetails,Insurance,RelationToPerson");
-		entityList.add("Encounter,EncounterDetails,HipaaNotified");
-		entityList.add("Encounter,EncounterDetails,OptOutIndicator");
-		entityList.add("Encounter,EncounterDetails,VipIndicator");
-		entityList.add("Encounter,EncounterDetails,PatientType");
-		entityList.add("Encounter,EncounterDetails,PatientClass");
-		entityList.add("Encounter,EncounterDetails,FinancialClass");
-		entityList.add("Encounter,EncounterDetails,Service");
-		entityList.add("Encounter,EncounterDetails,FacilityDischargeDisposition");
-		entityList.add("Encounter,EncounterDetails,DischargeDisposition");
-		entityList.add("Encounter,EncounterDetails,InfectionControlCode");
-		entityList.add("Encounter,EncounterDetails,DiagnosticRelatedGroup");
-		entityList.add("Encounter,EncounterDetails,PatientLocation");
-		entityList.add("Encounter,EncounterDetails,Diagnosis");
-		entityList.add("Encounter,EncounterDetails,Diagnosis,DiagnosisCode");
-		entityList.add("Encounter,EncounterDetails,Diagnosis,DiagnosisType");
-		entityList.add("Encounter,EncounterDetails,Procedure");
-		entityList.add("Encounter,EncounterDetails,Procedure,ProcedureCodingMethod");
-		entityList.add("Encounter,EncounterDetails,Procedure,ProcedureCode");
-		entityList.add("Encounter,EncounterDetails,Procedure,Provider");
-		entityList.add("Encounter,EncounterDetails,Procedure,Provider,PersonName");
-		entityList.add("Encounter,EncounterDetails,Procedure,Provider,ProviderType");
-		entityList.add("Encounter,EncounterDetails,Provider");
-		entityList.add("Encounter,EncounterDetails,Provider,ProviderType");
-		entityList.add("Encounter,EncounterDetails,Provider,PersonName");
+//		entityList.add("Encounter,EncounterDetails,Insurance");
+//		entityList.add("Encounter,EncounterDetails,Insurance,InsurancePlanType");
+//		entityList.add("Encounter,EncounterDetails,Insurance,PersonName");
+//		entityList.add("Encounter,EncounterDetails,Insurance,RelationToPerson");
+//		entityList.add("Encounter,EncounterDetails,HipaaNotified");
+//		entityList.add("Encounter,EncounterDetails,OptOutIndicator");
+//		entityList.add("Encounter,EncounterDetails,VipIndicator");
+//		entityList.add("Encounter,EncounterDetails,PatientType");
+//		entityList.add("Encounter,EncounterDetails,PatientClass");
+//		entityList.add("Encounter,EncounterDetails,FinancialClass");
+//		entityList.add("Encounter,EncounterDetails,Service");
+//		entityList.add("Encounter,EncounterDetails,FacilityDischargeDisposition");
+//		entityList.add("Encounter,EncounterDetails,DischargeDisposition");
+//		entityList.add("Encounter,EncounterDetails,InfectionControlCode");
+//		entityList.add("Encounter,EncounterDetails,DiagnosticRelatedGroup");
+//		entityList.add("Encounter,EncounterDetails,PatientLocation");
+//		entityList.add("Encounter,EncounterDetails,Diagnosis");
+		entityList.add("EncounterDetails,Diagnosis,DiagnosisCode");
+		entityList.add("EncounterDetails,Diagnosis,DiagnosisType");
+		entityList.add("EncounterDetails,Procedure");
+		entityList.add("EncounterDetails,Procedure,ProcedureCodingMethod");
+		entityList.add("EncounterDetails,Procedure,ProcedureCode");
+		entityList.add("EncounterDetails,Procedure,Provider");
+		entityList.add("EncounterDetails,Procedure,Provider,PersonName");
+		entityList.add("EncounterDetails,Procedure,Provider,ProviderType");
+		entityList.add("EncounterDetails,Provider");
+		entityList.add("EncounterDetails,Provider,ProviderType");
+		entityList.add("EncounterDetails,Provider,PersonName");
 	}
 
 	public AddCuratedPath(Connection connection)
