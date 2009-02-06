@@ -95,12 +95,15 @@ public class LoadSaveQueryPageAction extends Action
 			request.setAttribute(Constants.SHOW_ALL, Constants.TRUE);
 		}
 		target = Constants.SUCCESS;
+		SaveQueryForm savedQueryForm = (SaveQueryForm)form;
 		if (queryObject.getId() != null && queryObject instanceof ParameterizedQuery)
 		{
-			SaveQueryForm savedQueryForm = (SaveQueryForm)form;
 			savedQueryForm.setDescription(((ParameterizedQuery)queryObject).getDescription());
 			savedQueryForm.setTitle(((ParameterizedQuery)queryObject).getName());
 		}
+		//the title from GetCount query page should be displayed as default in Save Query page
+		if (queryObject.getId() == null && queryObject instanceof ParameterizedQuery)
+			savedQueryForm.setTitle(((ParameterizedQuery)queryObject).getName());
 		return target;
 	}
 	
