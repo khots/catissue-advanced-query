@@ -23,7 +23,7 @@
 	<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlXTree.js"></script>
 	<script src="jss/advancequery/ajax.js" type="text/javascript"> </script>
 	<script src="jss/advancequery/VI.js" type="text/javascript"> </script>
-
+	<script src="jss/advancequery/queryModule.js" type="text/javascript"> </script>
 	<script>
 	<%String srcVocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
 	String srcVocabVersion = VocabUtil.getVocabProperties().getProperty("source.vocab.version"); %>
@@ -288,7 +288,7 @@ function refreshWindow(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 		}
 			
 		/* code to support one vocab at a time  START*/
-		/*var elements=document.getElementsByName("vocabNameAndVersionCheckbox");
+		var elements=document.getElementsByName("vocabNameAndVersionCheckbox");
 		for(var i=0;i<elements.length;i++)
 		{
 			if(elements[i].id!=vocabCheckBoxId)
@@ -434,34 +434,41 @@ function checkedUncheckedAllPvs(vocabName)
 //method to search for the given term in vocabularies
 function serachForTermInVocab()
 {
-	label=document.getElementById("searhLabel");
-    label.innerHTML="  Searching .... Please Wait";
-    waitCursor();
-	var targetVocabsForSearchTerm="";
-	void(d=document);
-	void(vocabCheckboxes=d.getElementsByName("vocabNameAndVersionCheckbox"));
-	for(i=0;i<vocabCheckboxes.length;i++)
-	{
-		if(vocabCheckboxes[i].checked==1)
-		{
-			targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocabCheckboxes[i].value+"@";
-			uncheckAllAndDeleteFromArray(vocabCheckboxes[i].id.replace("vocab_",""));
-		}
-	}
 	var searchTerm=document.getElementById("searchtextfield").value;
-	var request = newXMLHTTPReq(); 
-	if(request == null)
+	void(d=document);
+	var vocabCheckboxes=d.getElementsByName("vocabNameAndVersionCheckbox");
+	var targetVocabsForSearchTerm="";
+			
+			for(i=0;i<vocabCheckboxes.length;i++)
+			{
+				if(vocabCheckboxes[i].checked==1)
+				{
+					targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocabCheckboxes[i].value+"@";
+					uncheckAllAndDeleteFromArray(vocabCheckboxes[i].id.replace("vocab_",""));
+				}
+			}
+			
+	if(! checkForSplChar(searchTerm)  && checkForEmptyText(searchTerm) && isVocabSelected(targetVocabsForSearchTerm))
 	{
-		alert ("Your browser does not support AJAX!");
-		return;
+	
+			label=document.getElementById("searhLabel");
+		    label.innerHTML="  Searching .... Please Wait";
+		    waitCursor();
+			
+			var request = newXMLHTTPReq(); 
+			if(request == null)
+			{
+				alert ("Your browser does not support AJAX!");
+				return;
+			}
+			// send request only first time when user click on the check box for other click  just hide and show the div 
+			var param = "searchTerm="+searchTerm+"&targetVocabsForSearchTerm="+targetVocabsForSearchTerm;
+			var actionUrl="SearchPermissibleValues.do";
+			request.onreadystatechange=function(){getSearchTermResult(request)};
+			request.open("POST",actionUrl,true);
+			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			request.send(param);
 	}
-		// send request only first time when user click on the check box for other click  just hide and show the div 
-		var param = "searchTerm="+searchTerm+"&targetVocabsForSearchTerm="+targetVocabsForSearchTerm;
-		var actionUrl="SearchPermissibleValues.do";
-		request.onreadystatechange=function(){getSearchTermResult(request)};
-		request.open("POST",actionUrl,true);
-		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-		request.send(param);
 }
 	
 function getSearchTermResult(request)
@@ -480,6 +487,19 @@ function getSearchTermResult(request)
 		}
 	}
 };
+function isVocabSelected(targetVocabsForSearchTerm)
+{
+	
+	if(targetVocabsForSearchTerm.length>0)
+	{
+		return true;
+	}
+	else
+	{
+		alert("Please select atleat one Vocabulary.");
+		return false;
+	}
+}
 /*this method will be called when user clicks on restore default*/
 function restoreDefault()
 {
@@ -534,6 +554,7 @@ function editSelectedPV()
 		}
 	<%}%>
 };
+
 </script>
 </head>
 <body onLoad="Reload();editSelectedPV();">
@@ -574,7 +595,7 @@ function editSelectedPV()
 				<td>&nbsp;</td>
 				<td><a  href='javascript:serachForTermInVocab();'><img src="images/advancequery/b_go.gif" border='0' alt="Go" ></a></td>
 				<td style="padding-left:10px"><a href='javascript:doNothing();' onclick='restoreDefault();' ><img src="images/advancequery/b_restore_defaults.gif" border='0' alt="Restore Default" ></a></td>
-				<td id="searhLabel" class="content_txt"  align="right" style="padding-left:10px;color:blue">&nbsp;</td> 
+				<!-- <td id="searhLabel" class="content_txt"  align="right" style="padding-left:10px;color:blue">&nbsp;</td>  -->
 				</tr>
 			</table>
 		</td>
@@ -588,7 +609,7 @@ function editSelectedPV()
 	<tr>
 		<td width="400px">
 	
-		<table cellpadding="0" cellspacing="0" width="400px" style="height: 300px; border:1px solid Silver;">
+		<table cellpadding="0" cellspacing="0" width="400px" style="height: 380px; border:1px solid Silver;">
 		<tr>
 			<td class="grid_header_text" height="25" bgcolor="#EAEAEA" style="padding-left:7px;">Search Result</td> 
 		</tr>
@@ -596,12 +617,14 @@ function editSelectedPV()
 			<td bgcolor="#FFFFFF">
 			<table cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" border="0">
 			<tr>
-				<td width="48%" height="20" valign="middle" bgcolor="#FFFFFF" class="grid_header_text" style="padding-left:7px;">List View </td> 
-				<td width="48%" height="20" valign="middle" bgcolor="#FFFFFF" class="grid_header_text" style="padding-left:7px;">Tree View </td> 
+				<td id="searhLabel" class="content_txt"  align="left" style="padding-left:10px;color:blue">&nbsp;</td>  
+				<!-- <td width="48%" height="20" valign="middle" bgcolor="#FFFFFF" class="grid_header_text" style="padding-left:7px;">List View </td>  -->
+				<!--<td width="48%" height="20" valign="middle" bgcolor="#FFFFFF" class="grid_header_text" style="padding-left:7px;">Tree View </td> -->
 			</tr>
 			<tr>
 				<td valign="top" style="padding:0 0 7px 7px;">
-					<div  id="divForMappingMode" style="width: 260px; height: 300px; border:1px solid Silver; overflow:auto;"  >
+					<!-- for tree view we required this width: 260px; height: 300px;  -->
+					<div  id="divForMappingMode" style="width: 380px; height: 330px; border:1px solid Silver; overflow:auto;"  >
 					<table border="0" cellpadding="0" cellspacing="0">
 					
 					<logic:iterate name="Vocabulries" id="vocabs">
@@ -610,7 +633,7 @@ function editSelectedPV()
 							<c:if test="${vocabs.version eq srcVocabVer}" >
 								<tr>
 								<td valign="top">
-									<div id="main_div_vocab_${vocabs.name}${vocabs.version}" style="width:250;">
+									<div id="main_div_vocab_${vocabs.name}${vocabs.version}" style="">
 									<% String treeData = (String)request.getSession().getAttribute(Constants.MED_PV_HTML); %>
 									<%=treeData%>
 									</div>
@@ -621,7 +644,7 @@ function editSelectedPV()
 						<c:otherwise>
 								<tr>
 								  <td valign="top">
-									<div id="main_div_vocab_${vocabs.name}${vocabs.version}" style="width:250;display:none"></div>
+									<div id="main_div_vocab_${vocabs.name}${vocabs.version}" style="display:none"></div>
 								 </td>
 								</tr>
 						</c:otherwise>
@@ -632,10 +655,11 @@ function editSelectedPV()
 					</table>
 					</div>
 				
-					<div  id="divForSearchingMode" style="width: 260px; height: 300px; border:1px solid Silver; overflow:auto;display:none"  >
+						<!-- for tree view we required this width: 260px; height: 300px;  -->
+					<div  id="divForSearchingMode" style="width: 380px; height: 330px; border:1px solid Silver; overflow:auto;display:none"  >
 					</div>
 				</td>
-				<td valign="top" style="padding:0 7px 7px 7px;">
+				<!--<td valign="top" style="padding:0 7px 7px 7px;">
 						<div style="width: 250px; height: 300px; overflow:auto;border:1px solid Silver;" >
 						<table style="width: 240px; height: 290px;">
 						<tr>
@@ -643,7 +667,7 @@ function editSelectedPV()
 						</tr>
 						</table>
 						</div>
-				</td>
+				</td> -->
 			</tr>
 			</table>
 			</td>
@@ -662,8 +686,8 @@ function editSelectedPV()
                       </table>
 		</td> 
 		<td width="260px" valign="top">
-			
-			<table cellpadding="0" cellspacing="0" width="260px" style="height:313px; border:1px solid Silver;">
+			<!-- for tree view we required this width: 260px; height: 300px;  -->
+			<table cellpadding="0" cellspacing="0" width="380px" style="height:385px; border:1px solid Silver;">
 				<tr>
 					<td class="grid_header_text" height="25" bgcolor="#EAEAEA" style="padding-left:7px;">Selected Permissible Values </td> 
 				</tr>
@@ -672,7 +696,7 @@ function editSelectedPV()
 					<table bgcolor="#FFFFFF">
 					<tr>
 					<td style="padding:5px;">
-						<div style="width: 250px; height:313px; border:1px solid Silver; overflow:auto;"  >
+						<div style="width: 380px; height:340px; border:1px solid Silver; overflow:auto;"  >
 						<table cellpadding="0" cellspacing="0"  border="0">
 						<logic:iterate name="Vocabulries" id="vocabs">
 							<tr><td><div id = "selectedPermValues_Div_${vocabs.name}@${vocabs.version}" style="display:none">
