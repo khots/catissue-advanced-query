@@ -66,6 +66,7 @@ public class SearchPermissibleValuesAction extends Action
 					.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 			try
 			{
+				searchTerm=searchTerm.trim();
 				String html = getSearchedVocabDataAsHTML(searchTerm, targetVocabsForSearchTerm,componentId,request);
 				response.getWriter().write(html);
 			}
