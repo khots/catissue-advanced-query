@@ -793,7 +793,7 @@ public class GenerateHtml
 			html.append(temp);
 			html.append("\n<select  class=" + cssClass
 						+ " style=\"width:150px; display:block;\" name=\"" + componentId
-						+ "_combobox\" onChange=\"changeIdOperator('" + componentId + "','"+compIdofID+"')\">");
+						+ "_combobox\" id=\""+ componentId+ "_combobox\" onChange=\"changeIdOperator('" + componentId + "','"+compIdofID+"')\">");
 			getHtmlForSelectedOperator(attributeDetails, cssClass, html, operatorsList);
 			html.append("\n</select>");
 			html.append(endTD);
