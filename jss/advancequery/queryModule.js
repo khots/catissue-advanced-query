@@ -1770,7 +1770,7 @@ var jsReady = false;
 	   compId= componentId;
 	   compIdOfID=componentIdOfID;
 	   var width=930; //(screen.width * 90 )/100;
-	   var height= 510;//( screen.height * 65)/100;
+	   var height= 520;//( screen.height * 65)/100;
 	   pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'LoadingVocabularies.do?componentId='+componentId,'Search Permissible Values for \"'+entityName+'\"', 'width='+width+' height='+height+',center=1,resize=0,scrolling=1');
 	   refresh=false;
 	}
@@ -1848,5 +1848,21 @@ var jsReady = false;
 			}
 		}
 		 idTextBox.value = idTextBox.value.substring(0,idTextBox.value.lastIndexOf(','));
+	}
+	/** Added by Amit Doshi **/
+	String.prototype.trim = function () {
+    return this.replace(/^\s*/, "").replace(/\s*$/, "");
+	}
+
+	function checkForEmptyText(textString)
+	{
+		//string should not contains the space only
+		textString=textString.trim(); 
+		if(textString.length>0)
+		{
+				return true;
+		}
+		alert("Please enter string to search.");
+		return false;
 	}
 	
