@@ -29,6 +29,7 @@ import edu.wustl.query.util.global.Utility;
 public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 {
 
+	
 	/**
 	 * map of for variables and corresponding expressions created in pass one xquery
 	 */
