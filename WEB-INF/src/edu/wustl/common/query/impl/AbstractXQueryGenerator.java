@@ -136,7 +136,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(!Variables.isExecutingTCFramework)
+		if(!Variables.isExecutingTestCase)
 		{
 			log(formedQuery);
 		}
