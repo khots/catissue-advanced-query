@@ -35,7 +35,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			/**
 			 * Indicating - Do not LOG XQueries
 			 */
-			Variables.isExecutingTCFramework = true;
+			Variables.isExecutingTestCase = true;
    	        Variables.queryGeneratorClassName = "edu.wustl.common.query.impl.PassOneXQueryGenerator";
 		}
 		catch (Exception e)
