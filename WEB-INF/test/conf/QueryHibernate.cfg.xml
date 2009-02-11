@@ -44,8 +44,19 @@
 		<mapping resource="edu/wustl/common/hbm/Operation.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/ResultView.hbm.xml" />
 		<mapping resource="edu/wustl/query/hbm/Workflow.hbm.xml" />
-		<mapping resource="edu/wustl/query/hbm/WorkflowItem.hbm.xml" />
 		
+		<mapping resource="edu/wustl/query/hbm/WorkflowItem.hbm.xml" />
+		<mapping resource="edu/wustl/cider/hbm/User.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/IdentityProvider.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/Project.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/Facility.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/File.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/IrbProtocols.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/Request.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/ProjectRule.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/AuditEvent.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/AuditEventDetails.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/AuditEventLog.hbm.xml"/>
     </session-factory>
     
 </hibernate-configuration>
