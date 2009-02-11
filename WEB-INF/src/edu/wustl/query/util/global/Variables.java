@@ -78,7 +78,7 @@ public class Variables extends edu.wustl.common.util.global.Variables
 	/** temp variable **/
 	public static int temp = 1;
 	/** 
-	  * for not Logging XQueries when Framework for test cases gets executed 
+	  * for not Logging XQueries test cases get executed 
 	  **/
-	public static boolean isExecutingTCFramework = false;
+	public static boolean isExecutingTestCase = false;
 }
