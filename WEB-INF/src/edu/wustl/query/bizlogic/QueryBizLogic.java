@@ -13,9 +13,11 @@ import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.query.authoriztion.SavedQueryAuthorization;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
+import edu.wustl.common.security.PrivilegeUtility;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import gov.nih.nci.security.authorization.domainobjects.User;
+import gov.nih.nci.security.exceptions.CSException;
 
 /**
  * @author chetan_patil
@@ -29,14 +31,25 @@ public class QueryBizLogic extends DefaultBizLogic
 	{
 		super.insert(obj, dao, sessionDataBean);
 	}
-	public void insertSavedQueries(IParameterizedQuery query,SessionDataBean sessionDataBean, boolean shareQuery, User user)throws DAOException, UserNotAuthorizedException, BizLogicException
+	public void insertSavedQueries(IParameterizedQuery query,SessionDataBean sessionDataBean, boolean shareQuery)throws DAOException, UserNotAuthorizedException, BizLogicException
 	{
 		insert(query,edu.wustl.common.util.global.Constants.HIBERNATE_DAO);
-//		HashSet<ParameterizedQuery> protectionObjects = new HashSet<ParameterizedQuery>();
-//		protectionObjects.add((ParameterizedQuery) query);
-//
-//	SavedQueryAuthorization savedQuery = new SavedQueryAuthorization();
-//	savedQuery.authenticate(protectionObjects,user.getUserId().toString(),shareQuery,user);
+		HashSet<ParameterizedQuery> protectionObjects = new HashSet<ParameterizedQuery>();
+		protectionObjects.add((ParameterizedQuery) query);
+
+		User user = null;
+		try
+		{
+			user = new PrivilegeUtility().getUserProvisioningManager().getUser(sessionDataBean.getUserName());
+		}
+		catch (CSException e)
+		{
+			new UserNotAuthorizedException(e.getMessage(),e);
+		}
+		sessionDataBean.setCsmUserId(user.getUserId().toString());
+		
+		SavedQueryAuthorization savedQuery = new SavedQueryAuthorization();
+		savedQuery.authenticate(protectionObjects,user.getUserId().toString(),shareQuery,user);
 	}
 
 }
