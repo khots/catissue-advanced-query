@@ -29,7 +29,6 @@ import edu.wustl.query.util.global.Utility;
 public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 {
 
-	
 	/**
 	 * map of for variables and corresponding expressions created in pass one xquery
 	 */
@@ -55,7 +54,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 
 		setPassOneForVariables();
 
-		for (IExpression expression : mainExpressions)
+		for (IExpression expression : getMainExpressions())
 		{
 			StringBuilder laterPart = new StringBuilder(1024);
 			String tableName = expression.getQueryEntity().getDynamicExtensionsEntity()
@@ -84,11 +83,11 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 	 */
 	private void setPassOneForVariables()
 	{
-		for (IExpression expression : forVariables.keySet())
+		for (IExpression expression : getForVariables().keySet())
 		{
 			if (hasVersion(expression))
 			{
-				String variable = forVariables.get(expression);
+				String variable = getForVariables().get(expression);
 				passOneForVariables.put(expression, variable);
 			}
 		}
@@ -107,7 +106,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			StringBuilder laterPart)
 	{
 		String variable = "";
-		String targetRole = targetRoles.get(expression);
+		String targetRole = getTargetRoles().get(expression);
 
 		if (targetRole != null)
 		{
@@ -116,12 +115,12 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 
 		String entityName = expression.getQueryEntity().getDynamicExtensionsEntity().getName();
 
-		if (!mainExpressions.contains(expression))
+		if (!getMainExpressions().contains(expression))
 		{
 			entityName = deCapitalize(entityName);
 		}
 
-		if (mainExpressions.contains(expression))
+		if (getMainExpressions().contains(expression))
 		{
 			laterPart.append('/').append(entityName);
 		}
@@ -190,12 +189,12 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		for (IExpression child : children)
 		{
 			//skip children that do not have for variables
-			if (!forVariables.containsKey(child))
+			if (!getForVariables().containsKey(child))
 			{
 				continue;
 			}
 
-			String targetRole = targetRoles.get(child);
+			String targetRole = getTargetRoles().get(child);
 			String entityName = deCapitalize(child.getQueryEntity().getDynamicExtensionsEntity()
 					.getName());
 			StringBuilder newPrefix = new StringBuilder(prefix);
@@ -224,7 +223,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 
 		xqueryLetClause.append(Constants.QUERY_LET);
 
-		for (Entry<IOutputAttribute, String> entry : attributeAliases.entrySet())
+		for (Entry<IOutputAttribute, String> entry : getAttributeAliases().entrySet())
 		{
 			xqueryLetClause.append(Constants.QUERY_DOLLAR).append(entry.getValue()).append(" := ");
 
@@ -247,7 +246,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 				expression = getNonMainNonEmptyChildren(expression).get(0);
 
 				//additional "../" for entities having target role eg. demographicsCollection 
-				if (targetRoles.containsKey(expression))
+				if (getTargetRoles().containsKey(expression))
 				{
 					relativePath.append("../");
 				}
@@ -270,7 +269,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		StringBuilder xqueryReturnClause = new StringBuilder(Constants.QUERY_RETURN);
 		xqueryReturnClause.append("<return>");
 
-		for (String attributeAlias : attributeAliases.values())
+		for (String attributeAlias : getAttributeAliases().values())
 		{
 			xqueryReturnClause.append('<').append(attributeAlias).append('>');
 			xqueryReturnClause.append('{').append(Constants.QUERY_DOLLAR).append(attributeAlias)
@@ -292,7 +291,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		StringBuilder columnsPart = new StringBuilder(512);
 		columnsPart.append(" columns ");
 
-		for (Entry<IOutputAttribute, String> entry : attributeAliases.entrySet())
+		for (Entry<IOutputAttribute, String> entry : getAttributeAliases().entrySet())
 		{
 			String attributeAlias = entry.getValue();
 			String dataType = getDataTypeInformation(entry.getKey().getAttribute());
@@ -369,7 +368,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 				StringBuilder path = new StringBuilder();
 
 				//find the expression corresponding to the for variable
-				for (Entry<IExpression, String> entry : forVariables.entrySet())
+				for (Entry<IExpression, String> entry : getForVariables().entrySet())
 				{
 					if (forVariable.equals(entry.getValue()))
 					{
@@ -391,10 +390,10 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 					}
 
 					expression = getNonMainNonEmptyChildren(expression).get(0);
-					forVariable = forVariables.get(expression);
+					forVariable = getForVariables().get(expression);
 
 					//additional "../" for entities having target role eg. demographicsCollection 
-					if (targetRoles.containsKey(expression))
+					if (getTargetRoles().containsKey(expression))
 					{
 						relativePath.append("../");
 					}

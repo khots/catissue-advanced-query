@@ -72,29 +72,31 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	/**
 	 * the set of expressions whose entites have a separate XML file, where they are the root element
 	 */
-	protected Set<IExpression> mainExpressions;
+	private Set<IExpression> mainExpressions;
 
 	/**
 	 * map of expressions for entities and the xpath used to reach them
 	 * xpath could be a variable name or a path
 	 */
-	protected Map<IExpression, String> entityPaths;
+	private Map<IExpression, String> entityPaths;
 
 	/**
 	 * map of expressions which have one to many relationships with their parents 
 	 * expressions and their respective target roles
 	 */
-	protected Map<IExpression, String> targetRoles;
+	private Map<IExpression, String> targetRoles;
 
 	/**
 	 * the map of exprssions for which a variable is created in the for clause and the variables 
 	 */
-	protected Map<IExpression, String> forVariables;
+	private Map<IExpression, String> forVariables;
 
 	/**
 	 * the selected attributes (ie the ones going in SELECT part) and their aliases
 	 */
-	protected Map<IOutputAttribute, String> attributeAliases;
+	private Map<IOutputAttribute, String> attributeAliases;
+	
+	
 
 	//private static org.apache.log4j.Logger logger =Logger.getLogger(XQueryGenerator.class);
 
@@ -136,6 +138,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		if(!Variables.isExecutingTestCase)
 		{
 			log(formedQuery);
@@ -924,6 +927,51 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		children.removeAll(emptyExpressions);
 		return children;
 		
+	}
+
+	
+	/**
+	 * @return the mainExpressions
+	 */
+	protected Set<IExpression> getMainExpressions()
+	{
+		return mainExpressions;
+	}
+
+	
+	/**
+	 * @return the entityPaths
+	 */
+	protected Map<IExpression, String> getEntityPaths()
+	{
+		return entityPaths;
+	}
+
+	
+	/**
+	 * @return the targetRoles
+	 */
+	protected Map<IExpression, String> getTargetRoles()
+	{
+		return targetRoles;
+	}
+
+	
+	/**
+	 * @return the forVariables
+	 */
+	protected Map<IExpression, String> getForVariables()
+	{
+		return forVariables;
+	}
+
+	
+	/**
+	 * @return the attributeAliases
+	 */
+	protected Map<IOutputAttribute, String> getAttributeAliases()
+	{
+		return attributeAliases;
 	}
 
 }

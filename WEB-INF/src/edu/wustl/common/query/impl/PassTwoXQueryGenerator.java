@@ -38,12 +38,12 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 		setParametrizedAttributes();
 		StringBuilder xqueryForClause = new StringBuilder(512);
 
-		for (Entry<IExpression, String> entry : forVariables.entrySet())
+		for (Entry<IExpression, String> entry : getForVariables().entrySet())
 		{
 			xqueryForClause.append(Constants.QUERY_FOR);
 			IExpression expression = entry.getKey();
 			String variable = entry.getValue();
-			if (mainExpressions.contains(expression))
+			if (getMainExpressions().contains(expression))
 			{
 				String tableName = expression.getQueryEntity().getDynamicExtensionsEntity()
 						.getTableProperties().getName();
@@ -62,8 +62,8 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 			else
 			{
 				xqueryForClause.append(variable).append(' ').append(Constants.IN).append(' ');
-				xqueryForClause.append(entityPaths.get(expression)).append('/').append(
-						targetRoles.get(expression)).append('/');
+				xqueryForClause.append(getEntityPaths().get(expression)).append('/').append(
+						getTargetRoles().get(expression)).append('/');
 				xqueryForClause.append(expression.getQueryEntity().getDynamicExtensionsEntity()
 						.getName());
 			}
@@ -94,11 +94,11 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 		StringBuilder xqueryReturnClause = new StringBuilder(Constants.QUERY_RETURN)
 				.append(" <result> ");
 
-		for (Entry<IOutputAttribute, String> entry : attributeAliases.entrySet())
+		for (Entry<IOutputAttribute, String> entry : getAttributeAliases().entrySet())
 		{
 			xqueryReturnClause.append('<').append(entry.getValue()).append(">{");
 
-			String expressionPath = entityPaths.get(entry.getKey().getExpression());
+			String expressionPath = getEntityPaths().get(entry.getKey().getExpression());
 			xqueryReturnClause.append(expressionPath).append('/');
 			xqueryReturnClause.append(entry.getKey().getAttribute().getName());
 
@@ -119,7 +119,7 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 	{
 		StringBuilder columnsPart = new StringBuilder(" columns ");
 
-		for (Entry<IOutputAttribute, String> entry : attributeAliases.entrySet())
+		for (Entry<IOutputAttribute, String> entry : getAttributeAliases().entrySet())
 		{
 			columnsPart.append(entry.getValue());
 
