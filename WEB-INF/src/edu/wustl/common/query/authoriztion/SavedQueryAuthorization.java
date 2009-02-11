@@ -136,7 +136,7 @@ public class SavedQueryAuthorization implements Roles
 		return securityDataBean;
 	}
 
-	private String getUserProtectionGroup(String csmUserId)
+	public String getUserProtectionGroup(String csmUserId)
 	{
 		return "User_" + csmUserId;
 	}
