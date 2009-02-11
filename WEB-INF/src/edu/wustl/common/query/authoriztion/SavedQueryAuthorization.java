@@ -87,7 +87,7 @@ public class SavedQueryAuthorization implements Roles
 		privilegeCache.refresh();
 	}
 
-	private String[] getDynamicGroups(ParameterizedQuery query)
+	public String[] getDynamicGroups(ParameterizedQuery query)
 	{
 		String[] dynamicGroups = null;
 		return dynamicGroups;
