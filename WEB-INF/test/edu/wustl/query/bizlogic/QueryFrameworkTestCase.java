@@ -67,7 +67,7 @@ public class QueryFrameworkTestCase extends TestCase
 			/**
 			 * Indicating - Do not LOG XQueries
 			 */
-			Variables.isExecutingTCFramework = true;
+			Variables.isExecutingTestCase = true;
 
 			Variables.queryGeneratorClassName = "edu.wustl.common.query.impl.PassOneXQueryGenerator";
 
@@ -153,15 +153,15 @@ public class QueryFrameworkTestCase extends TestCase
 
 	public void testXQuery_PersonUpi_is_NOT_NULL()
 	{
-		//    	IQuery query = XQueryGeneratorMock.createQuery2();
-		//    	QueryUtility.serializeIQueryToFile("query_1.xml", query);
+		
 	}
 
-	/*public void testXQuery_PersonUpi_is_NOT_NULL_AND_DOB_greater_than_10_10_1920()
+	public void testXQuery_PersonUpi_is_NOT_NULL_AND_DOB_greater_than_10_10_1920()
 	{
 		
 	}
 	
+	/*
 	public void testXQuery_PersonUpi_is_NOT_NULL_AND_DOB_less_than_10_10_1920()
 	{
 		
