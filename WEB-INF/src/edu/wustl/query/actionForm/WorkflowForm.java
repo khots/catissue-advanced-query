@@ -424,7 +424,7 @@ public class WorkflowForm extends AbstractActionForm
 						queryTitle = queryTitle + queryConst + " : " + ((ParameterizedQuery)(((CompositeQuery)workflowItem.getQuery()).getOperation().getOperandOne())).getName()+ "]"
 								+ setOperationForCompositeQuery(((CompositeQuery)workflowItem.getQuery()).getOperation());
 					
-					return queryTitle + queryConst + " : " + ((ParameterizedQuery)(((CompositeQuery)workflowItem.getQuery()).getOperation().getOperandOne())).getName() + "]";
+					return queryTitle + queryConst + " : " + ((ParameterizedQuery)(((CompositeQuery)workflowItem.getQuery()).getOperation().getOperandTwo())).getName() + "]";
 		
 		}
 		else if(workflowItem.getQuery() instanceof  ParameterizedQuery)
