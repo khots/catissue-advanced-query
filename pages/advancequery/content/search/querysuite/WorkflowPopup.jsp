@@ -192,6 +192,12 @@ function changeResPerPage(controlId)
 	document.forms[0].submit();	
 }
 
+function retrieveMyQueries()
+{
+	var url='RetrieveQueryAction.do?pageOf=myQueriesForWorkFlow&requestFor=nextPage&pageNum=1';
+	document.forms[0].action=url;
+	document.forms[0].submit();	
+}
 </script>
 <head>
 <title>CIDER: Clinical Investigation Data Exploration Repository</title>
@@ -241,13 +247,13 @@ int queryCount = 0;%>
 						<tr>
 							<td>&nbsp;</td>
 							<td width="18" align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle"></td>
-							<td valign="top"><a href="javascript:showNextReleaseMsg()" class="blacklink"><bean:message key="workflow.myqueries"/> 
+							<td valign="top"><a href="javascript:retrieveMyQueries()" class="blacklink"><bean:message key="workflow.myqueries"/> 
 						</a></td>
 						</tr>
 						<tr>
 							<td >&nbsp;</td>
 							<td align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle"></td>
-							<td valign="top"><a href="javascript:showNextReleaseMsg()" class="blacklink"><bean:message key="workflow.sharedqueries"/></a></td>
+							<td valign="top"><a href="javascript:retrieveMyQueries()" class="blacklink"><bean:message key="workflow.sharedqueries"/></a></td>
 						</tr>
 					</table>		
 				</td>
