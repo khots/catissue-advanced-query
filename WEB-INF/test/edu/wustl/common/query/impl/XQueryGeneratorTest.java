@@ -54,7 +54,7 @@ public class XQueryGeneratorTest
 			/**
 			  * Indicating - Do not LOG XQueries
 			  */
-			Variables.isExecutingTCFramework = true;
+			Variables.isExecutingTestCase = true;
 
 			Variables.queryGeneratorClassName = "edu.wustl.common.query.impl.PassOneXQueryGenerator";
 		}
