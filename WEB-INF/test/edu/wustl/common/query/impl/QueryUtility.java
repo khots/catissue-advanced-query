@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -42,6 +43,7 @@ import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.bizlogic.Constants;
 import edu.wustl.query.bizlogic.QueryFrameworkTestCase;
+import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
@@ -163,7 +165,7 @@ public class QueryUtility
 			SqlException, DAOException, QueryModuleException
 	{
 //		JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		
+		int queryExecId = 0;
 		try
 		{
 			/*HttpServletRequest request = new MockHttpServletRequest();
@@ -174,14 +176,28 @@ public class QueryUtility
 			HttpSession session = request.getSession();
 			session.setAttribute(arg0, arg1);
 			*/
+			CiderQueryManager manager = new CiderQueryManager();
+			int noOfRecords = 0;
 			
-			String xquery = xQueryGenerator.generateQuery(query);
-			System.out.println();
-			System.out.println("XQUERY :: " + xquery);
-			System.out.println();
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
+			queryExecId = manager.execute(ciderQueryObj);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
-			int queryExecId = new CiderQueryManager().execute(ciderQueryObj);
+			Count count = manager.getQueryCount(queryExecId);
+			
+			while(!count.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
+			{
+				if(count.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+				{
+					System.out.println("QUERY CANCELLED.......");
+				}
+				
+				count = manager.getQueryCount(queryExecId);
+			}
+			
+			noOfRecords = count.getCount();
+
+			System.out.println("No of Records :: "+noOfRecords);
+			System.out.println("TEST CASE EXECUTED.....");
 			
 //			jdbcDao.openSession(null);
 //			
@@ -193,7 +209,6 @@ public class QueryUtility
 			// QueryModuleSqlUtil.executeCreateTable(tempTableName, xquery, null);
 			System.out.println("Step 3. Executed XQuery on DB and ITABLE Populated....");
 			
-			return queryExecId;
 		}
 		catch (MultipleRootsException ex)
 		{
@@ -233,6 +248,12 @@ public class QueryUtility
 			System.out.println("\t Remaining Steps cannot be executed....");
 			throw ex;
 		}*/
+		catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return queryExecId;
 	}
 
 	/**
