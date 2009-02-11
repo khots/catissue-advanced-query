@@ -1,20 +1,32 @@
 <?xml version = "1.0" ?>
 
-<TestCases testHome="E:\\catissueworkspace\\AdvancedQuery_Jan16\\filesForTestCase\\"
+<TestCases testHome="E:\\catissueworkspace\\AQ_SVN_FRAMEWORK\\filesForTestCase\\"
 					 dbInitCommonScriptsFile="" dbCleanUpCommonScriptsFile="">
 		<TestCase>
-			 <name>Find all persons where Person Upi is NOT NULL and Demographics DOB>10/10/1920</name>
+			 <name>Find all persons where Person Upi is NOT NULL</name>
 			 <tmtTestCaseId>1</tmtTestCaseId>
 			 <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV> -->
 			 <expectedResultsCSV>TC1_Expected_Results.csv</expectedResultsCSV>
 			 <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV>  -->
 			 
-			 <query type = "serialized_query"
+			 <!-- <query type = "serialized_query"
 			 	    	 fileName = "query_1.xml">
-			 </query>
+			 </query>  -->
 			 
-			 <!--<query type = "saved_query"
-			 	    	 id = "81">
-			 </query>-->
+			 <query type = "saved_query"
+			 	    	 id = "41">
+			 </query>
 		</TestCase>
-</TestCases>
+		
+		<TestCase>
+			 <name>Find all persons where Person Upi is NOT NULL and Demographics DOB>10/10/1920</name>
+			 <tmtTestCaseId>2</tmtTestCaseId>
+			  <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV>  --> 
+			 <expectedResultsCSV>TC2_Expected_Results.csv</expectedResultsCSV>
+			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV>  -->  
+			 		 
+			 <query type = "saved_query"
+			 	    	 id = "42">
+			 </query>
+		</TestCase>
+	</TestCases>
