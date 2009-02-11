@@ -50,7 +50,6 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			throws MultipleRootsException, DynamicExtensionsSystemException
 	{
 
-		
 		StringBuilder xqueryForClause = new StringBuilder(1024);
 
 		setPassOneForVariables();
@@ -73,6 +72,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 					laterPart.toString());
 
 		}
+		
 		
 		return xqueryForClause.toString();
 	}
@@ -120,11 +120,11 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			entityName = deCapitalize(entityName);
 		}
 
-		if(mainExpressions.contains(expression))
+		if (mainExpressions.contains(expression))
 		{
 			laterPart.append('/').append(entityName);
 		}
-		
+
 		if (hasVersion(expression))
 		{
 			laterPart.append('/').append(entityName);
@@ -179,21 +179,21 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		downStreamPredicates.append(localPredicates.assemble(prefix)).append(Constants.QUERY_AND);
 
 		List<IExpression> children = getNonMainNonEmptyChildren(expression);
-		
+
 		//end recursion
 		if (children.isEmpty())
 		{
 			return Utility.removeLastAnd(downStreamPredicates.toString());
 		}
 
-		for(IExpression child : children)
+		for (IExpression child : children)
 		{
 			//skip children that do not have for variables
-			if(!forVariables.containsKey(child))
+			if (!forVariables.containsKey(child))
 			{
 				continue;
 			}
-			
+
 			String targetRole = targetRoles.get(child);
 			String entityName = deCapitalize(child.getQueryEntity().getDynamicExtensionsEntity()
 					.getName());
@@ -205,12 +205,13 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			}
 
 			newPrefix.append(entityName).append('/');
-			downStreamPredicates.append(getAllDownstreamPredicates(predicateGenerator, child,
-					newPrefix.toString())).append(Constants.QUERY_AND);
+			downStreamPredicates.append(
+					getAllDownstreamPredicates(predicateGenerator, child, newPrefix.toString()))
+					.append(Constants.QUERY_AND);
 		}
 
 		return Utility.removeLastAnd(downStreamPredicates.toString());
-		
+
 	}
 
 	/**
@@ -350,7 +351,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		else
 		{
 			String forVariable = rhs.substring(0, rhs.indexOf('/'));
-			String attribute = rhs.substring(rhs.indexOf('/')+1);
+			String attribute = rhs.substring(rhs.indexOf('/') + 1);
 
 			//return unchanged
 			if (passOneForVariables.containsValue(forVariable))
