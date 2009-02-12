@@ -7,13 +7,16 @@ package edu.wustl.common.query.impl;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.query.impl.predicate.PredicateGenerator;
 import edu.wustl.common.query.impl.predicate.Predicates;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
+import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
+import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.query.util.global.Constants;
 
 /**
@@ -22,8 +25,6 @@ import edu.wustl.query.util.global.Constants;
  */
 public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 {
-
-	private Set<IOutputAttribute> parametrizedAttributes;
 
 	/**
 	 * 
@@ -35,7 +36,6 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 	protected String buildXQueryForClause(PredicateGenerator predicateGenerator)
 			throws MultipleRootsException, DynamicExtensionsSystemException
 	{
-		setParametrizedAttributes();
 		StringBuilder xqueryForClause = new StringBuilder(512);
 
 		for (Entry<IExpression, String> entry : getForVariables().entrySet())
@@ -77,12 +77,6 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 		}
 
 		return xqueryForClause.toString();
-
-	}
-
-	private void setParametrizedAttributes()
-	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -140,11 +134,13 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 	{
 		StringBuilder passingPart = new StringBuilder("passing ");
 
-		for (IOutputAttribute attribute : parametrizedAttributes)
+		for (Entry<IParameter<?>, IExpression> entry : getParameters().entrySet())
 		{
-			String dataType = getDataTypeInformation(attribute.getAttribute());
-			passingPart.append(" cast (? as ").append(dataType).append(") as ").append(
-					attribute.getAttribute().getName());
+			ICondition condition = (ICondition) entry.getKey().getParameterizedObject();
+			AttributeInterface attribute = condition.getAttribute();
+			String name = getAliasFor(attribute, entry.getValue());
+			String dataType = getDataTypeInformation(attribute);
+			passingPart.append(" cast (? as ").append(dataType).append(") as ").append(name);
 		}
 
 		return passingPart.toString();
