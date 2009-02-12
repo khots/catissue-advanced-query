@@ -41,10 +41,13 @@ import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
+import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
+import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
+import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.util.global.Constants;
@@ -68,7 +71,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * the suffix used to generate sql column names on the fly, like column0, column1 etc.
 	 */
 	protected int suffix = 0;
-	
+
 	/**
 	 * the set of expressions whose entites have a separate XML file, where they are the root element
 	 */
@@ -95,8 +98,11 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * the selected attributes (ie the ones going in SELECT part) and their aliases
 	 */
 	private Map<IOutputAttribute, String> attributeAliases;
-	
-	
+
+	/**
+	 * map of IParameter and the expressions corresponding to their attributes 
+	 */
+	private Map<IParameter<?>, IExpression> parameters;
 
 	//private static org.apache.log4j.Logger logger =Logger.getLogger(XQueryGenerator.class);
 
@@ -138,8 +144,8 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		if(!Variables.isExecutingTestCase)
+
+		if (!Variables.isExecutingTestCase)
 		{
 			log(formedQuery);
 		}
@@ -154,15 +160,9 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 */
 	private void prepare(IQuery query) throws MultipleRootsException
 	{
-		//populate selected attributes and their aliases
-		attributeAliases = new LinkedHashMap<IOutputAttribute, String>();
-		IQuery queryClone = new DyExtnObjectCloner().clone(query);
-		for (IOutputAttribute selectedAttribute : ((IParameterizedQuery) queryClone)
-				.getOutputAttributeList())
-		{
-			String attributeAlias = getAliasFor(selectedAttribute);
-			attributeAliases.put(selectedAttribute, attributeAlias);
-		}
+		ParameterizedQuery queryClone = (ParameterizedQuery) new DyExtnObjectCloner().clone(query);
+		setSelectedAttributes(queryClone);
+		setParameterizedAttributes(queryClone);
 
 		// IQuery queryClone = query;
 		constraints = queryClone.getConstraints();
@@ -171,12 +171,44 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		this.joinGraph = (JoinGraph) constraints.getJoinGraph();
 		aliasAppenderMap = new HashMap<IExpression, Integer>();
 		createAliasAppenderMap();
-		
+
 		mainExpressions = new LinkedHashSet<IExpression>();
 		setMainExpressions(joinGraph.getRoot());
 		createTree();
 		createEntityPaths();
 		checkForEmptyExpression(joinGraph.getRoot().getExpressionId());
+	}
+
+	/**
+	 * set the parameters and their expressions
+	 * @param query
+	 */
+	private void setParameterizedAttributes(ParameterizedQuery query)
+	{
+		parameters = new HashMap<IParameter<?>, IExpression>();
+
+		for (IParameter<?> parameter : query.getParameters())
+		{
+			IExpression expression = QueryUtility.getExpression((IParameter<ICondition>) parameter,
+					query);
+			parameters.put(parameter, expression);
+		}
+	}
+
+	/**
+	 * @param query
+	 */
+	private void setSelectedAttributes(ParameterizedQuery query)
+	{
+		//populate selected attributes and their aliases
+		attributeAliases = new LinkedHashMap<IOutputAttribute, String>();
+
+		for (IOutputAttribute selectedAttribute : query.getOutputAttributeList())
+		{
+			String attributeAlias = getAliasFor(selectedAttribute.getAttribute(), selectedAttribute
+					.getExpression());
+			attributeAliases.put(selectedAttribute, attributeAlias);
+		}
 	}
 
 	/**
@@ -242,7 +274,8 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @throws XQueryDataTypeInitializationException 
 	 */
 	private String processChildExpressions(String leftAlias, Set<Integer> processedAlias,
-			IExpression parentExpression) throws SqlException, XQueryDataTypeInitializationException
+			IExpression parentExpression) throws SqlException,
+			XQueryDataTypeInitializationException
 	{
 		StringBuffer buffer = new StringBuffer();
 		List<IExpression> children = joinGraph.getChildrenList(parentExpression);
@@ -269,18 +302,20 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 								.getSrcEntityConstraintKeyPropertiesCollection();
 						Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyPropColl = constraintProperties
 								.getTgtEntityConstraintKeyPropertiesCollection();
-						
+
 						String leftAttribute = null;
 						String rightAttribute = null;
-						
+
 						//many sides
 						for (ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyPropColl)
 						{
-							AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+							AttributeInterface primaryKey = cnstrKeyProp
+									.getSrcPrimaryKeyAttribute();
 							String xQueryDataType = getXQuerydataType(primaryKey);
 							leftAttribute = "$" + getAliasName(parentExpression) + "/"
-									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName() +  "/" + xQueryDataType;
-							
+									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName()
+									+ "/" + xQueryDataType;
+
 							String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute()
 									.getName();
 							rightAttribute = "$" + getAliasName(childExpression) + "/"
@@ -289,16 +324,19 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 						// One Side
 						for (ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyPropColl)
 						{
-							AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+							AttributeInterface primaryKey = cnstrKeyProp
+									.getSrcPrimaryKeyAttribute();
 							String xQueryDataType = getXQuerydataType(primaryKey);
 							String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute()
 									.getName();
 							leftAttribute = "$" + getAliasName(parentExpression) + "/"
-									+ primaryKeyName ;
+									+ primaryKeyName;
 							rightAttribute = "$" + getAliasName(childExpression) + "/"
-									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName()+ "/" + xQueryDataType;
+									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName()
+									+ "/" + xQueryDataType;
 						}
-						buffer.append(Constants.QUERY_OPENING_PARENTHESIS + rightAttribute + "=" + leftAttribute);
+						buffer.append(Constants.QUERY_OPENING_PARENTHESIS + rightAttribute + "="
+								+ leftAttribute);
 						buffer.append(Constants.QUERY_CLOSING_PARENTHESIS);
 					}
 					buffer.append(Constants.QUERY_AND);
@@ -313,11 +351,12 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 				}
 			}
 		}
-	
+
 		return buffer.toString();
 	}
 
-	private String getXQuerydataType(AttributeInterface attributeType) throws XQueryDataTypeInitializationException
+	private String getXQuerydataType(AttributeInterface attributeType)
+			throws XQueryDataTypeInitializationException
 	{
 		String returnValue = null;
 		AttributeTypeInformationInterface dataType = attributeType.getAttributeTypeInformation();
@@ -331,27 +370,27 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		else if (dataType instanceof DateTypeInformationInterface)
 		{
 			returnValue = xQueryAttributeType
-			.getDataType(EntityManagerConstantsInterface.DATE_TIME_ATTRIBUTE_TYPE);
+					.getDataType(EntityManagerConstantsInterface.DATE_TIME_ATTRIBUTE_TYPE);
 		}
 		else if (dataType instanceof LongTypeInformationInterface)
 		{
 			returnValue = xQueryAttributeType
-			.getDataType(EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE);
+					.getDataType(EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE);
 		}
 		else if (dataType instanceof DoubleTypeInformationInterface)
 		{
 			returnValue = xQueryAttributeType
-			.getDataType(EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE);
+					.getDataType(EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE);
 		}
 		else if (dataType instanceof IntegerTypeInformationInterface)
 		{
 			returnValue = xQueryAttributeType
-			.getDataType(EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE);
+					.getDataType(EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE);
 		}
 		else if (dataType instanceof BooleanTypeInformationInterface)
 		{
 			returnValue = xQueryAttributeType
-			.getDataType(EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE);
+					.getDataType(EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE);
 		}
 
 		return returnValue;
@@ -453,7 +492,6 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return fromPart.toString();
 	}
 
-	
 	/**
 	 * return the Select portion of SQLXML Query
 	 * throws
@@ -555,7 +593,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @return the Return Clause of SQLXML
 	 */
 	protected abstract String buildXQueryReturnClause();
-	
+
 	/**
 	 * Adds an pseudo anded expression & all its child expressions to
 	 * pAndExpressions set.
@@ -586,7 +624,6 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return builder.toString();
 	}
 
-	
 	/**
 	 * @return Will modify the DataType depending on input
 	 * according to the database
@@ -601,7 +638,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		}
 		else if (dataType instanceof DateTypeInformationInterface)
 		{
-			String actualYear = value.substring(6,10);
+			String actualYear = value.substring(6, 10);
 			String actualMonth = value.substring(0, 2);
 			String actualDate = value.substring(3, 5);
 			String actualTime = "";
@@ -609,18 +646,19 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 			{
 				actualTime = value.substring(11);
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				actualTime = "";
 			}
-			if(actualTime.equals(""))
+			if (actualTime.equals(""))
 			{
 				StringBuilder newValue = new StringBuilder(actualYear);
 				newValue.append("-");
 				newValue.append(actualMonth);
 				newValue.append("-");
 				newValue.append(actualDate);
-				actualValue.append("xs:dateTime(\"").append(newValue.toString()).append("T00:00:00\")");
+				actualValue.append("xs:dateTime(\"").append(newValue.toString()).append(
+						"T00:00:00\")");
 			}
 			else
 			{
@@ -646,23 +684,22 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 */
 	private void setMainExpressions(IExpression expression)
 	{
-			List<EntityInterface> mainEntityList = new ArrayList<EntityInterface>();
-			EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
+		List<EntityInterface> mainEntityList = new ArrayList<EntityInterface>();
+		EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
 
-			List<EntityInterface> mainEntities = QueryCSMUtil.getAllMainEntities(entity,
-					mainEntityList);
+		List<EntityInterface> mainEntities = QueryCSMUtil
+				.getAllMainEntities(entity, mainEntityList);
 
-			if (mainEntities.contains(expression.getQueryEntity().getDynamicExtensionsEntity()))
-			{
-				mainExpressions.add(expression);
-			}
-			
-			for(IExpression child : joinGraph.getChildrenList(expression))
-			{
-				setMainExpressions(child);
-			}
+		if (mainEntities.contains(expression.getQueryEntity().getDynamicExtensionsEntity()))
+		{
+			mainExpressions.add(expression);
+		}
+
+		for (IExpression child : joinGraph.getChildrenList(expression))
+		{
+			setMainExpressions(child);
+		}
 	}
-	
 
 	/**
 	 * 
@@ -744,10 +781,9 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @param attribute
 	 * @return
 	 */
-	protected String getAliasFor(IOutputAttribute attribute)
+	protected String getAliasFor(AttributeInterface attribute, IExpression expression)
 	{
-		return attribute.getAttribute().getName() + "_"
-				+ attribute.getExpression().getExpressionId();
+		return attribute.getName() + "_" + expression.getExpressionId();
 	}
 
 	@Override
@@ -816,7 +852,6 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 
 	}
 
-	
 	/**
 	 * create xquery fragment to represent "in" operator 
 	 */
@@ -853,7 +888,6 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 
 	}
 
-	
 	/**
 	 * create xquery fragment to represent "exists" and "empty" operators 
 	 */
@@ -878,7 +912,6 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return builder.toString();
 	}
 
-	
 	/**
 	 * create xquery fragment to represent "contains", "starts-with" and 
 	 * "ends-with" operators 
@@ -906,8 +939,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return newOperator;
 
 	}
-	
-	
+
 	/**
 	 * get the list of children of given expression which are not main expressions
 	 *   
@@ -916,20 +948,20 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 */
 	protected List<IExpression> getNonMainChildren(IExpression expression)
 	{
-		List<IExpression> nonMainChildren = new ArrayList<IExpression>(joinGraph.getChildrenList(expression));
+		List<IExpression> nonMainChildren = new ArrayList<IExpression>(joinGraph
+				.getChildrenList(expression));
 		nonMainChildren.removeAll(mainExpressions);
 		return nonMainChildren;
 	}
-	
+
 	protected List<IExpression> getNonMainNonEmptyChildren(IExpression expression)
 	{
 		List<IExpression> children = getNonMainChildren(expression);
 		children.removeAll(emptyExpressions);
 		return children;
-		
+
 	}
 
-	
 	/**
 	 * @return the mainExpressions
 	 */
@@ -938,7 +970,6 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return mainExpressions;
 	}
 
-	
 	/**
 	 * @return the entityPaths
 	 */
@@ -947,7 +978,6 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return entityPaths;
 	}
 
-	
 	/**
 	 * @return the targetRoles
 	 */
@@ -956,7 +986,6 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return targetRoles;
 	}
 
-	
 	/**
 	 * @return the forVariables
 	 */
@@ -965,13 +994,20 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return forVariables;
 	}
 
-	
 	/**
 	 * @return the attributeAliases
 	 */
 	protected Map<IOutputAttribute, String> getAttributeAliases()
 	{
 		return attributeAliases;
+	}
+
+	/**
+	 * @return the parameters
+	 */
+	protected Map<IParameter<?>, IExpression> getParameters()
+	{
+		return parameters;
 	}
 
 }
