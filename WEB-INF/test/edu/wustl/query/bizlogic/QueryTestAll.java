@@ -32,7 +32,10 @@ public class QueryTestAll extends TestSuite
 		// suite.addTestSuite(XQueryGeneratorTestCase.class);
 		
 		// For testing ASynchronous Queries
-		suite.addTestSuite(ASynchronousQueriesTestCases.class);
+		// suite.addTestSuite(ASynchronousQueriesTestCases.class);
+		
+		//For testing WorkflowBizLogic
+		suite.addTestSuite(WorkflowBizLogicTestCases.class);
 		return suite;
 	}
 }
