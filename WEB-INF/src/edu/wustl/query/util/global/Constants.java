@@ -718,4 +718,9 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String WORFLOW_ID = "worflowId";
 	/**  Constant for WORFLOW_NAME  */
 	public static final String WORFLOW_NAME = "worflowName";
+	public static final String MESSAGE_SRC_VOCAB = "SourceVocabMessage";
+	public static final Object ABORT = "abort";
+	public static final String SELECTED_BOX = "selectedCheckBox";
+	public static final String OPERATION = "operation";
+	public static final String SEARCH_TERM = "searchTerm";
 }
