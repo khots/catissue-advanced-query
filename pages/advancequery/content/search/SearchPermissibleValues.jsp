@@ -6,7 +6,7 @@
 <%@page import="edu.wustl.common.vocab.IVocabulary"%>
 <%@page import="edu.wustl.common.vocab.utility.VocabUtil"%>
 <%@page import="edu.wustl.query.domain.SelectedConcept"%>
-
+<%@page import="edu.wustl.query.util.global.VIProperties"%>
 <%@ page language="java" isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
@@ -26,7 +26,10 @@
 	<script src="jss/advancequery/queryModule.js" type="text/javascript"> </script>
 	<script>
 	<%String srcVocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
-	String srcVocabVersion = VocabUtil.getVocabProperties().getProperty("source.vocab.version"); %>
+	String srcVocabVersion = VocabUtil.getVocabProperties().getProperty("source.vocab.version"); 
+	String srcVocaburn=VIProperties.sourceVocabUrn;
+	System.out.println("srcVocaburn---"+srcVocaburn);
+	%>
 	// selectedPvs will store that appears right side of the page
 	selectedPvs =new Array();
 	// selectedPvsCheckedBoxIdArray will store the  selected PVs from vocabulary that will deleted after clicked on add and stored in selectedPvs
@@ -567,14 +570,15 @@ function editSelectedPV()
 			<td class="content_txt_bold" nowrap>Select Vocabulary: &nbsp;&nbsp;</td>
 			<c:set var="srcVocabName" value="<%=srcVocabName%>"/>
 			<c:set var="srcVocabVer" value="<%=srcVocabVersion%>"/>
+			<c:set var="srcVocaburn" value="<%=srcVocaburn%>"/>
 
 			<logic:iterate name="Vocabulries" id="vocabs">
 					<c:choose>
-						<c:when test="${vocabs.name eq srcVocabName}">
-							<c:if test="${vocabs.version eq srcVocabVer}" >
+						<c:when test="${vocabs.vocabURN eq srcVocaburn}">
+							
 								<td><input type="checkbox"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.name}${vocabs.version}" value="${vocabs.name}:${vocabs.version}"   
 								onclick= "refreshWindow(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');" checked='true'></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;</td>			
-							</c:if>
+							
 						</c:when>
 						<c:otherwise>
 									<td><input type="checkbox"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.name}${vocabs.version}" value="${vocabs.name}:${vocabs.version}"   
@@ -629,17 +633,18 @@ function editSelectedPV()
 					
 					<logic:iterate name="Vocabulries" id="vocabs">
 					<c:choose>
-						<c:when test="${vocabs.name eq srcVocabName}">
-							<c:if test="${vocabs.version eq srcVocabVer}" >
+						<c:when test="${vocabs.vocabURN eq srcVocaburn}">
+							
 								<tr>
 								<td valign="top">
 									<div id="main_div_vocab_${vocabs.name}${vocabs.version}" style="">
-									<% String treeData = (String)request.getSession().getAttribute(Constants.MED_PV_HTML); %>
+									<% String treeData = (String)request.getSession().getAttribute(Constants.MED_PV_HTML);
+									System.out.println("treeData------------"+treeData);%>
 									<%=treeData%>
 									</div>
 								</td>
 								</tr>
-							</c:if>
+							
 						</c:when>
 						<c:otherwise>
 								<tr>
