@@ -19,7 +19,6 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.vocab.IConcept;
@@ -37,7 +36,6 @@ import edu.wustl.query.util.global.Constants;
  */
 public class SearchMappedPVsAction extends Action
 {
-
 	/**
 	 * This method handles the various Ajax request for VI
 	 * @param mapping mapping
@@ -47,34 +45,39 @@ public class SearchMappedPVsAction extends Action
 	 * @throws Exception Exception
 	 * @return ActionForward actionForward
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		final String targetVocab = request.getParameter("selectedCheckBox");
+		
+		 final String targetVocab = request.getParameter(Constants.SELECTED_BOX);
 		//get the id of the component on which user click to search for PVs
-		String componentId = request.getParameter("componentId");
+		String componentId = request.getParameter(Constants.COMPONENT_ID);
 		if (componentId == null)
 		{
-			//need to save componetid into the session for next Ajax requests
+			//need to save component id into the session for next Ajax requests
 			componentId = (String) request.getSession().getAttribute(Constants.COMPONENT_ID);
 		}
 		String entityName = (String) request.getSession().getAttribute(Constants.ENTITY_NAME);
 		Entity entity = (Entity) EntityCache.getCache().getEntityById(Long.valueOf((entityName)));
+		
 		Map<String, AttributeInterface> enumAttributeMap = (HashMap<String, AttributeInterface>)
-				request.getSession().getAttribute(Constants.ENUMRATED_ATTRIBUTE);
-		AttributeInterface attribute = (AttributeInterface) enumAttributeMap
-				.get(Constants.ATTRIBUTE_INTERFACE + componentId);
+		request.getSession().getAttribute(Constants.ENUMRATED_ATTRIBUTE);
+		
+		AttributeInterface attribute = (AttributeInterface) 
+		enumAttributeMap.get(Constants.ATTRIBUTE_INTERFACE + componentId);
 
 		if (targetVocab != null)
 		{
 			// AJAX Request handler for Getting Mapping data for source to target vocabulries
-			String html = getMappedVocabDataAsHTML(targetVocab, attribute, entity);
-			response.getWriter().write(html);
+			String htmlResponse = getMappingForTargetVocab(targetVocab, attribute, entity);
+			response.getWriter().write(htmlResponse);
 			return null;
 		}
-		
-		generatePermValueHTMLForMED(attribute, entity, componentId, request);
+		//new request for entity; remove the message from the session 
+		request.getSession().removeAttribute(Constants.MESSAGE_SRC_VOCAB);
+		getPVsFromSourceVocab(attribute, entity, componentId, request);
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
 	}
 		/**
@@ -86,7 +89,7 @@ public class SearchMappedPVsAction extends Action
 	 * @throws VocabularyException
 	 * @throws PVManagerException
 	 */
-	private void generatePermValueHTMLForMED(AttributeInterface attribute, EntityInterface entity,
+	private void getPVsFromSourceVocab(AttributeInterface attribute, EntityInterface entity,
 			String componentId, HttpServletRequest request) throws VocabularyException,
 			PVManagerException
 	{
@@ -99,21 +102,23 @@ public class SearchMappedPVsAction extends Action
 		List<IConcept> pvList = bizLogic.getConfiguredPermissibleValueList(attribute, entity);
 		String vocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
 		String vocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
-		String vocabDisName = getDisplayNameForVocab(vocabName, vocabVer);
-		int displayPVCount=1;
+		String vocabDisName = bizLogic.getDisplayNameForVocab(vocabName, vocabVer);
 		html.append(bizLogic.getRootVocabularyNodeHTML(vocabName, vocabVer, vocabDisName));
-		for(IConcept concept:pvList)
+		if(pvList!=null)
+		{
+			for(IConcept concept:pvList)
 			{
 				String id = vocabName + "@" + vocabVer + ":" + concept.getCode();
-				html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, vocabVer, concept,id));
-				displayPVCount++;
+				html.append(bizLogic.getHTMLForConcept(vocabName, vocabVer, concept,id));
 			}
-		if(pvList!=null && pvList.size()==count)// Need to show only specified number of Concepts on UI
-		{
-			html.append(bizLogic.getMessage(count));
+			html.append(bizLogic.getEndHTML());
+			if( pvList.size()==count)// Need to show Message Too Many Result on UI 
+			{
+				request.getSession().setAttribute(Constants.MESSAGE_SRC_VOCAB, bizLogic.getInfoMessage()
+						.replace("MSG$-$",""));
+			}
 		}
-		html.append(bizLogic.getEndHTML());
-			
+		//set the data in session because need to show this data on page load
 		request.getSession().setAttribute(Constants.MED_PV_HTML, html.toString());
 		request.getSession().setAttribute(Constants.VOCABULIRES, bizLogic.getVocabulries());
 		if (componentId != null)
@@ -131,7 +136,7 @@ public class SearchMappedPVsAction extends Action
 	 * @throws VocabularyException
 	 * @throws PVManagerException
 	 */
-	private String getMappedVocabDataAsHTML(String targetVocab, AttributeInterface attribute,
+	private String getMappingForTargetVocab(String targetVocab, AttributeInterface attribute,
 			EntityInterface entity) throws VocabularyException, PVManagerException
 	{
 
@@ -139,20 +144,23 @@ public class SearchMappedPVsAction extends Action
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		String sourceVocabulary = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
 		String sourceVocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
+		// Get the target vocabulary info from parameter
 		String targetVacbArray[] = targetVocab.split("#");
 		String targetVocabName = targetVacbArray[0];
 		String targetVocabVer = targetVacbArray[1];
 		String targetVocabURN = targetVacbArray[2];
+		String targetVocabDisName = targetVacbArray[3];
 		IVocabulary targetVocabulary = new Vocabulary(targetVocabName, targetVocabVer,targetVocabURN);
+		
 		StringBuffer html = new StringBuffer();
 		if (!sourceVocabulary.equalsIgnoreCase(targetVocabName)
 					|| !sourceVocabVer.equalsIgnoreCase(targetVocabVer))
 			{
 				html.append(bizLogic.getRootVocabularyNodeHTML(targetVocabName, targetVocabVer,
-						getDisplayNameForVocab(targetVocabName, targetVocabVer)));
+						targetVocabDisName));
 				Map<String, List<IConcept>> vocabMappings = bizLogic.getMappedConcepts(attribute,
 						targetVocabulary, entity);
-				getMappingDataAsHTML(html, targetVocabName, targetVocabVer, vocabMappings);
+				html.append(getMappedHTMLForTargetVocab(targetVocabName, targetVocabVer, vocabMappings));
 	
 			}
 
@@ -167,11 +175,12 @@ public class SearchMappedPVsAction extends Action
 	 * @throws VocabularyException 
 	 * @throws NumberFormatException 
 	 */
-	private void getMappingDataAsHTML(StringBuffer html, String vocabName, String vocabversoin,
+	private StringBuffer getMappedHTMLForTargetVocab(String vocabName, String vocabversoin,
 			Map<String, List<IConcept>> vocabMappings) throws NumberFormatException, VocabularyException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
+		StringBuffer mappedHTML=new StringBuffer();
 		int displayPVCount=1;
 		boolean isMsgDisplayed=false;
 		int count=Integer.parseInt(VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
@@ -192,13 +201,13 @@ public class SearchMappedPVsAction extends Action
 					{
 						//we need to use the MED Concept code with mapped values
 					String checkboxId = vocabName + "@" + vocabversoin + ":" + conceptCode;
-					html.append(bizLogic.getMappedVocabularyPVChildAsHTML(vocabName, vocabversoin,
+					mappedHTML.append(bizLogic.getHTMLForConcept(vocabName, vocabversoin,
 							concept, checkboxId));
 					displayPVCount++;
 					}
 					else
 					{
-						html.append(bizLogic.getMessage(count));
+						mappedHTML.append(bizLogic.getInfoMessage());
 						isMsgDisplayed=true;
 						break;//break inner loop
 					}
@@ -212,37 +221,12 @@ public class SearchMappedPVsAction extends Action
 		}
 		else
 		{
-			html.append(bizLogic.getNoMappingFoundHTML());
+			mappedHTML.append(bizLogic.getNoMappingFoundHTML());
 		}
-		html.append(bizLogic.getEndHTML());
+		mappedHTML.append(bizLogic.getEndHTML());
+		
+		return mappedHTML;
 	}
 
-	/**
-	 * This method returns the display name for given vocabulary Name and vocabulary version
-	 * @param vocabName
-	 * @param vocabVer
-	 * @return
-	 * @throws VocabularyException
-	 */
-	private String getDisplayNameForVocab(String vocabName, String vocabVer)
-			throws VocabularyException
-	{
-		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
-				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		List<IVocabulary> vocabularies = bizLogic.getVocabulries();
-		String vocabDisName = "";
-		for (IVocabulary vocabulary : vocabularies)
-		{
-			if (vocabulary.getName().equals(vocabName) && vocabulary.getVersion().equals(vocabVer))
-			{
-				vocabDisName = vocabulary.getDisplayName();
-				break;
-			}
-		}
-		if (vocabDisName.equals(""))
-		{
-			throw new VocabularyException("Could not find the vocabulary.");
-		}
-		return vocabDisName;
-	}
+	
 }
