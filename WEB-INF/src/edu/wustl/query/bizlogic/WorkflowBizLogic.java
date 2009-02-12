@@ -196,6 +196,10 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	 */
 	protected boolean validate(Object obj, DAO dao, String operation) throws DAOException
 	{
+		if(obj == null)
+		{
+			throw new DAOException("NULL object passed for validation");
+		}
 		Workflow workflow = (Workflow) obj;
 
 		//validat eempty workflow
