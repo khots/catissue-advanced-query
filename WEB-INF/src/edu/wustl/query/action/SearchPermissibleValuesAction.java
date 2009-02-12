@@ -49,30 +49,38 @@ public class SearchPermissibleValuesAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		
-		String searchTerm = request.getParameter("searchTerm");
-		String targetVocabsForSearchTerm = request.getParameter("targetVocabsForSearchTerm");
+		String searchTerm = request.getParameter(Constants.SEARCH_TERM);
+		String operation = request.getParameter(Constants.OPERATION);
+		String targetVocabs = request.getParameter("targetVocabsForSearchTerm");
 		//get the id of the component on which user click to search for PVs
-		String componentId = request.getParameter("componentId");
+		String componentId = request.getParameter(Constants.COMPONENT_ID);
 		if (componentId == null)
 		{
 			//need to save componetid into the session for next Ajax requests
 			componentId = (String) request.getSession().getAttribute(Constants.COMPONENT_ID);
 		}
 		
-		if (searchTerm != null && targetVocabsForSearchTerm != null)
+		if (searchTerm != null && targetVocabs != null)
 		{
 			// AJAX Request handler for Getting search term Result data for source to target vocabularies
 			SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
-					.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-			try
+			.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
+			if(operation.equals(Constants.ABORT))
 			{
-				searchTerm=searchTerm.trim();
-				String html = getSearchedVocabDataAsHTML(searchTerm, targetVocabsForSearchTerm,componentId,request);
-				response.getWriter().write(html);
+				response.getWriter().write(VocabUtil.getVocabProperties().getProperty("abort.message"));
 			}
-			catch (VocabularyException e)
+			else
 			{
-				response.getWriter().write(bizLogic.getErrorMessageAsHTML());
+				try
+				{
+					searchTerm=searchTerm.trim();
+					String html = searchTermInTargetVocab(searchTerm, targetVocabs,componentId,request);
+					response.getWriter().write(html);
+				}
+				catch (VocabularyException e)
+				{
+					response.getWriter().write(bizLogic.getErrorMessageAsHTML());
+				}
 			}
 			
 		}
@@ -82,45 +90,48 @@ public class SearchPermissibleValuesAction extends Action
 	 * This method will search for the entered text by the user across all the vocabularies
 	 * and return the HTML for the searched result
 	 * @param searchTerm
-	 * @param targetVocabsForSearchTerm
+	 * @param targetVocabs
 	 * @param request 
 	 * @param componentId 
 	 * @return
 	 * @throws VocabularyException
 	 * @throws PVManagerException 
 	 */
-	private String getSearchedVocabDataAsHTML(String searchTerm, String targetVocabsForSearchTerm, String componentId, HttpServletRequest request)
+	@SuppressWarnings("unchecked")
+	private String searchTermInTargetVocab(String searchTerm, String targetVocabs, String componentId, HttpServletRequest request)
 			throws VocabularyException, PVManagerException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		StringBuffer html = new StringBuffer();
-		StringTokenizer token = new StringTokenizer(targetVocabsForSearchTerm, "@");
+		
+		StringTokenizer allTrgVocabs = new StringTokenizer(targetVocabs, "@");
 		
 		String entityName = (String) request.getSession().getAttribute(Constants.ENTITY_NAME);
 		Entity entity = (Entity) EntityCache.getCache().getEntityById(Long.valueOf((entityName)));
+		
 		Map<String, AttributeInterface> enumAttributeMap = (HashMap<String, AttributeInterface>)
-				request.getSession().getAttribute(Constants.ENUMRATED_ATTRIBUTE);
+		request.getSession().getAttribute(Constants.ENUMRATED_ATTRIBUTE);
 		AttributeInterface attribute = (AttributeInterface) enumAttributeMap
-				.get(Constants.ATTRIBUTE_INTERFACE + componentId);
+		.get(Constants.ATTRIBUTE_INTERFACE + componentId);
 		
 		List<PermissibleValueInterface> pvList=bizLogic.getPermissibleValueListFromDB(attribute, entity);
 		int count=Integer.parseInt(VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
-		while (token.hasMoreTokens())
+		while (allTrgVocabs.hasMoreTokens())
 		{
-			String[] vocabFullName = token.nextToken().split(":");
-			String vocabName = vocabFullName[0];
-			String vocabVersion = vocabFullName[1];
+			String[] vocabDetail = allTrgVocabs.nextToken().split(":");
+			String vocabName = vocabDetail[0];
+			String vocabVersion = vocabDetail[1];
+			String vocabDisName = vocabDetail[2];
+			
 			html.append(bizLogic.getRootVocabularyHTMLForSearch("srh_" + vocabName, vocabVersion,
-					getDisplayNameForVocab(vocabName, vocabVersion)));
-			List<IConcept> conceptList = bizLogic
-					.searchConcept(searchTerm, vocabName, vocabVersion);
+																vocabDisName));
+			List<IConcept> conceptList = bizLogic.searchConcept(searchTerm, vocabName, vocabVersion);
 			int displayPVCount=1;
 			if (conceptList != null && conceptList.size()!=0)
 			{
 				for(IConcept concept:conceptList)
 				{
-					//TODO need to change into MED concept code when API will be completed
 					IConcept sourceConcept=null;
 					String status=isSourceVocabMappedTerm(concept,pvList,sourceConcept) ;
 					IConcept medRelatedConcept =sourceConcept;
@@ -136,13 +147,13 @@ public class SearchPermissibleValuesAction extends Action
 					
 					if(displayPVCount<=count)// Need to show only specified number of Concepts on UI
 					{
-					 html.append(bizLogic.getSearchedVocabPVChildAsHTML("srh_" + vocabName,
+					 html.append(bizLogic.getHTMLForSearchedConcept("srh_" + vocabName,
 							vocabVersion, concept,"srh_"+checkboxId,status));
 					 displayPVCount++;
 					}
 					else
 					{
-						html.append(bizLogic.getMessage(count));
+						html.append(bizLogic.getInfoMessage());
 						break;
 					}
 				}
@@ -193,7 +204,6 @@ public class SearchPermissibleValuesAction extends Action
 				 */
 				status="Normal_Disabled";
 			}
-				
 		}
 		else
 		{
@@ -208,7 +218,6 @@ public class SearchPermissibleValuesAction extends Action
 				 * and its is  valid PV for entity then show text bold with enabled.
 				 */
 				 status="Normal_Bold_Enabled";
-			 
 			}
 			else if(concepts!=null && sourceConcept==null )
 			{
@@ -223,40 +232,8 @@ public class SearchPermissibleValuesAction extends Action
 				 * then show text Italic Normal and Disabled;  
 				 */
 				 status="Normal_Italic_Disabled";
-				
 			}
-			
-
 		}
 		return status;
 	}
-	/**
-	 * This method returns the display name for given vocabulary Name and vocabulary version
-	 * @param vocabName
-	 * @param vocabVer
-	 * @return
-	 * @throws VocabularyException
-	 */
-	private String getDisplayNameForVocab(String vocabName, String vocabVer)
-			throws VocabularyException
-	{
-		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
-				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		List<IVocabulary> vocabularies = bizLogic.getVocabulries();
-		String vocabDisName = "";
-		for (IVocabulary vocabulary : vocabularies)
-		{
-			if (vocabulary.getName().equals(vocabName) && vocabulary.getVersion().equals(vocabVer))
-			{
-				vocabDisName = vocabulary.getDisplayName();
-				break;
-			}
-		}
-		if (vocabDisName.equals(""))
-		{
-			throw new VocabularyException("Could not find the vocabulary.");
-		}
-		return vocabDisName;
-	}
-	
 }
