@@ -6,7 +6,7 @@
 <%@page import="edu.wustl.common.vocab.IVocabulary"%>
 <%@page import="edu.wustl.common.vocab.utility.VocabUtil"%>
 <%@page import="edu.wustl.query.domain.SelectedConcept"%>
-<%@page import="edu.wustl.query.util.global.VIProperties"%>
+
 <%@ page language="java" isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
@@ -27,8 +27,7 @@
 	<script>
 	<%String srcVocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
 	String srcVocabVersion = VocabUtil.getVocabProperties().getProperty("source.vocab.version"); 
-	String srcVocaburn=VIProperties.sourceVocabUrn;
-	System.out.println("srcVocaburn---"+srcVocaburn);
+	String sourceVocabMessage =(String)request.getSession().getAttribute(Constants.MESSAGE_SRC_VOCAB); 
 	%>
 	// selectedPvs will store that appears right side of the page
 	selectedPvs =new Array();
@@ -38,7 +37,7 @@
 	numberOfPvs=0;
 	//variable is used to set the current status of mode
 	set_mode="Mapping";
-	
+	var label;
 	/*to close the model widow*/
 function cancelWindow()
 {
@@ -246,6 +245,7 @@ function refreshWindow(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 	if(set_mode=="Mapping")
 	{
 		
+		var vocabDisplayName=document.getElementById("hidden_"+vocabName+":"+vocabVer).value;
 		document.getElementById("divForMappingMode").style.display = '';
 		document.getElementById("divForSearchingMode").style.display = 'none';
 		var request = newXMLHTTPReq(); 
@@ -263,13 +263,12 @@ function refreshWindow(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 			var innerData=document.getElementById(selectedCheckedBoxVocabDivID).innerHTML;
 			 if(document.getElementById(selectedCheckedBoxVocabDivID).style.display == 'none' && innerData.length==0)
 				{
-					label=document.getElementById("searhLabel");
 					label.innerHTML="Please Wait.....";
 					waitCursor();
 					
 					 document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
 					 // send request only first time when user click on the check box for other click  just hide and show the div 
-					var param = "selectedCheckBox"+"="+vocabName+"#"+vocabVer+"#"+vocabURN;
+					var param = "selectedCheckBox"+"="+vocabName+"#"+vocabVer+"#"+vocabURN+"#"+vocabDisplayName;
 					var actionUrl="SearchMappedPV.do";
 					request.onreadystatechange=function(){setSelectedVocabDataInDIV(request,selectedCheckedBoxVocabDivID)};
 					request.open("POST",actionUrl,true);
@@ -324,8 +323,19 @@ function setSelectedVocabDataInDIV(request,selectedCheckedBoxVocabDivID)
 		if(request.status == 200)
 		{	
 			var responseTextValue =  request.responseText;	
-			document.getElementById(selectedCheckedBoxVocabDivID).innerHTML=responseTextValue;
-			label.innerHTML="";
+			var searchHTML=responseTextValue.split("MSG$-$");
+			if(searchHTML.length>1)
+			{
+				document.getElementById(selectedCheckedBoxVocabDivID).innerHTML=searchHTML[0];
+				label.innerHTML=searchHTML[1];
+			//document.getElementById(selectedCheckedBoxVocabDivID).innerHTML=responseTextValue;
+			//label.innerHTML="";
+			}
+			else
+			{
+				document.getElementById(selectedCheckedBoxVocabDivID).innerHTML=responseTextValue;
+				label.innerHTML="";
+			}
 			hideCursor();
 		}
 	}
@@ -435,18 +445,23 @@ function checkedUncheckedAllPvs(vocabName)
 	
 /***************************************************** Searching  Term Methods*******************************/
 //method to search for the given term in vocabularies
-function serachForTermInVocab()
+
+var searchRequest = newXMLHTTPReq(); 
+var operationAborted=false;
+function serachForTermInVocab(operation)
 {
 	var searchTerm=document.getElementById("searchtextfield").value;
 	void(d=document);
 	var vocabCheckboxes=d.getElementsByName("vocabNameAndVersionCheckbox");
+	
 	var targetVocabsForSearchTerm="";
 			
 			for(i=0;i<vocabCheckboxes.length;i++)
 			{
 				if(vocabCheckboxes[i].checked==1)
 				{
-					targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocabCheckboxes[i].value+"@";
+					var vocabDisplayName=document.getElementById("hidden_"+vocabCheckboxes[i].value).value;
+					targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocabCheckboxes[i].value+":"+vocabDisplayName+"@";
 					uncheckAllAndDeleteFromArray(vocabCheckboxes[i].id.replace("vocab_",""));
 				}
 			}
@@ -455,41 +470,66 @@ function serachForTermInVocab()
 	{
 	
 			label=document.getElementById("searhLabel");
+			var searchAbortButtonDiv=document.getElementById("searchAbortButtonDiv");
 		    label.innerHTML="  Searching .... Please Wait";
-		    waitCursor();
+			if(operation=="search") // if operation is search change the button to abort and set the flag
+			{
+				searchAbortButtonDiv.innerHTML="<a  href=\"javascript:serachForTermInVocab('abort');\"><img src='images/advancequery/b_abort.gif' border='0' alt='abort' ></a>";
+				operationAborted=false;
+			}
+			else // if operation is abort change the button to search and set the flag
+			{
+				searchAbortButtonDiv.innerHTML="<a  href=\"javascript:serachForTermInVocab('search');\"><img src='images/advancequery/b_go.gif' border='0' alt='abort' ></a>";
+				searchRequest.abort();
+				operationAborted=true;
+			}
 			
-			var request = newXMLHTTPReq(); 
-			if(request == null)
+		    waitCursor();
+			if(searchRequest == null)
 			{
 				alert ("Your browser does not support AJAX!");
 				return;
 			}
 			// send request only first time when user click on the check box for other click  just hide and show the div 
-			var param = "searchTerm="+searchTerm+"&targetVocabsForSearchTerm="+targetVocabsForSearchTerm;
+			var param = "searchTerm="+searchTerm+"&targetVocabsForSearchTerm="+targetVocabsForSearchTerm+"&operation="+operation;
 			var actionUrl="SearchPermissibleValues.do";
-			request.onreadystatechange=function(){getSearchTermResult(request)};
-			request.open("POST",actionUrl,true);
-			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-			request.send(param);
+			searchRequest.onreadystatechange=function(){getSearchTermResult(searchRequest)};
+			searchRequest.open("POST",actionUrl,true);
+			searchRequest.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			searchRequest.send(param);
 	}
 }
 	
-function getSearchTermResult(request)
+function getSearchTermResult(searchRequest)
  {
-	if(request.readyState == 4)  
+	
+	if(searchRequest.readyState == 4)  
 	{	  		
-		if(request.status == 200)
+		if(searchRequest.status == 200)
 		{	
-			var responseTextValue =  request.responseText;
+			var responseTextValue =  searchRequest.responseText;
 			set_mode="Searching"
 			document.getElementById("divForMappingMode").style.display = 'none';
 			document.getElementById("divForSearchingMode").style.display = '';
-			document.getElementById("divForSearchingMode").innerHTML=responseTextValue;
-			label.innerHTML="";
+			if( ! operationAborted)
+			{ 
+				// if user has not aborted the requrest then set the html result to div and clear the search message from message label
+				searchHTML=responseTextValue.split("MSG$-$");
+				document.getElementById("divForSearchingMode").innerHTML=searchHTML[0];
+				label.innerHTML=searchHTML[1];
+			}
+			else
+			{
+				// if user has  aborted the request then set the aborted successfully message to message label
+				label.innerHTML=responseTextValue;
+			}
+			var searchAbortButtonDiv=document.getElementById("searchAbortButtonDiv");
+			searchAbortButtonDiv.innerHTML="<a  href=\"javascript:serachForTermInVocab('search');\"><img src='images/advancequery/b_go.gif' border='0' alt='abort' ></a>";
 			hideCursor();
 		}
 	}
 };
+
 function isVocabSelected(targetVocabsForSearchTerm)
 {
 	
@@ -511,6 +551,7 @@ function restoreDefault()
 	document.getElementById("divForSearchingMode").style.display = 'none';
 	document.getElementById("divForSearchingMode").innerHTML="";
 	document.getElementById("searchtextfield").value="";
+	label.innerHTML="";
 	
 	var targetVocabsForMappingMode="";
 	void(d=document);
@@ -536,6 +577,7 @@ function restoreDefault()
 };
 function editSelectedPV()
 {
+	label=document.getElementById("searhLabel");
 	<%List<SelectedConcept> selectedConcepts = (ArrayList)request.getSession().getAttribute(Constants.SELECTED_CONCEPT_LIST);
 	if(selectedConcepts!=null)
 	{	
@@ -555,7 +597,13 @@ function editSelectedPV()
 		{
 			document.getElementById("deactivateDiv").innerHTML="<a href='javascript:addPvsToCondition();'><img id='okImage' src='images/advancequery/b_ok.gif' border='0' alt='OK' width='44' height='23'></a>";
 		}
-	<%}%>
+	<%}
+		if(sourceVocabMessage!=null)
+		{
+		%>
+			//set the messgage if concept code greater then configured value
+			label.innerHTML='<%=sourceVocabMessage%>';
+		<%}%>
 };
 
 </script>
@@ -570,19 +618,24 @@ function editSelectedPV()
 			<td class="content_txt_bold" nowrap>Select Vocabulary: &nbsp;&nbsp;</td>
 			<c:set var="srcVocabName" value="<%=srcVocabName%>"/>
 			<c:set var="srcVocabVer" value="<%=srcVocabVersion%>"/>
-			<c:set var="srcVocaburn" value="<%=srcVocaburn%>"/>
 
 			<logic:iterate name="Vocabulries" id="vocabs">
 					<c:choose>
-						<c:when test="${vocabs.vocabURN eq srcVocaburn}">
-							
-								<td><input type="checkbox"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.name}${vocabs.version}" value="${vocabs.name}:${vocabs.version}"   
-								onclick= "refreshWindow(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');" checked='true'></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;</td>			
-							
+						<c:when test="${vocabs.name eq srcVocabName}">
+							<c:if test="${vocabs.version eq srcVocabVer}" >
+								<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.name}${vocabs.version}" value="${vocabs.name}:${vocabs.version}"   
+								onclick= "refreshWindow(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');" checked='true'></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;
+								<input type="hidden"id="hidden_${vocabs.name}:${vocabs.version}" value="${vocabs.displayName}"/>
+
+								</td>			
+								
+							</c:if>
 						</c:when>
 						<c:otherwise>
-									<td><input type="checkbox"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.name}${vocabs.version}" value="${vocabs.name}:${vocabs.version}"   
-								onclick= "refreshWindow(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');"></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;</td>		
+								<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.name}${vocabs.version}" value="${vocabs.name}:${vocabs.version}"   
+								onclick= "refreshWindow(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');"></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;
+								<input type="hidden"id="hidden_${vocabs.name}:${vocabs.version}" value="${vocabs.displayName}"/>
+								</td>		
 						</c:otherwise>
 				</c:choose>
 			
@@ -593,11 +646,14 @@ function editSelectedPV()
 		</td>
 	</tr>
 	<tr>
-	    <td height="35" valign="top">
+	    <td height="35" valign="top" colspan="3">
 			<table height="30" border="0" cellpadding="0" cellspacing="0">
 		     <tr><td><label><input name="searchtextfield" type="text" class="texttype" id="searchtextfield" value=""></label></td>
 				<td>&nbsp;</td>
-				<td><a  href='javascript:serachForTermInVocab();'><img src="images/advancequery/b_go.gif" border='0' alt="Go" ></a></td>
+				<td><div id="searchAbortButtonDiv"><a href="javascript:serachForTermInVocab('search');"><img src="images/advancequery/b_go.gif" border="0" alt="Go"></a></div></td>
+				<!--<td><a  href="javascript:serachForTermInVocab('search');"><img src="images/advancequery/b_go.gif" border='0' alt="Go" ></a>
+				<a  href="javascript:serachForTermInVocab('abort');"><img src="images/advancequery/b_abort.gif" border='0' alt="abort" ></a>
+				</td>-->
 				<td style="padding-left:10px"><a href='javascript:doNothing();' onclick='restoreDefault();' ><img src="images/advancequery/b_restore_defaults.gif" border='0' alt="Restore Default" ></a></td>
 				<!-- <td id="searhLabel" class="content_txt"  align="right" style="padding-left:10px;color:blue">&nbsp;</td>  -->
 				</tr>
@@ -633,18 +689,17 @@ function editSelectedPV()
 					
 					<logic:iterate name="Vocabulries" id="vocabs">
 					<c:choose>
-						<c:when test="${vocabs.vocabURN eq srcVocaburn}">
-							
+						<c:when test="${vocabs.name eq srcVocabName}">
+							<c:if test="${vocabs.version eq srcVocabVer}" >
 								<tr>
 								<td valign="top">
 									<div id="main_div_vocab_${vocabs.name}${vocabs.version}" style="">
-									<% String treeData = (String)request.getSession().getAttribute(Constants.MED_PV_HTML);
-									System.out.println("treeData------------"+treeData);%>
+									<% String treeData = (String)request.getSession().getAttribute(Constants.MED_PV_HTML); %>
 									<%=treeData%>
 									</div>
 								</td>
 								</tr>
-							
+							</c:if>
 						</c:when>
 						<c:otherwise>
 								<tr>
