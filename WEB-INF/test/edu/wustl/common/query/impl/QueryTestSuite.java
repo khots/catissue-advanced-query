@@ -9,7 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 
 @RunWith(value = Suite.class)
-@SuiteClasses(value = {XQueryGeneratorTest.class})
+@SuiteClasses(value = {edu.wustl.query.bizlogic.WorkflowBizLogicTestCases.class})
 public class QueryTestSuite
 {
 	
