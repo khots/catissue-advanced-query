@@ -3,7 +3,11 @@
  */
 package edu.wustl.query.bizlogic;
 
+import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.bizlogic.QueryBizLogic;
 import edu.wustl.common.exception.BizLogicException;
+import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.Constants;
@@ -154,9 +158,41 @@ public class WorkflowBizLogicTestCases extends QueryBaseTestCases
 				workflow = (Workflow)workflowList.get(0);
 				workflow.setName("Updated Workflow from test case"+ new Date());
 			
-				workflowBizLogic.insert(workflow, getSessionData(), Constants.HIBERNATE_DAO);
+				workflowBizLogic.update(workflow, Constants.HIBERNATE_DAO);
 				assertTrue("Workflow updated successfully",true);
 			}
+		}
+		catch (UserNotAuthorizedException e)
+		{
+			fail();
+		}
+		catch (BizLogicException e)
+		{
+			fail();
+		}
+		catch (DAOException e)
+		{
+			fail();
+		}
+	}
+	
+	public void testAddWorkflowItem()
+	{
+		Long workflowId =null;
+		QueryBizLogic queryBizLogic = new QueryBizLogic();
+		WorkflowBizLogic workflowBizLogic = new WorkflowBizLogic();
+		ParameterizedQuery queryOperandOne = new ParameterizedQuery();
+		queryOperandOne.setName("Added WorkflowItem");
+		try
+		{
+			queryBizLogic.insert(queryOperandOne,getSessionData(), Constants.HIBERNATE_DAO);
+			List workflowList = workflowBizLogic.retrieve(Workflow.class.getName());
+			if(workflowList!=null && workflowList.size()>0)
+			{
+				workflowId = ((Workflow)workflowList.get(0)).getId();
+			}
+			workflowBizLogic.addWorkflowItem(workflowId,queryOperandOne,getSessionData());
+			assertTrue("Workflow Item added successfully",true);
 		}
 		catch (UserNotAuthorizedException e)
 		{
