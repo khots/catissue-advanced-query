@@ -72,6 +72,13 @@
 	{
 		window.parent.frames[1].location = "ShowGrid.do?pageOf=pageOfQueryModule&nodeId="+id;
 	}
+	 function showWorkFlowWizard()
+ {
+   document.forms[0].action="RedirectToWorkflow.do"
+   document.forms[0].submit();
+ }
+	
+	
 	function showChildNodes(outputTreeStr)
 	{
 		var nodes = outputTreeStr.split("|");
@@ -1182,9 +1189,13 @@
 		var textBoxId1 = document.getElementById("rowMsg");
 		var element = document.getElementById('validationMessages');
 		var row = document.getElementById(rowId);
-		var titleErrorId	= 'titleError';
-		var titleError		= document.getElementById(titleErrorId);
-		titleError.innerHTML = "";
+		var titleError;
+		if(document.getElementById("titleError")!=null)
+		{
+		  var titleErrorId	= 'titleError';
+		  titleError		= document.getElementById(titleErrorId);
+		  titleError.innerHTML = "";
+	   }
 		closeWaitPage();
 		row.innerHTML = "";
 		if(text == "")
@@ -1362,7 +1373,14 @@
 		else if(action=='save')
 		{
 			waitCursor();
-			var url = "LoadSaveQueryPage.do";
+			var pageof="";
+			var workflow="";
+			 
+			 if(document.getElementById("isWorkflow")!=null)
+			  workflow=document.getElementById("isWorkflow").value;
+			 if(document.getElementById("pageOf")!=null) 
+              pageof=document.getElementById("pageOf").value; 
+			 var url = "LoadSaveQueryPage.do?isWorkflow="+workflow+"&pageOf="+pageof;
 			platform = navigator.platform.toLowerCase();
 		    if (platform.indexOf("mac") != -1)
 			{
@@ -1412,7 +1430,7 @@
 			 var request = newXMLHTTPReq();			
 	         var handlerFunction = getReadyStateHandler(request,displayValidationMessage,true);	
 	         request.onreadystatechange = handlerFunction;
-		 	 var url='ValidateDefineView.do?queyTitle='+(document.getElementById("queryTitle1").value);
+		 	 var url='ValidateDefineView.do?pageOf=DefineFilter&isWorkflow=true';
 			 var actionURL="";
 		     request.open("POST",url,true);	
 		     request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
@@ -1429,7 +1447,10 @@
 	function previousFromDefineResults()
 	{
 		waitCursor();
-		var action ="SearchCategory.do";
+		if(document.getElementById("workflow")!=null)	
+	 	  var action ="SearchCategory.do?workflow="+(document.getElementById("workflow").value);
+	    else
+        var action="SearchCategory.do";
 		document.forms[0].action=action;
 		document.forms[0].isQuery.value = "true";  // change for flex
 		document.forms[0].currentPage.value = "prevToAddLimits";
@@ -1704,8 +1725,15 @@ var jsReady = false;
 		  {
 	//		showWaitPage();
 		  }
-		  var project = document.forms['categorySearchForm'].selectedProject.value;
-	      var url = "ValidateQuery.do?queyTitle="+(document.getElementById("queryTitle1").value)+"&selectedProject="+project;
+		  var project;
+		     if(document.getElementById("queryTitle1")!=null)
+		     {
+		      if( document.forms['categorySearchForm'].selectedProject!=null)
+		       var project = document.forms['categorySearchForm'].selectedProject.value;
+		      var url = "ValidateQuery.do?queyTitle="+(document.getElementById("queryTitle1").value)+"&selectedProject="+project;
+		     }
+		     else
+		       var url = "ValidateQuery.do?pageOf="+(document.getElementById("pageOf").value);
 		  request.open("POST",url,true);	
 		  request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 		  request.send(actionURL);		
@@ -1718,7 +1746,11 @@ var jsReady = false;
         if(text == "DefineView")
 		{
 		  waitCursor();
-		  document.forms['categorySearchForm'].action='DefineSearchResultsView.do';
+		 var isworkflow=document.getElementById("isWorkflow");
+		 if(isworkflow!=null)
+		    document.forms['categorySearchForm'].action='DefineSearchResultsView.do?isWorkflow='+isworkflow.value;
+		   else
+		    document.forms['categorySearchForm'].action='DefineSearchResultsView.do';
 		  document.forms['categorySearchForm'].submit();
 		  hideCursor();		
 		}
