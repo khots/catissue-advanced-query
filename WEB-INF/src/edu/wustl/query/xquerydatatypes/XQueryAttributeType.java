@@ -1,18 +1,14 @@
-package edu.wustl.query.xquerydatatypes;
 
+package edu.wustl.query.xquerydatatypes;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-
-import edu.common.dynamicextensions.entitymanager.DataTypeInformation;
-import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 
 /**
  * This is a Singleton class which parses the XML file that consists of mapping between PrimitiveAttribute 
@@ -29,7 +25,7 @@ public class XQueryAttributeType
 	/**
 	 * 
 	 */
-	private static XQueryAttributeType xqueryAttributeType = null;
+	private static XQueryAttributeType xqueryAttrType = null;
 
 	/**
 	 * 
@@ -49,16 +45,19 @@ public class XQueryAttributeType
 	 * @throws XQueryDataTypeInitializationException 
 	 * @throws DataTypeFactoryInitializationException on Exception
 	 */
-	public static synchronized XQueryAttributeType getInstance() throws XQueryDataTypeInitializationException
+	public static XQueryAttributeType getInstance() throws XQueryDataTypeInitializationException
 	{
-		if (xqueryAttributeType == null)
+		synchronized (xqueryAttrType)
 		{
-			xqueryAttributeType = new XQueryAttributeType();
-			String xqueryDataTypeMappingFileName = "XQuery_Datatypes" + ".xml";
-			xqueryAttributeType.populateDataTypeMap(xqueryDataTypeMappingFileName);
+			if (xqueryAttrType == null)
+			{
+				xqueryAttrType = new XQueryAttributeType();
+				String xqueryDataTypeMappingFileName = "XQuery_Datatypes" + ".xml";
+				xqueryAttrType.populateDataTypeMap(xqueryDataTypeMappingFileName);
+			}
 		}
-		
-		return xqueryAttributeType;
+
+		return xqueryAttrType;
 	}
 
 	/**
@@ -67,7 +66,8 @@ public class XQueryAttributeType
 	 * @return dataType Map
 	 * @throws DataTypeFactoryInitializationException on Exception
 	 */
-	public final Map<String, Object> populateDataTypeMap(String xmlFileName) throws XQueryDataTypeInitializationException
+	public final Map<String, Object> populateDataTypeMap(String xmlFileName)
+			throws XQueryDataTypeInitializationException
 	{
 		xqueryAttributeTypeMap = new HashMap<String, Object>();
 
@@ -82,9 +82,9 @@ public class XQueryAttributeType
 			Element name = null;
 			Element xqueryDataType = null;
 
-
 			Element xQueryAttributesElement = document.getRootElement();
-			Iterator xQueryDataTypeElementIterator = xQueryAttributesElement.elementIterator("XQuery-Datatype");
+			Iterator xQueryDataTypeElementIterator = xQueryAttributesElement
+					.elementIterator("XQuery-Datatype");
 
 			Element xQueryAttributeElement = null;
 
@@ -94,7 +94,7 @@ public class XQueryAttributeType
 
 				name = xQueryAttributeElement.element("name");
 				xqueryDataType = xQueryAttributeElement.element("datatype");
-				
+
 				XQueryDataTypeInformation xqueryDataTypeInfo = new XQueryDataTypeInformation();
 				xqueryDataTypeInfo.setName(name.getStringValue());
 				xqueryDataTypeInfo.setDataType(xqueryDataType.getStringValue());
@@ -109,8 +109,7 @@ public class XQueryAttributeType
 
 		return xqueryAttributeTypeMap;
 	}
-	
-	
+
 	/**
 	 * This method returns the name of the Database Data type given the name
 	 * of the corresponding Primitive attribute.
@@ -118,19 +117,21 @@ public class XQueryAttributeType
 	 * @return String The name of Database data type
 	 * @throws DataTypeFactoryInitializationException If dataTypeMap is not populated
 	 */
-	public String getDataType(String primitiveAttribute) throws XQueryDataTypeInitializationException
+	public String getDataType(String primitiveAttribute)
+			throws XQueryDataTypeInitializationException
 	{
 		String xQuerydataType = null;
 		if (xqueryAttributeTypeMap != null)
 		{
-			XQueryDataTypeInformation dataTypeInfo = (XQueryDataTypeInformation) xqueryAttributeTypeMap.get(primitiveAttribute);
+			XQueryDataTypeInformation dataTypeInfo = (XQueryDataTypeInformation) xqueryAttributeTypeMap
+					.get(primitiveAttribute);
 			xQuerydataType = (dataTypeInfo != null) ? dataTypeInfo.getDataType() : null;
 		}
 		else
 		{
 			throw new XQueryDataTypeInitializationException("Cannot find populated dataType Map.");
 		}
-		
+
 		return xQuerydataType;
 	}
 }
