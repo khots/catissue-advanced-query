@@ -11,8 +11,6 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 
-
-
 /**
  * Factory pattern for calling InheritanceUtil class methods.
  * @author prafull_kadam
@@ -26,19 +24,23 @@ public final class InheritanceUtils implements InheritanceUtilsInterface
 	 * constructor for singleton implementation.
 	 */
 	private InheritanceUtils()
-	{}
+	{
+	}
 
 	/**
 	 * @return the instance
 	 */
 	public static InheritanceUtilsInterface getInstance()
 	{
-		synchronized (instance){
-			if (instance == null)
+
+		if (instance == null)
+		{
+			synchronized (instance)
 			{
 				instance = new InheritanceUtils();
 			}
 		}
+
 		return instance;
 	}
 
