@@ -57,8 +57,8 @@
 	<td align="center">
 <table border="0"  width="100%" cellspacing="0" cellpadding="0"  bgColor="#FFFFFF" >	
 			<tr>
-				<td height="10" style="padding-left:15px;padding-top:3px" class='messagetexterror'>
-					<div id="titleError" style="overflow:auto; display:none"></div>
+				<td style="padding-left:15px;" class='messagetexterror'>
+					<div id="titleError" style="overflow:auto; padding-top:5px; padding-bottom:5px; display:none"></div>
 				</td>
 			</tr>
 			<tr>
@@ -69,10 +69,16 @@
 			</tr>
 			
 			<tr >
-			<td colspan="4" >
+			<td colspan="2" nowrap>
+			&nbsp;
+				<span class="content_txt_bold"><bean:message key="workflow.name"/></span>:<span class="content_txt">
+				<html:text styleClass="textfield_undefined" size="50" styleId="workflowName" property="workflowName" disabled="true"/></span>&nbsp;&nbsp;
+			</td>
+			
+			<td colspan="2" >
 				&nbsp;
 				<span class="content_txt_bold"><bean:message key="getcountquery.name"/></span><span class="red_star">*</span>:<span class="content_txt">
-				<html:text styleClass="textfield_undefined" size="80" styleId="queryTitle1" property="queryTitle" />&nbsp;&nbsp;</span>
+				<html:text styleClass="textfield_undefined" size="50" styleId="queryTitle1" property="queryTitle" /></span>
 			</td>
 			</tr>
 			<tr>
@@ -80,7 +86,7 @@
 				</td>
 			</tr>
 			<tr>	
-			<td  width="290" align="middle" valign="middle" height="32"  background="images/advancequery/top_bg_wiz.gif" >
+			<td  width="290" align="left" valign="middle" height="32"  background="images/advancequery/top_bg_wiz.gif" style="padding-left:105px" >
 				<img src="images/advancequery/tab_define_query_active.gif"/> <!-- width="118" height="25" /-->
 			</td>
 			
@@ -179,8 +185,14 @@
 							
 					  <table  border="0" cellspacing="0" cellpadding="0" >
 						<tr>
-							 <td   align="left"  style="padding-left:4px"><img src="images/advancequery/b_save.gif"  onclick="validateQuery('save');"/></td>
-							 <td style="padding-left:4px"><img src="images/advancequery/b_cancel.gif"  hspace="3" onclick="validateQuery('cancel');"/></td>
+							 <td align="left"  style="padding-left:4px" valign="top">
+								<a href="javascript:validateQuery('save');" >
+									<img border="0" alt="Save" src="images/advancequery/b_save.gif" />
+								</a>
+							 </td>
+							 <td style="padding-left:4px" valign="top">
+							 <a href="javascript:validateQuery('cancel');">
+							 <img   border="0" alt="Cancel" src="images/advancequery/b_cancel.gif"  onclick="validateQuery('cancel');"/></a></td>
 							<!-- <td style="padding-left:4px"><img src="images/advancequery/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td>-->
 						</tr>
 					 </table>
@@ -199,7 +211,10 @@
 								</c:forEach>
 							</SELECT>
 					    </td>
-						<td align="right"><img src="images/advancequery/b_get_count.gif" onclick="validateQuery('search');" /></td>
+						<td align="right">
+						<a href="javascript:validateQuery('search');" ><img alt="Get Counts" border='0' src="images/advancequery/b_get_count.gif" />
+						</a>
+						</td>
 					  </tr>
 					</table>
 					
