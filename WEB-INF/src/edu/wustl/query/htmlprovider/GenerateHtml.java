@@ -396,12 +396,17 @@ public class GenerateHtml
 			String attributeCollection, boolean isEditLimits)
 	{
 		StringBuffer generatedPreHTML = new StringBuffer(Constants.MAX_SIZE);
+		String buttonImg;
+		if(isEditLimits)
+			buttonImg = "t_edit_limits.gif";
+		else
+			buttonImg = "t_define_limits.gif";
 		//String header = Constants.DEFINE_SEARCH_RULES;
 		String html = "<table border=\"0\" width=\"100%\" height=\"30%\" background=\"images/advancequery/bg_content_header.gif\" " +
 					  "cellspacing=\"0\" cellpadding=\"0\" >" +
 					  "\n<tr height=\"2%\" >" +
-					  "<td  valign='top' height=\"2%\" class=\"grey_bold_big\" " +
-					  "colspan=\"8\" ><img src=\"images/advancequery/t_define_limits.gif\"  align=\"absmiddle\" />";
+					  "<td style=\"border-bottom: 1px solid #cccccc; \" valign='middle' height=\"2%\" class=\"grey_bold_big\" " +
+					  "colspan=\"8\" ><img src=\"images/advancequery/"+buttonImg+"\"  align=\"absmiddle\" />";
 		generatedPreHTML.append(html); 
 		generatedPreHTML.append(" '" + entityName + "'");
 		generatedPreHTML.append(endTD);
@@ -437,11 +442,11 @@ public class GenerateHtml
 			buttonCaption = "Edit Limit";
 			imgsrc="images/advancequery/b_edit_limit.gif";
 		}
-		html.append("\n<img src=\"" + imgsrc + "\"  id=\"" + buttonId
-				+ "\" onClick=\"produceQuery('" + buttonCaption
+		html.append("\n<a href=\"javascript:produceQuery('" + buttonCaption
 				+ "', 'addToLimitSet.do', 'categorySearchForm', '" + entityName + "','"
-				+ attributesStr + "')\" value=\"" + buttonCaption + "\"/>");
-		html.append(endTD);
+				+ attributesStr + "')\"><img border=\"0\" src=\"" + imgsrc + "\"  id=\"" + buttonId+"\" "
+				+ "value=\"" + buttonCaption + "\"/>");
+		html.append(endTD+"</a>");
 		return html.toString();
 	}
 	/**
