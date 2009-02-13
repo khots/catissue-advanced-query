@@ -175,7 +175,8 @@ public class SearchPermissibleValuesAction extends Action
 	
 		/********** Get HTML for Source Vocabulary************
 		 * need to ask about condition ;cause backend change*/ 
-		if(vocabName.equals(VocabUtil.getVocabProperties().getProperty("source.vocab.name")))
+		if(vocabName.equals(VocabUtil.getVocabProperties().getProperty("source.vocab.name"))
+				&& vocabName.equals(VocabUtil.getVocabProperties().getProperty("source.vocab.version")))
 		{
 		getHTML(orderedConcepts, vocabName, vocabVersion, html,Constants.MED_MAPPED_N_VALID_PVCONCEPT);
 		
