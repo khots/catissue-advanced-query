@@ -5,37 +5,39 @@
 package edu.wustl.common.query.queryobject.util;
 
 import java.util.Collection;
-
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AssociationInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.util.InheritanceUtil;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+
+
 
 /**
  * Factory pattern for calling InheritanceUtil class methods.
  * @author prafull_kadam
  */
-public class InheritanceUtils implements InheritanceUtilsInterface
+public final class InheritanceUtils implements InheritanceUtilsInterface
 {
 
 	private static InheritanceUtilsInterface instance = new InheritanceUtils();
 
 	/**
-	 * constructor for singolton implementation.
+	 * constructor for singleton implementation.
 	 */
-	protected InheritanceUtils()
-	{
-	}
+	private InheritanceUtils()
+	{}
 
 	/**
 	 * @return the instance
 	 */
 	public static InheritanceUtilsInterface getInstance()
 	{
-		if (instance == null)
-		{
-			instance = new InheritanceUtils();
+		synchronized (instance){
+			if (instance == null)
+			{
+				instance = new InheritanceUtils();
+			}
 		}
 		return instance;
 	}
