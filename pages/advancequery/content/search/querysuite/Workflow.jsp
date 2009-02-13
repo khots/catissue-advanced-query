@@ -273,13 +273,13 @@ function cancelWorkflow()
 function getCountdata()
 {
 	document.forms[0].forwardTo.value= "loadQueryPage";
-	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextpageOf=queryGetCount";
+	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextPageOf=queryGetCount";
 	document.forms[0].submit();
 }
 function getPatientdata()
 {
 	document.forms[0].forwardTo.value= "loadQueryPage";
-	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextpageOf=queryWizard";
+	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextPageOf=queryWizard";
 	document.forms[0].submit();
 }
 //-->
