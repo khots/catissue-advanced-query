@@ -61,7 +61,8 @@ public class GetCountAjaxHandlerAction extends Action
 				{
 					//retrieve the Selected Project from the GetCountPopUp.jsp
 					String selectedProject = request.getParameter(Constants.SELECTED_PROJECT);
-					request.setAttribute(Constants.SELECTED_PROJECT,selectedProject);
+					if(selectedProject!=null)
+						request.getSession().setAttribute(Constants.SELECTED_PROJECT,selectedProject);
 					
 					IQuery query = (IQuery)request.getSession().getAttribute(DAGConstant.QUERY_OBJECT);
 					AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(),request,query);
