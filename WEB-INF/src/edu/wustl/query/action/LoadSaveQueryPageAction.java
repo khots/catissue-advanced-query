@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
@@ -36,6 +37,18 @@ public class LoadSaveQueryPageAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+	    
+	     HttpSession session = request.getSession();
+		 String isworkflow= request.getParameter(Constants.IS_WORKFLOW);
+		 String pageOf= request.getParameter(Constants.PAGE_OF);
+		  request.setAttribute(Constants.PAGE_OF,pageOf);
+		//System.out.println("");
+		  if(Constants.TRUE.equals(isworkflow))
+		{	
+		  request.setAttribute(Constants.IS_WORKFLOW,Constants.TRUE);
+		  String workflowName= (String)request.getSession().getAttribute(Constants.WORKFLOW_NAME);
+		  request.setAttribute(Constants.WORKFLOW_NAME,workflowName);
+		} 
 		IQuery queryObject = (IQuery) request.getSession().getAttribute(
 				Constants.QUERY_OBJECT);
 		String target = Constants.FAILURE;
