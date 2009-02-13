@@ -39,6 +39,7 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
+import edu.wustl.query.bizlogic.WorkflowBizLogic;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
 import gov.nih.nci.security.exceptions.CSException;
@@ -102,6 +103,17 @@ public class SaveQueryAction extends BaseAction
 				new HibernateCleanser(queryClone).clean();
 				bizLogic.insertSavedQueries(queryClone, sessionDataBean, 
 						((SaveQueryForm)actionForm).isShareQuery());
+			// save query to workflow if it is a workflow query
+				String isworkflow = request.getParameter(Constants.IS_WORKFLOW);
+				if(isworkflow!=null && isworkflow.equals("true"))
+				{	
+				    String workflowId = (String)request.getSession().getAttribute(Constants.WORKFLOW_ID);
+					WorkflowBizLogic wfbzlogic = new WorkflowBizLogic();  
+					SessionDataBean sessionData = (SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA);
+					wfbzlogic.addWorkflowItem((long)Integer.valueOf(workflowId),queryClone,sessionData);
+				}
+						
+				
 				target = Constants.SUCCESS;
 				setActionErrors(request);
 				request.setAttribute(Constants.QUERY_SAVED, Constants.TRUE);
