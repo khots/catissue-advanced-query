@@ -111,8 +111,23 @@ public class CategorySearchForm extends ActionForm
 	 * title for defined queries
 	 */
 	private String queryTitle;
+	
+	/**
+	 * Name for WorkFlow
+	 */
+	private String workflowName;
 
 	
+	public String getWorkflowName() {
+		return workflowName;
+	}
+
+
+	public void setWorkflowName(String workflowName) {
+		this.workflowName = workflowName;
+	}
+
+
 	/**
 	 * @return the projectsNameValueBeanList
 	 */
