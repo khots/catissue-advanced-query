@@ -240,8 +240,9 @@ public class Workflow extends AbstractDomainObject
 			compositeQuery = new CompositeQuery();
 			((CompositeQuery) compositeQuery).setOperation(getOperationForCompositeQuery(
 					operator[0], operandOne, operandTwo));
-			//			String name = "CompositeQuery_"+ new Date().getTime();
-			//			((CompositeQuery)compositeQuery).setName(name);
+						String name = "CompositeQuery_"+ new Date().getTime();
+						((CompositeQuery)compositeQuery).setName(name);
+						((CompositeQuery)compositeQuery).setType("operation");
 		}
 		return compositeQuery;
 	}
