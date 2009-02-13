@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.query.actionForm.CategorySearchForm;
+import edu.wustl.query.enums.QueryType;
 import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
@@ -51,11 +52,21 @@ public class QueryWizardAction extends Action
 		session.removeAttribute(Constants.ALL_ADD_LIMIT_EXPRESSIONS);
 		session.removeAttribute(Constants.MAIN_EXPRESSIONS_ENTITY_EXP_ID_MAP);
 		session.removeAttribute(Constants.MAIN_ENTITY_LIST);
-		
+		session.removeAttribute(Constants.Query_Type);
 		searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
-
-		//Added a Default session data bean......Need to be removed when there query will have login
-
+         String pageOf = request.getParameter(Constants.PAGE_OF);
+		 if(pageOf!=null && pageOf.equals(Constants.PAGE_OF_WORKFLOW))
+		 {
+			 request.setAttribute(Constants.IS_WORKFLOW,Constants.TRUE);
+			 String workflowName= (String)request.getSession().getAttribute(Constants.WORKFLOW_NAME);
+			 request.setAttribute(Constants.WORKFLOW_NAME,workflowName);
+	     }
+		
+		    QueryType qtype = QueryType.GET_DATA;
+			session.setAttribute(Constants.Query_Type,qtype.type);
+		 
+		 //Added a Default session data bean......Need to be removed when there query will have login
+         
 		SessionDataBean sessionBean = (SessionDataBean) session
 				.getAttribute(Constants.SESSION_DATA);
 		if (sessionBean == null)
@@ -74,6 +85,7 @@ public class QueryWizardAction extends Action
 			sessionData.setSecurityRequired(false);
 
 			session.setAttribute(Constants.SESSION_DATA, sessionData);
+			
 		}
 
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
