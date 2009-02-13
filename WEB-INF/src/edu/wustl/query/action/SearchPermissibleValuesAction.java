@@ -81,7 +81,6 @@ public class SearchPermissibleValuesAction extends Action
 					searchTerm=searchTerm.trim();
 					String html = searchTermInTargetVocab(searchTerm, targetVocabs,componentId,request);
 					response.getWriter().write(html);
-					System.out.println(html);
 				}
 				catch (VocabularyException e)
 				{
