@@ -20,7 +20,9 @@ import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.querysuite.queryobject.impl.Query;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.query.enums.QueryType;
 import edu.wustl.query.queryengine.impl.IQueryGenerator;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
@@ -53,8 +55,15 @@ public class ValidateQueryBizLogic
 	{
 		String validationMessage = null;
 		boolean isRulePresentInDag = QueryModuleUtil.checkIfRulePresentInDag(query);
+		String pageOf = request.getParameter(Constants.PAGE_OF);
+		String workflow = request.getParameter("workflow");
+		String queryType=((Query)query).getType();
+		 if("true".equals(workflow))
+		 {
+			 request.setAttribute("workflow","true"); 
+		 }
 		String queryTile=request.getParameter("queyTitle");
-		if(queryTile==null||queryTile.equals(""))
+		if( !("DefineFilter".equals(pageOf) || "DefineView".equals(pageOf) || queryType.equals(QueryType.GET_DATA.type)) && queryTile==null||"".equals(queryTile))
 		{
 			validationMessage=validateQueyTitle(queryTile);
 			return validationMessage;
