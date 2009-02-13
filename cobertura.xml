@@ -37,9 +37,6 @@
 			<include name="**/AbstractXQueryGenerator.class"/>
 	  		<include name="**/QueryGenerator.class"/>
 	  		<include name="**/AbstractPredicate.class"/>
-		  	<include name="**/InfixPredicate.class"/>
-		  	<include name="**/SimpleCharStream.class"/>
-		  	<include name="**/WherePartParser.class"/>
 			<include name="**/CIDERQueryExecutionThread.class"/>
 			<include name="**/CiderQueryManager.class"/>
 			<include name="**/WorkflowBizLogic.class"/>
