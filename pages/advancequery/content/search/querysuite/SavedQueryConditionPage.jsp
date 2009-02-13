@@ -2,7 +2,6 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c"%>
-
 <%-- Imports --%>
 <%@
 	page language="java" contentType="text/html"
@@ -11,12 +10,25 @@
 
 <%
 	String isQuerySaved =(String) request.getAttribute("isQuerySaved");
+	String workflowName=(String)request.getAttribute(Constants.WORKFLOW_NAME);
+	String pageOf = (String)request.getAttribute("pageOf");
+	String isworkflow = (String)request.getAttribute(Constants.IS_WORKFLOW);
 	String isSaveButtonDisable = "";
+	 String action;
+	 request.setAttribute("pageOf",pageOf);
+	if("true".equals(isworkflow))
+	{
+	  action= Constants.SAVE_QUERY_ACTION+"?isWorkflow="+isworkflow;
+	}
+	else 
+	 action= Constants.SAVE_QUERY_ACTION;
 	if(isQuerySaved != null)
 	{
 		isSaveButtonDisable = "disabled='disabled'";
 	}
 %>
+
+
 
 <html:html>
 	<head>
@@ -27,15 +39,25 @@
 		<script language="JavaScript" type="text/javascript" src="jss/advancequery/calender.js"></script>
 		
 		<script>
+		     function showWorkFlowWizard()
+          {
+            var parentWindowForm = window.opener.document.forms[0];
+				parentWindowForm.action = "RedirectToWorkflow.do";
+				parentWindowForm.submit();
+          }
+			
 			function closeSaveQueryWindow()
 			{
-				var parentWindowForm = window.opener.document.forms[0];
-				parentWindowForm.action = "RetrieveQueryAction.do";
-				parentWindowForm.submit();
-				
 				window.self.close();
+				
 			}
 		</script>
+		<c:if test="${querySaved eq 'true'}">
+          <script>showWorkFlowWizard();
+			 window.self.close();
+
+          </script>
+       </c:if>
 		
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 		<title>
@@ -44,7 +66,7 @@
 	</head>
 
 	<body>
-		<html:form styleId='saveQueryForm' action='<%=Constants.SAVE_QUERY_ACTION%>'>
+		<html:form styleId='saveQueryForm' action='<%=action%>'>
 		<table summary="" cellpadding="0" cellspacing="0" border="0" class="contentPage" width="100%">
 		<tr>
 		  <td height="25"><html:errors/>
@@ -57,6 +79,17 @@
 						<bean:message key="savequery.queryInformationTitle"/>
 					</td>
 				</tr>
+				
+				<tr id="workflowName" >
+					<td width='5' class="formFieldNoBordersQuery">*</td>
+					<td class="formFieldNoBordersQuery"><b>
+								<bean:message key="workflow.name"/> </b>
+					</td>
+					<td class="formFieldNoBordersQuery">
+						<input type="text" name="workflowName" value="<%=workflowName%>" class="formFieldSized" disabled />
+					</td>
+				  </tr>
+
 				<tr>
 					<td width='5' class="formFieldNoBordersQuery">*</td>
 					<td class="formFieldNoBordersQuery"><b>
@@ -115,5 +148,14 @@
 				</tr>
 		 </table>
 		</html:form>
+<script>
+  
+if("<%=isworkflow%>"!="true")
+  {
+     
+	  document.getElementById("workflowName").style.display="none";
+   }
+  
+</script>	
 	</body>
 </html:html>
