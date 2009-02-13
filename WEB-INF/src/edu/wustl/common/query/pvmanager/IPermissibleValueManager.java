@@ -9,8 +9,8 @@ import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 
 public interface IPermissibleValueManager
 {
-	public List<PermissibleValueInterface> getPermissibleValueList(AttributeInterface attribute,EntityInterface entity) throws PVManagerException;
-	public boolean showListBoxForPV(AttributeInterface attribute,EntityInterface entity) throws PVManagerException;
-	public boolean isEnumerated(AttributeInterface attribute,EntityInterface entity);
-	public boolean showIcon(AttributeInterface attribute, EntityInterface entity, List<PermissibleValueInterface> permissibleValues)throws PVManagerException;;
+	List<PermissibleValueInterface> getPermissibleValueList(AttributeInterface attribute,EntityInterface entity) throws PVManagerException;
+	boolean showListBoxForPV(AttributeInterface attribute,EntityInterface entity) throws PVManagerException;
+	boolean isEnumerated(AttributeInterface attribute,EntityInterface entity);
+	boolean showIcon(AttributeInterface attribute, EntityInterface entity, List<PermissibleValueInterface> permissibleValues)throws PVManagerException;;
 }
