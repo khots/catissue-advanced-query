@@ -4,6 +4,7 @@
 <%@ taglib uri="/WEB-INF/nlevelcombo.tld" prefix="ncombo"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@page import="edu.wustl.query.util.global.CompositeQueryOperations"%>
+<%@ page import="edu.wustl.query.enums.QueryType" %>
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlwindow.js"></script>
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/js/modal.js"></script>
 <script language="JavaScript" type="text/javascript" src="jss/advancequery/newReleaseMsg.js"></script>
@@ -14,6 +15,10 @@
 <script src="jss/ajax.js"></script>	
 <script type="text/JavaScript">
 
+<%
+String qType_GetCount= (QueryType.GET_COUNT).type;
+String qType_GetData= (QueryType.GET_DATA).type;
+%>
 function MM_preloadImages() { //v3.0
   var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
     var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
@@ -111,10 +116,11 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 	rowContents[2]=createTextElement(cqType);
 	//rowContents[3]=createTextElement(operandsTdContent);
 	//rowContents[3]=getSelectObjectControl();
-	rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+queryCount,operandsTdContent);
+	rowContents[4]=createTextElement("");
+	rowContents[5]=createHiddenElement("selectedqueryId","selectedqueryId_"+queryCount,operandsTdContent);
 	//rowContents[4].appendChild(createHiddenElement("identifier","identifier_"+operandsTdContent,operandsTdContent));
-	rowContents[5]=cqTitle;
-	rowContents[6]=cqType;
+	rowContents[6]=cqTitle;
+	rowContents[7]=cqType;
 	
 	var operatorsTdContent=operation;
 	//uncommented for the underscore separated operation string 
@@ -199,12 +205,54 @@ function executeGetCountQuery(queryId,executionLogId)
 		alert ("Your browser does not support AJAX!");
 		return;
 	}
+	
+	
 	var handlerFunction = getReadyStateHandler(request,responseHandler,true); 
 	request.onreadystatechange = handlerFunction; 
 	request.open("POST",url,true);    
 	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 	request.send("");
 }
+
+function executeGetDataQuery(dataQueryId)
+{
+  
+   
+	var countQueryId = document.getElementById("countQueryDropDown_"+dataQueryId);
+    var countqId =countQueryId.options[countQueryId.selectedIndex].value;
+	var hiddnid=  document.getElementById("dataQueryId");
+	var hid=   document.getElementById("countQueryId") 
+	   if(hiddnid!=null)
+	{
+	    hiddnid.value=dataQueryId;
+	    hid.value=countqId;
+	  }
+
+	 //send Ajax request for validation
+	  	 var request = newXMLHTTPReq();		
+		 var handlerFunction = getReadyStateHandler(request,displayValidationMesage,true);
+		 request.onreadystatechange = handlerFunction;	
+		 var actionURL = "buttonClicked=ViewResults";		
+	      var url = "ValidateQuery.do?dataQueryId="+dataQueryId+"&countQueryId="+countqId;
+		 request.open("POST",url,true);	
+		 request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+		request.send(actionURL);	
+}
+
+
+function displayValidationMesage(response)
+{ 
+  
+  if(response=="ViewResults")
+ {
+    
+   //alert(document.getElementById("dataQueryId").value);
+	   //alert(document.getElementById("countQueryId").value);
+// alert(response);
+ }
+  
+}
+
 
 function responseHandler(response)
 {
@@ -278,6 +326,7 @@ function getCountdata()
 }
 function getPatientdata()
 {
+	
 	document.forms[0].forwardTo.value= "loadQueryPage";
 	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextPageOf=queryWizard";
 	document.forms[0].submit();
@@ -304,7 +353,8 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
 
 <html:form action="SaveWorkflow" >
-
+ <input type="hidden" name="dataQueryId" id="dataQueryId" value="">
+ <input type="hidden" name="countQueryId" id="dataQueryId" value="">
 <html:hidden property="operation" styleId="operation" value="${requestScope.operation}"/>
 <html:hidden property="id" styleId="id" value="${requestScope.id}"/>
 <select name="queryId" id="queryId"  style="display:none">
@@ -329,7 +379,8 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 	</logic:notEmpty>
 </select>
 <html:hidden property="forwardTo"/>
-
+<c:set var="query_type_data" value="<%=qType_GetData%>" scope="page"/>
+<c:set var="query_type_count" value="<%=qType_GetCount%>" scope="page"/>
  <input type="button" name="btn" id="btn" onclick="updateUI()" style="display:none">
 
 <table width="99%" border="0" valign="top"  cellpadding="0" cellspacing="0" style="padding-left:10px;">
@@ -503,8 +554,19 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 										<td class="content_txt">
 											<html:hidden property="queryTypeControl" styleId="queryTypeControl_${queryIndex}" value="${workflowForm.queryTypeControl[queryIndex]}"/>
 											${workflowForm.displayQueryType[queryIndex]}
+										 <script> </script>
 										</td>
-
+                                        <td class="content_txt">
+										
+										 <c:set var="qtype" value="${workflowForm.displayQueryType[queryIndex]}"/>
+										 
+										 <logic:equal name="query_type_data" value="${qtype}">
+										 <select name="countQueryDropDown" id="countQueryDropDown_${workflowForm.identifier[queryIndex]}" style="width:120;">
+										 <logic:notEmpty name="workflowForm" property="selectedqueryId">
+						   			       <logic:iterate id="singleQueryId" name="workflowForm" property="selectedqueryId" indexId="qIndx" >
+										  <logic:equal name="query_type_count" value="${workflowForm.displayQueryType[qIndx]}">
+										 <OPTION VALUE="${workflowForm.identifier[qIndx]}">${workflowForm.displayQueryTitle[qIndx]}</OPTION></logic:equal></logic:iterate></logic:notEmpty></select></logic:equal>
+										  </td>
 
 										<td class="content_txt">
 											
@@ -516,12 +578,23 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 										<table >
 										<tbody>
 										<tr>
+										  <logic:equal name="query_type_data" value="${qtype}">
+										  <td width="30">
+											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetDataQuery('${workflowForm.identifier[queryIndex]}')" styleClass="bluelink"
+											>
+												View Results
+											</html:link>
+										</td>
+										</logic:equal>
+										
+										<logic:notEqual name="query_type_data" value="${qtype}">
 										<td>
 											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetCountQuery('${workflowForm.identifier[queryIndex]}','0')" styleClass="bluelink"
 											>
 												Execute
 											</html:link>
 										</td>
+										</logic:notEqual>
 										<td>
 											<html:hidden property="operands" styleId="operands_${queryIndex}"  value="${workflowForm.operands[queryIndex]}"/>
 											<html:hidden property="operators" styleId="operators_${queryIndex}" value="${workflowForm.operators[queryIndex]}"/>
@@ -602,6 +675,8 @@ function setButtons()
 
 }setButtons();
 
+
+
 function updateOpenerUI() 
 { 
   if(document.getElementById)
@@ -621,5 +696,23 @@ function updateOpenerUI()
 		}
  }updateOpenerUI();
  setCheckboxCount();
+ 
+ function forwardToWorkflow()
+{
+	
+	
+	<%		
+		String id =(String) request.getAttribute("worflowId");
+	%>
+	
+	
+	if(<%=id%>!=null)
+	{
+		
+		document.forms[0].action ="SearchObject.do?pageOf=pageOfWorkflow&id="+<%=id%>;
+		document.forms[0].submit();
+
+	}
+}forwardToWorkflow();
 </script>
 </body>
