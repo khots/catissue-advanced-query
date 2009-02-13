@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import edu.wustl.common.query.exeptions.SQLXMLException;
-import edu.wustl.common.query.impl.AbstractXQueryGenerator;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 
 /**
@@ -24,7 +23,7 @@ public class PredicateGenerator
 	 * the map of expressions that have a for variable associated with them and those varibale
 	 */
 	final private Map<IExpression, String> forVariables;
-	
+
 	/**
 	 * map of expression and corresponding predicates 
 	 *  
@@ -36,7 +35,7 @@ public class PredicateGenerator
 	{
 		this.forVariables = forVariables;
 		predicates = new LinkedHashMap<IExpression, Predicates>();
-		
+
 		WherePartParser parser = new WherePartParser(wherePart, this);
 		try
 		{
@@ -92,6 +91,5 @@ public class PredicateGenerator
 		predicates.put(expression, values);
 
 	}
-	
-	
+
 }

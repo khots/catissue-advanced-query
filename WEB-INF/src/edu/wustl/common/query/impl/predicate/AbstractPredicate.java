@@ -1,12 +1,11 @@
 /**
  * 
  */
+
 package edu.wustl.common.query.impl.predicate;
 
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.query.util.global.Utility;
-
-
 
 /**
  * @author juberahamad_patel
@@ -19,27 +18,27 @@ import edu.wustl.query.util.global.Utility;
  */
 public abstract class AbstractPredicate
 {
+
 	/**
 	 * the attribute on which this predicate is.
 	 */
 	private String lhs;
-	
+
 	/**
 	 * operator involved in the predicate
 	 */
 	private String operator;
-	
+
 	/**
 	 * right hand side of the predicate
 	 */
 	private String rhs;
-	
-	
+
 	/**
 	 * the alias of the attribute of this predicate
 	 */
 	private String attributeAlias;
-	
+
 	/**
 	 * 
 	 * @param lhs
@@ -52,7 +51,7 @@ public abstract class AbstractPredicate
 		this.operator = operator;
 		this.rhs = rhs;
 	}
-	
+
 	/**
 	 * build the string representation of the predicate relative to
 	 * the point represented by prefix 
@@ -61,7 +60,6 @@ public abstract class AbstractPredicate
 	 */
 	public abstract String assemble(String prefix);
 
-	
 	/**
 	 * @return the rhs
 	 */
@@ -70,7 +68,6 @@ public abstract class AbstractPredicate
 		return rhs;
 	}
 
-	
 	/**
 	 * @param rhs the rhs to set
 	 */
@@ -79,7 +76,6 @@ public abstract class AbstractPredicate
 		this.rhs = rhs;
 	}
 
-	
 	/**
 	 * @return the lhs
 	 */
@@ -87,7 +83,7 @@ public abstract class AbstractPredicate
 	{
 		return lhs;
 	}
-	
+
 	/**
 	 * 
 	 * @return the operator
@@ -96,7 +92,7 @@ public abstract class AbstractPredicate
 	{
 		return operator;
 	}
-	
+
 	/**
 	 * 
 	 * @return the alias of the attribute of this predicate
@@ -106,13 +102,12 @@ public abstract class AbstractPredicate
 		return attributeAlias;
 	}
 
-	
 	public void createAttributeAlias(IExpression expression)
 	{
 		String attributeName = null;
 		int index = lhs.lastIndexOf('/');
-		
-		if(index == -1)
+
+		if (index == -1)
 		{
 			attributeName = lhs;
 		}
@@ -120,10 +115,9 @@ public abstract class AbstractPredicate
 		{
 			attributeName = lhs.substring(index + 1);
 		}
-		
+
 		attributeAlias = Utility.getAliasFor(attributeName, expression);
-		
+
 	}
-	
 
 }

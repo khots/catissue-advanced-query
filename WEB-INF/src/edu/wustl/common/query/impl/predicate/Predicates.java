@@ -42,7 +42,7 @@ public class Predicates
 	public String assemble(String prefix)
 	{
 		String newPrefix = prefix;
-		
+
 		if (newPrefix == null)
 		{
 			newPrefix = "";
@@ -68,7 +68,6 @@ public class Predicates
 		return assemble("");
 	}
 
-	
 	/**
 	 * @return the predicates
 	 */
