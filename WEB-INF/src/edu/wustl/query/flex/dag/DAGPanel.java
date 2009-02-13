@@ -60,6 +60,7 @@ import edu.wustl.common.querysuite.queryobject.impl.DateOffsetLiteral;
 import edu.wustl.common.querysuite.queryobject.impl.Expression;
 import edu.wustl.common.querysuite.queryobject.impl.ExpressionAttribute;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
+import edu.wustl.common.querysuite.queryobject.impl.Query;
 import edu.wustl.common.querysuite.queryobject.impl.Rule;
 import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.Collections;
@@ -138,6 +139,7 @@ public class DAGPanel
 		DAGNode node = null;
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		HttpSession session = request.getSession();
+		String qtype= (String)session.getAttribute(Constants.Query_Type);
 		List<SelectedConcept> selectedConcepts = (List<SelectedConcept>) session.getAttribute(Constants.SELECTED_CONCEPT_LIST);
 		if(selectedConcepts !=null)
 		{
@@ -158,6 +160,7 @@ public class DAGPanel
 		{
 			query = m_queryObject.getQuery();
 		}
+		((Query)query).setType(qtype);
 		session.setAttribute(DAGConstant.QUERY_OBJECT, query);
 		try
 		{
