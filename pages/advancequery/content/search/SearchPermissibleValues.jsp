@@ -465,8 +465,8 @@ function serachForTermInVocab(operation)
 					uncheckAllAndDeleteFromArray(vocabCheckboxes[i].id.replace("vocab_",""));
 				}
 			}
-			
-	if(! checkForSplChar(searchTerm)  && checkForEmptyText(searchTerm) && isVocabSelected(targetVocabsForSearchTerm))
+	var message="Please enter the search term.";
+	if(! checkForSplChar(searchTerm)  && checkForEmptyText(searchTerm,message) && isVocabSelected(targetVocabsForSearchTerm))
 	{
 	
 			label=document.getElementById("searhLabel");
