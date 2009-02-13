@@ -59,7 +59,7 @@ public class SavedQueryAuthorization implements Roles
 	{
 		ProtectionElement protectionElement = new ProtectionElement();
 
-		List<ProtectionElement> peList = new ArrayList<ProtectionElement>();
+		List<ProtectionElement> peList ;
 		PrivilegeUtility privilegeUtility = new PrivilegeUtility();
 		protectionElement.setProtectionElementName(query.getObjectId());
 		protectionElement
