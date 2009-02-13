@@ -1854,7 +1854,7 @@ var jsReady = false;
     return this.replace(/^\s*/, "").replace(/\s*$/, "");
 	}
 
-	function checkForEmptyText(textString)
+	function checkForEmptyText(textString,message)
 	{
 		//string should not contains the space only
 		textString=textString.trim(); 
@@ -1862,7 +1862,7 @@ var jsReady = false;
 		{
 				return true;
 		}
-		alert("Please enter string to search.");
+		alert(message);
 		return false;
 	}
 	
