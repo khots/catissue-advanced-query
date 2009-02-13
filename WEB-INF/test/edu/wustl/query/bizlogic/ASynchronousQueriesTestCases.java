@@ -414,4 +414,224 @@ public class ASynchronousQueriesTestCases extends TestCase
 			e.printStackTrace();
 		}
 	}
+	
+	
+	
+	public void testBetweenOperator()
+	{
+		int queryExecId = -1;
+		int noOfRecords = 0;
+		CiderQueryManager manager = new CiderQueryManager();
+		IQuery query = null;
+		
+		try
+		{
+			System.out.println("QUERY - DEMOGRAPHICS DOB between 1940 and 1970");
+			
+			query = QueryUtility.getQuery(41L);
+			
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			
+			queryExecId = manager.execute(ciderQueryObj);
+			
+			System.out.println("QUERY EXECUTION ID :::: "+queryExecId);
+		
+			Count count = manager.getQueryCount(queryExecId);
+			
+			while(!count.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
+			{
+				if(count.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+				{
+					fail("QUERY CANCELLED.......");
+				}
+				
+				count = manager.getQueryCount(queryExecId);
+			}
+			
+			noOfRecords = count.getCount();
+
+			System.out.println("No of Records :: "+noOfRecords);
+			System.out.println("TEST CASE EXECUTED.....");
+		}
+		catch (Exception e)
+		{
+			System.out.println("AN EXCEPTION HAS OCCURRED........");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void testStartsWithOperator()
+	{
+		int queryExecId = -1;
+		int noOfRecords = 0;
+		CiderQueryManager manager = new CiderQueryManager();
+		IQuery query = null;
+		
+		try
+		{
+			System.out.println("QUERY - PERSON UI STARTS WITH 000000000000000008690");
+			
+			query = QueryUtility.getQuery(42L);
+			
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			
+			queryExecId = manager.execute(ciderQueryObj);
+			
+			System.out.println("QUERY EXECUTION ID :::: "+queryExecId);
+		
+			Count count = manager.getQueryCount(queryExecId);
+			
+			while(!count.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
+			{
+				if(count.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+				{
+					fail("QUERY CANCELLED.......");
+				}
+				
+				count = manager.getQueryCount(queryExecId);
+			}
+			
+			noOfRecords = count.getCount();
+
+			System.out.println("No of Records :: "+noOfRecords);
+			System.out.println("TEST CASE EXECUTED.....");
+		}
+		catch (Exception e)
+		{
+			System.out.println("AN EXCEPTION HAS OCCURRED........");
+			e.printStackTrace();
+		}
+	}
+	
+	public void testEndsWithOperator()
+	{
+		int queryExecId = -1;
+		int noOfRecords = 0;
+		CiderQueryManager manager = new CiderQueryManager();
+		IQuery query = null;
+		
+		try
+		{
+			System.out.println("QUERY - PERSON UI ENDS WITH 3");
+			
+			query = QueryUtility.getQuery(43L);
+			
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			
+			queryExecId = manager.execute(ciderQueryObj);
+			
+			System.out.println("QUERY EXECUTION ID :::: "+queryExecId);
+		
+			Count count = manager.getQueryCount(queryExecId);
+			
+			while(!count.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
+			{
+				if(count.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+				{
+					fail("QUERY CANCELLED.......");
+				}
+				
+				count = manager.getQueryCount(queryExecId);
+			}
+			
+			noOfRecords = count.getCount();
+
+			System.out.println("No of Records :: "+noOfRecords);
+			System.out.println("TEST CASE EXECUTED.....");
+		}
+		catch (Exception e)
+		{
+			System.out.println("AN EXCEPTION HAS OCCURRED........");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void testINOperator()
+	{
+		int queryExecId = -1;
+		int noOfRecords = 0;
+		CiderQueryManager manager = new CiderQueryManager();
+		IQuery query = null;
+		
+		try
+		{
+			System.out.println("QUERY - PERSON UI IN 000000000000000008690923");
+			
+			query = QueryUtility.getQuery(44L);
+			
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			
+			queryExecId = manager.execute(ciderQueryObj);
+			
+			System.out.println("QUERY EXECUTION ID :::: "+queryExecId);
+		
+			Count count = manager.getQueryCount(queryExecId);
+			
+			while(!count.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
+			{
+				if(count.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+				{
+					fail("QUERY CANCELLED.......");
+				}
+				
+				count = manager.getQueryCount(queryExecId);
+			}
+			
+			noOfRecords = count.getCount();
+
+			System.out.println("No of Records :: "+noOfRecords);
+			System.out.println("TEST CASE EXECUTED.....");
+		}
+		catch (Exception e)
+		{
+			System.out.println("AN EXCEPTION HAS OCCURRED........");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void testNOT_INOperator()
+	{
+		int queryExecId = -1;
+		int noOfRecords = 0;
+		CiderQueryManager manager = new CiderQueryManager();
+		IQuery query = null;
+		
+		try
+		{
+			System.out.println("QUERY - PERSON UI NOT IN 000000000000000008690923");
+			
+			query = QueryUtility.getQuery(45L);
+			
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			
+			queryExecId = manager.execute(ciderQueryObj);
+			
+			System.out.println("QUERY EXECUTION ID :::: "+queryExecId);
+		
+			Count count = manager.getQueryCount(queryExecId);
+			
+			while(!count.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
+			{
+				if(count.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+				{
+					fail("QUERY CANCELLED.......");
+				}
+				
+				count = manager.getQueryCount(queryExecId);
+			}
+			
+			noOfRecords = count.getCount();
+
+			System.out.println("No of Records :: "+noOfRecords);
+			System.out.println("TEST CASE EXECUTED.....");
+		}
+		catch (Exception e)
+		{
+			System.out.println("AN EXCEPTION HAS OCCURRED........");
+			e.printStackTrace();
+		}
+	}
 }
