@@ -47,9 +47,10 @@ public class XQueryAttributeType
 	 */
 	public static XQueryAttributeType getInstance() throws XQueryDataTypeInitializationException
 	{
-		synchronized (xqueryAttrType)
+
+		if (xqueryAttrType == null)
 		{
-			if (xqueryAttrType == null)
+			synchronized (xqueryAttrType)
 			{
 				xqueryAttrType = new XQueryAttributeType();
 				String xqueryDataTypeMappingFileName = "XQuery_Datatypes" + ".xml";
