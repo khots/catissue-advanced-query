@@ -18,6 +18,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 
+import com.sun.org.apache.bcel.internal.classfile.Attribute;
+
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -29,6 +31,7 @@ import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.QueryBizLogic;
 import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.dao.queryExecutor.PagenatedResultData;
+import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
@@ -633,5 +636,20 @@ public class Utility extends edu.wustl.common.util.Utility
 			IQueryUpdationUtil.addLinks(eachExpressionParentChildMap, session,query);
 			
 	    }
+	}
+    
+    /**
+	 * get the alias for given attribute to identify it uniquely
+	 * @param attribute
+	 * @return
+	 */
+	public static String getAliasFor(AttributeInterface attribute, IExpression expression)
+	{
+		return getAliasFor(attribute.getName(), expression);
+	}
+	
+	public static String getAliasFor(String attributeName, IExpression expression)
+	{
+		return attributeName + "_" + expression.getExpressionId();
 	}
 }
