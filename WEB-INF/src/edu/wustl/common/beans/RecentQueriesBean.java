@@ -10,26 +10,26 @@ public class RecentQueriesBean
 	/**
 	 * title for query
 	 */
-	String queryTitle;
+	private String queryTitle;
 	
 	/**
 	 * status that is in-progress or Completed 
 	 */
-	String status;
+	private String status;
 	
 	/**
 	 * count
 	 */
-	Long resultCount;
+	private Long resultCount;
 	
 	/**
 	 * creation date assigned to query
 	 */
-	String queryCreationDate;
+	private String queryCreationDate;
 	/**
-	 * xecution id assigned to query
+	 * execution id assigned to query
 	 */
-	Long queyExecutionId;
+	private Long queyExecutionId;
 	
 	/**
 	 * @return query title
