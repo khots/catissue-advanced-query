@@ -113,7 +113,9 @@ public class ASynchronousQueriesTestCases extends TestCase
 			}
 			
 			noOfRecords = count.getCount();
-
+			
+			System.out.println("\n XQUERY :: "+ ciderQueryObj.getQueryString() +"\n\n");
+			
 			System.out.println("No of Records :: "+noOfRecords);
 			System.out.println("TEST CASE EXECUTED.....");
 		}
@@ -158,6 +160,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			noOfRecords = count.getCount();
 
+			System.out.println("\n XQUERY :: "+ ciderQueryObj.getQueryString() +"\n\n");
+			
 			System.out.println("No of Records :: "+noOfRecords);
 			System.out.println("TEST CASE EXECUTED.....");
 		}
@@ -182,6 +186,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 		int noOfRecords = 0;
 		CiderQueryManager manager = new CiderQueryManager();
 		IQuery query = null;
+		CiderQuery ciderQueryObj = null;
 		
 		try
 		{
@@ -189,7 +194,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			query = QueryUtility.getQuery(21L);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
+			ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -241,6 +246,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
 		}
+		
+		System.out.println("\n XQUERY :: "+ ciderQueryObj.getQueryString() +"\n\n");
 		
 		System.out.println("No of Records :: "+noOfRecords);
 		System.out.println("TEST CASE EXECUTED.....");
@@ -405,6 +412,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			noOfRecords = count.getCount();
 
+			System.out.println("\n XQUERY :: "+ ciderQueryObj.getQueryString() +"\n\n");
+			
 			System.out.println("No of Records :: "+noOfRecords);
 			System.out.println("TEST CASE EXECUTED.....");
 		}
