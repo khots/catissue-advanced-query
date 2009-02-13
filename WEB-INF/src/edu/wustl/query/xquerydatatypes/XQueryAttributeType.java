@@ -5,10 +5,13 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+
+import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 
 /**
  * This is a Singleton class which parses the XML file that consists of mapping between PrimitiveAttribute 
@@ -25,7 +28,7 @@ public class XQueryAttributeType
 	/**
 	 * 
 	 */
-	private static XQueryAttributeType xqueryAttrType = null;
+	private static XQueryAttributeType xqueryAttributeType = null;
 
 	/**
 	 * 
@@ -45,20 +48,17 @@ public class XQueryAttributeType
 	 * @throws XQueryDataTypeInitializationException 
 	 * @throws DataTypeFactoryInitializationException on Exception
 	 */
-	public static XQueryAttributeType getInstance() throws XQueryDataTypeInitializationException
+	public static synchronized XQueryAttributeType getInstance()
+			throws XQueryDataTypeInitializationException
 	{
-
-		if (xqueryAttrType == null)
+		if (xqueryAttributeType == null)
 		{
-			synchronized (xqueryAttrType)
-			{
-				xqueryAttrType = new XQueryAttributeType();
-				String xqueryDataTypeMappingFileName = "XQuery_Datatypes" + ".xml";
-				xqueryAttrType.populateDataTypeMap(xqueryDataTypeMappingFileName);
-			}
+			xqueryAttributeType = new XQueryAttributeType();
+			String xqueryDataTypeMappingFileName = "XQuery_Datatypes" + ".xml";
+			xqueryAttributeType.populateDataTypeMap(xqueryDataTypeMappingFileName);
 		}
 
-		return xqueryAttrType;
+		return xqueryAttributeType;
 	}
 
 	/**
