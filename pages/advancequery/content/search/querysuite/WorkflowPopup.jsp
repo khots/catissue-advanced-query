@@ -17,6 +17,7 @@
 %>
 <%@ page language="java" isELIgnored="false"%>
 <%@ page import="org.apache.struts.action.ActionMessages, edu.wustl.query.util.global.Utility"%>
+<%@ page import="edu.wustl.common.querysuite.queryobject.impl.AbstractQuery"%>
 <%@ page import="edu.wustl.query.util.global.Constants"%>
 <script language="JavaScript" type="text/javascript" src="jss/advancequery/newReleaseMsg.js"></script>
 <script>
@@ -48,7 +49,16 @@ function closePopup()
 
 						addOption(parent.window.document.getElementById("queryTitle"),""+document.getElementById("queryTitleControl_"+count).value,document.getElementById("queryIdControl_"+count).value);
 						addOption(parent.window.document.getElementById("queryType"),""+document.getElementById("queryTypeControl_"+count).value,document.getElementById("queryIdControl_"+count).value);
-
+       
+						  //add selected count query to dropdowns of parent window
+						if((document.getElementById("queryTypeControl_"+count).value)=="Get Count")
+					  {
+						 var countQDD= parent.window.document.getElementsByName("countQueryDropDown");
+						  for(var i=0;i<countQDD.length;i++) 
+						 {
+							  addOption(countQDD[i],document.getElementById("queryTitleControl_"+count).value,document.getElementById("queryIdControl_"+count).value);
+						 }
+					  }
 						isOptionAdded=true;
 					}
 					else
@@ -292,14 +302,15 @@ int queryCount = 0;%>
 													<jsp:useBean id="parameterizedQueryCollection" type="java.util.Collection" />
 											
 													<c:forEach items="${parameterizedQueryCollection}" var="parameterizedQuery" varStatus="queries">
-													<jsp:useBean id="parameterizedQuery" type="edu.wustl.common.querysuite.queryobject.IParameterizedQuery" />
+													<jsp:useBean id="parameterizedQuery" type="edu.wustl.common.querysuite.queryobject.impl.AbstractQuery" />
 													
 
 															<%String target = "executeQuery('"+parameterizedQuery.getId()+"')"; 
 															  String queryId=parameterizedQuery.getId()+"";
 															  String title = parameterizedQuery.getName();
 															  String newTitle = Utility.getQueryTitle(title);
-															  
+															  String queryType=
+															  parameterizedQuery.getType();
 															  String tooltip = Utility.getTooltip(title);
 															  String function = "Tip('"+tooltip+"', WIDTH, 700)";
 															  queryCount++;
@@ -314,7 +325,7 @@ int queryCount = 0;%>
 															<td height="25" valign="top" class="content_txt" >
 																<%=newTitle%>
 															</td>
-															  <td height="25" valign="top" class="content_txt">Get Count</td>
+															  <td height="25" valign="top" class="content_txt"><%=queryType%></td>
 															 
 															 </td>
 																<c:set var="queryTitleControlId">queryTitleControl_<%=queryCount%></c:set>
@@ -331,7 +342,7 @@ int queryCount = 0;%>
 																<c:set var="queryTypeControl">queryTypeControl_<%=queryCount%></c:set>
 																<jsp:useBean id="queryTypeControl" type="java.lang.String"/>
 																<html:hidden property="queryTypeControl" styleId="<%=queryTypeControl%>"
-																value="Get Count"/>
+																value='<%=queryType%>'/>
 
 														</tr>
 													</c:forEach>
