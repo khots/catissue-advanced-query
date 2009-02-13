@@ -15,6 +15,7 @@ import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.query.actionForm.CategorySearchForm;
+import edu.wustl.query.enums.QueryType;
 import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
@@ -56,9 +57,16 @@ public class QueryGetCountAction extends Action
 		session.removeAttribute(Constants.ALL_ADD_LIMIT_EXPRESSIONS);
 		session.removeAttribute(Constants.MAIN_EXPRESSIONS_ENTITY_EXP_ID_MAP);
 		session.removeAttribute(Constants.MAIN_ENTITY_LIST);
+		session.removeAttribute(Constants.Query_Type);
 		
 		searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
-
+		String pageOf = request.getParameter(Constants.PAGE_OF);
+		 if(pageOf!=null && pageOf.equals(Constants.PAGE_OF_WORKFLOW))
+		 {
+			 request.setAttribute(Constants.IS_WORKFLOW,Constants.TRUE);
+			 String workflowName= (String)request.getSession().getAttribute(Constants.WORKFLOW_NAME);
+			 request.setAttribute(Constants.WORKFLOW_NAME,workflowName);
+	     }
 		//Added a Default session data bean......Need to be removed when there query will have login
 
 		SessionDataBean sessionBean = (SessionDataBean) session
@@ -78,17 +86,20 @@ public class QueryGetCountAction extends Action
 			sessionData.setLastName("admin@admin.com");
 			sessionData.setAdmin(true);
 			sessionData.setSecurityRequired(false);
-
+            request.setAttribute("queryType", "GetCount"); 
 			session.setAttribute(Constants.SESSION_DATA, sessionData);
 		}
 		else
 		{
 			userId = sessionBean.getUserId();
 		}
+		
+		QueryType qtype = QueryType.GET_COUNT;
+		session.setAttribute(Constants.Query_Type,qtype.type);
 		//Retrieve the Project list
 		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
 		List<NameValueBean> projectList = qUIManager.getObjects(userId);
-
+         
 		if(projectList != null)   
 		{	 
 			searchForm.setProjectsNameValueBeanList(projectList);
