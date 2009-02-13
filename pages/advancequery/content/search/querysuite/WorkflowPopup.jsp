@@ -349,7 +349,7 @@ int queryCount = 0;%>
 			<td class="tr_color_lgrey" height="30">
 				<table width="100%" border="0" cellspacing="0" cellpadding="0">
 			  <tr colspan="3" class="content_txt">
-				<td width="125" align="left" class="content_txt_bold">Show Last:&nbsp;
+				<td width="125" align="left" class="content_txt_bold">Page Size:&nbsp;
 															<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}">
 												<html:options collection="resultsPerPageOptions" labelProperty="name" property="value"/>
 											</html:select>
