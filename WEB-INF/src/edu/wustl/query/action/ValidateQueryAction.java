@@ -6,13 +6,23 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.wustl.cider.querymanager.CIDERITableManager;
+import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.bizlogic.IBizLogic;
+import edu.wustl.common.factory.AbstractBizLogicFactory;
+import edu.wustl.common.query.itablemanager.ITableManager;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
+import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
+import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.bizlogic.ValidateQueryBizLogic;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 
 /**
  * When the user searches or saves a query , the query is checked for the conditions like DAG should not be empty , is there 
@@ -31,6 +41,8 @@ public class ValidateQueryAction extends Action
 	{
 
 		String buttonClicked = request.getParameter(Constants.BUTTON_CLICKED);
+		String dataQueryId= request.getParameter("dataQueryId");
+		String countQueryId= request.getParameter("countQueryId");
 		// dataKey defines that ajax call from SimpleSearchDataView.jsp is made to get the updated message.
 		String dataKey = request.getParameter(Constants.UPDATE_SESSION_DATA);
 		HttpSession session = request.getSession();
@@ -38,7 +50,6 @@ public class ValidateQueryAction extends Action
 		//retrieve the Selected Project from the GetCounts.jsp and set it in session
 		String selectedProject = request.getParameter(Constants.SELECTED_PROJECT);
 		session.setAttribute(Constants.SELECTED_PROJECT,selectedProject);
-		
 		//Added By Baljeet
 		//session.removeAttribute("allLimitExpressionIds");
 		String writeresponse= buttonClicked;
@@ -49,9 +60,32 @@ public class ValidateQueryAction extends Action
 			
 		}
 		else{	
-		    IParameterizedQuery parameterizedQuery = (IParameterizedQuery)session
+			IParameterizedQuery parameterizedQuery=null; 
+			if(dataQueryId==null)
+		     {
+				parameterizedQuery = (IParameterizedQuery)session
 				.getAttribute(Constants.QUERY_OBJECT);
-		    if(parameterizedQuery!=null)
+
+		     }
+			else{
+				IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
+		 				.getValue("app.bizLogicFactory"), "getBizLogic",
+		 				Constants.QUERY_INTERFACE_BIZLOGIC_ID);
+		    	 try{
+		    		 parameterizedQuery  =(ParameterizedQuery) bizLogic.retrieve(ParameterizedQuery.class
+		 					.getName(),Long.valueOf(dataQueryId));
+		    	     //request.setAttribute(Constants.DATA_QUERY_ID, dataQueryId);   
+		    	     //request.setAttribute(Constants.COUNT_QUERY_ID, countQueryId);
+		    	 
+		    	 }catch (DAOException daoException)
+		 		{
+		 			ActionErrors errors = Utility.setActionError(daoException.getMessage(),"errors.item");
+		 			saveErrors(request, errors);
+		 		} 
+				
+				
+			}
+		    if(parameterizedQuery!=null && dataQueryId==null)
 		    	parameterizedQuery.setName(request.getParameter("queyTitle"));
 		    String validationMessage = ValidateQueryBizLogic.getValidationMessage(request,parameterizedQuery);
 		    if (validationMessage != null)
