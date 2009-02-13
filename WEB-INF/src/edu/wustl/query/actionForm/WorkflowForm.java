@@ -3,10 +3,12 @@ package edu.wustl.query.actionForm;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
 import edu.wustl.common.querysuite.queryobject.IOperation;
+import edu.wustl.common.querysuite.queryobject.impl.AbstractQuery;
 import edu.wustl.common.querysuite.queryobject.impl.CompositeQuery;
 import edu.wustl.common.querysuite.queryobject.impl.Intersection;
 import edu.wustl.common.querysuite.queryobject.impl.Minus;
@@ -363,7 +365,9 @@ public class WorkflowForm extends AbstractActionForm
 		List<WorkflowItem> workflowItemList = workflow.getWorkflowItemList();
 
 		//  display title
-		String[] displayQueryTitle = new String[workflowItemList.size()];
+		int size= workflowItemList.size();
+		String[] displayQueryTitle = new String[size];
+		String[] displayQueryType = new String[size];
 		Long[] identifier = new Long[workflowItemList.size()];
 		String[]  queryName=new String[workflowItemList.size()];
 		for (int i = 0; i < workflowItemList.size(); i++)
@@ -379,7 +383,7 @@ public class WorkflowForm extends AbstractActionForm
 			setoperandList(operandList, operandsList);
 			setOperatorList(opretionList, operatorsList);
 			displayQueryTitle[i]=genetrateDisplayQueryTitle(workflowItem);
-		
+		    displayQueryType[i]=((AbstractQuery)abstractQuery).getType();
 		}
 
 		String[] operands = new String[operandList.size()];//oprands array
@@ -388,19 +392,14 @@ public class WorkflowForm extends AbstractActionForm
 		opretionList.toArray(operators);
 		operandList.toArray(operands);
 		
-
-		//starts TO DO query type value retrieve .....currently hard coded
-		// Commented as not needed
-		/*String[] queryTypeControl=new String[workflowItemList.size()];
-		String[] displayQueryType=new String[workflowItemList.size()];*/
-		createQueryTitle(workflowItemList.size());//, queryTypeControl, displayQueryType);
-		//ends
 		// starts selectedqueryId same as operandsArray 
 		String[] selectedqueryId = operands;
 		this.selectedqueryId = selectedqueryId;
+		this.displayQueryType=displayQueryType;
 		this.displayQueryTitle = displayQueryTitle;
 		//this.queryTypeControl=queryTypeControl;
-		//this.displayQueryType=displayQueryType;
+		System.out.println("");
+		
 		this.operands = operands;
 		this.operators = operators;
 		boolean[] chkbox = new boolean[workflowItemList.size()];
@@ -469,7 +468,7 @@ public class WorkflowForm extends AbstractActionForm
 
 	/*
 	 * */
-	private void createQueryTitle(int size)//, String[] queryTypeControl,String[] displayQueryType)
+/*	private void createQueryTitle(int size)//, String[] queryTypeControl,String[] displayQueryType)
 
 	{
 
@@ -482,8 +481,7 @@ public class WorkflowForm extends AbstractActionForm
 		}
 		this.queryTypeControl = queryTypeControl;
 		this.displayQueryType = displayQueryType;
-	}
-
+	} */
 
 	private void generateOperatorAndOperandList(LinkedList<String> operatorsList,
 			LinkedList<Long> operandsList, IAbstractQuery abstractQuery)
