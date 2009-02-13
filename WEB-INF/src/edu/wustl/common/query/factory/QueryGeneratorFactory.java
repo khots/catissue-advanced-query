@@ -27,7 +27,7 @@ public abstract class QueryGeneratorFactory
 	 * Method to create instance of class SqlGenerator. 
 	 * @return The reference of SqlGenerator. 
 	 */
-	public static IQueryGenerator ConfigureQueryGenerator(String className)
+	public static IQueryGenerator configureQueryGenerator(String className)
 	{
 
 		return (IQueryGenerator) Utility.getObject(className);
