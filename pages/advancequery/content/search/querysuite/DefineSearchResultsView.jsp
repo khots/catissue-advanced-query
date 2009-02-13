@@ -27,6 +27,7 @@
 	String formAction = Constants.ViewSearchResultsAction;
 	String defineSearchResultsViewAction = Constants.DefineSearchResultsViewAction;
 	Map treesMap = (Map) request.getAttribute("treesMap");
+	String workflowName=(String)request.getAttribute(Constants.WORKFLOW_NAME);
 %>
 <html:form method="GET" action="<%=defineSearchResultsViewAction%>" style="margin:0;padding:0;">
 <html:hidden property="currentPage" value="prevToAddLimits"/>
@@ -37,6 +38,7 @@
 			<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
 		</td>
 	</tr>
+	<tr id="workflowname" valign="top" style="padding-bottom:5px;padding-left:10px;"> <td><span class="content_txt"></b><bean:message key="workflow.name"/> </b></span>: <%=workflowName%></td></tr>
 	<tr>
 		<td valign="top">
 			<table border="0" width="100%" cellspacing="0" cellpadding="0" height="95%" id="table1" >
@@ -46,7 +48,7 @@
 							<tr  height="10">
 								
 								<td width="33%" align="center" valign="top" background="images/advancequery/top_bg_wiz.gif">
-									<img src="images/advancequery/1_inactive.gif" /> <!-- width="118" height="25" /-->
+									<img src="images/advancequery/define_filters_inactive.gif" /> <!-- width="118" height="25" /-->
 								</td>
 								<td width="33%" align="center" valign="middle" height="36"  background="images/advancequery/top_bg_wiz.gif">
 									<img src="images/advancequery/2_active.gif" /> <!-- width="199" height="38" /-->
@@ -73,38 +75,6 @@
 						</table>						
 					</td>
 				</tr>
-		
-				<tr >
-					<td colspan="4" valign="top">
-					<table border="0" width="100%" cellspacing="0" cellpadding="0"  height="24">
-					<tr valign="center">
-						 <td colspan="2" width="50%" align="left">
-						  <table border="0" cellspacing="0" cellpadding="0">
-							<tr>
-							  <td align="left" style="padding-left:5px;"><img src="images/advancequery/b_save.gif" hspace="3" onclick="validateQuery('save');"/></td>
-							 <!-- <td><img src="images/advancequery/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td> -->
-							</tr>
-						  </table>
-						</td>
-						
-						<td width="50%" align="right">
-						  <table border="0" cellspacing="0" cellpadding="0">
-						  <tr>
-							<td style="padding-right:5px;"><img src="images/advancequery/b_prev.gif"   onclick="previousFromDefineResults()"/></td>
-							<td><img src="images/advancequery/b_next.gif"   hspace="3" onclick="validateQuery('next');" /></td>
-						  </tr>
-						</table>
-					   </td>
-						<td width="2%">&nbsp;</td>
-					</tr>
-				</table>
-					</td>
-				</tr>
-				<tr height="4px">&nbsp;</td>
-			</table>
-		</td>
-	</tr>
-	
 </table>
 </html:form>
 
