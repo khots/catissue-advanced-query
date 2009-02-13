@@ -94,7 +94,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			query = QueryUtility.getQuery(23L);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -138,7 +138,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			query = QueryUtility.getQuery(24L);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -189,7 +189,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			query = QueryUtility.getQuery(21L);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -264,7 +264,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			query = Utility.getQuery(fileName2);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
 			// IQuery query = QueryUtility.getQuery(1L);
 			// ciderQueryObj.setQuery(query);
@@ -321,7 +321,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			query = QueryUtility.getQuery(23L);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
 			queryExecId1 = manager.execute(ciderQueryObj);
 			queryExecId2 = manager.execute(ciderQueryObj);
@@ -385,7 +385,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			query = QueryUtility.getQuery(22L);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -430,7 +430,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			query = QueryUtility.getQuery(41L);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -474,7 +474,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			query = QueryUtility.getQuery(42L);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -517,7 +517,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			query = QueryUtility.getQuery(43L);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -561,7 +561,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			query = QueryUtility.getQuery(44L);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -605,7 +605,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			
 			query = QueryUtility.getQuery(45L);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
