@@ -26,7 +26,7 @@ public class PrefixBinaryPredicate extends AbstractPredicate
 	public String assemble(String prefix)
 	{
 		StringBuilder predicate = new StringBuilder();
-		predicate.append(operator).append(prefix).append(attribute).append("),").append(rhs)
+		predicate.append(getOperator()).append(prefix).append(getLhs()).append("),").append(getRhs())
 				.append(')');
 
 		return predicate.toString();

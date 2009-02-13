@@ -25,7 +25,7 @@ public class InfixPredicate extends AbstractPredicate
 	public String assemble(String prefix)
 	{
 		StringBuilder predicate = new StringBuilder();
-		predicate.append(prefix).append(attribute).append(operator).append(rhs);
+		predicate.append(prefix).append(getLhs()).append(getOperator()).append(getRhs());
 
 		return predicate.toString();
 	}

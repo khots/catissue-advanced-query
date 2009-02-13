@@ -81,6 +81,7 @@ public class PredicateGenerator
 			}
 		}
 
+		predicate.createAttributeAlias(expression);
 		Predicates values = predicates.get(expression);
 		if (values == null)
 		{
