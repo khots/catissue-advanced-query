@@ -25,10 +25,10 @@ public final class CommonObjectFactory
 	 */
 	public static CommonObjectFactory getInstance()
 	{
-		synchronized (clientFactory)
-		{
 
-			if (clientFactory == null)
+		if (clientFactory == null)
+		{
+			synchronized (clientFactory)
 			{
 				clientFactory = new CommonObjectFactory();
 			}
