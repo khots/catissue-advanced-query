@@ -1,38 +1,44 @@
+
 package edu.wustl.common.query.pvmanager.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+//import java.util.Map;
 
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.util.global.Constants;
 
-public class MedLookUpManager
+public final class MedLookUpManager
 {
-	Map<String,List<String> > pvMap = null;
-	private static MedLookUpManager medLookUpManager = null;
+
+	//private Map<String, List<String>> pvMap = null;
+	private static MedLookUpManager mLookUpMgrObj = null;
+
 	//private String lookUpTable=null;
-	
+
 	private MedLookUpManager()
 	{
-		
+
 	}
-	
+
 	public static MedLookUpManager instance()
 	{
-		if(medLookUpManager == null)
+		synchronized (mLookUpMgrObj)
 		{
-			medLookUpManager = new MedLookUpManager();
-			//medLookUpManager.lookUpTable = Variables.properties.getProperty("med.lookup.table");
-			//medLookUpManager.init();
+			if (mLookUpMgrObj == null)
+			{
+				mLookUpMgrObj = new MedLookUpManager();
+				//medLookUpManager.lookUpTable = Variables.properties.getProperty("med.lookup.table");
+				//medLookUpManager.init();
+			}
 		}
-		
-		return medLookUpManager;
-		
+
+		return mLookUpMgrObj;
+
 	}
-	
+
 	/*private void init()
 	{
 		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
@@ -72,7 +78,7 @@ public class MedLookUpManager
 		}
 		
 	}*/
-	
+
 	/*public List<String> getPermissibleValues(String pvFilter)
 	{
 		if(pvMap != null)
@@ -82,7 +88,8 @@ public class MedLookUpManager
 	}*/
 	//change signature to accept pv_filter and pv_view.
 	//if pv_filter = null then dont go in for like condition.
-	public List<String> getPermissibleValues(List<String> pvFilter,String pvView) throws PVManagerException 
+	public List<String> getPermissibleValues(List<String> pvFilter, String pvView)
+			throws PVManagerException
 	{
 		List<String> pvList = null;
 		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
@@ -91,19 +98,20 @@ public class MedLookUpManager
 		{
 			dao.openSession(null);
 			//if a pvFilter value is give i.e a synonym is given 
-			if(pvFilter != null  &&(! pvFilter.equals("") ) ) {
-				query = getQueryWithSynonym(pvFilter,pvView);
+			if (pvFilter != null && (!pvFilter.equals("")))
+			{
+				query = getQueryWithSynonym(pvFilter, pvView);
 			}
 			else
 			{
 				query = getQueryDirectFromView(pvView);
 			}
 			List<List<String>> dataList = dao.executeQuery(query, null, false, false, null);
-			if(!dataList.isEmpty())
+			if (!dataList.isEmpty())
 			{
 				pvList = new ArrayList<String>();
-			
-				for(int i=0; i < dataList.size(); i++)
+
+				for (int i = 0; i < dataList.size(); i++)
 				{
 					pvList.add(dataList.get(i).get(1));
 				}
@@ -111,14 +119,16 @@ public class MedLookUpManager
 		}
 		catch (DAOException e)
 		{
-			
-			throw new PVManagerException("Error occured while fetching the permissible concept codes from MED.",e);
-			
+
+			throw new PVManagerException(
+					ErrMsg, e);
+
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new PVManagerException("Error occured while fetching the permissible concept codes from MED.",e);			
-		}	
+			throw new PVManagerException(
+					ErrMsg, e);
+		}
 		finally
 		{
 			try
@@ -127,28 +137,32 @@ public class MedLookUpManager
 			}
 			catch (DAOException e)
 			{
-				throw new PVManagerException("Error occured while fetching the permissible concept codes from MED.",e);
+				throw new PVManagerException(
+						ErrMsg, e);
 			}
 		}
-		
+
 		return pvList;
 
 	}
-	public int getPermissibleValuesCount(List<String> pvFilterList,String pvView) throws PVManagerException 
+
+	public int getPermissibleValuesCount(List<String> pvFilterList, String pvView)
+			throws PVManagerException
 	{
 		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		StringBuffer countQuery=new StringBuffer();
-		int count=0;
+		StringBuffer countQuery = new StringBuffer();
+		int count = 0;
 		try
 		{
 			dao.openSession(null);
 			//if a pvFilter value is give i.e a synonym is given 
-			if(pvFilterList != null  &&(! pvFilterList.isEmpty()) ) {
+			if (pvFilterList != null && (!pvFilterList.isEmpty()))
+			{
 				//countQuery="select count(*) from "+pvView+" where ";
-				countQuery.append("select count(*) from "+pvView+" where ");
+				countQuery.append("select count(*) from " + pvView + " where ");
 				//+pvFilter+"'";
-				int indx=0;
-				for(; indx<pvFilterList.size()-1;indx++)
+				int indx = 0;
+				for (; indx < pvFilterList.size() - 1; indx++)
 				{
 					countQuery.append("synonym like '");
 					countQuery.append(pvFilterList.get(indx));
@@ -156,30 +170,33 @@ public class MedLookUpManager
 				}
 				countQuery.append("synonym like '");
 				countQuery.append(pvFilterList.get(indx));
-				countQuery.append("'");
-				
-				
+				countQuery.append("' ");
+
 			}
 			else
 			{
-				countQuery.append("select count(*) from "+pvView);
+				countQuery.append("select count(*) from ");
+				countQuery.append(pvView);
 			}
-			List<List<String>> dataListCount = dao.executeQuery(countQuery.toString(), null, false, false, null);
-			if(!dataListCount.isEmpty())
+			List<List<String>> dataListCount = dao.executeQuery(countQuery.toString(), null, false,
+					false, null);
+			if (!dataListCount.isEmpty())
 			{
-				count=Integer.parseInt(dataListCount.get(0).get(0));
+				count = Integer.parseInt(dataListCount.get(0).get(0));
 			}
 		}
 		catch (DAOException e)
 		{
-			
-			throw new PVManagerException("Error occured while fetching the permissible concept codes from MED.",e);
-			
+
+			throw new PVManagerException(
+					ErrMsg, e);
+
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new PVManagerException("Error occured while fetching the permissible concept codes from MED.",e);			
-		}	
+			throw new PVManagerException(
+					ErrMsg, e);
+		}
 		finally
 		{
 			try
@@ -188,24 +205,26 @@ public class MedLookUpManager
 			}
 			catch (DAOException e)
 			{
-				throw new PVManagerException("Error occured while fetching the permissible concept codes from MED.",e);
+				throw new PVManagerException(
+						ErrMsg, e);
 			}
 		}
-		
+
 		return count;
 
 	}
-	
+
 	//accept the name of the view as well
 	//rename method.
-	private String getQueryWithSynonym(List<String> pvFilterList,String pvView)
+	private String getQueryWithSynonym(List<String> pvFilterList, String pvView)
 	{
-		
-		StringBuffer query = new StringBuffer("select synonym,id from ");
+
+		StringBuffer query = new StringBuffer(100);
+		query.append("select synonym,id from ");
 		query.append(pvView);
 		query.append(Constants.WHERE);
-		int indx=0;
-		for(; indx<pvFilterList.size()-1;indx++)
+		int indx = 0;
+		for (; indx < pvFilterList.size() - 1; indx++)
 		{
 			query.append("synonym like '");
 			query.append(pvFilterList.get(indx));
@@ -213,16 +232,18 @@ public class MedLookUpManager
 		}
 		query.append("synonym like '");
 		query.append(pvFilterList.get(indx));
-		query.append("'");
-		
+		query.append("' ");
+
 		return query.toString();
 	}
-	
-	//get pv from view directly without like synonymn condition.
+
+	//get pv from view directly without like synonym condition.
 	private String getQueryDirectFromView(String pvView)
 	{
 		StringBuffer query = new StringBuffer("select name,id from ");
 		query.append(pvView);
 		return query.toString();
 	}
+	
+	private static final String ErrMsg = "Error occured while fetching the permissible concept codes from MED.";
 }
