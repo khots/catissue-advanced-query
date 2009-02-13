@@ -47,6 +47,7 @@ MM_reloadPage(true);
 <body onLoad="MM_preloadImages('images/advancequery/m_home_act.gif')">
 <script type="text/javascript" src="wz_tooltip.js"></script>
 <table width="100%" border="0" cellspacing="0" cellpadding="4">
+<c:set var="currentSelectedProject" value="${requestScope.categorySearchForm.currentSelectedProject}"/>
   <tr>
     <td><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0"  class="login_box_bg">
       <tr>
@@ -58,14 +59,26 @@ MM_reloadPage(true);
             <td height="25" valign="middle" nowrap><span class="content_txt">Execution Status: <strong id="StatusId"></strong></span></td>
             <td align="right" valign="middle">
 			<form id="form1" name="form1" method="post" action="">
-              <img src="images/advancequery/b_abort_execution.gif" alt="Abort Execution" width="116" height="23" onclick="abortExecutionAjaxAction();">&nbsp;<img src="images/advancequery/b_notify_me.gif" alt="Notify me when done" width="146" height="23" onclick="retrieveRecentQueries();">
+              <a href="javascript:abortExecutionAjaxAction();"><img border='0' src="images/advancequery/b_abort_execution.gif" alt="Abort Execution" width="116" height="23"></a>&nbsp;<a href="javascript:retrieveRecentQueries();"><img border='0' src="images/advancequery/b_notify_me.gif" alt="Notify me when done" width="146" height="23"></a>
             </form></td>
           </tr>
           <tr>
-            <td height="25" colspan="2" valign="bottom"><span class="content_txt"><b id="CountId"></b> results found. </span></td>
+            <td height="25" colspan="2" valign="bottom"><span class="content_txt"><b id="CountId"></b>  results found. </span></td>
           </tr>
           <tr>
-            <td colspan="2" valign="top" class="tr_color_lgrey"><span class="content_txt">Note: This query is executed without selecting a project, so results from all facilities are included in the count.  If you would want to execute this query for a specific project, you can select the project below and the results will be filtered based on the project rules.</span> </td>
+		  <c:choose>
+			 <c:when test="${currentSelectedProject==''}">
+	            <td colspan="2" valign="top" class="tr_color_lgrey"><span class="content_txt">Note: The query "${requestScope.categorySearchForm.queryTitle}" is executed without selecting a project, so results from all facilities are included in the count.  If you would want to execute this query for a specific project, you can select the project below and the results will be filtered based on the project rules.</span> </td>								
+			 </c:when>
+			 <c:otherwise>
+				<c:forEach var="project" items="${requestScope.categorySearchForm.projectsNameValueBeanList}">
+					<c:if test="${project.value eq currentSelectedProject}">
+						<c:set var="currentSelectedProjectName" value="${project.name}"/>
+					</c:if>
+				</c:forEach>
+	            <td colspan="2" valign="top" class="tr_color_lgrey"><span class="content_txt">Note: The query "${requestScope.categorySearchForm.queryTitle}" is executed for project "${currentSelectedProjectName}".The results will be filtered based on the project rules.</span> </td>
+			</c:otherwise>
+		</c:choose>
           </tr>
           <tr>
             <td height="10" colspan="2" class="tr_color_lgrey"></td>
@@ -75,7 +88,6 @@ MM_reloadPage(true);
                 <td valign="middle" class="content_txt">Select Project:</td>
                 <td valign="middle">&nbsp;</td>
                 <td valign="middle"><form name="form2" method="post" action="">
-				<c:set var="currentSelectedProject" value="${requestScope.categorySearchForm.currentSelectedProject}"/>
 				<html:hidden property="notify" value="false" />
 				<html:hidden property="abortExecution" value="false" />
 				<html:hidden property="executionId" value="-1" />
