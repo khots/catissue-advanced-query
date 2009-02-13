@@ -33,12 +33,14 @@
       <ignore regex="org.apache.log4j.*"/>
 	
 	  <fileset dir="./WEB-INF/classes">
-			<!--  include name="**/PassOneXQueryGenerator.class"/>
+			<include name="**/PassOneXQueryGenerator.class"/>
 			<include name="**/AbstractXQueryGenerator.class"/>
 			<include name="**/CIDERQueryExecutionThread.class"/>
 			<include name="**/CiderQueryManager.class"/>
-			<include name="**/CiderQueryManager.class"/>   -->
 			<include name="**/WorkflowBizLogic.class"/>
+			<include name="**/QueryBizLogic.class"/>
+			<include name="**/CreateUIFromQueryObjectBizLogic.class"/>
+			<include name="**/ValidateQueryBizLogic.class"/>
 	      	<exclude name="**/bizlogic/*Test*.class"/>
 	      	<exclude name="**/bizlogic/*Factory*.class"/>
 	      	<exclude name="**/bizlogic/*Manager*.class"/>
