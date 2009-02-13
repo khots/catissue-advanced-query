@@ -36,7 +36,6 @@
 			<include name="**/PassOneXQueryGenerator.class"/>
 			<include name="**/AbstractXQueryGenerator.class"/>
 	  		<include name="**/QueryGenerator.class"/>
-	  		<include name="**/AbstractPredicate.class"/>
 			<include name="**/CIDERQueryExecutionThread.class"/>
 			<include name="**/CiderQueryManager.class"/>
 			<include name="**/WorkflowBizLogic.class"/>
