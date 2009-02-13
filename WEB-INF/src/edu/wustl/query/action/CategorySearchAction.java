@@ -1,4 +1,3 @@
-
 package edu.wustl.query.action;
 
 import java.io.IOException;
@@ -11,6 +10,7 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -53,10 +53,21 @@ public class CategorySearchAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+		//getQueryrTitle
+		
+		HttpSession session = request.getSession();
 		setIsQueryAttribute(request);
 		CategorySearchForm searchForm = (CategorySearchForm) form;
 		String currentPage = searchForm.getCurrentPage();
 		String forward = edu.wustl.query.util.global.Constants.SUCCESS;
+		String workflow=request.getParameter(edu.wustl.query.util.global.Constants.IS_WORKFLOW);
+		if("true".equals(workflow))
+		 {
+			 request.setAttribute(edu.wustl.query.util.global.Constants.IS_WORKFLOW,edu.wustl.query.util.global.Constants.TRUE);
+			 String workflowName= (String)request.getSession().getAttribute(edu.wustl.query.util.global.Constants.WORKFLOW_NAME);
+			 request.setAttribute(edu.wustl.query.util.global.Constants.WORKFLOW_NAME,workflowName);
+		 }
+		
 		if (currentPage != null && currentPage.equalsIgnoreCase("resultsView"))
 		{
 			searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
