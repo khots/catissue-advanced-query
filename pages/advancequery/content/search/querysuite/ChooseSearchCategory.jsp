@@ -84,22 +84,24 @@ else
 	<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%" bordercolorlight="#000000" id="table11">
 		<tr>
 			<td valign="top"> 
-				<table border="0" width="100%" valign="top" cellpadding="0" cellspacing="0" height="100%">
+				<table border="0" width="100%" valign="top" cellpadding="0" cellspacing="0" >
 					
 					<tr bordercolorlight="#000000" >
 						<td>&nbsp;</td>
 						<td width="75%" valign="middle" ><html:text property="textField" styleClass="textfield_undefined" onkeydown="setFocusOnSearchButton(event)" size="30"/></td>
 						<td width="25%" valign="middle" align="left" style="padding-left:4px;" >
-					
-							<img src="images/advancequery/b_go_blue.gif" width="44" align="absmiddle" hspace="3" onclick="retriveSearchedEntities('<%= SearchCategory %>','<%=formName%>','<%=currentPage%>');"/>
-					    </td>
+						<a href="javascript:retriveSearchedEntities('<%= SearchCategory %>','<%=formName%>','<%=currentPage%>')">
+							<img border="0" alt="Go" src="images/advancequery/b_go_blue.gif" width="44" align="absmiddle" hspace="3" />
+						</a>
+					    						
+						</td>
 					</tr>
 					<tr >
 					    <td>&nbsp;</td>
 						<td  align="left" valign="top" colspan="3" class="small_txt_grey"><bean:message key="query.chooseCategoryLable"/></font></td>
 					</tr>
 					<tr id="collapsableHeader" valign="top"  width="97%" height="20">
-						<td valign="top"   >&nbsp;</td>
+						<td valign="top"   ></td>
 						<td id="advancedSearchHeaderTd" valign="top" style="border-top: 1px solid #cccccc; border-left:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" height="29">
 							<img src="images/advancequery/t_adv_option.gif" />									
 						</td>
@@ -131,13 +133,12 @@ else
 								</tr>											
 							</table>
 						</td>
-						<td valign="top" style="display:none" id="td3">&nbsp;</td>
-					</tr>							 	
+						<td >&nbsp;</td>
+					</tr>
 					<tr>
-						<td height="5px"></td>
-				 	</tr>
-					<tr valign="top" class="row" width="98%"  height="1%">
-						<td  height="1%">&nbsp;</td>
+					<td colspan="4" height="5"></td>
+					<tr valign="top" class="row" width="98%" >
+						<td >&nbsp;</td>
 						<td colspan="2"  valign="top" style="border-top: 1px solid #cccccc; border-left:1px solid #cccccc;border-bottom:0px solid #cccccc;border-right:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" height="30">
 							
 							<img src="images/advancequery/t_search_results.gif" />		
