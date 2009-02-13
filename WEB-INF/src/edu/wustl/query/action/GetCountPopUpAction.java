@@ -55,9 +55,9 @@ public class GetCountPopUpAction extends Action
 		}
 		
 		//retrieve the Selected Project from the GetCounts.jsp
-		String selectedProject = request.getParameter(Constants.SELECTED_PROJECT);
+		String selectedProject = (String) request.getSession().getAttribute(Constants.SELECTED_PROJECT);
 		categorySearchForm.setCurrentSelectedProject(selectedProject);
-		request.setAttribute(Constants.SELECTED_PROJECT,selectedProject);
+//		request.setAttribute(Constants.SELECTED_PROJECT,selectedProject);
 		
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
 	}
