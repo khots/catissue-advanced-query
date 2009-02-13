@@ -45,7 +45,7 @@ public class QueryObjectProcessor
 	private List<IExpression> exprsToProcess;
 
 	/**
-	 * Default constructor, made it protected to keep its implemenation as singlton class.
+	 * Default constructor, made it protected to keep its implementation as singleton class.
 	 *
 	 */
 	protected QueryObjectProcessor()
@@ -91,7 +91,7 @@ public class QueryObjectProcessor
 
 	/**
 	 * Creates another node for the expression having multiple parent. It will also create heirarcy below that node.
-	 * @param expression The Expression id having multiple panrent.
+	 * @param expression The Expression id having multiple parent.
 	 * @throws CyclicException when adding an Edge in graph causes cycle in the graph.
 	 */
 	private void replaceMultipleParent(IExpression expression) throws CyclicException
@@ -112,7 +112,7 @@ public class QueryObjectProcessor
 			joinGraph.removeAssociation(parentExpression, expression);
 			joinGraph.putAssociation(parentExpression, newExpression, association);
 
-			// copying all expression info to new expression, including child expression heirarchy.
+			// copying all expression info to new expression, including child expression hierarchy.
 			copy(expression, newExpression);
 		}
 	}
@@ -139,7 +139,7 @@ public class QueryObjectProcessor
 					// this node also have multiple parent. So just adding this operand in new expression's operand list & updating joingraph.
 					toExpression.addOperand(operand);
 					joinGraph.putAssociation(toExpression, oldExpression, association);
-					// this will be handled seperately in method replaceMultipleParent.
+					// this will be handled separately in method replaceMultipleParent.
 				}
 				else
 				{
