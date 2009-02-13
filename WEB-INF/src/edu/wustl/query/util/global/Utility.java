@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -17,8 +16,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
-
-import com.sun.org.apache.bcel.internal.classfile.Attribute;
 
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -137,135 +134,139 @@ public class Utility extends edu.wustl.common.util.Utility
 		return attributeValues;
 	}
 
-	
 	public static String getmyData(List dataList)
 	{
-		String myData =	"[";
-		int i=0;
-		if(dataList !=null && dataList.size()!=0)
+		String myData = "[";
+		int i = 0;
+		if (dataList != null && dataList.size() != 0)
 		{
-			for (i=0;i<(dataList.size()-1);i++)
+			for (i = 0; i < (dataList.size() - 1); i++)
 			{
-				List row = (List)dataList.get(i);
+				List row = (List) dataList.get(i);
 				int j;
-				myData=myData+"\"";
-				for (j=0;j < (row.size()-1);j++)
+				myData = myData + "\"";
+				for (j = 0; j < (row.size() - 1); j++)
 				{
-					myData=myData+Utility.toNewGridFormat(row.get(j)).toString();
-					myData=myData+",";
+					myData = myData + Utility.toNewGridFormat(row.get(j)).toString();
+					myData = myData + ",";
 				}
-				myData=myData+Utility.toNewGridFormat(row.get(j)).toString();
-				myData=myData+"\"";
-				myData=myData+",";
+				myData = myData + Utility.toNewGridFormat(row.get(j)).toString();
+				myData = myData + "\"";
+				myData = myData + ",";
 			}
-		
-			List row = (List)dataList.get(i);
+
+			List row = (List) dataList.get(i);
 			int j;
-			myData=myData+"\"";
-			for (j=0;j < (row.size()-1);j++)
+			myData = myData + "\"";
+			for (j = 0; j < (row.size() - 1); j++)
 			{
-				myData=myData+Utility.toNewGridFormat(row.get(j)).toString();
-				myData=myData+",";
+				myData = myData + Utility.toNewGridFormat(row.get(j)).toString();
+				myData = myData + ",";
 			}
-			myData=myData+Utility.toNewGridFormat(row.get(j)).toString();
-			myData=myData+"\"";
+			myData = myData + Utility.toNewGridFormat(row.get(j)).toString();
+			myData = myData + "\"";
 		}
-		myData=myData+"]";
+		myData = myData + "]";
 		return myData;
 	}
-	public static String getcolumns(List columnList) 
+
+	public static String getcolumns(List columnList)
 	{
-		String columns="\"";
+		String columns = "\"";
 		int col;
-		if(columnList!=null)
+		if (columnList != null)
 		{
-			for(col=0;col<(columnList.size()-1);col++)
+			for (col = 0; col < (columnList.size() - 1); col++)
 			{
-				columns=columns+columnList.get(col);
-				columns=columns+",";
+				columns = columns + columnList.get(col);
+				columns = columns + ",";
 			}
-			columns=columns+columnList.get(col);
+			columns = columns + columnList.get(col);
 		}
-		columns=columns+"\"";
+		columns = columns + "\"";
 		return columns;
 	}
+
 	public static String getcolWidth(List columnList, boolean isWidthInPercent)
 	{
-	
-		String colWidth="\"";
+
+		String colWidth = "\"";
 		int col;
-		if(columnList!=null)
+		if (columnList != null)
 		{
 			String fixedColWidth = null;
-			if(isWidthInPercent)
+			if (isWidthInPercent)
 			{
-				fixedColWidth = String.valueOf(100/columnList.size());
+				fixedColWidth = String.valueOf(100 / columnList.size());
 			}
 			else
 			{
-				fixedColWidth="100";
+				fixedColWidth = "100";
 			}
-			for(col=0;col<(columnList.size()-1);col++)
+			for (col = 0; col < (columnList.size() - 1); col++)
 			{
-				colWidth=colWidth+fixedColWidth;
-				colWidth=colWidth+",";
+				colWidth = colWidth + fixedColWidth;
+				colWidth = colWidth + ",";
 			}
-			colWidth=colWidth+fixedColWidth;
+			colWidth = colWidth + fixedColWidth;
 		}
-		colWidth=colWidth+"\"";
+		colWidth = colWidth + "\"";
 		return colWidth;
 	}
+
 	public static String getcolTypes(List dataList)
 	{
-		StringBuffer colTypes= new StringBuffer(); 
+		StringBuffer colTypes = new StringBuffer();
 		colTypes.append("\"");
 		colTypes.append(Variables.prepareColTypes(dataList));
 		colTypes.append("\"");
 		return colTypes.toString();
 	}
-	
+
 	public static void setGridData(List dataList, List columnList, HttpServletRequest request)
 	{
-		request.setAttribute("myData",getmyData(dataList));
+		request.setAttribute("myData", getmyData(dataList));
 		request.setAttribute("columns", getcolumns(columnList));
-		boolean isWidthInPercent=false;
-		if( columnList.size()<10)
+		boolean isWidthInPercent = false;
+		if (columnList.size() < 10)
 		{
-			isWidthInPercent=true;
+			isWidthInPercent = true;
 		}
-		request.setAttribute("colWidth",getcolWidth(columnList,isWidthInPercent));
-		request.setAttribute("isWidthInPercent",isWidthInPercent);
-		request.setAttribute("colTypes",getcolTypes(dataList));
+		request.setAttribute("colWidth", getcolWidth(columnList, isWidthInPercent));
+		request.setAttribute("isWidthInPercent", isWidthInPercent);
+		request.setAttribute("colTypes", getcolTypes(dataList));
 		int heightOfGrid = 100;
-		if(dataList!=null)
+		if (dataList != null)
 		{
 			int noOfRows = dataList.size();
 			heightOfGrid = (noOfRows + 2) * 20;
-			if(heightOfGrid > 240)
+			if (heightOfGrid > 240)
 			{
 				heightOfGrid = 230;
 			}
 		}
 		request.setAttribute("heightOfGrid", heightOfGrid);
 		int col = 0;
-		int i=0;
-		String hiddenColumnNumbers="";
-		if(columnList!=null)
+		int i = 0;
+		String hiddenColumnNumbers = "";
+		if (columnList != null)
 		{
-			for(col=0;col<columnList.size();col++)
+			for (col = 0; col < columnList.size(); col++)
 			{
-				if (columnList.get(col).toString().trim().equals("ID") || columnList.get(col).toString().trim().equals("Status")
-						|| columnList.get(col).toString().trim().equals("Site Name")|| columnList.get(col).toString().trim().equals("Report Collection Date"))
+				if (columnList.get(col).toString().trim().equals("ID")
+						|| columnList.get(col).toString().trim().equals("Status")
+						|| columnList.get(col).toString().trim().equals("Site Name")
+						|| columnList.get(col).toString().trim().equals("Report Collection Date"))
 				{
-					hiddenColumnNumbers=hiddenColumnNumbers+"hiddenColumnNumbers["+i+"] = "+col+";";
+					hiddenColumnNumbers = hiddenColumnNumbers + "hiddenColumnNumbers[" + i + "] = "
+							+ col + ";";
 					i++;
 				}
 			}
 		}
 		request.setAttribute("hiddenColumnNumbers", hiddenColumnNumbers);
 	}
-	
-	
+
 	public static Object toNewGridFormatWithHref(List<String> row,
 			Map<Integer, QueryResultObjectData> hyperlinkColumnMap, int index)
 	{
@@ -319,9 +320,9 @@ public class Utility extends edu.wustl.common.util.Utility
 	public static String getColumnWidth(List columnNames)
 	{
 		String colWidth = getColumnWidth((String) columnNames.get(0));
-        
-		int size = columnNames.size(); 
-		
+
+		int size = columnNames.size();
+
 		for (int col = 1; col < size; col++)
 		{
 			String columnName = (String) columnNames.get(col);
@@ -357,21 +358,22 @@ public class Utility extends edu.wustl.common.util.Utility
 
 	public static String getColumnWidthP(List columnNames)
 	{
-		StringBuffer colWidth=new StringBuffer("");
-        
-		int size = columnNames.size(); 
-		double temp= 97.5f;
+		StringBuffer colWidth = new StringBuffer("");
+
+		int size = columnNames.size();
+		double temp = 97.5f;
 		for (int col = 0; col < size; col++)
 		{
 			String columnName = (String) columnNames.get(col);
-			 if(" ".equals(columnName))
-			 {
-				 colWidth = colWidth.append("2.5");
-			 }
-			 else{
-			      colWidth = colWidth .append(",");
-			      colWidth = colWidth .append(String.valueOf(temp/(size-1)));
-			 }
+			if (" ".equals(columnName))
+			{
+				colWidth = colWidth.append("2.5");
+			}
+			else
+			{
+				colWidth = colWidth.append(",");
+				colWidth = colWidth.append(String.valueOf(temp / (size - 1)));
+			}
 		}
 		return colWidth.toString();
 	}
@@ -432,10 +434,8 @@ public class Utility extends edu.wustl.common.util.Utility
 					.getQueryResultObjectDataMap();
 			if (queryResultObjectDataBeanMap != null)
 			{
-				for (Iterator<Long> beanMapIterator = queryResultObjectDataBeanMap.keySet()
-						.iterator(); beanMapIterator.hasNext();)
+				for (Long id : queryResultObjectDataBeanMap.keySet())
 				{
-					Long id = beanMapIterator.next();
 					QueryResultObjectDataBean bean = queryResultObjectDataBeanMap.get(id);
 					if (bean.isClobeType())
 					{
@@ -523,7 +523,7 @@ public class Utility extends edu.wustl.common.util.Utility
 		}
 		return selectSql;
 	}
-	
+
 	public static ActionErrors setActionError(String errorMessage, String key)
 	{
 		ActionErrors errors = new ActionErrors();
@@ -531,13 +531,13 @@ public class Utility extends edu.wustl.common.util.Utility
 		errors.add(ActionErrors.GLOBAL_ERROR, error);
 		return errors;
 	}
-	
-    /**
-     * This method returns the session data bean
-     * @param request
-     * @return
-     */
-    public static SessionDataBean getSessionData(HttpServletRequest request)
+
+	/**
+	 * This method returns the session data bean
+	 * @param request
+	 * @return
+	 */
+	public static SessionDataBean getSessionData(HttpServletRequest request)
 	{
 		Object obj = request.getSession().getAttribute(Constants.SESSION_DATA);
 		SessionDataBean sessionData = null;
@@ -548,19 +548,20 @@ public class Utility extends edu.wustl.common.util.Utility
 		}
 		return sessionData;
 	}
-    
-    /**
-     * Method checks if attribute is not viewable in results view of Query.
-     * @param attribute
-     * @return isNotViewable
-     */
-    public static boolean isNotViewable(AttributeInterface attribute)
+
+	/**
+	 * Method checks if attribute is not viewable in results view of Query.
+	 * @param attribute
+	 * @return isNotViewable
+	 */
+	public static boolean isNotViewable(AttributeInterface attribute)
 	{
 		boolean isNotViewable = false;
-		Collection<TaggedValueInterface> taggedValueCollection = attribute.getTaggedValueCollection();
-		for(TaggedValueInterface tagValue : taggedValueCollection)
+		Collection<TaggedValueInterface> taggedValueCollection = attribute
+				.getTaggedValueCollection();
+		for (TaggedValueInterface tagValue : taggedValueCollection)
 		{
-			if(tagValue.getKey().equals(Constants.TAGGED_VALUE_NOT_VIEWABLE))
+			if (tagValue.getKey().equals(Constants.TAGGED_VALUE_NOT_VIEWABLE))
 			{
 				isNotViewable = true;
 				break;
@@ -568,14 +569,14 @@ public class Utility extends edu.wustl.common.util.Utility
 		}
 		return isNotViewable;
 	}
-    
-    public static boolean isMainEntity(EntityInterface entity)
+
+	public static boolean isMainEntity(EntityInterface entity)
 	{
 		boolean isMainEntity = false;
 		Collection<TaggedValueInterface> taggedValueCollection = entity.getTaggedValueCollection();
-		for(TaggedValueInterface tagValue : taggedValueCollection)
+		for (TaggedValueInterface tagValue : taggedValueCollection)
 		{
-			if(tagValue.getKey().equals(Constants.TAGGED_VALUE_MAIN_ENTIY))
+			if (tagValue.getKey().equals(Constants.TAGGED_VALUE_MAIN_ENTIY))
 			{
 				isMainEntity = true;
 				break;
@@ -583,8 +584,8 @@ public class Utility extends edu.wustl.common.util.Utility
 		}
 		return isMainEntity;
 	}
-    
-    public static String removeLastAnd(String select)
+
+	public static String removeLastAnd(String select)
 	{
 		String selectString = select;
 		if (select.endsWith(Constants.QUERY_AND))
@@ -593,52 +594,55 @@ public class Utility extends edu.wustl.common.util.Utility
 		}
 		return selectString;
 	}
-    
-    public static void removeLastComma(StringBuilder string)
+
+	public static void removeLastComma(StringBuilder string)
 	{
 		if (Constants.QUERY_COMMA.equals(string.substring(string.length() - 2)))
 		{
 			string.delete(string.length() - 2, string.length());
 		}
 	}
-    
-    public static boolean istagPresent(AbstractMetadataInterface entity,String tag)
+
+	public static boolean istagPresent(AbstractMetadataInterface entity, String tag)
 	{
 		boolean isTagPresent = false;
 		Collection<TaggedValueInterface> taggedValueCollection = entity.getTaggedValueCollection();
-		for(TaggedValueInterface tagValue : taggedValueCollection)
+		for (TaggedValueInterface tagValue : taggedValueCollection)
 		{
-			if(tagValue.getKey().equals(tag))
+			if (tagValue.getKey().equals(tag))
 			{
 				isTagPresent = true;
 				break;
 			}
 		}
 		return isTagPresent;
-	} 
-    /**
-     * Method to update Query Objects with containments.
-     * @param session object
-     * @param query to be updated.
-     */
-    public static  void updateIQueryForContainments(HttpSession session, IQuery query,boolean isDefaultConditionPresent)
-	{
-		if(query != null)
-	    { 
-			Map<Integer, HashMap <EntityInterface, List<EntityInterface>>> eachExpressionParentChildMap = IQueryUpdationUtil.getAllConatainmentObjects(query,session,isDefaultConditionPresent);
-			
-			//Update the IQuery with containment objects......add only those containment objects which are not present in IQuery
-			IQueryUpdationUtil.addConatinmentObjectsToIquery(query,session);
-			
-			//IQueryUpdationUtil.addDefaultConditionToIquery(query,session);
-			
-			//Add the link/association among parent and containment entities
-			IQueryUpdationUtil.addLinks(eachExpressionParentChildMap, session,query);
-			
-	    }
 	}
-    
-    /**
+
+	/**
+	 * Method to update Query Objects with containments.
+	 * @param session object
+	 * @param query to be updated.
+	 */
+	public static void updateIQueryForContainments(HttpSession session, IQuery query,
+			boolean isDefaultConditionPresent)
+	{
+		if (query != null)
+		{
+			Map<Integer, HashMap<EntityInterface, List<EntityInterface>>> eachExpressionParentChildMap = IQueryUpdationUtil
+					.getAllConatainmentObjects(query, session, isDefaultConditionPresent);
+
+			//Update the IQuery with containment objects......add only those containment objects which are not present in IQuery
+			IQueryUpdationUtil.addConatinmentObjectsToIquery(query, session);
+
+			//IQueryUpdationUtil.addDefaultConditionToIquery(query,session);
+
+			//Add the link/association among parent and containment entities
+			IQueryUpdationUtil.addLinks(eachExpressionParentChildMap, session, query);
+
+		}
+	}
+
+	/**
 	 * get the alias for given attribute to identify it uniquely
 	 * @param attribute
 	 * @return
@@ -647,7 +651,7 @@ public class Utility extends edu.wustl.common.util.Utility
 	{
 		return getAliasFor(attribute.getName(), expression);
 	}
-	
+
 	public static String getAliasFor(String attributeName, IExpression expression)
 	{
 		return attributeName + "_" + expression.getExpressionId();
