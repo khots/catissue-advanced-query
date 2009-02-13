@@ -60,12 +60,17 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	
 	var queryTitleControl;
 	var queryTypeControl;
-	queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,(columnContents[5]));
-	queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,(columnContents[6]));
+	
+	queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,(columnContents[6]));
+	queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,(columnContents[7]));
 	operandsTd2.appendChild(queryTitleControl);
 	operandsTd2.appendChild(queryTypeControl);
 	operandsTd2.width="4";
-	operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+id+"','"+0+"')"));
+	var query_type=columnContents[7];
+	if(query_type=="Get Data")
+     operandsTd1.appendChild(createLink("View Results ","execute_"+queryCount,"javascript:executeGetDataQuery('"+id+"')"));
+	else
+	 operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+id+"','"+0+"')"));
 	operandsTd3.appendChild(createLink("Delete ","delete_"+queryCount,"javascript:deleteWorkflowItem('"+queryCount+"')"));
 	operandsTd3.appendChild(createHiddenElement("cancelajaxcall","cancelajaxcall_"+(queryCount),'false'));
 
@@ -117,11 +122,16 @@ function hasInnerText()
 	return hasInnerText;
 }
 
+   
 function addQuery()
 {
 	var queryIds=document.getElementById("queryId").options;
 	var queryTitles=document.getElementById("queryTitle").options;
 	var queryTypes=document.getElementById("queryType").options;
+	var presentQueryIds=parent.window.document.getElementsByName("identifier");
+	var presentQueryTitle=parent.window.document.getElementsByName("displayQueryTitle");
+	var presentQueryType=parent.window.document.getElementsByName("displayQueryType");
+
 	var queryCount=document.getElementById("table1").rows.length;
 
 
@@ -129,16 +139,20 @@ function addQuery()
 	{
 		
 		var operandsTdContent="";
-		var rowContents=new Array(7);
+		var rowContents=new Array(8);
 		rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'',(counter+queryCount));
 		operandsTdContent=getText(queryIds[counter]);
 		rowContents[1]=createTextElement(getText(queryTitles[counter]));
 		rowContents[2]=createTextElement(getText(queryTypes[counter]));
 		//rowContents[3]=createHiddenElement("cancelajaxcall","cancelajaxcall_"+(counter+queryCount),'false');
-		rowContents[4]=createHiddenElement("selectedqueryId","selectedqueryId_"+(counter+queryCount),getText(queryIds[counter]));
+		 if(getText(queryTypes[counter])=="GetData") 
+		  rowContents[4]=getSelectObjectControl(queryIds[counter],presentQueryIds,presentQueryTitle,presentQueryType,queryIds,queryTitles,queryTypes);
+		 else
+          rowContents[4]=createTextElement("");
+	 	rowContents[5]=createHiddenElement("selectedqueryId","selectedqueryId_"+(counter+queryCount),getText(queryIds[counter]));
 //		rowContents[4].appendChild(createHiddenElement("identifier","identifier_"+getText(queryIds[counter]),getText(queryIds[counter])));
-		rowContents[5]=getText(queryTitles[counter]);
-		rowContents[6]=getText(queryTypes[counter]);
+		rowContents[6]=getText(queryTitles[counter]);
+		rowContents[7]=getText(queryTypes[counter]);
 		var operatorsTdContent="None";
 	
 		//create a table containing tbody with id "table1"
@@ -147,14 +161,51 @@ function addQuery()
 
 }
 
-function getSelectObjectControl()
+function getSelectObjectControl(thisqID,pId,pTitle,pType,queryIds,queryTitles,queryTypes)
 {
+	var booln="true" ;
 	var selectObject=parent.window.document.createElement("select");
-	var optn = parent.window.document.createElement("OPTION");
-	optn.text="person";
-	optn.value="person";
-	selectObject.options.add(optn);
-	selectObject.name="selectObject";
+	selectObject.style.width="120";
+	selectObject.name="countQueryDropDown";
+	selectObject.id="countQueryDropDown_"+thisqID.value;
+	for(var i=0;i<pId.length;i++)
+	{
+    
+	  
+	  
+	  if(pType[i].value=="GetCount")
+	 {
+	   
+	    for(var t=0;t<queryIds.length;t++)
+	 {
+	    if(queryIds[t].value == pId[i].value)
+		{
+		  booln="false";
+		}
+	  
+	  }
+       if(booln=="true")
+	 {  
+       var optn = parent.window.document.createElement("OPTION");
+	   optn.text=pTitle[i].value;
+	   optn.value=pId[i].value;
+	   selectObject.options.add(optn);
+	 }
+     }
+   }
+	
+	
+	for(var i=0;i<queryIds.length;i++)
+   {
+    if(getText(queryTypes[i])=="GetCount")
+	   {
+	  var optn = parent.window.document.createElement("OPTION");
+	  optn.text=getText(queryTitles[i]);
+	  optn.value=queryIds[i].value;
+	  selectObject.options.add(optn);
+   }
+   }
+	
 	return selectObject;
 }
 
