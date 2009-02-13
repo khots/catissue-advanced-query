@@ -35,6 +35,11 @@
 	  <fileset dir="./WEB-INF/classes">
 			<include name="**/PassOneXQueryGenerator.class"/>
 			<include name="**/AbstractXQueryGenerator.class"/>
+	  		<include name="**/QueryGenerator.class"/>
+	  		<include name="**/AbstractPredicate.class"/>
+		  	<include name="**/InfixPredicate.java.class"/>
+		  	<include name="**/SimpleCharStream.java.class"/>
+		  	<include name="**/WherePartParser.java.class"/>
 			<include name="**/CIDERQueryExecutionThread.class"/>
 			<include name="**/CiderQueryManager.class"/>
 			<include name="**/WorkflowBizLogic.class"/>
