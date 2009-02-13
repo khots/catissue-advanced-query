@@ -23,9 +23,9 @@ import edu.wustl.common.util.dbManager.DAOException;
 public class QueryExecutionThread implements Runnable
 {
 
-	AbstractQuery abstractQueryObj;
+	protected AbstractQuery abstractQueryObj;
 	// JDBC result set for this query
-	ResultSet results;
+	protected ResultSet results;
 
 	/**
 	 * External Condition which controls cancel
