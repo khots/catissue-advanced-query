@@ -34,6 +34,7 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 	 * @throws MultipleRootsException
 	 * @throws DynamicExtensionsSystemException
 	 */
+	@Override
 	protected String buildXQueryForClause(PredicateGenerator predicateGenerator)
 			throws MultipleRootsException, DynamicExtensionsSystemException
 	{
@@ -64,7 +65,7 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 			else
 			{
 				IExpression parent = joinGraph.getParentList(expression).get(0);
-				String parentPath  = getEntityPaths().get(parent);
+				String parentPath = getEntityPaths().get(parent);
 				xqueryForClause.append(variable).append(' ').append(Constants.IN).append(' ');
 				xqueryForClause.append(parentPath).append('/').append(
 						getTargetRoles().get(expression)).append('/');
@@ -110,6 +111,7 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 	/**
 	 *  @return the Return Clause of SQLXML
 	 */
+	@Override
 	protected String buildXQueryReturnClause()
 	{
 		StringBuilder xqueryReturnClause = new StringBuilder(Constants.QUERY_RETURN)

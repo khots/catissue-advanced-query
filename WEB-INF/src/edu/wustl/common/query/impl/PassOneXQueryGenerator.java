@@ -46,6 +46,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 	 * @throws MultipleRootsException
 	 * @throws DynamicExtensionsSystemException
 	 */
+	@Override
 	protected String buildXQueryForClause(PredicateGenerator predicateGenerator)
 			throws MultipleRootsException, DynamicExtensionsSystemException
 	{
@@ -72,8 +73,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 					laterPart.toString());
 
 		}
-		
-		
+
 		return xqueryForClause.toString();
 	}
 
@@ -217,6 +217,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 	/**
 	 * build the let clause
 	 */
+	@Override
 	protected String buildXQueryLetClause(PredicateGenerator predicateGenerator)
 	{
 		StringBuilder xqueryLetClause = new StringBuilder();
@@ -264,6 +265,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 	 * 
 	 * @return the Return Clause of SQLXML
 	 */
+	@Override
 	protected String buildXQueryReturnClause()
 	{
 		StringBuilder xqueryReturnClause = new StringBuilder(Constants.QUERY_RETURN);
@@ -286,6 +288,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 	 * @return Columns part of SQLXML
 	 * @throws DataTypeFactoryInitializationException
 	 */
+	@Override
 	protected String buildColumnsPart() throws DataTypeFactoryInitializationException
 	{
 		StringBuilder columnsPart = new StringBuilder(512);

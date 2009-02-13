@@ -42,7 +42,6 @@ import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameter;
-import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
@@ -122,6 +121,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @parameters : IQuery query= The query object
 	 * @parameters : char QueryType = representing the kind of query whether aggregate or normal
 	 */
+	@Override
 	public String generateQuery(IQuery query) throws MultipleRootsException, SqlException
 	{
 		String formedQuery = null;
@@ -191,8 +191,8 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		{
 			IExpression expression = QueryUtility.getExpression((IParameter<ICondition>) parameter,
 					query);
-			
-			parameters.put((IParameter<ICondition>)parameter, expression);
+
+			parameters.put((IParameter<ICondition>) parameter, expression);
 		}
 	}
 
@@ -206,8 +206,8 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 
 		for (IOutputAttribute selectedAttribute : query.getOutputAttributeList())
 		{
-			String attributeAlias = Utility.getAliasFor(selectedAttribute.getAttribute(), selectedAttribute
-					.getExpression());
+			String attributeAlias = Utility.getAliasFor(selectedAttribute.getAttribute(),
+					selectedAttribute.getExpression());
 			attributeAliases.put(selectedAttribute, attributeAlias);
 		}
 	}
@@ -629,6 +629,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @return Will modify the DataType depending on input
 	 * according to the database
 	 */
+	@Override
 	protected String modifyValueForDataType(String value, AttributeTypeInformationInterface dataType)
 	{
 		StringBuilder actualValue = new StringBuilder();
@@ -777,8 +778,6 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return entityPaths.get(expression) + '/' + attribute.getName();
 	}
 
-	
-
 	@Override
 	protected String getDescriminatorCondition(EntityInterface entity, String aliasFor)
 	{
@@ -786,11 +785,13 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return null;
 	}
 
+	@Override
 	protected boolean shouldAddNodeFor(IExpression expression)
 	{
 		return super.shouldAddNodeFor(expression);
 	}
 
+	@Override
 	protected boolean isContainedExpresion(int expressionId)
 	{
 		boolean isMainExpression = false;
@@ -808,6 +809,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	/**
 	 * create xquery fragment to represent "between" operator 
 	 */
+	@Override
 	protected String processBetweenOperator(ICondition condition, String attributeName)
 			throws SqlException
 	{
@@ -848,6 +850,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	/**
 	 * create xquery fragment to represent "in" operator 
 	 */
+	@Override
 	protected String processInOperator(ICondition condition, String attributeName)
 			throws SqlException
 	{
@@ -884,6 +887,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	/**
 	 * create xquery fragment to represent "exists" and "empty" operators 
 	 */
+	@Override
 	protected String processNullCheckOperators(ICondition condition, String attributeName)
 			throws SqlException
 	{
@@ -909,6 +913,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * create xquery fragment to represent "contains", "starts-with" and 
 	 * "ends-with" operators 
 	 */
+	@Override
 	protected String processLikeOperators(ICondition condition, String attributeName)
 			throws SqlException
 	{
@@ -987,7 +992,6 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return forVariables;
 	}
 
-	
 	/**
 	 * @return the attributeAliases
 	 */
@@ -1003,5 +1007,5 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	{
 		return parameters;
 	}
-	
+
 }
