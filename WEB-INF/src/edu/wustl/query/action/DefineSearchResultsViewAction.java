@@ -63,6 +63,14 @@ public class DefineSearchResultsViewAction extends Action
 		CategorySearchForm searchForm = (CategorySearchForm) form;
 		searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
 		HttpSession session = request.getSession();
+		String workflow=request.getParameter(Constants.IS_WORKFLOW);
+		 if(Constants.TRUE.equals(workflow))
+		 {
+			 request.setAttribute(Constants.IS_WORKFLOW,Constants.TRUE);
+			 String workflowName= (String)request.getSession().getAttribute(Constants.WORKFLOW_NAME);
+			 request.setAttribute(Constants.WORKFLOW_NAME,workflowName);
+		 }
+		
 		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
 		String entityId = request.getParameter(Constants.MAIN_ENTITY_ID);
 		if(entityId == null)
