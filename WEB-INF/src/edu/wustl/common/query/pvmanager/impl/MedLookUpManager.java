@@ -25,9 +25,10 @@ public final class MedLookUpManager
 
 	public static MedLookUpManager instance()
 	{
-		synchronized (mLookUpMgrObj)
+
+		if (mLookUpMgrObj == null)
 		{
-			if (mLookUpMgrObj == null)
+			synchronized (mLookUpMgrObj)
 			{
 				mLookUpMgrObj = new MedLookUpManager();
 				//medLookUpManager.lookUpTable = Variables.properties.getProperty("med.lookup.table");
@@ -120,14 +121,12 @@ public final class MedLookUpManager
 		catch (DAOException e)
 		{
 
-			throw new PVManagerException(
-					ErrMsg, e);
+			throw new PVManagerException(ErrMsg, e);
 
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new PVManagerException(
-					ErrMsg, e);
+			throw new PVManagerException(ErrMsg, e);
 		}
 		finally
 		{
@@ -137,8 +136,7 @@ public final class MedLookUpManager
 			}
 			catch (DAOException e)
 			{
-				throw new PVManagerException(
-						ErrMsg, e);
+				throw new PVManagerException(ErrMsg, e);
 			}
 		}
 
@@ -188,14 +186,12 @@ public final class MedLookUpManager
 		catch (DAOException e)
 		{
 
-			throw new PVManagerException(
-					ErrMsg, e);
+			throw new PVManagerException(ErrMsg, e);
 
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new PVManagerException(
-					ErrMsg, e);
+			throw new PVManagerException(ErrMsg, e);
 		}
 		finally
 		{
@@ -205,8 +201,7 @@ public final class MedLookUpManager
 			}
 			catch (DAOException e)
 			{
-				throw new PVManagerException(
-						ErrMsg, e);
+				throw new PVManagerException(ErrMsg, e);
 			}
 		}
 
@@ -244,6 +239,6 @@ public final class MedLookUpManager
 		query.append(pvView);
 		return query.toString();
 	}
-	
+
 	private static final String ErrMsg = "Error occured while fetching the permissible concept codes from MED.";
 }
