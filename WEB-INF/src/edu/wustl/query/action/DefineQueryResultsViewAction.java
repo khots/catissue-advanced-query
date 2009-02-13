@@ -50,11 +50,11 @@ public class DefineQueryResultsViewAction extends Action
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		SelectedColumnsMetadata selectedColumnsMetadata = (SelectedColumnsMetadata) session
 				.getAttribute(Constants.SELECTED_COLUMN_META_DATA);
-		List<NameValueBean> prevSelectedColumnNameValueBeanList = selectedColumnsMetadata
+		List<NameValueBean> prevSelColumnList = selectedColumnsMetadata
 				.getSelectedColumnNameValueBeanList();
 		if (!selectedColumnsMetadata.isDefinedView())
 		{
-			prevSelectedColumnNameValueBeanList=null;
+			prevSelColumnList=null;
 		}
 		OutputTreeDataNode currentSelectedObject = selectedColumnsMetadata
 				.getCurrentSelectedObject();
@@ -64,13 +64,13 @@ public class DefineQueryResultsViewAction extends Action
 		List<QueryTreeNodeData> treeDataVector = new ArrayList<QueryTreeNodeData>();
 		DefineGridViewBizLogic defineGridViewBizLogic = new DefineGridViewBizLogic();
 		defineGridViewBizLogic.createTree(categorySearchForm, queryDetailsObj, treeDataVector,
-				currentSelectedObject, prevSelectedColumnNameValueBeanList);
-		List<NameValueBean> selectedColumnNameValueBeanList = categorySearchForm
+				currentSelectedObject, prevSelColumnList);
+		List<NameValueBean> selectedColumnList = categorySearchForm
 				.getSelectedColumnNameValueBeanList();
-		selectedColumnsMetadata.setSelectedColumnNameValueBeanList(selectedColumnNameValueBeanList);
+		selectedColumnsMetadata.setSelectedColumnNameValueBeanList(selectedColumnList);
 		session.setAttribute(Constants.SELECTED_COLUMN_META_DATA, selectedColumnsMetadata);
 		session.setAttribute(Constants.SELECTED_COLUMN_NAME_VALUE_BEAN_LIST,
-				selectedColumnNameValueBeanList);
+				selectedColumnList);
 		session.setAttribute(Constants.TREE_DATA, treeDataVector);
 		return mapping.findForward(Constants.SUCCESS);
 	}
