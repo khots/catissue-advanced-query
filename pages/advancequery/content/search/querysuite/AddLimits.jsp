@@ -4,6 +4,7 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
+<%@ page isELIgnored="false" %>
 
 <html>
 <head>
@@ -24,10 +25,12 @@
 <script type='text/JavaScript' src='jss/advancequery/scwcalendar.js'></script>
 <html:errors />
 <%
-
-	String formAction = Constants.SearchCategory;
+  
+  	String formAction = Constants.SearchCategory;
 	String defineSearchResultsViewAction = Constants.DefineSearchResultsViewAction;
-	String isQuery =(String) request.getAttribute("isQuery");;
+	String isQuery =(String) request.getAttribute("isQuery");
+	String isworkflow=(String)request.getAttribute(Constants.IS_WORKFLOW);
+	String workflowName=(String)request.getAttribute(Constants.WORKFLOW_NAME);
 	if(isQuery==null)
 	{
 		isQuery="false";
@@ -36,22 +39,19 @@
 	
 %>
 
-<html:form method="GET" action="<%=formAction%>" style="margin:0;padding:0;">
+ <html:form method="GET" action="<%=formAction%>" style="margin:0;padding:0;">
 	<html:hidden property="stringToCreateQueryObject" value="" />
 	<html:hidden property="nextOperation" value="" />
-
-<table border="0" width="100%" cellspacing="0" cellpadding="0"  height="450" >	
-		<tr>
-			<bean:message key="getcountquery.name"/><span class="red_star">*</span>
-			<html:text styleClass="formFieldSized"   styleId="queryTitle1" property="queryTitle" />
-					
-		</tr>
-		
-
-
-		<tr>	
+	 <input type="hidden" name="isWorkflow" id="isWorkflow" value="">
+   
+ <input type="hidden" name="pageOf" id="pageOf" value="DefineFilter">
+  <table border="0" width="100%" cellspacing="0" cellpadding="0"  height="450" bgcolor="#ffffff">	
+	 
+	 <tr id="workflowname" valign="top" style="padding-bottom:5px;padding-left:10px;"> <td colspan="3"><span class="content_txt"></b><bean:message key="workflow.name"/> </b></span>: <%=workflowName%></td></tr>
+	
+	 <tr>	
 			<td width="33%" align="center" valign="middle" height="36"  background="images/advancequery/top_bg_wiz.gif" >
-				<img src="images/advancequery/1_active.gif"/> <!-- width="118" height="25" /-->
+				<img src="images/advancequery/define_filters_active.gif"/> <!-- width="118" height="25" /-->
 			</td>
 			<td width="33%" align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
 				<img src="images/advancequery/2_inactive.gif" /> <!-- width="199" height="38" /-->
@@ -154,6 +154,7 @@
 			</td>
 			</tr>
 			<tr>
+					
 					<td colspan="4">
 					<table border="0" width="100%" cellspacing="0" cellpadding="0" height="24">
 					<tr valign="middle">
@@ -161,7 +162,7 @@
 					  <table border="0" cellspacing="0" cellpadding="0" >
 						<tr>
 							 <td style="padding-left:7px"  ><img src="images/advancequery/b_save.gif"   hspace="3" onclick="validateQuery('save');"/></td>
-							 <td style="padding-left:4px"><img src="images/advancequery/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td>
+							 <td style="padding-left:4px"><img src="images/advancequery/b_back_to_workflow.gif"  hspace="3" onclick="showWorkFlowWizard();"/></td>
 						</tr>
 					 </table>
 					</td>
@@ -169,7 +170,16 @@
 					<td width="50%" align="right">
 					 <table border="0" cellspacing="0" cellpadding="0">
 					  <tr>
-							<td align="right"><img src="images/advancequery/b_next.gif" onclick="saveClientQueryToServer('next');" /></td>
+						
+						<td id="projectList" style="padding-right:5px" > Select Project:
+							<SELECT NAME="dropdown" class="textfield" onChange="setProjectData(this,'categorySearchForm')">
+								<OPTION VALUE="">Unspecified..
+								<c:forEach var="project" items="${requestScope.categorySearchForm.projectsNameValueBeanList}">
+									<OPTION VALUE="${project.value}">${project.name}
+								</c:forEach>
+							</SELECT>
+					    </td>	
+						<td align="right"><img src="images/advancequery/b_define_results_view.gif" onclick="saveClientQueryToServer('next');" /></td>
 						</tr>
 					</table>
 					 </td>
@@ -185,4 +195,18 @@
 </table>               
 </html:form>
 </body>
-</html> 
+<script>   
+   var wrkflw = "<%=isworkflow%>";
+   if(wrkflw=="true")
+   {
+      document.getElementById("isWorkflow").value="true";
+	  document.getElementById("projectList").style.display="none";
+   }
+   else
+   {
+     document.getElementById("workflowname").style.display="none";
+	
+   }
+ 
+ </script>
+</html>
