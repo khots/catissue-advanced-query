@@ -102,7 +102,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	/**
 	 * map of IParameter and the expressions corresponding to their attributes 
 	 */
-	private Map<IParameter<?>, IExpression> parameters;
+	private Map<IParameter<ICondition>, IExpression> parameters;
 
 	//private static org.apache.log4j.Logger logger =Logger.getLogger(XQueryGenerator.class);
 
@@ -185,13 +185,14 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 */
 	private void setParameterizedAttributes(ParameterizedQuery query)
 	{
-		parameters = new HashMap<IParameter<?>, IExpression>();
+		parameters = new HashMap<IParameter<ICondition>, IExpression>();
 
 		for (IParameter<?> parameter : query.getParameters())
 		{
 			IExpression expression = QueryUtility.getExpression((IParameter<ICondition>) parameter,
 					query);
-			parameters.put(parameter, expression);
+			
+			parameters.put((IParameter<ICondition>)parameter, expression);
 		}
 	}
 
@@ -205,7 +206,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 
 		for (IOutputAttribute selectedAttribute : query.getOutputAttributeList())
 		{
-			String attributeAlias = getAliasFor(selectedAttribute.getAttribute(), selectedAttribute
+			String attributeAlias = Utility.getAliasFor(selectedAttribute.getAttribute(), selectedAttribute
 					.getExpression());
 			attributeAliases.put(selectedAttribute, attributeAlias);
 		}
@@ -776,15 +777,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return entityPaths.get(expression) + '/' + attribute.getName();
 	}
 
-	/**
-	 * get the alias for given attribute to identify it uniquely
-	 * @param attribute
-	 * @return
-	 */
-	protected String getAliasFor(AttributeInterface attribute, IExpression expression)
-	{
-		return attribute.getName() + "_" + expression.getExpressionId();
-	}
+	
 
 	@Override
 	protected String getDescriminatorCondition(EntityInterface entity, String aliasFor)
@@ -994,6 +987,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return forVariables;
 	}
 
+	
 	/**
 	 * @return the attributeAliases
 	 */
@@ -1005,9 +999,9 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	/**
 	 * @return the parameters
 	 */
-	protected Map<IParameter<?>, IExpression> getParameters()
+	protected Map<IParameter<ICondition>, IExpression> getParameters()
 	{
 		return parameters;
 	}
-
+	
 }

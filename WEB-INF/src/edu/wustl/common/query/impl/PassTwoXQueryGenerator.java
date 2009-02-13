@@ -4,12 +4,12 @@
 
 package edu.wustl.common.query.impl;
 
-import java.util.Set;
 import java.util.Map.Entry;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.wustl.common.query.impl.predicate.AbstractPredicate;
 import edu.wustl.common.query.impl.predicate.PredicateGenerator;
 import edu.wustl.common.query.impl.predicate.Predicates;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
@@ -18,6 +18,7 @@ import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 
 /**
  * @author juberahamad_patel
@@ -37,12 +38,13 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 			throws MultipleRootsException, DynamicExtensionsSystemException
 	{
 		StringBuilder xqueryForClause = new StringBuilder(512);
+		String variable = null;
 
 		for (Entry<IExpression, String> entry : getForVariables().entrySet())
 		{
 			xqueryForClause.append(Constants.QUERY_FOR);
 			IExpression expression = entry.getKey();
-			String variable = entry.getValue();
+			variable = entry.getValue();
 			if (getMainExpressions().contains(expression))
 			{
 				String tableName = expression.getQueryEntity().getDynamicExtensionsEntity()
@@ -61,16 +63,20 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 			}
 			else
 			{
+				IExpression parent = joinGraph.getParentList(expression).get(0);
+				String parentPath  = getEntityPaths().get(parent);
 				xqueryForClause.append(variable).append(' ').append(Constants.IN).append(' ');
-				xqueryForClause.append(getEntityPaths().get(expression)).append('/').append(
+				xqueryForClause.append(parentPath).append('/').append(
 						getTargetRoles().get(expression)).append('/');
-				xqueryForClause.append(expression.getQueryEntity().getDynamicExtensionsEntity()
-						.getName());
+				String entityName = expression.getQueryEntity().getDynamicExtensionsEntity()
+						.getName();
+				xqueryForClause.append(deCapitalize(entityName));
 			}
 
 			Predicates predicates = predicateGenerator.getPredicates(expression);
 			if (predicates != null)
 			{
+				insertParameters(predicates);
 				xqueryForClause.append('[').append(predicates.assemble()).append(']');
 			}
 
@@ -78,6 +84,27 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 
 		return xqueryForClause.toString();
 
+	}
+
+	/**
+	 * replace parameter placeholders with parameter names
+	 * @param predicates the predicates
+	 */
+	private void insertParameters(Predicates predicates)
+	{
+		for (Entry<IParameter<ICondition>, IExpression> entry : getParameters().entrySet())
+		{
+			AttributeInterface attribute = entry.getKey().getParameterizedObject().getAttribute();
+			String attributeAlias = Utility.getAliasFor(attribute, entry.getValue());
+
+			for (AbstractPredicate predicate : predicates.getPredicates())
+			{
+				if (attributeAlias.equals(predicate.getAttributeAlias()))
+				{
+					predicate.setRhs(Constants.QUERY_DOLLAR + attributeAlias);
+				}
+			}
+		}
 	}
 
 	/**
@@ -118,11 +145,12 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 			columnsPart.append(entry.getValue());
 
 			String dataType = getDataTypeInformation(entry.getKey().getAttribute());
-			columnsPart.append(dataType).append(" path '").append(entry.getValue()).append('/')
-					.append(entry.getKey().getAttribute().getName()).append('\'').append(
-							Constants.QUERY_COMMA);
+			columnsPart.append(' ').append(dataType).append(" path '").append(entry.getValue())
+					.append('/').append(entry.getKey().getAttribute().getName()).append('\'')
+					.append(Constants.QUERY_COMMA);
 		}
 
+		Utility.removeLastComma(columnsPart);
 		return columnsPart.toString();
 	}
 
@@ -134,13 +162,13 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 	{
 		StringBuilder passingPart = new StringBuilder("passing ");
 
-		for (Entry<IParameter<?>, IExpression> entry : getParameters().entrySet())
+		for (Entry<IParameter<ICondition>, IExpression> entry : getParameters().entrySet())
 		{
-			ICondition condition = (ICondition) entry.getKey().getParameterizedObject();
-			AttributeInterface attribute = condition.getAttribute();
-			String name = getAliasFor(attribute, entry.getValue());
+			AttributeInterface attribute = entry.getKey().getParameterizedObject().getAttribute();
+			String alias = Utility.getAliasFor(attribute, entry.getValue());
 			String dataType = getDataTypeInformation(attribute);
-			passingPart.append(" cast (? as ").append(dataType).append(") as ").append(name);
+			passingPart.append(" cast (? as ").append(dataType).append(") as ").append("\"")
+					.append(alias).append("\"");
 		}
 
 		return passingPart.toString();
