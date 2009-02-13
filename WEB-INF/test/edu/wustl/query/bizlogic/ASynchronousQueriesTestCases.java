@@ -592,7 +592,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 	}
 	
 	
-	public void testNOT_INOperator()
+	/*public void testNOT_INOperator()
 	{
 		int queryExecId = -1;
 		int noOfRecords = 0;
@@ -633,5 +633,5 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
 		}
-	}
+	}*/
 }
