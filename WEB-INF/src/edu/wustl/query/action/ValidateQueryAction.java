@@ -35,6 +35,10 @@ public class ValidateQueryAction extends Action
 		String dataKey = request.getParameter(Constants.UPDATE_SESSION_DATA);
 		HttpSession session = request.getSession();
 		
+		//retrieve the Selected Project from the GetCounts.jsp and set it in session
+		String selectedProject = request.getParameter(Constants.SELECTED_PROJECT);
+		session.setAttribute(Constants.SELECTED_PROJECT,selectedProject);
+		
 		//Added By Baljeet
 		//session.removeAttribute("allLimitExpressionIds");
 		String writeresponse= buttonClicked;
