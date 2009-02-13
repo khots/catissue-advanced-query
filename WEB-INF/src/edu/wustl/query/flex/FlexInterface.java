@@ -173,8 +173,7 @@ public class FlexInterface
 	 */
 	public DAGNode addNodeToView(String nodesStr)
 	{
-		DAGNode dagNode = dagPanel.addNodeToOutPutView(nodesStr);
-		return dagNode;
+		return dagPanel.addNodeToOutPutView(nodesStr);
 	}
 
 	/**
@@ -198,8 +197,7 @@ public class FlexInterface
 	 */
 	public DAGNode createNode(String strToCreateQueryObject, String entityName)
 	{
-		DAGNode dagNode = dagPanel.createQueryObject(strToCreateQueryObject, entityName, "Add");
-		return dagNode;
+		return dagPanel.createQueryObject(strToCreateQueryObject, entityName, "Add");
 	}
 
 	/**
@@ -225,8 +223,7 @@ public class FlexInterface
 	 */
 	public DAGNode editNode(String strToCreateQueryObject, String entityName)
 	{
-		DAGNode dagNode = dagPanel.createQueryObject(strToCreateQueryObject, entityName, "Edit");
-		return dagNode;
+		return dagPanel.createQueryObject(strToCreateQueryObject, entityName, "Edit");
 	}
 
 	/**
@@ -324,8 +321,7 @@ public class FlexInterface
 	{
 		DAGNode sourceNode = linkedNodeList.get(0);
 		DAGNode destinationNode = linkedNodeList.get(1);
-		List<IPath> pathsList = dagPanel.getPaths(sourceNode, destinationNode);
-		return pathsList;
+		return dagPanel.getPaths(sourceNode, destinationNode);
 	}
 
 	/**
@@ -333,16 +329,16 @@ public class FlexInterface
 	 * @param linkedNodeList
 	 * @return
 	 */
-	public List getpaths(List<DAGNode> linkedNodeList)
+	public List<DAGPath> getpaths(List<DAGNode> linkedNodeList)
 	{
 		List<IPath> pathsList = getPathList(linkedNodeList);
 		List<DAGPath> pathsListStr = new ArrayList<DAGPath>();
 		for (int i = 0; i < pathsList.size(); i++)
 		{
-			Path p = (Path) pathsList.get(i);
+			Path tempPath = (Path) pathsList.get(i);
 			DAGPath path = new DAGPath();
 			path.setToolTip(DAGPanel.getPathDisplayString(pathsList.get(i)));
-			path.setId(Long.valueOf(p.getPathId()).toString());
+			path.setId(Long.valueOf(tempPath.getPathId()).toString());
 			pathsListStr.add(path);
 		}
 		return pathsListStr;
@@ -396,7 +392,7 @@ public class FlexInterface
 	}
 
 	/**
-	 * Deletes associaton between 2 nodes
+	 * Deletes association between 2 nodes
 	 * @param linkedNodeList
 	 * @param linkName
 	 */
@@ -418,7 +414,7 @@ public class FlexInterface
 	}
 
 	/**
-	 *Initalises DAG 
+	 *Initializes DAG 
 	 *
 	 */
 	public void initFlexInterface()
