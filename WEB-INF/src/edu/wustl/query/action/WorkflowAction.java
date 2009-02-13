@@ -36,15 +36,16 @@ public class WorkflowAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		if (request.getParameter(Constants.OPERATION) != null && request.getParameter("id") != null
-				&& (!request.getParameter(Constants.ID).equals("")))
+		if (request.getParameter(Constants.OPERATION) != null && (request.getParameter("id") != null || request.getAttribute(Constants.WORKFLOW_ID)!=null)
+				&& (!"".equals(request.getParameter(Constants.ID))))
 		{
 
 			request.setAttribute(Constants.OPERATION, edu.wustl.common.util.global.Constants.EDIT);
 		}
-		else
+	   else
 		{
 			request.setAttribute(Constants.OPERATION, Constants.ADD);
+			System.out.println("");
 		}
 		if (request.getParameter(Constants.ID) != null && (!request.getParameter(Constants.ID).equals("")))
 		{
@@ -61,6 +62,7 @@ public class WorkflowAction extends Action
 	private void setProjectList(HttpServletRequest request) throws QueryModuleException
 	{
 		//Retrieve the Project list
+		
 		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
 				Constants.SESSION_DATA);
 		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory
