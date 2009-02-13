@@ -76,7 +76,7 @@ public class SearchMappedPVsAction extends Action
 			return null;
 		}
 		//new request for entity; remove the message from the session 
-		request.getSession().removeAttribute(Constants.MESSAGE_SRC_VOCAB);
+		request.getSession().removeAttribute(Constants.SRC_VOCAB_MESSAGE);
 		getPVsFromSourceVocab(attribute, entity, componentId, request);
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
 	}
@@ -114,7 +114,7 @@ public class SearchMappedPVsAction extends Action
 			html.append(bizLogic.getEndHTML());
 			if( pvList.size()==count)// Need to show Message Too Many Result on UI 
 			{
-				request.getSession().setAttribute(Constants.MESSAGE_SRC_VOCAB, bizLogic.getInfoMessage()
+				request.getSession().setAttribute(Constants.SRC_VOCAB_MESSAGE, bizLogic.getInfoMessage()
 						.replace("MSG$-$",""));
 			}
 		}
