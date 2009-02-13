@@ -210,6 +210,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String CONDITIONLIST = "conditionList";
 	/**  Constant for  */
 	public static final String QUERY_SAVED = "querySaved";
+	public static final String Query_Type="queryType";
 	/**  Constant for  */
 	public static final String DISPLAY_NAME_FOR_CONDITION = "_displayName";
 	/**  Constant for  */
@@ -695,6 +696,9 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String QUERY_COUNT = "queryCount";
 	public static final String GET_COUNT_STATUS = "status";
 	public static final String EXECUTION_ID = "executionId";
+	public static final String QUERY_TYPE_GET_COUNT="GetCount";
+	public static final String QUERY_TYPE_GET_DATA="GetData";
+	
 	public static final int[] SHOW_LAST_OPTION = {25, 50, 100, 200};
 //Constants for Get Count
 	/**  Constant for  abortExecution*/
@@ -710,9 +714,13 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String MY_QUERIESFOR_DASHBOARD = "myQueriesforDashboard";
 	public static final String WORKFLOW_NAME = "worflowName";
 	public static final String WORKFLOW_ID = "worflowId";
+	public static final String IS_WORKFLOW="isWorkflow";
+	public static final String PAGE_OF_WORKFLOW="workflow";
 	public static final String FORWARD_TO_HASHMAP = "forwardToHashMap";
-	public static final String NEXT_PAGE_OF = "nextPageOf";
+	public static final String NEXT_PAGE_OF = "nextpageOf";
 	public static final String QUERYWIZARD = "queryWizard";
+	public static final String DATA_QUERY_ID = "dataQueryId "; 
+	public static final String COUNT_QUERY_ID = "countQueryId "; 
 	public static final String PROJECT_NAME_VALUE_BEAN = "projectsNameValueBeanList";
 	/**  Constant for WORFLOW_ID   */
 	public static final String WORFLOW_ID = "worflowId";
