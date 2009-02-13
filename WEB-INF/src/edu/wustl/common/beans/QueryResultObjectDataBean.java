@@ -40,10 +40,10 @@ public class QueryResultObjectDataBean
 	private boolean hasAssociatedIdentifiedData;
 
 	//List of index  of identified data columns.
-	private Vector<Integer> IdentifiedDataColumnIds = new Vector<Integer>();
+	private List<Integer> IdentifiedDataColumnIds = new Vector<Integer>();
 
 	//List of index  of object data columns.
-	private Vector<Integer> objectColumnIds = new Vector<Integer>();
+	private List<Integer> objectColumnIds = new Vector<Integer>();
 
 	//Map of index of identifier columns of all main entities that are present in query.
 	private Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
@@ -168,7 +168,7 @@ public class QueryResultObjectDataBean
 	 * Set List of index of identified data columns.
 	 * @return IdentifiedDataColumnIds.
 	 */
-	public Vector<Integer> getIdentifiedDataColumnIds()
+	public List<Integer> getIdentifiedDataColumnIds()
 	{
 		return IdentifiedDataColumnIds;
 	}
@@ -177,7 +177,7 @@ public class QueryResultObjectDataBean
 	 * Get List of index of identified data columns.
 	 * @param identifiedDataColumnIds
 	 */
-	public void setIdentifiedDataColumnIds(Vector<Integer> identifiedDataColumnIds)
+	public void setIdentifiedDataColumnIds(List<Integer> identifiedDataColumnIds)
 	{
 		IdentifiedDataColumnIds = identifiedDataColumnIds;
 	}
@@ -186,7 +186,7 @@ public class QueryResultObjectDataBean
 	 * Set List of index  of object data columns.
 	 * @return objectColumnIds.
 	 */
-	public Vector<Integer> getObjectColumnIds()
+	public List<Integer> getObjectColumnIds()
 	{
 		return objectColumnIds;
 	}
@@ -195,7 +195,7 @@ public class QueryResultObjectDataBean
 	 * Get List of index  of object data columns.
 	 * @param objectColumnIds
 	 */
-	public void setObjectColumnIds(Vector<Integer> objectColumnIds)
+	public void setObjectColumnIds(List<Integer> objectColumnIds)
 	{
 		this.objectColumnIds = objectColumnIds;
 	}
@@ -249,7 +249,7 @@ public class QueryResultObjectDataBean
 	}
 
 	/**
-	 * returns true if atleast one attribute is of 'file' type
+	 * returns true if at least one attribute is of 'file' type
 	 * @return value of isClobeType
 	 */
 	public boolean isClobeType()
@@ -258,8 +258,8 @@ public class QueryResultObjectDataBean
 	}
 
 	/**
-	 * sets clob type true if atleast one attribute is of 'file' type
-	 * @param isClobeType - true if atleast one attribute is of 'file' type
+	 * sets clob type true if at least one attribute is of 'file' type
+	 * @param isClobeType - true if at least one attribute is of 'file' type
 	 */
 	public void setClobeType(boolean isClobeType)
 	{
@@ -269,7 +269,7 @@ public class QueryResultObjectDataBean
 	/**
 	 * 
 	 * @return map will have the key as the index of the 'file' 
-	 * type attribute and value as its metadata
+	 * type attribute and value as its meta data
 	 */
 	public Map<Integer, ? extends Object> getFileTypeAtrributeIndexMetadataMap()
 	{
