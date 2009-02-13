@@ -35,7 +35,9 @@
 
 	String formAction = Constants.SearchCategory;
 	String defineSearchResultsViewAction = Constants.DefineSearchResultsViewAction;
-	String isQuery =(String) request.getAttribute("isQuery");;
+	String isQuery =(String) request.getAttribute("isQuery");
+	String isworkflow=(String)request.getAttribute(Constants.IS_WORKFLOW);
+	String workflowName=(String)request.getAttribute(Constants.WORKFLOW_NAME);
 	if(isQuery==null)
 	{
 		isQuery="false";
@@ -45,6 +47,8 @@
 	<html:hidden property="stringToCreateQueryObject" value="" />
 	<html:hidden property="nextOperation" value="" />
 	<html:hidden property="selectedProject" value="" />
+	<input type="hidden" name="pageOf" id="pageOf" value="Get Count">
+	<input type="hidden" name="isWorkflow" id="isWorkflow" value="">
 	<table border="0" width="100%" >
 	<tr><td style="padding-left:5px; padding-right:5px;">
 <table  width="100%" border="0" cellspacing="0" cellpadding="0" align="center" class="login_box_bg">
@@ -67,7 +71,7 @@
 			<tr class="td_greydottedline_horizontal"><td height="1"></td></tr></table>
 			</td>
 			</tr>
-			
+			<tr id="workflowname" valign="top" style="padding-bottom:20px;padding-left:10px;"> <td colspan="4"> &nbsp;&nbsp;<span class="content_txt_bold"></b><bean:message key="workflow.name"/> </b></span>: <%=workflowName%></td></tr>
 			<tr >
 			<td colspan="2" nowrap>
 			&nbsp;
@@ -247,4 +251,16 @@
 </table>   <br>          
 </html:form>
 </body>
+<script>   
+   var wrkflw = "<%=isworkflow%>";
+   if(wrkflw=="true")
+   {
+      document.getElementById("isWorkflow").value="true";
+   }
+   else
+   {
+     document.getElementById("workflowname").style.display="none";
+   }
+ 
+ </script>
 </html> 
