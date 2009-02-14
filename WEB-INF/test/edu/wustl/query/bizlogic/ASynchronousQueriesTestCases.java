@@ -30,8 +30,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 		Logger.configure();
 		try
 		{
-			EntityCache.getInstance();
-			Utility.initTest();
+			// EntityCache.getInstance();
+			// Utility.initTest();
 			/**
 			 * Indicating - Do not LOG XQueries
 			 */
