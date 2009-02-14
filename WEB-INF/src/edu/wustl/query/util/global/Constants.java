@@ -777,5 +777,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
     /**  Constant for QUERY_COUNT **/
     public static final String QRY_COUNT = "QUERY_COUNT";
     /**  Constant for DEID_SEQUENCE **/
-    public static final String DEID_SEQUENCE = "DEID_SEQUENCE";
+    public static final String DEID_SEQUENCE = "DEID_SEQUENCE"; 
+    
+    public static final String TAGGED_VALUE_ITABLE_ATTRIBUTES = "ITABLE_ATTRIBUTES";
 }
