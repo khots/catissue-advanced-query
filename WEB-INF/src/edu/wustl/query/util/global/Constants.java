@@ -470,6 +470,9 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String QUERY_XMLDATA = "XMLDATA";
 	/**  Constant for  */
 	public static final String QUERY_AND = " and ";
+	
+	/**  Constant for  */
+	public static final String QUERY_TEMPORAL_CONDITION = "TEMPORAL_CONDITION";
 
 	/**  Constant for  */
 	public static final String TRUE = "true";
@@ -486,6 +489,17 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	 * @return
 	 */
 	public static final String getOracleTermString(String s)
+	{
+        return "day-from-dateTime(" + s + ") * 86400" + "hours-from-dateTime(" + s + ") * 3600" 
+    	+ "minutes-from-dateTime(" + s + ") * 60" + "seconds-from-dateTime(" + s + ")";
+	}
+	
+	/**
+	 * 
+	 * @param s
+	 * @return the actual time in seconds
+	 */
+	public static final String getDB2TermString(String s)
 	{
 		return "extract(day from " + s + ")*86400 + extract(hour from " + s
 				+ ")*3600 + extract(minute from " + s + ")*60 + extract(second from " + s + ")";
@@ -721,7 +735,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String IS_WORKFLOW="isWorkflow";
 	public static final String PAGE_OF_WORKFLOW="workflow";
 	public static final String FORWARD_TO_HASHMAP = "forwardToHashMap";
-	public static final String NEXT_PAGE_OF = "nextpageOf";
+	public static final String NEXT_PAGE_OF = "nextPageOf";
 	public static final String QUERYWIZARD = "queryWizard";
 	public static final String DATA_QUERY_ID = "dataQueryId "; 
 	public static final String COUNT_QUERY_ID = "countQueryId "; 
@@ -777,7 +791,5 @@ public class Constants extends edu.wustl.common.util.global.Constants
     /**  Constant for QUERY_COUNT **/
     public static final String QRY_COUNT = "QUERY_COUNT";
     /**  Constant for DEID_SEQUENCE **/
-    public static final String DEID_SEQUENCE = "DEID_SEQUENCE"; 
-    
-    public static final String TAGGED_VALUE_ITABLE_ATTRIBUTES = "ITABLE_ATTRIBUTES";
+    public static final String DEID_SEQUENCE = "DEID_SEQUENCE";
 }
