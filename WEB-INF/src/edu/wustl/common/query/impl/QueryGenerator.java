@@ -56,10 +56,10 @@ import edu.wustl.common.querysuite.utils.DatabaseType;
 import edu.wustl.common.querysuite.utils.TermProcessor;
 import edu.wustl.common.querysuite.utils.TermProcessor.IAttributeAliasProvider;
 import edu.wustl.common.querysuite.utils.TermProcessor.TermString;
-import edu.wustl.common.util.global.Variables;
 import edu.wustl.query.queryengine.impl.IQueryGenerator;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
+import edu.wustl.query.util.global.Variables;
 
 /**
  * @author juberahamad_patel
@@ -289,6 +289,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 			else
 			{
 				operandquery = getCustomFormulaString((ICustomFormula) operand);
+				operandquery = getTemporalCondition(operandquery);
 			}
 
 			if (!operandquery.equals("") && noOfRules != 1)
@@ -367,6 +368,15 @@ public abstract class QueryGenerator implements IQueryGenerator
 		}
 		return buffer.toString();
 	}
+	
+	/**
+	 * 
+	 * @param operandquery
+	 * @return Get the modified Temporal Condition according to SQL and XQuery Implementation
+	 */
+	protected abstract String getTemporalCondition(String operandquery);
+	
+	
 
 	protected abstract String getDescriminatorCondition(EntityInterface entity, String aliasFor);
 
@@ -468,7 +478,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 
 	private CustomFormulaProcessor getCustomFormulaProcessor()
 	{
-		return new CustomFormulaProcessor(getAliasProvider(), getDatabaseSQLSettings());
+		return new CustomFormulaProcessor(getAliasProvider(), getDatabaseSQLSettings(),Variables.properties.getProperty("queryType"));
 	}
 
 	protected DatabaseSQLSettings getDatabaseSQLSettings()
@@ -481,6 +491,10 @@ public abstract class QueryGenerator implements IQueryGenerator
 		else if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
 		{
 			databaseType = DatabaseType.Oracle;
+		}
+		else if (Variables.databaseName.equals(Constants.DB2_DATABASE))
+		{
+			databaseType = DatabaseType.DB2;
 		}
 		else
 		{
@@ -507,7 +521,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 
 	private TermProcessor getTermProcessor()
 	{
-		return new TermProcessor(getAliasProvider(), getDatabaseSQLSettings());
+		return new TermProcessor(getAliasProvider(), getDatabaseSQLSettings(),Variables.properties.getProperty("queryType"));
 	}
 
 	protected String getTermString(ITerm term)
@@ -527,6 +541,8 @@ public abstract class QueryGenerator implements IQueryGenerator
 				return s;
 			case Oracle :
 				Constants.getOracleTermString(s);
+			case DB2 :
+				Constants.getDB2TermString(s);	
 			default :
 				throw new RuntimeException("won't occur.");
 		}
