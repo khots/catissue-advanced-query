@@ -90,9 +90,10 @@ public class ASynchronousQueriesTestCases extends TestCase
 		
 		try
 		{
+			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI NOT NULL and DEMOGRAPHICS DOB>10/10/1985");
 			
-			query = QueryUtility.getQuery(23L);
+			query = QueryUtility.getQuery(21L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -136,9 +137,10 @@ public class ASynchronousQueriesTestCases extends TestCase
 		
 		try
 		{
+			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI NOT NULL and LABS, ACCESSION NUMBER CONTAINS 2008295007131");
 			
-			query = QueryUtility.getQuery(24L);
+			query = QueryUtility.getQuery(22L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -190,9 +192,10 @@ public class ASynchronousQueriesTestCases extends TestCase
 		
 		try
 		{
+			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI NOT NULL");
 			
-			query = QueryUtility.getQuery(21L);
+			query = QueryUtility.getQuery(23L);
 			
 			ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -267,6 +270,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 		
 		try
 		{
+			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI LESS THAN 1");
 			
 			query = Utility.getQuery(fileName2);
@@ -324,6 +328,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 		
 		try
 		{
+			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI NOT NULL");
 			
 			query = QueryUtility.getQuery(23L);
@@ -388,9 +393,10 @@ public class ASynchronousQueriesTestCases extends TestCase
 		
 		try
 		{
+			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI NOT NULL and DEMOGRAPHICS DOB>10/10/1980");
 			
-			query = QueryUtility.getQuery(22L);
+			query = QueryUtility.getQuery(24L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -435,9 +441,10 @@ public class ASynchronousQueriesTestCases extends TestCase
 		
 		try
 		{
+			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - DEMOGRAPHICS DOB between 1940 and 1970");
 			
-			query = QueryUtility.getQuery(41L);
+			query = QueryUtility.getQuery(25L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -479,9 +486,10 @@ public class ASynchronousQueriesTestCases extends TestCase
 		
 		try
 		{
-			System.out.println("QUERY - PERSON UI STARTS WITH 000000000000000008690");
+			System.out.println("\n\n*********************************************************");
+			System.out.println("QUERY - PERSON UPI STARTS WITH 000000000000000008690");
 			
-			query = QueryUtility.getQuery(42L);
+			query = QueryUtility.getQuery(26L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -522,9 +530,10 @@ public class ASynchronousQueriesTestCases extends TestCase
 		
 		try
 		{
-			System.out.println("QUERY - PERSON UI ENDS WITH 3");
+			System.out.println("\n\n*********************************************************");
+			System.out.println("QUERY - PERSON UPI ENDS WITH 3");
 			
-			query = QueryUtility.getQuery(43L);
+			query = QueryUtility.getQuery(27L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -566,9 +575,10 @@ public class ASynchronousQueriesTestCases extends TestCase
 		
 		try
 		{
+			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UI IN 000000000000000008690923");
 			
-			query = QueryUtility.getQuery(44L);
+			query = QueryUtility.getQuery(28L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -610,6 +620,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 		
 		try
 		{
+			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UI NOT IN 000000000000000008690923");
 			
 			query = QueryUtility.getQuery(45L);
