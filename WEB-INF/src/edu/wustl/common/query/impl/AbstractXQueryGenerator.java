@@ -26,7 +26,9 @@ import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterfa
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.entitymanager.DataTypeFactory;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.query.exeptions.SQLXMLException;
@@ -103,6 +105,10 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 */
 	private Map<IParameter<ICondition>, IExpression> parameters;
 
+	/*
+	 * A List containing all the main Entitiees
+	 */
+	protected List<EntityInterface> allMainEntityList = new ArrayList<EntityInterface>();
 	//private static org.apache.log4j.Logger logger =Logger.getLogger(XQueryGenerator.class);
 
 	/**
@@ -248,9 +254,10 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @throws MultipleRootsException
 	 * @throws SqlException
 	 * @throws XQueryDataTypeInitializationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private String addJoiningTableCondition(String wherePart) throws MultipleRootsException,
-			SqlException, XQueryDataTypeInitializationException
+			SqlException, XQueryDataTypeInitializationException, DynamicExtensionsSystemException
 	{
 		StringBuilder completeWherePart = new StringBuilder(wherePart);
 		Set<Integer> processedAlias = new HashSet<Integer>();
@@ -273,10 +280,10 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @return the left join sql for children expression.
 	 * @throws SqlException when there is error in the passed IQuery object.
 	 * @throws XQueryDataTypeInitializationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private String processChildExpressions(String leftAlias, Set<Integer> processedAlias,
-			IExpression parentExpression) throws SqlException,
-			XQueryDataTypeInitializationException
+			IExpression parentExpression) throws SqlException, XQueryDataTypeInitializationException, DynamicExtensionsSystemException
 	{
 		StringBuffer buffer = new StringBuffer();
 		List<IExpression> children = joinGraph.getChildrenList(parentExpression);
@@ -303,44 +310,49 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 								.getSrcEntityConstraintKeyPropertiesCollection();
 						Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyPropColl = constraintProperties
 								.getTgtEntityConstraintKeyPropertiesCollection();
-
+						
 						String leftAttribute = null;
 						String rightAttribute = null;
-
+						
 						//many sides
 						for (ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyPropColl)
 						{
-							AttributeInterface primaryKey = cnstrKeyProp
-									.getSrcPrimaryKeyAttribute();
+							AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
 							String xQueryDataType = getXQuerydataType(primaryKey);
 							leftAttribute = "$" + getAliasName(parentExpression) + "/"
-									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName()
-									+ "/" + xQueryDataType;
-
+									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+							EntityInterface entity = cnstrKeyProp.getSrcPrimaryKeyAttribute().getEntity();
+							String entityPath = getEntityPath(entity,childExpression);
 							String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute()
 									.getName();
-							rightAttribute = "$" + getAliasName(childExpression) + "/"
-									+ primaryKeyName;
+							rightAttribute = "$" + getAliasName(childExpression) + entityPath + "/"
+									+ primaryKeyName  +  "/" + xQueryDataType;
+							buffer.append(Constants.QUERY_OPENING_PARENTHESIS + rightAttribute + "=" + leftAttribute);
+							buffer.append(Constants.QUERY_CLOSING_PARENTHESIS);
+							buffer.append(Constants.QUERY_AND);
 						}
 						// One Side
 						for (ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyPropColl)
 						{
-							AttributeInterface primaryKey = cnstrKeyProp
-									.getSrcPrimaryKeyAttribute();
+							AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
 							String xQueryDataType = getXQuerydataType(primaryKey);
+							
+							EntityInterface entity = cnstrKeyProp.getSrcPrimaryKeyAttribute().getEntity();
+							String entityPath = getEntityPath(entity, parentExpression);
+							
 							String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute()
 									.getName();
-							leftAttribute = "$" + getAliasName(parentExpression) + "/"
-									+ primaryKeyName;
+							leftAttribute = "$" + getAliasName(parentExpression) + entityPath + "/"
+									+ primaryKeyName ;
 							rightAttribute = "$" + getAliasName(childExpression) + "/"
-									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName()
-									+ "/" + xQueryDataType;
+									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName()+ "/" + xQueryDataType;
+							buffer.append(Constants.QUERY_OPENING_PARENTHESIS + rightAttribute + "=" + leftAttribute);
+							buffer.append(Constants.QUERY_CLOSING_PARENTHESIS);
+							buffer.append(Constants.QUERY_AND);
 						}
-						buffer.append(Constants.QUERY_OPENING_PARENTHESIS + rightAttribute + "="
-								+ leftAttribute);
-						buffer.append(Constants.QUERY_CLOSING_PARENTHESIS);
+
 					}
-					buffer.append(Constants.QUERY_AND);
+
 
 					// append from part SQLXML for the next Expressions.
 					buffer.append(processChildExpressions(actualRightAlias, processedAlias,
@@ -352,10 +364,44 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 				}
 			}
 		}
-
+	
 		return buffer.toString();
 	}
 
+/**
+ * 
+ * @param entity - the entity whose path is been calculated
+ * @param intermediatePath - String buffer that stores the path and sends at as input recu 
+ * @param expression - expression for which the path is to be calculated
+ * @return
+ * @throws DynamicExtensionsSystemException
+ */
+	private String getEntityPath(EntityInterface entity, IExpression expression) throws DynamicExtensionsSystemException
+	{
+		StringBuffer intermediatePath = new StringBuffer();
+		if(!allMainEntityList.contains(entity))
+		{	
+			EntityManagerInterface entityMgr = EntityManager.getInstance();
+			Collection<AssociationInterface> associationList = entityMgr.getIncomingAssociations(entity);
+			for(AssociationInterface association : associationList)
+			{
+				EntityInterface associatedEntity = association.getEntity();
+				if (associatedEntity.equals(expression.getQueryEntity().getDynamicExtensionsEntity()))
+						{
+							intermediatePath.append("/").append(association.getTargetRole().getName());
+						}
+			}		
+		}
+		return intermediatePath.toString();
+	}
+
+	
+	/**
+	 * The method returns the XQuery function based on the data type
+	 * @param attributeType - the data type of the attribute
+	 * @return String representing XQuery function
+	 * @throws XQueryDataTypeInitializationException
+	 */
 	private String getXQuerydataType(AttributeInterface attributeType)
 			throws XQueryDataTypeInitializationException
 	{
@@ -564,9 +610,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 
 		xQuery.append(buildXQueryForClause(predicateGenerator));
 		xQuery.append(buildXQueryLetClause(predicateGenerator));
-
 		//xQuery.append(buildXQueryWhereClause());
-
 		xQuery.append(buildXQueryReturnClause());
 
 		return xQuery.toString();
@@ -1006,6 +1050,16 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	protected Map<IParameter<ICondition>, IExpression> getParameters()
 	{
 		return parameters;
+	}
+	
+	/**
+	 * 
+	 * @param operandquery
+	 * @return Added a method so that the Parser can identify the temporal query and act accordingly
+	 */
+	protected String getTemporalCondition(String operandquery) 
+	{
+		return Constants.QUERY_TEMPORAL_CONDITION + "(" + operandquery + ")";
 	}
 
 }
