@@ -656,11 +656,15 @@ public class Constants extends edu.wustl.common.util.global.Constants
     /**  Constant for USER_ID **/
     public static final String USER_ID = "USER_ID";
     /**  Constant for STATUS **/
-    public static final String STATUS = "STATUS";
+    public static final String QUERY_STATUS = "QUERY_STATUS";
     /**  Constant for PROJECT_ID **/
     public static final String PRJCT_ID = "PROJECT_ID";
     /**  Constant for QUERY_EXECUTION_ID **/
     public static final String QUERY_EXECUTION_ID = "QUERY_EXECUTION_ID";
+    /**  Constant for QUERY_EXECUTION_ID **/
+    public static final String COUNT_QUERY_EXECUTION_ID = "COUNT_QUERY_EXECUTION_ID";
+    /**  Constant for QUERY_EXECUTION_ID **/
+    public static final String DATA_QUERY_EXECUTION_ID = "DATA_QUERY_EXECUTION_ID";
     /**  Constant for QUERY_ID **/
     public static final String QRY_ID = "QUERY_ID";
     /**  Constant for GENERATING_QUERY **/
@@ -736,4 +740,42 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String NOT_MED_MAPPED_PVCONCEPT = "Normal_Italic_Disabled";
 	public static final String NOT_MED_VALED_PVCONCEPT = "Normal_Disabled";
 	
+	/**
+	 * Query ITABLE
+	 */
+	public static final String ITABLE = "QUERY_ITABLE";
+
+	/**
+	 * COUNT QUERY EXECUTION LOG TABLE
+	 */
+	public static final String COUNT_QUERY_EXECUTION_LOG = "COUNT_QUERY_EXECUTION_LOG";
+	
+	/**
+	 * DATA QUERY EXECUTION LOG TABLE
+	 */
+	public static final String DATA_QUERY_EXECUTION_LOG = "DATA_QUERY_EXECUTION_LOG";
+	
+	/**
+	 * QUERY EXECUTION LOG TABLE
+	 */
+	public static final String QUERY_EXECUTION_LOG = "QUERY_EXECUTION_LOG";
+	
+	/**
+	 * QUERY SECURITY LOG TABLE
+	 */
+	public static final String QUERY_SECURITY_LOG = "QUERY_SECURITY_LOG";
+	/**  Constant for DATE_OF_BIRTH **/
+    public static final String DATE_OF_BIRTH = "DATE_OF_BIRTH";
+    /**  Constant for VIEW_FLAG **/
+    public static final String VIEW_FLAG = "VIEW_FLAG";
+    /**  Constant for XQUERY_STRING **/
+    public static final String XQUERY_STRING = "XQUERY_STRING";
+    /**  Constant for QUERY_TYPE **/
+    public static final String QUERY_TYPE = "QUERY_TYPE";
+    /**  Constant for IP_ADDRESS **/
+    public static final String IP_ADDRESS = "IP_ADDRESS";
+    /**  Constant for QUERY_COUNT **/
+    public static final String QRY_COUNT = "QUERY_COUNT";
+    /**  Constant for DEID_SEQUENCE **/
+    public static final String DEID_SEQUENCE = "DEID_SEQUENCE";
 }
