@@ -34,6 +34,14 @@ public class QueryExecutionThread implements Runnable
 	protected boolean cancelThread = false;
 
 	/**
+	 * Default Constructor
+	 */
+	protected QueryExecutionThread()
+	{
+		
+	}
+	
+	/**
 	 * PARAMETERIZED CONSTRUCTOR
 	 * @param abstractQueryObj 
 	 */
@@ -54,8 +62,7 @@ public class QueryExecutionThread implements Runnable
 	{
 		ITableManager manager = ITableManager.getInstance();
 
-		return manager.insertNewQuery(-1L, abstractQueryObj.getUserId(), abstractQueryObj
-				.getQuery().getId());
+		return manager.insertCountQuery(abstractQueryObj);
 	}
 
 	/**
