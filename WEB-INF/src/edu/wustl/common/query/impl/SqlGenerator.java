@@ -1034,5 +1034,10 @@ public class SqlGenerator extends QueryGenerator
 		termString = "ROUND" + Constants.QUERY_OPENING_PARENTHESIS + termString + Constants.QUERY_CLOSING_PARENTHESIS;
 		return termString;
 	}
+	
+	protected String getTemporalCondition(String operandquery) 
+	{
+		return operandquery;
+	}
 
 }
