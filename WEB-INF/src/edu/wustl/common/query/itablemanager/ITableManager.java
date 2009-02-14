@@ -6,6 +6,7 @@ package edu.wustl.common.query.itablemanager;
 
 import java.sql.SQLException;
 
+import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.querymanager.Count;
 
@@ -66,7 +67,7 @@ public class ITableManager
 	 * @throws SQLException
 	 * @throws DAOException
 	 */
-	public void insertITableEntry(int patientDeid, int queryExecLogId, String upi)
+	public void insertITableEntry(int count_query_exec_id, String upi, String dob)
 			throws SQLException, DAOException
 	{
 		// CODE TO INSERT DATA INTO QUERY_ITABLE
@@ -82,7 +83,7 @@ public class ITableManager
 	 * @throws DAOException
 	 * @throws SQLException
 	 */
-	public int insertNewQuery(Long projectId, Long userId, Long query_id) throws DAOException,
+	public int insertCountQuery(AbstractQuery abstractQuery) throws DAOException,
 			SQLException
 	{
 		// CODE TO INSERT DATA INTO QUERY_EXECUTION_LOG Table
@@ -115,5 +116,32 @@ public class ITableManager
 		Count count = null;
 		return count;
 	}
-
+	
+	
+	/**
+	 * To insert details into QUERY EXECUTION LOG table
+	 * @param queryExecId
+	 * @param xQuery
+	 * @param query_type
+	 * @param ipAddress
+	 * @param projectId
+	 * @throws DAOException
+	 * @throws SQLException
+	 */
+	public void insertQueryDetails(int queryExecId, String xQuery, char query_type,
+			String ipAddress, Long projectId) throws DAOException, SQLException
+	{
+		
+	}
+	
+	
+	/**
+	 * To insert data into QUERY_SECURITY_LOG table
+	 * @param queryExecId
+	 * @param securityCode
+	 */
+	public void insertSecurityLog(int queryExecId, String securityCode)
+	{
+		
+	}
 }
