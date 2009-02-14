@@ -14,10 +14,16 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
  */
 public abstract class AbstractQuery
 {
+	/** IQuery **/
 	private IQuery query;
+	/** QUERY_EXECUTION_ID **/
 	private int queryExecId;
+	/** XQUERY **/
 	private String queryString;
+	/** USER ID **/
 	private Long userId;
+	/** machine IP ADDRESS from where query was fired **/
+	private String ipAddress;
 	
 	/**
 	 * Default Constructor
@@ -113,5 +119,23 @@ public abstract class AbstractQuery
 	public void setUserId(Long userId)
 	{
 		this.userId = userId;
+	}
+	
+	/**
+	 * To get IP Address
+	 * @return
+	 */
+	public String getIpAddress()
+	{
+		return ipAddress;
+	}
+
+	/**
+	 * To set IP Address
+	 * @param ipAddress
+	 */
+	public void setIpAddress(String ipAddress)
+	{
+		this.ipAddress = ipAddress;
 	}
 }
