@@ -33,9 +33,13 @@
       <ignore regex="org.apache.log4j.*"/>
 	
 	  <fileset dir="./WEB-INF/classes">
-			<include name="**/PassOneXQueryGenerator.class"/>
+	  		<include name="**/PassOneXQueryGenerator.class"/>
 			<include name="**/AbstractXQueryGenerator.class"/>
 	  		<include name="**/QueryGenerator.class"/>
+	  		<include name="**/AbstractPredicate.class"/>
+		  	<include name="**/InfixPredicate.class"/>
+		  	<include name="**/SimpleCharStream.class"/>
+		  	<include name="**/WherePartParser.class"/>
 			<include name="**/CIDERQueryExecutionThread.class"/>
 			<include name="**/CiderQueryManager.class"/>
 			<include name="**/WorkflowBizLogic.class"/>
@@ -45,7 +49,7 @@
 	      	<exclude name="**/bizlogic/*Test*.class"/>
 	      	<exclude name="**/bizlogic/*Factory*.class"/>
 	      	<exclude name="**/bizlogic/*Manager*.class"/>
-      	
+	      
        </fileset>
     </cobertura-instrument>
   </target>
