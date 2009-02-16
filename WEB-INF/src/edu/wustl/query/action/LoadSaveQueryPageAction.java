@@ -39,8 +39,8 @@ public class LoadSaveQueryPageAction extends Action
 	{
 	    
 	     HttpSession session = request.getSession();
-		 String isworkflow= request.getParameter(Constants.IS_WORKFLOW);
-		 String pageOf= request.getParameter(Constants.PAGE_OF);
+		 String isworkflow= (String)request.getAttribute(Constants.IS_WORKFLOW);
+		 String pageOf= (String)request.getAttribute(Constants.PAGE_OF);
 		  request.setAttribute(Constants.PAGE_OF,pageOf);
 		//System.out.println("");
 		  if(Constants.TRUE.equals(isworkflow))
