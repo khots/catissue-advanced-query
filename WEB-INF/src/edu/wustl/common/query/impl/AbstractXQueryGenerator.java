@@ -578,7 +578,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		OutputTreeDataNode treeNode = null;
 
 		//find the right tree node to add the attribute to
-		for (OutputTreeDataNode node : rootOutputTreeNodeList)
+		for (OutputTreeDataNode node : attributeOutputTreeNodeList)
 		{
 			if (node.getExpressionId() == entry.getKey().getExpression().getExpressionId())
 			{
