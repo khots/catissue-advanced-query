@@ -51,7 +51,7 @@ function closePopup()
 						addOption(parent.window.document.getElementById("queryType"),""+document.getElementById("queryTypeControl_"+count).value,document.getElementById("queryIdControl_"+count).value);
        
 						  //add selected count query to dropdowns of parent window
-						if((document.getElementById("queryTypeControl_"+count).value)=="Get Count")
+						if((document.getElementById("queryTypeControl_"+count).value)=="GetCount")
 					  {
 						 var countQDD= parent.window.document.getElementsByName("countQueryDropDown");
 						  for(var i=0;i<countQDD.length;i++) 
