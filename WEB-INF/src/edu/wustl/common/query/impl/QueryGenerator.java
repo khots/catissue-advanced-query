@@ -1116,14 +1116,19 @@ public abstract class QueryGenerator implements IQueryGenerator
 		{
 			value = "'%" + value + "'";
 		}
-		String str = "";
+		String str ;
 		switch (getDatabaseSQLSettings().getDatabaseType())
 		{
 			case MySQL :
 				str = attributeName + Constants.LIKE + value;
+				break;
 			case Oracle :
 				str = "lower(" + attributeName + ") like lower(" + value
 						+ Constants.QUERY_CLOSING_PARENTHESIS;
+				break;
+			default:
+				str="";
+				break;
 		}
 		return str;
 	}
