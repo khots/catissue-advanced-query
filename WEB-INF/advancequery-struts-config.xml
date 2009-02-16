@@ -127,6 +127,7 @@ PUBLIC
 			scope="request">
 			<forward name="success" path=".query.searchCategory"/>
 		</action>
+		
 		<action path="/ValidateQuery"
 			type="edu.wustl.query.action.ValidateQueryAction"
 			name="categorySearchForm"
@@ -134,6 +135,16 @@ PUBLIC
 			scope="request">
 		    <forward name="success" path=".query.searchCategory"/>
 		</action>
+		
+		<action path="/DefineView"
+			type="edu.wustl.query.action.DefineViewAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path="/LoadSaveQueryPage.do"/>
+		</action>
+		
+		
 		
 		<action path="/ValidateDefineView"
 			type="edu.wustl.query.action.ValidateDefineViewAction"
