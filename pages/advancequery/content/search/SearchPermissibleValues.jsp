@@ -446,10 +446,12 @@ function checkedUncheckedAllPvs(vocabName)
 /***************************************************** Searching  Term Methods*******************************/
 //method to search for the given term in vocabularies
 
-var searchRequest = newXMLHTTPReq(); 
-var operationAborted=false;
+var searchRequest;
+var operationAborted;
 function serachForTermInVocab(operation)
 {
+	 searchRequest= newXMLHTTPReq(); 
+	 operationAborted=false;
 	var searchTerm=document.getElementById("searchtextfield").value;
 	void(d=document);
 	var vocabCheckboxes=d.getElementsByName("vocabNameAndVersionCheckbox");
