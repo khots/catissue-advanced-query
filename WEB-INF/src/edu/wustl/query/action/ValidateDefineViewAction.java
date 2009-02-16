@@ -28,12 +28,14 @@ public class ValidateDefineViewAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
-		String workflow= request.getParameter("workflow");
 		String validationMessage = ValidateQueryBizLogic.getValidationMessage(request,(IQuery)session.getAttribute(Constants.QUERY_OBJECT));
-		if("true".equals(workflow))
-		{
-		 request.setAttribute("workflow","true");
-		}
+		String workflow=request.getParameter(Constants.IS_WORKFLOW);
+		 if(Constants.TRUE.equals(workflow))
+		 {
+			 request.setAttribute(Constants.IS_WORKFLOW,Constants.TRUE);
+			 String workflowName= (String)request.getSession().getAttribute(Constants.WORKFLOW_NAME);
+			 request.setAttribute(Constants.WORKFLOW_NAME,workflowName);
+		 }
 		if (validationMessage == null)
 		{
 			validationMessage=Constants.DEFINE_VIEW_MSG;
