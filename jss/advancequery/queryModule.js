@@ -1370,9 +1370,41 @@
 			   defineSearchResultsView();
 			}
 		}
-		else if(action=='save')
+		else if(action=='saveDefineView')
 		{
 			waitCursor();
+			var pageof="";
+			var workflow="";
+			 
+			 if(document.getElementById("isWorkflow")!=null)
+			  workflow=document.getElementById("isWorkflow").value;
+			 if(document.getElementById("pageOf")!=null) 
+              pageof=document.getElementById("pageOf").value; 
+			 var url = "DefineView.do?isWorkflow="+workflow+"&pageOf="+pageof;
+            
+			 window.open('','SaveQuery','height=700,width=850');
+    		 document.forms[0].action = url;
+			 document.forms[0].target = "SaveQuery";
+			 document.forms[0].submit();
+			 document.forms[0].target='_self';
+ 		   	/*	if (platform.indexOf("mac") != -1)
+			{
+		    	alert("1");
+				NewWindow(url,'name',screen.width,screen.height,'yes');
+				alert("2");
+		    }
+		    else
+		    {
+				alert("11");
+		    	NewWindow(url,'name','870','600','yes');
+				alert("22");
+		    } */
+			hideCursor();
+	
+		}
+		  else if(action=='save')
+		{
+		    waitCursor();
 			var pageof="";
 			var workflow="";
 			 
@@ -1391,15 +1423,9 @@
 		    	NewWindow(url,'name','870','600','yes');
 		    }
 			hideCursor();
-		/*	var request = newXMLHTTPReq();			
-			var actionURL;
-			var handlerFunction = getReadyStateHandler(request,showAlertBox,true);	
-			request.onreadystatechange = handlerFunction;				
-			var url = "LoadSaveQueryPage.do?isAjax=true";
-			request.open("POST",url,true);	
-			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
-			request.send(actionURL);	*/	
+		
 		}
+      
 	}
 	function showAlertBox(text)
 	{
@@ -1699,8 +1725,8 @@ var jsReady = false;
 		var request = newXMLHTTPReq();			
 		var handlerFunction = getReadyStateHandler(request,displayValidationMessage,true);	
 		request.onreadystatechange = handlerFunction;			
-		var actionURL = "buttonClicked=" + text;		
-		if(text=='next')
+		 var actionURL = "buttonClicked=" + text;		
+		if(text=='saveDefineView' )
 		{			
 		  	 var selectedColumns = document.forms['categorySearchForm'].selectedColumnNames;
 			 if(selectedColumns.length==0)
@@ -1708,10 +1734,15 @@ var jsReady = false;
 				alert("We need to add atleast one column to define view");
 				return ;
 			}
+			
 			showWaitPage();
-			selectOptions(document.forms['categorySearchForm'].selectedColumnNames)
-			document.forms['categorySearchForm'].action = "SearchDefineViewResults.do";	
-			document.forms['categorySearchForm'].submit();
+			selectOptions(document.forms[0].selectedColumnNames);
+			//document.forms['categorySearchForm'].action = "SearchDefineViewResults.do";	
+			//document.forms['categorySearchForm'].submit();
+			 var url = "ValidateQuery.do?pageOf="+(document.getElementById("pageOf").value);
+		  request.open("POST",url,true);	
+		  request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+		  request.send(actionURL);	
 		}
 		else
 		{
@@ -1725,7 +1756,7 @@ var jsReady = false;
 		  {
 	//		showWaitPage();
 		  }
-		  var project;
+	   var project;
 		     if(document.getElementById("queryTitle1")!=null)
 		     {
 		      if( document.forms['categorySearchForm'].selectedProject!=null)
@@ -1743,7 +1774,7 @@ var jsReady = false;
 	function displayValidationMessage(text)
 	{		
 		
-        if(text == "DefineView")
+       if(text == "DefineView")
 		{
 		  waitCursor();
 		 var isworkflow=document.getElementById("isWorkflow");
@@ -1756,9 +1787,9 @@ var jsReady = false;
 		}
         else
 	  {
-		  if (text == "save")
+		  if (text == "save" || text == 'saveDefineView')
 		 {
-			saveClientQueryToServer('save');
+			saveClientQueryToServer(text);
 		 }
 		  else
 		 {
