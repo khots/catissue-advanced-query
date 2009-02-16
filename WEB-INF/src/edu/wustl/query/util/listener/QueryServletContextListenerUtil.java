@@ -84,6 +84,8 @@ public class QueryServletContextListenerUtil
 				Variables.abstractQueryClassName = queryProperties.getProperty("query.abstractQueryClassName");
 				Variables.abstractQueryManagerClassName = queryProperties.getProperty("query.abstractQueryManagerClassName");
 				Variables.abstractQueryUIManagerClassName = queryProperties.getProperty("query.abstractQueryUIManagerClassName");
+				Variables.recordsPerPageForspreadSheet = Integer.parseInt(queryProperties.getProperty("spreadSheet.recordsPerPage"));
+				Variables.recordsPerPageForTree = Integer.parseInt(queryProperties.getProperty("tree.recordsPerPage"));
 				
 				
 				Variables.properties = queryProperties;
