@@ -149,7 +149,7 @@ public class ValidateQueryBizLogic
 		{
 			//selectSql = "select personUpi_1 Column0 from xmltable(' for $Person_1 in db2-fn:xmlcolumn(\"DEMOGRAPHICS.XMLDATA\")/Person where exists($Person_1/personUpi)  return <return><Person_1>{$Person_1}</Person_1></return>' columns personUpi_1 varchar(1000) path 'Person_1/Person/personUpi')";
 			selectSql=queryGenerator.generateQuery(
-					((CiderQueryUIManager)queryUIManager).getCiderQuery().getQuery());
+					(IQuery) ((CiderQueryUIManager)queryUIManager).getCiderQuery().getQuery());
 		}
 		catch (MultipleRootsException e)
 		{
