@@ -4,12 +4,17 @@
 
 package edu.wustl.common.query.itablemanager;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
+import edu.wustl.common.dao.DatabaseConnectionParams;
+import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.querymanager.Count;
-
+import edu.wustl.query.util.global.Constants;
 /**
  * @author supriya_dankh
  *
@@ -17,6 +22,10 @@ import edu.wustl.query.querymanager.Count;
 public class ITableManager
 {
 
+	/**
+	 * Static logger instance variable used for logging.
+	 */
+	private static org.apache.log4j.Logger logger =Logger.getLogger(ITableManager.class);
 	/**
 	 * To be used for batch inserts  
 	 */
@@ -32,7 +41,7 @@ public class ITableManager
 	 * @return
 	 * @throws DAOException
 	 */
-	public static ITableManager getInstance() throws DAOException
+	public static synchronized ITableManager getInstance() throws DAOException
 	{
 		if (sINSTANCE == null)
 		{
@@ -91,6 +100,23 @@ public class ITableManager
 		// return Query_Execution_Id
 		return -1;
 	}
+	
+
+	/**
+	 * This method inserts the given query object into the Query_Execution_Log table.
+	 * @param query
+	 * @return
+	 * @throws DAOException
+	 * @throws SQLException
+	 */
+	public int insertNewQuery(AbstractQuery query) throws DAOException,
+			SQLException
+	{
+		// CODE TO INSERT DATA INTO QUERY_EXECUTION_LOG Table
+
+		// return Query_Execution_Id
+		return -1;
+	}	
 
 	/**
 	 * 
@@ -117,7 +143,38 @@ public class ITableManager
 		return count;
 	}
 	
-	
+	public ResultSet executeCompositeQuery(String query) throws SQLException, DAOException
+	{
+		DatabaseConnectionParams DB_CONNECTION_PARAMS = new DatabaseConnectionParams();
+		Statement stmt = null;
+		ResultSet resultSet = null;
+		try
+		{
+			DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME_CIDER);
+			stmt = DB_CONNECTION_PARAMS.getDatabaseStatement();
+
+			resultSet = stmt.executeQuery(query);
+			DB_CONNECTION_PARAMS.commit();
+		}
+		catch (SQLException ex)
+		{
+			logger.error(ex.getMessage(), ex);
+			throw ex;
+		}
+		catch (DAOException ex)
+		{
+			logger.error(ex.getMessage(), ex);
+			throw ex;
+		}
+		finally
+		{
+			stmt.close();
+			DB_CONNECTION_PARAMS.closeSession();
+		}
+		return resultSet;
+	}	
+
+
 	/**
 	 * To insert details into QUERY EXECUTION LOG table
 	 * @param queryExecId
