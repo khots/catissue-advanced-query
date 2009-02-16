@@ -57,5 +57,10 @@ public class NegationPredicate extends AbstractPredicate
 	{
 		predicate.setRhs(rhs);
 	}
+	
+	public String getLhs()
+	{
+		return predicate.getLhs();
+	}
 
 }

@@ -105,15 +105,15 @@ public abstract class AbstractPredicate
 	public void createAttributeAlias(IExpression expression)
 	{
 		String attributeName = null;
-		int index = lhs.lastIndexOf('/');
+		int index = getLhs().lastIndexOf('/');
 
 		if (index == -1)
 		{
-			attributeName = lhs;
+			attributeName = getLhs();
 		}
 		else
 		{
-			attributeName = lhs.substring(index + 1);
+			attributeName = getLhs().substring(index + 1);
 		}
 
 		attributeAlias = Utility.getAliasFor(attributeName, expression);
