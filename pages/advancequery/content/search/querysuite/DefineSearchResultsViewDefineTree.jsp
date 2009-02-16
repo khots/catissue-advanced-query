@@ -44,7 +44,7 @@
 			</tr>
             <tr> 
 			<td align="left"><img src="images/advancequery/b_save.gif"       
-			 onclick="validateQuery('save');"/></td>
+			 onclick="validateQuery('saveDefineView');"/></td>
           <!-- <td width="30%" align="left" style="padding-left:4px;"><img src="images/advancequery/b_back_to_workflow.gif"   
 		     onclick="showWorkFlowWizard();"/></td> -->
 
