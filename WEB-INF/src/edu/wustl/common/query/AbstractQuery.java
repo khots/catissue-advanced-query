@@ -1,21 +1,20 @@
 /**
- * 
+ *
  */
 package edu.wustl.common.query;
 
-import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
 
 
 /**
- * 
- * 
+ *
+ *
  * @author supriya_dankh
  *
  */
 public abstract class AbstractQuery
 {
-	/** IQuery **/
-	private IQuery query;
+	private IAbstractQuery query;
 	/** QUERY_EXECUTION_ID **/
 	private int queryExecId;
 	/** XQUERY **/
@@ -32,22 +31,22 @@ public abstract class AbstractQuery
 	{
 		// Default Constructor
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param query
 	 * @param queryExecId
 	 * @param queryString
-	 * @param user_id
+	 * @param userId
 	 */
-	public AbstractQuery(IQuery query, int queryExecId, String queryString, Long userId)
+	public AbstractQuery(IAbstractQuery query, int queryExecId, String queryString, Long userId)
 	{
 		this.query = query;
 		this.queryExecId = queryExecId;
 		this.queryString = queryString;
 		this.userId = userId;
 	}
-	
+
 	/**
 	 * gets query execution id
 	 * @return queryExecId
@@ -75,7 +74,7 @@ public abstract class AbstractQuery
 		this.queryExecId = queryExecId;
 	}
 
-	
+
 	/**
 	 * sets query string
 	 * @param queryString
@@ -89,29 +88,29 @@ public abstract class AbstractQuery
 	 * gets query object
 	 * @return query
 	 */
-	public IQuery getQuery()
+	public IAbstractQuery getQuery()
 	{
 		return query;
 	}
-	
+
 	/**
 	 * sets query object
 	 * @param query
 	 */
-	public void setQuery(IQuery query)
+	public void setQuery(IAbstractQuery query)
 	{
 		this.query = query;
 	}
-	
+
 	/**
-	 * gets user id 
+	 * gets user id
 	 * @return  userId
 	 */
 	public Long getUserId()
 	{
 		return userId;
 	}
-	
+
 	/**
 	 * sets user id
 	 * @param userId
@@ -119,6 +118,54 @@ public abstract class AbstractQuery
 	public void setUserId(Long userId)
 	{
 		this.userId = userId;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+	    if (obj instanceof AbstractQuery)
+        {
+	        if(((AbstractQuery)obj).getQuery().getId().equals(this.getQuery().getId()))
+            {
+	            return true;
+            }
+	        else
+	        {
+	            return false;
+	        }
+        }
+	    else
+        {
+            return false;
+        }
+	}
+
+	@Override
+	public String toString()
+	{
+//	    StringBuilder toString = new StringBuilder();
+//	    toString.append("Query[id:");
+//	    toString.append(this.query != null ? this.query.getId() : "null");
+//        toString.append(" execId:");
+//        toString.append(this.queryExecId);
+//        toString.append(" userId:");
+//        toString.append(this.userId);
+//        toString.append("]");
+	    return "Query[id:"+this.query.getId()+" execId:"+this.queryExecId+" userId:"+this.userId+"]";
+	}
+
+	@Override
+	public int hashCode()
+	{
+	    // FIXME For now just assume the Query Id as the hashcode
+	    // To confirm that we also would need the userId in the hashcode
+
+
+//	    StringBuilder hashCodeStr = new StringBuilder();
+//	    hashCodeStr.append(this.query.getId());
+//	    hashCodeStr.append(this.queryExecId);
+
+	    return this.query.getId().intValue();
 	}
 	
 	/**
