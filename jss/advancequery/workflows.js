@@ -67,7 +67,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	operandsTd2.appendChild(queryTypeControl);
 	operandsTd2.width="4";
 	var query_type=columnContents[7];
-	if(query_type=="Get Data")
+	if(query_type=="GetData")
      operandsTd1.appendChild(createLink("View Results ","execute_"+queryCount,"javascript:executeGetDataQuery('"+id+"')"));
 	else
 	 operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+id+"','"+0+"')"));
