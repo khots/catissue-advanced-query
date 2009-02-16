@@ -27,7 +27,7 @@
 	<script>
 	<%String srcVocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
 	String srcVocabVersion = VocabUtil.getVocabProperties().getProperty("source.vocab.version"); 
-	String sourceVocabMessage =(String)request.getSession().getAttribute(Constants.MESSAGE_SRC_VOCAB); 
+	String sourceVocabMessage =(String)request.getSession().getAttribute(Constants.SRC_VOCAB_MESSAGE); 
 	%>
 	// selectedPvs will store that appears right side of the page
 	selectedPvs =new Array();
