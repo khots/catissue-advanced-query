@@ -28,14 +28,15 @@ public class QueryTestAll extends TestSuite
 	{
 		TestSuite suite = new TestSuite("Test suite for QUERY business logic");
 		
+		//For testing WorkflowBizLogic
+		suite.addTestSuite(WorkflowBizLogicTestCases.class);
+		
 		// For testing FAMEWORK for Query testing
 		// suite.addTestSuite(XQueryGeneratorTestCase.class);
 		
 		// For testing ASynchronous Queries
-		// suite.addTestSuite(ASynchronousQueriesTestCases.class);
+		suite.addTestSuite(ASynchronousQueriesTestCases.class);
 		
-		//For testing WorkflowBizLogic
-		suite.addTestSuite(WorkflowBizLogicTestCases.class);
 		return suite;
 	}
 }
