@@ -517,8 +517,16 @@ function getSearchTermResult(searchRequest)
 			{ 
 				// if user has not aborted the requrest then set the html result to div and clear the search message from message label
 				searchHTML=responseTextValue.split("MSG$-$");
-				document.getElementById("divForSearchingMode").innerHTML=searchHTML[0];
-				label.innerHTML=searchHTML[1];
+				if(searchHTML.length>1)
+				{
+					document.getElementById("divForSearchingMode").innerHTML=searchHTML[0];
+					label.innerHTML=searchHTML[1];
+				}
+				else
+				{
+					document.getElementById("divForSearchingMode").innerHTML=responseTextValue;
+					label.innerHTML="";
+				}
 			}
 			else
 			{
@@ -678,8 +686,8 @@ function editSelectedPV()
 		<tr>
 			<td bgcolor="#FFFFFF">
 			<table cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" border="0">
-			<tr>
-				<td id="searhLabel" class="content_txt"  align="left" style="padding-left:10px;color:blue">&nbsp;</td>  
+			<tr height="20px">
+				<td height="20px" id="searhLabel" class="content_txt"  align="left" style="padding-left:10px;color:blue">&nbsp;</td>  
 				<!-- <td width="48%" height="20" valign="middle" bgcolor="#FFFFFF" class="grid_header_text" style="padding-left:7px;">List View </td>  -->
 				<!--<td width="48%" height="20" valign="middle" bgcolor="#FFFFFF" class="grid_header_text" style="padding-left:7px;">Tree View </td> -->
 			</tr>
