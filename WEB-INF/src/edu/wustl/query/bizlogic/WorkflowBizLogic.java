@@ -2,17 +2,24 @@
 package edu.wustl.query.bizlogic;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import edu.wustl.cider.query.CiderQuery;
+import edu.wustl.cider.query.CiderWorkFlowDetails;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.exception.BizLogicException;
+import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
+import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
+import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
 import edu.wustl.common.querysuite.queryobject.ICompositeQuery;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
@@ -22,11 +29,13 @@ import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.domain.Workflow;
+import edu.wustl.query.domain.WorkflowDetails;
 import edu.wustl.query.domain.WorkflowItem;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryModuleException;
+import edu.wustl.query.workflowexecutor.WorkflowManager;
 
 /**
  * @author vijay_pande
@@ -37,13 +46,16 @@ public class WorkflowBizLogic extends DefaultBizLogic
 
 	private static org.apache.log4j.Logger logger = Logger.getLogger(WorkflowBizLogic.class);
 
+	private final WorkflowManager workflowManager = new WorkflowManager();
+
 	/**
-	 * Inserts domain object 
+	 * Inserts domain object
 	 * @param obj The object to be inserted.
 	 * @param dao the dao object
 	 * @param sessionDataBean session specific data
 	 * @throws DAOException
 	 */
+	@Override
 	protected void insert(Object obj, DAO dao, SessionDataBean sessionDataBean) throws DAOException
 	{
 		Workflow workflow = (Workflow) obj;
@@ -93,14 +105,15 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	}
 
 	/**
-	 * Updates  domain object 
+	 * Updates  domain object
 	 * @param dao the dao object
-	 * @param obj The object to be updated into the database. 
+	 * @param obj The object to be updated into the database.
 	 * @param oldObj old object that is to be updated
 	 * @param sessionDataBean session specific data
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
+	@Override
 	protected void update(DAO dao, Object obj, Object oldObj, SessionDataBean sessionDataBean)
 			throws DAOException, UserNotAuthorizedException
 	{
@@ -117,18 +130,129 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	}
 
 	/**
+	 * @param workflowId
 	 * @param queryId=id of query for which counts will be returned
 	 * @return count value
-	 * @throws DAOException 
-	 * @throws QueryModuleException 
-	 * @throws SQLException 
+	 * @throws DAOException
+	 * @throws QueryModuleException
+	 * @throws SQLException
 	 */
-	public int executeGetCountQuery(Long queryId, HttpServletRequest request)
+	public Map<Long, Integer> executeGetCountQuery(WorkflowDetails workflowDetails, Long queryId, HttpServletRequest request)//(Long queryId, HttpServletRequest request)
 			throws BizLogicException
 	{
-		//TO DO 
+
+
+		//map of query names and execution ids
+//		Map<String, Integer> executionIdsMap = new HashMap<String, Integer>();
+//		executionIdsMap.put("q1", 101);
+//		executionIdsMap.put("q2", 102);
+//		executionIdsMap.put("[Query:q1]Union[Query:q2]", 83);
+//		return executionIdsMap;
+
+
+
+		//map of query names and execution ids
+		Map<Long, Integer> executionIdsMap = new HashMap<Long, Integer>();
+
+		//TO DO
 		/*
-		 * set the IQuery from the query ID 
+		 * set the IQuery from the query ID
+		 */
+		edu.wustl.common.querysuite.queryobject.impl.AbstractQuery query = null;
+		Workflow workflow = null;
+		try
+		{
+			if (queryId != null)
+			{
+				AbstractDAO dao = DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+				dao.openSession(null);
+				try
+				{
+				    // Get the query
+				    query = (edu.wustl.common.querysuite.queryobject.impl.AbstractQuery) dao.retrieve(edu.wustl.common.querysuite.queryobject.impl.AbstractQuery.class.getName(), Long.valueOf(queryId));
+					if (query == null)
+                    {
+                        throw new BizLogicException(
+                                "No query exists with the Id - " + queryId
+                                        + " !");
+                    }
+				}
+				finally
+				{
+					dao.closeSession();
+				}
+			}
+
+			AbstractQueryUIManager qUIManager = null;
+
+			if (query instanceof IParameterizedQuery)
+			{
+                int queryExecId;
+                qUIManager = AbstractQueryUIManagerFactory
+                        .configureDefaultAbstractUIQueryManager(
+                                this.getClass(), request, (IQuery) query);
+                queryExecId = qUIManager.searchQuery(null);
+                executionIdsMap.put(queryId, queryExecId);
+            }
+			else if (query instanceof ICompositeQuery)
+			{
+//		        ICompositeQuery queryClone = new DyExtnObjectCloner().clone((ICompositeQuery)query);
+//		        new HibernateCleanser(queryClone).clean();
+
+		        AbstractQuery ciderQuery = new CiderQuery((IAbstractQuery)query,0,null,(long)((CiderWorkFlowDetails) workflowDetails).getUserId(), (long)((CiderWorkFlowDetails) workflowDetails).getProjectId());
+		        executionIdsMap.putAll(workflowManager.execute(workflowDetails, ciderQuery));
+			}
+		}
+		catch (DAOException ex)
+		{
+			BizLogicException bizLogicException = new BizLogicException(ex.getMessage(), ex);
+			throw bizLogicException;
+		}
+
+		catch (QueryModuleException e)
+		{
+			BizLogicException bizLogicException = new BizLogicException(e.getMessage(), e);
+			throw bizLogicException;
+		} catch (MultipleRootsException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SqlException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+		return executionIdsMap;
+
+
+	}
+
+	/**
+	 * @param queryId
+	 *            id of query for which counts will be returned
+	 * @param request
+	 *            The Request Object.
+	 * @return The Map containing the key as <code>queryId</code> and the value
+	 *         as <code>QueryExecutionId</code>.
+	 *         <ul>
+	 *         <li>In case of a parameterized query the map will contain a
+	 *         single entry corresponding to the concerned query.
+	 *         <li>In case of a Composite query the map will contain the entries
+	 *         corresponding to itself as well as all the child queries (PQs +
+	 *         CQs)
+	 *         </ul>
+	 * @throws BizLogicException
+	 */
+	public Map<Integer, Integer> executeGetCountQuery(Long queryId, HttpServletRequest request)
+			throws BizLogicException
+	{
+		//map of query names and execution ids
+		Map<Integer, Integer> executionIdsMap = new HashMap<Integer, Integer>();
+
+		//TO DO
+		/*
+		 * set the IQuery from the query ID
 		 */
 		IQuery query = null;
 		try
@@ -143,13 +267,14 @@ public class WorkflowBizLogic extends DefaultBizLogic
 			}
 			AbstractQueryUIManager qUIManager = null;
 
+
 			int queryExecId;
 
 			qUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this
 					.getClass(), request, query);
 			queryExecId = qUIManager.searchQuery(null);
 
-			return queryExecId;
+//			return queryExecId;
 
 		}
 		catch (DAOException ex)
@@ -164,65 +289,65 @@ public class WorkflowBizLogic extends DefaultBizLogic
 			throw bizLogicException;
 		}
 
+		return executionIdsMap;
+
 	}
 
-	public Count getCount( int queryExecId)
-			throws QueryModuleException
-	{
-		//CiderQueryUIManager ciderQueryUIManager = new CiderQueryUIManager();
-		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory
-				.getDefaultAbstractUIQueryManager();
-		Count countObject = qUIManager.getCount(queryExecId);
 
-//		HashMap<String, Count> resultMap = new HashMap<String, Count>();
-//		Iterator<String> queryIdIter = idList.iterator();
-//		if (queryIdIter.hasNext())
-//		{
-//			while (queryIdIter.hasNext())
-//			{
-//				resultMap.put(queryIdIter.next(), countObject);//change milli seconds to count
-//			}
-//		}
-//		else
-//		{
-//			resultMap = null;
-//		}
-//		return resultMap;
-		return countObject;
+
+	/**
+	 * This function returns the count for the
+	 * given executionID
+	 * @param queryExecId
+	 * @return
+	 * @throws QueryModuleException
+	 */
+	public Count getCount(int queryExecId) throws QueryModuleException
+	{
+		Count count = workflowManager.getCount(queryExecId);
+//		Count count = new Count();
+//		count.setCount(new Date().getSeconds());
+//		count.setQuery_exection_id(queryExecId);
+//		count.setStatus("Completed");
+
+		return count;
+
 	}
 
 	/**
 	 * Overriding the parent class's method to validate the enumerated attribute values
 	 */
+	@Override
 	protected boolean validate(Object obj, DAO dao, String operation) throws DAOException
 	{
-		if(obj == null)
+		if (obj == null)
 		{
 			throw new DAOException("NULL object passed for validation");
 		}
 		Workflow workflow = (Workflow) obj;
 
 		//validat eempty workflow
-		if(workflow.getName().equals(""))
+		if (workflow.getName().equals(""))
 		{
 			throw new DAOException("Workflow name  can not be empty.");
 		}
-		//forming Query to validate workflow Name 
+		//forming Query to validate workflow Name
 		String sourceObjectName = Workflow.class.getName();
 		String[] selectColumnName = {"id"};
-		String[] whereColumnName = {"name","name"};
-		String[] whereColumnCondition = {"=","="};
-		Object[] whereColumnValue = {workflow.getName().toLowerCase(),workflow.getName().toUpperCase()};
+		String[] whereColumnName = {"name", "name"};
+		String[] whereColumnCondition = {"=", "="};
+		Object[] whereColumnValue = {workflow.getName().toLowerCase(),
+				workflow.getName().toUpperCase()};
 		String joinCondition = Constants.OR_JOIN_CONDITION;
 
 		List list = dao.retrieve(sourceObjectName, selectColumnName, whereColumnName,
 				whereColumnCondition, whereColumnValue, joinCondition);
 		//edit
-		if(workflow.getId()!=null&&!list.isEmpty())
+		if (workflow.getId() != null && !list.isEmpty())
 		{
-			if(workflow.getId().equals(list.get(0)))
+			if (workflow.getId().equals(list.get(0))) {
 				return true;
-			else
+			} else
 			{
 				throw new DAOException("Workflow with same name already exists.");
 			}
@@ -234,27 +359,29 @@ public class WorkflowBizLogic extends DefaultBizLogic
 		return true;
 
 	}
-	
+
 	/**
 	 * This method adds the given query to workflow.
 	 * Workflow to which query is to be added is identified
-	 * by workflow id   
+	 * by workflow id
 	 * @param workflowId =workflow id
 	 * @param query=query to be added in workflow
-	 * @param sessionDataBean session related data 
-	 * @throws DAOException 
+	 * @param sessionDataBean session related data
+	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 * @throws BizLogicException
 	 */
-	public void addWorkflowItem(Long workflowId,IQuery query,SessionDataBean sessionDataBean) throws DAOException, UserNotAuthorizedException, BizLogicException
+	public void addWorkflowItem(Long workflowId, IQuery query, SessionDataBean sessionDataBean)
+			throws DAOException, UserNotAuthorizedException, BizLogicException
 	{
-		DefaultBizLogic defaultBizLogic=new DefaultBizLogic();
-		Workflow workflow=(Workflow)defaultBizLogic.retrieve(Workflow.class.getName(), workflowId);
+		DefaultBizLogic defaultBizLogic = new DefaultBizLogic();
+		Workflow workflow = (Workflow) defaultBizLogic.retrieve(Workflow.class.getName(),
+				workflowId);
 		WorkflowItem workflowItem = new WorkflowItem();
 		workflowItem.setQuery(query);
-		List workflowItemList=workflow.getWorkflowItemList();
+		List workflowItemList = workflow.getWorkflowItemList();
 		workflowItemList.add(workflowItem);
-		workflow.setWorkflowItemList(workflowItemList);	
+		workflow.setWorkflowItemList(workflowItemList);
 		defaultBizLogic.update(workflow, null, Constants.HIBERNATE_DAO, sessionDataBean);//.update(DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO),  workflow, null, sessionDataBean);
 	}
 }
