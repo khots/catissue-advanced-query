@@ -1,7 +1,7 @@
 package edu.wustl.common.query.impl;
 
 
-import org.junit.runner.JUnitCore;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -9,13 +9,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 
 @RunWith(value = Suite.class)
-@SuiteClasses(value = {edu.wustl.query.bizlogic.WorkflowBizLogicTestCases.class})
+@SuiteClasses(value = {edu.wustl.common.query.impl.XQueryGeneratorTest.class})
 public class QueryTestSuite
 {
 	
-	/**
-	 * 
-	 */
+	/*
 	public static void main(String[] args)
 	{
 		try
@@ -29,6 +27,6 @@ public class QueryTestSuite
 			e.printStackTrace();
 		}
 	}
-
+	*/
 	
 }

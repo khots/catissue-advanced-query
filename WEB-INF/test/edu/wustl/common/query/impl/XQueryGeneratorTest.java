@@ -5,6 +5,11 @@ package edu.wustl.common.query.impl;
  * 
  */
 
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -15,14 +20,13 @@ import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
+import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
+import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.utility.Utility;
-
-import static org.junit.Assert.*;
 
 /**
  * Test class for XQueryGenerator.
@@ -33,7 +37,7 @@ import static org.junit.Assert.*;
 public class XQueryGeneratorTest
 {
 
-	public static final PassOneXQueryGenerator xQueryGenerator = new PassOneXQueryGenerator();
+	public static final PassTwoXQueryGenerator xQueryGenerator = new PassTwoXQueryGenerator();
 	public static final XQueryEntityManagerMock entityManager = new XQueryEntityManagerMock();
 
 	/**
@@ -56,7 +60,7 @@ public class XQueryGeneratorTest
 			  */
 			Variables.isExecutingTestCase = true;
 
-			Variables.queryGeneratorClassName = "edu.wustl.common.query.impl.PassOneXQueryGenerator";
+			Variables.queryGeneratorClassName = "edu.wustl.common.query.impl.PassTwoXQueryGenerator";
 		}
 		catch (Exception e)
 		{
@@ -100,28 +104,34 @@ public class XQueryGeneratorTest
 
 		try
 		{
-			IQuery query = IQueryBuilder.skeletalRaceGenderAddressQuery();
+			IParameterizedQuery query = IQueryBuilder.skeletalRaceGenderAddressQuery();
 			IConstraints constraints = query.getConstraints();
 			IJoinGraph joinGraph = constraints.getJoinGraph();
 
 			IExpression demographics = IQueryBuilder.findExpression(
-					XQueryEntityManagerMock.DEMOGRAPHICS, joinGraph.getRoot(), joinGraph);
+					Constants.DEMOGRAPHICS, joinGraph.getRoot(), joinGraph);
 			IQueryBuilder.addCondition(demographics, "dateOfBirth", RelationalOperator.GreaterThan,
 					"10/10/1900");
 
-			IExpression race = IQueryBuilder.findExpression(XQueryEntityManagerMock.RACE, joinGraph
+			IExpression race = IQueryBuilder.findExpression(Constants.RACE, joinGraph
 					.getRoot(), joinGraph);
 			IQueryBuilder.addCondition(race, "id", RelationalOperator.Equals, "2345");
 			
-			IExpression gender = IQueryBuilder.findExpression(XQueryEntityManagerMock.GENDER, joinGraph.getRoot(), joinGraph);
+			IExpression gender = IQueryBuilder.findExpression(Constants.GENDER, joinGraph.getRoot(), joinGraph);
 			IQueryBuilder.addCondition(gender, "id", RelationalOperator.Equals, "1987");
 			
-			IExpression address = IQueryBuilder.findExpression(XQueryEntityManagerMock.ADDRESS, joinGraph.getRoot(), joinGraph);
-			IQueryBuilder.addCondition(address, "id", RelationalOperator.Equals, "3452");
+			IExpression address = IQueryBuilder.findExpression(Constants.ADDRESS, joinGraph.getRoot(), joinGraph);
+			IQueryBuilder.addCondition(address, "postalCode", RelationalOperator.Equals, "3452");
 			
+			
+			List<IOutputAttribute> outputAttriubtes = new ArrayList<IOutputAttribute>();
+			IQueryBuilder.addToList(outputAttriubtes, joinGraph.getRoot(), "personUpi");
+			
+			query.setOutputAttributeList(outputAttriubtes);
 
 			String xquery = xQueryGenerator.generateQuery(query);
 
+			int a = 10;
 			//does result contain value "6446456" ?
 			//	result =
 
@@ -137,19 +147,19 @@ public class XQueryGeneratorTest
 	{
 		try
 		{
-			IQuery query = IQueryBuilder.skeletalDemograpihcsQuery();
+			IParameterizedQuery query = IQueryBuilder.skeletalDemograpihcsQuery();
 			IConstraints constraints = query.getConstraints();
 			IJoinGraph joinGraph = constraints.getJoinGraph();
 
-			IExpression person = IQueryBuilder.findExpression(XQueryEntityManagerMock.PERSON,
+			IExpression person = IQueryBuilder.findExpression(Constants.PERSON,
 					joinGraph.getRoot(), joinGraph);
 
 			IExpression lab = IQueryBuilder.createExpression(constraints, person,
-					XQueryEntityManagerMock.LABORATORY_PROCEDURE);
+					Constants.LABORATORY_PROCEDURE);
 			//add conditions on lab
 			
 			IQueryBuilder.createExpression(constraints, lab,
-					XQueryEntityManagerMock.LABORATORY_PROCEDURE_DETAILS);
+					Constants.LABORATORY_PROCEDURE_DETAILS);
 			//add conditions on details
 
 			String xquery = xQueryGenerator.generateQuery(query);
