@@ -34,22 +34,22 @@ public class QueryBizLogic extends DefaultBizLogic
 	public void insertSavedQueries(IParameterizedQuery query,SessionDataBean sessionDataBean, boolean shareQuery)throws DAOException, UserNotAuthorizedException, BizLogicException
 	{
 		insert(query,edu.wustl.common.util.global.Constants.HIBERNATE_DAO);
-		HashSet<ParameterizedQuery> protectionObjects = new HashSet<ParameterizedQuery>();
-		protectionObjects.add((ParameterizedQuery) query);
-
-		User user = null;
-		try
-		{
-			user = new PrivilegeUtility().getUserProvisioningManager().getUser(sessionDataBean.getUserName());
-		}
-		catch (CSException e)
-		{
-			new UserNotAuthorizedException(e.getMessage(),e);
-		}
-		sessionDataBean.setCsmUserId(user.getUserId().toString());
-		
-		SavedQueryAuthorization savedQuery = new SavedQueryAuthorization();
-		savedQuery.authenticate(protectionObjects,user.getUserId().toString(),shareQuery,user);
+//		HashSet<ParameterizedQuery> protectionObjects = new HashSet<ParameterizedQuery>();
+//		protectionObjects.add((ParameterizedQuery) query);
+//
+//		User user = null;
+//		try
+//		{
+//			user = new PrivilegeUtility().getUserProvisioningManager().getUser(sessionDataBean.getUserName());
+//		}
+//		catch (CSException e)
+//		{
+//			new UserNotAuthorizedException(e.getMessage(),e);
+//		}
+//		sessionDataBean.setCsmUserId(user.getUserId().toString());
+//		
+//		SavedQueryAuthorization savedQuery = new SavedQueryAuthorization();
+//		savedQuery.authenticate(protectionObjects,user.getUserId().toString(),shareQuery,user);
 	}
 
 }
