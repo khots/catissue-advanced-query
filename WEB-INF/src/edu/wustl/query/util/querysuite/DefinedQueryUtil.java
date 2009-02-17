@@ -1,8 +1,8 @@
+
 package edu.wustl.query.util.querysuite;
 
 import java.util.List;
 
-import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
 import edu.wustl.common.hibernate.HibernateCleanser;
@@ -33,14 +33,31 @@ public class DefinedQueryUtil
 	{
 		IParameterizedQuery parameterizedQuery = populateParameterizedQueryData(query);
 		parameterizedQuery.setName(((IParameterizedQuery) query).getName());
-		edu.wustl.query.bizlogic.QueryBizLogic bizLogic = (edu.wustl.query.bizlogic.QueryBizLogic) AbstractBizLogicFactory.getBizLogic(ApplicationProperties
-		.getValue("app.bizLogicFactory"), "getBizLogic",
-		Constants.ADVANCE_QUERY_INTERFACE_ID);
+		edu.wustl.query.bizlogic.QueryBizLogic bizLogic = (edu.wustl.query.bizlogic.QueryBizLogic) AbstractBizLogicFactory
+				.getBizLogic(ApplicationProperties.getValue("app.bizLogicFactory"), "getBizLogic",
+						Constants.ADVANCE_QUERY_INTERFACE_ID);
 		IParameterizedQuery queryClone = new DyExtnObjectCloner().clone(parameterizedQuery);
 		new HibernateCleanser(queryClone).clean();
 		bizLogic.insert(queryClone, Constants.HIBERNATE_DAO);
-		
+
 		query.setId(queryClone.getId());
+
+	}
+
+	/**
+	 * This methods updates the query in the database which is already saved 
+	 * @param query=IQuery
+	 * @throws UserNotAuthorizedException
+	 * @throws BizLogicException
+	 */
+	public void updateQuery(IQuery query) throws UserNotAuthorizedException, BizLogicException
+	{
+		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) query;
+		parameterizedQuery.setName(((IParameterizedQuery) query).getName());
+		edu.wustl.query.bizlogic.QueryBizLogic bizLogic = (edu.wustl.query.bizlogic.QueryBizLogic) AbstractBizLogicFactory
+				.getBizLogic(ApplicationProperties.getValue("app.bizLogicFactory"), "getBizLogic",
+						Constants.ADVANCE_QUERY_INTERFACE_ID);
+		bizLogic.update(parameterizedQuery, Constants.HIBERNATE_DAO);
 
 	}
 
