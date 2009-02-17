@@ -92,10 +92,11 @@ public class Workflow extends AbstractDomainObject
 
 	/**
 	 * Method to set id of the workflow
-	 * 
+	 *
 	 * @param id of type Long
 	 */
-	public void setId(Long id)
+	@Override
+    public void setId(Long id)
 	{
 		this.id = id;
 	}
@@ -104,7 +105,8 @@ public class Workflow extends AbstractDomainObject
 	 * Method to set id of the workflow
 	 * @return id of type Long
 	 */
-	public Long getId()
+	@Override
+    public Long getId()
 	{
 		return this.id;
 	}
@@ -160,14 +162,17 @@ public class Workflow extends AbstractDomainObject
 	 * @throws AssignDataException
 	 * Method to populate domain object from formBean
 	 */
-	public void setAllValues(IValueObject form) throws AssignDataException
+	@Override
+    public void setAllValues(IValueObject form) throws AssignDataException
 	{
 		WorkflowForm workFlowForm = (WorkflowForm) form;
+		String[] displayQueryTitle =workFlowForm.getDisplayQueryTitle();
 		this.workflowItemList = new ArrayList<WorkflowItem>();
 		this.setName(workFlowForm.getName());
 		this.setCreatedOn(new Date());
 		String[] operators = workFlowForm.getOperators();
 		String[] operands = workFlowForm.getOperands();
+		String[] identifier=workFlowForm.getQueryIdForRow();
 		int numberOfRows = 0;
 		if (operators != null)
 		{
@@ -175,9 +180,13 @@ public class Workflow extends AbstractDomainObject
 		}
 		for (int i = 0; i < numberOfRows; i++)
 		{
-			IAbstractQuery query = getQuery(operators[i], operands[i]);
+			IAbstractQuery query = getQuery(operators[i], operands[i],displayQueryTitle[i]);
 			WorkflowItem workflowItem = new WorkflowItem();
-
+			//
+			if(!identifier[i].contains("_"))
+			{
+				query.setId(Long.parseLong(identifier[i]));
+			}
 			workflowItem.setQuery(query);
 			workflowItem.setPosition(i);
 			this.workflowItemList.add(workflowItem);
@@ -191,28 +200,31 @@ public class Workflow extends AbstractDomainObject
 	 * @return label of domain object
 	 */
 
-	public String getMessageLabel()
+	@Override
+    public String getMessageLabel()
 	{
 		return this.getClass().toString();
 	}
 
-	private IAbstractQuery getQuery(String operators, String operands)
+	public IAbstractQuery getQuery(String operators, String operands,String queryTitle)
 	{
 		IAbstractQuery query = null;
 
 		if (operators.equals(CompositeQueryOperations.NONE.getOperation()))
 		{
 			query = new ParameterizedQuery();
-			query.setId(Long.parseLong(operands));
+			//query.setId(Long.parseLong(operands));
+			((ParameterizedQuery)query).setName(queryTitle);
 		}
 		else
 		{
 			query = getCompositeQuery(operators, operands);
+			((CompositeQuery)query).setName(queryTitle);
 		}
 		return query;
 	}
 
-	private IAbstractQuery getCompositeQuery(String operators, String operands)
+	public IAbstractQuery getCompositeQuery(String operators, String operands)
 	{
 		String[] operand = operands.split("_");
 		IAbstractQuery compositeQuery = new CompositeQuery();
@@ -247,7 +259,7 @@ public class Workflow extends AbstractDomainObject
 		return compositeQuery;
 	}
 
-	private IOperation getOperationForCompositeQuery(String operation, IAbstractQuery operandOne,
+	public IOperation getOperationForCompositeQuery(String operation, IAbstractQuery operandOne,
 			IAbstractQuery operandTwo)
 	{
 		Operation operationObj = null;
@@ -257,11 +269,11 @@ public class Workflow extends AbstractDomainObject
 		}
 		else if (operation.equals(CompositeQueryOperations.MINUS.getOperation()))
 		{
-			operationObj = new Intersection();
+			operationObj = new Minus();
 		}
 		else if (operation.equals(CompositeQueryOperations.INTERSECTION.getOperation()))
 		{
-			operationObj = new Minus();
+			operationObj = new Intersection();
 		}
 
 		operationObj.setOperandOne(operandOne);
