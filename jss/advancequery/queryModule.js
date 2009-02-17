@@ -619,7 +619,7 @@
 		   hideCursor();
 		    return;
 		 }
-		if(currentPage == 'null')
+		if(currentPage == 'null' || currentPage== "editQuery")
 		{
 			var handlerFunction = getReadyStateHandler(request,onResponseUpdate,true);
 			actionURL = "textField=" + textFieldValue + "&attributeChecked=" + attributeCheckStatus + "&classChecked=" + classCheckStatus + "&permissibleValuesChecked=" + permissibleValuesCheckStatus + "&includeDescriptionChecked="+includeDescriptionCheckedStatus+ "&selected=" + radioCheckStatus+"&currentPage=AddLimits&key="+key;
@@ -1636,6 +1636,13 @@ var jsReady = false;
 		document.forms[0].submit();
 	} 
 	
+	/* This function is called from QueryListView.jsp It invokes FetchQueryAction */
+	function editQuery(queryId)
+	{
+		var action="FetchQuery.do?queryId="+queryId;
+		document.forms[0].action = action;
+		window.open(action,"_top");
+	} 
 	/*This function is called form QueryListView.jsp. Pops up for confirmation while deleting the query*/
 	function deleteQueryPopup(queryId, popupMessage)
 	{
