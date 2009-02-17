@@ -23,6 +23,40 @@
 	}
    }
 	
+	  function getTreeNodeChildren(nodeId)
+	   {
+			var request = newXMLHTTPReq();			
+			var actionURL;
+			var handlerFunction = getReadyStateHandler(request,showTreeNodeChildren,true);	
+	        request.onreadystatechange = handlerFunction; 
+			actionURL = "nodeId=" + nodeId;
+			var url = "UpdateTreeView.do";
+	        request.open("POST",url,true);	
+			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+			request.send(actionURL);
+			
+	   }
+	   function showTreeNodeChildren(response)
+	   {
+			 var jsonResponse = eval('('+ response+')');
+			 if(jsonResponse.childrenNodes!=null)
+		     {
+				 var num = jsonResponse.childrenNodes.length; 
+	             for(var i=0;i<num;i++)
+				 {
+					var nodeId = jsonResponse.childrenNodes[i].identifier;
+					var objName = jsonResponse.childrenNodes[i].objName;
+					var displayName = jsonResponse.childrenNodes[i].displayName;
+					var parentId = jsonResponse.childrenNodes[i].parentId;
+					var parentObjName = jsonResponse.childrenNodes[i].parentObjName;
+					
+					//Add children to result output tree 
+	                resultTree.insertNewChild(parentId,nodeId,displayName);
+	                
+				} 
+	         }
+	    }
+	
 	var addedNodes = "";
 	var isFirtHit = true;
 	function treeNodeClicked(id)
