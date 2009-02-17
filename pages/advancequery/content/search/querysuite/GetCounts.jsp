@@ -54,7 +54,7 @@
 <table  width="100%" border="0" cellspacing="0" cellpadding="0" align="center" class="login_box_bg">
 <tr>
 	<td class="table_header_query" height="28">
-		<img src="images/advancequery/t_get_counts.gif" altText="Get Counts"/>
+		<img src="images/advancequery/t_get_counts_define_query.gif" altText="Get Counts - Define Query"/>
 	</td>
 </tr>
 <tr>
@@ -89,22 +89,6 @@
 				<td height="5">
 				</td>
 			</tr>
-			<tr>	
-			<td  width="290" align="left" valign="middle" height="32"  background="images/advancequery/top_bg_wiz.gif" style="padding-left:105px" >
-				<img src="images/advancequery/tab_define_query_active.gif"/> <!-- width="118" height="25" /-->
-			</td>
-			
-			<td  align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
-			<!--	<img src="images/advancequery/2_inactive.gif" /> <!-- width="199" height="38" /-->
-			</td>
-			
-			<td  align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
-				<!--<img src="images/advancequery/3_inactive.gif" /> <!--  width="139" height="38" /-->
-			</td>
-			<td  noWrap align="right" background="images/advancequery/top_bg_wiz.gif" valign="middle">
-				<!--<a href="#" class="greylink">Get Patient Data >> </a>-->&nbsp;
-			</td>
-		</tr>
 	<tr>
 	<td colspan="4">
 	<table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" id="table1">			 
