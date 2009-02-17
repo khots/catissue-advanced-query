@@ -34,7 +34,7 @@ tr#hiddenCombo
 		columnList = (List) request.getAttribute(Constants.SPREADSHEET_COLUMN_LIST);
 
 	columnList.add(0," ");
-	List dataList = (List) request.getAttribute(Constants.PAGINATION_DATA_LIST);
+	List<String> dataList = (List<String>) request.getAttribute(Constants.PAGINATION_DATA_LIST);
 	String[] selectedColumnNames = new String[columnList.size()];
 	columnList.toArray(selectedColumnNames);
 	
