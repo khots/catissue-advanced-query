@@ -48,6 +48,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	/**  Constant for  */
 	public static final String REQUEST_TO_ORDER = "requestToOrder";
 	/**  Constant for  */
+	public static final String EDIT_QUERY = "editQuery";
+	/**  Constant for  */
 	public static final String BULK_TRANSFERS = "bulkTransfers";
 	/**  Constant for  */
 	public static final String BULK_DISPOSALS = "bulkDisposals";
