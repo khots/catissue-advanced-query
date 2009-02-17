@@ -555,10 +555,11 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 			selectClause.append(entry.getValue());
 			String columnAliasName = Constants.QUERY_COLUMN_NAME + suffix;
 			selectClause.append(" " + columnAliasName + Constants.QUERY_COMMA);
-			addToTreeNode(entry, columnAliasName);
 			attributeColumnNameMap.put(entry.getKey().getAttribute(), columnAliasName);
 			suffix++;
 		}
+		
+		addToTreeNode(null,null);
 
 		Utility.removeLastComma(selectClause);
 		return selectClause.toString();
@@ -580,17 +581,19 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		//find the right tree node to add the attribute to
 		for (OutputTreeDataNode node : attributeOutputTreeNodeList)
 		{
-			if (node.getExpressionId() == entry.getKey().getExpression().getExpressionId())
-			{
-				treeNode = node;
-				break;
+			
+			Collection<AttributeInterface> allAttributes = node.getOutputEntity().getDynamicExtensionsEntity().getAllAttributes();
+			for (AttributeInterface attributeInterface : allAttributes) {
+				String displayNameForColumn = Utility
+				.getDisplayNameForColumn(attributeInterface);
+				columnAliasName = "";
+				node.addAttribute(new QueryOutputTreeAttributeMetadata(attributeInterface,
+				columnAliasName, node, displayNameForColumn));
 			}
+			
 		}
 
-		String displayNameForColumn = Utility
-				.getDisplayNameForColumn(entry.getKey().getAttribute());
-		treeNode.addAttribute(new QueryOutputTreeAttributeMetadata(entry.getKey().getAttribute(),
-				columnAliasName, treeNode, displayNameForColumn));
+		
 	}
 
 	/**
