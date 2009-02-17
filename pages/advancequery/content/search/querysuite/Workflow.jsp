@@ -370,7 +370,6 @@ function executeGetDataQuery(dataQueryId)
 	  
 	  if(response=="ViewResults")
 	 {
-	    alert("response"+response);
 	  	var dataQueryId= document.getElementById("dataQueryId").value;
 	  	var countQueryId= document.getElementById("countQueryId").value;
 	  	var identifier=document.getElementById("queryIdForRow_"+countQueryId);
@@ -378,7 +377,6 @@ function executeGetDataQuery(dataQueryId)
 		var tdChildCollection=object.getElementsByTagName('input');
 		var executinIDElement=tdChildCollection[2].id;
 		var exId= document.getElementById(executinIDElement).value;
-		alert("exId:"+exId);
 	   document.forms[0].action="\QueryResultsView.do?dataQueryId="+dataQueryId+"&queryExecutionId="+exId;
 	   document.forms[0].submit();
 	 }
