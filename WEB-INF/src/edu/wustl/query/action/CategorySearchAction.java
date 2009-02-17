@@ -1,3 +1,4 @@
+
 package edu.wustl.query.action;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ import edu.wustl.cab2b.common.beans.MatchedClass;
 import edu.wustl.cab2b.common.exception.CheckedException;
 import edu.wustl.cab2b.common.util.Constants;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.CategorySearchForm;
@@ -54,20 +56,22 @@ public class CategorySearchAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		//getQueryrTitle
-		
+
 		HttpSession session = request.getSession();
 		setIsQueryAttribute(request);
 		CategorySearchForm searchForm = (CategorySearchForm) form;
-		String currentPage = searchForm.getCurrentPage();
+		String currentPage = getCurrentPage(request, searchForm);
 		String forward = edu.wustl.query.util.global.Constants.SUCCESS;
-		String workflow=request.getParameter(edu.wustl.query.util.global.Constants.IS_WORKFLOW);
-		if("true".equals(workflow))
-		 {
-			 request.setAttribute(edu.wustl.query.util.global.Constants.IS_WORKFLOW,edu.wustl.query.util.global.Constants.TRUE);
-			 String workflowName= (String)request.getSession().getAttribute(edu.wustl.query.util.global.Constants.WORKFLOW_NAME);
-			 request.setAttribute(edu.wustl.query.util.global.Constants.WORKFLOW_NAME,workflowName);
-		 }
-		
+		String workflow = request.getParameter(edu.wustl.query.util.global.Constants.IS_WORKFLOW);
+		if ("true".equals(workflow))
+		{
+			request.setAttribute(edu.wustl.query.util.global.Constants.IS_WORKFLOW,
+					edu.wustl.query.util.global.Constants.TRUE);
+			String workflowName = (String) request.getSession().getAttribute(
+					edu.wustl.query.util.global.Constants.WORKFLOW_NAME);
+			request.setAttribute(edu.wustl.query.util.global.Constants.WORKFLOW_NAME, workflowName);
+		}
+
 		if (currentPage != null && currentPage.equalsIgnoreCase("resultsView"))
 		{
 			searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
@@ -80,9 +84,40 @@ public class CategorySearchAction extends Action
 				searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
 				textfieldValue = "";
 			}
+			else if (currentPage != null
+					&& currentPage
+							.equalsIgnoreCase(edu.wustl.query.util.global.Constants.EDIT_QUERY))
+			{
+				searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
+				textfieldValue = "";
+				request.setAttribute("isQuery", "true");
+				IParameterizedQuery parameterizedQuery = (IParameterizedQuery) request.getSession()
+						.getAttribute(edu.wustl.query.util.global.Constants.QUERY_OBJECT);
+				searchForm.setQueryTitle(parameterizedQuery.getName());
+			}
 			forward = search(request, response, searchForm, textfieldValue);
 		} //end of else  
 		return mapping.findForward(forward);
+	}
+
+	
+	/**
+	 * It will retrieve the current page attribute from the searchForm, if it is null will
+	 * retrieve the same attribute from request and return that String.
+	 * @param request 
+	 * @param searchForm
+	 * @return
+	 */
+	private String getCurrentPage(HttpServletRequest request, CategorySearchForm searchForm)
+	{
+		String currentPage = searchForm.getCurrentPage();
+		if (currentPage == null)
+		{
+			currentPage = (String) request
+					.getAttribute(edu.wustl.query.util.global.Constants.CURRENT_PAGE);
+
+		}
+		return currentPage;
 	}
 
 	/**
@@ -175,13 +210,14 @@ public class CategorySearchAction extends Action
 	private void removeEntitiesNotSearchable(List<EntityInterface> resultList)
 	{
 		List<EntityInterface> notSearchableList = new ArrayList<EntityInterface>();
-		for(EntityInterface entity : resultList)
+		for (EntityInterface entity : resultList)
 		{
-			Collection<TaggedValueInterface> taggedValueCollection = entity.getTaggedValueCollection();
-			for(TaggedValueInterface tagValue : taggedValueCollection)
+			Collection<TaggedValueInterface> taggedValueCollection = entity
+					.getTaggedValueCollection();
+			for (TaggedValueInterface tagValue : taggedValueCollection)
 			{
-				if(tagValue.getKey().equals(
-					edu.wustl.query.util.global.Constants.TAGGED_VALUE_NOT_SEARCHABLE))
+				if (tagValue.getKey().equals(
+						edu.wustl.query.util.global.Constants.TAGGED_VALUE_NOT_SEARCHABLE))
 				{
 					notSearchableList.add(entity);
 				}
@@ -189,7 +225,6 @@ public class CategorySearchAction extends Action
 		}
 		resultList.removeAll(notSearchableList);
 	}
-
 
 	/**
 	 * This Method prepares a String of all resulted entities with adding seprator between each Entity.
@@ -204,8 +239,10 @@ public class CategorySearchAction extends Action
 		{
 			EntityInterface entity = (EntityInterface) resultList.get(i);
 			String fullyQualifiedEntityName = entity.getName();
-			StringBuffer fullEntityName = new StringBuffer(Utility.parseClassName(fullyQualifiedEntityName));
-			StringBuffer entityName = new StringBuffer(Utility.getDisplayLabel(fullEntityName.toString()));
+			StringBuffer fullEntityName = new StringBuffer(Utility
+					.parseClassName(fullyQualifiedEntityName));
+			StringBuffer entityName = new StringBuffer(Utility.getDisplayLabel(fullEntityName
+					.toString()));
 			String entityId = entity.getId().toString();
 			String description = entity.getDescription();
 			entitiesString = entitiesString
@@ -227,8 +264,9 @@ public class CategorySearchAction extends Action
 	 */
 	private void setIsQueryAttribute(HttpServletRequest request)
 	{
-		
-		request.getSession().removeAttribute(edu.wustl.query.util.global.Constants.SELECTED_COLUMN_META_DATA);
+
+		request.getSession().removeAttribute(
+				edu.wustl.query.util.global.Constants.SELECTED_COLUMN_META_DATA);
 		String isQuery = request.getParameter("isQuery");
 		if (isQuery == null)
 		{
@@ -254,7 +292,6 @@ public class CategorySearchAction extends Action
 		}
 		return searchString;
 	}
-
 
 	/**
 	 * Prepares the int [] for search targets from the checkbox values selected by user.
@@ -291,7 +328,7 @@ public class CategorySearchAction extends Action
 			target.add(Integer.valueOf((Constants.PV)));
 		}
 
-		int size=target.size();
+		int size = target.size();
 		int[] searchTarget = new int[size];
 		for (int i = 0; i < size; i++)
 		{
@@ -318,7 +355,6 @@ public class CategorySearchAction extends Action
 		return bool;
 	}
 
-		
 	/**
 	 * This Method includes class and/os atrribute with description to serchTarget if include description checkbox is checked
 	 * @param includeDescriptionChecked
@@ -330,8 +366,8 @@ public class CategorySearchAction extends Action
 			List<Integer> target)
 	{
 		Integer temp = Integer.valueOf(str);
-		boolean cheked=isChecked(includeDescriptionChecked);
-		if(cheked)
+		boolean cheked = isChecked(includeDescriptionChecked);
+		if (cheked)
 		{
 			temp = Integer.valueOf(withDesc);
 		}
