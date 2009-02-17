@@ -1,4 +1,5 @@
 
+
 package edu.wustl.query.bizlogic;
 
 /**
@@ -33,7 +34,6 @@ public class QueryFrameworkTestCase extends TestCase
 	public static PassOneXQueryGenerator xQueryGenerator = new PassOneXQueryGenerator();
 	// public static IQueryGenerator xQueryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
 
-	XQueryEntityManagerMock entityManager = new XQueryEntityManagerMock();
 	public static String xmlFileName = "FrameWork.xml";
 	Map<String, String> details;
 	public static QueryTestCaseExecutorInterface executor;
@@ -48,7 +48,7 @@ public class QueryFrameworkTestCase extends TestCase
 		{
 			EntityCache.getInstance();
 
-			Utility.initTest();
+			// Utility.initTest();
 
 			Properties props = new Properties();
 			props.load(new FileInputStream("queryInstall.properties"));
@@ -156,10 +156,16 @@ public class QueryFrameworkTestCase extends TestCase
 		
 	}
 
-	public void testXQuery_PersonUpi_is_NOT_NULL_AND_DOB_greater_than_10_10_1920()
+	public void testXQuery_PersonUpi_is_NOT_NULL_AND_Lab_Accession_No_contains_xxxx()
 	{
 		
 	}
+	
+	
+	/*public void testXQuery_PersonUpi_is_NOT_NULL_AND_DOB_less_than_10_10_1920()
+	{
+		
+	}*/
 	
 	/*
 	public void testXQuery_PersonUpi_is_NOT_NULL_AND_DOB_less_than_10_10_1920()
