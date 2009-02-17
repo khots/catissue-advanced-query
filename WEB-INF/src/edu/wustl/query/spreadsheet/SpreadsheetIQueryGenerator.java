@@ -59,7 +59,7 @@ public class SpreadsheetIQueryGenerator
 {
 
 	private org.apache.log4j.Logger logger= Logger.getLogger(SpreadsheetIQueryGenerator.class);
-	public List<Object> createIQuery(Node node, QueryDetails queryDetailsObj,
+	public void createIQuery(Node node, QueryDetails queryDetailsObj,
 			List<IOutputAttribute> selectedColumns)
 	{
 		List<Object> upis = null;
@@ -84,7 +84,8 @@ public class SpreadsheetIQueryGenerator
 				query = queryDetailsObj.getQuery();
 				
 				//Fetch UPI list for query
-				upis = getUPI(queryDetailsObj.getQueryExecutionId());
+				//upis = getUPI(queryDetailsObj.getQueryExecutionId());
+				
 			}
 			else
 			{
@@ -116,7 +117,7 @@ public class SpreadsheetIQueryGenerator
 			logger.error("Error occured "+ex.getMessage(), ex);
 		}
 
-		return upis;
+		//return upis;
 	}
 
 	/**
