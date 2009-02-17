@@ -13,6 +13,8 @@
 <%@ page import="org.apache.struts.action.ActionMessages, edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.Constants"%>
 <script language="JavaScript" type="text/javascript" src="jss/advancequery/newReleaseMsg.js"></script>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/queryModule.js"></script>
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/ajax.js"></script>
 <script>
 
 function changeResPerPage(controlId)
@@ -68,7 +70,7 @@ int queryCount = 0;%>
 													<jsp:useBean id="parameterizedQuery" type="edu.wustl.common.querysuite.queryobject.IParameterizedQuery" />
 													
 
-															<%String target = "executeQuery('"+parameterizedQuery.getId()+"')"; 
+															<%String target = "editQuery('"+parameterizedQuery.getId()+"')"; 
 															  String queryId=parameterizedQuery.getId()+"";
 															  String title = parameterizedQuery.getName();
 															  String newTitle = Utility.getQueryTitle(title);
@@ -85,7 +87,9 @@ int queryCount = 0;%>
 															<html:checkbox property="chkbox" styleId="<%=checkboxControl%>"/>
 															
 															<td  valign="top" class="content_txt" >
-																<%=newTitle%>
+																<html:link styleClass='formQueryLink' href='#' onclick='<%=target%>'  onmouseover="<%=function%>" >
+											 						<%=newTitle%>
+																</html:link><br/>
 															</td>
 															  <td  valign="top" class="content_txt">Get Count</td>
 															 
@@ -146,6 +150,7 @@ int queryCount = 0;%>
 			 
 				</tr>
 			</table>
+			<html:hidden styleId="queryId" property="queryId" />
 		</html:form>
 </body>
 
