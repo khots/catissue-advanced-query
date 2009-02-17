@@ -363,6 +363,20 @@ function executeGetDataQuery(dataQueryId)
 		request.send(actionURL);	
 }
 
+function displayValidationMesage(response)
+{ 
+  
+  if(response=="ViewResults")
+ {
+    
+   var dataQueryId= document.getElementById("dataQueryId").value;
+   var countQueryId= document.getElementById("countQueryId").value;
+   document.forms[0].action="\QueryResultsView.do?dataQueryId"+dataQueryId;
+   document.forms[0].submit();
+ }
+  
+}
+
 function workflowResponseHandler(response)
 {
   var jsonResponse = eval('('+ response+')');
@@ -476,7 +490,8 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 </table>
 </div>
 <html:form action="SaveWorkflow" >
-
+ <input type="hidden" name="dataQueryId" id="dataQueryId" value="">
+ <input type="hidden" name="countQueryId" id="countQueryId" value="">
 <html:hidden property="operation" styleId="operation" value="${requestScope.operation}"/>
 <html:hidden property="id" styleId="id" value="${requestScope.id}"/>
 <select name="queryId" id="queryId"  style="display:none">
@@ -703,12 +718,24 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 										<table >
 										<tbody>
 										<tr>
-										<td>
+										
+                                             <logic:equal name="query_type_data" value="${qtype}">
+										  <td width="30">
+											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetDataQuery('${workflowForm.identifier[queryIndex]}')" styleClass="bluelink"
+											>
+												View Results
+											</html:link>
+										</td>
+										</logic:equal>
+										
+										<logic:notEqual name="query_type_data" value="${qtype}">
+                                        <td>
 											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetCountQuery('${workflowForm.displayQueryTitle[queryIndex]}','0')" styleClass="bluelink"
 											>
 												Execute
 											</html:link>
 										</td>
+                                        </logic:notEqual>
 										<td>
 											<html:hidden property="operands" styleId="operands_${queryIndex}"  value="${workflowForm.operands[queryIndex]}"/>
 											<html:hidden property="operators" styleId="operators_${queryIndex}" value="${workflowForm.operators[queryIndex]}"/>
