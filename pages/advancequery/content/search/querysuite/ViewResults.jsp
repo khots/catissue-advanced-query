@@ -41,7 +41,7 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 			</iframe>
 		</td>
 		<td width="75%" colspan="3" valign="top" height="100%" >
-			<iframe name="<%=Constants.GRID_DATA_VIEW_FRAME%>" src="<%="#"%>?pageOf=pageOfQueryModule" <%=Constants.VIEW_TYPE%>=<%=Constants.SPREADSHEET_VIEW%>" scrolling="auto" frameborder="0" width="100%" height="100%">
+			<iframe name="<%=Constants.GRID_DATA_VIEW_FRAME%>" src="<%=Constants.QUERY_GRID_VIEW_ACTION%>?pageOf=pageOfQueryModule" <%=Constants.VIEW_TYPE%>=<%=Constants.SPREADSHEET_VIEW%>" scrolling="auto" frameborder="0" width="100%" height="100%">
 				Your Browser doesn't support IFrames.
 			</iframe>
 		</td>
