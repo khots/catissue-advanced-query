@@ -78,6 +78,11 @@ public class ViewResultsAction extends Action
 			iqueryId = Long.valueOf(id);
 		}
 		session.setAttribute("dataQueryId",iqueryId);
+		String qid = (String) request.getParameter("queryExecutionId");
+		if(qid!=null)
+		{
+			session.setAttribute(Constants.QUERY_EXECUTION_ID, Integer.parseInt(qid));
+		}
 	 	;//need to get From request
 	 	IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
 				.getValue("app.bizLogicFactory"), "getBizLogic",
