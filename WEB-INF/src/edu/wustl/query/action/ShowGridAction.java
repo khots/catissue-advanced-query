@@ -66,7 +66,7 @@ public class ShowGridAction extends BaseAction
 		int queryExecutionId = 0; //((Integer)session.getAttribute(Constants.QUERY_EXECUTION_ID)).intValue();
 		if(queryDetailsObj.getQueryExecutionId() == 0)
 		{
-			queryDetailsObj.setQueryExecutionId(4);
+			queryDetailsObj.setQueryExecutionId(165);
 		}
 		
 		Long queryid = (Long) session.getAttribute("dataQueryId");
