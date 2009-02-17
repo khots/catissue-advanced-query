@@ -22,21 +22,23 @@ tr#hiddenCombo
 <head>
 <%
 	
-	 int pageNum = Integer.parseInt((String)request.getAttribute(Constants.PAGE_NUMBER));
+	 int pageNum = 1;//Integer.parseInt((String)request.getAttribute(Constants.PAGE_NUMBER));
 	
 	int totalResults = ((Integer)session.getAttribute(Constants.TOTAL_RESULTS)).intValue();
-	int numResultsPerPage = Integer.parseInt((String)session.getAttribute(Constants.RESULTS_PER_PAGE));
+	int numResultsPerPage = 500;//Integer.parseInt((String)session.getAttribute(Constants.RESULTS_PER_PAGE));
 	String pageName = "SpreadsheetView.do";	
 	String checkAllPages = (String)session.getAttribute("checkAllPages");
 	AdvanceSearchForm form = (AdvanceSearchForm)session.getAttribute("advanceSearchForm");
-	List columnList = (List) session.getAttribute(Constants.SPREADSHEET_COLUMN_LIST);
+	List<String> columnList = (List<String>) session.getAttribute(Constants.SPREADSHEET_COLUMN_LIST);
 	if(columnList==null)
 		columnList = (List) request.getAttribute(Constants.SPREADSHEET_COLUMN_LIST);
 
 	columnList.add(0," ");
 	List dataList = (List) request.getAttribute(Constants.PAGINATION_DATA_LIST);
+	String[] selectedColumnNames = new String[columnList.size()];
+	columnList.toArray(selectedColumnNames);
 	
-	String pageOf = (String)request.getAttribute(Constants.PAGEOF);
+	String pageOf = (String)request.getAttribute(Constants.PAGE_OF);
 	String title = pageOf + ".searchResultTitle";
 	boolean isSpecimenData = false;	
 	int IDCount = 0;
@@ -372,15 +374,15 @@ function checkAllOnThisPageResponse()
 		
 		<tr height="5%">
 			<td class="black_ar" >					
-				<custom:test name="" pageNum="<%=pageNum%>" totalResults="<%=totalResults%>" numResultsPerPage="<%=numResultsPerPage%>" pageName="<%=pageName%>"  showPageSizeCombo="<%=true%>" recordPerPageList="<%=Constants.RESULT_PERPAGE_OPTIONS%>" />
+				<!-- <custom:test name="" pageNum="<%=pageNum%>" totalResults="<%=totalResults%>" numResultsPerPage="<%=numResultsPerPage%>" pageName="<%=pageName%>"  showPageSizeCombo="<%=false%>" recordPerPageList="<%=Constants.RESULT_PERPAGE_OPTIONS%>" />
 				<html:hidden property="<%=Constants.PAGEOF%>" value="<%=pageOf%>"/>
-				<html:hidden property="isPaging" value="true"/>			
+				<html:hidden property="isPaging" value="true"/>			-->
 			</td>
 		</tr>
 		<%
 		if(pageOf.equals(Constants.PAGEOF_QUERY_RESULTS))
 		{			
-			String []selectedColumns=form.getSelectedColumnNames();
+			String[] selectedColumns=selectedColumnNames;
 		%>
 		
 		<tr id="hiddenCombo" rowspan="4" >
@@ -426,40 +428,15 @@ function checkAllOnThisPageResponse()
 			<table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" valign="top">
 			<tr class="tr_color_lgrey">
 					<td width="5%" nowrap valign="top" class="black_ar">
-						<input type='checkbox' name='checkAll2' id='checkAll2' onClick='checkAllOnThisPage(this)'>
-						<span class="black_ar"><bean:message key="buttons.checkAllOnThisPage" /></span>
-						<input type='checkbox' name='checkAll' id='checkAll' onClick='checkAllAcrossAllPages(this)'>
-						<span class="black_ar"><bean:message key="buttons.checkAll" /></span>
-					</td>
-					<%
-						//Commented out By Baljeet....
-			            //Object obj = session.getAttribute(Constants.SPECIMENT_VIEW_ATTRIBUTE);
-						//boolean isDefaultView = (obj!=null);
-                        boolean isDefaultView = true;
-					%>
-					<td width="5%" valign="top">
-					<%if(pageOf.equals(Constants.PAGEOF_QUERY_RESULTS)){ %>
-						
-						<!--Commented out by Baljeet as it is catissuecore specific -->
-						<!--<input type='checkbox' <%if (isDefaultView){%>checked='checked' <%}%>name='checkDefaultSpecimenView' id='checkDefaultSpecimenView' onClick='setDefaultView(this)'>
-						<span class="black_ar"><bean:message key="buttons.defaultSpecimenView" /></span>&nbsp; -->
-					<%}else{%>
 						&nbsp;
-					<%}%>
+					</td>
+					
 					</td>
 					<td width="10%" align="right" valign="top">
 						&nbsp;
 					</td>
 					<td width="5%" nowrap align="right" valign="top">
-					<%if(pageOf.equals(Constants.PAGEOF_QUERY_RESULTS) || pageOf.equals(Constants.PAGEOF_QUERY_MODULE) ){
-						
-					%>
-					 <!-- <img src="images/advancequery/b_add_list.gif" width="100" hspace="3" onclick="getData()"/>&nbsp; -->
-				                        
-					<%}else
-				       {%>
 						&nbsp;
-					<%}%>
 					</td>
 					<td width="5%" nowrap align="right" valign="top">
 						<img src="images/advancequery/b_exp.gif"  hspace="3" onclick="onExport()"/>&nbsp;
@@ -486,4 +463,3 @@ function checkAllOnThisPageResponse()
 </td>
 </tr>
 </table>
-	
