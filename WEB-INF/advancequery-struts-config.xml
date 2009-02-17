@@ -578,6 +578,20 @@ PUBLIC
 			<forward name="queryGetCount" path="/QueryGetCount.do?operation=add&amp;pageOf=workflow&amp;menuSelected=1" />
 
 		</action>
+		
+		<action path="/QueryResultsView" 
+        	type="edu.wustl.query.action.ViewResultsAction"
+            validate="false"
+			scope="request" >
+		  <forward name="success" path=".query.viewSearchResults"/>
+        </action>
+        
+        <action path="/UpdateTreeView" 
+        	type="edu.wustl.query.action.UpdateResultsViewTreeAction"
+            validate="false"
+			scope="request" >
+        </action>
+        
 	</action-mappings>
 	
 	<controller processorClass="edu.wustl.common.struts.ApplicationRequestProcessor" />
