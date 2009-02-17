@@ -84,7 +84,7 @@ public abstract class IQueryParseUtil
 		boolean ifMainEntity = false;
 		IOutputEntity outputEntity = childNode.getOutputEntity();
 		EntityInterface entity = outputEntity.getDynamicExtensionsEntity();
-		List<EntityInterface> mainEntityList = IQueryUpdationUtil.getAllMainObjects(query);
+		List<EntityInterface> mainEntityList = QueryAddContainmentsUtil.getAllMainObjects(query);
 			if(mainEntityList.contains(entity))
 			{
 				ifMainEntity = true;
@@ -159,7 +159,38 @@ public abstract class IQueryParseUtil
 			separateChildrenForEachContainment(mainEntityContainmentList,mainEntitiesTreeDataNodesList,query);
 		}
 	}
-
-
+	
+	public static Map <OutputTreeDataNode, List<OutputTreeDataNode>> getParentChildrensForaMainNode(OutputTreeDataNode mainTreeDataNode)
+	{
+		Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap =  new HashMap<OutputTreeDataNode, List<OutputTreeDataNode>>();
+		List <OutputTreeDataNode> mainChildrenList  = mainTreeDataNode.getChildren();
+		if((mainChildrenList != null)  && (!mainChildrenList.isEmpty()))
+		{
+			parentChildrenMap.put(mainTreeDataNode, mainChildrenList);
+			
+			//Now for each children ,find their further children
+			getChildrenForEachMainChild(mainChildrenList,parentChildrenMap);
+		}
+		
+		return parentChildrenMap;
+	}
+	
+	private static void getChildrenForEachMainChild(List <OutputTreeDataNode> mainChildrenList,Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap)
+	{
+		int count = 0;
+		while(count < mainChildrenList.size())
+		{
+			OutputTreeDataNode treeNode = mainChildrenList.get(count);
+		    List <OutputTreeDataNode> childrenList =  treeNode.getChildren();
+		   
+		    //Even if Children List is empty , it is added to parentChildrenMap 
+		    parentChildrenMap.put(treeNode, childrenList);
+		    if(!childrenList.isEmpty())
+		    {
+		    	mainChildrenList.addAll(childrenList);
+		    }
+		    count ++;
+		}
+	}
 
 }
