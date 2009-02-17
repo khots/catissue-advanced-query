@@ -214,9 +214,9 @@
 		<!--copy todir="${temp.dir}/LexBIGData" overwrite="false">
 					<fileset dir="${base.dir}/LexBIGData" />
 		</copy -->
-		<replace dir="${temp.dir}/query-properties" propertyfile="${temp.dir}/query-properties/vocab.properties">
+		<!--replace dir="${temp.dir}/query-properties" propertyfile="${temp.dir}/query-properties/vocab.properties">
 				<replacefilter token="${lexbig.config.path}" value="${jboss.lexbig.config.path}" />
-		</replace>
+		</replace-->
 		<!--XQueryGenerator logger path token replacement-->
 		<replace dir="${base.dir}/WEB-INF/classes" propertyfile="${base.dir}/WEB-INF/classes/query.properties">
 	  		<replacefilter token="${xquery.jboss.path}" value="${jboss.server.url}" /> 
@@ -597,6 +597,7 @@
 			<replacefilter token="@@app-dynamicuixml-file@@" value="${jboss.server.url}/query-properties/dynamicUI.xml" />
 			<replacefilter token="@@vocab-properties-file@@" value="${jboss.server.url}/query-properties/vocab.properties"/>
 			<replacefilter token="@@configured-vocabs-file@@" value="${jboss.server.url}/query-properties/configuredVocabs.properties"/>
+			<replacefilter token="@@lexbig-config-file@@" value="${jboss.server.url}/data/LexBIGData/config/config.props"/>
 		</replace>
 
 		<copy todir="${jboss.server.url}/deploy" overwrite="true">
