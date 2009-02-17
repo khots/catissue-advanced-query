@@ -51,20 +51,21 @@ public class FetchQueryAction extends Action
 		if (request.getAttribute(Constants.QUERY_ID) == null)
 		{
 			queryId = saveQueryForm.getQueryId();
-			
+
 			Logger.out.debug("Fetching query having identifier as " + queryId);
 			if (queryId == null)
 			{
 				target = Constants.SUCCESS;
-				ActionErrors errors = Utility.setActionError(Constants.QUERY_IDENTIFIER_NOT_VALID,"errors.item");
+				ActionErrors errors = Utility.setActionError(Constants.QUERY_IDENTIFIER_NOT_VALID,
+						"errors.item");
 				saveErrors(request, errors);
 			}
-		
+
 			else
 			{
 				target = fetchQuery(request, queryId, saveQueryForm);
 			}
-	
+
 		}
 		else
 		{
@@ -73,42 +74,52 @@ public class FetchQueryAction extends Action
 			request.setAttribute(Constants.HTML_CONTENTS, htmlContent);
 			target = Constants.SUCCESS;
 		}
-	
+
 		return actionMapping.findForward(target);
 	}
 
-	private String fetchQuery(HttpServletRequest request, Long queryId,
-			 SaveQueryForm saveQueryForm) throws BizLogicException, PVManagerException
+	private String fetchQuery(HttpServletRequest request, Long queryId, SaveQueryForm saveQueryForm)
+			throws BizLogicException, PVManagerException
 	{
 		String target = Constants.FAILURE;
-		 IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
+		IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
 				.getValue("app.bizLogicFactory"), "getBizLogic",
 				Constants.QUERY_INTERFACE_BIZLOGIC_ID);
 		try
 		{
-		final List<IParameterizedQuery> queryList = bizLogic.retrieve(ParameterizedQuery.class
+			final List<IParameterizedQuery> queryList = bizLogic.retrieve(ParameterizedQuery.class
 					.getName(), Constants.ID, queryId);
 			if (queryList != null && !queryList.isEmpty())
 			{
-			 IParameterizedQuery parameterizedQuery = queryList.get(0);
+				IParameterizedQuery parameterizedQuery = queryList.get(0);
 				request.getSession().setAttribute(Constants.QUERY_OBJECT, parameterizedQuery);
 				//					Map<IExpression, Collection<IParameterizedCondition>> expressionIdConditionCollectionMap = QueryUtility
 				//							.getAllParameterizedConditions(parameterizedQuery);
 
 				if (parameterizedQuery.getParameters().isEmpty())
 				{
-					target = Constants.EXECUTE_QUERY;
+					ParameterizedQuery query = (ParameterizedQuery) parameterizedQuery;
+					if (query.getType().equalsIgnoreCase(Constants.QUERY_TYPE_GET_COUNT))
+					{
+						target = "editCountQuery";
+					}
+					else
+					{
+						target = "editDataQuery";
+					}
+
+					request.setAttribute(Constants.CURRENT_PAGE, "editQuery");
+
 				}
 				else
 				{
-				 Map<Integer, ICustomFormula> customFormulaIndexMap = new HashMap<Integer, ICustomFormula>();
-				 String htmlContents = new SavedQueryHtmlProvider()
-							.getHTMLForSavedQuery(parameterizedQuery, false,
-									Constants.EXECUTE_QUERY_PAGE, customFormulaIndexMap);
+					Map<Integer, ICustomFormula> customFormulaIndexMap = new HashMap<Integer, ICustomFormula>();
+					String htmlContents = new SavedQueryHtmlProvider().getHTMLForSavedQuery(
+							parameterizedQuery, false, Constants.EXECUTE_QUERY_PAGE,
+							customFormulaIndexMap);
 					request.setAttribute(Constants.HTML_CONTENTS, htmlContents);
 					request.getSession().setAttribute(
-							QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP,
-							customFormulaIndexMap);
+							QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP, customFormulaIndexMap);
 					saveQueryForm.setQueryString(htmlContents);
 					target = Constants.SUCCESS;
 				}
@@ -116,9 +127,9 @@ public class FetchQueryAction extends Action
 		}
 		catch (DAOException daoException)
 		{
-			ActionErrors errors = Utility.setActionError(daoException.getMessage(),"errors.item");
+			ActionErrors errors = Utility.setActionError(daoException.getMessage(), "errors.item");
 			saveErrors(request, errors);
-			
+
 		}
 		return target;
 	}
@@ -128,5 +139,5 @@ public class FetchQueryAction extends Action
 	 * @param request
 	 * @param errorMessage
 	 */
-	
+
 }
