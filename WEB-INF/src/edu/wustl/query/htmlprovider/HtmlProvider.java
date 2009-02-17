@@ -169,8 +169,8 @@ public class HtmlProvider
 	 * 		For adding linits this parameter is null
 	 * @return String html generated for Add Limits section.
 	 */
-	public String generateHTML(EntityInterface entity, List<ICondition> conditions,GenerateHTMLDetails generateHTMLDetails,
-			List<SelectedConcept> selectedConcepts)throws PVManagerException
+	public String generateHTML(EntityInterface entity, List<ICondition> conditions,GenerateHTMLDetails generateHTMLDetails
+			)throws PVManagerException
 	{
 		this.entity=entity;
 		Collection<AttributeInterface> attributeCollection = entity.getEntityAttributesForQuery();
@@ -184,7 +184,7 @@ public class HtmlProvider
 		String attributesStr = getAttributesString(attributeCollection);
 		generatedPreHTML = GenerateHtml.getHtmlHeader
 					(entityName.toString(),entityId,attributesStr,isEditLimits);
-		generatedHTML = getHtmlAttributes(conditions,attributeCollection,selectedConcepts);
+		generatedHTML = getHtmlAttributes(conditions,attributeCollection);
 		if(generateHTMLDetails!=null)
 		{
 			generateHTMLDetails.setEnumratedAttributeMap(enumratedAttributeMap);
@@ -200,8 +200,8 @@ public class HtmlProvider
 	 * @param attributeCollection collection of attributes
 	 * @return StringBuffer
 	 */
-	private StringBuffer getHtmlAttributes(List<ICondition> conditions,Collection<AttributeInterface> attributeCollection,
-			List<SelectedConcept> selectedConcepts)  throws PVManagerException
+	private StringBuffer getHtmlAttributes(List<ICondition> conditions,Collection<AttributeInterface> attributeCollection
+			)  throws PVManagerException
 	{
 		boolean attributeChecked = this.generateHTMLDetails.isAttributeChecked();
 		boolean permissibleValuesChecked = this.generateHTMLDetails.isPermissibleValuesChecked();
@@ -225,21 +225,31 @@ public class HtmlProvider
 				{
 					continue;
 				}
-				getAttributeDetails(attribute,conditions,null,selectedConcepts);
+				getAttributeDetails(attribute,conditions,null);
 				String componentId = generateComponentName(attribute);
+				ICondition condition=null;
+				if(attributeDetails.getAttributeNameConditionMap()!=null)
+				{
+				 condition = attributeDetails.getAttributeNameConditionMap().
+				get(attributeDetails.getAttrName());
+				}
 				if(HtmlUtility.isAttrHidden(attribute))
 				{
 					//generatedHTML.append("<tr>");
 					//generatedHTML.append("<td>");
 					String conceptIds = "";
-					if(selectedConcepts != null)
+					if(condition!=null)
+					{
+					List<String> conceptIds1=condition.getValues();
+					if(conceptIds1 != null)
 					{
 						
-						for(SelectedConcept concept : selectedConcepts)
+						for(String concept : conceptIds1)
 						{
-							conceptIds = conceptIds + concept.getConceptCode() + ",";
+							conceptIds = conceptIds + concept + ",";
 						}
 						conceptIds = conceptIds.substring(0, conceptIds.lastIndexOf(','));
+					}
 					}
 					String temp = "<input style=\"width:150px;\" type=\"hidden\" name=\""
 						+ componentId + "_combobox\" id=\"" + componentId + "_combobox\" value=\"In\">";
@@ -281,7 +291,7 @@ public class HtmlProvider
 	 * @param parameterList list of parameters
 	 */
 	private void getAttributeDetails(AttributeInterface attribute,
-			List<ICondition> conditions,List<IParameter<?>> parameterList,List<SelectedConcept> selectedConcepts)
+			List<ICondition> conditions,List<IParameter<?>> parameterList)
 	{
 		this.attributeDetails = new AttributeDetails();
 		attributeDetails.setAttrName(attribute.getName());
@@ -310,10 +320,6 @@ public class HtmlProvider
 				(condition.getRelationalOperator().getStringRepresentation());
 		}
 		getParamaterizedCondition(parameterList, forPage);
-		if(selectedConcepts!=null)
-		{
-			attributeDetails.setSelectedConcepts(selectedConcepts);
-		}
 	}
 
 	/**
@@ -513,7 +519,12 @@ public class HtmlProvider
 	private void generateHTMLForConditionNull(StringBuffer generatedHTML,
 			AttributeInterface attribute,AttributeDetails attributeDetails)throws PVManagerException
 	{
-		List<PermissibleValueInterface> permissibleValues =HtmlUtility.getPermissibleValuesList(attribute,entity);
+		List<ICondition> conditions=attributeDetails.getConditions();
+		List<PermissibleValueInterface> permissibleValues =null;
+		if(! isEditLimits(conditions) )
+		{
+			permissibleValues=HtmlUtility.getPermissibleValuesList(attribute,entity);
+		}
 		String componentId = generateComponentName(attribute);
 		boolean isDate = false;
 		AttributeTypeInformationInterface attrTypeInfo = attribute
@@ -580,15 +591,22 @@ public class HtmlProvider
                 + "_enumeratedvaluescombobox\"\" id=\"" + componentId
                 + "_enumeratedvaluescombobox\"\" onChange=\"changeId('" + componentId + "','"+componentIdOfID+"')\">";
          html.append(temp);
-         if (selectedConcepts != null)
+        if(attributeDetails.getAttributeNameConditionMap()!=null)
+        {
+        List<String> conditionOfId = attributeDetails.getAttributeNameConditionMap().get(Constants.ID).getValues();
+        List<String> conditionOfName = attributeDetails.getAttributeNameConditionMap().get(attributeDetails.getAttrName()).getValues();
+         if (conditionOfId != null && conditionOfName !=null )
    	     {
-			for (SelectedConcept concept : selectedConcepts)
+			for(int i=0;i<conditionOfId.size();i++)
 			{
-				String value = concept.getConceptName();
-				html.append("\n<option class=\"PermissibleValuesQuery\" title=\"" + value
-						+ "\" value=\"" + value + "\" id=\"" +concept.getConceptCode()+"\"+ SELECTED>" + value + "</option>");
+				String name = conditionOfName.get(i);
+				String id = conditionOfId.get(i);
+				html.append("\n<option class=\"PermissibleValuesQuery\" title=\"" + name
+						+ "\" value=\"" + name + "\" id=\"" +id+"\"+ SELECTED>" + name + "</option>");
 			}
+			
     	  }
+        }
 		html.append("\n</select>\n</td>");
 		return html.toString();
 	}
@@ -676,7 +694,7 @@ public class HtmlProvider
 				{
 					continue;
 				}
-				getAttributeDetails(attribute, conditions, parameterList,null);
+				getAttributeDetails(attribute, conditions, parameterList);
 				String attrName = attributeDetails.getAttrName();
 				Map<String, ICondition> attributeNameConditionMap =
 					attributeDetails.getAttributeNameConditionMap();
