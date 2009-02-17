@@ -1,4 +1,4 @@
-
+	
 package edu.wustl.common.query.impl;
 
 import java.io.IOException;
@@ -1059,7 +1059,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 */
 	protected String getTemporalCondition(String operandquery) 
 	{
-		return Constants.QUERY_TEMPORAL_CONDITION + "(" + operandquery + ")";
+		return "<" + Constants.QUERY_TEMPORAL_CONDITION + ">" +  operandquery  + "</" + Constants.QUERY_TEMPORAL_CONDITION + ">";
 	}
 
 }
