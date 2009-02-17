@@ -19,6 +19,8 @@ import edu.wustl.cab2b.client.ui.dag.ambiguityresolver.AmbiguityObject;
 import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
+import edu.wustl.common.dao.DAOFactory;
+import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.query.impl.CommonPathFinder;
 import edu.wustl.common.querysuite.exceptions.CyclicException;
 import edu.wustl.common.querysuite.metadata.path.IPath;
@@ -26,6 +28,7 @@ import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.flex.dag.DAGResolveAmbiguity;
 import edu.wustl.query.util.global.Constants;
@@ -716,4 +719,29 @@ public abstract class IQueryUpdationUtil
 		queryObject.setLogicalConnector(parentExpressionId, destId,
 				edu.wustl.cab2b.client.ui.query.Utility.getLogicalOperator(operator), false);
 	}
+	
+	public static List<List<String>> getPersonUpis(int queryExecutionId) throws DAOException
+	{
+		List <List<String>>personUpisList = null;
+		JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);	
+		try
+		{
+			jdbcDao.openSession(null);
+			String tableName = "QUERY_ITABLE";
+			String [] selectColumnName = {"UPI"};
+			String[] whereColumnName = {"COUNT_QUERY_EXECUTION_ID"};
+			String[] whereColumnCondition = {"="};
+			Object[] whereColumnValue = {queryExecutionId};
+			personUpisList = jdbcDao.retrieve(tableName, selectColumnName,whereColumnName,whereColumnCondition,whereColumnValue, null);
+		    System.out.println("Person UPI's List size is:"+personUpisList.size());
+		}
+		finally
+		{
+			jdbcDao.closeSession();
+		}
+		
+		
+		return personUpisList;
+	}
+
 }
