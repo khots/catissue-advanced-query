@@ -363,19 +363,29 @@ function executeGetDataQuery(dataQueryId)
 		request.send(actionURL);	
 }
 
-function displayValidationMesage(response)
-{ 
+
   
-  if(response=="ViewResults")
- {
-    
-   var dataQueryId= document.getElementById("dataQueryId").value;
-   var countQueryId= document.getElementById("countQueryId").value;
-   document.forms[0].action="\QueryResultsView.do?dataQueryId"+dataQueryId;
-   document.forms[0].submit();
- }
+	function displayValidationMesage(response)
+	{ 
+	  
+	  if(response=="ViewResults")
+	 {
+	    alert("response"+response);
+	  	var dataQueryId= document.getElementById("dataQueryId").value;
+	  	var countQueryId= document.getElementById("countQueryId").value;
+	  	var identifier=document.getElementById("queryIdForRow_"+countQueryId);
+		var object=identifier.parentNode;
+		var tdChildCollection=object.getElementsByTagName('input');
+		var executinIDElement=tdChildCollection[2].id;
+		var exId= document.getElementById(executinIDElement).value;
+		alert("exId:"+exId);
+	   document.forms[0].action="\QueryResultsView.do?dataQueryId="+dataQueryId+"&queryExecutionId="+exId;
+	   document.forms[0].submit();
+	 }
+	  
+	}
   
-}
+
 
 function workflowResponseHandler(response)
 {
