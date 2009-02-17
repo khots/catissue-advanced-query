@@ -88,11 +88,11 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 		{
 			if( cqTitle=='')
 			{
-				cqTitle="[Query : "+document.getElementById("displayQueryTitle_"+queryIds[counter]).value+"]";
+				cqTitle="[ Query : "+document.getElementById("displayQueryTitle_"+queryIds[counter]).value+" ]";
 			}
 			else
 			{
-				cqTitle=cqTitle+"  "+operation+"  "+ "[Query : "+document.getElementById("displayQueryTitle_"+queryIds[counter]).value+"] ";
+				cqTitle=cqTitle+" "+operation+" "+"[ Query : "+document.getElementById("displayQueryTitle_"+queryIds[counter]).value+" ]";
 			}
 			if(cqQueryId=='')
 			{
@@ -138,7 +138,8 @@ function submitWorflow()
 }
 function cancelGetCountQuery(queryId,executionLogId)
 {	
-	var identifier=document.getElementById("identifier_"+queryId);
+
+	var identifier=document.getElementById("queryIdForRow_"+queryId);
 	var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
 	var tdChildCollection=object.getElementsByTagName('input');
 	var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
@@ -147,9 +148,9 @@ function cancelGetCountQuery(queryId,executionLogId)
 	index=selectedquery[1];
 
 	document.getElementById("cancelajaxcall_"+index).value='true';
-	var ID=document.getElementById("selectedqueryId_"+index).value;
-
-	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'cancel'+"&ID="+ID+"&executionLogId="+executionLogId;
+	
+	var projectId=document.getElementById("selectedProject").value;
+	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'cancel'+"&executionLogId="+executionLogId+"&workflowId="+document.getElementById("id").value+"&selectedProject="+projectId;
 	changeExecuteLinkToExecute(queryId,0);
 	var request=newXMLHTTPReq();
 	if(request == null)
@@ -174,10 +175,8 @@ function cancelExecuteQuery(response)
              var num = jsonResponse.executionQueryResults.length; 
 				for(var i=0;i<num;i++)
 				{
-
-
 					var queryId = jsonResponse.executionQueryResults[i].queryId;
-					var identifier=document.getElementById("identifier_"+queryId);
+					var identifier=document.getElementById("queryIdForRow_"+queryId);
 					var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
 					var tdChildCollection=object.getElementsByTagName('input');
 
@@ -191,12 +190,139 @@ function cancelExecuteQuery(response)
 		  }
 }
 
-function executeGetCountQuery(queryId,executionLogId)
+function executeGetCountQuery(queryTitle,executionLogId)
 {
-	var ID=queryId;//document.getElementById("selectedqueryId_"+queryId).value;
-	//var identifier=(document.getElementById("selectedqueryId_"+queryId).childNode).value;
+	if(document.getElementById("isdone").value=='false')
+	{
+		var rows=document.getElementById("table1").rows.length;
+		var operators="";
+		var workflowName=document.getElementById("name").value;
+		var operands="";
+		var workflowName=document.getElementById("name").value;
+		var identifier="";
+		var displayQueryTitle="";
+		for(i=0;i<rows;i++)
+		{
+			operands=operands+document.getElementById("operands_"+i).value+",";
+			operators=operators+document.getElementById("operators_"+i).value+",";
+			displayQueryTitle=displayQueryTitle+document.getElementById("displayQueryTitle_"+i).value+",";
+			
+			var title=document.getElementById("identifier_"+i);
+			var object=title.parentNode;
+			var tdChildCollection=object.getElementsByTagName('input');
+			var queryId=tdChildCollection[2].id;
+			
+			identifier=identifier+document.getElementById(queryId).value+",";
+		}
+		var url="SaveWorkflowAjaxHandler.do?operands="+operands+"&operators="+operators+"&workflowName="+workflowName+"&displayQueryTitle="+displayQueryTitle+"&workflowId="+document.getElementById("id").value+"&queryTitle="+queryTitle+"&identifier="+identifier;
+
+		var request=newXMLHTTPReq();
+		if(request == null)
+		{
+			alert ("Your browser does not support AJAX!");
+			return;
+		}
+		var handlerFunction = getReadyStateHandler(request,responseHandler,true); 
+		request.onreadystatechange = handlerFunction; 
+		request.open("POST",url,true);    
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+		request.send("");
+
+	}
+	else
+	{
+		var nameIdentifier=document.getElementsByName("identifier");
+		var numOfRows =nameIdentifier.length;
+			for(var count = 0; count < numOfRows; count++)
+			{
+				var title=document.getElementById("identifier_"+count);
+				if(title.value==queryTitle)
+				{
+							var object=title.parentNode;
+							var tdChildCollection=object.getElementsByTagName('input');
+							var queryId=tdChildCollection[2].id;//object.childNodes[0].id;//object.id;
+							
+							workflowExecuteGetCountQuery(document.getElementById(queryId).value,executionLogId);
+				}
+			}
+	}
+
+}
+
+function responseHandler(response)
+{
+	var jsonResponse = eval('('+ response+')');
+    var hasValue = false;
+
+		//set error message 
+	 if(jsonResponse.errormessage!=null)
+     {
+           document.getElementById("errormessage").innerHTML=jsonResponse.errormessage;
+	 }
+
+	//set workflow id 
+	 if(jsonResponse.workflowId!="")
+     {
+		 document.getElementById("id").value=jsonResponse.workflowId;
+		  document.getElementById("operation").value="edit";
+
+	 }
+	 if((jsonResponse.workflowId!=null||jsonResponse.workflowId!="")&&(jsonResponse.errormessage==null||
+		jsonResponse.errormessage==""))
+	{
+		document.getElementById("isdone").value=true;
+	   
+	}
+
+
+	//set the name identifier mapping 
+	if(jsonResponse.executionQueryResults!=null)
+	  {
+		 var num = jsonResponse.executionQueryResults.length; 
+			for(var i=0;i<num;i++)
+			{
+				 var queryTitle = jsonResponse.executionQueryResults[i].queryTitle;
+
+
+				var nameIdentifier=document.getElementsByName("identifier");
+				var numOfRows =nameIdentifier.length;
+				for(var count = 0; count < numOfRows; count++)
+				{
+					var title=document.getElementById("identifier_"+count);
+					if(title.value==queryTitle)
+					{
+						var object=title.parentNode;
+						var tdChildCollection=object.getElementsByTagName('input');
+
+						var queryId=tdChildCollection[2].id;
+						document.getElementById(queryId).value=jsonResponse.executionQueryResults[i].queryId;
+						document.getElementById(queryId).id="queryIdForRow_"+jsonResponse.executionQueryResults[i].queryId;
+					
+					}
+				}
+
+				
+					if((jsonResponse.workflowId!=null||jsonResponse.workflowId!="")&&(jsonResponse.errormessage==null||
+						jsonResponse.errormessage==""))
+					{
+					
+					   if(jsonResponse.queryTitle!=null&&jsonResponse.queryTitle==queryTitle)
+					   {
+							workflowExecuteGetCountQuery(jsonResponse.executionQueryResults[i].queryId,0);
+						
+					   }
+					}
+
+			}
+	   }
+
+}
+
+function workflowExecuteGetCountQuery(queryId,executionLogId)
+{
+
 	var projectId=document.getElementById("selectedProject").value;
-	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'start'+"&ID="+ID+"&executionLogId="+executionLogId+"&selectedProject="+projectId;
+	var url="WorkflowAjaxHandler.do?operation=execute&state=start&executionLogId="+executionLogId+"&selectedProject="+projectId+"&workflowId="+document.getElementById("id").value+"&queryId="+queryId;
 	
 
 	var request=newXMLHTTPReq();
@@ -205,9 +331,7 @@ function executeGetCountQuery(queryId,executionLogId)
 		alert ("Your browser does not support AJAX!");
 		return;
 	}
-	
-	
-	var handlerFunction = getReadyStateHandler(request,responseHandler,true); 
+	var handlerFunction = getReadyStateHandler(request,workflowResponseHandler,true); 
 	request.onreadystatechange = handlerFunction; 
 	request.open("POST",url,true);    
 	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
@@ -239,79 +363,66 @@ function executeGetDataQuery(dataQueryId)
 		request.send(actionURL);	
 }
 
-
-function displayValidationMesage(response)
-{ 
-  
-  if(response=="ViewResults")
- {
-    
-   //alert(document.getElementById("dataQueryId").value);
-	   //alert(document.getElementById("countQueryId").value);
-// alert(response);
- }
-  
-}
-
-
-function responseHandler(response)
+function workflowResponseHandler(response)
 {
-	  var jsonResponse = eval('('+ response+')');
+  var jsonResponse = eval('('+ response+')');
           var hasValue = false;
           if(jsonResponse.executionQueryResults!=null)
           {
              var num = jsonResponse.executionQueryResults.length; 
+		
 				for(var i=0;i<num;i++)
 				{
 					 var queryId = jsonResponse.executionQueryResults[i].queryId;
-					 //var queryIndex = jsonResponse.executionQueryResults[i].queryIndex;
 					 var queryResult = jsonResponse.executionQueryResults[i].queryResult;
 					 var status = jsonResponse.executionQueryResults[i].status;
 					 var executionLogId = jsonResponse.executionQueryResults[i].executionLogId;
-					 var queryIndex=-1; 	 
-					if(queryResult!=-1)
-					{
-						var identifier=document.getElementById("identifier_"+queryId);
-						var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
-						var tdChildCollection=object.getElementsByTagName('input');
 
-						var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
-						var selectedquery=selectedqueryId.split("_");
-						
-						queryIndex=selectedquery[1];
-						
-						//var parentIObj=object.parentNode;
-						var lableObject=document.getElementById("label_"+queryIndex);
-						if(lableObject!=null)
+						if(queryResult!=-1)
 						{
-							object.removeChild(lableObject);
+							var identifier=document.getElementById("queryIdForRow_"+queryId);
+							var object=identifier.parentNode;
+							var tdChildCollection=object.getElementsByTagName('input');
+							var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
+							var selectedquery=selectedqueryId.split("_");
+							queryIndex=selectedquery[1];
+
+							//for setting the execution id
+
+							var queryExecId=tdChildCollection[3].id;
+							if(queryExecId!=null&&queryExecId!=undefined)
+							{
+								document.getElementById(queryExecId).value=executionLogId;
+							}
+							var lableObject=document.getElementById("label_"+queryIndex);
+							if(lableObject!=null)
+							{
+								object.removeChild(lableObject);
+							}
+							object.appendChild(createLabel(queryResult,queryIndex));
+							
 						}
-						object.appendChild(createLabel(queryResult,queryIndex));
-						
-					}
+						if((document.getElementById("cancel_"+queryIndex)==null)&&(document.getElementById("cancelajaxcall_"+queryIndex).value=='false'))
+						{
+							changeLinkToCancel(queryId,executionLogId);
+						}
 					
-					if((document.getElementById("cancel_"+queryIndex)==null)&&(document.getElementById("cancelajaxcall_"+queryIndex).value=='false'))
-					{
-						changeLinkToCancel(queryId,executionLogId);
-					}
-				
-					if((status!="Completed")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
-					{
-						executeGetCountQuery(queryId,executionLogId);
+						if((status!="Completed")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
+						{
+							workflowExecuteGetCountQuery(queryId,executionLogId);
+							
+						}
 						
-
-					}
-					
-					if((status=="Completed"))
-					{
+						if((status=="Completed"))
+						{
+							changeExecuteLinkToExecute(queryId,0);
+		
+						}
 						
-						changeExecuteLinkToExecute(queryId,0);
-
+						//workflowExecuteGetCountQuery(queryId,executionLogId);
 					}
-				
-				}
           } 
-	
+
 }
 function cancelWorkflow()
 {
@@ -326,7 +437,6 @@ function getCountdata()
 }
 function getPatientdata()
 {
-	
 	document.forms[0].forwardTo.value= "loadQueryPage";
 	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextPageOf=queryWizard";
 	document.forms[0].submit();
@@ -350,11 +460,23 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <script type="text/javascript" src="wz_tooltip.js"></script>
 
 <body>
-<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
-
+<%@ include file="/pages/content/common/ActionErrors.jsp" %>
+<div id="errordiv" >
+<table cellspacing="0" cellpadding="3" border="0">
+<tbody>
+<tr>
+</tr>
+<tr>
+<td> </td>
+<td class="messagetexterror">
+<div id="errormessage"></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <html:form action="SaveWorkflow" >
- <input type="hidden" name="dataQueryId" id="dataQueryId" value="">
- <input type="hidden" name="countQueryId" id="dataQueryId" value="">
+
 <html:hidden property="operation" styleId="operation" value="${requestScope.operation}"/>
 <html:hidden property="id" styleId="id" value="${requestScope.id}"/>
 <select name="queryId" id="queryId"  style="display:none">
@@ -364,14 +486,14 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 	</logic:iterate>
 	</logic:notEmpty>
 </select>
-<select name="queryTitle" id="queryTitle"  style="display:none">
+<select name="queryTitle" id="queryTitle" style="display:none">
 	<logic:notEmpty name="workflowForm" property="queryId">
 	<logic:iterate id="singleQueryId" name="workflowForm" property="queryTitle" indexId="queryIndex" >
 		<OPTION VALUE="${workflowForm.queryTitle[queryIndex]}">${workflowForm.queryTitle[queryIndex]}</OPTION>
 	</logic:iterate>
 	</logic:notEmpty>
 </select>
-<select name="queryType" id="queryType"  style="display:none">
+<select name="queryType" id="queryType" style="display:none" >
 <logic:notEmpty name="workflowForm" property="queryId">
 	<logic:iterate id="singleQueryId" name="workflowForm" property="queryType" indexId="queryIndex" >
 		<OPTION VALUE="${workflowForm.queryType[queryIndex]}">${workflowForm.queryType[queryIndex]}</OPTION>
@@ -381,6 +503,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <html:hidden property="forwardTo"/>
 <c:set var="query_type_data" value="<%=qType_GetData%>" scope="page"/>
 <c:set var="query_type_count" value="<%=qType_GetCount%>" scope="page"/>
+<input type="hidden" name="isdone" value="true" id="isdone">
  <input type="button" name="btn" id="btn" onclick="updateUI()" style="display:none">
 
 <table width="99%" border="0" valign="top"  cellpadding="0" cellspacing="0" style="padding-left:10px;">
@@ -554,9 +677,8 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 										<td class="content_txt">
 											<html:hidden property="queryTypeControl" styleId="queryTypeControl_${queryIndex}" value="${workflowForm.queryTypeControl[queryIndex]}"/>
 											${workflowForm.displayQueryType[queryIndex]}
-										 <script> </script>
 										</td>
-                                        <td class="content_txt">
+										<td class="content_txt">
 										
 										 <c:set var="qtype" value="${workflowForm.displayQueryType[queryIndex]}"/>
 										 
@@ -571,34 +693,27 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 										<td class="content_txt">
 											
 											<input type="hidden" name="selectedqueryId" id="selectedqueryId_${queryIndex}" value="${workflowForm.selectedqueryId[queryIndex]}"/>						
-											<input type="hidden" name="identifier" id="identifier_${workflowForm.identifier[queryIndex]}" value="${workflowForm.identifier[queryIndex]}"/>
+											<!-- <input type="hidden" name="identifier" id="identifier_${workflowForm.identifier[queryIndex]}" value="${workflowForm.identifier[queryIndex]}"/> -->
+											 <input type="hidden" name="identifier" id="identifier_${queryIndex}" value="${workflowForm.displayQueryTitle[queryIndex]}"/>
+											 <input type="hidden" name="queryIdForRow" id="queryIdForRow_${workflowForm.identifier[queryIndex]}" value="${workflowForm.identifier[queryIndex]}"/>
+											 <input type="hidden" name="queryExecId" id="queryExecId_${queryIndex}" value="${workflowForm.queryExecId[queryIndex]}"/>
 
 										</td>
 										<td width="100">
 										<table >
 										<tbody>
 										<tr>
-										  <logic:equal name="query_type_data" value="${qtype}">
-										  <td width="30">
-											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetDataQuery('${workflowForm.identifier[queryIndex]}')" styleClass="bluelink"
-											>
-												View Results
-											</html:link>
-										</td>
-										</logic:equal>
-										
-										<logic:notEqual name="query_type_data" value="${qtype}">
 										<td>
-											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetCountQuery('${workflowForm.identifier[queryIndex]}','0')" styleClass="bluelink"
+											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetCountQuery('${workflowForm.displayQueryTitle[queryIndex]}','0')" styleClass="bluelink"
 											>
 												Execute
 											</html:link>
 										</td>
-										</logic:notEqual>
 										<td>
 											<html:hidden property="operands" styleId="operands_${queryIndex}"  value="${workflowForm.operands[queryIndex]}"/>
 											<html:hidden property="operators" styleId="operators_${queryIndex}" value="${workflowForm.operators[queryIndex]}"/>
 											<html:hidden property="displayQueryType" styleId="displayQueryType_${queryIndex}" value="${workflowForm.displayQueryType[queryIndex]}"/>
+											<html:hidden property="queryExecId" styleId="queryExecId_${queryIndex}" value="${workflowForm.queryExecId[queryIndex]}"/>
 										</td>
 											<td>
 											<html:link styleId="delete_${queryIndex}" href="javascript:deleteWorkflowItem(${queryIndex})" styleClass="bluelink">
@@ -676,7 +791,6 @@ function setButtons()
 }setButtons();
 
 
-
 function updateOpenerUI() 
 { 
   if(document.getElementById)
@@ -696,7 +810,6 @@ function updateOpenerUI()
 		}
  }updateOpenerUI();
  setCheckboxCount();
- 
  function forwardToWorkflow()
 {
 	
