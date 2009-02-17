@@ -143,7 +143,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			throws VocabularyException, PVManagerException
 	{
 		IVocabulary sourceVocabulary = getVocabulary(VIProperties.sourceVocabUrn);
-		String associationName = VIProperties.translationAssociation;
+		
 		Map<String, List<IConcept>> mappedConcepts = new HashMap<String, List<IConcept>>();
 		try
 		{
@@ -155,7 +155,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 				for(PermissibleValueInterface perValueInterface:permissibleValues)
 				{
 					List<IConcept> conList = sourceVocabulary.getMappedConcepts(perValueInterface.getValueAsObject().toString(), VIProperties.translationAssociation, targetVocabulary);
-					if(conList != null && conList.isEmpty())
+					if(conList != null && !conList.isEmpty())
 					{
 						mappedConcepts.put(perValueInterface.getValueAsObject().toString(), conList);
 					}
