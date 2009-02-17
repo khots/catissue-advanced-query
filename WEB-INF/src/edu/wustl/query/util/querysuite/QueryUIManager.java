@@ -28,7 +28,6 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 	{
 	}
 
-	
 	/**
 	 * @param request
 	 * @param query
@@ -82,7 +81,7 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	/**
 	 * This method inserts defined queries.
 	 * @throws QueryModuleException
@@ -90,22 +89,47 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 	public void insertDefinedQueries() throws QueryModuleException
 	{
 		QueryModuleException queryModExp;
-			//inserts Defined Query
-			DefinedQueryUtil definedQueryUtil=new DefinedQueryUtil();
-			try
-			{
-				definedQueryUtil.insertQuery(query);
-			}
-			catch (UserNotAuthorizedException e)
-			{
-				queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
-				throw queryModExp;
-			}
-			catch (BizLogicException e)
-			{
-				queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
-				throw queryModExp;
-			}
+		//inserts Defined Query
+		DefinedQueryUtil definedQueryUtil = new DefinedQueryUtil();
+		try
+		{
+			definedQueryUtil.insertQuery(query);
 		}
+		catch (UserNotAuthorizedException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
+		}
+		catch (BizLogicException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
+		}
+	}
+
+	/**
+	 * This method updates the defined queries in database.
+	 * @throws QueryModuleException
+	 */
+	public void updateDefinedQueries() throws QueryModuleException
+	{
+		QueryModuleException queryModExp;
+		//inserts Defined Query
+		DefinedQueryUtil definedQueryUtil = new DefinedQueryUtil();
+		try
+		{
+			definedQueryUtil.updateQuery(query);
+		}
+		catch (UserNotAuthorizedException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
+		}
+		catch (BizLogicException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
+		}
+	}
 
 }
