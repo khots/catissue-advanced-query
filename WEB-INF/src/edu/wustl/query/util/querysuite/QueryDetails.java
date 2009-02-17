@@ -36,6 +36,8 @@ public class QueryDetails
 	private List<Integer> mainEntityList;
 	private Map <Integer,List<EntityInterface>> eachExpressionContainmentMap ;
     private Map <Integer,List<Integer>> mainExpEntityExpressionIdMap;
+    
+    private int queryExecutionId=0;
 
 	/**
 	 * @return the mainExpEntityExpressionIdMap
@@ -181,6 +183,7 @@ public class QueryDetails
 		outputTermsColumns = (Map<String, IOutputTerm>) session
 				.getAttribute(Constants.OUTPUT_TERMS_COLUMNS);
 		query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
+//		queryExecutionId = ((Integer)session.getAttribute(Constants.QUERY_EXECUTION_ID)).intValue();
 	}
 
 	/**
@@ -311,5 +314,23 @@ public class QueryDetails
 	public void setQuery(IQuery query)
 	{
 		this.query = query;
+	}
+
+	
+	/**
+	 * @return the queryExecutionId
+	 */
+	public int getQueryExecutionId()
+	{
+		return queryExecutionId;
+	}
+
+	
+	/**
+	 * @param queryExecutionId the queryExecutionId to set
+	 */
+	public void setQueryExecutionId(int queryExecutionId)
+	{
+		this.queryExecutionId = queryExecutionId;
 	}
 }
