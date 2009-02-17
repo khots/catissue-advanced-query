@@ -21,11 +21,6 @@ import edu.wustl.query.util.global.CompositeQueryOperations;
 import edu.wustl.query.util.global.Constants;
 
 /**
- * 
- * @author ravindra_jain
- *	
- */
-/**
  * @author chitra_garg
  *
  */
@@ -37,7 +32,7 @@ public class WorkflowForm extends AbstractActionForm
 {
 
 	/**
-	 * @return that get count or composite query 
+	 * @return that get count or composite query
 	 */
 	public String[] getQueryTypeControl()
 	{
@@ -45,7 +40,7 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * @param queryTypeControl=array containing get count or composite query 
+	 * @param queryTypeControl=array containing get count or composite query
 	 */
 	public void setQueryTypeControl(String[] queryTypeControl)
 	{
@@ -54,7 +49,7 @@ public class WorkflowForm extends AbstractActionForm
 
 	/**
 	 * @return  operands array . Each element of array is  underscore separated operands
-	 * corresponding to each row of table displayed in UI 
+	 * corresponding to each row of table displayed in UI
 	 */
 	public String[] getOperands()
 	{
@@ -71,7 +66,7 @@ public class WorkflowForm extends AbstractActionForm
 
 	/**
 	 * @return operators array . Each element of array is  underscore separated operators
-	 * corresponding to each row of table displayed in UI 
+	 * corresponding to each row of table displayed in UI
 	 */
 	public String[] getOperators()
 	{
@@ -88,7 +83,7 @@ public class WorkflowForm extends AbstractActionForm
 
 	/**
 	 * @return the displayQueryTitle array . Each element of array is  underscore separated displayQueryTitle
-	 * corresponding to each row of table displayed in UI 
+	 * corresponding to each row of table displayed in UI
 	 */
 	public String[] getDisplayQueryTitle()
 	{
@@ -96,7 +91,7 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * @param displayQueryTitle title corresponding 
+	 * @param displayQueryTitle title corresponding
 	 * to each row of table displayed in UI
 	 */
 	public void setDisplayQueryTitle(String[] displayQueryTitle)
@@ -105,7 +100,7 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * @return queryTypeControl=array containing get count or composite query 
+	 * @return queryTypeControl=array containing get count or composite query
 	 */
 	public String[] getDisplayQueryType()
 	{
@@ -127,25 +122,25 @@ public class WorkflowForm extends AbstractActionForm
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Query ID array corresponding 
-	 * to each row in UI  
+	 * Query ID array corresponding
+	 * to each row in UI
 	 */
 	protected String[] queryId;
 
 	/**
-	 *queryTitle of queries array 
+	 *queryTitle of queries array
 	 * selected from the work flow pop up
 	 */
 	protected String[] queryTitle;
 
 	/**
-	 *Composite Query or 
-	 * parameterized Query of query for each row in UI 
+	 *Composite Query or
+	 * parameterized Query of query for each row in UI
 	 */
 	protected String[] queryType;
 
 	/**
-	 * check box controls from UI 
+	 * check box controls from UI
 	 */
 	protected boolean[] chkbox;
 
@@ -155,7 +150,7 @@ public class WorkflowForm extends AbstractActionForm
 	private String name;
 
 	/**
-	 * @return Query Id array 
+	 * @return Query Id array
 	 */
 	public String[] getQueryId()
 	{
@@ -163,8 +158,8 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * @param queryId=set the value of Query ID 
-	 * array corresponding to each row in UI  
+	 * @param queryId=set the value of Query ID
+	 * array corresponding to each row in UI
 	 */
 	public void setQueryId(String[] queryId)
 	{
@@ -172,7 +167,7 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * @return queryTitle of queries array 
+	 * @return queryTitle of queries array
 	 * selected from the work flow pop up
 	 */
 	public String[] getQueryTitle()
@@ -181,7 +176,7 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * @param queryTitle 
+	 * @param queryTitle
 	 */
 	public void setQueryTitle(String[] queryTitle)
 	{
@@ -198,8 +193,8 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * @param queryType=composite Query or 
-	 * parameterized Query of query for each row in UI 
+	 * @param queryType=composite Query or
+	 * parameterized Query of query for each row in UI
 	 */
 	public void setQueryType(String[] queryType)
 	{
@@ -207,8 +202,8 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * @return hidden control that contains the 
-	 * value of Query title 
+	 * @return hidden control that contains the
+	 * value of Query title
 	 */
 	public String[] getQueryTitleControl()
 	{
@@ -216,8 +211,8 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * @param queryTitleControl hidden control that contains the 
-	 * value of Query title 
+	 * @param queryTitleControl hidden control that contains the
+	 * value of Query title
 	 * This function sets the  value of  this hidden control
 	 */
 	public void setQueryTitleControl(String[] queryTitleControl)
@@ -234,7 +229,7 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * @param queryIdControl hidden field in UI 
+	 * @param queryIdControl hidden field in UI
 	 * for the Query id
 	 */
 	public void setQueryIdControl(String[] queryIdControl)
@@ -243,7 +238,7 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * @return operands array.underscore separated for each row of table 
+	 * @return operands array.underscore separated for each row of table
 	 */
 	public String[] getSelectedqueryId()
 	{
@@ -251,7 +246,7 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * @param operands array.underscore separated for each row of table 
+	 * @param operands array.underscore separated for each row of table
 	 */
 	public void setSelectedqueryId(String[] selectedqueryId)
 	{
@@ -267,7 +262,7 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * @param chkbox=check box controls from UI 
+	 * @param chkbox=check box controls from UI
 	 */
 	public void setChkbox(boolean[] chkbox)
 	{
@@ -275,13 +270,13 @@ public class WorkflowForm extends AbstractActionForm
 	}
 
 	/**
-	 * hidden control in UI that contains the 
-	 * value of Query title 
+	 * hidden control in UI that contains the
+	 * value of Query title
 	 */
 	protected String[] queryTitleControl;
 
 	/**
-	 *hidden field in UI 
+	 *hidden field in UI
 	 * for the Query id
 	 */
 	protected String[] queryIdControl;
@@ -290,8 +285,8 @@ public class WorkflowForm extends AbstractActionForm
 	 * array containing get count or composite query
 	 */
 	protected String[] queryTypeControl;
-	
-	protected Long[] identifier;
+
+	protected String[] identifier;
 
 	/**
 	 * array containing operand's ids
@@ -302,15 +297,15 @@ public class WorkflowForm extends AbstractActionForm
 	 */
 	protected String[] operators;
 	/**
-	 * 
+	 *
 	 */
 	protected String[] displayQueryTitle;
 	/**
-	 * 
+	 *
 	 */
 	protected String[] displayQueryType;
 	/**
-	 * 
+	 *
 	 */
 	protected String[] selectedqueryId;
 
@@ -336,18 +331,51 @@ public class WorkflowForm extends AbstractActionForm
 	 * Method to get form id
 	 * @return name of type String
 	 */
-	public int getFormId()
+	@Override
+    public int getFormId()
 	{
 		return Constants.WORKFLOW_FORM_ID;
+	}
+	/**
+	 * Contains the query execution ID
+	 */
+	int[] queryExecId;
+	
+	/**
+	 * @return query Execution id
+	 */
+	public int[] getQueryExecId() {
+		return queryExecId;
+	}
+
+	/**
+	 * @param queryExecId=query Execution Id
+	 */
+	public void setQueryExecId(int[] queryExecId) {
+		this.queryExecId = queryExecId;
 	}
 
 	/* (non-Javadoc)
 	 * @see edu.wustl.common.actionForm.AbstractActionForm#reset()
 	 * reset method to set default values
 	 */
-	protected void reset()
+	@Override
+    protected void reset()
 	{
 
+	}
+	
+	/**
+	 * for queryIds 
+	 */
+	String[] queryIdForRow;
+
+	public String[] getQueryIdForRow() {
+		return queryIdForRow;
+	}
+
+	public void setQueryIdForRow(String[] queryIdForRow) {
+		this.queryIdForRow = queryIdForRow;
 	}
 
 	/**
@@ -368,7 +396,7 @@ public class WorkflowForm extends AbstractActionForm
 		int size= workflowItemList.size();
 		String[] displayQueryTitle = new String[size];
 		String[] displayQueryType = new String[size];
-		Long[] identifier = new Long[workflowItemList.size()];
+		String[] identifier = new String[workflowItemList.size()];
 		String[]  queryName=new String[workflowItemList.size()];
 		for (int i = 0; i < workflowItemList.size(); i++)
 		{
@@ -378,7 +406,7 @@ public class WorkflowForm extends AbstractActionForm
 			LinkedList<String> operatorsList = new LinkedList<String>();
 			LinkedList<Long> operandsList = new LinkedList<Long>();
 			IAbstractQuery abstractQuery = workflowItem.getQuery();
-			identifier[i]=abstractQuery.getId();
+			identifier[i]=String.valueOf(abstractQuery.getId());
 			generateOperatorAndOperandList(operatorsList, operandsList, abstractQuery);
 			setoperandList(operandList, operandsList);
 			setOperatorList(opretionList, operatorsList);
@@ -387,12 +415,12 @@ public class WorkflowForm extends AbstractActionForm
 		}
 
 		String[] operands = new String[operandList.size()];//oprands array
-		String[] operators = new String[opretionList.size()];//operator array 
-		//initialize operator and operand array 
+		String[] operators = new String[opretionList.size()];//operator array
+		//initialize operator and operand array
 		opretionList.toArray(operators);
 		operandList.toArray(operands);
-		
-		// starts selectedqueryId same as operandsArray 
+
+		// starts selectedqueryId same as operandsArray
 		String[] selectedqueryId = operands;
 		this.selectedqueryId = selectedqueryId;
 		this.displayQueryType=displayQueryType;
@@ -416,15 +444,14 @@ public class WorkflowForm extends AbstractActionForm
 	{
 		if(workflowItem.getQuery() instanceof CompositeQuery)
 		{
-			
-					String queryConst = "[Query";
+
+					String queryConst = "[ Query";
 					String queryTitle = "";
-					
-						queryTitle = queryTitle + queryConst + " : " + ((ParameterizedQuery)(((CompositeQuery)workflowItem.getQuery()).getOperation().getOperandOne())).getName()+ "]"
-								+ setOperationForCompositeQuery(((CompositeQuery)workflowItem.getQuery()).getOperation());
-					
-					return queryTitle + queryConst + " : " + ((ParameterizedQuery)(((CompositeQuery)workflowItem.getQuery()).getOperation().getOperandTwo())).getName() + "]";
-		
+
+						queryTitle = queryTitle + queryConst + " : " + ((ParameterizedQuery)(((CompositeQuery)workflowItem.getQuery()).getOperation().getOperandOne())).getName()+ " ]"
+								+ " "+setOperationForCompositeQuery(((CompositeQuery)workflowItem.getQuery()).getOperation())+" ";
+					return queryTitle + queryConst + " : " + ((ParameterizedQuery)(((CompositeQuery)workflowItem.getQuery()).getOperation().getOperandTwo())).getName() + " ]";
+	
 		}
 		else if(workflowItem.getQuery() instanceof  ParameterizedQuery)
 		{
@@ -521,7 +548,7 @@ public class WorkflowForm extends AbstractActionForm
 	/**
 	 * @param operation = operation on the CQ
 	 * @return operation object according to the String of operation to perform
-	 * 
+	 *
 	 * This method re
 	 */
 	private String setOperationForCompositeQuery(IOperation operation)
@@ -542,14 +569,14 @@ public class WorkflowForm extends AbstractActionForm
 		return operationName;
 	}
 
-	
-	public Long[] getIdentifier()
+
+	public String[] getIdentifier()
 	{
 		return identifier;
 	}
 
-	
-	public void setIdentifier(Long[] identifier)
+
+	public void setIdentifier(String[] identifier)
 	{
 		this.identifier = identifier;
 	}
