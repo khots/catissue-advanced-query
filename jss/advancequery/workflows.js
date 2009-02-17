@@ -11,6 +11,13 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	var columnObj;
 	var columnCount=columnContents.length;
 	var id=0;
+
+	var queryControls=document.getElementById("table1").rows;
+	var queryCount=0;
+	if(queryControls!=null && queryControls!=undefined)
+	{
+		queryCount=queryControls.length;
+	}
 	for(var counter=0;counter<columnCount-2;counter++)
 	{
 		if(columnContents[counter]!=null)
@@ -26,7 +33,9 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 			if(columnContents[counter].name=="selectedqueryId")
 			{
 				id=columnContents[counter].value;
-				columnObj.appendChild(createHiddenElement("identifier","identifier_"+id,id));
+				columnObj.appendChild(createHiddenElement("identifier","identifier_"+queryCount,columnContents[6]));
+				columnObj.appendChild(createHiddenElement("queryIdForRow","queryIdForRow_"+id,id));
+				columnObj.appendChild(createHiddenElement("queryExecId","queryExecId_"+id,0));
 			}
 			rowObj.appendChild(columnObj);
 		}
@@ -45,12 +54,6 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	var operandsTd2=document.createElement("td");
 	var operandsTd3=document.createElement("td");
 
-	var queryControls=document.getElementById("table1").rows;
-	var queryCount=0;
-	if(queryControls!=null && queryControls!=undefined)
-	{
-		queryCount=queryControls.length;
-	}
 	
 	var operandsControl=createHiddenElement("operands","operands_"+queryCount,operandsTdContent);	
 	operandsTd2.appendChild(operandsControl);
@@ -60,7 +63,6 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	
 	var queryTitleControl;
 	var queryTypeControl;
-	
 	queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,(columnContents[6]));
 	queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,(columnContents[7]));
 	operandsTd2.appendChild(queryTitleControl);
@@ -70,7 +72,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	if(query_type=="GetData")
      operandsTd1.appendChild(createLink("View Results ","execute_"+queryCount,"javascript:executeGetDataQuery('"+id+"')"));
 	else
-	 operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+id+"','"+0+"')"));
+	 operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+(columnContents[6])+"','"+0+"')"));
 	operandsTd3.appendChild(createLink("Delete ","delete_"+queryCount,"javascript:deleteWorkflowItem('"+queryCount+"')"));
 	operandsTd3.appendChild(createHiddenElement("cancelajaxcall","cancelajaxcall_"+(queryCount),'false'));
 
@@ -114,6 +116,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	reorderTd.appendChild(tble2);
 	rowObj.appendChild(reorderTd);*/
 	tableObj.appendChild(rowObj);
+	document.getElementById("isdone").value="false";
 }
 
 function hasInnerText()
@@ -122,17 +125,16 @@ function hasInnerText()
 	return hasInnerText;
 }
 
-   
 function addQuery()
 {
 	var queryIds=document.getElementById("queryId").options;
 	var queryTitles=document.getElementById("queryTitle").options;
 	var queryTypes=document.getElementById("queryType").options;
+	var queryCount=document.getElementById("table1").rows.length;
 	var presentQueryIds=parent.window.document.getElementsByName("identifier");
 	var presentQueryTitle=parent.window.document.getElementsByName("displayQueryTitle");
 	var presentQueryType=parent.window.document.getElementsByName("displayQueryType");
-
-	var queryCount=document.getElementById("table1").rows.length;
+	
 
 
 	for(var counter=0;counter<queryIds.length;counter++)
@@ -153,10 +155,10 @@ function addQuery()
 //		rowContents[4].appendChild(createHiddenElement("identifier","identifier_"+getText(queryIds[counter]),getText(queryIds[counter])));
 		rowContents[6]=getText(queryTitles[counter]);
 		rowContents[7]=getText(queryTypes[counter]);
-		var operatorsTdContent="None";
-	
+		var operatorsTdContent="None";	
 		//create a table containing tbody with id "table1"
-		addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent);	
+		addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent);
+
 	}
 
 }
@@ -209,15 +211,13 @@ function getSelectObjectControl(thisqID,pId,pTitle,pType,queryIds,queryTitles,qu
 	return selectObject;
 }
 
+
 function createImageElement(srcPath,imageId)
 {
 	var image=document.createElement("img");
 	image.setAttribute("src",srcPath);
 	image.setAttribute("id",imageId);
 	image.setAttribute("id",imageId);
-
-	//image.setAttribute("border","0");
-	//image.setAttribute("align","absmiddle");
 	return image;
 }
 
@@ -248,11 +248,7 @@ function createCheckBox(name,id,displayValue,count)
 			
 			setCheckboxCount();
 		}
-//			.setOnclickHandler("setCheckboxCount2");
 
-		//chkbox.setAttribute("onclick","javascript:setCheckboxCount2();");
-	//	chkbox.dhx_attachEvent("onRowDblClicked",func);
-		
 		return chkbox;
 }
 function createLabel(name,index)
@@ -290,26 +286,21 @@ function getText(control)
        {
     	   return control.textContent;
        }    
-	/*if (document.all)
-	{
-	return control.innerText;
-	}
-	else 
-	{
-	return control.textContent;
-	}*/
 }
 
 function deleteWorkflowItem(index)
 {
+	
 	var checkboxControl=document.getElementById("checkbox_"+(index));
 	if(checkboxControl!=null && checkboxControl!=undefined)
 	{
+
+		
 		var table=document.getElementById("table1");
 		var oldNoOfRows=document.getElementById("table1").rows.length;
 		var i=index;
 		++i;
-		for(;i<=oldNoOfRows-1;i++)
+		for( ;i<=(oldNoOfRows-1);i++)
 		{
 			document.getElementById("checkbox_"+i).id="checkbox_"+(i-1);
 			document.getElementById("displayQueryTitle_"+i).id="displayQueryTitle_"+(i-1);
@@ -339,11 +330,11 @@ function deleteWorkflowItem(index)
 			document.getElementById("delete_"+i).href="javascript:deleteWorkflowItem('"+(i-1)+"')"
 			document.getElementById("delete_"+i).id="delete_"+(i-1);
 			document.getElementById("cancelajaxcall_"+i).id="cancelajaxcall_"+(i-1);
+			document.getElementById("identifier_"+i).id="identifier_"+(i-1);
 			if(document.getElementById("label_"+i)!=null)
 			{
 				document.getElementById("label_"+i).id="label_"+(i-1);
 			}
-
 		}
 	table.deleteRow(index);
 	}
@@ -380,13 +371,10 @@ function setCheckboxCount()
 }
 function enableButtons()
 {
-	//var buttonStatusDiv=document.getElementById("buttonStatusDiv");
 	var buttonStatus=document.getElementById("buttonStatus");
-	//alert(document.getElementById("buttonStatus"));
 	if(buttonStatus!=null)
 	{
-		//alert(numOfChkSelected);
-		
+
 		  while (buttonStatus.childNodes[0])
 		 {
 			
@@ -427,8 +415,6 @@ function setOnclickEventOnDeselect(chckCount,selected)
 	{
 		numOfChkSelected--;
 	}
-	//alert("unchecked");
-	//alert("unchecked numOfChkSelected "+numOfChkSelected);
 	
 	var chckbox=document.getElementById("checkbox_"+chckCount);
 		chckbox.onclick=function addEvent2(){
@@ -445,16 +431,19 @@ function setOnclickEventOnDeselect(chckCount,selected)
 function changeLinkToCancel(queryId,executionLogId)
 {
 
-	var identifier=document.getElementById("identifier_"+queryId);
+	var identifier=document.getElementById("queryIdForRow_"+queryId);
 	var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
 	var tdChildCollection=object.getElementsByTagName('input');
-
 	var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
 	var selectedquery=selectedqueryId.split("_");
 	
 	index=selectedquery[1];
+	
+	var object=document.getElementById("execute_"+index);	
 
-	var object=document.getElementById("execute_"+index);		
+	//To get the query title field of document
+	var queryTitle=document.getElementById("displayQueryTitle_"+index).value;
+	
 	if(object!=null&&object!=undefined)
 	{
 		var parentIObj=object.parentNode;
@@ -466,21 +455,24 @@ function changeLinkToCancel(queryId,executionLogId)
 function changeExecuteLinkToExecute(queryId,executionLogId)
 {
 
-	var identifier=document.getElementById("identifier_"+queryId);
-	var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
+	var identifier=document.getElementById("queryIdForRow_"+queryId);
+	var object=identifier.parentNode;
 	var tdChildCollection=object.getElementsByTagName('input');
 
-	var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
+	var selectedqueryId=tdChildCollection[0].id;
 	var selectedquery=selectedqueryId.split("_");
 	
 	index=selectedquery[1];
-	
-	var object=document.getElementById("cancel_"+index);		
+	var object=document.getElementById("cancel_"+index);
+
+	//To get the query title field of document
+	var queryTitle=document.getElementById("displayQueryTitle_"+index).value;
+
 	if(object!=null)
 	{
 		var parentIObj=object.parentNode;
 		parentIObj.removeChild(object);
-		parentIObj.appendChild(createLink("Execute ","execute_"+index,"javascript:executeGetCountQuery('"+queryId+"','"+0+"')"));
+		parentIObj.appendChild(createLink("Execute ","execute_"+index,"javascript:executeGetCountQuery('"+queryTitle+"','"+0+"')"));
 		
 	}
 }
