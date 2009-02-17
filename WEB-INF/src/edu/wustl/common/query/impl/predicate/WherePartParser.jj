@@ -53,7 +53,7 @@ TOKEN : { <PREFIX_BINARY_OPERATOR : "contains(string(" | "starts-with(string(" |
 TOKEN : { <INFIX_OPERATOR : ">=" | ">" | "<" | "<=" | "="  >}
 
 
-TOKEN : { <LOGICAL_OPERATOR : "and" | "or" >}
+TOKEN : { <LOGICAL_OPERATOR : "and" >}
 
 
 TOKEN : { <CONDITION_ATTRIBUTE : <DOLLAR> (~[".", ")" , ">" , "<" , "=", " " , "\t" , "\n" , "\r"])* (".)")? > }
