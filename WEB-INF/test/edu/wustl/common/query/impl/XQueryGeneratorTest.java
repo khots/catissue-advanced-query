@@ -22,7 +22,6 @@ import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
-import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Variables;
@@ -31,7 +30,9 @@ import edu.wustl.query.utility.Utility;
 /**
  * Test class for XQueryGenerator.
  * 
- * @author ravindra_jain, juber patel
+ * @author ravindra_jain
+ * @author juber patel
+ * 
  * @created 4th December, 2008
  */
 public class XQueryGeneratorTest
@@ -108,27 +109,28 @@ public class XQueryGeneratorTest
 			IConstraints constraints = query.getConstraints();
 			IJoinGraph joinGraph = constraints.getJoinGraph();
 
-			IExpression demographics = QueryBuilder.findExpression(
-					Constants.DEMOGRAPHICS, joinGraph.getRoot(), joinGraph);
+			IExpression demographics = QueryBuilder.findExpression(Constants.DEMOGRAPHICS,
+					joinGraph.getRoot(), joinGraph);
 			QueryBuilder.addCondition(demographics, "dateOfBirth", RelationalOperator.GreaterThan,
 					"10/10/1900");
 
-			IExpression race = QueryBuilder.findExpression(Constants.RACE, joinGraph
-					.getRoot(), joinGraph);
+			IExpression race = QueryBuilder.findExpression(Constants.RACE, joinGraph.getRoot(),
+					joinGraph);
 			QueryBuilder.addCondition(race, "id", RelationalOperator.Equals, "2345");
-			
-			IExpression gender = QueryBuilder.findExpression(Constants.GENDER, joinGraph.getRoot(), joinGraph);
+
+			IExpression gender = QueryBuilder.findExpression(Constants.GENDER, joinGraph.getRoot(),
+					joinGraph);
 			QueryBuilder.addCondition(gender, "id", RelationalOperator.Equals, "1987");
-			
-			IExpression address = QueryBuilder.findExpression(Constants.ADDRESS, joinGraph.getRoot(), joinGraph);
+
+			IExpression address = QueryBuilder.findExpression(Constants.ADDRESS, joinGraph
+					.getRoot(), joinGraph);
 			QueryBuilder.addCondition(address, "postalCode", RelationalOperator.Equals, "3452");
-			
-			
+
 			List<IOutputAttribute> outputAttributes = new ArrayList<IOutputAttribute>();
 			QueryBuilder.addOutputAttribute(outputAttributes, joinGraph.getRoot(), "personUpi");
 			QueryBuilder.addOutputAttribute(outputAttributes, race, "id");
 			QueryBuilder.addOutputAttribute(outputAttributes, gender, "id");
-			
+
 			query.setOutputAttributeList(outputAttributes);
 
 			String xquery = xQueryGenerator.generateQuery(query);
@@ -153,19 +155,21 @@ public class XQueryGeneratorTest
 			IConstraints constraints = query.getConstraints();
 			IJoinGraph joinGraph = constraints.getJoinGraph();
 
-			IExpression person = QueryBuilder.findExpression(Constants.PERSON,
-					joinGraph.getRoot(), joinGraph);
+			IExpression person = QueryBuilder.findExpression(Constants.PERSON, joinGraph.getRoot(),
+					joinGraph);
 
 			IExpression lab = QueryBuilder.createExpression(constraints, person,
 					Constants.LABORATORY_PROCEDURE);
-			//add conditions on lab
-			
-			QueryBuilder.createExpression(constraints, lab,
+			QueryBuilder.addCondition(lab, "patientAccountNumber", RelationalOperator.IsNotNull);
+
+			IExpression labDetails = QueryBuilder.createExpression(constraints, lab,
 					Constants.LABORATORY_PROCEDURE_DETAILS);
-			//add conditions on details
-			
+			QueryBuilder.addCondition(labDetails, "ageAtProcedure", RelationalOperator.GreaterThan,
+					"18");
+
 			List<IOutputAttribute> outputAttributes = new ArrayList<IOutputAttribute>();
 			QueryBuilder.addOutputAttribute(outputAttributes, joinGraph.getRoot(), "personUpi");
+
 			query.setOutputAttributeList(outputAttributes);
 
 			String xquery = xQueryGenerator.generateQuery(query);

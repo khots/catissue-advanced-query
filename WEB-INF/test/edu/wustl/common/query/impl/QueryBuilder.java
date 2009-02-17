@@ -4,7 +4,6 @@ package edu.wustl.common.query.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,30 +16,28 @@ import edu.wustl.common.querysuite.exceptions.CyclicException;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
-import edu.wustl.common.querysuite.queryobject.ArithmeticOperator;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IConnector;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IExpressionOperand;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
-import edu.wustl.common.querysuite.queryobject.IOperand;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
-import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.IRule;
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
-import edu.wustl.common.querysuite.queryobject.impl.Expression;
 import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
- * Mock to create XQuery Objects.
+ * helper class that helps build parameterized queries of various configurations
  * 
- * @author ravindra_jain, juber patel
+ * @author ravindra_jain
+ * @author juber patel
+ * 
  * @created 4th December, 2008
  * 
  */
@@ -58,8 +55,9 @@ public class QueryBuilder
 	 * @throws CyclicException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public static IParameterizedQuery skeletalPersonQuery() throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException, CyclicException
+	public static IParameterizedQuery skeletalPersonQuery()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
+			CyclicException
 	{
 		IParameterizedQuery query = null;
 		query = QueryObjectFactory.createParameterizedQuery();
@@ -82,8 +80,9 @@ public class QueryBuilder
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws MultipleRootsException 
 	 */
-	public static IParameterizedQuery skeletalDemograpihcsQuery() throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException, CyclicException, MultipleRootsException
+	public static IParameterizedQuery skeletalDemograpihcsQuery()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
+			CyclicException, MultipleRootsException
 	{
 		IParameterizedQuery query = skeletalPersonQuery();
 		IConstraints constraints = query.getConstraints();
@@ -106,8 +105,9 @@ public class QueryBuilder
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public static IParameterizedQuery skeletalRaceGenderQuery() throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException, CyclicException, MultipleRootsException
+	public static IParameterizedQuery skeletalRaceGenderQuery()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
+			CyclicException, MultipleRootsException
 	{
 		IParameterizedQuery query = skeletalDemograpihcsQuery();
 		IConstraints constraints = query.getConstraints();
@@ -121,8 +121,9 @@ public class QueryBuilder
 		return query;
 	}
 
-	public static IParameterizedQuery skeletalRaceGenderAddressQuery() throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException, CyclicException, MultipleRootsException
+	public static IParameterizedQuery skeletalRaceGenderAddressQuery()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
+			CyclicException, MultipleRootsException
 	{
 		IParameterizedQuery query = skeletalRaceGenderQuery();
 		IConstraints constraints = query.getConstraints();
@@ -135,8 +136,9 @@ public class QueryBuilder
 		return query;
 	}
 
-	public static IParameterizedQuery skeletalLabProcedureQuery() throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException, CyclicException
+	public static IParameterizedQuery skeletalLabProcedureQuery()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
+			CyclicException
 	{
 		IParameterizedQuery query = null;
 		query = QueryObjectFactory.createParameterizedQuery();
@@ -163,24 +165,15 @@ public class QueryBuilder
 
 	}
 
-	public static ICondition addCondition(IExpression expression, String attributeName,
-			RelationalOperator unaryOperator)
+	public static void addCondition(IExpression expression, String attributeName,
+			RelationalOperator operator, String... values)
 	{
 		AttributeInterface attribute = findAttribute(expression.getQueryEntity()
 				.getDynamicExtensionsEntity(), attributeName);
-		ICondition condition = QueryObjectFactory.createCondition();
-		condition.setAttribute(attribute);
-		condition.setRelationalOperator(unaryOperator);
+
+		ICondition condition = QueryObjectFactory.createCondition(attribute, operator, Arrays
+				.asList(values));
 		getRule(expression).addCondition(condition);
-		return condition;
-	}
-
-	public static void addCondition(IExpression expression, String attributeName,
-			RelationalOperator binaryOperator, String value)
-	{
-		ICondition condition = addCondition(expression, attributeName, binaryOperator);
-		condition.setValue(value);
-
 	}
 
 	public static void addCondition(IExpression expression, String attributeName,
@@ -193,17 +186,6 @@ public class QueryBuilder
 				values);
 		getRule(expression).addCondition(condition);
 
-	}
-
-	public static void addCondition(IExpression expression, String attributeName,
-			RelationalOperator betweenOperator, String... values)
-	{
-		AttributeInterface attribute = findAttribute(expression.getQueryEntity()
-				.getDynamicExtensionsEntity(), attributeName);
-
-		ICondition condition = QueryObjectFactory.createCondition(attribute, betweenOperator,
-				Arrays.asList(values));
-		getRule(expression).addCondition(condition);
 	}
 
 	public static IExpression createExpression(IConstraints constraints, IExpression parent,
@@ -301,13 +283,13 @@ public class QueryBuilder
 		return null;
 	}
 
-	public static void addOutputAttribute(List<IOutputAttribute> outputAttributes, IExpression expression, String attributeName)
+	public static void addOutputAttribute(List<IOutputAttribute> outputAttributes,
+			IExpression expression, String attributeName)
 	{
-		AttributeInterface attribute = findAttribute(expression.getQueryEntity().getDynamicExtensionsEntity(), attributeName);
+		AttributeInterface attribute = findAttribute(expression.getQueryEntity()
+				.getDynamicExtensionsEntity(), attributeName);
 		outputAttributes.add(new OutputAttribute(expression, attribute));
 	}
-	
-	
 
 	/**
 	 * To search attribute in the Entity.
