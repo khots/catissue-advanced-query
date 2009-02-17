@@ -494,26 +494,11 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
  <input type="hidden" name="countQueryId" id="countQueryId" value="">
 <html:hidden property="operation" styleId="operation" value="${requestScope.operation}"/>
 <html:hidden property="id" styleId="id" value="${requestScope.id}"/>
-<select name="queryId" id="queryId"  style="display:none">
-	<logic:notEmpty name="workflowForm" property="queryId">
-	<logic:iterate id="singleQueryId" name="workflowForm" property="queryId" indexId="queryIndex" >
-		<OPTION VALUE="${workflowForm.queryId[queryIndex]}">${workflowForm.queryId[queryIndex]}</OPTION>
-	</logic:iterate>
-	</logic:notEmpty>
+<select name="queryId" id="queryId" style="display:none">
 </select>
 <select name="queryTitle" id="queryTitle" style="display:none">
-	<logic:notEmpty name="workflowForm" property="queryId">
-	<logic:iterate id="singleQueryId" name="workflowForm" property="queryTitle" indexId="queryIndex" >
-		<OPTION VALUE="${workflowForm.queryTitle[queryIndex]}">${workflowForm.queryTitle[queryIndex]}</OPTION>
-	</logic:iterate>
-	</logic:notEmpty>
 </select>
-<select name="queryType" id="queryType" style="display:none" >
-<logic:notEmpty name="workflowForm" property="queryId">
-	<logic:iterate id="singleQueryId" name="workflowForm" property="queryType" indexId="queryIndex" >
-		<OPTION VALUE="${workflowForm.queryType[queryIndex]}">${workflowForm.queryType[queryIndex]}</OPTION>
-	</logic:iterate>
-	</logic:notEmpty>
+<select name="queryType" id="queryType" style="display:none">
 </select>
 <html:hidden property="forwardTo"/>
 <c:set var="query_type_data" value="<%=qType_GetData%>" scope="page"/>
