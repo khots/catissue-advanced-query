@@ -140,12 +140,6 @@ public class DAGPanel
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		HttpSession session = request.getSession();
 		String qtype= (String)session.getAttribute(Constants.Query_Type);
-		List<SelectedConcept> selectedConcepts = (List<SelectedConcept>) session.getAttribute(Constants.SELECTED_CONCEPT_LIST);
-		if(selectedConcepts !=null)
-		{
-			modifySelectedConcepts(strToCreateQueryObject, selectedConcepts);
-			session.setAttribute(Constants.SELECTED_CONCEPT_LIST, selectedConcepts);
-		}
 		List<Integer> expressionIdsList =  (List<Integer>)session.getAttribute("allLimitExpressionIds");
 	    if(expressionIdsList == null)
 	    {
@@ -2008,9 +2002,6 @@ public class DAGPanel
 	 */
 	public Map editAddLimitUI(int expId) throws PVManagerException
 	{
-		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
-		HttpSession session = request.getSession();
-		List<SelectedConcept> selectedConcepts = (List<SelectedConcept>) session.getAttribute(Constants.SELECTED_CONCEPT_LIST);
 		Map<String, Object> map = new HashMap<String, Object>();
 		int expressionId = expId;
 		IExpression expression = m_queryObject.getQuery().getConstraints().getExpression(
@@ -2021,21 +2012,14 @@ public class DAGPanel
 		EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
 		
 		
-
-		Rule rule = ((Rule) (expression.getOperand(0)));
-		List<ICondition> conditions = Collections.list(rule);
+		List<ICondition> conditions = new ArrayList<ICondition>();
+		if(expression.numberOfOperands() > 0)
+		{
+			Rule rule = ((Rule) (expression.getOperand(0)));
+			conditions = Collections.list(rule);
+		}
 		String html=null;
-		if( entity.getParentEntity() == null)
-		{
-			html = generateHTMLBizLogic.generateHTML(entity, conditions,null,selectedConcepts);
-		}
-		else if(entity.getParentEntity().getName().equals("MedicalEntitiesDictionary"))
-		{
-			/*temporary  changes for edit option for MED entities*/
-			
-			html="<table width='100%' border='0' align='center' cellpadding='0' cellspacing='0'><tr><td class='content_txt'  align='center' style='padding-left:10px;color:blue'>" +
-					"MED Entity can not be edited. This feature will be available in next iteration.</td></tr></table>";
-		}
+		html = generateHTMLBizLogic.generateHTML(entity, conditions,null);
 		map.put(DAGConstant.HTML_STR, html);
 		map.put(DAGConstant.EXPRESSION, expression);
 		return map;
