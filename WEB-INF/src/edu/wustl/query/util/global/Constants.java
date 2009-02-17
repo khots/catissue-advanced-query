@@ -143,6 +143,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	/**  Constant for  */
 	public static final String PAGE_OF_QUERY_MODULE = "pageOfQueryModule";
 	/**  Constant for  */
+	public static final String PAGE_OF_QUERY_RESULTS = "pageOfQueryResults";
+	/**  Constant for  */
 	public static final String RANDOM_NUMBER = "randomNumber";
 	/**  Constant for  */
 	public static final String IS_NOT_NULL = "is not null";
