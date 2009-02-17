@@ -21,6 +21,7 @@ import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
+import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleException;
@@ -77,9 +78,9 @@ public class SpreadSheetViewGenerator
 		List<IOutputAttribute> selectedColumns = ((IParameterizedQuery) queryDetailsObj.getQuery())
 				.getOutputAttributeList(); //getSelectedOutputAttributeList(currentTreeNode,constraints);
 		SpreadsheetIQueryGenerator queryGenerator = new SpreadsheetIQueryGenerator();
-		List<Object> upis = queryGenerator.createIQuery(node, queryDetailsObj, selectedColumns);
+		queryGenerator.createIQuery(node, queryDetailsObj, selectedColumns);
 
-		executeXQuery(queryDetailsObj.getQuery(), spreadsheetData, upis, request, queryDetailsObj
+		executeXQuery(queryDetailsObj.getQuery(), spreadsheetData, request, queryDetailsObj
 				.getQueryExecutionId());
 
 		List<String> columnsList = getColumnList(queryDetailsObj);
@@ -107,31 +108,16 @@ public class SpreadSheetViewGenerator
 		return columnsList;
 	}
 
-	private void executeXQuery(IQuery query, SpreadSheetData spreadsheetData, List<Object> upis,
+	private void executeXQuery(IQuery query, SpreadSheetData spreadsheetData,
 			HttpServletRequest request, int queryExecutionId) throws QueryModuleException
 	{
 		//getData
-		CiderQueryUIManager ciderQueryUIManager = (CiderQueryUIManager) AbstractQueryUIManagerFactory
+		AbstractQueryUIManager ciderQueryUIManager = AbstractQueryUIManagerFactory
 				.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
-		CiderQueryManager ciderQueryManager = new CiderQueryManager();
 
 		DataQueryResultsBean dataQueryResultsBean;
-		try
-		{
-			dataQueryResultsBean = ciderQueryManager.execute(ciderQueryUIManager.getCiderQuery(), upis,
-					queryExecutionId);
-			spreadsheetData.setDataList(dataQueryResultsBean.getAttributeList());
-			spreadsheetData.setDataTypeList(dataQueryResultsBean.getDataTypesList());
-		}
-		catch (DAOException e)
-		{
-			throw new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
-		}
-		catch (SQLException e)
-		{
-			throw new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
-		}
-			
-		
+		dataQueryResultsBean = ciderQueryUIManager.getData(queryExecutionId);
+		spreadsheetData.setDataList(dataQueryResultsBean.getAttributeList());
+		spreadsheetData.setDataTypeList(dataQueryResultsBean.getDataTypesList());
 	}
 }
