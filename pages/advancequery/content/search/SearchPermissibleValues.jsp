@@ -275,7 +275,7 @@ function getMappingsOfConcepts(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 					
 					 document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
 					 // send request only first time when user click on the check box for other click  just hide and show the div 
-					var param = "selectedCheckBox"+"="+vocabName+"#"+vocabVer+"#"+vocabURN+"#"+vocabDisplayName;
+					var param = "selectedCheckBox"+"="+vocabURN+"#"+vocabDisplayName;
 					var actionUrl="SearchMappedPV.do";
 					request.onreadystatechange=function(){setMappedConceptsToVocabDIV(request,selectedCheckedBoxVocabDivID)};
 					request.open("POST",actionUrl,true);
@@ -460,9 +460,7 @@ function serachForTermInVocab(operation)
 				{
 					var vocabURN=vocabCheckboxes[i].id.replace("vocab_","");
 					var vocabDisplayName=document.getElementById("hidden_"+vocabURN).value;
-					var vocab=vocabCheckboxes[i].value.split(":");
-					
-					targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocab[0]+"##"+vocab[1]+"##"+vocabURN+"##"+vocabDisplayName+"@";
+					targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocab[0]+vocabURN+"##"+vocabDisplayName+"@";
 					uncheckAllAndDeleteFromArray(vocabURN);
 				}
 			}
