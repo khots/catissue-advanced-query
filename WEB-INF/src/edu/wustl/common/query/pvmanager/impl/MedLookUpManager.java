@@ -28,7 +28,7 @@ public final class MedLookUpManager
 
 		if (mLookUpMgrObj == null)
 		{
-			synchronized (mLookUpMgrObj)
+			synchronized (MedLookUpManager.class)
 			{
 				mLookUpMgrObj = new MedLookUpManager();
 				//medLookUpManager.lookUpTable = Variables.properties.getProperty("med.lookup.table");
