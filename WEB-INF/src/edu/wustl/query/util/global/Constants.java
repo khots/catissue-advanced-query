@@ -681,6 +681,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String QUERY_EXECUTION_ID = "QUERY_EXECUTION_ID";
     /**  Constant for QUERY_EXECUTION_ID **/
     public static final String COUNT_QUERY_EXECUTION_ID = "COUNT_QUERY_EXECUTION_ID";
+     
+    public static final String COUNT_QUERY_UPI = "UPI";
+    
+    public static final String COUNT_QUERY_DOB = "DATE_OF_BIRTH";
     /**  Constant for QUERY_EXECUTION_ID **/
     public static final String DATA_QUERY_EXECUTION_ID = "DATA_QUERY_EXECUTION_ID";
     /**  Constant for QUERY_ID **/
