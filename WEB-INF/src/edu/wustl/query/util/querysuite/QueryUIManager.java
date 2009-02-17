@@ -33,7 +33,7 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 	 * @param request
 	 * @param query
 	 */
-	public QueryUIManager(HttpServletRequest request, IQuery query)
+	public QueryUIManager(HttpServletRequest request, IQuery query) throws QueryModuleException
 	{
 
 		this.request = request;
