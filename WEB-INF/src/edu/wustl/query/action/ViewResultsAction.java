@@ -8,52 +8,57 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import com.sun.org.apache.xerces.internal.impl.XMLEntityManager.Entity;
+
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.cab2b.client.ui.IUpdateAddLimitUIInterface;
 import edu.wustl.cab2b.client.ui.dag.ambiguityresolver.AmbiguityObject;
 import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
-import edu.wustl.cab2b.common.queryengine.Cab2bQuery;
-import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
+import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.query.impl.CommonPathFinder;
-import edu.wustl.common.query.impl.PassTwoXQueryGenerator;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
+import edu.wustl.common.query.queryobject.util.QueryObjectProcessor;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.common.querysuite.queryobject.IExpressionOperand;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IOutputEntity;
 import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.querysuite.queryobject.IRule;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
+import edu.wustl.common.querysuite.queryobject.impl.Query;
 import edu.wustl.common.tree.QueryTreeNodeData;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.query.enums.QueryType;
 import edu.wustl.query.flex.dag.DAGResolveAmbiguity;
+import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.querysuite.IQueryUpdationUtil;
+import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
+import edu.wustl.query.util.querysuite.IQueryParseUtil;
 import edu.wustl.query.util.querysuite.QueryAddContainmentsUtil;
-import edu.wustl.query.util.querysuite.QueryModuleSqlUtil;
+import edu.wustl.query.util.querysuite.ResultsViewIQueryCreationUtil;
 
 
 public class ViewResultsAction extends Action 
@@ -61,8 +66,19 @@ public class ViewResultsAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
-		int queryExecutionID = 2; //need to get From request
-	 	Long iqueryId = Long.valueOf(255);//need to get From request
+		int queryExecutionID = 4; //need to get From request
+		if(request.getAttribute("")!=null)
+		{
+			queryExecutionID = (Integer)request.getAttribute("");
+		}
+		String id = request.getParameter("dataQueryId");
+		Long iqueryId = Long.valueOf(257);
+		if(id != null && !id.equals(""))
+		{
+			iqueryId = Long.valueOf(id);
+		}
+		session.setAttribute("dataQueryId",iqueryId);
+	 	;//need to get From request
 	 	IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
 				.getValue("app.bizLogicFactory"), "getBizLogic",
 				Constants.QUERY_INTERFACE_BIZLOGIC_ID);
@@ -70,72 +86,96 @@ public class ViewResultsAction extends Action
 	 	final List<IParameterizedQuery> queryList = bizLogic.retrieve(ParameterizedQuery.class
 				.getName(), Constants.ID, iqueryId);
 	 	
-	 	IQuery query = null;
+	 	IQuery getPatientDataQuery = null;
 		//Retrieve the IQuery from database on the basis of  IQueryId
 	 	if (queryList != null && !queryList.isEmpty())
 	 	{
-	 		query = queryList.get(0);
+	 		getPatientDataQuery = queryList.get(0);
 	 	}
 
-	 	Long queryId = Long.parseLong(request.getParameter("dataQueryId"));
-	 	session.setAttribute("dataQueryId", queryId);
 	 	//Pass that IQuery to PassTwoXQueryGenerator to parse it and populate the rootNodeOutput list
-		PassTwoXQueryGenerator passTwoQueryGenerator = new PassTwoXQueryGenerator();
-		String generatedQuery = passTwoQueryGenerator.generateQuery(query); 
+//		PassTwoXQueryGenerator passTwoQueryGenerator = new PassTwoXQueryGenerator();
+//		String generatedQuery = passTwoQueryGenerator.generateQuery(getPatientDataQuery); 
 		
 		//Get the root out put node list , which gives the root node
-		List<OutputTreeDataNode> rootOutputTreeNodeList = passTwoQueryGenerator.getRootOutputTreeNodeList();
-		IOutputEntity outputEntity = rootOutputTreeNodeList.get(0).getOutputEntity();
+//		List<OutputTreeDataNode> rootOutputTreeNodeList = passTwoQueryGenerator.getRootOutputTreeNodeList();
+		
+	 	List<OutputTreeDataNode> rootOutputTreeNodeList = (List<OutputTreeDataNode>)session.getAttribute(Constants.SAVE_TREE_NODE_LIST);
+		//This session attribute is required for each IQuery Formation
+		session.setAttribute("patientDataRootOutPutList",rootOutputTreeNodeList);
+		session.setAttribute("patientDataQuery",getPatientDataQuery);
+		OutputTreeDataNode rootNode = rootOutputTreeNodeList.get(0);
+		IOutputEntity outputEntity = rootNode.getOutputEntity();
 		EntityInterface rootEntity = outputEntity.getDynamicExtensionsEntity();
+		
+		Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap = IQueryParseUtil.getParentChildrensForaMainNode(rootNode);
 		
 		//Now Create IQuery From Main Entity , adding containments till attributes with tagged values are found
 		//Get the parent child map for containment of a  main Entity
 		Map<EntityInterface, List<EntityInterface>> partentChildEntityMap = getAllParentChildrenMap(rootEntity); 
 		
 		//Once u got the parent child map, get the parent child map for tagged entities for results view, and populate the list for tagged entities
-		Map<EntityInterface, List<EntityInterface>> taggedEntitiesParentChildMap = getTaggedEntitiesParentChildMap(partentChildEntityMap);
+		Map<EntityInterface, List<EntityInterface>> taggedEntitiesParentChildMap = getTaggedEntitiesParentChildMap(partentChildEntityMap,rootEntity);
 		
 		//Here we get path list from Root Entity to parent of Tagged Entity for results view 
 		Map<EntityInterface, List<EntityInterface>> eachTaggedEntityPathMap = getPathsMapForTaggedEntity(taggedEntitiesParentChildMap,partentChildEntityMap);
 		
 		//Now Add all entities related to a tagged entity to IQuery
-		query =  formIQuery(rootEntity,eachTaggedEntityPathMap);
+		IQuery generatedIQuery =  formIQuery(rootNode,eachTaggedEntityPathMap,getPatientDataQuery);
 		
-//		String generatedNewQuery = passTwoQueryGenerator.generateQuery(query); 
+		//Now update the formed IQuery with given conditions on children   
+		ResultsViewIQueryCreationUtil.updateGeneratedQuery(generatedIQuery,parentChildrenMap,rootNode,getPatientDataQuery);
 		
-		List <List<String>> personUPIsList =  IQueryUpdationUtil.getPersonUpis(4);
+		//Set Query type as Data Query
+		((Query)generatedIQuery).setType(QueryType.GET_DATA.type);
+		
+		//String generatedNewQuery = passTwoQueryGenerator.generateQuery(generatedIQuery); 
+		
+		//List<String> personUPIsList =  QueryModuleSqlUtil.getPersonUpis(queryExecutionID);
+
+//		CiderQuery ciderQuery = new CiderQuery();
+//		ciderQuery.setQueryString(generatedNewQuery);
+//		ciderQuery.setQuery(generatedIQuery);
+		
+		AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedIQuery);
+		DataQueryResultsBean  dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID);
+		
+		List<List<Object>> dataList = dataQueryResultsBean.getAttributeList();
+
+		
+		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
+		.getAllChildrenNodes(rootOutputTreeNodeList);
+		
+		
+		//Setting some session attributes
+		session.setAttribute("queryExecutionId", queryExecutionID);
+		session.setAttribute("uniqueIDNodeMap", uniqueIdNodesMap);
+		
+		
+	   
+		String labelNodeId = "";
+		
+		Set<String> uniqueKeySet = uniqueIdNodesMap.keySet();
+		Iterator<String> keyItr = uniqueKeySet.iterator();
+		while(keyItr.hasNext())
+		{
+			String keyId = keyItr.next();
+			OutputTreeDataNode treeDataNode = uniqueIdNodesMap.get(keyId);
+			if(treeDataNode.getExpressionId() == rootNode.getExpressionId())
+			{
+				labelNodeId = keyId;
+				break;
+			}
+		}
 		
 		//This happens something when "Person" is the root entity
-		
 		Vector<QueryTreeNodeData> treeDataVector = new Vector<QueryTreeNodeData>();
-		
-		
 		//Note : Root node of tree, Query execution id will be the node id  
-		String displayName = Utility.getDisplayLabel(rootEntity.getName()) + " (" + personUPIsList.size() + ")";
-		QueryTreeNodeData labelNode = getResultsTreeLabelNode(rootEntity,queryExecutionID,displayName);	
+		String displayName = Utility.getDisplayLabel(rootEntity.getName()) + " (" + dataList.size() + ")";
+		
+		QueryTreeNodeData labelNode = getResultsTreeLabelNode(rootEntity,labelNodeId,displayName);	
 		treeDataVector.add(labelNode);
-		
-	    
-		// So now Add Result Node under tree
-		Iterator <List<String>> upiListItr = personUPIsList.iterator();
-	    while(upiListItr.hasNext())
-	    {
-	        List<String> upiList = 	upiListItr.next();
-	        String personUPI = upiList.get(0);
-	        QueryTreeNodeData resultrTreeNode = new QueryTreeNodeData();
-	        
-	        resultrTreeNode.setIdentifier(personUPI);
-	        resultrTreeNode.setObjectName("UPI");
-	        
-	        displayName = "AAA_AAA" + personUPI;
-	        resultrTreeNode.setDisplayName(displayName);
-	        
-	        //node Id from Person label node is set parent of each node
-	        resultrTreeNode.setParentIdentifier(labelNode.getIdentifier().toString());
-	        resultrTreeNode.setParentObjectName("");
-	        treeDataVector.add(resultrTreeNode);
-	    }
-		
+	   	
 		//Setting some session attributes
 	    
 	    //Note, tree no is set hardcoded 
@@ -143,7 +183,9 @@ public class ViewResultsAction extends Action
 	    session.setAttribute(Constants.NO_OF_TREES,noOfTrees);
 	    String key = Constants.TREE_DATA + "_" + 0;
 	    session.setAttribute(key,treeDataVector);
+		
 		return mapping.findForward(Constants.SUCCESS);
+	  
 	}
 
 	/*private EntityInterface getEntityFromCache(String entityName, Collection<EntityGroupInterface> entityGroups)
@@ -162,7 +204,7 @@ public class ViewResultsAction extends Action
        	return entity;
 	}*/
 	
-	private QueryTreeNodeData getResultsTreeLabelNode(EntityInterface labelEntity, int labelNodeId, String displayName)
+	private QueryTreeNodeData getResultsTreeLabelNode(EntityInterface labelEntity, String labelNodeId, String displayName)
 	{
 		String name = labelEntity.getName();
 		String nodeId = 0 + "_" + Constants.NULL_ID + Constants.NODE_SEPARATOR + labelNodeId + Constants.UNDERSCORE + Constants.LABEL_TREE_NODE;
@@ -197,7 +239,7 @@ public class ViewResultsAction extends Action
 		return partentChildEntityMap;
 	}
 	
-	private Map<EntityInterface, List<EntityInterface>> getTaggedEntitiesParentChildMap(Map<EntityInterface, List<EntityInterface>> partentChildEntityMap)
+	private Map<EntityInterface, List<EntityInterface>> getTaggedEntitiesParentChildMap(Map<EntityInterface, List<EntityInterface>> partentChildEntityMap,EntityInterface rootEntity)
 	{
 		
 		Map<EntityInterface, List<EntityInterface>> taggedEntitiesParentChildMap = new HashMap<EntityInterface, List<EntityInterface>>();
@@ -205,6 +247,12 @@ public class ViewResultsAction extends Action
 	    for(EntityInterface keyEntity : keySet)
 	    {
 	    	List <EntityInterface> taggedEntitiesListForMainEntity = new ArrayList<EntityInterface>(); 
+	    	
+	    	//this is the case when the tag is also applied on the root Entity
+	    	if(edu.wustl.query.util.global.Utility.istagPresent(keyEntity,"resultview") && rootEntity.getId().longValue()== keyEntity.getId().longValue())
+	    	{
+	    		taggedEntitiesListForMainEntity.add(keyEntity);
+	    	}
 	    	List<EntityInterface> childrenEntities = partentChildEntityMap.get(keyEntity);
 	     	for(EntityInterface childEntity : childrenEntities)
 	     	{
@@ -253,31 +301,62 @@ public class ViewResultsAction extends Action
  		return pathList;
  	}
  	
- 	private IQuery formIQuery(EntityInterface rootEntity,Map<EntityInterface, List<EntityInterface>> eachTaggedEntityPathMap)
+ 	private IQuery formIQuery(OutputTreeDataNode rootNode,Map<EntityInterface, List<EntityInterface>> eachTaggedEntityPathMap,IQuery getPatientDataQuery)
  	{
  		//In IQuery, root entity should have a parametarized condition on primary key
- 		List <AttributeInterface> primaryAttributesList = rootEntity.getPrimaryKeyAttributeCollection();
-	    List<String> attributeOperators = new ArrayList<String>();
-	    List <String>conditionList = new ArrayList<String>();
-	    List<List<String>>  conditionValues = new ArrayList<List<String>>();
+ 		EntityInterface rootEntity = rootNode.getOutputEntity().getDynamicExtensionsEntity();
+ 		IClientQueryBuilderInterface m_queryObject = new ClientQueryBuilder();
+ 		int rootExpId = 0;
  		if(rootEntity.getName().equalsIgnoreCase("Person"))
  		{
+ 			List <AttributeInterface> primaryAttributesList = rootEntity.getPrimaryKeyAttributeCollection();
+ 		    List<String> attributeOperators = new ArrayList<String>();
+ 		    List <String>conditionList = new ArrayList<String>();
+ 		    List<List<String>>  conditionValues = new ArrayList<List<String>>();
+
  			//Only in case of Person Entity, it will be parametrized condition else not
  			for(int i=0; i<primaryAttributesList.size(); i++)
  			{
  				 attributeOperators.add("Equals");
- 				 conditionList.add("?");
+ 				 conditionList.add("");
  			}
- 			 conditionValues.add(conditionList);
+ 			conditionValues.add(conditionList);
+ 			rootExpId = m_queryObject.addRule(primaryAttributesList,attributeOperators,conditionValues,rootEntity);
  		}
  		else
  		{
+ 			//If this is not Person entity, then we need to add all those tagged entities which have Primary key tag and
+ 			//whatever condition is specified by the user or default condition should be added on all peimary key 
  			
+ 			//Add the condition defined on the Root Node
+ 			int rootNodeExpId = rootNode.getExpressionId();
+ 			IConstraints constraints = getPatientDataQuery.getConstraints();
+ 			
+ 			//Got root expression
+ 			IExpression  rootExpression = constraints.getExpression(rootNodeExpId);
+ 			
+ 			//get the rule
+ 			IRule iRule = null;
+ 			for (IExpressionOperand expressionOperand : rootExpression)
+ 			{
+ 				if(expressionOperand instanceof IRule)
+ 				{
+ 					iRule = (IRule)expressionOperand;
+ 					break;
+ 				}
+ 			}
+ 			
+ 			//Now Add this rule and expression to Query
+ 			if(iRule != null)
+ 			{
+ 				rootExpId = m_queryObject.addExpression(iRule, rootEntity);
+ 			}
+ 			else
+ 			{
+ 				rootExpId = m_queryObject.addExpression(rootEntity);
+ 			}
  		}
  		
- 		IClientQueryBuilderInterface m_queryObject = new ClientQueryBuilder();
-	    int rootExpId = m_queryObject.addRule(primaryAttributesList,attributeOperators,conditionValues,rootEntity);
-	    
 	    Map <EntityInterface, List<Integer>> eachTaggedEntityPathExpressionsMap = new HashMap<EntityInterface, List<Integer>>(); 
 	    
  		//All Intermediate nodes as well tagged entities should be added like containment
@@ -307,6 +386,25 @@ public class ViewResultsAction extends Action
  		//Only tagged attributes should be added as IOutPutAttribute List
  		addTaggedOutputAttributesToQuery(eachTaggedEntityPathExpressionsMap,m_queryObject);
  		
+ 		
+ 		//If root entity is Person , then add parameterized condition on PersonUpi
+ 		if(rootEntity.getName().equalsIgnoreCase("Person"))
+ 		{
+ 			//Create ICondition attribute
+ 	 		 AttributeInterface personAttributes = rootEntity.getAttributeByName("personUpi");
+ 	 		
+ 	 		 
+ 	 		 List <String> conditionList = new ArrayList<String>();
+ 	 		conditionList.add("");
+ 	 		 ICondition condition = QueryObjectFactory.createCondition(personAttributes, RelationalOperator.Equals, conditionList);
+ 	 	    
+ 	 	    //Now create parameter
+ 	 	    IParameter<ICondition> parameter = QueryObjectFactory.createParameter(condition,"personUpi");
+ 	 	    
+ 	 	    IParameterizedQuery pQuery = (IParameterizedQuery)m_queryObject.getQuery();
+ 	 	    pQuery.getParameters().add(parameter);
+ 		}
+ 		
  		return m_queryObject.getQuery();
  	}
  	
@@ -315,7 +413,6 @@ public class ViewResultsAction extends Action
  		//For each tagged Entity ,get the tagged Attributes and add them to Ioutput Attribute list
  		ParameterizedQuery query = (ParameterizedQuery)m_queryObject.getQuery();
  		List <IOutputAttribute> outputAttributeList =  new ArrayList<IOutputAttribute>();
- 		Cab2bQuery cab2bQuery = (Cab2bQuery)query;
 	    IConstraints constraints = query.getConstraints();
  		Set <EntityInterface> taggedEntityKeySet= eachTaggedEntityPathExpressionsMap.keySet();
  		for(EntityInterface taggedEntity : taggedEntityKeySet)
@@ -335,7 +432,7 @@ public class ViewResultsAction extends Action
  		}
  		
  	   //Setting the IOUtPut Attribute List to Query 
- 	  cab2bQuery.setOutputAttributeList(outputAttributeList);
+ 		query.setOutputAttributeList(outputAttributeList);
 	}
 		
  	
