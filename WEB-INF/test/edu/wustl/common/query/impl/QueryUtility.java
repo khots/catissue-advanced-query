@@ -386,7 +386,7 @@ public class QueryUtility
 //			param = param + " of DEL messages on server select * from " + tableName;
 
 			String param = "export to " + Constants.testHome + csvFileName;
-			param = param + " of DEL messages on server select UPI from " + tableName+ " where QUERY_EXECUTION_ID="+queryExecId;
+			param = param + " of DEL messages on server select UPI from " + tableName+ " where COUNT_QUERY_EXECUTION_ID="+queryExecId;
 			
 			// set the input parameter
 			callStmt1.setString(1, param);
