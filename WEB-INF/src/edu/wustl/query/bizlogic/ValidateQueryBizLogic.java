@@ -57,13 +57,15 @@ public class ValidateQueryBizLogic
 		boolean isRulePresentInDag = QueryModuleUtil.checkIfRulePresentInDag(query);
 		String pageOf = request.getParameter(Constants.PAGE_OF);
 		String workflow = request.getParameter("workflow");
-		String queryType=((Query)query).getType();
+		String queryType = null;
+		if(query!=null)
+			queryType =((Query)query).getType();
 		 if("true".equals(workflow))
 		 {
 			 request.setAttribute("workflow","true"); 
 		 }
 		String queryTile=request.getParameter("queyTitle");
-		if( !("DefineFilter".equals(pageOf) || "DefineView".equals(pageOf) || queryType.equals(QueryType.GET_DATA.type)) && queryTile==null||"".equals(queryTile))
+		if( !("DefineFilter".equals(pageOf) || "DefineView".equals(pageOf) || (QueryType.GET_DATA.type).equals(queryType)) && queryTile==null||"".equals(queryTile))
 		{
 			validationMessage=validateQueyTitle(queryTile);
 			return validationMessage;
@@ -103,8 +105,8 @@ public class ValidateQueryBizLogic
 					//return NO_MAIN_OBJECT_IN_QUERY;
 					validationMessage = (String) session
 							.getAttribute(Constants.NO_MAIN_OBJECT_IN_QUERY);
-					validationMessage = "<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>"
-							+ validationMessage + "</font></li>";
+					validationMessage = "<font color='blue' family='arial,helvetica,verdana,sans-serif'>"
+							+ validationMessage + "</font>";
 				}
 			}
 			else
@@ -119,15 +121,15 @@ public class ValidateQueryBizLogic
 			switch (e.getKey())
 			{
 				case MULTIPLE_ROOT :
-					validationMessage = "<li><font color='red'> "
+					validationMessage = "<font color='red'> "
 						+ ApplicationProperties.getValue("errors.executeQuery.multipleRoots")
-						+ "</font></li>";
+						+ "</font>";
 					
 					break;
                 default :
-                	validationMessage = "<li><font color='red'> "
+                	validationMessage = "<font color='red'> "
 						+ ApplicationProperties.getValue("errors.executeQuery.genericmessage")
-						+ "</font></li>";
+						+ "</font>";
 					break;
 			}
 			
@@ -198,7 +200,7 @@ public class ValidateQueryBizLogic
 		boolean istagPresent = edu.wustl.query.util.global.Utility.istagPresent(rootEntity,Constants.BASE_MAIN_ENTITY);
 		if(!istagPresent)
 		{
-			validationMessage = "<li><font color='blue'> "+ApplicationProperties.getValue(Constants.QUERY_NO_ROOTEXPRESSION)+"</font></li>";
+			validationMessage = "<font color='blue'> "+ApplicationProperties.getValue(Constants.QUERY_NO_ROOTEXPRESSION)+"</font>";
 		}
 		return validationMessage;
 	}
