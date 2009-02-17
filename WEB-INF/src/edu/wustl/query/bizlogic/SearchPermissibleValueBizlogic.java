@@ -143,7 +143,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			throws VocabularyException, PVManagerException
 	{
 		IVocabulary sourceVocabulary = getVocabulary(VIProperties.sourceVocabUrn);
-		
+		String associationName = VIProperties.translationAssociation;
 		Map<String, List<IConcept>> mappedConcepts = new HashMap<String, List<IConcept>>();
 		try
 		{
@@ -155,7 +155,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 				for(PermissibleValueInterface perValueInterface:permissibleValues)
 				{
 					List<IConcept> conList = sourceVocabulary.getMappedConcepts(perValueInterface.getValueAsObject().toString(), VIProperties.translationAssociation, targetVocabulary);
-					if(conList != null && !conList.isEmpty())
+					if(conList != null && conList.isEmpty())
 					{
 						mappedConcepts.put(perValueInterface.getValueAsObject().toString(), conList);
 					}
@@ -178,10 +178,10 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @return
 	 * @throws VocabularyException
 	 */
-	public List<IConcept> searchConcept(String term, String vocabName, String vocabVersion,int maxToReturn)
+	public List<IConcept> searchConcept(String term, String vocabURN,int maxToReturn)
 			throws VocabularyException
 	{
-		IVocabulary vocabulary = vocabularyManager.getVocabulary(vocabName, vocabVersion);
+		IVocabulary vocabulary = vocabularyManager.getVocabulary(vocabURN);
 		
 		return vocabulary.searchConcept(term, VIProperties.searchAlgorithm, maxToReturn);
 
@@ -214,11 +214,11 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @param checkboxId
 	 * @return
 	 */
-	public String getHTMLForConcept(String vocabName, String vocabversoin,
+	public String getHTMLForConcept(String vocabURN,
 			IConcept concept, String checkboxId)
 	{
 		return "<tr title='Concept Code: "+concept.getCode()+"'><td style='padding-left:30px'>&nbsp;</td><td class='black_ar_tt' > \n"
-				+ "<input type='checkbox' name='" + vocabName + vocabversoin + "' id='"
+				+ "<input type='checkbox' name='" +vocabURN + "' id='"
 				+ checkboxId + "' value='" + concept.getCode() + ":" + concept.getDescription()
 				+ "' onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
 				+ "</td><td class='black_ar_tt'>" /*+ concept.getCode() + ":"*/
@@ -235,7 +235,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @return
 	 * @throws VocabularyException 
 	 */
-	public String getHTMLForSearchedConcept(String vocabName, String vocabversoin,
+	public String getHTMLForSearchedConcept(String vocabURN, 
 			IConcept concept, String checkboxId, String textStatus) throws VocabularyException
 	{
 	
@@ -246,7 +246,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			chkBoxStatus="disabled";
 		}
 		return "<tr title='Concept Code: "+concept.getCode()+"'><td style='padding-left:30px'>&nbsp;</td><td class='black_ar_tt'> \n"
-				+ "<input type='checkbox' "+chkBoxStatus+" name='"+ vocabName + vocabversoin + "' id='"
+				+ "<input type='checkbox' "+chkBoxStatus+" name='"+ vocabURN + "' id='"
 				+ checkboxId + "' value='" + concept.getCode() + ":" + concept.getDescription()
 				+ "' onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
 				+ "</td><td class='"+cssClass+"'>" /*+ concept.getCode() + ":"*/
@@ -261,8 +261,8 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @return
 	 * @throws VocabularyException
 	 */
-	public String getRootVocabularyNodeHTML(String vocabName, String vocabVer,
-			String vocabDisName)throws VocabularyException
+	public String getRootVocabularyNodeHTML(String vocabURN, String vocabDisName)
+						throws VocabularyException
 	{
 		String  style="display:";
 		String  imgpath="src=\"images/advancequery/nolines_minus.gif\"/"; 
@@ -270,19 +270,19 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		return tableHTML 
 				+ "<tr><td>"
 				+ tableHTML + "<tr><td class='grid_header_text'>"
-				+ "<a id=\"image_"+ vocabName+ vocabVer+ "\"\n"
-				+ "onClick=\"showHide('inner_div_"+ vocabName+ vocabVer+ "'," 
-				+"'image_"+ vocabName+ vocabVer+ "');\">\n"
+				+ "<a id=\"image_"+ vocabURN+ "\"\n"
+				+ "onClick=\"showHide('inner_div_"+ vocabURN+ "'," 
+				+"'image_"+ vocabURN+ "');\">\n"
 				+ "<img "+ imgpath+ " align='absmiddle'/></a>"
-				+ "</td><td><input type='checkbox' name='"+ vocabName+vocabVer
-				+ "' id='root_"	+ vocabName+vocabVer+ "' "
-				+ "value='"	+ vocabName
+				+ "</td><td><input type='checkbox' name='"+ vocabURN
+				+ "' id='root_"	+ vocabURN+ "' "
+				+ "value='"	+ vocabURN
 				+ "' onclick=\"setStatusOfAllCheckBox(this.id);\"></td>"
 				+ "<td align='middle'  class='grid_header_text'>&nbsp;&nbsp;"
 				+ vocabDisName
 				+ "\n"
 				+ "</td></tr></table>"
-				+ "</td></tr><tr><td><div id='inner_div_"+ vocabName+vocabVer+ "'style='"+style+"'>"
+				+ "</td></tr><tr><td><div id='inner_div_"+ vocabURN+ "'style='"+style+"'>"
 				+tableHTML;
 	}
 	/**
@@ -293,7 +293,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @param vocabDisName
 	 * @return
 	 */
-	public String getRootVocabularyHTMLForSearch(String vocabName, String vocabVer,
+	public String getRootVocabularyHTMLForSearch(String vocabURN,
 			String vocabDisName)
 	{
 		String style="display:none"; 
@@ -302,19 +302,19 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		return tableHTML 
 				+ "<tr><td>"
 				+ tableHTML
-				+ "<tr><td class='grid_header_text'><a id=\"image_"+ vocabName+vocabVer+ "\"\n"
-				+ "onClick=\"showHide('inner_div_"+ vocabName+vocabVer+ "',"
-				+ "'image_"+ vocabName+ vocabVer+ "');\">\n"
+				+ "<tr><td class='grid_header_text'><a id=\"image_"+ vocabURN+ "\"\n"
+				+ "onClick=\"showHide('inner_div_"+ vocabURN+ "',"
+				+ "'image_"+vocabURN+ "');\">\n"
 				+ "<img "+ imgpath+ "align='absmiddle'></a>"
-				+ "</td><td><input type='checkbox' name='"+ vocabName+ vocabVer
-				+ "' id='root_"	+ vocabName+ vocabVer+ "' "
-				+ "value='"+ vocabName+ "'"
+				+ "</td><td><input type='checkbox' name='"+ vocabURN
+				+ "' id='root_"	+ vocabURN+ "' "
+				+ "value='"+ vocabURN+ "'"
 				+ " onclick=\"setStatusOfAllCheckBox(this.id);\"></td>"
 				+ "<td align='middle'  class='grid_header_text'>&nbsp;&nbsp;"
 				+ vocabDisName
 				+ "\n"
 				+ "</td></tr></table>"
-				+ "</td></tr><tr><td><div id='inner_div_"+ vocabName+vocabVer+"'style='"+style+"'>"
+				+ "</td></tr><tr><td><div id='inner_div_"+ vocabURN+"'style='"+style+"'>"
 				+tableHTML ;
 	}
 	/**
@@ -405,7 +405,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @return
 	 * @throws VocabularyException
 	 */
-	public String getDisplayNameForVocab(String vocabName, String vocabVer)
+	public String getDisplayNameForVocab(String vocabURN)
 			throws VocabularyException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
@@ -414,7 +414,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		String vocabDisName = "";
 		for (IVocabulary vocabulary : vocabularies)
 		{
-			if (vocabulary.getName().equals(vocabName) && vocabulary.getVersion().equals(vocabVer))
+			if (vocabulary.getVocabURN().equals(vocabURN))
 			{
 				vocabDisName = vocabulary.getDisplayName();
 				break;
