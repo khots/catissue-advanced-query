@@ -1874,12 +1874,29 @@ var jsReady = false;
 	{
 	   compId= componentId;
 	   compIdOfID=componentIdOfID;
+	   getConceptValues();
+	   
 	   var width=930; //(screen.width * 90 )/100;
 	   var height= 520;//( screen.height * 65)/100;
 	   pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'LoadingVocabularies.do?componentId='+componentId,'Search Permissible Values for \"'+entityName+'\"', 'width='+width+' height='+height+',center=1,resize=0,scrolling=1');
 	   refresh=false;
 	}
-
+	/** if Concept already selected and again VI pop is open then
+	 * need to open VI pop up in edit mode 
+	 * @return
+	 */
+	function  getConceptValues()
+	{
+		conceptCodes=new Array();
+		conceptName=new Array();
+		var componentId=compId + "_enumeratedvaluescombobox";
+		var listboxName = document.getElementById(componentId);
+		for(i=0 ; i < listboxName.options.length ; i++)
+			{
+				conceptCodes[i]=listboxName.options[i].id.trim();
+				conceptName[i]=listboxName.options[i].value.trim();
+			}
+	};
 	function getValueFromChild(pvList,pvNameList)
 	{
 			var componentId=compId + "_enumeratedvaluescombobox";
@@ -1895,14 +1912,8 @@ var jsReady = false;
 			{
 				if(permValuesWithCode[i]!="")
 				{
-					permValuesWithCodeArray=permValuesWithCode[i].split(':');
-					if(permValuesWithCodeArray[0]!="")
-					{
-						
-						medConceptCodeList[j]=permValuesWithCodeArray[1];
+						medConceptCodeList[j]=permValuesWithCode[i];
 						j++;
-					}
-					
 				}
 			}
 			// clear list box
@@ -1918,7 +1929,8 @@ var jsReady = false;
 				listboxName.options[index].id = medConceptCodeList[index];
 				index++;
 			}
-			medConceptCodeList=medConceptCodeList.unique()
+			
+			medConceptCodeList=medConceptCodeList.unique();
 			document.getElementById(componentIdOfID).value = medConceptCodeList;
 	}	
 	
