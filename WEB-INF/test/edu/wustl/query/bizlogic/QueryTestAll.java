@@ -34,11 +34,11 @@ public class QueryTestAll extends TestSuite
 		// For testing FAMEWORK for Query testing
 		// suite.addTestSuite(XQueryGeneratorTestCase.class);
 		
-		// For testing ASynchronous Queries
-		// suite.addTestSuite(ASynchronousQueriesTestCases.class);
-		
 		// For testing FRAMEWORK FUNCTIONALITY
 		suite.addTestSuite(QueryFrameworkTestCase.class);
+
+		// For testing ASynchronous Queries
+		suite.addTestSuite(ASynchronousQueriesTestCases.class);
 		
 		return suite;
 	}
