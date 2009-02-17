@@ -42,7 +42,8 @@ int noOfTrees = trees.intValue();
 %>
  <script>
 
-var trees = new Array();
+//var trees = new Array();
+var resultTree;
 function initTreeView()
 {
 	
@@ -58,11 +59,12 @@ var treeNo = 0;
 			String treeDataId = Constants.TREE_DATA+"_"+i;
 			%>
 			divHeight(<%=noOfTrees%>, <%=i%>);
-			trees[treeNo]=new dhtmlXTreeObject(<%=divId%>,"100%","100%",0);
-			trees[treeNo].setImagePath("dhtml_comp/imgs/");
-			trees[treeNo].setOnClickHandler(treeNodeClicked);
+			resultTree=new dhtmlXTreeObject(<%=divId%>,"100%","100%",0);
+			resultTree.setImagePath("dhtml_comp/imgs/");
+			resultTree.setOnClickHandler(getTreeNodeChildren);
 			<%
-					Vector treeData = (Vector)request.getAttribute(treeDataId);
+			
+			Vector treeData = (Vector)request.getAttribute(treeDataId);
 					if(treeData != null && treeData.size() != 0)
 						{
 							Iterator itr  = treeData.iterator();
@@ -91,16 +93,18 @@ var treeNo = 0;
 									nodeColapseCode += "tree.closeAllItems('" + nodeId + "');";
 								}
 			%>
-			trees[treeNo].insertNewChild("<%=parentId%>","<%=nodeId%>","<%=data.getDisplayName()%>",0,"<%=img%>","<%=img%>","<%=img%>","");
-			trees[treeNo].setUserData("<%=nodeId%>","<%=nodeId%>","<%=data%>");	
-			trees[treeNo].setItemText("<%=nodeId%>","<%=data.getDisplayName()%>","<%=data.getDisplayName()%>");
+			resultTree.insertNewChild("<%=parentId%>","<%=nodeId%>","<%=data.getDisplayName()%>",0,"<%=img%>","<%=img%>","<%=img%>","");
+			resultTree.setUserData("<%=nodeId%>","<%=nodeId%>","<%=data%>");	
+			resultTree.setItemText("<%=nodeId%>","<%=data.getDisplayName()%>","<%=data.getDisplayName()%>");
 			<%	
 							}
 			}	%>
 treeNo = treeNo + 1;						
 		<%}
 	%>	
-		trees[0].selectItem("<%=rootNodeIdOfFirstTree%>",true);
+		
+	//Note : automatic node selection of first node is commented
+	//trees[0].selectItem("<%=rootNodeIdOfFirstTree%>",true);
 	
 }
 </script>
