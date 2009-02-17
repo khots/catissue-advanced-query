@@ -752,6 +752,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String WORFLOW_ID = "worflowId";
 	/**  Constant for WORFLOW_NAME  */
 	public static final String WORFLOW_NAME = "worflowName";
+	/** constants for VI*/
 	public static final String SRC_VOCAB_MESSAGE = "SourceVocabMessage";
 	public static final Object ABORT = "abort";
 	public static final String SELECTED_BOX = "selectedCheckBox";
@@ -761,6 +762,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String MED_MAPPED_N_NOT_VALIED_PVCONCEPT = "Bold_Italic_Disabled";
 	public static final String NOT_MED_MAPPED_PVCONCEPT = "Normal_Italic_Disabled";
 	public static final String NOT_MED_VALED_PVCONCEPT = "Normal_Disabled";
+	public static final String ID_DEL = "$ID_DEL$"; 
 	
 	/**
 	 * Query ITABLE
