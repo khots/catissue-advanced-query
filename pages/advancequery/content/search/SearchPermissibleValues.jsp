@@ -25,10 +25,9 @@
 	<script src="jss/advancequery/VI.js" type="text/javascript"> </script>
 	<script src="jss/advancequery/queryModule.js" type="text/javascript"> </script>
 	<script>
-	<%String srcVocabName=VocabUtil.getVocabProperties().getProperty("source.vocab.name");
-	String srcVocabVersion = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
-	String srcVocaburn=VIProperties.sourceVocabUrn;
-	String sourceVocabMessage =(String)request.getSession().getAttribute(Constants.SRC_VOCAB_MESSAGE);
+	<%
+	String srcVocabURN = VIProperties.sourceVocabUrn;
+	String sourceVocabMessage =(String)request.getSession().getAttribute(Constants.SRC_VOCAB_MESSAGE); 
 	%>
 	// selectedPvs will store that appears right side of the page
 	selectedPvs =new Array();
@@ -56,20 +55,20 @@ function addPermissibleValuesToList()
 	if(!selectedPvs.inArray(selectedPvsCheckedBoxIdArray[j]) && selectedPvsCheckedBoxIdArray[j]!='' && selectedPvsCheckedBoxIdArray[j]!='undefined'  )
 	{
 		try{
-				var vocabName=selectedPvsCheckedBoxIdArray[j].split(":"); // selectedPvsCheckedBoxIdArray[j]  format MED1.0:52014
+				var vocabIdDetails=selectedPvsCheckedBoxIdArray[j].split('<%=Constants.ID_DEL%>'); // selectedPvsCheckedBoxIdArray[j]  format MED1.0:52014
 				
-				if(vocabName.length>1) // No need to include Root node in list make because its has id as only MED name not CONCEPTCODE:Permissible Value
+				if(vocabIdDetails.length>1) // No need to include Root node in list make because its has id as only MED name not CONCEPTCODE:Permissible Value
 				{
 					
 					if(set_mode=="Searching") 
 					{
 						var conceptDetail=document.getElementById("srh_"+selectedPvsCheckedBoxIdArray[j]).value;
-						createRows(vocabName[0],selectedPvsCheckedBoxIdArray[j],conceptDetail);
+						createRows(vocabIdDetails[0],selectedPvsCheckedBoxIdArray[j],conceptDetail);
 					}
 					else if(set_mode=="Mapping")
 					{
 						var conceptDetail=document.getElementById(selectedPvsCheckedBoxIdArray[j]).value;
-						createRows(vocabName[0],selectedPvsCheckedBoxIdArray[j],conceptDetail);
+						createRows(vocabIdDetails[0],selectedPvsCheckedBoxIdArray[j],conceptDetail);
 					}
 				}
 			}catch(e){}
@@ -82,14 +81,14 @@ function addPermissibleValuesToList()
 	}
 }
 // method is used to create the rows in the talbe
-function createRows(vocabName,selectedPvsCheckedBoxId,conceptDetail)
+function createRows(vocabURN,selectedPvsCheckedBoxId,conceptDetail)
 {
-					var table = document.getElementById('selectedPermValues_'+vocabName);
+					var table = document.getElementById('selectedPermValues_'+vocabURN);
 					var lastRow = table.rows.length;
 					var row = table.insertRow(lastRow); 
 					if(lastRow>=0)
 						{
-						document.getElementById('selectedPermValues_Div_'+vocabName).style.display = '';;
+						document.getElementById('selectedPermValues_Div_'+vocabURN).style.display = '';;
 						}
 						
 						//inserting cell as checkbox
@@ -106,9 +105,8 @@ function createRows(vocabName,selectedPvsCheckedBoxId,conceptDetail)
 						cell3.className="black_ar_td_dy"; 
 						
 						
-						var chkBox = createNamedElement('input','checkboxName_'+vocabName);
+						var chkBox = createNamedElement('input','checkboxName_'+vocabURN);
 						chkBox.setAttribute('type', 'checkbox');
-						//chkBox.setAttribute('name', 'checkboxName_'+vocabName[0]);
 						chkBox.setAttribute('id', selectedPvsCheckedBoxId);
 						chkBox.setAttribute('value',conceptDetail );
 						cell3.className="black_ar_td_dy"; 
@@ -138,16 +136,18 @@ function rowObj(one)
 /*method is used to delete the selected row as well all row in one go*/
 function deleteSelectedPvsRow()
 {
+	
 	var checkedObjtodelete=new Array();
 	var cCount = 0;
 	for(j=0;j<selectedPvs.length;j++)
 	{
 	try{
-		var vocabName=selectedPvs[j].split(":");
-		if(vocabName.length>1) // No need to include Root node in list make because its has id as only MED name not CONCEPTCODE:Permissible Value
+		var vocabIdDetails=selectedPvs[j].split('<%=Constants.ID_DEL%>');
+		if(vocabIdDetails.length>1) // No need to include Root node in list make because its has id as only MED name not CONCEPTCODE:Permissible Value
 		{
 			var checkedObjArray = new Array();
-			var table = document.getElementById('selectedPermValues_'+vocabName[0]);
+			var vocabURN=vocabIdDetails[0];
+			var table = document.getElementById('selectedPermValues_'+vocabURN);
 			for (var i=0; i<table.rows.length; i++)
 			{		
 				if (table.rows[i].myRow && table.rows[i].myRow.one.getAttribute('type') == 'checkbox' && table.rows[i].myRow.one.checked)
@@ -162,8 +162,8 @@ function deleteSelectedPvsRow()
 			cCount=0;
 			if(table.rows.length==0)
 			{
-				document.getElementById("pvSelectedCB_"+vocabName[0]).checked=false;
-				document.getElementById('selectedPermValues_Div_'+vocabName[0]).style.display = 'none';
+				document.getElementById("pvSelectedCB_"+vocabURN).checked=false;
+				document.getElementById('selectedPermValues_Div_'+vocabURN).style.display = 'none';
 						
 			}
 				
@@ -176,6 +176,7 @@ function deleteSelectedPvsRow()
 			{
 				document.getElementById("deactivateDiv").innerHTML="<a href='javascript:doNothing();'><img id='okImage' src='images/advancequery/b_ok_inactive.gif' border='0' alt='OK' width='44' height='23'></a>"
 			}
+		
 		
 }
 //method is used to delete the rows from the table
@@ -203,7 +204,7 @@ function addPvsToCondition()
 				var selectedIdFromList=document.getElementById(selectedPvs[k]).value;
 				var selectedIdFromListWithoutCode=selectedIdFromList.substring(selectedIdFromList.indexOf(":")+1);
 				//require for UI javascript and set the values to parent window
-				pvNameList=pvNameList+selectedIdFromListWithoutCode+"#";
+				pvNameList=pvNameList+selectedIdFromListWithoutCode.trim()+"#";
 				pvConceptCodeList=pvConceptCodeList+selectedPvs[k]+"#";
 				//required to store in session
 				pvNameListWithCode=pvNameListWithCode+document.getElementById(selectedPvs[k]).value+"#";
@@ -212,21 +213,26 @@ function addPvsToCondition()
 		{}
 			
 	}
+/*	alert("pvConceptCodeList--"+pvConceptCodeList);
+	alert("pvNameList--"+pvNameList);*/
+	
 		sendValueToParent(pvConceptCodeList,pvNameListWithCode,pvNameList)
 }
 // this method will send the selected values to the parent window from open child window
 function sendValueToParent(pvConceptCodeList,pvNameListWithCode,pvNameList)
 {
 		
-		var request = newXMLHTTPReq(); 
+		/*var request = newXMLHTTPReq(); 
 		var param = "ConceptCodes"+"="+pvConceptCodeList+"&ConceptName="+pvNameListWithCode;
 		var actionUrl="SelectedPermissibleValue.do";
 		request.onreadystatechange=function(){setSelectedConceptCodes(request,pvConceptCodeList,pvNameList)};
 		request.open("POST",actionUrl,true);
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-		request.send(param);
+		request.send(param);*/
+		parent.window.getValueFromChild(pvConceptCodeList,pvNameList);
+		parent.pvwindow.hide();
 }
-function setSelectedConceptCodes(request,pvConceptCodeList,pvNameList)
+/*function setSelectedConceptCodes(request,pvConceptCodeList,pvNameList)
 {
 	if(request.readyState == 4)  
 	{	
@@ -238,15 +244,15 @@ function setSelectedConceptCodes(request,pvConceptCodeList,pvNameList)
 			return false;
 		}
 	}
-}
+}*/
 //This method will be called when user clicks on the vocabulary check box
-function refreshWindow(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
+function getMappingsOfConcepts(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 {
 	
 	if(set_mode=="Mapping")
 	{
 		
-		var vocabDisplayName=document.getElementById("hidden_"+vocabName+":"+vocabVer).value;
+		var vocabDisplayName=document.getElementById("hidden_"+vocabURN).value;
 		document.getElementById("divForMappingMode").style.display = '';
 		document.getElementById("divForSearchingMode").style.display = 'none';
 		var request = newXMLHTTPReq(); 
@@ -271,7 +277,7 @@ function refreshWindow(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 					 // send request only first time when user click on the check box for other click  just hide and show the div 
 					var param = "selectedCheckBox"+"="+vocabName+"#"+vocabVer+"#"+vocabURN+"#"+vocabDisplayName;
 					var actionUrl="SearchMappedPV.do";
-					request.onreadystatechange=function(){setSelectedVocabDataInDIV(request,selectedCheckedBoxVocabDivID)};
+					request.onreadystatechange=function(){setMappedConceptsToVocabDIV(request,selectedCheckedBoxVocabDivID)};
 					request.open("POST",actionUrl,true);
 					request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 					request.send(param);
@@ -296,15 +302,16 @@ function refreshWindow(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 		{
 			if(elements[i].id!=vocabCheckBoxId)
 			{
+				var vURN=elements[i].id.replace("vocab_","");
 				document.getElementById("main_div_"+elements[i].id).style.display = 'none';
-				uncheckAllAndDeleteFromArray(elements[i].id.replace("vocab_",""));
+				uncheckAllAndDeleteFromArray(vURN);
 				//need to delete all the rows of right hand side selected list
-				var tableid =document.getElementById("selectedPermValues_"+elements[i].value.replace(":","@"));
+				var tableid =document.getElementById("selectedPermValues_"+vURN);
 				for(var j=0;j<tableid.rows.length;j++)
 				{
 					tableid.rows[j].myRow.one.checked=1;
 				}
-					deleteSelectedPvsRow();
+				deleteSelectedPvsRow();
 			}
 			else
 			{
@@ -317,7 +324,7 @@ function refreshWindow(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 	}
 }
 /* used to set the data in the div based the which checked box clicked */
-function setSelectedVocabDataInDIV(request,selectedCheckedBoxVocabDivID)
+function setMappedConceptsToVocabDIV(request,selectedCheckedBoxVocabDivID)
 {
 	if(request.readyState == 4)  
 	{	  		
@@ -341,19 +348,7 @@ function setSelectedVocabDataInDIV(request,selectedCheckedBoxVocabDivID)
 		}
 	}
 };
-// this method will used to refresh the MED div
-function refreshMEDDiv(medCheckBoxId)
-{
-		
-	if (document.getElementById(medCheckBoxId).checked==true)
-	{
-		document.getElementById("main_div_"+medCheckBoxId).style.display = '';
-	} 
-	else 
-	{
-		document.getElementById("main_div_"+medCheckBoxId).style.display = 'none';
-	}
-}
+
  /*store all the ids of selected checkbox in the array*/
 function getCheckedBoxId(checkedBoxId)
 {
@@ -463,9 +458,12 @@ function serachForTermInVocab(operation)
 			{
 				if(vocabCheckboxes[i].checked==1)
 				{
-					var vocabDisplayName=document.getElementById("hidden_"+vocabCheckboxes[i].value).value;
-					targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocabCheckboxes[i].value+":"+vocabDisplayName+"@";
-					uncheckAllAndDeleteFromArray(vocabCheckboxes[i].id.replace("vocab_",""));
+					var vocabURN=vocabCheckboxes[i].id.replace("vocab_","");
+					var vocabDisplayName=document.getElementById("hidden_"+vocabURN).value;
+					var vocab=vocabCheckboxes[i].value.split(":");
+					
+					targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocab[0]+"##"+vocab[1]+"##"+vocabURN+"##"+vocabDisplayName+"@";
+					uncheckAllAndDeleteFromArray(vocabURN);
 				}
 			}
 	var message="Please enter the search term.";
@@ -482,7 +480,7 @@ function serachForTermInVocab(operation)
 			}
 			else // if operation is abort change the button to search and set the flag
 			{
-				searchAbortButtonDiv.innerHTML="<a  href=\"javascript:serachForTermInVocab('search');\"><img src='images/advancequery/b_go.gif' border='0' alt='abort' ></a>";
+				searchAbortButtonDiv.innerHTML="<a  href=\"javascript:serachForTermInVocab('search');\"><img src='images/advancequery/b_go.gif' border='0' alt='GO' ></a>";
 				searchRequest.abort();
 				operationAborted=true;
 			}
@@ -570,51 +568,52 @@ function restoreDefault()
 	for(l=0;l<vocabCheckboxes.length;l++)
 	{
 		var selectedCheckedBoxVocabDivID="main_div_"+vocabCheckboxes[l].id;
-		vocabNameAndVer=vocabCheckboxes[l].value.split(':');
-		if(vocabNameAndVer[0].equalsIgnoreCase('<%=srcVocabName%>') && vocabNameAndVer[1].equalsIgnoreCase('<%=srcVocabVersion%>' ) )
+		var vocabURN=vocabCheckboxes[l].id.replace("vocab_","");
+		if(vocabURN.equalsIgnoreCase('<%=srcVocabURN%>') )
 		{
 			vocabCheckboxes[l].checked=1;
 			document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
-			uncheckAllAndDeleteFromArray(vocabNameAndVer[0]+vocabNameAndVer[1]);
+			uncheckAllAndDeleteFromArray(vocabURN);
 		}
 		else
 		{
 			vocabCheckboxes[l].checked=0;
 			document.getElementById(selectedCheckedBoxVocabDivID).style.display = 'none';
-			uncheckAllAndDeleteFromArray(vocabNameAndVer[0]+vocabNameAndVer[1]);
+			uncheckAllAndDeleteFromArray(vocabURN);
 		}
 	}
 	selectedPvsCheckedBoxIdArray=new Array();
+	selectedPvsCheckedBox=0;
+	numberOfPvs=0;
+	set_mode="Mapping";
 };
 function editSelectedPV()
 {
 	label=document.getElementById("searhLabel");
-	<%List<SelectedConcept> selectedConcepts = (ArrayList)request.getSession().getAttribute(Constants.SELECTED_CONCEPT_LIST);
-	if(selectedConcepts!=null)
-	{	
-		for (SelectedConcept selectedConcept : selectedConcepts)
-		{
-			String vocabName=selectedConcept.getVocabName()+"@"+selectedConcept.getVocabVersion();
-			String medConcept=selectedConcept.getMedCode();
-			String selectedCheckboxId=vocabName+":"+medConcept;
-			String conceptDetail=selectedConcept.getConceptCode()+":"+selectedConcept.getConceptName();
-			%>
-			createRows('<%=vocabName%>','<%=selectedCheckboxId%>','<%=conceptDetail%>');
-
-			<%
-			
-		}%>
-		if(selectedPvs.length>0) //Check to enable 'OK'  button
-		{
+	<%if(sourceVocabMessage!=null)
+	{%>
+		//set the messgage if concept code greater then configured value
+		label.innerHTML='<%=sourceVocabMessage%>';
+	<%}%>
+	
+	/* if the VI pop is opened in edit mode*/
+	var conceptCodesArray=parent.conceptCodes;
+	var conceptNameArray=parent.conceptName;
+	for(k=0;k<conceptCodesArray.length;k++)
+	{
+		var conceptDetailWithURN=conceptCodesArray[k].split('<%=Constants.ID_DEL%>');
+		var vocabURN=conceptDetailWithURN[0];
+		var conceptCode=conceptDetailWithURN[1];
+		var conceptDetail=":"+conceptNameArray[k]
+		createRows(vocabURN,conceptCodesArray[k],conceptDetail);
+	
+	}
+	//need to enabled the ok button
+	if(selectedPvs.length>0) //Check to enable 'OK'  button
+	{
 			document.getElementById("deactivateDiv").innerHTML="<a href='javascript:addPvsToCondition();'><img id='okImage' src='images/advancequery/b_ok.gif' border='0' alt='OK' width='44' height='23'></a>";
-		}
-	<%}
-		if(sourceVocabMessage!=null)
-		{
-		%>
-			//set the messgage if concept code greater then configured value
-			label.innerHTML='<%=sourceVocabMessage%>';
-		<%}%>
+	}
+	
 };
 
 </script>
@@ -627,26 +626,20 @@ function editSelectedPV()
 		<table >
 			<tr>
 			<td class="content_txt_bold" nowrap>Select Vocabulary: &nbsp;&nbsp;</td>
-			<c:set var="srcVocabName" value="<%=srcVocabName%>"/>
-			<c:set var="srcVocabVer" value="<%=srcVocabVersion%>"/>
-			<c:set var="srcVocaburn" value="<%=srcVocaburn%>"/>
-
+			<c:set var="srcVocabURN" value="<%=srcVocabURN%>"/>
 			<logic:iterate name="Vocabulries" id="vocabs">
 					<c:choose>
-						<c:when test="${vocabs.vocabURN eq srcVocaburn}">
-								
-								<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.name}${vocabs.version}" value="${vocabs.name}:${vocabs.version}"   
-								onclick= "refreshWindow(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');" checked='true'></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;
-								<input type="hidden"id="hidden_${vocabs.name}:${vocabs.version}" value="${vocabs.displayName}"/>
+						<c:when test="${vocabs.vocabURN eq srcVocabURN}">
+								<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.vocabURN}" value="${vocabs.name}:${vocabs.version}"   
+								onclick= "getMappingsOfConcepts(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');" checked='true'></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;
+								<input type="hidden"id="hidden_${vocabs.vocabURN}" value="${vocabs.displayName}"/>
 
 								</td>			
-								
-							
 						</c:when>
 						<c:otherwise>
-								<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.name}${vocabs.version}" value="${vocabs.name}:${vocabs.version}"   
-								onclick= "refreshWindow(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');"></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;
-								<input type="hidden"id="hidden_${vocabs.name}:${vocabs.version}" value="${vocabs.displayName}"/>
+								<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.vocabURN}" value="${vocabs.name}:${vocabs.version}"   
+								onclick= "getMappingsOfConcepts(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');"></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;
+								<input type="hidden"id="hidden_${vocabs.vocabURN}" value="${vocabs.displayName}"/>
 								</td>		
 						</c:otherwise>
 				</c:choose>
@@ -701,22 +694,20 @@ function editSelectedPV()
 					
 					<logic:iterate name="Vocabulries" id="vocabs">
 					<c:choose>
-						<c:when test="${vocabs.vocabURN eq srcVocaburn}">
-							
+						<c:when test="${vocabs.vocabURN eq srcVocabURN}">
 								<tr>
 								<td valign="top">
-									<div id="main_div_vocab_${vocabs.name}${vocabs.version}" style="">
+									<div id="main_div_vocab_${vocabs.vocabURN}" style="">
 									<% String treeData = (String)request.getSession().getAttribute(Constants.MED_PV_HTML); %>
 									<%=treeData%>
 									</div>
 								</td>
 								</tr>
-
 						</c:when>
 						<c:otherwise>
 								<tr>
 								  <td valign="top">
-									<div id="main_div_vocab_${vocabs.name}${vocabs.version}" style="display:none"></div>
+									<div id="main_div_vocab_${vocabs.vocabURN}" style="display:none"></div>
 								 </td>
 								</tr>
 						</c:otherwise>
@@ -771,22 +762,22 @@ function editSelectedPV()
 						<div style="width: 380px; height:340px; border:1px solid Silver; overflow:auto;"  >
 						<table cellpadding="0" cellspacing="0"  border="0">
 						<logic:iterate name="Vocabulries" id="vocabs">
-							<tr><td><div id = "selectedPermValues_Div_${vocabs.name}@${vocabs.version}" style="display:none">
+							<tr><td><div id = "selectedPermValues_Div_${vocabs.vocabURN}" style="display:none">
 						
 							<table border = "0" id = "" cellpadding ="0" cellspacing ="1">
 								<tr>
 									<td> <table border = "0" id = "" cellpadding ="0" cellspacing ="1">  <tr>
 									<td align="left" align="absmiddle">
-										<a id="image_${vocabs.name}@${vocabs.version}" onclick="javascript:showHide('selectedPermValues_${vocabs.name}@${vocabs.version}','image_${vocabs.name}@${vocabs.version}')">
+										<a id="image_${vocabs.vocabURN}" onclick="javascript:showHide('selectedPermValues_${vocabs.vocabURN}','image_${vocabs.vocabURN}')">
 										<img  src="images/advancequery/nolines_minus.gif" align="absmiddle"/></a>
 									</td>
-									<td  align="middle"><input type="checkbox" id="pvSelectedCB_${vocabs.name}@${vocabs.version}" onclick="checkedUncheckedAllPvs('${vocabs.name}@${vocabs.version}')"> </td>
+									<td  align="middle"><input type="checkbox" id="pvSelectedCB_${vocabs.vocabURN}" onclick="checkedUncheckedAllPvs('${vocabs.vocabURN}')"> </td>
 									<td  align="middle" class="grid_header_text" >&nbsp;&nbsp;${vocabs.displayName}</td>
 									</tr></table></td>
 								</tr>	
 								<tr>
 									<td>
-									<table  id = "selectedPermValues_${vocabs.name}@${vocabs.version}" border = "0" cellpadding ="1.5" cellspacing ="1">
+									<table  id = "selectedPermValues_${vocabs.vocabURN}" border = "0" cellpadding ="1.5" cellspacing ="1">
 									</table>
 									</td>
 								</tr>
