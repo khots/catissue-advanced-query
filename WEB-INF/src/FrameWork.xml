@@ -2,27 +2,28 @@
 
 <TestCases testHome="E:\\Nightly_build\\projects\\framework_test_home\\"
 					 dbInitCommonScriptsFile="" dbCleanUpCommonScriptsFile="">
-		<TestCase>
-			 <name>Find all persons where Person Upi is NOT NULL</name>
-			 <tmtTestCaseId>1</tmtTestCaseId>
-			 <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.sql</dbInitCSV> -->
-			 <expectedResultsCSV>TC1_Expected_Results.csv</expectedResultsCSV>
-			 <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.sql</dbCleanUpCSV>  -->
-			 
-			 <query type = "saved_query"
-			 	    	 id = "23">
-			 </query>
-		</TestCase>
 		
 		<TestCase>
 			 <name>Find all persons where PERSON UPI NOT NULL and DEMOGRAPHICS DOB>10/10/1985</name>
-			 <tmtTestCaseId>2</tmtTestCaseId>
+			 <tmtTestCaseId>1</tmtTestCaseId>
 			  <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV>  --> 
-			 <expectedResultsCSV>TC2_Expected_Results.csv</expectedResultsCSV>
+			 <expectedResultsCSV>TC1_Expected_Results.csv</expectedResultsCSV>
 			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV>  -->  
 			 		 
 			 <query type = "saved_query"
 			 	    	 id = "21">
+			 </query>
+		</TestCase>
+		
+		<TestCase>
+			 <name>Find all persons where Person Upi is NOT NULL and Lab Accession Number Contains (a valid number)</name>
+			 <tmtTestCaseId>2</tmtTestCaseId>
+			 <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.sql</dbInitCSV> -->
+			 <expectedResultsCSV>TC2_Expected_Results.csv</expectedResultsCSV>
+			 <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.sql</dbCleanUpCSV>  -->
+			 
+			 <query type = "saved_query"
+			 	    	 id = "22">
 			 </query>
 		</TestCase>
 		
