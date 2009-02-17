@@ -16,7 +16,10 @@ import edu.wustl.cab2b.server.path.PathFinder;
 import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.common.vocab.VocabularyException;
+import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.VIProperties;
 import edu.wustl.query.util.global.Variables;
 
 public class QueryServletContextListenerUtil
@@ -64,7 +67,24 @@ public class QueryServletContextListenerUtil
 		Variables.maximumTreeNodeLimit = maximumTreeNodeLimit;
 		readProperties();
 		path = System.getProperty("app.propertiesFile");
+		
+		//configure VI
+		setVIProperties();
+		
+	}
 
+	private static void setVIProperties() throws VocabularyException
+	{
+		Properties vocabProperties = VocabUtil.getVocabProperties();
+		VIProperties.sourceVocabName = vocabProperties.getProperty("source.vocab.name");
+		VIProperties.sourceVocabVersion = vocabProperties.getProperty("source.vocab.version");
+		VIProperties.sourceVocabUrn = vocabProperties.getProperty("source.vocab.urn");
+		VIProperties.searchAlgorithm = vocabProperties.getProperty("match.algorithm");
+		VIProperties.maxPVsToShow = Integer.valueOf(vocabProperties.getProperty("pvs.to.show"));
+		VIProperties.maxToReturnFromSearch = Integer.valueOf(vocabProperties.getProperty("max.to.return.from.search"));
+		VIProperties.translationAssociation = vocabProperties.getProperty("vocab.translation.association.name");
+		VIProperties.medClassName = vocabProperties.getProperty("med.class.name");
+		
 	}
 
 	private static void readProperties()
