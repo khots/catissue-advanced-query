@@ -63,15 +63,15 @@ public class WorkflowAction extends Action
 	{
 		//Retrieve the Project list
 		
-		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
-				Constants.SESSION_DATA);
-		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory
-				.getDefaultAbstractUIQueryManager();
-		List<NameValueBean> projectList = qUIManager.getObjects(sessionDataBean.getUserId());
-
-		if (projectList != null)
-		{
-			request.setAttribute(Constants.PROJECT_NAME_VALUE_BEAN, projectList);
-		}
+//		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
+//				Constants.SESSION_DATA);
+//		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory
+//				.getDefaultAbstractUIQueryManager();
+//		List<NameValueBean> projectList = qUIManager.getObjects(sessionDataBean.getUserId());
+//
+//		if (projectList != null)
+//		{
+//			request.setAttribute(Constants.PROJECT_NAME_VALUE_BEAN, projectList);
+//		}
 	}
 }
