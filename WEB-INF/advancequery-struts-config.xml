@@ -215,6 +215,8 @@ PUBLIC
 			<forward name="success" path=".query.collectQueryParameter"/>
 			<forward name="failure" path="/RetrieveQueryAction.do"/>
 			<forward name="executeQuery" path="/ExecuteQueryAction.do"/>
+			<forward name="editDataQuery" path="/SearchCategory.do" />
+			<forward name="editCountQuery" path="/QueryGetCount.do" />
 		</action>
 		<action path="/loadDefineSearchRules"
 			type="edu.wustl.query.action.LoadDefineSearchRulesAction"
@@ -518,12 +520,6 @@ PUBLIC
         
         <action path="/WorkflowAjaxHandler" 
         type="edu.wustl.query.action.WorkflowAjaxHandlerAction"
-        validate="false"
-		scope="request">
-        </action>
-        
-        <action path="/SaveWorkflowAjaxHandler" 
-        type="edu.wustl.query.action.SaveWorkflowAjaxHandlerAction"
         validate="false"
 		scope="request">
         </action>
