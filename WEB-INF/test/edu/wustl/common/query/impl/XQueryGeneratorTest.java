@@ -124,10 +124,12 @@ public class XQueryGeneratorTest
 			QueryBuilder.addCondition(address, "postalCode", RelationalOperator.Equals, "3452");
 			
 			
-			List<IOutputAttribute> outputAttriubtes = new ArrayList<IOutputAttribute>();
-			QueryBuilder.addToList(outputAttriubtes, joinGraph.getRoot(), "personUpi");
+			List<IOutputAttribute> outputAttributes = new ArrayList<IOutputAttribute>();
+			QueryBuilder.addOutputAttribute(outputAttributes, joinGraph.getRoot(), "personUpi");
+			QueryBuilder.addOutputAttribute(outputAttributes, race, "id");
+			QueryBuilder.addOutputAttribute(outputAttributes, gender, "id");
 			
-			query.setOutputAttributeList(outputAttriubtes);
+			query.setOutputAttributeList(outputAttributes);
 
 			String xquery = xQueryGenerator.generateQuery(query);
 
@@ -142,7 +144,7 @@ public class XQueryGeneratorTest
 		}
 	}
 
-	
+	@Test
 	public void demographicsLabDetailsTest()
 	{
 		try
@@ -161,6 +163,10 @@ public class XQueryGeneratorTest
 			QueryBuilder.createExpression(constraints, lab,
 					Constants.LABORATORY_PROCEDURE_DETAILS);
 			//add conditions on details
+			
+			List<IOutputAttribute> outputAttributes = new ArrayList<IOutputAttribute>();
+			QueryBuilder.addOutputAttribute(outputAttributes, joinGraph.getRoot(), "personUpi");
+			query.setOutputAttributeList(outputAttributes);
 
 			String xquery = xQueryGenerator.generateQuery(query);
 		}

@@ -301,10 +301,10 @@ public class QueryBuilder
 		return null;
 	}
 
-	public static void addToList(List<IOutputAttribute> outputAtteributes, IExpression expression, String attributeName)
+	public static void addOutputAttribute(List<IOutputAttribute> outputAttributes, IExpression expression, String attributeName)
 	{
 		AttributeInterface attribute = findAttribute(expression.getQueryEntity().getDynamicExtensionsEntity(), attributeName);
-		outputAtteributes.add(new OutputAttribute(expression, attribute));
+		outputAttributes.add(new OutputAttribute(expression, attribute));
 	}
 	
 	
