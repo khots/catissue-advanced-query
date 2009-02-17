@@ -25,6 +25,7 @@ import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.enums.QueryType;
 import edu.wustl.query.queryengine.impl.IQueryGenerator;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
 import edu.wustl.query.util.querysuite.QueryDetails;
@@ -56,13 +57,13 @@ public class ValidateQueryBizLogic
 		String validationMessage = null;
 		boolean isRulePresentInDag = QueryModuleUtil.checkIfRulePresentInDag(query);
 		String pageOf = request.getParameter(Constants.PAGE_OF);
-		String workflow = request.getParameter("workflow");
+		String workflow = request.getParameter("isWorkflow");
 		String queryType = null;
 		if(query!=null)
 			queryType =((Query)query).getType();
 		 if("true".equals(workflow))
 		 {
-			 request.setAttribute("workflow","true"); 
+			 request.setAttribute("isWorkflow","true"); 
 		 }
 		String queryTile=request.getParameter("queyTitle");
 		if( !("DefineFilter".equals(pageOf) || "DefineView".equals(pageOf) || (QueryType.GET_DATA.type).equals(queryType)) && queryTile==null||"".equals(queryTile))
@@ -145,6 +146,9 @@ public class ValidateQueryBizLogic
 		HttpSession session = request.getSession();
 		AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(ValidateQueryBizLogic.class, request, query);
 		queryUIManager.updateQueryForValidation();
+        
+		if(((Query)query).getType().equals(QueryType.GET_DATA.type))
+		   Variables.queryGeneratorClassName = "edu.wustl.common.query.impl.PassTwoXQueryGenerator";
 		IQueryGenerator queryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
 		String selectSql=null;
 		try
