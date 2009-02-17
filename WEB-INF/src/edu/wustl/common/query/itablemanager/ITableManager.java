@@ -10,7 +10,6 @@ import java.sql.Statement;
 
 import edu.wustl.common.dao.DatabaseConnectionParams;
 import edu.wustl.common.query.AbstractQuery;
-import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.querymanager.Count;
