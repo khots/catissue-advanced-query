@@ -143,18 +143,18 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			throws VocabularyException, PVManagerException
 	{
 		IVocabulary sourceVocabulary = getVocabulary(VIProperties.sourceVocabUrn);
-		String associationName = VocabUtil.getVocabProperties().getProperty("vocab.translation.association.name");
+		String associationName = VIProperties.translationAssociation;
 		Map<String, List<IConcept>> mappedConcepts = new HashMap<String, List<IConcept>>();
 		try
 		{
 			List<PermissibleValueInterface> permissibleValues = pvManager.getPermissibleValueList(
 					attribute, entity);
 			
-			if(permissibleValues !=null && permissibleValues.isEmpty())
+			if(permissibleValues !=null && !permissibleValues.isEmpty())
 			{
 				for(PermissibleValueInterface perValueInterface:permissibleValues)
 				{
-					List<IConcept> conList = sourceVocabulary.getMappedConcepts(perValueInterface.getValueAsObject().toString(), associationName, targetVocabulary);
+					List<IConcept> conList = sourceVocabulary.getMappedConcepts(perValueInterface.getValueAsObject().toString(), VIProperties.translationAssociation, targetVocabulary);
 					if(conList != null && conList.isEmpty())
 					{
 						mappedConcepts.put(perValueInterface.getValueAsObject().toString(), conList);
