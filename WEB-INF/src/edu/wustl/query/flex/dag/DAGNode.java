@@ -97,8 +97,16 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 		}
 		int totalConditions = rule.size();
 
-		sb.append("Condition(s) on  \n");
-		generateFormattedString(sb, rule, totalConditions);
+		if(totalConditions >0)
+		{
+			sb.append("Condition(s) on  \n");
+			generateFormattedString(sb, rule, totalConditions);
+		}
+		else
+		{
+			sb.append("No Condition Added \n");
+		}
+		
 		this.toolTip = sb.toString();
 	}
 
