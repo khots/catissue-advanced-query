@@ -66,11 +66,7 @@ public class ViewResultsAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
-		int queryExecutionID = 4; //need to get From request
-		if(request.getAttribute("")!=null)
-		{
-			queryExecutionID = (Integer)request.getAttribute("");
-		}
+		int queryExecutionID = 165; //need to get From request
 		String id = request.getParameter("dataQueryId");
 		Long iqueryId = Long.valueOf(257);
 		if(id != null && !id.equals(""))
@@ -79,8 +75,10 @@ public class ViewResultsAction extends Action
 		}
 		session.setAttribute("dataQueryId",iqueryId);
 		String qid = (String) request.getParameter("queryExecutionId");
+		
 		if(qid!=null)
 		{
+			queryExecutionID = Integer.parseInt(qid);
 			session.setAttribute(Constants.QUERY_EXECUTION_ID, Integer.parseInt(qid));
 		}
 	 	;//need to get From request
