@@ -1,6 +1,5 @@
 package edu.wustl.query.action;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -51,12 +50,13 @@ public class SearchMappedPVsAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		final String targetVocab = request.getParameter("selectedCheckBox");
+		
+		 final String targetVocab = request.getParameter(Constants.SELECTED_BOX);
 		//get the id of the component on which user click to search for PVs
-		String componentId = request.getParameter("componentId");
+		String componentId = request.getParameter(Constants.COMPONENT_ID);
 		if (componentId == null)
 		{
-			//need to save componetid into the session for next Ajax requests
+			//need to save component id into the session for next Ajax requests
 			componentId = (String) request.getSession().getAttribute(Constants.COMPONENT_ID);
 		}
 		String entityName = (String) request.getSession().getAttribute(Constants.ENTITY_NAME);
@@ -98,17 +98,15 @@ public class SearchMappedPVsAction extends Action
 		StringBuffer html = new StringBuffer();
 	
 		List<IConcept> pvList = bizLogic.getConfiguredPermissibleValueList(attribute, entity);
-		IVocabulary sourceVocabulary = bizLogic.getVocabulary(VIProperties.sourceVocabUrn);
-		String vocabName = sourceVocabulary.getName();
-		String vocabVer = sourceVocabulary.getVersion();
-		String vocabDisName = bizLogic.getDisplayNameForVocab(vocabName, vocabVer);
-		html.append(bizLogic.getRootVocabularyNodeHTML(vocabName, vocabVer, vocabDisName));
+		String vocabURN = VIProperties.sourceVocabUrn;
+		String vocabDisName = bizLogic.getDisplayNameForVocab(vocabURN);
+		html.append(bizLogic.getRootVocabularyNodeHTML(vocabURN, vocabDisName));
 		if(pvList != null && !pvList.isEmpty())
 		{
 			for(IConcept concept:pvList)
 			{
-				String id = vocabName + "@" + vocabVer + ":" + concept.getCode();
-				html.append(bizLogic.getHTMLForConcept(vocabName, vocabVer, concept,id));
+				String checkboxId = vocabURN + Constants.ID_DEL + concept.getCode();
+				html.append(bizLogic.getHTMLForConcept(vocabURN,concept,checkboxId));
 			}
 			html.append(bizLogic.getEndHTML());
 			if( pvList.size()==VIProperties.maxPVsToShow)// Need to show Message Too Many Result on UI 
@@ -144,20 +142,17 @@ public class SearchMappedPVsAction extends Action
 		IVocabulary souVocabulary = bizLogic.getVocabulary(VIProperties.sourceVocabUrn);
 		// Get the target vocabulary info from parameter
 		String targetVacbArray[] = targetVocab.split("#");
-		String targetVocabName = targetVacbArray[0];
-		String targetVocabVer = targetVacbArray[1];
-		String targetVocabURN = targetVacbArray[2];
-		String targetVocabDisName = targetVacbArray[3];
+		String targetVocabURN = targetVacbArray[0];
+		String targetVocabDisName = targetVacbArray[1];
 		IVocabulary targVocabulary = bizLogic.getVocabulary(targetVocabURN);
 		
 		StringBuffer html = new StringBuffer();
 		if (!((Vocabulary)souVocabulary).equals(targVocabulary))
 			{
-				html.append(bizLogic.getRootVocabularyNodeHTML(targetVocabName, targetVocabVer,
-						targetVocabDisName));
+				html.append(bizLogic.getRootVocabularyNodeHTML(targetVocabURN,targetVocabDisName));
 				Map<String, List<IConcept>> vocabMappings = bizLogic.getMappedConcepts(attribute,
 						targVocabulary, entity);
-				html.append(getMappedHTMLForTargetVocab(targetVocabName, targetVocabVer, vocabMappings));
+				html.append(getMappedHTMLForTargetVocab(targetVocabURN,vocabMappings));
 	
 			}
 
@@ -172,7 +167,7 @@ public class SearchMappedPVsAction extends Action
 	 * @throws VocabularyException 
 	 * @throws NumberFormatException 
 	 */
-	private StringBuffer getMappedHTMLForTargetVocab(String vocabName, String vocabversoin,
+	private StringBuffer getMappedHTMLForTargetVocab(String vocabURN,
 			Map<String, List<IConcept>> vocabMappings) throws NumberFormatException, VocabularyException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
@@ -197,9 +192,10 @@ public class SearchMappedPVsAction extends Action
 					if(displayPVCount<=VIProperties.maxPVsToShow)// Need to show only specified number of Concepts on UI
 					{
 						//we need to use the MED Concept code with mapped values
-					String checkboxId = vocabName + "@" + vocabversoin + ":" + conceptCode;
-					mappedHTML.append(bizLogic.getHTMLForConcept(vocabName, vocabversoin,
-							concept, checkboxId));
+						
+						
+					String checkboxId = vocabURN + Constants.ID_DEL + conceptCode;
+					mappedHTML.append(bizLogic.getHTMLForConcept(vocabURN,concept, checkboxId));
 					displayPVCount++;
 					}
 					else
