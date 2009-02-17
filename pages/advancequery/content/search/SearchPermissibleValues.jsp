@@ -460,7 +460,7 @@ function serachForTermInVocab(operation)
 				{
 					var vocabURN=vocabCheckboxes[i].id.replace("vocab_","");
 					var vocabDisplayName=document.getElementById("hidden_"+vocabURN).value;
-					targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocab[0]+vocabURN+"##"+vocabDisplayName+"@";
+					targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocabURN+"##"+vocabDisplayName+"@";
 					uncheckAllAndDeleteFromArray(vocabURN);
 				}
 			}
