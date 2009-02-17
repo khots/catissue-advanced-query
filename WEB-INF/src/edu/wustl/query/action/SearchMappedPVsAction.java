@@ -25,10 +25,10 @@ import edu.wustl.common.vocab.IConcept;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.VocabularyException;
 import edu.wustl.common.vocab.impl.Vocabulary;
-import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.bizlogic.SearchPermissibleValueBizlogic;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.VIProperties;
 
 /**
  * @author amit_doshi
@@ -36,6 +36,7 @@ import edu.wustl.query.util.global.Constants;
  */
 public class SearchMappedPVsAction extends Action
 {
+
 	/**
 	 * This method handles the various Ajax request for VI
 	 * @param mapping mapping
@@ -50,18 +51,16 @@ public class SearchMappedPVsAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		
-		 final String targetVocab = request.getParameter(Constants.SELECTED_BOX);
+		final String targetVocab = request.getParameter("selectedCheckBox");
 		//get the id of the component on which user click to search for PVs
-		String componentId = request.getParameter(Constants.COMPONENT_ID);
+		String componentId = request.getParameter("componentId");
 		if (componentId == null)
 		{
-			//need to save component id into the session for next Ajax requests
+			//need to save componetid into the session for next Ajax requests
 			componentId = (String) request.getSession().getAttribute(Constants.COMPONENT_ID);
 		}
 		String entityName = (String) request.getSession().getAttribute(Constants.ENTITY_NAME);
 		Entity entity = (Entity) EntityCache.getCache().getEntityById(Long.valueOf((entityName)));
-		
 		Map<String, AttributeInterface> enumAttributeMap = (HashMap<String, AttributeInterface>)
 		request.getSession().getAttribute(Constants.ENUMRATED_ATTRIBUTE);
 		
@@ -96,15 +95,15 @@ public class SearchMappedPVsAction extends Action
 
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		int count=Integer.parseInt( VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
 		StringBuffer html = new StringBuffer();
 	
 		List<IConcept> pvList = bizLogic.getConfiguredPermissibleValueList(attribute, entity);
-		String vocabName = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
-		String vocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
+		IVocabulary sourceVocabulary = bizLogic.getVocabulary(VIProperties.sourceVocabUrn);
+		String vocabName = sourceVocabulary.getName();
+		String vocabVer = sourceVocabulary.getVersion();
 		String vocabDisName = bizLogic.getDisplayNameForVocab(vocabName, vocabVer);
 		html.append(bizLogic.getRootVocabularyNodeHTML(vocabName, vocabVer, vocabDisName));
-		if(pvList!=null)
+		if(pvList != null && !pvList.isEmpty())
 		{
 			for(IConcept concept:pvList)
 			{
@@ -112,7 +111,7 @@ public class SearchMappedPVsAction extends Action
 				html.append(bizLogic.getHTMLForConcept(vocabName, vocabVer, concept,id));
 			}
 			html.append(bizLogic.getEndHTML());
-			if( pvList.size()==count)// Need to show Message Too Many Result on UI 
+			if( pvList.size()==VIProperties.maxPVsToShow)// Need to show Message Too Many Result on UI 
 			{
 				request.getSession().setAttribute(Constants.SRC_VOCAB_MESSAGE, bizLogic.getInfoMessage()
 						.replace("MSG$-$",""));
@@ -120,7 +119,7 @@ public class SearchMappedPVsAction extends Action
 		}
 		//set the data in session because need to show this data on page load
 		request.getSession().setAttribute(Constants.MED_PV_HTML, html.toString());
-		request.getSession().setAttribute(Constants.VOCABULIRES, bizLogic.getVocabulries());
+		request.getSession().setAttribute(Constants.VOCABULIRES, bizLogic.getVocabularies());
 		if (componentId != null)
 		{
 			request.getSession().setAttribute(Constants.COMPONENT_ID, componentId);
@@ -142,24 +141,22 @@ public class SearchMappedPVsAction extends Action
 
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		String sourceVocabulary = VocabUtil.getVocabProperties().getProperty("source.vocab.name");
-		String sourceVocabVer = VocabUtil.getVocabProperties().getProperty("source.vocab.version");
+		IVocabulary souVocabulary = bizLogic.getVocabulary(VIProperties.sourceVocabUrn);
 		// Get the target vocabulary info from parameter
 		String targetVacbArray[] = targetVocab.split("#");
 		String targetVocabName = targetVacbArray[0];
 		String targetVocabVer = targetVacbArray[1];
 		String targetVocabURN = targetVacbArray[2];
 		String targetVocabDisName = targetVacbArray[3];
-		IVocabulary targetVocabulary = new Vocabulary(targetVocabName, targetVocabVer,targetVocabURN);
+		IVocabulary targVocabulary = bizLogic.getVocabulary(targetVocabURN);
 		
 		StringBuffer html = new StringBuffer();
-		if (!sourceVocabulary.equalsIgnoreCase(targetVocabName)
-					|| !sourceVocabVer.equalsIgnoreCase(targetVocabVer))
+		if (!((Vocabulary)souVocabulary).equals(targVocabulary))
 			{
 				html.append(bizLogic.getRootVocabularyNodeHTML(targetVocabName, targetVocabVer,
 						targetVocabDisName));
 				Map<String, List<IConcept>> vocabMappings = bizLogic.getMappedConcepts(attribute,
-						targetVocabulary, entity);
+						targVocabulary, entity);
 				html.append(getMappedHTMLForTargetVocab(targetVocabName, targetVocabVer, vocabMappings));
 	
 			}
@@ -183,21 +180,21 @@ public class SearchMappedPVsAction extends Action
 		StringBuffer mappedHTML=new StringBuffer();
 		int displayPVCount=1;
 		boolean isMsgDisplayed=false;
-		int count=Integer.parseInt(VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
-		if (vocabMappings != null)
+		
+		if (vocabMappings != null && vocabMappings.size()!=0)
 		{
 			Set<String> keySet = vocabMappings.keySet();
 			Iterator<String> iterator = keySet.iterator();
 			while (iterator.hasNext())
 			{
 				String conceptCode = iterator.next();
-				List<IConcept> mappingList = (ArrayList) vocabMappings.get(conceptCode);
+				List<IConcept> mappingList = vocabMappings.get(conceptCode);
 				ListIterator<IConcept> mappingListItr = mappingList.listIterator();
 				while (mappingListItr.hasNext())
 				{
 					
 					IConcept concept = (IConcept) mappingListItr.next();
-					if(displayPVCount<=count)// Need to show only specified number of Concepts on UI
+					if(displayPVCount<=VIProperties.maxPVsToShow)// Need to show only specified number of Concepts on UI
 					{
 						//we need to use the MED Concept code with mapped values
 					String checkboxId = vocabName + "@" + vocabversoin + ":" + conceptCode;
@@ -227,6 +224,4 @@ public class SearchMappedPVsAction extends Action
 		
 		return mappedHTML;
 	}
-
-	
 }
