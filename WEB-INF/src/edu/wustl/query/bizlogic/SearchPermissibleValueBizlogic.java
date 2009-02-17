@@ -2,6 +2,7 @@
 package edu.wustl.query.bizlogic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,10 +19,10 @@ import edu.wustl.common.vocab.IConcept;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.IVocabularyManager;
 import edu.wustl.common.vocab.VocabularyException;
-import edu.wustl.common.vocab.impl.Vocabulary;
 import edu.wustl.common.vocab.impl.VocabularyManager;
 import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.VIProperties;
 
 
 /**
@@ -40,7 +41,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @return
 	 * @throws VocabularyException
 	 */
-	public List<IVocabulary> getVocabulries() throws VocabularyException
+	public List<IVocabulary> getVocabularies() throws VocabularyException
 	{
 		return vocabularyManager.getConfiguredVocabularies();
 	}
@@ -54,16 +55,13 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	public List<IConcept> getPermissibleValueList(AttributeInterface attribute,
 			EntityInterface entity) throws PVManagerException
 	{
-		List<IConcept> permissibleConcepts = null;
+		List<IConcept> permissibleConcepts = new ArrayList<IConcept>();
 		try
 		{
 			List<PermissibleValueInterface> permissibleValues = pvManager.getPermissibleValueList(
 					attribute, entity);
-			IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties()
-					.getProperty("source.vocab.name"), 
-					VocabUtil.getVocabProperties().getProperty("source.vocab.version"));
-			permissibleConcepts = vocabularyManager.getConceptDetails(
-					getConceptCodeList(permissibleValues), sourceVocabulary);
+			IVocabulary sourceVocabulary = getVocabulary(VIProperties.sourceVocabUrn);
+			permissibleConcepts = resolvePermissibleCodesToConcept(sourceVocabulary, permissibleValues);
 		}
 		catch (VocabularyException e)
 		{
@@ -88,19 +86,15 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		{
 			List<PermissibleValueInterface> permissibleValues = pvManager.getPermissibleValueList(
 					attribute, entity);
-			int configPVcount=Integer.parseInt(VocabUtil.getVocabProperties().getProperty("pvs.to.show"));
 			/*If the permissible values are more than the configured value
 			 * take the subset.
 			 */
-			if(permissibleValues.size() > configPVcount)
+			if(permissibleValues.size() > VIProperties.maxPVsToShow)
 			{
-				permissibleValues = permissibleValues.subList(0, configPVcount);
+				permissibleValues = permissibleValues.subList(0, VIProperties.maxPVsToShow);
 			}
-			IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties()
-					.getProperty("source.vocab.name"), 
-					VocabUtil.getVocabProperties().getProperty("source.vocab.version"));
-			permissibleConcepts = vocabularyManager.getConceptDetails(
-					getConceptCodeList(permissibleValues), sourceVocabulary);
+			IVocabulary sourceVocabulary = getVocabulary(VIProperties.sourceVocabUrn);
+			permissibleConcepts = resolvePermissibleCodesToConcept(sourceVocabulary,permissibleValues);
 		}
 		catch (VocabularyException e)
 		{
@@ -110,6 +104,25 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		}
 		return permissibleConcepts;
 	}
+	
+	private List<IConcept> resolvePermissibleCodesToConcept(IVocabulary sourceVocabulary,
+			List<PermissibleValueInterface> permissibleValues) throws VocabularyException
+	{
+		List<IConcept> permissibleConcepts = new ArrayList<IConcept>();
+		if(permissibleValues != null)
+		{
+			for(PermissibleValueInterface perValue:permissibleValues)
+			{
+				List<IConcept> concepts = sourceVocabulary.getConceptForCode(perValue.getValueAsObject().toString());
+				if(concepts != null)
+				{
+					permissibleConcepts.addAll(concepts);
+				}
+			}
+		}
+		return permissibleConcepts;
+	}
+	
 	public List<PermissibleValueInterface> getPermissibleValueListFromDB(AttributeInterface attribute,
 			EntityInterface entity) throws PVManagerException
 	{
@@ -129,20 +142,25 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			IVocabulary targetVocabulary, EntityInterface entity)
 			throws VocabularyException, PVManagerException
 	{
-		IVocabulary sourceVocabulary = new Vocabulary(VocabUtil.getVocabProperties().getProperty(
-				"source.vocab.name"), VocabUtil.getVocabProperties().getProperty(
-				"source.vocab.version"));
-		
-		List<IConcept> concepts;
-		Map<String, List<IConcept>> mappedConcepts = null;
+		IVocabulary sourceVocabulary = getVocabulary(VIProperties.sourceVocabUrn);
+		String associationName = VocabUtil.getVocabProperties().getProperty("vocab.translation.association.name");
+		Map<String, List<IConcept>> mappedConcepts = new HashMap<String, List<IConcept>>();
 		try
 		{
 			List<PermissibleValueInterface> permissibleValues = pvManager.getPermissibleValueList(
 					attribute, entity);
 			
-			concepts = vocabularyManager.getConceptDetails(getConceptCodeList(permissibleValues),
-					sourceVocabulary);
-			mappedConcepts = vocabularyManager.getMappedConcepts(concepts, targetVocabulary);
+			if(permissibleValues !=null && permissibleValues.isEmpty())
+			{
+				for(PermissibleValueInterface perValueInterface:permissibleValues)
+				{
+					List<IConcept> conList = sourceVocabulary.getMappedConcepts(perValueInterface.getValueAsObject().toString(), associationName, targetVocabulary);
+					if(conList != null && conList.isEmpty())
+					{
+						mappedConcepts.put(perValueInterface.getValueAsObject().toString(), conList);
+					}
+				}
+			}
 		}
 		catch (VocabularyException e)
 		{
@@ -151,25 +169,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 
 		return mappedConcepts;
 	}
-	/**
-	 * This method will return the concept code list
-	 * @param pvList
-	 * @return
-	 */
-	private List<String> getConceptCodeList(List<PermissibleValueInterface> pvList)
-	{
-		List<String> conceptCodes = null;
-		if (pvList != null)
-		{
-			conceptCodes = new ArrayList<String>();
-			for (PermissibleValueInterface pv : pvList)
-			{
-				conceptCodes.add(pv.getValueAsObject().toString());
-			}
-		}
-
-		return conceptCodes;
-	}
+	
 	/**
 	 * This method will search the given term in across all the vocabularies
 	 * @param term
@@ -178,11 +178,12 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @return
 	 * @throws VocabularyException
 	 */
-	public List<IConcept> searchConcept(String term, String vocabName, String vocabVersion)
+	public List<IConcept> searchConcept(String term, String vocabName, String vocabVersion,int maxToReturn)
 			throws VocabularyException
 	{
-		IVocabulary vocabulary = new Vocabulary(vocabName, vocabVersion);
-		return vocabularyManager.searchConcept(term, vocabulary);
+		IVocabulary vocabulary = vocabularyManager.getVocabulary(vocabName, vocabVersion);
+		
+		return vocabulary.searchConcept(term, VIProperties.searchAlgorithm, maxToReturn);
 
 	}
 	
@@ -343,10 +344,9 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @return
 	 * @throws VocabularyException
 	 */
-	public  List<IConcept> isSourceVocabCodedTerm(IConcept targetConcept, String relationType, IVocabulary baseVocab) throws VocabularyException
+	public  List<IConcept> isSourceVocabCodedTerm(IConcept targetConcept, String associationName, IVocabulary baseVocab) throws VocabularyException
 	{
-		 List<IConcept> concepts= vocabularyManager.getSrcConceptsForTarget(targetConcept,relationType,baseVocab);
-		
+		 List<IConcept> concepts= baseVocab.getSourceOf(targetConcept.getCode(), associationName, targetConcept.getVocabulary());
 		return concepts;
 		
 	}
@@ -410,7 +410,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		List<IVocabulary> vocabularies = bizLogic.getVocabulries();
+		List<IVocabulary> vocabularies = bizLogic.getVocabularies();
 		String vocabDisName = "";
 		for (IVocabulary vocabulary : vocabularies)
 		{
@@ -425,5 +425,11 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			throw new VocabularyException("Could not find the vocabulary.");
 		}
 		return vocabDisName;
+	}
+
+	public IVocabulary getVocabulary(String urn) throws VocabularyException
+	{
+		IVocabulary vocabulary = vocabularyManager.getVocabulary(urn);
+		return vocabulary;
 	}
 }
