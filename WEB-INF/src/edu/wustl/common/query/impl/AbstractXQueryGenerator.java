@@ -51,6 +51,7 @@ import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
+import edu.wustl.query.enums.QueryType;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.global.Variables;
@@ -134,7 +135,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		try
 		{
 			prepare(query);
-			formedQuery = formQuery();
+			formedQuery = formQuery(query);
 
 		}
 		catch (SQLXMLException e)
@@ -229,12 +230,12 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @throws DynamicExtensionsSystemException
 	 * @throws XQueryDataTypeInitializationException 
 	 */
-	private String formQuery() throws SqlException, MultipleRootsException, SQLXMLException,
+	private String formQuery(IQuery query) throws SqlException, MultipleRootsException, SQLXMLException,
 			DynamicExtensionsSystemException, XQueryDataTypeInitializationException
 	{
 		StringBuilder formedQuery = new StringBuilder();
 
-		formedQuery.append(buildSelectPart());
+		formedQuery.append(buildSelectPart(query));
 		String wherePart = buildWherePart(constraints.getRootExpression(), null);
 		wherePart = addJoiningTableCondition(wherePart);
 		PredicateGenerator predicateGenerator = new PredicateGenerator(forVariables, wherePart);
@@ -544,11 +545,18 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * throws
 	 * SQLXMLException
 	 */
-	private String buildSelectPart() throws SQLXMLException
+	private String buildSelectPart(IQuery query) throws SQLXMLException
 	{
-
+		
 		StringBuilder selectClause = new StringBuilder(256);
-		selectClause.append(Constants.SELECT);
+		if(query.getType().equals(QueryType.GET_COUNT))
+		{
+			selectClause.append(Constants.SELECT);
+		}
+		else
+		{
+			selectClause.append(Constants.SELECT_DISTINCT);
+		}
 
 		for (Entry<IOutputAttribute, String> entry : attributeAliases.entrySet())
 		{
