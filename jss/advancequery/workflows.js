@@ -35,7 +35,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 				id=columnContents[counter].value;
 				columnObj.appendChild(createHiddenElement("identifier","identifier_"+queryCount,columnContents[6]));
 				columnObj.appendChild(createHiddenElement("queryIdForRow","queryIdForRow_"+id,id));
-				columnObj.appendChild(createHiddenElement("queryExecId","queryExecId_"+id,0));
+				columnObj.appendChild(createHiddenElement("queryExecId","queryExecId_"+queryCount,0));
 			}
 			rowObj.appendChild(columnObj);
 		}
