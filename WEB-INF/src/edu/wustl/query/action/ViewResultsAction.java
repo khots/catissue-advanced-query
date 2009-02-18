@@ -59,14 +59,15 @@ import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.IQueryParseUtil;
 import edu.wustl.query.util.querysuite.QueryAddContainmentsUtil;
 import edu.wustl.query.util.querysuite.ResultsViewIQueryCreationUtil;
+import edu.wustl.query.viewmanager.ViewType;
 
 
 public class ViewResultsAction extends Action 
 {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
+	{ 
 		HttpSession session = request.getSession();
-		int queryExecutionID = 165; //need to get From request
+		int queryExecutionID = 4; //need to get From request
 		String id = request.getParameter("dataQueryId");
 		Long iqueryId = Long.valueOf(257);
 		if(id != null && !id.equals(""))
@@ -75,11 +76,10 @@ public class ViewResultsAction extends Action
 		}
 		session.setAttribute("dataQueryId",iqueryId);
 		String qid = (String) request.getParameter("queryExecutionId");
-		
 		if(qid!=null)
 		{
-			queryExecutionID = Integer.parseInt(qid);
-			session.setAttribute(Constants.QUERY_EXECUTION_ID, Integer.parseInt(qid));
+			queryExecutionID =Integer.parseInt(qid);
+			session.setAttribute(Constants.QUERY_EXECUTION_ID, queryExecutionID);
 		}
 	 	;//need to get From request
 	 	IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
@@ -141,7 +141,7 @@ public class ViewResultsAction extends Action
 //		ciderQuery.setQuery(generatedIQuery);
 		
 		AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedIQuery);
-		DataQueryResultsBean  dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID);
+		DataQueryResultsBean  dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID, ViewType.TREE_VIEW);
 		
 		List<List<Object>> dataList = dataQueryResultsBean.getAttributeList();
 

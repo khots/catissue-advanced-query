@@ -62,6 +62,7 @@ import edu.wustl.query.util.querysuite.IQueryParseUtil;
 import edu.wustl.query.util.querysuite.QueryAddContainmentsUtil;
 import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.ResultsViewIQueryCreationUtil;
+import edu.wustl.query.viewmanager.ViewType;
 
 /**
  * This class is invoked when user clicks on a node from the tree. It loads the data required for tree formation.
@@ -206,7 +207,7 @@ public class BuildQueryOutputTreeAction extends Action
 			}
 			
 			AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
-			DataQueryResultsBean dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID);
+			DataQueryResultsBean dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID, ViewType.TREE_VIEW);
 			List<List<Object>>  dataList = dataQueryResultsBean.getAttributeList();
 			//Till here i get the primary key indexes in the result set
 			
@@ -347,7 +348,7 @@ public class BuildQueryOutputTreeAction extends Action
 					   				//List<List<Object>>  dataList = resultBean.getAttributeList();
 					    		   	
 					    		   	AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
-					    		   	DataQueryResultsBean dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID); 
+					    		   	DataQueryResultsBean dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID, ViewType.TREE_VIEW); 
 					    			List<List<Object>>  dataList = dataQueryResultsBean.getAttributeList();
 					     
 					   				System.out.println("The dataList size is:"+dataList.size());
