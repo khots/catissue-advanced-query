@@ -15,6 +15,7 @@ import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.viewmanager.ViewType;
 
 public abstract class AbstractQueryUIManager {
 	
@@ -66,7 +67,7 @@ public abstract class AbstractQueryUIManager {
 	 */
 	abstract public void updateQueryForValidation() throws QueryModuleException;
 	
-	abstract public DataQueryResultsBean getData(int countQueryExecId,List<NodeInfo> upiList) throws QueryModuleException, DAOException, SQLException;
+	abstract public DataQueryResultsBean getData(int countQueryExecId,List<NodeInfo> upiList, ViewType viewType) throws QueryModuleException, DAOException, SQLException;
 	
-	abstract public DataQueryResultsBean getData(int countQueryExecId) throws QueryModuleException;
+	abstract public DataQueryResultsBean getData(int countQueryExecId, ViewType viewType) throws QueryModuleException;
 }
