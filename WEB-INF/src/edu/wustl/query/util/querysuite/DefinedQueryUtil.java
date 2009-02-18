@@ -52,7 +52,8 @@ public class DefinedQueryUtil
 	 */
 	public void updateQuery(IQuery query) throws UserNotAuthorizedException, BizLogicException
 	{
-		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) query;
+		IParameterizedQuery parameterizedQuery = populateParameterizedQueryData(query);
+		parameterizedQuery.setId(query.getId());
 		parameterizedQuery.setName(((IParameterizedQuery) query).getName());
 		edu.wustl.query.bizlogic.QueryBizLogic bizLogic = (edu.wustl.query.bizlogic.QueryBizLogic) AbstractBizLogicFactory
 				.getBizLogic(ApplicationProperties.getValue("app.bizLogicFactory"), "getBizLogic",
