@@ -30,11 +30,12 @@
 			var handlerFunction = getReadyStateHandler(request,showTreeNodeChildren,true);	
 	        request.onreadystatechange = handlerFunction; 
 			actionURL = "nodeId=" + nodeId;
-			var url = "UpdateTreeView.do";
+			var url = "BuildQueryOutputTree.do";
 	        request.open("POST",url,true);	
 			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 			request.send(actionURL);
 			
+			buildSpreadsheet(nodeId);			
 	   }
 	   function showTreeNodeChildren(response)
 	   {
