@@ -31,13 +31,13 @@ public class ViewManager
 		ViewManager viewManager = null;
 		switch (viewType)
 		{
-			case USER_DEFINED_VIEW :
+			case USER_DEFINED_SPREADSHEET_VIEW :
 				viewManager = new UserDefinedViewManager();
 				break;
-			case PRE_DEFINED_VIEW:
+			case PRE_DEFINED_SPREADSHEET_VIEW:
 				viewManager = new PreDefinedViewManager();
 				break;
-			case OBJECT_VIEW:
+			case OBJECT_SPREADSHEET_VIEW:
 				viewManager = new ObjectViewManager();
 				break;
 			default :
