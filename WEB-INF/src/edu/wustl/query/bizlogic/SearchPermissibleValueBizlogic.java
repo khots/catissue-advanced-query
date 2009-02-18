@@ -155,7 +155,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 				for(PermissibleValueInterface perValueInterface:permissibleValues)
 				{
 					List<IConcept> conList = sourceVocabulary.getMappedConcepts(perValueInterface.getValueAsObject().toString(), VIProperties.translationAssociation, targetVocabulary);
-					if(conList != null && conList.isEmpty())
+					if(conList != null && !conList.isEmpty())
 					{
 						mappedConcepts.put(perValueInterface.getValueAsObject().toString(), conList);
 					}
@@ -296,8 +296,8 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	public String getRootVocabularyHTMLForSearch(String vocabURN,
 			String vocabDisName)
 	{
-		String style="display:none"; 
-		String imgpath="src=\"images/advancequery/nolines_plus.gif\"/";
+		String style="display:"; 
+		String imgpath="src=\"images/advancequery/nolines_minus.gif\"/";
 		String tableHTML = "<table cellpadding ='0' cellspacing ='1'>";
 		return tableHTML 
 				+ "<tr><td>"
