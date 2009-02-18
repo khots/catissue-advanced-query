@@ -131,7 +131,7 @@ function addQuery()
 	var queryTitles=document.getElementById("queryTitle").options;
 	var queryTypes=document.getElementById("queryType").options;
 	var queryCount=document.getElementById("table1").rows.length;
-	var presentQueryIds=parent.window.document.getElementsByName("identifier");
+	var presentQueryIds=parent.window.document.getElementsByName("queryIdForRow");
 	var presentQueryTitle=parent.window.document.getElementsByName("displayQueryTitle");
 	var presentQueryType=parent.window.document.getElementsByName("displayQueryType");
 	
