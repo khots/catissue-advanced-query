@@ -426,7 +426,7 @@ function checkAllOnThisPageResponse()
 		<td width="90%">
 		
 			<table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" valign="top">
-			<tr class="tr_color_lgrey">
+			<tr class="tr_color_lgrey" style="display:none">
 					<td width="5%" nowrap valign="top" class="black_ar">
 						&nbsp;
 					</td>
