@@ -93,7 +93,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI NOT NULL and DEMOGRAPHICS DOB>10/10/1985");
 			
-			query = QueryUtility.getQuery(21L);
+			query = QueryUtility.getQuery(5L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -141,7 +141,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI NOT NULL and LABS, ACCESSION NUMBER CONTAINS 2008295007131");
 			
-			query = QueryUtility.getQuery(22L);
+			query = QueryUtility.getQuery(6L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -197,7 +197,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI NOT NULL");
 			
-			query = QueryUtility.getQuery(23L);
+			query = QueryUtility.getQuery(7L);
 			
 			ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -398,7 +398,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI NOT NULL and DEMOGRAPHICS DOB>10/10/1980");
 			
-			query = QueryUtility.getQuery(24L);
+			query = QueryUtility.getQuery(8L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -447,7 +447,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - DEMOGRAPHICS DOB between 1940 and 1970");
 			
-			query = QueryUtility.getQuery(25L);
+			query = QueryUtility.getQuery(9L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -493,7 +493,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI STARTS WITH 000000000000000008690");
 			
-			query = QueryUtility.getQuery(26L);
+			query = QueryUtility.getQuery(10L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -538,7 +538,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI ENDS WITH 3");
 			
-			query = QueryUtility.getQuery(27L);
+			query = QueryUtility.getQuery(11L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -584,7 +584,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UI IN 000000000000000008690923");
 			
-			query = QueryUtility.getQuery(28L);
+			query = QueryUtility.getQuery(12L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -618,7 +618,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 	}
 	
 	
-	/*public void testNOT_INOperator()
+	public void testNOT_INOperator()
 	{
 		int queryExecId = -1;
 		int noOfRecords = 0;
@@ -628,9 +628,9 @@ public class ASynchronousQueriesTestCases extends TestCase
 		try
 		{
 			System.out.println("\n\n*********************************************************");
-			System.out.println("QUERY - PERSON UI NOT IN 000000000000000008690923");
+			System.out.println("QUERY - PERSON UPI NOT IN 000000000000000008690923");
 			
-			query = QueryUtility.getQuery(45L);
+			query = QueryUtility.getQuery(13L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
 			
@@ -660,5 +660,5 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
 		}
-	}*/
+	}
 }
