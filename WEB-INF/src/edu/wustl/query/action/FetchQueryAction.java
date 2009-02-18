@@ -102,10 +102,12 @@ public class FetchQueryAction extends Action
 					if (query.getType().equalsIgnoreCase(Constants.QUERY_TYPE_GET_COUNT))
 					{
 						target = "editCountQuery";
+						request.getSession().setAttribute(Constants.Query_Type, Constants.QUERY_TYPE_GET_COUNT);
 					}
 					else
 					{
 						target = "editDataQuery";
+						request.getSession().setAttribute(Constants.Query_Type, Constants.QUERY_TYPE_GET_DATA);
 					}
 
 					request.setAttribute(Constants.CURRENT_PAGE, "editQuery");
