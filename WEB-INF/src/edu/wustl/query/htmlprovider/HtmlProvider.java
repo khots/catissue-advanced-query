@@ -728,7 +728,11 @@ public class HtmlProvider
 							conceptIds = conceptIds.substring(0, conceptIds.lastIndexOf(','));
 						}
 					}
-					String temp = "<input style=\"width:150px;\" type=\"hidden\" name=\""
+					String temp = "<td class=\"standardTextQuery\"  width=\"5\" valign=\"top\">"
+						+ "<input type=\"hidden\"   id='"
+						+ componentId
+						+ "_checkbox'></td>";
+					temp = temp + "<input style=\"width:150px;\" type=\"hidden\" name=\""
 						+ componentId + "_combobox\" id=\"" + componentId + "_combobox\" value=\"In\">";
 					generatedHTML.append(temp);
 					String textBoxId = componentId + "_textBox";
