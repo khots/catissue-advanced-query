@@ -231,8 +231,8 @@ function executeGetCountQuery(queryTitle,executionLogId)
 	}
 	else
 	{
-		var nameIdentifier=document.getElementsByName("identifier");
-		var numOfRows =nameIdentifier.length;
+		//var nameIdentifier=document.getElementsByName("identifier");
+		var numOfRows =document.getElementById("table1").rows.length;
 			for(var count = 0; count < numOfRows; count++)
 			{
 				var title=document.getElementById("identifier_"+count);
@@ -284,16 +284,16 @@ function responseHandler(response)
 				 var queryTitle = jsonResponse.executionQueryResults[i].queryTitle;
 
 
-				var nameIdentifier=document.getElementById("table1").rows;
-				var numOfRows =nameIdentifier.length;
+				//var nameIdentifier=document.getElementById("table1").rows;
+				var numOfRows =document.getElementById("table1").rows.length;
 				for(var count = 0; count < numOfRows; count++)
 				{
+					
 					var title=document.getElementById("identifier_"+count);
 					if(title.value==queryTitle)
 					{
 						var object=title.parentNode;
 						var tdChildCollection=object.getElementsByTagName('input');
-						
 						var queryId=tdChildCollection[2].id;
 						document.getElementById(queryId).value=jsonResponse.executionQueryResults[i].queryId;
 						document.getElementById(queryId).id="queryIdForRow_"+jsonResponse.executionQueryResults[i].queryId;
@@ -308,6 +308,7 @@ function responseHandler(response)
 					
 					   if(jsonResponse.queryTitle!=null&&jsonResponse.queryTitle==queryTitle)
 					   {
+						
 							workflowExecuteGetCountQuery(jsonResponse.executionQueryResults[i].queryId,0);
 						
 					   }
@@ -408,7 +409,6 @@ function workflowResponseHandler(response)
 							var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
 							var selectedquery=selectedqueryId.split("_");
 							queryIndex=selectedquery[1];
-							
 							//for setting the execution id
 
 							var queryExecId=tdChildCollection[3].id;
