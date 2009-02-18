@@ -116,7 +116,7 @@ public class SpreadSheetViewGenerator
 				.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
 
 		DataQueryResultsBean dataQueryResultsBean;
-		dataQueryResultsBean = ciderQueryUIManager.getData(queryExecutionId);
+		dataQueryResultsBean = ciderQueryUIManager.getData(queryExecutionId, ViewType.SPREADSHEET_VIEW);
 		spreadsheetData.setDataList(dataQueryResultsBean.getAttributeList());
 		spreadsheetData.setDataTypeList(dataQueryResultsBean.getDataTypesList());
 	}
