@@ -288,8 +288,9 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	{
 		StringBuffer buffer = new StringBuffer();
 		List<IExpression> children = joinGraph.getChildrenList(parentExpression);
-		if (!children.isEmpty())
-		{
+		
+//		if (!children.isEmpty())
+//		{
 			// processing all outgoing edges/nodes from the current node in the
 			// joingraph.
 			for (IExpression childExpression : children)
@@ -364,7 +365,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 					continue;
 				}
 			}
-		}
+//		}
 	
 		return buffer.toString();
 	}
