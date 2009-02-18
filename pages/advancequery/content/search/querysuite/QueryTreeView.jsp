@@ -104,7 +104,7 @@ treeNo = treeNo + 1;
 	%>	
 		
 	//Note : automatic node selection of first node is commented
-	//trees[0].selectItem("<%=rootNodeIdOfFirstTree%>",true);
+	resultTree.selectItem("<%=rootNodeIdOfFirstTree%>",true);
 	
 }
 </script>
