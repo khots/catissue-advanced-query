@@ -213,45 +213,30 @@ function addPvsToCondition()
 		{}
 			
 	}
-/*	alert("pvConceptCodeList--"+pvConceptCodeList);
-	alert("pvNameList--"+pvNameList);*/
-	
 		sendValueToParent(pvConceptCodeList,pvNameListWithCode,pvNameList)
 }
 // this method will send the selected values to the parent window from open child window
 function sendValueToParent(pvConceptCodeList,pvNameListWithCode,pvNameList)
 {
-		
-		/*var request = newXMLHTTPReq(); 
-		var param = "ConceptCodes"+"="+pvConceptCodeList+"&ConceptName="+pvNameListWithCode;
-		var actionUrl="SelectedPermissibleValue.do";
-		request.onreadystatechange=function(){setSelectedConceptCodes(request,pvConceptCodeList,pvNameList)};
-		request.open("POST",actionUrl,true);
-		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-		request.send(param);*/
 		parent.window.getValueFromChild(pvConceptCodeList,pvNameList);
 		parent.pvwindow.hide();
 }
-/*function setSelectedConceptCodes(request,pvConceptCodeList,pvNameList)
-{
-	if(request.readyState == 4)  
-	{	
-		if(request.status == 200)
-		{
-			var responseTextValue =  request.responseText;	
-			parent.window.getValueFromChild(pvConceptCodeList,pvNameList);
-			parent.pvwindow.hide();
-			return false;
-		}
-	}
-}*/
+
 //This method will be called when user clicks on the vocabulary check box
 function getMappingsOfConcepts(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 {
-	
+
+		continueMapping=true;
+		if(! isSelectedPVListEmpty())
+		{
+			continueMapping=confirm("All the selected Permissible Values will be removed. Do you want to continue? ");  
+		}
+		if(! continueMapping)
+		{
+			document.getElementById(vocabCheckBoxId).checked=false;
+		}
 	if(set_mode=="Mapping")
 	{
-		
 		var vocabDisplayName=document.getElementById("hidden_"+vocabURN).value;
 		document.getElementById("divForMappingMode").style.display = '';
 		document.getElementById("divForSearchingMode").style.display = 'none';
@@ -262,32 +247,32 @@ function getMappingsOfConcepts(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 			alert ("Your browser does not support AJAX!");
 			return;
 		}
-			
 		var selectedCheckedBoxVocabDivID="main_div_"+vocabCheckBoxId;
-		//var selectedCheckedBoxVocabDivID=selectedCheckedBoxVocabValue.substring(0,selectedCheckedBoxVocabValue.indexOf(" "));
-		if(document.getElementById(vocabCheckBoxId).checked)
+		
+		
+		if(document.getElementById(vocabCheckBoxId).checked && continueMapping )
 		{
-			var innerData=document.getElementById(selectedCheckedBoxVocabDivID).innerHTML;
-			 if(document.getElementById(selectedCheckedBoxVocabDivID).style.display == 'none' && innerData.length==0)
-				{
-					label.innerHTML="Please Wait.....";
-					waitCursor();
-					
-					 document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
-					 // send request only first time when user click on the check box for other click  just hide and show the div 
-					var param = "selectedCheckBox"+"="+vocabURN+"#"+vocabDisplayName;
-					var actionUrl="SearchMappedPV.do";
-					request.onreadystatechange=function(){setMappedConceptsToVocabDIV(request,selectedCheckedBoxVocabDivID)};
-					request.open("POST",actionUrl,true);
-					request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-					request.send(param);
-					 
-				}
-				else if(innerData.length>0)
-				{
-				  document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
-				  
-				}
+				 var innerData=document.getElementById(selectedCheckedBoxVocabDivID).innerHTML;
+				 if(document.getElementById(selectedCheckedBoxVocabDivID).style.display == 'none' && innerData.length==0)
+					{
+						label.innerHTML="Please Wait.....";
+						waitCursor();
+						
+						 document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
+						 // send request only first time when user click on the check box for other click  just hide and show the div 
+						var param = "selectedCheckBox"+"="+vocabURN+"#"+vocabDisplayName;
+						var actionUrl="SearchMappedPV.do";
+						request.onreadystatechange=function(){setMappedConceptsToVocabDIV(request,selectedCheckedBoxVocabDivID)};
+						request.open("POST",actionUrl,true);
+						request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+						request.send(param);
+						 
+					}
+					else if(innerData.length>0)
+					{
+					  document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
+					  
+					}
 				 
 		}
 		else if (! document.getElementById(vocabCheckBoxId).checked)
@@ -295,33 +280,46 @@ function getMappingsOfConcepts(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 				 document.getElementById(selectedCheckedBoxVocabDivID).style.display = 'none';
 				
 		}
-			
-		/* code to support one vocab at a time  START*/
+	}
+	if(continueMapping)
+		{
+		var elements=document.getElementsByName("vocabNameAndVersionCheckbox");
+				for(var i=0;i<elements.length;i++)
+				{
+					if(elements[i].id==vocabCheckBoxId)
+					{
+						document.getElementById("main_div_"+elements[i].id).style.display = '';
+					}
+					else
+					{
+						var vURN=elements[i].id.replace("vocab_","");
+						document.getElementById("main_div_"+elements[i].id).style.display = 'none';
+						uncheckAllAndDeleteFromArray(vURN);
+						//need to delete all the rows of right hand side selected list
+						tableid =document.getElementById("selectedPermValues_"+vURN);
+						for(var j=0;j<tableid.rows.length;j++)
+						{
+							tableid.rows[j].myRow.one.checked=1;
+						}
+						deleteSelectedPvsRow();
+					}
+						
+				}
+		}
+}
+function isSelectedPVListEmpty()
+{
 		var elements=document.getElementsByName("vocabNameAndVersionCheckbox");
 		for(var i=0;i<elements.length;i++)
 		{
-			if(elements[i].id!=vocabCheckBoxId)
-			{
 				var vURN=elements[i].id.replace("vocab_","");
-				document.getElementById("main_div_"+elements[i].id).style.display = 'none';
-				uncheckAllAndDeleteFromArray(vURN);
-				//need to delete all the rows of right hand side selected list
 				var tableid =document.getElementById("selectedPermValues_"+vURN);
-				for(var j=0;j<tableid.rows.length;j++)
+				if(tableid.rows.length>0)
 				{
-					tableid.rows[j].myRow.one.checked=1;
+					return false;
 				}
-				deleteSelectedPvsRow();
-			}
-			else
-			{
-				document.getElementById("main_div_"+elements[i].id).style.display = '';
-			}
-				
 		}
-		/* to support one vocab at a time  ENDED*/
-		
-	}
+		return true;
 }
 /* used to set the data in the div based the which checked box clicked */
 function setMappedConceptsToVocabDIV(request,selectedCheckedBoxVocabDivID)
@@ -559,6 +557,11 @@ function restoreDefault()
 	document.getElementById("divForSearchingMode").innerHTML="";
 	document.getElementById("searchtextfield").value="";
 	label.innerHTML="";
+	<%if(sourceVocabMessage!=null)
+	{%>
+		//set the messgage if concept code greater then configured value
+		label.innerHTML='<%=sourceVocabMessage%>';
+	<%}%>
 	
 	var targetVocabsForMappingMode="";
 	void(d=document);
