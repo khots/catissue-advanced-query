@@ -49,7 +49,7 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 </table>
 </td>
 </tr>
-<tr height="5%" valign="top"> 
+<tr height="5%" valign="top" style="display:none"> 
 		<td colspan="4" valign="top" height="10%">
 		<table border="0"  width="100%" cellspacing="0" cellpadding="0"   height="24"  >
 		<tr height="1%" valign="top">
