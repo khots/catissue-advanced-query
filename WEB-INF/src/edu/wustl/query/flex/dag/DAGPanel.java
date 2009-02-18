@@ -2011,6 +2011,10 @@ public class DAGPanel
 				null);
 		EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
 		
+		//added by amit_doshi to reset the edited entity in session for VI pop up
+		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
+		HttpSession session = request.getSession();
+		session.setAttribute(Constants.ENTITY_NAME, entity.getId()+"");
 		
 		List<ICondition> conditions = new ArrayList<ICondition>();
 		if(expression.numberOfOperands() > 0)
