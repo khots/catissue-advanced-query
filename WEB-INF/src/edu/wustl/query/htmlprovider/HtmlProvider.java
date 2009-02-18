@@ -704,10 +704,47 @@ public class HtmlProvider
 				}
 				collection.add(attribute);
 				String componentId = generateComponentName(attribute);
-				isBGColor = getAlternateHtmlForSavedQuery(
-						generatedHTML, isBGColor,componentId);
-				generatedHTML.append(getHtmlAttributeSavedQuery(
-						entity, dagNodeId, attribute));
+				ICondition condition=null;
+				if(attributeDetails.getAttributeNameConditionMap()!=null)
+				{
+					condition = attributeDetails.getAttributeNameConditionMap().
+					get(attributeDetails.getAttrName());
+				}
+				if(HtmlUtility.isAttrHidden(attribute))
+				{
+					//generatedHTML.append("<tr>");
+					//generatedHTML.append("<td>");
+					String conceptIds = "";
+					if(condition!=null)
+					{
+						List<String> conceptIds1=condition.getValues();
+						if(conceptIds1 != null)
+						{
+
+							for(String concept : conceptIds1)
+							{
+								conceptIds = conceptIds + concept + ",";
+							}
+							conceptIds = conceptIds.substring(0, conceptIds.lastIndexOf(','));
+						}
+					}
+					String temp = "<input style=\"width:150px;\" type=\"hidden\" name=\""
+						+ componentId + "_combobox\" id=\"" + componentId + "_combobox\" value=\"In\">";
+					generatedHTML.append(temp);
+					String textBoxId = componentId + "_textBox";
+					temp = "<input style=\"width:150px;\" type=\"hidden\" name=\""
+						+ textBoxId + "\" id=\"" + textBoxId + "\" value=\"" + conceptIds + "\">";
+					generatedHTML.append(temp);
+					//generatedHTML.append("</td></tr>");
+				}
+				else
+				{
+					isBGColor = getAlternateHtmlForSavedQuery(
+							generatedHTML, isBGColor,componentId);
+					generatedHTML.append(getHtmlAttributeSavedQuery(
+							entity, dagNodeId, attribute));
+				}
+
 
 			}
 
