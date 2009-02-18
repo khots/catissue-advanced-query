@@ -376,7 +376,7 @@ function executeGetDataQuery(dataQueryId)
 	  	var identifier=document.getElementById("queryIdForRow_"+countQueryId);
 		var object=identifier.parentNode;
 		var tdChildCollection=object.getElementsByTagName('input');
-		var executinIDElement=tdChildCollection[2].id;
+		var executinIDElement=tdChildCollection[3].id;
 		var exId= document.getElementById(executinIDElement).value;
 	   document.forms[0].action="\QueryResultsView.do?dataQueryId="+dataQueryId+"&queryExecutionId="+exId;
 	   document.forms[0].submit();
