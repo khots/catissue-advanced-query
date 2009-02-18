@@ -524,6 +524,12 @@ PUBLIC
 		scope="request">
         </action>
         
+        <action path="/SaveWorkflowAjaxHandler" 
+        type="edu.wustl.query.action.SaveWorkflowAjaxHandlerAction"
+        validate="false"
+		scope="request">
+        </action>
+        
         <action path="/RecentQueriesAjaxHandler" 
         type="edu.wustl.query.action.RecentQueriesAjaxHandlerAction"
         validate="false"
