@@ -762,7 +762,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String MED_MAPPED_N_NOT_VALIED_PVCONCEPT = "Bold_Italic_Disabled";
 	public static final String NOT_MED_MAPPED_PVCONCEPT = "Normal_Italic_Disabled";
 	public static final String NOT_MED_VALED_PVCONCEPT = "Normal_Disabled";
-	public static final String ID_DEL = "$ID_DEL$"; 
+	public static final String ID_DEL = "~ID_DEL~"; 
 	
 	/**
 	 * Query ITABLE
