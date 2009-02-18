@@ -56,7 +56,7 @@ public interface WherePartParserConstants {
     "<PREFIX_UNARY_OPERATOR>",
     "<PREFIX_BINARY_OPERATOR>",
     "<INFIX_OPERATOR>",
-    "<LOGICAL_OPERATOR>",
+    "\"and\"",
     "<CONDITION_ATTRIBUTE>",
     "<DIGITS>",
     "<NUMBER>",
