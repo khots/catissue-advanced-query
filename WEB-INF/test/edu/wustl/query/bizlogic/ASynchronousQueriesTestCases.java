@@ -123,8 +123,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 		catch (Exception e)
 		{
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
-			fail("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
+			fail("AN EXCEPTION HAS OCCURRED........");
 		}
 	}
 	
@@ -171,8 +171,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 		catch (Exception e)
 		{
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
-			fail("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
+			fail("AN EXCEPTION HAS OCCURRED........");
 		}
 	}
 	
@@ -248,8 +248,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 		catch (Exception e)
 		{
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
-			fail("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
+			fail("AN EXCEPTION HAS OCCURRED........");
 		}
 		
 		System.out.println("\n XQUERY :: "+ ciderQueryObj.getQueryString() +"\n\n");
@@ -428,8 +428,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 		catch (Exception e)
 		{
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
-			fail("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
+			fail("AN EXCEPTION HAS OCCURRED........");
 		}
 	}
 	
@@ -475,8 +475,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 		catch (Exception e)
 		{
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
-			fail("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
+			fail("AN EXCEPTION HAS OCCURRED........");
 		}
 	}
 	
@@ -521,8 +521,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 		catch (Exception e)
 		{
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
-			fail("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
+			fail("AN EXCEPTION HAS OCCURRED........");
 		}
 	}
 	
@@ -566,8 +566,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 		catch (Exception e)
 		{
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
-			fail("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
+			fail("AN EXCEPTION HAS OCCURRED........");
 		}
 	}
 	
@@ -612,8 +612,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 		catch (Exception e)
 		{
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
-			fail("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
+			fail("AN EXCEPTION HAS OCCURRED........");
 		}
 	}
 	
@@ -659,6 +659,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 		{
 			System.out.println("AN EXCEPTION HAS OCCURRED........");
 			e.printStackTrace();
+			fail("AN EXCEPTION HAS OCCURRED........");
 		}
 	}
 }
