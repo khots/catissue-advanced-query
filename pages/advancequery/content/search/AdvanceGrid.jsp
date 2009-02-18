@@ -159,7 +159,7 @@ function setEditableChkbox(checkAllPages)
 
 	var columns = <%="\""%><%int col;%><%for(col=0;col<(columnList.size()-1);col++){%><%=columnList.get(col)%>,<%}%><%=columnList.get(col)%><%="\""%>;
     var colWidth = "<%=Utility.getColumnWidth(columnList)%>";
-	var colTypes = <%="\""%><%=Variables.prepareColTypes(dataList,true)%><%="\""%>;
+	var colTypes = <%="\""%><%=Variables.prepareColTypes(dataList,false)%><%="\""%>;
 	var colDataTypes = colTypes;
 	
 	while(colDataTypes.indexOf("str") !=-1)
