@@ -164,12 +164,14 @@ public abstract class IQueryParseUtil
 	{
 		Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap =  new HashMap<OutputTreeDataNode, List<OutputTreeDataNode>>();
 		List <OutputTreeDataNode> mainChildrenList  = mainTreeDataNode.getChildren();
-		if((mainChildrenList != null)  && (!mainChildrenList.isEmpty()))
+		List <OutputTreeDataNode> childrenList = new ArrayList<OutputTreeDataNode>();
+		childrenList.addAll(mainChildrenList);
+		if((childrenList != null)  && (!childrenList.isEmpty()))
 		{
 			parentChildrenMap.put(mainTreeDataNode, mainChildrenList);
 			
 			//Now for each children ,find their further children
-			getChildrenForEachMainChild(mainChildrenList,parentChildrenMap);
+			getChildrenForEachMainChild(childrenList,parentChildrenMap);
 		}
 		
 		return parentChildrenMap;
