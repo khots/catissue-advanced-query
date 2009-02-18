@@ -284,7 +284,7 @@ function responseHandler(response)
 				 var queryTitle = jsonResponse.executionQueryResults[i].queryTitle;
 
 
-				var nameIdentifier=document.getElementsByName("identifier");
+				var nameIdentifier=document.getElementById("table1").rows;
 				var numOfRows =nameIdentifier.length;
 				for(var count = 0; count < numOfRows; count++)
 				{
@@ -293,7 +293,7 @@ function responseHandler(response)
 					{
 						var object=title.parentNode;
 						var tdChildCollection=object.getElementsByTagName('input');
-
+						
 						var queryId=tdChildCollection[2].id;
 						document.getElementById(queryId).value=jsonResponse.executionQueryResults[i].queryId;
 						document.getElementById(queryId).id="queryIdForRow_"+jsonResponse.executionQueryResults[i].queryId;
@@ -387,7 +387,7 @@ function executeGetDataQuery(dataQueryId)
 
 function workflowResponseHandler(response)
 {
-  var jsonResponse = eval('('+ response+')');
+		  var jsonResponse = eval('('+ response+')');
           var hasValue = false;
           if(jsonResponse.executionQueryResults!=null)
           {
@@ -408,7 +408,7 @@ function workflowResponseHandler(response)
 							var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
 							var selectedquery=selectedqueryId.split("_");
 							queryIndex=selectedquery[1];
-
+							
 							//for setting the execution id
 
 							var queryExecId=tdChildCollection[3].id;
