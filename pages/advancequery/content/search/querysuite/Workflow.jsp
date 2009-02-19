@@ -111,7 +111,7 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 	var cqId="";
 
 	var rowContents=new Array(7);
-	rowContents[0]=createCheckBox("chkbox","checkbox_"+queryCount,'',queryCount);
+	rowContents[0]=createCheckBox("chkbox","checkbox_"+queryCount,'',queryCount,false);
 	rowContents[1]=createTextElement(cqTitle);
 	rowContents[2]=createTextElement(cqType);
 	//rowContents[3]=createTextElement(operandsTdContent);
@@ -670,11 +670,26 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 						   			<logic:iterate id="singleQueryId" name="workflowForm" property="selectedqueryId" indexId="queryIndex" >
 
 									<tr bgcolor="#ffffff" class="td_bgcolor_white" height="22">
+									 <c:set var="qtype" value="${workflowForm.displayQueryType[queryIndex]}"/>
+									  <logic:equal name="query_type_data" value="${qtype}">
 						   				<td class="content_txt" width="10">
+												
 						   					<c:set var="chkId">chk_<c:out value="${queryIndex}"/></c:set>
+											${qtype}
 						   					<html:checkbox property="chkbox" styleId="checkbox_${queryIndex}"
-											onclick="javascript:setCheckboxCount()"></html:checkbox>
+											onclick="javascript:setCheckboxCount()" disabled="true"></html:checkbox>
 						   				</td>
+										</logic:equal>
+										<logic:notEqual name="query_type_data" value="${qtype}">
+											<td class="content_txt" width="10">
+												
+						   					<c:set var="chkId">chk_<c:out value="${queryIndex}"/></c:set>
+											${qtype}
+						   					<html:checkbox property="chkbox" styleId="checkbox_${queryIndex}"
+											onclick="javascript:setCheckboxCount()" disabled="false"></html:checkbox>
+						   				</td>
+										</logic:notEqual>
+
   										<td class="content_txt">
 						   					<html:hidden property="displayQueryTitle" styleId="displayQueryTitle_${queryIndex}" value="${workflowForm.displayQueryTitle[queryIndex]}"
 						   					/>
@@ -688,8 +703,6 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 											${workflowForm.displayQueryType[queryIndex]}
 										</td>
 										<td class="content_txt">
-										
-										 <c:set var="qtype" value="${workflowForm.displayQueryType[queryIndex]}"/>
 										 
 										 <logic:equal name="query_type_data" value="${qtype}">
 										 <select name="countQueryDropDown" class="texttype" id="countQueryDropDown_${workflowForm.identifier[queryIndex]}" style="width:120;">
