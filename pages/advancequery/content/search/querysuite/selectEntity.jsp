@@ -86,7 +86,11 @@ else
 
                                   </logic:equal>
 								
-								  </logic:iterate> 
+								  </logic:iterate>
+ 								 <% 
+										// hard coded to disabled checkbox
+										disabled = "disabled";
+								  %> 
 								  <tr><td>
 												<input type="checkbox"   onclick="updateIQuery(this,${entity.id});" value="${entity.id}" <%=disabled%> <%=checked%>
 												><span class="content_txt"> <bean:write name="entity" property="name"/></span> </tr></td>
