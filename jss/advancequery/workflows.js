@@ -172,12 +172,29 @@ function addQuery()
 
 function getSelectObjectControl(thisqID,pId,pTitle,pType,queryIds,queryTitles,queryTypes)
 {
-	var booln="true" ;
+	 var booln="true" ;
 	var selectObject=parent.window.document.createElement("select");
 	selectObject.style.width="120";
 	selectObject.name="countQueryDropDown";
 	selectObject.id="countQueryDropDown_"+thisqID.value;
-	for(var i=0;i<pId.length;i++)
+	selectObject.disabled=true;
+
+	var dropDown= parent.window.document.getElementById("executedCountQuery");
+    var executedQuery=dropDown.options.length;
+    	if(executedQuery >0)
+    	{
+    		selectObject.disabled=false;
+    		for(var i=0;i<executedQuery;i++)
+    	  {
+    		  var optn = parent.window.document.createElement("OPTION");
+    		   optn.text= dropDown.options[i].text;
+    		   optn.value= dropDown.options[i].value;
+    		   selectObject.options.add(optn);
+    	  }
+    	
+    	}
+	
+/*	for(var i=0;i<pId.length;i++)
 	{
     
 	  
@@ -213,7 +230,7 @@ function getSelectObjectControl(thisqID,pId,pTitle,pType,queryIds,queryTitles,qu
 	  optn.value=queryIds[i].value;
 	  selectObject.options.add(optn);
    }
-   }
+   } */
 	
 	return selectObject;
 }
@@ -299,6 +316,59 @@ function getText(control)
        }    
 }
 
+
+function  reSetDropDowns(queryTitle)
+{
+
+  var dropDowns= parent.window.document.getElementsByName("countQueryDropDown");
+  
+	 for(var i=0;i<dropDowns.length;i++)
+	{
+	    var index=-1;
+		var executedQuery=dropDowns[i].options.length;
+    	if(executedQuery >0)
+    	{
+    		for(var j=0;j<executedQuery;j++)
+    	  {
+    		  if(dropDowns[i].options[j].text==queryTitle)
+				 index=j;
+    	  }
+    	
+    	}
+	  
+	     if(index!=-1)
+		   dropDowns[i].remove(index);
+	      if(dropDowns[i].options.length==0)
+			  dropDowns[i].disabled=true;
+
+	}
+	
+    
+	 var hiddenDropDown=parent.window.document.getElementById("executedCountQuery");
+	 var optns=hiddenDropDown.options.length;
+	  var ind=-1;
+		
+    	if(optns >0)
+    	{
+    		for(var j=0;j<optns;j++)
+    	  {
+    		  if(hiddenDropDown.options[j].text==queryTitle)
+				 ind=j;
+    	  }
+    	
+    	}
+	  
+	   if(ind!=-1) 
+		 hiddenDropDown.remove(ind);
+	      if(hiddenDropDown.options.length==0)
+			 hiddenDropDown.disabled=true; 
+	  
+	     
+}
+
+
+
+
 function deleteWorkflowItem(index)
 {
 	
@@ -310,6 +380,7 @@ function deleteWorkflowItem(index)
 		var table=document.getElementById("table1");
 		var oldNoOfRows=document.getElementById("table1").rows.length;
 		var i=index;
+		var deleteQuery =document.getElementById('displayQueryTitle_'+index).value;
 		++i;
 		for( ;i<=(oldNoOfRows-1);i++)
 		{
@@ -349,6 +420,7 @@ function deleteWorkflowItem(index)
 		}
 	table.deleteRow(index);
 	}
+	 reSetDropDowns(deleteQuery);
 	setCheckboxCount();
 }
 
