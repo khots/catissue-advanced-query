@@ -73,14 +73,18 @@ public class DefineSearchResultsViewAction extends Action
 		
 		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
 		String entityId = request.getParameter(Constants.MAIN_ENTITY_ID);
-		if(entityId == null)
+		/*if(entityId == null)
 		{
 			AddContainmentsUtil.updateIQueryForContainments(session, query);
 		}
 		else
 		{
 			AddContainmentsUtil.updateIQueryForContainments(session, query, entityId);
-		}
+		}*/
+		
+		List<EntityInterface> mainEntityList = IQueryUpdationUtil.getAllMainObjects(query);
+		session.setAttribute(Constants.MAIN_ENTITY_LIST, mainEntityList);
+		
 		List<NameValueBean> prevSelectedColumnNVBList = setSelectedColumnList(session);
         ValidateQueryBizLogic.getValidationMessage(request,query);
         QueryDetails queryDetailsObject = new QueryDetails(session);
