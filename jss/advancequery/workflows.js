@@ -460,6 +460,7 @@ function changeLinkToCancel(queryId,executionLogId)
 		var parentIObj=object.parentNode;
 		parentIObj.removeChild(object);
 		parentIObj.appendChild(createLink("Cancel ","cancel_"+index,"javascript:cancelGetCountQuery('"+queryId+"','"+executionLogId+"')"));
+		disableDeleteLink(index);
 	}
 }
 
@@ -484,6 +485,19 @@ function changeExecuteLinkToExecute(queryId,executionLogId)
 		var parentIObj=object.parentNode;
 		parentIObj.removeChild(object);
 		parentIObj.appendChild(createLink("Execute ","execute_"+index,"javascript:executeGetCountQuery('"+queryTitle+"','"+0+"')"));
-		
+		enableDeleteLink(index);
 	}
+}
+
+function disableDeleteLink(index)
+{
+	var deleteLink=document.getElementById("delete_"+index);
+	deleteLink.href='#';
+	deleteLink.className="orangelink";
+}
+function enableDeleteLink(index)
+{
+	var deleteLink=document.getElementById("delete_"+index);
+	deleteLink.href="javascript:deleteWorkflowItem('"+index+"')";
+	deleteLink.className="bluelink";
 }
