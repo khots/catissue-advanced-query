@@ -20,6 +20,7 @@ import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.IVocabularyManager;
 import edu.wustl.common.vocab.VocabularyException;
 import edu.wustl.common.vocab.impl.VocabularyManager;
+import edu.wustl.common.vocab.utility.VIError;
 import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.VIProperties;
@@ -422,7 +423,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		}
 		if (vocabDisName.equals(""))
 		{
-			throw new VocabularyException("Could not find the vocabulary.");
+			throw new VocabularyException("Could not find the vocabulary.",VIError.SYSTEM_ERR);
 		}
 		return vocabDisName;
 	}
