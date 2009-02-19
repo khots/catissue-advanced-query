@@ -142,7 +142,14 @@ function addQuery()
 		
 		var operandsTdContent="";
 		var rowContents=new Array(8);
-		rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'',(counter+queryCount));
+		if(getText(queryTypes[counter])=="GetData") 
+		{
+			rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'',(counter+queryCount),true);
+		}
+		else
+		{
+			rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'',(counter+queryCount),false);
+		}
 		operandsTdContent=getText(queryIds[counter]);
 		rowContents[1]=createTextElement(getText(queryTitles[counter]));
 		rowContents[2]=createTextElement(getText(queryTypes[counter]));
@@ -237,13 +244,17 @@ function createTextElement(text)
 	return textnode;
 }
 
-function createCheckBox(name,id,displayValue,count)
+function createCheckBox(name,id,displayValue,count,disable)
 {
 		var chkbox=document.createElement("input");
 		var text=document.createTextNode(displayValue);
 		chkbox.type="checkbox";
 		chkbox.id=id;
 		chkbox.name=name;
+		if(disable==true)
+		{
+			chkbox.disabled = true;
+		}
 		chkbox.onclick=function addEvent(){
 			
 			setCheckboxCount();
