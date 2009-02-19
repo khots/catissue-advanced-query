@@ -49,16 +49,17 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 </table>
 </td>
 </tr>
-<tr height="5%" valign="top" style="display:none"> 
+<tr height="5%" valign="top"> 
 		<td colspan="4" valign="top" height="10%">
 		<table border="0"  width="100%" cellspacing="0" cellpadding="0"   height="24"  >
 		<tr height="1%" valign="top">
 		 <td width="2%" valign="top" >&nbsp;</td>
 		 <td valign="bottom" align="left" width="90-%" >
-		 <img src="images/advancequery/b_save.gif" width="51"  hspace="3" vspace="3" onclick="saveClientQueryToServer('save')" />
+		 &nbsp;
+		 <!-- <img src="images/advancequery/b_save.gif" width="51"  hspace="3" vspace="3" onclick="saveClientQueryToServer('save')" /> -->
 	 </td>
    	 <td align="right" valign="top">
-		 <img src="images/advancequery/b_prev.gif" width="72"  hspace="3" vspace="3" onclick="defineSearchResultsView()"/>
+		 <img src="images/advancequery/b_back_to_workflow.gif" hspace="3" vspace="3" onclick="javascript:showWorkFlowWizard()"/>
 	 </td>	
 		 <td width="2%">&nbsp;</td>
 </tr>

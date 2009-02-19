@@ -38,7 +38,13 @@
 			<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
 		</td>
 	</tr>
-	<tr id="workflowname" valign="top" style="padding-bottom:5px;padding-left:10px;"> <td><span class="content_txt"></b><bean:message key="workflow.name"/> </b></span>: <%=workflowName%></td></tr>
+	<tr style="padding-left:10px;">
+			<td  nowrap>
+			&nbsp;
+				<span class="small_txt_grey"><bean:message key="workflow.name"/></span>:<span class="small_txt_grey">
+				<html:text styleClass="textfield_undefined" size="50" styleId="workflowName" property="workflowName" disabled="true" value="<%=workflowName%>"/></span>&nbsp;&nbsp;
+			</td>
+			</tr>
 	<tr>
 		<td valign="top">
 			<table border="0" width="100%" cellspacing="0" cellpadding="0" height="95%" id="table1" >

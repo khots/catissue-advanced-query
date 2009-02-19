@@ -71,17 +71,17 @@
 			<tr class="td_greydottedline_horizontal"><td height="1"></td></tr></table>
 			</td>
 			</tr>
-			<tr id="workflowname" valign="top" style="padding-bottom:20px;padding-left:10px;"> <td colspan="4"> &nbsp;&nbsp;<span class="content_txt_bold"></b><bean:message key="workflow.name"/> </b></span>: <%=workflowName%></td></tr>
-			<tr >
+		<!--	<tr id="workflowname" valign="top" style="padding-bottom:20px;padding-left:10px;"> <td colspan="4"> &nbsp;&nbsp;<span class="content_txt_bold"></b><bean:message key="workflow.name"/> </b></span>: <%=workflowName%></td></tr> -->
+			<tr style="padding-left:10px;">
 			<td colspan="2" nowrap>
 			&nbsp;
-				<span class="content_txt_bold"><bean:message key="workflow.name"/></span>:<span class="content_txt">
-				<html:text styleClass="textfield_undefined" size="50" styleId="workflowName" property="workflowName" disabled="true"/></span>&nbsp;&nbsp;
+				<span class="small_txt_grey"><bean:message key="workflow.name"/></span>:<span class="content_txt">
+				<html:text styleClass="textfield_undefined" size="50" styleId="workflowName" property="workflowName" disabled="true" value="<%=workflowName%>"/></span>&nbsp;&nbsp;
 			</td>
 			
 			<td colspan="2" >
 				&nbsp;
-				<span class="content_txt_bold"><bean:message key="getcountquery.name"/></span><span class="red_star">*</span>:<span class="content_txt">
+				<span class="small_txt_grey"><bean:message key="getcountquery.name"/></span><span class="red_star">*</span>:<span class="content_txt">
 				<html:text styleClass="textfield_undefined" size="50" styleId="queryTitle1" property="queryTitle" /></span>
 			</td>
 			</tr>

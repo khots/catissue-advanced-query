@@ -659,6 +659,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 
 							<td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
 							<td width="111" valign="middle" class="grid_header_text"><bean:message key="workflow.type"/></td>
+							<td width="5%" valign="middle" class="grid_header_text">Select query </td>
 							
 							<td width="100" valign="middle" class="grid_header_text"><bean:message key="workflow.patientcount"/> </td>
 							<td width="90" valign="middle" class="grid_header_text">&nbsp;</td>
@@ -691,7 +692,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 										 <c:set var="qtype" value="${workflowForm.displayQueryType[queryIndex]}"/>
 										 
 										 <logic:equal name="query_type_data" value="${qtype}">
-										 <select name="countQueryDropDown" id="countQueryDropDown_${workflowForm.identifier[queryIndex]}" style="width:120;">
+										 <select name="countQueryDropDown" class="texttype" id="countQueryDropDown_${workflowForm.identifier[queryIndex]}" style="width:120;">
 										 <logic:notEmpty name="workflowForm" property="selectedqueryId">
 						   			       <logic:iterate id="singleQueryId" name="workflowForm" property="selectedqueryId" indexId="qIndx" >
 										  <logic:equal name="query_type_count" value="${workflowForm.displayQueryType[qIndx]}">
