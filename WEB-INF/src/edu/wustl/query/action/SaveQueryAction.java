@@ -38,6 +38,7 @@ import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.bizlogic.WorkflowBizLogic;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.DefinedQueryUtil;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
 import gov.nih.nci.security.exceptions.CSException;
 
@@ -106,7 +107,8 @@ public class SaveQueryAction extends BaseAction
 			}
 			else
 			{
-				bizLogic.update(parameterizedQuery, Constants.HIBERNATE_DAO);
+				DefinedQueryUtil queryUtil=new DefinedQueryUtil();
+				queryUtil.updateQuery(parameterizedQuery);
 			}
 			// save query to workflow if it is a workflow query
 			String isworkflow = request.getParameter(Constants.IS_WORKFLOW);
