@@ -1777,7 +1777,7 @@ var jsReady = false;
 				return ;
 			}
 			
-			showWaitPage();
+			//showWaitPage();
 			selectOptions(document.forms[0].selectedColumnNames);
 			//document.forms['categorySearchForm'].action = "SearchDefineViewResults.do";	
 			//document.forms['categorySearchForm'].submit();
