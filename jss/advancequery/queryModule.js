@@ -25,17 +25,20 @@
 	
 	  function getTreeNodeChildren(nodeId)
 	   {
-			var request = newXMLHTTPReq();			
-			var actionURL;
-			var handlerFunction = getReadyStateHandler(request,showTreeNodeChildren,true);	
-	        request.onreadystatechange = handlerFunction; 
-			actionURL = "nodeId=" + nodeId;
-			var url = "BuildQueryOutputTree.do";
-	        request.open("POST",url,true);	
-			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
-			request.send(actionURL);
-			
-			buildSpreadsheet(nodeId);			
+		  if(nodeId.substring(nodeId.length-5, nodeId.length)=="Label")
+		  {
+				var request = newXMLHTTPReq();			
+				var actionURL;
+				var handlerFunction = getReadyStateHandler(request,showTreeNodeChildren,true);	
+				request.onreadystatechange = handlerFunction; 
+				actionURL = "nodeId=" + nodeId;
+				var url = "BuildQueryOutputTree.do";
+				request.open("POST",url,true);	
+				request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+				request.send(actionURL);
+
+				buildSpreadsheet(nodeId);
+		  }	
 	   }
 	   function showTreeNodeChildren(response)
 	   {
