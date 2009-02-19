@@ -91,12 +91,11 @@ public class ITableManager
 	 * @throws DAOException
 	 * @throws SQLException
 	 */
-	public int insertCountQuery(AbstractQuery abstractQuery) throws DAOException,
-			SQLException
+	public int insertCountQuery(AbstractQuery abstractQuery) throws DAOException, SQLException
 	{
-		// CODE TO INSERT DATA INTO QUERY_EXECUTION_LOG Table
+		// CODE TO INSERT DATA INTO COUNT_QUERY_EXECUTION_LOG Table
 
-		// return Query_Execution_Id
+		// return Count_Query_Execution_Id
 		return -1;
 	}
 	
@@ -108,8 +107,7 @@ public class ITableManager
 	 * @throws DAOException
 	 * @throws SQLException
 	 */
-	public int insertNewQuery(AbstractQuery query) throws DAOException,
-			SQLException
+	public int insertNewQuery(AbstractQuery query) throws DAOException, SQLException
 	{
 		// CODE TO INSERT DATA INTO QUERY_EXECUTION_LOG Table
 
@@ -141,7 +139,14 @@ public class ITableManager
 		Count count = null;
 		return count;
 	}
-	
+
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 * @throws SQLException
+	 * @throws DAOException
+	 */
 	public ResultSet executeCompositeQuery(String query) throws SQLException, DAOException
 	{
 		DatabaseConnectionParams DB_CONNECTION_PARAMS = new DatabaseConnectionParams();
@@ -200,4 +205,22 @@ public class ITableManager
 	{
 		
 	}
+	
+
+	/**
+	 * To insert details into COUNT QUERY EXECUTION LOG table
+	 * @param count_query_exec_id
+	 * @return
+	 * @throws SQLException 
+	 * @throws DAOException 
+	 */
+	public int insertDataQuery(AbstractQuery abstractQuery, int countQueryExecId)
+			throws SQLException, DAOException
+	{
+		// CODE TO INSERT DATA INTO DATA_QUERY_EXECUTION_LOG Table
+
+		// return Data_Query_Execution_Id
+		return -1;
+	}
+
 }
