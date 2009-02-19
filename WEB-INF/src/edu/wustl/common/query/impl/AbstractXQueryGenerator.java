@@ -550,7 +550,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	{
 		
 		StringBuilder selectClause = new StringBuilder(256);
-		if(query.getType().equals(QueryType.GET_COUNT))
+		if(query.getType().equals(QueryType.GET_COUNT.type))
 		{
 			selectClause.append(Constants.SELECT);
 		}
