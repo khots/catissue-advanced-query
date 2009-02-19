@@ -241,7 +241,7 @@ function executeGetCountQuery(queryTitle,executionLogId)
 							var object=title.parentNode;
 							var tdChildCollection=object.getElementsByTagName('input');
 							var queryId=tdChildCollection[2].id;//object.childNodes[0].id;//object.id;
-							
+							setDropDowns(queryTitle);
 							workflowExecuteGetCountQuery(document.getElementById(queryId).value,executionLogId);
 				}
 			}
@@ -308,7 +308,7 @@ function responseHandler(response)
 					
 					   if(jsonResponse.queryTitle!=null&&jsonResponse.queryTitle==queryTitle)
 					   {
-						
+						   setDropDowns(queryTitle);
 							workflowExecuteGetCountQuery(jsonResponse.executionQueryResults[i].queryId,0);
 						
 					   }
@@ -318,6 +318,67 @@ function responseHandler(response)
 	   }
 
 }
+
+function setDropDowns(queryTitle)
+{
+  
+	var numOfRows =document.getElementById("table1").rows.length;
+	var queryId;		
+			for(var count = 0; count < numOfRows; count++)
+			{
+				var title=document.getElementById("identifier_"+count);
+				if(title.value==queryTitle)
+				{
+							
+							var object=title.parentNode;
+							var tdChildCollection=object.getElementsByTagName('input');
+							var queryId=tdChildCollection[2].value;//object.childNodes[0].id;//objecid
+				            var execId= tdChildCollection[3].value;
+				 }
+				
+			}
+
+    if(execId==0 || execId=="") 
+  {	
+	
+	 var dropDowns= document.getElementsByName("countQueryDropDown");
+	 var bool=false;
+	
+	 for(var i=0;i<dropDowns.length;i++)
+	{
+	   var bool=false;
+	   var executedQuery=dropDowns[i].options.length;
+    	if(executedQuery >0)
+    	{
+    		for(var j=0;j<executedQuery;j++)
+    	  {
+    		  if(dropDowns[i].options[j].text==queryTitle)
+				  bool=true;
+    	  }
+    	
+    	}
+	  
+	    if(bool== false) 
+		{
+		  var optn = parent.window.document.createElement("OPTION");
+	     optn.text=queryTitle;
+	   	 optn.value=queryId;
+	     dropDowns[i].options.add(optn);
+	     dropDowns[i].disabled=false;
+		}
+	 }
+    
+	 var hiddenDropDown=document.getElementById("executedCountQuery");
+	     var optn = parent.window.document.createElement("OPTION");
+	     optn.text=queryTitle;
+	     optn.value=queryId;
+	     hiddenDropDown.options.add(optn);
+	     hiddenDropDown.disabled=false;
+  }
+
+}
+
+
 
 function workflowExecuteGetCountQuery(queryId,executionLogId)
 {
@@ -507,6 +568,8 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <select name="queryTitle" id="queryTitle" style="display:none">
 </select>
 <select name="queryType" id="queryType" style="display:none">
+</select>
+<select name="executedCountQuery" id="executedCountQuery" style="display:none">
 </select>
 <html:hidden property="forwardTo"/>
 <c:set var="query_type_data" value="<%=qType_GetData%>" scope="page"/>
