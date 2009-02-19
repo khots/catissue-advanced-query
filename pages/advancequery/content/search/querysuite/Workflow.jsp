@@ -659,7 +659,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 
 							<td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
 							<td width="111" valign="middle" class="grid_header_text"><bean:message key="workflow.type"/></td>
-							<td width="5%" valign="middle" class="grid_header_text">Select query </td>
+							<td width="10%" valign="middle" class="grid_header_text">Select</td>
 							
 							<td width="100" valign="middle" class="grid_header_text"><bean:message key="workflow.patientcount"/> </td>
 							<td width="90" valign="middle" class="grid_header_text">&nbsp;</td>
