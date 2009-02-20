@@ -439,7 +439,8 @@ function executeGetDataQuery(dataQueryId)
 		var tdChildCollection=object.getElementsByTagName('input');
 		var executinIDElement=tdChildCollection[3].id;
 		var exId= document.getElementById(executinIDElement).value;
-	   document.forms[0].action="\QueryResultsView.do?dataQueryId="+dataQueryId+"&queryExecutionId="+exId;
+		var projectId=document.getElementById("selectedProject").value;
+	   document.forms[0].action="\QueryResultsView.do?dataQueryId="+dataQueryId+"&queryExecutionId="+exId+"&selectedProject="+projectId;
 	   document.forms[0].submit();
 	 }
 	  
