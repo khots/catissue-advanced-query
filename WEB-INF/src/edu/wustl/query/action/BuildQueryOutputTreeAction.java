@@ -226,7 +226,15 @@ public class BuildQueryOutputTreeAction extends Action
 				    	}
 				    	else
 				    	{
+				    		if(j==labelNodeDataList.size()-1)
+				    		{
+				    			displayData += "( ";
+				    		}
 				    		displayData += labelNodeDataList.get(j)+" ";
+				    		if(j==labelNodeDataList.size()-1)
+				    		{
+				    			displayData += ")";
+				    		}
 				    	}
 				    }
 					
