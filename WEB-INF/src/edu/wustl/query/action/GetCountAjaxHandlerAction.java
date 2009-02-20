@@ -2,6 +2,8 @@ package edu.wustl.query.action;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +15,8 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.factory.AbstractQueryManagerFactory;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.querysuite.queryobject.IQuery;
@@ -43,6 +47,7 @@ public class GetCountAjaxHandlerAction extends Action
 	{
 		try {
 			boolean abortExecution	= Boolean.valueOf(request.getParameter(Constants.ABORT_EXECUTION));
+			String queryTitle = null;
 			int queryExecID 		= 0;
 			if((Integer.valueOf(request.getParameter(Constants.EXECUTION_ID)))==-1)	//If its the first request
 			{
@@ -57,14 +62,31 @@ public class GetCountAjaxHandlerAction extends Action
 			if(!abortExecution)
 			{
 				boolean isNewQuery = Boolean.valueOf(request.getParameter(Constants.IS_NEW_QUERY));
-				if(isNewQuery)
+				String project_name  = null;
+				if(isNewQuery)	//if a new getcount query is fired from the pop-up
 				{
 					//retrieve the Selected Project from the GetCountPopUp.jsp
-					String selectedProject = request.getParameter(Constants.SELECTED_PROJECT);
-					if(selectedProject!=null)
-						request.getSession().setAttribute(Constants.SELECTED_PROJECT,selectedProject);
-					
+					String selectedProject_value = request.getParameter(Constants.SELECTED_PROJECT);
+					if(selectedProject_value!=null)
+					{
+						request.getSession().setAttribute(Constants.SELECTED_PROJECT,selectedProject_value);
+					}
+					if(selectedProject_value != "")
+					{
+						//get the userId from session data bean
+						SessionDataBean sessionData = (SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA);
+						Long userId = sessionData.getUserId();
+						if(userId == null)
+						{
+							userId = Long.valueOf((1));
+						}
+						//Retrieve the Project list
+						AbstractQueryUIManager absQUIManager = AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
+						List<NameValueBean> projectList = absQUIManager.getObjects(userId);
+						project_name = getSelectedProjectName(selectedProject_value,projectList);
+					}
 					IQuery query = (IQuery)request.getSession().getAttribute(DAGConstant.QUERY_OBJECT);
+					queryTitle = query.getName();
 					AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(),request,query);
 					queryExecID	= qUIManager.searchQuery(null);
 				}
@@ -76,6 +98,15 @@ public class GetCountAjaxHandlerAction extends Action
 
 				//create json object by count object adding Query status, count and execution id
 				JSONObject resultObject = createResultJSON(countObject);
+				//project_name will be appended only if its a new query and if the project selected is not 'unspecified'
+				if(project_name!=null)
+				{
+					resultObject.append(Constants.SELECTED_PROJECT, project_name);
+				}
+				if(isNewQuery)
+				{
+					resultObject.append(Constants.QUERY_TITLE, queryTitle);
+				}
 				response.setContentType("text/xml");
 				writer.write(new JSONObject().put(Constants.RESULT_OBJECT, resultObject).toString());
 			}
@@ -123,5 +154,25 @@ public class GetCountAjaxHandlerAction extends Action
 			Logger.out.info("error in initializing json object " + e);
 		}
 		return resultObject;
+	}
+	
+	/**
+	 * Returns the project-name from the NameValueBean Project-list with the help of given Project-value.
+	 * @param project_value
+	 * @param projectList
+	 * @return project-name
+	 */
+	private String getSelectedProjectName(final String project_value,final List<NameValueBean> projectList)
+	{
+		String projectName = null;
+		for (Iterator<NameValueBean> iterator = projectList.iterator(); iterator.hasNext();) 
+		{
+			NameValueBean nameValueBean = (NameValueBean) iterator.next();
+			if(project_value.equals(nameValueBean.getValue()))
+			{
+				projectName = nameValueBean.getName();
+			}
+		}
+		return projectName;
 	}
 }
