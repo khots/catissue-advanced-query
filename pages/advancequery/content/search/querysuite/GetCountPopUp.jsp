@@ -93,6 +93,7 @@ MM_reloadPage(true);
 				<html:hidden property="executionId" value="-1" />
 				<html:hidden property="isNewQuery" value="false" />
 				<html:hidden property="selectedProject" value="${currentSelectedProject}" />
+				<html:hidden property="selectedProjectName" value="" />
 				<SELECT NAME="getCount" class="textfield" onChange="setProjectData(this,'form2')">
 							<c:choose>
 								<c:when test="${currentSelectedProject==''}">
