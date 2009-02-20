@@ -766,7 +766,9 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String MED_MAPPED_N_NOT_VALIED_PVCONCEPT = "Bold_Italic_Disabled";
 	public static final String NOT_MED_MAPPED_PVCONCEPT = "Normal_Italic_Disabled";
 	public static final String NOT_MED_VALED_PVCONCEPT = "Normal_Disabled";
-	public static final String ID_DEL = "~ID_DEL~"; // if you change its value,kindly change in queryModule.js its hard coded there 
+	public static final String ID_DEL = "~ID_DEL~"; // if you change its value,kindly change in queryModule.js its hard coded there
+	public static final String MSG_DEL = "@MSG@"; // if you change its value,kindly change in queryModule.js its hard coded there
+	
 	
 	/**
 	 * Query ITABLE
