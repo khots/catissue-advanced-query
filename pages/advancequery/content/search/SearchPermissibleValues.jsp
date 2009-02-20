@@ -225,7 +225,7 @@ function sendValueToParent(pvConceptCodeList,pvNameListWithCode,pvNameList)
 //This method will be called when user clicks on the vocabulary check box
 function getMappingsOfConcepts(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 {
-
+		
 		continueMapping=true;
 		if(! isSelectedPVListEmpty())
 		{
@@ -249,18 +249,20 @@ function getMappingsOfConcepts(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 		}
 		var selectedCheckedBoxVocabDivID="main_div_"+vocabCheckBoxId;
 		
-		
 		if(document.getElementById(vocabCheckBoxId).checked && continueMapping )
 		{
-				 var innerData=document.getElementById(selectedCheckedBoxVocabDivID).innerHTML;
+				 var innerData=document.getElementById(selectedCheckedBoxVocabDivID).innerHTML.trim();
+				 
 				 if(document.getElementById(selectedCheckedBoxVocabDivID).style.display == 'none' && innerData.length==0)
 					{
+					
 						label.innerHTML="Please Wait.....";
 						waitCursor();
 						
 						 document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
 						 // send request only first time when user click on the check box for other click  just hide and show the div 
-						var param = "selectedCheckBox"+"="+vocabURN+"#"+vocabDisplayName;
+						
+						var param = "selectedCheckBox"+"="+vocabURN;
 						var actionUrl="SearchMappedPV.do";
 						request.onreadystatechange=function(){setMappedConceptsToVocabDIV(request,selectedCheckedBoxVocabDivID)};
 						request.open("POST",actionUrl,true);
@@ -329,7 +331,7 @@ function setMappedConceptsToVocabDIV(request,selectedCheckedBoxVocabDivID)
 		if(request.status == 200)
 		{	
 			var responseTextValue =  request.responseText;	
-			var searchHTML=responseTextValue.split("MSG$-$");
+			var searchHTML=responseTextValue.split("MSG@-@");
 			if(searchHTML.length>1)
 			{
 				document.getElementById(selectedCheckedBoxVocabDivID).innerHTML=searchHTML[0];
@@ -511,7 +513,7 @@ function getSearchTermResult(searchRequest)
 			if( ! operationAborted)
 			{ 
 				// if user has not aborted the requrest then set the html result to div and clear the search message from message label
-				searchHTML=responseTextValue.split("MSG$-$");
+				searchHTML=responseTextValue.split("MSG@-@");
 				if(searchHTML.length>1)
 				{
 					document.getElementById("divForSearchingMode").innerHTML=searchHTML[0];
@@ -588,6 +590,7 @@ function restoreDefault()
 	numberOfPvs=0;
 	set_mode="Mapping";
 };
+
 function editSelectedPV()
 {
 	label=document.getElementById("searhLabel");
@@ -602,12 +605,13 @@ function editSelectedPV()
 	var conceptNameArray=parent.conceptName;
 	for(k=0;k<conceptCodesArray.length;k++)
 	{
+
 		var conceptDetailWithURN=conceptCodesArray[k].split('<%=Constants.ID_DEL%>');
 		var vocabURN=conceptDetailWithURN[0];
 		var conceptCode=conceptDetailWithURN[1];
 		var conceptDetail=":"+conceptNameArray[k]
 		createRows(vocabURN,conceptCodesArray[k],conceptDetail);
-	
+		document.getElementById("vocab_"+vocabURN).checked=true;
 	}
 	//need to enabled the ok button
 	if(selectedPvs.length>0) //Check to enable 'OK'  button
@@ -629,6 +633,7 @@ function editSelectedPV()
 			<td class="content_txt_bold" nowrap>Select Vocabulary: &nbsp;&nbsp;</td>
 			<c:set var="srcVocabURN" value="<%=srcVocabURN%>"/>
 			<logic:iterate name="Vocabulries" id="vocabs">
+			<c:set var="urn" value="${vocabs.vocabURN}" />
 					<c:choose>
 						<c:when test="${vocabs.vocabURN eq srcVocabURN}">
 								<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.vocabURN}" value="${vocabs.name}:${vocabs.version}"   
@@ -641,7 +646,9 @@ function editSelectedPV()
 								<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.vocabURN}" value="${vocabs.name}:${vocabs.version}"   
 								onclick= "getMappingsOfConcepts(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');"></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;
 								<input type="hidden"id="hidden_${vocabs.vocabURN}" value="${vocabs.displayName}"/>
-								</td>		
+								</td>
+							<script>
+							</script>
 						</c:otherwise>
 				</c:choose>
 			
@@ -692,23 +699,37 @@ function editSelectedPV()
 					<!-- for tree view we required this width: 260px; height: 300px;  -->
 					<div  id="divForMappingMode" style="width: 380px; height: 330px; border:1px solid Silver; overflow:auto;"  >
 					<table border="0" cellpadding="0" cellspacing="0">
-					
 					<logic:iterate name="Vocabulries" id="vocabs">
+					<c:set var="urn" value="${vocabs.vocabURN}" />
 					<c:choose>
 						<c:when test="${vocabs.vocabURN eq srcVocabURN}">
 								<tr>
 								<td valign="top">
-									<div id="main_div_vocab_${vocabs.vocabURN}" style="">
-									<% String treeData = (String)request.getSession().getAttribute(Constants.MED_PV_HTML); %>
-									<%=treeData%>
-									</div>
+									<% 
+									String srcHTML = (String)request.getSession().getAttribute(Constants.PV_HTML+(String)pageContext.getAttribute("urn")); 
+									String style="";
+									if(srcHTML==null)
+									{
+									style="display:none";
+									srcHTML="";
+									%>
+									
+									<%}%>
+								<div id="main_div_vocab_${vocabs.vocabURN}" style='<%=style%>'><%=srcHTML%></div>
 								</td>
 								</tr>
 						</c:when>
 						<c:otherwise>
 								<tr>
 								  <td valign="top">
-									<div id="main_div_vocab_${vocabs.vocabURN}" style="display:none"></div>
+									 <% String trgHTML = (String)request.getSession().getAttribute(Constants.PV_HTML+(String)pageContext.getAttribute("urn")); 
+									String style="";
+									if(trgHTML==null)
+									{
+									style="display:none";
+									trgHTML="";
+									}%> 
+									<div id="main_div_vocab_${vocabs.vocabURN}"style='<%=style%>'><%=trgHTML%></div>
 								 </td>
 								</tr>
 						</c:otherwise>
