@@ -156,7 +156,7 @@ public class QueryFrameworkTestCase extends TestCase
 		
 	}
 
-	public void testXQuery_PersonUpi_is_NOT_NULL_AND_Lab_Accession_No_contains_xxxx()
+	public void testXQuery_PersonUpi_is_NOT_NULL_AND_Lab_Accession_No_contains_2008295007131()
 	{
 		
 	}
