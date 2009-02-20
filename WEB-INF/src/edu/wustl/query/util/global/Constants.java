@@ -709,6 +709,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String DEFAULT_CONDITION_RULES_OPT_OUT="RULES_OPT_OUT";
     /** Constant for default conditions project rule minors **/
     public static final String DEFAULT_CONDITION_RULES_MINOR="RULES_MINOR";
+    /** Constant for secure condition for Age **/
+    public static final String SECURE_CONDITION_AGE="AGE";
     /** Constant for space **/
     public static final String SPACE=" ";
     public static final String SHOW_LAST = "showLast";
@@ -804,6 +806,11 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String QRY_COUNT = "QUERY_COUNT";
     /**  Constant for DEID_SEQUENCE **/
     public static final String DEID_SEQUENCE = "DEID_SEQUENCE";
-    
+    /**  Constant for  ITABLE_ATTRIBUTES**/
     public static final String TAGGED_VALUE_ITABLE_ATTRIBUTES = "ITABLE_ATTRIBUTES";
+    /**  Constant for SECURE CONDITION **/
+    public static final String TAGGED_VALUE_SECURE_CONDITION = "SECURE_CONDITION";
+    
+    public static final int AGE = 89;
+    public static final int MINOR = 18;
 }
