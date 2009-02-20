@@ -248,6 +248,7 @@
 				var status		= jsonResponse.resultObject.status;
 				executionId		= jsonResponse.resultObject.executionId;
 				document.forms['form2'].executionId.value = executionId;		 
+						 	 
 						
 				if(isNewQuery=="true" && abortExecution=='false')
 				{
@@ -1961,7 +1962,6 @@ var jsReady = false;
 				index++;
 			}
 			
-			alert(medConceptCodeList);
 			medConceptCodeList=medConceptCodeList.unique();
 			document.getElementById(componentIdOfID).value = medConceptCodeList;
 	}	
