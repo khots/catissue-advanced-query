@@ -186,7 +186,9 @@
 	function setProjectData(dropdown,formName)
 	{
 		var selectedProject = dropdown.options[dropdown.selectedIndex].value;
+		var selectedProjectName = dropdown.options[dropdown.selectedIndex].text;		
 		document.forms[formName].selectedProject.value = selectedProject;
+		document.forms[formName].selectedProjectName.value = selectedProjectName;
 	}
 	function getCountAjaxAction(executionId)
 	{
@@ -254,7 +256,7 @@
 					var queryTitle 		= jsonResponse.resultObject.queryTitle;
 					if(selectedProject!="")
 					{
-						var project_name 	 =  jsonResponse.resultObject.selectedProject;
+						var project_name 	 = document.forms['form2'].selectedProjectName.value;;
 						NoteObject.innerHTML = 'Note: The query "'+queryTitle+'" is executed for project "'+project_name+'". The results will be filtered based on the project rules.';
 					}
 					else
