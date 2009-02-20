@@ -163,7 +163,6 @@ public class SearchPermissibleValuesAction extends Action
 
 					if ((medMappedNValiedPVConcept.size() == VIProperties.maxPVsToShow))
 					{
-						messageFlag = true;
 						break;
 					}
 				}
@@ -173,7 +172,9 @@ public class SearchPermissibleValuesAction extends Action
 			{
 				html.append(bizLogic.getNoMappingFoundHTML());
 			}
-			if (messageFlag)
+			int uiListSize=medMappedNValiedPVConcept.size()+medMappedNNotValiedPVConcept.size()
+							+notMEDMappedConcept.size();
+			if (uiListSize>=VIProperties.maxPVsToShow)
 			{
 				html.append(bizLogic.getInfoMessage());
 			}
