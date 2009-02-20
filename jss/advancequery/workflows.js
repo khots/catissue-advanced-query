@@ -367,61 +367,67 @@ function  reSetDropDowns(queryTitle)
 }
 
 
-
-
 function deleteWorkflowItem(index)
 {
-	
-	var checkboxControl=document.getElementById("checkbox_"+(index));
-	if(checkboxControl!=null && checkboxControl!=undefined)
+
+	if(checkFordependentQueries(index)!=true)
 	{
-
-		
-		var table=document.getElementById("table1");
-		var oldNoOfRows=document.getElementById("table1").rows.length;
-		var i=index;
-		var deleteQuery =document.getElementById('displayQueryTitle_'+index).value;
-		++i;
-		for( ;i<=(oldNoOfRows-1);i++)
+		//dhtmlmodal.open('delete Queries', 'iframe', './pages/advancequery/content/search/querysuite/deleteQueryConfim.jsp','Delete Query', 'width=400px,height=150px,center=1,resize=1,scrolling=1');
+		var checkboxControl=document.getElementById("checkbox_"+(index));
+		if(checkboxControl!=null && checkboxControl!=undefined)
 		{
-			document.getElementById("checkbox_"+i).id="checkbox_"+(i-1);
-			document.getElementById("displayQueryTitle_"+i).id="displayQueryTitle_"+(i-1);
-			//document.getElementById("queryTypeControl_"+i).id="queryTypeControl_"+(i-1);
-			document.getElementById("selectedqueryId_"+i).id="selectedqueryId_"+(i-1);
-			document.getElementById("operands_"+i).id="operands_"+(i-1);
-			document.getElementById("operators_"+i).id="operators_"+(i-1);
-			document.getElementById("displayQueryType_"+i).id="displayQueryType_"+(i-1);
-		/*	if(document.getElementById("execute_"+i)!=null)
+			
+			
+			var table=document.getElementById("table1");
+			var oldNoOfRows=document.getElementById("table1").rows.length;
+			var i=index;
+			var deleteQuery =document.getElementById('displayQueryTitle_'+index).value;
+			++i;
+			for( ;i<=(oldNoOfRows-1);i++)
 			{
-				document.getElementById("execute_"+i).href="javascript:executeGetCountQuery('"+(i-1)+"')"
-			}
-			if(document.getElementById("cancel_"+i)!=null)
-			{
-				document.getElementById("cancel_"+i).href="javascript:cancelGetCountQuery('"+(i-1)+"','"+executionLogId+"')";
+				document.getElementById("checkbox_"+i).id="checkbox_"+(i-1);
+				document.getElementById("displayQueryTitle_"+i).id="displayQueryTitle_"+(i-1);
+				//document.getElementById("queryTypeControl_"+i).id="queryTypeControl_"+(i-1);
+				document.getElementById("selectedqueryId_"+i).id="selectedqueryId_"+(i-1);
+				document.getElementById("operands_"+i).id="operands_"+(i-1);
+				document.getElementById("operators_"+i).id="operators_"+(i-1);
+				document.getElementById("displayQueryType_"+i).id="displayQueryType_"+(i-1);
+			/*	if(document.getElementById("execute_"+i)!=null)
+				{
+					document.getElementById("execute_"+i).href="javascript:executeGetCountQuery('"+(i-1)+"')"
+				}
+				if(document.getElementById("cancel_"+i)!=null)
+				{
+					document.getElementById("cancel_"+i).href="javascript:cancelGetCountQuery('"+(i-1)+"','"+executionLogId+"')";
 
-			}*/
-		
-			if(document.getElementById("execute_"+i)!=null)
-			{
-				document.getElementById("execute_"+i).id="execute_"+(i-1);
+				}*/
+			
+				if(document.getElementById("execute_"+i)!=null)
+				{
+					document.getElementById("execute_"+i).id="execute_"+(i-1);
+				}
+				if(document.getElementById("cancel_"+i)!=null)
+				{
+					document.getElementById("cancel_"+i).id="cancel_"+(i-1);
+				}	
+				document.getElementById("delete_"+i).href="javascript:deleteWorkflowItem('"+(i-1)+"')"
+				document.getElementById("delete_"+i).id="delete_"+(i-1);
+				document.getElementById("cancelajaxcall_"+i).id="cancelajaxcall_"+(i-1);
+				document.getElementById("identifier_"+i).id="identifier_"+(i-1);
+				if(document.getElementById("label_"+i)!=null)
+				{
+					document.getElementById("label_"+i).id="label_"+(i-1);
+				}
 			}
-			if(document.getElementById("cancel_"+i)!=null)
-			{
-				document.getElementById("cancel_"+i).id="cancel_"+(i-1);
-			}	
-			document.getElementById("delete_"+i).href="javascript:deleteWorkflowItem('"+(i-1)+"')"
-			document.getElementById("delete_"+i).id="delete_"+(i-1);
-			document.getElementById("cancelajaxcall_"+i).id="cancelajaxcall_"+(i-1);
-			document.getElementById("identifier_"+i).id="identifier_"+(i-1);
-			if(document.getElementById("label_"+i)!=null)
-			{
-				document.getElementById("label_"+i).id="label_"+(i-1);
-			}
+		table.deleteRow(index);
 		}
-	table.deleteRow(index);
+		 reSetDropDowns(deleteQuery);
+		setCheckboxCount();
 	}
-	 reSetDropDowns(deleteQuery);
-	setCheckboxCount();
+	else
+	{
+		dhtmlmodal.open('delete Queries', 'iframe', './pages/advancequery/content/search/querysuite/depentQueryPopup.jsp','Delete Query', 'width=400px,height=150px,center=1,resize=1,scrolling=1');
+	}
 }
 
 function setCheckboxCount()
@@ -572,4 +578,29 @@ function enableDeleteLink(index)
 	var deleteLink=document.getElementById("delete_"+index);
 	deleteLink.href="javascript:deleteWorkflowItem('"+index+"')";
 	deleteLink.className="bluelink";
+}
+
+function checkFordependentQueries(index)
+{
+	var selectedQueryId=document.getElementById("selectedqueryId_"+index).value;
+	var queryIds=selectedQueryId.split(",");
+
+	var rows=document.getElementById("table1").rows.length;
+	for(var i=0;i<rows;i++)
+	{
+		var idsToCompare=document.getElementById("selectedqueryId_"+i).value;
+			if(i!=index)
+			{
+				for(var counter=0;counter<queryIds.length;counter++)
+				{
+					var queryIdPosition=idsToCompare.indexOf(queryIds[counter]);
+					if(queryIdPosition!=-1)
+					{
+						return true;
+					}
+				}
+			}
+	}
+
+	return false;
 }
