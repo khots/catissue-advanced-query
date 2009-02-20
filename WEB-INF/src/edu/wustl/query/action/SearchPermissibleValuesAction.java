@@ -146,16 +146,11 @@ public class SearchPermissibleValuesAction extends Action
 			{
 				for (IConcept concept : conceptList)
 				{
-					String sourceConceptCode = new String();
+					IConcept sourceConceptCode = new Concept();
 					int status = isSourceVocabMappedTerm(concept, pvList, sourceConceptCode);
-					if(sourceConceptCode != null)
-					{
-						sourceConceptMap.put(concept.getCode(), sourceConceptCode);
-					}
-					else
-					{
-						sourceConceptMap.put(concept.getCode(), concept.getCode());
-					}
+					
+					sourceConceptMap.put(concept.getCode(), sourceConceptCode.getCode());
+					
 					maintainOrderOfConcepts(orderedConcepts, status, concept,
 							medMappedNValiedPVConcept, medMappedNNotValiedPVConcept,
 							notMEDMappedConcept);
@@ -291,7 +286,7 @@ public class SearchPermissibleValuesAction extends Action
 	 * @throws VocabularyException 
 	 */
 	private int isSourceVocabMappedTerm(IConcept concept, List<PermissibleValueInterface> pvList,
-			String sourceConceptCode) throws VocabularyException
+			IConcept sourceConceptCode) throws VocabularyException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
@@ -308,7 +303,7 @@ public class SearchPermissibleValuesAction extends Action
 			{
 				//If MED coded and its part of PV then show text should be bold with normal 
 				status = 1;//"Normal_Bold_Enabled";
-				sourceConceptCode = returnedConcept.getCode();
+				((Concept)sourceConceptCode).setCode(returnedConcept.getCode());
 			}
 			else
 			{
@@ -316,7 +311,7 @@ public class SearchPermissibleValuesAction extends Action
 				 * entity text should be normal disabled 
 				 */
 				status = 2;//"Normal_Disabled";
-				sourceConceptCode = null;
+				((Concept)sourceConceptCode).setCode(concept.getCode());
 			}
 
 		}
@@ -337,7 +332,7 @@ public class SearchPermissibleValuesAction extends Action
 					 * 
 					 */
 					status = 3;//"Normal_Bold_Enabled";
-					sourceConceptCode = sourceConcept.getCode();
+					((Concept)sourceConceptCode).setCode(sourceConcept.getCode());
 				}
 				else
 				{
@@ -347,7 +342,7 @@ public class SearchPermissibleValuesAction extends Action
 					 * but  its is not valid PV  entity then show text Bold Italic Disabled.)
 					 */
 					status = 4;//"Bold_Italic_Disabled";
-					sourceConceptCode = null;
+					((Concept)sourceConceptCode).setCode(concept.getCode());
 				}
 			}
 			else
@@ -358,7 +353,7 @@ public class SearchPermissibleValuesAction extends Action
 				 * then show text Italic Normal and Disabled;)  
 				 */
 				status = 5;//"Normal_Italic_Disabled";
-				sourceConceptCode = null;
+				((Concept)sourceConceptCode).setCode(concept.getCode());
 			}
 		}
 		return status;
