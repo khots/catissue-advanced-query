@@ -1962,7 +1962,6 @@ var jsReady = false;
 				index++;
 			}
 			
-			alert(medConceptCodeList);
 			medConceptCodeList=medConceptCodeList.unique();
 			document.getElementById(componentIdOfID).value = medConceptCodeList;
 	}	
