@@ -321,7 +321,6 @@ function  reSetDropDowns(queryTitle)
 {
 
   var dropDowns= parent.window.document.getElementsByName("countQueryDropDown");
-  
 	 for(var i=0;i<dropDowns.length;i++)
 	{
 	    var index=-1;
@@ -345,34 +344,42 @@ function  reSetDropDowns(queryTitle)
 	
     
 	 var hiddenDropDown=parent.window.document.getElementById("executedCountQuery");
-	 var optns=hiddenDropDown.options.length;
-	  var ind=-1;
-		
-    	if(optns >0)
-    	{
-    		for(var j=0;j<optns;j++)
-    	  {
-    		  if(hiddenDropDown.options[j].text==queryTitle)
-				 ind=j;
-    	  }
-    	
-    	}
-	  
-	   if(ind!=-1) 
-		 hiddenDropDown.remove(ind);
-	      if(hiddenDropDown.options.length==0)
-			 hiddenDropDown.disabled=true; 
+	 if(hiddenDropDown!=null)
+	 {
+		  var optns=hiddenDropDown.options.length;
+		  var ind=-1;
+			
+			if(optns >0)
+			{
+				for(var j=0;j<optns;j++)
+			  {
+				  if(hiddenDropDown.options[j].text==queryTitle)
+					 ind=j;
+			  }
+			
+			}
+		  
+		   if(ind!=-1) 
+			 hiddenDropDown.remove(ind);
+			  if(hiddenDropDown.options.length==0)
+				 hiddenDropDown.disabled=true; 
+	 }
 	  
 	     
 }
 
 
+
+
 function deleteWorkflowItem(index)
 {
+	var dependentQueries=checkFordependentQueries(index);
 
-	if(checkFordependentQueries(index)!=true)
+	if(dependentQueries!=true)
 	{
 		//dhtmlmodal.open('delete Queries', 'iframe', './pages/advancequery/content/search/querysuite/deleteQueryConfim.jsp','Delete Query', 'width=400px,height=150px,center=1,resize=1,scrolling=1');
+		var checkboxControl=document.getElementById("checkbox_"+(index));
+
 		var checkboxControl=document.getElementById("checkbox_"+(index));
 		if(checkboxControl!=null && checkboxControl!=undefined)
 		{
@@ -380,8 +387,8 @@ function deleteWorkflowItem(index)
 			
 			var table=document.getElementById("table1");
 			var oldNoOfRows=document.getElementById("table1").rows.length;
-			var i=index;
 			var deleteQuery =document.getElementById('displayQueryTitle_'+index).value;
+			var i=index;
 			++i;
 			for( ;i<=(oldNoOfRows-1);i++)
 			{
@@ -419,8 +426,10 @@ function deleteWorkflowItem(index)
 					document.getElementById("label_"+i).id="label_"+(i-1);
 				}
 			}
-		table.deleteRow(index);
+			
+			table.deleteRow(index);
 		}
+	
 		 reSetDropDowns(deleteQuery);
 		setCheckboxCount();
 	}
@@ -601,6 +610,5 @@ function checkFordependentQueries(index)
 				}
 			}
 	}
-
 	return false;
 }
