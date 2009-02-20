@@ -246,7 +246,22 @@
 				var status		= jsonResponse.resultObject.status;
 				executionId		= jsonResponse.resultObject.executionId;
 				document.forms['form2'].executionId.value = executionId;		 
-						 	 
+						
+				if(isNewQuery=="true" && abortExecution=='false')
+				{
+					var NoteObject 		= document.getElementById("NoteId");
+					var selectedProject	= document.forms['form2'].selectedProject.value;
+					var queryTitle 		= jsonResponse.resultObject.queryTitle;
+					if(selectedProject!="")
+					{
+						var project_name 	 =  jsonResponse.resultObject.selectedProject;
+						NoteObject.innerHTML = 'Note: The query "'+queryTitle+'" is executed for project "'+project_name+'". The results will be filtered based on the project rules.';
+					}
+					else
+					{
+						NoteObject.innerHTML = 'Note: The query "'+queryTitle+'" is executed without selecting a project, so results from all facilities are included in the count.  If you would want to execute this query for a specific project, you can select the project below and the results will be filtered based on the project rules.';
+					}
+				}
 				if(queryCount!=-1)
 				{
 					if(StatusObject!=null)
