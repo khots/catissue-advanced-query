@@ -738,7 +738,6 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 						   				<td class="content_txt" width="10">
 												
 						   					<c:set var="chkId">chk_<c:out value="${queryIndex}"/></c:set>
-											${qtype}
 						   					<html:checkbox property="chkbox" styleId="checkbox_${queryIndex}"
 											onclick="javascript:setCheckboxCount()" disabled="true"></html:checkbox>
 						   				</td>
@@ -747,7 +746,6 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 											<td class="content_txt" width="10">
 												
 						   					<c:set var="chkId">chk_<c:out value="${queryIndex}"/></c:set>
-											${qtype}
 						   					<html:checkbox property="chkbox" styleId="checkbox_${queryIndex}"
 											onclick="javascript:setCheckboxCount()" disabled="false"></html:checkbox>
 						   				</td>
