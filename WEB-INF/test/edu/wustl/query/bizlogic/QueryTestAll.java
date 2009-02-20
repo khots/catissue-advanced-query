@@ -31,9 +31,6 @@ public class QueryTestAll extends TestSuite
 		//For testing WorkflowBizLogic
 		suite.addTestSuite(WorkflowBizLogicTestCases.class);
 		
-		// For testing FAMEWORK for Query testing
-		// suite.addTestSuite(XQueryGeneratorTestCase.class);
-		
 		// For testing FRAMEWORK FUNCTIONALITY
 		suite.addTestSuite(QueryFrameworkTestCase.class);
 
