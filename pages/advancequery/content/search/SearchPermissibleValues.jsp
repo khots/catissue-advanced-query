@@ -335,7 +335,7 @@ function setMappedConceptsToVocabDIV(request,selectedCheckedBoxVocabDivID)
 		if(request.status == 200)
 		{	
 			var responseTextValue =  request.responseText;	
-			var searchHTML=responseTextValue.split("MSG@-@");
+			var searchHTML=responseTextValue.split('<%=Constants.MSG_DEL%>');
 			if(searchHTML.length>1)
 			{
 				document.getElementById(selectedCheckedBoxVocabDivID).innerHTML=searchHTML[0];
@@ -520,7 +520,7 @@ function getSearchTermResult(searchRequest)
 			if( ! operationAborted)
 			{ 
 				// if user has not aborted the requrest then set the html result to div and clear the search message from message label
-				searchHTML=responseTextValue.split("MSG@-@");
+				searchHTML=responseTextValue.split('<%=Constants.MSG_DEL%>');
 				if(searchHTML.length>1)
 				{
 					document.getElementById("divForSearchingMode").innerHTML=searchHTML[0];
@@ -731,7 +731,7 @@ function editSelectedPV()
 									srcHTML="";
 									}
 									else{
-										String srcHTMLArray[]=srcHTML.split("MSG@-@");
+										String srcHTMLArray[]=srcHTML.split(Constants.MSG_DEL);
 										srcHTML=srcHTMLArray[0];
 										}
 									%>
