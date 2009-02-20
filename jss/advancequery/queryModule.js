@@ -1900,7 +1900,7 @@ var jsReady = false;
 	   editVocabURN="null";
 	   if(conceptCodes.length>0)
 	   {
-			vocabCodeDetail=conceptCodes[0].split("~ID_DEL~");
+			vocabCodeDetail=conceptCodes[0].split("ID_DEL");
 			editVocabURN=vocabCodeDetail[0];
 	   }
 	   var width=930; //(screen.width * 90 )/100;
@@ -1938,7 +1938,7 @@ var jsReady = false;
 			{
 				if(permValuesWithCode[i]!="")
 				{
-						var urnAndCode=permValuesWithCode[i].split("~ID_DEL~");
+						var urnAndCode=permValuesWithCode[i].split("ID_DEL");
 						medConceptCodeList[j]=urnAndCode[1];  //concept code
 						j++;
 				}
@@ -1952,9 +1952,9 @@ var jsReady = false;
 			for(i=0;i < permValuesNames.length-1;i++)
 			{
 				
-				var urnAndCode=permValuesWithCode[i].split("~ID_DEL~");
+				var urnAndCode=permValuesWithCode[i].split("ID_DEL");
 				
-				optionID=urnAndCode[0]+"~ID_DEL~"+urnAndCode[1]+"~ID_DEL~"+permValuesNames[index];
+				optionID=urnAndCode[0]+"ID_DEL"+urnAndCode[1]+"ID_DEL"+permValuesNames[index];
 				listboxName.options[index] = new Option(permValuesNames[index], optionID,true, true); 
 				listboxName.options[index].title =permValuesNames[index];
 				listboxName.options[index].id = optionID;
@@ -1962,6 +1962,7 @@ var jsReady = false;
 				index++;
 			}
 			
+			alert(medConceptCodeList);
 			medConceptCodeList=medConceptCodeList.unique();
 			document.getElementById(componentIdOfID).value = medConceptCodeList;
 	}	
@@ -1993,7 +1994,7 @@ var jsReady = false;
 		{
 			if(listboxName.options[i].selected == true)
 			{
-				var listBoxId=listboxName.options[i].id.split("~ID_DEL~"); // need to set only the ids of the med concept 
+				var listBoxId=listboxName.options[i].id.split("ID_DEL"); // need to set only the ids of the med concept 
 				// URN + Concept Code+ Concept Name
 				idTextBox.value = idTextBox.value +listBoxId[1] +",";
 			}
