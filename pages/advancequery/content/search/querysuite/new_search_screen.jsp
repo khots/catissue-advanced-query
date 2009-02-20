@@ -52,13 +52,13 @@ MM_reloadPage(true);
 					  <td  height="30">
 					  </td>
                     </tr>
-                    <tr bgcolor="#FFFFFF" class="tr_color_lgrey">
+                   <!-- <tr bgcolor="#FFFFFF" class="tr_color_lgrey">
                       <td valign="top" class="content_txt"><img src="images/advancequery/ic_patient_data.gif" alt="Patient Data" width="15" height="16"></td>
                       <td height="30" valign="top" class="content_txt"><a href="#" onClick="(alert('This feature is currently not available..!'))" class="bluelink"><b>Get individual patient level clinical information for my project.</b></a><br>
                         Description: </td>
 						  <td  height="30">
 						  </td>
-                    </tr>
+                    </tr> -->
                     <tr bgcolor="#FFFFFF">
                       <td valign="top" class="content_txt"><img src="images/advancequery/ic_worflow.gif" alt="Workflow" width="15" height="16"></td>
                       <td height="30" valign="top" class="content_txt"><a href="QueryWorkflowWizard.do" class="bluelink"><b>Define a set of queries for a workflow.</b></a><br>
