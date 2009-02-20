@@ -24,6 +24,7 @@ import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.vocab.IConcept;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.VocabularyException;
+import edu.wustl.common.vocab.impl.Concept;
 import edu.wustl.common.vocab.impl.Vocabulary;
 import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.bizlogic.BizLogicFactory;
@@ -51,7 +52,7 @@ public class SearchPermissibleValuesAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		
+
 		String searchTerm = request.getParameter(Constants.SEARCH_TERM);
 		String operation = request.getParameter(Constants.OPERATION);
 		String targetVocabs = request.getParameter("targetVocabsForSearchTerm");
@@ -62,22 +63,24 @@ public class SearchPermissibleValuesAction extends Action
 			//need to save componetid into the session for next Ajax requests
 			componentId = (String) request.getSession().getAttribute(Constants.COMPONENT_ID);
 		}
-		
+
 		if (searchTerm != null && targetVocabs != null)
 		{
 			// AJAX Request handler for Getting search term Result data for source to target vocabularies
 			SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
-			.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-			if(operation.equals(Constants.ABORT))
+					.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
+			if (operation.equals(Constants.ABORT))
 			{
-				response.getWriter().write(VocabUtil.getVocabProperties().getProperty("abort.message"));
+				response.getWriter().write(
+						VocabUtil.getVocabProperties().getProperty("abort.message"));
 			}
 			else
 			{
 				try
 				{
-					searchTerm=searchTerm.trim();
-					String html = searchTermInTargetVocab(searchTerm, targetVocabs,componentId,request);
+					searchTerm = searchTerm.trim();
+					String html = searchTermInTargetVocab(searchTerm, targetVocabs, componentId,
+							request);
 					response.getWriter().write(html);
 				}
 				catch (VocabularyException e)
@@ -85,10 +88,11 @@ public class SearchPermissibleValuesAction extends Action
 					response.getWriter().write(bizLogic.getErrorMessageAsHTML());
 				}
 			}
-			
+
 		}
 		return null;
 	}
+
 	/**
 	 * This method will search for the entered text by the user across all the vocabularies
 	 * and return the HTML for the searched result
@@ -126,11 +130,10 @@ public class SearchPermissibleValuesAction extends Action
 		while (allTrgVocabs.hasMoreTokens())
 		{
 			String[] vocabDetail = allTrgVocabs.nextToken().split("##");
-			String 	vocabURN=vocabDetail[0],vocabDisName = vocabDetail[1];
-			html.append(bizLogic.getRootVocabularyHTMLForSearch("srh_" + vocabURN,
-					vocabDisName));
-			List<IConcept> conceptList = bizLogic
-					.searchConcept(searchTerm, vocabURN,VIProperties.maxToReturnFromSearch);
+			String vocabURN = vocabDetail[0], vocabDisName = vocabDetail[1];
+			html.append(bizLogic.getRootVocabularyHTMLForSearch("srh_" + vocabURN, vocabDisName));
+			List<IConcept> conceptList = bizLogic.searchConcept(searchTerm, vocabURN,
+					VIProperties.maxToReturnFromSearch);
 			/**
 			 * to maintain the order of search results to show on UI
 			 */
@@ -138,26 +141,33 @@ public class SearchPermissibleValuesAction extends Action
 			List<IConcept> medMappedNValiedPVConcept = new ArrayList<IConcept>();
 			List<IConcept> medMappedNNotValiedPVConcept = new ArrayList<IConcept>();
 			List<IConcept> notMEDMappedConcept = new ArrayList<IConcept>();
+			Map<String,String> sourceConceptMap = new HashMap<String, String>();
 			if (conceptList != null && conceptList.size() != 0)
 			{
 				for (IConcept concept : conceptList)
 				{
-					IConcept sourceConcept = null;
-					int status = isSourceVocabMappedTerm(concept, pvList, sourceConcept);
-
+					String sourceConceptCode = new String();
+					int status = isSourceVocabMappedTerm(concept, pvList, sourceConceptCode);
+					if(sourceConceptCode != null)
+					{
+						sourceConceptMap.put(concept.getCode(), sourceConceptCode);
+					}
+					else
+					{
+						sourceConceptMap.put(concept.getCode(), concept.getCode());
+					}
 					maintainOrderOfConcepts(orderedConcepts, status, concept,
 							medMappedNValiedPVConcept, medMappedNNotValiedPVConcept,
 							notMEDMappedConcept);
 					//need to put the condition on size of each vocab
-					
-					if( (medMappedNValiedPVConcept.size()==VIProperties.maxPVsToShow) 
-							||(medMappedNNotValiedPVConcept.size()==VIProperties.maxPVsToShow)|| (notMEDMappedConcept.size()==VIProperties.maxPVsToShow))
+
+					if ((medMappedNValiedPVConcept.size() == VIProperties.maxPVsToShow))
 					{
 						messageFlag = true;
 						break;
 					}
 				}
-				createHTMLForConcept(orderedConcepts, vocabURN, html);
+				createHTMLForConcept(orderedConcepts, vocabURN, html,sourceConceptMap);
 			}
 			else
 			{
@@ -172,19 +182,17 @@ public class SearchPermissibleValuesAction extends Action
 		return html.toString();
 	}
 
-	private void createHTMLForConcept(Map<String, List<IConcept>> orderedConcepts,
-			String vocabURN, StringBuffer html) throws VocabularyException
+	private void createHTMLForConcept(Map<String, List<IConcept>> orderedConcepts, String vocabURN,
+			StringBuffer html,Map<String,String> sourceConceptMap) throws VocabularyException
 	{
 
 		/********** Get HTML for Source Vocabulary************
 		 * need to ask about condition ;cause backend change*/
 		if (vocabURN.equals(VocabUtil.getVocabProperties().getProperty("source.vocab.urn")))
 		{
-			getHTML(orderedConcepts, vocabURN, html,
-					Constants.MED_MAPPED_N_VALID_PVCONCEPT);
+			getHTML(orderedConcepts, vocabURN, html, Constants.MED_MAPPED_N_VALID_PVCONCEPT,sourceConceptMap);
 
-			getHTML(orderedConcepts, vocabURN, html,
-					Constants.NOT_MED_VALED_PVCONCEPT);
+			getHTML(orderedConcepts, vocabURN, html, Constants.NOT_MED_VALED_PVCONCEPT,sourceConceptMap);
 		}
 		else
 		{
@@ -192,18 +200,15 @@ public class SearchPermissibleValuesAction extends Action
 			/*first get the HTML for Result has mapping available in MED and it is valid permissible value for the entity.
 			 *  Show result as bold enabled.
 			 */
-			getHTML(orderedConcepts, vocabURN, html,
-					Constants.MED_MAPPED_N_VALID_PVCONCEPT);
+			getHTML(orderedConcepts, vocabURN, html, Constants.MED_MAPPED_N_VALID_PVCONCEPT,sourceConceptMap);
 			/* Result has mapping available in MED but it is not valid permissible value.
 			 * Show result as disabled bold italicized.
 			 */
-			getHTML(orderedConcepts, vocabURN, html,
-					Constants.MED_MAPPED_N_NOT_VALIED_PVCONCEPT);
+			getHTML(orderedConcepts, vocabURN, html, Constants.MED_MAPPED_N_NOT_VALIED_PVCONCEPT,sourceConceptMap);
 			/* 	Result has no mapping available in MED.
 			 *	Show result as disabled  italicized.
 			 */
-			getHTML(orderedConcepts, vocabURN, html,
-					Constants.NOT_MED_MAPPED_PVCONCEPT);
+			getHTML(orderedConcepts, vocabURN, html, Constants.NOT_MED_MAPPED_PVCONCEPT,sourceConceptMap);
 		}
 	}
 
@@ -217,7 +222,7 @@ public class SearchPermissibleValuesAction extends Action
 	 * @throws VocabularyException
 	 */
 	private void getHTML(Map<String, List<IConcept>> orderedConcepts, String vocabURN,
-			 StringBuffer html, String status) throws VocabularyException
+			StringBuffer html, String status,Map<String,String> sourceConceptMap) throws VocabularyException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
@@ -226,9 +231,8 @@ public class SearchPermissibleValuesAction extends Action
 		{
 			for (IConcept medRelatedConcept : conceptList)
 			{
-				String checkboxId = vocabURN + Constants.ID_DEL
-						+ medRelatedConcept.getCode();// concept.getCode();
-				html.append(bizLogic.getHTMLForSearchedConcept("srh_" + vocabURN, 
+				String checkboxId = vocabURN + Constants.ID_DEL + sourceConceptMap.get(medRelatedConcept.getCode());// concept.getCode();
+				html.append(bizLogic.getHTMLForSearchedConcept("srh_" + vocabURN,
 						medRelatedConcept, "srh_" + checkboxId, status));
 
 			}
@@ -286,23 +290,24 @@ public class SearchPermissibleValuesAction extends Action
 	 * @throws VocabularyException 
 	 */
 	private int isSourceVocabMappedTerm(IConcept concept, List<PermissibleValueInterface> pvList,
-			IConcept sourceConcept) throws VocabularyException
+			String sourceConceptCode) throws VocabularyException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
-		.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
-		
+				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
+
 		IVocabulary sourceVocabulary = bizLogic.getVocabulary(VIProperties.sourceVocabUrn);
-		int status =0;
-		if(((Vocabulary)sourceVocabulary).equals((Vocabulary)concept.getVocabulary()))
+		int status = 0;
+		if (((Vocabulary) sourceVocabulary).equals((Vocabulary) concept.getVocabulary()))
 		{
 			/*In case of MED check whether the result is valid permissible value for the entity. 
 			 *If yes make it enable and show it in bold face otherwise disable the result.
 			 */
-			sourceConcept = bizLogic.isConceptExistInPVList(concept, pvList);
-			if (sourceConcept != null)
+			IConcept returnedConcept = bizLogic.isConceptExistInPVList(concept, pvList);
+			if (returnedConcept != null)
 			{
 				//If MED coded and its part of PV then show text should be bold with normal 
 				status = 1;//"Normal_Bold_Enabled";
+				sourceConceptCode = returnedConcept.getCode();
 			}
 			else
 			{
@@ -310,34 +315,39 @@ public class SearchPermissibleValuesAction extends Action
 				 * entity text should be normal disabled 
 				 */
 				status = 2;//"Normal_Disabled";
+				sourceConceptCode = null;
 			}
+
 		}
 		else
 		{
-			List<IConcept> concepts = bizLogic.isSourceVocabCodedTerm(concept, VIProperties.translationAssociation,
-					sourceVocabulary);
+			List<IConcept> concepts = bizLogic.isSourceVocabCodedTerm(concept,
+					VIProperties.translationAssociation, sourceVocabulary);
 			if (concepts != null)
 			{
-				sourceConcept = bizLogic.isConceptsExistInPVList(concepts, pvList);
-			}
-			if (concepts != null && sourceConcept != null)
-			{
-				/*	Result has mapping available in MED and it is valid permissible value for the entity.
-				 *  Show result as bold enabled.
-				 * (user has searched on other vocabulary and the searched concept is MED coded 
-				 * and its is  valid PV for entity then show text bold with enabled.)
-				 * 
-				 */
-				status = 3;//"Normal_Bold_Enabled";
-			}
-			else if (concepts != null && sourceConcept == null)
-			{
-				/* Result has mapping available in MED but it is not valid permissible value.
-				 * Show result as disabled bold italicized.
-				 * (user has searched on other vocabulary and the searched concept is MED coded 
-				 * but  its is not valid PV  entity then show text Bold Italic Disabled.)
-				 */
-				status = 4;//"Bold_Italic_Disabled";
+				IConcept sourceConcept = bizLogic.isConceptsExistInPVList(concepts, pvList);
+
+				if (sourceConcept != null)
+				{
+					/*	Result has mapping available in MED and it is valid permissible value for the entity.
+					 *  Show result as bold enabled.
+					 * (user has searched on other vocabulary and the searched concept is MED coded 
+					 * and its is  valid PV for entity then show text bold with enabled.)
+					 * 
+					 */
+					status = 3;//"Normal_Bold_Enabled";
+					sourceConceptCode = sourceConcept.getCode();
+				}
+				else
+				{
+					/* Result has mapping available in MED but it is not valid permissible value.
+					 * Show result as disabled bold italicized.
+					 * (user has searched on other vocabulary and the searched concept is MED coded 
+					 * but  its is not valid PV  entity then show text Bold Italic Disabled.)
+					 */
+					status = 4;//"Bold_Italic_Disabled";
+					sourceConceptCode = null;
+				}
 			}
 			else
 			{
@@ -347,6 +357,7 @@ public class SearchPermissibleValuesAction extends Action
 				 * then show text Italic Normal and Disabled;)  
 				 */
 				status = 5;//"Normal_Italic_Disabled";
+				sourceConceptCode = null;
 			}
 		}
 		return status;
