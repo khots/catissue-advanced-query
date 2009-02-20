@@ -768,11 +768,12 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 										<td class="content_txt">
 										 
 										 <logic:equal name="query_type_data" value="${qtype}">
-										 <select name="countQueryDropDown" class="texttype" id="countQueryDropDown_${workflowForm.identifier[queryIndex]}" style="width:120;">
-										 <logic:notEmpty name="workflowForm" property="selectedqueryId">
+										 <select name="countQueryDropDown" disabled id="countQueryDropDown_${workflowForm.identifier[queryIndex]}" style="width:120;">
+										<!-- <logic:notEmpty name="workflowForm" property="selectedqueryId">
 						   			       <logic:iterate id="singleQueryId" name="workflowForm" property="selectedqueryId" indexId="qIndx" >
 										  <logic:equal name="query_type_count" value="${workflowForm.displayQueryType[qIndx]}">
-										 <OPTION VALUE="${workflowForm.identifier[qIndx]}">${workflowForm.displayQueryTitle[qIndx]}</OPTION></logic:equal></logic:iterate></logic:notEmpty></select></logic:equal>
+										 <OPTION VALUE="${workflowForm.identifier[qIndx]}">${workflowForm.displayQueryTitle[qIndx]}</OPTION></logic:equal></logic:iterate></logic:notEmpty>--></select>
+                                         </logic:equal>
 										  </td>
 
 										<td class="content_txt">
