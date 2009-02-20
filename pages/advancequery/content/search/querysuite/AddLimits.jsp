@@ -45,15 +45,19 @@
 	 <input type="hidden" name="isWorkflow" id="isWorkflow" value="">
    
  <input type="hidden" name="pageOf" id="pageOf" value="DefineFilter">
+ <table border="0" width="100%" >
+	<tr><td style="padding-left:5px; padding-right:5px;">
+ <table  width="100%" border="0" cellspacing="0" cellpadding="0" align="center" class="login_box_bg">
+ <tr><td>
   <table border="0" width="100%" cellspacing="0" cellpadding="0"  height="450" bgcolor="#ffffff">	
 	 
-	 <tr style="padding-left:10px;">
-			<td  nowrap>
+	 <tr style="padding-left:10px;" id="workflowname">
+			<td  nowrap height="30" colspan="3">
 			&nbsp;
-				<span class="small_txt_grey"><bean:message key="workflow.name"/></span>:<span class="small_txt_grey">
+				<span class="content_txt"><bean:message key="workflow.name"/>:</span><span>
 				<html:text styleClass="textfield_undefined" size="50" styleId="workflowName" property="workflowName" disabled="true" value="<%=workflowName%>"/></span>&nbsp;&nbsp;
 			</td>
-			</tr>
+	  </tr>
 	 <tr>	
 			<td width="33%" align="center" valign="middle" height="36"  background="images/advancequery/top_bg_wiz.gif" >
 				<img src="images/advancequery/define_filters_active.gif"/> <!-- width="118" height="25" /-->
@@ -76,14 +80,14 @@
 			<td height="60%" valign="top" width="100%" colspan="4">
 				<table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3">			
 					<tr>
-						<td valign="top" width="10%" >
+						<td valign="bottom" width="10%" >
 						<%@ include file="/pages/advancequery/content/search/querysuite/ChooseSearchCategory.jsp" %>
 						</td>
 					
 					
 
 					<td valign="top" height="60%">
-							<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  >        
+<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  >        
 								
 							<tr>
 							<td>
@@ -112,7 +116,7 @@
 								</td>
 							</tr>							
 							<tr>							
-							<td>								
+							<td valign="bottom">								
 								<table border="0" bordercolor="#cccccc" width="100%" cellspacing="0" class="login_box_bg" cellpadding="0" bgcolor="#FFFFFF" height="100%">
 								<tr>
 										<td height="400px" >											
@@ -161,7 +165,7 @@
 			<tr>
 					
 					<td colspan="4">
-					<table border="0" width="100%" cellspacing="0" cellpadding="0" height="24">
+					<table border="0" width="100%" cellspacing="0" cellpadding="0" height="40">
 					<tr valign="middle">
 					 <td width="50%" align="left" colspan="2">
 					  <table border="0" cellspacing="0" cellpadding="0" >
@@ -184,20 +188,21 @@
 								</c:forEach>
 							</SELECT>
 					    </td>	
-						<td align="right"><img src="images/advancequery/b_define_results_view.gif" onclick="saveClientQueryToServer('next');" /></td>
+						<td align="right" style="padding-right:5px"><img src="images/advancequery/b_define_results_view.gif" onclick="saveClientQueryToServer('next');" /></td>
 						</tr>
 					</table>
 					 </td>
-					 <td width="2%">&nbsp;</td>
+					 <td></td>
 					</tr>
 				</table>   
 				</td>
 					</tr>
 			</table>          
 			</td></tr>
-			<tr height="7"> <td>&nbsp;</td></tr>
-
-</table>               
+	</table>  
+</td></tr></table>
+</td></tr></table>
+<br>
 </html:form>
 </body>
 <script>   
