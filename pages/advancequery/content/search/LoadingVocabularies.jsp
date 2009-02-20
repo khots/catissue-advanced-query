@@ -2,7 +2,7 @@
 
 function forwardToLocation()
 {
-	location.href ='SearchMappedPV.do?componentId='+parent.compId;
+	location.href ='SearchMappedPV.do?componentId='+parent.compId+"&editVocabURN="+parent.editVocabURN;
 }
 </script>
 
