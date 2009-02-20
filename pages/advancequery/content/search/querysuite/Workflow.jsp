@@ -405,11 +405,17 @@ function executeGetDataQuery(dataQueryId)
   
    
 	var countQueryId = document.getElementById("countQueryDropDown_"+dataQueryId);
-    var countqId =countQueryId.options[countQueryId.selectedIndex].value;
-	var hiddnid=  document.getElementById("dataQueryId");
-	var hid=   document.getElementById("countQueryId") 
-	   if(hiddnid!=null)
+    if(countQueryId.selectedIndex== -1)
 	{
+	  alert("please first execute a get count query");
+	}
+	else
+	{
+      var countqId =countQueryId.options[countQueryId.selectedIndex].value;
+	  var hiddnid=  document.getElementById("dataQueryId");
+	  var hid=   document.getElementById("countQueryId") 
+	   if(hiddnid!=null)
+	  {
 	    hiddnid.value=dataQueryId;
 	    hid.value=countqId;
 	  }
@@ -423,6 +429,7 @@ function executeGetDataQuery(dataQueryId)
 		 request.open("POST",url,true);	
 		 request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 		request.send(actionURL);	
+	  }
 }
 
 
@@ -440,7 +447,8 @@ function executeGetDataQuery(dataQueryId)
 		var executinIDElement=tdChildCollection[3].id;
 		var exId= document.getElementById(executinIDElement).value;
 		var projectId=document.getElementById("selectedProject").value;
-	   document.forms[0].action="\QueryResultsView.do?dataQueryId="+dataQueryId+"&queryExecutionId="+exId+"&selectedProject="+projectId;
+	    var workflowId=document.getElementById("id").value;
+		document.forms[0].action="\QueryResultsView.do?dataQueryId="+dataQueryId+"&queryExecutionId="+exId+"&selectedProject="+projectId+"&workflowId="+workflowId;
 	   document.forms[0].submit();
 	 }
 	  
