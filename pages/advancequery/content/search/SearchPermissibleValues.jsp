@@ -628,6 +628,7 @@ function editSelectedPV()
 		var checkboxId=vocabURN+'<%=Constants.ID_DEL%>'+conceptCode;
 		createRows(vocabURN,checkboxId,conceptDetail);
 		document.getElementById("vocab_"+vocabURN).checked=true;
+		pervVocabCheckboxId="vocab_"+vocabURN;
 	}
 	//need to enabled the ok button
 	if(selectedPvs.length>0) //Check to enable 'OK'  button
