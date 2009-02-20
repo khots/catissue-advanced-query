@@ -599,10 +599,10 @@ public class HtmlProvider
    	     {
 			for(int i=0;i<conditionOfId.size();i++)
 			{
-				String name = conditionOfName.get(i);
-				String id = conditionOfId.get(i);
-				html.append("\n<option class=\"PermissibleValuesQuery\" title=\"" + name
-						+ "\" value=\"" + name + "\" id=\"" +id+"\"+ SELECTED>" + name + "</option>");
+				String[] name = conditionOfName.get(i).split(Constants.ID_DEL);
+				String id = conditionOfName.get(i);
+				html.append("\n<option class=\"PermissibleValuesQuery\" title=\"" + name[2]
+						+ "\" value=\"" + id + "\" id=\"" +id+"\"+ SELECTED>" + name[2] + "</option>");
 			}
 			
     	  }
