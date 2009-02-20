@@ -145,6 +145,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	{
 		IVocabulary sourceVocabulary = getVocabulary(VIProperties.sourceVocabUrn);
 		String associationName = VIProperties.translationAssociation;
+		int maxPVsToShow=0;
 		Map<String, List<IConcept>> mappedConcepts = new HashMap<String, List<IConcept>>();
 		try
 		{
@@ -159,6 +160,11 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 					if(conList != null && !conList.isEmpty())
 					{
 						mappedConcepts.put(perValueInterface.getValueAsObject().toString(), conList);
+						maxPVsToShow=maxPVsToShow+conList.size();
+						if(maxPVsToShow>=VIProperties.maxPVsToShow)
+						{
+							break;
+						}
 					}
 				}
 			}
@@ -204,7 +210,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	public String getInfoMessage() throws VocabularyException
 	{
 		//return "<tr><td class='black_ar_tt' colspan='3'>" + Constants.VI_INFO_MESSAGE1 +count+Constants.VI_INFO_MESSAGE2+ "<td></tr>";
-		return "MSG$-$"+ VocabUtil.getVocabProperties().getProperty("too.many.results.message");
+		return "MSG@-@"+ VocabUtil.getVocabProperties().getProperty("too.many.results.message");
 	}
 	/**
 	 * This method returns the HTML for child nodes for all the vocabularies which
