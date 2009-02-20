@@ -618,7 +618,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	/**  Constant for  */
 	public static final String NO_RESULT = "No results found";
 	/**  Constant for  */
-	public static final String PV_HTML = "PVHTML";
+	public static final String MED_PV_HTML = "PVHTML";
 
 	/**  Constant for  */
 	public static final String DEFINE_VIEW_MSG = "DefineView";
