@@ -68,7 +68,7 @@ MM_reloadPage(true);
           <tr>
 		  <c:choose>
 			 <c:when test="${currentSelectedProject==''}">
-	            <td colspan="2" valign="top" class="tr_color_lgrey"><span class="content_txt">Note: The query "${requestScope.categorySearchForm.queryTitle}" is executed without selecting a project, so results from all facilities are included in the count.  If you would want to execute this query for a specific project, you can select the project below and the results will be filtered based on the project rules.</span> </td>								
+	            <td colspan="2" valign="top" class="tr_color_lgrey"><span id="NoteId" class="content_txt">Note: The query "${requestScope.categorySearchForm.queryTitle}" is executed without selecting a project, so results from all facilities are included in the count.  If you would want to execute this query for a specific project, you can select the project below and the results will be filtered based on the project rules.</span> </td>								
 			 </c:when>
 			 <c:otherwise>
 				<c:forEach var="project" items="${requestScope.categorySearchForm.projectsNameValueBeanList}">
@@ -76,7 +76,7 @@ MM_reloadPage(true);
 						<c:set var="currentSelectedProjectName" value="${project.name}"/>
 					</c:if>
 				</c:forEach>
-	            <td colspan="2" valign="top" class="tr_color_lgrey"><span class="content_txt">Note: The query "${requestScope.categorySearchForm.queryTitle}" is executed for project "${currentSelectedProjectName}".The results will be filtered based on the project rules.</span> </td>
+	            <td colspan="2" valign="top" class="tr_color_lgrey"><span id="NoteId" class="content_txt">Note: The query "${requestScope.categorySearchForm.queryTitle}" is executed for project "${currentSelectedProjectName}".The results will be filtered based on the project rules.</span> </td>
 			</c:otherwise>
 		</c:choose>
           </tr>
@@ -94,9 +94,14 @@ MM_reloadPage(true);
 				<html:hidden property="isNewQuery" value="false" />
 				<html:hidden property="selectedProject" value="${currentSelectedProject}" />
 				<SELECT NAME="getCount" class="textfield" onChange="setProjectData(this,'form2')">
-						<c:if test="${currentSelectedProject==''}">
-								<OPTION VALUE="" selected>Unspecified..
-						</c:if>
+							<c:choose>
+								<c:when test="${currentSelectedProject==''}">
+									<OPTION VALUE="" selected>Unspecified..
+								</c:when>
+								<c:otherwise>
+									<OPTION VALUE="">Unspecified..
+								</c:otherwise>
+							</c:choose>
 						<c:forEach var="project" items="${requestScope.categorySearchForm.projectsNameValueBeanList}">
 							<c:choose>
 								<c:when test="${project.value eq currentSelectedProject}">
