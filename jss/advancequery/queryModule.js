@@ -1879,10 +1879,15 @@ var jsReady = false;
 	   compId= componentId;
 	   compIdOfID=componentIdOfID;
 	   getConceptValues();
-	   
+	   editVocabURN="null";
+	   if(conceptCodes.length>0)
+	   {
+			vocabCodeDetail=conceptCodes[0].split("~ID_DEL~");
+			editVocabURN=vocabCodeDetail[0];
+	   }
 	   var width=930; //(screen.width * 90 )/100;
 	   var height= 520;//( screen.height * 65)/100;
-	   pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'LoadingVocabularies.do?componentId='+componentId,'Search Permissible Values for \"'+entityName+'\"', 'width='+width+' height='+height+',center=1,resize=0,scrolling=1');
+	   pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'LoadingVocabularies.do','Search Permissible Values for \"'+entityName+'\"', 'width='+width+' height='+height+',center=1,resize=0,scrolling=1');
 	   refresh=false;
 	}
 	/** if Concept already selected and again VI pop is open then
