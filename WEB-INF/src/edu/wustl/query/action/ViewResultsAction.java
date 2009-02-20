@@ -69,12 +69,15 @@ public class ViewResultsAction extends Action
 		HttpSession session = request.getSession();
 		int queryExecutionID = 4; //need to get From request
 		String id = request.getParameter("dataQueryId");
+		String workflowId= request.getParameter("workflowId");
+		
 		Long iqueryId = Long.valueOf(257);
 		if(id != null && !id.equals(""))
 		{
 			iqueryId = Long.valueOf(id);
 		}
 		session.setAttribute("dataQueryId",iqueryId);
+		session.setAttribute(Constants.WORFLOW_ID, workflowId);
 		String qid = (String) request.getParameter("queryExecutionId");
 		if(qid!=null)
 		{
