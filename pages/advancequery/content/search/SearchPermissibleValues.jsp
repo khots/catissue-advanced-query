@@ -38,6 +38,7 @@
 	//variable is used to set the current status of mode
 	set_mode="Mapping";
 	var label;
+	var pervVocabCheckboxId="vocab_"+'<%=srcVocabURN%>';
 	/*to close the model widow*/
 function cancelWindow()
 {
@@ -233,7 +234,7 @@ function getMappingsOfConcepts(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 		}
 		if(! continueMapping)
 		{
-			document.getElementById(vocabCheckBoxId).checked=false;
+			document.getElementById(pervVocabCheckboxId).checked=true;
 		}
 	if(set_mode=="Mapping")
 	{
@@ -275,6 +276,8 @@ function getMappingsOfConcepts(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 					  document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
 					  
 					}
+					
+			pervVocabCheckboxId=vocabCheckBoxId;
 				 
 		}
 		else if (! document.getElementById(vocabCheckBoxId).checked)
@@ -308,6 +311,7 @@ function getMappingsOfConcepts(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
 						
 				}
 		}
+	
 }
 function isSelectedPVListEmpty()
 {
@@ -451,7 +455,7 @@ function serachForTermInVocab(operation)
 	var searchTerm=document.getElementById("searchtextfield").value;
 	void(d=document);
 	var vocabCheckboxes=d.getElementsByName("vocabNameAndVersionCheckbox");
-	
+	var currentcheckedBoxID;
 	var targetVocabsForSearchTerm="";
 			
 			for(i=0;i<vocabCheckboxes.length;i++)
@@ -462,6 +466,8 @@ function serachForTermInVocab(operation)
 					var vocabDisplayName=document.getElementById("hidden_"+vocabURN).value;
 					targetVocabsForSearchTerm=targetVocabsForSearchTerm+vocabURN+"##"+vocabDisplayName+"@";
 					uncheckAllAndDeleteFromArray(vocabURN);
+					currentcheckedBoxID=vocabCheckboxes[i].id;
+					
 				}
 			}
 	var message="Please enter the search term.";
@@ -496,6 +502,7 @@ function serachForTermInVocab(operation)
 			searchRequest.open("POST",actionUrl,true);
 			searchRequest.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 			searchRequest.send(param);
+			pervVocabCheckboxId=currentcheckedBoxID;
 	}
 }
 	
@@ -559,6 +566,7 @@ function restoreDefault()
 	document.getElementById("divForSearchingMode").innerHTML="";
 	document.getElementById("searchtextfield").value="";
 	label.innerHTML="";
+	pervVocabCheckboxId="vocab_"+'<%=srcVocabURN%>';
 	<%if(sourceVocabMessage!=null)
 	{%>
 		//set the messgage if concept code greater then configured value
@@ -584,6 +592,13 @@ function restoreDefault()
 			document.getElementById(selectedCheckedBoxVocabDivID).style.display = 'none';
 			uncheckAllAndDeleteFromArray(vocabURN);
 		}
+		
+		tableid =document.getElementById("selectedPermValues_"+vocabURN);
+		for(var j=0;j<tableid.rows.length;j++)
+		{
+					tableid.rows[j].myRow.one.checked=1;
+		}
+		deleteSelectedPvsRow();
 	}
 	selectedPvsCheckedBoxIdArray=new Array();
 	selectedPvsCheckedBox=0;
@@ -602,7 +617,6 @@ function editSelectedPV()
 	
 	/* if the VI pop is opened in edit mode*/
 	var conceptCodesArray=parent.conceptCodes;
-	alert("conceptCodesArray  "+conceptCodesArray);
 	for(k=0;k<conceptCodesArray.length;k++)
 	{
 
