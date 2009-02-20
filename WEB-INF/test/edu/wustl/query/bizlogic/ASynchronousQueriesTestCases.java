@@ -184,7 +184,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 	  * Cancel Query (Thread corresponding to query)
 	  * Get count again
 	  */
-	public void testCancelQuery()
+	/*public void testCancelQuery()
 	{
 		int queryExecId = -1;
 		int noOfRecords = 0;
@@ -256,7 +256,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 		
 		System.out.println("No of Records :: "+noOfRecords);
 		System.out.println("TEST CASE EXECUTED.....");
-	}
+	}*/
 	
 	/**
 	 * Fire a Query which will return 0 records
@@ -386,7 +386,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 	  * Get count
 	  * Initialize 'expectedNoOfRecords' to an appropriate value
 	  */
-	public void testExecuteQueryWithinXML2()
+	/*public void testExecuteQueryWithinXML2()
 	{
 		int queryExecId = -1;
 		int noOfRecords = 0;
@@ -431,11 +431,11 @@ public class ASynchronousQueriesTestCases extends TestCase
 			e.printStackTrace();
 			fail("AN EXCEPTION HAS OCCURRED........");
 		}
-	}
+	}*/
 	
 	
 	
-	public void testBetweenOperator()
+	/*public void testBetweenOperator()
 	{
 		int queryExecId = -1;
 		int noOfRecords = 0;
@@ -524,7 +524,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			e.printStackTrace();
 			fail("AN EXCEPTION HAS OCCURRED........");
 		}
-	}
+	}*/
 	
 	public void testEndsWithOperator()
 	{
@@ -618,7 +618,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 	}
 	
 	
-	public void testNOT_INOperator()
+	/*public void testNOT_INOperator()
 	{
 		int queryExecId = -1;
 		int noOfRecords = 0;
@@ -661,5 +661,5 @@ public class ASynchronousQueriesTestCases extends TestCase
 			e.printStackTrace();
 			fail("AN EXCEPTION HAS OCCURRED........");
 		}
-	}
+	}*/
 }
