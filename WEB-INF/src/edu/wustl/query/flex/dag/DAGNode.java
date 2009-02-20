@@ -8,6 +8,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.client.ui.util.ClientConstants;
 import edu.wustl.cab2b.client.ui.util.CommonUtils;
 import edu.wustl.common.querysuite.queryobject.ICondition;
@@ -15,6 +16,8 @@ import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IRule;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.query.htmlprovider.HtmlUtility;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.VIProperties;
 
 public class DAGNode implements Externalizable, Comparable<DAGNode>
 {
@@ -97,7 +100,7 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 		}
 		int totalConditions = rule.size();
 
-		if(totalConditions >0)
+		if (totalConditions > 0)
 		{
 			sb.append("Condition(s) on  \n");
 			generateFormattedString(sb, rule, totalConditions);
@@ -106,23 +109,38 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 		{
 			sb.append("No Condition Added \n");
 		}
-		
+
 		this.toolTip = sb.toString();
 	}
 
 	private void generateFormattedString(StringBuffer sb, IRule rule, int totalConditions)
 	{
-		int condnctr =0;
+		int condnctr = 0;
 		for (int i = 0; i < totalConditions; i++)
 		{
 			ICondition condition = rule.getCondition(i);
-			if(!HtmlUtility.isAttrHidden(condition.getAttribute()))
+			if (!HtmlUtility.isAttrHidden(condition.getAttribute()))
 			{
 				sb.append((condnctr + 1) + ") ");
-				String formattedAttributeName = CommonUtils.getFormattedString(condition.getAttribute()
-						.getName());
+				String formattedAttributeName = CommonUtils.getFormattedString(condition
+						.getAttribute().getName());
 				sb.append(formattedAttributeName).append(' ');
-				List<String> values = condition.getValues();
+				List<String> values = new ArrayList<String>();
+				values.addAll(condition.getValues());
+				EntityInterface parentEntity = condition.getAttribute().getEntity();
+				if (parentEntity != null
+						&& parentEntity.getName().equals(VIProperties.medClassName)
+						&& condition.getAttribute().getName().equals("name"))
+				{
+					List<String> newValues = new ArrayList<String>();
+					for (String conValue : values)
+					{
+						String[] nameValue = conValue.split(Constants.ID_DEL);
+						newValues.add(nameValue[2]);
+					}
+					values.clear();
+					values.addAll(newValues);
+				}
 				RelationalOperator operator = condition.getRelationalOperator();
 				sb.append(
 						edu.wustl.cab2b.client.ui.query.Utility
@@ -145,7 +163,7 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 			}
 			else
 			{
-				sb.append(')');
+				sb.append('(');
 				generateFomulaString(sb, values, size);
 				sb.append(')');
 			}
