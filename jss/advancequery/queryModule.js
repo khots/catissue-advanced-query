@@ -1912,22 +1912,21 @@ var jsReady = false;
 	function  getConceptValues()
 	{
 		conceptCodes=new Array();
-		conceptName=new Array();
 		var componentId=compId + "_enumeratedvaluescombobox";
 		var listboxName = document.getElementById(componentId);
 		for(i=0 ; i < listboxName.options.length ; i++)
 			{
 				conceptCodes[i]=listboxName.options[i].id.trim();
-				conceptName[i]=listboxName.options[i].value.trim();
 			}
 	};
-	function getValueFromChild(pvList,pvNameList)
+	function getValueFromChild(pvConceptCodeList,pvNameList)
 	{
+		
 			var componentId=compId + "_enumeratedvaluescombobox";
 			var componentIdOfID=compIdOfID + "_textBox";
 			var listboxName = document.getElementById(componentId);
 			//set the concept code to the ID attribute
-			var permValuesWithCode=pvList.split('#');
+			var permValuesWithCode=pvConceptCodeList.split('#');
 			var permValuesNames = pvNameList.split('#');
 			var medConceptCodeList=new Array();
 			var j=0;
@@ -1936,7 +1935,8 @@ var jsReady = false;
 			{
 				if(permValuesWithCode[i]!="")
 				{
-						medConceptCodeList[j]=permValuesWithCode[i];
+						var urnAndCode=permValuesWithCode[i].split("~ID_DEL~");
+						medConceptCodeList[j]=urnAndCode[1];  //concept code
 						j++;
 				}
 			}
@@ -1948,12 +1948,18 @@ var jsReady = false;
 			var index = 0;
 			for(i=0;i < permValuesNames.length-1;i++)
 			{
-				listboxName.options[index] = new Option(permValuesNames[index], permValuesNames[index],true, true); 
+				
+				var urnAndCode=permValuesWithCode[i].split("~ID_DEL~");
+				
+				optionID=urnAndCode[0]+"~ID_DEL~"+urnAndCode[1]+"~ID_DEL~"+permValuesNames[index];
+				listboxName.options[index] = new Option(permValuesNames[index], optionID,true, true); 
 				listboxName.options[index].title =permValuesNames[index];
-				listboxName.options[index].id = medConceptCodeList[index];
+				listboxName.options[index].id = optionID;
+				listboxName.options[index].value= optionID;
 				index++;
 			}
 			
+			alert(medConceptCodeList);
 			medConceptCodeList=medConceptCodeList.unique();
 			document.getElementById(componentIdOfID).value = medConceptCodeList;
 	}	
@@ -1985,7 +1991,9 @@ var jsReady = false;
 		{
 			if(listboxName.options[i].selected == true)
 			{
-				idTextBox.value = idTextBox.value + listboxName.options[i].id +",";
+				var listBoxId=listboxName.options[i].id.split("~ID_DEL~"); // need to set only the ids of the med concept 
+				// URN + Concept Code+ Concept Name
+				idTextBox.value = idTextBox.value +listBoxId[1] +",";
 			}
 		}
 		 idTextBox.value = idTextBox.value.substring(0,idTextBox.value.lastIndexOf(','));
