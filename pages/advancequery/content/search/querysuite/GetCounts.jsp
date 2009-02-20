@@ -76,7 +76,7 @@
 			<td colspan="2" nowrap>
 			&nbsp;
 				<span class="small_txt_grey"><bean:message key="workflow.name"/></span>:<span class="content_txt">
-				<html:text styleClass="textfield_undefined" size="50" styleId="workflowName" property="workflowName" disabled="true" value="<%=workflowName%>"/></span>&nbsp;&nbsp;
+				<input type="text" styleClass="textfield_undefined" class="textfield_inactive" size="50" styleId="workflowName" property="workflowName" disabled="disabled" value="<%=workflowName%>"/></span>&nbsp;&nbsp;
 			</td>
 			
 			<td colspan="2" >
