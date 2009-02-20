@@ -228,7 +228,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 				+ "<input type='checkbox' name='" +vocabURN + "' id='"
 				+ checkboxId + "' value='" + concept.getCode() + ":" + concept.getDescription()
 				+ "' onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
-				+ "</td><td class='black_ar_tt'>" /*+ concept.getCode() + ":"*/
+				+ "</td><td class='black_ar_tt' nowrap>&nbsp;" /*+ concept.getCode() + ":"*/
 				+ concept.getDescription() + "\n" + "<td></tr>";
 	}
 	/**
@@ -256,7 +256,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 				+ "<input type='checkbox' "+chkBoxStatus+" name='"+ vocabURN + "' id='"
 				+ checkboxId + "' value='" + concept.getCode() + ":" + concept.getDescription()
 				+ "' onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
-				+ "</td><td class='"+cssClass+"'>" /*+ concept.getCode() + ":"*/
+				+ "</td><td class='"+cssClass+"' nowrap>&nbsp;" /*+ concept.getCode() + ":"*/
 				+ concept.getDescription() + "\n" + "<td></tr>";
 	}
 	/**
