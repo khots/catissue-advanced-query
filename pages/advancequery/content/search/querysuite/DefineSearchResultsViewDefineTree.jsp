@@ -47,9 +47,12 @@
 			 onclick="validateQuery('saveDefineView');"/></td>
           <!-- <td width="30%" align="left" style="padding-left:4px;"><img src="images/advancequery/b_back_to_workflow.gif"   
 		     onclick="showWorkFlowWizard();"/></td> -->
-
-			<td align="right"><img src="images/advancequery/b_redefine_filter.gif"   
+        <td align="right"><table><tr>
+		 <td style="padding-right:5px;"><img src="images/advancequery/b_redefine_filter.gif"   
 		     onclick="previousFromDefineResults();"/></td>
+			  <td align="right" valign="top">
+		   <img src="images/advancequery/b_back_to_workflow.gif" hspace="3" vspace="3" onclick="javascript:showWorkFlowWizard()"/>
+	     </td>	</tr></table>
             <td align="right" id="projectList" style="padding-left:4px;">
 					 <table border="0" cellspacing="0" cellpadding="0">
 					  <tr>
@@ -62,12 +65,11 @@
 									<OPTION VALUE="${project.value}">${project.name}
 								</c:forEach>
 							</SELECT>
-					    </td>				
+					    </td> 				
 		  </tr>
 		</table>
 	</td>
- <!-- <td align="right"><img src="images/advancequery/b_execute_inact.gif"   
-		     onclick=""/></td> -->
+ <!-- <td align="right"><img src="images/advancequery/b_execute_inact.gif" onclick=""/></td> -->
 
 </tr>
 
