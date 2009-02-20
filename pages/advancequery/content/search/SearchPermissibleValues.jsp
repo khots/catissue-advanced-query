@@ -602,15 +602,17 @@ function editSelectedPV()
 	
 	/* if the VI pop is opened in edit mode*/
 	var conceptCodesArray=parent.conceptCodes;
-	var conceptNameArray=parent.conceptName;
+	alert("conceptCodesArray  "+conceptCodesArray);
 	for(k=0;k<conceptCodesArray.length;k++)
 	{
 
 		var conceptDetailWithURN=conceptCodesArray[k].split('<%=Constants.ID_DEL%>');
 		var vocabURN=conceptDetailWithURN[0];
 		var conceptCode=conceptDetailWithURN[1];
-		var conceptDetail=":"+conceptNameArray[k]
-		createRows(vocabURN,conceptCodesArray[k],conceptDetail);
+		var conceptName=conceptDetailWithURN[2];
+		var conceptDetail=":"+conceptName;
+		var checkboxId=vocabURN+'<%=Constants.ID_DEL%>'+conceptCode;
+		createRows(vocabURN,checkboxId,conceptDetail);
 		document.getElementById("vocab_"+vocabURN).checked=true;
 	}
 	//need to enabled the ok button
