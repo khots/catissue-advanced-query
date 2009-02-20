@@ -107,7 +107,7 @@ public class SearchMappedPVsAction extends Action
 			AttributeInterface attribute) throws VocabularyException, PVManagerException
 	{
 		String trgHTML=getMappingForTargetVocab(editVocabURN, attribute, entity);
-		 String[] trgHTMLAll=trgHTML.split("MSG@-@");
+		 String[] trgHTMLAll=trgHTML.split(Constants.MSG_DEL);
 		 if(trgHTMLAll.length>1)
 		 {
 			 request.getSession().setAttribute(Constants.PV_HTML+editVocabURN, trgHTMLAll[0]);
@@ -219,7 +219,7 @@ public class SearchMappedPVsAction extends Action
 			{
 				html.append(bizLogic.getInfoMessage());
 				request.getSession().setAttribute(Constants.SRC_VOCAB_MESSAGE, bizLogic.getInfoMessage()
-						.replace("MSG@-@",""));
+						.replace(Constants.MSG_DEL,""));
 			}
 		}
 		
