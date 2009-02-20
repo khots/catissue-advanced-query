@@ -729,9 +729,12 @@ function editSelectedPV()
 									{
 									style="display:none";
 									srcHTML="";
+									}
+									else{
+										String srcHTMLArray[]=srcHTML.split("MSG@-@");
+										srcHTML=srcHTMLArray[0];
+										}
 									%>
-									
-									<%}%>
 								<div id="main_div_vocab_${vocabs.vocabURN}" style='<%=style%>'><%=srcHTML%></div>
 								</td>
 								</tr>
