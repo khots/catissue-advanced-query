@@ -342,7 +342,14 @@ FORM BEGINS
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
   text-align:left;
 }
-
+.textfield_inactive {
+	font-family:Arial, Helvetica, sans-serif;
+	color: #000000;
+	font-size: 12px;
+	border: 1px solid #cccccc;
+	width: 180px;
+	background-color: #eae9e5;
+}
 .formRequiredLabelWithLeftBottomBorder{ /* for the required form labels without border*/
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;
