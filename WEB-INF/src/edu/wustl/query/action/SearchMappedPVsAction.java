@@ -171,6 +171,7 @@ public class SearchMappedPVsAction extends Action
 	/**
 	 * @param request
 	 */
+	@SuppressWarnings("unchecked")
 	private void removeHTMLFromSesson(HttpServletRequest request)
 	{
 		request.getSession().removeAttribute(Constants.SRC_VOCAB_MESSAGE);
@@ -216,6 +217,7 @@ public class SearchMappedPVsAction extends Action
 			html.append(bizLogic.getEndHTML());
 			if( pvList.size()==VIProperties.maxPVsToShow)// Need to show Message Too Many Result on UI 
 			{
+				html.append(bizLogic.getInfoMessage());
 				request.getSession().setAttribute(Constants.SRC_VOCAB_MESSAGE, bizLogic.getInfoMessage()
 						.replace("MSG@-@",""));
 			}
