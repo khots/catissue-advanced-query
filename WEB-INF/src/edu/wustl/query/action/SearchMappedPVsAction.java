@@ -1,5 +1,6 @@
 package edu.wustl.query.action;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -51,14 +52,12 @@ public class SearchMappedPVsAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		
-		 final String targetVocab = request.getParameter(Constants.SELECTED_BOX);
+		final String targetVocabURN = request.getParameter(Constants.SELECTED_BOX);
 		//get the id of the component on which user click to search for PVs
 		String componentId = request.getParameter(Constants.COMPONENT_ID);
-		if (componentId == null)
-		{
-			//need to save component id into the session for next Ajax requests
-			componentId = (String) request.getSession().getAttribute(Constants.COMPONENT_ID);
-		}
+		String editVocabURN = request.getParameter("editVocabURN");
+		componentId = getComponentId(request, componentId);
+		
 		String entityName = (String) request.getSession().getAttribute(Constants.ENTITY_NAME);
 		Entity entity = (Entity) EntityCache.getCache().getEntityById(Long.valueOf((entityName)));
 		Map<String, AttributeInterface> enumAttributeMap = (HashMap<String, AttributeInterface>)
@@ -66,18 +65,124 @@ public class SearchMappedPVsAction extends Action
 		
 		AttributeInterface attribute = (AttributeInterface) 
 		enumAttributeMap.get(Constants.ATTRIBUTE_INTERFACE + componentId);
-
-		if (targetVocab != null)
+		if (targetVocabURN != null)
 		{
-			// AJAX Request handler for Getting Mapping data for source to target vocabulries
-			String htmlResponse = getMappingForTargetVocab(targetVocab, attribute, entity);
+			// AJAX Request handler for Getting Mapping data for source or target vocabularies
+			String htmlResponse = getOfPermissibleValues(request, targetVocabURN, componentId,
+					entity, attribute);
 			response.getWriter().write(htmlResponse);
 			return null;
 		}
+		
 		//new request for entity; remove the message from the session 
-		request.getSession().removeAttribute(Constants.SRC_VOCAB_MESSAGE);
-		getPVsFromSourceVocab(attribute, entity, componentId, request);
+		removeHTMLFromSesson(request);
+		if(editVocabURN.equals("null") || editVocabURN.equals(VIProperties.sourceVocabUrn) )
+		{
+			/* load source vocabulary if in edit mode as well as in not edit mode*/
+			String srcHTML=getPVsFromSourceVocab(attribute, entity, componentId, request);
+			//set the data in session because need to show this data on page load
+			request.getSession().setAttribute(Constants.PV_HTML+VIProperties.sourceVocabUrn, srcHTML);
+			
+		}
+		else
+		{
+			 setEditVocabHTML(request, editVocabURN, entity, attribute);
+		}
+		
+		setComponentId(request, componentId);
+		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
+		.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
+        request.getSession().setAttribute(Constants.VOCABULIRES, bizLogic.getVocabularies());
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
+	}
+	/**
+	 * @param request
+	 * @param editVocabURN
+	 * @param entity
+	 * @param attribute
+	 * @throws VocabularyException
+	 * @throws PVManagerException
+	 */
+	private void setEditVocabHTML(HttpServletRequest request, String editVocabURN, Entity entity,
+			AttributeInterface attribute) throws VocabularyException, PVManagerException
+	{
+		String trgHTML=getMappingForTargetVocab(editVocabURN, attribute, entity);
+		 String[] trgHTMLAll=trgHTML.split("MSG@-@");
+		 if(trgHTMLAll.length>1)
+		 {
+			 request.getSession().setAttribute(Constants.PV_HTML+editVocabURN, trgHTMLAll[0]);
+			 request.getSession().setAttribute(Constants.SRC_VOCAB_MESSAGE, trgHTMLAll[1]);
+		 }
+		 else
+		 {
+			 request.getSession().setAttribute(Constants.PV_HTML+editVocabURN, trgHTML);
+		 }
+	}
+	/**
+	 * @param request
+	 * @param targetVocabURN
+	 * @param componentId
+	 * @param entity
+	 * @param attribute
+	 * @return
+	 * @throws VocabularyException
+	 * @throws PVManagerException
+	 */
+	private String getOfPermissibleValues(HttpServletRequest request, final String targetVocabURN,
+			String componentId, Entity entity, AttributeInterface attribute)
+			throws VocabularyException, PVManagerException
+	{
+		String htmlResponse =null;
+		if(targetVocabURN.equals(VIProperties.sourceVocabUrn))
+		{
+			htmlResponse= getPVsFromSourceVocab(attribute, entity, componentId, request);
+		}
+		else
+		{
+			htmlResponse= getMappingForTargetVocab(targetVocabURN, attribute, entity);
+		}
+		return htmlResponse;
+	}
+	/**
+	 * @param request
+	 * @param componentId
+	 */
+	private void setComponentId(HttpServletRequest request, String componentId)
+	{
+		if (componentId != null)
+		{
+			request.getSession().setAttribute(Constants.COMPONENT_ID, componentId);
+		}
+	}
+	/**
+	 * @param request
+	 * @param componentId
+	 * @return
+	 */
+	private String getComponentId(HttpServletRequest request, String componentId)
+	{
+		if (componentId == null)
+		{
+			//need to save component id into the session for next Ajax requests
+			componentId = (String) request.getSession().getAttribute(Constants.COMPONENT_ID);
+		}
+		return componentId;
+	}
+	/**
+	 * @param request
+	 */
+	private void removeHTMLFromSesson(HttpServletRequest request)
+	{
+		request.getSession().removeAttribute(Constants.SRC_VOCAB_MESSAGE);
+		Enumeration attributeNames = request.getSession().getAttributeNames();
+		while(attributeNames.hasMoreElements())
+		{
+			String atr=attributeNames.nextElement().toString();
+			if(atr.indexOf(Constants.PV_HTML)==0)
+			{
+				request.getSession().removeAttribute(atr);
+			}
+		}
 	}
 		/**
 	 * This method generate the HTML for the Source vocabulary  (MED 1.0)
@@ -88,7 +193,7 @@ public class SearchMappedPVsAction extends Action
 	 * @throws VocabularyException
 	 * @throws PVManagerException
 	 */
-	private void getPVsFromSourceVocab(AttributeInterface attribute, EntityInterface entity,
+	private String getPVsFromSourceVocab(AttributeInterface attribute, EntityInterface entity,
 			String componentId, HttpServletRequest request) throws VocabularyException,
 			PVManagerException
 	{
@@ -98,42 +203,38 @@ public class SearchMappedPVsAction extends Action
 		StringBuffer html = new StringBuffer();
 	
 		List<IConcept> pvList = bizLogic.getConfiguredPermissibleValueList(attribute, entity);
-		String vocabURN = VIProperties.sourceVocabUrn;
-		String vocabDisName = bizLogic.getDisplayNameForVocab(vocabURN);
-		html.append(bizLogic.getRootVocabularyNodeHTML(vocabURN, vocabDisName));
+		String srcVocabURN = VIProperties.sourceVocabUrn;
+		String vocabDisName = bizLogic.getDisplayNameForVocab(srcVocabURN);
+		html.append(bizLogic.getRootVocabularyNodeHTML(srcVocabURN, vocabDisName));
 		if(pvList != null && !pvList.isEmpty())
 		{
 			for(IConcept concept:pvList)
 			{
-				String checkboxId = vocabURN + Constants.ID_DEL + concept.getCode();
-				html.append(bizLogic.getHTMLForConcept(vocabURN,concept,checkboxId));
+				String checkboxId = srcVocabURN + Constants.ID_DEL + concept.getCode();
+				html.append(bizLogic.getHTMLForConcept(srcVocabURN,concept,checkboxId));
 			}
 			html.append(bizLogic.getEndHTML());
 			if( pvList.size()==VIProperties.maxPVsToShow)// Need to show Message Too Many Result on UI 
 			{
 				request.getSession().setAttribute(Constants.SRC_VOCAB_MESSAGE, bizLogic.getInfoMessage()
-						.replace("MSG$-$",""));
+						.replace("MSG@-@",""));
 			}
 		}
-		//set the data in session because need to show this data on page load
-		request.getSession().setAttribute(Constants.MED_PV_HTML, html.toString());
-		request.getSession().setAttribute(Constants.VOCABULIRES, bizLogic.getVocabularies());
-		if (componentId != null)
-		{
-			request.getSession().setAttribute(Constants.COMPONENT_ID, componentId);
-		}
+		
+		return html.toString();
+		
 	}
 	
 	/**
 	 * This method returns the data mapped vocabularies
-	 * @param targetVocab
+	 * @param targetVocabURN
 	 * @param attribute
 	 * @param entity
 	 * @return
 	 * @throws VocabularyException
 	 * @throws PVManagerException
 	 */
-	private String getMappingForTargetVocab(String targetVocab, AttributeInterface attribute,
+	private String getMappingForTargetVocab(String targetVocabURN, AttributeInterface attribute,
 			EntityInterface entity) throws VocabularyException, PVManagerException
 	{
 
@@ -141,9 +242,8 @@ public class SearchMappedPVsAction extends Action
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		IVocabulary souVocabulary = bizLogic.getVocabulary(VIProperties.sourceVocabUrn);
 		// Get the target vocabulary info from parameter
-		String targetVacbArray[] = targetVocab.split("#");
-		String targetVocabURN = targetVacbArray[0];
-		String targetVocabDisName = targetVacbArray[1];
+		
+		String targetVocabDisName=bizLogic.getDisplayNameForVocab(targetVocabURN);
 		IVocabulary targVocabulary = bizLogic.getVocabulary(targetVocabURN);
 		
 		StringBuffer html = new StringBuffer();
@@ -155,7 +255,6 @@ public class SearchMappedPVsAction extends Action
 				html.append(getMappedHTMLForTargetVocab(targetVocabURN,vocabMappings));
 	
 			}
-
 		return html.toString();
 	}
 	/**
@@ -174,6 +273,7 @@ public class SearchMappedPVsAction extends Action
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		StringBuffer mappedHTML=new StringBuffer();
 		int displayPVCount=1;
+		int maxPv=0;
 		boolean isMsgDisplayed=false;
 		
 		if (vocabMappings != null && vocabMappings.size()!=0)
@@ -184,40 +284,27 @@ public class SearchMappedPVsAction extends Action
 			{
 				String conceptCode = iterator.next();
 				List<IConcept> mappingList = vocabMappings.get(conceptCode);
+				maxPv=maxPv+mappingList.size();
 				ListIterator<IConcept> mappingListItr = mappingList.listIterator();
 				while (mappingListItr.hasNext())
 				{
-					
 					IConcept concept = (IConcept) mappingListItr.next();
-					if(displayPVCount<=VIProperties.maxPVsToShow)// Need to show only specified number of Concepts on UI
-					{
-						//we need to use the MED Concept code with mapped values
-						
-						
 					String checkboxId = vocabURN + Constants.ID_DEL + conceptCode;
 					mappedHTML.append(bizLogic.getHTMLForConcept(vocabURN,concept, checkboxId));
-					displayPVCount++;
-					}
-					else
-					{
-						mappedHTML.append(bizLogic.getInfoMessage());
-						isMsgDisplayed=true;
-						break;//break inner loop
-					}
-
 				}
-				if(isMsgDisplayed)
-				{
-					break; //break outer loop
-				}
+					
 			}
 		}
 		else
 		{
 			mappedHTML.append(bizLogic.getNoMappingFoundHTML());
 		}
-		mappedHTML.append(bizLogic.getEndHTML());
 		
+		mappedHTML.append(bizLogic.getEndHTML());
+		if(maxPv>=VIProperties.maxPVsToShow)
+		{
+			mappedHTML.append(bizLogic.getInfoMessage());
+		}
 		return mappedHTML;
 	}
 }
