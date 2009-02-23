@@ -68,6 +68,7 @@ import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.domain.SelectedConcept;
+import edu.wustl.query.htmlprovider.GenerateHTMLDetails;
 import edu.wustl.query.htmlprovider.HtmlProvider;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
@@ -2023,7 +2024,9 @@ public class DAGPanel
 			conditions = Collections.list(rule);
 		}
 		String html=null;
-		html = generateHTMLBizLogic.generateHTML(entity, conditions,null);
+		GenerateHTMLDetails generateHTMLDetails=new GenerateHTMLDetails();
+		html = generateHTMLBizLogic.generateHTML(entity, conditions,generateHTMLDetails);
+		request.getSession().setAttribute(Constants.ENUMRATED_ATTRIBUTE, generateHTMLDetails.getEnumratedAttributeMap());
 		map.put(DAGConstant.HTML_STR, html);
 		map.put(DAGConstant.EXPRESSION, expression);
 		return map;
