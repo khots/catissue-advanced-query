@@ -76,10 +76,11 @@ function addPermissibleValuesToList()
 		
 	}
 	}
-	if(selectedPvs.length>0) //Check to enable 'OK'  button
+	/*if(selectedPvs.length>0) //Check to enable 'OK'  button
 	{
+		//In each case ok button should be enabled because Requirement has changed, user  should able to add any entity without  limit
 		document.getElementById("deactivateDiv").innerHTML="<a href='javascript:addPvsToCondition();'><img id='okImage' src='images/advancequery/b_ok.gif' border='0' alt='OK' width='44' height='23'></a>"
-	}
+	}*/
 }
 // method is used to create the rows in the talbe
 function createRows(vocabURN,selectedPvsCheckedBoxId,conceptDetail)
@@ -173,10 +174,15 @@ function deleteSelectedPvsRow()
 	}
 		deleteFromArray(checkedObjtodelete,selectedPvs);
 		selectedPvs=removeElementsFromArray(selectedPvs, isNullOrUndefined);
+		/* In each case ok button should be enabled because Requirement has changed, user  should able to add any entity without  limit
 		if(selectedPvs.length==0)
 			{
 				document.getElementById("deactivateDiv").innerHTML="<a href='javascript:doNothing();'><img id='okImage' src='images/advancequery/b_ok_inactive.gif' border='0' alt='OK' width='44' height='23'></a>"
 			}
+		if(parent.conceptCodes.length >0) // VI open in Edit Mode then 'OK' Button should be enabled.
+		{
+			document.getElementById("deactivateDiv").innerHTML="<a href='javascript:addPvsToCondition();'><img id='okImage' src='images/advancequery/b_ok.gif' border='0' alt='OK' width='44' height='23'></a>";
+		}*/
 		
 		
 }
@@ -631,10 +637,11 @@ function editSelectedPV()
 		pervVocabCheckboxId="vocab_"+vocabURN;
 	}
 	//need to enabled the ok button
-	if(selectedPvs.length>0) //Check to enable 'OK'  button
+	/*if(selectedPvs.length>0) //Check to enable 'OK'  button
 	{
+		// In each case ok button should be enabled because Requirement has changed, user  should able to add any entity without  limit
 			document.getElementById("deactivateDiv").innerHTML="<a href='javascript:addPvsToCondition();'><img id='okImage' src='images/advancequery/b_ok.gif' border='0' alt='OK' width='44' height='23'></a>";
-	}
+	}*/
 	
 };
 
@@ -841,7 +848,9 @@ function editSelectedPV()
     <tr>
             <td height="35"><table border="0" cellspacing="0" cellpadding="0">
               <tr>
-                <td align="left"><div id="deactivateDiv"><a href="javascript:doNothing();"><img id="okImage" src="images/advancequery/b_ok_inactive.gif" border="0" alt="OK" width="44" height="23"></a></div></td>
+			 <td align="left"><div id="deactivateDiv"> <a href='javascript:addPvsToCondition();'><img id='okImage' src='images/advancequery/b_ok.gif' border='0' alt='OK' width='44' height='23'></a></div></td>
+                <!--  In each case ok button should be enabled because Requirement has changed, user should able to add any entity without  limit
+				<td align="left"><div id="deactivateDiv"><a href="javascript:doNothing();"><img id="okImage" src="images/advancequery/b_ok_inactive.gif" border="0" alt="OK" width="44" height="23"></a></div></td> -->
                <!-- <td width="76" align="right"><a href="#" onclick= "cancelWindow()"><img src="images/advancequery/b_ok_inactive.gif" border="0" alt="Cancel" width="66" height="23"></a></td> -->
               </tr>
             </table></td>
