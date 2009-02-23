@@ -1924,7 +1924,6 @@ var jsReady = false;
 	};
 	function getValueFromChild(pvConceptCodeList,pvNameList)
 	{
-		
 			var componentId=compId + "_enumeratedvaluescombobox";
 			var componentIdOfID=compIdOfID + "_textBox";
 			var listboxName = document.getElementById(componentId);
@@ -1944,15 +1943,17 @@ var jsReady = false;
 				}
 			}
 			// clear list box
-			for(i=0 ; i < listboxName.options.length ; i++)
+			for( k=0 ; k < listboxName.options.length ; k++)
 			{
-				listboxName.options[i] = null;
+				listboxName.options[k] = null;
 			}
 			var index = 0;
-			for(i=0;i < permValuesNames.length-1;i++)
+			listboxName.options.length=0; //bug fixed : 11418
+		
+			for( l=0;l < permValuesNames.length-1;l++)
 			{
 				
-				var urnAndCode=permValuesWithCode[i].split("ID_DEL");
+				var urnAndCode=permValuesWithCode[l].split("ID_DEL");
 				
 				optionID=urnAndCode[0]+"ID_DEL"+urnAndCode[1]+"ID_DEL"+permValuesNames[index];
 				listboxName.options[index] = new Option(permValuesNames[index], optionID,true, true); 
@@ -1961,7 +1962,6 @@ var jsReady = false;
 				listboxName.options[index].value= optionID;
 				index++;
 			}
-			
 			medConceptCodeList=medConceptCodeList.unique();
 			document.getElementById(componentIdOfID).value = medConceptCodeList;
 	}	
