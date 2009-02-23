@@ -807,6 +807,13 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String QRY_COUNT = "QUERY_COUNT";
     /**  Constant for DEID_SEQUENCE **/
     public static final String DEID_SEQUENCE = "DEID_SEQUENCE";
+
     
+    /**  Constant for  ITABLE_ATTRIBUTES**/
     public static final String TAGGED_VALUE_ITABLE_ATTRIBUTES = "ITABLE_ATTRIBUTES";
+    /**  Constant for SECURE CONDITION **/
+    public static final String TAGGED_VALUE_SECURE_CONDITION = "SECURE_CONDITION";
+
+    public static final int AGE = 89;
+    public static final int MINOR = 18;
 }
