@@ -65,10 +65,12 @@ public class SearchMappedPVsAction extends Action
 		
 		AttributeInterface attribute = (AttributeInterface) 
 		enumAttributeMap.get(Constants.ATTRIBUTE_INTERFACE + componentId);
-		if (targetVocabURN != null)
+		
+		if (targetVocabURN != null)// Need to retrieve HTML for requested Vocabulary Mapped or sou
 		{
-			// AJAX Request handler for Getting Mapping data for source or target vocabularies
-			String htmlResponse = getOfPermissibleValues(request, targetVocabURN, componentId,
+			// user clicked on radio boxes
+			//AJAX Request handler for Getting Mapping data for source or target vocabularies
+			String htmlResponse = getPVsForRequestedVoab(request, targetVocabURN, componentId,
 					entity, attribute);
 			response.getWriter().write(htmlResponse);
 			return null;
@@ -79,13 +81,14 @@ public class SearchMappedPVsAction extends Action
 		if(editVocabURN.equals("null") || editVocabURN.equals(VIProperties.sourceVocabUrn) )
 		{
 			/* load source vocabulary if in edit mode as well as in not edit mode*/
-			String srcHTML=getPVsFromSourceVocab(attribute, entity, componentId, request);
+			String srcHTML=getPVsForSourceVocab(attribute, entity, componentId, request);
 			//set the data in session because need to show this data on page load
 			request.getSession().setAttribute(Constants.PV_HTML+VIProperties.sourceVocabUrn, srcHTML);
 			
 		}
 		else
 		{
+			//need to load other vocabulary in edit mode
 			 setEditVocabHTML(request, editVocabURN, entity, attribute);
 		}
 		
@@ -128,14 +131,14 @@ public class SearchMappedPVsAction extends Action
 	 * @throws VocabularyException
 	 * @throws PVManagerException
 	 */
-	private String getOfPermissibleValues(HttpServletRequest request, final String targetVocabURN,
+	private String getPVsForRequestedVoab(HttpServletRequest request, final String targetVocabURN,
 			String componentId, Entity entity, AttributeInterface attribute)
 			throws VocabularyException, PVManagerException
 	{
 		String htmlResponse =null;
 		if(targetVocabURN.equals(VIProperties.sourceVocabUrn))
 		{
-			htmlResponse= getPVsFromSourceVocab(attribute, entity, componentId, request);
+			htmlResponse= getPVsForSourceVocab(attribute, entity, componentId, request);
 		}
 		else
 		{
@@ -194,7 +197,7 @@ public class SearchMappedPVsAction extends Action
 	 * @throws VocabularyException
 	 * @throws PVManagerException
 	 */
-	private String getPVsFromSourceVocab(AttributeInterface attribute, EntityInterface entity,
+	private String getPVsForSourceVocab(AttributeInterface attribute, EntityInterface entity,
 			String componentId, HttpServletRequest request) throws VocabularyException,
 			PVManagerException
 	{
@@ -221,6 +224,11 @@ public class SearchMappedPVsAction extends Action
 				request.getSession().setAttribute(Constants.SRC_VOCAB_MESSAGE, bizLogic.getInfoMessage()
 						.replace(Constants.MSG_DEL,""));
 			}
+		}
+		else
+		{
+			html.append(bizLogic.getNoMappingFoundHTML());
+			html.append(bizLogic.getEndHTML());
 		}
 		
 		return html.toString();
