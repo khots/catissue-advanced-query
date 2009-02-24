@@ -26,7 +26,8 @@ function retrieveRecentQueries()
 {
 	document.forms['form2'].notify.value="true";
 	parent.pvwindow.hide();
-	parent.document.forms[0].action="\ShowDashboard.do"
+	parent.document.forms[0].requestFrom.value="RecentQueries";
+	parent.document.forms[0].action="\ShowDashboard.do";
 	parent.document.forms[0].submit();
 }
 //-->
@@ -59,11 +60,11 @@ MM_reloadPage(true);
             <td height="25" valign="middle" nowrap><span class="content_txt">Execution Status: <strong id="StatusId"></strong></span></td>
             <td align="right" valign="middle">
 			<form id="form1" name="form1" method="post" action="">
-              <a href="javascript:abortExecutionAjaxAction();"><img border='0' src="images/advancequery/b_abort_execution.gif" alt="Abort Execution" width="116" height="23"></a>&nbsp;<a href="javascript:retrieveRecentQueries();"><img border='0' src="images/advancequery/b_notify_me.gif" alt="Notify me when done" width="146" height="23"></a>
+              <a href="javascript:abortExecutionAjaxAction();"><img border='0' src="images/advancequery/b_cancel.gif" alt="Cancel" width="65" height="23"></a>&nbsp;<a href="javascript:retrieveRecentQueries();"><img border='0' src="images/advancequery/b_notify_me.gif" alt="Execute in Background" width="146" height="23"></a>
             </form></td>
           </tr>
           <tr>
-            <td height="25" colspan="2" valign="bottom"><span class="content_txt"><b id="CountId"></b>  results found. </span></td>
+            <td height="25" colspan="2" valign="bottom"><span class="content_txt"><b id="CountId">0</b>  results found. </span></td>
           </tr>
           <tr>
 		  <c:choose>
