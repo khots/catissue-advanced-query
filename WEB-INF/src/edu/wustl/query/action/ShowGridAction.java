@@ -1,9 +1,6 @@
 
 package edu.wustl.query.action;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -14,7 +11,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.action.BaseAction;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
@@ -23,8 +19,9 @@ import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.query.spreadsheet.SpreadSheetData;
 import edu.wustl.query.spreadsheet.SpreadSheetViewGenerator;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.QueryDetails;
-
+import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
  * This class is invoked when user clicks on a node from the tree. It loads the data required for grid formation.
@@ -48,75 +45,62 @@ public class ShowGridAction extends BaseAction
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
-	
-		Map<EntityInterface, List<EntityInterface>> mainEntityMap = null; //(Map<EntityInterface, List<EntityInterface>>) session
-//				.getAttribute(Constants.MAIN_ENTITY_MAP);
-		
-		//Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map<String, OutputTreeDataNode>) session.getAttribute(Constants.ID_NODES_MAP);
-		
-		//List<OutputTreeDataNode> rootOutputTreeNodeList = (List<OutputTreeDataNode>)session.getAttribute(Constants.TREE_ROOTS);
-		//SessionDataBean sessionData = getSessionData(request);
-		
-		String idOfClickedNode = request.getParameter(Constants.TREE_NODE_ID);
-		Map spreadSheetDatamap = null;
-		String forward = Constants.SUCCESS;
-	
-		QueryDetails queryDetailsObj = new QueryDetails(session);
-		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
-		int queryExecutionId =((Integer)session.getAttribute(Constants.QUERY_EXECUTION_ID)).intValue();
-		if(queryDetailsObj.getQueryExecutionId() == 0)
-		{
-			queryDetailsObj.setQueryExecutionId(165);
-		}
-		
-		Long queryid = (Long) session.getAttribute("dataQueryId");
-		if(queryid == null)
-		{
-			queryid = Long.parseLong("257");
-		}
-		
-		DefaultBizLogic defaultBizLogic = new DefaultBizLogic();
-		query = (IParameterizedQuery) defaultBizLogic.retrieve(ParameterizedQuery.class.getName(),queryid);
-		queryDetailsObj.setQuery(query);
 
-		
-		
-		SpreadSheetViewGenerator spreadSheetViewGenerator = new SpreadSheetViewGenerator();
-		SpreadSheetData spreadsheetData = new SpreadSheetData();
-		
-		spreadSheetViewGenerator.createSpreadsheet(queryDetailsObj, idOfClickedNode, 
-				spreadsheetData, request);
+		try
+		{
+			QueryDetails queryDetailsObj = new QueryDetails(session);
 
-		setGridData(request,spreadsheetData);
-		
-		return mapping.findForward(forward);
+			Long queryid = (Long) session.getAttribute(Constants.DATA_QUERY_ID);
+
+			DefaultBizLogic defaultBizLogic = new DefaultBizLogic();
+			IQuery query = (IParameterizedQuery) defaultBizLogic.retrieve(ParameterizedQuery.class
+					.getName(), queryid);
+			queryDetailsObj.setQuery(query);
+
+			SpreadSheetViewGenerator spreadSheetViewGenerator = new SpreadSheetViewGenerator();
+			SpreadSheetData spreadsheetData = new SpreadSheetData();
+
+			spreadSheetViewGenerator.createSpreadsheet(queryDetailsObj, spreadsheetData, request);
+
+			setGridData(request, spreadsheetData);
+
+		}
+		catch (QueryModuleException ex)
+		{
+			generateErrorMessage(request, ex.getMessage());
+		}
+		return mapping.findForward(Constants.SUCCESS);
 	}
 
+	/**
+	 * @param request
+	 * @param spreadsheetData
+	 */
 	private void setGridData(HttpServletRequest request, SpreadSheetData spreadsheetData)
 	{
 		HttpSession session = request.getSession();
-//		session.setAttribute(Constants.PAGINATION_DATA_LIST, spreadsheetData.getDataList());
-		session.setAttribute(Constants.SELECTED_COLUMN_META_DATA, spreadsheetData.getSelectedColumnsMetadata());
+		session.setAttribute(Constants.SELECTED_COLUMN_META_DATA, spreadsheetData
+				.getSelectedColumnsMetadata());
 		session.setAttribute(Constants.SPREADSHEET_COLUMN_LIST, spreadsheetData.getColumnsList());
 		session.setAttribute(Constants.MAIN_ENTITY_MAP, spreadsheetData.getMainEntityMap());
-		session.setAttribute(Constants.TOTAL_RESULTS, Integer.parseInt(""+spreadsheetData.getDataList().size()));
-		session.setAttribute(Constants.RESULTS_PER_PAGE,"500");
-		session.setAttribute(Constants.PAGE_NUMBER,"1");
-		
-		
+		session.setAttribute(Constants.TOTAL_RESULTS, Integer.parseInt(""
+				+ spreadsheetData.getDataList().size()));
+		session.setAttribute(Constants.RESULTS_PER_PAGE, Variables.recordsPerPageForSpreadSheet);
+		session.setAttribute(Constants.PAGE_NUMBER, "1");
+
 		request.setAttribute(Constants.PAGE_OF, Constants.PAGE_OF_QUERY_RESULTS);
 		request.setAttribute(Constants.PAGINATION_DATA_LIST, spreadsheetData.getDataList());
 	}
 
-	/**Method that will add an error message in action errors when id particular data node is -1 i.e. user is not authorized to see 
-	 * this particular record. 
+	/**
 	 * @param request
+	 * @param message
 	 */
-	private void getErrorMessageUserNotAuthorized(HttpServletRequest request)
+	private void generateErrorMessage(HttpServletRequest request, String message)
 	{
 		ActionErrors errors = new ActionErrors();
-		ActionError error = new ActionError("query.userNotAuthorizedError");
-		 errors.add(ActionErrors.GLOBAL_ERROR, error);
+		ActionError error = new ActionError(message);
+		errors.add(ActionErrors.GLOBAL_ERROR, error);
 		saveErrors(request, errors);
 	}
 }
