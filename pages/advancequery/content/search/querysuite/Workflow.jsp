@@ -241,7 +241,7 @@ function executeGetCountQuery(queryTitle,executionLogId)
 							var object=title.parentNode;
 							var tdChildCollection=object.getElementsByTagName('input');
 							var queryId=tdChildCollection[2].id;//object.childNodes[0].id;//object.id;
-							setDropDowns(queryTitle);
+							//setDropDowns(queryTitle);
 							workflowExecuteGetCountQuery(document.getElementById(queryId).value,executionLogId);
 				}
 			}
@@ -308,7 +308,7 @@ function responseHandler(response)
 					
 					   if(jsonResponse.queryTitle!=null&&jsonResponse.queryTitle==queryTitle)
 					   {
-						   setDropDowns(queryTitle);
+						   //setDropDowns(queryTitle);
 							workflowExecuteGetCountQuery(jsonResponse.executionQueryResults[i].queryId,0);
 						
 					   }
@@ -341,32 +341,34 @@ function setDropDowns(queryTitle)
     if(execId==0 || execId=="") 
   {	
 	
-	 var dropDowns= document.getElementsByName("countQueryDropDown");
-	 var bool=false;
-	
-	 for(var i=0;i<dropDowns.length;i++)
+	 var dropDowns= document.getElementsByTagName("select");
+	for(var i=0;i<dropDowns.length;i++)
 	{
-	   var bool=false;
-	   var executedQuery=dropDowns[i].options.length;
-    	if(executedQuery >0)
-    	{
-    		for(var j=0;j<executedQuery;j++)
-    	  {
-    		  if(dropDowns[i].options[j].text==queryTitle)
-				  bool=true;
-    	  }
-    	
-    	}
-	  
-	    if(bool== false) 
-		{
-		  var optn = parent.window.document.createElement("OPTION");
-	     optn.text=queryTitle;
-	   	 optn.value=queryId;
-	     dropDowns[i].options.add(optn);
-	     dropDowns[i].disabled=false;
-		}
-	 }
+	   
+	   if(dropDowns[i].name=="countQueryDropDown")
+	 {
+		   var bool=false;
+		   var executedQuery=dropDowns[i].options.length;
+			if(executedQuery >0)
+			{
+				for(var j=0;j<executedQuery;j++)
+			  {
+				  if(dropDowns[i].options[j].text==queryTitle)
+					  bool=true;
+			  }
+			
+			}
+		  
+			if(bool== false) 
+			{
+			  var optn = parent.window.document.createElement("OPTION");
+			 optn.text=queryTitle;
+			 optn.value=queryId;
+			 dropDowns[i].options.add(optn);
+			 dropDowns[i].disabled=false;
+			}
+	  }
+	}
     
 	 var hiddenDropDown=document.getElementById("executedCountQuery");
 	     var optn = parent.window.document.createElement("OPTION");
@@ -476,6 +478,7 @@ function workflowResponseHandler(response)
 							var identifier=document.getElementById("queryIdForRow_"+queryId);
 							var object=identifier.parentNode;
 							var tdChildCollection=object.getElementsByTagName('input');
+							var qTitle = tdChildCollection[1].value;
 							var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
 							var selectedquery=selectedqueryId.split("_");
 							queryIndex=selectedquery[1];
@@ -484,7 +487,14 @@ function workflowResponseHandler(response)
 							var queryExecId=tdChildCollection[3].id;
 							if(queryExecId!=null&&queryExecId!=undefined)
 							{
-								document.getElementById(queryExecId).value=executionLogId;
+							   if(document.getElementById(queryExecId).value==0 ||   
+									 document.getElementById(queryExecId).value=='' || document.getElementById(queryExecId).value==null)
+								{
+								  setDropDowns(qTitle);
+								} 
+								
+								 document.getElementById(queryExecId).value=executionLogId;
+
 							}
 							var lableObject=document.getElementById("label_"+queryIndex);
 							if(lableObject!=null)
@@ -502,7 +512,6 @@ function workflowResponseHandler(response)
 						if((status!="Completed")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
 						{
 							workflowExecuteGetCountQuery(queryId,executionLogId);
-							
 						}
 						
 						if((status=="Completed"))
