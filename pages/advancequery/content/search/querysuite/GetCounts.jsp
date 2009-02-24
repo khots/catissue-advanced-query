@@ -48,6 +48,7 @@
 	<html:hidden property="nextOperation" value="" />
 	<html:hidden property="selectedProject" value="" />
 	<html:hidden property="selectedProjectName" value="" />
+	<html:hidden property="requestFrom" value="" />
 	<input type="hidden" name="pageOf" id="pageOf" value="Get Count">
 	<input type="hidden" name="isWorkflow" id="isWorkflow" value="">
 	<table border="0" width="100%" >
