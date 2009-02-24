@@ -77,7 +77,7 @@ public class SpreadSheetViewGenerator
 				.getDefaultViewIQueryGenerator();
 		queryGenerator.createQueryForSpreadSheetView(node, queryDetailsObj); 
 
-		executeXQuery(queryDetailsObj.getQuery(), spreadsheetData, request, queryDetailsObj
+		executeQuery(queryDetailsObj.getQuery(), spreadsheetData, request, queryDetailsObj
 				.getQueryExecutionId());
 
 		List<String> columnsList = getColumnList(selectedColumns);
@@ -110,15 +110,15 @@ public class SpreadSheetViewGenerator
 	 * @param queryExecutionId
 	 * @throws QueryModuleException
 	 */
-	private void executeXQuery(IQuery query, SpreadSheetData spreadsheetData,
+	private void executeQuery(IQuery query, SpreadSheetData spreadsheetData,
 			HttpServletRequest request, int queryExecutionId) throws QueryModuleException
 	{
 		//getData
-		AbstractQueryUIManager ciderQueryUIManager = AbstractQueryUIManagerFactory
+		AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory
 				.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
 
 		DataQueryResultsBean dataQueryResultsBean;
-		dataQueryResultsBean = ciderQueryUIManager.getData(queryExecutionId,
+		dataQueryResultsBean = queryUIManager.getData(queryExecutionId,
 				ViewType.SPREADSHEET_VIEW);
 		spreadsheetData.setDataList(dataQueryResultsBean.getAttributeList());
 		spreadsheetData.setDataTypeList(dataQueryResultsBean.getDataTypesList());
