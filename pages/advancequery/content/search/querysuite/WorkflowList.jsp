@@ -36,8 +36,7 @@ function init_grid()
 	mygrid.setHeader(columns);
 	mygrid.setEditable("true");
 	mygrid.enableAutoHeigth(true);
-	
-	//document.write("<hr>"+colWidth+"<hr>");
+	mygrid.enableAlterCss("even","uneven");
     mygrid.enableRowsHover(true,'grid_hover')
 
 	if(isWidthInPercent)
@@ -50,30 +49,20 @@ function init_grid()
 	}
 
 	mygrid.setColTypes(colDataTypes);
-//	mygrid.setSkin("light");
-	mygrid.enableAlterCss("even","uneven");
-	//mygrid.setColAlign("left,left")
+
 	mygrid.setColSorting(colTypes);
-	//colTypes = "\"ch,str,int\"";
-	
-	//mygrid.enableMultiselect(true)
 	mygrid.init();
 
-	/*
-	mygrid.loadXML("dhtmlxgrid/grid.xml");
-	// clears the dummy data and refreshes the grid.
-	// fix for grid display on IE for first time.
-	mygrid.clearAll();
-	*/
 
 	for(var row=0;row<myData.length;row++)
 	{
 		mygrid.addRow(row+1,myData[row],row+1);
-		mygrid.setRowTextStyle(row+1,"font-family: Arial, Helvetica, sans-serif;font-size: 12px;padding-left:10px;color: #000000;background-color: #FFFFFF;border-left-width: 1px;border-left-color: #CCCCCC;  border-bottom-color: #CCCCCC; border-bottom-color: #CCCCCC; border-right-width: 1px;border-right-color: #CCCCCC");
+		mygrid.setRowTextStyle(row+1,"font-family: Arial, Helvetica, sans-serif;font-size: 12px;padding-left:10px;color: #000000;border-left-width: 1px;border-left-color: #CCCCCC;  border-bottom-color: #CCCCCC; border-bottom-color: #CCCCCC; border-right-width: 1px;border-right-color: #CCCCCC");
 	}
 
 	//mygrid.setOnRowSelectHandler(funcName);
-	mygrid.setOnRowDblClickedHandler(funcName);
+	//mygrid.setOnRowDblClickedHandler(funcName);
+		mygrid.setOnRowSelectHandler(funcName);
 	// :To hide ID columns by kalpana
 	function getIDColumns()
 		{
