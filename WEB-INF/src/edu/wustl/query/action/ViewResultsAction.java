@@ -76,7 +76,7 @@ public class ViewResultsAction extends Action
 		{
 			iqueryId = Long.valueOf(id);
 		}
-		session.setAttribute("dataQueryId",iqueryId);
+		session.setAttribute(Constants.DATA_QUERY_ID,iqueryId);
 		session.setAttribute(Constants.WORFLOW_ID, workflowId);
 		String qid = (String) request.getParameter("queryExecutionId");
 		if(qid!=null)
