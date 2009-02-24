@@ -69,6 +69,7 @@ public class ShowGridAction extends BaseAction
 		{
 			generateErrorMessage(request, ex.getMessage());
 		}
+		request.setAttribute(Constants.PAGE_OF, Constants.PAGE_OF_QUERY_RESULTS);
 		return mapping.findForward(Constants.SUCCESS);
 	}
 
@@ -88,7 +89,7 @@ public class ShowGridAction extends BaseAction
 		session.setAttribute(Constants.RESULTS_PER_PAGE, Variables.recordsPerPageForSpreadSheet);
 		session.setAttribute(Constants.PAGE_NUMBER, "1");
 
-		request.setAttribute(Constants.PAGE_OF, Constants.PAGE_OF_QUERY_RESULTS);
+		
 		request.setAttribute(Constants.PAGINATION_DATA_LIST, spreadsheetData.getDataList());
 	}
 
@@ -99,7 +100,7 @@ public class ShowGridAction extends BaseAction
 	private void generateErrorMessage(HttpServletRequest request, String message)
 	{
 		ActionErrors errors = new ActionErrors();
-		ActionError error = new ActionError(message);
+		ActionError error = new ActionError("errors.item",message);
 		errors.add(ActionErrors.GLOBAL_ERROR, error);
 		saveErrors(request, errors);
 	}
