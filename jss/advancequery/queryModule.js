@@ -220,10 +220,17 @@
 	}
 	function getCountResponseHandler(response)
 	{
-		if(response=="queryException")
+		if(response=="queryException")	//If some exception occurs at any point,  control will be transfered to  getCountExceptionHandler()
 		{
 			var executionId = document.forms['form2'].executionId.value ;
 			getCountExceptionHandler(executionId);
+			return;
+		}
+		if(response=="wait")	//this will keep waiting and calling ajaxactionwith -1 as first request till point , until execution Id donot get initialized at the back-end
+		{
+			var StatusObject 		= document.getElementById("StatusId");
+			StatusObject.innerHTML	= "Processing";
+			getCountAjaxAction(-1);
 			return;
 		}
 		var isNewQuery 		= document.forms['form2'].isNewQuery.value;
@@ -233,7 +240,7 @@
 		//making getcount= inactive, abort=active, notify=active
 		getCountObj.innerHTML='<img src="images/advancequery/b_get_count_inact.gif" alt="Get Count" width="84" height="23" onclick="">';
 		if(isNewQuery=="true")
-			abort_notifyObj.innerHTML='<a href="javascript:abortExecutionAjaxAction();"><img border="0" src="images/advancequery/b_abort_execution.gif" alt="Abort Execution" width="116" height="23"></a>&nbsp;<a href="javascript:retrieveRecentQueries();"><img border="0" src="images/advancequery/b_notify_me.gif" alt="Execute in Background" width="146" height="23"></a>';
+			abort_notifyObj.innerHTML='<a href="javascript:abortExecutionAjaxAction();"><img border="0" src="images/advancequery/b_cancel.gif" alt="Cancel" width="65" height="23"></a>&nbsp;<a href="javascript:retrieveRecentQueries();"><img border="0" src="images/advancequery/b_notify_me.gif" alt="Execute in Background" width="146" height="23"></a>';
 		document.forms['form2'].isNewQuery.value="false";
 		
 		  var executionId  		= null;
@@ -289,7 +296,7 @@
 				//making getcount=active , abort=inactive, notify=inactive
 				document.forms['form2'].isNewQuery.value="true";	
 				getCountObj.innerHTML='<a href="javascript:newGetCountAjaxAction('+executionId+');"><img border="0" src="images/advancequery/b_get_count.gif" alt="Get Count" width="84" height="23"></a>';
-				abort_notifyObj.innerHTML='<img src="images/advancequery/b_abort_execution_inact.gif" alt="Abort Execution" width="116" height="23" onclick="">&nbsp;<img src="images/advancequery/b_notify_me_inact.gif" alt="Notify me when done" width="146" height="23" onclick="">';
+				abort_notifyObj.innerHTML='<img src="images/advancequery/b_cancel_inact.gif" alt="Cancel" width="65" height="23" onclick="">&nbsp;<img src="images/advancequery/b_notify_me_inact.gif" alt="Execute in Background" width="146" height="23" onclick="">';
 			}
 	}
 	function abortExecutionAjaxAction()
@@ -328,7 +335,7 @@
 		document.forms['form2'].isNewQuery.value="true";
 		//document.forms['form2'].abortExecution.value="false";
 		getCountObj.innerHTML='<a href="javascript:newGetCountAjaxAction('+executionId+');"><img border="0" src="images/advancequery/b_get_count.gif" alt="Get Count" width="84" height="23"></a>';
-		abort_notifyObj.innerHTML='<img src="images/advancequery/b_abort_execution_inact.gif" alt="Abort Execution" width="116" height="23" onclick="">&nbsp;<img src="images/advancequery/b_notify_me_inact.gif" alt="Notify me when done" width="146" height="23" onclick="">';
+		abort_notifyObj.innerHTML='<img src="images/advancequery/b_cancel_inact.gif" alt="Cancel" width="65" height="23" onclick="">&nbsp;<img src="images/advancequery/b_notify_me_inact.gif" alt="Execute in Background" width="146" height="23" onclick="">';
 	}
 	function getCountExceptionHandler(executionId)
 	{
@@ -343,7 +350,7 @@
 		var abort_notifyObj =document.getElementById("form1");
 		document.forms['form2'].isNewQuery.value="true";
 		getCountObj.innerHTML		='<a href="javascript:newGetCountAjaxAction('+executionId+');"><img border="0" src="images/advancequery/b_get_count.gif" alt="Get Count" width="84" height="23"></a>';
-		abort_notifyObj.innerHTML='<img src="images/advancequery/b_abort_execution_inact.gif" alt="Abort Execution" width="116" height="23" onclick="">&nbsp;<img src="images/advancequery/b_notify_me_inact.gif" alt="Notify me when done" width="146" height="23" onclick="">';
+		abort_notifyObj.innerHTML='<img src="images/advancequery/b_cancel_inact.gif" alt="Cancel" width="65" height="23" onclick="">&nbsp;<img src="images/advancequery/b_notify_me_inact.gif" alt="Execute in Background" width="146" height="23" onclick="">';
 	}
 	function newGetCountAjaxAction(executionId)
 	{
@@ -1290,7 +1297,7 @@
 	}
 	function showViewSearchResultsJsp()
 	{
-		showPopUp();
+	//	showPopUp();
 	//	document.forms['categorySearchForm'].action='ViewSearchResultsJSPAction.do';
 	//	document.forms['categorySearchForm'].submit();			
 	}
@@ -1674,6 +1681,7 @@ var jsReady = false;
 	
 	 function search()
 	 {
+		  showPopUp();
 		 callFlexMethod();
 		 interfaceObj.searchResult();
 	 }
