@@ -323,25 +323,28 @@ function getText(control)
 function  reSetDropDowns(queryTitle)
 {
 
-  var dropDowns= parent.window.document.getElementsByName("countQueryDropDown");
+  var dropDowns= parent.window.document.getElementsByTagName("select");
 	 for(var i=0;i<dropDowns.length;i++)
 	{
-	    var index=-1;
-		var executedQuery=dropDowns[i].options.length;
-    	if(executedQuery >0)
-    	{
-    		for(var j=0;j<executedQuery;j++)
-    	  {
-    		  if(dropDowns[i].options[j].text==queryTitle)
-				 index=j;
-    	  }
-    	
-    	}
-	  
-	     if(index!=-1)
-		   dropDowns[i].remove(index);
-	      if(dropDowns[i].options.length==0)
-			  dropDowns[i].disabled=true;
+      if(dropDowns[i].name=="countQueryDropDown")
+	  {
+			var index=-1;
+			var executedQuery=dropDowns[i].options.length;
+			if(executedQuery >0)
+			{
+				for(var j=0;j<executedQuery;j++)
+			  {
+				  if(dropDowns[i].options[j].text==queryTitle)
+					 index=j;
+			  }
+			
+			}
+		  
+			 if(index!=-1)
+			   dropDowns[i].remove(index);
+			  if(dropDowns[i].options.length==0)
+				  dropDowns[i].disabled=true;
+	  }
 
 	}
 	
