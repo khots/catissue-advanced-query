@@ -34,6 +34,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 	 */
 	private Map<IExpression, String> passOneForVariables;
 
+	
 	public PassOneXQueryGenerator()
 	{
 		passOneForVariables = new LinkedHashMap<IExpression, String>();
@@ -431,5 +432,11 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		}
 
 		return false;
+	}
+
+	@Override
+	protected String buildXQueryWhereClause(PredicateGenerator predicateGenerator)
+	{
+		return "";
 	}
 }

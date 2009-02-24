@@ -3,7 +3,7 @@ options
 	STATIC = false;
 	LOOKAHEAD = 3;
 	FORCE_LA_CHECK = true;
-	DEBUG_PARSER = false;
+	DEBUG_PARSER = true;
 	//DEBUG_TOKEN_MANAGER = true;
 }
 
@@ -19,17 +19,19 @@ public class WherePartParser
 	
 	private PredicateGenerator predicateGenerator;
 	private String forVariable;
+	private StringBuilder xQueryWherePart = new StringBuilder();
 	
 	public WherePartParser(String wherePart, PredicateGenerator predicateGenerator)
 	{
 		this(new StringReader(wherePart));
 		this.predicateGenerator = predicateGenerator;
+		xQueryWherePart = new StringBuilder();
 	}
 	
 	
 	public static void main(String[] args) throws ParseException, FileNotFoundException
 	{
-		InputStream in = new FileInputStream("WherePart4.txt");
+		InputStream in = new FileInputStream("WherePart7.txt");
 		
 		WherePartParser parser = new WherePartParser(in);
 		parser.parse();
@@ -60,6 +62,12 @@ TOKEN : { <LOGICAL_OPERATOR : "and" >}
 TOKEN : { <CONDITION_ATTRIBUTE : <DOLLAR> (~[".", ")" , ">" , "<" , "=", " " , "\t" , "\n" , "\r"])* (".)")? > }
 
 
+TOKEN : { <TEMPORAL_CONDITION_OPEN : "<TEMPORAL_CONDITION>" > :  IN_TEMPORAL_CONDITION }
+<IN_TEMPORAL_CONDITION> TOKEN : { <CHAR : ~[]> }
+<IN_TEMPORAL_CONDITION> TOKEN : { <TEMPORAL_CONDITION_CLOSE : "</TEMPORAL_CONDITION>" > : DEFAULT }
+
+
+
 TOKEN : { <#DIGITS : (["0"-"9"])+  > }
 TOKEN : { <#NUMBER :  <DIGITS> | <DIGITS> "." <DIGITS> | "." <DIGITS> | <DIGITS> "." >}
 TOKEN : { <#STRING : "\"" (~["\""])* "\"" >}
@@ -77,7 +85,9 @@ public void parse() throws ParseException:
 {
 	ConditionTree() <EOF>
 	{
-		//System.out.println("Condition Tree Parsed Successfully!");	
+		//System.out.println("CONDITON PARSED SUCCESSFULLY !!");
+		//System.out.println(xQueryWherePart);
+		predicateGenerator.setXQueryWherePart(xQueryWherePart);	
 	}
 	
 }
@@ -94,14 +104,12 @@ private void ConditionTree() :
 |
 	ParenthesizedConditionsOnOneEntity()
 	(<LOGICAL_OPERATOR>
-	<OPENING_PARENTHESIS>
-	ConditionsOnChild()
-	<CLOSING_PARENTHESIS>)*
+	ConditionsOnAChild())*
 	
 |
-	(<OPENING_PARENTHESIS>
-	ConditionsOnChild()
-	<CLOSING_PARENTHESIS>)+
+	ConditionsOnAChild()
+	(<LOGICAL_OPERATOR>
+	ConditionsOnAChild())*
 	
 }
 
@@ -124,13 +132,19 @@ private void ConditionsOnOneEntity() :
 {
 	predicate=AtomicCondition()
 	{
-		predicateGenerator.addPredicate(forVariable, predicate);	
+		if(predicate != null)
+		{
+			predicateGenerator.addPredicate(forVariable, predicate);
+		}	
 	}
 	
 	(
 		<LOGICAL_OPERATOR> predicate=AtomicCondition()
 		{
-			predicateGenerator.addPredicate(forVariable, predicate);
+			if(predicate != null)
+			{
+				predicateGenerator.addPredicate(forVariable, predicate);
+			}
 		}	
 	)*
 }
@@ -166,9 +180,37 @@ private AbstractPredicate AtomicCondition() :
 	{
 		return predicate;	
 	}
-		
+	
+|
+	TemporalCondition()
+	{
+		return predicate;
+	}
 }
 
+
+private void TemporalCondition() :
+{
+	Token t = null;
+}
+{
+
+	<TEMPORAL_CONDITION_OPEN>
+	(
+		t=<CHAR>
+		{
+			xQueryWherePart.append(t.image);
+		}
+		
+|
+		
+		<TEMPORAL_CONDITION_CLOSE>
+		{
+			xQueryWherePart.append(" and ");
+		}
+	)+
+
+}
 
 private AbstractPredicate PrefixUnaryCondition() :
 {
@@ -250,12 +292,14 @@ private AbstractPredicate NegationCondition() :
 }
 
 
-private void ConditionsOnChild() :
+private void ConditionsOnAChild() :
 {
 	
 }
 {
+	<OPENING_PARENTHESIS>
 	ConditionTree()
+	<CLOSING_PARENTHESIS>
 	
 }
 

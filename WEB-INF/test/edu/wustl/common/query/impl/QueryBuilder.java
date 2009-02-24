@@ -23,6 +23,7 @@ import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IExpressionOperand;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
+import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.IRule;
@@ -177,16 +178,29 @@ public class QueryBuilder
 	}
 
 	public static void addCondition(IExpression expression, String attributeName,
-			RelationalOperator betweenOperator, List<String> values)
+			RelationalOperator operator, List<String> values)
 	{
 		AttributeInterface attribute = findAttribute(expression.getQueryEntity()
 				.getDynamicExtensionsEntity(), attributeName);
 
-		ICondition condition = QueryObjectFactory.createCondition(attribute, betweenOperator,
+		ICondition condition = QueryObjectFactory.createCondition(attribute, operator,
 				values);
 		getRule(expression).addCondition(condition);
 
 	}
+	
+	
+	public static void addParametrizedCondition(IParameterizedQuery query, IExpression expression,
+			String attributeName, RelationalOperator operator)
+	{
+		AttributeInterface attribute = findAttribute(expression.getQueryEntity()
+				.getDynamicExtensionsEntity(), attributeName);
+		ICondition condition = QueryObjectFactory.createCondition(attribute, operator, new ArrayList<String>());
+		IParameter<ICondition> parameter = QueryObjectFactory.createParameter(condition, attributeName);
+ 	    query.getParameters().add(parameter);
+		
+	}
+
 
 	public static IExpression createExpression(IConstraints constraints, IExpression parent,
 			String expressionType) throws DynamicExtensionsSystemException,
@@ -466,4 +480,5 @@ public class QueryBuilder
 		}
 	}
 
+	
 }

@@ -27,6 +27,12 @@ import edu.wustl.query.util.global.Utility;
 public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 {
 
+	public PassTwoXQueryGenerator()
+	{
+		setSelectDistinct(true);		
+	}
+	
+	
 	/**
 	 * 
 	 * @param predicateGenerator 
@@ -64,10 +70,10 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 			}
 			else
 			{
-				StringBuffer entityPath = new StringBuffer();
+				StringBuilder entityPath = new StringBuilder();
 				String entityName = expression.getQueryEntity().getDynamicExtensionsEntity()
 				.getName();
-				entityPath = entityPath.append(getTargetRoles().get(expression)).append('/').append(deCapitalize(entityName));
+				entityPath.append(getTargetRoles().get(expression)).append('/').append(deCapitalize(entityName));
 				IExpression parent = joinGraph.getParentList(expression).get(0);
 				String parentPath = getEntityPaths().get(parent);
 				xqueryForClause.append(variable).append(' ').append(Constants.IN).append(' ');
@@ -184,6 +190,21 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 	protected String buildXQueryLetClause(PredicateGenerator predicateGenerator)
 	{
 		return "";
+	}
+
+	@Override
+	protected String buildXQueryWhereClause(PredicateGenerator predicateGenerator)
+	{
+		String xQueryWherePart = predicateGenerator.getXQueryWherePart();
+		
+		if(xQueryWherePart == null)
+		{
+			return "";
+		}
+		else
+		{
+			return new StringBuilder(Constants.WHERE).append(xQueryWherePart).toString();
+		}
 	}
 
 }

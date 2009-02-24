@@ -51,7 +51,6 @@ import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
-import edu.wustl.query.enums.QueryType;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.global.Variables;
@@ -105,6 +104,8 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * map of IParameter and the expressions corresponding to their attributes 
 	 */
 	private Map<IParameter<ICondition>, IExpression> parameters;
+	
+	private boolean selectDistinct;
 
 	/*
 	 * A List containing all the main Entitiees
@@ -135,7 +136,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		try
 		{
 			prepare(query);
-			formedQuery = formQuery(query);
+			formedQuery = formQuery();
 
 		}
 		catch (SQLXMLException e)
@@ -230,12 +231,12 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @throws DynamicExtensionsSystemException
 	 * @throws XQueryDataTypeInitializationException 
 	 */
-	private String formQuery(IQuery query) throws SqlException, MultipleRootsException, SQLXMLException,
+	private String formQuery() throws SqlException, MultipleRootsException, SQLXMLException,
 			DynamicExtensionsSystemException, XQueryDataTypeInitializationException
 	{
 		StringBuilder formedQuery = new StringBuilder();
 
-		formedQuery.append(buildSelectPart(query));
+		formedQuery.append(buildSelectPart());
 		String wherePart = buildWherePart(constraints.getRootExpression(), null);
 		wherePart = addJoiningTableCondition(wherePart);
 		PredicateGenerator predicateGenerator = new PredicateGenerator(forVariables, wherePart);
@@ -546,17 +547,18 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * throws
 	 * SQLXMLException
 	 */
-	private String buildSelectPart(IQuery query) throws SQLXMLException
+	private String buildSelectPart() throws SQLXMLException
 	{
-		
+
 		StringBuilder selectClause = new StringBuilder(256);
-		if(query.getType().equals(QueryType.GET_COUNT.type))
+		
+		if(selectDistinct)
 		{
-			selectClause.append(Constants.SELECT);
+			selectClause.append(Constants.SELECT_DISTINCT);
 		}
 		else
 		{
-			selectClause.append(Constants.SELECT_DISTINCT);
+			selectClause.append(Constants.SELECT);
 		}
 
 		for (Entry<IOutputAttribute, String> entry : attributeAliases.entrySet())
@@ -622,7 +624,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 
 		xQuery.append(buildXQueryForClause(predicateGenerator));
 		xQuery.append(buildXQueryLetClause(predicateGenerator));
-		//xQuery.append(buildXQueryWhereClause());
+		xQuery.append(buildXQueryWhereClause(predicateGenerator));
 		xQuery.append(buildXQueryReturnClause());
 
 		return xQuery.toString();
@@ -644,6 +646,13 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 *  @return the Return Clause of SQLXML
 	 */
 	protected abstract String buildXQueryLetClause(PredicateGenerator predicateGenerator);
+	
+	
+	/**
+	 * 
+	 * @return the where clause of XQuery
+	 */
+	protected abstract String buildXQueryWhereClause(PredicateGenerator predicateGenerator);
 
 	/**
 	 * 
@@ -1072,6 +1081,23 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	protected String getTemporalCondition(String operandquery) 
 	{
 		return "<" + Constants.QUERY_TEMPORAL_CONDITION + ">" +  operandquery  + "</" + Constants.QUERY_TEMPORAL_CONDITION + ">";
+	}
+
+	
+	/**
+	 * @param selectDistinct the selectDistinct to set
+	 */
+	protected void setSelectDistinct(boolean selectDistinct)
+	{
+		this.selectDistinct = selectDistinct;
+	}
+
+	/**
+	 * @return the selectDistinct
+	 */
+	protected boolean isSelectDistinct()
+	{
+		return selectDistinct;
 	}
 
 }

@@ -29,18 +29,26 @@ public interface WherePartParserConstants {
   /** RegularExpression Id. */
   int CONDITION_ATTRIBUTE = 13;
   /** RegularExpression Id. */
-  int DIGITS = 14;
+  int TEMPORAL_CONDITION_OPEN = 14;
   /** RegularExpression Id. */
-  int NUMBER = 15;
+  int CHAR = 15;
   /** RegularExpression Id. */
-  int STRING = 16;
+  int TEMPORAL_CONDITION_CLOSE = 16;
   /** RegularExpression Id. */
-  int CONSTANT = 17;
+  int DIGITS = 17;
   /** RegularExpression Id. */
-  int FUNCTION_CALL = 18;
+  int NUMBER = 18;
+  /** RegularExpression Id. */
+  int STRING = 19;
+  /** RegularExpression Id. */
+  int CONSTANT = 20;
+  /** RegularExpression Id. */
+  int FUNCTION_CALL = 21;
 
   /** Lexical state. */
   int DEFAULT = 0;
+  /** Lexical state. */
+  int IN_TEMPORAL_CONDITION = 1;
 
   /** Literal token values. */
   String[] tokenImage = {
@@ -58,6 +66,9 @@ public interface WherePartParserConstants {
     "<INFIX_OPERATOR>",
     "\"and\"",
     "<CONDITION_ATTRIBUTE>",
+    "\"<TEMPORAL_CONDITION>\"",
+    "<CHAR>",
+    "\"</TEMPORAL_CONDITION>\"",
     "<DIGITS>",
     "<NUMBER>",
     "<STRING>",

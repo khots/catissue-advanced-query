@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import edu.wustl.common.query.exeptions.SQLXMLException;
 import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.query.util.global.Utility;
 
 /**
 * @author juberahamad_patel
@@ -29,6 +30,8 @@ public class PredicateGenerator
 	 *  
 	 */
 	final private Map<IExpression, Predicates> predicates;
+	
+	private String xQueryWherePart;
 
 	public PredicateGenerator(Map<IExpression, String> forVariables, String wherePart)
 			throws SQLXMLException
@@ -90,6 +93,20 @@ public class PredicateGenerator
 		values.addPredicate(predicate);
 		predicates.put(expression, values);
 
+	}
+	
+	public void setXQueryWherePart(StringBuilder xQueryWherePart)
+	{
+		if(xQueryWherePart.length() != 0)
+		{
+			this.xQueryWherePart = Utility.removeLastAnd(xQueryWherePart.toString());
+		}
+	}
+	
+	
+	public String getXQueryWherePart()
+	{
+		return xQueryWherePart;
 	}
 
 }
