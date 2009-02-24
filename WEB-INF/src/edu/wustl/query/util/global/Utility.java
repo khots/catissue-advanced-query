@@ -321,9 +321,9 @@ public class Utility extends edu.wustl.common.util.Utility
 	{
 		String colWidth = getColumnWidth((String) columnNames.get(0));
 
-		int size = columnNames.size();
+		int size = columnNames.size()-1;
 
-		for (int col = 1; col < size; col++)
+		for (int col = 0; col < size; col++)
 		{
 			String columnName = (String) columnNames.get(col);
 			colWidth = colWidth + "," + getColumnWidth(columnName);
