@@ -41,7 +41,7 @@
 		<script>
 		     function showWorkFlowWizard()
           {
-            var parentWindowForm = window.opener.document.forms[0];
+               var parentWindowForm = window.opener.document.forms[0];
 				parentWindowForm.action = "RedirectToWorkflow.do";
 				parentWindowForm.submit();
           }
@@ -53,10 +53,13 @@
 			}
 		</script>
 		<c:if test="${querySaved eq 'true'}">
-          <script>showWorkFlowWizard();
+          <script>
+          if("<%=isworkflow%>"=="true")
+			{
+			  showWorkFlowWizard();
+			}
 			 window.self.close();
-
-          </script>
+		   </script>
        </c:if>
 		
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
