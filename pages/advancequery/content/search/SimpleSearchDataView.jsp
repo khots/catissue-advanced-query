@@ -4,14 +4,15 @@
 <%@ taglib uri="/WEB-INF/PagenationTag.tld" prefix="custom" %>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Hashtable"%>
-<%@ page import="edu.wustl.query.actionForm.AdvanceSearchForm"%>
 <%@ page import = "edu.wustl.query.util.global.Constants"%>
 <%@ page import="edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.Variables"%>
 <%@ page language="java" isELIgnored="false"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<link href="css/advancequery/catissue_suite.css" rel="stylesheet" type="text/css" />
 <script src="jss/advancequery/script.js"></script>
 <script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
+<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
 <style>
 .active-column-0 {width:30px}
 tr#hiddenCombo
@@ -28,12 +29,10 @@ tr#hiddenCombo
 	int numResultsPerPage = 500;//Integer.parseInt((String)session.getAttribute(Constants.RESULTS_PER_PAGE));
 	String pageName = "SpreadsheetView.do";	
 	String checkAllPages = (String)session.getAttribute("checkAllPages");
-	AdvanceSearchForm form = (AdvanceSearchForm)session.getAttribute("advanceSearchForm");
 	List<String> columnList = (List<String>) session.getAttribute(Constants.SPREADSHEET_COLUMN_LIST);
 	if(columnList==null)
-		columnList = (List) request.getAttribute(Constants.SPREADSHEET_COLUMN_LIST);
+		columnList = (List<String>) request.getAttribute(Constants.SPREADSHEET_COLUMN_LIST);
 
-	columnList.add(0," ");
 	List dataList = (List) request.getAttribute(Constants.PAGINATION_DATA_LIST);
 	String[] selectedColumnNames = new String[columnList.size()];
 	columnList.toArray(selectedColumnNames);
@@ -86,38 +85,7 @@ tr#hiddenCombo
 			}
 		}
 		
-		function onAddToCart()
-		{
-			var isChecked = updateHiddenFields();
-			var chkBox = document.getElementById('checkAll');
-			var isCheckAllAcrossAllChecked = chkBox.checked;
-			
-		    if(isChecked == "true")
-		    {
-			     var pageNum = "<%=pageNum%>";
-				 var action;
-                 var isQueryModule = "<%=pageOf.equals(Constants.PAGEOF_QUERY_MODULE)%>";
-                 <%if (pageOf.equals(Constants.PAGEOF_QUERY_MODULE))
-                 {
-                 %>
-				
-				  action = "AddDeleteCart.do?operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
-				   document.forms[0].target = "gridFrame";
-				<%} else 
-				{%>
-			     action = "ShoppingCart.do?operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked ;
-				 document.forms[0].target = "myframe1";
-				<%}%>
-				document.forms[0].operation.value="add";
-				document.forms[0].action = action;
-				document.forms[0].submit();
-			}
-			else
-			{
-				alert("Please select at least one checkbox");
-			}
-		}
-		
+
 		function onExport()
 		{
 			var isChecked = updateHiddenFields();
@@ -138,51 +106,7 @@ tr#hiddenCombo
 				alert("Please select at least one checkbox");
 			}
 		}
-		//function that is called on click of Define View button for the configuration of search results
-		function onSimpleConfigure()
-		{
-				action="ConfigureSimpleQuery.do?pageOf=pageOfSimpleQueryInterface";
-				document.forms[0].action = action;
-				document.forms[0].target = "_parent";
-				document.forms[0].submit();
-		}
 
-		function onAdvanceConfigure()
-		{
-				action="ConfigureAdvanceSearchView.do?pageOf=pageOfQueryResults";
-				document.forms[0].action = action;
-				document.forms[0].target = "myframe1";
-				document.forms[0].submit();
-		}
-		function onQueryResultsConfigure()
-		{
-			 action="DefineQueryResultsView.do?pageOf=pageOfQueryModule";
-			 document.forms[0].action = action;
-			 document.forms[0].target = "<%=Constants.GRID_DATA_VIEW_FRAME%>";
-			 document.forms[0].submit();
-		}
-		function onRedefineSimpleQuery()
-		{
-			action="SimpleQueryInterface.do?pageOf=pageOfSimpleQueryInterface&operation=redefine";
-			document.forms[0].action = action;
-			document.forms[0].target = "_parent";
-			document.forms[0].submit();
-		}
-		function onRedefineAdvanceQuery()
-		{
-			action="AdvanceQueryInterface.do?pageOf=pageOfAdvanceQueryInterface&operation=redefine";
-			document.forms[0].action = action;
-			document.forms[0].target = "_parent";
-			document.forms[0].submit();
-		}
-		function onRedefineDAGQuery()
-		{
-			waitCursor();
-			document.forms[0].action='SearchCategory.do?currentPage=resultsView';
-			document.forms[0].target = "_parent";
-			document.forms[0].submit();
-			hideCursor();
-		}
 		var selected;
 
 		function addCheckBoxValuesToArray(checkBoxName)
@@ -227,105 +151,23 @@ tr#hiddenCombo
 		<%	} %>
 		}
 		}
-//this function is called after executing ajax call from checkAllOnThisPage function.
-function checkAllOnThisPageResponse()
-{
-}
 
-//document.forms[0].checkAllPages.value = true;
-
-	</script>
-	<%
-		String configAction = new String();
-		String redefineQueryAction = new String();
-		if(pageOf.equals(Constants.PAGEOF_SIMPLE_QUERY_INTERFACE))
-		{
-			configAction = "onSimpleConfigure()";
-			redefineQueryAction = "onRedefineSimpleQuery()";
-		}
-		else if(pageOf.equals("pageOfQueryModule"))
-		{
-			configAction = "onQueryResultsConfigure()";
-			redefineQueryAction = "onRedefineDAGQuery()";
-		}
-		else
-		{
-			configAction = "onAdvanceConfigure()";
-			redefineQueryAction = "onRedefineAdvanceQuery()";
-		}
-		boolean mac = false;
-		Object os = request.getHeader("user-agent");
-		if(os!=null && os.toString().toLowerCase().indexOf("mac")!=-1)
-		{
-			mac = true;
-		}
-		String height = "100%";		
-		if(mac) 
-		{
-			/* mac gives problem if the values aer specified in percentage*/
-		  height="500";
-		}
-	%>
-	<!-- Mandar : 434 : for tooltip -->
-	<script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
+</script>
 </head>
 <body onload="setCheckBoxState()" height="100%">
-
+<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
 <!-------new--->
  <!--Prafull:Added errors tag inside the table-->
 
-<logic:notEqual name="pageOf" value="<%=Constants.PAGEOF_SIMPLE_QUERY_INTERFACE%>">
  <table id="table1" width="100%" border="0" height="96%" cellpadding="0" cellspacing="0" class="maintable" >
  
 	<tr height="100%">
 		<td class="td_color_bfdcf3">
  
-</logic:notEqual>
 
 
-<logic:equal name="pageOf" value="<%=Constants.PAGEOF_SIMPLE_QUERY_INTERFACE%>">
-		 <table   width="100%" border="0" height="90%" cellpadding="0" cellspacing="0" class="maintable" >
-          <tr height="6%" valign="top">
-		   <td class="td_color_bfdcf3">	
-			<table border="0" cellpadding="0" cellspacing="0"   
-			valign="top">
-		      <tr>
-				<td class="td_table_head">
-					<span class="wh_ar_b">
-						Simple Query
-					</span>
-				</td>
-		        <td>
-					<img src="images/advancequery/uIEnhancementImages/table_title_corner2.gif" alt="Page Title - Search Results" width="31" height="24" hspace="0" vspace="0" />
-				</td>
-		      </tr>
-		    </table>
-		</td>
-	  </tr>
-	   <tr height="90%">
-		<td class="tablepadding">
-			<table width="100%" border="0" cellpadding="0" cellspacing="0" height="5%" >
-			
-      <tr>
-        <td width="90%" valign="bottom" class="td_tab_bg">&nbsp;</td>
-      </tr>
-	 
-    </table>
-	
-	
-	<table id="table2" width="100%" border="0"  cellpadding="3" height="92%" cellspacing="0" class="whitetable_bg">
-  <script> 
-	if(navigator.appName == "Microsoft Internet Explorer")
-   {
-	   document.getElementById("table2").style.height="100%"; 
-	    
-    }
-</script>
-   
-   </logic:equal>
-   <logic:notEqual name="pageOf" value="<%=Constants.PAGEOF_SIMPLE_QUERY_INTERFACE%>">
+
 	 <table id="table2" width="100%" border="0"  cellpadding="3" height="98%" cellspacing="0" class="whitetable_bg">
-   </logic:notEqual>
 	
    <script> 
 	if(navigator.appName == "Microsoft Internet Explorer")
@@ -336,24 +178,15 @@ function checkAllOnThisPageResponse()
    </script>
 	  
 	  <tr height="4%">
-        <td align="left" ><%@ include file="/pages/advancequery/common/ActionErrors.jsp" %></td>
+        <td align="left" ></td>
       </tr>
-      <tr height="6%">
-        <td align="left" class="tr_bg_blue1"><span class="blue_ar_b"> &nbsp;<bean:message key="<%=title%>" />&nbsp;</span></td>
 
-      </tr>
-<!------new--->
-<!--<table summary="" cellpadding="0" cellspacing="0" border="0" width="99%" height="100%" style="overflow:auto;">
-<tr>
-	<td >
-		
-	</td>
-</tr>-->
+
 <html:form action="QueryWizard.do" style="margin:0;padding:0;height:100%;">
 <html:hidden property="checkAllPages" value=""/>	
 
 	<%
-		if(dataList == null && pageOf.equals(Constants.PAGEOF_QUERY_RESULTS))
+		if((dataList == null || dataList.size()==0) && pageOf.equals(Constants.PAGEOF_QUERY_RESULTS))
 		{
 		%>
 			<bean:message key="advanceQuery.noRecordsFound"/>
@@ -366,19 +199,12 @@ function checkAllOnThisPageResponse()
 			Description: The width of <td> are adjusted to fit into the iframe. 
 			These changes were made to remove the extra white space on the data view/spreadsheet view page. 
 		-->
-		<%--<tr height="3%">
-			 <td  class="formTitle" width="100%">
-				<bean:message key="<%=title%>"/>
+		<tr height="3%">
+			 <td align="left" class="tr_bg_blue1">
+				<span class="blue_ar_b"> &nbsp;<bean:message key="<%=title%>" />&nbsp;</span>
 			 </td>
-		</tr>--%>	
+		</tr> 		
 		
-		<tr height="5%">
-			<td class="black_ar" >					
-				<!-- <custom:test name="" pageNum="<%=pageNum%>" totalResults="<%=totalResults%>" numResultsPerPage="<%=numResultsPerPage%>" pageName="<%=pageName%>"  showPageSizeCombo="<%=false%>" recordPerPageList="<%=Constants.RESULT_PERPAGE_OPTIONS%>" />
-				<html:hidden property="<%=Constants.PAGEOF%>" value="<%=pageOf%>"/>
-				<html:hidden property="isPaging" value="true"/>			-->
-			</td>
-		</tr>
 		<%
 		if(pageOf.equals(Constants.PAGEOF_QUERY_RESULTS))
 		{			
@@ -401,7 +227,8 @@ function checkAllOnThisPageResponse()
 	   	 		</html:select>
 			</td>
 		</tr>
-		<% } 
+		<% 
+		} 
 		%>
 		
 		<tr valign="top" width="100%" height="69%">
@@ -442,10 +269,10 @@ function checkAllOnThisPageResponse()
 						<img src="images/advancequery/b_exp.gif"  hspace="3" onclick="onExport()"/>&nbsp;
 					</td>
 					<td width="5%" nowrap align="right" valign="top">
-						<img src="images/advancequery/b_def_view.gif"  hspace="3" onclick="<%=configAction%>"/>&nbsp;
+						<img src="images/advancequery/b_def_view.gif"  hspace="3" />&nbsp;
 					</td>
 					<td width="5%" nowrap align="right" valign="top">
-						<img src="images/advancequery/b_red_query.gif" hspace="3" onclick="<%=redefineQueryAction%>"/>&nbsp;
+						<img src="images/advancequery/b_red_query.gif" hspace="3" />&nbsp;
 					</td>
 			</tr>
 			</table>
