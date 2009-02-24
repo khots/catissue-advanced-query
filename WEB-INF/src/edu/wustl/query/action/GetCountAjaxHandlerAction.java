@@ -44,11 +44,18 @@ public class GetCountAjaxHandlerAction extends Action
 	{
 		try {
 			boolean abortExecution	= Boolean.valueOf(request.getParameter(Constants.ABORT_EXECUTION));
+			Writer writer = response.getWriter();
 			String queryTitle = null;
 			int queryExecID 		= 0;
 			if((Integer.valueOf(request.getParameter(Constants.EXECUTION_ID)))==-1)	//If its the first request
 			{
-				queryExecID =(Integer)request.getSession().getAttribute(Constants.QUERY_EXEC_ID);
+				Object queryId_obj = request.getSession().getAttribute(Constants.QUERY_EXEC_ID);
+				if(queryId_obj==null)
+				{
+					writer.write(Constants.WAIT);
+					return null;
+				}
+				queryExecID =(Integer)queryId_obj;
 				request.getSession().removeAttribute(Constants.QUERY_EXEC_ID);
 			}
 			else
@@ -73,7 +80,7 @@ public class GetCountAjaxHandlerAction extends Action
 					queryExecID	= qUIManager.searchQuery(null);
 				}
 				
-				Writer writer = response.getWriter();
+				
 				//retrieve count with query execution id
 				AbstractQueryUIManager qUIManager	= AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
 				Count countObject = qUIManager.getCount(queryExecID);
