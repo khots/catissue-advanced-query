@@ -1,30 +1,26 @@
 
 package edu.wustl.query.spreadsheet;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import edu.wustl.cider.querymanager.CiderQueryManager;
-import edu.wustl.cider.util.CiderQueryUIManager;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
-import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
+import edu.wustl.common.query.factory.ViewIQueryGeneratorFactory;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
-import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.OutputTreeNode;
-import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.util.Utility;
-import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
+import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryDetails;
-import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleException;
+import edu.wustl.query.viewmanager.AbstractViewIQueryGenerator;
+import edu.wustl.query.viewmanager.ViewManager;
 import edu.wustl.query.viewmanager.ViewType;
 
 /**
@@ -68,35 +64,34 @@ public class SpreadSheetViewGenerator
 	 * @param request 
 	 * @throws QueryModuleException 
 	 */
-	public void createSpreadsheet(QueryDetails queryDetailsObj, String idOfClickedNode2,
-			SpreadSheetData spreadsheetData, HttpServletRequest request)
-			throws QueryModuleException
+	public void createSpreadsheet(QueryDetails queryDetailsObj, SpreadSheetData spreadsheetData,
+			HttpServletRequest request) throws QueryModuleException
 	{
-		Node node = new Node(idOfClickedNode2);
-		OutputTreeDataNode currentTreeNode = null; //queryDetailsObj.getUniqueIdNodesMap().get(uniqueCurrentNodeId);
+		idOfClickedNode = request.getParameter(Constants.TREE_NODE_ID);
+		Node node = new Node(idOfClickedNode);
 
-		List<IOutputAttribute> selectedColumns = ((IParameterizedQuery) queryDetailsObj.getQuery())
-				.getOutputAttributeList(); //getSelectedOutputAttributeList(currentTreeNode,constraints);
-		SpreadsheetIQueryGenerator queryGenerator = new SpreadsheetIQueryGenerator();
-		queryGenerator.createIQuery(node, queryDetailsObj, selectedColumns);
+		ViewManager viewManager = ViewManager.getInstance(ViewType.USER_DEFINED_SPREADSHEET_VIEW);
+		List<IOutputAttribute> selectedColumns = viewManager.getSelectedColumnList(queryDetailsObj
+				.getQuery());
+		AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
+				.getDefaultViewIQueryGenerator();
+		queryGenerator.createQueryForSpreadSheetView(node, queryDetailsObj); 
 
 		executeXQuery(queryDetailsObj.getQuery(), spreadsheetData, request, queryDetailsObj
 				.getQueryExecutionId());
 
-		List<String> columnsList = getColumnList(queryDetailsObj);
+		List<String> columnsList = getColumnList(selectedColumns);
 
 		spreadsheetData.setColumnsList(columnsList);
 
 	}
 
 	/**
-	 * @param queryDetailsObj
+	 * @param outputAttributeList
 	 * @return
 	 */
-	private List<String> getColumnList(QueryDetails queryDetailsObj)
+	private List<String> getColumnList(List<IOutputAttribute> outputAttributeList)
 	{
-		List<IOutputAttribute> outputAttributeList = ((ParameterizedQuery) queryDetailsObj
-				.getQuery()).getOutputAttributeList();
 		List<String> columnsList = new ArrayList<String>();
 		for (IOutputAttribute outputAttribute : outputAttributeList)
 		{
@@ -108,6 +103,13 @@ public class SpreadSheetViewGenerator
 		return columnsList;
 	}
 
+	/**
+	 * @param query
+	 * @param spreadsheetData
+	 * @param request
+	 * @param queryExecutionId
+	 * @throws QueryModuleException
+	 */
 	private void executeXQuery(IQuery query, SpreadSheetData spreadsheetData,
 			HttpServletRequest request, int queryExecutionId) throws QueryModuleException
 	{
@@ -116,7 +118,8 @@ public class SpreadSheetViewGenerator
 				.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
 
 		DataQueryResultsBean dataQueryResultsBean;
-		dataQueryResultsBean = ciderQueryUIManager.getData(queryExecutionId, ViewType.SPREADSHEET_VIEW);
+		dataQueryResultsBean = ciderQueryUIManager.getData(queryExecutionId,
+				ViewType.SPREADSHEET_VIEW);
 		spreadsheetData.setDataList(dataQueryResultsBean.getAttributeList());
 		spreadsheetData.setDataTypeList(dataQueryResultsBean.getDataTypesList());
 	}
