@@ -393,7 +393,7 @@ public class GenerateHtml
 	 * @return StringBuffer
 	 */
 	public static StringBuffer getHtmlHeader(String entityName,String entityId,
-			String attributeCollection, boolean isEditLimits)
+			String attributeCollection, boolean isEditLimits,String pageOf)
 	{
 		StringBuffer generatedPreHTML = new StringBuffer(Constants.MAX_SIZE);
 		String buttonImg;
@@ -411,7 +411,7 @@ public class GenerateHtml
 		generatedPreHTML.append(" '" + entityName + "'");
 		generatedPreHTML.append(endTD);
 		generatedPreHTML.append("####");
-		generatedPreHTML.append(generateHTMLForButton(entityId,attributeCollection, isEditLimits));
+		generatedPreHTML.append(generateHTMLForButton(entityId,attributeCollection, isEditLimits,pageOf));
 		generatedPreHTML.append("\n</tr></table>");
 		return generatedPreHTML;
 	}
@@ -429,7 +429,8 @@ public class GenerateHtml
 	{
 		//String buttonName = "addLimit";
 		String buttonId = "";
-		String imgsrc="images/advancequery/b_add_limit.gif";
+		String imgsrc="";  //"images/advancequery/b_add_limit.gif";
+        imgsrc="images/advancequery/b_edit_limit.gif";
 		StringBuffer html = new StringBuffer(Constants.MAX_SIZE);
 		
 		String temp = "\n<td  colspan=\"2\" " +
@@ -449,6 +450,59 @@ public class GenerateHtml
 		html.append(endTD+"</a>");
 		return html.toString();
 	}
+	
+	/**
+	 * This Method is written to generate button as per the page of getCount and getPatientData 
+	 * @param entityName
+	 * @param attributesStr
+	 * @param isEditLimits
+	 * @param pageOf
+	 * @return
+	 */
+	private static String generateHTMLForButton(String entityName, String attributesStr,
+			boolean isEditLimits,String pageOf)
+	{
+		//String buttonName = "addLimit";
+		String buttonId = "";
+		String imgsrc="";  //"images/advancequery/b_add_limit.gif";
+		 if(Constants.PAGE_OF_GET_DATA.equals(pageOf)) //if pageOf getPatientData
+		 {
+			 imgsrc="images/advancequery/b_add_filters_blue.gif";
+		 }
+		 else  //if pageOf getCount
+		 {
+			imgsrc="images/advancequery/b_add_limit.gif";
+		 } 
+		
+		StringBuffer html = new StringBuffer(Constants.MAX_SIZE);
+		
+		String temp = "\n<td  colspan=\"2\" " +
+						"height=\"30\" valign=\"top\" align=\"right\" >";
+		buttonId = "TopAddLimitButton";
+		html.append(temp);
+		String buttonCaption ="Add Limit";
+		if (isEditLimits)
+		{
+			buttonCaption = "Edit Limit";
+			if(Constants.PAGE_OF_GET_DATA.equals(pageOf)) //if pageOf getCount
+			 {
+				 imgsrc="images/advancequery/b_edit_filters.gif";
+			 }
+			 else  //if pageOf getPatientData
+			 {
+				imgsrc="images/advancequery/b_edit_limit.gif";
+			 } 
+		}
+		html.append("\n<a href=\"javascript:produceQuery('" + buttonCaption
+				+ "', 'addToLimitSet.do', 'categorySearchForm', '" + entityName + "','"
+				+ attributesStr + "')\"><img border=\"0\" src=\"" + imgsrc + "\"  id=\"" + buttonId+"\" "
+				+ "value=\"" + buttonCaption + "\"/>");
+		html.append(endTD+"</a>");
+		return html.toString();
+	}
+	
+	
+	
 	/**
 	 * @param attributeCollection String
 	 * @param nameOfTheEntity String
