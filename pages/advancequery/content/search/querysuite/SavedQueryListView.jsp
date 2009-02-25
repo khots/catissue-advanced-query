@@ -87,7 +87,7 @@ int queryCount = 0;%>
 															<html:checkbox property="chkbox" styleId="<%=checkboxControl%>"/>
 															
 															<td  valign="top" class="content_txt" >
-																<html:link styleClass='formQueryLink' href='#' onclick='<%=target%>'  onmouseover="<%=function%>" >
+																<html:link styleClass='bluelink' href='#' onclick='<%=target%>'  onmouseover="<%=function%>" >
 											 						<%=newTitle%>
 																</html:link><br/>
 															</td>
