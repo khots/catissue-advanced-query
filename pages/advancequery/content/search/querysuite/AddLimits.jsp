@@ -44,18 +44,18 @@
 	<html:hidden property="nextOperation" value="" />
 	 <input type="hidden" name="isWorkflow" id="isWorkflow" value="">
    
- <input type="hidden" name="pageOf" id="pageOf" value="DefineFilter">
+ <input type="hidden" name="pageOf" id="pageOf" value="pageOfGetData">
  <table border="0" width="100%" >
 	<tr><td style="padding-left:5px; padding-right:5px;">
  <table  width="100%" border="0" cellspacing="0" cellpadding="0" align="center" class="login_box_bg">
  <tr><td>
   <table border="0" width="100%" cellspacing="0" cellpadding="0"  height="450" bgcolor="#ffffff">	
 	 
-	 <tr style="padding-left:10px;" id="workflowname">
+	 <tr style="padding-left:2px;" id="workflowname">
 			<td  nowrap height="30" colspan="3">
 			&nbsp;
 				<span class="content_txt"><bean:message key="workflow.name"/>:</span><span>
-				<html:text styleClass="textfield_undefined" size="50" styleId="workflowName" property="workflowName" disabled="true" value="<%=workflowName%>"/></span>&nbsp;&nbsp;
+				<input type="text" styleClass="textfield_undefined" class="textfield_inactive" size="50" styleId="workflowName" property="workflowName" disabled="disabled" value="<%=workflowName%>"/></span>&nbsp;&nbsp;
 			</td>
 	  </tr>
 	 <tr>	
@@ -124,13 +124,13 @@
 											<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 												id="DAG" width="100%" height="100%"
 												codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-												<param name="movie" value="flexclient/advancequery/dag/DAG.swf?view=AddLimit&isQuery=<%=isQuery%>"/>
+												<param name="movie" value="flexclient/advancequery/dag/DAG.swf?pageOf=pageOfGetData&view=AddLimit&isQuery=<%=isQuery%>"/>
 												<param name="quality" value="high" />
 												
 												<param name="bgcolor" value="#869ca7" />
 												<param name="allowScriptAccess" value="sameDomain"/>
 												<param name="wmode" value="transparent"/>
-												<embed src="flexclient/advancequery/dag/DAG.swf?view=AddLimit&isQuery=<%=isQuery%>" quality="high" bgcolor="#869ca7"
+												<embed src="flexclient/advancequery/dag/DAG.swf?pageOf=pageOfGetData&view=AddLimit&isQuery=<%=isQuery%>" quality="high" bgcolor="#869ca7"
 													width="100%" height="100%" name="DAG" align="middle" wmode="transparent"
 													play="true"
 													loop="false" 
@@ -170,7 +170,7 @@
 					 <td width="50%" align="left" colspan="2">
 					  <table border="0" cellspacing="0" cellpadding="0" >
 						<tr>
-							 <td style="padding-left:7px"  ><img src="images/advancequery/b_save.gif"   hspace="3" onclick="validateQuery('save');"/></td>
+							 <td style="padding-left:5px"  ><img src="images/advancequery/b_save.gif"   hspace="3" onclick="validateQuery('save');"/></td>
 							 <td style="padding-left:4px"><img src="images/advancequery/b_back_to_workflow.gif"  hspace="3" onclick="showWorkFlowWizard();"/></td>
 						</tr>
 					 </table>
