@@ -20,6 +20,7 @@ import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 import edu.wustl.query.viewmanager.AbstractViewIQueryGenerator;
+import edu.wustl.query.viewmanager.NodeId;
 import edu.wustl.query.viewmanager.ViewManager;
 import edu.wustl.query.viewmanager.ViewType;
 
@@ -68,7 +69,7 @@ public class SpreadSheetViewGenerator
 			HttpServletRequest request) throws QueryModuleException
 	{
 		idOfClickedNode = request.getParameter(Constants.TREE_NODE_ID);
-		Node node = new Node(idOfClickedNode);
+		NodeId node = new NodeId(idOfClickedNode);
 
 		ViewManager viewManager = ViewManager.getInstance(ViewType.USER_DEFINED_SPREADSHEET_VIEW);
 		List<IOutputAttribute> selectedColumns = viewManager.getSelectedColumnList(queryDetailsObj

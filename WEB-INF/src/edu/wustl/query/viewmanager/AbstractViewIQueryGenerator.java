@@ -1,7 +1,6 @@
 package edu.wustl.query.viewmanager;
 
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.query.spreadsheet.Node;
 import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
@@ -16,7 +15,7 @@ public abstract class AbstractViewIQueryGenerator
 	 * @param node 
 	 * @return
 	 */
-	public abstract IQuery createQueryForSpreadSheetView(Node node, QueryDetails queryDetails) throws QueryModuleException;
+	public abstract IQuery createQueryForSpreadSheetView(NodeId node, QueryDetails queryDetails) throws QueryModuleException;
 	/**
 	 * @return
 	 */
