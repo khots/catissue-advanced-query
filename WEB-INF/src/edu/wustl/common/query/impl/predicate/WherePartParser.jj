@@ -3,7 +3,7 @@ options
 	STATIC = false;
 	LOOKAHEAD = 3;
 	FORCE_LA_CHECK = true;
-	DEBUG_PARSER = true;
+	//DEBUG_PARSER = true;
 	//DEBUG_TOKEN_MANAGER = true;
 }
 
