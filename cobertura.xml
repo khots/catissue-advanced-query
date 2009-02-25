@@ -44,7 +44,6 @@
 			<include name="**/CiderQueryManager.class"/>
 			<include name="**/WorkflowBizLogic.class"/>
 			<include name="**/QueryBizLogic.class"/>
-			<include name="**/CreateUIFromQueryObjectBizLogic.class"/>
 			<include name="**/ValidateQueryBizLogic.class"/>
 			<include name="**/SpreadSheetViewGenerator.class"/>
 			<include name="**/ResultsViewIQueryCreationUtil.class"/>
