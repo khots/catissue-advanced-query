@@ -635,7 +635,7 @@ public class CreateQueryObjectBizLogic
 									.getOperatorForStringRepresentation(params[QueryModuleConstants.INDEX_PARAM_ZERO]));
 				}
 			}
-			if ((!newConditions.containsKey(componentName)) && (displayNamesMap == null))
+			if ((displayNamesMap == null) && (!newConditions.containsKey(componentName)))
 			{
 				removalList.add(condition);
 				if (query instanceof ParameterizedQuery)
