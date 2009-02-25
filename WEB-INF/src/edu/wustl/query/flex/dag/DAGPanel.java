@@ -2001,7 +2001,7 @@ public class DAGPanel
 	 * @return
 	 * @throws PVManagerException 
 	 */
-	public Map editAddLimitUI(int expId) throws PVManagerException
+	public Map editAddLimitUI(int expId,String pageOf) throws PVManagerException
 	{
 		Map<String, Object> map = new HashMap<String, Object>();
 		int expressionId = expId;
@@ -2025,7 +2025,7 @@ public class DAGPanel
 		}
 		String html=null;
 		GenerateHTMLDetails generateHTMLDetails=new GenerateHTMLDetails();
-		html = generateHTMLBizLogic.generateHTML(entity, conditions,generateHTMLDetails);
+		html = generateHTMLBizLogic.generateHTML(entity, conditions,generateHTMLDetails,pageOf);
 		request.getSession().setAttribute(Constants.ENUMRATED_ATTRIBUTE, generateHTMLDetails.getEnumratedAttributeMap());
 		map.put(DAGConstant.HTML_STR, html);
 		map.put(DAGConstant.EXPRESSION, expression);
