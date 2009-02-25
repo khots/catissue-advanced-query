@@ -718,7 +718,7 @@ public class HtmlProvider
 					if(condition!=null)
 					{
 						List<String> conceptIds1=condition.getValues();
-						if(conceptIds1 != null)
+						if(conceptIds1 != null && !conceptIds1.isEmpty())
 						{
 
 							for(String concept : conceptIds1)
