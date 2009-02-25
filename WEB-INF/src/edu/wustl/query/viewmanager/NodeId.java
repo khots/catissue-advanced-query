@@ -5,33 +5,61 @@ import edu.wustl.query.util.global.Constants;
 
 public class NodeId
 {
+	/**
+	 * Variable for Root Data
+	 */
 	private String rootData;
 
+	/**
+	 * Unique Tree number
+	 */
 	private String treeNo;
+	/**
+	 * Unique parent node id
+	 */
 	private String uniqueParentNodeId;
+	/**
+	 * Primary Key attribute values for parent node
+	 */
 	private String[] parentData;
 	
+	/**
+	 * Unique current node id
+	 */
 	private String uniqueCurrentNodeId;
+	/**
+	 * Primary Key attribute values for current node
+	 */
 	private String[] currentNodeData;
 
+	/**
+	 * Boolean value to identify node is Label Node or Data Node
+	 */
+	private boolean isLabelNode;
+	
+	/**
+	 * Constructor for the class
+	 * @param idOfClickedNode id of clicked node
+	 */
 	public NodeId(String idOfClickedNode)
 	{
 		String[] nodeIds = idOfClickedNode.split(Constants.NODE_SEPARATOR);
 		rootData = nodeIds[0];
 		
+		if(idOfClickedNode.endsWith(Constants.LABEL_TREE_NODE))
+		{
+			isLabelNode = true;
+		}
 		String parentNode = nodeIds[1];
 		String[] splitParentNodeId = parentNode.split(Constants.UNDERSCORE);
 		treeNo = splitParentNodeId[0];
 		String parentNodeId = splitParentNodeId[1];
 		uniqueParentNodeId = treeNo + Constants.UNDERSCORE + parentNodeId;
 		
-		if(!idOfClickedNode.endsWith(Constants.LABEL_TREE_NODE))
+		parentData  = new String[splitParentNodeId.length-2];
+		for(int i=2;i<splitParentNodeId.length;i++)
 		{
-			parentData  = new String[splitParentNodeId.length-2];
-			for(int i=2;i<splitParentNodeId.length;i++)
-			{
-				parentData[i-2] = splitParentNodeId[i];
-			}
+			parentData[i-2] = splitParentNodeId[i];
 		}
 		
 		String currentNode = nodeIds[2];
@@ -39,7 +67,7 @@ public class NodeId
 		String currentNodeId = splitCurrentNodeId[1];
 		uniqueCurrentNodeId = treeNo + Constants.UNDERSCORE + currentNodeId;
 		
-		if(!idOfClickedNode.endsWith(Constants.LABEL_TREE_NODE))
+		if(isLabelNode)
 		{
 			currentNodeData  = new String[splitCurrentNodeId.length-2];
 			for(int i=2;i<splitCurrentNodeId.length;i++)
@@ -47,6 +75,7 @@ public class NodeId
 				currentNodeData[i-2] = splitCurrentNodeId[i];
 			}
 		}
+		
 	}
 
 	/**
@@ -95,5 +124,13 @@ public class NodeId
 	public String[] getCurrentNodeData()
 	{
 		return currentNodeData;
+	}
+	
+	/**
+	 * @return the isLabelNode
+	 */
+	public boolean isLabelNode()
+	{
+		return isLabelNode;
 	}
 }
