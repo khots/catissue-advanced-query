@@ -206,9 +206,9 @@ public class FlexInterface
 	 * @return
 	 * @throws PVManagerException 
 	 */
-	public String getLimitUI(int expressionId) throws PVManagerException
+	public String getLimitUI(int expressionId,String pageOf) throws PVManagerException
 	{
-		Map map = dagPanel.editAddLimitUI(expressionId);
+		Map map = dagPanel.editAddLimitUI(expressionId,pageOf);
 		String htmlStr = (String) map.get(DAGConstant.HTML_STR);
 		IExpression expression = (IExpression) map.get(DAGConstant.EXPRESSION);
 		dagPanel.setExpression(expression);
