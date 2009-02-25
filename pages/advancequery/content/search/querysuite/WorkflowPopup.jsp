@@ -3,6 +3,7 @@
 <%-- TagLibs --%>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%
 
@@ -238,7 +239,6 @@ int queryCount = 0;%>
 <% message = messageKey;    %>
 </html:messages>
 <html:form action="SaveWorkflow">
-<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
 <table width="100%" border="0" cellspacing="0" cellpadding="4">
 <tr>
 	<td>
@@ -270,7 +270,8 @@ int queryCount = 0;%>
 				<td style="border-bottom:1px solid #DDDDDD;" valign="top">
 					<table width="100%" border="0" cellspacing="0" cellpadding="4">
 						<tr>
-						<td align="left" valign="middle">&nbsp;<a href="javascript:showNextReleaseMsg()" class="bluelink">Delete</a>&nbsp;<span class="content_txt">|</span>&nbsp;<a href="javascript:closePopup()" class="bluelink"><bean:message key="workflow.add"/></a></td>
+						
+						<td align="left" valign="middle"><!--&nbsp;<a href="javascript:showNextReleaseMsg()" class="bluelink">Delete</a>&nbsp;<span class="content_txt">|</span>&nbsp;--><a href="javascript:closePopup()" class="bluelink"><bean:message key="workflow.add"/></a></td>
 						<td align="right">
 							<table border="0" cellspacing="0" cellpadding="2">
 								<tr>
@@ -311,6 +312,14 @@ int queryCount = 0;%>
 															  String newTitle = Utility.getQueryTitle(title);
 															  String queryType=
 															  parameterizedQuery.getType();
+															  if(queryType.equals("GetData"))
+															  {
+																  queryType="Get Data";
+															  }
+															  else
+															  {
+																  queryType="Get Count";
+															  }
 															  String tooltip = Utility.getTooltip(title);
 															  String function = "Tip('"+tooltip+"', WIDTH, 700)";
 															  queryCount++;
@@ -360,7 +369,7 @@ int queryCount = 0;%>
 			<td class="tr_color_lgrey" height="30">
 				<table width="100%" border="0" cellspacing="0" cellpadding="0">
 			  <tr colspan="3" class="content_txt">
-				<td width="125" align="left" class="content_txt_bold">Show :&nbsp;
+				<td width="125" align="left" class="content_txt_bold">Show Items:&nbsp;
 															<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}">
 												<html:options collection="resultsPerPageOptions" labelProperty="name" property="value"/>
 											</html:select>
