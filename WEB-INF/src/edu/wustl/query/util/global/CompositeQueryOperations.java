@@ -5,10 +5,10 @@ public enum CompositeQueryOperations {
 	INTERSECTION("Intersection","*"),
 	MINUS("Minus","-"),
 	NONE("None","");
-	
+
 	String operation;
 	String shortOperation;
-	
+
 	CompositeQueryOperations(String operation, String shortOperation)
 	{
 		this.operation=operation;
@@ -19,17 +19,18 @@ public enum CompositeQueryOperations {
 	{
 		return this.operation;
 	}
-	
-	public String getShortOperation() 
+
+	public String getShortOperation()
 	{
 		return this.shortOperation;
 	}
-	
+
 	public static CompositeQueryOperations get(final String operation)
 	{
 		CompositeQueryOperations opToReturn=null;
 		for (CompositeQueryOperations operationEnum : CompositeQueryOperations.values()) {
-			if(operationEnum.getOperation().equals(operation))
+			if (operationEnum.getOperation().equals(operation)
+                    || operationEnum.getShortOperation().equals(operation))
 			{
 				opToReturn=operationEnum;
 			}
