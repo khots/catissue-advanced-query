@@ -180,7 +180,7 @@ public class Workflow extends AbstractDomainObject
 		String[] operators = workFlowForm.getOperators();
 		String[] operands = workFlowForm.getOperands();
 		String[] identifier=workFlowForm.getQueryIdForRow();
-		String[] expressions = workFlowForm.getExpressions();
+		String[] expressions = workFlowForm.getExpression();
 //		String[] expressions = new String[] {""};
 		int numberOfRows = 0;
 		if (operators != null)
