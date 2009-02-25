@@ -410,7 +410,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String SPREADSHEET_COLUMN_LIST = "spreadsheetColumnList";
 	/**  Constant for  */
 	public static final String PAGE_OF = "pageOf";
-
+	/**  Constant for  */
+	public static final String PAGE_OF_GET_DATA ="pageOfGetData";
+	/**  Constant for  */
+	public static final String PAGE_OF_GET_COUNT ="pageOfGetCount";
 	/**  Constant for  */
 	public static final String SPREADSHEET_EXPORT_ACTION = "SpreadsheetExport.do";
 	/**  Constant for  */
