@@ -329,7 +329,7 @@ public class WorkflowBizLogic extends DefaultBizLogic
 		//validat eempty workflow
 		if (workflow.getName().equals(""))
 		{
-			throw new DAOException("Workflow name  can not be empty.");
+			throw new DAOException("Workflow Name cannot be empty");
 		}
 		//forming Query to validate workflow Name
 		String sourceObjectName = Workflow.class.getName();
@@ -349,12 +349,12 @@ public class WorkflowBizLogic extends DefaultBizLogic
 				return true;
 			} else
 			{
-				throw new DAOException("Workflow with same name already exists.");
+				throw new DAOException("Workflow with same name already exists");
 			}
 		}
 		else if (!list.isEmpty())
 		{
-			throw new DAOException("Workflow with same name already exists.");
+			throw new DAOException("Workflow with same name already exists");
 		}
 		return true;
 
