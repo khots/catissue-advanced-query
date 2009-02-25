@@ -1305,7 +1305,7 @@
 	
 	function produceSavedQuery()
 	{
-		var totalentities = document.getElementById("totalentities").value;
+		/*var totalentities = document.getElementById("totalentities").value;
 		var totalCFCount = document.getElementById("totalCF").value;
 		//alert(''+totalCFCount);
 		var numberOfEntities = totalentities.split(";");
@@ -1340,7 +1340,7 @@
 			document.getElementById('strToFormTQ').value = buildTQstr;
 		}
         document.getElementById('conditionList').value = buildquerystr;
-		
+		*/
         // Save query
         document.getElementById('saveQueryForm').submit();
 	}
@@ -1484,7 +1484,8 @@
 		    }
 		    else
 		    {
-		    	NewWindow(url,'name','870','600','yes');
+				pvwindow	=dhtmlmodal.open('Query Information', 'iframe', url,'Query Information', 'width=800px,height=260px,center=1,resize=0,scrolling=1,menubar=0,toolbar=0');
+		    	//NewWindow(url,'name','870','300','yes');
 		    }
 			hideCursor();
 		
