@@ -74,7 +74,7 @@
 			</td>
 			</tr>
 		<!--	<tr id="workflowname" valign="top" style="padding-bottom:20px;padding-left:10px;"> <td colspan="4"> &nbsp;&nbsp;<span class="content_txt_bold"></b><bean:message key="workflow.name"/> </b></span>: <%=workflowName%></td></tr> -->
-			<tr style="padding-left:10px;">
+			<tr style="padding-left:2px;">
 			<td colspan="2" nowrap id="workflowname">
 			&nbsp;
 				<span class="content_txt"><bean:message key="workflow.name"/>:</span><span>
@@ -141,13 +141,13 @@
 											<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 												id="DAG" width="100%" height="100%"
 												codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-												<param name="movie" value="flexclient/advancequery/dag/DAG.swf?view=AddLimit&isQuery=<%=isQuery%>"/>
+												<param name="movie" value="flexclient/advancequery/dag/DAG.swf?pageOf=pageOfGetCount&view=AddLimit&isQuery=<%=isQuery%>"/>
 												<param name="quality" value="high" />
 												
 												<param name="bgcolor" value="#869ca7" />
 												<param name="allowScriptAccess" value="sameDomain"/>
 												<param name="wmode" value="transparent"/>
-												<embed src="flexclient/advancequery/dag/DAG.swf?view=AddLimit&isQuery=<%=isQuery%>" quality="high" bgcolor="#869ca7"
+												<embed src="flexclient/advancequery/dag/DAG.swf?pageOf=pageOfGetCount&view=AddLimit&isQuery=<%=isQuery%>" quality="high" bgcolor="#869ca7"
 													width="100%" height="100%" name="DAG" align="middle" wmode="transparent"
 													play="true"
 													loop="false" 
