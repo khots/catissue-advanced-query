@@ -97,7 +97,7 @@ public class ValidateQueryBizLogic
 		try
 		{
 			HttpSession session = request.getSession();
-			validationMessage = getMessageForBaseObject(validationMessage, constraints);
+			validationMessage = getMessageForBaseObject(validationMessage, constraints,queryType);
 			if(validationMessage == null)
 			{
 			   Map<EntityInterface, List<EntityInterface>> mainEntityMap = getMainObjectErrorMessege(query, request);
@@ -189,23 +189,39 @@ public class ValidateQueryBizLogic
 		return mainEntityMap;
 	}
 
-	private static String getMessageForBaseObject(String validationMessage, IConstraints constraints) throws QueryModuleException
+	private static String getMessageForBaseObject(String validationMessage, IConstraints constraints,String queryType) throws QueryModuleException
 			
-	{
-		EntityInterface rootEntity;
-		try
-		{
-			rootEntity = constraints.getRootExpression().getQueryEntity().getDynamicExtensionsEntity();
+	{  
+		System.out.println();
+		boolean istagPresent = false;
+		if (queryType.equals(QueryType.GET_DATA.type)) {
+			try {
+				IExpression root = constraints.getJoinGraph().getRoot();
+				istagPresent = edu.wustl.query.util.global.Utility
+						.istagPresent(root.getQueryEntity()
+								.getDynamicExtensionsEntity(),
+								Constants.BASE_MAIN_ENTITY);
+			} catch (MultipleRootsException e) {
+				throw new QueryModuleException(e.getMessage(),
+						QueryModuleError.MULTIPLE_ROOT);
+			}
+		} else {
+			for (IExpression expression : constraints) {
+				EntityInterface baseEntity = expression.getQueryEntity()
+						.getDynamicExtensionsEntity();
+				istagPresent = edu.wustl.query.util.global.Utility
+						.istagPresent(baseEntity, Constants.BASE_MAIN_ENTITY);
+				if (istagPresent)
+					break;
+			}
 		}
-		catch (MultipleRootsException e)
-		{
-			throw new QueryModuleException(e.getMessage(),QueryModuleError.MULTIPLE_ROOT);
+		if (!istagPresent) {
+			validationMessage = "<li><font color='blue'> "
+					+ ApplicationProperties
+							.getValue(Constants.QUERY_NO_ROOTEXPRESSION)
+					+ "</font></li>";
 		}
-		boolean istagPresent = edu.wustl.query.util.global.Utility.istagPresent(rootEntity,Constants.BASE_MAIN_ENTITY);
-		if(!istagPresent)
-		{
-			validationMessage = "<font color='blue'> "+ApplicationProperties.getValue(Constants.QUERY_NO_ROOTEXPRESSION)+"</font>";
-		}
+
 		return validationMessage;
 	}
 
