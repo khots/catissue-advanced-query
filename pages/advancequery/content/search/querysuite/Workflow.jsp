@@ -3,6 +3,7 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/nlevelcombo.tld" prefix="ncombo"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@page import="edu.wustl.query.util.global.CompositeQueryOperations"%>
 <%@ page import="edu.wustl.query.enums.QueryType" %>
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlwindow.js"></script>
@@ -25,10 +26,16 @@ function MM_preloadImages() { //v3.0
     if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
 }
 
+function test(title)
+{
+	 var t =	escape(title);
+	executeGetCountQuery(escape(t),0);
+}
+
 function showPopUp(pageOf)
 {
 	var url='QueryAction.do?pageOf='+pageOf+'&queryId=queryId&queryTitle=queryTitle&queryType=queryType';
-	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select queries', 'width=930px,height=430px,center=1,resize=1,scrolling=1');
+	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select queries', 'width=930px,height=400px,center=1,resize=1,scrolling=1');
 }
 
 function updateUI()
@@ -82,6 +89,7 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 	var cqTitle="";
 	var cqQueryId="";
 	var operandsCounter=0;
+	var expression="";
 	for(var counter=0;counter<queryIds.length;counter++)
 	{
 		if(queryIds[counter]!=null && queryIds[counter]!='')
@@ -98,11 +106,15 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 			{
 				cqQueryId="("+document.getElementById("selectedqueryId_"+queryIds[counter]).value+")";
 				operandsTdContent=document.getElementById("selectedqueryId_"+queryIds[counter]).value;
+				expression=document.getElementById("selectedqueryId_"+queryIds[counter]).value;
+
 			}
 			else
 			{
-				cqQueryId=cqQueryId+"_"+operation+"_("+document.getElementById("selectedqueryId_"+queryIds[counter]).value+")";
+				cqQueryId="("+document.getElementById("selectedqueryId_"+queryIds[counter]).value+")";
 				operandsTdContent=operandsTdContent+"_"+document.getElementById("selectedqueryId_"+queryIds[counter]).value;
+	
+				expression=expression+"_"+document.getElementById("expression_"+queryIds[counter]).value+"_"+shortOperator(operation);
 			}
 			operandsCounter=operandsCounter+1;
 		}
@@ -129,8 +141,23 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 		operatorsTdContent=operatorsTdContent+"_"+operation;
 	}
 	//create a table containing tbody with id "table1"
-	addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent);	
+	addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent,expression);	
 }
+
+function shortOperator(operation)
+{
+	if(operation='Union')
+		return "+";
+		
+	if(operation='Intersection')
+		return "*";
+	
+	if(operation='Minus')
+		return "-";
+	
+	return "";//for NONE
+}
+
 
 function submitWorflow()
 {
@@ -201,20 +228,20 @@ function executeGetCountQuery(queryTitle,executionLogId)
 		var workflowName=document.getElementById("name").value;
 		var identifier="";
 		var displayQueryTitle="";
+				var expression="";
 		for(i=0;i<rows;i++)
 		{
 			operands=operands+document.getElementById("operands_"+i).value+",";
 			operators=operators+document.getElementById("operators_"+i).value+",";
 			displayQueryTitle=displayQueryTitle+document.getElementById("displayQueryTitle_"+i).value+",";
-			
+			expression=expression+document.getElementById("expression_"+i).value+",";
 			var title=document.getElementById("identifier_"+i);
 			var object=title.parentNode;
 			var tdChildCollection=object.getElementsByTagName('input');
 			var queryId=tdChildCollection[2].id;
-			
 			identifier=identifier+document.getElementById(queryId).value+",";
 		}
-		var url="SaveWorkflowAjaxHandler.do?operands="+operands+"&operators="+operators+"&workflowName="+workflowName+"&displayQueryTitle="+displayQueryTitle+"&workflowId="+document.getElementById("id").value+"&queryTitle="+queryTitle+"&identifier="+identifier;
+		var url="SaveWorkflowAjaxHandler.do?operands="+operands+"&operators="+operators+"&workflowName="+workflowName+"&displayQueryTitle="+displayQueryTitle+"&workflowId="+document.getElementById("id").value+"&queryTitle="+queryTitle+"&identifier="+identifier+"&expression="+ encodeURIComponent(expression);
 
 		var request=newXMLHTTPReq();
 		if(request == null)
@@ -231,6 +258,8 @@ function executeGetCountQuery(queryTitle,executionLogId)
 	}
 	else
 	{
+				queryTitle=unescape(queryTitle);
+				queryTitle=unescape(queryTitle);
 		//var nameIdentifier=document.getElementsByName("identifier");
 		var numOfRows =document.getElementById("table1").rows.length;
 			for(var count = 0; count < numOfRows; count++)
@@ -305,7 +334,7 @@ function responseHandler(response)
 					if((jsonResponse.workflowId!=null||jsonResponse.workflowId!="")&&(jsonResponse.errormessage==null||
 						jsonResponse.errormessage==""))
 					{
-					
+
 					   if(jsonResponse.queryTitle!=null&&jsonResponse.queryTitle==queryTitle)
 					   {
 						   //setDropDowns(queryTitle);
@@ -318,6 +347,7 @@ function responseHandler(response)
 	   }
 
 }
+
 
 function setDropDowns(queryTitle)
 {
@@ -405,7 +435,7 @@ function workflowExecuteGetCountQuery(queryId,executionLogId)
 function executeGetDataQuery(dataQueryId)
 {
   
-   
+
 	var countQueryId = document.getElementById("countQueryDropDown_"+dataQueryId);
     if(countQueryId.selectedIndex== -1)
 	{
@@ -438,7 +468,7 @@ function executeGetDataQuery(dataQueryId)
   
 	function displayValidationMesage(response)
 	{ 
-	  
+		
 	  if(response=="ViewResults")
 	 {
 	  	var dataQueryId= document.getElementById("dataQueryId").value;
@@ -494,7 +524,7 @@ function workflowResponseHandler(response)
 								} 
 								
 								 document.getElementById(queryExecId).value=executionLogId;
-
+	
 							}
 							var lableObject=document.getElementById("label_"+queryIndex);
 							if(lableObject!=null)
@@ -561,21 +591,6 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <script type="text/javascript" src="wz_tooltip.js"></script>
 
 <body>
-<%@ include file="/pages/content/common/ActionErrors.jsp" %>
-<div id="errordiv" >
-<table cellspacing="0" cellpadding="3" border="0">
-<tbody>
-<tr>
-</tr>
-<tr>
-<td> </td>
-<td class="messagetexterror">
-<div id="errormessage"></div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <html:form action="SaveWorkflow" >
  <input type="hidden" name="dataQueryId" id="dataQueryId" value="">
  <input type="hidden" name="countQueryId" id="countQueryId" value="">
@@ -590,8 +605,8 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <select name="executedCountQuery" id="executedCountQuery" style="display:none">
 </select>
 <html:hidden property="forwardTo"/>
-<c:set var="query_type_data" value="<%=qType_GetData%>" scope="page"/>
-<c:set var="query_type_count" value="<%=qType_GetCount%>" scope="page"/>
+<c:set var="query_type_data" value="Get Data" scope="page"/>
+<c:set var="query_type_count" value="Get Count" scope="page"/>
 <input type="hidden" name="isdone" value="true" id="isdone">
  <input type="button" name="btn" id="btn" onclick="updateUI()" style="display:none">
 
@@ -618,17 +633,33 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <tr>
 <td >
 <table width="100%" border="0" cellspacing="0" cellpadding="4">
+<tr>
+<%@ include file="/pages/content/common/ActionErrors.jsp" %>
+<div id="errordiv" >
+<table cellspacing="0" cellpadding="3" border="0">
+<tbody>
+<tr>
+<td> </td>
+<td class="messagetexterror">
+<div id="errormessage"></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</tr>
 	<tr>
-		<td height="25"><span class="red_star">*</span> <span class="small_txt_grey">Denotes mandatory fields</span></td>
+		<td height="25"  style="padding-left:10px;"><span class="red_star">*</span> <span class="small_txt_grey">Denotes mandatory fields</span></td>
 	</tr>
 	<tr>
-		<td style="padding-bottom:10px;">
+		<td style="padding-bottom:10px;padding-left:10px;">
 			<span class="content_txt_bold"><bean:message key="workflow.name"/></span><span class="red_star">*</span>:<span class="content_txt">
 			<html:text styleId="name" property="name" styleClass="textfield_undefined" size="80"/>
 			 &nbsp;&nbsp;</span>
 		</td>
 	</tr>
-</table>
+	<tr>
+<td>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0"   >
 	<tr>
@@ -739,11 +770,11 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 							</td>
 
 							<td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
-							<td width="111" valign="middle" class="grid_header_text"><bean:message key="workflow.type"/></td>
+							<td width="65" valign="middle" class="grid_header_text"><bean:message key="workflow.type"/></td>
 							<td width="10%" valign="middle" class="grid_header_text">Select</td>
 							
-							<td width="100" valign="middle" class="grid_header_text"><bean:message key="workflow.patientcount"/> </td>
-							<td width="90" valign="middle" class="grid_header_text">&nbsp;</td>
+							<td width="84" valign="middle" class="grid_header_text"><bean:message key="workflow.patientcount"/> </td>
+							<td valign="middle" class="grid_header_text" width="125">&nbsp;</td>
 							<!--<td width="55" valign="middle" class="grid_header_text"><bean:message key="workflow.reorder"/></td>-->
 					  </tr>
 						   <tbody id="table1">
@@ -751,9 +782,17 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 						   			<logic:iterate id="singleQueryId" name="workflowForm" property="selectedqueryId" indexId="queryIndex" >
 
 									<tr bgcolor="#ffffff" class="td_bgcolor_white" height="22">
+									
+										<!--  <logic:equal name="test" value="Get Data">
+												 <c:set var="qtype" value="GetData"/>
+										  </logic:equal>
+										    <logic:notEqual name="test" value="Get Data">
+												 <c:set var="qtype" value="GetCount"/>
+										  </logic:notEqual>-->
+
 									 <c:set var="qtype" value="${workflowForm.displayQueryType[queryIndex]}"/>
-									  <logic:equal name="query_type_data" value="${qtype}">
-						   				<td class="content_txt" width="10">
+										  <logic:equal name="query_type_data" value="${qtype}">
+						   				<td class="content_txt" width="10" valign="top">
 												
 						   					<c:set var="chkId">chk_<c:out value="${queryIndex}"/></c:set>
 						   					<html:checkbox property="chkbox" styleId="checkbox_${queryIndex}"
@@ -761,7 +800,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 						   				</td>
 										</logic:equal>
 										<logic:notEqual name="query_type_data" value="${qtype}">
-											<td class="content_txt" width="10">
+											<td class="content_txt" width="10" valign="top">
 												
 						   					<c:set var="chkId">chk_<c:out value="${queryIndex}"/></c:set>
 						   					<html:checkbox property="chkbox" styleId="checkbox_${queryIndex}"
@@ -769,19 +808,22 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 						   				</td>
 										</logic:notEqual>
 
-  										<td class="content_txt">
+  										<td class="content_txt" valign="top">
 						   					<html:hidden property="displayQueryTitle" styleId="displayQueryTitle_${queryIndex}" value="${workflowForm.displayQueryTitle[queryIndex]}"
 						   					/>
 											${workflowForm.displayQueryTitle[queryIndex]}
+											
+											<html:hidden property="expression" styleId="expression_${queryIndex}" value="${workflowForm.expression[queryIndex]}"
+						   					/>
 						   				</td>
 
 
 											
-										<td class="content_txt">
+										<td class="content_txt" valign="top">
 											<html:hidden property="queryTypeControl" styleId="queryTypeControl_${queryIndex}" value="${workflowForm.queryTypeControl[queryIndex]}"/>
 											${workflowForm.displayQueryType[queryIndex]}
 										</td>
-										<td class="content_txt">
+										<td class="content_txt"  valign="top">
 										 
 										 <logic:equal name="query_type_data" value="${qtype}">
 										 <select name="countQueryDropDown" disabled id="countQueryDropDown_${workflowForm.identifier[queryIndex]}" style="width:120;">
@@ -792,22 +834,22 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
                                          </logic:equal>
 										  </td>
 
-										<td class="content_txt">
+										<td class="content_txt" valign="top">
 											
 											<input type="hidden" name="selectedqueryId" id="selectedqueryId_${queryIndex}" value="${workflowForm.selectedqueryId[queryIndex]}"/>						
 											<!-- <input type="hidden" name="identifier" id="identifier_${workflowForm.identifier[queryIndex]}" value="${workflowForm.identifier[queryIndex]}"/> -->
 											 <input type="hidden" name="identifier" id="identifier_${queryIndex}" value="${workflowForm.displayQueryTitle[queryIndex]}"/>
-											 <input type="hidden" name="queryIdForRow" id="queryIdForRow_${workflowForm.identifier[queryIndex]}" value="${workflowForm.identifier[queryIndex]}"/>
+											 <input type="hidden" name="queryIdForRow" id="queryIdForRow_${workflowForm.queryIdForRow[queryIndex]}" value="${workflowForm.queryIdForRow[queryIndex]}"/>
 											 <input type="hidden" name="queryExecId" id="queryExecId_${queryIndex}" value="${workflowForm.queryExecId[queryIndex]}"/>
 
 										</td>
-										<td width="100">
+										<td width="125" valign="top">
 										<table >
 										<tbody>
 										<tr>
 										
                                              <logic:equal name="query_type_data" value="${qtype}">
-										  <td width="30">
+										  <td width="100" valign="top">
 											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetDataQuery('${workflowForm.identifier[queryIndex]}')" styleClass="bluelink"
 											>
 												View Results
@@ -816,20 +858,20 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 										</logic:equal>
 										
 										<logic:notEqual name="query_type_data" value="${qtype}">
-                                        <td>
-											<html:link styleId="execute_${queryIndex}" href="javascript:executeGetCountQuery('${workflowForm.displayQueryTitle[queryIndex]}','0')" styleClass="bluelink"
+                                        <td valign="top" width="100">
+											<html:link styleId="execute_${queryIndex}" href="#" styleClass="bluelink" onclick="javascript:test('${workflowForm.displayQueryTitle[queryIndex]}')"
 											>
 												Execute
 											</html:link>
 										</td>
                                         </logic:notEqual>
-										<td>
+										<td valign="top">
 											<html:hidden property="operands" styleId="operands_${queryIndex}"  value="${workflowForm.operands[queryIndex]}"/>
 											<html:hidden property="operators" styleId="operators_${queryIndex}" value="${workflowForm.operators[queryIndex]}"/>
 											<html:hidden property="displayQueryType" styleId="displayQueryType_${queryIndex}" value="${workflowForm.displayQueryType[queryIndex]}"/>
 											<html:hidden property="queryExecId" styleId="queryExecId_${queryIndex}" value="${workflowForm.queryExecId[queryIndex]}"/>
 										</td>
-											<td>
+											<td valign="top" width="25">
 											<html:link styleId="delete_${queryIndex}" href="javascript:deleteWorkflowItem(${queryIndex})" styleClass="bluelink">
 												Delete
 											</html:link>
@@ -876,6 +918,11 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 		</td>
 	</tr>
 </table>
+</td>
+	</tr>
+</table>
+
+
 
 </td>
 </tr>
