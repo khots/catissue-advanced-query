@@ -33,6 +33,8 @@
 <html:html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
+		<link rel="stylesheet" type="text/css" href="css/advancequery/catissue_suite.css" />
+		<link rel="stylesheet" type="text/css" href="css/advancequery/inside.css" />
 		<script language="JavaScript" type="text/javascript" src="jss/advancequery/queryModule.js"></script>
 		<script language="JavaScript" type="text/javascript" src="jss/advancequery/script.js"></script>
 		<script language="JavaScript" type="text/javascript" src="jss/advancequery/overlib_mini.js"></script>
@@ -70,85 +72,97 @@
 
 	<body>
 		<html:form styleId='saveQueryForm' action='<%=action%>'>
-		<table summary="" cellpadding="0" cellspacing="0" border="0" class="contentPage" width="100%">
-		<tr>
-		  <td height="25"><html:errors/>
-		  </td>
-		 <tr>
+		<table summary="" cellpadding="0" cellspacing="0" align="center" border="0"  width="100%" style="padding:5px;">
+
 		  <td>
-			<table summary="" cellpadding="3" cellspacing="0" border="0"  width="100%">
-				<tr>
-					<td colspan='3'  class="formTitle" height="20">
-						<bean:message key="savequery.queryInformationTitle"/>
+			<table summary="" cellpadding="0" cellspacing="0"  border="0" align="center" width="100%" class="login_box_bg" >
+					<tr>
+					<td style="padding:5px" class='messagetexterror' nowrap><html:errors/>
+					</td>
+					<tr>
+				<!--<tr class="table_header_query" >
+					<td colspan='3'height="25" style="padding-left:5px;">
+					<span class="blue_title">	<bean:message key="savequery.queryInformationTitle"/></span>
 					</td>
 				</tr>
+				<tr><td colspan='3' class="td_greydottedline_horizontal" height="1">
+				</td></tr>-->
+				<tr>
+				<td colspan="3" height="30"  valign="top" style="padding-left:5px;"><span class="red_star">*</span> <span class="small_txt_grey">Denotes mandatory fields</span></td>
+				</tr>
 				
-				<tr id="workflowName" >
-					<td width='5' class="formFieldNoBordersQuery">*</td>
-					<td class="formFieldNoBordersQuery"><b>
-								<bean:message key="workflow.name"/> </b>
+					<tr id="workflowName" >
+					<td width='1' class="red_star"></td>
+					<td class="content_txt">
+								<bean:message key="workflow.name"/><span class="red_star">*</span>:
 					</td>
-					<td class="formFieldNoBordersQuery">
-						<input type="text" name="workflowName" value="<%=workflowName%>" class="formFieldSized" disabled />
+					<td style="padding-bottom:5px;" class="formFieldNoBordersQuery">
+						<input type="text" name="workflowName" value="<%=workflowName%>" class="textfield_inactive" disabled="disabled" />
 					</td>
 				  </tr>
-
-				<tr>
-					<td width='5' class="formFieldNoBordersQuery">*</td>
-					<td class="formFieldNoBordersQuery"><b>
-								<bean:message key="query.title"/> </b>
+						<td class="content_txt" colspan="2" style="padding-left:5px;" >
+					<bean:message key="query.title"/><span class="red_star">*</span>:
 					</td>
-					<td class="formFieldNoBordersQuery">
-						<html:text       styleClass="formFieldSized" maxlength="255"      styleId="title" property="title" />
+					<td >
+						<html:text       styleClass="textfield_undefined"   size="80"   styleId="title" property="title" />
 					</td>
 					
 				</tr>
+				<tr><td height="10"></td></tr>
 				<tr>
-					<td width='5' class="formFieldNoBordersQuery">&nbsp;</td>
-					<td class="formFieldNoBordersQuery"><bean:message key="query.description"/> </td>
-					<td class="formFieldNoBordersQuery">
-						<html:textarea styleClass="formFieldSized"   cols="32" rows="5"  property="description"> </html:textarea>
+					<td colspan="2" class="content_txt" valign="top" style="padding-left:5px;padding-bottom:5px;"><bean:message key="query.description"/>:</td>
+					<td style="padding-bottom:5px;" class="formFieldNoBordersQuery">
+						<html:textarea styleClass="textfield_undefined"   cols="80" rows="5"  property="description"> </html:textarea>
 					</td>
 				</tr>
+				<!--<tr class="td_subtitle">
+					<td colspan='3'  height="25" class="blue_title" style="padding-left:5px;">
+						<bean:message key="savequery.setConditionParametersTitle" />
+					</td>
+				</tr>-->
 				<tr>
-                   <td colspan="3" height="20">&nbsp;
+				<td style="padding-bottom:5px;" colspan="3" class="td_greydottedline_horizontal"  height="1">
 				</td>
 				</tr>
 				<tr>
-					<td colspan='3' class="formTitle" height="20">
-						<bean:message key="savequery.setConditionParametersTitle" />
-					</td>
+					<td style="padding-left:5px;padding-top:5px;" class="content_txt" colspan='3' height='20'>
+					<!--<div  style="width:100%; max-height:300px; min-height:50px; overflow-y:auto;">
+					<table cellpadding="0" cellspacing="0" bgcolor="#cccccc">
+					<tr>
+					<td>
+						<%=request.getAttribute(Constants.HTML_CONTENTS)%>
+				   </td>
+				   </tr>
+				   </table>
+				   </div>-->
+				   <html:checkbox property="shareQuery" styleId="shareQuery"/>&nbsp;				
+				   <bean:message
+							key="query.shareQuery.permission" /></td>
+
+					</td> 
+				</tr>
+				<tr>
+				  <td style="padding-left:5px;padding-bottom:5px;padding-top:5px"  colspan='3'  align="left">
+						    <input type="hidden" name="queryString" id="queryString" value=""/>
+						    <input type="hidden" name="buildQueryString" id="buildQueryString" value=""/>
+							<!--input type="button" name="preview" value="Preview" class="actionButton"  disabled="true"/-->
+							<c:choose>
+								<c:when test="${querySaved eq 'true'}">
+								<!--<img src="images/advancequery/b_close.gif" onclick="closeSaveQueryWindow()" />	-->
+								</c:when>
+								<c:otherwise>
+									<a href="javascript:produceSavedQuery();" ><img border='0' src="images/advancequery/b_save.gif" <%=isSaveButtonDisable%> /></a>
+									<!--<a href="javascript:window.close();" ><img border='0' src="images/advancequery/b_cancel.gif" /></a>-->
+									
+								</c:otherwise>
+							</c:choose>
+				  </td>
 				</tr>
 				</table>
             </td>
           </tr>
-		   <tr>
-		    <td>
-		      <div  style="width:100%; max-height:300px; min-height:50px; overflow-y:auto;">
-			    <%=request.getAttribute(Constants.HTML_CONTENTS)%>
-			   </div>
-			   <html:checkbox property="shareQuery" styleId="shareQuery"/>				
-			   <bean:message
-						key="query.shareQuery.permission" /></td>
-
-			</td> 
-		   </tr>
-		 	<tr>
-			  <td colspan='3'  align="right">
-					    <input type="hidden" name="queryString" id="queryString" value=""/>
-					    <input type="hidden" name="buildQueryString" id="buildQueryString" value=""/>
-						<!--input type="button" name="preview" value="Preview" class="actionButton"  disabled="true"/-->
-						<c:choose>
-							<c:when test="${querySaved eq 'true'}">
-								<input type="button" name="close" value="Close" class="actionButton" onClick="closeSaveQueryWindow()"/>
-							</c:when>
-							<c:otherwise>
-								<input type="button" name="save" value="Save" class="actionButton" onClick="produceSavedQuery()" <%=isSaveButtonDisable%>/>
-								<input type="button" name="cancel" value="Cancel" class="actionButton" onClick="window.close();"/>
-							</c:otherwise>
-						</c:choose>
-					</td>
-				</tr>
+		  
+		 	
 		 </table>
 		</html:form>
 <script>
