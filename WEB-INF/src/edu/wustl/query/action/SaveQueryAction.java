@@ -248,10 +248,16 @@ public class SaveQueryAction extends BaseAction
 		session.removeAttribute(QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP);
 		Map<String, String> displayNameMap = getDisplayNamesForConditions(saveActionForm, request);
 		String error = "";
-		error = bizLogic.setInputDataToQuery(conditionList, parameterizedQuery.getConstraints(),
+		if(conditionList!=null)
+		{
+			error = bizLogic.setInputDataToQuery(conditionList, parameterizedQuery.getConstraints(),
 				displayNameMap, parameterizedQuery);
-		error = bizLogic.setInputDataToTQ(parameterizedQuery, Constants.SAVE_QUERY_PAGE, cfRHSList,
+		}
+		if(cfRHSList!=null)
+		{
+			error = bizLogic.setInputDataToTQ(parameterizedQuery, Constants.SAVE_QUERY_PAGE, cfRHSList,
 				customFormulaIndexMap);
+		}
 		String tmpError = error.trim();
 		if (error != null && tmpError.length() > 0)
 		{
