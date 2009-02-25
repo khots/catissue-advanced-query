@@ -46,6 +46,7 @@ import edu.wustl.common.querysuite.queryobject.IDateOffsetAttribute;
 import edu.wustl.common.querysuite.queryobject.IDateOffsetLiteral;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IExpressionAttribute;
+import edu.wustl.common.querysuite.queryobject.IExpressionOperand;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
@@ -140,12 +141,13 @@ public class DAGPanel
 		DAGNode node = null;
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		HttpSession session = request.getSession();
-		String qtype= (String)session.getAttribute(Constants.Query_Type);
-		List<Integer> expressionIdsList =  (List<Integer>)session.getAttribute("allLimitExpressionIds");
-	    if(expressionIdsList == null)
-	    {
-	    	expressionIdsList =  new ArrayList<Integer>();
-	    }
+		String qtype = (String) session.getAttribute(Constants.Query_Type);
+		List<Integer> expressionIdsList = (List<Integer>) session
+				.getAttribute("allLimitExpressionIds");
+		if (expressionIdsList == null)
+		{
+			expressionIdsList = new ArrayList<Integer>();
+		}
 		IQuery query = (IQuery) session.getAttribute(DAGConstant.QUERY_OBJECT);// Get existing Query object from server  
 		if (query != null)
 		{
@@ -155,7 +157,7 @@ public class DAGPanel
 		{
 			query = m_queryObject.getQuery();
 		}
-		((Query)query).setType(qtype);
+		((Query) query).setType(qtype);
 		session.setAttribute(DAGConstant.QUERY_OBJECT, query);
 		try
 		{
@@ -167,21 +169,22 @@ public class DAGPanel
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			Logger.out.error(e.getMessage(),e);
+			Logger.out.error(e.getMessage(), e);
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			Logger.out.error(e.getMessage(),e);
+			Logger.out.error(e.getMessage(), e);
 		}
 		expressionIdsList.add(Integer.valueOf(node.getExpressionId()));
-		session.setAttribute("allLimitExpressionIds",expressionIdsList);
+		session.setAttribute("allLimitExpressionIds", expressionIdsList);
 		return node;
 	}
 
 	private void modifySelectedConcepts(String strToCreateQueryObject,
 			List<SelectedConcept> selectedConcepts)
 	{
-		String[] conditions = strToCreateQueryObject.split(QueryModuleConstants.QUERY_CONDITION_DELIMITER);
+		String[] conditions = strToCreateQueryObject
+				.split(QueryModuleConstants.QUERY_CONDITION_DELIMITER);
 		String condition;
 		String[] ids = null;
 		String[] conceptNames = null;
@@ -205,12 +208,12 @@ public class DAGPanel
 						if (tokenizer.hasMoreTokens())
 						{
 							//opr = tokenizer.nextToken();
-							if(attrName.startsWith(Constants.ID))
+							if (attrName.startsWith(Constants.ID))
 							{
 								String id = tokenizer.nextToken();
 								ids = id.split("&");
 							}
-							else if(attrName.startsWith(Constants.NAME))
+							else if (attrName.startsWith(Constants.NAME))
 							{
 								String conceptName = tokenizer.nextToken();
 								conceptNames = conceptName.split("&");
@@ -227,19 +230,19 @@ public class DAGPanel
 			String[] ids, String[] conceptNames)
 	{
 		Iterator<SelectedConcept> iterator = selectedConcepts.iterator();
-		while(iterator.hasNext())
+		while (iterator.hasNext())
 		{
 			SelectedConcept selectedConcept = iterator.next();
 			boolean isPresent = false;
-			for(int i=0;conceptNames!= null && i<conceptNames.length && !isPresent;i++)
+			for (int i = 0; conceptNames != null && i < conceptNames.length && !isPresent; i++)
 			{
-				if(selectedConcept.getConceptName().equals(conceptNames[i]) &&
-						selectedConcept.getConceptCode().equals(ids[i]))
+				if (selectedConcept.getConceptName().equals(conceptNames[i])
+						&& selectedConcept.getConceptCode().equals(ids[i]))
 				{
 					isPresent = true;
 				}
 			}
-			if(!isPresent)
+			if (!isPresent)
 			{
 				iterator.remove();
 			}
@@ -251,7 +254,7 @@ public class DAGPanel
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map ruleDetailsMap;
-		
+
 		if (!strToCreateQueryObject.equalsIgnoreCase(""))
 		{
 			ruleDetailsMap = queryBizLogic.getRuleDetailsMap(strToCreateQueryObject, entity
@@ -339,7 +342,6 @@ public class DAGPanel
 	public List<DAGPath> linkNode(final DAGNode sourceNode, final DAGNode destNode,
 			List<IPath> paths)
 	{
-
 		List<DAGPath> dagPathList = null;
 		if (paths != null && !paths.isEmpty())
 		{
@@ -352,6 +354,7 @@ public class DAGPanel
 				for (int i = 0; i < paths.size(); i++)
 				{
 					IPath path = paths.get(i);
+					updatePathForIntraModelAssociation(sourceExpressionId, destExpressionId, path);
 					linkTwoNode(sourceNode, destNode, paths.get(i), new ArrayList());
 					String pathStr = Long.valueOf(path.getPathId()).toString();
 					DAGPath dagPath = new DAGPath();
@@ -367,6 +370,121 @@ public class DAGPanel
 			}
 		}
 		return dagPathList;
+	}
+
+	/**
+	 * This method Will search if the path already exists in the query object before
+	 * and if it is present then it will set intramodel association of that path in the current path.
+	 * @param sourceExpressionId Id of the source Expression from which the path is going to start 
+	 * @param destExpressionId Id of the destination Expression where the path ends
+	 * @param path list of the path which is retrieved from the cab2bStandalone.jar 
+	 */
+	private void updatePathForIntraModelAssociation(int sourceExpressionId, int destExpressionId,
+			IPath path)
+	{
+		IQuery query = m_queryObject.getQuery();
+		IConstraints constraints = query.getConstraints();
+		IExpression sourceExpression = constraints.getExpression(sourceExpressionId);
+
+		for (IExpression expression : constraints)
+		{
+			if (expression.getQueryEntity().getDynamicExtensionsEntity().equals(
+					sourceExpression.getQueryEntity().getDynamicExtensionsEntity()))
+			{
+				List<IExpression> subExpressionList = getSubExpressionList(expression);
+				updateAllIassociationsInPath(expression, subExpressionList, path, constraints);
+			}
+
+		}
+
+	}
+
+	/**
+	 * It will search all the IAssociations present in the query object starting from the expression
+	 * to its subexpression, then subExpression to its subExpressions & so on recursively.
+	 * if that same association present in the path will replace that with the one in query. 
+	 * @param expression 
+	 * @param subExpressionList
+	 * @param path
+	 * @param constraints
+	 */
+	private void updateAllIassociationsInPath(IExpression expression,
+			List<IExpression> subExpressionList, IPath path, IConstraints constraints)
+	{
+
+		for (IExpression subExpression : subExpressionList)
+		{
+			IAssociation ass = getAssociationBetweenTwoExpressions(expression, subExpression,
+					constraints);
+			if (ass != null)
+			{
+				updatePathForIassociation(path, ass);
+			}
+			updateAllIassociationsInPath(subExpression, getSubExpressionList(subExpression), path,
+					constraints);
+		}
+
+	}
+
+	/**
+	 * It will search the given association in the path object & if found will replace that
+	 * with its own in path.
+	 * @param path
+	 * @param association
+	 */
+	private void updatePathForIassociation(IPath path, IAssociation association)
+	{
+		List<IAssociation> associationList = path.getIntermediateAssociations();
+		for (int i = 0; i < associationList.size(); i++)
+		{
+			if (associationList.get(i).equals(association))
+			{
+				associationList.remove(i);
+				associationList.add(i, association);
+			}
+
+		}
+
+	}
+
+	/**
+	 * It will search the operands of the given expression which are subExpressions & will return them in list.
+	 * @param expression whose subExpressions are needed
+	 * @return List of subExpression
+	 */
+	private List<IExpression> getSubExpressionList(IExpression expression)
+	{
+		int noOfOperands = expression.numberOfOperands();
+		List<IExpression> subExpressionList = new ArrayList<IExpression>();
+		for (int i = 0; i < noOfOperands; i++)
+		{
+			IExpressionOperand operand = expression.getOperand(i);
+			if (operand instanceof IExpression)
+			{
+				subExpressionList.add((IExpression) operand);
+			}
+		}
+		return subExpressionList;
+	}
+
+	/**
+	 * It will return the association between the source and destination expression.
+	 * @param sourceExpression 
+	 * @param destinationExpression
+	 * @param constraints
+	 * @return association between the sourceExpression & destinationExpression.
+	 */
+	private IAssociation getAssociationBetweenTwoExpressions(IExpression sourceExpression,
+			IExpression destinationExpression, IConstraints constraints)
+	{
+		IAssociation association = null;
+		if (sourceExpression != null && destinationExpression != null)
+		{
+			association = constraints.getJoinGraph().getAssociation(sourceExpression,
+					destinationExpression);
+		}
+		return association;
+
 	}
 
 	/**
@@ -401,7 +519,7 @@ public class DAGPanel
 		}
 		catch (Exception e)
 		{
-			Logger.out.error(e.getMessage(),e);
+			Logger.out.error(e.getMessage(), e);
 		}
 		return map.get(ambiguityObject);
 	}
@@ -1152,7 +1270,7 @@ public class DAGPanel
 		}
 		catch (CyclicException e)
 		{
-			Logger.out.error(e.getMessage(),e);
+			Logger.out.error(e.getMessage(), e);
 
 		}
 	}
@@ -1333,22 +1451,21 @@ public class DAGPanel
 			session.setAttribute(DAGConstant.ISREPAINT, DAGConstant.ISREPAINT_TRUE);
 		}
 		HashSet<Integer> visibleExpression = new HashSet<Integer>();
-		
+
 		//Get the main Entities from Query
 		List<EntityInterface> mainEntityList = QueryAddContainmentsUtil.getAllMainObjects(query);
-	   
-		
+
 		for (IExpression expression : constraints)
 		{
 			/*if (expression.isVisible())
 			{
 				visibleExpression.add(Integer.valueOf(expression.getExpressionId()));
 			}*/
-			
-			
+
 			//As we require expressions added on Add Limit page or main Entities added Define Search Results View   
 			EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
-			if(expression.containsRule() || QueryAddContainmentsUtil.checkIfMainObject(entity, mainEntityList))
+			if (expression.containsRule()
+					|| QueryAddContainmentsUtil.checkIfMainObject(entity, mainEntityList))
 			{
 				visibleExpression.add(Integer.valueOf(expression.getExpressionId()));
 			}
@@ -1365,7 +1482,8 @@ public class DAGPanel
 			dagNode.setToolTip(exp);
 			Position position = positionMap.get(exp.getExpressionId());
 			setNodeType(dagNode, position);
-			nodeform(expressionId, dagNode, constraints, new ArrayList<IIntraModelAssociation>(),mainEntityList);
+			nodeform(expressionId, dagNode, constraints, new ArrayList<IIntraModelAssociation>(),
+					mainEntityList);
 			int numOperands = exp.numberOfOperands();
 			int numOperator = numOperands - 1;
 			for (int i = 0; i < numOperator; i++)
@@ -1401,7 +1519,7 @@ public class DAGPanel
 			dagNode.setX(position.getX());
 			dagNode.setY(position.getY());
 		}
-		
+
 		//Commented out .....Baljeet
 		/*if (!exp.containsRule())
 		{
@@ -1565,8 +1683,8 @@ public class DAGPanel
 			if (exp.containsCustomFormula())
 			{
 				Set<ICustomFormula> customFormulas = QueryUtility.getCustomFormulas(exp);
-				checkingCustomFormulas(customNodeList, SNcustomNodeList, query,
-						TQUIMap, exp, customFormulas);
+				checkingCustomFormulas(customNodeList, SNcustomNodeList, query, TQUIMap, exp,
+						customFormulas);
 			}
 		}
 		session.setAttribute(DAGConstant.TQUIMap, TQUIMap);
@@ -1584,7 +1702,7 @@ public class DAGPanel
 				Set<IExpression> expressionSet = QueryUtility.getExpressionsInFormula(c);
 				if ((!expressionSet.isEmpty()) && (expressionSet.size() == 2))
 				{
-					CustomFormulaNode customNode = populateCustomNodeInfo(c,exp);
+					CustomFormulaNode customNode = populateCustomNodeInfo(c, exp);
 					if (customNode != null)
 					{
 						savedQTwoNodesCNode(customNodeList, query, TQUIMap, c, customNode);
@@ -1592,17 +1710,17 @@ public class DAGPanel
 				}
 				else if ((!expressionSet.isEmpty()) && (expressionSet.size() == 1))
 				{
-					savedQSingleNodeCNode(SNcustomNodeList, query,TQUIMap, exp, c);
+					savedQSingleNodeCNode(SNcustomNodeList, query, TQUIMap, exp, c);
 				}
 			}
 		}
 	}
 
 	private void savedQSingleNodeCNode(List<SingleNodeCustomFormulaNode> SNcustomNodeList,
-			IQuery query,Map<String, CustomFormulaUIBean> TQUIMap,
-			IExpression exp, ICustomFormula c)
+			IQuery query, Map<String, CustomFormulaUIBean> TQUIMap, IExpression exp,
+			ICustomFormula c)
 	{
-		SingleNodeCustomFormulaNode singleNodeCF = populateSingleNodeInfo(c,exp);
+		SingleNodeCustomFormulaNode singleNodeCF = populateSingleNodeInfo(c, exp);
 		String singleNodeName = getCustomNodeName(singleNodeCF.getName(), TQUIMap);
 		singleNodeCF.setName(singleNodeName);
 		String customColumnName = setCustomColumnName(query);
@@ -1637,8 +1755,7 @@ public class DAGPanel
 		TQUIMap.put(name, bean);
 	}
 
-	private SingleNodeCustomFormulaNode populateSingleNodeInfo(ICustomFormula c,
-			IExpression exp)
+	private SingleNodeCustomFormulaNode populateSingleNodeInfo(ICustomFormula c, IExpression exp)
 	{
 		// TODO Auto-generated method stub
 		SingleNodeCustomFormulaNode singleCNode = new SingleNodeCustomFormulaNode();
@@ -1755,7 +1872,7 @@ public class DAGPanel
 
 	}
 
-	private CustomFormulaNode populateCustomNodeInfo(ICustomFormula c,IExpression srcExp)
+	private CustomFormulaNode populateCustomNodeInfo(ICustomFormula c, IExpression srcExp)
 	{
 		CustomFormulaNode cNode = new CustomFormulaNode();
 		Set<IExpression> containingExpressions = QueryUtility.getExpressionsInFormula(c);
@@ -1912,7 +2029,8 @@ public class DAGPanel
 	 * @param path
 	 */
 	private void nodeform(int expressionId, DAGNode node, IConstraints constraints,
-			List<IIntraModelAssociation> intraModelAssociationList,List<EntityInterface> mainEntityList)
+			List<IIntraModelAssociation> intraModelAssociationList,
+			List<EntityInterface> mainEntityList)
 	{
 		IJoinGraph graph = constraints.getJoinGraph();
 		IExpression expression = constraints.getExpression(expressionId);
@@ -1931,13 +2049,13 @@ public class DAGPanel
 
 			//Added By Baljeet.....
 			intraModelAssociationList.clear();
-			
-			
+
 			intraModelAssociationList.add(association);
 
 			//if (exp.isVisible())
 			EntityInterface entity = exp.getQueryEntity().getDynamicExtensionsEntity();
-			if(exp.containsRule() || QueryAddContainmentsUtil.checkIfMainObject(entity, mainEntityList)) 
+			if (exp.containsRule()
+					|| QueryAddContainmentsUtil.checkIfMainObject(entity, mainEntityList))
 			{
 				IPath pathObj = m_pathFinder.getPathForAssociations(intraModelAssociationList);
 				long pathId = pathObj.getPathId();
@@ -1965,7 +2083,7 @@ public class DAGPanel
 				intraModelAssociationList.clear();
 
 			}
-			
+
 			//Commented out .......Baljeet
 			/*else
 			{
@@ -2007,18 +2125,17 @@ public class DAGPanel
 		int expressionId = expId;
 		IExpression expression = m_queryObject.getQuery().getConstraints().getExpression(
 				expressionId);
-		
-		HtmlProvider generateHTMLBizLogic = new HtmlProvider(
-				null);
+
+		HtmlProvider generateHTMLBizLogic = new HtmlProvider(null);
 		EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
-		
+
 		//added by amit_doshi to reset the edited entity in session for VI pop up
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		HttpSession session = request.getSession();
-		session.setAttribute(Constants.ENTITY_NAME, entity.getId()+"");
-		
+		session.setAttribute(Constants.ENTITY_NAME, entity.getId() + "");
+
 		List<ICondition> conditions = new ArrayList<ICondition>();
-		if(expression.numberOfOperands() > 0)
+		if (expression.numberOfOperands() > 0)
 		{
 			Rule rule = ((Rule) (expression.getOperand(0)));
 			conditions = Collections.list(rule);
@@ -2070,15 +2187,16 @@ public class DAGPanel
 	{
 		int expressionId = expId;
 		m_queryObject.removeExpression(expressionId);
-		
+
 		//Removing the expression also from the list
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		HttpSession session = request.getSession();
-		List<Integer> expressionIdsList =  (List<Integer>)session.getAttribute("allLimitExpressionIds");
-	    if(expressionIdsList != null)
-	    {
-	    	expressionIdsList.remove(Integer.valueOf(expressionId));
-	    }
+		List<Integer> expressionIdsList = (List<Integer>) session
+				.getAttribute("allLimitExpressionIds");
+		if (expressionIdsList != null)
+		{
+			expressionIdsList.remove(Integer.valueOf(expressionId));
+		}
 	}
 
 	/**
