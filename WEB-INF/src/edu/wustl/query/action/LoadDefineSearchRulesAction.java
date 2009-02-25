@@ -40,7 +40,7 @@ public class LoadDefineSearchRulesAction extends Action
 	{
 		CategorySearchForm searchForm = (CategorySearchForm) form;
 		String entityName = searchForm.getEntityName();
-
+        String pageOf = request.getParameter(Constants.PAGE_OF);
 		GenerateHTMLDetails generateHTMLDetails = new GenerateHTMLDetails();
 		generateHTMLDetails.setSearchString(searchForm.getTextField());
 		generateHTMLDetails.setAttributeChecked(Boolean.valueOf(searchForm.getAttributeChecked()));
@@ -58,7 +58,7 @@ public class LoadDefineSearchRulesAction extends Action
 		if (entity != null)
 		{
 			request.getSession().removeAttribute(edu.wustl.query.util.global.Constants.SELECTED_CONCEPT_LIST);
-			html = htmlProvider.generateHTML(entity, null,generateHTMLDetails);
+			html = htmlProvider.generateHTML(entity, null,generateHTMLDetails,pageOf);
 		}
 		//	}
 		request.getSession().setAttribute(Constants.ENUMRATED_ATTRIBUTE, generateHTMLDetails.getEnumratedAttributeMap());
