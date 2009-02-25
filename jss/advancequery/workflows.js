@@ -2,7 +2,7 @@
 // This method adds a row to the table with id "tableId"
 // The contents of the row are provided in the array "columnContents"
 // "columnContents" contains controls to be added to be added to each column
-function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdContent)
+function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdContent,expr)
 {
 	var tableObj=document.getElementById(tableId);
 	var rowObj=document.createElement("tr");
@@ -23,6 +23,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 		if(columnContents[counter]!=null)
 		{
 			columnObj=document.createElement("td");
+			//columnObj.className="aligntop";
 			if(counter==0)
 			{
 				columnObj.width="10";//set width for checkbox control
@@ -44,6 +45,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	//Create all the hidden controls and add them to a "td"
 	var operandsTd=document.createElement("td");
 	operandsTd.width="100"
+	//operandsTd.className="aligntop";
 	
 	var tble1=document.createElement("table");
 	tble1.depth="3";
@@ -51,8 +53,13 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	tbody1.depth="5";
 	var operandsTr=document.createElement("tr");
 	var operandsTd1=document.createElement("td");
+	//operandsTd1.className="aligntop";
+	operandsTd1.width="100"
 	var operandsTd2=document.createElement("td");
+	//operandsTd2.className="aligntop";
 	var operandsTd3=document.createElement("td");
+	//operandsTd3.className="aligntop";
+
 
 	
 	var operandsControl=createHiddenElement("operands","operands_"+queryCount,operandsTdContent);	
@@ -63,13 +70,18 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	
 	var queryTitleControl;
 	var queryTypeControl;
+    var exprControl;
+
 	queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,(columnContents[6]));
 	queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,(columnContents[7]));
+	exprControl=createHiddenElement("expression","expression_"+queryCount,expr);
+
 	operandsTd2.appendChild(queryTitleControl);
 	operandsTd2.appendChild(queryTypeControl);
+	operandsTd2.appendChild(exprControl);
 	operandsTd2.width="4";
 	var query_type=columnContents[7];
-	if(query_type=="GetData")
+	if(query_type=="Get Data")
      operandsTd1.appendChild(createLink("View Results ","execute_"+queryCount,"javascript:executeGetDataQuery('"+id+"')"));
 	else
 	{
@@ -145,7 +157,7 @@ function addQuery()
 		
 		var operandsTdContent="";
 		var rowContents=new Array(8);
-		if(getText(queryTypes[counter])=="GetData") 
+		if(getText(queryTypes[counter])=="Get Data") 
 		{
 			rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'',(counter+queryCount),true);
 		}
@@ -157,7 +169,7 @@ function addQuery()
 		rowContents[1]=createTextElement(getText(queryTitles[counter]));
 		rowContents[2]=createTextElement(getText(queryTypes[counter]));
 		//rowContents[3]=createHiddenElement("cancelajaxcall","cancelajaxcall_"+(counter+queryCount),'false');
-		 if(getText(queryTypes[counter])=="GetData") 
+		 if(getText(queryTypes[counter])=="Get Data") 
 		  rowContents[4]=getSelectObjectControl(queryIds[counter],presentQueryIds,presentQueryTitle,presentQueryType,queryIds,queryTitles,queryTypes);
 		 else
           rowContents[4]=createTextElement("");
@@ -167,7 +179,7 @@ function addQuery()
 		rowContents[7]=getText(queryTypes[counter]);
 		var operatorsTdContent="None";	
 		//create a table containing tbody with id "table1"
-		addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent);
+		addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent,getText(queryIds[counter]));
 
 	}
 
@@ -373,9 +385,6 @@ function  reSetDropDowns(queryTitle)
 	  
 	     
 }
-
-
-
 
 function deleteWorkflowItem(index)
 {
@@ -586,7 +595,7 @@ function disableDeleteLink(index)
 {
 	var deleteLink=document.getElementById("delete_"+index);
 	deleteLink.href='#';
-	deleteLink.className="orangelink";
+	deleteLink.className="greylink2";
 }
 function enableDeleteLink(index)
 {
