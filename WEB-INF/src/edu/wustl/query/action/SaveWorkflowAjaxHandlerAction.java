@@ -120,12 +120,14 @@ public class SaveWorkflowAjaxHandlerAction extends Action
 		String workflowName = request.getParameter("workflowName");
 		String querytitles = request.getParameter("displayQueryTitle");
 		String identifier = request.getParameter("identifier");
+		String expressions= request.getParameter("expression");
 
 		workflow.setName(workflowName);
 		String[] operandsArray = operands.split(",");
 		String[] operatorsArray = operators.split(",");
 		String[] displayQueryTitle = querytitles.split(",");
 		String[] identifierArray = identifier.split(",");
+		String[] expressionsArray = expressions.split(",");
 		List<WorkflowItem> workflowItemList = new ArrayList<WorkflowItem>();
 		int numberOfRows = 0;
 
@@ -135,8 +137,10 @@ public class SaveWorkflowAjaxHandlerAction extends Action
 		}
 		for (int i = 0; i < numberOfRows; i++)
 		{
-			IAbstractQuery query = workflow.getQuery(operatorsArray[i], operandsArray[i],
-					displayQueryTitle[i]);
+//			IAbstractQuery query = workflow.getQuery(operatorsArray[i], operandsArray[i],
+//					displayQueryTitle[i],expressionsArray[i]);
+            IAbstractQuery query = workflow.getQuery(expressionsArray[i]);
+            query.setName(displayQueryTitle[i]);
 			WorkflowItem workflowItem = new WorkflowItem();
 			if (!identifierArray[i].contains("_"))
 			{
