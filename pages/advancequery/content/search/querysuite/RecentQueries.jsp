@@ -95,20 +95,20 @@ function responseHandler(response)
 					%>
 
 					 <tr bgcolor="ffffff" class="content_txt">
-							<td  width="55%" height='20' styleClass="content_txt"><c:out value='${recentQueriesBean.queryTitle}'/></td>
-							<td   width="15%" styleClass="content_txt">
+							<td  width="55%"  styleClass="content_txt" valign="top"><c:out value='${recentQueriesBean.queryTitle}'/></td>
+							<td   width="15%" styleClass="content_txt" valign="top">
 							<label id="StatusId_<%=count%>"></label>
 							</td>
-							<td  width="10%" styleClass="content_txt">
+							<td  width="10%" styleClass="content_txt" valign="top">
 							<label id="CountId_<%=count%>"></label>
 								<input type="hidden" name="queryExecutionId"  id="queryExecutionId_<%=count%>" value="${recentQueriesBean.queyExecutionId}"/>
 							</td>
-							<td   width="20%" styleClass="content_txt"><c:out value='${recentQueriesBean.queryCreationDate}'/></td>         
+							<td   width="20%" styleClass="content_txt" valign="top"><c:out value='${recentQueriesBean.queryCreationDate}'/></td>         
 						</tr>
 					  </c:forEach>	
 					</tbody>
 				</table>
-				</td>
+	
 				</tr>
 				</table>
 			</tr>
