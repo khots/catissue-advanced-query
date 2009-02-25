@@ -351,7 +351,7 @@ public class Utility extends edu.wustl.common.util.Utility
 		}
 		else
 		{
-			columnWidth = "80";
+			columnWidth = "150";
 		}
 		return columnWidth;
 	}
@@ -364,16 +364,12 @@ public class Utility extends edu.wustl.common.util.Utility
 		double temp = 97.5f;
 		for (int col = 0; col < size; col++)
 		{
-			String columnName = (String) columnNames.get(col);
-			if (" ".equals(columnName))
-			{
-				colWidth = colWidth.append("2.5");
-			}
-			else
-			{
-				colWidth = colWidth.append(",");
-				colWidth = colWidth.append(String.valueOf(temp / (size - 1)));
-			}
+			colWidth = colWidth.append(String.valueOf(temp / (size)));
+			colWidth = colWidth.append(",");
+		}
+		if(colWidth.lastIndexOf(",")== colWidth.length()-1)
+		{
+			colWidth.deleteCharAt(colWidth.length()-1);
 		}
 		return colWidth.toString();
 	}
