@@ -189,7 +189,7 @@ public class ITableManager
 	 * @throws DAOException
 	 * @throws SQLException
 	 */
-	public void insertQueryDetails(int queryExecId, String xQuery, char query_type,
+	public void insertQueryDetails(int queryExecId, String xQuery, String query_type,
 			String ipAddress, Long projectId) throws DAOException, SQLException
 	{
 		
