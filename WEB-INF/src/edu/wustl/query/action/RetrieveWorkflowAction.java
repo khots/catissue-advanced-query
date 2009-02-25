@@ -115,13 +115,13 @@ public class RetrieveWorkflowAction extends Action
 		request.setAttribute("msgBoardItemList", CiderUtility.getmyData(attributesList));
 		List<String> columnList = new ArrayList<String>();
 
-		columnList.add("");
+		columnList.add(" &nbsp;");
 		columnList.add("Workflow Name");
 		columnList.add("identifier");
 
 		request.setAttribute("columns", Utility.getcolumns(columnList));
 		List<String> columnWidthsList = Utility.getColumnWidths(columnList.size());
-		request.setAttribute("colWidth","\"4,30,30\"");//Utility.getcolWidth(columnWidthsList, true));
+		request.setAttribute("colWidth","\"4,96,0\"");//Utility.getcolWidth(columnWidthsList, true));
 		
 		request.setAttribute("isWidthInPercent", true);
 		request.setAttribute("colTypes", "\"ch,str,int\"");
