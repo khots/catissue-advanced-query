@@ -117,6 +117,7 @@ Application
 	public var isOutputView:Boolean=false;
 
 	public var view:String ="";
+	public var pageOf:String ="";
 	public var dagPathUIMap:HashMap;
 	public var totalNodes:ArrayCollection;
 	public var allPaths:ArrayCollection;
@@ -456,7 +457,6 @@ Application
 	*/
 	private function initApp():void
 	{
-		
 		registerClassAlias("edu.wustl.query.flex.dag.DAGNode", DAGNode);
 		registerClassAlias("edu.wustl.query.flex.dag.DAGPath", DAGPath);
 		registerClassAlias("edu.wustl.query.flex.dag.CustomFormulaNode",CustomFormulaNode);
@@ -465,6 +465,7 @@ Application
 		rpcService.channelSet = Utility.getChannelSet();
 		rpcService.destination="cdeService";
 		isQuery =Application.application.parameters.isQuery;
+		pageOf =Application.application.parameters.pageOf;
 		view= Application.application.parameters.view;
 		dagPathUIMap = new HashMap();
 		totalNodes = new ArrayCollection();
@@ -1169,7 +1170,7 @@ Application
 	{
 		eNode=node;
 		rpcService.removeEventListener(ResultEvent.RESULT,getNodeResultHandler,false);
-		rpcService.getLimitUI(node.expressionId);
+		rpcService.getLimitUI(node.expressionId,pageOf);
 		rpcService.addEventListener(ResultEvent.RESULT,limitUIHandler);
 		
 	}
