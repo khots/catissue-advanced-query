@@ -53,7 +53,7 @@ public abstract class AbstractQueryUIManager {
 	public abstract Count getCount(int query_execution_id) throws QueryModuleException;
 	
 	/**
-	 * This method gets the required objects (incase of Cider objects will be Projects)
+	 * This method gets the required objects (in case of Cider objects will be Projects)
 	 * based on which query results can be filtered.
 	 * @param userId get Objects based on user id. 
 	 * @return collection of required objects.
@@ -70,4 +70,6 @@ public abstract class AbstractQueryUIManager {
 	abstract public DataQueryResultsBean getData(int countQueryExecId,List<NodeInfo> upiList, ViewType viewType) throws QueryModuleException, DAOException, SQLException;
 	
 	abstract public DataQueryResultsBean getData(int countQueryExecId, ViewType viewType) throws QueryModuleException;
+	
+	abstract public DataQueryResultsBean getData(int countQueryExecId, String data, ViewType viewType) throws QueryModuleException;
 }
