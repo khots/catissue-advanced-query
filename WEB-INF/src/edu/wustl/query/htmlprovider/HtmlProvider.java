@@ -169,8 +169,9 @@ public class HtmlProvider
 	 * 		For adding linits this parameter is null
 	 * @return String html generated for Add Limits section.
 	 */
-	public String generateHTML(EntityInterface entity, List<ICondition> conditions,GenerateHTMLDetails generateHTMLDetails
-			)throws PVManagerException
+	public String generateHTML(EntityInterface entity, List<ICondition> conditions,GenerateHTMLDetails generateHTMLDetails, 
+			String pageOf)throws PVManagerException
+			
 	{
 		this.entity=entity;
 		Collection<AttributeInterface> attributeCollection = entity.getEntityAttributesForQuery();
@@ -183,7 +184,7 @@ public class HtmlProvider
 		StringBuffer generatedPreHTML = new StringBuffer();
 		String attributesStr = getAttributesString(attributeCollection);
 		generatedPreHTML = GenerateHtml.getHtmlHeader
-					(entityName.toString(),entityId,attributesStr,isEditLimits);
+					(entityName.toString(),entityId,attributesStr,isEditLimits,pageOf);
 		generatedHTML = getHtmlAttributes(conditions,attributeCollection);
 		if(generateHTMLDetails!=null)
 		{
