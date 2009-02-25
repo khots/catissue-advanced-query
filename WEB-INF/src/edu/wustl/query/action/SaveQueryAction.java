@@ -207,9 +207,10 @@ public class SaveQueryAction extends BaseAction
 
 		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) query;
 
-		if (query.getId() == null)
+		parameterizedQuery = QueryObjectFactory.createParameterizedQuery(query);
+		if(query.getId()!=null)
 		{
-			parameterizedQuery = QueryObjectFactory.createParameterizedQuery(query);
+			parameterizedQuery.setId(query.getId());
 		}
 
 		HttpSession session = request.getSession();
