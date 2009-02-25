@@ -794,11 +794,12 @@
 	function retriveEntityInformation(url,nameOfFormToPost,entityName, textField, attributeChecked, permissibleValuesChecked) 
 	{	
 		waitCursor();
+		var pageOf= document.getElementById("pageOf").value;
 		var request = newXMLHTTPReq();			
 		var actionURL;
 		var handlerFunction = getReadyStateHandler(request,showEntityInformation,true);	
 		request.onreadystatechange = handlerFunction;	
-		actionURL = "entityName=" + entityName + "&textField=" + textField + "&attributeChecked=" + attributeChecked + "&permissibleValuesChecked=" + permissibleValuesChecked;				
+		actionURL = "entityName=" + entityName + "&textField=" + textField + "&attributeChecked=" + attributeChecked + "&permissibleValuesChecked=" + permissibleValuesChecked+ "&pageOf="+pageOf;				
 		request.open("POST",url,true);	
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 		request.send(actionURL);		
