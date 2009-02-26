@@ -95,7 +95,7 @@ public class RetrieveQueryAction extends Action
 		return actionForward;
 	}
 
-	private int setQueryCount()
+	public int setQueryCount()
 	{
 
 		Collection prameterizedQueriesCollection=HibernateUtility
