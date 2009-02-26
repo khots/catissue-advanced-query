@@ -49,7 +49,7 @@ public class RetrieveRecentQueriesAction extends Action
 	 * @return
 	 * @throws QueryModuleException 
 	 */
-	private int setRecentQueriesCount(HttpServletRequest request) throws QueryModuleException
+	public int setRecentQueriesCount(HttpServletRequest request) throws QueryModuleException
 	{
 		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
 				Constants.SESSION_DATA);
