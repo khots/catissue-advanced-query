@@ -146,9 +146,13 @@ function changeResPerPage(controlId)
 						</c:forEach></td></tr></table>
 						</logic:notEqual>
 <logic:equal name="totalPages" value="0">
+<table>
+		<tr>
 					<td class="content_txt_bold" style="padding-left:5px;" valign="top">
 					<bean:message key="meassges.emptyworflow"/>
 					</td>	
+		</tr>
+</table>
 </logic:equal >
 </html:form>
 </body>
