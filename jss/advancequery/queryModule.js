@@ -1484,7 +1484,7 @@
 		    }
 		    else
 		    {
-				pvwindow	=dhtmlmodal.open('Query Information', 'iframe', url,'Query Information', 'width=800px,height=260px,center=1,resize=0,scrolling=1,menubar=0,toolbar=0');
+				pvwindow	=dhtmlmodal.open('Query Information', 'iframe', url,'Query Information', 'width=800px,height=280px,center=1,resize=0,scrolling=1,menubar=0,toolbar=0');
 		    	//NewWindow(url,'name','870','300','yes');
 		    }
 			hideCursor();
