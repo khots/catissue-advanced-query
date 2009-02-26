@@ -566,6 +566,15 @@ PUBLIC
 			scope="request">
 			<forward name="queryWizard" path="/QueryWorkflowWizard.do?operation=add&amp;pageOf=workflow&amp;menuSelected=1" />
 		</action>
+		
+		<action path="/ShowResetCountPopUp"
+          type = "edu.wustl.query.action.ShowResetCountPopUpAction"
+          name="categorySearchForm"
+          validate="false"
+		  scope="request">
+            <forward name="success"  path=".query.resetCountPopUp" />
+        </action>
+        
         
         <action path="/RetrieveRecentQueries"
 			type="edu.wustl.query.action.RetrieveRecentQueriesAction"
