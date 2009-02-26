@@ -312,14 +312,6 @@ int queryCount = 0;%>
 															  String newTitle = Utility.getQueryTitle(title);
 															  String queryType=
 															  parameterizedQuery.getType();
-															  if(queryType.equals("GetData"))
-															  {
-																  queryType="Get Data";
-															  }
-															  else
-															  {
-																  queryType="Get Count";
-															  }
 															  String tooltip = Utility.getTooltip(title);
 															  String function = "Tip('"+tooltip+"', WIDTH, 700)";
 															  queryCount++;
