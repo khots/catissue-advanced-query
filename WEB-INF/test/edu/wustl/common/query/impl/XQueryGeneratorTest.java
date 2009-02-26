@@ -5,7 +5,7 @@ package edu.wustl.common.query.impl;
  * 
  */
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,18 +19,13 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.dao.DatabaseConnectionParams;
-import edu.wustl.common.querysuite.exceptions.CyclicException;
-import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
-import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Variables;
 
@@ -47,8 +42,8 @@ public class XQueryGeneratorTest
 
 	private static DatabaseConnectionParams params;
 
-	public static final PassTwoXQueryGenerator xQueryGenerator = new PassTwoXQueryGenerator();
-	public static final XQueryEntityManagerMock entityManager = new XQueryEntityManagerMock();
+	private static final PassTwoXQueryGenerator xQueryGenerator = new PassTwoXQueryGenerator();
+	private static final XQueryEntityManagerMock entityManager = new XQueryEntityManagerMock();
 
 	/**
 	 * this method is called only once, after which the tests are executed
@@ -93,7 +88,7 @@ public class XQueryGeneratorTest
 		params.closeSession();
 	}
 
-	
+	@Ignore
 	@Test
 	public void raceGenderAddressTest() throws Exception
 	{
@@ -126,14 +121,6 @@ public class XQueryGeneratorTest
 		query.setOutputAttributeList(outputAttributes);
 
 		String xquery = xQueryGenerator.generateQuery(query);
-		
-		
-		ResultSet rs = params.getResultSet(xquery);
-
-		if (!rs.next())
-		{
-			fail("no results!!!");
-		}
 
 		int a = 10;
 		//does result contain value "6446456" ?
@@ -188,12 +175,12 @@ public class XQueryGeneratorTest
 
 		String xquery = xQueryGenerator.generateQuery(query);
 
-		/*
-		ResultSet rs = executeParametrizedXQuery(xquery, "33333333");
+		ResultSet rs = executeParametrizedXQuery(xquery, "000000000000000001000823");
+
 		if (!rs.next())
 		{
 			fail("no results!!!");
-		}*/
+		}
 
 	}
 
@@ -213,7 +200,7 @@ public class XQueryGeneratorTest
 	@Test
 	public void temporalQueryTest()
 	{
-		
+
 	}
 
 }

@@ -56,7 +56,7 @@ public class QueryBuilder
 	 * @throws CyclicException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public static IParameterizedQuery skeletalPersonQuery()
+	private static IParameterizedQuery skeletalPersonQuery()
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
 			CyclicException
 	{
@@ -92,6 +92,55 @@ public class QueryBuilder
 		IExpression person = findExpression(Constants.PERSON, joinGraph.getRoot(), joinGraph);
 		IExpression demographics = createExpression(constraints, person, Constants.DEMOGRAPHICS);
 		addBasicDemographicsConditions(demographics);
+
+		return query;
+	}
+
+	/**
+	 *  simple IQuery for Person, Demographics and Race
+	 *  
+	 * @param expression The Expression reference created by function
+	 * @return The corresponding join Graph reference.
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws CyclicException 
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws MultipleRootsException 
+	 */
+	public static IParameterizedQuery skeletalRaceQuery() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException, CyclicException, MultipleRootsException
+	{
+		IParameterizedQuery query = skeletalDemograpihcsQuery();
+		IConstraints constraints = query.getConstraints();
+		IJoinGraph joinGraph = constraints.getJoinGraph();
+
+		IExpression demographics = findExpression(Constants.DEMOGRAPHICS, joinGraph.getRoot(),
+				joinGraph);
+		createExpression(constraints, demographics, Constants.RACE);
+
+		return query;
+	}
+
+	/**
+	 *  simple IQuery for Person, Demographics and Address
+	 *  
+	 * @param expression The Expression reference created by function
+	 * @return The corresponding join Graph reference.
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws CyclicException 
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws MultipleRootsException 
+	 */
+	public static IParameterizedQuery skeletalAddressQuery()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
+			CyclicException, MultipleRootsException
+	{
+		IParameterizedQuery query = skeletalDemograpihcsQuery();
+		IConstraints constraints = query.getConstraints();
+		IJoinGraph joinGraph = constraints.getJoinGraph();
+
+		IExpression demographics = findExpression(Constants.DEMOGRAPHICS, joinGraph.getRoot(),
+				joinGraph);
+		createExpression(constraints, demographics, Constants.ADDRESS);
 
 		return query;
 	}
@@ -183,24 +232,27 @@ public class QueryBuilder
 		AttributeInterface attribute = findAttribute(expression.getQueryEntity()
 				.getDynamicExtensionsEntity(), attributeName);
 
-		ICondition condition = QueryObjectFactory.createCondition(attribute, operator,
-				values);
+		ICondition condition = QueryObjectFactory.createCondition(attribute, operator, values);
 		getRule(expression).addCondition(condition);
 
 	}
-	
-	
+
 	public static void addParametrizedCondition(IParameterizedQuery query, IExpression expression,
 			String attributeName, RelationalOperator operator)
 	{
 		AttributeInterface attribute = findAttribute(expression.getQueryEntity()
 				.getDynamicExtensionsEntity(), attributeName);
-		ICondition condition = QueryObjectFactory.createCondition(attribute, operator, new ArrayList<String>());
-		IParameter<ICondition> parameter = QueryObjectFactory.createParameter(condition, attributeName);
- 	    query.getParameters().add(parameter);
-		
-	}
 
+		List<String> list = new ArrayList<String>();
+		list.add("");
+		ICondition condition = QueryObjectFactory.createCondition(attribute, operator, list);
+		getRule(expression).addCondition(condition);
+
+		IParameter<ICondition> parameter = QueryObjectFactory.createParameter(condition,
+				attributeName);
+		query.getParameters().add(parameter);
+
+	}
 
 	public static IExpression createExpression(IConstraints constraints, IExpression parent,
 			String expressionType) throws DynamicExtensionsSystemException,
@@ -326,7 +378,6 @@ public class QueryBuilder
 
 	private static void addBasicPersonConditions(IExpression personExpression, String researchOptOut)
 	{
-		addCondition(personExpression, "personUpi", RelationalOperator.IsNotNull);
 		addCondition(personExpression, "activeUpiFlag", RelationalOperator.Equals, "A");
 		addCondition(personExpression, "researchOptOut", RelationalOperator.In, researchOptOut);
 	}
@@ -334,22 +385,9 @@ public class QueryBuilder
 	private static void addBasicDemographicsConditions(IExpression demographicsExpression)
 	{
 		addCondition(demographicsExpression, "effectiveEndTimeStamp",
-				RelationalOperator.GreaterThan, "01/24/2009");
+				RelationalOperator.GreaterThan, "01/26/2009");
 		addCondition(demographicsExpression, "effectiveStartTimeStamp",
 				RelationalOperator.LessThan, "01/26/2009");
-	}
-
-	private static void addPersonUpiMembershipCondition(IExpression personExpression,
-			RelationalOperator operator)
-	{
-		List<String> values = new ArrayList<String>();
-		values.add("000000000000000008690923");
-		values.add("000000000000000008690927");
-		values.add("000000000000000008691120");
-		values.add("000000000000000008690929");
-
-		addCondition(personExpression, "personUpi", operator, values);
-
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -480,5 +518,4 @@ public class QueryBuilder
 		}
 	}
 
-	
 }

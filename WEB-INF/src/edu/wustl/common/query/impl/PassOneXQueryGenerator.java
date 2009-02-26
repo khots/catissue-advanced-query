@@ -299,7 +299,9 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			String attributeAlias = entry.getValue();
 			String dataType = getDataTypeInformation(entry.getKey().getAttribute());
 			columnsPart.append(attributeAlias).append(' ').append(dataType).append(" path '")
-					.append(attributeAlias).append("'").append(Constants.QUERY_COMMA);
+					.append(attributeAlias).append('/').append(
+							entry.getKey().getAttribute().getName()).append("'").append(
+							Constants.QUERY_COMMA);
 		}
 
 		Utility.removeLastComma(columnsPart);
