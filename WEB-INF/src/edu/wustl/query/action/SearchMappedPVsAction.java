@@ -214,7 +214,8 @@ public class SearchMappedPVsAction extends Action
 		{
 			for(IConcept concept:pvList)
 			{
-				String checkboxId = srcVocabURN + Constants.ID_DEL + concept.getCode();
+				String checkboxId = srcVocabURN + Constants.ID_DEL+ concept.getCode();
+				checkboxId=checkboxId.replaceAll("'", "");
 				html.append(bizLogic.getHTMLForConcept(srcVocabURN,concept,checkboxId));
 			}
 			html.append(bizLogic.getEndHTML());
