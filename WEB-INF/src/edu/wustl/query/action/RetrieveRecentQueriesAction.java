@@ -49,10 +49,9 @@ public class RetrieveRecentQueriesAction extends Action
 	 * @return
 	 * @throws QueryModuleException 
 	 */
-	public int setRecentQueriesCount(HttpServletRequest request) throws QueryModuleException
+	public int setRecentQueriesCount(SessionDataBean sessionDataBean) throws QueryModuleException
 	{
-		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
-				Constants.SESSION_DATA);
+
 		String sql = "select count(*) from  COUNT_QUERY_EXECUTION_LOG where USER_ID= "
 				+ sessionDataBean.getUserId();
 		int numberOfQueries = 0;
@@ -76,7 +75,9 @@ public class RetrieveRecentQueriesAction extends Action
 			throws QueryModuleException
 	{
 
-		int recordCountToDisplay = setRecentQueriesCount(request);
+		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
+				Constants.SESSION_DATA);
+		int recordCountToDisplay = setRecentQueriesCount(sessionDataBean);
 		String showLastfromRequest = request.getParameter(Constants.SHOW_LAST);
 		int showLast = 0;
 		if (showLastfromRequest == null)
