@@ -194,7 +194,7 @@ function createTextElement(text)
   <tr>
     <td align="center" valign="middle"><table width="96%" height="90" border="0" align="center" cellpadding="4" cellspacing="0" class="dynamic_table_bg">
       <tr>
-        <td height="23" align="center" class="content_txt">Are you sure you want to delete the query from the workflow? </td>
+        <td height="23" align="center" class="content_txt">Selecting another project will erase the query counts for the current project. Do you want to continue?</td>
       </tr>
       <tr>
         <td height="35" align="center"><table border="0" cellspacing="0" cellpadding="4">
