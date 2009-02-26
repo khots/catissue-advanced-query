@@ -43,7 +43,7 @@
 		<script>
 		     function showWorkFlowWizard()
           {
-               var parentWindowForm = window.opener.document.forms[0];
+                var parentWindowForm 	= parent.document.forms[0];
 				parentWindowForm.action = "RedirectToWorkflow.do";
 				parentWindowForm.submit();
           }
