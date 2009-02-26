@@ -32,7 +32,7 @@ public class RetrieveWorkflowAction extends Action
 	private void setPagiantion(HttpServletRequest request, String requestFor
 			)
 	{
-		int totalRecords=setQueryCount();
+		int totalRecords=setWorkflowCount();
 		
 		int recordsPerPage=1;
 		
@@ -141,7 +141,7 @@ public class RetrieveWorkflowAction extends Action
 		
 		return totalRecords;
 	}
-	private int setQueryCount()
+	public int setWorkflowCount()
 	{
 
 		Session session1=DBUtil.currentSession();
