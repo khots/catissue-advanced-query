@@ -121,7 +121,7 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 			operandsCounter=operandsCounter+1;
 		}
 	}
-	var cqType="Operation";
+	var cqType="Count";
 	var cqId="";
 
 	var rowContents=new Array(7);
@@ -253,7 +253,7 @@ function showResetCountPopup()
 		{
 			var url='ShowResetCountPopUp.do';
 			pvwindow=dhtmlmodal.open('Change Project', 'iframe', url,'Change Project', 
-			'width=300px,height=200px,center=1,resize=1,scrolling=1');
+			'width=200px,height=200px,center=1,resize=1,scrolling=1');
 		}
 	}
 	previousProject=currentProject;
@@ -687,8 +687,8 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <select name="executedCountQuery" id="executedCountQuery" style="display:none">
 </select>
 <html:hidden property="forwardTo"/>
-<c:set var="query_type_data" value="Get Data" scope="page"/>
-<c:set var="query_type_count" value="Get Count" scope="page"/>
+<c:set var="query_type_data" value="<%=qType_GetData%>" scope="page"/>
+<c:set var="query_type_count" value="<%=qType_GetCount%>" scope="page"/>
 <input type="hidden" name="isdone" value="true" id="isdone">
  <input type="button" name="btn" id="btn" onclick="updateUI()" style="display:none">
 
@@ -866,13 +866,6 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 
 									<tr bgcolor="#ffffff" class="td_bgcolor_white" height="22">
 									
-										<!--  <logic:equal name="test" value="Get Data">
-												 <c:set var="qtype" value="GetData"/>
-										  </logic:equal>
-										    <logic:notEqual name="test" value="Get Data">
-												 <c:set var="qtype" value="GetCount"/>
-										  </logic:notEqual>-->
-
 									 <c:set var="qtype" value="${workflowForm.displayQueryType[queryIndex]}"/>
 										  <logic:equal name="query_type_data" value="${qtype}">
 						   				<td class="content_txt" width="10" valign="top">
@@ -1073,8 +1066,9 @@ function updateOpenerUI()
 }forwardToWorkflow();
 function setPreviousProject()
 {
-	previousProject=document.getElementById('selectedProject').value);
-}
+	previousProject=document.getElementById('selectedProject').value;
+}setPreviousProject();
+
 
 </script>
 </body>
