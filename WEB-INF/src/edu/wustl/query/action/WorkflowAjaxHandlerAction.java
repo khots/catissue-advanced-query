@@ -1,6 +1,7 @@
 
 package edu.wustl.query.action;
 
+import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -71,11 +72,6 @@ public class WorkflowAjaxHandlerAction extends Action
 	        {
 	            // Get the workflow
 	            workflow = (Workflow) dao.retrieve(Workflow.class.getName(), Long.valueOf(workflowId));
-	        }
-	        finally
-	        {
-	            dao.closeSession();
-	        }
 
 
 
@@ -110,43 +106,88 @@ public class WorkflowAjaxHandlerAction extends Action
 			// WorkflowBizLogic--->getCount
 			List<JSONObject> executionQueryResults = new ArrayList<JSONObject>();
 
-			if (queryExecId == 0)
-			{
-
-
-				//queryExecId = workflowBizLogic.executeGetCountQuery(queryId, request);
-			    Map<Long, Integer> executionIdMap = workflowBizLogic
-                        .executeGetCountQuery(workflowdetails, queryId, request);
-			    Set<Long> titleset=executionIdMap.keySet();
-			    Iterator<Long>  iterator=titleset.iterator();
-				while(iterator.hasNext())
-				{
-				    Long query=iterator.next();
-
-				    Count resultCount=workflowBizLogic.getCount(executionIdMap.get(query));
-                    executionQueryResults.add(createResultJSON(query, resultCount.getCount(),
-                            resultCount.getStatus(), resultCount.getQuery_exection_id()));
-				}
-			}
-			else
-			{
-					Count resultCount=workflowBizLogic.getCount(queryExecId);
-					executionQueryResults.add(createResultJSON(queryId, resultCount.getCount(),
-							resultCount.getStatus(), resultCount.getQuery_exection_id()));
-			}
 
 
 			if (state != null && state.equals("cancel"))
 			{
-				AbstractQueryManager qManager = AbstractQueryManagerFactory.getDefaultAbstractQueryManager();
-				qManager.cancel(queryExecId);
-				//countObj.setStatus("Completed");
+		        JSONObject resultObject = null;
+		        resultObject = new JSONObject();
+	        	resultObject.append("queryId", queryId);
+				try
+				{
+					AbstractQueryManager qManager = AbstractQueryManagerFactory.getDefaultAbstractQueryManager();
+					qManager.cancel(queryExecId);
+					//Count resultCount=workflowBizLogic.getCount(queryExecId);
 
+					if(request.getParameter("removeExecutedCount").equals("true"))
+					{
+						resultObject.put("removeExecutedCount", "removeExecutedCount");
+					}
+					response.setContentType(Constants.CONTENT_TYPE_TEXT);
+					writer.write(resultObject
+							.toString());
+				}
+				catch (Exception e) {
 
+				        resultObject.append("execption","execption");
+
+			        	//resultObject.append("executionLogId", queryExecId);
+
+				        response.setContentType(Constants.CONTENT_TYPE_TEXT);
+					writer.write(resultObject
+							.toString());
+					
+				}
+			
+			
 			}
-			response.setContentType(Constants.CONTENT_TYPE_TEXT);
-			writer.write(new JSONObject().put("executionQueryResults", executionQueryResults)
-					.toString());
+			else
+			{
+				if (queryExecId == 0)
+				{
+
+
+					//queryExecId = workflowBizLogic.executeGetCountQuery(queryId, request);
+				    Map<Long, Integer> executionIdMap = workflowBizLogic
+	                        .executeGetCountQuery(workflowdetails, queryId, request);
+				    Set<Long> titleset=executionIdMap.keySet();
+				    Iterator<Long>  iterator=titleset.iterator();
+					while(iterator.hasNext())
+					{
+					    Long query=iterator.next();
+
+					    Count resultCount=workflowBizLogic.getCount(executionIdMap.get(query));
+	                    executionQueryResults.add(createResultJSON(query, resultCount.getCount(),
+	                            resultCount.getStatus(), resultCount.getQuery_exection_id()));
+					}
+				}
+				else
+				{
+						Count resultCount=workflowBizLogic.getCount(queryExecId);
+						executionQueryResults.add(createResultJSON(queryId, resultCount.getCount(),
+								resultCount.getStatus(), resultCount.getQuery_exection_id()));
+				}
+				response.setContentType(Constants.CONTENT_TYPE_TEXT);
+				writer.write(new JSONObject().put("executionQueryResults", executionQueryResults)
+						.toString());
+			}
+	        }
+	        catch (Exception e) {
+	        	Logger.out.debug(e.getMessage(),e);
+				try {
+						response.setContentType("text/xml");
+						writer.write(Constants.QUERY_EXCEPTION);
+					} 
+				catch (IOException e1) {
+					Logger.out.debug(e1.getMessage(),e1);
+				}
+			}
+	        finally
+	        {
+	            dao.closeSession();
+	        }
+
+
 
 		}
 
