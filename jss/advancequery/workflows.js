@@ -81,7 +81,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	operandsTd2.appendChild(exprControl);
 	operandsTd2.width="4";
 	var query_type=columnContents[7];
-	if(query_type=="Get Data")
+	if(query_type=="Data")
      operandsTd1.appendChild(createLink("View Results ","execute_"+queryCount,"javascript:executeGetDataQuery('"+id+"')"));
 	else
 	{
@@ -157,7 +157,7 @@ function addQuery()
 		
 		var operandsTdContent="";
 		var rowContents=new Array(8);
-		if(getText(queryTypes[counter])=="Get Data") 
+		if(getText(queryTypes[counter])=="Data") 
 		{
 			rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'',(counter+queryCount),true);
 		}
@@ -169,7 +169,7 @@ function addQuery()
 		rowContents[1]=createTextElement(getText(queryTitles[counter]));
 		rowContents[2]=createTextElement(getText(queryTypes[counter]));
 		//rowContents[3]=createHiddenElement("cancelajaxcall","cancelajaxcall_"+(counter+queryCount),'false');
-		 if(getText(queryTypes[counter])=="Get Data") 
+		 if(getText(queryTypes[counter])=="Data") 
 		  rowContents[4]=getSelectObjectControl(queryIds[counter],presentQueryIds,presentQueryTitle,presentQueryType,queryIds,queryTitles,queryTypes);
 		 else
           rowContents[4]=createTextElement("");
