@@ -113,7 +113,7 @@ function changeResPerPage(controlId)
 <body>
 <html:form action="RetrieveWorkflowAction">
 
-
+	<logic:notEqual name="totalPages" value="0">	
 	
      <table width="100%"  border="0" style="overflow-y:hidden;overflow-x:hidden;">
 		<tr height="100%">
@@ -144,6 +144,12 @@ function changeResPerPage(controlId)
 							<c:if test="${sessionScope.pageNum != pageCoutner}"> | <a class="bluelink" href="<%=linkURL%>"><c:out value="${pageCoutner}"/></a>
 							</c:if>
 						</c:forEach></td></tr></table>
+						</logic:notEqual>
+<logic:equal name="totalPages" value="0">
+					<td class="content_txt_bold" style="padding-left:5px;" valign="top">
+					<bean:message key="meassges.emptyworflow"/>
+					</td>	
+</logic:equal >
 </html:form>
 </body>
 </html>
