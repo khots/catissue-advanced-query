@@ -77,7 +77,7 @@
 		  <td>
 			<table summary="" cellpadding="0" cellspacing="0"  border="0" align="center" width="100%" class="login_box_bg" >
 					<tr>
-					<td style="padding:5px" class='messagetexterror' nowrap><html:errors/>
+					<td style="padding-left:5px;padding-bottom:5px;padding-top:5px;"  colspan="3" class='messagetexterror' nowrap><html:errors/>
 					</td>
 					<tr>
 				<!--<tr class="table_header_query" >
@@ -92,14 +92,14 @@
 				</tr>
 				
 					<tr id="workflowName" >
-					<td width='1' class="red_star"></td>
-					<td class="content_txt">
-								<bean:message key="workflow.name"/><span class="red_star">*</span>:
+						<td class="content_txt" colspan="2" style="padding-left:5px;padding-bottom:10px;">
+								<bean:message key="workflow.name"/>:
 					</td>
-					<td style="padding-bottom:5px;" class="formFieldNoBordersQuery">
+					<td style="padding-bottom:10px;">
 						<input type="text" name="workflowName" value="<%=workflowName%>" class="textfield_inactive" disabled="disabled" />
 					</td>
 				  </tr>
+				  <tr>
 						<td class="content_txt" colspan="2" style="padding-left:5px;" >
 					<bean:message key="query.title"/><span class="red_star">*</span>:
 					</td>
