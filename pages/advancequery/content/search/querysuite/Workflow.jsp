@@ -716,14 +716,15 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <td >
 <table width="100%" border="0" cellspacing="0" cellpadding="4">
 <tr>
-<%@ include file="/pages/content/common/ActionErrors.jsp" %>
 <div id="errordiv" >
 <table cellspacing="0" cellpadding="3" border="0">
 <tbody>
 <tr>
 <td> </td>
 <td class="messagetexterror">
-<div id="errormessage"></div>
+<div id="errormessage">
+<%@ include file="/pages/content/common/ActionErrors.jsp" %>
+</div>
 </td>
 </tr>
 </tbody>
