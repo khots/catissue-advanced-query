@@ -452,7 +452,7 @@ public class WorkflowForm extends AbstractActionForm
 			setoperandList(operandList, operandsList);
 			setOperatorList(opretionList, operatorsList);
 			displayQueryTitle[i]=genetrateDisplayQueryTitle(workflowItem);
-		    displayQueryType[i]=createQueryTitle(((AbstractQuery)abstractQuery).getType());
+		    displayQueryType[i]=((AbstractQuery)abstractQuery).getType();
 		}
 
 		String[] operands = new String[operandList.size()];//oprands array
@@ -569,31 +569,6 @@ public class WorkflowForm extends AbstractActionForm
 			}
 		}
 	}
-
-	/*
-	 * */
-	private String createQueryTitle(String queryType)//, String[] queryTypeControl,String[] displayQueryType)
-
-	{
-//
-//		String[] queryTypeControl = new String[size];
-//		String[] displayQueryType = new String[size];
-//		for (int i = 0; i < size; i++)
-//		{
-		if(queryType!=null)
-		{
-			if(queryType.equals("GetCount"))
-				return  "Get Count";
-			if(queryType.equals("GetData"))
-				return  "Get Data";
-			return "Operation";
-		}
-		else 
-		 return "";
-//		}
-//		this.queryTypeControl = queryTypeControl;
-//		this.displayQueryType = displayQueryType;
-	} 
 
 	private void generateOperatorAndOperandList(LinkedList<String> operatorsList,
 			LinkedList<Long> operandsList, IAbstractQuery abstractQuery)
