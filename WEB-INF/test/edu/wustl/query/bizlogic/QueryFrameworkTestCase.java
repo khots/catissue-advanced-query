@@ -161,6 +161,20 @@ public class QueryFrameworkTestCase extends TestCase
 		
 	}
 	
+	public void testXQuery_Person_AfricanAmerican_Male_Age_GreaterThan_50()
+	{
+
+	}
+
+	public void testXQuery_Person_AfricanAmerican_Male_Age_GreaterThan_50_and_done_PSAtest()
+	{
+
+	}
+
+	public void testXQuery_Person_AfricanAmerican_Male_Age_GreaterThan_50_and_PSA_greaterthan_5()
+	{
+
+	}
 	
 	/*public void testXQuery_PersonUpi_is_NOT_NULL_AND_DOB_less_than_10_10_1920()
 	{
