@@ -727,8 +727,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String QUERY_COUNT = "queryCount";
 	public static final String GET_COUNT_STATUS = "status";
 	public static final String EXECUTION_ID = "executionId";
-	public static final String QUERY_TYPE_GET_COUNT="GetCount";
-	public static final String QUERY_TYPE_GET_DATA="GetData";
+	public static final String QUERY_TYPE_GET_COUNT="Count";
+	public static final String QUERY_TYPE_GET_DATA="Data";
 	
 	public static final int[] SHOW_LAST_OPTION = {25, 50, 100, 200};
 //Constants for Get Count
