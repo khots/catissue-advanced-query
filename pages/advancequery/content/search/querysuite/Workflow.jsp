@@ -213,41 +213,28 @@ function cancelExecuteQuery(response)
 			 
 			  if(jsonResponse.removeExecutedCount!=null)
 			  {
-				 
-					//alert("jsonResponse.removeExecutedCount"+jsonResponse.removeExecutedCount);
 						var queryId = jsonResponse.queryId;
 						var identifier=document.getElementById("queryIdForRow_"+queryId);
 						var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
 						var tdChildCollection=object.getElementsByTagName('input');
-
 						var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
 						var selectedquery=selectedqueryId.split("_");
 						index=selectedquery[1];
-						//alert("index"+index);
-					 removeCountResults1(index);
-					 //changeExecuteLinkToExecute(queryId,0);
+						removeCountResults1(index);
 			  }
 		
 }
 function removeCountResults1(queryIndex)
 {
-	//var row=document.getElementById("table1").rows.length;
-	//alert(" removeCountResults1 queryIndex = " +queryIndex);
 		var lableObject=document.getElementById("label_"+queryIndex);
 		lableObject.innerHTML="";
-
 }
 function showResetCountPopup()
 {
 	var selectedProject=document.getElementById('selectedProject');
-	//alert("id =" +document.getElementById('selectedProject'));
 	var currentProject=document.getElementById('selectedProject').value;
-	//alert("currentProject" +currentProject);
-	//alert(" previousProject " +  previousProject);
 	if(previousProject!='-1' && previousProject!=currentProject)
 	{
-		//alert("removing");
-		
 		var isExecuted=isQueryExecuted();
 		if(isExecuted==true)
 		{
@@ -1069,6 +1056,22 @@ function setPreviousProject()
 	previousProject=document.getElementById('selectedProject').value;
 }setPreviousProject();
 
-
+function retrieveCounts()
+{
+	var rows=parent.window.document.getElementById("table1").rows.length;
+	for(var i=0;i<rows;i++)
+	{
+		var executionId=parent.window.document.getElementById("queryExecId_"+i).value;
+		var id=parent.window.document.getElementById("queryExecId_"+i).id;
+		var object=parent.window.document.getElementById("queryExecId_"+i).parentNode;//parent.window.id.parentNode;
+		var tdChildCollection=object.getElementsByTagName('input');
+		var queryIdForRow=tdChildCollection[2].id;
+		var queryId=parent.window.document.getElementById(queryIdForRow).value;
+		if(executionId!='0' && executionId!="")
+		{
+			workflowExecuteGetCountQuery(queryId,executionId);
+		}
+	}
+}retrieveCounts();
 </script>
 </body>
