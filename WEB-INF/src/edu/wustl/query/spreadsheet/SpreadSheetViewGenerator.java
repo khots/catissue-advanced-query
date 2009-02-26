@@ -69,6 +69,8 @@ public class SpreadSheetViewGenerator
 			HttpServletRequest request) throws QueryModuleException
 	{
 		idOfClickedNode = request.getParameter(Constants.TREE_NODE_ID);
+		idOfClickedNode = "NULL::0_NULL_NULL::0_2_Label";
+		
 		NodeId node = new NodeId(idOfClickedNode);
 
 		ViewManager viewManager = ViewManager.getInstance(ViewType.USER_DEFINED_SPREADSHEET_VIEW);
@@ -79,7 +81,7 @@ public class SpreadSheetViewGenerator
 		queryGenerator.createQueryForSpreadSheetView(node, queryDetailsObj); 
 
 		executeQuery(queryDetailsObj.getQuery(), spreadsheetData, request, queryDetailsObj
-				.getQueryExecutionId());
+				.getQueryExecutionId(), node.getRootData());
 
 		List<String> columnsList = getColumnList(selectedColumns);
 
@@ -109,18 +111,26 @@ public class SpreadSheetViewGenerator
 	 * @param spreadsheetData
 	 * @param request
 	 * @param queryExecutionId
+	 * @param data 
 	 * @throws QueryModuleException
 	 */
 	private void executeQuery(IQuery query, SpreadSheetData spreadsheetData,
-			HttpServletRequest request, int queryExecutionId) throws QueryModuleException
+			HttpServletRequest request, int queryExecutionId, String data) throws QueryModuleException
 	{
 		//getData
 		AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory
 				.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
 
 		DataQueryResultsBean dataQueryResultsBean;
-		dataQueryResultsBean = queryUIManager.getData(queryExecutionId,
+		if(data.equals(Constants.NULL_ID))
+		{
+			dataQueryResultsBean = queryUIManager.getData(queryExecutionId,
 				ViewType.SPREADSHEET_VIEW);
+		}
+		else
+		{
+			dataQueryResultsBean = queryUIManager.getData(queryExecutionId, data, ViewType.SPREADSHEET_VIEW);
+		}
 		spreadsheetData.setDataList(dataQueryResultsBean.getAttributeList());
 		spreadsheetData.setDataTypeList(dataQueryResultsBean.getDataTypesList());
 	}
