@@ -1,30 +1,61 @@
 <?xml version = "1.0" ?>
 
-<TestCases testHome="E:\\Nightly_build\\projects\\framework_test_home\\"
+<TestCases testHome="E:\\framework_test_home\\"
 					 dbInitCommonScriptsFile="" dbCleanUpCommonScriptsFile="">
 		
-		<TestCase>
+	<TestCase>
 			 <name>Find all persons where PERSON UPI NOT NULL and DEMOGRAPHICS DOB>10/10/1985</name>
 			 <tmtTestCaseId>1</tmtTestCaseId>
-			  <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV>  --> 
 			 <expectedResultsCSV>TC1_Expected_Results.csv</expectedResultsCSV>
-			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV>  -->  
-			 		 
 			 <query type = "saved_query"
 			 	    	 id = "5">
 			 </query>
-		</TestCase>
+		</TestCase> 
 		
 		<TestCase>
 			 <name>Find all persons where Person Upi is NOT NULL and Lab Accession Number Contains 2008295007131</name>
 			 <tmtTestCaseId>2</tmtTestCaseId>
-			 <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.sql</dbInitCSV> -->
 			 <expectedResultsCSV>TC2_Expected_Results.csv</expectedResultsCSV>
-			 <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.sql</dbCleanUpCSV>  -->
-			 
 			 <query type = "saved_query"
 			 	    	 id = "6">
 			 </query>
 		</TestCase>
 		
+		<TestCase>
+			 <name>Find all African American male persons whose age greater then 50</name>
+			 <tmtTestCaseId>5966</tmtTestCaseId>
+			 <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV> -->
+			 <expectedResultsCSV>TC3_Expected_Results.csv</expectedResultsCSV>
+			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> -->
+			 		 
+			 <query type = "saved_query"
+			 	    	 id = "489">
+			 </query>
+		</TestCase>
+
+		<TestCase>
+			 <name>Find all African American male persons whose age greater then 50 and done atleast one PSA test</name>
+			 <tmtTestCaseId>5974</tmtTestCaseId>
+			 <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV> -->
+			 <expectedResultsCSV>TC4_Expected_Results.csv</expectedResultsCSV>
+			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> -->
+			 		 
+			 <query type = "saved_query"
+			 	    	 id = "500">
+			 </query>
+		</TestCase>
+
+		<TestCase>
+			 <name>Find all African American male persons whose age greater then 50 and PSA value greater than 5</name>
+			 <tmtTestCaseId>5974</tmtTestCaseId>
+			 <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV> -->
+			 <expectedResultsCSV>TC5_Expected_Results.csv</expectedResultsCSV>
+			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> -->
+			 		 
+			 <query type = "saved_query"
+			 	    	 id = "510">
+			 </query>
+		</TestCase>
+
+
 </TestCases>
