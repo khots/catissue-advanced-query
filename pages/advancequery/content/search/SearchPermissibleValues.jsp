@@ -85,6 +85,7 @@ function addPermissibleValuesToList()
 // method is used to create the rows in the talbe
 function createRows(vocabURN,selectedPvsCheckedBoxId,conceptDetail)
 {
+				
 					var table = document.getElementById('selectedPermValues_'+vocabURN);
 					var lastRow = table.rows.length;
 					var row = table.insertRow(lastRow); 
@@ -230,9 +231,8 @@ function sendValueToParent(pvConceptCodeList,pvNameListWithCode,pvNameList)
 }
 
 //This method will be called when user clicks on the vocabulary check box
-function getMappingsOfConcepts(vocabCheckBoxId,vocabName,vocabVer,vocabURN)
+function getMappingsOfConcepts(vocabCheckBoxId,vocabURN)
 {
-		
 		continueMapping=true;
 		if(! isSelectedPVListEmpty())
 		{
@@ -564,6 +564,26 @@ function isVocabSelected(targetVocabsForSearchTerm)
 	}
 }
 /*this method will be called when user clicks on restore default*/
+function restoreDefaultVocab()
+{
+	var reset=confirm("Do you want to load the default vocabulary ? ");  
+	if(reset)
+	{
+		if(parent.conceptCodes.length>0) //edit mode
+		{
+			restoreDefault();
+			var checkBoxId="vocab_"+'<%=srcVocabURN%>';
+			var selectedCheckedBoxVocabDivID="main_div_"+checkBoxId;
+			document.getElementById(selectedCheckedBoxVocabDivID).style.display = 'none';
+			getMappingsOfConcepts(checkBoxId,'<%=srcVocabURN%>');
+			
+		}
+		else
+		{
+			restoreDefault();
+		}
+	}
+}
 function restoreDefault()
 {
 	set_mode="Mapping";
@@ -661,14 +681,14 @@ function editSelectedPV()
 					<c:choose>
 						<c:when test="${vocabs.vocabURN eq srcVocabURN}">
 								<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.vocabURN}" value="${vocabs.name}:${vocabs.version}"   
-								onclick= "getMappingsOfConcepts(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');" checked='true'></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;
+								onclick= "getMappingsOfConcepts(this.id,'${vocabs.vocabURN}');" checked='true'></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;
 								<input type="hidden"id="hidden_${vocabs.vocabURN}" value="${vocabs.displayName}"/>
 
 								</td>			
 						</c:when>
 						<c:otherwise>
 								<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.vocabURN}" value="${vocabs.name}:${vocabs.version}"   
-								onclick= "getMappingsOfConcepts(this.id,'${vocabs.name}','${vocabs.version}','${vocabs.vocabURN}');"></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;
+								onclick= "getMappingsOfConcepts(this.id,'${vocabs.vocabURN}');"></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;
 								<input type="hidden"id="hidden_${vocabs.vocabURN}" value="${vocabs.displayName}"/>
 								</td>
 							<script>
@@ -691,7 +711,7 @@ function editSelectedPV()
 				<!--<td><a  href="javascript:serachForTermInVocab('search');"><img src="images/advancequery/b_go.gif" border='0' alt="Go" ></a>
 				<a  href="javascript:serachForTermInVocab('abort');"><img src="images/advancequery/b_abort.gif" border='0' alt="abort" ></a>
 				</td>-->
-				<td style="padding-left:10px"><a href='javascript:doNothing();' onclick='restoreDefault();' ><img src="images/advancequery/b_restore_defaults.gif" border='0' alt="Restore Default" ></a></td>
+				<td style="padding-left:10px"><a href='javascript:doNothing();' onclick='restoreDefaultVocab();' ><img src="images/advancequery/b_restore_defaults.gif" border='0' alt="Restore Default" ></a></td>
 				<!-- <td id="searhLabel" class="content_txt"  align="right" style="padding-left:10px;color:blue">&nbsp;</td>  -->
 				</tr>
 			</table>
