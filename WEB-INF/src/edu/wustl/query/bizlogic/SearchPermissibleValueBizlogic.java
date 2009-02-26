@@ -224,11 +224,12 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	public String getHTMLForConcept(String vocabURN,
 			IConcept concept, String checkboxId)
 	{
-		return "<tr title='Concept Code: "+concept.getCode()+"'><td style='padding-left:30px'>&nbsp;</td><td class='black_ar_tt' > \n"
-				+ "<input type='checkbox' name='" +vocabURN + "' id='"
-				+ checkboxId + "' value='" + concept.getCode() + ":" + concept.getDescription()
-				+ "' onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
-				+ "</td><td class='black_ar_tt' nowrap>&nbsp;" /*+ concept.getCode() + ":"*/
+		String value=concept.getCode() + ":" + concept.getDescription();
+		return "<tr title=\"Concept Code: "+concept.getCode()+"\"><td style=\"padding-left:30px\">&nbsp;</td><td class=\"black_ar_tt\" > \n"
+				+ "<input type=\"checkbox\" name=\"" +vocabURN + "\" id=\""
+				+ checkboxId + "\" value=\"" + value
+				+ "\" onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
+				+ "</td><td class=\"black_ar_tt\" nowrap>&nbsp;" /*+ concept.getCode() + ":"*/
 				+ concept.getDescription() + "\n" + "<td></tr>";
 	}
 	/**
@@ -252,10 +253,11 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		{
 			chkBoxStatus="disabled";
 		}
-		return "<tr title='Concept Code: "+concept.getCode()+"'><td style='padding-left:30px'>&nbsp;</td><td class='black_ar_tt'> \n"
-				+ "<input type='checkbox' "+chkBoxStatus+" name='"+ vocabURN + "' id='"
-				+ checkboxId + "' value='" + concept.getCode() + ":" + concept.getDescription()
-				+ "' onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
+		
+		return "<tr title=\"Concept Code: "+concept.getCode()+"\"><td style=\"padding-left:30px\">&nbsp;</td><td class=\"black_ar_tt\"> \n"
+				+ "<input type=\"checkbox\" "+chkBoxStatus+" name=\""+ vocabURN + "\" id=\""
+				+ checkboxId + "\" value=\"" + concept.getCode() + ":" + concept.getDescription()
+				+ "\" onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
 				+ "</td><td class='"+cssClass+"' nowrap>&nbsp;" /*+ concept.getCode() + ":"*/
 				+ concept.getDescription() + "\n" + "<td></tr>";
 	}
