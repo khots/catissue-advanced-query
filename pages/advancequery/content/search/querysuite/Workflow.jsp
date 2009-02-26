@@ -20,6 +20,8 @@
 String qType_GetCount= (QueryType.GET_COUNT).type;
 String qType_GetData= (QueryType.GET_DATA).type;
 %>
+var previousProject="-1";
+
 function MM_preloadImages() { //v3.0
   var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
     var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
@@ -163,7 +165,7 @@ function submitWorflow()
 {
 	document.forms[0].submit();
 }
-function cancelGetCountQuery(queryId,executionLogId)
+function cancelGetCountQuery(queryId,executionLogId,removeExecutedCount)
 {	
 
 	var identifier=document.getElementById("queryIdForRow_"+queryId);
@@ -177,8 +179,8 @@ function cancelGetCountQuery(queryId,executionLogId)
 	document.getElementById("cancelajaxcall_"+index).value='true';
 	
 	var projectId=document.getElementById("selectedProject").value;
-	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'cancel'+"&executionLogId="+executionLogId+"&workflowId="+document.getElementById("id").value+"&selectedProject="+projectId;
-	changeExecuteLinkToExecute(queryId,0);
+	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'cancel'+"&executionLogId="+executionLogId+"&workflowId="+document.getElementById("id").value+"&selectedProject="+projectId+"&removeExecutedCount="+removeExecutedCount;
+	//changeExecuteLinkToExecute(queryId,0);
 	var request=newXMLHTTPReq();
 	if(request == null)
 	{
@@ -194,31 +196,112 @@ function cancelGetCountQuery(queryId,executionLogId)
 }
 function cancelExecuteQuery(response)
 {
+	var jsonResponse = eval('('+ response+')');
+			  var hasValue = false;
 
-		 var jsonResponse = eval('('+ response+')');
-          var hasValue = false;
-          if(jsonResponse.executionQueryResults!=null)
-          {
-             var num = jsonResponse.executionQueryResults.length; 
-				for(var i=0;i<num;i++)
-				{
-					var queryId = jsonResponse.executionQueryResults[i].queryId;
-					var identifier=document.getElementById("queryIdForRow_"+queryId);
-					var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
-					var tdChildCollection=object.getElementsByTagName('input');
 
-					var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
-					var selectedquery=selectedqueryId.split("_");
-					
-					index=selectedquery[1];
-					document.getElementById("cancelajaxcall_"+index).value='false';
+			//TO DO
+			//write code to show error occured while cancel 
 
-				}
-		  }
+			if(jsonResponse.queryId!=null)
+			{
+				var queryId = jsonResponse.queryId;
+				//var executionLogId = jsonResponse.executionLogId;
+				changeExecuteLinkToExecute(queryId,0);
+
+			}
+			 
+			  if(jsonResponse.removeExecutedCount!=null)
+			  {
+				 
+					//alert("jsonResponse.removeExecutedCount"+jsonResponse.removeExecutedCount);
+						var queryId = jsonResponse.queryId;
+						var identifier=document.getElementById("queryIdForRow_"+queryId);
+						var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
+						var tdChildCollection=object.getElementsByTagName('input');
+
+						var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
+						var selectedquery=selectedqueryId.split("_");
+						index=selectedquery[1];
+						//alert("index"+index);
+					 removeCountResults1(index);
+					 //changeExecuteLinkToExecute(queryId,0);
+			  }
+		
+}
+function removeCountResults1(queryIndex)
+{
+	//var row=document.getElementById("table1").rows.length;
+	//alert(" removeCountResults1 queryIndex = " +queryIndex);
+		var lableObject=document.getElementById("label_"+queryIndex);
+		lableObject.innerHTML="";
+
+}
+function showResetCountPopup()
+{
+	var selectedProject=document.getElementById('selectedProject');
+	//alert("id =" +document.getElementById('selectedProject'));
+	var currentProject=document.getElementById('selectedProject').value;
+	//alert("currentProject" +currentProject);
+	//alert(" previousProject " +  previousProject);
+	if(previousProject!='-1' && previousProject!=currentProject)
+	{
+		//alert("removing");
+		
+		var isExecuted=isQueryExecuted();
+		if(isExecuted==true)
+		{
+			var url='ShowResetCountPopUp.do';
+			pvwindow=dhtmlmodal.open('Change Project', 'iframe', url,'Change Project', 
+			'width=300px,height=200px,center=1,resize=1,scrolling=1');
+		}
+	}
+	previousProject=currentProject;
+}
+function isQueryExecuted()
+{
+	var rows=document.getElementById("table1").rows.length;
+	for(var i=0;i<rows;i++)
+	{
+		if(document.getElementById("queryExecId_"+i).value!='0' && document.getElementById("queryExecId_"+i).value!="")
+		{
+
+			return true;
+		}
+	}
+	return false;
 }
 
+function setCancelFlag(queryTitle)
+{
+		queryTitle=unescape(queryTitle);
+		queryTitle=unescape(queryTitle);
+		//var nameIdentifier=document.getElementsByName("identifier");
+		var numOfRows =document.getElementById("table1").rows.length;
+			for(var count = 0; count < numOfRows; count++)
+			{
+				var title=document.getElementById("identifier_"+count);
+				if(title.value==queryTitle)
+				{
+							var object=title.parentNode;
+							var tdChildCollection=object.getElementsByTagName('input');
+							var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
+							var selectedquery=selectedqueryId.split("_");
+					
+							index=selectedquery[1];
+							document.getElementById("cancelajaxcall_"+index).value='false'
+							
+				}
+			}
+	
+}
 function executeGetCountQuery(queryTitle,executionLogId)
 {
+
+	setCancelFlag(queryTitle);
+	queryTitle=unescape(queryTitle);
+	queryTitle=unescape(queryTitle);
+
 	if(document.getElementById("isdone").value=='false')
 	{
 		var rows=document.getElementById("table1").rows.length;
@@ -241,7 +324,7 @@ function executeGetCountQuery(queryTitle,executionLogId)
 			var queryId=tdChildCollection[2].id;
 			identifier=identifier+document.getElementById(queryId).value+",";
 		}
-		var url="SaveWorkflowAjaxHandler.do?operands="+operands+"&operators="+operators+"&workflowName="+workflowName+"&displayQueryTitle="+displayQueryTitle+"&workflowId="+document.getElementById("id").value+"&queryTitle="+queryTitle+"&identifier="+identifier+"&expression="+ encodeURIComponent(expression);
+		var url="SaveWorkflowAjaxHandler.do?operands="+operands+"&operators="+operators+"&workflowName="+workflowName+"&displayQueryTitle="+displayQueryTitle+"&workflowId="+document.getElementById("id").value+"&queryTitle="+encodeURIComponent(queryTitle)+"&identifier="+identifier+"&expression="+ encodeURIComponent(expression);
 
 		var request=newXMLHTTPReq();
 		if(request == null)
@@ -258,8 +341,7 @@ function executeGetCountQuery(queryTitle,executionLogId)
 	}
 	else
 	{
-				queryTitle=unescape(queryTitle);
-				queryTitle=unescape(queryTitle);
+				
 		//var nameIdentifier=document.getElementsByName("identifier");
 		var numOfRows =document.getElementById("table1").rows.length;
 			for(var count = 0; count < numOfRows; count++)
@@ -747,7 +829,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 						<table  border="0" cellpadding="4" cellspacing="0" align="right">
                           <tr>
                             <td align="right"  nowrap><span class="content_txt_bold"><bean:message  key="workflow.project"/></span>&nbsp;
-							 <SELECT name="selectedProject" id="selectedProject" class="texttype" >
+							 <SELECT name="selectedProject" id="selectedProject" class="texttype" onchange="showResetCountPopup()">
 							   <option VALUE="-1">Select..</option>
 								<c:forEach var="project" items="${requestScope.projectsNameValueBeanList}">
 									<OPTION VALUE="${project.value}">${project.name}
@@ -988,5 +1070,10 @@ function updateOpenerUI()
 
 	}
 }forwardToWorkflow();
+function setPreviousProject()
+{
+	previousProject=document.getElementById('selectedProject').value);
+}
+
 </script>
 </body>
