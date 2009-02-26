@@ -86,7 +86,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	else
 	{
 		 var t =	escape(columnContents[6]);
-		 operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+escape(t)+"','"+0+"')"));
+		 operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+escape(t)+"','"+0+"','false')"));
 	}
 	operandsTd3.appendChild(createLink("Delete ","delete_"+queryCount,"javascript:deleteWorkflowItem('"+queryCount+"')"));
 	operandsTd3.appendChild(createHiddenElement("cancelajaxcall","cancelajaxcall_"+(queryCount),'false'));
