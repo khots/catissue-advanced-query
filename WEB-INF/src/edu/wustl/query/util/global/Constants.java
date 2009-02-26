@@ -821,4 +821,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 
     public static final int AGE = 89;
     public static final int MINOR = 18;
+    
+    /**  Constant for Equal to operator */
+	public static final String EQUALS = " = ";
 }
