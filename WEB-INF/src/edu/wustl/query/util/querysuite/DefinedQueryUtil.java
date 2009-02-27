@@ -3,6 +3,7 @@ package edu.wustl.query.util.querysuite;
 
 import java.util.List;
 
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
 import edu.wustl.common.hibernate.HibernateCleanser;
@@ -11,6 +12,7 @@ import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.util.global.Constants;
@@ -28,8 +30,9 @@ public class DefinedQueryUtil
 	 * @param query=IQuery
 	 * @throws UserNotAuthorizedException
 	 * @throws BizLogicException
+	 * @throws DAOException 
 	 */
-	public void insertQuery(IQuery query) throws UserNotAuthorizedException, BizLogicException
+	public void insertQuery(IQuery query,SessionDataBean sessionDataBean , boolean isShared) throws UserNotAuthorizedException, BizLogicException, DAOException
 	{
 		IParameterizedQuery parameterizedQuery = populateParameterizedQueryData(query);
 		parameterizedQuery.setName(((IParameterizedQuery) query).getName());
@@ -38,7 +41,7 @@ public class DefinedQueryUtil
 						Constants.ADVANCE_QUERY_INTERFACE_ID);
 		IParameterizedQuery queryClone = new DyExtnObjectCloner().clone(parameterizedQuery);
 		new HibernateCleanser(queryClone).clean();
-		bizLogic.insert(queryClone, Constants.HIBERNATE_DAO);
+		bizLogic.insertSavedQueries(queryClone, sessionDataBean, isShared);
 
 		query.setId(queryClone.getId());
 
