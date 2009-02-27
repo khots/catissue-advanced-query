@@ -69,7 +69,6 @@ public class SpreadSheetViewGenerator
 			HttpServletRequest request) throws QueryModuleException
 	{
 		idOfClickedNode = request.getParameter(Constants.TREE_NODE_ID);
-		idOfClickedNode = "NULL::0_NULL_NULL::0_2_Label";
 		
 		NodeId node = new NodeId(idOfClickedNode);
 
