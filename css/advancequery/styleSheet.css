@@ -350,6 +350,19 @@ FORM BEGINS
 	width: 180px;
 	background-color: #eae9e5;
 }
+.textfield_undefined {
+	font-family:Arial, Helvetica, sans-serif;
+	color: #000000;
+	font-size: 12px;
+	border: 1px solid #7f9db9;
+
+}
+.biglistbox {
+	background-color: #F8F8F8;
+	border: 1px solid #CCCCCC;
+	width: 250px;
+}
+
 .formRequiredLabelWithLeftBottomBorder{ /* for the required form labels without border*/
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;
