@@ -681,7 +681,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
     /**  Constant for PROJECT_ID **/
     public static final String PRJCT_ID = "PROJECT_ID";
     /**  Constant for QUERY_EXECUTION_ID **/
-    public static final String QUERY_EXECUTION_ID = "queryExecutionId";
+    public static final String QUERY_EXECUTION_ID = "QUERY_EXECUTION_ID";
     /**  Constant for QUERY_EXECUTION_ID **/
     public static final String COUNT_QUERY_EXECUTION_ID = "COUNT_QUERY_EXECUTION_ID";
      
