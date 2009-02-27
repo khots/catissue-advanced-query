@@ -221,22 +221,30 @@ function cancelExecuteQuery(response)
 			{
 				var queryId = jsonResponse.queryId;
 				//var executionLogId = jsonResponse.executionLogId;
+				var queryId = jsonResponse.queryId;
+				var identifier=document.getElementById("queryIdForRow_"+queryId);
+				var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
+				var tdChildCollection=object.getElementsByTagName('input');
+				var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
+				var selectedquery=selectedqueryId.split("_");
+				index=selectedquery[1];
 				changeExecuteLinkToExecute(queryId,0);
+				document.getElementById("cancelajaxcall_"+index).value='false';
 
 			}
 			 
-			  if(jsonResponse.removeExecutedCount!=null)
-			  {
-						var queryId = jsonResponse.queryId;
-						var identifier=document.getElementById("queryIdForRow_"+queryId);
-						var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
-						var tdChildCollection=object.getElementsByTagName('input');
-						var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
-						var selectedquery=selectedqueryId.split("_");
-						index=selectedquery[1];
-						removeCountResults1(index);
-			  }
-		
+		  if(jsonResponse.removeExecutedCount!=null)
+		  {
+			var queryId = jsonResponse.queryId;
+			var identifier=document.getElementById("queryIdForRow_"+queryId);
+			var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
+			var tdChildCollection=object.getElementsByTagName('input');
+			var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
+			var selectedquery=selectedqueryId.split("_");
+			index=selectedquery[1];
+			removeCountResults1(index);
+		  }
+	
 }
 function removeCountResults1(queryIndex)
 {
@@ -505,7 +513,7 @@ function setDropDowns(queryTitle)
 
 function workflowExecuteGetCountQuery(queryId,executionLogId)
 {
-	setCancelFlag(queryId);
+	//setCancelFlag(queryId);
 	var projectId=document.getElementById("selectedProject").value;
 	var url="WorkflowAjaxHandler.do?operation=execute&state=start&executionLogId="+executionLogId+"&selectedProject="+projectId+"&workflowId="+document.getElementById("id").value+"&queryId="+queryId;
 	
@@ -629,7 +637,6 @@ function workflowResponseHandler(response)
 						if((document.getElementById("cancel_"+queryIndex)==null)&&(document.getElementById("cancelajaxcall_"+queryIndex).value=='false'))
 						{
 							changeLinkToCancel(queryId,executionLogId);
-							//imageForProgressiveCounts1(queryIndex);
 						}
 					
 						if((status!="Completed")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
