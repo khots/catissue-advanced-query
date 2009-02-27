@@ -56,7 +56,7 @@ public class WorkflowAjaxHandlerAction extends Action
 		// Get the Query information
         Long queryId=Long.valueOf(request.getParameter("queryId"));
 
-		String queryTitle=request.getParameter("queryTitle");
+		//String queryTitle=request.getParameter("queryTitle");
 		String operation = request.getParameter(Constants.OPERATION);
 		String state = request.getParameter("state");
 		Writer writer = response.getWriter();
@@ -115,14 +115,15 @@ public class WorkflowAjaxHandlerAction extends Action
 	        	resultObject.append("queryId", queryId);
 				try
 				{
-					AbstractQueryManager qManager = AbstractQueryManagerFactory.getDefaultAbstractQueryManager();
-					qManager.cancel(queryExecId);
-					//Count resultCount=workflowBizLogic.getCount(queryExecId);
 
 					if(request.getParameter("removeExecutedCount").equals("true"))
 					{
 						resultObject.put("removeExecutedCount", "removeExecutedCount");
 					}
+					AbstractQueryManager qManager = AbstractQueryManagerFactory.getDefaultAbstractQueryManager();
+					qManager.cancel(queryExecId);
+					//Count resultCount=workflowBizLogic.getCount(queryExecId);
+
 					response.setContentType(Constants.CONTENT_TYPE_TEXT);
 					writer.write(resultObject
 							.toString());
@@ -190,6 +191,8 @@ public class WorkflowAjaxHandlerAction extends Action
 
 
 		}
+	        
+	    
 
 		return null;
 	}
