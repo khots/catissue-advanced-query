@@ -443,7 +443,7 @@ function responseHandler(response)
 
 function setDropDowns(queryTitle)
 {
-  
+
 	var numOfRows =document.getElementById("table1").rows.length;
 	var queryId;		
 			for(var count = 0; count < numOfRows; count++)
@@ -632,7 +632,7 @@ function workflowResponseHandler(response)
 							//imageForProgressiveCounts1(queryIndex);
 						}
 					
-						if((status!="Completed")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
+						if((status!="Completed" && status!="Cancelled")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
 						{
 							workflowExecuteGetCountQuery(queryId,executionLogId);
 						}
