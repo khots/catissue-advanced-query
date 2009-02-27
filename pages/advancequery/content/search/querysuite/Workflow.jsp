@@ -76,14 +76,28 @@ function addCQToList(operation)
 		}
 	}
 
-
 	if(queryIdsToAdd!=""&& selectedQueryCount==2)
 	{
 		
 		createCQ(queryIdsToAdd,operation,queryCount);
+		uncheckselectedCheckBoxes();
+		
 	}		
 }
 
+function uncheckselectedCheckBoxes()
+{
+	var queryCount=0;
+	queryCount=document.getElementById("table1").rows.length;
+		for(var counter=0;counter<queryCount;counter++)
+			{
+				var checkboxControl=document.getElementById("checkbox_"+(counter));
+				if(checkboxControl!=null && checkboxControl!=undefined && checkboxControl.checked==true)
+				{
+					checkboxControl.checked=false;
+				}
+			}
+}
 function createCQ(queryIdsToAdd,operation,queryCount)
 {
 	var queryIds=queryIdsToAdd.split(",");
@@ -259,9 +273,9 @@ function isQueryExecuted()
 	return false;
 }
 
-function setCancelFlag(queryTitle)
+function setCancelFlag(queryId)
 {
-		queryTitle=unescape(queryTitle);
+		/*queryTitle=unescape(queryTitle);
 		queryTitle=unescape(queryTitle);
 		//var nameIdentifier=document.getElementsByName("identifier");
 		var numOfRows =document.getElementById("table1").rows.length;
@@ -279,13 +293,22 @@ function setCancelFlag(queryTitle)
 							document.getElementById("cancelajaxcall_"+index).value='false'
 							
 				}
-			}
+			}*/
+
+						var identifier=document.getElementById("queryIdForRow_"+queryId);
+							var object=identifier.parentNode;
+							var tdChildCollection=object.getElementsByTagName('input');
+							var qTitle = tdChildCollection[1].value;
+							var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
+							var selectedquery=selectedqueryId.split("_");
+							queryIndex=selectedquery[1];
+							document.getElementById("cancelajaxcall_"+queryIndex).value='false';
 	
 }
 function executeGetCountQuery(queryTitle,executionLogId)
 {
 
-	setCancelFlag(queryTitle);
+	//setCancelFlag(queryTitle);
 	queryTitle=unescape(queryTitle);
 	queryTitle=unescape(queryTitle);
 
@@ -483,7 +506,7 @@ function setDropDowns(queryTitle)
 
 function workflowExecuteGetCountQuery(queryId,executionLogId)
 {
-
+	setCancelFlag(queryId);
 	var projectId=document.getElementById("selectedProject").value;
 	var url="WorkflowAjaxHandler.do?operation=execute&state=start&executionLogId="+executionLogId+"&selectedProject="+projectId+"&workflowId="+document.getElementById("id").value+"&queryId="+queryId;
 	
@@ -606,6 +629,7 @@ function workflowResponseHandler(response)
 						if((document.getElementById("cancel_"+queryIndex)==null)&&(document.getElementById("cancelajaxcall_"+queryIndex).value=='false'))
 						{
 							changeLinkToCancel(queryId,executionLogId);
+							//imageForProgressiveCounts1(queryIndex);
 						}
 					
 						if((status!="Completed")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
@@ -835,6 +859,8 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 				<td>
 					<table width="100%" border="0" cellpadding="2" cellspacing="1"  bgcolor="#EAEAEA">
 					  <tr class="td_bgcolor_grey">
+					  		<td width="10" height="25" valign="middle" >&nbsp;
+							</td>
 							<td width="10" height="25" valign="middle" >&nbsp;
 							</td>
 							</td>
@@ -853,6 +879,10 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 
 									<tr bgcolor="#ffffff" class="td_bgcolor_white" height="22">
 									
+									   <td valign="middle" valign="top">
+												<img src="images/advancequery/ic_notrun06.gif" alt=""  align="absmiddle"
+												id="notStarted_${queryIndex}">
+									   </td>
 									 <c:set var="qtype" value="${workflowForm.displayQueryType[queryIndex]}"/>
 										  <logic:equal name="query_type_data" value="${qtype}">
 						   				<td class="content_txt" width="10" valign="top">
