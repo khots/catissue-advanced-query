@@ -251,6 +251,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 				if(def.isPreferred())
 				{
 					definition=def.getDescription();
+					break;
 				}
 			}
 		}
