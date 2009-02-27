@@ -47,6 +47,8 @@
 			<include name="**/ValidateQueryBizLogic.class"/>
 			<include name="**/SpreadSheetViewGenerator.class"/>
 			<include name="**/ResultsViewIQueryCreationUtil.class"/>
+	  		<include name="**/workflowexecutor/*.class"/>
+		  	<include name="**/DirectedGraph.class"/>
 	      	<exclude name="**/bizlogic/*Test*.class"/>
 	      	<exclude name="**/bizlogic/*Factory*.class"/>
 	      	<exclude name="**/bizlogic/*Manager*.class"/>
