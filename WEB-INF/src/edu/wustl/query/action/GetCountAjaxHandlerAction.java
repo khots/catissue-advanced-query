@@ -42,11 +42,12 @@ public class GetCountAjaxHandlerAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 	{
+		int queryExecID = 0;
 		try {
 			boolean abortExecution	= Boolean.valueOf(request.getParameter(Constants.ABORT_EXECUTION));
 			Writer writer = response.getWriter();
 			String queryTitle = null;
-			int queryExecID 		= 0;
+			
 			if((Integer.valueOf(request.getParameter(Constants.EXECUTION_ID)))==-1)	//If its the first request
 			{
 				Object queryId_obj = request.getSession().getAttribute(Constants.QUERY_EXEC_ID);
@@ -84,14 +85,26 @@ public class GetCountAjaxHandlerAction extends Action
 				//retrieve count with query execution id
 				AbstractQueryUIManager qUIManager	= AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
 				Count countObject = qUIManager.getCount(queryExecID);
-
-				//create json object by count object adding Query status, count and execution id
-				JSONObject resultObject = createResultJSON(countObject);
-				
+				String projectId = (String)request.getSession().getAttribute(Constants.SELECTED_PROJECT);
+				boolean hasFewRecords = false;
+				if(projectId != null && !projectId.equals(""))
+				{
+					hasFewRecords = qUIManager.checkTooFewRecords(Long.valueOf(projectId),countObject);
+				}
+				JSONObject resultObject = null;
+				if(hasFewRecords)
+				{
+					resultObject = createResultJSON(countObject,0);
+				}
+				else
+				{
+					resultObject = createResultJSON(countObject,countObject.getCount());
+				}
 				if(isNewQuery)
 				{
 					resultObject.append(Constants.QUERY_TITLE, queryTitle);
 				}
+				//checkTooFewRecords(request, queryExecID, countObject);
 				response.setContentType("text/xml");
 				writer.write(new JSONObject().put(Constants.RESULT_OBJECT, resultObject).toString());
 			}
@@ -126,12 +139,12 @@ public class GetCountAjaxHandlerAction extends Action
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	private JSONObject createResultJSON(Count countObject) 
+	private JSONObject createResultJSON(Count countObject,int count) 
 	{
 		JSONObject resultObject = new JSONObject();
 		try
 		{
-			resultObject.append(Constants.QUERY_COUNT, countObject.getCount());
+			resultObject.append(Constants.QUERY_COUNT,count);
 			resultObject.append(Constants.GET_COUNT_STATUS, countObject.getStatus());
 			resultObject.append(Constants.EXECUTION_ID, countObject.getQuery_exection_id());
 		}
