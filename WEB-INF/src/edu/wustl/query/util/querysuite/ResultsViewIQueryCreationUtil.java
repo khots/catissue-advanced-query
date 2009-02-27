@@ -3,17 +3,21 @@ package edu.wustl.query.util.querysuite;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.client.ui.dag.ambiguityresolver.AmbiguityObject;
 import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
 import edu.wustl.cab2b.common.queryengine.Cab2bQuery;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.query.impl.CommonPathFinder;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
@@ -36,8 +40,19 @@ import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.query.flex.dag.DAGResolveAmbiguity;
 
 
+/**
+ * 
+ * @author baljeet_dhindhwal
+ *
+ */
+
 public abstract class ResultsViewIQueryCreationUtil
 {
+	/**
+	 * 
+	 * @param mainEntity
+	 * @return
+	 */
 	public static Map<EntityInterface, List<EntityInterface>> getAllParentChildrenMap(EntityInterface mainEntity)
 	{
 		HashMap<EntityInterface, List<EntityInterface>> partentChildEntityMap = new HashMap<EntityInterface, List<EntityInterface>>();
@@ -46,6 +61,12 @@ public abstract class ResultsViewIQueryCreationUtil
 		return partentChildEntityMap;
 	}
 	
+	/**
+	 * 
+	 * @param partentChildEntityMap
+	 * @param rootEntity
+	 * @return
+	 */
 	public static Map<EntityInterface, List<EntityInterface>> getTaggedEntitiesParentChildMap(Map<EntityInterface, List<EntityInterface>> partentChildEntityMap ,EntityInterface rootEntity)
 	{
 		
@@ -72,6 +93,12 @@ public abstract class ResultsViewIQueryCreationUtil
 	    return taggedEntitiesParentChildMap;
 	}
 	
+	/**
+	 * 
+	 * @param taggedEntitiesParentChildMap
+	 * @param parentChilddrenMap
+	 * @return
+	 */
 	public static Map<EntityInterface, List<EntityInterface>> getPathsMapForTaggedEntity(Map<EntityInterface, List<EntityInterface>> taggedEntitiesParentChildMap,Map<EntityInterface, List<EntityInterface>> parentChilddrenMap)
 	{
 		Map<EntityInterface, List<EntityInterface>> eachTaggedEntityPathMap = new HashMap<EntityInterface, List<EntityInterface>>();
@@ -93,7 +120,14 @@ public abstract class ResultsViewIQueryCreationUtil
 		return eachTaggedEntityPathMap;
 	}
 	
- 	private static List<EntityInterface> getPathListForTaggedEntity(EntityInterface taggedEntity,List <EntityInterface> pathList,Map<EntityInterface, List<EntityInterface>> parentChilddrenMap)
+ 	/**
+ 	 * 
+ 	 * @param taggedEntity
+ 	 * @param pathList
+ 	 * @param parentChilddrenMap
+ 	 * @return
+ 	 */
+	private static List<EntityInterface> getPathListForTaggedEntity(EntityInterface taggedEntity,List <EntityInterface> pathList,Map<EntityInterface, List<EntityInterface>> parentChilddrenMap)
  	{
  		Set<EntityInterface> keySet  = parentChilddrenMap.keySet();
  		for(EntityInterface mainEntity : keySet)
@@ -109,7 +143,15 @@ public abstract class ResultsViewIQueryCreationUtil
  	}
 
  	
- 	public static IQuery formIQuery(OutputTreeDataNode rootNode,Map<EntityInterface, List<EntityInterface>> eachTaggedEntityPathMap,IQuery getPatientDataQuery,IClientQueryBuilderInterface m_queryObject)
+ 	/**
+ 	 * 
+ 	 * @param rootNode
+ 	 * @param eachTaggedEntityPathMap
+ 	 * @param getPatientDataQuery
+ 	 * @param m_queryObject
+ 	 * @return
+ 	 */
+	public static IQuery formIQuery(OutputTreeDataNode rootNode,Map<EntityInterface, List<EntityInterface>> eachTaggedEntityPathMap,IQuery getPatientDataQuery,IClientQueryBuilderInterface m_queryObject)
  	{
  		//In IQuery, root entity should have a parametarized condition on primary key
  		EntityInterface rootEntity = rootNode.getOutputEntity().getDynamicExtensionsEntity();
@@ -216,6 +258,12 @@ public abstract class ResultsViewIQueryCreationUtil
  	}
 	
 	
+	/**
+	 * 
+	 * @param pathEntity
+	 * @param m_queryObject
+	 * @param pathExpressionsList
+	 */
 	private static void updatePathExpressionsList(EntityInterface pathEntity ,IClientQueryBuilderInterface m_queryObject,List <Integer> pathExpressionsList)
  	{
  		IQuery query = m_queryObject.getQuery();
@@ -238,7 +286,11 @@ public abstract class ResultsViewIQueryCreationUtil
 		}
  	}
 	
-	
+	/**
+	 * 
+	 * @param eachTaggedEntityPathExpressionsMap
+	 * @param m_queryObject
+	 */
  	private static void addLinksAmongExpressionsAdded(Map <EntityInterface, List<Integer>> eachTaggedEntityPathExpressionsMap,IClientQueryBuilderInterface m_queryObject )
  	{
  		IQuery query =  m_queryObject.getQuery();
@@ -276,7 +328,12 @@ public abstract class ResultsViewIQueryCreationUtil
  		
  	}
 
-	private static void addTaggedOutputAttributesToQuery(Map <EntityInterface, List<Integer>> eachTaggedEntityPathExpressionsMap,IClientQueryBuilderInterface m_queryObject)
+	/**
+	 * 
+	 * @param eachTaggedEntityPathExpressionsMap
+	 * @param m_queryObject
+	 */
+ 	private static void addTaggedOutputAttributesToQuery(Map <EntityInterface, List<Integer>> eachTaggedEntityPathExpressionsMap,IClientQueryBuilderInterface m_queryObject)
 	{
  		//For each tagged Entity ,get the tagged Attributes and add them to Ioutput Attribute list
  		ParameterizedQuery query = (ParameterizedQuery)m_queryObject.getQuery();
@@ -304,7 +361,13 @@ public abstract class ResultsViewIQueryCreationUtil
  	  cab2bQuery.setOutputAttributeList(outputAttributeList);
 	}
 
-	private  static IPath getIPath(EntityInterface parentEntity,EntityInterface childEntity)
+	/**
+	 * 
+	 * @param parentEntity
+	 * @param childEntity
+	 * @return
+	 */
+ 	private  static IPath getIPath(EntityInterface parentEntity,EntityInterface childEntity)
 	{
 		 //Now Add path among expressions added to query
 	    Map<AmbiguityObject, List<IPath>> map = null;
@@ -318,7 +381,15 @@ public abstract class ResultsViewIQueryCreationUtil
 	}
 
 	
-	public static void updateGeneratedQuery(IQuery generatedQuery,Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap,OutputTreeDataNode mainEntityTreeDataNode,IQuery parentQuery) throws MultipleRootsException
+	/**
+	 * 
+	 * @param generatedQuery
+	 * @param parentChildrenMap
+	 * @param mainEntityTreeDataNode
+	 * @param parentQuery
+	 * @throws MultipleRootsException
+	 */
+ 	public static void updateGeneratedQuery(IQuery generatedQuery,Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap,OutputTreeDataNode mainEntityTreeDataNode,IQuery parentQuery) throws MultipleRootsException
 	{
 
 		IClientQueryBuilderInterface m_queryObject = new ClientQueryBuilder();
@@ -405,7 +476,12 @@ public abstract class ResultsViewIQueryCreationUtil
 	 }	
 	}
     
-	private static IRule getRuleFromExpression(IExpression childExpression)
+	/**
+	 * 
+	 * @param childExpression
+	 * @return
+	 */
+ 	private static IRule getRuleFromExpression(IExpression childExpression)
 	{
 		IRule iRule = null;
 		for (IExpressionOperand expressionOperand : childExpression)
@@ -419,7 +495,14 @@ public abstract class ResultsViewIQueryCreationUtil
 		return iRule;
 	}
 	
-	private static int addExpressionAndRuleToQuery(IClientQueryBuilderInterface m_queryObject,
+	/**
+	 * 
+	 * @param m_queryObject
+	 * @param iRule
+	 * @param childEntity
+	 * @return
+	 */
+ 	private static int addExpressionAndRuleToQuery(IClientQueryBuilderInterface m_queryObject,
 			IRule iRule, EntityInterface childEntity)
 	{
 		int expressionId;
@@ -433,7 +516,158 @@ public abstract class ResultsViewIQueryCreationUtil
 		}
 		return expressionId;
 	}
-
-
-
+ 	
+ 	
+	/**
+	 * 
+	 * @param constraints
+	 * @param mainEntityTreeDataNode
+	 * @return
+	 */
+ 	public static  List<IExpression> getAllParentsHierarchy(IConstraints constraints,
+			OutputTreeDataNode mainEntityTreeDataNode)
+	{
+		int mainEntityOldExpId = mainEntityTreeDataNode.getExpressionId();
+		   IExpression oldPatientDataQueryExp = constraints.getExpression(mainEntityOldExpId);
+		   IJoinGraph oldPatientDataQueryGraph = constraints.getJoinGraph();
+		   
+		   //Get the complete parent child Hierarchy, till root is reached 
+		  
+		   //Extract this as Method
+		   List <IExpression>  parentsList =oldPatientDataQueryGraph.getParentList(oldPatientDataQueryExp);
+		   if(parentsList != null && !parentsList.isEmpty())
+		   {
+			   //Iterate through full hierarchy till root is reached
+			   for(int i=0; i< parentsList.size(); i++)
+			   {
+				   IExpression parentExp = parentsList.get(i);
+				   List <IExpression> listOfParents = oldPatientDataQueryGraph.getParentList(parentExp);
+				   if((listOfParents != null) && (!listOfParents.isEmpty()))
+				   {
+					   parentsList.addAll(listOfParents);
+				   }
+			   }
+		   }
+		return parentsList;
+	}
+ 	
+	public static IQuery addAllParentsHierarchyToIQuery(IClientQueryBuilderInterface m_queryObject,
+			List<IExpression> parentsList) throws MultipleRootsException
+	{
+		
+		for(int i=0; i< parentsList.size(); i++)
+		{
+			IExpression parentExp = parentsList.get(i);
+			EntityInterface parentEntity =  parentExp.getQueryEntity().getDynamicExtensionsEntity();
+			  
+			 //get the rule Associated with each parent from old get patient data Query
+			IRule parentRule =  getRuleFromExpression(parentExp); 
+			if(!parentEntity.getName().equalsIgnoreCase("Person"))
+			{
+				//If the parent expression is not person, then add to the Query 
+				IQuery updatedNewQuery = m_queryObject.getQuery();
+				  
+				IConstraints generatedQueryconstraints = updatedNewQuery.getConstraints();
+				IJoinGraph graph = generatedQueryconstraints.getJoinGraph();
+				IExpression rootExpression = graph.getRoot();
+				int rootExpressionId = rootExpression.getExpressionId();
+				EntityInterface rootEntity = rootExpression.getQueryEntity().getDynamicExtensionsEntity();
+			  
+				//Now Add the parent as the root entity of Query
+				int parentExpressionId = 0;
+				if(parentRule != null)
+				{
+					parentExpressionId = m_queryObject.addExpression(parentRule, parentEntity);
+			    }
+				 else
+				 {
+					parentExpressionId = m_queryObject.addExpression(parentEntity);
+				 }
+				 
+				 IPath path = getIPath(parentEntity,rootEntity); 
+			     
+			     //Adding the path from parent to previous root entity of the generated Query
+				  if (!m_queryObject.isPathCreatesCyclicGraph(parentExpressionId, rootExpressionId, path))
+			 	   {
+			 	    	QueryAddContainmentsUtil.linkTwoNodes(parentExpressionId, rootExpressionId, path, m_queryObject);
+			 	   } 
+			  }
+		  }
+		
+		return m_queryObject.getQuery();
+	}
+	
+	/**
+	 * 
+	 * @param m_queryObject
+	 * @param generatedQuery
+	 * @return
+	 * @throws MultipleRootsException
+	 */
+	public static IQuery addPersonAsRootToIQuery(IClientQueryBuilderInterface m_queryObject,
+			IQuery generatedQuery) throws MultipleRootsException
+	{
+		//Now again get the root node of the Query, as it might be updated by adding the new parents  
+		  IConstraints generatedQueryconstraints = generatedQuery.getConstraints();
+		  IJoinGraph graph = generatedQueryconstraints.getJoinGraph();
+		  IExpression rootExpression = graph.getRoot();
+		  int rootExpressionId = rootExpression.getExpressionId();
+		  EntityInterface rootEntity = rootExpression.getQueryEntity().getDynamicExtensionsEntity();
+		  
+		  //Get the Person Entity
+		   Collection <EntityGroupInterface> entityGroups =  EntityCache.getCache().getEntityGroups();
+		   EntityInterface  personEntity = getEntityFromCache("Person", entityGroups);
+		   AttributeInterface personAttributes = personEntity.getAttributeByName("personUpi");
+		   List<AttributeInterface> personAttributesList =  new Vector<AttributeInterface>();
+		   personAttributesList.add(personAttributes);
+		   List<String> personAttributeOperators = new ArrayList<String>();
+		   personAttributeOperators.add(RelationalOperator.Equals.getStringRepresentation());
+		   List <String> conditionList = new ArrayList<String>();
+		   List<List<String>>  personConditionValues = new ArrayList<List<String>>();
+		   conditionList.add("");
+		   personConditionValues.add(conditionList);
+		   
+		   //Now Added the person as in the Query
+		   int personExpId = m_queryObject.addRule(personAttributesList,personAttributeOperators,personConditionValues,personEntity);
+		   
+		   //Add link from Person to Root entity of the Query, making Person as root entity
+		   IPath path = getIPath(personEntity,rootEntity);
+		   if (!m_queryObject.isPathCreatesCyclicGraph(personExpId, rootExpressionId, path))
+		   {
+		    	QueryAddContainmentsUtil.linkTwoNodes(personExpId, rootExpressionId, path, m_queryObject);
+		   } 
+		   
+		   //Adding parameterized conditions on Person
+		   ICondition condition = QueryObjectFactory.createCondition(personAttributes, RelationalOperator.Equals, conditionList);
+		    
+			//Now create parameter
+		    IParameter<ICondition> parameter = QueryObjectFactory.createParameter(condition,"personUpi");
+		    
+		    IParameterizedQuery pQuery = (IParameterizedQuery)m_queryObject.getQuery();
+		    pQuery.getParameters().add(parameter);
+	
+	        return m_queryObject.getQuery();
+	}
+	
+	/**
+	 * 
+	 * @param entityName
+	 * @param entityGroups
+	 * @return
+	 */
+	private static EntityInterface getEntityFromCache(String entityName, Collection<EntityGroupInterface> entityGroups)
+	{
+		EntityInterface entity = null;
+		Iterator<EntityGroupInterface> entityGroupsItr =   entityGroups.iterator();
+       	while(entityGroupsItr.hasNext())
+       	{
+       		EntityGroupInterface entityGroup = entityGroupsItr.next();
+       		entity =  entityGroup.getEntityByName(entityName);
+       		if(entity != null)
+       		{
+       			break;
+       		}
+       	}
+       	return entity;
+	}
 }
