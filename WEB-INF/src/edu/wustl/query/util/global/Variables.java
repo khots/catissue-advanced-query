@@ -25,6 +25,7 @@ public class Variables extends edu.wustl.common.util.global.Variables
 	public static int recordsPerPageForSpreadSheet;
 	public static int recordsPerPageForTree;
 
+	public static int resultLimit;
 	public static String prepareColTypes(List dataColl)
 	{
 		return prepareColTypes(dataColl, false);
