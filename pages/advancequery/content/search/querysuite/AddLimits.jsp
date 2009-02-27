@@ -71,14 +71,14 @@
 		</tr>
 	<tr>
 	<td colspan="3">
-	<table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" id="table1">			 
+	<table border="0" width="100%" cellspacing="0" cellpadding="0"  id="table1">			 
 	<tr>
 		<td>
-		<table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" bordercolor="#000000" id="table2" >																					
+		<table border="0" width="100%" cellspacing="0" cellpadding="0"   id="table2" >																					
 		
 		<tr>
-			<td height="60%" valign="top" width="100%" colspan="4">
-				<table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3">			
+			<td  valign="top" width="100%" colspan="4">
+				<table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3" >			
 					<tr>
 						<td valign="bottom" width="10%" >
 						<%@ include file="/pages/advancequery/content/search/querysuite/ChooseSearchCategory.jsp" %>
@@ -86,32 +86,31 @@
 					
 					
 
-					<td valign="top" height="60%">
-<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  >        
-								
-							<tr>
-							<td>
-								<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="30%"  class='login_box_bg'>
-							
-												<tr id="rowMsg">
-													<td id="validationMessagesSection"  class='validationMessageCss'>
-														<div id="validationMessagesRow"   class='validationMessageCss' style="overflow:auto; height:30;display:none"></div>
+					<td valign="top">
+                    <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  >        
+					        <tr id="rowMsg">
+													<td id="validationMessagesSection"  class='validationMessageCss'  valign="middle">
+														<div id="validationMessagesRow"   class='validationMessageCss' style="overflow:auto; display:none"></div>
 													</td>
-												</tr>												
+												</tr>			
+							<tr>
+							<td >
+								<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  class='login_box_bg'>
+																													
 												<tr id="AddLimitsButtonMsg" border="0">
 													<td id="AddLimitsButtonSection" height="10" >
 														<div id="AddLimitsMsgRow"  border="0"></div>
 													</td>
 												</tr>
 												<tr>
-													<td height="215" width="100%" id="addLimitsSection">
+													<td width="100%" id="addLimitsSection">
 													<div id="addLimits" style="overflow:auto; height:100%;width:100%"></div></td>
 												</tr>	
 								</table>
 							</td>
 							</tr>							
 							<tr id="AddLimitsButtonMsg" border="0">
-								<td valign="top" id="AddLimitsButtonSection" style="padding-bottom:3px;padding-top:3px">
+								<td valign="top" id="AddLimitsButtonSection" height="29" style="padding-top:3px">
 										<div id="AddLimitsButtonRow" valign="middle" align="right" border="0"></div>
 								</td>
 							</tr>							
@@ -119,8 +118,8 @@
 							<td valign="bottom">								
 								<table border="0" bordercolor="#cccccc" width="100%" cellspacing="0" class="login_box_bg" cellpadding="0" bgcolor="#FFFFFF" height="100%">
 								<tr>
-										<td height="400px" >											
-											<div id="queryTableTd" style="overflow:auto;height:400;width:100%">
+										<td>											
+											<div id="queryTableTd" style="overflow:auto;height:350;width:100%">
 											<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 												id="DAG" width="100%" height="100%"
 												codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
@@ -168,10 +167,10 @@
 					<table border="0" width="100%" cellspacing="0" cellpadding="0" height="40">
 					<tr valign="middle">
 					 <td width="50%" align="left" colspan="2">
-					  <table border="0" cellspacing="0" cellpadding="0" >
+					  <table border="0" cellspacing="0" cellpadding="0"  >
 						<tr>
-							 <td style="padding-left:5px"  ><img src="images/advancequery/b_save.gif"   hspace="3" onclick="validateQuery('save');"/></td>
-							 <td style="padding-left:4px"><img src="images/advancequery/b_back_to_workflow.gif"  hspace="3" onclick="showWorkFlowWizard();"/></td>
+							 <td style="padding-left:8px;" valign="top" ><a href="javascript:validateQuery('save');" ><img alt="Save" src="images/advancequery/b_save.gif" border="0"/> </a></td>
+							 <td style="padding-left:5px;" valign="top"><a href="javascript:showWorkFlowWizard();"><img  alt="Back to Workflow" src="images/advancequery/b_back_to_workflow.gif" border="0" /></a></td>
 						</tr>
 					 </table>
 					</td>
@@ -188,7 +187,7 @@
 								</c:forEach>
 							</SELECT>
 					    </td>	
-						<td align="right" style="padding-right:5px"><img src="images/advancequery/b_define_results_view.gif" onclick="saveClientQueryToServer('next');" /></td>
+						<td valign="top" align="right" style="padding-right:5px"><a href="javascript:saveClientQueryToServer('next');"><img alt="Define Results View >>" src="images/advancequery/b_define_results_view.gif" border="0" /></a></td>
 						</tr>
 					</table>
 					 </td>
@@ -206,6 +205,8 @@
 </html:form>
 </body>
 <script>   
+   var element= document.getElementById("addLimitsSection");
+   element.style.height="240px";
    var wrkflw = "<%=isworkflow%>";
    if(wrkflw=="true")
    {
