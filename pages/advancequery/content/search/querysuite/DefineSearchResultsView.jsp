@@ -32,45 +32,45 @@
 <html:form method="GET" action="<%=defineSearchResultsViewAction%>" style="margin:0;padding:0;">
 <html:hidden property="currentPage" value="prevToAddLimits"/>
 <input type="hidden" name="isQuery" value="true">
-<table bordercolor="#000000" border="0" width="100%" cellspacing="0" cellpadding="0"  height="100%" >
-	<tr height="5%">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" >
+	<tr><td  valign="top" align="center" >
+
+<table border="1" width="90%" cellspacing="0" cellpadding="0"   class="login_box_bg">
+	<tr>
 		<td>
 			<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
 		</td>
 	</tr>
-	<tr style="padding-left:10px;">
-			<td  nowrap>
+	 <tr style="padding-left:2px;" id="workflowname">
+			<td nowrap height="30">
 			&nbsp;
-				<span class="small_txt_grey"><bean:message key="workflow.name"/></span>:<span class="small_txt_grey">
-				<html:text styleClass="textfield_undefined" size="50" styleId="workflowName" property="workflowName" disabled="true" value="<%=workflowName%>"/></span>&nbsp;&nbsp;
+				<span class="content_txt"><bean:message key="workflow.name"/>:</span><span>
+				<input type="text" styleClass="textfield_undefined" class="textfield_inactive" size="50" styleId="workflowName" property="workflowName" disabled="disabled" value="<%=workflowName%>"/></span>&nbsp;&nbsp;
 			</td>
-			</tr>
+	  </tr>
 	<tr>
 		<td valign="top">
-			<table border="0" width="100%" cellspacing="0" cellpadding="0" height="95%" id="table1" >
+			<table border="0" width="100%" cellspacing="0" cellpadding="0"  id="table1" >
 				<tr>
 					<td valign="top">
-						<table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" bordercolor="#000000" id="table2" >
-							<tr  height="10">
+						<table border="0" width="100%" cellspacing="0" cellpadding="0"   id="table2" >
+							<tr>
 								
 								<td width="33%" align="center" valign="top" background="images/advancequery/top_bg_wiz.gif">
 									<img src="images/advancequery/define_filters_inactive.gif" /> <!-- width="118" height="25" /-->
 								</td>
-								<td width="33%" align="center" valign="middle" height="36"  background="images/advancequery/top_bg_wiz.gif">
+								<td width="33%" align="center" valign="top" height="36"  background="images/advancequery/top_bg_wiz.gif">
 									<img src="images/advancequery/2_active.gif" /> <!-- width="199" height="38" /-->
 								</td>
 								<td width="33%" align="center" valign="top" background="images/advancequery/top_bg_wiz.gif">
 									<img src="images/advancequery/3_inactive.gif" /> <!--  width="139" height="38" /-->
 								</td>
 							</tr>
-							<tr height="1">
-								<td></td>
-							</tr>
-							<tr valign="top"  height="100%" width="100%">
-								<td colspan="4" valign="top" height="100%" width="100%">
-									<table border="0" cellspacing="0" cellpadding="0" valign="top"  height="100%" width="100%">
+							<tr valign="top"   width="100%">
+								<td colspan="3" valign="top"  width="100%">
+									<table border="0" cellspacing="0" cellpadding="0" valign="top" width="100%">
 									<tr valign="top">
-										<td valign="top" height="100%" colspan="4" width="100%">
+										<td valign="top"  colspan="4" width="100%">
 											<!--		tiles insert -->
 											<tiles:insert attribute="content"></tiles:insert>
 										</td>
@@ -82,7 +82,7 @@
 					</td>
 				</tr>
 </table>
+</td></tr></table>
 </html:form>
-
 </body>
 </html> 
