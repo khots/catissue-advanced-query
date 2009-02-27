@@ -4,20 +4,13 @@ package edu.wustl.query.spreadsheet;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.query.factory.ViewIQueryGeneratorFactory;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
-import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.querysuite.queryobject.impl.OutputTreeNode;
 import edu.wustl.common.querysuite.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
-import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 import edu.wustl.query.viewmanager.AbstractViewIQueryGenerator;
 import edu.wustl.query.viewmanager.NodeId;
@@ -37,50 +30,34 @@ public class SpreadSheetViewGenerator
 	protected String idOfClickedNode;
 	protected QueryDetails queryDetails;
 	protected SelectedColumnsMetadata selectedColumnsMetadata;
+	private ViewType viewType;
 
-	public SpreadSheetData createSpreadSheet()
+	public SpreadSheetViewGenerator(ViewType viewType)
 	{
-		return null;
+		this.viewType = viewType;
 	}
-
-	public OutputTreeNode getClickedNode()
-	{
-		return null;
-	}
-
-	public void updateSpreadSheetForDataNode(SpreadSheetData spreadSheetData)
-	{
-
-	}
-
+	
 	public void updateViewOfQuery(ViewType viewType)
 	{
-
+		this.viewType = viewType;
 	}
 
 	/**
+	 * @param node
 	 * @param queryDetailsObj
-	 * @param idOfClickedNode2
 	 * @param spreadsheetData
-	 * @param request 
 	 * @throws QueryModuleException 
 	 */
-	public void createSpreadsheet(QueryDetails queryDetailsObj, SpreadSheetData spreadsheetData,
-			HttpServletRequest request) throws QueryModuleException
+	public void createSpreadsheet(NodeId node, QueryDetails queryDetailsObj,
+			SpreadSheetData spreadsheetData)
+			throws QueryModuleException
 	{
-		idOfClickedNode = request.getParameter(Constants.TREE_NODE_ID);
-		
-		NodeId node = new NodeId(idOfClickedNode);
-
-		ViewManager viewManager = ViewManager.getInstance(ViewType.USER_DEFINED_SPREADSHEET_VIEW);
+		ViewManager viewManager = ViewManager.getInstance(viewType);
 		List<IOutputAttribute> selectedColumns = viewManager.getSelectedColumnList(queryDetailsObj
 				.getQuery());
 		AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
 				.getDefaultViewIQueryGenerator();
-		queryGenerator.createQueryForSpreadSheetView(node, queryDetailsObj); 
-
-		executeQuery(queryDetailsObj.getQuery(), spreadsheetData, request, queryDetailsObj
-				.getQueryExecutionId(), node.getRootData());
+		queryGenerator.createQueryForSpreadSheetView(node, queryDetailsObj);
 
 		List<String> columnsList = getColumnList(selectedColumns);
 
@@ -91,10 +68,18 @@ public class SpreadSheetViewGenerator
 	/**
 	 * @param outputAttributeList
 	 * @return
+	 * @throws QueryModuleException 
 	 */
 	private List<String> getColumnList(List<IOutputAttribute> outputAttributeList)
+			throws QueryModuleException
 	{
 		List<String> columnsList = new ArrayList<String>();
+		if (outputAttributeList.size() == 0)
+		{
+			logger.error("No output attribute defined for patient data query");
+			throw new QueryModuleException("No output attribute defined for patient data query",
+					QueryModuleError.GENERIC_EXCEPTION);
+		}
 		for (IOutputAttribute outputAttribute : outputAttributeList)
 		{
 			String className = outputAttribute.getAttribute().getEntity().getName();
@@ -103,34 +88,5 @@ public class SpreadSheetViewGenerator
 			columnsList.add(attrLabel + " : " + className);
 		}
 		return columnsList;
-	}
-
-	/**
-	 * @param query
-	 * @param spreadsheetData
-	 * @param request
-	 * @param queryExecutionId
-	 * @param data 
-	 * @throws QueryModuleException
-	 */
-	private void executeQuery(IQuery query, SpreadSheetData spreadsheetData,
-			HttpServletRequest request, int queryExecutionId, String data) throws QueryModuleException
-	{
-		//getData
-		AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory
-				.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
-
-		DataQueryResultsBean dataQueryResultsBean;
-		if(data.equals(Constants.NULL_ID))
-		{
-			dataQueryResultsBean = queryUIManager.getData(queryExecutionId,
-				ViewType.SPREADSHEET_VIEW);
-		}
-		else
-		{
-			dataQueryResultsBean = queryUIManager.getData(queryExecutionId, data, ViewType.SPREADSHEET_VIEW);
-		}
-		spreadsheetData.setDataList(dataQueryResultsBean.getAttributeList());
-		spreadsheetData.setDataTypeList(dataQueryResultsBean.getDataTypesList());
 	}
 }
