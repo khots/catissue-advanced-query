@@ -39,12 +39,13 @@ public abstract class AbstractQuery
 	 * @param queryString
 	 * @param userId
 	 */
-	public AbstractQuery(IAbstractQuery query, int queryExecId, String queryString, Long userId)
+	public AbstractQuery(IAbstractQuery query, int queryExecId, String queryString, Long userId, String ipAddress)
 	{
 		this.query = query;
 		this.queryExecId = queryExecId;
 		this.queryString = queryString;
 		this.userId = userId;
+		this.ipAddress = ipAddress;
 	}
 
 	/**
