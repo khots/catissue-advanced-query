@@ -23,7 +23,7 @@ public abstract class AbstractQuery
 	private Long userId;
 	/** machine IP ADDRESS from where query was fired **/
 	private String ipAddress;
-	
+
 	/**
 	 * Default Constructor
 	 */
@@ -123,21 +123,23 @@ public abstract class AbstractQuery
 	@Override
 	public boolean equals(Object obj)
 	{
+	    boolean isEqual = false;
 	    if (obj instanceof AbstractQuery)
         {
 	        if(((AbstractQuery)obj).getQuery().getId().equals(this.getQuery().getId()))
             {
-	            return true;
+	            isEqual = true;
             }
 	        else
 	        {
-	            return false;
+	            isEqual = false;
 	        }
         }
 	    else
         {
-            return false;
+	        isEqual = false;
         }
+	    return isEqual;
 	}
 
 	@Override
@@ -167,7 +169,7 @@ public abstract class AbstractQuery
 
 	    return this.query.getId().intValue();
 	}
-	
+
 	/**
 	 * To get IP Address
 	 * @return

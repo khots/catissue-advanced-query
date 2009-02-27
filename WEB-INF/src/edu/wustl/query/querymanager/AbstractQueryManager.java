@@ -29,17 +29,22 @@ import edu.wustl.query.util.querysuite.QueryModuleException;
 public abstract class AbstractQueryManager
 {
 
-	/**
-	 *
-	 * @param query
-	 * @return
-	 * @throws QueryModuleException
-	 */
-	public int execute(AbstractQuery query)throws MultipleRootsException,SqlException, QueryModuleException
-	{
-
-		return 0;
-	}
+    /**
+     * This method is used to execute the given <code>query</code> object.
+     *
+     * @param query
+     *            The query object to be executed.
+     * @return The Query Execution Id generated for the given <code>query</code>
+     *         object.
+     * @throws MultipleRootsException
+     *             MultipleRootsException
+     * @throws SqlException
+     *             SqlException
+     * @throws QueryModuleException
+     *             QueryModuleException
+     */
+    abstract public int execute(AbstractQuery query)
+            throws MultipleRootsException, SqlException, QueryModuleException;
 
 	/**
      * This method is used to execute a composite query.
@@ -54,12 +59,9 @@ public abstract class AbstractQueryManager
      * @throws SqlException
      * @throws QueryModuleException
      */
-    public int execute(AbstractQuery compositeQuery,
+    abstract public int execute(AbstractQuery compositeQuery,
             List<Integer> dependendentQueryExecIds)
-            throws MultipleRootsException, SqlException, QueryModuleException
-    {
-        return 0;
-    }
+            throws MultipleRootsException, SqlException, QueryModuleException;
 
 	/**
 	 *
