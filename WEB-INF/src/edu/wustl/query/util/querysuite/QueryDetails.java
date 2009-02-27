@@ -183,9 +183,9 @@ public class QueryDetails
 		outputTermsColumns = (Map<String, IOutputTerm>) session
 				.getAttribute(Constants.OUTPUT_TERMS_COLUMNS);
 		query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
-		if(session.getAttribute(Constants.QUERY_EXECUTION_ID)!=null)
+		if(session.getAttribute("queryExecutionId")!=null)
 		{
-			queryExecutionId = ((Integer)session.getAttribute(Constants.QUERY_EXECUTION_ID)).intValue();
+			queryExecutionId = ((Integer)session.getAttribute("queryExecutionId")).intValue();
 		}
 	}
 
