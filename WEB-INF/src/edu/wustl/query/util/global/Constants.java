@@ -681,7 +681,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
     /**  Constant for PROJECT_ID **/
     public static final String PRJCT_ID = "PROJECT_ID";
     /**  Constant for QUERY_EXECUTION_ID **/
-    public static final String QUERY_EXECUTION_ID = "QUERY_EXECUTION_ID";
+    public static final String QUERY_EXECUTION_ID = "queryExecutionId";
     /**  Constant for QUERY_EXECUTION_ID **/
     public static final String COUNT_QUERY_EXECUTION_ID = "COUNT_QUERY_EXECUTION_ID";
      
@@ -727,8 +727,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String QUERY_COUNT = "queryCount";
 	public static final String GET_COUNT_STATUS = "status";
 	public static final String EXECUTION_ID = "executionId";
-	public static final String QUERY_TYPE_GET_COUNT="Count";
-	public static final String QUERY_TYPE_GET_DATA="Data";
+	public static final String QUERY_TYPE_GET_COUNT="GetCount";
+	public static final String QUERY_TYPE_GET_DATA="GetData";
 	
 	public static final int[] SHOW_LAST_OPTION = {25, 50, 100, 200};
 //Constants for Get Count
@@ -758,7 +758,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String COUNT_QUERY_ID = "countQueryId "; 
 	public static final String PROJECT_NAME_VALUE_BEAN = "projectsNameValueBeanList";
 	/**  Constant for WORFLOW_ID   */
-	public static final String WORFLOW_ID = "worflowId";
+	public static final String WORFLOW_ID = "workflowId";
 	/**  Constant for WORFLOW_NAME  */
 	public static final String WORFLOW_NAME = "worflowName";
 	/** constants for VI*/
@@ -822,6 +822,17 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final int AGE = 89;
     public static final int MINOR = 18;
     
-    /**  Constant for Equal to operator */
+    /**
+     * constant for  PATIENT_DATA_QUERY
+     */
+    public static final String PATIENT_DATA_QUERY = "patientDataQuery";
+    
+    public static final String  PATIENT_QUERY_ROOT_OUT_PUT_NODE_LIST = "patientDataRootOutPutList";
+    
+   
+    public static final String PATIENT_QUERY_UNIQUE_ID_MAP =  "uniqueIDNodeMap";
+    
+     /**  Constant for Equal to operator */
 	public static final String EQUALS = " = ";
+    
 }
