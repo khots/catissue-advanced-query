@@ -39,6 +39,7 @@
 	set_mode="Mapping";
 	var label;
 	var pervVocabCheckboxId="vocab_"+'<%=srcVocabURN%>';
+	var searchImg="<img src='images/advancequery/loading_msg.gif' border='0' alt='Searching...' >   ";
 	/*to close the model widow*/
 function cancelWindow()
 {
@@ -263,7 +264,7 @@ function getMappingsOfConcepts(vocabCheckBoxId,vocabURN)
 				 if(document.getElementById(selectedCheckedBoxVocabDivID).style.display == 'none' && innerData.length==0)
 					{
 					
-						label.innerHTML="Please Wait.....";
+						label.innerHTML=searchImg+"Please Wait.....";
 						waitCursor();
 						
 						 document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
@@ -482,7 +483,7 @@ function serachForTermInVocab(operation)
 	
 			label=document.getElementById("searhLabel");
 			var searchAbortButtonDiv=document.getElementById("searchAbortButtonDiv");
-		    label.innerHTML="  Searching .... Please Wait";
+		    label.innerHTML=searchImg+"Searching .... Please Wait";
 			if(operation=="search") // if operation is search change the button to abort and set the flag
 			{
 				searchAbortButtonDiv.innerHTML="<a  href=\"javascript:serachForTermInVocab('abort');\"><img src='images/advancequery/b_abort.gif' border='0' alt='abort' ></a>";
@@ -665,11 +666,23 @@ function editSelectedPV()
 	
 };
 
+/*  To support different window resolution */
+	   var windowWidth=(screen.width * 90 )/100;
+	   var windowHeight=( screen.height * 65)/100;
+	   divWidth=windowWidth*42/100;
+	   divHeight=windowHeight*64/100;
+	   if(screen.height>768)
+	   {
+	  
+	   divHeight=divHeight+42;
+	   }
+	   
 </script>
 </head>
 <body onLoad="Reload();editSelectedPV();">
-<table width="100%"  border="0" cellspacing="0" cellpadding="7"><tr><td>
-<table width="100%" border="0" align="center" cellpadding="2" cellspacing="0">
+<script src="jss/advancequery/wz_tooltip.js" type="text/javascript"> </script>
+<table width="100%"  height="100%" border="0" cellspacing="0" cellpadding="7"><tr><td>
+<table width="100%" height="100%" border="0" align="center" cellpadding="2" cellspacing="0">
 	<tr>
 		<td colspan="3" >
 		<table >
@@ -719,30 +732,30 @@ function editSelectedPV()
 		
 	</tr>
   </tr>
-	<tr>
+  <tr>
 		<td colspan="3" height='7px' class="td_greydottedline_horizontal">
 		</td>
-	</tr>
-	<tr>
-		<td width="400px">
+  </tr>
+  <tr>
+		<td width="45%"  height="100%">
 	
-		<table cellpadding="0" cellspacing="0" width="400px" style="height: 380px; border:1px solid Silver;">
+		<table cellpadding="0" cellspacing="0" width="100%"  height="100%" style=" border:1px solid Silver;">
 		<tr>
 			<td class="grid_header_text" height="25" bgcolor="#EAEAEA" style="padding-left:7px;">Search Result</td> 
 		</tr>
 		<tr>
-			<td bgcolor="#FFFFFF">
-			<table cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" border="0">
+			<td bgcolor="#FFFFFF" width="100%"  height="100%">
+			<table width="100%"  height="100%" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" border="0">
 			<tr height="20px">
 				<td height="20px" id="searhLabel" class="content_txt"  align="left" style="padding-left:10px;color:blue">&nbsp;</td>  
 				<!-- <td width="48%" height="20" valign="middle" bgcolor="#FFFFFF" class="grid_header_text" style="padding-left:7px;">List View </td>  -->
 				<!--<td width="48%" height="20" valign="middle" bgcolor="#FFFFFF" class="grid_header_text" style="padding-left:7px;">Tree View </td> -->
 			</tr>
 			<tr>
-				<td valign="top" style="padding:0 0 7px 7px;">
+				<td valign="top" style="padding:0px 7px 0px 7px;" width="100%"  height="100%">
 					<!-- for tree view we required this width: 260px; height: 300px;  -->
-					<div  id="divForMappingMode" style="width: 380px; height: 330px; border:1px solid Silver; overflow:auto;"  >
-					<table border="0" cellpadding="0" cellspacing="0">
+					<script>document.write('<div  id="divForMappingMode" style=" width: '+divWidth+'px; height:'+divHeight+'px ;  border:1px solid Silver; overflow:auto;"  >')</script>
+					<table width="100%"  height="100%" border="0" cellpadding="0" cellspacing="0">
 					<logic:iterate name="Vocabulries" id="vocabs">
 					<c:set var="urn" value="${vocabs.vocabURN}" />
 					<c:choose>
@@ -788,7 +801,8 @@ function editSelectedPV()
 					</div>
 				
 						<!-- for tree view we required this width: 260px; height: 300px;  -->
-					<div  id="divForSearchingMode" style="width: 380px; height: 330px; border:1px solid Silver; overflow:auto;display:none"  >
+					<script>document.write('<div  id="divForSearchingMode" style=" width: '+divWidth+'px; height:'+divHeight+'px ;  border:1px solid Silver; overflow:auto;display:none"  >')</script>
+				<!--	<div  id="divForSearchingMode" width="100%"  height="100%" style="border:1px solid Silver; overflow:auto;display:none"  >-->
 					</div>
 				</td>
 				<!--<td valign="top" style="padding:0 7px 7px 7px;">
@@ -807,37 +821,43 @@ function editSelectedPV()
 			
 		</table>
 		</td>
-		<td align="center" valign="middle">
-			<table border="0" cellspacing="0" cellpadding="0">
-                          <tr>
-                            <td height="22"><a href="javascript:addPermissibleValuesToList();"><img src="images/advancequery/b_add.gif" alt="Add" width="63" height="18" vspace="2" border="0" align="absmiddle" /></a></td>
+		<td align="center" valign="middle" width="10%"  height="100%">
+			<table width="100%"  height="100%"  border="0" cellspacing="0" cellpadding="0" >
+                          <tr valign="middle" align="center" >
+                            <td height="22" valign="bottom" align="center"><a href="javascript:addPermissibleValuesToList();"><img src="images/advancequery/b_add.gif" alt="Add" width="63" height="18" vspace="2" border="0" align="absmiddle" /></a></td>
                           </tr>
-                          <tr>
-                            <td height="22"><a href="javascript:deleteSelectedPvsRow();"><img src="images/advancequery/b_remove.gif" alt="Remove" width="63" height="18" vspace="2" border="0"></a></td>
+						  
+                          <tr valign="middle" align="center" >
+                            <td height="22" valign="top" align="center"><a href="javascript:deleteSelectedPvsRow();"><img src="images/advancequery/b_remove.gif" alt="Remove" width="63" height="18" vspace="2" border="0"></a></td>
                           </tr>
-                      </table>
+             </table>
 		</td> 
-		<td width="260px" valign="top">
+		<td  valign="top" width="45%"  height="100%">
 			<!-- for tree view we required this width: 260px; height: 300px;  -->
-			<table cellpadding="0" cellspacing="0" width="380px" style="height:385px; border:1px solid Silver;">
+			<table cellpadding="0" cellspacing="0" width="100%"  height="100%" style=" border:1px solid Silver;">
 				<tr>
 					<td class="grid_header_text" height="25" bgcolor="#EAEAEA" style="padding-left:7px;">Selected Permissible Values </td> 
 				</tr>
+				<tr height="20px">
+				<td height="20px" id="searhLabel222" class="content_txt"  align="left" style="padding-left:10px;color:blue">&nbsp;</td>  
+				
+			</tr>
 				<tr>
 					<td bgcolor="#FFFFFF">
-					<table bgcolor="#FFFFFF">
+					<table bgcolor="#FFFFFF" width="100%"  height="100%">
 					<tr>
-					<td style="padding:5px;">
-						<div style="width: 380px; height:340px; border:1px solid Silver; overflow:auto;"  >
-						<table cellpadding="0" cellspacing="0"  border="0">
+					<td valign="top"  style="padding:0px 5px 0px 5px;">
+						<script>document.write('<div  id="divForSearchingMode" style=" width: '+divWidth+'px; height:'+divHeight+'px ; border:1px solid Silver; overflow:auto;">')</script>
+						<!-- <div width="100%"  height="100%" style=" border:1px solid Silver; overflow:auto;"  >-->
+						<table width="100%"  height="100%" cellpadding="0" cellspacing="0"  border="0">
 						<logic:iterate name="Vocabulries" id="vocabs">
-							<tr><td><div id = "selectedPermValues_Div_${vocabs.vocabURN}" style="display:none">
+							<tr><td valign="top"><div id = "selectedPermValues_Div_${vocabs.vocabURN}" style="display:none">
 						
-							<table border = "0" id = "" cellpadding ="0" cellspacing ="1">
+							<table border = "0" id = "" cellpadding ="0" cellspacing ="1" >
 								<tr>
 									<td> <table border = "0" id = "" cellpadding ="0" cellspacing ="1">  <tr>
 									<td align="left" align="absmiddle">
-										<a id="image_${vocabs.vocabURN}" onclick="javascript:showHide('selectedPermValues_${vocabs.vocabURN}','image_${vocabs.vocabURN}')">
+										<a id="imageSEL_${vocabs.vocabURN}" onclick="javascript:showHide('selectedPermValues_${vocabs.vocabURN}','imageSEL_${vocabs.vocabURN}')">
 										<img  src="images/advancequery/nolines_minus.gif" align="absmiddle"/></a>
 									</td>
 									<td  align="middle"><input type="checkbox" id="pvSelectedCB_${vocabs.vocabURN}" onclick="checkedUncheckedAllPvs('${vocabs.vocabURN}')"> </td>
@@ -866,7 +886,7 @@ function editSelectedPV()
 		</td>
 	</tr>
     <tr>
-            <td height="35"><table border="0" cellspacing="0" cellpadding="0">
+            <td height="10%"><table border="0" cellspacing="0" cellpadding="0">
               <tr>
 			 <td align="left"><div id="deactivateDiv"> <a href='javascript:addPvsToCondition();'><img id='okImage' src='images/advancequery/b_ok.gif' border='0' alt='OK' width='44' height='23'></a></div></td>
                 <!--  In each case ok button should be enabled because Requirement has changed, user should able to add any entity without  limit
