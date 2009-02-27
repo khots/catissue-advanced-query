@@ -3,7 +3,7 @@
 <TestCases testHome="E:\\Nightly_build\\projects\\framework_test_home\\"
 					 dbInitCommonScriptsFile="" dbCleanUpCommonScriptsFile="">
 		
-	<TestCase>
+	 <TestCase>
 			 <name>Find all persons where PERSON UPI NOT NULL and DEMOGRAPHICS DOB>10/10/1985</name>
 			 <tmtTestCaseId>1</tmtTestCaseId>
 			 <expectedResultsCSV>TC1_Expected_Results.csv</expectedResultsCSV>
@@ -54,6 +54,30 @@
 			 		 
 			 <query type = "saved_query"
 			 	    	 id = "510">
+			 </query>
+		</TestCase>
+		
+		<TestCase>
+			 <name>Find all females over age of 35 have had HCG > 100 in last 2 years</name>
+			 <tmtTestCaseId>6011</tmtTestCaseId>
+			 <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV> -->
+			 <expectedResultsCSV>TC6_Expected_Results.csv</expectedResultsCSV>
+			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> -->
+			 		 
+			 <query type = "saved_query"
+			 	    	 id = "576">
+			 </query>
+		</TestCase>
+
+		<TestCase>
+			 <name>Find all persons have had PSA > 5 done within 2 years</name>
+			 <tmtTestCaseId>6013</tmtTestCaseId>
+			 <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV> -->
+			 <expectedResultsCSV>TC7_Expected_Results.csv</expectedResultsCSV>
+			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> -->
+			 		 
+			 <query type = "saved_query"
+			 	    	 id = "571">
 			 </query>
 		</TestCase>
 
