@@ -264,9 +264,8 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		StringBuilder completeWherePart = new StringBuilder(wherePart);
 		Set<Integer> processedAlias = new HashSet<Integer>();
 		IExpression parentExpression = joinGraph.getRoot();
-		String leftAlias = getAliasName(parentExpression);
 		completeWherePart.append(Constants.QUERY_AND);
-		completeWherePart.append(processChildExpressions(leftAlias, processedAlias,
+		completeWherePart.append(processChildExpressions(processedAlias,
 				parentExpression));
 		return Utility.removeLastAnd(completeWherePart.toString());
 	}
@@ -284,7 +283,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @throws XQueryDataTypeInitializationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private String processChildExpressions(String leftAlias, Set<Integer> processedAlias,
+	private String processChildExpressions(Set<Integer> processedAlias,
 			IExpression parentExpression) throws SqlException, XQueryDataTypeInitializationException, DynamicExtensionsSystemException
 	{
 		StringBuffer buffer = new StringBuffer();
@@ -303,8 +302,8 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 					AssociationInterface actualEavAssociation = ((IIntraModelAssociation) association)
 							.getDynamicExtensionsAssociation();
 					AssociationInterface eavAssociation = actualEavAssociation;
-					EntityInterface rightEntity = eavAssociation.getTargetEntity();
-					String actualRightAlias = getAliasFor(childExpression, rightEntity);
+					//EntityInterface rightEntity = eavAssociation.getTargetEntity();
+					//String actualRightAlias = getAliasFor(childExpression, rightEntity);
 					if (!processedAlias.contains(aliasAppenderMap.get(childExpression)))
 					{
 						ConstraintPropertiesInterface constraintProperties = eavAssociation
@@ -358,7 +357,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 
 
 					// append from part SQLXML for the next Expressions.
-					buffer.append(processChildExpressions(actualRightAlias, processedAlias,
+					buffer.append(processChildExpressions(processedAlias,
 							childExpression));
 				}
 				else
@@ -601,7 +600,6 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 				node.addAttribute(new QueryOutputTreeAttributeMetadata(attributeInterface,
 				columnAliasName, node, displayNameForColumn));
 			}
-			
 		}
 
 		
