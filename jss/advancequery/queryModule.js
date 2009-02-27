@@ -1924,8 +1924,8 @@ var jsReady = false;
 			vocabCodeDetail=conceptCodes[0].split("ID_DEL");
 			editVocabURN=vocabCodeDetail[0];
 	   }
-	   var width=930; //(screen.width * 90 )/100;
-	   var height= 520;//( screen.height * 65)/100;
+	   var width=(screen.width * 90 )/100;
+	   var height=( screen.height * 65)/100;
 	   pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'LoadingVocabularies.do','Search Permissible Values for \"'+entityName+'\"', 'width='+width+' height='+height+',center=1,resize=0,scrolling=1');
 	   refresh=false;
 	}
