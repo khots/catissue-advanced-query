@@ -75,25 +75,22 @@ public class WorkflowExecutor
 			ICompositeQuery cquery = (ICompositeQuery) ciderQuery.getQuery();
 
 			// Need to spawn Cider execution threads from the child queries
-			// FIXME For now we assume that there are only PQs in a CQ.
-			// Ideally it should be a recursive call.
+			// For now we assume that there are only PQs in a CQ.
+			// Ideally it is a recursive call.
 			IAbstractQuery queryOne = cquery.getOperation().getOperandOne();
 			IAbstractQuery queryTwo = cquery.getOperation().getOperandTwo();
 
 			// Get all the PQs and start their execution.
 			List<AbstractQuery> childQueryNodes =
-				workflowDetails.getDependencyGraph().getAllChildNodes(ciderQuery);
+				workflowDetails.getDependencyGraph().getChildNodes(ciderQuery);
 			List<Integer> queryExecIdsList = new ArrayList<Integer>();
 
 			for (AbstractQuery childQuery : childQueryNodes) {
-			    int execId = queryManager.execute(childQuery);
-				queryExecIdsList.add(execId);
-
-				// FIXME - remove cast
-				// FIXME - use query Id instead as key
-                executionIdsMap.put(childQuery.getQuery().getId(), execId);
-//				executionIdsMap.put(((IParameterizedQuery)childQuery.getQuery()).getName(), execId);
+//			    int execId = queryManager.execute(childQuery);
+			    executionIdsMap.putAll(this.execute(childQuery));
+//                executionIdsMap.put(childQuery.getQuery().getId(), execId);
 			}
+			queryExecIdsList.addAll(executionIdsMap.values());
 
 			// Need to submit the cquery to the Composite Query Executer
 			String cqSqlQueryString = workflowDetails.getDependencyGraph().generateSQL(ciderQuery);
@@ -104,13 +101,15 @@ public class WorkflowExecutor
 			executionIdsMap.put(ciderQuery.getQuery().getId(), cqExecId);
 
 		} else if(ciderQuery.getQuery() instanceof IParameterizedQuery) {
-			// run the PQ
-			int queryExecId = queryManager.execute(ciderQuery);
+			// run the PQ only if it not executed previously
+		    if (executionIdsMap.get(ciderQuery.getQuery().getId()) == null)
+		    {
+		        int queryExecId = queryManager.execute(ciderQuery);
 
-			// FIXME use query Id as key
-            executionIdsMap.put(ciderQuery.getQuery().getId(), queryExecId);
-//			executionIdsMap.put(((IParameterizedQuery)ciderQuery.getQuery()).getName(), queryExecId);
-			log.debug("ciderQuery started Exec - " + queryExecId);
+		        // Use query Id as key
+		        executionIdsMap.put(ciderQuery.getQuery().getId(), queryExecId);
+		        log.debug("ciderQuery started Exec - " + queryExecId);
+		    }
 		}
 		return executionIdsMap;
 	}
@@ -147,18 +146,22 @@ public class WorkflowExecutor
 
 	/**
 	 *  Method to execute all composite queries in workflow
+	 * @throws SqlException
+	 * @throws MultipleRootsException
 	 */
-	private void executeAllCompositeQueries() throws QueryModuleException
+	private void executeAllCompositeQueries() throws QueryModuleException,
+            MultipleRootsException, SqlException
 	{
 		List<AbstractQuery> compositeQueries = workflowDetails.getDependencyGraph()
 				.getAllIntermediateNodes();
 		for (AbstractQuery query : compositeQueries)
 		{
-			CompositeQueryExecutor compositeQueryExecutor = new CompositeQueryExecutor(
-					query, workflowDetails.getDependencyGraph()
-							.getOutgoingEdgesExecIdList(query), workflowDetails
-							.getDependencyGraph().generateSQL(query));
-			compositeQueryExecutor.generateQueryExecId();
+//			CompositeQueryExecutor compositeQueryExecutor = new CompositeQueryExecutor(
+//					query, workflowDetails.getDependencyGraph()
+//							.getOutgoingEdgesExecIdList(query), workflowDetails
+//							.getDependencyGraph().generateSQL(query));
+//			compositeQueryExecutor.generateQueryExecId();
+		    this.execute(query);
 		}
 	}
 
