@@ -46,7 +46,6 @@ import edu.wustl.common.querysuite.queryobject.IDateOffsetAttribute;
 import edu.wustl.common.querysuite.queryobject.IDateOffsetLiteral;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IExpressionAttribute;
-import edu.wustl.common.querysuite.queryobject.IExpressionOperand;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
@@ -384,6 +383,7 @@ public class DAGPanel
 	{
 		IQuery query = m_queryObject.getQuery();
 		IConstraints constraints = query.getConstraints();
+		IJoinGraph graph = constraints.getJoinGraph();
 		IExpression sourceExpression = constraints.getExpression(sourceExpressionId);
 
 		for (IExpression expression : constraints)
@@ -391,14 +391,14 @@ public class DAGPanel
 			if (expression.getQueryEntity().getDynamicExtensionsEntity().equals(
 					sourceExpression.getQueryEntity().getDynamicExtensionsEntity()))
 			{
-				List<IExpression> subExpressionList = getSubExpressionList(expression);
-				updateAllIassociationsInPath(expression, subExpressionList, path, constraints);
+				List<IExpression> subExpressionList = graph.getChildrenList(expression);
+				updateAllIassociationsInPath(expression, subExpressionList, path, graph);
 			}
 
 		}
 
 	}
-
+	
 	/**
 	 * It will search all the IAssociations present in the query object starting from the expression
 	 * to its subexpression, then subExpression to its subExpressions & so on recursively.
@@ -409,19 +409,18 @@ public class DAGPanel
 	 * @param constraints
 	 */
 	private void updateAllIassociationsInPath(IExpression expression,
-			List<IExpression> subExpressionList, IPath path, IConstraints constraints)
+			List<IExpression> subExpressionList, IPath path, IJoinGraph graph)
 	{
 
 		for (IExpression subExpression : subExpressionList)
 		{
-			IAssociation ass = getAssociationBetweenTwoExpressions(expression, subExpression,
-					constraints);
+			IAssociation ass = graph.getAssociation(expression, subExpression);
 			if (ass != null)
 			{
 				updatePathForIassociation(path, ass);
 			}
-			updateAllIassociationsInPath(subExpression, getSubExpressionList(subExpression), path,
-					constraints);
+			updateAllIassociationsInPath(subExpression, graph.getChildrenList(subExpression), path,
+					graph);
 		}
 
 	}
@@ -447,45 +446,6 @@ public class DAGPanel
 
 	}
 
-	/**
-	 * It will search the operands of the given expression which are subExpressions & will return them in list.
-	 * @param expression whose subExpressions are needed
-	 * @return List of subExpression
-	 */
-	private List<IExpression> getSubExpressionList(IExpression expression)
-	{
-		int noOfOperands = expression.numberOfOperands();
-		List<IExpression> subExpressionList = new ArrayList<IExpression>();
-		for (int i = 0; i < noOfOperands; i++)
-		{
-			IExpressionOperand operand = expression.getOperand(i);
-			if (operand instanceof IExpression)
-			{
-				subExpressionList.add((IExpression) operand);
-			}
-		}
-		return subExpressionList;
-	}
-
-	/**
-	 * It will return the association between the source and destination expression.
-	 * @param sourceExpression 
-	 * @param destinationExpression
-	 * @param constraints
-	 * @return association between the sourceExpression & destinationExpression.
-	 */
-	private IAssociation getAssociationBetweenTwoExpressions(IExpression sourceExpression,
-			IExpression destinationExpression, IConstraints constraints)
-	{
-		IAssociation association = null;
-		if (sourceExpression != null && destinationExpression != null)
-		{
-			association = constraints.getJoinGraph().getAssociation(sourceExpression,
-					destinationExpression);
-		}
-		return association;
-
-	}
 
 	/**
 	 * Gets list of paths between two nodes
