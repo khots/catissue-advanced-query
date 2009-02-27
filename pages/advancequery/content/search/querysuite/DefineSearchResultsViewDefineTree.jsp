@@ -16,7 +16,7 @@
   <table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3" valign="top">
 	
 <tr  valign="top">
-	<td  valign="top" width="20%">
+	<td  valign="top" width="20%" colspan="2">
 		<table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3" valign="top">
 			<tr  class='validationMessageCss'  >
 				<td width="80%" class='validationMessageCss' style="display:none">
@@ -25,35 +25,43 @@
 			</tr>
 			<tr valign="top" width="100%" height="100%" align="left">
 				<td valign="top" height="100%" align="left" >
-<%@ include file="/pages/advancequery/content/search/querysuite/selectEntity.jsp" %>				
-</td>
+              <%@ include file="/pages/advancequery/content/search/querysuite/selectEntity.jsp" %>				
+                </td>
 			</tr>
+
 		</table>
 	</td>
 	<td>
 	    <table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3" valign="top">
 			<tr  id="rowMsg" class='validationMessageCss' >
-				<td id="validationMessagesSection"  width="80%" class='validationMessageCss' colspan="5">
+				<td id="validationMessagesSection"  width="80%" class='validationMessageCss'>
 					<div id="validationMessagesRow" style="overflow:auto; width:100%; height:50;display:none"></div>
 				</td>
 			</tr>
 			<tr>
-				<td valign="top" width="80%" height="100%" class="login_box_bg" align="middle" colspan="5">
+				<td valign="top" width="80%" height="100%" class="login_box_bg" align="left">
 					<%@ include file="/pages/advancequery/content/search/querysuite/ContainmentViewTree.jsp" %>
 				</td>
 			</tr>
-            <tr> 
-			<td align="left"><img src="images/advancequery/b_save.gif"       
-			 onclick="validateQuery('saveDefineView');"/></td>
-          <!-- <td width="30%" align="left" style="padding-left:4px;"><img src="images/advancequery/b_back_to_workflow.gif"   
-		     onclick="showWorkFlowWizard();"/></td> -->
-        <td align="right"><table><tr>
-		 <td style="padding-right:5px;"><img src="images/advancequery/b_redefine_filter.gif"   
-		     onclick="previousFromDefineResults();"/></td>
-			  <td align="right" valign="top">
+           
+
+</table></td>
+</tr>
+
+ <tr> 
+	<td colspan="2" height="40"><table  border="0"><tr>
+		<td  align="left" style="padding-left:2px;"><a href="javascript:validateQuery('saveDefineView');"><img alt="Save" src="images/advancequery/b_save.gif"       
+			border="0" /></a></td>
+        <td align="left" style="padding-left:5px;"><a href="javascript:showWorkFlowWizard();"><img border="0" alt="Back To Workflow" src="images/advancequery/b_back_to_workflow.gif"   
+		     /></a></td></tr></table></td>
+			 <td align="right">
+			 <table border="0"><tr>
+				 <td align="right" style="padding-right:2px;"><a href="javascript:previousFromDefineResults();"><img alt= "<< Redefine Filters" src="images/advancequery/b_redefine_filter.gif" border="0"  
+		     /></a></td></tr></table></td>
+			<!--  <td align="right" valign="top">
 		   <img src="images/advancequery/b_back_to_workflow.gif" hspace="3" vspace="3" onclick="javascript:showWorkFlowWizard()"/>
-	     </td>	</tr></table>
-            <td align="right" id="projectList" style="padding-left:4px;">
+	     </td> -->	
+          <!--  <td align="right" id="projectList" style="padding-left:4px;">
 					 <table border="0" cellspacing="0" cellpadding="0">
 					  <tr>
 						<td style="padding-right:5px" valign="middle" class="content_txt"> Project:</td>
@@ -68,15 +76,15 @@
 					    </td> 				
 		  </tr>
 		</table>
-	</td>
+	</td>-->
  <!-- <td align="right"><img src="images/advancequery/b_execute_inact.gif" onclick=""/></td> -->
 
 </tr>
-
 </table>
 <script>  
 //to hide the button row (of defineGridView page )in define view page
  if("<%=isworkflow%>"=="true")
+ 
  {
     document.getElementById("isWorkflow").value="true";
 	document.getElementById("projectList").style.display="none";
