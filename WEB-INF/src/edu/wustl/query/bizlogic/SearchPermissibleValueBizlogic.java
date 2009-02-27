@@ -118,7 +118,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			for(PermissibleValueInterface perValue:permissibleValues)
 			{
 				List<IConcept> concepts = sourceVocabulary.getConceptForCode(perValue.getValueAsObject().toString());
-				if(concepts != null)
+				if(concepts != null && !concepts.isEmpty())
 				{
 					permissibleConcepts.addAll(concepts);
 				}
