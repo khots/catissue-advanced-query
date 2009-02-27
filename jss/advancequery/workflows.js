@@ -562,7 +562,7 @@ function changeLinkToCancel(queryId,executionLogId)
 
 	//To get the query title field of document
 	var queryTitle=document.getElementById("displayQueryTitle_"+index).value;
-	document.getElementById("cancelajaxcall_"+index).value='false';
+	//document.getElementById("cancelajaxcall_"+index).value='false';
 	
 	if(object!=null&&object!=undefined)
 	{
@@ -588,7 +588,7 @@ function changeExecuteLinkToExecute(queryId,executionLogId)
 
 	//To get the query title field of document
 	var queryTitle=document.getElementById("displayQueryTitle_"+index).value;
-	document.getElementById("cancelajaxcall_"+index).value='false';
+	//document.getElementById("cancelajaxcall_"+index).value='false';
 
 	if(object!=null)
 	{
