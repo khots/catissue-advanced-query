@@ -72,7 +72,7 @@ else
 					<tr valign="top" class="row" width="100" height="400">
 						<td height="400" width="100" colspan="2" id='resultSetTd' class="tdWithoutTopBorder" bordercolor="#cccccc">
 							<div id="resultSet"  style="border : padding: 4px; width   : 230px; height :400px; overflow : auto; ">
-                              <table> 
+                              <table border="0" cellpadding="2"> 
 								<logic:iterate id="entity" name="entityList">        
  								 
 								  <% String disabled = null;
@@ -86,14 +86,14 @@ else
 
                                   </logic:equal>
 								
-								  </logic:iterate>
+							 </logic:iterate>
  								 <% 
 										// hard coded to disabled checkbox
 										disabled = "disabled";
 								  %> 
-								  <tr><td>
+								  <tr><td >
 												<input type="checkbox"   onclick="updateIQuery(this,${entity.id});" value="${entity.id}" <%=disabled%> <%=checked%>
-												><span class="content_txt"> <bean:write name="entity" property="name"/></span> </tr></td>
+												></td><td ><span class="content_txt"> <bean:write name="entity" property="name"/></span> </td></tr>
 								</logic:iterate>
                                </table>
 							  </div>
