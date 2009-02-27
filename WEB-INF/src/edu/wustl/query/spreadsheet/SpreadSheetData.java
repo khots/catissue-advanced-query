@@ -15,7 +15,7 @@ public class SpreadSheetData
 	private List<List<Object>> dataList;
 	private List<String> dataTypeList;
 	private SelectedColumnsMetadata selectedColumnsMetadata;
-	private List columnsList;
+	private List<String> columnsList;
 	private Map mainEntityMap;
 	
 	/**
@@ -69,7 +69,7 @@ public class SpreadSheetData
 	/**
 	 * @return the columnsList
 	 */
-	public List getColumnsList()
+	public List<String> getColumnsList()
 	{
 		return columnsList;
 	}
@@ -77,7 +77,7 @@ public class SpreadSheetData
 	/**
 	 * @param columnsList the columnsList to set
 	 */
-	public void setColumnsList(List columnsList)
+	public void setColumnsList(List<String> columnsList)
 	{
 		this.columnsList = columnsList;
 	}
