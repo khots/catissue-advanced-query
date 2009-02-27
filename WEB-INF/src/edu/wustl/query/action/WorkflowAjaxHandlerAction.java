@@ -24,6 +24,7 @@ import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.query.factory.AbstractQueryManagerFactory;
+import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.bizlogic.WorkflowBizLogic;
@@ -31,6 +32,7 @@ import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.querymanager.AbstractQueryManager;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 
 /**
  * @author niharika_sharma
@@ -49,7 +51,6 @@ public class WorkflowAjaxHandlerAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		WorkflowBizLogic workflowBizLogic=new WorkflowBizLogic();
-		String errormessage=null;
 		//for saving workflow when click execute
 
 
@@ -77,12 +78,12 @@ public class WorkflowAjaxHandlerAction extends Action
 
 	        //get the current selected projectId
 	        int project_id = 0;
-	        if (request.getAttribute(Constants.SELECTED_PROJECT) != null
-	                && !(request.getAttribute(Constants.SELECTED_PROJECT))
+	        if (request.getParameter(Constants.SELECTED_PROJECT) != null
+	                && !(request.getParameter(Constants.SELECTED_PROJECT))
 	                        .equals(""))
 	        {
 	            project_id = (Integer.valueOf((request
-	                    .getAttribute(Constants.SELECTED_PROJECT).toString())));
+	                    .getParameter(Constants.SELECTED_PROJECT).toString())));
 	        }
 
 	        // Get the current User Id
@@ -144,10 +145,11 @@ public class WorkflowAjaxHandlerAction extends Action
 			}
 			else
 			{
+				Count resultCount= null;
+				JSONObject jsonObject = null;
+				AbstractQueryUIManager qUIManager	= AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
 				if (queryExecId == 0)
 				{
-
-
 					//queryExecId = workflowBizLogic.executeGetCountQuery(queryId, request);
 				    Map<Long, Integer> executionIdMap = workflowBizLogic
 	                        .executeGetCountQuery(workflowdetails, queryId, request);
@@ -155,18 +157,52 @@ public class WorkflowAjaxHandlerAction extends Action
 				    Iterator<Long>  iterator=titleset.iterator();
 					while(iterator.hasNext())
 					{
-					    Long query=iterator.next();
+						Long query=iterator.next();
 
-					    Count resultCount=workflowBizLogic.getCount(executionIdMap.get(query));
+					     resultCount=workflowBizLogic.getCount(executionIdMap.get(query));
 	                    executionQueryResults.add(createResultJSON(query, resultCount.getCount(),
 	                            resultCount.getStatus(), resultCount.getQuery_exection_id()));
+	                    boolean hasFewRecords = false;
+	                    if(project_id > 0)
+	                    {
+	                    	hasFewRecords = qUIManager.checkTooFewRecords
+	                    	(Long.valueOf(project_id), resultCount);
+	                    }
+					    if(hasFewRecords)
+					    {
+					    	jsonObject = createResultJSON(query,0,
+		                            resultCount.getStatus(), resultCount.getQuery_exection_id());
+					    }
+					    else
+					    {	
+					    	jsonObject = createResultJSON(query, resultCount.getCount(),
+		                            resultCount.getStatus(), resultCount.getQuery_exection_id());
+					    }
+					    executionQueryResults.add(jsonObject);
 					}
 				}
 				else
 				{
-						Count resultCount=workflowBizLogic.getCount(queryExecId);
+					 resultCount=workflowBizLogic.getCount(queryExecId);
 						executionQueryResults.add(createResultJSON(queryId, resultCount.getCount(),
 								resultCount.getStatus(), resultCount.getQuery_exection_id()));
+						boolean hasFewRecords = false;
+	                    if(project_id > 0)
+	                    {
+	                    	hasFewRecords = qUIManager.checkTooFewRecords
+		                    (Long.valueOf(project_id), resultCount);
+	                    }
+						if(hasFewRecords)
+					    {
+							jsonObject = createResultJSON(queryId,0,
+									resultCount.getStatus(), resultCount.getQuery_exection_id());
+						}
+						else
+						{
+							jsonObject = createResultJSON(queryId, resultCount.getCount(),
+									resultCount.getStatus(), resultCount.getQuery_exection_id());
+						}
+						executionQueryResults.add(jsonObject);
 				}
 				response.setContentType(Constants.CONTENT_TYPE_TEXT);
 				writer.write(new JSONObject().put("executionQueryResults", executionQueryResults)
