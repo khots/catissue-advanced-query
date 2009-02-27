@@ -25,8 +25,6 @@
 	
 	  function getTreeNodeChildren(nodeId)
 	   {
-		  if(nodeId.substring(nodeId.length-5, nodeId.length)=="Label")
-		  {
 				var request = newXMLHTTPReq();			
 				var actionURL;
 				var handlerFunction = getReadyStateHandler(request,showTreeNodeChildren,true);	
@@ -38,25 +36,24 @@
 				request.send(actionURL);
 
 				buildSpreadsheet(nodeId);
-		  }	
+		  	
 	   }
+	  
 	   function showTreeNodeChildren(response)
 	   {
 			 var jsonResponse = eval('('+ response+')');
 			 if(jsonResponse.childrenNodes!=null)
 		     {
 				 var num = jsonResponse.childrenNodes.length; 
-	             for(var i=0;i<num;i++)
+	             
+				 for(var i=0;i<num;i++)
 				 {
 					var nodeId = jsonResponse.childrenNodes[i].identifier;
-					var objName = jsonResponse.childrenNodes[i].objName;
 					var displayName = jsonResponse.childrenNodes[i].displayName;
 					var parentId = jsonResponse.childrenNodes[i].parentId;
-					var parentObjName = jsonResponse.childrenNodes[i].parentObjName;
 					
 					//Add children to result output tree 
-	                resultTree.insertNewChild(parentId,nodeId,displayName);
-	                
+	                resultTree.insertNewChild(parentId,nodeId,displayName,0,"folder.gif","folder.gif","folder.gif","");
 				} 
 	         }
 	    }
