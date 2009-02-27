@@ -130,7 +130,7 @@ public class CountXQueryGeneratorTest
 
 		int count = getCountFor(xquery);
 		assertEquals(1, count);
-
+		
 	}
 
 	@Test

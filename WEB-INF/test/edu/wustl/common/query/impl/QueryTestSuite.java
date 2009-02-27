@@ -13,7 +13,8 @@ import edu.wustl.query.utility.Utility;
 
 @RunWith(value = Suite.class)
 @SuiteClasses(value = 	{
-									edu.wustl.common.query.impl.CountXQueryGeneratorTest.class									
+									edu.wustl.common.query.impl.CountXQueryGeneratorTest.class,
+									edu.wustl.common.query.impl.DataXQueryGeneratorTest.class
 									
 								})
 public class QueryTestSuite
