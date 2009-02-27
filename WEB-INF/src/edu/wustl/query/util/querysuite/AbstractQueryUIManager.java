@@ -72,4 +72,6 @@ public abstract class AbstractQueryUIManager {
 	abstract public DataQueryResultsBean getData(int countQueryExecId, ViewType viewType) throws QueryModuleException;
 	
 	abstract public DataQueryResultsBean getData(int countQueryExecId, String data, ViewType viewType) throws QueryModuleException;
+	
+	abstract public boolean checkTooFewRecords(Long projectId, Count countObject) throws QueryModuleException;
 }
