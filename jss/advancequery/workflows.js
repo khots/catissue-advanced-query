@@ -18,6 +18,14 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	{
 		queryCount=queryControls.length;
 	}
+	//To add icons showing the status
+
+	var imgObj=document.createElement("td");
+	imgObj.width="20";
+	var trImgDown=createImageElement("images/advancequery/ic_notrun06.gif","notStarted_"+queryCount);
+	imgObj.appendChild(trImgDown);
+	rowObj.appendChild(imgObj);
+
 	for(var counter=0;counter<columnCount-2;counter++)
 	{
 		if(columnContents[counter]!=null)
@@ -256,7 +264,6 @@ function createImageElement(srcPath,imageId)
 	var image=document.createElement("img");
 	image.setAttribute("src",srcPath);
 	image.setAttribute("id",imageId);
-	image.setAttribute("id",imageId);
 	return image;
 }
 
@@ -395,11 +402,8 @@ function deleteWorkflowItem(index)
 		//dhtmlmodal.open('delete Queries', 'iframe', './pages/advancequery/content/search/querysuite/deleteQueryConfim.jsp','Delete Query', 'width=400px,height=150px,center=1,resize=1,scrolling=1');
 		var checkboxControl=document.getElementById("checkbox_"+(index));
 
-		var checkboxControl=document.getElementById("checkbox_"+(index));
 		if(checkboxControl!=null && checkboxControl!=undefined)
 		{
-			
-			
 			var table=document.getElementById("table1");
 			var oldNoOfRows=document.getElementById("table1").rows.length;
 			var deleteQuery =document.getElementById('displayQueryTitle_'+index).value;
@@ -440,6 +444,8 @@ function deleteWorkflowItem(index)
 				{
 					document.getElementById("label_"+i).id="label_"+(i-1);
 				}
+				document.getElementById("notStarted_"+i).id="notStarted_"+(i-1);
+				document.getElementById("expression_"+i).id="expression_"+(i-1);
 			}
 			
 			table.deleteRow(index);
@@ -556,19 +562,20 @@ function changeLinkToCancel(queryId,executionLogId)
 
 	//To get the query title field of document
 	var queryTitle=document.getElementById("displayQueryTitle_"+index).value;
+	document.getElementById("cancelajaxcall_"+index).value='false';
 	
 	if(object!=null&&object!=undefined)
 	{
 		var parentIObj=object.parentNode;
 		parentIObj.removeChild(object);
-		parentIObj.appendChild(createLink("Cancel ","cancel_"+index,"javascript:cancelGetCountQuery('"+queryId+"','"+executionLogId+"')"));
+		parentIObj.appendChild(createLink("Cancel ","cancel_"+index,"javascript:cancelGetCountQuery('"+queryId+"','"+executionLogId+"','"+false+"')"));
 		disableDeleteLink(index);
 	}
+	 imageForProgressiveCounts(index);
 }
 
 function changeExecuteLinkToExecute(queryId,executionLogId)
 {
-
 	var identifier=document.getElementById("queryIdForRow_"+queryId);
 	var object=identifier.parentNode;
 	var tdChildCollection=object.getElementsByTagName('input');
@@ -581,6 +588,7 @@ function changeExecuteLinkToExecute(queryId,executionLogId)
 
 	//To get the query title field of document
 	var queryTitle=document.getElementById("displayQueryTitle_"+index).value;
+	document.getElementById("cancelajaxcall_"+index).value='false';
 
 	if(object!=null)
 	{
@@ -589,6 +597,7 @@ function changeExecuteLinkToExecute(queryId,executionLogId)
 		parentIObj.appendChild(createLink("Execute ","execute_"+index,"javascript:executeGetCountQuery('"+queryTitle+"','"+0+"')"));
 		enableDeleteLink(index);
 	}
+	imageForCompletedCounts(index);
 }
 
 function disableDeleteLink(index)
@@ -606,24 +615,49 @@ function enableDeleteLink(index)
 
 function checkFordependentQueries(index)
 {
-	var selectedQueryId=document.getElementById("selectedqueryId_"+index).value;
-	var queryIds=selectedQueryId.split(",");
-
+	var expression=document.getElementById("expression_"+index).value;
+	//var queryIds=selectedQueryId.split(",");
+	//alert("index" +index);
+	//alert("queryIds ="+queryIds);
 	var rows=document.getElementById("table1").rows.length;
 	for(var i=0;i<rows;i++)
 	{
-		var idsToCompare=document.getElementById("selectedqueryId_"+i).value;
-			if(i!=index)
+		var idsToCompare=document.getElementById("expression_"+i).value;
+		///alert("idsToCompare =" +idsToCompare);
+			if(i!=index && document.getElementById("displayQueryType_"+i).value!='Data' )
 			{
-				for(var counter=0;counter<queryIds.length;counter++)
-				{
-					var queryIdPosition=idsToCompare.indexOf(queryIds[counter]);
+				//alert(" i =" +i);
+				//for(var counter=0;counter<queryIds.length;counter++)
+				//{
+					//alert(" queryIds[counter] =" +queryIds[counter]);
+					var queryIdPosition=idsToCompare.indexOf(expression);
 					if(queryIdPosition!=-1)
 					{
 						return true;
 					}
-				}
+				//}
 			}
 	}
 	return false;
 }
+
+function imageForProgressiveCounts(index)
+{
+
+
+  var x = document.getElementById("notStarted_"+index);
+  var v = x.getAttribute("src");
+  v = "images/advancequery/inprogress09.gif";
+  x.setAttribute("src", v);	
+
+}
+
+function imageForCompletedCounts(index)
+{
+	var x = document.getElementById("notStarted_"+index);
+	var v = x.getAttribute("src");
+	v = "images/advancequery/ic_complete05.gif";
+	x.setAttribute("src", v);	
+}
+
+
