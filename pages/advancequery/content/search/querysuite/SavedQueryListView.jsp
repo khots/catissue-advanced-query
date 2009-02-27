@@ -73,6 +73,7 @@ int queryCount = 0;%>
 															<%String target = "editQuery('"+parameterizedQuery.getId()+"')"; 
 															  String queryId=parameterizedQuery.getId()+"";
 															  String title = parameterizedQuery.getName();
+															  String queryType = parameterizedQuery.getType();
 															  String newTitle = Utility.getQueryTitle(title);
 															  
 															  String tooltip = Utility.getTooltip(title);
@@ -91,7 +92,7 @@ int queryCount = 0;%>
 											 						<%=newTitle%>
 																</html:link><br/>
 															</td>
-															  <td  valign="top" class="content_txt">Get Count</td>
+															  <td  valign="top" class="content_txt"> <%=queryType %></td>
 															 
 							
 																<c:set var="queryTitleControlId">queryTitleControl_<%=queryCount%></c:set>
