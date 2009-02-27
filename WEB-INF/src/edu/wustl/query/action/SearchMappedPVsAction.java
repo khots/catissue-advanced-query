@@ -1,5 +1,6 @@
 package edu.wustl.query.action;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -205,8 +206,8 @@ public class SearchMappedPVsAction extends Action
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		StringBuffer html = new StringBuffer();
-	
-		List<IConcept> pvList = bizLogic.getConfiguredPermissibleValueList(attribute, entity);
+		List<Boolean> showMessage=new ArrayList<Boolean>();
+		List<IConcept> pvList = bizLogic.getConfiguredPermissibleValueList(attribute, entity,showMessage);
 		String srcVocabURN = VIProperties.sourceVocabUrn;
 		String vocabDisName = bizLogic.getDisplayNameForVocab(srcVocabURN);
 		html.append(bizLogic.getRootVocabularyNodeHTML(srcVocabURN, vocabDisName));
@@ -219,7 +220,7 @@ public class SearchMappedPVsAction extends Action
 				html.append(bizLogic.getHTMLForConcept(srcVocabURN,concept,checkboxId));
 			}
 			html.append(bizLogic.getEndHTML());
-			if( pvList.size()==VIProperties.maxPVsToShow)// Need to show Message Too Many Result on UI 
+			if( !showMessage.isEmpty())// Need to show Message Too Many Result on UI 
 			{
 				html.append(bizLogic.getInfoMessage());
 				request.getSession().setAttribute(Constants.SRC_VOCAB_MESSAGE, bizLogic.getInfoMessage()

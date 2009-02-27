@@ -82,7 +82,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @throws PVManagerException
 	 */
 	public List<IConcept> getConfiguredPermissibleValueList(AttributeInterface attribute,
-			EntityInterface entity) throws PVManagerException
+			EntityInterface entity,List<Boolean> showMessage) throws PVManagerException
 	{
 		List<IConcept> permissibleConcepts = null;
 		try
@@ -95,6 +95,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			if(permissibleValues.size() > VIProperties.maxPVsToShow)
 			{
 				permissibleValues = permissibleValues.subList(0, VIProperties.maxPVsToShow);
+				showMessage.add(true);// may be all concept will not resolved
 			}
 			IVocabulary sourceVocabulary = getVocabulary(VIProperties.sourceVocabUrn);
 			permissibleConcepts = resolvePermissibleCodesToConcept(sourceVocabulary,permissibleValues);
