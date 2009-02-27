@@ -169,7 +169,7 @@
 					 <td width="50%" align="left" colspan="2">
 					  <table border="0" cellspacing="0" cellpadding="0"  >
 						<tr>
-							 <td style="padding-left:8px;" valign="top" ><a href="javascript:validateQuery('save');" ><img alt="Save" src="images/advancequery/b_save.gif" border="0"/> </a></td>
+							 <td style="padding-left:8px;" valign="top" ><a href="javascript:validateQuery('save');" ><img alt="Save" src="images/advancequery/b_save.gif" border="0"/></a></td>
 							 <td style="padding-left:5px;" valign="top"><a href="javascript:showWorkFlowWizard();"><img  alt="Back to Workflow" src="images/advancequery/b_back_to_workflow.gif" border="0" /></a></td>
 						</tr>
 					 </table>
