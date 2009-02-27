@@ -182,8 +182,9 @@ public class SearchPermissibleValuesAction extends Action
 			StringBuffer html,Map<String,String> sourceConceptMap) throws VocabularyException
 	{
 
-		/********** Get HTML for Source Vocabulary************
-		 * need to ask about condition ;cause backend change*/
+		/********** Get HTML for Source Vocabulary************/
+		
+		
 		if (vocabURN.equals(VocabUtil.getVocabProperties().getProperty("source.vocab.urn")))
 		{
 			getHTML(orderedConcepts, vocabURN, html, Constants.MED_MAPPED_N_VALID_PVCONCEPT,sourceConceptMap);
