@@ -16,9 +16,11 @@ import edu.wustl.common.query.pvmanager.impl.LexBIGPermissibleValueManager;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.vocab.IConcept;
+import edu.wustl.common.vocab.IDefinition;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.IVocabularyManager;
 import edu.wustl.common.vocab.VocabularyException;
+import edu.wustl.common.vocab.impl.Definition;
 import edu.wustl.common.vocab.impl.VocabularyManager;
 import edu.wustl.common.vocab.utility.VIError;
 import edu.wustl.common.vocab.utility.VocabUtil;
@@ -225,12 +227,36 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			IConcept concept, String checkboxId)
 	{
 		String value=concept.getCode() + ":" + concept.getDescription();
-		return "<tr title=\"Concept Code: "+concept.getCode()+"\"><td style=\"padding-left:30px\">&nbsp;</td><td class=\"black_ar_tt\" > \n"
+		String toolTip = getToolTip(concept);
+		return "<tr onmouseover=\"Tip('"+toolTip+"');\" onmouseout=\"UnTip();\"><td style=\"padding-left:30px\">&nbsp;</td><td class=\"black_ar_tt\" > \n"
 				+ "<input type=\"checkbox\" name=\"" +vocabURN + "\" id=\""
 				+ checkboxId + "\" value=\"" + value
 				+ "\" onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
 				+ "</td><td class=\"black_ar_tt\" nowrap>&nbsp;" /*+ concept.getCode() + ":"*/
 				+ concept.getDescription() + "\n" + "<td></tr>";
+	}
+	/**
+	 * @param concept
+	 * @return
+	 */
+	private String getToolTip(IConcept concept)
+	{
+		String definition=Constants.NOT_AVAILABLE;
+		List<IDefinition> defsList=concept.getDefinition();
+		if(defsList!=null &&  !defsList.isEmpty())
+		{
+			for(IDefinition defs:defsList)
+			{
+				Definition def=(Definition)defs;
+				if(def.isPreferred())
+				{
+					definition=def.getDescription();
+				}
+			}
+		}
+		String toolTip="Concept Code: "+concept.getCode()+"<br/> "+
+					   "Definition : "+definition;
+		return toolTip;
 	}
 	/**
 	 * This method returns the HTML for child nodes for all the vocabularies which
@@ -253,8 +279,8 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		{
 			chkBoxStatus="disabled";
 		}
-		
-		return "<tr title=\"Concept Code: "+concept.getCode()+"\"><td style=\"padding-left:30px\">&nbsp;</td><td class=\"black_ar_tt\"> \n"
+		String toolTip = getToolTip(concept);
+		return "<tr onmouseover=\"Tip('"+toolTip+"');\" onmouseout=\"UnTip();\"><td style=\"padding-left:30px\">&nbsp;</td><td class=\"black_ar_tt\"> \n"
 				+ "<input type=\"checkbox\" "+chkBoxStatus+" name=\""+ vocabURN + "\" id=\""
 				+ checkboxId + "\" value=\"" + concept.getCode() + ":" + concept.getDescription()
 				+ "\" onclick=\"getCheckedBoxId('" + checkboxId + "');\">"
