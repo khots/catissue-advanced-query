@@ -161,17 +161,28 @@ public class QueryFrameworkTestCase extends TestCase
 		
 	}
 	
-	public void testXQuery_Person_AfricanAmerican_Male_Age_GreaterThan_50()
+	public void testXQuery_Person_AfricanAmerican_Male_Age_GreaterThan50_5966()
 	{
 
 	}
 
-	public void testXQuery_Person_AfricanAmerican_Male_Age_GreaterThan_50_and_done_PSAtest()
+	public void testXQuery_Person_AfricanAmerican_Male_Age_GreaterThan_50_and_done_PSAtest_5974()
 	{
 
 	}
 
-	public void testXQuery_Person_AfricanAmerican_Male_Age_GreaterThan_50_and_PSA_greaterthan_5()
+	public void testXQuery_Person_AfricanAmerican_Male_Age_GreaterThan_50_and_PSA_greaterthan5_5978()
+	{
+
+	}
+
+
+	public void testXQuery_AllFemales_OverAge_of35_had_HCG_greaterthan100_within_lats2years_6011()
+	{
+
+	}
+	
+	public void testXQuery_AllPerson_had_PSA_greaterthan5_within_last2years_6013()
 	{
 
 	}
