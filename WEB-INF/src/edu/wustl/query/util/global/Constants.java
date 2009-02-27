@@ -532,7 +532,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 
 	//Taraben Khoiwala
 	/**  Constant for  */
-	public static final Object PERMISSIBLEVALUEFILTER = "PV_FILTER";
+	public static final String PERMISSIBLEVALUEFILTER = "PV_FILTER";
 	/**  Constant for  */
 	public static final int ADVANCE_QUERY_INTERFACE_ID = 24;
 	/**  Constant for  */
