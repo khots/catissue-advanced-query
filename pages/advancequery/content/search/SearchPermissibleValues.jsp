@@ -822,7 +822,7 @@ function editSelectedPV()
 		</table>
 		</td>
 		<td align="center" valign="middle" width="10%"  height="100%">
-			<table width="100%"  height="100%"  border="0" cellspacing="0" cellpadding="0" >
+			<table width="100%"  height="100%"  border="0"  >
                           <tr valign="middle" align="center" >
                             <td height="22" valign="bottom" align="center"><a href="javascript:addPermissibleValuesToList();"><img src="images/advancequery/b_add.gif" alt="Add" width="63" height="18" vspace="2" border="0" align="absmiddle" /></a></td>
                           </tr>
