@@ -234,21 +234,7 @@ public class HtmlUtility
 		}
 		return isNotSearchable;
 	}
-	/**
-	 * 
-	 * @param attribute
-	 * @return boolean
-	 * added by amit_doshi
-	 * @throws PVManagerException 
-	 */
-	public static boolean showListBoxForPV(AttributeInterface attribute,EntityInterface entity) throws PVManagerException
-	{
-		IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
-		boolean status=false;
-		status= permissibleValueManager.showListBoxForPV(attribute,entity);
-		return status;
-		
-	}
+	
 	/**
 	 * returns PermissibleValuesList' list for attribute
 	 * 
