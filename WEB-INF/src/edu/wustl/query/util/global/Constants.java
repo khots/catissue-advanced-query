@@ -773,7 +773,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String NOT_MED_VALED_PVCONCEPT = "Normal_Disabled";
 	public static final String ID_DEL = "ID_DEL"; 
 	public static final String MSG_DEL = "@MSG@"; // if you change its value,kindly change in queryModule.js its hard coded there
-	
+		public static final String NOT_AVAILABLE = "Not Available";
 	/**
 	 * Query ITABLE
 	 */
@@ -834,5 +834,5 @@ public class Constants extends edu.wustl.common.util.global.Constants
     
      /**  Constant for Equal to operator */
 	public static final String EQUALS = " = ";
-    
+	
 }
