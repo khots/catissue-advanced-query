@@ -439,7 +439,8 @@
 		}
 		else  							   //Clicked on + image
 		{
-            advancedSearchHeaderTd.style.borderBottom = "0";
+           switchObj.innerHTML = '<img src="images/advancequery/nolines_minus.gif" border="0" />';
+			advancedSearchHeaderTd.style.borderBottom = "0";
 			imageContainer.style.borderBottom = "0";
 			if(navigator.appName == "Microsoft Internet Explorer")
 			{					
@@ -457,7 +458,7 @@
 				resultSetDivObj.height = "420";
 			}
 			resultSetDiv.style.height = "420"+'px'
-			switchObj.innerHTML = '<img src="images/advancequery/nolines_minus.gif" border="0" />';
+			
 		}
 	}
 	
@@ -806,18 +807,20 @@
 	} 
 	function showEntityInformation(text)
 	{	
+		
 		var row = document.getElementById('validationMessagesRow');
 		row.innerHTML = "";	
 		row.style.display = 'none';		
-		var element = document.getElementById('addLimits');
+		var element = document.getElementById('addLimitsSection');
 		var addLimitsMsgElement = document.getElementById('AddLimitsMsgRow');
 		var addLimitsButtonElement = document.getElementById('AddLimitsButtonRow');
 		var resoln= screen.width; 
+		element.style.height="240px";
 		  if(resoln<=800)
 		{
 		   
 		   element.style.width="512px";
-		 }
+		}
 		if(text.indexOf("####") != -1)
 		{
 			var htmlArray = text.split('####');
@@ -1249,6 +1252,7 @@
 	}
 	function showValidationMessages(text)
 	{
+		
 		var rowId= 'validationMessagesRow';
 		var textBoxId1 = document.getElementById("rowMsg");
 		var element = document.getElementById('validationMessages');
@@ -1285,6 +1289,13 @@
 				}
 			else
 				{
+					var element = document.getElementById('addLimitsSection');
+					if(element!=null)
+					{
+					  element.style.height="200px";
+					}
+					
+					row.style.height="40px";
 					row.style.display = 'block';
 					row.innerHTML = text;
 				}
@@ -1446,7 +1457,7 @@
               pageof=document.getElementById("pageOf").value; 
 			 var url = "DefineView.do?isWorkflow="+workflow+"&pageOf="+pageof;
             
-			 window.open('','SaveQuery','height=700,width=850');
+			 window.open('','SaveQuery','height=280,width=800');
     		 document.forms[0].action = url;
 			 document.forms[0].target = "SaveQuery";
 			 document.forms[0].submit();
@@ -1484,7 +1495,7 @@
 		    }
 		    else
 		    {
-				pvwindow	=dhtmlmodal.open('Query Information', 'iframe', url,'Query Information', 'width=800px,height=280px,center=1,resize=0,scrolling=1,menubar=0,toolbar=0');
+			 pvwindow	= window.open(url,'SaveQuery','height=280,width=800');
 		    	//NewWindow(url,'name','870','300','yes');
 		    }
 			hideCursor();
