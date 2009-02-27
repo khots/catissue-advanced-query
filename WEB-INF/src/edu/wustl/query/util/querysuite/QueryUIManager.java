@@ -12,6 +12,7 @@ import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.querymanager.AbstractQueryManager;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
@@ -93,7 +94,7 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 		DefinedQueryUtil definedQueryUtil = new DefinedQueryUtil();
 		try
 		{
-			definedQueryUtil.insertQuery(query);
+			definedQueryUtil.insertQuery(query,(SessionDataBean)session.getAttribute(Constants.SESSION_DATA),false);
 		}
 		catch (UserNotAuthorizedException e)
 		{
@@ -101,6 +102,11 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 			throw queryModExp;
 		}
 		catch (BizLogicException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
+		}
+		catch (DAOException e)
 		{
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
 			throw queryModExp;
