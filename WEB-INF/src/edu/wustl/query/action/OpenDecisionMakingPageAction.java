@@ -11,6 +11,8 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.query.actionForm.CategorySearchForm;
@@ -46,6 +48,7 @@ public class OpenDecisionMakingPageAction extends Action
 		String pageOf = (String)request.getParameter(Constants.PAGE_OF);
 		  request.setAttribute(Constants.PAGE_OF, pageOf);
 		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
+		SessionDataBean sessionDataBean = (SessionDataBean) session.getAttribute(Constants.SESSION_DATA);
 		String noOfResults = (String) session
 				.getAttribute(Constants.TREE_NODE_LIMIT_EXCEEDED_RECORDS);
 		String option = actionForm.getOptions();
@@ -55,7 +58,7 @@ public class OpenDecisionMakingPageAction extends Action
 		DefinedQueryUtil definedQueryUtil=new DefinedQueryUtil();
 		ParameterizedQuery parameterizedQuery=(ParameterizedQuery)query;
 		parameterizedQuery.setName(actionForm.getQueryTitle());
-		definedQueryUtil.insertQuery(parameterizedQuery);
+		definedQueryUtil.insertQuery(parameterizedQuery,sessionDataBean,false);
 		if (option == null)
 		{
 			 ActionErrors errors = new ActionErrors();
