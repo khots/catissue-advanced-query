@@ -55,25 +55,28 @@ public class NodeId
 		treeNo = splitParentNodeId[0];
 		String parentNodeId = splitParentNodeId[1];
 		uniqueParentNodeId = treeNo + Constants.UNDERSCORE + parentNodeId;
+		if(isLabelNode)
+		{
+			parentData  = splitParentNodeId[2].split("@@");
+		}
 		
-		parentData  = new String[splitParentNodeId.length-2];
-		for(int i=2;i<splitParentNodeId.length;i++)
+		/*for(int i=2;i<splitParentNodeId.length;i++)
 		{
 			parentData[i-2] = splitParentNodeId[i];
-		}
+		}*/
 		
 		String currentNode = nodeIds[2];
 		String[] splitCurrentNodeId = currentNode.split(Constants.UNDERSCORE);
 		String currentNodeId = splitCurrentNodeId[1];
 		uniqueCurrentNodeId = treeNo + Constants.UNDERSCORE + currentNodeId;
 		
-		if(isLabelNode)
+		if(!isLabelNode && splitCurrentNodeId.length > 2)
 		{
-			currentNodeData  = new String[splitCurrentNodeId.length-2];
-			for(int i=2;i<splitCurrentNodeId.length;i++)
+			currentNodeData  = splitCurrentNodeId[2].split("@@");
+			/*for(int i=2;i<splitCurrentNodeId.length;i++)
 			{
 				currentNodeData[i-2] = splitCurrentNodeId[i];
-			}
+			}*/
 		}
 		
 	}
