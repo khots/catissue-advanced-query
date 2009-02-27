@@ -108,7 +108,7 @@ public class QueryServletContextListenerUtil
 				Variables.viewIQueryGeneratorClassName = queryProperties.getProperty("query.viewIQueryGeneratorClassName");
 				Variables.recordsPerPageForSpreadSheet = Integer.parseInt(queryProperties.getProperty("spreadSheet.recordsPerPage"));
 				Variables.recordsPerPageForTree = Integer.parseInt(queryProperties.getProperty("tree.recordsPerPage"));
-				
+				Variables.resultLimit = Integer.parseInt(queryProperties.getProperty("datasecurity.resultLimit"));
 				Variables.properties = queryProperties;
 			}
 			catch (FileNotFoundException e)
