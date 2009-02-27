@@ -37,6 +37,9 @@ public class QueryTestAll extends TestSuite
 		// For testing ASynchronous Queries
 		suite.addTestSuite(ASynchronousQueriesTestCases.class);
 		
+		// For testing Saved Queries
+		suite.addTestSuite(QueryBizLogicTestCases.class);
+		
 		return suite;
 	}
 }
