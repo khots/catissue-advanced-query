@@ -60,11 +60,11 @@ public class ViewResultsAction extends Action
 		session.setAttribute(Constants.WORFLOW_ID, workflowId);
 		
 		//Get the  Query Execution Id  
-		String qid = (String) request.getParameter(Constants.QUERY_EXECUTION_ID);
+		String qid = (String) request.getParameter("queryExecutionId");
 		if(qid!=null)
 		{
 			queryExecutionID =Integer.parseInt(qid);
-			session.setAttribute(Constants.QUERY_EXECUTION_ID, queryExecutionID);
+			session.setAttribute("queryExecutionId", queryExecutionID);
 		}
 	 	IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
 				.getValue("app.bizLogicFactory"), "getBizLogic",

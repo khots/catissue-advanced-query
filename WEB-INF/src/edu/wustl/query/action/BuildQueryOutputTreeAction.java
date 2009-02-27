@@ -150,7 +150,7 @@ public class BuildQueryOutputTreeAction extends Action
 		String uniqueCurrentNodeId = treeNo + "_" + treeNodeId;*/
 		
 		//Get the query Execution id
-		int queryExecutionID =   (Integer)session.getAttribute(Constants.QUERY_EXECUTION_ID);
+		int queryExecutionID =   (Integer)session.getAttribute("queryExecutionId");
 		
 		//Get the unique node Id map
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map)session.getAttribute(Constants.PATIENT_QUERY_UNIQUE_ID_MAP);
@@ -178,7 +178,17 @@ public class BuildQueryOutputTreeAction extends Action
 					rootEntity, generatedQuery);
 			
 			AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
-			DataQueryResultsBean dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID, ViewType.TREE_VIEW);
+			
+			DataQueryResultsBean dataQueryResultsBean = null;
+			if(rootData.equalsIgnoreCase(Constants.NULL_ID))
+			{
+				dataQueryResultsBean =  abstractQueryUIManager.getData(queryExecutionID, ViewType.TREE_VIEW);
+			}
+			else
+			{
+				dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID, rootData ,ViewType.TREE_VIEW);
+			}
+			 
 			List<List<Object>>  dataList = dataQueryResultsBean.getAttributeList();
 			if(dataList.size() >0)
 			{
@@ -195,15 +205,15 @@ public class BuildQueryOutputTreeAction extends Action
 				    	}
 				    	else
 				    	{
-				    		if(j==labelNodeDataList.size()-1)
+				    		if(labelNodeDataList.get(j)== null)
 				    		{
-				    			displayData += "( ";
+				    			displayData += ""; 
 				    		}
-				    		displayData += labelNodeDataList.get(j)+" ";
-				    		if(j==labelNodeDataList.size()-1)
+				    		else
 				    		{
-				    			displayData += ")";
+				    			displayData += labelNodeDataList.get(j)+" ";
 				    		}
+				    		
 				    	}
 				    }
 					
@@ -254,10 +264,6 @@ public class BuildQueryOutputTreeAction extends Action
 					labelNodeParentPrimaryKey += labelNodeParentPrimaryKey + primaryKeyValues[i]+"@@";
 				}
 			}
-			
-			
-			
-			
 			OutputTreeDataNode labelTreeDataNode =  uniqueIdNodesMap.get(uniqueCurrentNodeId);		    
 		    int rootNodeExpd = labelTreeDataNode.getExpressionId();
 		    if(patientDataQuery != null)
@@ -286,13 +292,8 @@ public class BuildQueryOutputTreeAction extends Action
 					    		{
 					    			IQuery generatedQuery = generateIQuery(mainEntityTreeDataNode,parentChildrenMap,mainEntity,patientDataQuery);
 					    			
-					    			/*List<Object> personUPIsList = new ArrayList<Object>();
-					    		   	for(int i=0; i< primaryKeyValues.length; i++)
-					    		   	{
-					    			   personUPIsList.add(primaryKeyValues[i]);
-					    		   	}*/
 					    		   	AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
-					    		   	DataQueryResultsBean dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID, ViewType.TREE_VIEW); 
+					    		   	DataQueryResultsBean dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID, rootData ,ViewType.TREE_VIEW); 
 					    			List<List<Object>>  dataList = dataQueryResultsBean.getAttributeList();
 					   				
 					   				//Here create the Label Node
@@ -308,7 +309,7 @@ public class BuildQueryOutputTreeAction extends Action
 					   				JSONObject jsonObject = new JSONObject();
 					   				jsonObject.append("identifier", dataNodeId);
 									jsonObject.append("displayName",displayName);
-									jsonObject.append("parentId",nodeId);
+									jsonObject.append("parentId",nodeId.trim());
 									jsonObjectList.add(jsonObject);
 					    		}
 					    	}	
