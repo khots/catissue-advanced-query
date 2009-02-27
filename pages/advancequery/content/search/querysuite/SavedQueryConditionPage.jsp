@@ -39,29 +39,25 @@
 		<script language="JavaScript" type="text/javascript" src="jss/advancequery/script.js"></script>
 		<script language="JavaScript" type="text/javascript" src="jss/advancequery/overlib_mini.js"></script>
 		<script language="JavaScript" type="text/javascript" src="jss/advancequery/calender.js"></script>
-		
-		<script>
-		     function showWorkFlowWizard()
-          {
-                var parentWindowForm 	= parent.document.forms[0];
-				parentWindowForm.action = "RedirectToWorkflow.do";
-				parentWindowForm.submit();
-          }
-			
-			function closeSaveQueryWindow()
-			{
-				window.self.close();
-				
-			}
-		</script>
 		<c:if test="${querySaved eq 'true'}">
           <script>
-          if("<%=isworkflow%>"=="true")
-			{
-			  showWorkFlowWizard();
-			}
-			 window.self.close();
-		   </script>
+           window.onunload=function()
+		   {
+		        var forwardTo="";
+				var parentWindowForm = window.opener.document.forms[0];
+				if("<%=isworkflow%>"=="true")
+			     forwardTo="RedirectToWorkflow.do";
+				else
+				{
+				 forwardTo="ShowDashboard.do?requestFrom=MyQueries";
+				 parentWindowForm.requestFrom.value="MyQueries"; 
+				}
+				parentWindowForm.action = forwardTo; 
+                parentWindowForm.submit(); 
+               // window.self.close();
+		   }
+		   		   
+		  </script>
        </c:if>
 		
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -148,11 +144,11 @@
 							<!--input type="button" name="preview" value="Preview" class="actionButton"  disabled="true"/-->
 							<c:choose>
 								<c:when test="${querySaved eq 'true'}">
-								<!--<img src="images/advancequery/b_close.gif" onclick="closeSaveQueryWindow()" />	-->
+							 <!--	<img src="images/advancequery/b_close.gif" onclick="closeSaveQueryWindow()" /> -->
 								</c:when>
 								<c:otherwise>
 									<a href="javascript:produceSavedQuery();" ><img border='0' src="images/advancequery/b_save.gif" <%=isSaveButtonDisable%> /></a>
-									<!--<a href="javascript:window.close();" ><img border='0' src="images/advancequery/b_cancel.gif" /></a>-->
+									<!--<a href="javascript:closeSaveQueryWindow();" ><img border='0' src="images/advancequery/b_close.gif" /></a>-->
 									
 								</c:otherwise>
 							</c:choose>
@@ -172,7 +168,6 @@ if("<%=isworkflow%>"!="true")
      
 	  document.getElementById("workflowName").style.display="none";
    }
-  
 </script>	
 	</body>
 </html:html>
