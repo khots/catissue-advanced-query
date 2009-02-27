@@ -145,9 +145,9 @@ else
 						</td>
 						<td  height="1%">&nbsp;</td>
 					</tr>
-					<tr valign="top" class="row" width="100" height="400">
-						<td width="100" height="400">&nbsp;</td>
-						<td height="400" width="100" colspan="2" id='resultSetTd' class="tdWithoutTopBorder" bordercolor="#cccccc">
+					<tr valign="top" class="row" width="100" >
+						<td width="100" >&nbsp;</td>
+						<td height="100%" width="100" colspan="2" id='resultSetTd' class="tdWithoutTopBorder" bordercolor="#cccccc">
 							<div id="resultSet"  style="border : padding : 4px; width : 230px; height : 550px; overflow : auto; "></div>
 						</td>
 						<td >&nbsp;</td>
