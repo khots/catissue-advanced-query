@@ -443,7 +443,6 @@ function responseHandler(response)
 
 function setDropDowns(queryTitle)
 {
-
 	var numOfRows =document.getElementById("table1").rows.length;
 	var queryId;		
 			for(var count = 0; count < numOfRows; count++)
@@ -607,6 +606,7 @@ function workflowResponseHandler(response)
 							//for setting the execution id
 
 							var queryExecId=tdChildCollection[3].id;
+							//alert(queryExecId);
 							if(queryExecId!=null&&queryExecId!=undefined)
 							{
 							   if(document.getElementById(queryExecId).value==0 ||   
@@ -632,8 +632,9 @@ function workflowResponseHandler(response)
 							//imageForProgressiveCounts1(queryIndex);
 						}
 					
-						if((status!="Completed" && status!="Cancelled")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
+						if((status!="Completed")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
 						{
+
 							workflowExecuteGetCountQuery(queryId,executionLogId);
 						}
 						
