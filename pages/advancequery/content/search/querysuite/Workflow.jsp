@@ -375,7 +375,7 @@ function executeGetCountQuery(queryTitle,executionLogId)
 				}
 			}
 	}
-
+	setCountDropDown = false;
 }
 
 function responseHandler(response)
@@ -449,6 +449,28 @@ function responseHandler(response)
 }
 
 
+function removeFromDropDown(qTitle)
+{
+	var dropDowns= document.getElementsByTagName("select");
+	for(var i=0;i<dropDowns.length;i++)
+	{
+	   if(dropDowns[i].name=="countQueryDropDown")
+	   {
+		    var executedQuery=dropDowns[i].options.length;
+			if(executedQuery >0)
+			{
+			  for(var j=0;j<executedQuery;j++)
+			  {
+				  if(dropDowns[i].options[j].text==qTitle)
+				  {
+					dropDowns[i].options[j]=null;
+				  }
+			  }
+			}
+	   }
+	}
+}
+
 function setDropDowns(queryTitle)
 {
 	var numOfRows =document.getElementById("table1").rows.length;
@@ -467,8 +489,8 @@ function setDropDowns(queryTitle)
 				
 			}
 
-    if(execId==0 || execId=="") 
-  {	
+    //if(execId==0 || execId=="") 
+  //{	
 	
 	 var dropDowns= document.getElementsByTagName("select");
 	for(var i=0;i<dropDowns.length;i++)
@@ -497,14 +519,30 @@ function setDropDowns(queryTitle)
 			 dropDowns[i].disabled=false;
 			}
 	  }
-	}
-    
-	 var hiddenDropDown=document.getElementById("executedCountQuery");
-	     var optn = parent.window.document.createElement("OPTION");
+	//}
+	// Add query to hidden dropdown
+        var add=true;
+	    var hiddenDropDown=document.getElementById("executedCountQuery");
+	    var num=hiddenDropDown.options.length;
+		if(num>0)
+		{
+		  for(var t=0;t<num;t++)
+		  {
+		   if(hiddenDropDown.options[t].text==queryTitle)
+			  add=false;
+		   
+		  }
+		
+		}
+		 
+		if(add==true) 
+		{
+		 var optn = parent.window.document.createElement("OPTION");
 	     optn.text=queryTitle;
 	     optn.value=queryId;
 	     hiddenDropDown.options.add(optn);
 	     hiddenDropDown.disabled=false;
+		}
   }
 
 }
@@ -586,7 +624,7 @@ function executeGetDataQuery(dataQueryId)
 	}
   
 
-
+var setCountDropDown = false;
 function workflowResponseHandler(response)
 {
 		  var jsonResponse = eval('('+ response+')');
@@ -614,15 +652,22 @@ function workflowResponseHandler(response)
 							//for setting the execution id
 
 							var queryExecId=tdChildCollection[3].id;
-							//alert(queryExecId);
 							if(queryExecId!=null&&queryExecId!=undefined)
 							{
-							   if(document.getElementById(queryExecId).value==0 ||   
+							   /*if(document.getElementById(queryExecId).value==0 ||   
 									 document.getElementById(queryExecId).value=='' || document.getElementById(queryExecId).value==null)
 								{
 								  setDropDowns(qTitle);
-								} 
-								
+								}*/ 
+								if(setCountDropDown == false && queryResult>0)
+								{
+									setDropDowns(qTitle);
+									setCountDropDown=true;
+								}
+								if(queryResult==0)
+								{
+									removeFromDropDown(qTitle);								
+								}
 								 document.getElementById(queryExecId).value=executionLogId;
 	
 							}
