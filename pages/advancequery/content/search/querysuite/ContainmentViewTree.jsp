@@ -39,54 +39,53 @@
 <html:form method="GET" action="<%=callAction%>">
 <html:hidden property="operation" value=""/>
 <body>
-<table border="0" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF"  bordercolorlight="#000000" >
-	<tr >
-		<td width="1px" >&nbsp;</td>
-		<td valign="top"  width="100"></td>
-	</tr>
-		
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF"  bordercolorlight="#000000" >
 	<tr>
-		<td width="1px">&nbsp;	</td>
-		<td valign="top"  width="90%" height="90%">
-			<div id="treeBox" style="background-color:white;overflow:auto;height:378;width:240;border-left:solid 1px;border-right:solid 1px;border-top:solid 1px;border-bottom:solid 1px;border-color:#7f9db9;"></div>
+	
+		<td valign="top"    style="padding: 5px;">
+			<div id="treeBox" style="overflow:auto;height:378;  padding: 5px;" class="biglistbox"></div>
 		</td>
-		<td width="1%"> &nbsp; </td>
-		   <td align="center" valign="center" style="padding-left:10px;padding-right:10px;">
-			<table>
-			 <tr><td><img src="images/advancequery/b_add.gif"  align="absmiddle" hspace="3" property="shiftRight" styleId ="shiftRight" onclick="moveOptionsRight(document.forms[0].columnNames,document.forms[0].selectedColumnNames);"/></td></tr>
+		
+		   <td align="left" valign="middle" >
+			<table width="90" align="center" border="0">
+			 <tr><td align="center"><img src="images/advancequery/b_add.gif"  align="absmiddle" hspace="3" property="shiftRight" styleId ="shiftRight" onclick="moveOptionsRight(document.forms[0].columnNames,document.forms[0].selectedColumnNames);"/></td></tr>
 			
-			<tr><td><img src="images/advancequery/b_remove.gif"  align="absmiddle" hspace="3" onclick="moveOptionsLeft(document.forms[0].selectedColumnNames, document.forms[0].columnNames);"/></td></tr>
+			<tr><td align="center"><img src="images/advancequery/b_remove.gif"  align="absmiddle" hspace="3" onclick="moveOptionsLeft(document.forms[0].selectedColumnNames, document.forms[0].columnNames);"/></td></tr>
 			</table>
 		</td>
-		<td width="1%"> &nbsp; </td>
-		<td class="" valign="top" width="60" height="85%">
+		
+		<td valign="top" >
 <!-- Mandar : 434 : for tooltip -->
-		   <div id="emptyList" style="height:378;width:250;overflow:hidden;"> 
-		   <select name="heg" style="height:378;width:250;" multiple="true">
+		<table>
+		<tr>
+		<td style="padding: 5px;">
+		   <div id="emptyList" style="height:388;overflow:hidden;" class="biglistbox"> 
+		   <select name="heg" style="height:388;width:250;"  multiple="true">
 				<option value="">
 			</select></div>	
-			
-		 <div id="elementList" style="OVERFLOW: auto;WIDTH:250px;HEIGHT: 378px;border:0px solid;border-color:#7f9db9;"  onscroll="OnDivScroll();"> 
-			 <select  id="lstAttributeNames" name="selectedColumnNames" styleClass="" size="22" multiple="true" style="" onfocus="OnSelectFocus();">
+			</td>
+			<td >
+		 <div id="elementList" style="OVERFLOW: auto;  height:388; padding:1px; bgcolor:#000000;" class="biglistbox"  onscroll="OnDivScroll();"> 
+			 <select  id="lstAttributeNames" name="selectedColumnNames" class="textfield_undefined" size="22" multiple="true" style="" onfocus="OnSelectFocus();">
 			  <logic:iterate id="columnNameValue" name="selectedColumnNameValueBeanList">	
 				<option value="${columnNameValue.value}"/><span class="content_txt"> <bean:write name="columnNameValue" property="name"/></span>
               </logic:iterate> 
 			</select>
-		   </div> 
-		</td>
-		<td width="1%"> &nbsp; </td>
-		 <td align="center" valign="center" style="padding-left:10px;padding-right:10px;">
-		  <table>		
-				<tr><td><img src="images/advancequery/ic_up.gif" align="absmiddle"  onclick="moveUp(document.forms[0].selectedColumnNames);"/>  
+		   </div></td>
+		   <td>
+		     <table>		
+			 <tr>
+			 <td class="content_txt">Re-order</td>
+			 </tr>
+				<tr><td align="center"><img src="images/advancequery/ic_up.gif" align="absmiddle"  onclick="moveUp(document.forms[0].selectedColumnNames);"/>  
 			</td></tr>
-			<tr><td><img src="images/advancequery/ic_down.gif"  align="absmiddle" onclick="moveDown(document.forms[0].selectedColumnNames);"/></td></tr>
+			<tr><td align="center"><img src="images/advancequery/ic_down.gif"  align="absmiddle" onclick="moveDown(document.forms[0].selectedColumnNames);"/></td></tr>
+			</table></td>
+			</tr>
 			</table>
 		</td>
+		
 </tr>
-<tr><td> &nbsp;
-</td>
-</tr>					
-
 </table>
 </body>
 </html:form>
@@ -158,7 +157,7 @@
         lstCollegeNames.focus();
         lstCollegeNames.size=22;
     }
-   removeBorder();
+  // removeBorder();
 }
 	
 	function addOption(theSel, theText, theValue)
@@ -231,7 +230,7 @@
 				addOption(theSelTo, selectedText[i], selectedValues[i]);
 			}
 		}
-        if(document.getElementById("lstAttributeNames").offsetWidth >=250)
+      /*  if(document.getElementById("lstAttributeNames").offsetWidth >=260)
 		   {
 		     e=document.getElementById("elementList");
              e.style.border =1+'px solid';
@@ -241,7 +240,7 @@
 			  e=document.getElementById("elementList");
              e.style.border =0+'px solid';
 			
-			}
+			} */
 	     OnDivScroll();
 	}
    	function moveOptionsLeft(theSelFrom, theSelTo)
@@ -265,7 +264,7 @@
 		  
 		if(selectedCount==0)
 			alert("Please select column name.");
-		removeBorder();
+		//removeBorder();
 	}
 	function deleteOption(theSel, theIndex)
     { 
@@ -280,18 +279,18 @@
    	}
  	
  
-   function removeBorder()
+  /* function removeBorder()
 	{
 	    e=document.getElementById("elementList");
-		if(document.getElementById("lstAttributeNames").offsetWidth >=250)
+		if(document.getElementById("lstAttributeNames").offsetWidth >=260)
 		{
-		  e.style.border =1+'px solid';
+		  e.style.border =0+'px solid';
       	}
 	    else
 		{
 		  e.style.border =0+'px solid';
 		}
-	}
+	}*/
 	
 	function moveUpAllSelected(theSelFrom)
 	{
