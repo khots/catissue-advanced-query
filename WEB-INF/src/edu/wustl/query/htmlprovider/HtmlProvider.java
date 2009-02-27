@@ -1066,7 +1066,7 @@ public class HtmlProvider
 		String componentIdOfID=generateComponentName(attributeIDInterface);
 		String componentId = generateComponentName(attributeInterface);
 		enumratedAttributeMap.put(Constants.ATTRIBUTE_INTERFACE+componentId, attributeInterface);
-		return "\n<td valign='top'><img  src=\"images/advancequery/ic_lookup.gif\" width=\"16\" height=\"16\" align='left' onclick=\"openPermissibleValuesConfigWindow('" + componentId	+ "','"+entity.getName()+"','"+componentIdOfID+"')\"" +
+		return "\n<td valign='top'><img  src=\"images/advancequery/ic_lookup.gif\" width=\"22\" height=\"20\" align='left' onclick=\"openPermissibleValuesConfigWindow('" + componentId	+ "','"+entity.getName()+"','"+componentIdOfID+"')\"" +
 				" border=\"0\"/ title='Search concept codes from Vocabularies'></td>";
 		
 	}
