@@ -137,7 +137,7 @@ public class AddCuratedPath
 //		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,Status");
 //		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,MedicalRecordNumber");
 //		entityList.add("LaboratoryProcedure,LaboratoryProcedureDetails,Facility");
-		entityList.add("LaboratoryProcedureDetails,MedicalRecordNumber,Facility");
+//		entityList.add("LaboratoryProcedureDetails,MedicalRecordNumber,Facility");
 		entityList.add("LaboratoryProcedureDetails,LaboratoryResult,LaboratoryTestType");
 		entityList.add("LaboratoryProcedureDetails,LaboratoryResult,ResultValue");
 		entityList.add("LaboratoryProcedureDetails,LaboratoryResult,Status");
