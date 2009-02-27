@@ -2,8 +2,7 @@
 package edu.wustl.common.query.pvmanager.impl;
 
 import java.util.ArrayList;
-import java.util.List;
-//import java.util.Map;
+import java.util.List; //import java.util.Map;
 
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.JDBCDAO;
@@ -16,7 +15,6 @@ public final class MedLookUpManager
 	//private Map<String, List<String>> pvMap = null;
 	private static MedLookUpManager mLookUpMgrObj = null;
 
-	//private String lookUpTable=null;
 
 	private MedLookUpManager()
 	{
@@ -31,7 +29,6 @@ public final class MedLookUpManager
 			synchronized (MedLookUpManager.class)
 			{
 				mLookUpMgrObj = new MedLookUpManager();
-				//medLookUpManager.lookUpTable = Variables.properties.getProperty("med.lookup.table");
 				//medLookUpManager.init();
 			}
 		}
@@ -80,13 +77,7 @@ public final class MedLookUpManager
 		
 	}*/
 
-	/*public List<String> getPermissibleValues(String pvFilter)
-	{
-		if(pvMap != null)
-			return pvMap.get(pvFilter);
-		else
-			return null;
-	}*/
+	
 	//change signature to accept pv_filter and pv_view.
 	//if pv_filter = null then dont go in for like condition.
 	public List<String> getPermissibleValues(List<String> pvFilter, String pvView)
@@ -99,7 +90,7 @@ public final class MedLookUpManager
 		{
 			dao.openSession(null);
 			//if a pvFilter value is give i.e a synonym is given 
-			if (pvFilter != null && (!pvFilter.equals("")))
+			if (pvFilter != null && (!pvFilter.isEmpty()))
 			{
 				query = getQueryWithSynonym(pvFilter, pvView);
 			}
@@ -115,6 +106,61 @@ public final class MedLookUpManager
 				for (int i = 0; i < dataList.size(); i++)
 				{
 					pvList.add(dataList.get(i).get(1));
+				}
+			}
+		}
+		catch (DAOException e)
+		{
+
+			throw new PVManagerException(ErrMsg, e);
+
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new PVManagerException(ErrMsg, e);
+		}
+		finally
+		{
+			try
+			{
+				dao.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new PVManagerException(ErrMsg, e);
+			}
+		}
+
+		return pvList;
+
+	}
+
+	public List<String> getPermissibleValues(String pvFilter, String pvView)
+			throws PVManagerException
+	{
+		List<String> pvList = null;
+		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+		String query = "";
+		try
+		{
+			dao.openSession(null);
+			//if a pvFilter value is give i.e a synonym is given 
+			if (pvFilter != null && (!pvFilter.equals("")))
+			{
+				query = "select distinct id from " + pvView + " where " + pvFilter;
+			}
+			else
+			{
+				query = "select distinct id from " + pvView;
+			}
+			List<List<String>> dataList = dao.executeQuery(query, null, false, false, null);
+			if (!dataList.isEmpty())
+			{
+				pvList = new ArrayList<String>();
+
+				for (int i = 0; i < dataList.size(); i++)
+				{
+					pvList.add(dataList.get(i).get(0));
 				}
 			}
 		}
@@ -175,6 +221,56 @@ public final class MedLookUpManager
 			{
 				countQuery.append("select count(*) from ");
 				countQuery.append(pvView);
+			}
+			List<List<String>> dataListCount = dao.executeQuery(countQuery.toString(), null, false,
+					false, null);
+			if (!dataListCount.isEmpty())
+			{
+				count = Integer.parseInt(dataListCount.get(0).get(0));
+			}
+		}
+		catch (DAOException e)
+		{
+
+			throw new PVManagerException(ErrMsg, e);
+
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new PVManagerException(ErrMsg, e);
+		}
+		finally
+		{
+			try
+			{
+				dao.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new PVManagerException(ErrMsg, e);
+			}
+		}
+
+		return count;
+
+	}
+
+	public int getPermissibleValuesCount(String pvFilter, String pvView) throws PVManagerException
+	{
+		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+		String countQuery = null;
+		int count = 0;
+		try
+		{
+			dao.openSession(null);
+			//if a pvFilter value is give i.e a synonym is given 
+			if (pvFilter != null && (!pvFilter.equals("")))
+			{
+				countQuery = "select count(distinct id) from " + pvView + " where " + pvFilter;
+			}
+			else
+			{
+				countQuery = "select count(distinct id) from " + pvView;
 			}
 			List<List<String>> dataListCount = dao.executeQuery(countQuery.toString(), null, false,
 					false, null);
