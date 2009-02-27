@@ -522,10 +522,10 @@ public class HtmlProvider
 	{
 		List<ICondition> conditions=attributeDetails.getConditions();
 		List<PermissibleValueInterface> permissibleValues =null;
-		if(! isEditLimits(conditions) )
-		{
-			permissibleValues=HtmlUtility.getPermissibleValuesList(attribute,entity);
-		}
+//		if(! isEditLimits(conditions) )
+//		{
+//			permissibleValues=HtmlUtility.getPermissibleValuesList(attribute,entity);
+//		}
 		String componentId = generateComponentName(attribute);
 		boolean isDate = false;
 		AttributeTypeInformationInterface attrTypeInfo = attribute
@@ -547,15 +547,19 @@ public class HtmlProvider
 					GenerateHtml.generateHTMLForOperators(componentId,isDate,attributeDetails));
 		}
 		IPermissibleValueManager permissibleValueManager = PermissibleValueManagerFactory.getPermissibleValueManager();
-		if(permissibleValueManager.isEnumerated(attribute,entity) && permissibleValueManager.showIcon(attribute, entity,permissibleValues))
+		if(permissibleValueManager.isEnumerated(attribute,entity) && permissibleValueManager.showIcon(attribute, entity))
 		{
-			permissibleValues = new ArrayList<PermissibleValueInterface>();
+			//permissibleValues = new ArrayList<PermissibleValueInterface>();
 			generatedHTML.append(Constants.NEWLINE).append(
 					getHtmlForVIEnumeratedValues(componentId, attributeDetails.getSelectedConcepts()));
 			generatedHTML.append(showEnumeratedAttibutesWithIcon(attribute));
 		}
 		else if(permissibleValueManager.isEnumerated(attribute,entity))
 		{
+			if(! isEditLimits(conditions) )
+			{
+				permissibleValues=HtmlUtility.getPermissibleValuesList(attribute,entity);
+			}
 			generatedHTML.append(Constants.NEWLINE).append(
 					generateHTMLForEnumeratedValues(componentId, permissibleValues,
 							attributeDetails.getEditValues()));
