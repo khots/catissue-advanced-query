@@ -1138,7 +1138,7 @@ function setPreviousProject()
 {
 	previousProject=document.getElementById('selectedProject').value;
 }setPreviousProject();
-
+/*
 function retrieveCounts()
 {
 	var rows=parent.window.document.getElementById("table1").rows.length;
@@ -1155,6 +1155,6 @@ function retrieveCounts()
 			workflowExecuteGetCountQuery(queryId,executionId);
 		}
 	}
-}retrieveCounts();
+}retrieveCounts();*/
 </script>
 </body>
