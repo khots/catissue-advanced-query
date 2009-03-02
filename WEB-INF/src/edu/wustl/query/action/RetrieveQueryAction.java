@@ -183,12 +183,8 @@ public class RetrieveQueryAction extends Action
 			SaveQueryForm saveQueryForm)
 	{
 		int totalRecords=setQueryCount();
-		
-		int recordsPerPage=1;
-		
 		int startIndex=0;
 		int pageNum=getPageNumber(request,requestFor);
-		String pageOf = request.getParameter(Constants.PAGEOF);
 		int maxRecords = getRecordsPerPage(request,requestFor);
 		if(maxRecords==-1)
 		{
