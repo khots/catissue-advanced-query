@@ -23,7 +23,7 @@ public class DefineViewAction extends Action {
 	   HttpSession session = request.getSession();
 	   String isworkflow= request.getParameter(Constants.IS_WORKFLOW);
 	   String pageOf= request.getParameter(Constants.PAGE_OF);
-	   System.out.println("");
+	   
 	   request.setAttribute(Constants.IS_WORKFLOW, isworkflow);
 	   request.setAttribute(Constants.PAGE_OF,pageOf);
 	   QueryDetails queryDetails = new QueryDetails(session);
