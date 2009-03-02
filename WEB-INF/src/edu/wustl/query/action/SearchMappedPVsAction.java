@@ -284,9 +284,8 @@ public class SearchMappedPVsAction extends Action
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		StringBuffer mappedHTML=new StringBuffer();
-		int displayPVCount=1;
 		int maxPv=0;
-		boolean isMsgDisplayed=false;
+		
 		
 		if (vocabMappings != null && vocabMappings.size()!=0)
 		{
