@@ -46,8 +46,7 @@ public class QueryFrameworkTestCase extends TestCase
 		Logger.configure();
 		try
 		{
-			EntityCache.getInstance();
-
+			// EntityCache.getInstance();
 			// Utility.initTest();
 
 			Properties props = new Properties();
