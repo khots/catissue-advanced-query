@@ -2,6 +2,7 @@ package edu.wustl.query.bizlogic;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import edu.wustl.query.spreadsheet.SpreadSheetViewGeneratorTestCases;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.query.utility.Utility;
 
@@ -44,6 +45,9 @@ public class QueryTestAll extends TestSuite
 		
 		// For testing Saved Queries
 		suite.addTestSuite(QueryBizLogicTestCases.class);
+		
+		// For testing SpreadSheet View Generator
+		suite.addTestSuite(SpreadSheetViewGeneratorTestCases.class);
 		
 		return suite;
 	}
