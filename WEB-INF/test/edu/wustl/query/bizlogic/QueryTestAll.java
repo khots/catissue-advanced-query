@@ -2,6 +2,8 @@ package edu.wustl.query.bizlogic;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.query.utility.Utility;
 
 
 public class QueryTestAll extends TestSuite
@@ -26,6 +28,9 @@ public class QueryTestAll extends TestSuite
 	 */
 	public static Test suite()
 	{
+		Utility.initTest();
+		EntityCache.getInstance();
+		
 		TestSuite suite = new TestSuite("Test suite for QUERY business logic");
 		
 		//For testing WorkflowBizLogic
