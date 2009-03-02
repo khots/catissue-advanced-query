@@ -126,7 +126,7 @@ public class SearchPermissibleValuesAction extends Action
 
 		List<PermissibleValueInterface> pvList = bizLogic.getPermissibleValueListFromDB(attribute,
 				entity);
-		boolean messageFlag = false;
+		
 		while (allTrgVocabs.hasMoreTokens())
 		{
 			String[] vocabDetail = allTrgVocabs.nextToken().split("##");
