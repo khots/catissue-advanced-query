@@ -21,7 +21,6 @@ import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
-import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
