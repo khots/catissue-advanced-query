@@ -30,55 +30,45 @@ public class RetrieveWorkflowAction extends Action
 
 		return mapping.findForward(request.getParameter(Constants.PAGE_OF));
 	}
+	/**
+	 * @param request
+	 * @param requestFor
+	 */
 	private void setPagiantion(HttpServletRequest request, String requestFor
 			)
 	{
 		int totalRecords=setWorkflowCount();
-		int startIndex=0;
-		int pageNum=getPageNumber(request,requestFor);
 		
-		int maxRecords = getRecordsPerPage(request,requestFor);
-		if(maxRecords==-1)
-		{
-			maxRecords=10;
-		}
-		if(pageNum<1)
-		{
-			pageNum=1;
-		}
-		startIndex=maxRecords*(pageNum-1);
-		
-		int totalPages=0;
-
-		totalRecords=getTotalRecords(request,requestFor,totalRecords);
-
-		if(totalRecords>0)
-		{
-			totalPages=totalRecords%maxRecords==0?totalRecords/maxRecords:(totalRecords/maxRecords)+1;
-		}
+		int startIndex = 0;
+		int pageNum = getPageNumber(request, requestFor);
+		int maxRecords = getRecordsPerPage(request, requestFor);		
+		startIndex = maxRecords * (pageNum - 1);	
+			
 		request.getSession().setAttribute(Constants.RESULTS_PER_PAGE,maxRecords );
 		request.getSession().setAttribute(Constants.PAGE_NUMBER,pageNum );
+		int totalPages = getTotalPages(maxRecords, totalRecords);
 		request.getSession().setAttribute("totalPages",totalPages);
 		request.getSession().setAttribute(Constants.TOTAL_RESULTS, totalRecords);
 		
 		List<NameValueBean> resultsPerPageOptions=new ArrayList<NameValueBean>();
+		resultsPerPageOptions.add(new NameValueBean("5","5"));
 		resultsPerPageOptions.add(new NameValueBean("10","10"));
-		resultsPerPageOptions.add(new NameValueBean("20","20"));
-		resultsPerPageOptions.add(new NameValueBean("30","30"));
+		resultsPerPageOptions.add(new NameValueBean("15","15"));
 		
 		request.setAttribute("resultsPerPageOptions", resultsPerPageOptions);
 		request.setAttribute(Constants.PAGE_OF, request.getParameter(Constants.PAGE_OF));
+		
+		setPaginationVars(request);
 		
 		//to set queries to form 
 
 		Session session1=DBUtil.currentSession();
 		Query query = null;
-		query = session1.createQuery("from "+Workflow.class.getName());
+		query = session1.createQuery("from "+Workflow.class.getName()+ "  Workflow order by Workflow.id desc");
 	
 		query.setFirstResult(startIndex);
 		query.setMaxResults(maxRecords);
-		List<Workflow> workflowList = query.list();
-		//workflowForm.setParameterizedQueryCollection(temp);
+		List<Workflow> workflowList = query.list();		
 		request.setAttribute("workflowList", workflowList);
 		request.setAttribute("identifierFieldIndex", 2);
 		
@@ -124,26 +114,31 @@ public class RetrieveWorkflowAction extends Action
 		request.setAttribute("colTypes", "\"ch,str,int\"");
 		request.setAttribute("colDataTypes", "\"ch,txt,ro\"");
 	}
-	private int getTotalRecords(HttpServletRequest request, String requestFor, int matchingUsersCount)
+	
+	/**
+	 * @param maxRecords
+	 * @param totalRecords
+	 * @return
+	 */
+	private int getTotalPages(int maxRecords,
+			int totalRecords)
 	{
-		int totalRecords=0;
-		if(requestFor!=null && request.getSession().getAttribute(Constants.TOTAL_RESULTS)!=null)
-		{
-			totalRecords=(Integer)request.getSession().getAttribute(Constants.TOTAL_RESULTS);
-		}
-		else
-		{
-			totalRecords=matchingUsersCount;
-		}
-		
-		return totalRecords;
+		int totalPages=0;		
+		totalPages = totalRecords % maxRecords == 0
+				? totalRecords / maxRecords
+				: (totalRecords / maxRecords) + 1;		
+		return totalPages;
 	}
+		
+	/**
+	 * @return
+	 */
 	public int setWorkflowCount()
 	{
 
 		Session session1=DBUtil.currentSession();
 		Query query = null;
-		query = session1.createQuery("from "+Workflow.class.getName());
+		query = session1.createQuery("from "+Workflow.class.getName()); 
 		List workflowList = query.list();
 		if(workflowList!=null)
 		{
@@ -151,6 +146,11 @@ public class RetrieveWorkflowAction extends Action
 		}
 		return 0;
 	}
+	/**
+	 * @param request
+	 * @param requestFor
+	 * @return
+	 */
 	private int getPageNumber(HttpServletRequest request, String requestFor)
 	{
 		Object pageNumObj=getSessionAttribute(request,Constants.PAGE_NUMBER);
@@ -167,6 +167,11 @@ public class RetrieveWorkflowAction extends Action
 		return pageNum;
 	}
 
+	/**
+	 * @param request
+	 * @param attributeName
+	 * @return
+	 */
 	private Object getSessionAttribute(HttpServletRequest request, String attributeName)
 	{
 		Object object=null;
@@ -186,6 +191,11 @@ public class RetrieveWorkflowAction extends Action
 		return object;
 	}
 
+	/**
+	 * @param request
+	 * @param requestFor
+	 * @return
+	 */
 	private int getRecordsPerPage(HttpServletRequest request, String requestFor)
 	{
 		Object recordsPerPageObj=getSessionAttribute(request,Constants.RESULTS_PER_PAGE);
@@ -199,6 +209,46 @@ public class RetrieveWorkflowAction extends Action
 			maxRecords=10;
 		}
 		return maxRecords;
+	}
+	
+	/**
+	 * @param request
+	 */
+	private void setPaginationVars(HttpServletRequest request)
+	{
+		int firstPageNo = 1, currentPageNo;
+		currentPageNo = (Integer) (request.getSession().getAttribute("pageNum"));
+
+		if (request.getParameter("firstPageNum") != null)
+		{
+			firstPageNo = Integer.parseInt(request.getParameter("firstPageNum"));
+		}
+		else
+		{
+			if (currentPageNo % 5 == 0)
+			{
+				firstPageNo = currentPageNo - 4;
+			}
+			else
+			{
+				firstPageNo = currentPageNo - (currentPageNo % 5 - 1);
+			}
+		}
+		if (firstPageNo < 5)
+		{
+			firstPageNo = 1;
+		}
+		request.setAttribute("firstPageNum", firstPageNo);
+		request.setAttribute("numOfPageNums", 5);
+		if ((firstPageNo + 4) > (Integer) (request.getSession().getAttribute("totalPages")))
+		{
+			request.setAttribute("lastPageNum", (Integer) (request.getSession()
+					.getAttribute("totalPages")));
+		}
+		else
+		{
+			request.setAttribute("lastPageNum", firstPageNo + 4);
+		}
 	}
 
 }
