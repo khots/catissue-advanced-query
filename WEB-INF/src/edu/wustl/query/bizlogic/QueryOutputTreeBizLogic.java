@@ -295,7 +295,7 @@ public class QueryOutputTreeBizLogic
 	 */
 	private String getSql(String parentNodeId, String tableName, String parentIdColumnName,
 			OutputTreeDataNode childNode)
-	{   System.out.println();
+	{  
 		String selectSql = Constants.SELECT_DISTINCT;
 		String idColumnOfCurrentNode = "";
 		
