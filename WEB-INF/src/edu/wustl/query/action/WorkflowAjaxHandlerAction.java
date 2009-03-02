@@ -161,7 +161,7 @@ public class WorkflowAjaxHandlerAction extends Action
 
 					     resultCount=workflowBizLogic.getCount(executionIdMap.get(query));
 	                    executionQueryResults.add(createResultJSON(query, resultCount.getCount(),
-	                            resultCount.getStatus(), resultCount.getQuery_exection_id()));
+	                            resultCount.getStatus(), resultCount.getQueryExectionId()));
 	                    boolean hasFewRecords = false;
 	                    if(project_id > 0)
 	                    {
@@ -171,12 +171,12 @@ public class WorkflowAjaxHandlerAction extends Action
 					    if(hasFewRecords)
 					    {
 					    	jsonObject = createResultJSON(query,0,
-		                            resultCount.getStatus(), resultCount.getQuery_exection_id());
+		                            resultCount.getStatus(), resultCount.getQueryExectionId());
 					    }
 					    else
 					    {	
 					    	jsonObject = createResultJSON(query, resultCount.getCount(),
-		                            resultCount.getStatus(), resultCount.getQuery_exection_id());
+		                            resultCount.getStatus(), resultCount.getQueryExectionId());
 					    }
 					    executionQueryResults.add(jsonObject);
 					}
@@ -185,7 +185,7 @@ public class WorkflowAjaxHandlerAction extends Action
 				{
 					 resultCount=workflowBizLogic.getCount(queryExecId);
 						executionQueryResults.add(createResultJSON(queryId, resultCount.getCount(),
-								resultCount.getStatus(), resultCount.getQuery_exection_id()));
+								resultCount.getStatus(), resultCount.getQueryExectionId()));
 						boolean hasFewRecords = false;
 	                    if(project_id > 0)
 	                    {
@@ -195,12 +195,12 @@ public class WorkflowAjaxHandlerAction extends Action
 						if(hasFewRecords)
 					    {
 							jsonObject = createResultJSON(queryId,0,
-									resultCount.getStatus(), resultCount.getQuery_exection_id());
+									resultCount.getStatus(), resultCount.getQueryExectionId());
 						}
 						else
 						{
 							jsonObject = createResultJSON(queryId, resultCount.getCount(),
-									resultCount.getStatus(), resultCount.getQuery_exection_id());
+									resultCount.getStatus(), resultCount.getQueryExectionId());
 						}
 						executionQueryResults.add(jsonObject);
 				}
