@@ -199,8 +199,9 @@ public class WorkflowBizLogic extends DefaultBizLogic
 //		        ICompositeQuery queryClone = new DyExtnObjectCloner().clone((ICompositeQuery)query);
 //		        new HibernateCleanser(queryClone).clean();
 
-		        AbstractQuery ciderQuery = new CiderQuery((IAbstractQuery)query,0,null,(long)((CiderWorkFlowDetails) workflowDetails).getUserId(), (long)((CiderWorkFlowDetails) workflowDetails).getProjectId(), "");
+		        AbstractQuery ciderQuery = new CiderQuery(query,0,null,(long)((CiderWorkFlowDetails) workflowDetails).getUserId(), (long)((CiderWorkFlowDetails) workflowDetails).getProjectId(),request.getRemoteAddr());
 		        executionIdsMap.putAll(workflowManager.execute(workflowDetails, ciderQuery));
+
 			}
 		}
 		catch (DAOException ex)
