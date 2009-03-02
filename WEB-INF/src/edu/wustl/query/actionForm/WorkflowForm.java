@@ -448,7 +448,7 @@ public class WorkflowForm extends AbstractActionForm
 			IAbstractQuery abstractQuery = workflowItem.getQuery();
 			identifier[i]=String.valueOf(abstractQuery.getId());
 			generateOperatorAndOperandList(operatorsList, operandsList, abstractQuery);
-			expression[i]=generatePostfixExpression(workflowItem,operatorsList,operandsList,abstractQuery);
+			expression[i]=generatePostfixExpression(abstractQuery,"");// empty expression is passed for the first call
 			setoperandList(operandList, operandsList);
 			setOperatorList(opretionList, operatorsList);
 			displayQueryTitle[i]=genetrateDisplayQueryTitle(workflowItem);
@@ -478,36 +478,21 @@ public class WorkflowForm extends AbstractActionForm
 
 	}
 
-	private String generatePostfixExpression(WorkflowItem workflowItem, LinkedList<String> operatorsList, LinkedList<Long> operandsList, IAbstractQuery abstractQuery) {
-		String exp="";
-		for(int i=0;i<operandsList.size();i++)
-		{
-			exp=exp+operandsList.get(i)+"_";
-		}
-		//exp=exp+operandsList.get(operandsList.size());
-		for(int i=0;i<operatorsList.size();i++)
-		{
-			if(!operatorsList.get(i).equals("None"))
-			{
-				String shortOperator=null;
-				if(operatorsList.get(i).equals("Union"))
-				{
-					shortOperator="+";
-				}
-				if(operatorsList.get(i).equals("Intersection"))
-				{
-					shortOperator="*";
-				}
-				if(operatorsList.get(i).equals("Minus"))
-				{
-					shortOperator="-";
-				}
+	private String generatePostfixExpression(IAbstractQuery abstractQuery,String exp) {
 
-				
-				exp=exp+shortOperator+"_";
-			}
+
+		if (abstractQuery instanceof CompositeQuery)
+		{
+			CompositeQuery compositeQuery = (CompositeQuery) abstractQuery;
+			IAbstractQuery operandOne=compositeQuery.getOperation().getOperandOne();
+			IAbstractQuery operandTwo=compositeQuery.getOperation().getOperandTwo();
+			exp=exp+generatePostfixExpression(operandTwo,exp)+"_"+generatePostfixExpression(operandOne,exp)+"_"+setShortOperation(compositeQuery.getOperation());
+
 		}
-		exp=exp.substring(0, exp.lastIndexOf('_'));
+		else
+		{
+			return abstractQuery.getId().toString();
+		}
 		return exp;
 	}
 
@@ -517,23 +502,7 @@ public class WorkflowForm extends AbstractActionForm
 	 */
 	private String genetrateDisplayQueryTitle(WorkflowItem workflowItem)
 	{
-//		if(workflowItem.getQuery() instanceof CompositeQuery)
-//		{
-//
-//					String queryConst = "[ Query";
-//					String queryTitle = "";
-//
-//						queryTitle = queryTitle + queryConst + " : " + ((ParameterizedQuery)(((CompositeQuery)workflowItem.getQuery()).getOperation().getOperandOne())).getName()+ " ]"
-//								+ " "+setOperationForCompositeQuery(((CompositeQuery)workflowItem.getQuery()).getOperation())+" ";
-//					return queryTitle + queryConst + " : " + ((ParameterizedQuery)(((CompositeQuery)workflowItem.getQuery()).getOperation().getOperandTwo())).getName() + " ]";
-//	
-//		}
-//		else if(workflowItem.getQuery() instanceof  ParameterizedQuery)
-//		{
-//			return ((ParameterizedQuery)workflowItem.getQuery()).getName();
-//		}
 		return workflowItem.getQuery().getName();
-		//return null;
 	}
 
 	private void setOperatorList(LinkedList<String> opretionList, LinkedList<String> operatorsList)
@@ -626,6 +595,31 @@ public class WorkflowForm extends AbstractActionForm
 			operationName = "Minus";
 		}
 		return operationName;
+	}
+
+	
+	/**
+	 * @param operation = operation on the CQ
+	 * @return operation object according to the String of operation to perform
+	 *
+	 * This method returns the short operation for hte given operation 
+	 */
+	private String setShortOperation(IOperation operation)
+	{
+		String shortOpr = null;
+		if (operation instanceof Union)
+		{
+			shortOpr = "+";
+		}
+		else if (operation instanceof Intersection)
+		{
+			shortOpr = "*";
+		}
+		else if (operation instanceof Minus)
+		{
+			shortOpr = "-";
+		}
+		return shortOpr;
 	}
 
 
