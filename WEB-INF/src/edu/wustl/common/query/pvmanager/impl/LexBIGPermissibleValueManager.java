@@ -13,9 +13,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
-import edu.wustl.common.vocab.IVocabularyManager;
 import edu.wustl.common.vocab.VocabularyException;
-import edu.wustl.common.vocab.impl.VocabularyManager;
 import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.util.global.Constants;
 
@@ -145,7 +143,6 @@ public class LexBIGPermissibleValueManager implements IPermissibleValueManager
 		boolean showIcon = true;
 		try
 		{
-			IVocabularyManager vocabMngr = VocabularyManager.getInstance();
 			if (isEnumerated(attribute, entity))
 			{
 				Properties properties = VocabUtil.getConfigVocabProps();
