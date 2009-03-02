@@ -146,7 +146,7 @@ public class GetCountAjaxHandlerAction extends Action
 		{
 			resultObject.append(Constants.QUERY_COUNT,count);
 			resultObject.append(Constants.GET_COUNT_STATUS, countObject.getStatus());
-			resultObject.append(Constants.EXECUTION_ID, countObject.getQuery_exection_id());
+			resultObject.append(Constants.EXECUTION_ID, countObject.getQueryExectionId());
 		}
 		catch (JSONException e)
 		{
