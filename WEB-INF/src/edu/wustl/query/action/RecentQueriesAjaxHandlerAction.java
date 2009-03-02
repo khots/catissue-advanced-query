@@ -71,7 +71,7 @@ public class RecentQueriesAjaxHandlerAction extends Action
 		{
 			resultObject.append(Constants.QUERY_COUNT, countObject.getCount());
 			resultObject.append(Constants.GET_COUNT_STATUS, countObject.getStatus());
-			resultObject.append(Constants.EXECUTION_ID, countObject.getQuery_exection_id());
+			resultObject.append(Constants.EXECUTION_ID, countObject.getQueryExectionId());
 			resultObject.append(Constants.INDEX, index);
 		}
 		catch (JSONException e)
