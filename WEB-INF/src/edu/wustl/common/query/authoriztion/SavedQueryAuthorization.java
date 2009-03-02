@@ -4,11 +4,9 @@
 
 package edu.wustl.common.query.authoriztion;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import java.util.Vector;
 
 import edu.wustl.common.beans.SecurityDataBean;
@@ -18,7 +16,6 @@ import edu.wustl.common.security.PrivilegeManager;
 import edu.wustl.common.security.PrivilegeUtility;
 import edu.wustl.common.security.SecurityManager;
 import edu.wustl.common.security.exceptions.SMException;
-
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.util.global.Constants;
 import gov.nih.nci.security.authorization.domainobjects.ProtectionElement;
