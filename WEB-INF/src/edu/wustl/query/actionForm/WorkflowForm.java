@@ -467,8 +467,7 @@ public class WorkflowForm extends AbstractActionForm
 		this.displayQueryType=displayQueryType;
 		this.displayQueryTitle = displayQueryTitle;
 		//this.queryTypeControl=queryTypeControl;
-		System.out.println("");
-		
+			
 		this.operands = operands;
 		this.operators = operators;
 		boolean[] chkbox = new boolean[workflowItemList.size()];
