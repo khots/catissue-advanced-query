@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -16,8 +18,6 @@ import org.apache.struts.action.ActionMessages;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-
-import com.rsa.jsafe.asn1.SetContainer;
 
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
@@ -36,16 +36,6 @@ import gov.nih.nci.security.authorization.domainobjects.ProtectionGroup;
 import gov.nih.nci.security.dao.ProtectionElementSearchCriteria;
 import gov.nih.nci.security.exceptions.CSException;
 import gov.nih.nci.security.exceptions.CSObjectNotFoundException;
-/*
-import gov.nih.nci.security.authorization.domainobjects.User;
-import edu.wustl.common.beans.SessionDataBean;
-import edu.wustl.common.dao.HibernateDAOImpl;
-import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.security.PrivilegeManager;
-
-import com.sun.msv.datatype.xsd.regex.REUtil;
-*/
 
 /**
  * @author chetan_patil
