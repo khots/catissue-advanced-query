@@ -32,7 +32,8 @@ public class DefinedQueryUtil
 	 * @throws BizLogicException
 	 * @throws DAOException 
 	 */
-	public void insertQuery(IQuery query,SessionDataBean sessionDataBean , boolean isShared) throws UserNotAuthorizedException, BizLogicException, DAOException
+	public void insertQuery(IQuery query, SessionDataBean sessionDataBean, boolean isShared)
+			throws UserNotAuthorizedException, BizLogicException, DAOException
 	{
 		IParameterizedQuery parameterizedQuery = populateParameterizedQueryData(query);
 		parameterizedQuery.setName(((IParameterizedQuery) query).getName());
