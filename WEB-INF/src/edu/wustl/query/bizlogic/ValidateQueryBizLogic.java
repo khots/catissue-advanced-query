@@ -59,16 +59,20 @@ public class ValidateQueryBizLogic
 		String pageOf = request.getParameter(Constants.PAGE_OF);
 		String workflow = request.getParameter("isWorkflow");
 		String queryType = null;
-		if(query!=null)
-			queryType =((Query)query).getType();
-		 if("true".equals(workflow))
-		 {
-			 request.setAttribute("isWorkflow","true"); 
-		 }
-		String queryTile=request.getParameter("queyTitle");
-		if( !("DefineFilter".equals(pageOf) || "DefineView".equals(pageOf) || (QueryType.GET_DATA.type).equals(queryType)) && queryTile==null||"".equals(queryTile))
+		if (query != null)
 		{
-			validationMessage=validateQueyTitle(queryTile);
+			queryType = ((Query) query).getType();
+		}
+		if ("true".equals(workflow))
+		{
+			request.setAttribute("isWorkflow", "true");
+		}
+		String queryTile = request.getParameter("queyTitle");
+		if (!("DefineFilter".equals(pageOf) || "DefineView".equals(pageOf) || (QueryType.GET_DATA.type)
+				.equals(queryType))
+				&& queryTile == null || "".equals(queryTile))
+		{
+			validationMessage = validateQueyTitle(queryTile);
 			return validationMessage;
 		}
 
@@ -97,11 +101,12 @@ public class ValidateQueryBizLogic
 		try
 		{
 			HttpSession session = request.getSession();
-			validationMessage = getMessageForBaseObject(validationMessage, constraints,queryType);
-			if(validationMessage == null)
+			validationMessage = getMessageForBaseObject(validationMessage, constraints, queryType);
+			if (validationMessage == null)
 			{
-			   Map<EntityInterface, List<EntityInterface>> mainEntityMap = getMainObjectErrorMessege(query, request);
-			   if (mainEntityMap == null)
+				Map<EntityInterface, List<EntityInterface>> mainEntityMap = getMainObjectErrorMessege(
+						query, request);
+				if (mainEntityMap == null)
 				{
 					//return NO_MAIN_OBJECT_IN_QUERY;
 					validationMessage = (String) session
@@ -112,10 +117,10 @@ public class ValidateQueryBizLogic
 			}
 			else
 			{
-				
+
 			}
 			// if no main object is present in the map show the error message set in the session.
-			
+
 		}
 		catch (QueryModuleException e)
 		{
@@ -123,47 +128,50 @@ public class ValidateQueryBizLogic
 			{
 				case MULTIPLE_ROOT :
 					validationMessage = "<font color='red'> "
-						+ ApplicationProperties.getValue("errors.executeQuery.multipleRoots")
-						+ "</font>";
-					
+							+ ApplicationProperties.getValue("errors.executeQuery.multipleRoots")
+							+ "</font>";
+
 					break;
-                default :
-                	validationMessage = "<font color='red'> "
-						+ ApplicationProperties.getValue("errors.executeQuery.genericmessage")
-						+ "</font>";
+				default :
+					validationMessage = "<font color='red'> "
+							+ ApplicationProperties.getValue("errors.executeQuery.genericmessage")
+							+ "</font>";
 					break;
 			}
-			
-		}
-		
-		
-		return validationMessage;
-	} 
 
-	private static Map<EntityInterface, List<EntityInterface>> getMainObjectErrorMessege(IQuery query,
-			HttpServletRequest request) throws QueryModuleException
-	{ 
+		}
+
+		return validationMessage;
+	}
+
+	private static Map<EntityInterface, List<EntityInterface>> getMainObjectErrorMessege(
+			IQuery query, HttpServletRequest request) throws QueryModuleException
+	{
 		HttpSession session = request.getSession();
-		AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(ValidateQueryBizLogic.class, request, query);
+		AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory
+				.configureDefaultAbstractUIQueryManager(ValidateQueryBizLogic.class, request, query);
 		queryUIManager.updateQueryForValidation();
-        
-		if(((Query)query).getType().equals(QueryType.GET_DATA.type))
-		   Variables.queryGeneratorClassName = "edu.wustl.common.query.impl.PassTwoXQueryGenerator";
+
+		if (((Query) query).getType().equals(QueryType.GET_DATA.type))
+		{
+			Variables.queryGeneratorClassName = "edu.wustl.common.query.impl.PassTwoXQueryGenerator";
+		}
 		IQueryGenerator queryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
-		String selectSql=null;
+		String selectSql = null;
 		try
 		{
 			//selectSql = "select personUpi_1 Column0 from xmltable(' for $Person_1 in db2-fn:xmlcolumn(\"DEMOGRAPHICS.XMLDATA\")/Person where exists($Person_1/personUpi)  return <return><Person_1>{$Person_1}</Person_1></return>' columns personUpi_1 varchar(1000) path 'Person_1/Person/personUpi')";
-			selectSql=queryGenerator.generateQuery(
-					(IQuery) ((CiderQueryUIManager)queryUIManager).getCiderQuery().getQuery());
+			selectSql = queryGenerator
+					.generateQuery((IQuery) ((CiderQueryUIManager) queryUIManager).getCiderQuery()
+							.getQuery());
 		}
 		catch (MultipleRootsException e)
 		{
-			throw new QueryModuleException(e.getMessage(),QueryModuleError.MULTIPLE_ROOT);
+			throw new QueryModuleException(e.getMessage(), QueryModuleError.MULTIPLE_ROOT);
 		}
 		catch (SqlException e)
 		{
-			throw new QueryModuleException(e.getMessage(),QueryModuleError.SQL_EXCEPTION);
+			throw new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
 		}
 		Map<AttributeInterface, String> attributeColumnNameMap = queryGenerator
 				.getAttributeColumnNameMap();
@@ -176,9 +184,7 @@ public class ValidateQueryBizLogic
 		List<OutputTreeDataNode> rootOutputTreeNodeList = queryGenerator
 				.getRootOutputTreeNodeList();
 		session.setAttribute(Constants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
-		session
-				.setAttribute(Constants.NO_OF_TREES, Long
-						.valueOf(rootOutputTreeNodeList.size()));
+		session.setAttribute(Constants.NO_OF_TREES, Long.valueOf(rootOutputTreeNodeList.size()));
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
 				.getAllChildrenNodes(rootOutputTreeNodeList);
 		queryDetailsObj.setUniqueIdNodesMap(uniqueIdNodesMap);
@@ -189,36 +195,43 @@ public class ValidateQueryBizLogic
 		return mainEntityMap;
 	}
 
-	private static String getMessageForBaseObject(String validationMessage, IConstraints constraints,String queryType) throws QueryModuleException
-			
-	{  
+	private static String getMessageForBaseObject(String validationMessage,
+			IConstraints constraints, String queryType) throws QueryModuleException
+
+	{
 		System.out.println();
 		boolean istagPresent = false;
-		if (queryType.equals(QueryType.GET_DATA.type)) {
-			try {
+		if (queryType.equals(QueryType.GET_DATA.type))
+		{
+			try
+			{
 				IExpression root = constraints.getJoinGraph().getRoot();
-				istagPresent = edu.wustl.query.util.global.Utility
-						.istagPresent(root.getQueryEntity()
-								.getDynamicExtensionsEntity(),
-								Constants.BASE_MAIN_ENTITY);
-			} catch (MultipleRootsException e) {
-				throw new QueryModuleException(e.getMessage(),
-						QueryModuleError.MULTIPLE_ROOT);
+				istagPresent = edu.wustl.query.util.global.Utility.istagPresent(root
+						.getQueryEntity().getDynamicExtensionsEntity(), Constants.BASE_MAIN_ENTITY);
 			}
-		} else {
-			for (IExpression expression : constraints) {
-				EntityInterface baseEntity = expression.getQueryEntity()
-						.getDynamicExtensionsEntity();
-				istagPresent = edu.wustl.query.util.global.Utility
-						.istagPresent(baseEntity, Constants.BASE_MAIN_ENTITY);
-				if (istagPresent)
-					break;
+			catch (MultipleRootsException e)
+			{
+				throw new QueryModuleException(e.getMessage(), QueryModuleError.MULTIPLE_ROOT);
 			}
 		}
-		if (!istagPresent) {
+		else
+		{
+			for (IExpression expression : constraints)
+			{
+				EntityInterface baseEntity = expression.getQueryEntity()
+						.getDynamicExtensionsEntity();
+				istagPresent = edu.wustl.query.util.global.Utility.istagPresent(baseEntity,
+						Constants.BASE_MAIN_ENTITY);
+				if (istagPresent)
+				{
+					break;
+				}
+			}
+		}
+		if (!istagPresent)
+		{
 			validationMessage = "<li><font color='blue'> "
-					+ ApplicationProperties
-							.getValue(Constants.QUERY_NO_ROOTEXPRESSION)
+					+ ApplicationProperties.getValue(Constants.QUERY_NO_ROOTEXPRESSION)
 					+ "</font></li>";
 		}
 
@@ -232,9 +245,8 @@ public class ValidateQueryBizLogic
 	*/
 	private static String validateQueyTitle(String queryTitle)
 	{
-		
+
 		return ApplicationProperties.getValue("query.title.madatory");
 	}
 
 }
-
