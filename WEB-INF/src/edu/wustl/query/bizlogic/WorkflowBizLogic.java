@@ -159,7 +159,6 @@ public class WorkflowBizLogic extends DefaultBizLogic
 		 * set the IQuery from the query ID
 		 */
 		edu.wustl.common.querysuite.queryobject.impl.AbstractQuery query = null;
-		Workflow workflow = null;
 		try
 		{
 			if (queryId != null)
