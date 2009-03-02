@@ -176,7 +176,7 @@ public class CompositeQueryExecutor
 					QueryModuleError.SQL_EXCEPTION);
 			throw queryModExp;
 		}
-		count.setQuery_exection_id(ciderQuery.getQueryExecId());
+		count.setQueryExectionId(ciderQuery.getQueryExecId());
 
 		return count;
 	}
