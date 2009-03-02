@@ -70,7 +70,7 @@ public class RetrieveQueryAction extends Action
 
 			
 			setErrorMessages(request,message);
-			actionForward = setActionForward(actionMapping, request.getParameter("pageOf"));
+			actionForward = setActionForward(actionMapping, request.getParameter(Constants.PAGE_OF));
 		}
 		catch (HibernateException hibernateException)
 		{
@@ -78,9 +78,9 @@ public class RetrieveQueryAction extends Action
 		}
 		request.setAttribute(Constants.POPUP_MESSAGE, ApplicationProperties
 				.getValue("query.confirmBox.message"));
-		if(request.getParameter("pageOf")!=null)
+		if(request.getParameter(Constants.PAGE_OF)!=null)
 		{
-			request.setAttribute(Constants.PAGE_OF,  request.getParameter("pageOf"));
+			request.setAttribute(Constants.PAGE_OF,  request.getParameter(Constants.PAGE_OF));
 		}
 		return actionForward;
 	}
@@ -159,8 +159,8 @@ public class RetrieveQueryAction extends Action
 			
 			
 				//saveQueryForm.setParameterizedQueryCollection(parameterizedQueryCollection);
-			if(request.getParameter("pageOf")!=null&&(Constants.MY_QUERIES_FOR_WORKFLOW.equals(request.getParameter("pageOf"))
-					||Constants.PUBLIC_QUERIES_FOR_WORKFLOW.equals(request.getParameter("pageOf"))))
+			if(request.getParameter(Constants.PAGE_OF)!=null&&(Constants.MY_QUERIES_FOR_WORKFLOW.equals(request.getParameter(Constants.PAGE_OF))
+					||Constants.PUBLIC_QUERIES_FOR_WORKFLOW.equals(request.getParameter(Constants.PAGE_OF))))
 			{
 				setQueryCount();
 				saveQueryForm=setPagiantion(request,request.getParameter("requestFor"),saveQueryForm);	
