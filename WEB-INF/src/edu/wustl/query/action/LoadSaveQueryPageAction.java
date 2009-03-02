@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
@@ -38,7 +37,6 @@ public class LoadSaveQueryPageAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 	    
-	     HttpSession session = request.getSession();
 	     String isworkflow= (String)request.getAttribute(Constants.IS_WORKFLOW);
 	     if(isworkflow==null)
 	     {
@@ -126,7 +124,9 @@ public class LoadSaveQueryPageAction extends Action
 		}
 		//the title from GetCount query page should be displayed as default in Save Query page
 		if (queryObject.getId() == null && queryObject instanceof ParameterizedQuery)
+		{
 			savedQueryForm.setTitle(((ParameterizedQuery)queryObject).getName());
+		}
 		return target;
 	}
 	
