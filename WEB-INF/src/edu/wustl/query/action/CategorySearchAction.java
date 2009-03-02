@@ -57,7 +57,6 @@ public class CategorySearchAction extends Action
 	{
 		//getQueryrTitle
 
-		HttpSession session = request.getSession();
 		setIsQueryAttribute(request);
 		CategorySearchForm searchForm = (CategorySearchForm) form;
 		String currentPage = getCurrentPage(request, searchForm);
