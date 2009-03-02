@@ -122,7 +122,7 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 			{
 				cqQueryId="("+document.getElementById("selectedqueryId_"+queryIds[counter]).value+")";
 				operandsTdContent=document.getElementById("selectedqueryId_"+queryIds[counter]).value;
-				expression=document.getElementById("selectedqueryId_"+queryIds[counter]).value;
+				expression=document.getElementById("expression_"+queryIds[counter]).value;
 
 			}
 			else
@@ -162,13 +162,13 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 
 function shortOperator(operation)
 {
-	if(operation='Union')
+	if(operation=='Union')
 		return "+";
 		
-	if(operation='Intersection')
+	if(operation=='Intersection')
 		return "*";
 	
-	if(operation='Minus')
+	if(operation=='Minus')
 		return "-";
 	
 	return "";//for NONE
