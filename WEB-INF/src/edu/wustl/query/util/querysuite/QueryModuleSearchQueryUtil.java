@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
-import edu.wustl.common.bizlogic.QueryBizLogic;
 import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.query.factory.QueryGeneratorFactory;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
@@ -185,7 +184,7 @@ public class QueryModuleSearchQueryUtil
 	 */
 	private QueryOutputTreeBizLogic auditQuery() throws QueryModuleException
 	{
-		QueryBizLogic queryBizLogic = null;
+		//QueryBizLogic queryBizLogic = null;
 		QueryModuleException queryModExp;
 		QueryOutputTreeBizLogic outputTreeBizLogic = new QueryOutputTreeBizLogic();
 		try
