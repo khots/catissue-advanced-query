@@ -179,7 +179,7 @@ public class QueryUtility
 			CiderQueryManager manager = new CiderQueryManager();
 			int noOfRecords = 0;
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
 			queryExecId = manager.execute(ciderQueryObj);
 			
 			Count count = manager.getQueryCount(queryExecId);
