@@ -39,7 +39,6 @@ public class ValidateQueryAction extends Action
 
 		String buttonClicked = request.getParameter(Constants.BUTTON_CLICKED);
 		String dataQueryId= request.getParameter("dataQueryId");
-		String countQueryId= request.getParameter("countQueryId");
 		// dataKey defines that ajax call from SimpleSearchDataView.jsp is made to get the updated message.
 		String dataKey = request.getParameter(Constants.UPDATE_SESSION_DATA);
 		HttpSession session = request.getSession();
@@ -83,7 +82,9 @@ public class ValidateQueryAction extends Action
 				
 			}
 		    if(parameterizedQuery!=null && dataQueryId==null)
+		    {
 		    	parameterizedQuery.setName(request.getParameter("queyTitle"));
+		    }
 		    String validationMessage = ValidateQueryBizLogic.getValidationMessage(request,parameterizedQuery);
 		    if (validationMessage != null)
 		   {
