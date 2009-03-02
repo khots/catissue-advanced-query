@@ -110,50 +110,93 @@ function changeResPerPage(controlId)
 
 </script>
 </head>
-<body>
-<html:form action="RetrieveWorkflowAction">
+<body>		
 
-	<logic:notEqual name="totalPages" value="0">	
+<logic:notEqual name="totalPages" value="0">
 	
-     <table width="100%"  border="0" style="overflow-y:hidden;overflow-x:hidden;">
-		<tr height="100%">
-			<td valign="top" height="100%">
-				<div id='gridbox' width='100%' height="90%" style='overflow:hidden'></div>
-			</td>
-		</tr>
-	</table>
-      
-			<table width="100%" cellpadding="0" cellspacing="0">
-			<tr class="tr_color_lgrey">
-				<td align="left"  height="30" style="padding-left:5px;"><span class="content_txt_bold">Show Last:&nbsp;</span>
-					<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}" styleClass="textfield_undefined">
-						<html:options collection="resultsPerPageOptions" labelProperty="name" property="value"/>
-					</html:select>
-				</td>
-				<td align="right" class="content_txt" style="padding-right:5px;">
-					<c:set var="totalPages" value="${sessionScope.totalPages}"/>  
-						<jsp:useBean id="totalPages" type="java.lang.Integer"/>
-					<c:forEach var="pageCoutner" begin="1" end="${totalPages}">
-							<c:set var="linkURL">
-								RetrieveWorkflowAction.do?requestFor=nextPage&pageNum=<c:out value="${pageCoutner}"/>&pageOf=<c:out value="${requestScope.pageOf}"/>
-							</c:set>
-							<jsp:useBean id="linkURL" type="java.lang.String"/>
-							<c:if test="${sessionScope.pageNum == pageCoutner}">
-									<c:out value="${pageCoutner}"/> 
-							</c:if>
-							<c:if test="${sessionScope.pageNum != pageCoutner}"> | <a class="bluelink" href="<%=linkURL%>"><c:out value="${pageCoutner}"/></a>
-							</c:if>
-						</c:forEach></td></tr></table>
-						</logic:notEqual>
+			<table height="65%" width="100%" border="0" cellpadding="0" cellspacing="0">
+					<tr width="100%" valign="top">					
+						  <td class="content_txt_bold">
+								<html:form action="RetrieveWorkflowAction">						
+								 <table width="100%"  border="0" style="overflow-y:hidden;overflow-x:hidden;">
+									<tr height="100%">
+										<td valign="top" height="100%">
+											<div id='gridbox' width='100%' height="90%" style='overflow:hidden'></div>
+										</td>
+									</tr>
+								</table>
+							   </html:form>					
+						  </td>
+				   </tr>
+			</table>
+			 
+			<table height="*" width="100%" border="0" cellpadding="0" cellspacing="0">
+					<tr valign="bottom">					
+						<td class="content_txt_bold" width="200">						  
+								<table>
+									<tr>
+										<td class="content_txt_bold" style="padding-left:5px;">
+											<bean:message key="userSearch.resultsPerPage"/>
+										</td>
+										<td>
+											<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}">
+												<html:options collection="resultsPerPageOptions" labelProperty="name" property="value"/>
+											</html:select>
+										</td>
+									</tr>
+								</table>
+							
+						  </td>
+						<td class="content_txt_bold" align="center">
+							<bean:message key="userSearch.showing"/> ${sessionScope.pageNum} <bean:message key="userSearch.of"/>  <c:out value="${sessionScope.totalPages}"></c:out>
+						</td>	
+						<td width="15" align="right">
+							
+							<logic:greaterEqual name="firstPageNum" value="${requestScope.numOfPageNums+1}">	
+								<a class="bluelinkNoUnderline" href="RetrieveWorkflowAction.do?requestFor=nextPage&pageOf=${requestScope.pageOf}&pageNum=${requestScope.firstPageNum-requestScope.numOfPageNums}&firstPageNum=${requestScope.firstPageNum-5}&lastPageNum=${requestScope.lastPageNum-5}"> 
+									<< 			    						    	
+								</a>							
+							</logic:greaterEqual>	
+						</td>
+						<td class="content_txt" width="100" align="center" nowrap>
+							<div ID="links">									
+								<c:set var="totalPages" value="${sessionScope.totalPages}"/>										 									
+								<jsp:useBean id="totalPages" type="java.lang.Integer"/>																														
+								<c:forEach var="pageCoutner" begin= "${requestScope.firstPageNum}" end="${requestScope.lastPageNum}">
+									<c:set var="linkURL">
+										RetrieveWorkflowAction.do?requestFor=nextPage&pageNum=<c:out value="${pageCoutner}"/>&pageOf=<c:out value="${requestScope.pageOf}"/>
+									</c:set>
+									<jsp:useBean id="linkURL" type="java.lang.String"/>
+									<c:if test="${sessionScope.pageNum == pageCoutner}">
+									<span class="content_txt_bold">
+										<c:out value="${pageCoutner}"/> 
+									</span>
+									</c:if>
+									<c:if test="${sessionScope.pageNum != pageCoutner}">
+										<a class="bluelink" href="<%=linkURL%>"><c:out value="${pageCoutner}"/></a>
+									</c:if>
+									<c:if test="${pageCoutner < requestScope.lastPageNum}">
+										|&nbsp;
+									</c:if>
+								</c:forEach>    
+							</div>  
+						</td>	
+						<td width="15" style="padding-right:5px;"align="right">
+							<logic:lessEqual name="lastPageNum" value="${sessionScope.totalPages-1}">
+								<a class="bluelinkNoUnderline" href="RetrieveWorkflowAction.do?requestFor=nextPage&pageOf=${requestScope.pageOf}&pageNum=${requestScope.lastPageNum+1}&firstPageNum=${requestScope.firstPageNum+5}&lastPageNum=${requestScope.lastPageNum+5}"> 
+						  		  	>> 
+								</a>
+							</logic:lessEqual>
+							
+						</td>					
+					</tr>
+					
+		</table>
+</logic:notEqual>
 <logic:equal name="totalPages" value="0">
-<table>
-		<tr>
 					<td class="content_txt_bold" style="padding-left:5px;" valign="top">
 					<bean:message key="meassges.emptyworflow"/>
 					</td>	
-		</tr>
-</table>
 </logic:equal >
-</html:form>
 </body>
 </html>
