@@ -37,6 +37,7 @@ public class CommonPathFinder implements IPathFinder
 
 	public CommonPathFinder()
 	{
+		String className="CommonPathFinder :";
 		if (pathFinder == null)
 		{
 			Connection connection = null;
@@ -66,18 +67,18 @@ public class CommonPathFinder implements IPathFinder
 			}
 			catch (NamingException e)
 			{
-				Logger.out.error("CommonPathFinder:", e);
+				Logger.out.error(className, e);
 				//TODO need to see how to handle exception
 			}
 			catch (SQLException e)
 			{
-				Logger.out.error("CommonPathFinder:", e);
+				Logger.out.error(className, e);
 				//TODO need to see how to handle exception
 			}
 			catch (DAOException e)
 			{
 				// TODO Auto-generated catch block
-				Logger.out.error("CommonPathFinder:", e);
+				Logger.out.error(className, e);
 			}
 			finally
 			{
@@ -96,11 +97,11 @@ public class CommonPathFinder implements IPathFinder
 				}
 				catch (SQLException e)
 				{
-					Logger.out.error("CommonPathFinder:", e);
+					Logger.out.error(className, e);
 				}
 				catch (DAOException e)
 				{
-					Logger.out.error("CommonPathFinder:", e);
+					Logger.out.error(className, e);
 				}
 			}
 		}
