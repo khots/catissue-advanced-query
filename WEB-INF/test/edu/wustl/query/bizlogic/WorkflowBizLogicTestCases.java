@@ -34,7 +34,7 @@ public class WorkflowBizLogicTestCases extends QueryBaseTestCases
 	}
 	
 	static{
-		Utility.initTest();
+		// Utility.initTest();
 		/**
 		 * Indicating - Do not LOG XQueries
 		 */
