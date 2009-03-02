@@ -34,12 +34,9 @@ public class RetrieveWorkflowAction extends Action
 			)
 	{
 		int totalRecords=setWorkflowCount();
-		
-		int recordsPerPage=1;
-		
 		int startIndex=0;
 		int pageNum=getPageNumber(request,requestFor);
-		String pageOf = request.getParameter(Constants.PAGEOF);
+		
 		int maxRecords = getRecordsPerPage(request,requestFor);
 		if(maxRecords==-1)
 		{
@@ -121,7 +118,6 @@ public class RetrieveWorkflowAction extends Action
 		columnList.add("identifier");
 
 		request.setAttribute("columns", Utility.getcolumns(columnList));
-		List<String> columnWidthsList = Utility.getColumnWidths(columnList.size());
 		request.setAttribute("colWidth","\"4,96,0\"");//Utility.getcolWidth(columnWidthsList, true));
 		
 		request.setAttribute("isWidthInPercent", true);
