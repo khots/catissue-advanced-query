@@ -1,3 +1,4 @@
+
 package edu.wustl.query.action;
 
 import java.util.List;
@@ -39,27 +40,32 @@ public class GetCountPopUpAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		CategorySearchForm categorySearchForm = (CategorySearchForm) form;
-		
+
 		//get the userId from session data bean
-		SessionDataBean sessionData = (SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA);
+		SessionDataBean sessionData = (SessionDataBean) request.getSession().getAttribute(
+				Constants.SESSION_DATA);
 		Long userId = sessionData.getUserId();
-		if(userId == null)
+		if (userId == null)
+		{
 			userId = Long.valueOf((1));
-		
+		}
+			
+
 		//Retrieve the Project list
-		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
+		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory
+				.getDefaultAbstractUIQueryManager();
 		List<NameValueBean> projectList = qUIManager.getObjects(userId);
-		if(projectList != null)   
-		{	 
+		if (projectList != null)
+		{
 			categorySearchForm.setProjectsNameValueBeanList(projectList);
 		}
-		
+
 		//retrieve the Selected Project from the GetCounts.jsp
-		String selectedProject = (String) request.getSession().getAttribute(Constants.SELECTED_PROJECT);
+		String selectedProject = (String) request.getSession().getAttribute(
+				Constants.SELECTED_PROJECT);
 		categorySearchForm.setCurrentSelectedProject(selectedProject);
-//		request.setAttribute(Constants.SELECTED_PROJECT,selectedProject);
-		
+		//		request.setAttribute(Constants.SELECTED_PROJECT,selectedProject);
+
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
 	}
 }
-
