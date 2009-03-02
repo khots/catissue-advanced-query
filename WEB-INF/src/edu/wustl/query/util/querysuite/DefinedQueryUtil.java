@@ -1,14 +1,11 @@
 
 package edu.wustl.query.util.querysuite;
 
-import java.util.List;
-
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
 import edu.wustl.common.hibernate.HibernateCleanser;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
-import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
@@ -74,7 +71,6 @@ public class DefinedQueryUtil
 	public IParameterizedQuery populateParameterizedQueryData(IQuery query)
 	{
 		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) query;
-		List<IOutputAttribute> outputAttributeList = parameterizedQuery.getOutputAttributeList();
 		parameterizedQuery = QueryObjectFactory.createParameterizedQuery(query);
 		return parameterizedQuery;
 	}
