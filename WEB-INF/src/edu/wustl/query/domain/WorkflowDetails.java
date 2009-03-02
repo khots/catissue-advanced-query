@@ -4,10 +4,10 @@ package edu.wustl.query.domain;
 
 
 /**
- * This class contains all the detailed information to required for workflow execution.  
- * 
+ * This class contains all the detailed information to required for workflow execution.
+ *
  * @author maninder_randhawa
- * 
+ *
  */
 public class WorkflowDetails
 {
@@ -30,7 +30,7 @@ public class WorkflowDetails
 	{
 		super();
 		this.workflow = workflow;
-		createGraph(workflow);
+//		createGraph(workflow);
 	}
 
 	/**
