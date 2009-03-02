@@ -586,8 +586,6 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		// code to get displayname. & pass it to the Constructor along with
 		// treeNode.
 
-		OutputTreeDataNode treeNode = null;
-
 		//find the right tree node to add the attribute to
 		for (OutputTreeDataNode node : attributeOutputTreeNodeList)
 		{
