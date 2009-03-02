@@ -1,8 +1,10 @@
 package edu.wustl.query.action;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -14,7 +16,6 @@ import edu.wustl.cider.util.CiderUtility;
 import edu.wustl.cider.util.global.Utility;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.dbManager.DBUtil;
-import edu.wustl.common.util.global.Variables;
 import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.util.global.Constants;
 
