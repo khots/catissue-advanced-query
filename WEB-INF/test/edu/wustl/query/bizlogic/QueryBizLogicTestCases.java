@@ -22,7 +22,7 @@ public class QueryBizLogicTestCases extends QueryBaseTestCases
 	}
 	
 	static{
-		Utility.initTest();
+		// Utility.initTest();
 		/**
 		 * Indicating - Do not LOG XQueries
 		 */
