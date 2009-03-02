@@ -278,7 +278,6 @@ public class SqlGenerator extends QueryGenerator
 			Connection connection = null;
 			try
 			{
-				EntityInterface rootEntity = null;
 				EntityInterface rootDEEntity = constraints.getRootExpression().getQueryEntity()
 						.getDynamicExtensionsEntity();
 				boolean isCategory = edu.wustl.cab2b.common.util.Utility.isCategory(rootDEEntity);
@@ -298,12 +297,8 @@ public class SqlGenerator extends QueryGenerator
 				{
 					Category category = new CategoryOperations().getCategoryByEntityId(rootDEEntity
 							.getId(), connection);
-					rootEntity = EntityManager.getInstance().getEntityByIdentifier(
+					EntityManager.getInstance().getEntityByIdentifier(
 							category.getRootClass().getDeEntityId());
-				}
-				else
-				{
-					rootEntity = rootDEEntity;
 				}
 				new CategoryPreprocessor().processCategories(query);
 			}
