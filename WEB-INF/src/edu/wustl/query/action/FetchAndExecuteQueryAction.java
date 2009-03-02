@@ -37,6 +37,7 @@ public class FetchAndExecuteQueryAction extends Action
 			HttpServletRequest request,HttpServletResponse response) throws Exception
 	{
 		String target = Constants.FAILURE;
+		String actionErrorsKey="errors.item";
 
 		try
 		{
@@ -49,7 +50,7 @@ public class FetchAndExecuteQueryAction extends Action
 
 			if (object == null)
 			{
-				ActionErrors errors = Utility.setActionError(Constants.NO_RESULT_FOUND,"errors.item");
+				ActionErrors errors = Utility.setActionError(Constants.NO_RESULT_FOUND,actionErrorsKey);
 				saveErrors(request, errors);
 			}
 			else
@@ -59,13 +60,13 @@ public class FetchAndExecuteQueryAction extends Action
 		}
 		catch (NumberFormatException numberFormatException)
 		{
-			ActionErrors errors = Utility.setActionError(Constants.QUERY_IDENTIFIER_NOT_VALID,"errors.item");
+			ActionErrors errors = Utility.setActionError(Constants.QUERY_IDENTIFIER_NOT_VALID,actionErrorsKey);
 			saveErrors(request, errors);
 			
 		}
 		catch (DAOException daoException)
 		{
-			ActionErrors errors = Utility.setActionError(daoException.getMessage(),"errors.item");
+			ActionErrors errors = Utility.setActionError(daoException.getMessage(),actionErrorsKey);
 			saveErrors(request, errors);
 			
 		}
