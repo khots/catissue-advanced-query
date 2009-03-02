@@ -35,7 +35,7 @@
 <table border="0" width="100%" cellspacing="0" cellpadding="0" >
 	<tr><td  valign="top" align="center" >
 
-<table border="1" width="90%" cellspacing="0" cellpadding="0"   class="login_box_bg">
+<table border="0" width="90%" cellspacing="0" cellpadding="0"   class="login_box_bg">
 	<tr>
 		<td>
 			<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
