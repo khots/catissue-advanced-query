@@ -167,6 +167,11 @@ public class QueryDetails
 		this.mainEntityList = mainEntityList;
 	}
 
+	public QueryDetails()
+	{
+		
+	}
+	
 	public QueryDetails(HttpSession session)
 	{
 		//this.session = session;
