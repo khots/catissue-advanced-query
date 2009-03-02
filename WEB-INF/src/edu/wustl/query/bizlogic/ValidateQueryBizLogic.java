@@ -199,7 +199,6 @@ public class ValidateQueryBizLogic
 			IConstraints constraints, String queryType) throws QueryModuleException
 
 	{
-		System.out.println();
 		boolean istagPresent = false;
 		if (queryType.equals(QueryType.GET_DATA.type))
 		{
