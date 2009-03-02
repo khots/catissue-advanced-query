@@ -147,7 +147,6 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			throws VocabularyException, PVManagerException
 	{
 		IVocabulary sourceVocabulary = getVocabulary(VIProperties.sourceVocabUrn);
-		String associationName = VIProperties.translationAssociation;
 		int maxPVsToShow=0;
 		Map<String, List<IConcept>> mappedConcepts = new HashMap<String, List<IConcept>>();
 		try
