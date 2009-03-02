@@ -272,7 +272,7 @@ public final class MedLookUpManager
 			{
 				countQuery = "select count(distinct id) from " + pvView;
 			}
-			List<List<String>> dataListCount = dao.executeQuery(countQuery.toString(), null, false,
+			List<List<String>> dataListCount = dao.executeQuery(countQuery, null, false,
 					false, null);
 			if (!dataListCount.isEmpty())
 			{
