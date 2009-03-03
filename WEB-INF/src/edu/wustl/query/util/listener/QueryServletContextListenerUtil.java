@@ -109,6 +109,8 @@ public class QueryServletContextListenerUtil
 				Variables.recordsPerPageForSpreadSheet = Integer.parseInt(queryProperties.getProperty("spreadSheet.recordsPerPage"));
 				Variables.recordsPerPageForTree = Integer.parseInt(queryProperties.getProperty("tree.recordsPerPage"));
 				Variables.resultLimit = Integer.parseInt(queryProperties.getProperty("datasecurity.resultLimit"));
+				Variables.exportDataThreadClassName = queryProperties.getProperty("query.exportDataThreadClassName");
+				Variables.dataQueryExecutionClassName = queryProperties.getProperty("query.dataQueryExecutionClassName");
 				Variables.properties = queryProperties;
 				Variables.csmUtility = queryProperties.getProperty("query.csmUtility");
 			}
