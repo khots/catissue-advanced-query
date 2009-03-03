@@ -13,18 +13,13 @@
  <input type="hidden" name="pageOf" id="pageOf" value="DefineView">
  <input type="hidden" name="isWorkflow" id="isWorkflow" value="">
 
-  <table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3" valign="top">
+  <table border="0"  height="100%" width="100%"  cellpadding="1" cellspacing="3" valign="top">
 	
 <tr  valign="top">
 	<td  valign="top" width="20%" colspan="2">
 		<table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3" valign="top">
-			<tr  class='validationMessageCss'  >
-				<td width="80%" class='validationMessageCss' style="display:none">
-					&nbsp;
-				</td>
-			</tr>
 			<tr valign="top" width="100%" height="100%" align="left">
-				<td valign="top" height="100%" align="left" >
+				<td valign="top" height="100%" align="left" style="padding:4px 0 0 0;*padding:2px 0 0 0;">
               <%@ include file="/pages/advancequery/content/search/querysuite/selectEntity.jsp" %>				
                 </td>
 			</tr>
@@ -55,7 +50,7 @@
         <td align="left" style="padding-left:5px;"><a href="javascript:showWorkFlowWizard();"><img border="0" alt="Back To Workflow" src="images/advancequery/b_back_to_workflow.gif"   
 		     /></a></td></tr></table></td>
 			 <td align="right">
-			 <table border="0"><tr>
+			 <table border="0" cellpadding="0" cellspacing="0"><tr>
 				 <td align="right" style="padding-right:2px;"><a href="javascript:previousFromDefineResults();"><img alt= "<< Redefine Filters" src="images/advancequery/b_redefine_filter.gif" border="0"  
 		     /></a></td></tr></table></td>
 			<!--  <td align="right" valign="top">
