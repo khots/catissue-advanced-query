@@ -539,6 +539,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String PUBLIC_QUERY_PROTECTION_GROUP = "Public_Query_Protection_Group";
 	/**  Constant for  */
 	public static final String MY_QUERIES = "MyQueries";
+	public static final String SAHRED_QUERIES = "sharedQueries";
 
 	/**  Constant for  */
 	public static final String[] NUMBER = {"long", "double", "short", "integer", "float"};
@@ -557,6 +558,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final int WORKFLOW_BIZLOGIC_ID = 101;
 	/**  Constant for  */
 	public static final String MY_QUERIES_FOR_WORKFLOW = "myQueriesForWorkFlow";
+	public static final String SAHRED_QUERIES_FOR_WORKFLOW = "sharedQueriesForWorkFlow";
+	
+	public static final String MY_QUERIES_FOR_MAIN_MENU = "myQueriesForMainMenu";
+	public static final String SHARED_QUERIES_FOR_MAIN_MENU = "sharedQueriesForMainMenu";
 	/**  Constant for  */
 	public static final String PUBLIC_QUERIES_FOR_WORKFLOW = "publicQueryForWorkFlow";
 	/**  Constant for  */
