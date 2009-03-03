@@ -4,7 +4,9 @@ package edu.wustl.query.queryexecutionmanager;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.wustl.common.beans.NodeInfo;
 import edu.wustl.common.query.AbstractQuery;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
  * This is an abstract class which is extended by CIDERDataQueryExecution
@@ -18,6 +20,12 @@ import edu.wustl.common.query.AbstractQuery;
 public abstract class DataQueryExecution
 {
 
+	/**
+	 * 
+	 * @param abstractQuery
+	 * @param primaryKeyList
+	 * @return
+	 */
 	public List<List<Object>> executeDataQuery(AbstractQuery abstractQuery,
 			List<List<Object>> primaryKeyList)
 	{
@@ -25,4 +33,16 @@ public abstract class DataQueryExecution
 		return new ArrayList<List<Object>>();
 	}
 
+	/**
+	 * 
+	 * @param abstractQuery
+	 * @param primaryKeyList
+	 * @return
+	 */
+	public List<List<Object>> executeDataQueryForExport(AbstractQuery abstractQuery,
+			List<NodeInfo> primaryKeyList) throws QueryModuleException
+	{
+
+		return new ArrayList<List<Object>>();
+	}
 }
