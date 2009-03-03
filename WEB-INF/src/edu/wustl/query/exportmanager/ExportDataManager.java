@@ -2,7 +2,6 @@
 package edu.wustl.query.exportmanager;
 
 import java.util.Map;
-
 import edu.wustl.common.beans.SessionDataBean;
 
 /**
@@ -15,6 +14,9 @@ import edu.wustl.common.beans.SessionDataBean;
  */
 public class ExportDataManager
 {
+
+	/** Represents Singleton instance of ExportDataManager **/
+	private static ExportDataManager sINSTANCE;
 
 	/**
 	 * Key - query execution Id
@@ -30,6 +32,20 @@ public class ExportDataManager
 		// Default Constructor
 	}
 
+	
+	/**
+	 * To return Singleton instance of ExportDataManager
+	 * @return
+	 */
+	public static ExportDataManager getInstance()
+	{
+		if (sINSTANCE == null)
+		{
+			sINSTANCE = new ExportDataManager();
+		}
+		return sINSTANCE;
+	}
+	
 	/**
 	 * 
 	 * @param sdb

@@ -14,6 +14,7 @@ import java.util.Map;
 public class ExportDataObject
 {
 
+	/** Stores all information which is required for Exporting Data (Results of getData query) **/
 	private Map exportObjectDetails;
 
 	/**
@@ -23,5 +24,25 @@ public class ExportDataObject
 	{
 		// Default Constructor
 	}
+	
+	/**
+	 * 
+	 * 
+	 * @return
+	 */
+	public Map getExportObjectDetails()
+	{
+		return exportObjectDetails;
+	}
+
+	/**
+	 * 
+	 * @param exportObjectDetails
+	 */
+	public void setExportObjectDetails(Map exportObjectDetails)
+	{
+		this.exportObjectDetails = exportObjectDetails;
+	}
+
 
 }
