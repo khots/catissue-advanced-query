@@ -360,7 +360,7 @@ FORM BEGINS
 .biglistbox {
 	background-color: #F8F8F8;
 	border: 1px solid #CCCCCC;
-	width: 250px;
+	width: 270px;
 }
 
 .formRequiredLabelWithLeftBottomBorder{ /* for the required form labels without border*/
