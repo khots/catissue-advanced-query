@@ -7,13 +7,18 @@ package edu.wustl.common.query.itablemanager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
+import edu.wustl.common.beans.NodeInfo;
 import edu.wustl.common.dao.DatabaseConnectionParams;
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.QueryModuleError;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 /**
  * @author supriya_dankh
  *
@@ -222,5 +227,107 @@ public class ITableManager
 		// return Data_Query_Execution_Id
 		return -1;
 	}
-
+	
+	
+	/**
+	 * Returns a list of upis.
+	 * @param query_Exec_id
+	 * @return
+	 * @throws DAOException
+	 * @throws SQLException
+	 */
+	public final List<NodeInfo> getUpiList(int query_Exec_id) throws QueryModuleException
+	{
+		List<NodeInfo> upiList = new ArrayList<NodeInfo>();
+		DatabaseConnectionParams DB_CONNECTION_PARAMS = new DatabaseConnectionParams();
+		ResultSet resultSet = null;
+		try
+		{
+			try
+			{
+				String sql = Constants.SELECT + Constants.COUNT_QUERY_UPI +","+Constants.COUNT_QUERY_DOB+ Constants.FROM + Constants.ITABLE + Constants.WHERE
+						+ Constants.COUNT_QUERY_EXECUTION_ID + Constants.EQUALS + query_Exec_id;
+				
+				DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME_CIDER);
+				resultSet = DB_CONNECTION_PARAMS.getResultSet(sql);
+				
+				while (resultSet.next())
+				{
+					NodeInfo nodeInfo = new NodeInfo();
+					nodeInfo.setObj(resultSet.getObject(1));
+					nodeInfo.setDob(resultSet.getDate(2));
+					upiList.add(nodeInfo);
+				}
+			}
+			finally
+			{
+				DB_CONNECTION_PARAMS.commit();
+				if (resultSet != null)
+				{
+					resultSet.close();
+				}
+				DB_CONNECTION_PARAMS.closeSession();
+			}
+		}
+		catch (DAOException e)
+		{
+			throw new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+		}
+		catch (SQLException e)
+		{
+			throw new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
+		}
+		return upiList;
+	}
+	
+	/**
+	 * Returns a list of upis.
+	 * @param query_Exec_id
+	 * @return
+	 * @throws DAOException
+	 * @throws SQLException
+	 */
+	public final List<NodeInfo> getUpiList(int query_Exec_id, String upi) throws QueryModuleException
+	{
+		List<NodeInfo> upiList = new ArrayList<NodeInfo>();
+		DatabaseConnectionParams DB_CONNECTION_PARAMS = new DatabaseConnectionParams();
+		ResultSet resultSet = null;
+		try
+		{
+			try
+			{
+				String sql = Constants.SELECT + Constants.COUNT_QUERY_DOB+ Constants.FROM + Constants.ITABLE + Constants.WHERE
+						+ Constants.COUNT_QUERY_EXECUTION_ID + Constants.EQUALS + query_Exec_id + " " +Constants.AND_JOIN_CONDITION + " " + Constants.COUNT_QUERY_UPI + Constants.EQUALS + "'" + upi + "'";
+				
+				DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME_CIDER);
+				resultSet = DB_CONNECTION_PARAMS.getResultSet(sql);
+				
+				if(resultSet.next())
+				{
+					NodeInfo nodeInfo = new NodeInfo();
+					nodeInfo.setObj(upi);
+					nodeInfo.setDob(resultSet.getDate(1));
+					upiList.add(nodeInfo);
+				}
+			}
+			finally
+			{
+				DB_CONNECTION_PARAMS.commit();
+				if (resultSet != null)
+				{
+					resultSet.close();
+				}
+				DB_CONNECTION_PARAMS.closeSession();
+			}
+		}
+		catch (DAOException e)
+		{
+			throw new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+		}
+		catch (SQLException e)
+		{
+			throw new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
+		}
+		return upiList;
+	}
 }
