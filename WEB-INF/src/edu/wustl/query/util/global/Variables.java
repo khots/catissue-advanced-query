@@ -21,6 +21,8 @@ public class Variables extends edu.wustl.common.util.global.Variables
 	public static String abstractQueryUIManagerClassName = "";
 	public static String abstractQueryITableManagerClassName = "";
 	public static String viewIQueryGeneratorClassName = "";
+	
+	public static String csmUtility = "";
 
 	public static int recordsPerPageForSpreadSheet;
 	public static int recordsPerPageForTree;
