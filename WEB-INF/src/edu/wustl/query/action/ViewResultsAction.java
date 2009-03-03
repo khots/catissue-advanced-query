@@ -16,8 +16,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
-import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
@@ -27,11 +25,9 @@ import edu.wustl.common.querysuite.queryobject.IOutputEntity;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
-import edu.wustl.common.querysuite.queryobject.impl.Query;
 import edu.wustl.common.tree.QueryTreeNodeData;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
-import edu.wustl.query.enums.QueryType;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
@@ -40,9 +36,8 @@ import edu.wustl.query.util.querysuite.ResultsViewIQueryCreationUtil;
 import edu.wustl.query.viewmanager.ViewType;
 
 /**
- * 
+ * This class handles the tree generation of the view results action 
  * @author baljeet_dhindhwal
- *
  */
 
 public class ViewResultsAction extends Action 
@@ -59,15 +54,10 @@ public class ViewResultsAction extends Action
 		{
 			iqueryId = Long.valueOf(dataQueryId);
 		}
-		session.setAttribute(Constants.DATA_QUERY_ID,iqueryId);
-		session.setAttribute(Constants.WORFLOW_ID, workflowId);
-		
-		//Get the  Query Execution Id  
-		String qid = (String) request.getParameter("queryExecutionId");
+		String qid = (String) request.getParameter(Constants.EXECUTION_ID_OF_QUERY);
 		if(qid!=null)
 		{
 			queryExecutionID =Integer.parseInt(qid);
-			session.setAttribute("queryExecutionId", queryExecutionID);
 		}
 	 	IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
 				.getValue("app.bizLogicFactory"), "getBizLogic",
@@ -83,8 +73,6 @@ public class ViewResultsAction extends Action
 	 		getPatientDataQuery = queryList.get(0);
 	 	}
 	 	List<OutputTreeDataNode> rootOutputTreeNodeList = (List<OutputTreeDataNode>)session.getAttribute(Constants.SAVE_TREE_NODE_LIST);
-		session.setAttribute(Constants.PATIENT_QUERY_ROOT_OUT_PUT_NODE_LIST,rootOutputTreeNodeList);
-		session.setAttribute(Constants.PATIENT_DATA_QUERY,getPatientDataQuery);
 		OutputTreeDataNode rootNode = rootOutputTreeNodeList.get(0);
 		IOutputEntity outputEntity = rootNode.getOutputEntity();
 		EntityInterface rootEntity = outputEntity.getDynamicExtensionsEntity();
@@ -92,45 +80,26 @@ public class ViewResultsAction extends Action
 		Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap = 
 			IQueryParseUtil.getParentChildrensForaMainNode(rootNode);
 		
-		//Now Create IQuery From Main Entity , adding containments till attributes with tagged values are found
-		//Get the parent child map for containment of a  main Entity
-		Map<EntityInterface, List<EntityInterface>> partentChildEntityMap = 
-			ResultsViewIQueryCreationUtil.getAllParentChildrenMap(rootEntity); 
-		
-		//Once u got the parent child map, get the parent child map for tagged entities for results view, and populate the list for tagged entities
-		Map<EntityInterface, List<EntityInterface>> taggedEntitiesParentChildMap = 
-			ResultsViewIQueryCreationUtil.getTaggedEntitiesParentChildMap(partentChildEntityMap,rootEntity);
-		
-		//Here we get path list from Root Entity to parent of Tagged Entity for results view 
-		Map<EntityInterface, List<EntityInterface>> eachTaggedEntityPathMap = 
-			ResultsViewIQueryCreationUtil.getPathsMapForTaggedEntity(taggedEntitiesParentChildMap,partentChildEntityMap);
-		
-		//Now Add all entities related to a tagged entity to IQuery
-		IClientQueryBuilderInterface m_queryObject = new ClientQueryBuilder();
-		IQuery generatedIQuery = ResultsViewIQueryCreationUtil.
-		formIQuery(rootNode,eachTaggedEntityPathMap,getPatientDataQuery,m_queryObject);
-		
-		//Now update the formed IQuery with given conditions on children   
-		ResultsViewIQueryCreationUtil.updateGeneratedQuery
-		(generatedIQuery,parentChildrenMap,rootNode,getPatientDataQuery);
-		
-		//Set Query type as Data Query
-		((Query)generatedIQuery).setType(QueryType.GET_DATA.type);
+		IQuery generatedQuery = ResultsViewIQueryCreationUtil.generateIQuery(rootNode,parentChildrenMap,rootEntity,getPatientDataQuery);
 		AbstractQueryUIManager abstractQueryUIManager =
-			AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedIQuery);
+			AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
 		
-		//Get Data 
-		DataQueryResultsBean  dataQueryResultsBean = 
-			abstractQueryUIManager.getData(queryExecutionID, ViewType.TREE_VIEW);
+		//Get Data for generated IQuery
+		DataQueryResultsBean  dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID, ViewType.TREE_VIEW);
 		List<List<Object>> dataList = dataQueryResultsBean.getAttributeList();
 		
 		//Get the unique node Id map
-		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
-		.getAllChildrenNodes(rootOutputTreeNodeList);
+		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor.getAllChildrenNodes(rootOutputTreeNodeList);
 		
 		//Setting some session attributes
 		session.setAttribute(Constants.PATIENT_QUERY_UNIQUE_ID_MAP, uniqueIdNodesMap);
-	   
+		session.setAttribute(Constants.DATA_QUERY_ID,iqueryId);
+		session.setAttribute(Constants.WORFLOW_ID, workflowId);
+		session.setAttribute(Constants.EXECUTION_ID_OF_QUERY, queryExecutionID);
+		session.setAttribute(Constants.PATIENT_QUERY_ROOT_OUT_PUT_NODE_LIST,rootOutputTreeNodeList);
+		session.setAttribute(Constants.PATIENT_DATA_QUERY,getPatientDataQuery);
+
+		
 		String labelNodeId = getUniqueNodeID(rootNode, uniqueIdNodesMap);
 		Vector<QueryTreeNodeData> treeDataVector = new Vector<QueryTreeNodeData>();
 		String displayName = Utility.getDisplayLabel(rootEntity.getName()) + " (" + dataList.size() + ")";
@@ -147,8 +116,15 @@ public class ViewResultsAction extends Action
 	}
 
 
+	/**
+	 * 
+	 * @param rootNode
+	 * @param uniqueIdNodesMap
+	 * @return
+	 */
 	private String getUniqueNodeID(OutputTreeDataNode rootNode,
-			Map<String, OutputTreeDataNode> uniqueIdNodesMap) {
+			Map<String, OutputTreeDataNode> uniqueIdNodesMap) 
+	{
 		String labelNodeId = "";
 		
 		Set<String> uniqueKeySet = uniqueIdNodesMap.keySet();
@@ -166,6 +142,13 @@ public class ViewResultsAction extends Action
 		return labelNodeId;
 	}
 
+	/**
+	 * 
+	 * @param labelEntity
+	 * @param labelNodeId
+	 * @param displayName
+	 * @return
+	 */
 	private QueryTreeNodeData getResultsTreeLabelNode(EntityInterface labelEntity, String labelNodeId, String displayName)
 	{
 		String [] strs = labelNodeId.split("_");
