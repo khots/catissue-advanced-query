@@ -33,7 +33,7 @@
 <html:hidden property="currentPage" value="prevToAddLimits"/>
 <input type="hidden" name="isQuery" value="true">
 <table border="0" width="100%" cellspacing="0" cellpadding="0" >
-	<tr><td  valign="top" align="center" >
+	<tr><td  valign="top" align="center" style="padding-left:5px; padding-right:5px;">
 
 <table border="0" width="90%" cellspacing="0" cellpadding="0"   class="login_box_bg">
 	<tr>
@@ -68,9 +68,9 @@
 							</tr>
 							<tr valign="top"   width="100%">
 								<td colspan="3" valign="top"  width="100%">
-									<table border="0" cellspacing="0" cellpadding="0" valign="top" width="100%">
+									<table border="0" cellspacing="0" cellpadding="0"  valign="top" width="100%">
 									<tr valign="top">
-										<td valign="top"  colspan="4" width="100%">
+										<td valign="top"   width="100%">
 											<!--		tiles insert -->
 											<tiles:insert attribute="content"></tiles:insert>
 										</td>
@@ -83,6 +83,7 @@
 				</tr>
 </table>
 </td></tr></table>
+</td></tr><tr><td style="padding:2px;">&nbsp;</td></tr></table>
 </html:form>
 </body>
 </html> 
