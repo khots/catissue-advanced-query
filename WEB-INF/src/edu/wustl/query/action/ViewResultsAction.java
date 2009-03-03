@@ -19,6 +19,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
+import edu.wustl.common.query.factory.ViewIQueryGeneratorFactory;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.util.QueryObjectProcessor;
 import edu.wustl.common.querysuite.queryobject.IOutputEntity;
@@ -32,7 +33,9 @@ import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.IQueryParseUtil;
-import edu.wustl.query.util.querysuite.ResultsViewIQueryCreationUtil;
+import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.ResultsViewTreeUtil;
+import edu.wustl.query.viewmanager.AbstractViewIQueryGenerator;
 import edu.wustl.query.viewmanager.ViewType;
 
 /**
@@ -80,7 +83,17 @@ public class ViewResultsAction extends Action
 		Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap = 
 			IQueryParseUtil.getParentChildrensForaMainNode(rootNode);
 		
-		IQuery generatedQuery = ResultsViewIQueryCreationUtil.generateIQuery(rootNode,parentChildrenMap,rootEntity,getPatientDataQuery);
+		//Here populate the new query details object
+		QueryDetails queryDetails = new QueryDetails();
+		queryDetails.setCurrentSelectedObject(rootNode);
+		queryDetails.setQuery(getPatientDataQuery);
+		queryDetails.setParentChildrenMap(parentChildrenMap);
+		
+		AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
+		.getDefaultViewIQueryGenerator();
+		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails);
+		
+		//IQuery generatedQuery = ResultsViewTreeUtil.generateIQuery(rootNode,parentChildrenMap,rootEntity,getPatientDataQuery);
 		AbstractQueryUIManager abstractQueryUIManager =
 			AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
 		

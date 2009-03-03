@@ -17,9 +17,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
+import edu.wustl.common.query.factory.ViewIQueryGeneratorFactory;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
@@ -33,15 +35,15 @@ import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.IQueryParseUtil;
 import edu.wustl.query.util.querysuite.QueryAddContainmentsUtil;
+import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.QueryModuleException;
-import edu.wustl.query.util.querysuite.ResultsViewIQueryCreationUtil;
+import edu.wustl.query.viewmanager.AbstractViewIQueryGenerator;
 import edu.wustl.query.viewmanager.NodeId;
 import edu.wustl.query.viewmanager.ViewType;
 
 /**
  * This class is invoked when user clicks on a node from the tree. It loads the data required for tree formation.
  * @author deepti_shelar
- *
  */
 public class BuildQueryOutputTreeAction extends Action
 {
@@ -69,10 +71,8 @@ public class BuildQueryOutputTreeAction extends Action
 		{
              processDataNodeClick(nodeId,request,jsonObjectList);
 		}
-	  
 		//Set the response
 		setResponse(response, jsonObjectList);
-		
 		return null;
 	}
 
@@ -83,7 +83,8 @@ public class BuildQueryOutputTreeAction extends Action
  * @param primaryKeyValues
  * @return
  */
-private String getClickedDataNodeKey(String rootData, String[] primaryKeyValues) {
+private String getClickedDataNodeKey(String rootData, String[] primaryKeyValues) 
+{
 	String labelNodeParentPrimaryKey = "";
 	if(primaryKeyValues == null && rootData != null)
 	{
@@ -108,7 +109,8 @@ private String getClickedDataNodeKey(String rootData, String[] primaryKeyValues)
  * @return
  */
 private String createTreeNodeId(String rootData, String uniqueParentNode,
-		String uniqueCurrentNodeId, StringBuffer primaryKeySetData) {
+		String uniqueCurrentNodeId, StringBuffer primaryKeySetData) 
+{
 	String dataNodeId = "";
 	String upiStr = Constants.NULL_ID;
 	if(rootData.equalsIgnoreCase(Constants.NULL_ID))
@@ -204,7 +206,18 @@ private void processDataNodeClick(String nodeId,HttpServletRequest request,List<
 		    	EntityInterface mainEntity = mainEntityTreeDataNode.getOutputEntity().getDynamicExtensionsEntity();
 		    	if(mainEntityTreeDataNode.getExpressionId() != labelTreeDataNode.getExpressionId() && mainEntityList.contains(mainEntity))
 			    {
-			    	IQuery generatedQuery = ResultsViewIQueryCreationUtil.generateIQuery(mainEntityTreeDataNode,parentChildrenMap,mainEntity,patientDataQuery);
+			    	
+		    		//Here populate the new query details object
+		    		QueryDetails queryDetails = new QueryDetails();
+		    		queryDetails.setCurrentSelectedObject(mainEntityTreeDataNode);
+		    		queryDetails.setQuery(patientDataQuery);
+		    		queryDetails.setParentChildrenMap(parentChildrenMap);
+
+		    		AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
+		    		.getDefaultViewIQueryGenerator();
+		    		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails);
+		    		
+		    		//IQuery generatedQuery = ResultsViewTreeUtil.generateIQuery(mainEntityTreeDataNode,parentChildrenMap,mainEntity,patientDataQuery);
 			    	AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
 			    	DataQueryResultsBean dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID, rootData ,ViewType.TREE_VIEW); 
 			    	List<List<Object>>  dataList = dataQueryResultsBean.getAttributeList();
@@ -256,8 +269,17 @@ private void processLabelNodeClick(String nodeId,HttpServletRequest request,List
 	//Now for labelTreeDataNode, get All the parent /children Map from root 
 	Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap = IQueryParseUtil.getParentChildrensForaMainNode(labelTreeDataNode);
 
+	QueryDetails queryDetails = new QueryDetails();
+	queryDetails.setCurrentSelectedObject(labelTreeDataNode);
+	queryDetails.setQuery(patientDataQuery);
+	queryDetails.setParentChildrenMap(parentChildrenMap);
+	
 	//Here we generate the iQuery
-	IQuery generatedQuery = ResultsViewIQueryCreationUtil.generateIQuery(labelTreeDataNode,parentChildrenMap,rootEntity,patientDataQuery);
+	AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
+	.getDefaultViewIQueryGenerator();
+	IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails);
+	
+	//IQuery generatedQuery = ResultsViewTreeUtil.generateIQuery(labelTreeDataNode,parentChildrenMap,rootEntity,patientDataQuery);
 		
 	//Here we get the list of primary key indexes in the Output attribute list of generated IQuery
 	List<Integer> primaryKeyIndexesList = getPrimaryKeysIndexes(rootEntity, generatedQuery);
