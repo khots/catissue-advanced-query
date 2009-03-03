@@ -217,7 +217,20 @@ function cancelExecuteQuery(response)
 			//TO DO
 			//write code to show error occured while cancel 
 
-			if(jsonResponse.queryId!=null)
+ 
+		  if(jsonResponse.removeExecutedCount!=null)
+		  {
+			var queryId = jsonResponse.queryId;
+			var identifier=document.getElementById("queryIdForRow_"+queryId);
+			var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
+			var tdChildCollection=object.getElementsByTagName('input');
+			var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
+			var selectedquery=selectedqueryId.split("_");
+			index=selectedquery[1];
+			removeCountResults1(index);
+		  }
+
+		  	if(jsonResponse.queryId!=null)
 			{
 				var queryId = jsonResponse.queryId;
 				//var executionLogId = jsonResponse.executionLogId;
@@ -232,18 +245,7 @@ function cancelExecuteQuery(response)
 				document.getElementById("cancelajaxcall_"+index).value='false';
 
 			}
-			 
-		  if(jsonResponse.removeExecutedCount!=null)
-		  {
-			var queryId = jsonResponse.queryId;
-			var identifier=document.getElementById("queryIdForRow_"+queryId);
-			var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
-			var tdChildCollection=object.getElementsByTagName('input');
-			var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
-			var selectedquery=selectedqueryId.split("_");
-			index=selectedquery[1];
-			removeCountResults1(index);
-		  }
+			
 	
 }
 function removeCountResults1(queryIndex)
@@ -671,26 +673,30 @@ function workflowResponseHandler(response)
 								 document.getElementById(queryExecId).value=executionLogId;
 	
 							}
-							var lableObject=document.getElementById("label_"+queryIndex);
-							if(lableObject!=null)
+
+							if(document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
 							{
-								object.removeChild(lableObject);
+								var lableObject=document.getElementById("label_"+queryIndex);
+								if(lableObject!=null)
+								{
+									object.removeChild(lableObject);
+								}
+								object.appendChild(createLabel(queryResult,queryIndex));
 							}
-							object.appendChild(createLabel(queryResult,queryIndex));
-							
+								
 						}
 						if((document.getElementById("cancel_"+queryIndex)==null)&&(document.getElementById("cancelajaxcall_"+queryIndex).value=='false'))
 						{
 							changeLinkToCancel(queryId,executionLogId);
 						}
 					
-						if((status!="Completed")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
+						if((status!="Completed"||status=="Cancelled")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
 						{
 
 							workflowExecuteGetCountQuery(queryId,executionLogId);
 						}
 						
-						if((status=="Completed"))
+						if((status=="Completed"||status=="Cancelled"))
 						{
 							changeExecuteLinkToExecute(queryId,0);
 		
@@ -932,7 +938,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 
 									<tr bgcolor="#ffffff" class="td_bgcolor_white" height="22">
 									
-									   <td valign="middle" valign="top">
+									   <td  width="10" valign="middle" valign="top">
 												<img src="images/advancequery/ic_notrun06.gif" alt=""  align="absmiddle"
 												id="notStarted_${queryIndex}">
 									   </td>
@@ -1138,8 +1144,8 @@ function setPreviousProject()
 {
 	previousProject=document.getElementById('selectedProject').value;
 }setPreviousProject();
-/*
-function retrieveCounts()
+
+/*function retrieveCounts()
 {
 	var rows=parent.window.document.getElementById("table1").rows.length;
 	for(var i=0;i<rows;i++)
