@@ -110,6 +110,7 @@ public class QueryServletContextListenerUtil
 				Variables.recordsPerPageForTree = Integer.parseInt(queryProperties.getProperty("tree.recordsPerPage"));
 				Variables.resultLimit = Integer.parseInt(queryProperties.getProperty("datasecurity.resultLimit"));
 				Variables.properties = queryProperties;
+				Variables.csmUtility = queryProperties.getProperty("query.csmUtility");
 			}
 			catch (FileNotFoundException e)
 			{
