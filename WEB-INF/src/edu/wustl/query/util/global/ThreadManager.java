@@ -2,8 +2,10 @@
 package edu.wustl.query.util.global;
 
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.query.factory.ThreadGeneratorFactory;
 import edu.wustl.query.exportmanager.AbstractExportDataThread;
 import edu.wustl.query.exportmanager.ExportDataObject;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
  * This class is responsible for returning a requested Thread object
@@ -16,6 +18,7 @@ import edu.wustl.query.exportmanager.ExportDataObject;
  */
 public class ThreadManager
 {
+
 	/**
 	 * Default Constructor
 	 */
@@ -28,10 +31,19 @@ public class ThreadManager
 	 * 
 	 * @param edo
 	 * @param sdb
+	 * @throws QueryModuleException 
 	 */
-	public AbstractExportDataThread getExportDataThread(ExportDataObject edo, SessionDataBean sdb)
+	public AbstractExportDataThread getExportDataThread(ExportDataObject exportDataObject,
+			SessionDataBean sessionDataBean) throws QueryModuleException
 	{
-		return null;
+		AbstractExportDataThread exportDataThread = ThreadGeneratorFactory
+				.getDefaultAbstractExportDataThread(Variables.exportDataThreadClassName,
+						exportDataObject, sessionDataBean);
+
+		Thread thread = new Thread(exportDataThread);
+		thread.start();
+
+		return exportDataThread;
 	}
 
 }
