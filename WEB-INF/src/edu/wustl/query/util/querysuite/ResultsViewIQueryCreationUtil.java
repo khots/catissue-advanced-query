@@ -37,6 +37,8 @@ import edu.wustl.common.querysuite.queryobject.IRule;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
+import edu.wustl.common.querysuite.queryobject.impl.Query;
+import edu.wustl.query.enums.QueryType;
 import edu.wustl.query.flex.dag.DAGResolveAmbiguity;
 
 
@@ -46,7 +48,7 @@ import edu.wustl.query.flex.dag.DAGResolveAmbiguity;
  *
  */
 
-public abstract class ResultsViewIQueryCreationUtil
+public class ResultsViewIQueryCreationUtil
 {
 	/**
 	 * 
@@ -153,7 +155,7 @@ public abstract class ResultsViewIQueryCreationUtil
  	 */
 	public static IQuery formIQuery(OutputTreeDataNode rootNode,Map<EntityInterface, List<EntityInterface>> eachTaggedEntityPathMap,IQuery getPatientDataQuery,IClientQueryBuilderInterface m_queryObject)
  	{
- 		//In IQuery, root entity should have a parametarized condition on primary key
+ 		//In IQuery, root entity should have a parameterized condition on primary key
  		EntityInterface rootEntity = rootNode.getOutputEntity().getDynamicExtensionsEntity();
  		 int rootExpId = 0;
  		if(rootEntity.getName().equalsIgnoreCase("Person"))
@@ -163,7 +165,7 @@ public abstract class ResultsViewIQueryCreationUtil
  		    List <String>conditionList = new ArrayList<String>();
  		    List<List<String>>  conditionValues = new ArrayList<List<String>>();
 
- 			//Only in case of Person Entity, it will be parametrized condition else not
+ 			//Only in case of Person Entity, it will be parameterized condition else not
  			for(int i=0; i<primaryAttributesList.size(); i++)
  			{
  				 attributeOperators.add("Equals");
@@ -175,8 +177,7 @@ public abstract class ResultsViewIQueryCreationUtil
  		else
  		{
  			//If this is not Person entity, then we need to add all those tagged entities which have Primary key tag and
- 			//whatever condition is specified by the user or default condition should be added on all peimary key 
- 			
+ 			//whatever condition is specified by the user or default condition should be added on all primary key 
  			//Add the condition defined on the Root Node
  			int rootNodeExpId = rootNode.getExpressionId();
  			IConstraints constraints = getPatientDataQuery.getConstraints();
@@ -184,29 +185,65 @@ public abstract class ResultsViewIQueryCreationUtil
  			//Got root expression
  			IExpression  rootExpression = constraints.getExpression(rootNodeExpId);
  			
- 			//get the rule
- 			IRule iRule = null;
- 			for (IExpressionOperand expressionOperand : rootExpression)
- 			{
- 				if(expressionOperand instanceof IRule)
- 				{
- 					iRule = (IRule)expressionOperand;
- 					break;
- 				}
- 			}
+ 			//Get the rule associated with an expression fro
+ 			IRule iRule = getRuleFromExpression(rootExpression);;
  			
  			//Now Add this rule and expression to Query
- 			if(iRule != null)
- 			{
- 				rootExpId = m_queryObject.addExpression(iRule, rootEntity);
- 			}
- 			else
- 			{
- 				rootExpId = m_queryObject.addExpression(rootEntity);
- 			}
+ 			rootExpId = addExpressionToIQuery(m_queryObject, rootEntity, iRule);
  		}
  		
-	    Map <EntityInterface, List<Integer>> eachTaggedEntityPathExpressionsMap = new HashMap<EntityInterface, List<Integer>>(); 
+	    Map<EntityInterface, List<Integer>> eachTaggedEntityPathExpressionsMap = addAllTaggedEntitiesToIQuery(
+				eachTaggedEntityPathMap, m_queryObject, rootEntity, rootExpId);
+ 		
+ 		//Now u have eachTaggedEntityPathExpressionsMap, so create path among added expressions
+ 		addLinksAmongExpressionsAdded(eachTaggedEntityPathExpressionsMap,m_queryObject); 
+ 		
+ 		//Only tagged attributes should be added as IOutPutAttribute List
+ 		addTaggedOutputAttributesToQuery(eachTaggedEntityPathExpressionsMap,m_queryObject);
+ 		
+ 		//If root entity is Person , then add parameterized condition on PersonUpi
+ 		if(rootEntity.getName().equalsIgnoreCase("Person"))
+ 		{
+ 			addParameterizedConditionOnPerson(m_queryObject, rootEntity);
+ 		}
+ 		return m_queryObject.getQuery();
+ 	}
+
+	/**
+	 * This method adds the parameterized condition on Person and adds that condition to IQuery
+	 * @param m_queryObject
+	 * @param rootEntity
+	 */
+	private static void addParameterizedConditionOnPerson(IClientQueryBuilderInterface m_queryObject,
+			EntityInterface rootEntity)
+	{
+		//Create ICondition attribute
+		AttributeInterface personAttributes = rootEntity.getAttributeByName("personUpi");
+		List <String> conditionList = new ArrayList<String>();
+		conditionList.add("");
+		ICondition condition = QueryObjectFactory.createCondition(personAttributes, RelationalOperator.Equals, conditionList);
+		
+		//Now create parameter
+		IParameter<ICondition> parameter = QueryObjectFactory.createParameter(condition,"personUpi");
+		
+		IParameterizedQuery pQuery = (IParameterizedQuery)m_queryObject.getQuery();
+		pQuery.getParameters().add(parameter);
+	}
+
+	/**
+	 * 
+	 * @param eachTaggedEntityPathMap
+	 * @param m_queryObject
+	 * @param rootEntity
+	 * @param rootExpId
+	 * @return
+	 */
+	private static Map<EntityInterface, List<Integer>> addAllTaggedEntitiesToIQuery(
+			Map<EntityInterface, List<EntityInterface>> eachTaggedEntityPathMap,
+			IClientQueryBuilderInterface m_queryObject,
+			EntityInterface rootEntity, int rootExpId)
+	{
+		Map <EntityInterface, List<Integer>> eachTaggedEntityPathExpressionsMap = new HashMap<EntityInterface, List<Integer>>(); 
 	    
  		//All Intermediate nodes as well tagged entities should be added like containment
  		Set <EntityInterface> taggedEntitiesKeySet = eachTaggedEntityPathMap.keySet();
@@ -228,35 +265,31 @@ public abstract class ResultsViewIQueryCreationUtil
  			}
  			eachTaggedEntityPathExpressionsMap.put(taggedEntity,pathExpressionsList);
  		}
- 		
- 		//Now u have eachTaggedEntityPathExpressionsMap, so create path among added expressions
- 		addLinksAmongExpressionsAdded(eachTaggedEntityPathExpressionsMap,m_queryObject); 
- 		
- 		//Only tagged attributes should be added as IOutPutAttribute List
- 		addTaggedOutputAttributesToQuery(eachTaggedEntityPathExpressionsMap,m_queryObject);
- 		
- 		
- 		//If root entity is Person , then add parameterized condition on PersonUpi
- 		if(rootEntity.getName().equalsIgnoreCase("Person"))
- 		{
- 			//Create ICondition attribute
- 	 		 AttributeInterface personAttributes = rootEntity.getAttributeByName("personUpi");
- 	 		
- 	 		
- 	 		 List <String> conditionList = new ArrayList<String>();
-  	 		 conditionList.add("");
- 	 		 ICondition condition = QueryObjectFactory.createCondition(personAttributes, RelationalOperator.Equals, conditionList);
- 	 	    
- 	 	    //Now create parameter
- 	 	    IParameter<ICondition> parameter = QueryObjectFactory.createParameter(condition,"personUpi");
- 	 	    
- 	 	    IParameterizedQuery pQuery = (IParameterizedQuery)m_queryObject.getQuery();
- 	 	    pQuery.getParameters().add(parameter);
- 		}
- 		
- 		return m_queryObject.getQuery();
- 	}
-	
+		return eachTaggedEntityPathExpressionsMap;
+	}
+
+	/**
+	 * This method adds the entity with rule to IQuery
+	 * @param m_queryObject
+	 * @param rootEntity
+	 * @param iRule
+	 * @return
+	 */
+	private static int addExpressionToIQuery(IClientQueryBuilderInterface m_queryObject,
+			EntityInterface rootEntity, IRule iRule) 
+	{
+		int rootExpId;
+		if(iRule != null)
+		{
+			rootExpId = m_queryObject.addExpression(iRule, rootEntity);
+		}
+		else
+		{
+			rootExpId = m_queryObject.addExpression(rootEntity);
+		}
+		return rootExpId;
+	}
+
 	
 	/**
 	 * 
@@ -307,7 +340,6 @@ public abstract class ResultsViewIQueryCreationUtil
  		    	{
                     int parentExpId = pathExpressionsList.get(i);
                     int childExpId = pathExpressionsList.get(i+1);
- 		    		
  		    		IExpression parentExpression = constraints.getExpression(parentExpId);
                     IExpression childExpresion = constraints.getExpression(childExpId);
                     IIntraModelAssociation association = (IIntraModelAssociation) (graph.getAssociation(
@@ -357,7 +389,7 @@ public abstract class ResultsViewIQueryCreationUtil
  			}
  		}
  		
- 	   //Setting the IOUtPut Attribute List to Query 
+ 	   //Setting the IOutPut Attribute List to Query 
  	  cab2bQuery.setOutputAttributeList(outputAttributeList);
 	}
 
@@ -391,23 +423,21 @@ public abstract class ResultsViewIQueryCreationUtil
 	 */
  	public static void updateGeneratedQuery(IQuery generatedQuery,Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap,OutputTreeDataNode mainEntityTreeDataNode,IQuery parentQuery) throws MultipleRootsException
 	{
-
 		IClientQueryBuilderInterface m_queryObject = new ClientQueryBuilder();
 		m_queryObject.setQuery(generatedQuery);
-		
-		//Map<Integer,List<Integer>> parentChildExpIdsMap = new HashMap<Integer,List<Integer>>();
 		
 		//Now add children added by user to IQuery with conditions
 		IConstraints constraints = generatedQuery.getConstraints();
 		IJoinGraph graph = constraints.getJoinGraph();
 	 	IExpression rootExpression = graph.getRoot();
 	 	int rootExpressionId = rootExpression.getExpressionId();
+	 	
 	 	//This rootExpression gives the root expression of the Query
 	 	EntityInterface rootEntity = rootExpression.getQueryEntity().getDynamicExtensionsEntity();
 	 	
 	 	List<OutputTreeDataNode> childrenList = parentChildrenMap.get(mainEntityTreeDataNode);
+
 	 	//Add these direct children to IQuery with rule
-	 
         //Get the constraints from old patient Data query. This is required to get the rules added on children nodes 	 	
 	 	IConstraints parentQueryConstraints  = parentQuery.getConstraints();
 	 	Map <OutputTreeDataNode,Integer> childrenExpIdsMap =  new HashMap<OutputTreeDataNode, Integer>();
@@ -426,7 +456,6 @@ public abstract class ResultsViewIQueryCreationUtil
 		 		//Now add that expression to generated  IQuery
 		 		int expressionId = addExpressionAndRuleToQuery(m_queryObject, iRule, childEntity);
 		 		
-		 		
 		 		//This map is used for retrieving the expression id a children that is added to iQuery
 		 		childrenExpIdsMap.put(childNode, expressionId);
 		 		
@@ -436,44 +465,33 @@ public abstract class ResultsViewIQueryCreationUtil
 		 		{
 		 	    	QueryAddContainmentsUtil.linkTwoNodes(rootExpressionId, expressionId, path, m_queryObject);
 		 		}
-		 		
-		 		
-		 		//expressionIdsList.add(expressionId);
 		 	}
-		 
-	 	//parentChildExpIdsMap.put(rootExpressionId, expressionIdsList);
-	 	
-	 	//Now for each children, add further children
-	 	for(OutputTreeDataNode childNode : childrenList)
-	 	{
-	 		int childRootExpId = childrenExpIdsMap.get(childNode);
-	 		EntityInterface childRootEntity = childNode.getOutputEntity().getDynamicExtensionsEntity();
-	 		
-	 		List <OutputTreeDataNode> childrenOutPutList = parentChildrenMap.get(childNode);
-	 		//List<Integer> expIdsList = new ArrayList<Integer>();
-	 		if(childrenOutPutList != null  && !childrenOutPutList.isEmpty())
-	 		{  
-	 			for(OutputTreeDataNode outputNode : childrenOutPutList)
-	 			{
-	 				
-	 				int expId =  outputNode.getExpressionId();
-	 				IExpression childExpression = parentQueryConstraints.getExpression(expId);
-	 				IRule iRule = getRuleFromExpression(childExpression);
-	 				EntityInterface childEntity =  outputNode.getOutputEntity().getDynamicExtensionsEntity();
-	 				int expressionId = addExpressionAndRuleToQuery(m_queryObject, iRule, childEntity);
-	 			
-	 				IPath path = getIPath(childRootEntity,childEntity);
-	 		 		if (!m_queryObject.isPathCreatesCyclicGraph(childRootExpId, expressionId, path))
-	 		 		{
-	 		 	    	QueryAddContainmentsUtil.linkTwoNodes(childRootExpId, expressionId, path, m_queryObject);
-	 		 		}
-	 				
-	 				//expIdsList.add(expressionId);
-	 			}
-	 			//parentChildExpIdsMap.put(childNode.getExpressionId(),expIdsList);
-	 		}
-	 	}
-	 }	
+			
+		 	//Now for each children, add further children
+		 	for(OutputTreeDataNode childNode : childrenList)
+		 	{
+		 		int childRootExpId = childrenExpIdsMap.get(childNode);
+		 		EntityInterface childRootEntity = childNode.getOutputEntity().getDynamicExtensionsEntity();
+		 		List <OutputTreeDataNode> childrenOutPutList = parentChildrenMap.get(childNode);
+		 		if(childrenOutPutList != null  && !childrenOutPutList.isEmpty())
+		 		{  
+		 			for(OutputTreeDataNode outputNode : childrenOutPutList)
+		 			{
+		 				int expId =  outputNode.getExpressionId();
+		 				IExpression childExpression = parentQueryConstraints.getExpression(expId);
+		 				IRule iRule = getRuleFromExpression(childExpression);
+		 				EntityInterface childEntity =  outputNode.getOutputEntity().getDynamicExtensionsEntity();
+		 				int expressionId = addExpressionAndRuleToQuery(m_queryObject, iRule, childEntity);
+		 				IPath path = getIPath(childRootEntity,childEntity);
+		 		 		if (!m_queryObject.isPathCreatesCyclicGraph(childRootExpId, expressionId, path))
+		 		 		{
+		 		 	    	QueryAddContainmentsUtil.linkTwoNodes(childRootExpId, expressionId, path, m_queryObject);
+		 		 		}
+		 			}
+		 		}
+		 	}
+		}	
+	 
 	}
     
 	/**
@@ -483,7 +501,7 @@ public abstract class ResultsViewIQueryCreationUtil
 	 */
  	private static IRule getRuleFromExpression(IExpression childExpression)
 	{
-		IRule iRule = null;
+ 		IRule iRule = null;
 		for (IExpressionOperand expressionOperand : childExpression)
 		{
 			if(expressionOperand instanceof IRule)
@@ -506,14 +524,7 @@ public abstract class ResultsViewIQueryCreationUtil
 			IRule iRule, EntityInterface childEntity)
 	{
 		int expressionId;
-		if(iRule != null)
-		{
-			expressionId = m_queryObject.addExpression(iRule, childEntity);
-		}
-		else
-		{
-			expressionId = m_queryObject.addExpression(childEntity);
-		}
+		expressionId = addExpressionToIQuery(m_queryObject, childEntity, iRule);
 		return expressionId;
 	}
  	
@@ -551,10 +562,16 @@ public abstract class ResultsViewIQueryCreationUtil
 		return parentsList;
 	}
  	
-	public static IQuery addAllParentsHierarchyToIQuery(IClientQueryBuilderInterface m_queryObject,
+	/**
+	 * 
+	 * @param m_queryObject
+	 * @param parentsList
+	 * @return
+	 * @throws MultipleRootsException
+	 */
+ 	public static IQuery addAllParentsHierarchyToIQuery(IClientQueryBuilderInterface m_queryObject,
 			List<IExpression> parentsList) throws MultipleRootsException
 	{
-		
 		for(int i=0; i< parentsList.size(); i++)
 		{
 			IExpression parentExp = parentsList.get(i);
@@ -575,14 +592,8 @@ public abstract class ResultsViewIQueryCreationUtil
 			  
 				//Now Add the parent as the root entity of Query
 				int parentExpressionId = 0;
-				if(parentRule != null)
-				{
-					parentExpressionId = m_queryObject.addExpression(parentRule, parentEntity);
-			    }
-				 else
-				 {
-					parentExpressionId = m_queryObject.addExpression(parentEntity);
-				 }
+				parentExpressionId = addExpressionToIQuery(m_queryObject,
+						parentEntity, parentRule);
 				 
 				 IPath path = getIPath(parentEntity,rootEntity); 
 			     
@@ -669,5 +680,57 @@ public abstract class ResultsViewIQueryCreationUtil
        		}
        	}
        	return entity;
+	}
+	
+	/**
+	 * 
+	 * @param labelTreeDataNode
+	 * @param parentChildrenMap
+	 * @param rootEntity
+	 * @param patientDataQuery
+	 * @return
+	 * @throws Exception
+	 */
+	public static IQuery generateIQuery(OutputTreeDataNode labelTreeDataNode,Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap
+			,EntityInterface rootEntity,IQuery patientDataQuery) throws Exception
+	{
+		IConstraints constraints = patientDataQuery.getConstraints(); 
+		
+		//Now form the IQuery, to get the results
+    	//Get the parent child map for containment of a  main Entity
+    	Map<EntityInterface, List<EntityInterface>> partentChildEntityMap = getAllParentChildrenMap(rootEntity);
+    	
+    	//Once u got the parent child map, get the parent child map for tagged entities for results view, and populate the list for tagged entities
+    	Map<EntityInterface, List<EntityInterface>> taggedEntitiesParentChildMap = getTaggedEntitiesParentChildMap(partentChildEntityMap,rootEntity);
+   
+    	//Here we get path list from Root Entity to parent of Tagged Entity for results view 
+		Map<EntityInterface, List<EntityInterface>> eachTaggedEntityPathMap = getPathsMapForTaggedEntity(taggedEntitiesParentChildMap,partentChildEntityMap);
+
+		//Now Add all entities related to a tagged entity to IQuery
+		IClientQueryBuilderInterface m_queryObject = new ClientQueryBuilder();
+		IQuery generatedQuery =  formIQuery(labelTreeDataNode,eachTaggedEntityPathMap,patientDataQuery,m_queryObject); 				
+		
+		//update the IQuery with conditions on all children
+		updateGeneratedQuery(generatedQuery,parentChildrenMap,labelTreeDataNode,patientDataQuery);
+		
+		//Now add all parents
+		List<IExpression> parentsList = getAllParentsHierarchy(constraints,labelTreeDataNode);
+			   
+		 //Now Add All the parents of the main Entity to form the IQuery, except Person
+		 //Person will always be the root entity of the iQuery with parameterized conditions
+		 //add all the other parents Hierarchy
+		 if((parentsList != null) && (!parentsList.isEmpty()))
+		 {
+			 generatedQuery = addAllParentsHierarchyToIQuery(m_queryObject, parentsList);
+		 }
+		 
+		 if(!labelTreeDataNode.getOutputEntity().getDynamicExtensionsEntity().getName().equalsIgnoreCase("Person"))
+		 {
+			 //If clicked label node is not Person, only then add Person as Root entity of the Query 
+			 generatedQuery = addPersonAsRootToIQuery(m_queryObject, generatedQuery);
+		 }
+		 ((Query)generatedQuery).setType(QueryType.GET_DATA.type);
+		
+		return generatedQuery; 
 	}
 }
