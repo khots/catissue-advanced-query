@@ -848,7 +848,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 					<tr>
 						<td valign="middle">&nbsp;</td>
 						<td valign="middle"><img src="images/advancequery/ic_arrow_small.gif" alt=""  align="absmiddle"></td>
-						<td valign="middle"><a href="#" class="blacklink" onClick="showPopUp('publicQueryForWorkFlow')"><bean:message key="query.sharedqueries"/></a></td>
+						<td valign="middle"><a href="#" class="blacklink" onClick="showPopUp('sharedQueriesForWorkFlow')"><bean:message key="query.sharedqueries"/></a></td>
 					</tr>
 		  
 					<tr>
