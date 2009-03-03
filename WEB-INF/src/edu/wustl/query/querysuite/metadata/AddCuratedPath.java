@@ -166,13 +166,13 @@ public class AddCuratedPath
 //		entityList.add("Encounter,EncounterDetails,Diagnosis");
 		entityList.add("EncounterDetails,Diagnosis,DiagnosisCode");
 		entityList.add("EncounterDetails,Diagnosis,DiagnosisType");
-		entityList.add("EncounterDetails,Procedure");
+		//entityList.add("EncounterDetails,Procedure");
 		entityList.add("EncounterDetails,Procedure,ProcedureCodingMethod");
 		entityList.add("EncounterDetails,Procedure,ProcedureCode");
 		entityList.add("EncounterDetails,Procedure,Provider");
 		entityList.add("EncounterDetails,Procedure,Provider,PersonName");
 		entityList.add("EncounterDetails,Procedure,Provider,ProviderType");
-		entityList.add("EncounterDetails,Provider");
+		//entityList.add("EncounterDetails,Provider");
 		entityList.add("EncounterDetails,Provider,ProviderType");
 		entityList.add("EncounterDetails,Provider,PersonName");
 	}
