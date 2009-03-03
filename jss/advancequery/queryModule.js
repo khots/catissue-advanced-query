@@ -24,7 +24,7 @@
    }
 	
 	  function getTreeNodeChildren(nodeId)
-	   {
+	  {
 				var request = newXMLHTTPReq();			
 				var actionURL;
 				var handlerFunction = getReadyStateHandler(request,showTreeNodeChildren,true);	
@@ -36,7 +36,6 @@
 				request.send(actionURL);
 
 				buildSpreadsheet(nodeId);
-		  	
 	   }
 	  
 	   function showTreeNodeChildren(response)
@@ -45,7 +44,12 @@
 			 if(jsonResponse.childrenNodes!=null)
 		     {
 				 var num = jsonResponse.childrenNodes.length; 
-	             
+				 if(num > 0)
+				 {
+                    var parentIdToRemoveChildren = jsonResponse.childrenNodes[0].parentId;
+					resultTree.deleteChildItems(parentIdToRemoveChildren);
+				 }
+				 
 				 for(var i=0;i<num;i++)
 				 {
 					var nodeId = jsonResponse.childrenNodes[i].identifier;
