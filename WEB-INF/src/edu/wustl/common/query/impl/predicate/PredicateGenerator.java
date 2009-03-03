@@ -30,7 +30,7 @@ public class PredicateGenerator
 	 *  
 	 */
 	final private Map<IExpression, Predicates> predicates;
-	
+
 	private String xQueryWherePart;
 
 	public PredicateGenerator(Map<IExpression, String> forVariables, String wherePart)
@@ -94,16 +94,15 @@ public class PredicateGenerator
 		predicates.put(expression, values);
 
 	}
-	
+
 	public void setXQueryWherePart(StringBuilder xQueryWherePart)
 	{
-		if(xQueryWherePart.length() != 0)
+		if (xQueryWherePart.length() != 0)
 		{
 			this.xQueryWherePart = Utility.removeLastAnd(xQueryWherePart.toString());
 		}
 	}
-	
-	
+
 	public String getXQueryWherePart()
 	{
 		return xQueryWherePart;

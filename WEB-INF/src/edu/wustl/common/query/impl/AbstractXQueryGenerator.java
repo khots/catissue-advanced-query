@@ -1077,6 +1077,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @param operandquery
 	 * @return Added a method so that the Parser can identify the temporal query and act accordingly
 	 */
+	@Override
 	protected String getTemporalCondition(String operandquery)
 	{
 		return "<" + Constants.QUERY_TEMPORAL_CONDITION + ">" + operandquery + "</"

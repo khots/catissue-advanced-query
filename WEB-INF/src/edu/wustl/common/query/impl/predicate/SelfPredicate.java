@@ -1,8 +1,8 @@
 /**
  * 
  */
-package edu.wustl.common.query.impl.predicate;
 
+package edu.wustl.common.query.impl.predicate;
 
 /**
  * @author juberahamad_patel
@@ -10,8 +10,6 @@ package edu.wustl.common.query.impl.predicate;
  */
 public class SelfPredicate extends AbstractPredicate
 {
-	
-	
 
 	public SelfPredicate(String lhs, String operator)
 	{

@@ -29,10 +29,9 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 
 	public PassTwoXQueryGenerator()
 	{
-		setSelectDistinct(true);		
+		setSelectDistinct(true);
 	}
-	
-	
+
 	/**
 	 * 
 	 * @param predicateGenerator 
@@ -72,13 +71,16 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 			{
 				StringBuilder entityPath = new StringBuilder();
 				String entityName = expression.getQueryEntity().getDynamicExtensionsEntity()
-				.getName();
-				entityPath.append(getTargetRoles().get(expression)).append('/').append(deCapitalize(entityName));
+						.getName();
+				entityPath.append(getTargetRoles().get(expression)).append('/').append(
+						deCapitalize(entityName));
 				IExpression parent = joinGraph.getParentList(expression).get(0);
 				String parentPath = getEntityPaths().get(parent);
 				xqueryForClause.append(variable).append(' ').append(Constants.IN).append(' ');
-				xqueryForClause.append(parentPath).append('/').append(Constants.QUERY_OPENING_PARENTHESIS).append(entityPath.toString())
-				.append(Constants.QUERY_COMMA).append(".[not(").append(entityPath.toString()).append(")]/<nothing/>").append(Constants.QUERY_CLOSING_PARENTHESIS);
+				xqueryForClause.append(parentPath).append('/').append(
+						Constants.QUERY_OPENING_PARENTHESIS).append(entityPath.toString()).append(
+						Constants.QUERY_COMMA).append(".[not(").append(entityPath.toString())
+						.append(")]/<nothing/>").append(Constants.QUERY_CLOSING_PARENTHESIS);
 			}
 
 			Predicates predicates = predicateGenerator.getPredicates(expression);
@@ -196,8 +198,8 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 	protected String buildXQueryWhereClause(PredicateGenerator predicateGenerator)
 	{
 		String xQueryWherePart = predicateGenerator.getXQueryWherePart();
-		
-		if(xQueryWherePart == null)
+
+		if (xQueryWherePart == null)
 		{
 			return "";
 		}
