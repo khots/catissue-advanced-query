@@ -72,23 +72,24 @@
 
 		  <td>
 			<table summary="" cellpadding="0" cellspacing="0"  border="0" align="center" width="100%" class="login_box_bg" >
-					<tr>
+					
+				<tr class="table_header_query" >
+					<td colspan='3'height="25" style="padding-left:5px;border-bottom:1px solid #cccccc;">
+					<span class="grey_bold_big">	<bean:message key="savequery.queryInformationTitle"/></span>
+					</td>
+				</tr>
+				
+				<tr>
 					<td style="padding-left:5px;padding-bottom:5px;padding-top:5px;"  colspan="3" class='messagetexterror' nowrap><html:errors/>
 					</td>
 					<tr>
-				<!--<tr class="table_header_query" >
-					<td colspan='3'height="25" style="padding-left:5px;">
-					<span class="blue_title">	<bean:message key="savequery.queryInformationTitle"/></span>
-					</td>
-				</tr>
-				<tr><td colspan='3' class="td_greydottedline_horizontal" height="1">
-				</td></tr>-->
 				<tr>
-				<td colspan="3" height="30"  valign="top" style="padding-left:5px;"><span class="red_star">*</span> <span class="small_txt_grey">Denotes mandatory fields</span></td>
+				<td colspan="3"  valign="top" style="padding-left:5px;"><span class="red_star">*</span> <span class="small_txt_grey">Denotes mandatory fields</span></td>
 				</tr>
-				
+				<tr><td colspan="3" style="padding:0 10px 10px 10px;"><table width="100%" cellpadding="0" cellspacing="0"> <tr><td class="td_greydottedline_horizontal" height="1"></td></tr></table></td>
+				</td></tr>
 					<tr id="workflowName" >
-						<td class="content_txt" colspan="2" style="padding-left:5px;padding-bottom:10px;">
+						<td class="content_txt_bold" colspan="2" style="padding-left:5px;padding-bottom:10px;">
 								<bean:message key="workflow.name"/>:
 					</td>
 					<td style="padding-bottom:10px;">
@@ -96,7 +97,7 @@
 					</td>
 				  </tr>
 				  <tr>
-						<td class="content_txt" colspan="2" style="padding-left:5px;" >
+						<td class="content_txt_bold" colspan="2" style="padding-left:5px;" >
 					<bean:message key="query.title"/><span class="red_star">*</span>:
 					</td>
 					<td >
@@ -106,7 +107,7 @@
 				</tr>
 				<tr><td height="10"></td></tr>
 				<tr>
-					<td colspan="2" class="content_txt" valign="top" style="padding-left:5px;padding-bottom:5px;"><bean:message key="query.description"/>:</td>
+					<td colspan="2" class="content_txt_bold" valign="top" style="padding-left:5px;padding-bottom:5px;"><bean:message key="query.description"/>:</td>
 					<td style="padding-bottom:5px;" class="formFieldNoBordersQuery">
 						<html:textarea styleClass="textfield_undefined"   cols="80" rows="5"  property="description"> </html:textarea>
 					</td>
@@ -138,7 +139,7 @@
 					</td> 
 				</tr>
 				<tr>
-				  <td style="padding-left:5px;padding-bottom:5px;padding-top:5px"  colspan='3'  align="left">
+				  <td style="padding-top:10px;padding-bottom:10px;padding-left:5px;"  colspan='3'  align="left">
 						    <input type="hidden" name="queryString" id="queryString" value=""/>
 						    <input type="hidden" name="buildQueryString" id="buildQueryString" value=""/>
 							<!--input type="button" name="preview" value="Preview" class="actionButton"  disabled="true"/-->
