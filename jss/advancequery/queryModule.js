@@ -1300,6 +1300,7 @@
 					row.style.display = 'block';
 					row.innerHTML = text;
 				}
+				self.scrollTo(0,0);
 		}	
 	}
 	function showErrorPage()
@@ -1458,7 +1459,7 @@
               pageof=document.getElementById("pageOf").value; 
 			 var url = "DefineView.do?isWorkflow="+workflow+"&pageOf="+pageof;
             
-			 window.open('','SaveQuery','height=280,width=800');
+			 window.open('','SaveQuery','height=315,width=800');
     		 document.forms[0].action = url;
 			 document.forms[0].target = "SaveQuery";
 			 document.forms[0].submit();
@@ -1496,7 +1497,7 @@
 		    }
 		    else
 		    {
-			 pvwindow	= window.open(url,'SaveQuery','height=280,width=800');
+			 pvwindow	= window.open(url,'SaveQuery','height=315,width=800');
 		    	//NewWindow(url,'name','870','300','yes');
 		    }
 			hideCursor();
