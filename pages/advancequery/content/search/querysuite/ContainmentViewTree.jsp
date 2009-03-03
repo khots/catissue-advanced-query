@@ -42,8 +42,8 @@
 <table border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF"  bordercolorlight="#000000" >
 	<tr>
 	
-		<td valign="top"    style="padding: 5px;">
-			<div id="treeBox" style="overflow:auto;height:378;  padding: 5px;" class="biglistbox"></div>
+		<td valign="top"    style="padding: 5px 5px 3px 5px;*padding: 5px 5px 0 5px;">
+			<div id="treeBox" style="overflow:auto;height:407;*height:425;padding: 5px;" class="biglistbox"></div>
 		</td>
 		
 		   <td align="left" valign="middle" >
@@ -58,14 +58,14 @@
 <!-- Mandar : 434 : for tooltip -->
 		<table>
 		<tr>
-		<td style="padding: 5px;">
-		   <div id="emptyList" style="height:388;overflow:hidden;" class="biglistbox"> 
-		   <select name="heg" style="height:388;width:250;"  multiple="true">
+		<td style="padding: 3px 5px 1px 5px;*padding: 3px 5px 0 5px;">
+		   <div id="emptyList" style="height:417;*height:425;overflow:hidden;" class="biglistbox"> 
+		   <select name="heg" style="height:417;*height:425;width:270;"  multiple="true">
 				<option value="">
 			</select></div>	
 			</td>
-			<td >
-		 <div id="elementList" style="OVERFLOW: auto;  height:388; padding:1px; bgcolor:#000000;" class="biglistbox"  onscroll="OnDivScroll();"> 
+			<td style="padding: 3px 5px 1px 5px;*padding: 3px 5px 0 5px;">
+		 <div id="elementList" style="OVERFLOW: auto;height:417;*height:425; bgcolor:#000000;" class="biglistbox"  onscroll="OnDivScroll();"> 
 			 <select  id="lstAttributeNames" name="selectedColumnNames" class="textfield_undefined" size="22" multiple="true" style="" onfocus="OnSelectFocus();">
 			  <logic:iterate id="columnNameValue" name="selectedColumnNameValueBeanList">	
 				<option value="${columnNameValue.value}"/><span class="content_txt"> <bean:write name="columnNameValue" property="name"/></span>
@@ -74,11 +74,14 @@
 		   </div></td>
 		   <td>
 		     <table>		
-			 <tr>
+			 <!--<tr>
 			 <td class="content_txt">Re-order</td>
-			 </tr>
+			 </tr>-->
 				<tr><td align="center"><img src="images/advancequery/ic_up.gif" align="absmiddle"  onclick="moveUp(document.forms[0].selectedColumnNames);"/>  
 			</td></tr>
+			<tr>
+			 <td class="content_txt">Re-order</td>
+			 </tr>
 			<tr><td align="center"><img src="images/advancequery/ic_down.gif"  align="absmiddle" onclick="moveDown(document.forms[0].selectedColumnNames);"/></td></tr>
 			</table></td>
 			</tr>
@@ -122,14 +125,14 @@
     //if so then making the size of the selectbox to count of
     //items in selectbox,so that vertival scrollbar
     // won't appear in selectbox
-    if (lstAttributeNames.options.length > 22)
+    if (lstAttributeNames.options.length > 26)
     {
           
 		lstAttributeNames.size=lstAttributeNames.options.length;
     }
     else
     {
-        lstAttributeNames.size=22;
+        lstAttributeNames.size=26;
     }
 }
 	
