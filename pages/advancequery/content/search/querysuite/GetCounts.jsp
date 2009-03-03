@@ -63,81 +63,81 @@
 	<td align="center">
 <table border="0"  width="100%" cellspacing="0" cellpadding="0"  bgColor="#FFFFFF" >	
 			<tr>
-				<td style="padding-left:15px;" class='messagetexterror'>
+				<td style="padding-left:15px;" class='messagetexterror' colspan="2">
 					<div id="titleError" style="overflow:auto; padding-top:5px; padding-bottom:5px; display:none"></div>
 				</td>
 			</tr>
 			<tr>
-			<td colspan="4" style="padding-left:5px;" height="30" class="small_txt_grey" ><span class="red_star">*</span> Denotes mandatory fields
-			<table width="100%" cellpadding="2" cellspacing="2" align="center">
-			<tr class="td_greydottedline_horizontal"><td height="1"></td></tr></table>
+			<td style="padding-left:5px;" height="30" class="small_txt_grey" colspan="2"><span class="red_star">*</span> Denotes mandatory feilds
+			<table width="100%" border="0" cellpadding="2" cellspacing="2" align="center">
+			<tr class="td_greydottedline_horizontal"><td height="1"></td></tr></table> 
 			</td>
 			</tr>
 		<!--	<tr id="workflowname" valign="top" style="padding-bottom:20px;padding-left:10px;"> <td colspan="4"> &nbsp;&nbsp;<span class="content_txt_bold"></b><bean:message key="workflow.name"/> </b></span>: <%=workflowName%></td></tr> -->
 			<tr style="padding-left:2px;">
-			<td colspan="2" nowrap id="workflowname">
+			<td nowrap id="workflowname">
 			&nbsp;
 				<span class="content_txt"><bean:message key="workflow.name"/>:</span><span>
 				<input type="text" styleClass="textfield_undefined" class="textfield_inactive" size="50" styleId="workflowName" property="workflowName" disabled="disabled" value="<%=workflowName%>"/></span>&nbsp;&nbsp;
 			</td>
 			
-			<td colspan="2" >
+			<td  >
 				&nbsp;
 				<span class="content_txt"><bean:message key="getcountquery.name"/></span><span class="red_star">*</span>:<span class="content_txt">
 				<html:text styleClass="textfield_undefined" size="50" styleId="queryTitle1" property="queryTitle" /></span>
 			</td>
 			</tr>
 			<tr>
-				<td height="5">
+				<td height="5" colspan="2">
 				</td>
 			</tr>
 	<tr>
-	<td colspan="4">
-	<table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" id="table1">			 
+	<td colspan="2">
+	<table border="0" width="100%" cellspacing="0" cellpadding="0"  id="table1">			 
 	<tr>
-		<td>
-		<table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" bordercolor="#000000" id="table2" >																					
-				<tr>
-			<td height="60%" valign="top" align="left" colspan="4">
-				<table border="0"  height="100%" width="100%" >			
+	<td>
+		<table border="0" width="100%" cellspacing="0" cellpadding="0"   id="table2" >						
+		<tr>
+			<td  valign="top" width="100%" colspan="4">
+				<table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3" >			
 					<tr>
-						<td valign="top" width="10%" >
-						<%@ include file="/pages/advancequery/content/search/querysuite/ChooseSearchCategory.jsp" %>
+						<td valign="bottom" width="10%" >
+						<%@includefile="/pages/advancequery/content/search/querysuite/ChooseSearchCategory.jsp" %>
 						</td>
-										<td valign="top" height="60%" style="padding-right:7px">
-							<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  >
+					<td valign="top">
+                    <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  >        
+					        <tr id="rowMsg">
+													<td id="validationMessagesSection"  class='validationMessageCss'  valign="middle">
+														<div id="validationMessagesRow"   class='validationMessageCss' style="overflow:auto; display:none"></div>
+													</td>
+							</tr>			
 							<tr>
-							<td>
-								<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF"   class='login_box_bg'>
-																								
+							<td >
+								<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  class='login_box_bg'>
+																													
 												<tr id="AddLimitsButtonMsg" border="0">
-													<td id="AddLimitsButtonSection"  >
+													<td id="AddLimitsButtonSection" height="10" >
 														<div id="AddLimitsMsgRow"  border="0"></div>
 													</td>
 												</tr>
-												<tr id="rowMsg">
-													<td id="validationMessagesSection" height="30" style="padding-left:5px" class='messagetexterror'>
-														<div id="validationMessagesRow" style="overflow:auto; display:none"></div>
-													</td>
-												</tr>
 												<tr>
-													<td height="215" width="100%" id="addLimitsSection">
+													<td width="100%" id="addLimitsSection">
 													<div id="addLimits" style="overflow:auto; height:100%;width:100%"></div></td>
 												</tr>	
 								</table>
 							</td>
 							</tr>							
 							<tr id="AddLimitsButtonMsg" border="0">
-								<td valign="top" id="AddLimitsButtonSection" style="padding-bottom:3px;padding-top:3px">
+								<td valign="top" id="AddLimitsButtonSection" height="29" style="padding-top:3px">
 										<div id="AddLimitsButtonRow" valign="middle" align="right" border="0"></div>
 								</td>
 							</tr>							
 							<tr>							
-							<td>								
+							<td valign="bottom">								
 								<table border="0" bordercolor="#cccccc" width="100%" cellspacing="0" class="login_box_bg" cellpadding="0" bgcolor="#FFFFFF" height="100%">
 								<tr>
-										<td height="400px" >											
-											<div id="queryTableTd" style="overflow:auto;height:400;width:100%">
+										<td>											
+											<div id="queryTableTd" style="overflow:auto;height:350;width:100%">
 											<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 												id="DAG" width="100%" height="100%"
 												codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
@@ -167,15 +167,24 @@
 							</td>
 							</tr>
 							</table>
-					
 						</td>
 						
 					</tr>
-					<tr><td >
-							
+					
+				</table>    
+				
+			</td>
+		</tr>
+	
+			</table>		
+			</td>
+			</tr>
+			<tr>					
+			 <td>		
+				 <table cellspacing="0" cellpadding="0" border="0" width="100%" height="40"><tr><td width="50%" align="left">	
 					  <table  border="0" cellspacing="0" cellpadding="0" >
 						<tr>
-							 <td align="left"  style="padding-left:4px" valign="top">
+							 <td align="left"  style="padding-left:8px" valign="top">
 								<a href="javascript:validateQuery('save');" >
 									<img border="0" alt="Save" src="images/advancequery/b_save.gif" />
 								</a>
@@ -188,12 +197,12 @@
 					 </table>
 					</td>
 							
-					<td colspan="2" align="right" style="padding-right:7px">
+					<td  width="50%" align="right" style="padding-right:4px">
 					 <table border="0" cellspacing="0" cellpadding="0">
 					  <tr>
-						<td style="padding-right:5px" valign="middle" class="content_txt">Select Project:</td>
-						</td>
-						<td style="padding-right:5px">
+						<td style="padding-right:5px" valign="center" class="content_txt">Select Project:</td>
+						
+						<td style="padding-right:5px" valign="center">
 							<SELECT NAME="dropdown" class="textfield" onChange="setProjectData(this,'categorySearchForm')">
 								<OPTION VALUE="">Unspecified..
 								<c:forEach var="project" items="${requestScope.categorySearchForm.projectsNameValueBeanList}">
@@ -201,13 +210,12 @@
 								</c:forEach>
 							</SELECT>
 					    </td>
-						<td align="right">
+						<td align="right" valign="center">
 						<a href="javascript:validateQuery('search');" ><img alt="Get Counts" border='0' src="images/advancequery/b_get_count.gif" />
 						</a>
 						</td>
 					  </tr>
 					</table>
-					
 					</td>
 					</tr>
 					
@@ -219,11 +227,7 @@
 			</table>		
 			</td>
 			</tr>
-			<tr>
-					<td colspan="4">
-			  
-				</td>
-					</tr>
+			
 			</table>          
 			</td></tr>
 			
@@ -238,6 +242,8 @@
 </html:form>
 </body>
 <script>   
+   var element= document.getElementById("addLimitsSection");
+   element.style.height="240px";
    var wrkflw = "<%=isworkflow%>";
    if(wrkflw=="true")
    {
