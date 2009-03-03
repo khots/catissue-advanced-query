@@ -44,6 +44,8 @@ public interface WherePartParserConstants {
   int CONSTANT = 20;
   /** RegularExpression Id. */
   int FUNCTION_CALL = 21;
+  /** RegularExpression Id. */
+  int READYMADE_PREDICATE = 22;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -74,6 +76,7 @@ public interface WherePartParserConstants {
     "<STRING>",
     "<CONSTANT>",
     "<FUNCTION_CALL>",
+    "<READYMADE_PREDICATE>",
     "\"not(\"",
   };
 

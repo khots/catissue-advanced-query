@@ -59,7 +59,7 @@ TOKEN : { <INFIX_OPERATOR : ">=" | ">" | "<" | "<=" | "="  >}
 TOKEN : { <LOGICAL_OPERATOR : "and" >}
 
 
-TOKEN : { <CONDITION_ATTRIBUTE : <DOLLAR> (~[".", ")" , ">" , "<" , "=", " " , "\t" , "\n" , "\r"])* (".)")? > }
+TOKEN : { <CONDITION_ATTRIBUTE : <DOLLAR> (~[".", ")" , ">" , "<" , "=", " " , "\t" , "\n" , "\r", "["])* (".)")? > }
 
 
 TOKEN : { <TEMPORAL_CONDITION_OPEN : "<TEMPORAL_CONDITION>" > :  IN_TEMPORAL_CONDITION }
@@ -74,6 +74,7 @@ TOKEN : { <#STRING : "\"" (~["\""])* "\"" >}
 TOKEN : { <CONSTANT : <STRING> | <NUMBER>  > }
 
 TOKEN : { <FUNCTION_CALL : ("xs:" (~["("])*) "(" <CONSTANT> ")" >}
+TOKEN : { <READYMADE_PREDICATE : "[" (~["]"])* "]" > }
 
 
 
@@ -182,10 +183,19 @@ private AbstractPredicate AtomicCondition() :
 	}
 	
 |
+
+	predicate=SelfPredicateCondition() 	
+	{
+		return predicate;	
+	}
+	
+|
+
 	TemporalCondition()
 	{
-		return predicate;
+		return null;
 	}
+	
 }
 
 
@@ -211,6 +221,30 @@ private void TemporalCondition() :
 	)+
 
 }
+
+
+
+private AbstractPredicate SelfPredicateCondition() :
+{
+	Token conditionAttribute = null;
+	Token operator = null;
+}
+{
+	conditionAttribute=<CONDITION_ATTRIBUTE>
+	operator=<READYMADE_PREDICATE>
+	{
+			int separator = conditionAttribute.image.indexOf("/");
+			forVariable = conditionAttribute.image.substring(0, separator);
+			String attribute = conditionAttribute.image.substring(separator+1);
+			AbstractPredicate predicate = new SelfPredicate(attribute, operator.image);
+			return predicate;				
+	} 
+
+
+
+}
+
+
 
 private AbstractPredicate PrefixUnaryCondition() :
 {
