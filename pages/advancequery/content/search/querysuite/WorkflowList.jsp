@@ -131,7 +131,7 @@ function changeResPerPage(controlId)
 			</table>
 			 
 			<table height="*" width="100%" border="0" cellpadding="0" cellspacing="0">
-					<tr valign="bottom">					
+					<tr class="tr_color_lgrey" valign="bottom">					
 						<td class="content_txt_bold" width="200">						  
 								<table>
 									<tr>
