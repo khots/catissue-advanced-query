@@ -835,4 +835,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
      /**  Constant for Equal to operator */
 	public static final String EQUALS = " = ";
 	
+	/** Constant for... */
+	public static final String EXECUTION_ID_OF_QUERY = "queryExecutionId";
+	
 }
