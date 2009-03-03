@@ -46,8 +46,8 @@ public class QueryTestAll extends TestSuite
 		// For testing Saved Queries
 		suite.addTestSuite(QueryBizLogicTestCases.class);
 		
-		// For testing SpreadSheet View Generator
-		suite.addTestSuite(SpreadSheetViewGeneratorTestCases.class);
+//		// For testing SpreadSheet View Generator
+//		suite.addTestSuite(SpreadSheetViewGeneratorTestCases.class);
 		
 		return suite;
 	}
