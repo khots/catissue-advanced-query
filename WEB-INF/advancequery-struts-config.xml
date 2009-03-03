@@ -187,8 +187,17 @@ PUBLIC
 			scope="request">
 			<forward name="success" path=".query.queryViewPageDef"/>
 			<forward name="failure" path=".query.errorPageDef"/>
+			
 			<forward name="MyQueries" path=".query.querySavedQueryListDef"/>
-			<forward name="displayQueriesInPopup" path=".query.queryWorkFlowPopup"/>
+			<forward name="sharedQueries" path=".query.querySavedQueryListDef"/>
+			
+			<forward name="myQueriesForMainMenu" path=".query.savedQueryListDeftile"/>
+			<forward name="sharedQueriesForMainMenu" path=".query.savedQueryListDeftile"/>
+
+			<!--  for popup-->
+			<forward name="myQueriesForWorkFlow" path=".query.queryWorkFlowPopup"/>
+			<forward name="sharedQueriesForWorkFlow" path=".query.queryWorkFlowPopup"/>
+			
 		</action>
 		<action path="/ExecuteQueryAction"
 			type="edu.wustl.query.action.ExecuteQueryAction"
