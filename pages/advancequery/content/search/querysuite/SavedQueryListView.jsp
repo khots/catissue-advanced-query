@@ -3,6 +3,7 @@
 <%-- TagLibs --%>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%-- Imports --%>
 <%@
@@ -53,7 +54,6 @@ String popupMessage = (String)request.getAttribute(Constants.POPUP_MESSAGE);
 int queryCount = 0;%>
 
 <html:form action="SaveWorkflow">
-<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#cccccc">
 					<tr>
 						<td>
