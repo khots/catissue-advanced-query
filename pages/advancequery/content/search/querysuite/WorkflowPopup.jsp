@@ -203,9 +203,9 @@ function changeResPerPage(controlId)
 	document.forms[0].submit();	
 }
 
-function retrieveMyQueries()
+function retrieveMyQueries(pageOf)
 {
-	var url='RetrieveQueryAction.do?pageOf=myQueriesForWorkFlow&requestFor=nextPage&pageNum=1';
+	var url='RetrieveQueryAction.do?pageOf=sharedQueriesForWorkFlow&requestFor=nextPage&pageNum=1';
 	document.forms[0].action=url;
 	document.forms[0].submit();	
 }
@@ -235,9 +235,6 @@ if(mac)
 String message = null; 
 String popupMessage = (String)request.getAttribute(Constants.POPUP_MESSAGE);
 int queryCount = 0;%>
-<html:messages id="messageKey" message="true" >
-<% message = messageKey;    %>
-</html:messages>
 <html:form action="SaveWorkflow">
 <table width="100%" border="0" cellspacing="0" cellpadding="4">
 <tr>
@@ -257,13 +254,13 @@ int queryCount = 0;%>
 						<tr>
 							<td>&nbsp;</td>
 							<td width="18" align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle"></td>
-							<td valign="top"><a href="javascript:retrieveMyQueries()" class="blacklink"><bean:message key="workflow.myqueries"/> 
+							<td valign="top"><a href="javascript:retrieveMyQueries('myQueriesForWorkFlow')" class="blacklink"><bean:message key="workflow.myqueries"/> 
 						</a></td>
 						</tr>
 						<tr>
 							<td >&nbsp;</td>
 							<td align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle"></td>
-							<td valign="top"><a href="javascript:retrieveMyQueries()" class="blacklink"><bean:message key="workflow.sharedqueries"/></a></td>
+							<td valign="top"><a href="javascript:retrieveMyQueries('sharedQueriesForWorkFlow')" class="blacklink"><bean:message key="workflow.sharedqueries"/></a></td>
 						</tr>
 					</table>		
 				</td>
