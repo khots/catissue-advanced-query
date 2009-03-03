@@ -107,8 +107,6 @@ public class WorkflowAjaxHandlerAction extends Action
 			// WorkflowBizLogic--->getCount
 			List<JSONObject> executionQueryResults = new ArrayList<JSONObject>();
 
-
-
 			if (state != null && state.equals("cancel"))
 			{
 		        JSONObject resultObject = null;
@@ -160,8 +158,8 @@ public class WorkflowAjaxHandlerAction extends Action
 						Long query=iterator.next();
 
 					     resultCount=workflowBizLogic.getCount(executionIdMap.get(query));
-	                    executionQueryResults.add(createResultJSON(query, resultCount.getCount(),
-	                            resultCount.getStatus(), resultCount.getQueryExectionId()));
+//	                    executionQueryResults.add(createResultJSON(query, resultCount.getCount(),
+//	                            resultCount.getStatus(), resultCount.getQueryExectionId()));
 	                    boolean hasFewRecords = false;
 	                    if(project_id > 0)
 	                    {
@@ -183,9 +181,10 @@ public class WorkflowAjaxHandlerAction extends Action
 				}
 				else
 				{
+					
 					 resultCount=workflowBizLogic.getCount(queryExecId);
-						executionQueryResults.add(createResultJSON(queryId, resultCount.getCount(),
-								resultCount.getStatus(), resultCount.getQueryExectionId()));
+//						executionQueryResults.add(createResultJSON(queryId, resultCount.getCount(),
+//								resultCount.getStatus(), resultCount.getQueryExectionId()));
 						boolean hasFewRecords = false;
 	                    if(project_id > 0)
 	                    {
