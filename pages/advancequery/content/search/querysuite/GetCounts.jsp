@@ -77,13 +77,13 @@
 			<tr style="padding-left:2px;">
 			<td nowrap id="workflowname">
 			&nbsp;
-				<span class="content_txt"><bean:message key="workflow.name"/>:</span><span>
+				<span class="content_txt_bold"><bean:message key="workflow.name"/>:</span><span>
 				<input type="text" styleClass="textfield_undefined" class="textfield_inactive" size="50" styleId="workflowName" property="workflowName" disabled="disabled" value="<%=workflowName%>"/></span>&nbsp;&nbsp;
 			</td>
 			
 			<td  >
 				&nbsp;
-				<span class="content_txt"><bean:message key="getcountquery.name"/></span><span class="red_star">*</span>:<span class="content_txt">
+				<span class="content_txt_bold"><bean:message key="getcountquery.name"/></span><span class="red_star">*</span>:<span class="content_txt">
 				<html:text styleClass="textfield_undefined" size="50" styleId="queryTitle1" property="queryTitle" /></span>
 			</td>
 			</tr>
@@ -200,7 +200,7 @@
 					<td  width="50%" align="right" style="padding-right:4px">
 					 <table border="0" cellspacing="0" cellpadding="0">
 					  <tr>
-						<td style="padding-right:5px" valign="center" class="content_txt">Select Project:</td>
+						<td style="padding-right:5px" valign="center" class="content_txt_bold">Select Project:</td>
 						
 						<td style="padding-right:5px" valign="center">
 							<SELECT NAME="dropdown" class="textfield" onChange="setProjectData(this,'categorySearchForm')">
