@@ -37,7 +37,24 @@ public class QueryDetails
 	private Map <Integer,List<EntityInterface>> eachExpressionContainmentMap ;
     private Map <Integer,List<Integer>> mainExpEntityExpressionIdMap;
     
-    private int queryExecutionId=0;
+    /**
+     * 
+     */
+    Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap;
+    
+    public Map<OutputTreeDataNode, List<OutputTreeDataNode>> getParentChildrenMap() 
+    {
+		return parentChildrenMap;
+	}
+
+	public void setParentChildrenMap(
+			Map<OutputTreeDataNode, List<OutputTreeDataNode>> parentChildrenMap)
+	{
+		this.parentChildrenMap = parentChildrenMap;
+	}
+
+
+	private int queryExecutionId=0;
 
 	/**
 	 * @return the mainExpEntityExpressionIdMap
