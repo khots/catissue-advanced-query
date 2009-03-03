@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.IOutputEntity;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 
 
-public abstract class IQueryParseUtil
+public class IQueryParseUtil
 {
 	
 	/**
