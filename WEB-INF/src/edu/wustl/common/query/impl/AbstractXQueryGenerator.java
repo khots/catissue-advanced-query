@@ -1,4 +1,4 @@
-	
+
 package edu.wustl.common.query.impl;
 
 import java.io.IOException;
@@ -104,13 +104,14 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * map of IParameter and the expressions corresponding to their attributes 
 	 */
 	private Map<IParameter<ICondition>, IExpression> parameters;
-	
+
 	private boolean selectDistinct;
 
 	/*
 	 * A List containing all the main Entitiees
 	 */
 	protected List<EntityInterface> allMainEntityList = new ArrayList<EntityInterface>();
+
 	//private static org.apache.log4j.Logger logger =Logger.getLogger(XQueryGenerator.class);
 
 	/**
@@ -265,8 +266,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		Set<Integer> processedAlias = new HashSet<Integer>();
 		IExpression parentExpression = joinGraph.getRoot();
 		completeWherePart.append(Constants.QUERY_AND);
-		completeWherePart.append(processChildExpressions(processedAlias,
-				parentExpression));
+		completeWherePart.append(processChildExpressions(processedAlias, parentExpression));
 		return Utility.removeLastAnd(completeWherePart.toString());
 	}
 
@@ -283,121 +283,125 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @throws XQueryDataTypeInitializationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private String processChildExpressions(Set<Integer> processedAlias,
-			IExpression parentExpression) throws SqlException, XQueryDataTypeInitializationException, DynamicExtensionsSystemException
+	private String processChildExpressions(Set<Integer> processedAlias, IExpression parentExpression)
+			throws SqlException, XQueryDataTypeInitializationException,
+			DynamicExtensionsSystemException
 	{
 		StringBuffer buffer = new StringBuffer();
 		List<IExpression> children = joinGraph.getChildrenList(parentExpression);
-		
-//		if (!children.isEmpty())
-//		{
-			// processing all outgoing edges/nodes from the current node in the
-			// joingraph.
-			for (IExpression childExpression : children)
-			{
-				if (mainExpressions.contains(childExpression))
-				{
-					IAssociation association = joinGraph.getAssociation(parentExpression,
-							childExpression);
-					AssociationInterface actualEavAssociation = ((IIntraModelAssociation) association)
-							.getDynamicExtensionsAssociation();
-					AssociationInterface eavAssociation = actualEavAssociation;
-					//EntityInterface rightEntity = eavAssociation.getTargetEntity();
-					//String actualRightAlias = getAliasFor(childExpression, rightEntity);
-					if (!processedAlias.contains(aliasAppenderMap.get(childExpression)))
-					{
-						ConstraintPropertiesInterface constraintProperties = eavAssociation
-								.getConstraintProperties();
-						Collection<ConstraintKeyPropertiesInterface> srcCnstrKeyPropColl = constraintProperties
-								.getSrcEntityConstraintKeyPropertiesCollection();
-						Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyPropColl = constraintProperties
-								.getTgtEntityConstraintKeyPropertiesCollection();
-						
-						String leftAttribute = null;
-						String rightAttribute = null;
-						
-						//many sides
-						for (ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyPropColl)
-						{
-							AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
-							String xQueryDataType = getXQuerydataType(primaryKey);
-							leftAttribute = "$" + getAliasName(parentExpression) + "/"
-									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
-							EntityInterface entity = cnstrKeyProp.getSrcPrimaryKeyAttribute().getEntity();
-							String entityPath = getEntityPath(entity,childExpression);
-							String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute()
-									.getName();
-							rightAttribute = "$" + getAliasName(childExpression) + entityPath + "/"
-									+ primaryKeyName  +  "/" + xQueryDataType;
-							buffer.append(Constants.QUERY_OPENING_PARENTHESIS + rightAttribute + "=" + leftAttribute);
-							buffer.append(Constants.QUERY_CLOSING_PARENTHESIS);
-							buffer.append(Constants.QUERY_AND);
-						}
-						// One Side
-						for (ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyPropColl)
-						{
-							AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
-							String xQueryDataType = getXQuerydataType(primaryKey);
-							
-							EntityInterface entity = cnstrKeyProp.getSrcPrimaryKeyAttribute().getEntity();
-							String entityPath = getEntityPath(entity, parentExpression);
-							
-							String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute()
-									.getName();
-							leftAttribute = "$" + getAliasName(parentExpression) + entityPath + "/"
-									+ primaryKeyName ;
-							rightAttribute = "$" + getAliasName(childExpression) + "/"
-									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName()+ "/" + xQueryDataType;
-							buffer.append(Constants.QUERY_OPENING_PARENTHESIS + rightAttribute + "=" + leftAttribute);
-							buffer.append(Constants.QUERY_CLOSING_PARENTHESIS);
-							buffer.append(Constants.QUERY_AND);
-						}
 
+		//		if (!children.isEmpty())
+		//		{
+		// processing all outgoing edges/nodes from the current node in the
+		// joingraph.
+		for (IExpression childExpression : children)
+		{
+			if (mainExpressions.contains(childExpression))
+			{
+				IAssociation association = joinGraph.getAssociation(parentExpression,
+						childExpression);
+				AssociationInterface actualEavAssociation = ((IIntraModelAssociation) association)
+						.getDynamicExtensionsAssociation();
+				AssociationInterface eavAssociation = actualEavAssociation;
+				//EntityInterface rightEntity = eavAssociation.getTargetEntity();
+				//String actualRightAlias = getAliasFor(childExpression, rightEntity);
+				if (!processedAlias.contains(aliasAppenderMap.get(childExpression)))
+				{
+					ConstraintPropertiesInterface constraintProperties = eavAssociation
+							.getConstraintProperties();
+					Collection<ConstraintKeyPropertiesInterface> srcCnstrKeyPropColl = constraintProperties
+							.getSrcEntityConstraintKeyPropertiesCollection();
+					Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyPropColl = constraintProperties
+							.getTgtEntityConstraintKeyPropertiesCollection();
+
+					String leftAttribute = null;
+					String rightAttribute = null;
+
+					//many sides
+					for (ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyPropColl)
+					{
+						AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+						String xQueryDataType = getXQuerydataType(primaryKey);
+						leftAttribute = "$" + getAliasName(parentExpression) + "/"
+								+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+						EntityInterface entity = cnstrKeyProp.getSrcPrimaryKeyAttribute()
+								.getEntity();
+						String entityPath = getEntityPath(entity, childExpression);
+						String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute().getName();
+						rightAttribute = "$" + getAliasName(childExpression) + entityPath + "/"
+								+ primaryKeyName + "/" + xQueryDataType;
+						buffer.append(Constants.QUERY_OPENING_PARENTHESIS + rightAttribute + "="
+								+ leftAttribute);
+						buffer.append(Constants.QUERY_CLOSING_PARENTHESIS);
+						buffer.append(Constants.QUERY_AND);
+					}
+					// One Side
+					for (ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyPropColl)
+					{
+						AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+						String xQueryDataType = getXQuerydataType(primaryKey);
+
+						EntityInterface entity = cnstrKeyProp.getSrcPrimaryKeyAttribute()
+								.getEntity();
+						String entityPath = getEntityPath(entity, parentExpression);
+
+						String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute().getName();
+						leftAttribute = "$" + getAliasName(parentExpression) + entityPath + "/"
+								+ primaryKeyName;
+						rightAttribute = "$" + getAliasName(childExpression) + "/"
+								+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName() + "/"
+								+ xQueryDataType;
+						buffer.append(Constants.QUERY_OPENING_PARENTHESIS + rightAttribute + "="
+								+ leftAttribute);
+						buffer.append(Constants.QUERY_CLOSING_PARENTHESIS);
+						buffer.append(Constants.QUERY_AND);
 					}
 
+				}
 
-					// append from part SQLXML for the next Expressions.
-					buffer.append(processChildExpressions(processedAlias,
-							childExpression));
-				}
-				else
-				{
-					continue;
-				}
+				// append from part SQLXML for the next Expressions.
+				buffer.append(processChildExpressions(processedAlias, childExpression));
 			}
-//		}
-	
+			else
+			{
+				continue;
+			}
+		}
+		//		}
+
 		return buffer.toString();
 	}
 
-/**
- * 
- * @param entity - the entity whose path is been calculated
- * @param intermediatePath - String buffer that stores the path and sends at as input recu 
- * @param expression - expression for which the path is to be calculated
- * @return
- * @throws DynamicExtensionsSystemException
- */
-	private String getEntityPath(EntityInterface entity, IExpression expression) throws DynamicExtensionsSystemException
+	/**
+	 * 
+	 * @param entity - the entity whose path is been calculated
+	 * @param intermediatePath - String buffer that stores the path and sends at as input recu 
+	 * @param expression - expression for which the path is to be calculated
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private String getEntityPath(EntityInterface entity, IExpression expression)
+			throws DynamicExtensionsSystemException
 	{
 		StringBuffer intermediatePath = new StringBuffer();
-		if(!allMainEntityList.contains(entity))
-		{	
+		if (!allMainEntityList.contains(entity))
+		{
 			EntityManagerInterface entityMgr = EntityManager.getInstance();
-			Collection<AssociationInterface> associationList = entityMgr.getIncomingAssociations(entity);
-			for(AssociationInterface association : associationList)
+			Collection<AssociationInterface> associationList = entityMgr
+					.getIncomingAssociations(entity);
+			for (AssociationInterface association : associationList)
 			{
 				EntityInterface associatedEntity = association.getEntity();
-				if (associatedEntity.equals(expression.getQueryEntity().getDynamicExtensionsEntity()))
-						{
-							intermediatePath.append("/").append(association.getTargetRole().getName());
-						}
-			}		
+				if (associatedEntity.equals(expression.getQueryEntity()
+						.getDynamicExtensionsEntity()))
+				{
+					intermediatePath.append("/").append(association.getTargetRole().getName());
+				}
+			}
 		}
 		return intermediatePath.toString();
 	}
 
-	
 	/**
 	 * The method returns the XQuery function based on the data type
 	 * @param attributeType - the data type of the attribute
@@ -550,8 +554,8 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	{
 
 		StringBuilder selectClause = new StringBuilder(256);
-		
-		if(selectDistinct)
+
+		if (selectDistinct)
 		{
 			selectClause.append(Constants.SELECT_DISTINCT);
 		}
@@ -568,8 +572,8 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 			attributeColumnNameMap.put(entry.getKey().getAttribute(), columnAliasName);
 			suffix++;
 		}
-		
-		addToTreeNode(null,null);
+
+		addToTreeNode(null, null);
 
 		Utility.removeLastComma(selectClause);
 		return selectClause.toString();
@@ -589,18 +593,18 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		//find the right tree node to add the attribute to
 		for (OutputTreeDataNode node : attributeOutputTreeNodeList)
 		{
-			
-			Collection<AttributeInterface> allAttributes = node.getOutputEntity().getDynamicExtensionsEntity().getAllAttributes();
-			for (AttributeInterface attributeInterface : allAttributes) {
-				String displayNameForColumn = Utility
-				.getDisplayNameForColumn(attributeInterface);
+
+			Collection<AttributeInterface> allAttributes = node.getOutputEntity()
+					.getDynamicExtensionsEntity().getAllAttributes();
+			for (AttributeInterface attributeInterface : allAttributes)
+			{
+				String displayNameForColumn = Utility.getDisplayNameForColumn(attributeInterface);
 				columnAliasName = "";
 				node.addAttribute(new QueryOutputTreeAttributeMetadata(attributeInterface,
-				columnAliasName, node, displayNameForColumn));
+						columnAliasName, node, displayNameForColumn));
 			}
 		}
 
-		
 	}
 
 	/**
@@ -642,8 +646,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 *  @return the Return Clause of SQLXML
 	 */
 	protected abstract String buildXQueryLetClause(PredicateGenerator predicateGenerator);
-	
-	
+
 	/**
 	 * 
 	 * @return the where clause of XQuery
@@ -897,12 +900,12 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		String firstValue = modifyValueForDataType(values.get(0), dataType);
 		String secondValue = modifyValueForDataType(values.get(1), dataType);
 
-		builder.append(attributeName).append(
+		builder.append(attributeName).append("[.").append(
 				RelationalOperator.getSQL(RelationalOperator.GreaterThanOrEquals)).append(
 				firstValue);
 		builder.append(Constants.QUERY_AND);
-		builder.append(attributeName).append(
-				RelationalOperator.getSQL(RelationalOperator.LessThanOrEquals)).append(secondValue);
+		builder.append('.').append(RelationalOperator.getSQL(RelationalOperator.LessThanOrEquals))
+				.append(secondValue).append(']');
 
 		return builder.toString();
 
@@ -1068,18 +1071,18 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	{
 		return parameters;
 	}
-	
+
 	/**
 	 * 
 	 * @param operandquery
 	 * @return Added a method so that the Parser can identify the temporal query and act accordingly
 	 */
-	protected String getTemporalCondition(String operandquery) 
+	protected String getTemporalCondition(String operandquery)
 	{
-		return "<" + Constants.QUERY_TEMPORAL_CONDITION + ">" +  operandquery  + "</" + Constants.QUERY_TEMPORAL_CONDITION + ">";
+		return "<" + Constants.QUERY_TEMPORAL_CONDITION + ">" + operandquery + "</"
+				+ Constants.QUERY_TEMPORAL_CONDITION + ">";
 	}
 
-	
 	/**
 	 * @param selectDistinct the selectDistinct to set
 	 */
