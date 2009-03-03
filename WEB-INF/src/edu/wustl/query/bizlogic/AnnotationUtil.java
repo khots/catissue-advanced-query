@@ -150,7 +150,7 @@ public class AnnotationUtil
 			//			}
 
 			Set<PathObject> processedPathList = new HashSet<PathObject>();
-			addQueryPathsForAllAssociatedEntities(dynamicEntity, staticEntity, association.getId(),
+			addQueryPathsForAllAssociatedEntities(dynamicEntity, staticEntity, association,
 					staticEntity.getId(), processedPathList);
 
 			addEntitiesToCache(isEntityFromXmi, dynamicEntity, staticEntity);
@@ -238,7 +238,7 @@ public class AnnotationUtil
 	 * @throws BizLogicException
 	 */
 	public static void addQueryPathsForAllAssociatedEntities(EntityInterface dynamicEntity,
-			EntityInterface staticEntity, Long associationId, Long staticEntityId,
+			EntityInterface staticEntity, AssociationInterface association, Long staticEntityId,
 			Set<PathObject> processedPathList) throws BizLogicException
 	{
 		if (staticEntity != null)
@@ -246,6 +246,7 @@ public class AnnotationUtil
 			PathObject pathObject = new PathObject();
 			pathObject.setSourceEntity(staticEntity);
 			pathObject.setTargetEntity(dynamicEntity);
+			pathObject.setAssociation(association);
 
 			if (processedPathList.contains(pathObject))
 			{
@@ -257,7 +258,7 @@ public class AnnotationUtil
 			}
 
 			AnnotationUtil.addPathsForQuery(staticEntity.getId(), dynamicEntity.getId(),
-					staticEntityId, associationId);
+					staticEntityId, association.getId());
 		}
 
 		Collection<AssociationInterface> associationCollection = dynamicEntity
@@ -265,7 +266,7 @@ public class AnnotationUtil
 		for (AssociationInterface associationInteface : associationCollection)
 		{
 			addQueryPathsForAllAssociatedEntities(associationInteface.getTargetEntity(),
-					dynamicEntity, associationInteface.getId(), staticEntityId, processedPathList);
+					dynamicEntity, associationInteface, staticEntityId, processedPathList);
 
 			//			AnnotationUtil.addPathsForQuery(dynamicEntity.getId(), associationInteface
 			//					.getTargetEntity().getId(), associationInteface.getId());
