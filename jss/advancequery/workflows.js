@@ -589,12 +589,12 @@ function changeExecuteLinkToExecute(queryId,executionLogId)
 	//To get the query title field of document
 	var queryTitle=document.getElementById("displayQueryTitle_"+index).value;
 	//document.getElementById("cancelajaxcall_"+index).value='false';
-
+	 var t =	escape(queryTitle);
 	if(object!=null)
 	{
 		var parentIObj=object.parentNode;
 		parentIObj.removeChild(object);
-		parentIObj.appendChild(createLink("Execute ","execute_"+index,"javascript:executeGetCountQuery('"+queryTitle+"','"+0+"')"));
+		parentIObj.appendChild(createLink("Execute ","execute_"+index,"javascript:executeGetCountQuery('"+escape(t)+"','"+0+"')"));
 		enableDeleteLink(index);
 	}
 	imageForCompletedCounts(index);
