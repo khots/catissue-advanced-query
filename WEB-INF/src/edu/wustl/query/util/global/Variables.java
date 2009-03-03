@@ -89,4 +89,9 @@ public class Variables extends edu.wustl.common.util.global.Variables
 	  * for not Logging XQueries test cases get executed 
 	  **/
 	public static boolean isExecutingTestCase = false;
+	
+	/** Thread class used for Exporting data for get Data Query **/
+	public static String exportDataThreadClassName = "";
+	/** Used to get executor for get Data Query **/
+	public static String dataQueryExecutionClassName = "";
 }
