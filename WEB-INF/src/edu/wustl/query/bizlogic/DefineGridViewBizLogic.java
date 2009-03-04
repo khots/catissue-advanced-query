@@ -472,7 +472,8 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
       {
             attribute = attributeMetadata.getAttribute();
             boolean isNotViewable = edu.wustl.query.util.global.Utility.isNotViewable(attribute);
-			if(isNotViewable)
+            boolean isVIHidden = edu.wustl.query.util.global.Utility.istagPresent(attribute,Constants.TAGGED_VALUE_VI_HIDDEN);
+			if(isNotViewable || isVIHidden)
 			{
 				continue;
 			}
@@ -557,6 +558,23 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 				{
 					if (columnId.equals(attributeMetaData.getUniqueId()))
 					{
+						if(attributeMetaData.getAttribute().getName().equals(Constants.NAME) 
+								&& attributeMetaData.getAttribute().getEntity().getName().equals(Constants.MED_ENTITY_NAME))
+						{
+							for(QueryOutputTreeAttributeMetadata idAttr:attributes)
+							{
+								if(idAttr.getAttribute().getName().equals(Constants.ID))
+								{
+									attribureMetadataList.add(idAttr);
+									attr = new OutputAttribute(queryDetailsObj.getQuery().getConstraints().getExpression(outputTreeDataNode
+											.getExpressionId()), idAttr.getAttribute());
+									outputAttributeList.add(attr);
+									nameValueBean = new NameValueBean(idAttr.getDisplayName(),
+											idAttr.getUniqueId());
+									selectedColumnNameValue.add(nameValueBean);
+								}
+							}
+						}
 						attribureMetadataList.add(attributeMetaData);
 						attr = new OutputAttribute(queryDetailsObj.getQuery().getConstraints().getExpression(outputTreeDataNode
 								.getExpressionId()), attributeMetaData.getAttribute());
