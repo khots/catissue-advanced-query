@@ -104,25 +104,6 @@ function showHide(elementid,imageId)
 			
 		}
 	}
-	
-
-
-function MyReload()
-{
-		if(navigator.userAgent.indexOf('Safari')!=-1)
-		{
-		 window.location.reload(true);
-		}
-} 
-function Reload()
-{
-	if(!parent.refresh)
-	{
-			MyReload();
-			parent.refresh=true; // to solve the problem in safari page is not getting refreshed
-	}
-	
-}
 function doNothing()
 {
 
