@@ -21,7 +21,7 @@ public class QueryModuleConstants
 	public static final String BOOLEAN_YES = "Yes";
 	public static final String Between = "Between";
 	public static final String ENTITY_SEPARATOR = ";";
-	public static final String QUERY_VALUES_DELIMITER = "&";
+	public static final String QUERY_VALUES_DELIMITER = "&DEL_VAL&";
 	public static final String QUERY_OPERATOR_DELIMITER = "!*=*!";
 	public static final String QUERY_CONDITION_DELIMITER = "@#condition#@";
 	//Parameterizing TQ constants
