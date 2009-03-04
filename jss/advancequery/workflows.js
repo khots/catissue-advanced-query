@@ -20,11 +20,11 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	}
 	//To add icons showing the status
 
-	var imgObj=document.createElement("td");
-	imgObj.width="20";
-	var trImgDown=createImageElement("images/advancequery/ic_notrun06.gif","notStarted_"+queryCount);
-	imgObj.appendChild(trImgDown);
-	rowObj.appendChild(imgObj);
+	//var imgObj=document.createElement("td");
+	//imgObj.width="20";
+	//var trImgDown=createImageElement("images/advancequery/ic_notrun06.gif","notStarted_"+queryCount);
+	//imgObj.appendChild(trImgDown);
+	//rowObj.appendChild(imgObj);
 
 	for(var counter=0;counter<columnCount-2;counter++)
 	{
@@ -42,7 +42,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 			if(columnContents[counter].name=="selectedqueryId")
 			{
 				id=columnContents[counter].value;
-				columnObj.appendChild(createHiddenElement("identifier","identifier_"+queryCount,columnContents[6]));
+				columnObj.appendChild(createHiddenElement("identifier","identifier_"+queryCount,columnContents[7]));
 				columnObj.appendChild(createHiddenElement("queryIdForRow","queryIdForRow_"+id,id));
 				columnObj.appendChild(createHiddenElement("queryExecId","queryExecId_"+queryCount,0));
 			}
@@ -80,20 +80,20 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	var queryTypeControl;
     var exprControl;
 
-	queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,(columnContents[6]));
-	queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,(columnContents[7]));
+	queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,(columnContents[7]));
+	queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,(columnContents[8]));
 	exprControl=createHiddenElement("expression","expression_"+queryCount,expr);
 
 	operandsTd2.appendChild(queryTitleControl);
 	operandsTd2.appendChild(queryTypeControl);
 	operandsTd2.appendChild(exprControl);
 	operandsTd2.width="4";
-	var query_type=columnContents[7];
+	var query_type=columnContents[8];
 	if(query_type=="Data")
      operandsTd1.appendChild(createLink("View Results ","execute_"+queryCount,"javascript:executeGetDataQuery('"+id+"')"));
 	else
 	{
-		 var t =	escape(columnContents[6]);
+		 var t =	escape(columnContents[7]);
 		 operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+escape(t)+"','"+0+"')"));
 	}
 	operandsTd3.appendChild(createLink("Delete ","delete_"+queryCount,"javascript:deleteWorkflowItem('"+queryCount+"')"));
@@ -164,7 +164,7 @@ function addQuery()
 	{
 		
 		var operandsTdContent="";
-		var rowContents=new Array(8);
+		var rowContents=new Array(9);
 		if(getText(queryTypes[counter])=="Data") 
 		{
 			rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'',(counter+queryCount),true);
@@ -174,17 +174,19 @@ function addQuery()
 			rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'',(counter+queryCount),false);
 		}
 		operandsTdContent=getText(queryIds[counter]);
-		rowContents[1]=createTextElement(getText(queryTitles[counter]));
-		rowContents[2]=createTextElement(getText(queryTypes[counter]));
+		var trImgDown=createImageElement("images/advancequery/ic_notrun06.gif","notStarted_"+counter);
+		rowContents[1]=trImgDown;
+		rowContents[2]=createTextElement(getText(queryTitles[counter]));
+		rowContents[3]=createTextElement(getText(queryTypes[counter]));
 		//rowContents[3]=createHiddenElement("cancelajaxcall","cancelajaxcall_"+(counter+queryCount),'false');
 		 if(getText(queryTypes[counter])=="Data") 
-		  rowContents[4]=getSelectObjectControl(queryIds[counter],presentQueryIds,presentQueryTitle,presentQueryType,queryIds,queryTitles,queryTypes);
+		  rowContents[5]=getSelectObjectControl(queryIds[counter],presentQueryIds,presentQueryTitle,presentQueryType,queryIds,queryTitles,queryTypes);
 		 else
-          rowContents[4]=createTextElement("");
-	 	rowContents[5]=createHiddenElement("selectedqueryId","selectedqueryId_"+(counter+queryCount),getText(queryIds[counter]));
+          rowContents[5]=createTextElement("");
+	 	rowContents[6]=createHiddenElement("selectedqueryId","selectedqueryId_"+(counter+queryCount),getText(queryIds[counter]));
 //		rowContents[4].appendChild(createHiddenElement("identifier","identifier_"+getText(queryIds[counter]),getText(queryIds[counter])));
-		rowContents[6]=getText(queryTitles[counter]);
-		rowContents[7]=getText(queryTypes[counter]);
+		rowContents[7]=getText(queryTitles[counter]);
+		rowContents[8]=getText(queryTypes[counter]);
 		var operatorsTdContent="None";	
 		//create a table containing tbody with id "table1"
 		addRowToTable("table1",rowContents,operandsTdContent,operatorsTdContent,getText(queryIds[counter]));
