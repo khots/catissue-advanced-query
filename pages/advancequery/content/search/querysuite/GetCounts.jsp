@@ -191,7 +191,7 @@
 							 </td>
 							 <td style="padding-left:4px" valign="top">
 							 <a href="javascript:validateQuery('cancel');">
-							 <img   border="0" alt="Cancel" src="images/advancequery/b_cancel.gif"  onclick="validateQuery('cancel');"/></a></td>
+							 <img   border="0" alt="Cancel" src="images/advancequery/b_cancel.gif"/></a></td>
 							<!-- <td style="padding-left:4px"><img src="images/advancequery/b_search.gif"  hspace="3" onclick="validateQuery('search');"/></td>-->
 						</tr>
 					 </table>
