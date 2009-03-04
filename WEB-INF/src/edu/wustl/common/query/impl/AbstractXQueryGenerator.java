@@ -31,6 +31,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterfac
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.query.exeptions.SQLXMLException;
 import edu.wustl.common.query.impl.predicate.PredicateGenerator;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
@@ -372,6 +373,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return buffer.toString();
 	}
 
+
 	/**
 	 * 
 	 * @param entity - the entity whose path is been calculated
@@ -380,27 +382,26 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private String getEntityPath(EntityInterface entity, IExpression expression)
-			throws DynamicExtensionsSystemException
-	{
-		StringBuffer intermediatePath = new StringBuffer();
-		if (!allMainEntityList.contains(entity))
+		private String getEntityPath(EntityInterface entity, IExpression expression) throws DynamicExtensionsSystemException
 		{
-			EntityManagerInterface entityMgr = EntityManager.getInstance();
-			Collection<AssociationInterface> associationList = entityMgr
-					.getIncomingAssociations(entity);
-			for (AssociationInterface association : associationList)
-			{
-				EntityInterface associatedEntity = association.getEntity();
-				if (associatedEntity.equals(expression.getQueryEntity()
-						.getDynamicExtensionsEntity()))
+			StringBuffer intermediatePath = new StringBuffer();
+			if(!allMainEntityList.contains(entity))
+			{	
+				EntityManagerInterface entityManager = EntityManager.getInstance();
+				ArrayList<Long> allIds = (ArrayList<Long>) entityManager.getIncomingAssociationIds(entity);
+				EntityCache cache = EntityCache.getInstance();
+				for (Long id : allIds)
 				{
-					intermediatePath.append("/").append(association.getTargetRole().getName());
-				}
+					AssociationInterface associationById = cache.getAssociationById(id);
+					EntityInterface associatedEntity = associationById.getEntity();
+					if (associatedEntity.equals(expression.getQueryEntity().getDynamicExtensionsEntity()))
+							{
+								intermediatePath.append("/").append(associationById.getTargetRole().getName());
+							}
+				}				
 			}
+			return intermediatePath.toString();
 		}
-		return intermediatePath.toString();
-	}
 
 	/**
 	 * The method returns the XQuery function based on the data type
