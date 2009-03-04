@@ -281,7 +281,8 @@ function getMappingsOfConcepts(vocabCheckBoxId,vocabURN)
 					else if(innerData.length>0)
 					{
 					  document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
-					  
+					  document.getElementById("divForMappingMode").scrollTop=0;
+					  document.getElementById("divForMappingMode").scrollLeft=0;
 					}
 					
 			pervVocabCheckboxId=vocabCheckBoxId;
@@ -356,6 +357,8 @@ function setMappedConceptsToVocabDIV(request,selectedCheckedBoxVocabDivID)
 				label.innerHTML="";
 			}
 			hideCursor();
+			document.getElementById("divForMappingMode").scrollTop=0;
+			document.getElementById("divForMappingMode").scrollLeft=0;
 		}
 	}
 };
@@ -531,11 +534,15 @@ function getSearchTermResult(searchRequest)
 				if(searchHTML.length>1)
 				{
 					document.getElementById("divForSearchingMode").innerHTML=searchHTML[0];
+					document.getElementById("divForSearchingMode").scrollTop=0;
+					document.getElementById("divForSearchingMode").scrollLeft=0;
 					label.innerHTML=searchHTML[1];
 				}
 				else
 				{
 					document.getElementById("divForSearchingMode").innerHTML=responseTextValue;
+					document.getElementById("divForSearchingMode").scrollTop=0;
+					document.getElementById("divForSearchingMode").scrollLeft=0;
 					label.innerHTML="";
 				}
 			}
@@ -589,6 +596,8 @@ function restoreDefault()
 {
 	set_mode="Mapping";
 	document.getElementById("divForMappingMode").style.display = '';
+	document.getElementById("divForMappingMode").scrollTop=0;
+	document.getElementById("divForMappingMode").scrollLeft=0;
 	document.getElementById("divForSearchingMode").style.display = 'none';
 	document.getElementById("divForSearchingMode").innerHTML="";
 	document.getElementById("searchtextfield").value="";
@@ -679,7 +688,7 @@ function editSelectedPV()
 	   
 </script>
 </head>
-<body onLoad="Reload();editSelectedPV();">
+<body onLoad="editSelectedPV();">
 <script src="jss/advancequery/wz_tooltip.js" type="text/javascript"> </script>
 <table width="100%"  height="100%" border="0" cellspacing="0" cellpadding="7"><tr><td>
 <table width="100%" height="100%" border="0" align="center" cellpadding="2" cellspacing="0">
@@ -755,7 +764,7 @@ function editSelectedPV()
 				<td valign="top" style="padding:0px 7px 0px 7px;" width="100%"  height="100%">
 					<!-- for tree view we required this width: 260px; height: 300px;  -->
 					<script>document.write('<div  id="divForMappingMode" style=" width: '+divWidth+'px; height:'+divHeight+'px ;  border:1px solid Silver; overflow:auto;"  >')</script>
-					<table width="100%"  height="100%" border="0" cellpadding="0" cellspacing="0">
+					<table  border="0" cellpadding="0" cellspacing="0">
 					<logic:iterate name="Vocabulries" id="vocabs">
 					<c:set var="urn" value="${vocabs.vocabURN}" />
 					<c:choose>
@@ -849,7 +858,7 @@ function editSelectedPV()
 					<td valign="top"  style="padding:0px 5px 0px 5px;">
 						<script>document.write('<div  id="divForSearchingMode" style=" width: '+divWidth+'px; height:'+divHeight+'px ; border:1px solid Silver; overflow:auto;">')</script>
 						<!-- <div width="100%"  height="100%" style=" border:1px solid Silver; overflow:auto;"  >-->
-						<table width="100%"  height="100%" cellpadding="0" cellspacing="0"  border="0">
+						<table  cellpadding="0" cellspacing="0"  border="0">
 						<logic:iterate name="Vocabulries" id="vocabs">
 							<tr><td valign="top"><div id = "selectedPermValues_Div_${vocabs.vocabURN}" style="display:none">
 						
