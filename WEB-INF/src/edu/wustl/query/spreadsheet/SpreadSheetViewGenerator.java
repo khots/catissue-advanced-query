@@ -9,6 +9,7 @@ import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleException;
@@ -82,10 +83,15 @@ public class SpreadSheetViewGenerator
 		}
 		for (IOutputAttribute outputAttribute : outputAttributeList)
 		{
-			String className = outputAttribute.getAttribute().getEntity().getName();
-			className = Utility.parseClassName(className);
-			String attrLabel = Utility.getDisplayLabel(outputAttribute.getAttribute().getName());
-			columnsList.add(attrLabel + " : " + className);
+			if(!(outputAttribute.getAttribute().getName().equals(Constants.ID)
+					&& outputAttribute.getAttribute().getEntity().getName().equals(Constants.MED_ENTITY_NAME)))
+			{
+				String className = outputAttribute.getExpression().getQueryEntity()
+						.getDynamicExtensionsEntity().getName();
+				className = Utility.parseClassName(className);
+				String attrLabel = Utility.getDisplayLabel(outputAttribute.getAttribute().getName());
+				columnsList.add(attrLabel + " : " + className);
+			}
 		}
 		return columnsList;
 	}
