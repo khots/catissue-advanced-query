@@ -77,6 +77,7 @@ font-family:Arial, Helvetica, sans-serif;
 	font-family:Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	color: #3c3c3c;
+
 }
 	.content_txt_bold {
 	font-family:Arial, Helvetica, sans-serif;
@@ -544,4 +545,18 @@ A.greylink2:link, A.greylink2:hover, A.greylink2:visited, A.greylink2:active{
 	font-family:Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	cursor:text;
+}
+
+td.aligntop
+{
+	vertical-align:top;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #3c3c3c;
+}
+
+.workflowicon
+{
+	padding:1px 5px 0 5px;
+	vertical-align:top;
 }
