@@ -20,7 +20,7 @@ public class WherePartParser implements WherePartParserConstants {
 
         public static void main(String[] args) throws ParseException, FileNotFoundException
         {
-                InputStream in = new FileInputStream("WherePart7.txt");
+                InputStream in = new FileInputStream("WherePart8.txt");
 
                 WherePartParser parser = new WherePartParser(in);
                 parser.parse();
@@ -37,10 +37,8 @@ public class WherePartParser implements WherePartParserConstants {
   }
 
   final private void ConditionTree() throws ParseException {
-    if (jj_2_3(3)) {
+    if (jj_2_4(3)) {
       ConditionsOnOneEntity();
-    } else if (jj_2_4(3)) {
-      ParenthesizedConditionsOnOneEntity();
       label_1:
       while (true) {
         if (jj_2_1(3)) {
@@ -49,16 +47,28 @@ public class WherePartParser implements WherePartParserConstants {
           break label_1;
         }
         jj_consume_token(LOGICAL_OPERATOR);
-        ConditionsOnAChild();
+        JoiningCondition();
       }
     } else if (jj_2_5(3)) {
-      ConditionsOnAChild();
+      ParenthesizedConditionsOnOneEntity();
       label_2:
       while (true) {
         if (jj_2_2(3)) {
           ;
         } else {
           break label_2;
+        }
+        jj_consume_token(LOGICAL_OPERATOR);
+        ConditionsOnAChild();
+      }
+    } else if (jj_2_6(3)) {
+      ConditionsOnAChild();
+      label_3:
+      while (true) {
+        if (jj_2_3(3)) {
+          ;
+        } else {
+          break label_3;
         }
         jj_consume_token(LOGICAL_OPERATOR);
         ConditionsOnAChild();
@@ -82,12 +92,12 @@ public class WherePartParser implements WherePartParserConstants {
                 {
                         predicateGenerator.addPredicate(forVariable, predicate);
                 }
-    label_3:
+    label_4:
     while (true) {
-      if (jj_2_6(3)) {
+      if (jj_2_7(3)) {
         ;
       } else {
-        break label_3;
+        break label_4;
       }
       jj_consume_token(LOGICAL_OPERATOR);
       predicate = AtomicCondition();
@@ -100,22 +110,22 @@ public class WherePartParser implements WherePartParserConstants {
 
   final private AbstractPredicate AtomicCondition() throws ParseException {
         AbstractPredicate predicate = null;
-    if (jj_2_7(3)) {
+    if (jj_2_8(3)) {
       predicate = PrefixUnaryCondition();
                 {if (true) return predicate;}
-    } else if (jj_2_8(3)) {
+    } else if (jj_2_9(3)) {
       predicate = PrefixBinaryCondition();
                 {if (true) return predicate;}
-    } else if (jj_2_9(3)) {
+    } else if (jj_2_10(3)) {
       predicate = InfixCondition();
                 {if (true) return predicate;}
-    } else if (jj_2_10(3)) {
+    } else if (jj_2_11(3)) {
       predicate = NegationCondition();
                 {if (true) return predicate;}
-    } else if (jj_2_11(3)) {
+    } else if (jj_2_12(3)) {
       predicate = SelfPredicateCondition();
                 {if (true) return predicate;}
-    } else if (jj_2_12(3)) {
+    } else if (jj_2_13(3)) {
       TemporalCondition();
                 {if (true) return null;}
     } else {
@@ -128,22 +138,22 @@ public class WherePartParser implements WherePartParserConstants {
   final private void TemporalCondition() throws ParseException {
         Token t = null;
     jj_consume_token(TEMPORAL_CONDITION_OPEN);
-    label_4:
+    label_5:
     while (true) {
-      if (jj_2_13(3)) {
+      if (jj_2_14(3)) {
         t = jj_consume_token(CHAR);
                         xQueryWherePart.append(t.image);
-      } else if (jj_2_14(3)) {
+      } else if (jj_2_15(3)) {
         jj_consume_token(TEMPORAL_CONDITION_CLOSE);
                         xQueryWherePart.append(" and ");
       } else {
         jj_consume_token(-1);
         throw new ParseException();
       }
-      if (jj_2_15(3)) {
+      if (jj_2_16(3)) {
         ;
       } else {
-        break label_4;
+        break label_5;
       }
     }
   }
@@ -227,16 +237,16 @@ public class WherePartParser implements WherePartParserConstants {
   final private String RHS() throws ParseException {
         Token rhsToken = null;
         String rhs = null;
-    if (jj_2_16(3)) {
+    if (jj_2_17(3)) {
       rhsToken = jj_consume_token(FUNCTION_CALL);
                 {if (true) return rhsToken.image;}
-    } else if (jj_2_17(3)) {
+    } else if (jj_2_18(3)) {
       rhsToken = jj_consume_token(CONSTANT);
                 {if (true) return rhsToken.image;}
-    } else if (jj_2_18(3)) {
+    } else if (jj_2_19(3)) {
       rhsToken = jj_consume_token(CONDITION_ATTRIBUTE);
                 {if (true) return rhsToken.image;}
-    } else if (jj_2_19(3)) {
+    } else if (jj_2_20(3)) {
       rhs = CSV();
                 {if (true) return rhs;}
     } else {
@@ -253,12 +263,12 @@ public class WherePartParser implements WherePartParserConstants {
                 rhs.append('(');
     constant = jj_consume_token(CONSTANT);
                 rhs.append(constant.image);
-    label_5:
+    label_6:
     while (true) {
-      if (jj_2_20(3)) {
+      if (jj_2_21(3)) {
         ;
       } else {
-        break label_5;
+        break label_6;
       }
       jj_consume_token(COMMA);
       constant = jj_consume_token(CONSTANT);
@@ -268,6 +278,17 @@ public class WherePartParser implements WherePartParserConstants {
                 rhs.append(')');
                 {if (true) return rhs.toString();}
     throw new Error("Missing return statement in function");
+  }
+
+  final private void JoiningCondition() throws ParseException {
+        AbstractPredicate predicate = null;
+    jj_consume_token(OPENING_PARENTHESIS);
+    predicate = AtomicCondition();
+                if(predicate != null)
+                {
+                        predicateGenerator.addPredicate(forVariable, predicate);
+                }
+    jj_consume_token(CLOSING_PARENTHESIS);
   }
 
   private boolean jj_2_1(int xla) {
@@ -410,92 +431,87 @@ public class WherePartParser implements WherePartParserConstants {
     finally { jj_save(19, xla); }
   }
 
+  private boolean jj_2_21(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_21(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(20, xla); }
+  }
+
+  private boolean jj_3_10() {
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_7() {
+    if (jj_scan_token(OPENING_PARENTHESIS)) return true;
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
   private boolean jj_3_19() {
-    if (jj_3R_16()) return true;
-    return false;
-  }
-
-  private boolean jj_3_14() {
-    if (jj_scan_token(TEMPORAL_CONDITION_CLOSE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_13() {
-    if (jj_scan_token(23)) return true;
-    if (jj_3R_9()) return true;
-    return false;
-  }
-
-  private boolean jj_3_9() {
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
-  private boolean jj_3_18() {
     if (jj_scan_token(CONDITION_ATTRIBUTE)) return true;
     return false;
   }
 
-  private boolean jj_3_13() {
+  private boolean jj_3_14() {
     if (jj_scan_token(CHAR)) return true;
     return false;
   }
 
-  private boolean jj_3_15() {
+  private boolean jj_3_16() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_13()) {
+    if (jj_3_14()) {
     jj_scanpos = xsp;
-    if (jj_3_14()) return true;
+    if (jj_3_15()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_10() {
+  private boolean jj_3R_12() {
     if (jj_scan_token(PREFIX_UNARY_OPERATOR)) return true;
     if (jj_scan_token(CONDITION_ATTRIBUTE)) return true;
     if (jj_scan_token(CLOSING_PARENTHESIS)) return true;
     return false;
   }
 
-  private boolean jj_3R_8() {
+  private boolean jj_3R_10() {
     if (jj_scan_token(OPENING_PARENTHESIS)) return true;
-    if (jj_3R_7()) return true;
+    if (jj_3R_9()) return true;
     return false;
   }
 
-  private boolean jj_3_8() {
-    if (jj_3R_11()) return true;
+  private boolean jj_3_9() {
+    if (jj_3R_13()) return true;
     return false;
   }
 
-  private boolean jj_3_17() {
+  private boolean jj_3_18() {
     if (jj_scan_token(CONSTANT)) return true;
     return false;
   }
 
-  private boolean jj_3R_15() {
+  private boolean jj_3R_17() {
     if (jj_scan_token(TEMPORAL_CONDITION_OPEN)) return true;
     Token xsp;
-    if (jj_3_15()) return true;
+    if (jj_3_16()) return true;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3_15()) { jj_scanpos = xsp; break; }
+      if (jj_3_16()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
 
-  private boolean jj_3_20() {
+  private boolean jj_3_21() {
     if (jj_scan_token(COMMA)) return true;
     if (jj_scan_token(CONSTANT)) return true;
     return false;
   }
 
-  private boolean jj_3R_9() {
+  private boolean jj_3R_11() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_7()) {
-    jj_scanpos = xsp;
     if (jj_3_8()) {
     jj_scanpos = xsp;
     if (jj_3_9()) {
@@ -504,7 +520,9 @@ public class WherePartParser implements WherePartParserConstants {
     jj_scanpos = xsp;
     if (jj_3_11()) {
     jj_scanpos = xsp;
-    if (jj_3_12()) return true;
+    if (jj_3_12()) {
+    jj_scanpos = xsp;
+    if (jj_3_13()) return true;
     }
     }
     }
@@ -513,138 +531,165 @@ public class WherePartParser implements WherePartParserConstants {
     return false;
   }
 
-  private boolean jj_3_2() {
-    if (jj_scan_token(LOGICAL_OPERATOR)) return true;
-    if (jj_3R_6()) return true;
+  private boolean jj_3_8() {
+    if (jj_3R_12()) return true;
     return false;
   }
 
-  private boolean jj_3_7() {
-    if (jj_3R_10()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_18() {
+  private boolean jj_3R_20() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_16()) {
-    jj_scanpos = xsp;
     if (jj_3_17()) {
     jj_scanpos = xsp;
     if (jj_3_18()) {
     jj_scanpos = xsp;
-    if (jj_3_19()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3_16() {
-    if (jj_scan_token(FUNCTION_CALL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_12() {
-    if (jj_scan_token(CONDITION_ATTRIBUTE)) return true;
-    if (jj_scan_token(INFIX_OPERATOR)) return true;
-    if (jj_3R_18()) return true;
-    return false;
-  }
-
-  private boolean jj_3_5() {
-    if (jj_3R_6()) return true;
-    return false;
-  }
-
-  private boolean jj_3_1() {
-    if (jj_scan_token(LOGICAL_OPERATOR)) return true;
-    if (jj_3R_6()) return true;
-    return false;
-  }
-
-  private boolean jj_3_4() {
-    if (jj_3R_8()) return true;
-    return false;
-  }
-
-  private boolean jj_3_6() {
-    if (jj_scan_token(LOGICAL_OPERATOR)) return true;
-    if (jj_3R_9()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_17() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_3()) {
+    if (jj_3_19()) {
     jj_scanpos = xsp;
-    if (jj_3_4()) {
-    jj_scanpos = xsp;
-    if (jj_3_5()) return true;
+    if (jj_3_20()) return true;
+    }
     }
     }
     return false;
   }
 
   private boolean jj_3_3() {
-    if (jj_3R_7()) return true;
+    if (jj_scan_token(LOGICAL_OPERATOR)) return true;
+    if (jj_3R_8()) return true;
     return false;
   }
 
-  private boolean jj_3_12() {
-    if (jj_3R_15()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_6() {
-    if (jj_scan_token(OPENING_PARENTHESIS)) return true;
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_16() {
-    if (jj_scan_token(OPENING_PARENTHESIS)) return true;
-    if (jj_scan_token(CONSTANT)) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_20()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_scan_token(CLOSING_PARENTHESIS)) return true;
-    return false;
-  }
-
-  private boolean jj_3_11() {
-    if (jj_3R_14()) return true;
+  private boolean jj_3_17() {
+    if (jj_scan_token(FUNCTION_CALL)) return true;
     return false;
   }
 
   private boolean jj_3R_14() {
     if (jj_scan_token(CONDITION_ATTRIBUTE)) return true;
+    if (jj_scan_token(INFIX_OPERATOR)) return true;
+    if (jj_3R_20()) return true;
+    return false;
+  }
+
+  private boolean jj_3_6() {
+    if (jj_3R_8()) return true;
+    return false;
+  }
+
+  private boolean jj_3_2() {
+    if (jj_scan_token(LOGICAL_OPERATOR)) return true;
+    if (jj_3R_8()) return true;
+    return false;
+  }
+
+  private boolean jj_3_5() {
+    if (jj_3R_10()) return true;
+    return false;
+  }
+
+  private boolean jj_3_7() {
+    if (jj_scan_token(LOGICAL_OPERATOR)) return true;
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_scan_token(LOGICAL_OPERATOR)) return true;
+    if (jj_3R_7()) return true;
+    return false;
+  }
+
+  private boolean jj_3_13() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_19() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_4()) {
+    jj_scanpos = xsp;
+    if (jj_3_5()) {
+    jj_scanpos = xsp;
+    if (jj_3_6()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_8() {
+    if (jj_scan_token(OPENING_PARENTHESIS)) return true;
+    if (jj_3R_19()) return true;
+    return false;
+  }
+
+  private boolean jj_3_4() {
+    if (jj_3R_9()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_1()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_18() {
+    if (jj_scan_token(OPENING_PARENTHESIS)) return true;
+    if (jj_scan_token(CONSTANT)) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_21()) { jj_scanpos = xsp; break; }
+    }
+    if (jj_scan_token(CLOSING_PARENTHESIS)) return true;
+    return false;
+  }
+
+  private boolean jj_3_12() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_16() {
+    if (jj_scan_token(CONDITION_ATTRIBUTE)) return true;
     if (jj_scan_token(READYMADE_PREDICATE)) return true;
     return false;
   }
 
-  private boolean jj_3R_11() {
+  private boolean jj_3R_13() {
     if (jj_scan_token(PREFIX_BINARY_OPERATOR)) return true;
     if (jj_scan_token(CONDITION_ATTRIBUTE)) return true;
     if (jj_scan_token(CLOSING_PARENTHESIS)) return true;
     return false;
   }
 
-  private boolean jj_3R_7() {
-    if (jj_3R_9()) return true;
+  private boolean jj_3R_9() {
+    if (jj_3R_11()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3_6()) { jj_scanpos = xsp; break; }
+      if (jj_3_7()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
 
-  private boolean jj_3_10() {
-    if (jj_3R_13()) return true;
+  private boolean jj_3_11() {
+    if (jj_3R_15()) return true;
+    return false;
+  }
+
+  private boolean jj_3_20() {
+    if (jj_3R_18()) return true;
+    return false;
+  }
+
+  private boolean jj_3_15() {
+    if (jj_scan_token(TEMPORAL_CONDITION_CLOSE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_15() {
+    if (jj_scan_token(23)) return true;
+    if (jj_3R_11()) return true;
     return false;
   }
 
@@ -667,7 +712,7 @@ public class WherePartParser implements WherePartParserConstants {
    private static void jj_la1_init_0() {
       jj_la1_0 = new int[] {};
    }
-  final private JJCalls[] jj_2_rtns = new JJCalls[20];
+  final private JJCalls[] jj_2_rtns = new JJCalls[21];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
@@ -892,7 +937,7 @@ public class WherePartParser implements WherePartParserConstants {
 
   private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 21; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -919,6 +964,7 @@ public class WherePartParser implements WherePartParserConstants {
             case 17: jj_3_18(); break;
             case 18: jj_3_19(); break;
             case 19: jj_3_20(); break;
+            case 20: jj_3_21(); break;
           }
         }
         p = p.next;

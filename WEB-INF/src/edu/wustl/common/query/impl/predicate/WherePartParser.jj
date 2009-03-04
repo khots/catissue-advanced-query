@@ -31,7 +31,7 @@ public class WherePartParser
 	
 	public static void main(String[] args) throws ParseException, FileNotFoundException
 	{
-		InputStream in = new FileInputStream("WherePart7.txt");
+		InputStream in = new FileInputStream("WherePart8.txt");
 		
 		WherePartParser parser = new WherePartParser(in);
 		parser.parse();
@@ -101,6 +101,9 @@ private void ConditionTree() :
 }
 {
 	ConditionsOnOneEntity()
+	(<LOGICAL_OPERATOR>
+	JoiningCondition())*
+	
 		
 |
 	ParenthesizedConditionsOnOneEntity()
@@ -111,6 +114,7 @@ private void ConditionTree() :
 	ConditionsOnAChild()
 	(<LOGICAL_OPERATOR>
 	ConditionsOnAChild())*
+	
 	
 }
 
@@ -397,5 +401,23 @@ private String CSV() :
 	} 
 	
 	
+}
+
+
+private void JoiningCondition() :
+{
+	AbstractPredicate predicate = null;
+}
+{
+	<OPENING_PARENTHESIS>
+	predicate=AtomicCondition()
+	{
+		if(predicate != null)
+		{
+			predicateGenerator.addPredicate(forVariable, predicate);
+		}	
+	}
+	<CLOSING_PARENTHESIS>
+
 }	
 
