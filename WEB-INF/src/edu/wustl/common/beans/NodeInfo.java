@@ -1,12 +1,11 @@
 package edu.wustl.common.beans;
-
-import java.sql.Date;
+import java.sql.Timestamp;
 
 
 public class NodeInfo
 {
 	Object obj;
-	Date dob;
+	Timestamp dob;
 	
 	/**
 	 * @return the obj
@@ -27,7 +26,7 @@ public class NodeInfo
 	/**
 	 * @return the dob
 	 */
-	public Date getDob()
+	public Timestamp getDob()
 	{
 		return dob;
 	}
@@ -35,7 +34,7 @@ public class NodeInfo
 	/**
 	 * @param dob the dob to set
 	 */
-	public void setDob(Date dob)
+	public void setDob(Timestamp dob)
 	{
 		this.dob = dob;
 	}
