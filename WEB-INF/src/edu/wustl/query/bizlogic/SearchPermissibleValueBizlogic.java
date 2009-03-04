@@ -17,6 +17,7 @@ import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.vocab.IConcept;
 import edu.wustl.common.vocab.IDefinition;
+import edu.wustl.common.vocab.IPresentation;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.IVocabularyManager;
 import edu.wustl.common.vocab.VocabularyException;
@@ -241,6 +242,9 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 */
 	private String getToolTip(IConcept concept)
 	{
+		StringBuffer toolTip = new StringBuffer("Concept Code:");
+		toolTip.append(concept.getCode());
+		toolTip.append("<br/>");
 		String definition=Constants.NOT_AVAILABLE;
 		List<IDefinition> defsList=concept.getDefinition();
 		if(defsList!=null &&  !defsList.isEmpty())
@@ -255,9 +259,25 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 				}
 			}
 		}
-		String toolTip="Concept Code: "+concept.getCode()+"<br/> "+
-					   "Definition : "+definition;
-		return toolTip;
+		
+		toolTip.append("Definition : ");
+		toolTip.append(definition);
+		
+		List<IPresentation> preList = concept.getPresentation();
+		if(preList != null && !preList.isEmpty())
+		{
+			for(IPresentation presentation:preList)
+			{
+				if(presentation.getName().equals(Constants.MED_CONECPT_NAME))
+				{
+					toolTip.append("<br/>");
+					toolTip.append("Med Concept Name : ");
+					toolTip.append(presentation.getDescription());
+				}
+			}
+		}
+		
+		return toolTip.toString();
 	}
 	/**
 	 * This method returns the HTML for child nodes for all the vocabularies which
