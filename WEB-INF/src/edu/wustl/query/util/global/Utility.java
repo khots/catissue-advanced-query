@@ -26,12 +26,16 @@ import edu.wustl.common.beans.QueryResultObjectData;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.QueryBizLogic;
+import edu.wustl.common.dao.AbstractDAO;
+import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.dao.queryExecutor.PagenatedResultData;
 import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
+import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
@@ -294,7 +298,7 @@ public class Utility extends edu.wustl.common.util.Utility
 				 */
 				String aliasName = queryResultObjectData.getAliasName();
 				String link = "SimpleSearchEdit.do?"
-						+ edu.wustl.common.util.global.Constants.TABLE_ALIAS_NAME + "=" + aliasName
+						+ Constants.TABLE_ALIAS_NAME + "=" + aliasName
 						+ "&" + Constants.SYSTEM_IDENTIFIER + "="
 						+ row.get(queryResultObjectData.getIdentifierColumnId()) + "&"
 						+ Constants.PAGE_OF + "=" + Variables.aliasAndPageOfMap.get(aliasName);
@@ -423,7 +427,7 @@ public class Utility extends edu.wustl.common.util.Utility
 				startIndex);
 		paginationDataList = pagenatedResultData.getResult();
 		String isSimpleSearch = (String) request.getSession().getAttribute(
-				edu.wustl.common.util.global.Constants.IS_SIMPLE_SEARCH);
+				Constants.IS_SIMPLE_SEARCH);
 		if (isSimpleSearch == null || (!isSimpleSearch.equalsIgnoreCase(Constants.TRUE)))
 		{
 			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap = querySessionData
@@ -651,5 +655,26 @@ public class Utility extends edu.wustl.common.util.Utility
 	public static String getAliasFor(String attributeName, IExpression expression)
 	{
 		return attributeName + "_" + expression.getExpressionId();
+	}
+	
+	/**
+	 * To get IQuery object from Query Id
+	 * @param queryId
+	 * @return
+	 * @throws DAOException
+	 */
+	public static IQuery getQuery(Long queryId) throws DAOException
+	{
+		IQuery query = null;
+
+		if (queryId != null)
+		{
+			AbstractDAO dao = DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+			dao.openSession(null);
+			query = (IParameterizedQuery) dao.retrieve(ParameterizedQuery.class.getName(), queryId);
+			dao.closeSession();
+		}
+
+		return query;
 	}
 }
