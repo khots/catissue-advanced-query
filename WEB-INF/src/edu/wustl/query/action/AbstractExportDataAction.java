@@ -11,6 +11,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.util.global.Constants;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.exportmanager.ExportDataManager;
 import edu.wustl.query.exportmanager.ExportDataObject;
 
@@ -39,14 +40,41 @@ public abstract class AbstractExportDataAction extends Action
 		ExportDataObject exportDataObject = new ExportDataObject();
 		SessionDataBean sessionDataBean = getSessionData(request);
 			
-		AbstractQuery abstractQuery = (AbstractQuery) request.getSession().getAttribute("");
-		exportDataObject.getExportObjectDetails().put(edu.wustl.query.util.global.Constants.ABSTRACT_QUERY, abstractQuery);
-		
 		preProcess(exportDataObject, sessionDataBean);
 		
-		ExportDataManager.export(sessionDataBean, exportDataObject);
+		AbstractQuery abstractQuery = getAbstractQuery(request);
+		exportDataObject.getExportObjectDetails().put(edu.wustl.query.util.global.Constants.ABSTRACT_QUERY, abstractQuery);
+		
+		try
+		{
+			ExportDataManager.export(sessionDataBean, exportDataObject);
+		}
+		catch (Exception ex)
+		{
+			handleException(ex);
+		}
 
 		return null;
+	}
+
+	/**
+	 * 
+	 * @param ex Exception
+	 */ 
+	private void handleException(Exception ex)
+	{
+		Logger.out.debug(ex.getMessage());
+	}
+
+	/**
+	 * 
+	 * @param request HttpServletRequest
+	 * @return AbstractQuery
+	 */
+	private AbstractQuery getAbstractQuery(HttpServletRequest request)
+	{
+		AbstractQuery abstractQuery = (AbstractQuery) request.getSession().getAttribute(edu.wustl.query.util.global.Constants.ABSTRACT_QUERY);
+		return abstractQuery;
 	}
 
 	/**
@@ -57,13 +85,12 @@ public abstract class AbstractExportDataAction extends Action
 	private SessionDataBean getSessionData(HttpServletRequest request)
 	{
 		Object obj = request.getSession().getAttribute(Constants.SESSION_DATA);
-
+		SessionDataBean sessionData = null;
 		if (obj != null)
 		{
-			SessionDataBean sessionData = (SessionDataBean) obj;
-			return sessionData;
+			sessionData = (SessionDataBean) obj;
 		}
-		return null;
+		return sessionData;
 	}
 
 }
