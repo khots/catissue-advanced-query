@@ -481,7 +481,7 @@ function serachForTermInVocab(operation)
 				}
 			}
 	var message="Please enter the search term.";
-	if(! checkForSplChar(searchTerm)  && checkForEmptyText(searchTerm,message) && isVocabSelected(targetVocabsForSearchTerm))
+	if(! checkForVISplChar(searchTerm)  && checkForEmptyText(searchTerm,message) && isVocabSelected(targetVocabsForSearchTerm))
 	{
 	
 			label=document.getElementById("searhLabel");
