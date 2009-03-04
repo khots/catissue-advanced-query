@@ -33,7 +33,7 @@ public class ThreadManager
 	 * @param sdb
 	 * @throws QueryModuleException 
 	 */
-	public AbstractExportDataThread getExportDataThread(ExportDataObject exportDataObject,
+	public static AbstractExportDataThread getExportDataThread(ExportDataObject exportDataObject,
 			SessionDataBean sessionDataBean) throws QueryModuleException
 	{
 		AbstractExportDataThread exportDataThread = ThreadGeneratorFactory
