@@ -839,7 +839,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 
      /**  Constant for Equal to operator */
 	public static final String EQUALS = " = ";
-
+	
 	/** Constant for... */
 	public static final String EXECUTION_ID_OF_QUERY = "queryExecutionId";
 	/** Constant for AbstractQuery */
@@ -854,7 +854,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
      * Constant to denoted execution type as 'Workflow'.
      */
     public static final String EXECUTION_TYPE_WORKFLOW = "executeWorkFlow";
-
-
-
+	
+	/** Constant for presenatation property name for med concept name**/
+	public static final String MED_CONECPT_NAME = "med_concept_name";
+	
 }
