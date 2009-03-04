@@ -38,9 +38,10 @@ public abstract class AbstractExportDataThread implements Runnable
 	 * @param edo
 	 * @param sdb
 	 */
-	public AbstractExportDataThread(ExportDataObject edo, SessionDataBean sdb)
+	public AbstractExportDataThread(ExportDataObject exportDataObject, SessionDataBean sessionDataBean)
 	{
-
+		this.exportDataObject = exportDataObject;
+		this.sessionDataBean = sessionDataBean;
 	}
 
 	/**
@@ -118,15 +119,15 @@ public abstract class AbstractExportDataThread implements Runnable
 		List<List<Object>> dList = new ArrayList<List<Object>>();
 		List<Object> list = new ArrayList<Object>();
 		list.add("abcd");
-		list.add(99897L);
-		list.add('c');
-		list.add(1025);
+		list.add("99897");
+		list.add("c");
+		list.add("1025");
 		
 		dList.add(list);
 		
-		ExportReport report = new ExportReport("f:\\zip_Trial\\", "file.csv", "");
+		ExportReport report = new ExportReport("f:\\zip_Trial\\file.csv");
 		report.writeData(dList, Constants.DELIMETER);
-		
+		report.closeFile();
 	}
 
 	/**
@@ -140,6 +141,8 @@ public abstract class AbstractExportDataThread implements Runnable
 			dataList = executeQuery(exportDataObject);
 
 			generateCSV(dataList);
+			
+			ExportUtility.createZip("f:\\zip_Trial", "file.csv", "file.zip");
 	
 			postProcess(exportDataObject, sessionDataBean);
 		}
