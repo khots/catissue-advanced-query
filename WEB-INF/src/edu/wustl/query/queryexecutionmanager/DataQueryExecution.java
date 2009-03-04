@@ -9,7 +9,7 @@ import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
- * This is an abstract class which is extended by CIDERDataQueryExecution
+ * This class is extended by CIDERDataQueryExecution
  * Responsible for executing the data query
  * 
  * @author ravindra_jain
@@ -17,7 +17,7 @@ import edu.wustl.query.util.querysuite.QueryModuleException;
  * @since February 12, 2009
  */
 
-public abstract class DataQueryExecution
+public class DataQueryExecution
 {
 
 	/**
