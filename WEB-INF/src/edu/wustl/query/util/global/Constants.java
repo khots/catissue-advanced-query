@@ -4,7 +4,7 @@ package edu.wustl.query.util.global;
 import java.awt.Color;
 
 /**
- * 
+ *
  * @author baljeet_dhindhwal
  * @version 1.0
  *
@@ -477,7 +477,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String QUERY_XMLDATA = "XMLDATA";
 	/**  Constant for  */
 	public static final String QUERY_AND = " and ";
-	
+
 	/**  Constant for  */
 	public static final String QUERY_TEMPORAL_CONDITION = "TEMPORAL_CONDITION";
 
@@ -491,18 +491,18 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String CONTENT_TYPE_TEXT = "text/html";
 
 	/**
-	 * 
+	 *
 	 * @param s
 	 * @return
 	 */
 	public static final String getOracleTermString(String s)
 	{
-        return "day-from-dateTime(" + s + ") * 86400" + "hours-from-dateTime(" + s + ") * 3600" 
+        return "day-from-dateTime(" + s + ") * 86400" + "hours-from-dateTime(" + s + ") * 3600"
     	+ "minutes-from-dateTime(" + s + ") * 60" + "seconds-from-dateTime(" + s + ")";
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param s
 	 * @return the actual time in seconds
 	 */
@@ -511,7 +511,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 		return "extract(day from " + s + ")*86400 + extract(hour from " + s
 				+ ")*3600 + extract(minute from " + s + ")*60 + extract(second from " + s + ")";
 	}
-	
+
 	public static final String VERSION = "VERSION";
 
 	//Constants related to Export functionality
@@ -559,7 +559,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	/**  Constant for  */
 	public static final String MY_QUERIES_FOR_WORKFLOW = "myQueriesForWorkFlow";
 	public static final String SAHRED_QUERIES_FOR_WORKFLOW = "sharedQueriesForWorkFlow";
-	
+
 	public static final String MY_QUERIES_FOR_MAIN_MENU = "myQueriesForMainMenu";
 	public static final String SHARED_QUERIES_FOR_MAIN_MENU = "sharedQueriesForMainMenu";
 	/**  Constant for  */
@@ -658,7 +658,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String ALL_ADD_LIMIT_EXPRESSIONS = "allLimitExpressionIds";
 	/**  Constant for  */
 	public static final String MAIN_EXPRESSIONS_ENTITY_EXP_ID_MAP = "mainExpEntityExpressionIdMap";
-    
+
 	/**  Constant for  */
 	public static final String  MAIN_ENTITY_ID= "entityId";
 	/**  Constant for  */
@@ -667,11 +667,11 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String VI_INFO_MESSAGE1 = "This entity contains more than ";
 	public static final String VI_INFO_MESSAGE2 = " Permissible values.Please search for the specific term ";
 
-	
-	//Start : Added for changes in Query Design for CIDER Query 
+
+	//Start : Added for changes in Query Design for CIDER Query
     public static final String PROJECT_ID = "projectId";
     //End : Added for changes in Query Design for CIDER Query
-    
+
     /** Constant for Advanced Query 'JNDI' name **/
     public static final String JNDI_NAME_QUERY = "java:/query";
     /** Constant for CIDER 'JNDI' name **/
@@ -689,9 +689,9 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String QUERY_EXECUTION_ID = "QUERY_EXECUTION_ID";
     /**  Constant for QUERY_EXECUTION_ID **/
     public static final String COUNT_QUERY_EXECUTION_ID = "COUNT_QUERY_EXECUTION_ID";
-     
+
     public static final String COUNT_QUERY_UPI = "UPI";
-    
+
     public static final String COUNT_QUERY_DOB = "DATE_OF_BIRTH";
     /**  Constant for QUERY_EXECUTION_ID **/
     public static final String DATA_QUERY_EXECUTION_ID = "DATA_QUERY_EXECUTION_ID";
@@ -734,7 +734,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String EXECUTION_ID = "executionId";
 	public static final String QUERY_TYPE_GET_COUNT="Count";
 	public static final String QUERY_TYPE_GET_DATA="Data";
-	
+
 	public static final int[] SHOW_LAST_OPTION = {25, 50, 100, 200};
 //Constants for Get Count
 	/**  Constant for  abortExecution*/
@@ -759,8 +759,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String FORWARD_TO_HASHMAP = "forwardToHashMap";
 	public static final String NEXT_PAGE_OF = "nextPageOf";
 	public static final String QUERYWIZARD = "queryWizard";
-	public static final String DATA_QUERY_ID = "dataQueryId "; 
-	public static final String COUNT_QUERY_ID = "countQueryId "; 
+	public static final String DATA_QUERY_ID = "dataQueryId ";
+	public static final String COUNT_QUERY_ID = "countQueryId ";
 	public static final String PROJECT_NAME_VALUE_BEAN = "projectsNameValueBeanList";
 	/**  Constant for WORFLOW_ID   */
 	public static final String WORFLOW_ID = "workflowId";
@@ -776,7 +776,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String MED_MAPPED_N_NOT_VALIED_PVCONCEPT = "Bold_Italic_Disabled";
 	public static final String NOT_MED_MAPPED_PVCONCEPT = "Normal_Italic_Disabled";
 	public static final String NOT_MED_VALED_PVCONCEPT = "Normal_Disabled";
-	public static final String ID_DEL = "ID_DEL"; 
+	public static final String ID_DEL = "ID_DEL";
 	public static final String MSG_DEL = "@MSG@"; // if you change its value,kindly change in queryModule.js its hard coded there
 		public static final String NOT_AVAILABLE = "Not Available";
 	/**
@@ -788,17 +788,17 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	 * COUNT QUERY EXECUTION LOG TABLE
 	 */
 	public static final String COUNT_QUERY_EXECUTION_LOG = "COUNT_QUERY_EXECUTION_LOG";
-	
+
 	/**
 	 * DATA QUERY EXECUTION LOG TABLE
 	 */
 	public static final String DATA_QUERY_EXECUTION_LOG = "DATA_QUERY_EXECUTION_LOG";
-	
+
 	/**
 	 * QUERY EXECUTION LOG TABLE
 	 */
 	public static final String QUERY_EXECUTION_LOG = "QUERY_EXECUTION_LOG";
-	
+
 	/**
 	 * QUERY SECURITY LOG TABLE
 	 */
@@ -818,7 +818,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
     /**  Constant for DEID_SEQUENCE **/
     public static final String DEID_SEQUENCE = "DEID_SEQUENCE";
 
-    
+
     /**  Constant for  ITABLE_ATTRIBUTES**/
     public static final String TAGGED_VALUE_ITABLE_ATTRIBUTES = "ITABLE_ATTRIBUTES";
     /**  Constant for SECURE CONDITION **/
@@ -826,23 +826,35 @@ public class Constants extends edu.wustl.common.util.global.Constants
 
     public static final int AGE = 89;
     public static final int MINOR = 18;
-    
+
     /**
      * constant for  PATIENT_DATA_QUERY
      */
     public static final String PATIENT_DATA_QUERY = "patientDataQuery";
-    
+
     public static final String  PATIENT_QUERY_ROOT_OUT_PUT_NODE_LIST = "patientDataRootOutPutList";
-    
-   
+
+
     public static final String PATIENT_QUERY_UNIQUE_ID_MAP =  "uniqueIDNodeMap";
-    
+
      /**  Constant for Equal to operator */
 	public static final String EQUALS = " = ";
-	
+
 	/** Constant for... */
 	public static final String EXECUTION_ID_OF_QUERY = "queryExecutionId";
 	/** Constant for AbstractQuery */
 	public static final String ABSTRACT_QUERY = "abstractQuery";
-	
+
+    /**
+     * Constant for request attribute for 'execution type'.
+     */
+    public static final String REQ_ATTRIB_EXECUTION_TYPE = "executeType";
+
+    /**
+     * Constant to denoted execution type as 'Workflow'.
+     */
+    public static final String EXECUTION_TYPE_WORKFLOW = "executeWorkFlow";
+
+
+
 }

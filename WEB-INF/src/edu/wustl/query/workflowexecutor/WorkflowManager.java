@@ -30,17 +30,20 @@ public class WorkflowManager
 
 	}
 
-	public Map<Long, Integer> execute(WorkflowDetails workflowDetails, AbstractQuery ciderQuery) throws QueryModuleException, MultipleRootsException, SqlException
-	{
-		workflowExecutor = new WorkflowExecutor(workflowDetails);
-		return workflowExecutor.execute(ciderQuery);
-	}
+	public Map<Long, Integer> execute(WorkflowDetails workflowDetails,
+            AbstractQuery ciderQuery) throws QueryModuleException,
+            MultipleRootsException, SqlException
+    {
+        workflowExecutor = new WorkflowExecutor(workflowDetails);
+        return workflowExecutor.execute(ciderQuery);
+    }
 
-	public void execute(WorkflowDetails workflowDetails) throws QueryModuleException, MultipleRootsException, SqlException
-	{
-		workflowExecutor = new WorkflowExecutor(workflowDetails);
-		workflowExecutor.execute();
-	}
+	public Map<Long, Integer> execute(WorkflowDetails workflowDetails)
+            throws QueryModuleException, MultipleRootsException, SqlException
+    {
+        workflowExecutor = new WorkflowExecutor(workflowDetails);
+        return workflowExecutor.execute();
+    }
 
 	public Count getCount(int queryExecId) throws QueryModuleException
 	{

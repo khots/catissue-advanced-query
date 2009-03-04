@@ -315,6 +315,134 @@ function setCancelFlag(queryId)
 							document.getElementById("cancelajaxcall_"+queryIndex).value='false';
 	
 }
+
+function runWorkflow()
+{
+
+	if(document.getElementById("isdone").value=='false')
+	{
+		var rows=document.getElementById("table1").rows.length;
+		var operators="";
+		var workflowName=document.getElementById("name").value;
+		var operands="";
+		var workflowName=document.getElementById("name").value;
+		var identifier="";
+		var displayQueryTitle="";
+				var expression="";
+		for(i=0;i<rows;i++)
+		{
+			operands=operands+document.getElementById("operands_"+i).value+",";
+			operators=operators+document.getElementById("operators_"+i).value+",";
+			displayQueryTitle=displayQueryTitle+document.getElementById("displayQueryTitle_"+i).value+",";
+			expression=expression+document.getElementById("expression_"+i).value+",";
+			var title=document.getElementById("identifier_"+i);
+			var object=title.parentNode;
+			var tdChildCollection=object.getElementsByTagName('input');
+			var queryId=tdChildCollection[2].id;
+			identifier=identifier+document.getElementById(queryId).value+",";
+		}
+		var url="SaveWorkflowAjaxHandler.do?operands="+operands+"&operators="+operators+"&workflowName="+workflowName+"&displayQueryTitle="+displayQueryTitle+"&workflowId="+document.getElementById("id").value+"&identifier="+identifier+"&expression="+ encodeURIComponent(expression)+"&excuteType=workflow";
+
+		var request=newXMLHTTPReq();
+		if(request == null)
+		{
+			alert ("Your browser does not support AJAX!");
+			return;
+		}
+		var handlerFunction = getReadyStateHandler(request,runWorkflowResponseHandler,true); 
+		request.onreadystatechange = handlerFunction; 
+		request.open("POST",url,true);    
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+		request.send("");
+
+	}
+	else
+	{
+		runSavedWorkflow();
+	}
+
+
+}
+function runWorkflowResponseHandler(response)
+{
+	var jsonResponse = eval('('+ response+')');
+    var hasValue = false;
+
+	 if(jsonResponse.errormessage!=null)
+	 {
+		   document.getElementById("errormessage").innerHTML=jsonResponse.errormessage;
+	 }
+
+	//set workflow id 
+	 if(jsonResponse.workflowId!="")
+     {
+		 document.getElementById("id").value=jsonResponse.workflowId;
+		 document.getElementById("operation").value="edit";
+
+	 }
+	 if((jsonResponse.workflowId!=null||jsonResponse.workflowId!="")&&(jsonResponse.errormessage==null||
+		jsonResponse.errormessage==""))
+	{
+		document.getElementById("isdone").value=true;
+	   
+	}
+
+
+	//set the name identifier mapping 
+	if(jsonResponse.executionQueryResults!=null)
+	  {
+		 var num = jsonResponse.executionQueryResults.length; 
+			for(var i=0;i<num;i++)
+			{
+				 var queryTitle = jsonResponse.executionQueryResults[i].queryTitle;
+
+
+				//var nameIdentifier=document.getElementById("table1").rows;
+					var numOfRows =document.getElementById("table1").rows.length;
+					for(var count = 0; count < numOfRows; count++)
+					{
+						
+						var title=document.getElementById("identifier_"+count);
+						if(title.value==queryTitle)
+						{
+							var object=title.parentNode;
+							var tdChildCollection=object.getElementsByTagName('input');
+							var queryId=tdChildCollection[2].id;
+							document.getElementById(queryId).value=jsonResponse.executionQueryResults[i].queryId;
+							document.getElementById(queryId).id="queryIdForRow_"+jsonResponse.executionQueryResults[i].queryId;
+						
+						}
+					}
+
+			
+					if((jsonResponse.workflowId!=null||jsonResponse.workflowId!="")&&(jsonResponse.errormessage==null||
+						jsonResponse.errormessage==""))
+					{
+						 runSavedWorkflow();
+					}
+
+			}
+	   }
+
+}
+function runSavedWorkflow()
+{
+	var projectId=document.getElementById("selectedProject").value;
+	var url="WorkflowAjaxHandler.do?operation=execute&selectedProject="+projectId+"&workflowId="+document.getElementById("id").value+"&executeType=executeWorkFlow";
+
+	var request=newXMLHTTPReq();
+	if(request == null)
+	{
+		alert ("Your browser does not support AJAX!");
+		return;
+	}
+	var handlerFunction = getReadyStateHandler(request,workflowResponseHandler,true); 
+	request.onreadystatechange = handlerFunction; 
+	request.open("POST",url,true);    
+	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+	request.send("");
+}
+
 function executeGetCountQuery(queryTitle,executionLogId)
 {
 
@@ -379,6 +507,7 @@ function executeGetCountQuery(queryTitle,executionLogId)
 	}
 	setCountDropDown = false;
 }
+
 
 function responseHandler(response)
 {
@@ -548,8 +677,6 @@ function setDropDowns(queryTitle)
   }
 
 }
-
-
 
 function workflowExecuteGetCountQuery(queryId,executionLogId)
 {
@@ -907,7 +1034,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 								</c:forEach>
 							</SELECT>
                             </td>
-                            <td width="90" align="left" valign="middle" ><a href="javascript:showNextReleaseMsg()" class="bluelink"><bean:message key="workflow.runworkflow"/></a></td>
+                            <td width="90" align="left" valign="middle" ><a href="javascript:runWorkflow()" class="bluelink"><bean:message key="workflow.runworkflow"/></a></td>
                           </tr>
                         </table>
 					</td>

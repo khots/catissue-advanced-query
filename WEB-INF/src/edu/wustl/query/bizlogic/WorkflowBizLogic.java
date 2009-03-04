@@ -129,6 +129,39 @@ public class WorkflowBizLogic extends DefaultBizLogic
 		dao.update(obj, null, false, false, false);
 	}
 
+    /**
+     * @param workflowDetails
+     * @param request
+     * @return
+     * @throws BizLogicException
+     */
+    public Map<Long, Integer> runWorkflow(WorkflowDetails workflowDetails, HttpServletRequest request)//(Long queryId, HttpServletRequest request)
+            throws BizLogicException
+    {
+        WorkflowManager wfm = new WorkflowManager();
+        Map<Long, Integer> execIdMap = null;
+        try
+        {
+            // generate the
+            execIdMap = wfm.execute(workflowDetails);
+        } catch (QueryModuleException ex)
+        {
+            BizLogicException bizLogicException = new BizLogicException(ex.getMessage(), ex);
+            throw bizLogicException;
+        } catch (MultipleRootsException ex)
+        {
+            BizLogicException bizLogicException = new BizLogicException(ex.getMessage(), ex);
+            throw bizLogicException;
+        } catch (SqlException ex)
+        {
+            BizLogicException bizLogicException = new BizLogicException(ex.getMessage(), ex);
+            throw bizLogicException;
+        }
+
+        return execIdMap;
+    }
+
+
 	/**
 	 * @param workflowId
 	 * @param queryId=id of query for which counts will be returned

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -18,9 +19,9 @@ import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
- * 
+ *
  * @author ravindra_jain
- * @created November 26, 2008	
+ * @created November 26, 2008
  */
 public class WorkflowAction extends Action
 {
@@ -33,7 +34,8 @@ public class WorkflowAction extends Action
 	 * truts.action.ActionMapping, org.apache.struts.action.ActionForm,
 	 *  javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
+	@Override
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		if (request.getParameter(Constants.OPERATION) != null && (request.getParameter("id") != null || request.getAttribute(Constants.WORKFLOW_ID)!=null)
@@ -45,7 +47,6 @@ public class WorkflowAction extends Action
 	   else
 		{
 			request.setAttribute(Constants.OPERATION, Constants.ADD);
-			System.out.println("");
 		}
 		if (request.getParameter(Constants.ID) != null && (!request.getParameter(Constants.ID).equals("")))
 		{
@@ -62,7 +63,7 @@ public class WorkflowAction extends Action
 	private void setProjectList(HttpServletRequest request) throws QueryModuleException
 	{
 		//Retrieve the Project list
-		
+
 		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
 				Constants.SESSION_DATA);
 		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory
