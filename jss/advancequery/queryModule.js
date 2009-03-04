@@ -2042,4 +2042,22 @@ var jsReady = false;
 		alert(message);
 		return false;
 	}
+	function checkForVISplChar(textFieldValue)
+	{
+	     var splChar= new Array('&','(',')','[',']'); 
+	     var splCharsize = splChar.length;
+	     //alert("textFieldValue "+textFieldValue);
+	   	for( i=0; i < splCharsize ; i++)
+		{ 
+		   
+		 //  alert('<%= splChar[i] %>');
+		   if( textFieldValue.indexOf( splChar[i] ) != -1)
+		  {
+		    alert("Special Character are not allowed for search");
+			return true;
+		  }
+	   }
+	 
+		  return false;
+	}
 	
