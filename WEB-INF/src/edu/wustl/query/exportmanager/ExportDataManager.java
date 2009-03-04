@@ -1,8 +1,15 @@
 
 package edu.wustl.query.exportmanager;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.query.AbstractQuery;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.ThreadManager;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
  * This manager class will handle all the live export data threads
@@ -20,9 +27,10 @@ public class ExportDataManager
 
 	/**
 	 * Key - query execution Id
-	 * Value - ExportDataThread
+	 * Value - AbstractExportDataThread
 	 */
-	private Map exportDataThreadMap;
+	private static Map<Integer, AbstractExportDataThread> exportDataThreadMap = Collections
+			.synchronizedMap(new HashMap<Integer, AbstractExportDataThread>());
 
 	/**
 	 * Default Constructor
@@ -32,7 +40,6 @@ public class ExportDataManager
 		// Default Constructor
 	}
 
-	
 	/**
 	 * To return Singleton instance of ExportDataManager
 	 * @return
@@ -45,15 +52,23 @@ public class ExportDataManager
 		}
 		return sINSTANCE;
 	}
-	
+
 	/**
 	 * 
 	 * @param sdb
 	 * @param edo
+	 * @throws QueryModuleException 
 	 */
-	public static void export(SessionDataBean sdb, ExportDataObject edo)
+	public static void export(SessionDataBean sessionDataBean, ExportDataObject exportDataObject)
+			throws QueryModuleException
 	{
+		AbstractExportDataThread exportDataThread = ThreadManager.getExportDataThread(
+				exportDataObject, sessionDataBean);
 
+		AbstractQuery abstractQuery = (AbstractQuery) exportDataObject.getExportObjectDetails()
+				.get(Constants.ABSTRACT_QUERY);
+
+		exportDataThreadMap.put(abstractQuery.getQueryExecId(), exportDataThread);
 	}
 
 }

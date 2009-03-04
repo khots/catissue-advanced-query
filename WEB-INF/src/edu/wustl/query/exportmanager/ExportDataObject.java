@@ -1,6 +1,7 @@
 
 package edu.wustl.query.exportmanager;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -15,7 +16,7 @@ public class ExportDataObject
 {
 
 	/** Stores all information which is required for Exporting Data (Results of getData query) **/
-	private Map exportObjectDetails;
+	private Map<String, Object> exportObjectDetails = new HashMap<String, Object>();
 
 	/**
 	 * Default Constructor
