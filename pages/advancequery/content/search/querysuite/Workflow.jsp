@@ -140,15 +140,16 @@ function createCQ(queryIdsToAdd,operation,queryCount)
 
 	var rowContents=new Array(7);
 	rowContents[0]=createCheckBox("chkbox","checkbox_"+queryCount,'',queryCount,false);
-	rowContents[1]=createTextElement(cqTitle);
-	rowContents[2]=createTextElement(cqType);
+	rowContents[1]=createImageElement("images/advancequery/ic_notrun06.gif","notStarted_"+queryCount);
+	rowContents[2]=createTextElement(cqTitle);
+	rowContents[3]=createTextElement(cqType);
 	//rowContents[3]=createTextElement(operandsTdContent);
 	//rowContents[3]=getSelectObjectControl();
-	rowContents[4]=createTextElement("");
-	rowContents[5]=createHiddenElement("selectedqueryId","selectedqueryId_"+queryCount,operandsTdContent);
+	rowContents[5]=createTextElement("");
+	rowContents[6]=createHiddenElement("selectedqueryId","selectedqueryId_"+queryCount,operandsTdContent);
 	//rowContents[4].appendChild(createHiddenElement("identifier","identifier_"+operandsTdContent,operandsTdContent));
-	rowContents[6]=cqTitle;
-	rowContents[7]=cqType;
+	rowContents[7]=cqTitle;
+	rowContents[8]=cqType;
 	
 	var operatorsTdContent=operation;
 	//uncommented for the underscore separated operation string 
