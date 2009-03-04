@@ -126,7 +126,7 @@ public class SearchPermissibleValuesAction extends Action
 
 		List<PermissibleValueInterface> pvList = bizLogic.getPermissibleValueListFromDB(attribute,
 				entity);
-		
+		IVocabulary sourceVocabulary = bizLogic.getVocabulary(VIProperties.sourceVocabUrn);
 		while (allTrgVocabs.hasMoreTokens())
 		{
 			String[] vocabDetail = allTrgVocabs.nextToken().split("##");
@@ -147,7 +147,7 @@ public class SearchPermissibleValuesAction extends Action
 				for (IConcept concept : conceptList)
 				{
 					IConcept sourceConceptCode = new Concept();
-					int status = isSourceVocabMappedTerm(concept, pvList, sourceConceptCode);
+					int status = isSourceVocabMappedTerm(concept, pvList, sourceConceptCode,sourceVocabulary);
 					
 					sourceConceptMap.put(concept.getCode(), sourceConceptCode.getCode());
 					
@@ -280,6 +280,7 @@ public class SearchPermissibleValuesAction extends Action
 	 * 
 	 * @param concept 
 	 * @param pvList 
+	 * @param sourceVocabulary 
 	 * @param sourceConcept 
 	 * @param componentId
 	 * @param request
@@ -287,12 +288,12 @@ public class SearchPermissibleValuesAction extends Action
 	 * @throws VocabularyException 
 	 */
 	private int isSourceVocabMappedTerm(IConcept concept, List<PermissibleValueInterface> pvList,
-			IConcept sourceConceptCode) throws VocabularyException
+			IConcept sourceConceptCode, IVocabulary sourceVocabulary) throws VocabularyException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 
-		IVocabulary sourceVocabulary = bizLogic.getVocabulary(VIProperties.sourceVocabUrn);
+		
 		int status = 0;
 		if (((Vocabulary) sourceVocabulary).equals((Vocabulary) concept.getVocabulary()))
 		{
