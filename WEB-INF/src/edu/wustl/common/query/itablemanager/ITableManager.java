@@ -255,7 +255,7 @@ public class ITableManager
 				{
 					NodeInfo nodeInfo = new NodeInfo();
 					nodeInfo.setObj(resultSet.getObject(1));
-					nodeInfo.setDob(resultSet.getDate(2));
+					nodeInfo.setDob(resultSet.getTimestamp(2));
 					upiList.add(nodeInfo);
 				}
 			}
@@ -306,7 +306,7 @@ public class ITableManager
 				{
 					NodeInfo nodeInfo = new NodeInfo();
 					nodeInfo.setObj(upi);
-					nodeInfo.setDob(resultSet.getDate(1));
+					nodeInfo.setDob(resultSet.getTimestamp(1));
 					upiList.add(nodeInfo);
 				}
 			}
