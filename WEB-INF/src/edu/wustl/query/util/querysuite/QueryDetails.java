@@ -195,7 +195,7 @@ public class QueryDetails
 		rootOutputTreeNodeList = (List<OutputTreeDataNode>) session
 				.getAttribute(Constants.SAVE_TREE_NODE_LIST);
 		uniqueIdNodesMap = (Map<String, OutputTreeDataNode>) session
-				.getAttribute(Constants.ID_NODES_MAP);
+				.getAttribute(Constants.PATIENT_QUERY_UNIQUE_ID_MAP);
 		mainEntityMap = (Map<EntityInterface, List<EntityInterface>>) session
 				.getAttribute(Constants.MAIN_ENTITY_MAP);
 		sessionData = (SessionDataBean) session.getAttribute(Constants.SESSION_DATA);

@@ -1,6 +1,9 @@
 
 package edu.wustl.query.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -69,10 +72,11 @@ public class ShowGridAction extends BaseAction
 			String idOfClickedNode = request.getParameter(Constants.TREE_NODE_ID);
 			NodeId node = new NodeId(idOfClickedNode);
 
-			spreadSheetViewGenerator.createSpreadsheet(node, queryDetailsObj, spreadsheetData);
+			List<IQuery> queries = spreadSheetViewGenerator.createSpreadsheet(node,
+					queryDetailsObj, spreadsheetData);
 
-			executeQuery(queryDetailsObj.getQuery(), spreadsheetData, request, queryDetailsObj
-					.getQueryExecutionId(), node.getRootData());
+			executeQuery(queries, spreadsheetData, request, queryDetailsObj.getQueryExecutionId(),
+					node.getRootData());
 
 			setGridData(request, spreadsheetData);
 
@@ -124,30 +128,34 @@ public class ShowGridAction extends BaseAction
 	 * @param data 
 	 * @throws QueryModuleException
 	 */
-	private void executeQuery(IQuery query, SpreadSheetData spreadsheetData,
+	private void executeQuery(List<IQuery> queries, SpreadSheetData spreadsheetData,
 			HttpServletRequest request, int queryExecutionId, String data)
 			throws QueryModuleException
 	{
-		//getData
-		AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory
-				.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
-
 		HttpSession session = request.getSession();
-		
-		DataQueryResultsBean dataQueryResultsBean;
-		if (data.equals(Constants.NULL_ID))
+		List<List<Object>> dataList = new ArrayList<List<Object>>();
+		DataQueryResultsBean dataQueryResultsBean = null;
+		for (IQuery query : queries)
 		{
-			session.setAttribute(Constants.ABSTRACT_QUERY, queryUIManager.getAbstractQuery());
-			
-			dataQueryResultsBean = queryUIManager.getData(queryExecutionId,
-					ViewType.SPREADSHEET_VIEW);
+			//getData
+			AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory
+					.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
+
+			if (data.equals(Constants.NULL_ID))
+			{
+				session.setAttribute(Constants.ABSTRACT_QUERY, queryUIManager.getAbstractQuery());
+				dataQueryResultsBean = queryUIManager.getData(queryExecutionId,
+						ViewType.SPREADSHEET_VIEW);
+			}
+			else
+			{
+				dataQueryResultsBean = queryUIManager.getData(queryExecutionId, data,
+						ViewType.SPREADSHEET_VIEW);
+			}
+			dataList.addAll(dataQueryResultsBean.getAttributeList());
 		}
-		else
-		{
-			dataQueryResultsBean = queryUIManager.getData(queryExecutionId, data,
-					ViewType.SPREADSHEET_VIEW);
-		}
-		spreadsheetData.setDataList(dataQueryResultsBean.getAttributeList());
+
+		spreadsheetData.setDataList(dataList);
 		spreadsheetData.setDataTypeList(dataQueryResultsBean.getDataTypesList());
 	}
 }

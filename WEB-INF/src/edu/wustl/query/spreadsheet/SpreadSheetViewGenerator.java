@@ -6,6 +6,7 @@ import java.util.List;
 
 import edu.wustl.common.query.factory.ViewIQueryGeneratorFactory;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
+import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
@@ -49,21 +50,22 @@ public class SpreadSheetViewGenerator
 	 * @param spreadsheetData
 	 * @throws QueryModuleException 
 	 */
-	public void createSpreadsheet(NodeId node, QueryDetails queryDetailsObj,
+	public List<IQuery> createSpreadsheet(NodeId node, QueryDetails queryDetailsObj,
 			SpreadSheetData spreadsheetData)
 			throws QueryModuleException
 	{
 		ViewManager viewManager = ViewManager.getInstance(viewType);
-		List<IOutputAttribute> selectedColumns = viewManager.getSelectedColumnList(queryDetailsObj
-				.getQuery());
+		
 		AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
 				.getDefaultViewIQueryGenerator();
-		queryGenerator.createQueryForSpreadSheetView(node, queryDetailsObj);
+		List<IQuery> queries = queryGenerator.createQueryForSpreadSheetView(node, queryDetailsObj);
 
+		List<IOutputAttribute> selectedColumns = viewManager.getSelectedColumnList(queries.get(0));
 		List<String> columnsList = getColumnList(selectedColumns);
 
 		spreadsheetData.setColumnsList(columnsList);
-
+		
+		return queries;
 	}
 
 	/**
