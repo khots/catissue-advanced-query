@@ -4,6 +4,7 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 
 <%
 
@@ -12,6 +13,7 @@
 	response.setDateHeader ("Expires", 0);
 %>
 <%-- Imports --%>
+<link href="css/cider.css" rel="stylesheet" type="text/css" />
 <%@
 	page language="java" contentType="text/html"
 	import="edu.wustl.query.util.global.Constants, org.apache.struts.Globals"
@@ -236,6 +238,7 @@ String message = null;
 String popupMessage = (String)request.getAttribute(Constants.POPUP_MESSAGE);
 int queryCount = 0;%>
 <html:form action="SaveWorkflow">
+<logic:notEqual name="totalPages" value="0">
 <table width="100%" border="0" cellspacing="0" cellpadding="4">
 <tr>
 	<td>
@@ -353,45 +356,88 @@ int queryCount = 0;%>
 					</table>
 				</td>
 			</tr>
-			<tr>
+			<tr valign="bottom">
 			<td class="tr_color_lgrey" height="25px">&nbsp;</td>
-			<td class="tr_color_lgrey" height="30">
-				<table width="100%" border="0" cellspacing="0" cellpadding="0">
-			  <tr colspan="3" class="content_txt">
-				<td width="125" align="left" class="content_txt_bold">Show Items:&nbsp;
-															<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}">
+			<td colspan="2" class="tr_color_lgrey" valign="bottom">
+
+			<table height="*" width="100%" border="0" cellpadding="0" cellspacing="0">
+					<tr class="tr_color_lgrey">					
+						<td class="content_txt_bold" width="200">						  
+								<table>
+									<tr>
+										<td class="content_txt_bold" style="padding-left:5px;">
+											<bean:message key="userSearch.resultsPerPage"/>
+										</td>
+										<td>
+											<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}">
 												<html:options collection="resultsPerPageOptions" labelProperty="name" property="value"/>
 											</html:select>
-				</td>
-				<td align="right" style="padding-right:10px">
-													<c:set var="pageOf" value="${requestScope.pageOf}"/>  
-														<jsp:useBean id="pageOf" type="java.lang.String"/>
-
-
-													<c:set var="totalPages" value="${sessionScope.totalPages}"/>  
-														<jsp:useBean id="totalPages" type="java.lang.Integer"/>
-													<c:forEach var="pageCoutner" begin="1" end="${totalPages}">
-															<c:set var="linkURL">
-																RetrieveQueryAction.do?pageOf=<c:out value="${pageOf}"/>&requestFor=nextPage&pageNum=<c:out value="${pageCoutner}"/>
-															</c:set>
-															<jsp:useBean id="linkURL" type="java.lang.String"/>
-															<c:if test="${sessionScope.pageNum == pageCoutner}">
-																	<c:out value="${pageCoutner}"/> 
-															</c:if>
-															<c:if test="${sessionScope.pageNum != pageCoutner}"> | <a class="bluelink" href="<%=linkURL%>"><c:out value="${pageCoutner}"/></a>
-															</c:if>
-														</c:forEach>
-
-</td>
-				</tr>
-			</table>
-			</td>
+										</td>
+									</tr>
+								</table>
+							
+						  </td>
+						<td class="content_txt_bold" align="center">
+							<bean:message key="userSearch.showing"/> ${sessionScope.pageNum} <bean:message key="userSearch.of"/>  <c:out value="${sessionScope.totalPages}"></c:out>
+						</td>	
+						<td width="15" align="right">
+							
+							<logic:greaterEqual name="firstPageNum" value="${requestScope.numOfPageNums+1}">	
+								<a class="bluelinkNoUnderline" href="RetrieveQueryAction.do?requestFor=nextPage&pageOf=${requestScope.pageOf}&pageNum=${requestScope.firstPageNum-requestScope.numOfPageNums}&firstPageNum=${requestScope.firstPageNum-5}&lastPageNum=${requestScope.lastPageNum-5}"> 
+									<< 			    						    	
+								</a>							
+							</logic:greaterEqual>	
+						</td>
+						<td class="content_txt" width="100" align="center" nowrap>
+							<div ID="links">
+								<c:set var="pageOf" value="${requestScope.pageOf}"/>  
+								<jsp:useBean id="pageOf" type="java.lang.String"/>									
+								<c:set var="totalPages" value="${sessionScope.totalPages}"/>										 									
+								<jsp:useBean id="totalPages" type="java.lang.Integer"/>																														
+								<c:forEach var="pageCoutner" begin= "${requestScope.firstPageNum}" end="${requestScope.lastPageNum}">
+									<c:set var="linkURL">
+										RetrieveQueryAction.do?pageOf=<c:out value="${pageOf}"/>&requestFor=nextPage&pageNum=<c:out value="${pageCoutner}"/>
+									</c:set>
+									<jsp:useBean id="linkURL" type="java.lang.String"/>
+									<c:if test="${sessionScope.pageNum == pageCoutner}">
+									<span class="content_txt_bold">
+										<c:out value="${pageCoutner}"/> 
+									</span>
+									</c:if>
+									<c:if test="${sessionScope.pageNum != pageCoutner}">
+										<a class="bluelink" href="<%=linkURL%>"><c:out value="${pageCoutner}"/></a>
+									</c:if>
+									<c:if test="${pageCoutner < requestScope.lastPageNum}">
+										|&nbsp;
+									</c:if>
+								</c:forEach>    
+							</div>  
+						</td>	
+						<td width="15" style="padding-right:5px;"align="right">
+							<logic:lessEqual name="lastPageNum" value="${sessionScope.totalPages-1}">
+								<a class="bluelinkNoUnderline" href="RetrieveQueryAction.do?requestFor=nextPage&pageOf=${requestScope.pageOf}&pageNum=${requestScope.lastPageNum+1}&firstPageNum=${requestScope.firstPageNum+5}&lastPageNum=${requestScope.lastPageNum+5}"> 
+						  		  	>> 
+								</a>
+							</logic:lessEqual>
+							
+						</td>					
+					</tr>
+					
+		</table>
+		</td>
 			</tr>
 		</table>
 	</td>
 </tr>
 </table>
-
+</logic:notEqual>
+<table width="100%" cellpadding="4" cellspacing="0">
+<logic:equal name="totalPages" value="0">
+					<td class="content_txt_bold" style="padding-left:5px;" valign="top">
+					<bean:message key="meassges.emptyquery"/>
+					</td>	
+</logic:equal >
+</table>
 </html:form>
 </body>
 
