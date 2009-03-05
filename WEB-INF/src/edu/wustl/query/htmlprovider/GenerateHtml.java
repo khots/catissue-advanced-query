@@ -409,20 +409,19 @@ public class GenerateHtml
 		String buttonImg;
 		if (isEditLimits)
 		{
-			buttonImg = "t_edit_limits.gif";
+			buttonImg = "Edit Limits For";
 		}
 		else
 		{
-			buttonImg = "t_define_limits.gif";
+			buttonImg = "Define Limits For";
 		}
 		//String header = Constants.DEFINE_SEARCH_RULES;
-		String html = "<table border=\"0\" width=\"100%\" height=\"30%\" background=\"images/advancequery/bg_content_header.gif\" "
-				+ "cellspacing=\"0\" cellpadding=\"0\" >"
-				+ "\n<tr height=\"2%\" >"
-				+ "<td style=\"border-bottom: 1px solid #cccccc; \" valign='middle' height=\"2%\" class=\"grey_bold_big\" "
-				+ "colspan=\"8\" ><img src=\"images/advancequery/"
-				+ buttonImg
-				+ "\"  align=\"absmiddle\" />";
+		String html = "<table border=\"0\" width=\"100%\" height=\"28\" background=\"images/advancequery/bg_content_header.gif\" "
+			+ "cellspacing=\"0\" cellpadding=\"0\" >"
+			+ "\n<tr>"
+			+ "<td style=\"border-bottom: 1px solid #cccccc;padding-left:5px;\" valign='middle' class=\"grey_bold_big\" "
+			+ "colspan=\"8\" >"
+			+ buttonImg;
 		generatedPreHTML.append(html);
 		generatedPreHTML.append(" '" + entityName + "'");
 		generatedPreHTML.append(endTD);
