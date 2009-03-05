@@ -37,6 +37,7 @@ import gov.nih.nci.security.exceptions.CSObjectNotFoundException;
  */
 public class RetrieveQueryAction extends Action
 {
+
 	@Override
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -54,7 +55,10 @@ public class RetrieveQueryAction extends Action
 			initializeParameterizeQueryCollection(request, saveQueryForm,
 					  authorizedQueryCollection,
 					sharedQueryCollection);
-			request.setAttribute("pageOf", request.getParameter("pageOf"));
+			//user in workflow popup
+			request.setAttribute(Constants.PAGE_OF, request.getParameter(Constants.PAGE_OF));
+			request.setAttribute(Constants.MY_QUERIES_COUNT,  authorizedQueryCollection.size());
+			request.setAttribute(Constants.SHARED_QUERIES_COUNT, sharedQueryCollection.size());
 			actionForward = setActionForward(actionMapping, request.getParameter("pageOf"));
 		}
 		catch (HibernateException hibernateException)
