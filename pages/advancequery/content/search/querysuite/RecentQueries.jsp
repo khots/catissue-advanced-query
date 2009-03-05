@@ -115,6 +115,7 @@ function responseHandler(response)
 	
 				</tr>
 				</table>
+			</td>
 			</tr>
 
 			</table>
