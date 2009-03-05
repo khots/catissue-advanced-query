@@ -169,7 +169,7 @@
 					 <td width="50%" align="left" colspan="2">
 					  <table border="0" cellspacing="0" cellpadding="0"  >
 						<tr>
-							 <td style="padding-left:8px;" valign="top" ><a href="javascript:validateQuery('save');" ><img alt="Save" src="images/advancequery/b_save.gif" border="0"/></a></td>
+							 <td style="padding-left:8px; display:none;" valign="top" ><a href="javascript:validateQuery('save');" ><img alt="Save" src="images/advancequery/b_save.gif" border="0"/></a></td>
 							 <td style="padding-left:5px;" valign="top"><a href="javascript:showWorkFlowWizard();"><img  alt="Back to Workflow" src="images/advancequery/b_back_to_workflow.gif" border="0" /></a></td>
 						</tr>
 					 </table>
@@ -178,15 +178,6 @@
 					<td width="50%" align="right">
 					 <table border="0" cellspacing="0" cellpadding="0">
 					  <tr>
-						
-						<td id="projectList" style="padding-right:5px" > Select Project:
-							<SELECT NAME="dropdown" class="textfield" onChange="setProjectData(this,'categorySearchForm')">
-								<OPTION VALUE="">Unspecified..
-								<c:forEach var="project" items="${requestScope.categorySearchForm.projectsNameValueBeanList}">
-									<OPTION VALUE="${project.value}">${project.name}
-								</c:forEach>
-							</SELECT>
-					    </td>	
 						<td valign="top" align="right" style="padding-right:5px"><a href="javascript:saveClientQueryToServer('next');"><img alt="Define Results View >>" src="images/advancequery/b_define_results_view.gif" border="0" /></a></td>
 						</tr>
 					</table>
@@ -211,7 +202,6 @@
    if(wrkflw=="true")
    {
       document.getElementById("isWorkflow").value="true";
-	  document.getElementById("projectList").style.display="none";
    }
    else
    {
