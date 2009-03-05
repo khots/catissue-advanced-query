@@ -33,7 +33,6 @@ public class DefinedQueryUtil
 			throws UserNotAuthorizedException, BizLogicException, DAOException
 	{
 		IParameterizedQuery parameterizedQuery = populateParameterizedQueryData(query);
-		parameterizedQuery.setName(((IParameterizedQuery) query).getName());
 		edu.wustl.query.bizlogic.QueryBizLogic bizLogic = (edu.wustl.query.bizlogic.QueryBizLogic) AbstractBizLogicFactory
 				.getBizLogic(ApplicationProperties.getValue("app.bizLogicFactory"), "getBizLogic",
 						Constants.ADVANCE_QUERY_INTERFACE_ID);
@@ -55,7 +54,6 @@ public class DefinedQueryUtil
 	{
 		IParameterizedQuery parameterizedQuery = populateParameterizedQueryData(query);
 		parameterizedQuery.setId(query.getId());
-		parameterizedQuery.setName(((IParameterizedQuery) query).getName());
 		edu.wustl.query.bizlogic.QueryBizLogic bizLogic = (edu.wustl.query.bizlogic.QueryBizLogic) AbstractBizLogicFactory
 				.getBizLogic(ApplicationProperties.getValue("app.bizLogicFactory"), "getBizLogic",
 						Constants.ADVANCE_QUERY_INTERFACE_ID);
@@ -70,8 +68,11 @@ public class DefinedQueryUtil
 	 */
 	public IParameterizedQuery populateParameterizedQueryData(IQuery query)
 	{
-		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) query;
-		parameterizedQuery = QueryObjectFactory.createParameterizedQuery(query);
+		IParameterizedQuery originalQuery=(IParameterizedQuery)query;
+		IParameterizedQuery parameterizedQuery = QueryObjectFactory.createParameterizedQuery(query);
+		parameterizedQuery.setName(originalQuery.getName());
+		parameterizedQuery.setOutputAttributeList(originalQuery.getOutputAttributeList());
+		
 		return parameterizedQuery;
 	}
 

@@ -231,7 +231,7 @@ public class SaveQueryAction extends BaseAction
 		else
 		{
 			// Saving view 
-			setQueryOutputAttributeList(parameterizedQuery, session);
+			setQueryOutputAttributeList(parameterizedQuery, session,(IParameterizedQuery)query);
 		}
 		return parameterizedQuery;
 	}
@@ -271,14 +271,19 @@ public class SaveQueryAction extends BaseAction
 	 * This Method sets the  selected column to the output 
 	 * @param parameterizedQuery
 	 * @param session
+	 * @param query 
 	 */
 	private void setQueryOutputAttributeList(IParameterizedQuery parameterizedQuery,
-			HttpSession session)
+			HttpSession session, IParameterizedQuery query)
 	{
 		SelectedColumnsMetadata selectedColumnsMetadata = (SelectedColumnsMetadata) session
 				.getAttribute(Constants.SELECTED_COLUMN_META_DATA);
 		List<IOutputAttribute> selectedOutputAttributeList = new ArrayList<IOutputAttribute>();
-		if (selectedColumnsMetadata != null)
+		if (selectedColumnsMetadata == null)
+		{
+			selectedOutputAttributeList=query.getOutputAttributeList();
+		}
+		else
 		{
 			selectedOutputAttributeList = selectedColumnsMetadata.getSelectedOutputAttributeList();
 		}
