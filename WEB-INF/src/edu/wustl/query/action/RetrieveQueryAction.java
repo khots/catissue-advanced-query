@@ -88,7 +88,7 @@ public class RetrieveQueryAction extends Action
 			CSObjectNotFoundException
 	{
 
-
+			Collection<IParameterizedQuery> finalQueries= null;
 			CsmUtility csmUtility=getDefaultCsmUtility();
 			csmUtility.checkExecuteQueryPrivilege(parameterizedQueryCollection, authorizedQueryCollection, sharedQueryCollection,(SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA));
 			setQueryCollectionToSaveQueryForm(saveQueryForm, (String) request.getAttribute("pageOf"), authorizedQueryCollection,
@@ -100,6 +100,7 @@ public class RetrieveQueryAction extends Action
 				)
 				)
 			{
+				finalQueries = authorizedQueryCollection;
 				saveQueryForm.setParameterizedQueryCollection(authorizedQueryCollection);
 				saveQueryForm=
 					setPagiantion(request,request.getParameter("requestFor"),saveQueryForm);
@@ -111,11 +112,12 @@ public class RetrieveQueryAction extends Action
 					Constants.SAHRED_QUERIES_FOR_WORKFLOW.equals(request.getParameter("pageOf"))
 					))
 			{
+				finalQueries = sharedQueryCollection;
 				saveQueryForm.setParameterizedQueryCollection(sharedQueryCollection);
 			
-			}
-			
+			}			
 			setPagiantion(request,request.getParameter("requestFor"),saveQueryForm);
+			saveQueryForm.setParameterizedQueryCollection(getMaxRecord(finalQueries,request));
 	}
 
 
@@ -130,41 +132,79 @@ public class RetrieveQueryAction extends Action
 			totalRecords=saveQueryForm.getParameterizedQueryCollection().size();
 		}
 		
-		int startIndex=0;
-		int pageNum=getPageNumber(request,requestFor);
-		int maxRecords = getRecordsPerPage(request,requestFor);
-		if(maxRecords==-1)
-		{
-			maxRecords=10;
-		}
-		if(pageNum<1)
-		{
-			pageNum=1;
-		}
-		startIndex=maxRecords*(pageNum-1);
-		
-		int totalPages=0;
-
-		totalRecords=getTotalRecords(request,requestFor,totalRecords);
-
-		if(totalRecords>0)
-		{
-			totalPages=totalRecords%maxRecords==0?totalRecords/maxRecords:(totalRecords/maxRecords)+1;
-		}
+		int startIndex = 0;
+		int pageNum = getPageNumber(request, requestFor);
+		int maxRecords = getRecordsPerPage(request, requestFor);		
+				
 		request.getSession().setAttribute(Constants.RESULTS_PER_PAGE,maxRecords );
 		request.getSession().setAttribute(Constants.PAGE_NUMBER,pageNum );
+		
+		startIndex = maxRecords * (pageNum - 1);
+		totalRecords=getTotalRecords(request,requestFor,totalRecords);
+		int totalPages = getTotalPages(maxRecords, totalRecords);
 		request.getSession().setAttribute("totalPages",totalPages);
 		request.getSession().setAttribute(Constants.TOTAL_RESULTS, totalRecords);
+		request.getSession().setAttribute("startIndex",startIndex);
 		
 		List<NameValueBean> resultsPerPageOptions=new ArrayList<NameValueBean>();
+		resultsPerPageOptions.add(new NameValueBean("5","5"));
 		resultsPerPageOptions.add(new NameValueBean("10","10"));
-		resultsPerPageOptions.add(new NameValueBean("20","20"));
-		resultsPerPageOptions.add(new NameValueBean("30","30"));
+		resultsPerPageOptions.add(new NameValueBean("15","15"));
 		
 		request.setAttribute("resultsPerPageOptions", resultsPerPageOptions);
+		
+		int firstPageNo = 1, currentPageNo;
+		currentPageNo = (Integer) (request.getSession().getAttribute("pageNum"));
+
+		if (request.getParameter("firstPageNum") != null)
+		{
+			firstPageNo = Integer.parseInt(request.getParameter("firstPageNum"));
+		}
+		else
+		{
+			if (currentPageNo % 5 == 0)
+			{
+				firstPageNo = currentPageNo - 4;
+			}
+			else
+			{
+				firstPageNo = currentPageNo - (currentPageNo % 5 - 1);
+			}
+		}
+		if (firstPageNo < 5)
+		{
+			firstPageNo = 1;
+		}
+		request.setAttribute("firstPageNum", firstPageNo);
+		request.setAttribute("numOfPageNums", 5);
+		if ((firstPageNo + 4) > (Integer) (request.getSession().getAttribute("totalPages")))
+		{
+			request.setAttribute("lastPageNum", (Integer) (request.getSession()
+					.getAttribute("totalPages")));
+		}
+		else
+		{
+			request.setAttribute("lastPageNum", firstPageNo + 4);
+		}
+		
 		return saveQueryForm;
 	}
 
+	/**
+	 * @param maxRecords
+	 * @param totalRecords
+	 * @return
+	 */
+	private int getTotalPages(int maxRecords,
+			int totalRecords)
+	{
+		int totalPages=0;		
+		totalPages = totalRecords % maxRecords == 0
+				? totalRecords / maxRecords
+				: (totalRecords / maxRecords) + 1;		
+		return totalPages;
+	}
+	
 	private int getTotalRecords(HttpServletRequest request, String requestFor, int matchingUsersCount)
 	{
 		int totalRecords=0;
@@ -219,6 +259,22 @@ public class RetrieveQueryAction extends Action
 		}
 	}
 
+	private Collection<IParameterizedQuery> getMaxRecord(Collection<IParameterizedQuery> queries,HttpServletRequest request)
+	{
+		Collection<IParameterizedQuery> coll = new ArrayList<IParameterizedQuery>();
+		int maxRec = (Integer) request.getSession().getAttribute(Constants.RESULTS_PER_PAGE);
+		int strartIndex = (Integer) request.getSession().getAttribute("startIndex");
+		IParameterizedQuery arr[] = new IParameterizedQuery[queries.size()];
+		queries.toArray(arr);
+		for (int i=0;i<maxRec;i++)
+		{
+			if((i+strartIndex)==arr.length)
+				break;
+			else
+				coll.add(((IParameterizedQuery)arr[i+strartIndex])); 			
+		}		
+		return coll;
+	}
 	private int getRecordsPerPage(HttpServletRequest request, String requestFor)
 	{
 		Object recordsPerPageObj=getSessionAttribute(request,Constants.RESULTS_PER_PAGE);

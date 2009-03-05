@@ -91,6 +91,7 @@ public class RetrieveRecentQueriesAction extends Action
 
 		}
 		request.setAttribute(Constants.RESULTS_PER_PAGE, showLast);
+		request.setAttribute("records", recordCountToDisplay);
 		if (showLast < recordCountToDisplay)
 		{
 			recordCountToDisplay = showLast;
@@ -100,51 +101,22 @@ public class RetrieveRecentQueriesAction extends Action
 	}
 
 	/**
-	 * set the pagination related data 
-	 * @param request = HttpRequest
-	 * @param requestFor = requested for page 
-	 * @param showRetrieveRecentForm =ShowRetrieveRecentForm
-	 * @return
-	 * @throws QueryModuleException 
+	 * @param request
+	 * @param showRetrieveRecentForm
+	 * @throws DAOException
+	 * @throws QueryModuleException
 	 */
-	private int setPagiantion(HttpServletRequest request,
-			ShowRetrieveRecentForm showRetrieveRecentForm) throws QueryModuleException
-	{
-		int totalRecords = setDisplayedRecentQueryCount(request);
-		int maxRecords = getNumberOfRecordsPerPage();
-		int totalPages = 0;
-		if (totalRecords > 0)
-		{
-			totalPages = totalRecords % maxRecords == 0
-					? totalRecords / maxRecords
-					: (totalRecords / maxRecords) + 1;
-		}
-		int pageNum = getPageNumber(request);
-
-		request.getSession().setAttribute("pageNum", pageNum);
-		request.getSession().setAttribute(Constants.TOTAL_PAGES, totalPages);
-		request.getSession().setAttribute(Constants.TOTAL_RESULTS, totalRecords);
-		request.setAttribute(Constants.PAGE_OF,request.getParameter(Constants.PAGE_OF));
-		//drop down box
-		request.setAttribute(Constants.RESULTS_PER_PAGE_OPTIONS, Constants.SHOW_LAST_OPTION);
-
-		return totalRecords;
-	}
-
 	private void populateRecentQueries(HttpServletRequest request,
 			ShowRetrieveRecentForm showRetrieveRecentForm) throws DAOException,
 			QueryModuleException
 	{
-		int totalCount = setPagiantion(request, showRetrieveRecentForm);
 		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
 				Constants.SESSION_DATA);
 
-		int pageNum = getPageNumber(request);//return the page number for requested
-		int recordsPerPage = getNumberOfRecordsPerPage();//records per  page
-		int lastIndex = calculateLastIndex(totalCount, pageNum, recordsPerPage);
-
-		List<List<String>> queryResultList = retrieveQueries(sessionDataBean, pageNum,
-				recordsPerPage, lastIndex);
+		request.setAttribute(Constants.PAGE_OF,request.getParameter(Constants.PAGE_OF));
+		request.setAttribute(Constants.RESULTS_PER_PAGE_OPTIONS, Constants.SHOW_LAST_OPTION);
+		int lastIndex = setDisplayedRecentQueryCount(request);
+		List<List<String>> queryResultList = retrieveQueries(sessionDataBean, lastIndex);
 
 		List<RecentQueriesBean> recentQueriesBeanList = populateRecentQueryBean(sessionDataBean,
 				queryResultList);
@@ -165,8 +137,8 @@ public class RetrieveRecentQueriesAction extends Action
 	 * @return
 	 * @throws QueryModuleException 
 	 */
-	private List<List<String>> retrieveQueries(SessionDataBean sessionDataBean, int pageNum,
-			int recordsPerPage, int lastIndex) throws QueryModuleException
+	private List<List<String>> retrieveQueries(SessionDataBean sessionDataBean,int lastIndex) 
+	throws QueryModuleException
 	{
 //		String sql = "select * from  COUNT_QUERY_EXECUTION_LOG where USER_ID="
 //				+ sessionDataBean.getUserId() + " order by CREATIONTIME desc ";
@@ -175,7 +147,7 @@ public class RetrieveRecentQueriesAction extends Action
 		   "FROM QUERY_EXECUTION_LOG qel, COUNT_QUERY_EXECUTION_LOG cqel "+
 		   "WHERE qel.QUERY_EXECUTION_ID = cqel.COUNT_QUERY_EXECUTION_ID and cqel.USER_ID="+sessionDataBean.getUserId() + "  order by qel.CREATIONTIME desc ";
 		List<List<String>> queryResultList = executeQuery(sql, sessionDataBean, false, false, null,
-				(pageNum - 1) * recordsPerPage, lastIndex);
+				0, lastIndex);
 		return queryResultList;
 	}
 
@@ -206,72 +178,7 @@ public class RetrieveRecentQueriesAction extends Action
 		}
 		return recentQueriesBeanList;
 	}
-
-	/**
-	 * This method set the last index of records to be fetched
-	 * @param totalCount=total records
-	 * @param pageNum=page number for which last index is to be manipulate
-	 * @param recordsPerPage= number of records per page
-	 * @return =last index
-	 */
-	private int calculateLastIndex(int totalCount, int pageNum, int recordsPerPage)
-	{
-		if (recordsPerPage * pageNum > totalCount)
-		{
-			return totalCount - (recordsPerPage * (pageNum - 1));
-		}
-		return recordsPerPage;
-	}
-
-	/**
-	 * This method returns the page number 
-	 * @param request
-	 * @param requestFor = request for which page 
-	 * @return 
-	 */
-	private int getPageNumber(HttpServletRequest request)
-	{
-		//String requestFor=request.getParameter("requestFor");
-		Object pageNumObj = getSessionAttribute(request, Constants.PAGE_NUMBER);
-		int pageNum = 0;
-		if (pageNumObj != null)///&& requestFor != null)
-		{
-			pageNum = Integer.parseInt(pageNumObj.toString());
-		}
-		else
-		{
-			pageNum = 1;
-		}
-
-		return pageNum;
-	}
-
-	/**
-	 * this method returns the given attribute from request
-	 * or session
-	 * @param request
-	 * @param attributeName
-	 * @return
-	 */
-	private Object getSessionAttribute(HttpServletRequest request, String attributeName)
-	{
-		Object object = null;
-		if (request != null)
-		{
-			object = request.getParameter(attributeName);
-			if (object == null)
-			{
-				object = request.getAttribute(attributeName);
-				if (object == null)
-				{
-					object = request.getSession().getAttribute(attributeName);
-				}
-			}
-		}
-
-		return object;
-	}
-
+	
 	/**
 	 * @param id=query id
 	 * @param sessionDataBean session specific data
@@ -289,14 +196,6 @@ public class RetrieveRecentQueriesAction extends Action
 		dao.closeSession();
 
 		return name;
-	}
-
-	/**
-	 * @return number of results per page
-	 */
-	private int getNumberOfRecordsPerPage()
-	{
-		return Constants.PER_PAGE_RESULTS;
 	}
 
 	/**
