@@ -94,7 +94,8 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 		DefinedQueryUtil definedQueryUtil = new DefinedQueryUtil();
 		try
 		{
-			definedQueryUtil.insertQuery(query,(SessionDataBean)session.getAttribute(Constants.SESSION_DATA),false);
+			definedQueryUtil.insertQuery(query, (SessionDataBean) session
+					.getAttribute(Constants.SESSION_DATA), false);
 		}
 		catch (UserNotAuthorizedException e)
 		{
@@ -138,4 +139,21 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 		}
 	}
 
+	/**
+	 * Method to get object of AbstractQuery
+	 * @return abstractQuery object of AbstractQuery
+	 */
+	public AbstractQuery getAbstractQuery()
+	{
+		return abstractQuery;
+	}
+
+	/**
+	 * Method to set object of AbstractQuery
+	 * @param abstractQuery object of AbstractQuery
+	 */
+	public void setAbstractQuery(AbstractQuery abstractQuery)
+	{
+		this.abstractQuery = abstractQuery;
+	}
 }
