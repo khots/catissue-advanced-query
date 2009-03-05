@@ -1030,7 +1030,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
                           <tr>
                             <td align="right"  nowrap ><span class="content_txt_bold"><bean:message  key="workflow.project"/></span>&nbsp;
 							 <SELECT name="selectedProject" id="selectedProject" class="texttype" onchange="showResetCountPopup()">
-							   <option VALUE="-1">Select...</option>
+							   <option VALUE="-1">Unspecified...</option>
 								<c:forEach var="project" items="${requestScope.projectsNameValueBeanList}">
 									<OPTION VALUE="${project.value}">${project.name}
 								</c:forEach>
