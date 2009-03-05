@@ -171,10 +171,10 @@ public class WorkflowAjaxHandlerAction extends Action
                         Map<Long, Integer> executionIdMap = workflowBizLogic
                                 .runWorkflow(workflowdetails,
                                         request);
-                        executionQueryResults
-                                .addAll(generateExecutionQueryResults(
+                        executionQueryResults=
+                               generateExecutionQueryResults(
                                         executionIdMap, workflowBizLogic,
-                                        qUIManager, project_id));
+                                        qUIManager, project_id);
                     }
                     else
                     {
@@ -187,10 +187,10 @@ public class WorkflowAjaxHandlerAction extends Action
                             Map<Long, Integer> executionIdMap = workflowBizLogic
                                     .executeGetCountQuery(workflowdetails, queryId,
                                             request);
-                            executionQueryResults
-                                    .addAll(generateExecutionQueryResults(
+                            executionQueryResults=
+                                    generateExecutionQueryResults(
                                             executionIdMap, workflowBizLogic,
-                                            qUIManager, project_id));
+                                            qUIManager, project_id);
 
                         } else
                         {
@@ -227,6 +227,7 @@ public class WorkflowAjaxHandlerAction extends Action
             }
 	        catch (Exception e) {
 	        	Logger.out.debug(e.getMessage(),e);
+	        	e.printStackTrace();
 				try {
 						response.setContentType("text/xml");
 						writer.write(Constants.QUERY_EXCEPTION);
