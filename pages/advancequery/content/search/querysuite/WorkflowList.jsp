@@ -34,7 +34,7 @@ function init_grid()
 	mygrid.setImagePath("dhtml_comp/imgs/");
 	mygrid.setStyle("font-family: Arial, Helvetica, sans-serif;font-size: 12px;font-weight: bold;color: #000000;background-color: #E2E2E2; border-left-width: 1px;border-left-color: #CCCCCC; border-top-width: 1px;border-top-color: #CCCCCC; border-bottom-color: #CCCCCC; border-top-width: 1px;border-bottom-color: #CCCCCC; border-right-width: 1px;border-right-color: #CCCCCC; text-align:left;padding-left:10px;");
 	mygrid.setHeader(columns);
-	mygrid.setEditable("true");
+	mygrid.setEditable("false");
 	mygrid.enableAutoHeigth(true);
 	mygrid.enableAlterCss("even","uneven");
     mygrid.enableRowsHover(true,'grid_hover')
