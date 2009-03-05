@@ -207,7 +207,7 @@ function changeResPerPage(controlId)
 
 function retrieveMyQueries(pageOf)
 {
-	var url='RetrieveQueryAction.do?pageOf=sharedQueriesForWorkFlow&requestFor=nextPage&pageNum=1';
+	var url='RetrieveQueryAction.do?pageOf='+pageOf+'&requestFor=nextPage&pageNum=1';
 	document.forms[0].action=url;
 	document.forms[0].submit();	
 }
@@ -245,7 +245,18 @@ int queryCount = 0;%>
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="login_box_bg">
 			<tr >
 				<td width="20%" align="left" valign="top" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_explore.gif" alt="Explore" width="64" height="26" valign="absmiddle"></td>
-				<td valign="top" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_myqueries.gif" alt="My Queries " width="99" height="26" valign="absmiddle"></td>
+
+				<td valign="top" background="images/advancequery/bg_content_header.gif">
+				<c:set var="query_type_data" value="myQueriesForWorkFlow"/>
+				 <c:set var="qtype" value="${requestScope.pageOf}"/>
+				  <logic:equal name="query_type_data" value="${qtype}">
+					<img src="images/advancequery/t_myqueries.gif" alt="My Queries " width="99" height="26" valign="absmiddle">
+				  </logic:equal>
+				   <logic:notEqual name="query_type_data" value="${qtype}">
+						<img src="images/advancequery/t_shared_queries.gif" alt="My Queries " width="125" height="26" valign="absmiddle">
+				   </logic:notEqual>
+				</td>
+
 			</tr>
 			<tr>
 				<td valign="top" style="border-right:1px solid #DDDDDD; border-bottom:1px solid #DDDDDD;" height="300px">
