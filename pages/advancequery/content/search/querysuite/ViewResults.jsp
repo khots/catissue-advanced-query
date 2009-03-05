@@ -3,6 +3,21 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ page import="edu.wustl.query.util.global.Constants"%>
 <script src="jss/advancequery/queryModule.js"></script>
+<script  src="dhtml_comp/js/dhtmlXCommon.js"></script>
+<script  src="dhtml_comp/js/dhtmlXGrid.js"></script>		
+<script  src="dhtml_comp/js/dhtmlXGridCell.js"></script>	
+<script  src="dhtml_comp/js/dhtmlXGrid_mcol.js"></script>
+<script  src="dhtml_comp/js/dhtmlwindow.js"></script>	
+<script  src="dhtml_comp/js/modal.js"></script>
+<link rel="stylesheet" type="text/css" href="css/advancequery/catissue_suite.css" />
+
+<script>
+function openPopupWindow()
+{
+      confidentialitywindow=dhtmlmodal.open('CIDER', 'iframe', 'Forward.do','CIDER Confidentiality Terms & Conditions', 'width=830px,height=300px,center=1,resize=0,scrolling=1')
+   	 
+}
+</script>
 <%
 String formAction = Constants.DefineSearchResultsViewJSPAction;
            boolean mac = false;
@@ -31,11 +46,16 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 				<img src="images/advancequery/3_active.gif" /> <!--  width="139" height="38" /-->
 			</td>
 		</tr>
-		<tr height="90%" valign="top">
-		<td colspan="4" height="100%">
-<table border="0" height="98%" width="100%">
-	<tr height="100%">
-		<td width="25%" colspan="1" valign="top" height="100%">
+		<tr valign="top">
+		<td colspan="4" >
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" height="40">
+<tr>
+<td style="padding-left:10px;" class="content_txt">Project: </td><td align="right" style="padding-right:10px;"><a href="javascript:openPopupWindow()" class="bluelink">Export</a></td>
+</tr>
+</table>
+</td>
+	<tr valign="top">
+		<td width="25%" colspan="1" valign="top" height="100%" style="padding-left:10px;" style="padding-right:5px;" >
 			<iframe id="<%=Constants.TREE_VIEW_FRAME%>" src="<%=Constants.QUERY_TREE_VIEW_ACTION%>?pageOf=pageOfQueryResults" scrolling="auto" frameborder="0" width="100%" height="100%">
 				Your Browser doesn't support IFrames.
 			</iframe>
@@ -70,4 +90,4 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 </td>
 </tr>
 </html:form>
-</table>			
+</table>		
