@@ -1839,8 +1839,18 @@ var jsReady = false;
 		
 		  if(text=="cancel")	
 			{
-			  alert("This feature is currently not available..!");
-			  return ;
+				var isWorkflow = document.getElementById("isWorkflow").value;
+				var forwardTo="";
+				if(isWorkflow=='true')
+					forwardTo="RedirectToWorkflow.do";
+				else
+				{
+					forwardTo="ShowDashboard.do";
+					document.forms[0].requestFrom.value="MyQueries"; 
+				}
+				document.forms[0].action = forwardTo;
+				document.forms[0].submit(); 
+				return ;
 			}
 		  if (text != "save")
 		  {
