@@ -2,7 +2,6 @@
 package edu.wustl.query.exportmanager;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.wustl.common.beans.NodeInfo;
@@ -115,18 +114,8 @@ public abstract class AbstractExportDataThread implements Runnable
 	 */
 	private final void generateCSV(List dataList) throws IOException
 	{
-		// Hard coded data for testing
-		List<List<Object>> dList = new ArrayList<List<Object>>();
-		List<Object> list = new ArrayList<Object>();
-		list.add("abcd");
-		list.add("99897");
-		list.add("c");
-		list.add("1025");
-		
-		dList.add(list);
-		
 		ExportReport report = new ExportReport("f:\\zip_Trial\\file.csv");
-		report.writeData(dList, Constants.DELIMETER);
+		report.writeData(dataList, Constants.DELIMETER);
 		report.closeFile();
 	}
 
@@ -148,11 +137,11 @@ public abstract class AbstractExportDataThread implements Runnable
 		}
 		catch (QueryModuleException ex)
 		{
-			Logger.out.debug(ex.getMessage());
+			Logger.out.debug(ex.getMessage(), ex);
 		}
 		catch (IOException ex)
 		{
-			Logger.out.debug(ex.getMessage());
+			Logger.out.debug(ex.getMessage(), ex);
 		}
 	}
 
