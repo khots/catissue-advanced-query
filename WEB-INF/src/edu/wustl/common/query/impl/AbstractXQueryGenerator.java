@@ -323,8 +323,9 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 					{
 						AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
 						String xQueryDataType = getXQuerydataType(primaryKey);
-						leftAttribute = "$" + getAliasName(parentExpression) + "/"
-								+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+						leftAttribute = getManyToOneLeft(parentExpression,cnstrKeyProp);
+//						leftAttribute = "$" + getAliasName(parentExpression) + "/"
+//								+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
 						EntityInterface entity = cnstrKeyProp.getSrcPrimaryKeyAttribute()
 								.getEntity();
 						String entityPath = getEntityPath(entity, childExpression);
@@ -347,8 +348,9 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 						String entityPath = getEntityPath(entity, parentExpression);
 
 						String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute().getName();
-						leftAttribute = "$" + getAliasName(parentExpression) + entityPath + "/"
-								+ primaryKeyName;
+						leftAttribute = getOneToManyLeft(parentExpression,entityPath,cnstrKeyProp);
+//						leftAttribute = "$" + getAliasName(parentExpression) + entityPath + "/"
+//								+ primaryKeyName;
 						rightAttribute = "$" + getAliasName(childExpression) + "/"
 								+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName() + "/"
 								+ xQueryDataType;
@@ -373,6 +375,12 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		return buffer.toString();
 	}
 
+
+	protected abstract String getOneToManyLeft(IExpression parentExpression,
+			String entityPath, ConstraintKeyPropertiesInterface cnstrKeyProp);
+
+	protected abstract String getManyToOneLeft(IExpression parentExpression,
+			ConstraintKeyPropertiesInterface cnstrKeyProp);
 
 	/**
 	 * 
