@@ -98,7 +98,7 @@ MM_reloadPage(true);
 				<SELECT NAME="getCount" class="textfield" onChange="setProjectData(this,'form2')">
 							<c:choose>
 								<c:when test="${currentSelectedProject==''}">
-									<OPTION VALUE="" selected>Unspecified..
+									<OPTION VALUE="" selected>Unspecified
 								</c:when>
 								<c:otherwise>
 									<OPTION VALUE="">Unspecified..
