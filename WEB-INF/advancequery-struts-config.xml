@@ -35,6 +35,10 @@ PUBLIC
 		 			<forward name="success" path=".query.homePageDef" /> 
 		</action>
 		
+		<action path="/Forward"
+					type="org.apache.struts.actions.ForwardAction"
+					parameter=".terms.andConditions" />
+		
 		<action path="/QueryHome"
 					type="org.apache.struts.actions.ForwardAction"
 					parameter=".query.mainTitlePageDef" />
