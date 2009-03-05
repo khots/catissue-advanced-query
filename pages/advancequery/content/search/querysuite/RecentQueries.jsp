@@ -78,7 +78,7 @@ function responseHandler(response)
 <body onLoad="initializeAjaxCall()" >
 	<%int count = 0;%>
 	<html:form action="RetrieveRecentQueries">
-<logic:notEqual name="totalPages" value="0">
+<logic:notEqual name="records" value="0">
 		 <table width="100%" bgcolor="#cccccc" cellpadding="0" cellspacing="0">
 			  <tr>
 			  <td><table width="100%" border="0"  cellspacing="1" cellpadding="4" >
@@ -129,7 +129,7 @@ function responseHandler(response)
 		 </table>
 </logic:notEqual>
 <table width="100%" cellpadding="4" cellspacing="0">
-<logic:equal name="totalPages" value="0">
+<logic:equal name="records" value="0">
 					<td class="content_txt_bold" style="padding-left:5px;" valign="top">
 					<bean:message key="meassges.emptyquery"/>
 					</td>	
