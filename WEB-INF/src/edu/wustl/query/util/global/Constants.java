@@ -817,6 +817,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String QRY_COUNT = "QUERY_COUNT";
     /**  Constant for DEID_SEQUENCE **/
     public static final String DEID_SEQUENCE = "DEID_SEQUENCE";
+    /**  Constant for PARAMETRIZED_ATTRIBUTE **/
+    public static final String PARAMETERIZED = "PARAMETERIZED";
 
 
     /**  Constant for  ITABLE_ATTRIBUTES**/
