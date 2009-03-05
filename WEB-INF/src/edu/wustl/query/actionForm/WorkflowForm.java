@@ -341,20 +341,20 @@ public class WorkflowForm extends AbstractActionForm
 	/**
 	 * Contains the query execution ID
 	 */
-	int[] queryExecId;
+	Integer[] queryExecId;
 	
 	/**
 	 * @return query Execution id
 	 */
-	public int[] getQueryExecId() {
+	public Integer[] getQueryExecId() {
 		return queryExecId;
 	}
 
 	/**
 	 * @param queryExecId=query Execution Id
 	 */
-	public void setQueryExecId(int[] queryExecId) {
-		this.queryExecId = queryExecId;
+	public void setQueryExecId(Integer[] queryExeId) {
+		this.queryExecId = queryExeId;
 	}
 
 	/* (non-Javadoc)
@@ -432,8 +432,6 @@ public class WorkflowForm extends AbstractActionForm
 		this.id = workflow.getId();
 		this.name = Utility.toString(workflow.getName());
 		List<WorkflowItem> workflowItemList = workflow.getWorkflowItemList();
-		Map<Long,Integer> queryExecutionIdMap=generateExecutionIdMap(abstractDomain.getId());
-		//  display title
 		int size= workflowItemList.size();
 		String[] displayQueryTitle = new String[size];
 		String[] displayQueryType = new String[size];
@@ -638,14 +636,4 @@ public class WorkflowForm extends AbstractActionForm
 		this.identifier = identifier;
 	}
 
-	/**
-	 * This method returns the map of query execution ids
-	 * @param workflowId
-	 * @return
-	 */
-	public  Map<Long, Integer> generateExecutionIdMap(Long workflowId)
-	{
-		Map<Long,Integer> queryExecutionIdMap=new HashMap<Long,Integer>();
-		return queryExecutionIdMap;
-	}
 }
