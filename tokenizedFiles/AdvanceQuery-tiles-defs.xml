@@ -33,7 +33,11 @@
 	</definition>
 	
 	<!-- Home tab pages definitions end -->
-
+	
+	<definition name=".terms.andConditions" 
+	path="/pages/advancequery/content/TermsAndConditions.jsp">
+	</definition>
+	
 	<definition name=".query.configurationSuccessDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/advancequery/content/search/ConfigureResultView.jsp" />
 	</definition>
