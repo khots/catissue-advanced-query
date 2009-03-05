@@ -272,12 +272,12 @@ int queryCount = 0;%>
 						<td align="right">
 							<table border="0" cellspacing="0" cellpadding="2">
 								<tr>
-								  <td class="content_txt"><bean:message key="workflow.show"/></td>
-								  <td><select name="select" class="textfield_undefined" disabled="true">
+								<!--    <td class="content_txt"><bean:message key="workflow.show"/></td>
+								<td><select name="select" class="textfield_undefined" disabled="true">
 									<option>All</option>
 									<option>Get Count</option>
 									<option>Get Patient Data</option>
-								  </select></td>
+								  </select></td>-->
 								</tr>
 						  </table>
 						</td>
