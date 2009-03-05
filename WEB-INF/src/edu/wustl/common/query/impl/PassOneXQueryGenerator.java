@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.query.impl.predicate.AbstractPredicate;
@@ -449,4 +450,35 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			return new StringBuilder(Constants.WHERE).append(xQueryWherePart).toString();
 		}
 	}
+	
+	/**
+	 * to pass the left hand side of joining expression in case of One to Many case
+	 * associated with it 
+	 * @param parentExpression
+	 * entityPath - path of the entity
+	 * primaryKeyName - name of primary key
+	 * @return - left attribute of joining condition
+	 */
+	protected String getOneToManyLeft(IExpression parentExpression,
+			String entityPath, ConstraintKeyPropertiesInterface cnstrKeyProp)
+	{
+		return "$" + getAliasName(parentExpression) + entityPath + "/"
+		+ cnstrKeyProp.getSrcPrimaryKeyAttribute().getName();
+	}
+
+	/**
+	 * to pass the left hand side of joining expression in case of Many to One case
+	 * associated with it 
+	 * @param parentExpression
+	 * entityPath - path of the entity
+	 * primaryKeyName - name of primary key
+	 * @return - left attribute of joining condition
+	 */
+	protected String getManyToOneLeft(IExpression parentExpression,
+			ConstraintKeyPropertiesInterface cnstrKeyProp)
+	{
+		return "$" + getAliasName(parentExpression) + "/"
+		+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+	}
+	
 }
