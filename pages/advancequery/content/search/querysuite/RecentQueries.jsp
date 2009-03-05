@@ -70,9 +70,12 @@ function responseHandler(response)
 					CountObject.innerHTML= queryCount;
 				}
 			}	
+			if(status!="Completed"&&status!="Cancelled")
+			  {
+					recentQueryAjaxCall(executionId,index);
+			  }
           }
-		if(status!="Completed")
-			recentQueryAjaxCall(executionId,index);
+
 }
 </script>
 <body onLoad="initializeAjaxCall()" >
