@@ -132,9 +132,13 @@ public class ShowGridAction extends BaseAction
 		AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory
 				.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
 
+		HttpSession session = request.getSession();
+		
 		DataQueryResultsBean dataQueryResultsBean;
 		if (data.equals(Constants.NULL_ID))
 		{
+			session.setAttribute(Constants.ABSTRACT_QUERY, queryUIManager.getAbstractQuery());
+			
 			dataQueryResultsBean = queryUIManager.getData(queryExecutionId,
 					ViewType.SPREADSHEET_VIEW);
 		}
