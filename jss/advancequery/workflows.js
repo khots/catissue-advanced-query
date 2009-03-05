@@ -37,7 +37,13 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 				columnObj.width="10";//set width for checkbox control
 
 			}
-			columnObj.className="content_txt";
+
+			columnObj.className="aligntop";
+			if(counter==1)
+			{
+				columnObj.className="workflowicon";//set width for checkbox control
+
+			}
 			columnObj.appendChild(columnContents[counter]);
 			if(columnContents[counter].name=="selectedqueryId")
 			{
@@ -52,6 +58,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 		
 	//Create all the hidden controls and add them to a "td"
 	var operandsTd=document.createElement("td");
+	operandsTd.className="aligntop";
 	operandsTd.width="100"
 	//operandsTd.className="aligntop";
 	
@@ -61,11 +68,15 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	tbody1.depth="5";
 	var operandsTr=document.createElement("tr");
 	var operandsTd1=document.createElement("td");
+	operandsTd1.className="aligntop";
 	//operandsTd1.className="aligntop";
 	operandsTd1.width="100"
 	var operandsTd2=document.createElement("td");
+	operandsTd2.className="aligntop";
+
 	//operandsTd2.className="aligntop";
 	var operandsTd3=document.createElement("td");
+	operandsTd3.className="aligntop";
 	//operandsTd3.className="aligntop";
 
 
