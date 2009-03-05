@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.NodeInfo;
+import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.querymanager.Count;
@@ -80,4 +81,8 @@ public abstract class AbstractQueryUIManager {
 	 * @throws QueryModuleException
 	 */
 	abstract public boolean checkTooFewRecords(Long projectId, Count countObject) throws QueryModuleException;
+	
+	abstract public AbstractQuery getAbstractQuery();
+	
+	abstract public void setAbstractQuery(AbstractQuery abstractQuery);
 }
