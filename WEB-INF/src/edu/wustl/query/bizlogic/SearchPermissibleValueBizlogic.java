@@ -386,11 +386,12 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * This method returns  HTML Error message
 	 * @return
 	 */
-	public String getErrorMessageAsHTML()
+	public String getErrorMessageAsHTML(String msg)
 	{
 		return "<table width='100%' height='100%'>"
 				+ "<tr><td class='black_ar_tt' style='color:red'>"
-				+ "Error occured while Searching.Please report this problem to the Adminstrator.<td></tr></table>";
+				+msg+
+				"<td></tr></table>";
 	}
 	/**
 	 * 
