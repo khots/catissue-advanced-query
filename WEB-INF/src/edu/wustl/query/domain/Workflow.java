@@ -23,6 +23,7 @@ import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.Union;
 import edu.wustl.query.actionForm.WorkflowForm;
 import edu.wustl.query.util.global.CompositeQueryOperations;
+import edu.wustl.query.util.global.Constants;
 
 /**
  * @author vijay_pande
@@ -304,7 +305,7 @@ public class Workflow extends AbstractDomainObject
     /**
      * Forms the IAbstract Query object based on the post fix expression.
      * @param expression The post fix expression
-     * @return The correspondign IAbstractQuery object.
+     * @return The corresponding IAbstractQuery object.
      */
     public IAbstractQuery getQuery(String expression)
     {
@@ -365,6 +366,7 @@ public class Workflow extends AbstractDomainObject
                     operationObj.setOperandOne(op1);
                     operationObj.setOperandTwo(op2);
                     ((CompositeQuery) op3).setOperation(operationObj);
+                    ((CompositeQuery) op3).setType(Constants.QUERY_TYPE_GET_COUNT);
 
                     queryIdMap.put(key, op3);
                 }
