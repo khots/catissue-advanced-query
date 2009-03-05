@@ -264,7 +264,7 @@ function getMappingsOfConcepts(vocabCheckBoxId,vocabURN)
 				 if(document.getElementById(selectedCheckedBoxVocabDivID).style.display == 'none' && innerData.length==0)
 					{
 					
-						label.innerHTML=searchImg+"Please Wait.....";
+						label.innerHTML=searchImg+"Loading Permissible Values, Please Wait...";
 						waitCursor();
 						
 						 document.getElementById(selectedCheckedBoxVocabDivID).style.display = '';
@@ -486,7 +486,7 @@ function serachForTermInVocab(operation)
 	
 			label=document.getElementById("searhLabel");
 			var searchAbortButtonDiv=document.getElementById("searchAbortButtonDiv");
-		    label.innerHTML=searchImg+"Searching .... Please Wait";
+		    label.innerHTML=searchImg+"Searching for term, Please Wait...";
 			if(operation=="search") // if operation is search change the button to abort and set the flag
 			{
 				searchAbortButtonDiv.innerHTML="<a  href=\"javascript:serachForTermInVocab('abort');\"><img src='images/advancequery/b_abort.gif' border='0' alt='abort' ></a>";
