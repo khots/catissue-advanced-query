@@ -46,8 +46,18 @@ public class WorkflowAction extends Action
 		{
 
 			request.setAttribute(Constants.OPERATION, edu.wustl.common.util.global.Constants.EDIT);
+			String id=request.getParameter("id");
+			if(id==null)
+			{
+				
+				/*for the get patient data/get Count flow
+				the is no id set in request.getParameter so  retrieve
+				 form request.getAttribute
+				*/
+				id=(String) request.getAttribute(Constants.WORKFLOW_ID);
+			}
 			setQueryExecutionid(form,(SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA)
-					,Long.valueOf(request.getParameter("id")));
+					,Long.valueOf(id));
 		}
 	   else
 		{
