@@ -200,9 +200,8 @@
 					<td  width="50%" align="right" style="padding-right:4px">
 					 <table border="0" cellspacing="0" cellpadding="0">
 					  <tr>
-						<td style="padding-right:5px" valign="center" class="content_txt_bold">Select Project:</td>
-						
-						<td style="padding-right:5px" valign="center">
+						<td style="padding:0 5px 5px 0;" valign="middle" class="content_txt_bold">Select Project:</td>
+						<td style="padding:0 5px 5px 0;" valign="middle">
 							<SELECT NAME="dropdown" class="textfield" onChange="setProjectData(this,'categorySearchForm')">
 								<OPTION VALUE="">Unspecified..
 								<c:forEach var="project" items="${requestScope.categorySearchForm.projectsNameValueBeanList}">
