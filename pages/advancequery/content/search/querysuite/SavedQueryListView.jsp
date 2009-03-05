@@ -18,7 +18,95 @@
 <script language="JavaScript" type="text/javascript" src="jss/advancequery/newReleaseMsg.js"></script>
 <script language="JavaScript" type="text/javascript" src="jss/advancequery/queryModule.js"></script>
 <script language="JavaScript" type="text/javascript" src="jss/advancequery/ajax.js"></script>
+
+<!-- dataList and columnList are to be set in the main JSP file -->
+<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXGrid.css"/>
+<script  src="dhtml_comp/js/dhtmlXCommon.js"></script>
+<script  src="dhtml_comp/js/dhtmlXGrid.js"></script>		
+<script  src="dhtml_comp/js/dhtmlXGridCell.js"></script>	
+<script  src="dhtml_comp/js/dhtmlXGrid_mcol.js"></script>
+
 <script>
+
+
+var myData =${requestScope.msgBoardItemList};
+var columns =${requestScope.columns};
+var colWidth =${requestScope.colWidth};
+var isWidthInPercent=${requestScope.isWidthInPercent};
+var colTypes =${requestScope.colTypes};
+var colDataTypes =${requestScope.colDataTypes};
+
+function init_grid()
+{			
+var funcName = "rowClick";
+
+mygrid = new dhtmlXGridObject('gridbox');
+mygrid.setImagePath("dhtml_comp/imgs/");
+mygrid.setStyle("font-family: Arial, Helvetica, sans-serif;font-size: 12px;font-weight: bold;color: #000000;background-color: #E2E2E2; border-left-width: 1px;border-left-color: #CCCCCC; border-top-width: 1px;border-top-color: #CCCCCC; border-bottom-color: #CCCCCC; border-top-width: 1px;border-bottom-color: #CCCCCC; border-right-width: 1px;border-right-color: #CCCCCC; text-align:left;padding-left:10px;");
+mygrid.setHeader(columns);
+mygrid.setEditable("false");
+mygrid.enableAutoHeigth(true);
+mygrid.enableAlterCss("even","uneven");
+mygrid.enableRowsHover(true,'grid_hover')
+
+if(isWidthInPercent)
+{
+	mygrid.setInitWidthsP(colWidth+",0");
+}
+else
+{
+	mygrid.setInitWidths(colWidth);
+}
+
+mygrid.setColTypes(colDataTypes);
+
+mygrid.setColSorting(colTypes);
+mygrid.init();
+
+
+for(var row=0;row<myData.length;row++)
+{
+	mygrid.addRow(row+1,myData[row],row+1);
+	mygrid.setRowTextStyle(row+1,"font-family: Arial, Helvetica, sans-serif;font-size: 12px;padding-left:10px;color: #000000;border-left-width: 1px;border-left-color: #CCCCCC;  border-bottom-color: #CCCCCC; border-bottom-color: #CCCCCC; border-right-width: 1px;border-right-color: #CCCCCC");
+}
+
+//mygrid.setOnRowSelectHandler(funcName);
+//mygrid.setOnRowDblClickedHandler(funcName);
+	mygrid.setOnRowSelectHandler(funcName);
+// :To hide ID columns by kalpana
+function getIDColumns()
+	{
+		var hiddenColumnNumbers = new Array();
+		hiddenColumnNumbers[0]=${requestScope.identifierFieldIndex};
+		return hiddenColumnNumbers;
+	}
+
+
+// :To hide ID columns
+	var hideCols = getIDColumns();
+	for(i=0;i<hideCols.length;i++)
+	{
+		mygrid.setHeaderCol(hideCols[i],"");
+		mygrid.setColumnHidden(hideCols[i],true);
+	}
+mygrid.setSizes();
+}
+
+function rowClick(id)
+{
+var colid ='${requestScope.identifierFieldIndex}';
+var cl = mygrid.cells(id,colid);
+var searchId = cl.getValue();
+var url = editQuery(searchId);
+//window.open(url,"_top");
+}
+
+window.onload=function loadPageContents()
+{
+init_grid();
+}
+
+
 
 function changeResPerPage(controlId)
 {
@@ -59,68 +147,16 @@ int queryCount = 0;%>
 <logic:notEqual name="totalPages" value="0">
 <table height="90%"width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#cccccc" >
 					<tr class="tr_color_lgrey">
-						<td valign="top">
-							<table width="100%" bgcolor="#cccccc" border="0" cellpadding="4" cellspacing="1" >
-								<tr  class="td_bgcolor_grey">
-										<td width="10" valign="middle" height="25"><input id="selectAllCheckbox"   type="checkbox" name="checkbox8" value="checkbox" onClick="javascript:selectAllCheckboxes()">                 </td>
-										<td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
-										<td width="111" valign="middle" class="grid_header_text"><bean:message key="workflow.querytype"/></td>
-										</tr>
-											<div  id="searchDiv">
-													<c:set var="parameterizedQueryCollection" value="${saveQueryForm.parameterizedQueryCollection}" />
-												
-													<c:forEach items="${parameterizedQueryCollection}" var="parameterizedQuery" varStatus="queries">
-													<jsp:useBean id="parameterizedQuery" type="edu.wustl.common.querysuite.queryobject.IParameterizedQuery" />
-													
-
-															<%String target = "editQuery('"+parameterizedQuery.getId()+"')"; 
-															  String queryId=parameterizedQuery.getId()+"";
-															  String title = parameterizedQuery.getName();
-															  String queryType = parameterizedQuery.getType();
-															  String newTitle = Utility.getQueryTitle(title);
-															  
-															  String tooltip = Utility.getTooltip(title);
-															  String function = "Tip('"+tooltip+"', WIDTH, 700)";
-															  queryCount++;
-															%>
-															<tr bgcolor="#FFFFFF">
-															<td  valign="top">
-																<c:set var="checkboxControl">checkbox_<%=queryCount%></c:set>
-																<jsp:useBean id="checkboxControl" type="java.lang.String"/>
-
-															<html:checkbox property="chkbox" styleId="<%=checkboxControl%>"/>
-															
-															<td  valign="top" class="content_txt" >
-																<html:link styleClass='bluelink' href='#' onclick='<%=target%>'  onmouseover="<%=function%>" >
-											 						<%=newTitle%>
-																</html:link><br/>
-															</td>
-															  <td  valign="top" class="content_txt"> <%=queryType %></td>
-															 
+						<td class="content_txt_bold" valign="top">						  
+								<table width="100%"  border="0" style="overflow-y:hidden;overflow-x:hidden;">
+									<tr height="100%">
+										<td valign="top" height="100%">
+											<div id='gridbox' width='100%' height="90%" style='overflow:hidden'></div>
+										</td>
+									</tr>
+								</table>
 							
-																<c:set var="queryTitleControlId">queryTitleControl_<%=queryCount%></c:set>
-																<jsp:useBean id="queryTitleControlId" type="java.lang.String"/>
-																<html:hidden property="queryTitleControl" styleId="<%=queryTitleControlId%>"
-																value="<%=newTitle%>"/>
-
-																<c:set var="queryIdControl">queryIdControl_<%=queryCount%></c:set>
-																<jsp:useBean id="queryIdControl" type="java.lang.String"/>
-																<html:hidden property="queryIdControl" styleId="<%=queryIdControl%>"
-																value="<%=queryId%>"/>
-
-																
-																<c:set var="queryTypeControl">queryTypeControl_<%=queryCount%></c:set>
-																<jsp:useBean id="queryTypeControl" type="java.lang.String"/>
-																<html:hidden property="queryTypeControl" styleId="<%=queryTypeControl%>"
-																value="Get Count"/>
-
-														</tr>
-													</c:forEach>
-											</div>
-
-									
-									</table>
-							</td>
+						  </td>
 						</tr>
 					</table>
 			</tr>
