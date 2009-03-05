@@ -19,6 +19,9 @@ public class DataQueryResultsBean
 	private int dataQueryExecId;
 
 	/**  **/
+	private int countQueryExecId;
+	
+	/**  **/
 	private List<List<Object>> attributeList;
 
 	/**  **/
@@ -37,8 +40,9 @@ public class DataQueryResultsBean
 	 * @param attributeList
 	 * @param dataTypesList
 	 */
-	public DataQueryResultsBean(int dataQueryExecId, List<List<Object>> attributeList, List<String> dataTypesList)
+	public DataQueryResultsBean(int countQueryExecId, int dataQueryExecId, List<List<Object>> attributeList, List<String> dataTypesList)
 	{
+		this.countQueryExecId = countQueryExecId;
 		this.dataQueryExecId = dataQueryExecId;
 		this.attributeList = attributeList;
 		this.dataTypesList = dataTypesList;
@@ -96,6 +100,24 @@ public class DataQueryResultsBean
 	public void setDataQueryExecId(int dataQueryExecId)
 	{
 		this.dataQueryExecId = dataQueryExecId;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public int getCountQueryExecId()
+	{
+		return countQueryExecId;
+	}
+
+	/**
+	 * 
+	 * @param countQueryExecId
+	 */
+	public void setCountQueryExecId(int countQueryExecId)
+	{
+		this.countQueryExecId = countQueryExecId;
 	}
 
 }
