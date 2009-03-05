@@ -105,12 +105,7 @@
 						<%@includefile="/pages/advancequery/content/search/querysuite/ChooseSearchCategory.jsp" %>
 						</td>
 					<td valign="top">
-                    <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  >        
-					        <tr id="rowMsg">
-													<td id="validationMessagesSection"  class='validationMessageCss'  valign="middle">
-														<div id="validationMessagesRow"   class='validationMessageCss' style="overflow:auto; display:none"></div>
-													</td>
-							</tr>			
+                    <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  >        			        						
 							<tr>
 							<td >
 								<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  class='login_box_bg'>
@@ -120,6 +115,11 @@
 														<div id="AddLimitsMsgRow"  border="0"></div>
 													</td>
 												</tr>
+												<tr id="rowMsg">
+													<td id="validationMessagesSection"  class='validationMessageCss'  valign="top" style="padding:5px 0 0 10px;">
+														<div id="validationMessagesRow"   class='validationMessageCss' style="overflow:auto; display:none"></div>
+													</td>
+							</tr>	
 												<tr>
 													<td width="100%" id="addLimitsSection">
 													<div id="addLimits" style="overflow:auto; height:100%;width:100%"></div></td>
@@ -133,7 +133,7 @@
 								</td>
 							</tr>							
 							<tr>							
-							<td valign="bottom">								
+							<td valign="top">								
 								<table border="0" bordercolor="#cccccc" width="100%" cellspacing="0" class="login_box_bg" cellpadding="0" bgcolor="#FFFFFF" height="100%">
 								<tr>
 										<td>											
