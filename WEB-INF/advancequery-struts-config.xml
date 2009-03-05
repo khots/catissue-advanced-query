@@ -506,6 +506,7 @@ PUBLIC
 	            <!--  To Do  change the action  class name --> 
         <action path="/QueryWorkflowWizard" 
         		type="edu.wustl.query.action.WorkflowAction"
+        		name="workflowForm" 
         		validate="false"
 				scope="request">
         	<forward name="success" path=".query.queryWorkFlowWizardDef"/>
