@@ -85,7 +85,7 @@ public class SearchPermissibleValuesAction extends Action
 				}
 				catch (VocabularyException e)
 				{
-					response.getWriter().write(bizLogic.getErrorMessageAsHTML());
+					response.getWriter().write(bizLogic.getErrorMessageAsHTML(e.getError().getErrorMessage()));
 				}
 			}
 
@@ -183,13 +183,15 @@ public class SearchPermissibleValuesAction extends Action
 	{
 
 		/********** Get HTML for Source Vocabulary************/
-		
-		
+		int rowsCreated=0;
 		if (vocabURN.equals(VocabUtil.getVocabProperties().getProperty("source.vocab.urn")))
 		{
-			getHTML(orderedConcepts, vocabURN, html, Constants.MED_MAPPED_N_VALID_PVCONCEPT,sourceConceptMap);
+			rowsCreated=getHTML(orderedConcepts, vocabURN, html, Constants.MED_MAPPED_N_VALID_PVCONCEPT,
+								sourceConceptMap,rowsCreated);
 
-			getHTML(orderedConcepts, vocabURN, html, Constants.NOT_MED_VALED_PVCONCEPT,sourceConceptMap);
+			rowsCreated=(rowsCreated<VIProperties.maxPVsToShow)?getHTML(orderedConcepts, vocabURN, html,
+					Constants.NOT_MED_VALED_PVCONCEPT,sourceConceptMap,rowsCreated):0;
+			
 		}
 		else
 		{
@@ -197,15 +199,18 @@ public class SearchPermissibleValuesAction extends Action
 			/*first get the HTML for Result has mapping available in MED and it is valid permissible value for the entity.
 			 *  Show result as bold enabled.
 			 */
-			getHTML(orderedConcepts, vocabURN, html, Constants.MED_MAPPED_N_VALID_PVCONCEPT,sourceConceptMap);
+			rowsCreated=	getHTML(orderedConcepts, vocabURN, html, Constants.MED_MAPPED_N_VALID_PVCONCEPT,
+					sourceConceptMap,rowsCreated);
 			/* Result has mapping available in MED but it is not valid permissible value.
 			 * Show result as disabled bold italicized.
 			 */
-			getHTML(orderedConcepts, vocabURN, html, Constants.MED_MAPPED_N_NOT_VALIED_PVCONCEPT,sourceConceptMap);
+			rowsCreated=(rowsCreated<VIProperties.maxPVsToShow)? getHTML(orderedConcepts, vocabURN, html, 
+					Constants.MED_MAPPED_N_NOT_VALIED_PVCONCEPT,sourceConceptMap,rowsCreated):0;
 			/* 	Result has no mapping available in MED.
 			 *	Show result as disabled  italicized.
 			 */
-			getHTML(orderedConcepts, vocabURN, html, Constants.NOT_MED_MAPPED_PVCONCEPT,sourceConceptMap);
+			rowsCreated=(rowsCreated<VIProperties.maxPVsToShow)? getHTML(orderedConcepts, vocabURN, html,
+					Constants.NOT_MED_MAPPED_PVCONCEPT,sourceConceptMap,rowsCreated):0;
 		}
 	}
 
@@ -218,8 +223,8 @@ public class SearchPermissibleValuesAction extends Action
 	 * @param status
 	 * @throws VocabularyException
 	 */
-	private void getHTML(Map<String, List<IConcept>> orderedConcepts, String vocabURN,
-			StringBuffer html, String status,Map<String,String> sourceConceptMap) throws VocabularyException
+	private int getHTML(Map<String, List<IConcept>> orderedConcepts, String vocabURN,
+			StringBuffer html, String status,Map<String,String> sourceConceptMap,int rowsCreated) throws VocabularyException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
@@ -231,9 +236,15 @@ public class SearchPermissibleValuesAction extends Action
 				String checkboxId = vocabURN + Constants.ID_DEL + sourceConceptMap.get(medRelatedConcept.getCode());// concept.getCode();
 				html.append(bizLogic.getHTMLForSearchedConcept("srh_" + vocabURN,
 						medRelatedConcept, "srh_" + checkboxId, status));
-
+				rowsCreated++;
+				if(rowsCreated==VIProperties.maxPVsToShow)
+				{
+					rowsCreated++;
+					break;
+				}
 			}
 		}
+		return rowsCreated;
 	}
 
 	private void maintainOrderOfConcepts(Map<String, List<IConcept>> orderedConcepts, int status,
