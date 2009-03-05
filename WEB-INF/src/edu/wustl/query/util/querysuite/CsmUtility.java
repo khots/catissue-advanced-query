@@ -11,6 +11,7 @@ import edu.wustl.common.security.PrivilegeCache;
 import edu.wustl.common.security.PrivilegeManager;
 import edu.wustl.common.security.PrivilegeUtility;
 import edu.wustl.common.util.Permissions;
+import edu.wustl.common.util.dbManager.HibernateUtility;
 import edu.wustl.query.util.global.Constants;
 import gov.nih.nci.security.authorization.domainobjects.ProtectionElement;
 import gov.nih.nci.security.authorization.domainobjects.ProtectionGroup;
@@ -30,12 +31,13 @@ public class CsmUtility {
 
 	}
 	public void  checkExecuteQueryPrivilege(
-			Collection<IParameterizedQuery> parameterizedQueryCollection,			
 			Collection<IParameterizedQuery> authorizedQueryCollection,
 			Collection<IParameterizedQuery> sharedQueryCollection,
 			SessionDataBean sessionDataBean ) throws CSException,
 			CSObjectNotFoundException
 	{
+		Collection<IParameterizedQuery> parameterizedQueryCollection=getParameterizedQueryCollection();
+		
 		PrivilegeCache privilegeCache =setPrivilegeCache(sessionDataBean);
 		for(IParameterizedQuery parameterizedQuery : parameterizedQueryCollection)
 		{
@@ -43,7 +45,7 @@ public class CsmUtility {
 			if(privilegeCache.hasPrivilege(objectId, Permissions.EXECUTE_QUERY))
 			{
 				boolean sharedQuery = setSharedQueriesCollection(sharedQueryCollection,
-						parameterizedQuery, objectId);
+						parameterizedQuery, objectId,sessionDataBean.getCsmUserId());
 				if(!sharedQuery)
 				{
 					authorizedQueryCollection.add(parameterizedQuery);
@@ -54,7 +56,7 @@ public class CsmUtility {
 	
 	private boolean setSharedQueriesCollection(
 			Collection<IParameterizedQuery> sharedQueryCollection,
-			IParameterizedQuery parameterizedQuery, String objectId) throws CSException,
+			IParameterizedQuery parameterizedQuery, String objectId,String csmUserId) throws CSException,
 			CSObjectNotFoundException
 	{
 		ProtectionElement pe = new ProtectionElement();
@@ -73,13 +75,13 @@ public class CsmUtility {
 		Set<ProtectionGroup> pgSet = privilegeUtility.getUserProvisioningManager().getProtectionGroups(pe.getProtectionElementId().toString());
 		
 		sharedQuery = populateSharedQueryCollection(sharedQueryCollection, parameterizedQuery,
-				pgSet);
+				pgSet,csmUserId);
 		return sharedQuery;
 	}
 	
 	private boolean populateSharedQueryCollection(
 			Collection<IParameterizedQuery> sharedQueryCollection,
-			IParameterizedQuery parameterizedQuery, Set<ProtectionGroup> pgSet)
+			IParameterizedQuery parameterizedQuery, Set<ProtectionGroup> pgSet,String csmUserId)
 	{
 		boolean sharedQuery=false;
 		for(ProtectionGroup pg : pgSet)
@@ -92,6 +94,15 @@ public class CsmUtility {
 		}
 		return sharedQuery;
 	}
-	
+	public String getUserProtectionGroup(String csmUserId)
+	{
+		return "User_" + csmUserId;
+	}
+	public static Collection getParameterizedQueryCollection()
+	{
 
+		return	HibernateUtility
+		.executeHQL(HibernateUtility.GET_PARAMETERIZED_QUERIES_DETAILS);
+		
+	}
 }
