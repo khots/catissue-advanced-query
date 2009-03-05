@@ -282,7 +282,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	/**  Constant for  */
 	public static final String DEFINE_SEARCH_RULES = "Define Limits For";
 	/**  Constant for  */
-	public static final String CLASSES_PRESENT_IN_QUERY = "Objects Present In Query";
+	public static final String CLASSES_PRESENT_IN_QUERY = "Classes Present In Query";
 	/**  Constant for  */
 	public static final String CLASS = "class";
 	/**  Constant for  */
