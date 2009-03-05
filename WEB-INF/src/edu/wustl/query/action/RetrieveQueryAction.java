@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.hibernate.HibernateException;
 
+import edu.wustl.cider.util.CiderUtility;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
@@ -21,6 +22,7 @@ import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.HibernateUtility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.SaveQueryForm;
+import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
@@ -46,13 +48,13 @@ public class RetrieveQueryAction extends Action
 
 			removeAttributesFromSession(session);
 			SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
-			Collection<IParameterizedQuery> parameterizedQueryCollection = HibernateUtility
-			.executeHQL(HibernateUtility.GET_PARAMETERIZED_QUERIES_DETAILS);
+
 			Collection<IParameterizedQuery> authorizedQueryCollection = new ArrayList<IParameterizedQuery>();
 			Collection<IParameterizedQuery> sharedQueryCollection = new ArrayList<IParameterizedQuery>();
-			initializeParameterizeQueryCollection(request, saveQueryForm,parameterizedQueryCollection,
+			initializeParameterizeQueryCollection(request, saveQueryForm,
 					  authorizedQueryCollection,
 					sharedQueryCollection);
+			request.setAttribute("pageOf", request.getParameter("pageOf"));
 			actionForward = setActionForward(actionMapping, request.getParameter("pageOf"));
 		}
 		catch (HibernateException hibernateException)
@@ -68,21 +70,54 @@ public class RetrieveQueryAction extends Action
 		return actionForward;
 	}
 
-	public int setQueryCount()
+	/**
+	 * return my queries collection Count
+	 * @param dataBean
+	 * @return
+	 * @throws CSObjectNotFoundException
+	 * @throws CSException
+	 */
+	public int setMyQueryCount(SessionDataBean dataBean) throws CSObjectNotFoundException, CSException
 	{
 
-		Collection prameterizedQueriesCollection=HibernateUtility
-		.executeHQL(HibernateUtility.GET_PARAMETERIZED_QUERIES_DETAILS);
-		if(prameterizedQueriesCollection!=null)
+		Collection<IParameterizedQuery> authorizedQueryCollection = new ArrayList<IParameterizedQuery>();
+		Collection<IParameterizedQuery> sharedQueryCollection = new ArrayList<IParameterizedQuery>();
+		CsmUtility csmUtility=getDefaultCsmUtility();
+		csmUtility.checkExecuteQueryPrivilege(authorizedQueryCollection, sharedQueryCollection,dataBean);
+
+		if(authorizedQueryCollection!=null)
 		{
-			return prameterizedQueriesCollection.size();
+			return authorizedQueryCollection.size();
+		}
+		return 0;
+	}
+
+	/**
+	 * return shared query Collection Count
+	 * @param dataBean
+	 * @return
+	 * @throws CSObjectNotFoundException
+	 * @throws CSException
+	 */
+	public int setSharedQueryCount(SessionDataBean dataBean) throws CSObjectNotFoundException, CSException
+	{
+
+		Collection<IParameterizedQuery> parameterizedQueryCollection=HibernateUtility
+		.executeHQL(HibernateUtility.GET_PARAMETERIZED_QUERIES_DETAILS);
+		Collection<IParameterizedQuery> authorizedQueryCollection = new ArrayList<IParameterizedQuery>();
+		Collection<IParameterizedQuery> sharedQueryCollection = new ArrayList<IParameterizedQuery>();
+		CsmUtility csmUtility=getDefaultCsmUtility();
+		csmUtility.checkExecuteQueryPrivilege( authorizedQueryCollection, sharedQueryCollection,dataBean);
+
+		if(parameterizedQueryCollection!=null)
+		{
+			return sharedQueryCollection.size();
 		}
 		return 0;
 	}
 
 	private void initializeParameterizeQueryCollection(HttpServletRequest request,
 			SaveQueryForm saveQueryForm,
-			Collection<IParameterizedQuery> parameterizedQueryCollection,
 			Collection<IParameterizedQuery> authorizedQueryCollection,
 			Collection<IParameterizedQuery> sharedQueryCollection) throws CSException,
 			CSObjectNotFoundException
@@ -90,7 +125,7 @@ public class RetrieveQueryAction extends Action
 
 			Collection<IParameterizedQuery> finalQueries= null;
 			CsmUtility csmUtility=getDefaultCsmUtility();
-			csmUtility.checkExecuteQueryPrivilege(parameterizedQueryCollection, authorizedQueryCollection, sharedQueryCollection,(SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA));
+			csmUtility.checkExecuteQueryPrivilege( authorizedQueryCollection, sharedQueryCollection,(SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA));
 			setQueryCollectionToSaveQueryForm(saveQueryForm, (String) request.getAttribute("pageOf"), authorizedQueryCollection,
 					sharedQueryCollection);
 			if(request.getParameter("pageOf")!=null&&
@@ -118,6 +153,7 @@ public class RetrieveQueryAction extends Action
 			}			
 			setPagiantion(request,request.getParameter("requestFor"),saveQueryForm);
 			saveQueryForm.setParameterizedQueryCollection(getMaxRecord(finalQueries,request));
+			populateGrid(request,saveQueryForm.getParameterizedQueryCollection());
 	}
 
 
@@ -331,6 +367,40 @@ public class RetrieveQueryAction extends Action
 	public static CsmUtility getDefaultCsmUtility()
 	{
 		return (CsmUtility)Utility.getObject(Variables.csmUtility);
+	}
+	
+	public void populateGrid(HttpServletRequest request,Collection<IParameterizedQuery> queryColletion)
+	{
+		request.setAttribute("identifierFieldIndex",3);
+		final List<Object[]> attributesList = new ArrayList<Object[]>();
+		Object[] attributes = null;
+		for (IParameterizedQuery query : queryColletion) {
+			attributes = new Object[4];
+			if (query != null) {
+				if (query.getName() != null) {
+					attributes[1] = query.getName();
+				} else {
+					attributes[1] = "";
+				}
+				attributes[2] = query.getType();
+				attributes[3] = query.getId().toString();
+			}
+			attributesList.add(attributes);
+
+		}
+		request.setAttribute("msgBoardItemList", CiderUtility
+				.getmyData(attributesList));
+		List<String> columnList = new ArrayList<String>();
+
+		columnList.add(" &nbsp;");
+		columnList.add("Query Title");
+		columnList.add("Query Type");
+		columnList.add("identifier");
+		request.setAttribute("columns", edu.wustl.cider.util.global.Utility.getcolumns(columnList));
+		request.setAttribute("colWidth", "\"4,80,16,0\"");
+		request.setAttribute("isWidthInPercent", true);
+		request.setAttribute("colTypes", "\"ch,str,str,int\"");
+		request.setAttribute("colDataTypes", "\"ch,txt,txt,ro\"");
 	}
 	
 }
