@@ -860,4 +860,13 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	/** Constant for presenatation property name for med concept name**/
 	public static final String MED_CONECPT_NAME = "med_concept_name";
 	public static final String MED_ENTITY_NAME = "MedicalEntityDictionary";
+	
+	/**
+	 * for shared queries Count
+	 */
+	public static final String SHARED_QUERIES_COUNT = "sharedQueriesCount";
+	/**
+	 * for my queries Count
+	 */
+	public static final String MY_QUERIES_COUNT = "myQueriesCount";
 }
