@@ -265,7 +265,7 @@ function showResetCountPopup()
 		{
 			var url='ShowResetCountPopUp.do';
 			pvwindow=dhtmlmodal.open('Change Project', 'iframe', url,'Change Project', 
-			'width=200px,height=200px,center=1,resize=1,scrolling=1');
+			'width=400px,height=150px,center=1,resize=1,scrolling=1');
 		}
 	}
 	previousProject=currentProject;
@@ -757,6 +757,7 @@ function executeGetDataQuery(dataQueryId)
 var setCountDropDown = false;
 function workflowResponseHandler(response)
 {
+
 		  var jsonResponse = eval('('+ response+')');
           var hasValue = false;
           if(jsonResponse.executionQueryResults!=null)
@@ -1027,15 +1028,16 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 					<td >
 						<table  border="0" cellpadding="4" cellspacing="0" align="right">
                           <tr>
-                            <td align="right"  nowrap><span class="content_txt_bold"><bean:message  key="workflow.project"/></span>&nbsp;
+                            <td align="right"  nowrap ><span class="content_txt_bold"><bean:message  key="workflow.project"/></span>&nbsp;
 							 <SELECT name="selectedProject" id="selectedProject" class="texttype" onchange="showResetCountPopup()">
-							   <option VALUE="-1">Select..</option>
+							   <option VALUE="-1">Select...</option>
 								<c:forEach var="project" items="${requestScope.projectsNameValueBeanList}">
 									<OPTION VALUE="${project.value}">${project.name}
 								</c:forEach>
 							</SELECT>
                             </td>
-                            <td width="90" align="left" valign="middle" ><a href="javascript:runWorkflow()" class="bluelink"><bean:message key="workflow.runworkflow"/></a></td>
+							<td>&nbsp;</td>
+                            <td width="90" align="right" valign="middle" ><a href="javascript:runWorkflow()" class="bluelink"><bean:message key="workflow.runworkflow"/></a></td>
                           </tr>
                         </table>
 					</td>
@@ -1054,7 +1056,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 
 							<td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
 							<td width="65" valign="middle" class="grid_header_text"><bean:message key="workflow.type"/></td>
-							<td width="10%" valign="middle" class="grid_header_text">Select</td>
+							<td width="10%" valign="middle" class="grid_header_text">Select Query</td>
 							
 							<td width="84" valign="middle" class="grid_header_text"><bean:message key="workflow.patientcount"/> </td>
 							<td valign="middle" class="grid_header_text" width="125">&nbsp;</td>
@@ -1066,10 +1068,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 
 									<tr bgcolor="#ffffff" class="td_bgcolor_white" height="22">
 									
-									   <td  width="10" valign="middle" valign="top">
-												<img src="images/advancequery/ic_notrun06.gif" alt=""  align="absmiddle"
-												id="notStarted_${queryIndex}">
-									   </td>
+
 									 <c:set var="qtype" value="${workflowForm.displayQueryType[queryIndex]}"/>
 										  <logic:equal name="query_type_data" value="${qtype}">
 						   				<td class="content_txt" width="10" valign="top">
@@ -1087,6 +1086,10 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 											onclick="javascript:setCheckboxCount()" disabled="false"></html:checkbox>
 						   				</td>
 										</logic:notEqual>
+									 <td  width="10" valign="middle" valign="top" style="padding:1px 5px 0 5px">
+												<img src="images/advancequery/ic_notrun06.gif" alt=""  align="absmiddle"
+												id="notStarted_${queryIndex}">
+									   </td>
 
   										<td class="content_txt" valign="top">
 						   					<html:hidden property="displayQueryTitle" styleId="displayQueryTitle_${queryIndex}" value="${workflowForm.displayQueryTitle[queryIndex]}"
@@ -1273,7 +1276,7 @@ function setPreviousProject()
 	previousProject=document.getElementById('selectedProject').value;
 }setPreviousProject();
 
-/*function retrieveCounts()
+function retrieveCounts()
 {
 	var rows=parent.window.document.getElementById("table1").rows.length;
 	for(var i=0;i<rows;i++)
@@ -1289,6 +1292,6 @@ function setPreviousProject()
 			workflowExecuteGetCountQuery(queryId,executionId);
 		}
 	}
-}retrieveCounts();*/
+}retrieveCounts();
 </script>
 </body>
