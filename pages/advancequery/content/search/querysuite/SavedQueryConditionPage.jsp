@@ -74,11 +74,10 @@
 			<table summary="" cellpadding="0" cellspacing="0"  border="0" align="center" width="100%" class="login_box_bg" >
 					
 				<tr class="table_header_query" >
-					<td colspan='3'height="25" style="padding-left:5px;border-bottom:1px solid #cccccc;">
-					<span class="grey_bold_big">	<bean:message key="savequery.queryInformationTitle"/></span>
+					<td colspan='3' height="26" style="padding-left:5px;">
+					<img border='0' src="images/advancequery/t_query_info.gif">
 					</td>
 				</tr>
-				
 				<tr>
 					<td style="padding-left:5px;padding-bottom:5px;padding-top:5px;"  colspan="3" class='messagetexterror' nowrap><html:errors/>
 					</td>
@@ -101,7 +100,7 @@
 					<bean:message key="query.title"/><span class="red_star">*</span>:
 					</td>
 					<td >
-						<html:text       styleClass="textfield_undefined"   size="80"   styleId="title" property="title" />
+						<html:text       styleClass="textfield_QueryTitle"      styleId="title" property="title" />
 					</td>
 					
 				</tr>
@@ -117,12 +116,10 @@
 						<bean:message key="savequery.setConditionParametersTitle" />
 					</td>
 				</tr>-->
+				<tr><td colspan="3" style="padding:5px 10px 10px 10px;"><table width="100%" cellpadding="0" cellspacing="0"> <tr><td class="td_greydottedline_horizontal" height="1"></td></tr></table></td>
+				</td></tr>
 				<tr>
-				<td style="padding-bottom:5px;" colspan="3" class="td_greydottedline_horizontal"  height="1">
-				</td>
-				</tr>
-				<tr>
-					<td style="padding-left:5px;padding-top:5px;" class="content_txt" colspan='3' height='20'>
+					<td style="padding-left:10px;padding-top:5px;" class="content_txt" colspan='3' height='20'>
 					<!--<div  style="width:100%; max-height:300px; min-height:50px; overflow-y:auto;">
 					<table cellpadding="0" cellspacing="0" bgcolor="#cccccc">
 					<tr>
@@ -139,7 +136,7 @@
 					</td> 
 				</tr>
 				<tr>
-				  <td style="padding-top:10px;padding-bottom:10px;padding-left:5px;"  colspan='3'  align="left">
+				  <td style="padding-top:10px;padding-bottom:10px;padding-left:10px;"  colspan='3'  align="left">
 						    <input type="hidden" name="queryString" id="queryString" value=""/>
 						    <input type="hidden" name="buildQueryString" id="buildQueryString" value=""/>
 							<!--input type="button" name="preview" value="Preview" class="actionButton"  disabled="true"/-->
