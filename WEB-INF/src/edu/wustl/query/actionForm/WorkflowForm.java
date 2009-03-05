@@ -1,8 +1,10 @@
 
 package edu.wustl.query.actionForm;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
@@ -430,7 +432,7 @@ public class WorkflowForm extends AbstractActionForm
 		this.id = workflow.getId();
 		this.name = Utility.toString(workflow.getName());
 		List<WorkflowItem> workflowItemList = workflow.getWorkflowItemList();
-
+		Map<Long,Integer> queryExecutionIdMap=generateExecutionIdMap(abstractDomain.getId());
 		//  display title
 		int size= workflowItemList.size();
 		String[] displayQueryTitle = new String[size];
@@ -453,6 +455,8 @@ public class WorkflowForm extends AbstractActionForm
 			setOperatorList(opretionList, operatorsList);
 			displayQueryTitle[i]=genetrateDisplayQueryTitle(workflowItem);
 		    displayQueryType[i]=((AbstractQuery)abstractQuery).getType();
+		    //TO DO uncomment the code for the  queryExecId
+		    //queryExecId[i]=queryExecutionIdMap.get(abstractQuery.getId());
 		}
 
 		String[] operands = new String[operandList.size()];//oprands array
@@ -634,4 +638,14 @@ public class WorkflowForm extends AbstractActionForm
 		this.identifier = identifier;
 	}
 
+	/**
+	 * This method returns the map of query execution ids
+	 * @param workflowId
+	 * @return
+	 */
+	public  Map<Long, Integer> generateExecutionIdMap(Long workflowId)
+	{
+		Map<Long,Integer> queryExecutionIdMap=new HashMap<Long,Integer>();
+		return queryExecutionIdMap;
+	}
 }
