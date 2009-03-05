@@ -113,7 +113,9 @@ function changeResPerPage(controlId)
 <body>		
 
 <logic:notEqual name="totalPages" value="0">
-	
+<table height="100%" width="100%" border="0" cellspacing="0" cellpadding="4">
+	<tr height="90%">
+		<td valign="top">
 			<table height="65%" width="100%" border="0" cellpadding="0" cellspacing="0">
 					<tr width="100%" valign="top">					
 						  <td class="content_txt_bold">
@@ -129,10 +131,13 @@ function changeResPerPage(controlId)
 						  </td>
 				   </tr>
 			</table>
-			 
-			<table height="*" width="100%" border="0" cellpadding="0" cellspacing="0">
-					<tr class="tr_color_lgrey" valign="bottom">					
-						<td class="content_txt_bold" width="200">						  
+	    </td>
+   </tr>
+   <tr height="*" valign="bottom">		
+			<td colspan="2" class="tr_color_lgrey" valign="bottom" > 
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+					<tr class="tr_color_lgrey">					
+						<td class="content_txt_bold" width="200" valign="bottom">						  
 								<table>
 									<tr>
 										<td class="content_txt_bold" style="padding-left:5px;">
@@ -192,11 +197,16 @@ function changeResPerPage(controlId)
 					</tr>
 					
 		</table>
+		</td>
+		</tr>
+		</table>
 </logic:notEqual>
+<table width="100%" cellpadding="4" cellspacing="0">
 <logic:equal name="totalPages" value="0">
 					<td class="content_txt_bold" style="padding-left:5px;" valign="top">
 					<bean:message key="meassges.emptyworflow"/>
 					</td>	
 </logic:equal >
+</table>
 </body>
 </html>

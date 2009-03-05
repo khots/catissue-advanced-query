@@ -78,6 +78,7 @@ function responseHandler(response)
 <body onLoad="initializeAjaxCall()" >
 	<%int count = 0;%>
 	<html:form action="RetrieveRecentQueries">
+<logic:notEqual name="totalPages" value="0">
 		 <table width="100%" bgcolor="#cccccc" cellpadding="0" cellspacing="0">
 			  <tr>
 			  <td><table width="100%" border="0"  cellspacing="1" cellpadding="4" >
@@ -115,8 +116,7 @@ function responseHandler(response)
 
 			</table>
 			<table width="100%" cellpadding="0" cellspacing="0">
-			<tr class="tr_color_lgrey">
-				
+			<tr class="tr_color_lgrey">				
 				<td align="left" height="30" style="padding-left:5px;"><span class="content_txt_bold">Show Last:</span>
 				<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${requestScope.numResultsPerPage}" styleClass="textfield_undefined">
 							 <c:forEach var="item" items="${requestScope.resultsPerPageOptions}" varStatus="i">
@@ -124,25 +124,16 @@ function responseHandler(response)
 							 </c:forEach>
 				
 					</html:select> 
-				</td>
-				  <td align="right" style="padding-right:5px;" class="content_txt">	
-				  <c:set var="totalPages" value="${sessionScope.totalPages}"/>  
-					<jsp:useBean id="totalPages" type="java.lang.Integer"/>
-					<c:forEach var="pageCoutner" begin="1" end="${totalPages}">
-					<c:set var="linkURL">
-				RetrieveRecentQueries.do?requestFor=nextPage&pageNum=<c:out value="${pageCoutner}"/>
-				&showLast=<c:out value="${requestScope.numResultsPerPage}"/>&pageOf=<c:out value="${requestScope.pageOf}"/>
-			</c:set>
-			<jsp:useBean id="linkURL" type="java.lang.String"/>
-			<c:if test="${sessionScope.pageNum == pageCoutner}">
-					<c:out value="${pageCoutner}"/> 
-			</c:if>
-			<c:if test="${sessionScope.pageNum != pageCoutner}"> | <a class="bluelink" href="<%=linkURL%>"><c:out value="${pageCoutner}"/></a>
-			</c:if>
-		</c:forEach>
-			 </td>
+				</td>				  
 		</tr>
 		 </table>
-
+</logic:notEqual>
+<table width="100%" cellpadding="4" cellspacing="0">
+<logic:equal name="totalPages" value="0">
+					<td class="content_txt_bold" style="padding-left:5px;" valign="top">
+					<bean:message key="meassges.emptyquery"/>
+					</td>	
+</logic:equal >
+</table>
 	</html:form>
 </body>
