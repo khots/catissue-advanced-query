@@ -766,8 +766,8 @@ public class GenerateHtml
 		String imgStr = "\n<img id=\"arrowImg\" "
 				+ "src=\"images/advancequery/ic_black_arrow.gif\" />";
 		StringBuffer label = new StringBuffer(imgStr);
-		label.append("  <b>");
-		label.append(attrLabel).append("</b>");
+		label.append("  <strong>");
+		label.append(attrLabel).append("</strong>");
 		return label;
 	}
 
@@ -842,8 +842,8 @@ public class GenerateHtml
 			if (isBold)
 			{
 				format = new StringBuffer();
-				format.append("<b>");
-				format.append(dateFormat).append("</b>");
+				format.append("<strong>");
+				format.append(dateFormat).append("</strong>");
 			}
 			generatedHTML.append("\n(" + format + ")");
 		}
