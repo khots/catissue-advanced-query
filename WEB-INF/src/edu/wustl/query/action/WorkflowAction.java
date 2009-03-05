@@ -14,6 +14,9 @@ import org.apache.struts.action.ActionMapping;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
+import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.query.actionForm.WorkflowForm;
+import edu.wustl.query.bizlogic.WorkflowBizLogic;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryModuleException;
@@ -43,6 +46,8 @@ public class WorkflowAction extends Action
 		{
 
 			request.setAttribute(Constants.OPERATION, edu.wustl.common.util.global.Constants.EDIT);
+			setQueryExecutionid(form,(SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA)
+					,Long.valueOf(request.getParameter("id")));
 		}
 	   else
 		{
@@ -57,6 +62,7 @@ public class WorkflowAction extends Action
 		{
 			request.setAttribute(Constants.WORKFLOW_ID,  request.getAttribute(Constants.WORKFLOW_ID));
 		}
+
 		return mapping.findForward(Constants.SUCCESS);
 	}
 
@@ -74,5 +80,16 @@ public class WorkflowAction extends Action
 		{
 			request.setAttribute(Constants.PROJECT_NAME_VALUE_BEAN, projectList);
 		}
+	}
+	private void setQueryExecutionid(ActionForm form,SessionDataBean sessionDataBean,Long id) throws DAOException
+	{
+		WorkflowForm  workflowForm=(WorkflowForm)form;
+		WorkflowBizLogic workflowBizLogic=new WorkflowBizLogic();
+		List<Integer> queryexecutionId=workflowBizLogic.generateExecutionIdMap(id, sessionDataBean.getUserId());
+	
+		Integer[] queryExeId = new Integer[queryexecutionId.size()];
+		queryexecutionId.toArray(queryExeId);
+		workflowForm.setQueryExecId(queryExeId);
+		
 	}
 }
