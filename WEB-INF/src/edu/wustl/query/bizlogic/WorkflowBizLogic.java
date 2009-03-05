@@ -2,6 +2,7 @@
 package edu.wustl.query.bizlogic;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -416,5 +417,25 @@ public class WorkflowBizLogic extends DefaultBizLogic
 		workflowItemList.add(workflowItem);
 		workflow.setWorkflowItemList(workflowItemList);
 		defaultBizLogic.update(workflow, null, Constants.HIBERNATE_DAO, sessionDataBean);//.update(DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO),  workflow, null, sessionDataBean);
+	}
+	/**
+	 * This method returns the map of query execution ids
+	 * @param workflowId
+	 * @return
+	 */
+	public List<Integer>  generateExecutionIdMap(Long workflowId,Long userId)throws  DAOException
+	{
+		DefaultBizLogic defaultBizLogic = new DefaultBizLogic();
+		Workflow workflow;
+		try {
+			workflow = (Workflow) defaultBizLogic.retrieve(Workflow.class.getName(),
+					workflowId);
+			List<Integer> queryExecId=new ArrayList<Integer>(workflow.getWorkflowItemList().size());
+			return queryExecId;
+		} catch (DAOException e) {
+			e.printStackTrace();
+			throw e;
+
+		}
 	}
 }
