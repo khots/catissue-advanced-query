@@ -4,9 +4,12 @@
 
 package edu.wustl.common.query.impl;
 
+import java.util.Collection;
 import java.util.Map.Entry;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.query.impl.predicate.AbstractPredicate;
@@ -207,6 +210,66 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 		{
 			return new StringBuilder(Constants.WHERE).append(xQueryWherePart).toString();
 		}
+	}
+	
+	/**
+	 * to pass the left hand side of joining expression in case of One to Many case
+	 * associated with it 
+	 * @param parentExpression
+	 * entityPath - path of the entity
+	 * primaryKeyName - name of primary key
+	 * @return - left attribute of joining condition
+	 */
+	protected String getOneToManyLeft(IExpression parentExpression,
+			String entityPath, ConstraintKeyPropertiesInterface cnstrKeyProp)
+	{
+		StringBuffer leftAttribute = new StringBuffer();
+		AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+		Collection<TaggedValueInterface> taggedValues = primaryKey.getTaggedValueCollection();
+		leftAttribute.append("$").append(getAliasName(parentExpression)).append(entityPath).append("/").
+		append(primaryKey.getName());
+		for (TaggedValueInterface tagValue : taggedValues)
+		{
+			if (tagValue.getKey().equalsIgnoreCase(Constants.PARAMETERIZED))
+			{
+				leftAttribute = new StringBuffer();
+				leftAttribute.append("$").append(primaryKey.getName()).append("_").append(parentExpression.getExpressionId());
+				break;
+			}
+		}
+		
+		return leftAttribute.toString();
+
+	}
+
+	/**
+	 * to pass the left hand side of joining expression in case of Many to One case
+	 * associated with it 
+	 * @param parentExpression
+	 * entityPath - path of the entity
+	 * primaryKeyName - name of primary key
+	 * @return - left attribute of joining condition
+	 */
+	protected String getManyToOneLeft(IExpression parentExpression,
+			ConstraintKeyPropertiesInterface cnstrKeyProp)
+	{
+		
+		StringBuffer leftAttribute = new StringBuffer();
+		AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+		Collection<TaggedValueInterface> taggedValues = primaryKey.getTaggedValueCollection();
+		leftAttribute.append("$").append(getAliasName(parentExpression)).
+		append(cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName());
+		for (TaggedValueInterface tagValue : taggedValues)
+		{	
+			if (tagValue.getKey().equalsIgnoreCase(Constants.PARAMETERIZED))
+			{
+				leftAttribute = new StringBuffer();
+				leftAttribute.append("$").append(primaryKey.getName()).append("_").append(parentExpression.getExpressionId());
+				break;
+			}
+		}
+		
+		return leftAttribute.toString();
 	}
 
 }
