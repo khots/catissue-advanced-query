@@ -57,6 +57,8 @@ public class ExportUtility
 			out.closeEntry();
 			in.close();
 			out.close();
+			csvFile.delete();
+			Logger.out.info("CSV DELETED....");
 			Logger.out.info("ZIP FILE GENERATED....");
 		}
 		catch (IllegalArgumentException iae)

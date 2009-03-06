@@ -13,6 +13,7 @@ import edu.wustl.common.util.ExportReport;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.queryexecutionmanager.DataQueryExecution;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
@@ -82,11 +83,31 @@ public abstract class AbstractExportDataThread implements Runnable
 
 	/**
 	 * 
+	 * @param exportDataObject
+	 * @return
+	 */
+	protected String getFileName(ExportDataObject exportDataObject)
+	{
+		AbstractQuery query = (AbstractQuery) exportDataObject.getExportObjectDetails().get(Constants.ABSTRACT_QUERY);
+		String fileName = "Query_" + query.getQuery().getId().toString();
+		return fileName;
+	}
+	
+	/**
+	 * 
 	 * @param edo
 	 * @param sdb
 	 */
 	protected abstract void postProcess(ExportDataObject exportDataObject,
 			SessionDataBean sessionDataBean);
+	
+	/**
+	 * 
+	 * @param exportDataObject
+	 * @param exception
+	 */
+	protected abstract void handleException(ExportDataObject exportDataObject,
+			Exception exception);
 
 	/**
 	 * 
@@ -112,9 +133,9 @@ public abstract class AbstractExportDataThread implements Runnable
 	 * @param dataList
 	 * @throws IOException 
 	 */
-	private final void generateCSV(List dataList) throws IOException
+	private final void generateCSV(List dataList, String fileName) throws IOException
 	{
-		ExportReport report = new ExportReport("f:\\zip_Trial\\file.csv");
+		ExportReport report = new ExportReport(fileName);
 		report.writeData(dataList, Constants.DELIMETER);
 		report.closeFile();
 	}
@@ -128,20 +149,21 @@ public abstract class AbstractExportDataThread implements Runnable
 		try
 		{
 			dataList = executeQuery(exportDataObject);
-
-			generateCSV(dataList);
 			
-			ExportUtility.createZip("f:\\zip_Trial", "file.csv", "file.zip");
+			String fileName = getFileName(exportDataObject);
+			
+			generateCSV(dataList, Variables.properties.getProperty("xquery.jbossPath")  + "/data/ExportHome/"+fileName+".csv");
+			
+			AbstractQuery query = (AbstractQuery) exportDataObject.getExportObjectDetails().get(Constants.ABSTRACT_QUERY);
+			
+			ExportUtility.createZip(Variables.properties.getProperty("xquery.jbossPath")  + "/data/ExportHome", fileName+".csv", fileName+".zip");
 	
 			postProcess(exportDataObject, sessionDataBean);
 		}
-		catch (QueryModuleException ex)
-		{
-			Logger.out.debug(ex.getMessage(), ex);
-		}
-		catch (IOException ex)
-		{
-			Logger.out.debug(ex.getMessage(), ex);
+		catch (Exception exception)
+		{	
+			handleException(exportDataObject, exception);
+			Logger.out.debug(exception.getMessage(), exception);
 		}
 	}
 
