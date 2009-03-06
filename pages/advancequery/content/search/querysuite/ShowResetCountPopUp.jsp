@@ -4,6 +4,7 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
+<link rel="stylesheet" type="text/css" href="css/advancequery/inside.css" />
 <script  src="jss/advancequery/workflows.js"></script>
 <script src="jss/ajax.js"></script>	
 <script type="text/JavaScript">
@@ -190,16 +191,16 @@ function createTextElement(text)
 <html>
 <body>
 <body>
-<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr>
-    <td align="center" valign="middle"><table width="96%" height="90" border="0" align="center" cellpadding="4" cellspacing="0" class="dynamic_table_bg">
+<table width="96%" height="100%" border="0" cellpadding="0" cellspacing="0" align = "right">
+  <tr align = "center">
+    <td style = "padding-left:10px;padding-right:10px" align="center" valign="middle"><table width="100%" height="90" border="0" align="center" cellpadding="0" cellspacing="0" class="dynamic_table_bg">
       <tr>
         <td height="23" align="center" class="content_txt">Selecting another project will erase the query counts for the current project. Do you want to continue?</td>
       </tr>
       <tr>
-        <td height="35" align="center"><table border="0" cellspacing="0" cellpadding="4">
+        <td height="35" align="center"><table border="0" cellspacing="0" cellpadding="0">
           <tr>
-            <td><a href="javascript:abortCountExecution()"><img src="images/advancequery/b_yes.gif" alt="Yes" width="50" height="23" border="0" /></a></td>
+            <td width = "60"><a href="javascript:abortCountExecution()"><img src="images/advancequery/b_yes.gif" alt="Yes" width="50" height="23" border="0" /></a></td>
             <td><a href="javascript:cancelChnageProjectRequest()"><img src="images/advancequery/b_no.gif" alt="No" width="43" height="23" border="0" /></a></td>
           </tr>
         </table></td>
