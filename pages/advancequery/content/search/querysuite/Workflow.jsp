@@ -509,7 +509,7 @@ function executeGetCountQuery(queryTitle,executionLogId)
 							var object=title.parentNode;
 							var tdChildCollection=object.getElementsByTagName('input');
 							var queryId=tdChildCollection[2].id;//object.childNodes[0].id;//object.id;
-							//setDropDowns(queryTitle);
+							//DropDowns(queryTitle);
 							workflowExecuteGetCountQuery(document.getElementById(queryId).value,executionLogId);
 				}
 			}
@@ -793,15 +793,17 @@ function workflowResponseHandler(response)
 							var queryExecId=tdChildCollection[3].id;
 							if(queryExecId!=null&&queryExecId!=undefined)
 							{
-							   /*if(document.getElementById(queryExecId).value==0 ||   
+							//removed To be changed by rinku /rukhsana
+							 /*  if(document.getElementById(queryExecId).value==0 ||   
 									 document.getElementById(queryExecId).value=='' || document.getElementById(queryExecId).value==null)
 								{
-								  setDropDowns(qTitle);
-								}*/ 
-								if(setCountDropDown == false && queryResult>0)
+								  // setCountDropDown=false;
+								  //setDropDowns(qTitle);
+								} */
+								if( queryResult>0)
 								{
 									setDropDowns(qTitle);
-									setCountDropDown=true;
+									//setCountDropDown=true;
 								}
 								if(queryResult==0)
 								{
@@ -1284,7 +1286,7 @@ function setPreviousProject()
 {
 	previousProject=document.getElementById('selectedProject').value;
 }setPreviousProject();
-
+/*
 function retrieveCounts()
 {
 	var rows=parent.window.document.getElementById("table1").rows.length;
@@ -1301,6 +1303,6 @@ function retrieveCounts()
 			workflowExecuteGetCountQuery(queryId,executionId);
 		}
 	}
-}retrieveCounts();
+}retrieveCounts();*/
 </script>
 </body>
