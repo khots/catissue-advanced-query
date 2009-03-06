@@ -1205,9 +1205,9 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <table border="0" cellspacing="0" cellpadding="2" height="30">
 	
 	<tr>
-		<td align="left" width="65" valign="middle" style="padding-left:5px;"><a href="javascript:submitWorflow()">
+		<td align="left"  valign="middle" style="padding-left:5px;"><a href="javascript:submitWorflow()">
 		<img src="images/advancequery/b_save.gif" alt="Save" width="55" height="23" border="0"></a></td>
-		<td width="76" align="left" valign="middle"><a href="javascript:cancelWorkflow()"><img src="images/advancequery/b_cancel.gif" alt="Cancel" width="66" height="23" border='0' align="absmiddle">
+		<td  align="left" valign="middle" style="padding-left:5px;"><a href="javascript:cancelWorkflow()"><img src="images/advancequery/b_cancel.gif" alt="Cancel" width="66" height="23" border='0' align="absmiddle">
 		</td>
 	</tr>
 </table>
