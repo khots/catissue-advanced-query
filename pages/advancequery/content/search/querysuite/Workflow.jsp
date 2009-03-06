@@ -316,10 +316,18 @@ function setCancelFlag(queryId)
 							document.getElementById("cancelajaxcall_"+queryIndex).value='false';
 	
 }
+function setIsDoneOnWorkflowNameChange()
+{
+	if(document.getElementById("name").value=="")
+	{
+		document.getElementById("isdone").value='false';
+	}
+}
 
 function runWorkflow()
 {
 
+	setIsDoneOnWorkflowNameChange();
 	if(document.getElementById("isdone").value=='false')
 	{
 		var rows=document.getElementById("table1").rows.length;
@@ -450,7 +458,7 @@ function executeGetCountQuery(queryTitle,executionLogId)
 	//setCancelFlag(queryTitle);
 	queryTitle=unescape(queryTitle);
 	queryTitle=unescape(queryTitle);
-
+	setIsDoneOnWorkflowNameChange();
 	if(document.getElementById("isdone").value=='false')
 	{
 		var rows=document.getElementById("table1").rows.length;
@@ -1254,6 +1262,7 @@ function updateOpenerUI()
 		}
  }updateOpenerUI();
  setCheckboxCount();
+ /*
  function forwardToWorkflow()
 {
 	
@@ -1270,7 +1279,7 @@ function updateOpenerUI()
 		document.forms[0].submit();
 
 	}
-}forwardToWorkflow();
+}forwardToWorkflow();*/
 function setPreviousProject()
 {
 	previousProject=document.getElementById('selectedProject').value;
