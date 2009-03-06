@@ -11,8 +11,9 @@
 function submitForm()
 {
 	document.forms[0].submit();
+	parent.document.getElementById("exportMessageDiv").style.display="block";
 	parent.confidentialitywindow.hide();
-	parent.getElementById("exportMessageDiv").style.display="block";
+	
 }
 
 function closeWindow()
@@ -104,14 +105,15 @@ Once the file is ready to download, you will be notified via an email.
                   <td height="10px"></td>
                 </tr>
                 <tr>
-                  <td align="left" valign="top" class="content_txt" >
+                  <td style="padding-left:10px;" align="left" valign="top"  class="content_txt" >
 				  <div class="conditions">		
-				  Data Download Terms and Conditions: 
-The data set you are about to download may contain confidential patient information from CIDER. By s and downloading the data from CIDER, you agree to all of the following:
-·	Not transfer CIDER data to any third party other than staff for whom you are directly responsible unless a data use agreement is in place.
-·	To certify the protection of any downloaded CIDER data file as well as any data files derived from the downloaded file.
-·	To promptly report to appropriate authority, if data is compromised or lost.
-
+				  <ol>
+						Data Download Terms and Conditions: 
+						The data set you are about to download may contain confidential patient information from CIDER. By s and downloading the data from CIDER, you agree to all of the following:
+						<li>	Not transfer CIDER data to any third party other than staff for whom you are directly responsible unless a data use agreement is in place.</li>
+						<li>	To certify the protection of any downloaded CIDER data file as well as any data files derived from the downloaded file.</li>
+						 <li>	To promptly report to appropriate authority, if data is compromised or lost.</li>
+				  </ol>	
 				  </div>				  </td>
                 </tr>
                 <tr>
