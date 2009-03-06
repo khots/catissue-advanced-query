@@ -105,7 +105,7 @@ public class ViewResultsAction extends Action
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor.getAllChildrenNodes(rootOutputTreeNodeList);
 		
 		//Setting some session attributes
-		session.setAttribute(Constants.PATIENT_QUERY_UNIQUE_ID_MAP, uniqueIdNodesMap);
+		session.setAttribute(Constants.ID_NODES_MAP, uniqueIdNodesMap);
 		session.setAttribute(Constants.DATA_QUERY_ID,iqueryId);
 		session.setAttribute(Constants.WORKFLOW_ID, workflowId);
 		session.setAttribute(Constants.EXECUTION_ID_OF_QUERY, queryExecutionID);

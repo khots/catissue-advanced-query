@@ -836,9 +836,6 @@ public class Constants extends edu.wustl.common.util.global.Constants
 
     public static final String  PATIENT_QUERY_ROOT_OUT_PUT_NODE_LIST = "patientDataRootOutPutList";
 
-
-    public static final String PATIENT_QUERY_UNIQUE_ID_MAP =  "uniqueIDNodeMap";
-
      /**  Constant for Equal to operator */
 	public static final String EQUALS = " = ";
 	

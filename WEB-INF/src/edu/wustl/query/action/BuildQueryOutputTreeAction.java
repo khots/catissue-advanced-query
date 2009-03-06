@@ -181,7 +181,7 @@ private void processDataNodeClick(String nodeId,HttpServletRequest request,List<
 	
 	//Retrieve the required session attributes
 	int queryExecutionID =   (Integer)session.getAttribute("queryExecutionId");
-	Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map)session.getAttribute(Constants.PATIENT_QUERY_UNIQUE_ID_MAP);
+	Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map)session.getAttribute(Constants.ID_NODES_MAP);
 	IQuery patientDataQuery  = (IQuery)session.getAttribute(Constants.PATIENT_DATA_QUERY);
     
 	OutputTreeDataNode labelTreeDataNode =  uniqueIdNodesMap.get(uniqueCurrentNodeId);		    
@@ -258,7 +258,7 @@ private void processLabelNodeClick(String nodeId,HttpServletRequest request,List
 		
 	//Retrieve the required session attributes
 	int queryExecutionID =   (Integer)session.getAttribute("queryExecutionId");
-	Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map<String, OutputTreeDataNode>)session.getAttribute(Constants.PATIENT_QUERY_UNIQUE_ID_MAP);
+	Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map<String, OutputTreeDataNode>)session.getAttribute(Constants.ID_NODES_MAP);
 	IQuery patientDataQuery  = (IQuery)session.getAttribute(Constants.PATIENT_DATA_QUERY);
 		
 	//If node Id ends with Label, then it's label node
