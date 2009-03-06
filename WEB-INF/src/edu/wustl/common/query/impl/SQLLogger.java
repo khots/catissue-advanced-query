@@ -21,7 +21,7 @@ class SQLLogger extends FileLogger<String>
 	@Override
 	protected String getBaseDir()
 	{
-		return Variables.properties.getProperty("xquery.jbossPath")  + "/sql_log";
+		return Variables.properties.getProperty("xquery.jbossPath")  + "/log/sql_log";
 	}
 
 	@Override
