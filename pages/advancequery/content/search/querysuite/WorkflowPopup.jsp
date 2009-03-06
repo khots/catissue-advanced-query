@@ -270,14 +270,14 @@ int queryCount = 0;%>
 							<td width="18" align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle">
 							</td>
 							<td valign="top"  class="content_txt"><a href="javascript:retrieveMyQueries('myQueriesForWorkFlow')" class="blacklink"><bean:message key="workflow.myqueries"/> 
-						</a>(${requestScope.myQueriesCount})</td>
+						</a>&nbsp;(${requestScope.myQueriesCount})</td>
 						</tr>
 						<tr>
 							<td >&nbsp;</td>
 							<td align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle">
 							
 							</td>
-							<td valign="top"  class="content_txt"><a href="javascript:retrieveMyQueries('sharedQueriesForWorkFlow')" class="blacklink"><bean:message key="workflow.sharedqueries"/></a>(${requestScope.sharedQueriesCount})</td>
+							<td valign="top"  class="content_txt"><a href="javascript:retrieveMyQueries('sharedQueriesForWorkFlow')" class="blacklink"><bean:message key="workflow.sharedqueries"/></a>&nbsp;(${requestScope.sharedQueriesCount})</td>
 						</tr>
 					</table>		
 				</td>
