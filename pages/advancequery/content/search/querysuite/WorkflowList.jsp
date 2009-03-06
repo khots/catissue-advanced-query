@@ -36,7 +36,7 @@ function init_grid()
 	mygrid.setHeader(columns);
 	mygrid.setEditable("false");
 	mygrid.enableAutoHeigth(true);
-	mygrid.enableAlterCss("even","uneven");
+	mygrid.enableAlterCss("uneven","even");
     mygrid.enableRowsHover(true,'grid_hover')
 
 	if(isWidthInPercent)
@@ -189,7 +189,7 @@ function changeResPerPage(controlId)
 						<td width="15" style="padding-right:5px;"align="right">
 							<logic:lessEqual name="lastPageNum" value="${sessionScope.totalPages-1}">
 								<a class="bluelinkNoUnderline" href="RetrieveWorkflowAction.do?requestFor=nextPage&pageOf=${requestScope.pageOf}&pageNum=${requestScope.lastPageNum+1}&firstPageNum=${requestScope.firstPageNum+5}&lastPageNum=${requestScope.lastPageNum+5}"> 
-						  		  	>> 
+						  		  	>>
 								</a>
 							</logic:lessEqual>
 							
