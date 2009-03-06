@@ -39,11 +39,11 @@ public abstract class AbstractExportDataAction extends Action
 	{
 		ExportDataObject exportDataObject = new ExportDataObject();
 		SessionDataBean sessionDataBean = getSessionData(request);
-			
-		preProcess(exportDataObject, sessionDataBean);
-		
+
 		AbstractQuery abstractQuery = getAbstractQuery(request);
 		exportDataObject.getExportObjectDetails().put(edu.wustl.query.util.global.Constants.ABSTRACT_QUERY, abstractQuery);
+		
+		preProcess(exportDataObject, sessionDataBean);
 		
 		try
 		{
@@ -74,6 +74,7 @@ public abstract class AbstractExportDataAction extends Action
 	private AbstractQuery getAbstractQuery(HttpServletRequest request)
 	{
 		AbstractQuery abstractQuery = (AbstractQuery) request.getSession().getAttribute(edu.wustl.query.util.global.Constants.ABSTRACT_QUERY);
+		abstractQuery.getQuery().setId((Long) request.getSession().getAttribute(edu.wustl.query.util.global.Constants.DATA_QUERY_ID));
 		return abstractQuery;
 	}
 
