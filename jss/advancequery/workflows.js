@@ -70,7 +70,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	var operandsTd1=document.createElement("td");
 	operandsTd1.className="aligntop";
 	//operandsTd1.className="aligntop";
-	operandsTd1.width="100"
+	operandsTd1.width="100";
 	var operandsTd2=document.createElement("td");
 	operandsTd2.className="aligntop";
 
