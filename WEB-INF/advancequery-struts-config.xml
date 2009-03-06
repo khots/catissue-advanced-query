@@ -578,7 +578,7 @@ PUBLIC
 			name="workflowForm"
 			validate="false"
 			scope="request">
-			<forward name="queryWizard" path="/QueryWorkflowWizard.do?operation=add&amp;pageOf=workflow&amp;menuSelected=1" />
+			<forward name="queryWizard" path="/WorkflowSearch.do?operation=edit&amp;pageOf=pageOfWorkflow&amp;menuSelected=1" />
 		</action>
 		
 		<action path="/ShowResetCountPopUp"
