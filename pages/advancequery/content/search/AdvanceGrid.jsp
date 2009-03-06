@@ -76,9 +76,9 @@
 
 
 
-<table width="100%" valign="top" border="0" height="100%">
+<table width="100%" cellpadding="0" cellspacing="0" valign="top" border="0" height="100%">
 	<tr valign="top" height="100%" width="100%">
-		<td valign="top" height="100%" width="100%">
+		<td valign="top" height="100%" width="100%" style="padding:7px 0;">
 			<!-- 
 				Patch ID: Bug#3090_25
 				Description: The height of the gridbox is increased to eliminate the blank space
@@ -103,10 +103,10 @@
        mygrid.entBox.style.width="100%";
 	 }	
 	
-
+    mygrid.setStyle("font-family: Arial, Helvetica, sans-serif;font-size: 12px;font-weight: bold;color: #000000;background-color: #E2E2E2; border-left-width: 1px;border-left-color: #CCCCCC; border-top-width: 1px;border-top-color: #CCCCCC; border-bottom-color: #CCCCCC; border-top-width: 1px;border-bottom-color: #CCCCCC; border-right-width: 1px;border-right-color: #CCCCCC; text-align:left;padding-left:10px;");
 	mygrid.setHeader(columns);
-	//mygrid.setEditable("FALSE");
-	mygrid.enableAutoHeigth(false);
+	mygrid.setEditable("FALSE");
+	mygrid.enableAutoHeigth(true);
 	
    if(navigator.userAgent.toString().toLowerCase().indexOf("firefox")!= -1)
   {
@@ -148,6 +148,7 @@
 	{
 		data = myData[row];
 		mygrid.addRow(row+1,data,row+1);
+		mygrid.setRowTextStyle(row+1,"font-family: Arial, Helvetica, sans-serif;font-size: 12px;padding-left:10px;color: #000000;border-left-width: 1px;border-left-color: #CCCCCC;  border-bottom-color: #CCCCCC; border-bottom-color: #CCCCCC; border-right-width: 1px;border-right-color: #CCCCCC; Cursor: pointer;");
 	}
 	
 	
