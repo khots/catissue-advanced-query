@@ -71,7 +71,7 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 	<tr>
 	<td style="padding-left:10px;" class = "info_msg" >
 		<div id = "exportMessageDiv" style = "display:none" >
-			Your request for downloading data has been submitted.	
+			Request for data download has been submitted.	
 		</div>
 		
 	</td>
