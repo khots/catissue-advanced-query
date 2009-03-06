@@ -28,13 +28,14 @@ import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
 * @author chitra_garg
-*retrieves the recent queries and set the pagination on 
+*retrieves the recent queries and set the pagination on
 *retrieved data
 */
 public class RetrieveRecentQueriesAction extends Action
 {
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
+	@Override
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		populateRecentQueries(request, (ShowRetrieveRecentForm) actionForm);
@@ -44,11 +45,11 @@ public class RetrieveRecentQueriesAction extends Action
 	}
 
 	/**
-	 * set the total recent queries count for 
-	 * a user in session 
+	 * set the total recent queries count for
+	 * a user in session
 	 * @param request
 	 * @return
-	 * @throws QueryModuleException 
+	 * @throws QueryModuleException
 	 */
 	public int setRecentQueriesCount(SessionDataBean sessionDataBean) throws QueryModuleException
 	{
@@ -67,10 +68,10 @@ public class RetrieveRecentQueriesAction extends Action
 	}
 
 	/**
-	 * This method set the total number of records to display 
+	 * This method set the total number of records to display
 	 * @param request
 	 * @return
-	 * @throws QueryModuleException 
+	 * @throws QueryModuleException
 	 */
 	private int setDisplayedRecentQueryCount(HttpServletRequest request)
 			throws QueryModuleException
@@ -128,22 +129,22 @@ public class RetrieveRecentQueriesAction extends Action
 
 	/**
 	 * This method returns the  Query List
-	 * 
+	 *
 	 * @param sessionDataBean
 	 * @param sql
 	 * @param pageNum
 	 * @param recordsPerPage
 	 * @param lastIndex
 	 * @return
-	 * @throws QueryModuleException 
+	 * @throws QueryModuleException
 	 */
-	private List<List<String>> retrieveQueries(SessionDataBean sessionDataBean,int lastIndex) 
+	private List<List<String>> retrieveQueries(SessionDataBean sessionDataBean,int lastIndex)
 	throws QueryModuleException
 	{
 //		String sql = "select * from  COUNT_QUERY_EXECUTION_LOG where USER_ID="
 //				+ sessionDataBean.getUserId() + " order by CREATIONTIME desc ";
-//		
-		String sql ="SELECT * "+
+//
+		String sql ="SELECT CREATIONTIME,QUERY_COUNT,QUERY_STATUS,QUERY_ID,QUERY_EXECUTION_ID "+
 		   "FROM QUERY_EXECUTION_LOG qel, COUNT_QUERY_EXECUTION_LOG cqel "+
 		   "WHERE qel.QUERY_EXECUTION_ID = cqel.COUNT_QUERY_EXECUTION_ID and cqel.USER_ID="+sessionDataBean.getUserId() + "  order by qel.CREATIONTIME desc ";
 		List<List<String>> queryResultList = executeQuery(sql, sessionDataBean, false, false, null,
@@ -152,8 +153,8 @@ public class RetrieveRecentQueriesAction extends Action
 	}
 
 	/**
-	 * @param sessionDataBean =session related data 
-	 * @param queryResultList =List of queries for which 
+	 * @param sessionDataBean =session related data
+	 * @param queryResultList =List of queries for which
 	 * RecentQueryBean list is to be populate
 	 * @return= RecentQueriesBean List
 	 * @throws DAOException
@@ -166,19 +167,19 @@ public class RetrieveRecentQueriesAction extends Action
 		for (List<String> parameterizedQuery : queryResultList)
 		{
 			RecentQueriesBean recentQueriesBean = new RecentQueriesBean();
-			recentQueriesBean.setQueryCreationDate(parameterizedQuery.get(3));//(0));
-			recentQueriesBean.setResultCount(Long.valueOf(parameterizedQuery.get(9)));//(100L);
-			recentQueriesBean.setStatus(parameterizedQuery.get(10));//2));
+			recentQueriesBean.setQueryCreationDate(parameterizedQuery.get(0));//(0));
+			recentQueriesBean.setResultCount(Long.valueOf(parameterizedQuery.get(1)));//(100L);
+			recentQueriesBean.setStatus(parameterizedQuery.get(2));//2));
 
-			String title = retrieveQueryName(Long.valueOf(parameterizedQuery.get(7)),
+			String title = retrieveQueryName(Long.valueOf(parameterizedQuery.get(3)),
 					sessionDataBean);
 			recentQueriesBean.setQueryTitle(title);
-			recentQueriesBean.setQueyExecutionId(Long.valueOf(parameterizedQuery.get(0)));//Long.valueOf(parameterizedQuery.get(4)));
+			recentQueriesBean.setQueyExecutionId(Long.valueOf(parameterizedQuery.get(4)));//Long.valueOf(parameterizedQuery.get(4)));
 			recentQueriesBeanList.add(recentQueriesBean);
 		}
 		return recentQueriesBeanList;
 	}
-	
+
 	/**
 	 * @param id=query id
 	 * @param sessionDataBean session specific data
@@ -200,7 +201,7 @@ public class RetrieveRecentQueriesAction extends Action
 
 	/**
 	 * Executes the query & returns the results specified by the offset values i.e. startIndex & noOfRecords.
-	 * @param query 
+	 * @param query
 	 * @param sessionDataBean =session related data
 	 * @param isSecureExecute
 	 * @param hasConditionOnIdentifiedField
@@ -221,7 +222,7 @@ public class RetrieveRecentQueriesAction extends Action
 		try
 		{
 			dao.openSession(sessionDataBean);
-			PagenatedResultData pagiPagenatedResultData = (PagenatedResultData) dao.executeQuery(
+			PagenatedResultData pagiPagenatedResultData = dao.executeQuery(
 					query, sessionDataBean, false, false, null, startIndex, noOfRecords);
 			queryResultList = pagiPagenatedResultData.getResult();
 
