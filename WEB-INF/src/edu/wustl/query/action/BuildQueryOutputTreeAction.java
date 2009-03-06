@@ -225,7 +225,7 @@ private void processDataNodeClick(String nodeId,HttpServletRequest request,List<
 			   		String displayName = Utility.getDisplayLabel(mainEntity.getName()) + " (" + dataList.size() + ")";
 			   		String labelNodeId = getUniqueNodeID(uniqueIdNodesMap,mainEntityTreeDataNode);
 			   		String dataNodeId = rootData + Constants.NODE_SEPARATOR + uniqueCurrentNodeId + Constants.UNDERSCORE + labelNodeParentPrimaryKey + Constants.NODE_SEPARATOR +labelNodeId + Constants.UNDERSCORE + Constants.LABEL_TREE_NODE;
-			   		displayName = Constants.TREE_NODE_FONT + displayName + Constants.TREE_NODE_FONT_CLOSE;
+			   		displayName = "<span class=\"content_txt\">" + displayName + "</span>";
 			   				
 			   		JSONObject jsonObject = new JSONObject();
 			   		jsonObject.append("identifier", dataNodeId);
@@ -301,8 +301,7 @@ private void processLabelNodeClick(String nodeId,HttpServletRequest request,List
 				
 			//Creating the Tree node Id
 			String dataNodeId = createTreeNodeId(rootData,uniqueParentNode, uniqueCurrentNodeId,primaryKeySetData);
-
-			String displayName = Constants.TREE_NODE_FONT +  displayData +Constants.TREE_NODE_FONT_CLOSE;	  
+            String displayName = "<span class=\"content_txt\">"+  displayData +"</span>";	  
 			String parentId = nodeId;
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.append("identifier", dataNodeId);
