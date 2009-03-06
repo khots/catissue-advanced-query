@@ -442,19 +442,44 @@ private void arrangeAttributes(List<IOutputAttribute> outputAttributesList,
 		//
 		List <IOutputAttribute> outputAttributesList = ((ParameterizedQuery)generatedQuery).getOutputAttributeList();
 		
-		for(int i=0; i<outputAttributesList.size(); i++)
+		for(int i=0; i<primaryKeyList.size(); i++)
+		{
+			AttributeInterface attribute = primaryKeyList.get(i);
+			for(int j=0; j<outputAttributesList.size(); j++)
+			{
+				IOutputAttribute outputAttribute = outputAttributesList.get(j);	
+				if(edu.wustl.query.util.global.Utility.istagPresent(attribute, "Inherited") || outputAttribute.getAttribute().getId() == attribute.getId())
+				{
+					if(attribute.getEntity().equals(outputAttribute.getExpression().getQueryEntity().getDynamicExtensionsEntity()))
+					{
+					primaryKeyIndexesList.add(j);
+					break;
+					}
+				}
+				
+			}
+		}
+		
+		
+		
+		/*for(int i=0; i<outputAttributesList.size(); i++)
 		{
 			IOutputAttribute outputAttribute = outputAttributesList.get(i);
 			for(int j=0; j<primaryKeyList.size(); j++)
 			{
 				AttributeInterface attribute = primaryKeyList.get(j);	
+				String name = attribute.getEntity().getName();
+				if(edu.wustl.query.util.global.Utility.istagPresent(attribute, "Inherited"))
+				{
+					primaryKeyIndexesList.add(i);
+				}
 				if(outputAttribute.getAttribute().getId() == attribute.getId())
 				{
 					primaryKeyIndexesList.add(i);
 				    break;
 				}
 			}
-		}
+		}*/
 		return primaryKeyIndexesList;
 	}
    
