@@ -107,7 +107,7 @@ public class ViewResultsAction extends Action
 		//Setting some session attributes
 		session.setAttribute(Constants.PATIENT_QUERY_UNIQUE_ID_MAP, uniqueIdNodesMap);
 		session.setAttribute(Constants.DATA_QUERY_ID,iqueryId);
-		session.setAttribute(Constants.WORFLOW_ID, workflowId);
+		session.setAttribute(Constants.WORKFLOW_ID, workflowId);
 		session.setAttribute(Constants.EXECUTION_ID_OF_QUERY, queryExecutionID);
 		session.setAttribute(Constants.PATIENT_QUERY_ROOT_OUT_PUT_NODE_LIST,rootOutputTreeNodeList);
 		session.setAttribute(Constants.PATIENT_DATA_QUERY,getPatientDataQuery);
@@ -169,7 +169,7 @@ public class ViewResultsAction extends Action
 		String name = labelEntity.getName();
 		String nodeId = Constants.NULL_ID + Constants.NODE_SEPARATOR +  treeNo + Constants.UNDERSCORE+ Constants.NULL_ID
 		+Constants.UNDERSCORE + Constants.NULL_ID +Constants.NODE_SEPARATOR+labelNodeId + Constants.UNDERSCORE + Constants.LABEL_TREE_NODE;
-		displayName = Constants.TREE_NODE_FONT + displayName + Constants.TREE_NODE_FONT_CLOSE;
+		displayName = "<font size='2' color='#297cc7' face='Arial'><b>"+ displayName + "</b></font>";
 		QueryTreeNodeData treeNode = new QueryTreeNodeData();
 		treeNode.setIdentifier(nodeId);
 		treeNode.setObjectName(name);
