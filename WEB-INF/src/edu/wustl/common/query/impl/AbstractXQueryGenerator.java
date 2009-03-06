@@ -347,7 +347,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 								.getEntity();
 						String entityPath = getEntityPath(entity, parentExpression);
 
-						String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute().getName();
+//						String primaryKeyName = cnstrKeyProp.getSrcPrimaryKeyAttribute().getName();
 						leftAttribute = getOneToManyLeft(parentExpression,entityPath,cnstrKeyProp);
 //						leftAttribute = "$" + getAliasName(parentExpression) + entityPath + "/"
 //								+ primaryKeyName;
