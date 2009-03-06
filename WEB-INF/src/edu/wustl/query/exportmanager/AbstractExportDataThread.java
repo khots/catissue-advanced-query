@@ -163,6 +163,7 @@ public abstract class AbstractExportDataThread implements Runnable
 		catch (Exception exception)
 		{	
 			handleException(exportDataObject, exception);
+			exception.printStackTrace();
 			Logger.out.debug(exception.getMessage(), exception);
 		}
 	}
