@@ -10,11 +10,12 @@
 <script  src="dhtml_comp/js/dhtmlwindow.js"></script>	
 <script  src="dhtml_comp/js/modal.js"></script>
 <link rel="stylesheet" type="text/css" href="css/advancequery/catissue_suite.css" />
+<link rel="stylesheet" type="text/css" href="css/advancequery/inside.css" />
 
 <script>
 function openPopupWindow()
 {
-      confidentialitywindow=dhtmlmodal.open('CIDER', 'iframe', 'Forward.do','CIDER Confidentiality Terms & Conditions', 'width=830px,height=300px,center=1,resize=0,scrolling=1')
+      confidentialitywindow=dhtmlmodal.open('CIDER', 'iframe', 'Forward.do','CIDER Confidentiality Terms & Conditions', 'width=830px,height=350px,center=1,resize=0,scrolling=1')
    	 
 }
 </script>
@@ -64,10 +65,20 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 			</table></td>
 		</tr>
 <tr valign="top">
-		<td>
+		<td colspan = "2" width = "25%">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" height="30">
+
+	<tr>
+	<td style="padding-left:10px;" class = "info_msg" >
+		<div id = "exportMessageDiv" style = "display:none" >
+			Your request for downloading data has been submitted.	
+		</div>
+		
+	</td>
+</tr>
+
 <tr>
-<td style="padding-left:10px;" class="content_txt">Project: </td><td align="right" style="padding-right:10px;"><a href="javascript:openPopupWindow()" class="bluelink">Export</a></td>
+<td style = "padding-right:10px;" width = "25%">&nbsp;</td><td align="left" style="padding-left:5px;"><a href="javascript:openPopupWindow()" class="bluelink">Export</a></td>
 </tr>
 </table>
 </td></tr>
