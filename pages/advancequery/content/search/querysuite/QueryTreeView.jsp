@@ -33,7 +33,12 @@ function divHeight(treeNumber, currentNumber)
 }
 //style="position: relative;zoom: 1;"
 </script> 
+<style>
+ #aaa{
+    width: 100%;
+  }
 
+</style>
 </head>
 <%
 Long trees = (Long)request.getSession().getAttribute("noOfTrees");
@@ -61,6 +66,7 @@ var treeNo = 0;
 			divHeight(<%=noOfTrees%>, <%=i%>);
 			resultTree=new dhtmlXTreeObject(<%=divId%>,"100%","100%",0);
 			resultTree.setImagePath("dhtml_comp/imgs/");
+			//resultTree.setStyle("font-family: Arial, Helvetica, sans-serif;font-size: 12px;font-weight: bold;color: #000000;background-color: #E2E2E2;");
 			resultTree.setOnClickHandler(getTreeNodeChildren);
 			<%
 			
@@ -126,24 +132,24 @@ treeNo = treeNo + 1;
 <%
 	String formAction = Constants.DefineSearchResultsViewJSPAction;
 %>
-<html:form method="GET" action="<%=formAction%>">
+<html:form method="GET" action="<%=formAction%>" > 
 <html:hidden property="currentPage" value=""/>
 <html:hidden property="stringToCreateQueryObject" value="" />
 
-<table id="table1" border="0" height="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="width:100%;" bordercolorlight="#000000" class='tbBordersAllbordersBlack'>
+<table  id="table1" border="0"  cellspacing="0" cellpadding="0" style="width:100%">
 	<tr>
-		<td valign="top" width="90%" height="100%">
-			<%  for(int i=0;i<noOfTrees;i++) {
+		<td valign="top" style="padding-top:10px;">
+		<%  for(int i=0;i<noOfTrees;i++) {
 			String divId = "treebox"+i;
 			%>
 
-				<div id="<%=divId%>"  style="width:100%;background-color:white;">
+				<div class="content_txt" id="<%=divId%>"  style="width:100%;background-color:white;">
 				</div>
 			<% } %>
 		</td>
 	</tr>									
 </table>
-		
+	
 </html:form>
 </body>
 </html> 
