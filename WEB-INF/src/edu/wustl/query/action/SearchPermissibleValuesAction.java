@@ -190,7 +190,7 @@ public class SearchPermissibleValuesAction extends Action
 								sourceConceptMap,rowsCreated);
 
 			rowsCreated=(rowsCreated<VIProperties.maxPVsToShow)?getHTML(orderedConcepts, vocabURN, html,
-					Constants.NOT_MED_VALED_PVCONCEPT,sourceConceptMap,rowsCreated):0;
+					Constants.NOT_MED_VALED_PVCONCEPT,sourceConceptMap,rowsCreated):VIProperties.maxPVsToShow;
 			
 		}
 		else
@@ -199,18 +199,18 @@ public class SearchPermissibleValuesAction extends Action
 			/*first get the HTML for Result has mapping available in MED and it is valid permissible value for the entity.
 			 *  Show result as bold enabled.
 			 */
-			rowsCreated=	getHTML(orderedConcepts, vocabURN, html, Constants.MED_MAPPED_N_VALID_PVCONCEPT,
+			rowsCreated=getHTML(orderedConcepts, vocabURN, html, Constants.MED_MAPPED_N_VALID_PVCONCEPT,
 					sourceConceptMap,rowsCreated);
 			/* Result has mapping available in MED but it is not valid permissible value.
 			 * Show result as disabled bold italicized.
 			 */
 			rowsCreated=(rowsCreated<VIProperties.maxPVsToShow)? getHTML(orderedConcepts, vocabURN, html, 
-					Constants.MED_MAPPED_N_NOT_VALIED_PVCONCEPT,sourceConceptMap,rowsCreated):0;
+					Constants.MED_MAPPED_N_NOT_VALIED_PVCONCEPT,sourceConceptMap,rowsCreated):VIProperties.maxPVsToShow;
 			/* 	Result has no mapping available in MED.
 			 *	Show result as disabled  italicized.
 			 */
 			rowsCreated=(rowsCreated<VIProperties.maxPVsToShow)? getHTML(orderedConcepts, vocabURN, html,
-					Constants.NOT_MED_MAPPED_PVCONCEPT,sourceConceptMap,rowsCreated):0;
+					Constants.NOT_MED_MAPPED_PVCONCEPT,sourceConceptMap,rowsCreated):VIProperties.maxPVsToShow;
 		}
 	}
 
