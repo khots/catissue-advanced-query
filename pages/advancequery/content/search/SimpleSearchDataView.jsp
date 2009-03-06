@@ -159,15 +159,11 @@ tr#hiddenCombo
 <!-------new--->
  <!--Prafull:Added errors tag inside the table-->
 
- <table id="table1" width="100%" border="0" height="96%" cellpadding="0" cellspacing="0" class="maintable" >
+ <table id="table1" width="100%" border="0" height="96%" cellpadding="0" cellspacing="0"  >
  
 	<tr height="100%">
-		<td class="td_color_bfdcf3">
- 
-
-
-
-	 <table id="table2" width="100%" border="0"  cellpadding="3" height="98%" cellspacing="0" class="whitetable_bg">
+		<td valign="top">
+ 	 <table id="table2" width="100%" border="0"  cellpadding="3" height="98%" cellspacing="0" class="whitetable_bg">
 	
    <script> 
 	if(navigator.appName == "Microsoft Internet Explorer")
@@ -177,10 +173,7 @@ tr#hiddenCombo
    }
    </script>
 	  
-	  <tr height="4%">
-        <td align="left" ></td>
-      </tr>
-
+	 
 
 <html:form action="QueryWizard.do" style="margin:0;padding:0;height:100%;">
 <html:hidden property="checkAllPages" value=""/>	
@@ -199,11 +192,11 @@ tr#hiddenCombo
 			Description: The width of <td> are adjusted to fit into the iframe. 
 			These changes were made to remove the extra white space on the data view/spreadsheet view page. 
 		-->
-		<tr height="3%">
+		<!-- <tr height="3%">
 			 <td align="left" class="tr_bg_blue1">
 				<span class="blue_ar_b"> &nbsp;<bean:message key="<%=title%>" />&nbsp;</span>
 			 </td>
-		</tr> 		
+		</tr> 	-->	
 		
 		<%
 		if(pageOf.equals(Constants.PAGEOF_QUERY_RESULTS))
@@ -211,8 +204,8 @@ tr#hiddenCombo
 			String[] selectedColumns=selectedColumnNames;
 		%>
 		
-		<tr id="hiddenCombo" rowspan="4" >
-			<td class="black_new" >
+		<tr id="hiddenCombo" rowspan="4" style="bgcolor:blue;" >
+			<td class="black_new" >bfh
 	<!-- Mandar : 434 : for tooltip -->
 	   			<html:select property="selectedColumnNames" styleClass="selectedColumnNames"  size="1" styleId="selectedColumnNames" multiple="true"
 				 onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)">
@@ -231,7 +224,7 @@ tr#hiddenCombo
 		} 
 		%>
 		
-		<tr valign="top" width="100%" height="69%">
+		<tr valign="top" width="100%" height="*">
 			<td  width="100%" valign="top" height="100%">
 <!--  **************  Code for New Grid  *********************** -->
 				<script>
@@ -243,12 +236,12 @@ tr#hiddenCombo
 					var useDefaultRowClickHandler =1;
 					var useFunction = "search";	
 				</script>
-				<%@ include file="/pages/advancequery/content/search/AdvanceGrid.jsp" %> 
+			<!--	<%@ include file="/pages/advancequery/content/search/AdvanceGrid.jsp" %> -->
 <!--  **************  Code for New Grid  *********************** -->
 			</td>
 		</tr>
 
-		<tr width="100%" valign="top" height="15%">
+		<!--<tr width="100%" valign="top" height="15%">
 		
 		<td width="90%">
 		
@@ -278,13 +271,12 @@ tr#hiddenCombo
 			</table>
 			
 			</td>
-		</tr>
+		</tr> -->
 	<% } %>
 
 	
-		<html:hidden property="operation" value=""/>
-	
-	<input type="hidden" name="isQuery" value="true">
+<html:hidden property="operation" value=""/>
+<input type="hidden" name="isQuery" value="true">
 </html:form>
 </table>
 </td>
