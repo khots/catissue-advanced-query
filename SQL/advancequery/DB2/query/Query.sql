@@ -193,7 +193,7 @@ where CNSTR_KEY_PROP_ID =
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
 where name = 'id') 
-and TGT_CONSTRAINT_KEY_ID=
+and SRC_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
 (select identifier from dyextn_association
@@ -218,7 +218,7 @@ where CNSTR_KEY_PROP_ID =
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
 where name = 'patientAccountNumber') 
-and TGT_CONSTRAINT_KEY_ID=
+and SRC_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
 (select identifier from dyextn_association
