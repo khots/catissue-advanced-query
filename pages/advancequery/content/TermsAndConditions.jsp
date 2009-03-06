@@ -8,6 +8,32 @@
 <script type="text/JavaScript">
 <!--
 
+function submitForm()
+{
+	document.forms[0].submit();
+	parent.confidentialitywindow.hide();
+	parent.getElementById("exportMessageDiv").style.display="block";
+}
+
+function closeWindow()
+{
+	parent.confidentialitywindow.hide();
+}
+
+function isAgreeForTerms(element)
+{
+	if(element.checked)
+	{
+		document.getElementById("isAgree").style.display="block";
+		document.getElementById("isNotAgree").style.display="none";
+	}
+	else
+	{
+		document.getElementById("isNotAgree").style.display="block";
+		document.getElementById("isAgree").style.display="none";
+	}
+}
+
 
 function MM_preloadImages() { //v3.0
   var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
@@ -31,6 +57,7 @@ MM_reloadPage(true);
 <link href="css/inside.css" rel="stylesheet" type="text/css" media="screen">
 </head>
 <body onLoad="MM_preloadImages('images/m_home_act.gif')">
+<form name = "exportDataForm" id = "exportDataForm" action = "CiderExportData.do">
 <script type="text/javascript" src="wz_tooltip.js"></script>
 <div id="welcome_links"></div>
 
@@ -78,20 +105,43 @@ Once the file is ready to download, you will be notified via an email.
                 </tr>
                 <tr>
                   <td align="left" valign="top" class="content_txt" >
-				  <div class="conditions">				  </div>				  </td>
+				  <div class="conditions">		
+				  Data Download Terms and Conditions: 
+The data set you are about to download may contain confidential patient information from CIDER. By s and downloading the data from CIDER, you agree to all of the following:
+·	Not transfer CIDER data to any third party other than staff for whom you are directly responsible unless a data use agreement is in place.
+·	To certify the protection of any downloaded CIDER data file as well as any data files derived from the downloaded file.
+·	To promptly report to appropriate authority, if data is compromised or lost.
+
+				  </div>				  </td>
                 </tr>
                 <tr>
                   <td height="10px"></td>
                 </tr>
                 <tr>
-                  <td align="left" valign="top" class="content_txt" ><input type="checkbox" name="checkbox" value="checkbox">&nbsp;I agree with the above mentioned terms and conditions.</td>
+                  <td align="left" valign="top" class="content_txt" ><input type="checkbox" id= "checkbox" name="checkbox" value="checkbox" onclick = "isAgreeForTerms(this)">&nbsp;I agree with the above mentioned terms and conditions.</td>
                 </tr>
                 <tr>
                   <td height="10px"></td>
                 </tr>
                 <tr>
-                  <td align="left" valign="middle" ><a href="CiderExportData.do"><img src="images/b_ok_inactive.gif" alt="OK" width="44" height="23"></a>&nbsp;<a href="window.close()"><img src="images/b_cancel.gif" alt="Cancel" width="66" height="23"></a>
-</td>
+                  <td align="left" valign="middle" >
+					<table cellspacing = "0" cellpadding= "0" colspan = "2">
+					<tr>
+						<td width = "54">
+						<div id = "isNotAgree" style = "display:block" >
+						  <img src="images/b_ok_inactive.gif" alt="OK" width="44" height="23">
+						  </div>
+						  <div id = "isAgree" style = "display:none">
+								<a href="javascript:submitForm()"><img border = "0" src="images/b_ok.gif" alt="OK" width="44" height="23"></a>
+						  </div>
+						  </td>
+						  <td>
+						   <a href="javascript:closeWindow()"><img border = "0" src="images/b_cancel.gif" alt="Cancel" width="66" height="23"></a>
+						  </td>
+					</tr>
+					</table>
+					</td>
+
                 </tr>
                <tr>
                   <td height="10px"></td>
@@ -108,6 +158,7 @@ Once the file is ready to download, you will be notified via an email.
     </tr>
   </table>
 </div>
+</form>
 </body>
 </html>
 
