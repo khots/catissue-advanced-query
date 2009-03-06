@@ -252,12 +252,12 @@ public class PassTwoXQueryGenerator extends AbstractXQueryGenerator
 	 */
 	protected String getManyToOneLeft(IExpression parentExpression,
 			ConstraintKeyPropertiesInterface cnstrKeyProp)
-	{
+	{	
 		
 		StringBuffer leftAttribute = new StringBuffer();
 		AttributeInterface primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
 		Collection<TaggedValueInterface> taggedValues = primaryKey.getTaggedValueCollection();
-		leftAttribute.append("$").append(getAliasName(parentExpression)).
+		leftAttribute.append("$").append(getAliasName(parentExpression)).append("/").
 		append(cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName());
 		for (TaggedValueInterface tagValue : taggedValues)
 		{	
