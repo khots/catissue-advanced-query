@@ -23,6 +23,7 @@ import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.query.domain.WorkflowDetails;
 import edu.wustl.query.querymanager.AbstractQueryManager;
 import edu.wustl.query.querymanager.Count;
+import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
@@ -199,8 +200,11 @@ public class WorkflowExecutor
 		List<AbstractQuery> simpleQueries = workflowDetails.getDependencyGraph().getAllLeafNodes();
 		for (AbstractQuery query : simpleQueries)
 		{
-			Integer queryExecId = queryManager.execute(query);
-			executionIdsMap.put(query.getQuery().getId(), queryExecId);
+		    if(Constants.QUERY_TYPE_GET_COUNT.equalsIgnoreCase(query.getQuery().getType()))
+		    {
+		        Integer queryExecId = queryManager.execute(query);
+		        executionIdsMap.put(query.getQuery().getId(), queryExecId);
+		    }
 		}
 	}
 
