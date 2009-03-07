@@ -29,8 +29,8 @@ public class ExportUtility
 	 */
 	public static void createZip(String filePath, String csvFileName, String zipFileName)
 	{
-		File csvFile = new File(filePath + "\\" + csvFileName);
-		String zipFilePath = filePath + "\\" + zipFileName;
+		File csvFile = new File(filePath + "/" + csvFileName);
+		String zipFilePath = filePath + "/" + zipFileName;
 		if (!csvFile.exists())
 		{
 			Logger.out.info("CSV File not found..");
