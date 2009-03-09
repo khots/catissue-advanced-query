@@ -93,7 +93,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI NOT NULL and DEMOGRAPHICS DOB>10/10/1985");
 			
-			query = QueryUtility.getQuery(5L);
+			query = QueryUtility.getQuery(1L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
 			
@@ -141,7 +141,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI NOT NULL and LABS, ACCESSION NUMBER CONTAINS 2008295007131");
 			
-			query = QueryUtility.getQuery(6L);
+			query = QueryUtility.getQuery(2L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
 			
@@ -184,7 +184,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 	  * Cancel Query (Thread corresponding to query)
 	  * Get count again
 	  */
-	/*public void testCancelQuery()
+	public void testCancelQuery()
 	{
 		int queryExecId = -1;
 		int noOfRecords = 0;
@@ -197,9 +197,9 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI NOT NULL");
 			
-			query = QueryUtility.getQuery(7L);
+			query = QueryUtility.getQuery(5L);
 			
-			ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
+			ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -256,7 +256,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 		
 		System.out.println("No of Records :: "+noOfRecords);
 		System.out.println("TEST CASE EXECUTED.....");
-	}*/
+	}
 	
 	/**
 	 * Fire a Query which will return 0 records
@@ -435,7 +435,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 	
 	
 	
-	/*public void testBetweenOperator()
+	public void testBetweenOperator()
 	{
 		int queryExecId = -1;
 		int noOfRecords = 0;
@@ -447,9 +447,9 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - DEMOGRAPHICS DOB between 1940 and 1970");
 			
-			query = QueryUtility.getQuery(9L);
+			query = QueryUtility.getQuery(7L);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -493,9 +493,9 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI STARTS WITH 000000000000000008690");
 			
-			query = QueryUtility.getQuery(10L);
+			query = QueryUtility.getQuery(8L);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -524,7 +524,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			e.printStackTrace();
 			fail("AN EXCEPTION HAS OCCURRED........");
 		}
-	}*/
+	}
 	
 	public void testEndsWithOperator()
 	{
@@ -538,7 +538,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UPI ENDS WITH 3");
 			
-			query = QueryUtility.getQuery(11L);
+			query = QueryUtility.getQuery(3L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
 			
@@ -584,7 +584,7 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("\n\n*********************************************************");
 			System.out.println("QUERY - PERSON UI IN 000000000000000008690923");
 			
-			query = QueryUtility.getQuery(12L);
+			query = QueryUtility.getQuery(4L);
 			
 			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
 			
