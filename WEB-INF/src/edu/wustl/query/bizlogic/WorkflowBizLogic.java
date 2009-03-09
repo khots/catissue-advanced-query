@@ -19,6 +19,8 @@ import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
+import edu.wustl.common.query.factory.ITableManagerFactory;
+import edu.wustl.common.query.itablemanager.ITableManager;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
@@ -231,8 +233,18 @@ public class WorkflowBizLogic extends DefaultBizLogic
 			{
 //		        ICompositeQuery queryClone = new DyExtnObjectCloner().clone((ICompositeQuery)query);
 //		        new HibernateCleanser(queryClone).clean();
+			    Long projectIdVal = (long) ((CiderWorkFlowDetails) workflowDetails).getProjectId();
+			    if (projectIdVal <= 0)
+                {
+                    projectIdVal = null;
+                }
 
-		        AbstractQuery ciderQuery = new CiderQuery(query,0,null,(long)((CiderWorkFlowDetails) workflowDetails).getUserId(), (long)((CiderWorkFlowDetails) workflowDetails).getProjectId(),request.getRemoteAddr());
+
+		        AbstractQuery ciderQuery = new CiderQuery(query, 0, null,
+                        (long) ((CiderWorkFlowDetails) workflowDetails).getUserId(),
+                        projectIdVal,
+                        request.getRemoteAddr(),workflowDetails.getWorkflow().getId()
+                        );
 		        executionIdsMap.putAll(workflowManager.execute(workflowDetails, ciderQuery));
 
 			}
@@ -249,12 +261,12 @@ public class WorkflowBizLogic extends DefaultBizLogic
 			throw bizLogicException;
 		} catch (MultipleRootsException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            BizLogicException bizLogicException = new BizLogicException(e.getMessage(), e);
+            throw bizLogicException;
         } catch (SqlException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            BizLogicException bizLogicException = new BizLogicException(e.getMessage(), e);
+            throw bizLogicException;
         }
 
 		return executionIdsMap;
@@ -419,23 +431,61 @@ public class WorkflowBizLogic extends DefaultBizLogic
 		defaultBizLogic.update(workflow, null, Constants.HIBERNATE_DAO, sessionDataBean);//.update(DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO),  workflow, null, sessionDataBean);
 	}
 	/**
-	 * This method returns the map of query execution ids
-	 * @param workflowId
-	 * @return
-	 */
-	public List<Integer>  generateExecutionIdMap(Long workflowId,Long userId)throws  DAOException
-	{
-		DefaultBizLogic defaultBizLogic = new DefaultBizLogic();
-		Workflow workflow;
-		try {
-			workflow = (Workflow) defaultBizLogic.retrieve(Workflow.class.getName(),
-					workflowId);
-			List<Integer> queryExecId=new ArrayList<Integer>(workflow.getWorkflowItemList().size());
-			return queryExecId;
-		} catch (DAOException e) {
-			e.printStackTrace();
-			throw e;
+     * This method returns the map of query execution ids
+     *
+     * @param workflowId
+     * @return
+     */
+    public List<Integer> generateExecutionIdMap(Long workflowId, Long userId)
+            throws BizLogicException
+    {
+        return generateExecutionIdMap(workflowId, userId, null);
+    }
 
-		}
-	}
+    /**
+     * This method returns the List of query execution ids
+     *
+     * @param workflowId
+     * @return
+     */
+    public List<Integer> generateExecutionIdMap(Long workflowId, Long userId,
+            Long projectId) throws BizLogicException
+    {
+        DefaultBizLogic defaultBizLogic = new DefaultBizLogic();
+        Workflow workflow;
+        try {
+            workflow = (Workflow) defaultBizLogic.retrieve(Workflow.class.getName(),
+                    workflowId);
+
+            // Get the map of execution Ids from DB
+            ITableManager itableManager = ITableManagerFactory.getDefaultITableManager();
+            Map<Long, Integer> execIdMap = itableManager.getLatestExecutionCountId(null, userId, workflow.getId(), projectId);
+
+
+            List<Integer> queryExecIdsList=new ArrayList<Integer>(workflow.getWorkflowItemList().size());
+
+            // For each workflow item list fetch the latest execution count.
+            List<WorkflowItem> workflowItemList = workflow.getWorkflowItemList();
+            for (WorkflowItem workflowItem : workflowItemList)
+            {
+                // Get the query object
+                Long queryId = workflowItem.getQuery().getId();
+                Integer queryExecId = execIdMap.get(queryId);
+                if (queryExecId == null)
+                {
+                    queryExecId = 0;
+                }
+                queryExecIdsList.add(queryExecId);
+            }
+            return queryExecIdsList;
+        } catch (DAOException ex) {
+            BizLogicException bizLogicException = new BizLogicException(ex.getMessage(), ex);
+            throw bizLogicException;
+
+        } catch (SQLException ex)
+        {
+            BizLogicException bizLogicException = new BizLogicException(ex.getMessage(), ex);
+            throw bizLogicException;
+        }
+    }
 }

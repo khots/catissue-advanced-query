@@ -154,6 +154,9 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String IS_NULL = "is null";
 	/**  Constant for  */
 	public static final String IN = "in";
+    /**  Constant for Join 'ON' clause */
+    public static final String JOIN_ON_CLAUSE = " ON ";
+
 	/**  Constant for  */
 	public static final String Not_In = "Not In";
 	/**  Constant for  */
@@ -271,6 +274,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String LEFT_JOIN = " LEFT JOIN ";
 	/**  Constant for  */
 	public static final String INNER_JOIN = " INNER JOIN ";
+    /**  Constant for GROUP_BY Clause */
+    public static final String GROUP_BY_CLAUSE = " GROUP BY ";
+
+
 	/**  Constant for  */
 	public static final String HASHED_OUT = "####";
 	/**  Constant for  */
@@ -477,6 +484,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String QUERY_XMLDATA = "XMLDATA";
 	/**  Constant for  */
 	public static final String QUERY_AND = " and ";
+    /**  Constant for OR Clause */
+    public static final String QUERY_OR = " OR ";
 
 	/**  Constant for  */
 	public static final String QUERY_TEMPORAL_CONDITION = "TEMPORAL_CONDITION";
@@ -685,6 +694,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String QUERY_STATUS = "QUERY_STATUS";
     /**  Constant for PROJECT_ID **/
     public static final String PRJCT_ID = "PROJECT_ID";
+
+    /**  Constant for WORKFLOW_ID **/
+    public static final String COL_WORKFLOW_ID = "WORKFLOW_ID";
+
     /**  Constant for QUERY_EXECUTION_ID **/
     public static final String QUERY_EXECUTION_ID = "QUERY_EXECUTION_ID";
     /**  Constant for QUERY_EXECUTION_ID **/
@@ -838,7 +851,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 
      /**  Constant for Equal to operator */
 	public static final String EQUALS = " = ";
-	
+
 	/** Constant for... */
 	public static final String EXECUTION_ID_OF_QUERY = "queryExecutionId";
 	/** Constant for AbstractQuery */
@@ -853,11 +866,11 @@ public class Constants extends edu.wustl.common.util.global.Constants
      * Constant to denoted execution type as 'Workflow'.
      */
     public static final String EXECUTION_TYPE_WORKFLOW = "executeWorkFlow";
-	
+
 	/** Constant for presenatation property name for med concept name**/
 	public static final String MED_CONECPT_NAME = "med_concept_name";
 	public static final String MED_ENTITY_NAME = "MedicalEntityDictionary";
-	
+
 	/**
 	 * for shared queries Count
 	 */

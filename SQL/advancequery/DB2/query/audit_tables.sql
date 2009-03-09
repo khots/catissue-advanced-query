@@ -1,5 +1,5 @@
 create table QUERY_EXECUTION_LOG(QUERY_EXECUTION_ID integer, XQUERY_String varchar(32500), QUERY_TYPE varchar(10), 
-CREATIONTIME timestamp, IP_ADDRESS varchar(50), PROJECT_ID integer);
+CREATIONTIME timestamp, IP_ADDRESS varchar(50), PROJECT_ID integer, WORKFLOW_ID bigint);
 
 
 create table COUNT_QUERY_EXECUTION_LOG(COUNT_QUERY_EXECUTION_ID integer generated always as identity, QUERY_ID integer, USER_ID integer, 

@@ -25,6 +25,11 @@ public abstract class AbstractQuery
 	private String ipAddress;
 
 	/**
+	 * The identifier of the workflow if the query is run from a workflow.
+	 */
+	private Long workFlowId = (long)0;
+
+	/**
 	 * Default Constructor
 	 */
 	public AbstractQuery()
@@ -47,6 +52,23 @@ public abstract class AbstractQuery
 		this.userId = userId;
 		this.ipAddress = ipAddress;
 	}
+
+
+   /**
+     * @param query
+     * @param queryExecId
+     * @param queryString
+     * @param userId
+     * @param ipAddress
+     * @param workflowId
+     */
+    public AbstractQuery(IAbstractQuery query, int queryExecId,
+            String queryString, Long userId, String ipAddress,
+            Long workflowId)
+    {
+        this(query, queryExecId, queryString, userId, ipAddress);
+        this.workFlowId = workflowId;
+    }
 
 	/**
 	 * gets query execution id
@@ -146,14 +168,6 @@ public abstract class AbstractQuery
 	@Override
 	public String toString()
 	{
-//	    StringBuilder toString = new StringBuilder();
-//	    toString.append("Query[id:");
-//	    toString.append(this.query != null ? this.query.getId() : "null");
-//        toString.append(" execId:");
-//        toString.append(this.queryExecId);
-//        toString.append(" userId:");
-//        toString.append(this.userId);
-//        toString.append("]");
 	    return "Query[id:"+this.query.getId()+" execId:"+this.queryExecId+" userId:"+this.userId+"]";
 	}
 
@@ -188,4 +202,22 @@ public abstract class AbstractQuery
 	{
 		this.ipAddress = ipAddress;
 	}
+
+    /**
+     * Returns the workflowId
+     * @return the workFlowId
+     */
+    public Long getWorkFlowId()
+    {
+        return workFlowId;
+    }
+
+    /**
+     * Sets the workflowId
+     * @param workFlowId the workFlowId to set
+     */
+    public void setWorkFlowId(Long workFlowId)
+    {
+        this.workFlowId = workFlowId;
+    }
 }

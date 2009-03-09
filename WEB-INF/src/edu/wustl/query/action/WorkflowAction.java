@@ -13,8 +13,8 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
-import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.actionForm.WorkflowForm;
 import edu.wustl.query.bizlogic.WorkflowBizLogic;
 import edu.wustl.query.util.global.Constants;
@@ -49,7 +49,7 @@ public class WorkflowAction extends Action
 			String id=request.getParameter("id");
 			if(id==null)
 			{
-				
+
 				/*for the get patient data/get Count flow
 				the is no id set in request.getParameter so  retrieve
 				 form request.getAttribute
@@ -91,15 +91,15 @@ public class WorkflowAction extends Action
 			request.setAttribute(Constants.PROJECT_NAME_VALUE_BEAN, projectList);
 		}
 	}
-	private void setQueryExecutionid(ActionForm form,SessionDataBean sessionDataBean,Long id) throws DAOException
+	private void setQueryExecutionid(ActionForm form,SessionDataBean sessionDataBean,Long id) throws  BizLogicException
 	{
 		WorkflowForm  workflowForm=(WorkflowForm)form;
 		WorkflowBizLogic workflowBizLogic=new WorkflowBizLogic();
 		List<Integer> queryexecutionId=workflowBizLogic.generateExecutionIdMap(id, sessionDataBean.getUserId());
-	
+
 		Integer[] queryExeId = new Integer[queryexecutionId.size()];
 		queryexecutionId.toArray(queryExeId);
 		workflowForm.setQueryExecId(queryExeId);
-		
+
 	}
 }

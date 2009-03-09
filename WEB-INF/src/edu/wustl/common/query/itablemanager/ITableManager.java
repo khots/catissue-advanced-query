@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 package edu.wustl.common.query.itablemanager;
@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import edu.wustl.common.beans.NodeInfo;
 import edu.wustl.common.dao.DatabaseConnectionParams;
@@ -31,7 +32,7 @@ public class ITableManager
 	 */
 	private static org.apache.log4j.Logger logger =Logger.getLogger(ITableManager.class);
 	/**
-	 * To be used for batch inserts  
+	 * To be used for batch inserts
 	 */
 	private int batchSize;
 
@@ -41,7 +42,7 @@ public class ITableManager
 	private static ITableManager sINSTANCE;
 
 	/**
-	 * 
+	 *
 	 * @return
 	 * @throws DAOException
 	 */
@@ -55,7 +56,7 @@ public class ITableManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public int getBatchSize()
@@ -64,7 +65,7 @@ public class ITableManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param batchSize
 	 */
 	public void setBatchSize(int batchSize)
@@ -73,7 +74,7 @@ public class ITableManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param patientDeid
 	 * @param queryExecLogId
 	 * @param upi
@@ -88,7 +89,7 @@ public class ITableManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param projectId
 	 * @param userId
 	 * @param query_id
@@ -103,7 +104,7 @@ public class ITableManager
 		// return Count_Query_Execution_Id
 		return -1;
 	}
-	
+
 
 	/**
 	 * This method inserts the given query object into the Query_Execution_Log table.
@@ -118,14 +119,14 @@ public class ITableManager
 
 		// return Query_Execution_Id
 		return -1;
-	}	
+	}
 
 	/**
-	 * 
+	 *
 	 * @param status
 	 * @param queryExecId
-	 * @throws SQLException 
-	 * @throws DAOException 
+	 * @throws SQLException
+	 * @throws DAOException
 	 */
 	public void changeStatus(String status, int queryExecId) throws SQLException, DAOException
 	{
@@ -133,7 +134,7 @@ public class ITableManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param queryExecId
 	 * @return
 	 * @throws SQLException
@@ -146,7 +147,7 @@ public class ITableManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param query
 	 * @return
 	 * @throws SQLException
@@ -181,26 +182,45 @@ public class ITableManager
 			DB_CONNECTION_PARAMS.closeSession();
 		}
 		return resultSet;
-	}	
+	}
 
 
 	/**
+     * To insert details into QUERY EXECUTION LOG table
+     * @param queryExecId
+     * @param xQuery
+     * @param query_type
+     * @param ipAddress
+     * @param projectId
+     * @throws DAOException
+     * @throws SQLException
+     */
+	@Deprecated
+    public void insertQueryDetails(int queryExecId, String xQuery, String query_type,
+    		String ipAddress, Long projectId) throws DAOException, SQLException
+    {
+        insertQueryDetails(queryExecId, xQuery, query_type, ipAddress,
+                projectId, null);
+    }
+
+    /**
 	 * To insert details into QUERY EXECUTION LOG table
 	 * @param queryExecId
 	 * @param xQuery
 	 * @param query_type
 	 * @param ipAddress
 	 * @param projectId
+	 * @param workFlowId TODO
 	 * @throws DAOException
 	 * @throws SQLException
 	 */
 	public void insertQueryDetails(int queryExecId, String xQuery, String query_type,
-			String ipAddress, Long projectId) throws DAOException, SQLException
+			String ipAddress, Long projectId, Long workFlowId) throws DAOException, SQLException
 	{
-		
+
 	}
-	
-	
+
+
 	/**
 	 * To insert data into QUERY_SECURITY_LOG table
 	 * @param queryExecId
@@ -208,16 +228,16 @@ public class ITableManager
 	 */
 	public void insertSecurityLog(int queryExecId, String securityCode)
 	{
-		
+
 	}
-	
+
 
 	/**
 	 * To insert details into COUNT QUERY EXECUTION LOG table
 	 * @param count_query_exec_id
 	 * @return
-	 * @throws SQLException 
-	 * @throws DAOException 
+	 * @throws SQLException
+	 * @throws DAOException
 	 */
 	public int insertDataQuery(AbstractQuery abstractQuery, int countQueryExecId)
 			throws SQLException, DAOException
@@ -227,8 +247,8 @@ public class ITableManager
 		// return Data_Query_Execution_Id
 		return -1;
 	}
-	
-	
+
+
 	/**
 	 * Returns a list of upis.
 	 * @param query_Exec_id
@@ -247,10 +267,10 @@ public class ITableManager
 			{
 				String sql = Constants.SELECT + Constants.COUNT_QUERY_UPI +","+Constants.COUNT_QUERY_DOB+ Constants.FROM + Constants.ITABLE + Constants.WHERE
 						+ Constants.COUNT_QUERY_EXECUTION_ID + Constants.EQUALS + query_Exec_id;
-				
+
 				DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME_CIDER);
 				resultSet = DB_CONNECTION_PARAMS.getResultSet(sql);
-				
+
 				while (resultSet.next())
 				{
 					NodeInfo nodeInfo = new NodeInfo();
@@ -279,7 +299,7 @@ public class ITableManager
 		}
 		return upiList;
 	}
-	
+
 	/**
 	 * Returns a list of upis.
 	 * @param query_Exec_id
@@ -298,10 +318,10 @@ public class ITableManager
 			{
 				String sql = Constants.SELECT + Constants.COUNT_QUERY_DOB+ Constants.FROM + Constants.ITABLE + Constants.WHERE
 						+ Constants.COUNT_QUERY_EXECUTION_ID + Constants.EQUALS + query_Exec_id + " " +Constants.AND_JOIN_CONDITION + " " + Constants.COUNT_QUERY_UPI + Constants.EQUALS + "'" + upi + "'";
-				
+
 				DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME_CIDER);
 				resultSet = DB_CONNECTION_PARAMS.getResultSet(sql);
-				
+
 				if(resultSet.next())
 				{
 					NodeInfo nodeInfo = new NodeInfo();
@@ -330,4 +350,20 @@ public class ITableManager
 		}
 		return upiList;
 	}
+
+
+
+    /**
+	 * @param queryId
+	 * @param userId
+	 * @param workflowId
+	 * @param projectId
+	 * @return
+	 */
+	public Map<Long, Integer> getLatestExecutionCountId(Long queryId, Long userId,
+            Long workflowId, Long projectId) throws SQLException, DAOException
+    {
+
+        return null;
+    }
 }
