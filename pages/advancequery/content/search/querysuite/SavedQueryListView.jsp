@@ -145,25 +145,27 @@ int queryCount = 0;%>
 
 <html:form action="SaveWorkflow">
 <logic:notEqual name="totalPages" value="0">
-<table height="90%"width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#cccccc" >
-					<tr class="tr_color_lgrey">
+<table height="100%" width="100%" cellpadding="0" cellspacing="0">
+<tr valign="top">
+	<td>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#cccccc" >
+				<tr class="tr_color_lgrey">
 						<td class="content_txt_bold" valign="top">						  
-								<table width="100%"  border="0" style="overflow-y:hidden;overflow-x:hidden;">
-									<tr height="100%">
-										<td valign="top" height="100%">
-											<div id='gridbox' width='100%' height="90%" style='overflow:hidden'></div>
-										</td>
-									</tr>
-								</table>
-							
-						  </td>
-						</tr>
-					</table>
-			</tr>
-			<tr valign="bottom">
-		<td colspan="2" class="tr_color_lgrey" valign="bottom" >
-
-			<table height="*" width="100%" border="0" cellpadding="0" cellspacing="0">
+							<table width="100%"  border="0" style="overflow-y:hidden;overflow-x:hidden;">
+								<tr height="100%">
+									<td valign="top" height="100%">
+										<div id='gridbox' width='100%' height="90%" style='overflow:hidden'></div>
+									</td>
+								</tr>
+							</table>						
+						</td>
+				</tr>
+			</table>
+	</td>
+</tr>
+<tr valign="bottom">
+		<td>
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
 					<tr class="tr_color_lgrey" >					
 						<td class="content_txt_bold" width="200">						  
 								<table>
@@ -227,6 +229,9 @@ int queryCount = 0;%>
 					</tr>
 					
 		</table>
+	</td>
+	</tr>
+</table>
 </logic:notEqual>
 <table width="100%" cellpadding="4" cellspacing="0">
 <logic:equal name="totalPages" value="0">
