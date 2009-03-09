@@ -116,8 +116,8 @@
 													</td>
 												</tr>
 												<tr id="rowMsg">
-													<td id="validationMessagesSection"  class='validationMessageCss'  valign="top" style="padding:5px 0 0 10px;">
-														<div id="validationMessagesRow"   class='validationMessageCss' style="overflow:auto; display:none"></div>
+													<td  id="validationMessagesSection"   class="messagetexterror" valign="top" style="padding:3px 0 0 5px;">
+														<div id="validationMessagesRow"   style="overflow:auto; display:none"></div>
 													</td>
 							</tr>	
 												<tr>
@@ -210,7 +210,7 @@
 							</SELECT>
 					    </td>
 						<td align="right" valign="center">
-						<a href="javascript:validateQuery('search');" ><img alt="Get Counts" border='0' src="images/advancequery/b_get_count.gif" />
+						<a href="javascript:validateQuery('search');" ><img alt="Get Count" border='0' src="images/advancequery/b_get_count.gif" />
 						</a>
 						</td>
 					  </tr>
