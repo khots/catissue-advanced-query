@@ -82,6 +82,9 @@ function responseHandler(response)
 	<%int count = 0;%>
 	<html:form action="RetrieveRecentQueries">
 <logic:notEqual name="records" value="0">
+ <table height="82%" width="100%" cellpadding="0" cellspacing="0">
+	<tr valign="top">
+		<td>
 		 <table width="100%" bgcolor="#cccccc" cellpadding="0" cellspacing="0">
 			  <tr>
 			  <td><table width="100%" border="0"  cellspacing="1" cellpadding="4" >
@@ -89,9 +92,8 @@ function responseHandler(response)
                 <td width="55%"  height='25' valign="middle" class="grid_header_text">Title</td>
                 <td  width="15%" valign="middle" class="grid_header_text">Status </td>
                 <td   width="10%" valign="middle" class="grid_header_text">Result</td>
-                <td   width="20%" valign="middle" class="grid_header_text">Date</td>
-             	 
-				<table width="100%" border="0" cellpadding="4" cellspacing="1" >
+                <td   width="20%" valign="middle" class="grid_header_text">Date</td>             	 
+				
 					<tbody id="table1">
 					<c:forEach var="recentQueriesBean" items="${requestScope.recentQueriesBeanList}">
 						<%
@@ -110,16 +112,20 @@ function responseHandler(response)
 							<td   width="20%" styleClass="content_txt" valign="top"><c:out value='${recentQueriesBean.queryCreationDate}'/></td>         
 						</tr>
 					  </c:forEach>	
-					</tbody>
+					</tbody>				
 				</table>
-	
+				</td>
 				</tr>
 				</table>
-			</td>
+			
 			</tr>
 
 			</table>
-			<table width="100%" cellpadding="0" cellspacing="0">
+</td>
+</tr>
+<tr valign="bottom">
+<td >
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
 			<tr class="tr_color_lgrey">				
 				<td align="left" height="30" style="padding-left:5px;"><span class="content_txt_bold">Show Last:</span>
 				<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${requestScope.numResultsPerPage}" styleClass="textfield_undefined">
@@ -131,6 +137,9 @@ function responseHandler(response)
 				</td>				  
 		</tr>
 		 </table>
+</td>
+</tr>
+</table>
 </logic:notEqual>
 <table width="100%" cellpadding="4" cellspacing="0">
 <logic:equal name="records" value="0">
