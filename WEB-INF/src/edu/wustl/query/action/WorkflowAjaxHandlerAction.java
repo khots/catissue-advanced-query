@@ -51,7 +51,7 @@ public class WorkflowAjaxHandlerAction extends Action
     public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		WorkflowBizLogic workflowBizLogic=new WorkflowBizLogic();
+		WorkflowBizLogic workflowBizLogic=null;
 		//for saving workflow when click execute
 
 		// Get the Query information
@@ -70,40 +70,9 @@ public class WorkflowAjaxHandlerAction extends Action
 		{
 		    // Fetch the current workflow
 	        String workflowId=request.getParameter("workflowId");
-
-	        Workflow workflow = null;
-            AbstractDAO dao = DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
-            dao.openSession(null);
+	        AbstractDAO dao= null;
 	        try
 	        {
-                // Get the workflow
-                workflow = (Workflow) dao.retrieve(Workflow.class.getName(),
-                        Long.valueOf(workflowId));
-
-                // get the current selected projectId
-                int project_id = 0;
-                if (request.getParameter(Constants.SELECTED_PROJECT) != null
-                        && !(request.getParameter(Constants.SELECTED_PROJECT))
-                                .equals(""))
-                {
-                    project_id = (Integer.valueOf((request
-                            .getParameter(Constants.SELECTED_PROJECT)
-                            .toString())));
-                }
-
-                // Get the current User Id
-                SessionDataBean sessionData = (SessionDataBean) request
-                        .getSession().getAttribute(Constants.SESSION_DATA);
-                Long userId = sessionData.getUserId();
-
-                // Create a workflow details object
-                // FIXME - CiderWorkFlowdetails cannot be accessed from here.
-                // Need a
-                // good enough way to create the workflow details object
-                // specific to
-                // Cider and AdvancedQuery.
-                CiderWorkFlowDetails workflowdetails = new CiderWorkFlowDetails(
-                        project_id, userId.intValue(), workflow);
 
                 workflowBizLogic = (WorkflowBizLogic) BizLogicFactory
                         .getInstance().getBizLogic(
@@ -161,6 +130,22 @@ public class WorkflowAjaxHandlerAction extends Action
                     AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory
                     .getDefaultAbstractUIQueryManager();
 
+                    // Get the current User Id
+                    SessionDataBean sessionData = (SessionDataBean) request
+                            .getSession().getAttribute(Constants.SESSION_DATA);
+                    Long userId = sessionData.getUserId();
+
+                    // get the current selected projectId
+                    int project_id = 0;
+                    if (request.getParameter(Constants.SELECTED_PROJECT) != null
+                            && !(request.getParameter(Constants.SELECTED_PROJECT))
+                                    .equals(""))
+                    {
+                        project_id = (Integer.valueOf((request
+                                .getParameter(Constants.SELECTED_PROJECT))));
+                    }
+
+
                     // Get the executionType
                     String execType = request
                             .getParameter(Constants.REQ_ATTRIB_EXECUTION_TYPE);
@@ -168,6 +153,28 @@ public class WorkflowAjaxHandlerAction extends Action
                             && Constants.EXECUTION_TYPE_WORKFLOW
                                     .equalsIgnoreCase(execType.trim()))
                     {
+                        Workflow workflow = null;
+                        dao = DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+                        dao.openSession(null);
+
+
+                        // Get the workflow
+                        workflow = (Workflow) dao.retrieve(Workflow.class.getName(),
+                                Long.valueOf(workflowId));
+
+
+
+                        // Create a workflow details object
+                        // FIXME - CiderWorkFlowdetails cannot be accessed from here.
+                        // Need a
+                        // good enough way to create the workflow details object
+                        // specific to
+                        // Cider and AdvancedQuery.
+                        CiderWorkFlowDetails workflowdetails = new CiderWorkFlowDetails(
+                                project_id, userId.intValue(), workflow);
+
+
+
                         Map<Long, Integer> executionIdMap = workflowBizLogic
                                 .runWorkflow(workflowdetails,
                                         request);
@@ -181,6 +188,17 @@ public class WorkflowAjaxHandlerAction extends Action
                         // normal query execution
                         if (queryExecId == 0)
                         {
+                            Workflow workflow = null;
+                            dao = DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+                            dao.openSession(null);
+
+                            // Get the workflow
+                            workflow = (Workflow) dao.retrieve(Workflow.class.getName(),
+                                    Long.valueOf(workflowId));
+
+                            CiderWorkFlowDetails workflowdetails = new CiderWorkFlowDetails(
+                                    project_id, userId.intValue(), workflow);
+
                             // queryExecId =
                             // workflowBizLogic.executeGetCountQuery(queryId,
                             // request);
@@ -194,11 +212,17 @@ public class WorkflowAjaxHandlerAction extends Action
 
                         } else
                         {
+                            // First sleep for say 5 seconds
+                            try
+                            {
+                                Thread.sleep(10);
+                            }
+                            catch (InterruptedException ie)
+                            {
+                                Logger.out.debug(ie.getMessage(),ie);
+                            }
+
                             resultCount = workflowBizLogic.getCount(queryExecId);
-//                            executionQueryResults.add(createResultJSON(queryId,
-//                                    resultCount.getCount(),
-//                                    resultCount.getStatus(), resultCount
-//                                            .getQueryExectionId()));
                             boolean hasFewRecords = false;
                             if (project_id > 0)
                             {
@@ -227,7 +251,6 @@ public class WorkflowAjaxHandlerAction extends Action
             }
 	        catch (Exception e) {
 	        	Logger.out.debug(e.getMessage(),e);
-	        	e.printStackTrace();
 				try {
 						response.setContentType("text/xml");
 						writer.write(Constants.QUERY_EXCEPTION);
@@ -238,7 +261,10 @@ public class WorkflowAjaxHandlerAction extends Action
 			}
 	        finally
 	        {
-	            dao.closeSession();
+	            if (dao != null)
+                {
+                    dao.closeSession();
+                }
 	        }
 
 
