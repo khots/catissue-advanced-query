@@ -832,7 +832,8 @@
 		} else 
 		{
 			element.innerHTML = "";
-			addLimitsMsgElement.innerHTML = text;
+			row.style.display = 'block';
+			row.innerHTML = text;
 		}
 		hideCursor();
 	}
