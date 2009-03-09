@@ -8,7 +8,7 @@
 			 <tmtTestCaseId>1</tmtTestCaseId>
 			 <expectedResultsCSV>TC1_Expected_Results.csv</expectedResultsCSV>
 			 <query type = "saved_query"
-			 	    	 id = "5">
+			 	    	 id = "1">
 			 </query>
 		</TestCase> 
 		
@@ -17,7 +17,7 @@
 			 <tmtTestCaseId>2</tmtTestCaseId>
 			 <expectedResultsCSV>TC2_Expected_Results.csv</expectedResultsCSV>
 			 <query type = "saved_query"
-			 	    	 id = "6">
+			 	    	 id = "2">
 			 </query>
 		</TestCase>
 		
