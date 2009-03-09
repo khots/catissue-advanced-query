@@ -417,6 +417,23 @@ html, body {
 	vertical-align:middle;
 	margin:0px;
 }
+.error_msg{
+color: #FF0000;
+font-size: 12px;
+font-family: Arial,Verdana ,Helvetica, sans-serif;
+}
+
+.success_msg{
+color: #009900;
+font-size: 12px;
+font-family: Arial,Verdana ,Helvetica, sans-serif;
+}
+
+.info_msg{
+color: #0066FF;
+font-size: 12px;
+font-family: Arial,Verdana ,Helvetica, sans-serif;
+}
 
 .messagehighlight {
 	border-bottom:1px solid #ea6c15;
