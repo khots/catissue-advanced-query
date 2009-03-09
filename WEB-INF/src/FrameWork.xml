@@ -1,6 +1,6 @@
 <?xml version = "1.0" ?>
 
-<TestCases testHome="E:\\Nightly_build\\projects\\framework_test_home\"
+<TestCases testHome="E:\\Nightly_build\\projects\\framework_test_home\\"
 					 dbInitCommonScriptsFile="" dbCleanUpCommonScriptsFile="">
 		
 	 <TestCase>
@@ -29,7 +29,7 @@
 			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> -->
 			 		 
 			 <query type = "saved_query"
-			 	    	 id = "489">
+			 	    	 id = "10">
 			 </query>
 		</TestCase>
 
@@ -41,7 +41,7 @@
 			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> -->
 			 		 
 			 <query type = "saved_query"
-			 	    	 id = "500">
+			 	    	 id = "19">
 			 </query>
 		</TestCase>
 
@@ -53,7 +53,7 @@
 			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> -->
 			 		 
 			 <query type = "saved_query"
-			 	    	 id = "510">
+			 	    	 id = "20">
 			 </query>
 		</TestCase>
 		
@@ -65,7 +65,7 @@
 			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> -->
 			 		 
 			 <query type = "saved_query"
-			 	    	 id = "576">
+			 	    	 id = "21">
 			 </query>
 		</TestCase>
 
@@ -77,33 +77,33 @@
 			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> -->
 			 		 
 			 <query type = "saved_query"
-			 	    	 id = "571">
+			 	    	 id = "22">
 			 </query>
 		</TestCase>
 
-		<TestCase>
+	 <!-- 	<TestCase>
 			 <name>Find all patients with HCM diagnosis registered as inpatient or outpatient</name>
 			 <tmtTestCaseId>6155</tmtTestCaseId>
-			 <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV> -->
+			<dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV>
 			 <expectedResultsCSV>TC8_Expected_Results.csv</expectedResultsCSV>
-			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> -->
-			 		 
-			 <query type = "saved_query"
-			 	    	 id = "21">
-			 </query>
-		</TestCase>
-
-		<TestCase>
-			 <name>Find all persons have had Gamma Knife , IMRT , Brachytherapy treatment in 2008</name>
-			 <tmtTestCaseId>6062</tmtTestCaseId>
-			 <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV> -->
-			 <expectedResultsCSV>TC9_Expected_Results.csv</expectedResultsCSV>
-			  <!-- <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> -->
+			 <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV>
 			 		 
 			 <query type = "saved_query"
 			 	    	 id = "23">
 			 </query>
-		</TestCase>
+		</TestCase>  -->
+
+	<!--	<TestCase>
+			 <name>Find all persons have had Gamma Knife , IMRT , Brachytherapy treatment in 2008</name>
+			 <tmtTestCaseId>6062</tmtTestCaseId>
+			  <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV> 
+			 <expectedResultsCSV>TC9_Expected_Results.csv</expectedResultsCSV>
+			   <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> 
+			 		 
+			 <query type = "saved_query"
+			 	    	 id = "24">
+			 </query>
+		</TestCase> -->
 
 
 
