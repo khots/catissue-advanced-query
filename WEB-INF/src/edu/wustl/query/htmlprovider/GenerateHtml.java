@@ -512,7 +512,7 @@ public class GenerateHtml
 		}
 		html.append("\n<a href=\"javascript:produceQuery('" + buttonCaption
 				+ "', 'addToLimitSet.do', 'categorySearchForm', '" + entityName + "','"
-				+ attributesStr + "')\"><img border=\"0\" src=\"" + imgsrc + "\"  id=\"" + buttonId
+				+ attributesStr + "')\"><img alt='"+ buttonCaption +"' border=\"0\" src=\"" + imgsrc + "\"  id=\"" + buttonId
 				+ "\" " + "value=\"" + buttonCaption + "\"/>");
 		html.append(endTD + "</a>");
 		return html.toString();
