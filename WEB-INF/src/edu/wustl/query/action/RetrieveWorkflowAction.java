@@ -15,6 +15,7 @@ import org.hibernate.Session;
 import edu.wustl.cider.util.CiderUtility;
 import edu.wustl.cider.util.global.Utility;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.query.domain.Workflow;
@@ -34,7 +35,8 @@ public class RetrieveWorkflowAction extends Action {
 	 * @param requestFor
 	 */
 	private void setPagiantion(HttpServletRequest request, String requestFor) {
-		int totalRecords = setWorkflowCount();
+		Long userId=((SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA)).getUserId();
+		int totalRecords = setWorkflowCount(userId);
 
 		int startIndex = 0;
 		int pageNum = getPageNumber(request, requestFor);
@@ -67,8 +69,9 @@ public class RetrieveWorkflowAction extends Action {
 		try {
 			session1 = DBUtil.getCleanSession();
 			Query query = null;
+			
 			query = session1.createQuery("from " + Workflow.class.getName()
-					+ "  Workflow order by Workflow.id desc");
+					+ "  Workflow  where  createdBy= "+ userId +" order by Workflow.id desc");
 
 			query.setFirstResult(startIndex);
 			query.setMaxResults(maxRecords);
@@ -135,13 +138,13 @@ public class RetrieveWorkflowAction extends Action {
 	 * number of workflows
 	 * @return
 	 */
-	public int setWorkflowCount() {
+	public int setWorkflowCount(Long userId) {
 
 		Session session1 = null;
 		try {
 			session1 = DBUtil.getCleanSession();
 			Query query = null;
-			query = session1.createQuery("from " + Workflow.class.getName());
+			query = session1.createQuery("from " + Workflow.class.getName()+ "  Workflow  where  createdBy= "+ userId);
 			List workflowList = query.list();
 
 			if (workflowList != null) {
