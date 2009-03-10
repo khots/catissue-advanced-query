@@ -589,6 +589,15 @@ PUBLIC
             <forward name="success"  path=".query.resetCountPopUp" />
         </action>
         
+        		
+		<action path="/DeleteQueryPopup"
+          type = "edu.wustl.query.action.ShowResetCountPopUpAction"
+          name="categorySearchForm"
+          validate="false"
+		  scope="request">
+            <forward name="success"  path=".query.deleteQueryPopUp" />
+        </action>
+        
         
         <action path="/RetrieveRecentQueries"
 			type="edu.wustl.query.action.RetrieveRecentQueriesAction"
