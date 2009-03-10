@@ -279,4 +279,7 @@
 	
 	<definition name=".query.resetCountPopUp" path="/pages/advancequery/content/search/querysuite/ShowResetCountPopUp.jsp">
 	</definition>
+	
+	<definition name=".query.deleteQueryPopUp" path="/pages/advancequery/content/search/querysuite/deleteQueryConfim.jsp">
+	</definition>
 </tiles-definitions>
