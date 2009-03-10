@@ -60,7 +60,7 @@ MM_reloadPage(true);
             <td height="25" valign="middle" nowrap><span class="content_txt">Execution Status: <strong id="StatusId"></strong></span></td>
             <td align="right" valign="middle">
 			<form id="form1" name="form1" method="post" action="">
-              <a href="javascript:abortExecutionAjaxAction();"><img border='0' src="images/advancequery/b_cancel.gif" alt="Cancel" width="65" height="23"></a>&nbsp;<a href="javascript:retrieveRecentQueries();"><img border='0' src="images/advancequery/b_notify_me.gif" alt="Execute in Background" width="146" height="23"></a>
+              <a href="javascript:abortExecutionAjaxAction();"><img border='0' src="images/advancequery/b_cancel.gif" alt="Cancel"></a>&nbsp;<a href="javascript:retrieveRecentQueries();"><img border='0' src="images/advancequery/b_notify_me.gif" alt="Execute in Background"></a>
             </form></td>
           </tr>
           <tr>
