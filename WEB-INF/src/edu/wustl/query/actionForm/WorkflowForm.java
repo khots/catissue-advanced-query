@@ -1,10 +1,10 @@
 
 package edu.wustl.query.actionForm;
 
-import java.util.HashMap;
+
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+
 
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
@@ -22,10 +22,7 @@ import edu.wustl.query.domain.WorkflowItem;
 import edu.wustl.query.util.global.CompositeQueryOperations;
 import edu.wustl.query.util.global.Constants;
 
-/**
- * @author chitra_garg
- *
- */
+
 /**
  * @author chitra_garg
  *
