@@ -148,8 +148,8 @@ int queryCount = 0;%>
 <table height="100%" width="100%" cellpadding="0" cellspacing="0">
 <tr valign="top">
 	<td>
-			<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#cccccc" >
-				<tr class="tr_color_lgrey">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+				<tr>
 						<td class="content_txt_bold" valign="top">						  
 							<table width="100%"  border="0" style="overflow-y:hidden;overflow-x:hidden;">
 								<tr height="100%">
