@@ -16,6 +16,7 @@ public class ShowResetCountPopUpAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+		request.setAttribute("index",request.getParameter("index"));
 		return mapping.findForward(Constants.SUCCESS);
 	
 	}
