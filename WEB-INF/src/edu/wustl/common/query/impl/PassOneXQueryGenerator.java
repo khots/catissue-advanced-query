@@ -147,9 +147,17 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			List<IExpression> children = getNonMainNonEmptyChildren(expression);
 			for (IExpression child : children)
 			{
-				IExpression firstChild = child;
-				variable = appendChildren(firstChild, predicateGenerator, laterPart);
+				/**
+				 * added to fix bug 11656.
+				 * Now we can possibly have branching before we encounter hasVersion becomes true.
+				 * To avoid the wrong branch, check if child is childless and does not have version. 
+				 */
+				if (getNonMainNonEmptyChildren(child).isEmpty() && !hasVersion(child))
+				{
+					continue;
+				}
 
+				variable = appendChildren(child, predicateGenerator, laterPart);
 			}
 
 		}
@@ -450,7 +458,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			return new StringBuilder(Constants.WHERE).append(xQueryWherePart).toString();
 		}
 	}
-	
+
 	/**
 	 * to pass the left hand side of joining expression in case of One to Many case
 	 * associated with it 
@@ -459,11 +467,11 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 	 * primaryKeyName - name of primary key
 	 * @return - left attribute of joining condition
 	 */
-	protected String getOneToManyLeft(IExpression parentExpression,
-			String entityPath, ConstraintKeyPropertiesInterface cnstrKeyProp)
+	protected String getOneToManyLeft(IExpression parentExpression, String entityPath,
+			ConstraintKeyPropertiesInterface cnstrKeyProp)
 	{
 		return "$" + getAliasName(parentExpression) + entityPath + "/"
-		+ cnstrKeyProp.getSrcPrimaryKeyAttribute().getName();
+				+ cnstrKeyProp.getSrcPrimaryKeyAttribute().getName();
 	}
 
 	/**
@@ -478,7 +486,7 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			ConstraintKeyPropertiesInterface cnstrKeyProp)
 	{
 		return "$" + getAliasName(parentExpression) + "/"
-		+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+				+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
 	}
-	
+
 }
