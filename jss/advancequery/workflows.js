@@ -42,6 +42,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 			if(counter==1)
 			{
 				columnObj.className="workflowicon";//set width for checkbox control
+				 columnObj.width="10";
 
 			}
 			columnObj.appendChild(columnContents[counter]);
@@ -59,7 +60,7 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	//Create all the hidden controls and add them to a "td"
 	var operandsTd=document.createElement("td");
 	operandsTd.className="aligntop";
-	operandsTd.width="100"
+	operandsTd.width="125";
 	//operandsTd.className="aligntop";
 	
 	var tble1=document.createElement("table");
@@ -98,7 +99,6 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 	operandsTd2.appendChild(queryTitleControl);
 	operandsTd2.appendChild(queryTypeControl);
 	operandsTd2.appendChild(exprControl);
-	operandsTd2.width="4";
 	var query_type=columnContents[8];
 	if(query_type=="Data")
      operandsTd1.appendChild(createLink("View Results ","execute_"+queryCount,"javascript:executeGetDataQuery('"+id+"')"));
@@ -107,7 +107,10 @@ function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdConte
 		 var t =	escape(columnContents[7]);
 		 operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+escape(t)+"','"+0+"')"));
 	}
+		operandsTd1.className="aligntop";
+
 	operandsTd3.appendChild(createLink("Delete ","delete_"+queryCount,"javascript:deleteWorkflowItem('"+queryCount+"')"));
+	operandsTd3.className="aligntop";
 	operandsTd3.appendChild(createHiddenElement("cancelajaxcall","cancelajaxcall_"+(queryCount),'false'));
 
 	operandsTr.appendChild(operandsTd1);
@@ -277,6 +280,8 @@ function createImageElement(srcPath,imageId)
 	var image=document.createElement("img");
 	image.setAttribute("src",srcPath);
 	image.setAttribute("id",imageId);
+	//image.setAttribute("onMouseOver","Tip('Not Started')");
+	image.onmouseover=function abc(image){ Tip('Not Started'); };
 	return image;
 }
 
@@ -656,12 +661,12 @@ function checkFordependentQueries(index)
 
 function imageForProgressiveCounts(index)
 {
-
-
   var x = document.getElementById("notStarted_"+index);
   var v = x.getAttribute("src");
   v = "images/advancequery/inprogress09.gif";
   x.setAttribute("src", v);	
+ //x.setAttribute("onMouseOver","Tip('In Progress')");
+ 	x.onmouseover=function chnageToolTip(x){ Tip('In Progress'); };
 
 }
 
@@ -671,6 +676,11 @@ function imageForCompletedCounts(index)
 	var v = x.getAttribute("src");
 	v = "images/advancequery/ic_complete05.gif";
 	x.setAttribute("src", v);	
+	//x.setAttribute("onMouseOver","Tip('Completed')");
+		x.onmouseover=function chnageToolTip(x){ Tip('Completed'); };
+
+
 }
+
 
 
