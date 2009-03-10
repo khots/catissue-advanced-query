@@ -87,6 +87,8 @@ public class SaveWorkflowAjaxHandlerAction extends Action
 		String workflowId = request.getParameter("workflowId");
 		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
 				Constants.SESSION_DATA);
+		//for created by 
+		workflow.setCreatedBy(sessionDataBean.getUserId());
 		try
 		{
 			if (workflowId == null || workflowId.equals(""))
