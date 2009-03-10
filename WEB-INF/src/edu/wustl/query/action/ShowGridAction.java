@@ -20,6 +20,7 @@ import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.spreadsheet.SpreadSheetData;
 import edu.wustl.query.spreadsheet.SpreadSheetViewGenerator;
@@ -37,6 +38,8 @@ import edu.wustl.query.viewmanager.ViewType;
  */
 public class ShowGridAction extends BaseAction
 {
+	private static org.apache.log4j.Logger logger = Logger
+	.getLogger(ShowGridAction.class);
 
 	/**
 	 * This method loads the data required for Query Output tree. 
@@ -83,6 +86,7 @@ public class ShowGridAction extends BaseAction
 		}
 		catch (QueryModuleException ex)
 		{
+			logger.error(ex.getMessage(),ex);
 			generateErrorMessage(request, ex.getMessage());
 		}
 		request.setAttribute(Constants.PAGE_OF, Constants.PAGE_OF_QUERY_RESULTS);
