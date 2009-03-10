@@ -271,7 +271,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 		for (int i = 0; i < noOfRules; i++)
 		{
 			IExpressionOperand operand = expression.getOperand(i);
-			String operandquery = null;
+			String operandquery = "";
 			boolean isEmptyExppression = false;
 			if (operand instanceof IRule)
 			{
@@ -280,10 +280,15 @@ public abstract class QueryGenerator implements IQueryGenerator
 			else if (operand instanceof IExpression)
 			// Processing sub Expression.
 			{
+
 				isEmptyExppression = emptyExpressions.contains(operand);
 				if (!isEmptyExppression)
 				{
 					operandquery = buildWherePart((IExpression) operand, expression);
+				}
+				else
+				{
+					continue;
 				}
 			}
 			else
