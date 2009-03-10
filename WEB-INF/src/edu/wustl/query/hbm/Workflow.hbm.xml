@@ -49,6 +49,14 @@
 				class="edu.wustl.query.domain.WorkflowItem" />
 		</list>
 
+		<property 
+			name="createdBy" 
+			type="long" 
+			update="true" 
+			insert="true"
+			column="USER_ID" 
+			length="1024" 
+			 />
 	</class>
 
 </hibernate-mapping>
