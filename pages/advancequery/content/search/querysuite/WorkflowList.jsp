@@ -113,7 +113,7 @@ function changeResPerPage(controlId)
 <body>		
 
 <logic:notEqual name="totalPages" value="0">
-<table height="100%" width="100%" border="0" cellspacing="0" cellpadding="4">
+<table height="100%" width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr height="90%">
 		<td valign="top">
 			<table height="65%" width="100%" border="0" cellpadding="0" cellspacing="0">
