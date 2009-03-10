@@ -74,21 +74,21 @@
 			<table summary="" cellpadding="0" cellspacing="0"  border="0" align="center" width="100%" class="login_box_bg" >
 					
 				<tr class="table_header_query" >
-					<td colspan='3' height="26" style="padding-left:5px;">
+					<td colspan='3' height="26">
 					<img border='0' src="images/advancequery/t_query_info.gif">
 					</td>
 				</tr>
 				<tr>
-					<td style="padding-left:5px;padding-bottom:5px;padding-top:5px;"  colspan="3" class='messagetexterror' nowrap><html:errors/>
+					<td style="padding-left:10px;padding-bottom:5px;padding-top:5px;" class='error_msg' colspan="3" nowrap><html:errors/>
 					</td>
 					<tr>
 				<tr>
-				<td colspan="3"  valign="top" style="padding-left:5px;"><span class="red_star">*</span> <span class="small_txt_grey">Denotes mandatory fields</span></td>
+				<td colspan="3"  valign="top" style="padding-left:10px;"><span class="red_star">*</span> <span class="small_txt_grey">Denotes mandatory fields</span></td>
 				</tr>
 				<tr><td colspan="3" style="padding:0 10px 10px 10px;"><table width="100%" cellpadding="0" cellspacing="0"> <tr><td class="td_greydottedline_horizontal" height="1"></td></tr></table></td>
 				</td></tr>
 					<tr id="workflowName" >
-						<td class="content_txt_bold" colspan="2" style="padding-left:5px;padding-bottom:10px;">
+						<td class="content_txt_bold" colspan="2" style="padding-left:10px;padding-bottom:10px;">
 								<bean:message key="workflow.name"/>:
 					</td>
 					<td style="padding-bottom:10px;">
@@ -96,7 +96,7 @@
 					</td>
 				  </tr>
 				  <tr>
-						<td class="content_txt_bold" colspan="2" style="padding-left:5px;" >
+						<td class="content_txt_bold" colspan="2" style="padding-left:10px;" >
 					<bean:message key="query.title"/><span class="red_star">*</span>:
 					</td>
 					<td >
@@ -106,7 +106,7 @@
 				</tr>
 				<tr><td height="10"></td></tr>
 				<tr>
-					<td colspan="2" class="content_txt_bold" valign="top" style="padding-left:5px;padding-bottom:5px;"><bean:message key="query.description"/>:</td>
+					<td colspan="2" class="content_txt_bold" valign="top" style="padding-left:10px;padding-bottom:5px;"><bean:message key="query.description"/>:</td>
 					<td style="padding-bottom:5px;" class="formFieldNoBordersQuery">
 						<html:textarea styleClass="textfield_undefined"   cols="80" rows="5"  property="description"> </html:textarea>
 					</td>
