@@ -57,7 +57,21 @@ public class Workflow extends AbstractDomainObject
 	 */
 	private Date createdOn;
 
-	//	private User createdBy;
+	private Long createdBy;
+
+	/**
+	 * @return for user id
+	 */
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+
+	/**
+	 * @param createdBy  for  setting the User id
+	 */
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
 
 	private final Map<String,IAbstractQuery> queryIdMap = new HashMap<String, IAbstractQuery>();
 
@@ -155,15 +169,6 @@ public class Workflow extends AbstractDomainObject
 		this.createdOn = createdOn;
 	}
 
-	//	public User getCreatedBy()
-	//	{
-	//		return createdBy;
-	//	}
-	//
-	//	public void setCreatedBy(User createdBy)
-	//	{
-	//		this.createdBy = createdBy;
-	//	}
 
 	/**
 	 * @param workflow form
