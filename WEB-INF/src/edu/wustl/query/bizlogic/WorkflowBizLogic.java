@@ -50,6 +50,19 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	private static org.apache.log4j.Logger logger = Logger.getLogger(WorkflowBizLogic.class);
 
 	private final WorkflowManager workflowManager = new WorkflowManager();
+	
+
+	/* (non-Javadoc)
+	 * @see edu.wustl.common.bizlogic.DefaultBizLogic#preInsert(java.lang.Object, edu.wustl.common.dao.DAO, edu.wustl.common.beans.SessionDataBean)
+	 */
+	protected void preInsert(Object obj, DAO dao, SessionDataBean sessionDataBean) throws DAOException, UserNotAuthorizedException
+	{
+
+			Workflow workflow=(Workflow)obj;
+			workflow.setCreatedBy(sessionDataBean.getUserId());
+			
+	}
+
 
 	/**
 	 * Inserts domain object
@@ -457,9 +470,7 @@ public class WorkflowBizLogic extends DefaultBizLogic
             workflow = (Workflow) defaultBizLogic.retrieve(Workflow.class.getName(),
                     workflowId);
 
-            // Get the map of execution Ids from DB
-            ITableManager itableManager = ITableManagerFactory.getDefaultITableManager();
-            Map<Long, Integer> execIdMap = itableManager.getLatestExecutionCountId(null, userId, workflow.getId(), projectId);
+            Map<Long, Integer> execIdMap = generateQueryExecIdMap(userId, workflow.getId(), projectId);
 
 
             List<Integer> queryExecIdsList=new ArrayList<Integer>(workflow.getWorkflowItemList().size());
@@ -481,11 +492,36 @@ public class WorkflowBizLogic extends DefaultBizLogic
         } catch (DAOException ex) {
             BizLogicException bizLogicException = new BizLogicException(ex.getMessage(), ex);
             throw bizLogicException;
-
-        } catch (SQLException ex)
-        {
-            BizLogicException bizLogicException = new BizLogicException(ex.getMessage(), ex);
-            throw bizLogicException;
         }
     }
+    
+    /**
+     * @param userId
+     * @param workflowId
+     * @param projectId
+     * @return
+     * @throws BizLogicException
+     */
+    public Map<Long, Integer> generateQueryExecIdMap(Long userId,
+			Long workflowId, Long projectId) throws BizLogicException {
+		// Get the map of execution Ids from DB
+		ITableManager itableManager = ITableManagerFactory
+				.getDefaultITableManager();
+		try {
+			Map<Long, Integer> execIdMap = itableManager
+					.getLatestExecutionCountId(null, userId, workflowId,
+							projectId);
+			return execIdMap;
+		} catch (DAOException ex) {
+			BizLogicException bizLogicException = new BizLogicException(ex
+					.getMessage(), ex);
+			throw bizLogicException;
+
+		} catch (SQLException ex) {
+			BizLogicException bizLogicException = new BizLogicException(ex
+					.getMessage(), ex);
+			throw bizLogicException;
+		}
+
+	}
 }
