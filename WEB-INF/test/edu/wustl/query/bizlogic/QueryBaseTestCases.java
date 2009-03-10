@@ -92,4 +92,12 @@ public class QueryBaseTestCases extends TestCase
 		sessionDataBean.setUserName("admin@admin.com");
 		return sessionDataBean;
 	}
+	
+	public Workflow gerUserSpecificWorkFlow() throws UserNotAuthorizedException, BizLogicException
+	{
+		Workflow workflow=getWorkflow();
+		workflow.setName("User Specific Workflow Test case"+new Date());
+		workflow.setCreatedBy(getSessionData().getUserId());
+		return workflow;
+	}
 }
