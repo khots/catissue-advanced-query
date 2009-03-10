@@ -269,7 +269,14 @@ int queryCount = 0;%>
 							<td>&nbsp;</td>
 							<td width="18" align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle">
 							</td>
-							<td valign="top"  class="content_txt"><a href="javascript:retrieveMyQueries('myQueriesForWorkFlow')" class="blacklink"><bean:message key="workflow.myqueries"/> 
+							<td valign="top"  class="content_txt">
+
+							<logic:equal name="query_type_data" value="${qtype}">
+								<b>
+							</logic:equal>
+
+
+							<a href="javascript:retrieveMyQueries('myQueriesForWorkFlow')" class="blacklink"><bean:message key="workflow.myqueries"/> 
 						</a>&nbsp;(${requestScope.myQueriesCount})</td>
 						</tr>
 						<tr>
@@ -277,7 +284,13 @@ int queryCount = 0;%>
 							<td align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle">
 							
 							</td>
-							<td valign="top"  class="content_txt"><a href="javascript:retrieveMyQueries('sharedQueriesForWorkFlow')" class="blacklink"><bean:message key="workflow.sharedqueries"/></a>&nbsp;(${requestScope.sharedQueriesCount})</td>
+							<td valign="top"  class="content_txt">
+							
+							<logic:notEqual name="query_type_data" value="${qtype}">
+								<b>
+							</logic:notEqual>
+
+							<a href="javascript:retrieveMyQueries('sharedQueriesForWorkFlow')" class="blacklink"><bean:message key="workflow.sharedqueries"/></a>&nbsp;(${requestScope.sharedQueriesCount})</td>
 						</tr>
 					</table>		
 				</td>
