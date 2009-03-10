@@ -70,7 +70,7 @@ function responseHandler(response)
 					CountObject.innerHTML= queryCount;
 				}
 			}	
-			if(status!="Completed"&&status!="Cancelled")
+			if(status!="Completed"&&status!="Cancelled"&&status!="Query Failed")
 			  {
 					recentQueryAjaxCall(executionId,index);
 			  }
