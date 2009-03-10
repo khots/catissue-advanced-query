@@ -1038,7 +1038,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 					<td >
 						<table  border="0" cellpadding="4" cellspacing="0" align="right">
                           <tr>
-                            <td align="right"  nowrap ><span class="content_txt_bold"><bean:message  key="workflow.project"/></span>&nbsp;
+                            <td  align="right"  nowrap ><span class="content_txt_bold"><bean:message  key="workflow.project"/></span>&nbsp;
 							 <SELECT name="selectedProject" id="selectedProject" class="texttype" onchange="showResetCountPopup()">
 							   <option VALUE="-1">Unspecified</option>
 								<c:forEach var="project" items="${requestScope.projectsNameValueBeanList}">
@@ -1098,7 +1098,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 										</logic:notEqual>
 									 <td  width="10" valign="middle" valign="top" style="padding:1px 5px 0 5px">
 												<img src="images/advancequery/ic_notrun06.gif" alt=""  align="absmiddle"
-												id="notStarted_${queryIndex}">
+												id="notStarted_${queryIndex}" onMouseOver="Tip('Not Started')">
 									   </td>
 
   										<td class="content_txt" valign="top">
@@ -1162,7 +1162,6 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 											<html:hidden property="operands" styleId="operands_${queryIndex}"  value="${workflowForm.operands[queryIndex]}"/>
 											<html:hidden property="operators" styleId="operators_${queryIndex}" value="${workflowForm.operators[queryIndex]}"/>
 											<html:hidden property="displayQueryType" styleId="displayQueryType_${queryIndex}" value="${workflowForm.displayQueryType[queryIndex]}"/>
-											<html:hidden property="queryExecId" styleId="queryExecId_${queryIndex}" value="${workflowForm.queryExecId[queryIndex]}"/>
 										</td>
 											<td valign="top" width="25">
 											<html:link styleId="delete_${queryIndex}" href="javascript:deleteWorkflowItem(${queryIndex})" styleClass="bluelink">
@@ -1286,7 +1285,7 @@ function setPreviousProject()
 {
 	previousProject=document.getElementById('selectedProject').value;
 }setPreviousProject();
-/*
+
 function retrieveCounts()
 {
 	var rows=parent.window.document.getElementById("table1").rows.length;
@@ -1303,6 +1302,6 @@ function retrieveCounts()
 			workflowExecuteGetCountQuery(queryId,executionId);
 		}
 	}
-}retrieveCounts();*/
+}retrieveCounts();
 </script>
 </body>
