@@ -3,10 +3,8 @@
  */
 package edu.wustl.query.bizlogic;
 
-import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.QueryBizLogic;
 import edu.wustl.common.exception.BizLogicException;
-import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
@@ -15,7 +13,6 @@ import edu.wustl.query.bizlogic.WorkflowBizLogic;
 import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.domain.WorkflowItem;
 import edu.wustl.query.util.global.Variables;
-import edu.wustl.query.utility.Utility;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,7 +48,7 @@ public class WorkflowBizLogicTestCases extends QueryBaseTestCases
 		WorkflowBizLogic workflowBizLogic = new WorkflowBizLogic();
 		try
 		{
-			Workflow workflow = getWorkflow();
+			Workflow workflow = gerUserSpecificWorkFlow();
 			//step 2
 			workflowBizLogic.insert(workflow, getSessionData(), Constants.HIBERNATE_DAO);
 			Workflow insertedProject = (Workflow) workflowBizLogic.retrieve(Workflow.class.getName(),workflow.getId());
@@ -81,6 +78,8 @@ public class WorkflowBizLogicTestCases extends QueryBaseTestCases
 	{
 		Workflow workflow = new Workflow();
 		workflow.setName("Workflow from test case" + new Date());
+		// For User specific wf
+		workflow.setCreatedBy(getSessionData().getUserId());
 		workflow.setWorkflowItemList(new ArrayList<WorkflowItem>());
 		
 		WorkflowBizLogic workflowBizLogic = new WorkflowBizLogic();
@@ -155,11 +154,21 @@ public class WorkflowBizLogicTestCases extends QueryBaseTestCases
 			List workflowList = workflowBizLogic.retrieve(Workflow.class.getName());
 			if(workflowList!=null && workflowList.size()>0)
 			{
-				workflow = (Workflow)workflowList.get(0);
-				workflow.setName("Updated Workflow from test case"+ new Date());
-			
-				workflowBizLogic.update(workflow, Constants.HIBERNATE_DAO);
-				assertTrue("Workflow updated successfully",true);
+				for(int i=0;i<workflowList.size();i++)
+				{
+					Long userId=((Workflow)workflowList.get(i)).getCreatedBy();
+					if(userId!=null)
+					{
+						if(userId.equals(getSessionData().getUserId()))
+						{
+							workflow = (Workflow)workflowList.get(i);
+							workflow.setName("Updated User Specific Workflow"+ new Date());
+						
+							workflowBizLogic.update(workflow, Constants.HIBERNATE_DAO);
+							assertTrue("Workflow updated successfully",true);
+						}
+					}
+				}
 			}
 		}
 		catch (UserNotAuthorizedException e)
@@ -207,4 +216,5 @@ public class WorkflowBizLogicTestCases extends QueryBaseTestCases
 			fail();
 		}
 	}
+
 }
