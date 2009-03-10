@@ -63,12 +63,12 @@
 	<td align="center">
 <table border="0"  width="100%" cellspacing="0" cellpadding="0"  bgColor="#FFFFFF" >	
 			<tr>
-				<td style="padding-left:15px;" class='messagetexterror' colspan="2">
+				<td style="padding-left:10px;" class='error_msg' colspan="2">
 					<div id="titleError" style="overflow:auto; padding-top:5px; padding-bottom:5px; display:none"></div>
 				</td>
 			</tr>
 			<tr>
-			<td style="padding-left:5px;" height="30" class="small_txt_grey" colspan="2"><span class="red_star">*</span> Denotes mandatory feilds
+			<td style="padding-left:9px;" height="30" class="small_txt_grey" colspan="2"><span class="red_star">*</span> Denotes mandatory feilds
 			<table width="100%" border="0" cellpadding="2" cellspacing="2" align="center">
 			<tr class="td_greydottedline_horizontal"><td height="1"></td></tr></table> 
 			</td>
@@ -116,10 +116,10 @@
 													</td>
 												</tr>
 												<tr id="rowMsg">
-													<td  id="validationMessagesSection"   class="messagetexterror" valign="top" style="padding:3px 0 0 5px;">
+													<td  id="validationMessagesSection"  valign="top" style="padding:3px 0 0 7px;">
 														<div id="validationMessagesRow"   style="overflow:auto; display:none"></div>
 													</td>
-							</tr>	
+												</tr>	
 												<tr>
 													<td width="100%" id="addLimitsSection">
 													<div id="addLimits" style="overflow:auto; height:100%;width:100%"></div></td>
