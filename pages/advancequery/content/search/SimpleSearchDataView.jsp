@@ -10,6 +10,7 @@
 <%@ page language="java" isELIgnored="false"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <link href="css/advancequery/catissue_suite.css" rel="stylesheet" type="text/css" />
+<link href="css/advancequery/inside.css" rel="stylesheet" type="text/css" />
 <script src="jss/advancequery/script.js"></script>
 <script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
 <script language="JavaScript" type="text/javascript" src="jss/advancequery/javaScript.js"></script>
@@ -182,7 +183,7 @@ tr#hiddenCombo
 		if((dataList == null || dataList.size()==0) && pageOf.equals(Constants.PAGEOF_QUERY_RESULTS))
 		{
 		%>
-			<bean:message key="advanceQuery.noRecordsFound"/>
+			<span class="info_msg"><bean:message key="advanceQuery.noRecordsFound"/></span>
 		<%}
 		else if(dataList != null && dataList.size() != 0)
 		{
