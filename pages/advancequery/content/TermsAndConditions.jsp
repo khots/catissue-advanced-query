@@ -55,32 +55,25 @@ function MM_reloadPage(init) {  //reloads the window if Nav4 resized
 MM_reloadPage(true);
 //-->
 </script>
-<link href="css/inside.css" rel="stylesheet" type="text/css" media="screen">
+<link href="css/advancequery/inside.css" rel="stylesheet" type="text/css" media="screen">
 </head>
 <body onLoad="MM_preloadImages('images/m_home_act.gif')">
 <form name = "exportDataForm" id = "exportDataForm" action = "CiderExportData.do">
 <script type="text/javascript" src="wz_tooltip.js"></script>
-<div id="welcome_links"></div>
+<!--<div id="welcome_links"></div>-->
 
 <div class="wrapper">
   <table width="100%" border="0" cellpadding="0" cellspacing="0">
     <tr>
-      <td valign="top">&nbsp;</td>
-      <td align="right" valign="middle">&nbsp;</td>
-      <td valign="top">&nbsp;</td>
-    </tr>
-    <tr>
-      <td width="10" valign="top">&nbsp;</td>
-      <td valign="top" bgcolor="#FFFFFF"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0"  class="login_box_bg">
+      <td valign="top" style="padding:10px;"><table width="100%" border="0" align="center" cellpadding="4" cellspacing="0"  class="login_box_bg" bgcolor="#FFFFFF">
           <tr>
-            <td align="center" valign="top"><table width="98%" border="0" cellspacing="0" cellpadding="3">
-
+            <td align="center" valign="top"><table width="98%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td height="10px"></td>
+                  <td height="5px"></td>
                 </tr>
                 <tr>
-                  <td align="center" valign="middle" nowrap class="dynamic_table_bg">
-				  <table  border="0" cellspacing="0" cellpadding="5">
+                  <td align="left" valign="middle" nowrap>
+				  <table width="100%"  border="0" cellspacing="0" cellpadding="5" class="dynamic_table_bg">
   <tr>
     <td><img src="images/ic_fatal_error.gif" alt="Application has encountered a fatal error. Please contact administrator" width="48" height="43" align="absmiddle"></td>
     <td class="grey_bold_big">You are about to download the patient data. <br>
@@ -93,48 +86,42 @@ Once the file is ready to download, you will be notified via an email.
 				  </td>
                 </tr>
                 <tr>
-                  <td height="10px"></td>
+                  <td height="25px"></td>
                 </tr>
                 <tr>
-                  <td height="10px"></td>
+                  <td  align="left" valign="top" class="grey_bold_big">Data Download Terms and Conditions</td>
                 </tr>
                 <tr>
-                  <td  align="left" valign="top" class="grey_bold_big">Terms and Conditions</td>
+                  <td align="left" valign="top"  class="content_txt" >
+				  <div class="conditions">		 
+						The data set you are about to download may contain confidential patient information from CIDER. By downloading the data from CIDER, you agree to all of the following:
+					<ol>
+						<li>Not transfer CIDER data to any third party other than staff for whom you are directly responsible unless a data use agreement is in place.</li>
+						<li>To certify the protection of any downloaded CIDER data file as well as any data files derived from the downloaded file.</li>
+						 <li>To promptly report to appropriate authority, if data is compromised or lost.</li>
+					</ol>	
+				  </div>
+				</td>
                 </tr>
                 <tr>
-                  <td height="10px"></td>
+                  <td height="15px"></td>
                 </tr>
                 <tr>
-                  <td style="padding-left:10px;" align="left" valign="top"  class="content_txt" >
-				  <div class="conditions">		
-				  <ol>
-						Data Download Terms and Conditions: 
-						The data set you are about to download may contain confidential patient information from CIDER. By s and downloading the data from CIDER, you agree to all of the following:
-						<li>	Not transfer CIDER data to any third party other than staff for whom you are directly responsible unless a data use agreement is in place.</li>
-						<li>	To certify the protection of any downloaded CIDER data file as well as any data files derived from the downloaded file.</li>
-						 <li>	To promptly report to appropriate authority, if data is compromised or lost.</li>
-				  </ol>	
-				  </div>				  </td>
+                  <td align="left" valign="top" class="content_txt" ><input type="checkbox" id= "checkbox" name="checkbox" value="checkbox" onclick = "isAgreeForTerms(this)">&nbsp;&nbsp;I agree with the above mentioned terms and conditions.</td>
                 </tr>
                 <tr>
-                  <td height="10px"></td>
-                </tr>
-                <tr>
-                  <td align="left" valign="top" class="content_txt" ><input type="checkbox" id= "checkbox" name="checkbox" value="checkbox" onclick = "isAgreeForTerms(this)">&nbsp;I agree with the above mentioned terms and conditions.</td>
-                </tr>
-                <tr>
-                  <td height="10px"></td>
+                  <td height="15px"></td>
                 </tr>
                 <tr>
                   <td align="left" valign="middle" >
 					<table cellspacing = "0" cellpadding= "0" colspan = "2">
 					<tr>
-						<td width = "54">
+						<td width = "85">
 						<div id = "isNotAgree" style = "display:block" >
-						  <img src="images/b_ok_inactive.gif" alt="OK" width="44" height="23">
+						  <img src="images/advancequery/b_I_agree_inact.gif" alt="OK" width="76" height="23">
 						  </div>
 						  <div id = "isAgree" style = "display:none">
-								<a href="javascript:submitForm()"><img border = "0" src="images/b_ok.gif" alt="OK" width="44" height="23"></a>
+								<a href="javascript:submitForm()"><img border = "0" src="images/advancequery/b_I_agree.gif" alt="OK" width="76" height="23"></a>
 						  </div>
 						  </td>
 						  <td>
@@ -146,18 +133,11 @@ Once the file is ready to download, you will be notified via an email.
 
                 </tr>
                <tr>
-                  <td height="10px"></td>
+                  <td height="5px"></td>
                 </tr>
             </table></td>
           </tr>
       </table></td>
-      <td width="10" valign="top">&nbsp;</td>
-    </tr>
-    <tr>
-      <td valign="top">&nbsp;</td>
-      <td valign="top">&nbsp;</td>
-      <td valign="top">&nbsp;</td>
-    </tr>
   </table>
 </div>
 </form>
