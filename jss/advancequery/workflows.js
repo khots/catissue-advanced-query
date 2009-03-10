@@ -413,11 +413,17 @@ function  reSetDropDowns(queryTitle)
 
 function deleteWorkflowItem(index)
 {
+	var url='DeleteQueryPopup.do?index='+index;
+	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select queries', 'width=430px,height=200px,center=1,resize=1,scrolling=1');
+
+}
+
+function deleteQuery(index)
+{
 	var dependentQueries=checkFordependentQueries(index);
 
 	if(dependentQueries!=true)
 	{
-		//dhtmlmodal.open('delete Queries', 'iframe', './pages/advancequery/content/search/querysuite/deleteQueryConfim.jsp','Delete Query', 'width=400px,height=150px,center=1,resize=1,scrolling=1');
 		var checkboxControl=document.getElementById("checkbox_"+(index));
 
 		if(checkboxControl!=null && checkboxControl!=undefined)
@@ -468,16 +474,15 @@ function deleteWorkflowItem(index)
 			
 			table.deleteRow(index);
 		}
-	
-		 reSetDropDowns(deleteQuery);
+		
+		reSetDropDowns(deleteQuery);
 		setCheckboxCount();
-	}
-	else
-	{
-		dhtmlmodal.open('delete Queries', 'iframe', './pages/advancequery/content/search/querysuite/depentQueryPopup.jsp','Delete Query', 'width=400px,height=150px,center=1,resize=1,scrolling=1');
-	}
+		}
+		else
+		{
+			pvwindow1=dhtmlmodal.open('delete Queries', 'iframe', './pages/advancequery/content/search/querysuite/depentQueryPopup.jsp','Delete Query', 'width=400px,height=150px,center=1,resize=1,scrolling=1');
+		}
 }
-
 function setCheckboxCount()
 {	
 	
