@@ -419,20 +419,32 @@ html, body {
 }
 .error_msg{
 color: #FF0000;
-font-size: 12px;
+font-size: 11px;
 font-family: Arial,Verdana ,Helvetica, sans-serif;
+}
+
+.error_msg li{
+	list-style-type:none;
 }
 
 .success_msg{
 color: #009900;
-font-size: 12px;
+font-size: 11px;
 font-family: Arial,Verdana ,Helvetica, sans-serif;
+}
+
+.success_msg li{
+	list-style-type:none;
 }
 
 .info_msg{
 color: #0066FF;
-font-size: 12px;
+font-size: 11px;
 font-family: Arial,Verdana ,Helvetica, sans-serif;
+}
+
+.info_msg li{
+	list-style-type:none;
 }
 
 .messagehighlight {
