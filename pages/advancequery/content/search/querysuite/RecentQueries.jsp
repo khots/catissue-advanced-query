@@ -82,7 +82,7 @@ function responseHandler(response)
 	<%int count = 0;%>
 	<html:form action="RetrieveRecentQueries">
 <logic:notEqual name="records" value="0">
- <table height="82%" width="100%" cellpadding="0" cellspacing="0">
+ <table height="82%" width="100%" cellpadding="3" cellspacing="0">
 	<tr valign="top">
 		<td>
 		 <table width="100%" bgcolor="#cccccc" cellpadding="0" cellspacing="0">
