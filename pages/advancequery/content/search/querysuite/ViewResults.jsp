@@ -15,7 +15,7 @@
 <script>
 function openPopupWindow()
 {
-      confidentialitywindow=dhtmlmodal.open('CIDER', 'iframe', 'Forward.do','CIDER Confidentiality Terms & Conditions', 'width=830px,height=350px,center=1,resize=0,scrolling=1')
+      confidentialitywindow=dhtmlmodal.open('CIDER', 'iframe', 'Forward.do','CIDER Confidentiality Terms & Conditions', 'width=830px,height=530px,center=1,resize=0,scrolling=1')
    	 
 }
 </script>
