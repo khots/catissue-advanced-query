@@ -151,6 +151,19 @@
 		<replace file="${deploy.temp.dir}/${war.dir}/WEB-INF/web.xml">
 			<replacefilter token="/WEB-INF/${cider.struts.config.file}"
 				value="/WEB-INF/${cider.struts.config.file}, /WEB-INF/advancequery-struts-config.xml" />
+			<replacetoken>&lt;/web-app&gt;</replacetoken>
+			    	  <replacevalue><![CDATA[	 <filter>
+	  <filter-name>loginFilter</filter-name>
+	  <filter-class> 
+	    edu.wustl.query.util.filter.QueryRequestFilter  
+	  </filter-class>
+	</filter>
+	<filter-mapping>
+	  <filter-name>loginFilter</filter-name>
+	  <url-pattern>/*</url-pattern>
+	</filter-mapping>
+</web-app>
+					]]></replacevalue>
 		</replace>
 
 		<!-- 4 ) Inject db-util.properties entry in cider db-util.properties -->
