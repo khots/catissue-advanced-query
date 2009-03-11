@@ -106,14 +106,12 @@ public class RetrieveQueryAction extends Action
 	public int setSharedQueryCount(SessionDataBean dataBean) throws CSObjectNotFoundException, CSException
 	{
 
-		Collection<IParameterizedQuery> parameterizedQueryCollection=HibernateUtility
-		.executeHQL(HibernateUtility.GET_PARAMETERIZED_QUERIES_DETAILS);
 		Collection<IParameterizedQuery> authorizedQueryCollection = new ArrayList<IParameterizedQuery>();
 		Collection<IParameterizedQuery> sharedQueryCollection = new ArrayList<IParameterizedQuery>();
 		CsmUtility csmUtility=getDefaultCsmUtility();
 		csmUtility.checkExecuteQueryPrivilege( authorizedQueryCollection, sharedQueryCollection,dataBean);
 
-		if(parameterizedQueryCollection!=null)
+		if(sharedQueryCollection!=null)
 		{
 			return sharedQueryCollection.size();
 		}
