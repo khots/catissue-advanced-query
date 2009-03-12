@@ -601,10 +601,13 @@ function removeFromDropDown(qTitle)
 			{
 			  for(var j=0;j<executedQuery;j++)
 			  {
-				  if(dropDowns[i].options[j].text==qTitle)
-				  {
-					dropDowns[i].options[j]=null;
-				  }
+					if(dropDowns[i].options[j]!=null&& dropDowns[i].options[j]!=undefined)
+				    {
+					  if(dropDowns[i].options[j].text==qTitle)
+					  {
+						dropDowns[i].options[j]=null;
+					  }
+					}
 			  }
 			}
 	   }
@@ -829,13 +832,13 @@ function workflowResponseHandler(response)
 							changeLinkToCancel(queryId,executionLogId);
 						}
 					
-						if((status!="Completed"||status=="Cancelled")&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
+						if(status!="Completed"&&status!="Cancelled"&&status!="Query Failed"&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
 						{
-
+							
 							workflowExecuteGetCountQuery(queryId,executionLogId);
 						}
 						
-						if((status=="Completed"||status=="Cancelled"))
+						if((status=="Completed"||status=="Cancelled"||status=="Query Failed"))
 						{
 							changeExecuteLinkToExecute(queryId,0);
 		
