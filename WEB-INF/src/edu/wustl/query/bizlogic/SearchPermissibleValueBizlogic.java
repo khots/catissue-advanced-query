@@ -229,6 +229,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	{
 		String value=concept.getCode() + ":" + concept.getDescription();
 		String toolTip = getToolTip(concept);
+		toolTip=org.apache.commons.lang.StringEscapeUtils.escapeJavaScript(toolTip); //bug Fixed:# 11665
 		return "<tr onmouseover=\"Tip('"+toolTip+"');\" onmouseout=\"UnTip();\"><td style=\"padding-left:30px\">&nbsp;</td><td class=\"black_ar_tt\" > \n"
 				+ "<input type=\"checkbox\" name=\"" +vocabURN + "\" id=\""
 				+ checkboxId + "\" value=\"" + value
@@ -301,6 +302,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			chkBoxStatus="disabled";
 		}
 		String toolTip = getToolTip(concept);
+		toolTip=org.apache.commons.lang.StringEscapeUtils.escapeJavaScript(toolTip);//bug Fixed:# 11665
 		return "<tr onmouseover=\"Tip('"+toolTip+"');\" onmouseout=\"UnTip();\"><td style=\"padding-left:30px\">&nbsp;</td><td class=\"black_ar_tt\"> \n"
 				+ "<input type=\"checkbox\" "+chkBoxStatus+" name=\""+ vocabURN + "\" id=\""
 				+ checkboxId + "\" value=\"" + concept.getCode() + ":" + concept.getDescription()
