@@ -879,4 +879,13 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	 * for my queries Count
 	 */
 	public static final String MY_QUERIES_COUNT = "myQueriesCount";
+	
+	/**
+	 * StrutsConfigReader related constants
+	 */
+	public static final String WEB_INF_FOLDER_NAME = "WEB-INF"; 
+	public static final String AQ_STRUTS_CONFIG_FILE_NAME = "advancequery-struts-config.xml";
+	public static final String AQ_STRUTS_CONFIG_DTD_FILE_NAME = "struts-config_1_1.dtd";
+	public static final String STRUTS_NODE_ACTION = "action";
+	public static final String NODE_ACTION_ATTRIBUTE_PATH = "path";
 }
