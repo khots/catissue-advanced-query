@@ -141,9 +141,7 @@ public class RetrieveRecentQueriesAction extends Action
 	private List<List<String>> retrieveQueries(SessionDataBean sessionDataBean,int lastIndex)
 	throws QueryModuleException
 	{
-//		String sql = "select * from  COUNT_QUERY_EXECUTION_LOG where USER_ID="
-//				+ sessionDataBean.getUserId() + " order by CREATIONTIME desc ";
-//
+
 		String sql ="SELECT CREATIONTIME,QUERY_COUNT,QUERY_STATUS,QUERY_ID,QUERY_EXECUTION_ID "+
 		   "FROM QUERY_EXECUTION_LOG qel, COUNT_QUERY_EXECUTION_LOG cqel "+
 		   "WHERE qel.QUERY_EXECUTION_ID = cqel.COUNT_QUERY_EXECUTION_ID and cqel.USER_ID="+sessionDataBean.getUserId() + "  order by qel.CREATIONTIME desc ";
