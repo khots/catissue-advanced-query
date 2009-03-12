@@ -281,7 +281,7 @@ function createImageElement(srcPath,imageId)
 	image.setAttribute("src",srcPath);
 	image.setAttribute("id",imageId);
 	//image.setAttribute("onMouseOver","Tip('Not Started')");
-	image.onmouseover=function abc(image){ Tip('Not Started'); };
+	image.onmouseover=function abc(image){ Tip('Not Run'); };
 	return image;
 }
 
@@ -414,7 +414,7 @@ function  reSetDropDowns(queryTitle)
 function deleteWorkflowItem(index)
 {
 	var url='DeleteQueryPopup.do?index='+index;
-	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select queries', 'width=430px,height=200px,center=1,resize=1,scrolling=1');
+	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select queries', 'width=400px,height=120px,center=1,resize=1,scrolling=1');
 
 }
 
@@ -480,7 +480,7 @@ function deleteQuery(index)
 		}
 		else
 		{
-			pvwindow1=dhtmlmodal.open('delete Queries', 'iframe', './pages/advancequery/content/search/querysuite/depentQueryPopup.jsp','Delete Query', 'width=400px,height=150px,center=1,resize=1,scrolling=1');
+			pvwindow1=dhtmlmodal.open('delete Queries', 'iframe', './pages/advancequery/content/search/querysuite/depentQueryPopup.jsp','Delete Query', 'width=400px,height=120px,center=1,resize=1,scrolling=1');
 		}
 }
 function setCheckboxCount()
@@ -573,15 +573,19 @@ function setOnclickEventOnDeselect(chckCount,selected)
 function changeLinkToCancel(queryId,executionLogId)
 {
 
+//	alert("hi");
 	var identifier=document.getElementById("queryIdForRow_"+queryId);
+	//alert("identifier "+identifier);
 	var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
+	//alert("object "+object);
 	var tdChildCollection=object.getElementsByTagName('input');
 	var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
 	var selectedquery=selectedqueryId.split("_");
 	
 	index=selectedquery[1];
-	
+	//alert("index "+index);
 	var object=document.getElementById("execute_"+index);	
+	//alert("object "+object);
 
 	//To get the query title field of document
 	var queryTitle=document.getElementById("displayQueryTitle_"+index).value;
