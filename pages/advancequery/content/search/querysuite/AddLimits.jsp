@@ -17,6 +17,7 @@
 <link rel="stylesheet" type="text/css" href="css/advancequery/styleSheet.css" />
 <link rel="stylesheet" type="text/css" href="css/advancequery/CascadeMenu.css" />
 <link rel="stylesheet" type="text/css" href="css/advancequery/catissue_suite.css" />
+<link rel="stylesheet" type="text/css" href="css/advancequery/inside.css"/>
 
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlwindow.js"></script>
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/js/modal.js"></script>
@@ -50,7 +51,10 @@
  <table  width="100%" border="0" cellspacing="0" cellpadding="0" align="center" class="login_box_bg">
  <tr><td>
   <table border="0" width="100%" cellspacing="0" cellpadding="0"  height="450" bgcolor="#ffffff">	
-	 
+	 <tr id='emptyTr'>
+	 <td height='10'>
+	 </td>
+	 </tr>
 	 <tr style="padding-left:2px;" id="workflowname">
 			<td  nowrap height="30" colspan="3">
 			&nbsp;
@@ -192,7 +196,6 @@
 	</table>  
 </td></tr></table>
 </td></tr></table>
-<br>
 </html:form>
 </body>
 <script>   
@@ -201,6 +204,7 @@
    var wrkflw = "<%=isworkflow%>";
    if(wrkflw=="true")
    {
+	  document.getElementById("emptyTr").style.display="none";
       document.getElementById("isWorkflow").value="true";
    }
    else
