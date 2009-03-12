@@ -2,7 +2,6 @@ package edu.wustl.query.action;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Formatter;
 import java.util.Iterator;
 import java.util.List;
@@ -22,9 +21,9 @@ import org.json.JSONObject;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.query.factory.ViewIQueryGeneratorFactory;
+import edu.wustl.common.query.pvmanager.impl.MedLookUpManager;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
@@ -136,27 +135,19 @@ private String createTreeNodeId(String rootData, String uniqueParentNode,
  * @param primaryKeyIndexesList
  * @param labelNodeDataList
  * @param displayData
- * @param primaryKeySetData
  */
 private void separateResultsViewData(List<Integer> primaryKeyIndexesList,
-		List<Object> labelNodeDataList, StringBuffer displayData,
-		StringBuffer primaryKeySetData) {
+		List<Object> labelNodeDataList, StringBuffer displayData) {
 	for(int j=0; j<labelNodeDataList.size(); j++)
 	{
-		if(primaryKeyIndexesList.contains(j))
-		{
-			//primaryKeySetData +=  labelNodeDataList.get(j) + "@@";
-			primaryKeySetData.append(labelNodeDataList.get(j)+"@@");
-		}
-		else
+		if(!primaryKeyIndexesList.contains(j))
 		{
 			if(labelNodeDataList.get(j)== null)
 			{
-				displayData.append("");
+				displayData.append(" "+"!=!");
 			}
 			else
 			{
-				//displayData += labelNodeDataList.get(j)+" ";
 				displayData.append(labelNodeDataList.get(j).toString().trim()+"!=!");
 			}
 		}
@@ -276,7 +267,6 @@ private void processLabelNodeClick(String nodeId,HttpServletRequest request,List
 	queryDetails.setCurrentSelectedObject(labelTreeDataNode);
 	queryDetails.setQuery(patientDataQuery);
 	queryDetails.setParentChildrenMap(parentChildrenMap);
-	
 	//Here we generate the iQuery
 	AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
 	.getDefaultViewIQueryGenerator();
@@ -293,20 +283,22 @@ private void processLabelNodeClick(String nodeId,HttpServletRequest request,List
 	List<IOutputAttribute> outputAttributesList = ((ParameterizedQuery) generatedQuery)
 	.getOutputAttributeList();
 	List<List<Object>>  dataList = dataQueryResultsBean.getAttributeList();
-	
+	String format = edu.wustl.query.util.global.Utility.getTagValue(rootEntity,Constants.TAGGED_VALUE_RESULTVIEW);
  	if(dataList.size() >0)
 	{
 		for(int i=0; i< dataList.size(); i++)
 		{
 			List <Object> labelNodeDataList = dataList.get(i);
-			arrangeAttributes(outputAttributesList, labelNodeDataList);
+			List<Object> newList  = new ArrayList<Object>();
+			newList.addAll(labelNodeDataList);
+			arrangeAttributes(outputAttributesList,newList);
 			StringBuffer displayData = new StringBuffer(""); 
 			StringBuffer primaryKeySetData = new StringBuffer("");
-			   
-			//Separating the primary key data and Data to be displayed in the results tree
-			separateResultsViewData(primaryKeyIndexesList,labelNodeDataList, displayData, primaryKeySetData);
-			
-			displayData = getFormattedOutput(displayData, rootEntity);
+			//creating primary key data set
+			createPrimaryKeyData(primaryKeyIndexesList,labelNodeDataList,primaryKeySetData);
+			//Separating data to be displayed in the results tree
+			separateResultsViewData(primaryKeyIndexesList,newList,displayData);
+			displayData = getFormattedOutput(displayData, format);
 			//Creating the Tree node Id
 			String dataNodeId = createTreeNodeId(rootData,uniqueParentNode, uniqueCurrentNodeId,primaryKeySetData);
             String displayName = "<span class=\"content_txt\">"+  displayData +"</span>";	  
@@ -318,61 +310,76 @@ private void processLabelNodeClick(String nodeId,HttpServletRequest request,List
 			
 			//populating the json object list
 			jsonObjectList.add(jsonObject);
-			}
 		}
 	}
+}
 
-
-private StringBuffer getFormattedOutput(StringBuffer displayData,
-		EntityInterface rootEntity)
+/**
+ * 
+ * @param primaryKeyIndexesList
+ * @param labelNodeDataList
+ * @param primaryKeySetData
+ */
+private void createPrimaryKeyData(List<Integer> primaryKeyIndexesList,
+		List<Object> labelNodeDataList, StringBuffer primaryKeySetData)
 {
-	String value = "";
-	Collection<TaggedValueInterface> taggedValueCollection = 
-		rootEntity.getTaggedValueCollection();
-	for(TaggedValueInterface tagValue : taggedValueCollection)
+	for(int j=0; j<labelNodeDataList.size(); j++)
 	{
-		if(tagValue.getKey().equals("resultview"))
+		if(primaryKeyIndexesList.contains(j))
 		{
-			value = tagValue.getValue();
-			break;
+			//primaryKeySetData +=  labelNodeDataList.get(j) + "@@";
+			primaryKeySetData.append(labelNodeDataList.get(j)+"@@");
 		}
 	}
+	
+}
+
+/**
+ * Formatting output to be shown on tree view.
+ * @param displayData
+ * @param format
+ * @return formatted string
+ */
+private StringBuffer getFormattedOutput(StringBuffer displayData,
+		String format)
+{
 	String[] split = displayData.toString().split("!=!");
 	Formatter formatter = new Formatter();
-	displayData = new StringBuffer(formatter.format(value,split).toString());
+	displayData = new StringBuffer(formatter.format(format,split).toString());
 	return displayData;
 }
 
-
+/**
+ * This method changes position of attributes in data list in the order to be
+ * shown on the tree view. 
+ * @param outputAttributesList
+ * @param list
+ */
 private void arrangeAttributes(List<IOutputAttribute> outputAttributesList,
-		List<Object> labelNodeDataList)
+		List<Object> list)
 {
 	List<Object> oldList  = new ArrayList<Object>();
-	oldList.addAll(labelNodeDataList);
-	for(int ctr = 0;ctr < outputAttributesList.size();ctr++)
+	oldList.addAll(list);
+	for(int counter = 0;counter < outputAttributesList.size();counter++)
 	{
-		Collection<TaggedValueInterface> taggedValueCollection = 
-			outputAttributesList.get(ctr).getAttribute().getTaggedValueCollection();
-		for(TaggedValueInterface tagValue : taggedValueCollection)
+		AttributeInterface attribute = outputAttributesList.get(counter).getAttribute();
+		String value = edu.wustl.query.util.global.Utility.getTagValue(attribute,Constants.TAGGED_VALUE_RESULTVIEW);
+		if(attribute.getName().equals(Constants.ID)
+		&& attribute.getEntity().getName().equals(Constants.MED_ENTITY_NAME))
 		{
-			if(tagValue.getKey().equals("resultview"))
+			String conceptName = "";
+			if (oldList.get(counter) != null)
 			{
-				String value = tagValue.getValue();
-				if(outputAttributesList.get(ctr).getAttribute().getName().equals(Constants.ID)
-						&& outputAttributesList.get(ctr).getAttribute().getEntity().getName().equals(Constants.MED_ENTITY_NAME))
-				{
-					 Collection<TaggedValueInterface> taggedValueCollection2 = outputAttributesList.get(ctr).getExpression().
-					 	getQueryEntity().getDynamicExtensionsEntity().getTaggedValueCollection();
-					 for(TaggedValueInterface tagValue2: taggedValueCollection2)
-						{
-							if(tagValue2.getKey().equals("resultview"))
-							{
-								value = tagValue2.getValue();
-							}
-						}
-				}
-				labelNodeDataList.set(Integer.valueOf(value).intValue(),oldList.get(ctr));
+				conceptName = MedLookUpManager.instance().
+					getConceptName( outputAttributesList.get(counter),(String)(oldList.get(counter)));
 			}
+			oldList.set(counter,conceptName);
+			value = edu.wustl.query.util.global.Utility.getTagValue(outputAttributesList.get(counter).getExpression().
+		 	getQueryEntity().getDynamicExtensionsEntity(),Constants.TAGGED_VALUE_RESULTORDER);
+		}
+		if(!value.equals(""))
+		{
+			list.set(Integer.valueOf(value).intValue(),oldList.get(counter));
 		}
 	}
 }
