@@ -859,6 +859,13 @@ function getCountdata()
 }
 function getPatientdata()
 {
+	var selectedProject = document.getElementById('selectedProject').value;
+	if(selectedProject==-1)
+		{
+			var url		='pages/advancequery/content/search/querysuite/SelectProjectPopUp.html';
+			pvwindow	= dhtmlmodal.open('Select a Project', 'iframe', url,'Select a Project','width=400px,height=50px,center=1,resize=0,scrolling=1,menubar=0,toolbar=0');
+			return;
+		}
 	document.forms[0].forwardTo.value= "loadQueryPage";
 	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextPageOf=queryWizard";
 	document.forms[0].submit();
