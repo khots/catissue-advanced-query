@@ -81,29 +81,29 @@
 			 </query>
 		</TestCase>
 
-	 <!-- 	<TestCase>
-			 <name>Find all patients with HCM diagnosis registered as inpatient or outpatient</name>
+	  	<TestCase>
+			 <name>Find all patients diagnosis as other than HCM and registered as inpatient or outpatient</name>
 			 <tmtTestCaseId>6155</tmtTestCaseId>
-			<dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV>
+			<!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV> -->
 			 <expectedResultsCSV>TC8_Expected_Results.csv</expectedResultsCSV>
-			 <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV>
+			<!--  <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> -->
 			 		 
 			 <query type = "saved_query"
-			 	    	 id = "23">
+			 	    	 id = "101">
 			 </query>
-		</TestCase>  -->
+		</TestCase>  
 
-	<!--	<TestCase>
-			 <name>Find all persons have had Gamma Knife , IMRT , Brachytherapy treatment in 2008</name>
+		<TestCase>
+			 <name>Find all persons have had treatment other than Gamma Knife in 2008</name>
 			 <tmtTestCaseId>6062</tmtTestCaseId>
-			  <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV> 
+			  <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV>  -->
 			 <expectedResultsCSV>TC9_Expected_Results.csv</expectedResultsCSV>
-			   <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV> 
+			  <!--  <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV>  -->
 			 		 
 			 <query type = "saved_query"
-			 	    	 id = "24">
+			 	    	 id = "109">
 			 </query>
-		</TestCase> -->
+		</TestCase> 
 
 
 
