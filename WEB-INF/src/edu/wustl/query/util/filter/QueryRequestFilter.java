@@ -10,11 +10,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.util.logger.Logger;
-import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 
 /**
@@ -35,20 +33,16 @@ public class QueryRequestFilter implements Filter
 	{
 
 		HttpServletRequest request = (HttpServletRequest) req;
-		HttpSession session = request.getSession();
 		HttpServletResponse response = (HttpServletResponse) res;
 		
 		
 		SessionDataBean sessionDataBean = Utility.getSessionData(request);
 		String url = request.getRequestURL().toString().substring(request.getContextPath().length());
-		if(sessionDataBean == null && url.indexOf(".do")>-1)
+		if(sessionDataBean == null && url.indexOf(".do")>-1 && !isValidURL(url))
 		{
-			if (!isValidURL(url, sessionDataBean))
-			{
-				logger.error("Redirecting to Login Page!");
-				response.sendRedirect("Logout.do");
-				return;
-			}
+			logger.error("Redirecting to Login Page!");
+			response.sendRedirect("Logout.do");
+			return;
 		}
 		chain.doFilter(req, res);
 	}
@@ -59,7 +53,7 @@ public class QueryRequestFilter implements Filter
 	 * @param sessionDataBean
 	 * @return
 	 */
-	private boolean isValidURL(String url, SessionDataBean sessionDataBean)
+	private boolean isValidURL(String url)
 	{
 		boolean isValidURL = false;
 		String[] array = new String[]{"Logout.do", "RedirectHome.do","Login.do"};
