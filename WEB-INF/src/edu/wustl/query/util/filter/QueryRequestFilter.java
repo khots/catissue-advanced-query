@@ -46,7 +46,6 @@ public class QueryRequestFilter implements Filter
 			if (!isValidURL(url, sessionDataBean))
 			{
 				logger.error("Redirecting to Login Page!");
-				session.setAttribute(Constants.IS_LOADING_LOGIN_PAGE, Constants.TRUE);
 				response.sendRedirect("Logout.do");
 				return;
 			}
