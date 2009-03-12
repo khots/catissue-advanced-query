@@ -237,7 +237,7 @@
 </table> 
 </td>
 </tr>
-</table>   <br>          
+</table>       
 </html:form>
 </body>
 <script>   
