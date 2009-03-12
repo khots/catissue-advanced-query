@@ -120,7 +120,8 @@ public class WorkflowBizLogicTestCases extends QueryBaseTestCases
      * 4. Check whether the stored proejct can be retrieved from the database properly.
      * 5. Check whether the properties of project are retained properly after saving it to database.
      */
-	public void testInsertWorkflowNullObject() {
+	public void testInsertWorkflowNullObject() 
+	{
 		//Step 1
 		Workflow workflow = null;
 		//step 2
@@ -163,13 +164,14 @@ public class WorkflowBizLogicTestCases extends QueryBaseTestCases
 						{
 							workflow = (Workflow)workflowList.get(i);
 							workflow.setName("Updated User Specific Workflow"+ new Date());
-						
 							workflowBizLogic.update(workflow, Constants.HIBERNATE_DAO);
-							assertTrue("Workflow updated successfully",true);
+							break;
+							
 						}
 					}
 				}
 			}
+			assertTrue("Workflow updated successfully",true);
 		}
 		catch (UserNotAuthorizedException e)
 		{
@@ -177,10 +179,12 @@ public class WorkflowBizLogicTestCases extends QueryBaseTestCases
 		}
 		catch (BizLogicException e)
 		{
+			e.printStackTrace();
 			fail();
 		}
 		catch (DAOException e)
 		{
+			e.printStackTrace();
 			fail();
 		}
 	}
@@ -214,6 +218,64 @@ public class WorkflowBizLogicTestCases extends QueryBaseTestCases
 		catch (DAOException e)
 		{
 			fail();
+		}
+	}
+	
+	public void testInsertWorkflowEmptyUser() throws DAOException
+	{
+		Workflow workflow = new Workflow();
+		workflow.setName("Workflow for created by" + new Date());
+		// For User specific wf
+		workflow.setCreatedBy(null);
+		workflow.setWorkflowItemList(new ArrayList<WorkflowItem>());
+		
+		WorkflowBizLogic workflowBizLogic = new WorkflowBizLogic();
+		try
+		{
+			//step 2
+			workflowBizLogic.insert(workflow, getSessionData(), Constants.HIBERNATE_DAO);
+			Workflow insertedWf = (Workflow) workflowBizLogic.retrieve(Workflow.class.getName(),workflow.getId());
+			if(insertedWf.getCreatedBy()==null)
+			{
+				fail();
+			}
+		}
+		catch (UserNotAuthorizedException e)
+		{
+			fail();
+		}
+		catch (BizLogicException e)
+		{
+			assertFalse("Got biz logic exception",false);
+		}
+	}
+
+	public void testInsertUserSpecificWorkflow() throws DAOException
+	{
+		Workflow workflow = new Workflow();
+		workflow.setName("Workflow for created by" + new Date());
+		// For User specific wf
+		workflow.setCreatedBy(1L);
+		workflow.setWorkflowItemList(new ArrayList<WorkflowItem>());
+		
+		WorkflowBizLogic workflowBizLogic = new WorkflowBizLogic();
+		try
+		{
+			//step 2
+			workflowBizLogic.insert(workflow, getSessionData(), Constants.HIBERNATE_DAO);
+			Workflow insertedWf = (Workflow) workflowBizLogic.retrieve(Workflow.class.getName(),workflow.getId());
+			if(insertedWf.getCreatedBy()==workflow.getCreatedBy())
+			{
+				assertTrue("User specific workflow inserted successfully ",true);
+			}
+		}
+		catch (UserNotAuthorizedException e)
+		{
+			fail();
+		}
+		catch (BizLogicException e)
+		{
+			assertFalse("Got biz logic exception",false);
 		}
 	}
 
