@@ -187,15 +187,15 @@ public class QueryFrameworkTestCase extends TestCase
 
 	}
 
-	/*public void testXQuery_AllPatients_With_HCMdiagnosis_Registered_Inpatientor_Or_Outpatient_6155()
+	public void testXQuery_AllPatients_With_Not_HCMdiagnosis_Registered_Inpatientor_Or_Outpatient_6155()
 	{
 
 	}
 
-	public void testXQuery_AllPerson_had_GammaKnife_IMRT_Brachytherapy_treatment_in2008_6062()
+	public void testXQuery_AllPerson_had_treatment_Otherthan_GammaKnife_in2008_6062()
 	{
 
-	}*/
+	}
 
 	/*public void testXQuery_PersonUpi_is_NOT_NULL_AND_DOB_less_than_10_10_1920()
 	{
