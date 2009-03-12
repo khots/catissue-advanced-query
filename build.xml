@@ -394,6 +394,7 @@
 		<copy todir="${zip.dir}" overwrite="true">
 			<fileset dir="${base.dir}/WEB-INF">
 				<include name="advancequery-struts-config.xml" />
+				<include name="struts-config_1_1.dtd" />
 				<!--include name="AdvanceQuery-tiles-defs.xml" /-->
 			</fileset>
 		</copy>
