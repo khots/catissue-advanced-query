@@ -126,10 +126,7 @@ public class ValidateQueryBizLogic
 			switch (e.getKey())
 			{
 				case MULTIPLE_ROOT :
-					validationMessage = "<font color='red'> "
-							+ ApplicationProperties.getValue("errors.executeQuery.multipleRoots")
-							+ "</font>";
-
+					validationMessage = ApplicationProperties.getValue("errors.executeQuery.multipleRoots");
 					break;
 				default :
 					validationMessage = "<font color='red'> "
