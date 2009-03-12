@@ -1417,18 +1417,18 @@ public class DAGPanel
 
 		for (IExpression expression : constraints)
 		{
-			/*if (expression.isVisible())
+			if (expression.isVisible())
 			{
 				visibleExpression.add(Integer.valueOf(expression.getExpressionId()));
-			}*/
-
+			}
+             System.out.println();  
 			//As we require expressions added on Add Limit page or main Entities added Define Search Results View   
-			EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
+			/*EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
 			if (expression.containsRule()
 					|| QueryAddContainmentsUtil.checkIfMainObject(entity, mainEntityList))
 			{
 				visibleExpression.add(Integer.valueOf(expression.getExpressionId()));
-			}
+			}*/
 		}
 		for (Integer expressionId : visibleExpression)
 		{
@@ -1441,7 +1441,7 @@ public class DAGPanel
 			dagNode.setNodeName(nodeDisplayName);
 			dagNode.setToolTip(exp);
 			Position position = positionMap.get(exp.getExpressionId());
-			setNodeType(dagNode, position);
+			setNodeType(exp,dagNode, position);
 			nodeform(expressionId, dagNode, constraints, new ArrayList<IIntraModelAssociation>(),
 					mainEntityList);
 			int numOperands = exp.numberOfOperands();
@@ -1472,7 +1472,7 @@ public class DAGPanel
 
 	}
 
-	private void setNodeType(/*IExpression exp,*/DAGNode dagNode, Position position)
+	private void setNodeType(IExpression exp ,DAGNode dagNode, Position position)
 	{
 		if (position != null)
 		{
@@ -1484,11 +1484,11 @@ public class DAGPanel
 		/*if (!exp.containsRule())
 		{
 			dagNode.setNodeType(DAGConstant.VIEW_ONLY_NODE);
-		}
+		}*/
 		if (!exp.isInView())
 		{
 			dagNode.setNodeType(DAGConstant.CONSTRAINT_ONLY_NODE);
-		}*/
+		}
 	}
 
 	private void repaintFromSessionQuery(List<CustomFormulaNode> customNodeList,
@@ -2008,14 +2008,14 @@ public class DAGPanel
 					expression, exp));
 
 			//Added By Baljeet.....
-			intraModelAssociationList.clear();
+			//intraModelAssociationList.clear();
 
 			intraModelAssociationList.add(association);
 
-			//if (exp.isVisible())
-			EntityInterface entity = exp.getQueryEntity().getDynamicExtensionsEntity();
+			if (exp.isVisible())
+			/*EntityInterface entity = exp.getQueryEntity().getDynamicExtensionsEntity();
 			if (exp.containsRule()
-					|| QueryAddContainmentsUtil.checkIfMainObject(entity, mainEntityList))
+					|| QueryAddContainmentsUtil.checkIfMainObject(entity, mainEntityList))*/
 			{
 				IPath pathObj = m_pathFinder.getPathForAssociations(intraModelAssociationList);
 				long pathId = pathObj.getPathId();
@@ -2045,10 +2045,10 @@ public class DAGPanel
 			}
 
 			//Commented out .......Baljeet
-			/*else
+			else
 			{
 				nodeform(exp.getExpressionId(), node, constraints, intraModelAssociationList,mainEntityList);
-			}*/
+			}
 		}
 	}
 
