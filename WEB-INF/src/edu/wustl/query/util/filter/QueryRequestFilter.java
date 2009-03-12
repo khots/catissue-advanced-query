@@ -37,8 +37,9 @@ public class QueryRequestFilter implements Filter
 		
 		
 		SessionDataBean sessionDataBean = Utility.getSessionData(request);
-		String url = request.getRequestURL().toString().substring(request.getContextPath().length());
-		if(sessionDataBean == null && !isValidURL(url))
+		//Trim initial context path to get URL starting from Action name
+		String url = request.getRequestURI().replaceFirst(request.getContextPath()+"/","");
+		if(sessionDataBean == null && isQueryAction(url))
 		{
 			logger.error("Redirecting to Login Page!");
 			response.sendRedirect("Logout.do");
@@ -53,19 +54,9 @@ public class QueryRequestFilter implements Filter
 	 * @param sessionDataBean
 	 * @return
 	 */
-	private boolean isValidURL(String url)
+	private boolean isQueryAction(String url)
 	{
-		boolean isValidURL = false;
-		String[] array = new String[]{"Logout.do", "RedirectHome.do","Login.do"};
-		for(String string : array)
-		{
-			if(url.indexOf(string)>-1)
-			{
-				isValidURL = true;
-				break;
-			}
-		}
-		return isValidURL;
+		return StrutsConfigReader.isQueryAction(url);
 	}
 
 	/* (non-Javadoc)
