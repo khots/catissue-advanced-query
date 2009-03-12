@@ -26,7 +26,7 @@ function notdelete()
   <tr align = "center">
     <td style = "padding-left:10px;padding-right:10px" align="center" valign="middle"><table width="100%" height="90" border="0" align="center" cellpadding="0" cellspacing="0" class="dynamic_table_bg">
       <tr>
-        <td height="23" align="center" class="content_txt">Are You sure You want to delete query?</td>
+        <td height="23" align="center" class="content_txt">Are you sure you want to delete this query?</td>
       </tr>
       <tr>
         <td height="35" align="center"><table border="0" cellspacing="0" cellpadding="0">
