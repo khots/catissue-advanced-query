@@ -834,6 +834,7 @@
 			element.innerHTML = "";
 			row.style.display = 'block';
 			row.innerHTML = text;
+			self.scrollTo(0,0);
 		}
 		hideCursor();
 	}
