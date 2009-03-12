@@ -443,9 +443,7 @@ final public class QueryModuleUtil
 						+ ApplicationProperties.getValue("query.empty.dag") + "</font></li>";
 				break;
 			case MULTIPLE_ROOT :
-				errorMessage = "<li><font color='red'> "
-						+ ApplicationProperties.getValue("errors.executeQuery.multipleRoots")
-						+ "</font></li>";
+				errorMessage = ApplicationProperties.getValue("errors.executeQuery.multipleRoots");
 				break;
 			case NO_RESULT_PRESENT :
 				errorMessage = ApplicationProperties.getValue("query.zero.records.present");
