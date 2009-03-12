@@ -77,18 +77,15 @@ public class CountXQueryGeneratorTest
 
 		IExpression race = QueryBuilder.findExpression(Constants.RACE, joinGraph.getRoot(),
 				joinGraph);
-		QueryBuilder.addCondition(race, "id", RelationalOperator.In, "3452");
+		QueryBuilder.addCondition(race, "id", RelationalOperator.In, "3326");
 
 		setSelectAttributes(query);
 
 		String xquery = generator.generateQuery(query);
 
 		int count = getCountFor(xquery);
-		if (count == 0)
-		{
-			fail("no results !!!");
-		}
-
+		assertEquals(1, count);
+		
 	}
 
 	@Test
@@ -122,7 +119,7 @@ public class CountXQueryGeneratorTest
 
 		IExpression person = joinGraph.getRoot();
 		QueryBuilder.addCondition(person, "personUpi", RelationalOperator.Equals,
-				"000000000000000001000823");
+				"1317900");
 
 		setSelectAttributes(query);
 
@@ -142,17 +139,14 @@ public class CountXQueryGeneratorTest
 
 		IExpression person = joinGraph.getRoot();
 		QueryBuilder.addCondition(person, "personUpi", RelationalOperator.Equals,
-				"000000000000000001000823");
+				"1317900");
 
 		setSelectAttributes(query);
 
 		String xquery = generator.generateQuery(query);
 
 		int count = getCountFor(xquery);
-		if (count == 0)
-		{
-			fail("no results !!!");
-		}
+		assertEquals(29, count);
 
 	}
 
@@ -173,10 +167,7 @@ public class CountXQueryGeneratorTest
 		String xquery = generator.generateQuery(query);
 
 		int count = getCountFor(xquery);
-		if (count == 0)
-		{
-			fail("no results !!!");
-		}
+		assertEquals(29, count);
 
 	}
 
@@ -189,18 +180,14 @@ public class CountXQueryGeneratorTest
 
 		IExpression person = joinGraph.getRoot();
 		QueryBuilder.addCondition(person, "personUpi", RelationalOperator.StartsWith,
-				"0000000000000000010008");
+				"13179");
 
 		setSelectAttributes(query);
 
 		String xquery = generator.generateQuery(query);
 
 		int count = getCountFor(xquery);
-		if (count == 0)
-		{
-			fail("no results !!!");
-		}
-
+		assertEquals(1, count);
 
 	}
 
@@ -213,19 +200,14 @@ public class CountXQueryGeneratorTest
 
 		IExpression person = joinGraph.getRoot();
 		QueryBuilder.addCondition(person, "personUpi", RelationalOperator.EndsWith,
-				"23");
+				"900");
 
 		setSelectAttributes(query);
 
 		String xquery = generator.generateQuery(query);
 
 		int count = getCountFor(xquery);
-		if (count == 0)
-		{
-			fail("no results !!!");
-		}
-
-
+		assertEquals(1, count);
 	}
 
 	@Test
@@ -237,17 +219,13 @@ public class CountXQueryGeneratorTest
 
 		IExpression address = QueryBuilder.findExpression(Constants.ADDRESS, joinGraph.getRoot(),
 				joinGraph);
-		QueryBuilder.addCondition(address, "line1", RelationalOperator.Contains, "S");
+		QueryBuilder.addCondition(address, "line1", RelationalOperator.Contains, "NORTHP");
 
 		setSelectAttributes(query);
 		String xquery = generator.generateQuery(query);
 
 		int count = getCountFor(xquery);
-		if (count == 0)
-		{
-			fail("no results !!!");
-		}
-
+		assertEquals(1, count);
 	}
 
 	
