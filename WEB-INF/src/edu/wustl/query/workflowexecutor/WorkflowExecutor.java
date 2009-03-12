@@ -120,7 +120,7 @@ public class WorkflowExecutor
 	public Map<Long, Integer> execute(AbstractQuery ciderQuery) throws QueryModuleException, MultipleRootsException,
 			SqlException
 	{
-        //Map<Long, Integer> executionIdsMap = new HashMap<Long, Integer>();
+        Map<Long, Integer> childQueryExecutionIdsMap = new HashMap<Long, Integer>();
 		// determine if the given query is a PQ or CQ
 		// check the condition -
 		if (ciderQuery.getQuery() instanceof ICompositeQuery) {
@@ -142,10 +142,10 @@ public class WorkflowExecutor
 
 	            for (AbstractQuery childQuery : childQueryNodes) {
 //	              int execId = queryManager.execute(childQuery);
-	                executionIdsMap.putAll(this.execute(childQuery));
+	                childQueryExecutionIdsMap.putAll(this.execute(childQuery));
 //	                executionIdsMap.put(childQuery.getQuery().getId(), execId);
 	            }
-	            queryExecIdsList.addAll(executionIdsMap.values());
+	            queryExecIdsList.addAll(childQueryExecutionIdsMap.values());
 
 	            // Need to submit the cquery to the Composite Query Executer
 	            String cqSqlQueryString = workflowDetails.getDependencyGraph().generateSQL(ciderQuery);
@@ -153,8 +153,15 @@ public class WorkflowExecutor
 
 	            CompositeQueryExecutor compositeQueryExecutor = new CompositeQueryExecutor(ciderQuery,queryExecIdsList,cqSqlQueryString);
 	            int cqExecId = compositeQueryExecutor.executeQuery();
-	            executionIdsMap.put(ciderQuery.getQuery().getId(), cqExecId);
+	            childQueryExecutionIdsMap.put(ciderQuery.getQuery().getId(), cqExecId);
+	            executionIdsMap.putAll(childQueryExecutionIdsMap);
 			}
+            else
+            {
+                int cqExecId = executionIdsMap.get(cquery.getId());
+                ciderQuery.setQueryExecId(cqExecId);
+                childQueryExecutionIdsMap.put(cquery.getId(), cqExecId);
+            }
 
 
 		} else if(ciderQuery.getQuery() instanceof IParameterizedQuery) {
@@ -164,11 +171,18 @@ public class WorkflowExecutor
 		        int queryExecId = queryManager.execute(ciderQuery);
 
 		        // Use query Id as key
-		        executionIdsMap.put(ciderQuery.getQuery().getId(), queryExecId);
+//		        executionIdsMap.put(ciderQuery.getQuery().getId(), queryExecId);
+		        childQueryExecutionIdsMap.put(ciderQuery.getQuery().getId(), queryExecId);
 		        log.debug("ciderQuery started Exec - " + queryExecId);
 		    }
+		    else
+		    {
+                int cqExecId = executionIdsMap.get(ciderQuery.getQuery().getId());
+                ciderQuery.setQueryExecId(cqExecId);
+		        childQueryExecutionIdsMap.put(ciderQuery.getQuery().getId(), cqExecId);
+		    }
 		}
-		return new HashMap<Long, Integer>(this.executionIdsMap);
+		return childQueryExecutionIdsMap;
 	}
 
 

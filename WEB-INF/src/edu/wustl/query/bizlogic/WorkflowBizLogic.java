@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
+
 import edu.wustl.cider.query.CiderQuery;
 import edu.wustl.cider.query.CiderWorkFlowDetails;
 import edu.wustl.common.beans.SessionDataBean;
@@ -52,7 +54,6 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	private static org.apache.log4j.Logger logger = Logger.getLogger(WorkflowBizLogic.class);
 
 	private final WorkflowManager workflowManager = new WorkflowManager();
-	
 
 
 	/**
@@ -245,13 +246,22 @@ public class WorkflowBizLogic extends DefaultBizLogic
                     projectIdVal = null;
                 }
 
+			    long userId = ((CiderWorkFlowDetails) workflowDetails).getUserId();
+			    Long workflowId = workflowDetails.getWorkflow().getId();
+
 
 		        AbstractQuery ciderQuery = new CiderQuery(query, 0, null,
-                        (long) ((CiderWorkFlowDetails) workflowDetails).getUserId(),
+		                userId,
                         projectIdVal,
-                        request.getRemoteAddr(),workflowDetails.getWorkflow().getId()
+                        request.getRemoteAddr(),
+                        workflowId
                         );
-		        executionIdsMap.putAll(workflowManager.execute(workflowDetails, ciderQuery));
+
+		        // get the latest execution ids for this workflow first'
+//                Map<Long, Integer> preExecIdMap = new HashMap<Long, Integer>();
+		        Map<Long, Integer> preExecIdMap = generateQueryExecIdMap(userId, workflowId, projectIdVal);
+		        preExecIdMap.remove(query.getId());
+		        executionIdsMap.putAll(workflowManager.execute(workflowDetails, ciderQuery, preExecIdMap));
 
 			}
 		}
@@ -384,12 +394,12 @@ public class WorkflowBizLogic extends DefaultBizLogic
 			throw new DAOException("Workflow Name cannot be empty");
 		}
 
-		
-		
+
+
 		Session session = null;
 		try {
 			session = DBUtil.getCleanSession();
-		
+
 			Query query = null;
 			String wfName = getWorkflowName(workflow.getName());
 			query = session.createQuery("select id from " + Workflow.class.getName() + "  Workflow where upper(Workflow.name) = "
@@ -417,15 +427,15 @@ public class WorkflowBizLogic extends DefaultBizLogic
 		finally
 		{
 			session.close();;
-			
+
 		}
 		return true;
 
 	}
 
 	/**
-	 * This method returns the name of 
-	 * workflow to validate it. 
+	 * This method returns the name of
+	 * workflow to validate it.
 	 * @param workflowName= name of workflow
 	 * @return workflow name
 	 */
@@ -514,7 +524,7 @@ public class WorkflowBizLogic extends DefaultBizLogic
             throw bizLogicException;
         }
     }
-    
+
     /**
      * @param userId
      * @param workflowId

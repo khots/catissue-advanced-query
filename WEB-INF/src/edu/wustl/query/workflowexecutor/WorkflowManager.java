@@ -31,10 +31,11 @@ public class WorkflowManager
 	}
 
 	public Map<Long, Integer> execute(WorkflowDetails workflowDetails,
-            AbstractQuery ciderQuery) throws QueryModuleException,
+            AbstractQuery ciderQuery, Map<Long, Integer> preExecIdMap) throws QueryModuleException,
             MultipleRootsException, SqlException
     {
         workflowExecutor = new WorkflowExecutor(workflowDetails);
+        workflowExecutor.addAllExistingExecutionId(preExecIdMap);
         return workflowExecutor.execute(ciderQuery);
     }
 
