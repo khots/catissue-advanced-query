@@ -603,6 +603,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String VI_IGNORE_PREDICATE = "VI_IGNORE_PREDICATE";
 	/** Constant for default condition tagged value**/
 	public static final String TAGGED_VALUE_DEFAULT_CONDITION = "DEFAULT_CONDITION";
+	/** Constant for default condition tagged value**/
+	public static final String DEFAULT_CONDITION_DATA = "DEFAULT_CONDITION_DATA";
 	/**  Constant for  */
 	public static final String TAGGED_VALUE_PRIMARY_KEY = "PRIMARY_KEY";
 	/**  Constant for  */
@@ -879,6 +881,12 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	 * for my queries Count
 	 */
 	public static final String MY_QUERIES_COUNT = "myQueriesCount";
+	public static final String PATIENT_DEID = "PATIENT_DEID";
+	/** Constant for result view tag */
+	public static final String TAGGED_VALUE_RESULTVIEW = "resultview";
+	/** Constant for result order tag */
+	public static final String TAGGED_VALUE_RESULTORDER = "resultorder";
+
 	
 	/**
 	 * StrutsConfigReader related constants
