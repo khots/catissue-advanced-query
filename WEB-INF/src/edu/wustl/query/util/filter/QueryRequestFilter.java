@@ -23,7 +23,7 @@ import edu.wustl.query.util.global.Utility;
 public class QueryRequestFilter implements Filter
 {
 
-	private org.apache.log4j.Logger logger = Logger.getLogger(QueryRequestFilter.class);
+	private static org.apache.log4j.Logger logger = Logger.getLogger(QueryRequestFilter.class);
 	
 	/* (non-Javadoc)
 	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
