@@ -2,11 +2,16 @@
 package edu.wustl.common.query.pvmanager.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List; //import java.util.Map;
+import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.JDBCDAO;
+import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 
 public final class MedLookUpManager
@@ -14,7 +19,7 @@ public final class MedLookUpManager
 
 	//private Map<String, List<String>> pvMap = null;
 	private static MedLookUpManager mLookUpMgrObj = null;
-
+	private static Map<String,String> conceptCodeVsConceptName = new HashMap<String,String>();
 
 	private MedLookUpManager()
 	{
@@ -335,6 +340,59 @@ public final class MedLookUpManager
 		query.append(pvView);
 		return query.toString();
 	}
-
+	/**
+	 * Method to get Med concept name based on concept Id.
+	 * @param attribute
+	 * @param conceptId
+	 * @return conceptname
+	 */
+	public String getConceptName(IOutputAttribute attribute, String conceptId)
+	{
+		String conceptName = "";
+		if(conceptId != null)
+		{
+			conceptName = conceptCodeVsConceptName.get(conceptId);
+			if(conceptName==null)
+			{
+				String pvView = "";
+				EntityInterface entity = attribute.getExpression().getQueryEntity().getDynamicExtensionsEntity();
+				pvView = edu.wustl.query.util.global.Utility.getTagValue(entity, Constants.PERMISSIBLEVALUEVIEW);
+				JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+				String query = "";
+				try
+				{
+					dao.openSession(null);
+					query = "select "+Constants.NAME +" from " + pvView + " where "+ Constants.ID +
+							" = " + conceptId;
+					List<List<String>> dataList = dao.executeQuery(query, null, false, false, null);
+					if (!dataList.isEmpty())
+					{
+						conceptName = dataList.get(0).get(0);
+					}
+				}
+				catch (DAOException e)
+				{
+					Logger.out.error(e.getMessage(),e);
+				}
+				catch (ClassNotFoundException e)
+				{
+					Logger.out.error(e.getMessage(),e);
+				}
+				finally
+				{
+					try
+					{
+						dao.closeSession();
+					}
+					catch (DAOException e)
+					{
+						Logger.out.error(e.getMessage(),e);
+					}
+				}
+			}
+			conceptCodeVsConceptName.put(conceptId,conceptName);
+		}
+		return conceptName;
+	}
 	private static final String ErrMsg = "Error occured while fetching the permissible concept codes from MED.";
 }
