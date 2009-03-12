@@ -18,6 +18,7 @@ import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.vocab.VocabularyException;
 import edu.wustl.common.vocab.utility.VocabUtil;
+import edu.wustl.query.util.filter.StrutsConfigReader;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.VIProperties;
 import edu.wustl.query.util.global.Variables;
@@ -34,6 +35,10 @@ public class QueryServletContextListenerUtil
 
 		//Added by Baljeet....This method caches all the Meta data
 		initEntityCache(datasourceJNDIName);
+		
+		// Added to create map of query actions which will be used by QueryRequestFilter to check authorization
+		StrutsConfigReader.init(Variables.applicationHome+File.separator+Constants.WEB_INF_FOLDER_NAME+File.separator+Constants.AQ_STRUTS_CONFIG_FILE_NAME);
+
 
 	}
 
