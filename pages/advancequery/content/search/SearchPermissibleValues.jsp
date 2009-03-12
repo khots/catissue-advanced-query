@@ -685,7 +685,15 @@ function editSelectedPV()
 	  
 	   divHeight=divHeight+42;
 	   }
-	   
+/* This will search the form upon pressing enter key */   
+function keypress(e) // Bug Fixed # 11683
+{
+   var KeyID = (window.event) ? event.keyCode : e.keyCode;
+   if(KeyID == 13)
+	{
+	   serachForTermInVocab('search');
+	}
+}
 </script>
 </head>
 <body onLoad="editSelectedPV();">
@@ -727,7 +735,7 @@ function editSelectedPV()
 	<tr>
 	    <td height="35" valign="top" colspan="3">
 			<table height="30" border="0" cellpadding="0" cellspacing="0">
-		     <tr><td><label><input name="searchtextfield" type="text" class="texttype" id="searchtextfield" value=""></label></td>
+		     <tr><td><label><input name="searchtextfield" type="text" class="texttype" id="searchtextfield" value="" onkeyup="keypress(event)"></label></td>
 				<td>&nbsp;</td>
 				<td><div id="searchAbortButtonDiv"><a href="javascript:serachForTermInVocab('search');"><img src="images/advancequery/b_go.gif" border="0" alt="Go"></a></div></td>
 				<!--<td><a  href="javascript:serachForTermInVocab('search');"><img src="images/advancequery/b_go.gif" border='0' alt="Go" ></a>
