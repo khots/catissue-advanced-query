@@ -263,8 +263,7 @@ public class CreateQueryObjectBizLogic
 	 */
 	private String getErrorMessageForBetweenOperator(String errorMessages, String enteredValue)
 	{
-		errorMessages = errorMessages + "<li><font color\\='red'>"
-				+ ApplicationProperties.getValue("simpleQuery.twovalues.required") + "</font></li>";
+		errorMessages = errorMessages + ApplicationProperties.getValue("simpleQuery.twovalues.required");
 		Logger.out.debug(enteredValue + " two values required for 'Between' operator ");
 		return errorMessages;
 	}
