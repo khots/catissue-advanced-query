@@ -209,8 +209,8 @@ public class HtmlProvider
 		StringBuffer generatedHTML = new StringBuffer(Constants.MAX_SIZE);
 		String space = " ";
 		generatedHTML
-				.append("<table valign='top' border=\"0\" width=\"100%\" " +
-						"height=\"100%\" cellspacing=\"0\" cellpadding=\"0\" " +
+				.append("<table valign='top' border=\"0\" " +
+						"height=\"100%\" cellspacing=\"0\" cellpadding=\"4\" " +
 						"class='rowBGWhiteColor'>");
 		boolean isBGColor = false;
 		GenerateHtml.getTags(generatedHTML);
