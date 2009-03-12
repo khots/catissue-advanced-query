@@ -38,7 +38,7 @@ public class QueryRequestFilter implements Filter
 		
 		SessionDataBean sessionDataBean = Utility.getSessionData(request);
 		String url = request.getRequestURL().toString().substring(request.getContextPath().length());
-		if(sessionDataBean == null && url.indexOf(".do")>-1 && !isValidURL(url))
+		if(sessionDataBean == null && !isValidURL(url))
 		{
 			logger.error("Redirecting to Login Page!");
 			response.sendRedirect("Logout.do");
