@@ -75,7 +75,7 @@ public class ResultsViewTreeUtil
 	    	List<EntityInterface> childrenEntities = partentChildEntityMap.get(keyEntity);
 	     	for(EntityInterface childEntity : childrenEntities)
 	     	{
-	     		if(edu.wustl.query.util.global.Utility.istagPresent(childEntity,"resultview"))
+	     		if(checkForResultViewTag(rootEntity, childEntity))
 		    	{
 	     			taggedEntitiesListForMainEntity.add(childEntity);
 		    	}
@@ -83,6 +83,29 @@ public class ResultsViewTreeUtil
 	     	taggedEntitiesParentChildMap.put(keyEntity, taggedEntitiesListForMainEntity);
 	    }
 	    return taggedEntitiesParentChildMap;
+	}
+	
+	/**
+	 * 
+	 * @param rootEntity
+	 * @param childEntity
+	 * @return
+	 */
+	private static boolean checkForResultViewTag(EntityInterface rootEntity,
+			EntityInterface childEntity)
+	{
+		boolean isTagPresent = false;
+		String tagValue = edu.wustl.query.util.global.Utility.getTagValue(childEntity,"resultview");
+		String[] split = tagValue.split(",");
+		for(String entityName : split)
+		{
+			if(entityName.equals(rootEntity.getName()))
+			{
+				isTagPresent = true;
+				break;
+			}
+		}
+		return isTagPresent;
 	}
 	
 	/**
