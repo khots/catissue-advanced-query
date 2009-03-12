@@ -116,6 +116,7 @@
 			<fileset dir=".">
 				<include name="advancequery-struts-config.xml" />
 				<include name="AdvanceQuery-tiles-defs.xml" />
+				<include name="struts-config_1_1.dtd" />
 			</fileset>
 		</copy>
 
