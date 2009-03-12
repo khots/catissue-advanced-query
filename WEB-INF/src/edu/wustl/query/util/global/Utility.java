@@ -677,4 +677,25 @@ public class Utility extends edu.wustl.common.util.Utility
 
 		return query;
 	}
+	
+	/**
+	 * 
+	 * @param entity
+	 * @param tag
+	 * @return
+	 */
+	public static String getTagValue(AbstractMetadataInterface entity, String tag)
+	{
+		String value = "";
+		Collection<TaggedValueInterface> taggedValueCollection = entity.getTaggedValueCollection();
+		for (TaggedValueInterface tagValue : taggedValueCollection)
+		{
+			if (tagValue.getKey().equals(tag))
+			{
+				value = tagValue.getValue();
+				break;
+			}
+		}
+		return value;
+	}
 }
