@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
+import org.hibernate.Query;
+import org.hibernate.Session;
 import edu.wustl.cider.query.CiderQuery;
 import edu.wustl.cider.query.CiderWorkFlowDetails;
 import edu.wustl.common.beans.SessionDataBean;
@@ -30,6 +31,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.domain.WorkflowDetails;
@@ -52,17 +54,6 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	private final WorkflowManager workflowManager = new WorkflowManager();
 	
 
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.bizlogic.DefaultBizLogic#preInsert(java.lang.Object, edu.wustl.common.dao.DAO, edu.wustl.common.beans.SessionDataBean)
-	 */
-	protected void preInsert(Object obj, DAO dao, SessionDataBean sessionDataBean) throws DAOException, UserNotAuthorizedException
-	{
-
-			Workflow workflow=(Workflow)obj;
-			workflow.setCreatedBy(sessionDataBean.getUserId());
-			
-	}
-
 
 	/**
 	 * Inserts domain object
@@ -75,6 +66,7 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	protected void insert(Object obj, DAO dao, SessionDataBean sessionDataBean) throws DAOException
 	{
 		Workflow workflow = (Workflow) obj;
+		workflow.setCreatedBy(sessionDataBean.getUserId());
 
 		logger.info("In  WORKFLOW  BIZ LOGIC >>>>>> INSERT METHOD");
 		logger.info("#### Workflow Name #### ::  " + workflow.getName());
@@ -134,6 +126,7 @@ public class WorkflowBizLogic extends DefaultBizLogic
 			throws DAOException, UserNotAuthorizedException
 	{
 		Workflow workflow = (Workflow) obj;
+		workflow.setCreatedBy(sessionDataBean.getUserId());
 		for (WorkflowItem workflowItem : workflow.getWorkflowItemList())
 		{
 			IAbstractQuery query = workflowItem.getQuery();
@@ -385,38 +378,65 @@ public class WorkflowBizLogic extends DefaultBizLogic
 		}
 		Workflow workflow = (Workflow) obj;
 
-		//validat eempty workflow
+		//validate empty workflow
 		if (workflow.getName().equals(""))
 		{
 			throw new DAOException("Workflow Name cannot be empty");
 		}
-		//forming Query to validate workflow Name
-		String sourceObjectName = Workflow.class.getName();
-		String[] selectColumnName = {"id"};
-		String[] whereColumnName = {"name", "name"};
-		String[] whereColumnCondition = {"=", "="};
-		Object[] whereColumnValue = {workflow.getName().toLowerCase(),
-				workflow.getName().toUpperCase()};
-		String joinCondition = Constants.OR_JOIN_CONDITION;
 
-		List list = dao.retrieve(sourceObjectName, selectColumnName, whereColumnName,
-				whereColumnCondition, whereColumnValue, joinCondition);
-		//edit
-		if (workflow.getId() != null && !list.isEmpty())
-		{
-			if (workflow.getId().equals(list.get(0))) {
-				return true;
-			} else
+		
+		
+		Session session = null;
+		try {
+			session = DBUtil.getCleanSession();
+		
+			Query query = null;
+			String wfName = getWorkflowName(workflow.getName());
+			query = session.createQuery("select id from " + Workflow.class.getName() + "  Workflow where upper(Workflow.name) = "
+					+ "'"+wfName.toUpperCase()+"'");
+
+
+			List list = query.list();
+			//edit
+			if (workflow.getId() != null && !list.isEmpty())
+			{
+				if (workflow.getId().equals(list.get(0))) {
+					return true;
+				} else
+				{
+					throw new DAOException("Workflow with same name already exists");
+				}
+			}
+			else if (!list.isEmpty())
 			{
 				throw new DAOException("Workflow with same name already exists");
 			}
+		} catch (BizLogicException e) {
+			e.printStackTrace();
 		}
-		else if (!list.isEmpty())
+		finally
 		{
-			throw new DAOException("Workflow with same name already exists");
+			session.close();;
+			
 		}
 		return true;
 
+	}
+
+	/**
+	 * This method returns the name of 
+	 * workflow to validate it. 
+	 * @param workflowName= name of workflow
+	 * @return workflow name
+	 */
+	private String getWorkflowName(String workflowName)
+	{
+		if(workflowName.contains("'"))
+		{
+			// replace "'" with "''"
+			return workflowName.replace("'","''");
+		}
+		return workflowName;
 	}
 
 	/**
