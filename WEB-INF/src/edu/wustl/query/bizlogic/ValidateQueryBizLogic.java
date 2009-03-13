@@ -225,9 +225,7 @@ public class ValidateQueryBizLogic
 		}
 		if (!istagPresent)
 		{
-			validationMessage = "<li><font color='blue'> "
-					+ ApplicationProperties.getValue(Constants.QUERY_NO_ROOTEXPRESSION)
-					+ "</font></li>";
+			validationMessage =  ApplicationProperties.getValue(Constants.QUERY_NO_ROOTEXPRESSION);
 		}
 
 		return validationMessage;
