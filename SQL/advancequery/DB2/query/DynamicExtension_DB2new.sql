@@ -6676,7 +6676,7 @@ insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) 
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (882,'Inherited','Inherited',81);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (883,'Inherited','Inherited',81);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (884,'Inherited','Inherited',81);
-insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (885,'PV_FILTER','CONCEPT_NAME like ''PHARMACY_FREQUENCY_MODIFIER->^%''',83);
+insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (885,'PV_FILTER','name like ''PHARMACY_FREQUENCY_MODIFIER->^%''',83);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (886,'PV_VIEW','MED_LOOKUP_VIEW',83);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (887,'DEFAULT_CONDITION','In!=!FACILITY_ID',84);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (888,'VI_HIDDEN','VI_HIDDEN',84);
