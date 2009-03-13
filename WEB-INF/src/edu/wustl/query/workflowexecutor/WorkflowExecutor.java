@@ -4,6 +4,7 @@
 
 package edu.wustl.query.workflowexecutor;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
 import edu.wustl.common.querysuite.queryobject.ICompositeQuery;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.domain.WorkflowDetails;
 import edu.wustl.query.querymanager.AbstractQueryManager;
 import edu.wustl.query.querymanager.Count;
@@ -159,6 +161,45 @@ public class WorkflowExecutor
             else
             {
                 int cqExecId = executionIdsMap.get(cquery.getId());
+
+                try
+                {
+                    Count count = queryManager.getQueryCount(cqExecId);
+                    if (Constants.QUERY_CANCELLED.equalsIgnoreCase(count.getStatus()) || Constants.QUERY_FAILED.equalsIgnoreCase(count.getStatus()) )
+                    {
+                        // execute the query again
+                        executionIdsMap.remove(ciderQuery.getQuery().getId());
+
+                        // Get all the PQs and start their execution.
+                        List<AbstractQuery> childQueryNodes =
+                            workflowDetails.getDependencyGraph().getChildNodes(ciderQuery);
+                        List<Integer> queryExecIdsList = new ArrayList<Integer>();
+
+                        for (AbstractQuery childQuery : childQueryNodes) {
+//                        int execId = queryManager.execute(childQuery);
+                            childQueryExecutionIdsMap.putAll(this.execute(childQuery));
+//                          executionIdsMap.put(childQuery.getQuery().getId(), execId);
+                        }
+                        queryExecIdsList.addAll(childQueryExecutionIdsMap.values());
+
+                        // Need to submit the cquery to the Composite Query Executer
+                        String cqSqlQueryString = workflowDetails.getDependencyGraph().generateSQL(ciderQuery);
+                        ciderQuery.setQueryString(cqSqlQueryString);
+
+                        CompositeQueryExecutor compositeQueryExecutor = new CompositeQueryExecutor(ciderQuery,queryExecIdsList,cqSqlQueryString);
+                        cqExecId = compositeQueryExecutor.executeQuery();
+
+//                        cqExecId = this.execute(ciderQuery);
+                       executionIdsMap.put(ciderQuery.getQuery().getId(),cqExecId);
+                    }
+                } catch (DAOException e)
+                {
+                    log.error("Error while getting count status object - ",e);
+                } catch (SQLException e)
+                {
+                    log.error("Error while getting count status object - ",e);
+                }
+
                 ciderQuery.setQueryExecId(cqExecId);
                 childQueryExecutionIdsMap.put(cquery.getId(), cqExecId);
             }
@@ -178,6 +219,25 @@ public class WorkflowExecutor
 		    else
 		    {
                 int cqExecId = executionIdsMap.get(ciderQuery.getQuery().getId());
+                // Reuse execId only if the last execution was 'COMPLETED'.
+                try
+                {
+                    Count count = queryManager.getQueryCount(cqExecId);
+                    if (Constants.QUERY_CANCELLED.equalsIgnoreCase(count.getStatus()) || Constants.QUERY_FAILED.equalsIgnoreCase(count.getStatus()) )
+                    {
+                        // execute the query again
+                        cqExecId = queryManager.execute(ciderQuery);
+                        executionIdsMap.put(ciderQuery.getQuery().getId(),cqExecId);
+                    }
+
+                } catch (DAOException e)
+                {
+                    log.error("Error while getting count status object - ",e);
+                } catch (SQLException e)
+                {
+                    log.error("Error while getting count status object - ",e);
+                }
+
                 ciderQuery.setQueryExecId(cqExecId);
 		        childQueryExecutionIdsMap.put(ciderQuery.getQuery().getId(), cqExecId);
 		    }
