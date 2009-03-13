@@ -35,8 +35,12 @@ tr#hiddenCombo
 		columnList = (List<String>) request.getAttribute(Constants.SPREADSHEET_COLUMN_LIST);
 
 	List dataList = (List) request.getAttribute(Constants.PAGINATION_DATA_LIST);
-	String[] selectedColumnNames = new String[columnList.size()];
-	columnList.toArray(selectedColumnNames);
+	String[] selectedColumnNames =null;
+	if(columnList!=null)
+	{
+		selectedColumnNames = new String[columnList.size()];
+		columnList.toArray(selectedColumnNames);
+	}
 	
 	String pageOf = (String)request.getAttribute(Constants.PAGE_OF);
 	String title = pageOf + ".searchResultTitle";
