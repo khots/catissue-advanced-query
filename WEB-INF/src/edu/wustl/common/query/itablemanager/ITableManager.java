@@ -265,7 +265,7 @@ public class ITableManager
 		{
 			try
 			{
-				String sql = Constants.SELECT + Constants.COUNT_QUERY_UPI +","+Constants.COUNT_QUERY_DOB+ Constants.FROM + Constants.ITABLE + Constants.WHERE
+				String sql = Constants.SELECT + Constants.COUNT_QUERY_UPI +","+Constants.COUNT_QUERY_DOB+","+Constants.PATIENT_DEID+ Constants.FROM + Constants.ITABLE + Constants.WHERE
 						+ Constants.COUNT_QUERY_EXECUTION_ID + Constants.EQUALS + query_Exec_id;
 
 				DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME_CIDER);
@@ -276,6 +276,7 @@ public class ITableManager
 					NodeInfo nodeInfo = new NodeInfo();
 					nodeInfo.setObj(resultSet.getObject(1));
 					nodeInfo.setDob(resultSet.getTimestamp(2));
+					nodeInfo.setPatientDeid(resultSet.getLong(3));
 					upiList.add(nodeInfo);
 				}
 			}
@@ -316,7 +317,7 @@ public class ITableManager
 		{
 			try
 			{
-				String sql = Constants.SELECT + Constants.COUNT_QUERY_DOB+ Constants.FROM + Constants.ITABLE + Constants.WHERE
+				String sql = Constants.SELECT + Constants.COUNT_QUERY_DOB+","+Constants.PATIENT_DEID + Constants.FROM + Constants.ITABLE + Constants.WHERE
 						+ Constants.COUNT_QUERY_EXECUTION_ID + Constants.EQUALS + query_Exec_id + " " +Constants.AND_JOIN_CONDITION + " " + Constants.COUNT_QUERY_UPI + Constants.EQUALS + "'" + upi + "'";
 
 				DB_CONNECTION_PARAMS.openSession(Constants.JNDI_NAME_CIDER);
@@ -327,6 +328,7 @@ public class ITableManager
 					NodeInfo nodeInfo = new NodeInfo();
 					nodeInfo.setObj(upi);
 					nodeInfo.setDob(resultSet.getTimestamp(1));
+					nodeInfo.setPatientDeid(resultSet.getLong(2));
 					upiList.add(nodeInfo);
 				}
 			}

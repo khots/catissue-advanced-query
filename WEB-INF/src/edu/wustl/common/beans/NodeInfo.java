@@ -6,6 +6,7 @@ public class NodeInfo
 {
 	Object obj;
 	Timestamp dob;
+	Long patientDeid;
 	
 	/**
 	 * @return the obj
@@ -38,7 +39,23 @@ public class NodeInfo
 	{
 		this.dob = dob;
 	}
-	
-	
 
+	/**
+	 * 
+	 * @return
+	 */
+	public Long getPatientDeid()
+	{
+		return patientDeid;
+	}
+	
+	/**
+	 * 
+	 * @param patientDeid
+	 */
+	public void setPatientDeid(Long patientDeid)
+	{
+		this.patientDeid = patientDeid;
+	}
+	
 }

@@ -10,6 +10,7 @@ import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.query.factory.DataQueryExecutorFactory;
 import edu.wustl.common.query.factory.ITableManagerFactory;
 import edu.wustl.common.util.ExportReport;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.queryexecutionmanager.DataQueryExecution;
 import edu.wustl.query.util.global.Constants;
@@ -99,7 +100,7 @@ public abstract class AbstractExportDataThread implements Runnable
 	 * @param sdb
 	 */
 	protected abstract void postProcess(ExportDataObject exportDataObject,
-			SessionDataBean sessionDataBean);
+			SessionDataBean sessionDataBean) throws DAOException;
 	
 	/**
 	 * 
