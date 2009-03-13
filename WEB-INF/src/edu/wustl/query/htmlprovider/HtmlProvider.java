@@ -589,9 +589,9 @@ public class HtmlProvider
 		StringBuffer html = new StringBuffer(Constants.MAX_SIZE);
 		AttributeInterface attributeIDInterface=entity.getAttributeByName(Constants.ID);
 		String componentIdOfID=generateComponentName(attributeIDInterface);
-		String format ="\n<td width='5%' valign='top' colspan='4' >";
+		String format ="\n<td width='5%' valign='top'>";
         html.append(format);
-        String temp = "\n<select style=\"width:10em;\" MULTIPLE styleId='country' "
+        String temp = "\n<select style=\"width:11em;\" MULTIPLE styleId='country' "
         		+ "size ='10' name=\"" + componentId
                 + "_enumeratedvaluescombobox\"\" id=\"" + componentId
                 + "_enumeratedvaluescombobox\"\" onChange=\"changeId('" + componentId + "','"+componentIdOfID+"')\">";
