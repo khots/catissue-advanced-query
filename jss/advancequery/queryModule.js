@@ -1234,7 +1234,7 @@
 		callFlexMethod();
      	if(interfaceObj.isDAGEmpty())
 		{
-			var message = 	"<font color='red'>Graph must have atleast one node.</font>";
+			var message = 	"<span class='error_msg'>Graph must have atleast one node.</span>";
 			showValidationMessages(message)
 		}
 		else
@@ -1445,7 +1445,7 @@
 			if(interfaceObj.isDAGEmpty())
 			{
 				//showValidationMessages("<li><font color='red'>Graph must have atleast one node.</font></li>")
-				var message = 	"<font color='red'>Graph must have atleast one node.</font>";
+				var message = 	"<span class='error_msg'>Graph must have atleast one node.</span>";
 				showValidationMessages(message);
 			}
 			else
