@@ -105,6 +105,17 @@
 			 </query>
 		</TestCase> 
 
+        <TestCase>
+			 <name>Find all patients have transfered from other than emergency to IP and elevated troponin</name>
+			 <tmtTestCaseId>6075</tmtTestCaseId>
+			  <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV>  -->
+			 <expectedResultsCSV>TC10_Expected_Results.csv</expectedResultsCSV>
+			  <!--  <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV>  -->
+			 		 
+			 <query type = "saved_query"
+			 	    	 id = "261">
+			 </query>
+		</TestCase> 
 
 
 </TestCases>
