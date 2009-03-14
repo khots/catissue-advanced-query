@@ -197,6 +197,11 @@ public class QueryFrameworkTestCase extends TestCase
 
 	}
 
+	public void testXQuery_Allpatients_transfered_from_otherthanemergency_toIPandelevated troponin_6075()
+	{
+
+	}
+
 	/*public void testXQuery_PersonUpi_is_NOT_NULL_AND_DOB_less_than_10_10_1920()
 	{
 		
