@@ -197,7 +197,7 @@ public class QueryFrameworkTestCase extends TestCase
 
 	}
 
-	public void testXQuery_Allpatients_transfered_from_otherthanemergency_toIPandelevated troponin_6075()
+	public void testXQuery_Allpatients_transfered_from_otherthanemergency_toIPandelevated_troponin_6075()
 	{
 
 	}
