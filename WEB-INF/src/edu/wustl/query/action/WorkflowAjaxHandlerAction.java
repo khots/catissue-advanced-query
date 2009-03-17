@@ -181,7 +181,7 @@ public class WorkflowAjaxHandlerAction extends Action
                         executionQueryResults=
                                generateExecutionQueryResults(
                                         executionIdMap, workflowBizLogic,
-                                        qUIManager, project_id);
+                                        qUIManager, project_id,userId);
                     }
                     else
                     {
@@ -208,7 +208,7 @@ public class WorkflowAjaxHandlerAction extends Action
                             executionQueryResults=
                                     generateExecutionQueryResults(
                                             executionIdMap, workflowBizLogic,
-                                            qUIManager, project_id);
+                                            qUIManager, project_id,userId);
 
                         } else
                         {
@@ -227,7 +227,7 @@ public class WorkflowAjaxHandlerAction extends Action
                             if (project_id > 0)
                             {
                                 hasFewRecords = qUIManager.checkTooFewRecords(Long
-                                        .valueOf(project_id), resultCount);
+                                        .valueOf(project_id), resultCount,userId);
                             }
                             if (hasFewRecords)
                             {
@@ -293,7 +293,7 @@ public class WorkflowAjaxHandlerAction extends Action
      */
 	private List<JSONObject> generateExecutionQueryResults(Map<Long, Integer> executionIdMap,
             WorkflowBizLogic workflowBizLogic, AbstractQueryUIManager qUIManager,
-            int projectId) throws QueryModuleException
+            int projectId,Long userId) throws QueryModuleException
     {
         Count resultCount = null;
         JSONObject jsonObject = null;
@@ -315,7 +315,7 @@ public class WorkflowAjaxHandlerAction extends Action
             if (projectId > 0)
             {
                 hasFewRecords = qUIManager.checkTooFewRecords(
-                        Long.valueOf(projectId), resultCount);
+                        Long.valueOf(projectId), resultCount,userId);
             }
             if (hasFewRecords)
             {
