@@ -1190,17 +1190,8 @@ Application
 	*/
 	public function editLimit(strToCreateQueyObject:String,entityName:String):void
 	{
-		
-		if(strToCreateQueyObject=="")	
-		{
-			showValidationMessagesToUser(DAGConstants.EMPTY_LIMIT_ERROR_MESSAGE);
-		}
-		else
-		{
 			rpcService.addEventListener(ResultEvent.RESULT,editNodeHandler);
 			rpcService.editNode(strToCreateQueyObject,entityName);
-		}
-							
 	}
 	/**
 	* Edit node handler
