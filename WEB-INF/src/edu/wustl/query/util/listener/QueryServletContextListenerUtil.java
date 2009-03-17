@@ -118,6 +118,7 @@ public class QueryServletContextListenerUtil
 				Variables.dataQueryExecutionClassName = queryProperties.getProperty("query.dataQueryExecutionClassName");
 				Variables.properties = queryProperties;
 				Variables.csmUtility = queryProperties.getProperty("query.csmUtility");
+				Variables.spreadSheetGeneratorClassName = queryProperties.getProperty("query.spreadSheetGeneratorClassName");
 			}
 			catch (FileNotFoundException e)
 			{
