@@ -50,6 +50,7 @@ import edu.wustl.common.querysuite.queryobject.IJoinGraph;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IQueryEntity;
+import edu.wustl.common.querysuite.queryobject.IRule;
 import edu.wustl.common.querysuite.queryobject.ITerm;
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
@@ -253,7 +254,7 @@ public class DAGPanel
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map ruleDetailsMap;
-
+		int expressionId;
 		if (!strToCreateQueryObject.equalsIgnoreCase(""))
 		{
 			ruleDetailsMap = queryBizLogic.getRuleDetailsMap(strToCreateQueryObject, entity
@@ -271,7 +272,17 @@ public class DAGPanel
 		}
 		else
 		{
-			int expressionId = m_queryObject.addExpression(entity);
+			if (mode.equals("Edit"))
+			{
+				Rule rule = ((Rule) (expression.getOperand(0)));
+				rule.removeAllConditions();
+				expressionId = expression.getExpressionId();
+			}
+			else
+			{
+				IRule rule =QueryObjectFactory.createRule();
+				expressionId = m_queryObject.addExpression(rule,entity);
+			}
 			node = createNode(expressionId, false);
 		}
 		return node;
@@ -2207,9 +2218,9 @@ public class DAGPanel
 		}
 		else
 		{
-			for (int i = 0; i < expressions.size(); i++)
+			for (IExpression intermediateExpression : expressions)
 			{
-				m_queryObject.removeExpression(expression.getExpressionId());
+				m_queryObject.removeExpression(intermediateExpression.getExpressionId());
 			}
 		}
 	}
