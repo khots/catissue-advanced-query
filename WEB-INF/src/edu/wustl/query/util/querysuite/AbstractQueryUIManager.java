@@ -80,7 +80,7 @@ public abstract class AbstractQueryUIManager {
 	 * @return hasTooFewRecords
 	 * @throws QueryModuleException
 	 */
-	abstract public boolean checkTooFewRecords(Long projectId, Count countObject) throws QueryModuleException;
+	abstract public boolean checkTooFewRecords(Long projectId, Count countObject,Long userId) throws QueryModuleException;
 	
 	abstract public AbstractQuery getAbstractQuery();
 	
