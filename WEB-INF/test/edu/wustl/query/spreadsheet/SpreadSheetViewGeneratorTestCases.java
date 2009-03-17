@@ -61,7 +61,7 @@ public class SpreadSheetViewGeneratorTestCases extends TestCase
 			
 			SpreadSheetData spreadsheetData = new SpreadSheetData();
 			
-			spreadSheetViewGenerator.createSpreadsheet(node, queryDetailsObj, spreadsheetData);
+			spreadSheetViewGenerator.createSpreadsheet(node, queryDetailsObj, spreadsheetData,null);
 			
 			assertTrue("Spreadsheet object populated successfully  ",true);
 		}
