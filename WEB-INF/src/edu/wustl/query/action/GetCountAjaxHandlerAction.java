@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.factory.AbstractQueryManagerFactory;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.querysuite.queryobject.IQuery;
@@ -81,6 +82,9 @@ public class GetCountAjaxHandlerAction extends Action
 					queryExecID	= qUIManager.searchQuery(null);
 				}
 				
+				SessionDataBean sessionData = (SessionDataBean) request
+                .getSession().getAttribute(Constants.SESSION_DATA);
+				Long userId = sessionData.getUserId();
 				
 				//retrieve count with query execution id
 				AbstractQueryUIManager qUIManager	= AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
@@ -89,7 +93,7 @@ public class GetCountAjaxHandlerAction extends Action
 				boolean hasFewRecords = false;
 				if(projectId != null && !projectId.equals(""))
 				{
-					hasFewRecords = qUIManager.checkTooFewRecords(Long.valueOf(projectId),countObject);
+					hasFewRecords = qUIManager.checkTooFewRecords(Long.valueOf(projectId),countObject,userId);
 				}
 				JSONObject resultObject = null;
 				if(hasFewRecords)
