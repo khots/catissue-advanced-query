@@ -596,10 +596,11 @@ public class HtmlProvider
                 + "_enumeratedvaluescombobox\"\" id=\"" + componentId
                 + "_enumeratedvaluescombobox\"\" onChange=\"changeId('" + componentId + "','"+componentIdOfID+"')\">";
          html.append(temp);
-        if(attributeDetails.getAttributeNameConditionMap()!=null)
+        if(attributeDetails.getAttributeNameConditionMap()!=null && !attributeDetails.getAttributeNameConditionMap().isEmpty())
         {
-        List<String> conditionOfId = attributeDetails.getAttributeNameConditionMap().get(Constants.ID).getValues();
-        List<String> conditionOfName = attributeDetails.getAttributeNameConditionMap().get(attributeDetails.getAttrName()).getValues();
+        
+        	List<String> conditionOfId = attributeDetails.getAttributeNameConditionMap().get(Constants.ID).getValues();
+            List<String> conditionOfName = attributeDetails.getAttributeNameConditionMap().get(attributeDetails.getAttrName()).getValues();
          if (conditionOfId != null && conditionOfName !=null )
    	     {
 			for(int i=0;i<conditionOfId.size();i++)
@@ -626,7 +627,7 @@ public class HtmlProvider
 			AttributeInterface attribute) throws PVManagerException
 	{
 		List<ICondition> conditions = attributeDetails.getConditions();
-		if (conditions != null)
+		if (conditions != null && !conditions.isEmpty())
 		{
 			getHtmlConditionNotNull(generatedHTML,attribute, forPage);
 		}
