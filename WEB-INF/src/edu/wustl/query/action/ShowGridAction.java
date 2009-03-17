@@ -153,6 +153,10 @@ public class ShowGridAction extends BaseAction
 			}
 			else
 			{
+				if(data.indexOf(Constants.UNDERSCORE)>-1)
+				{
+					data = data.substring(data.lastIndexOf(Constants.UNDERSCORE)+1);
+				}
 				dataQueryResultsBean = queryUIManager.getData(queryExecutionId, data,
 						ViewType.SPREADSHEET_VIEW);
 			}
