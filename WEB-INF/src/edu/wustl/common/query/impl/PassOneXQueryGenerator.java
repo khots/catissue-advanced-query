@@ -4,6 +4,7 @@
 
 package edu.wustl.common.query.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -402,8 +403,16 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 						newRhs = path.toString();
 						break;
 					}
-
-					expression = getNonMainNonEmptyChildren(expression).get(0);
+					List<IExpression> expressionList=new ArrayList<IExpression>();
+					expressionList.addAll(getNonMainNonEmptyChildren(expression));
+					for(IExpression childExpression : expressionList)
+					{
+						if(Utility.istagPresent(childExpression.getQueryEntity().getDynamicExtensionsEntity(),Constants.VERSION))
+						{
+							expression=childExpression;
+						}
+					}
+					//expression = getNonMainNonEmptyChildren(expression).get(0);
 					forVariable = getForVariables().get(expression);
 
 					//additional "../" for entities having target role eg. demographicsCollection 

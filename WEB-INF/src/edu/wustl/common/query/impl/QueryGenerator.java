@@ -275,7 +275,14 @@ public abstract class QueryGenerator implements IQueryGenerator
 			boolean isEmptyExppression = false;
 			if (operand instanceof IRule)
 			{
-				operandquery = getQuery((IRule) operand); // Processing Rule.
+				if(((IRule) operand).size() > 0)
+				{
+					operandquery = getQuery((IRule) operand); // Processing Rule.
+				}
+				else
+				{
+					continue;
+				}
 			}
 			else if (operand instanceof IExpression)
 			// Processing sub Expression.
@@ -414,7 +421,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 			}
 		}
 
-		isEmpty = isEmpty && !expression.containsRule();// check if there are
+		isEmpty = isEmpty && !containsCondition(expression) ;// check if there are
 		// rule present as
 		// subexpression.
 		// SRINATH
@@ -425,6 +432,29 @@ public abstract class QueryGenerator implements IQueryGenerator
 		}
 
 		return isEmpty;
+	}
+
+	private boolean containsCondition(Expression expression)
+	{
+		boolean result;
+		if(expression.containsRule())
+		{
+			IRule rule = (IRule)expression.getOperand(0);
+			if(rule.size()==0)
+			{
+				result = false;
+			}
+			else
+			{
+				result = true;
+			}
+		}
+		else
+		{
+			result = false;
+		}
+		
+		return result;
 	}
 
 	/**
