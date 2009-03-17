@@ -4,6 +4,9 @@ package edu.wustl.query.spreadsheet;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.query.factory.ViewIQueryGeneratorFactory;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IQuery;
@@ -32,8 +35,9 @@ public class SpreadSheetViewGenerator
 	protected String idOfClickedNode;
 	protected QueryDetails queryDetails;
 	protected SelectedColumnsMetadata selectedColumnsMetadata;
-	private ViewType viewType;
+	protected ViewType viewType;
 
+	
 	public SpreadSheetViewGenerator(ViewType viewType)
 	{
 		this.viewType = viewType;
@@ -51,7 +55,7 @@ public class SpreadSheetViewGenerator
 	 * @throws QueryModuleException 
 	 */
 	public List<IQuery> createSpreadsheet(NodeId node, QueryDetails queryDetailsObj,
-			SpreadSheetData spreadsheetData)
+			SpreadSheetData spreadsheetData,AbstractQuery abstractQuery)
 			throws QueryModuleException
 	{
 		ViewManager viewManager = ViewManager.getInstance(viewType);
@@ -61,7 +65,7 @@ public class SpreadSheetViewGenerator
 		List<IQuery> queries = queryGenerator.createQueryForSpreadSheetView(node, queryDetailsObj);
 
 		List<IOutputAttribute> selectedColumns = viewManager.getSelectedColumnList(queries.get(0));
-		List<String> columnsList = getColumnList(selectedColumns);
+		List<String> columnsList = getColumnList(selectedColumns,abstractQuery);
 
 		spreadsheetData.setColumnsList(columnsList);
 		
@@ -73,7 +77,7 @@ public class SpreadSheetViewGenerator
 	 * @return
 	 * @throws QueryModuleException 
 	 */
-	private List<String> getColumnList(List<IOutputAttribute> outputAttributeList)
+	protected List<String> getColumnList(List<IOutputAttribute> outputAttributeList,AbstractQuery abstractQuery)
 			throws QueryModuleException
 	{
 		List<String> columnsList = new ArrayList<String>();
@@ -95,6 +99,6 @@ public class SpreadSheetViewGenerator
 				columnsList.add(attrLabel + " : " + className);
 			}
 		}
-		return columnsList;
+	    return columnsList;
 	}
 }
