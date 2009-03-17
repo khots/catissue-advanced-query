@@ -188,12 +188,17 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @return
 	 * @throws VocabularyException
 	 */
-	public List<IConcept> searchConcept(String term, String vocabURN,int maxToReturn)
+	public List<IConcept> searchConcept(String term, String vocabURN,int maxToReturn,boolean findExactMatch)
 			throws VocabularyException
 	{
 		IVocabulary vocabulary = vocabularyManager.getVocabulary(vocabURN);
-		
-		return vocabulary.searchConcept(term, VIProperties.searchAlgorithm, maxToReturn);
+		String searchAlgorithm = VIProperties.searchAlgorithm;
+		if(findExactMatch)
+		{
+			term = "\"" + term + "\"";
+			searchAlgorithm = "LuceneQuery";
+		}
+		return vocabulary.searchConcept(term, searchAlgorithm, maxToReturn);
 
 	}
 	

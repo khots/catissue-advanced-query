@@ -132,8 +132,9 @@ public class SearchPermissibleValuesAction extends Action
 			String[] vocabDetail = allTrgVocabs.nextToken().split("##");
 			String vocabURN = vocabDetail[0], vocabDisName = vocabDetail[1];
 			html.append(bizLogic.getRootVocabularyHTMLForSearch("srh_" + vocabURN, vocabDisName));
+			//TODO: Pass the flag value as true for finding the exact match. 
 			List<IConcept> conceptList = bizLogic.searchConcept(searchTerm, vocabURN,
-					VIProperties.maxToReturnFromSearch);
+					VIProperties.maxToReturnFromSearch,false);
 			/**
 			 * to maintain the order of search results to show on UI
 			 */
