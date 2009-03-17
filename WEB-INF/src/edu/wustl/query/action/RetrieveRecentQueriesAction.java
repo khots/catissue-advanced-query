@@ -54,8 +54,11 @@ public class RetrieveRecentQueriesAction extends Action
 	public int setRecentQueriesCount(SessionDataBean sessionDataBean) throws QueryModuleException
 	{
 
-		String sql = "select count(*) from  COUNT_QUERY_EXECUTION_LOG where USER_ID= "
-				+ sessionDataBean.getUserId();
+        String sql ="SELECT COUNT(*) "+
+        "FROM QUERY_EXECUTION_LOG qel, COUNT_QUERY_EXECUTION_LOG cqel "+
+        "WHERE qel.QUERY_EXECUTION_ID = cqel.COUNT_QUERY_EXECUTION_ID and cqel.USER_ID="+
+        sessionDataBean.getUserId() + " and qel.QUERY_TYPE='C' and qel.WORKFLOW_ID IS NULL";
+
 		int numberOfQueries = 0;
 		List<List<String>> resultCount = executeQuery(sql, sessionDataBean, false, false, null, -1,
 				-1);
@@ -144,7 +147,8 @@ public class RetrieveRecentQueriesAction extends Action
 
 		String sql ="SELECT CREATIONTIME,QUERY_COUNT,QUERY_STATUS,QUERY_ID,QUERY_EXECUTION_ID "+
 		   "FROM QUERY_EXECUTION_LOG qel, COUNT_QUERY_EXECUTION_LOG cqel "+
-		   "WHERE qel.QUERY_EXECUTION_ID = cqel.COUNT_QUERY_EXECUTION_ID and cqel.USER_ID="+sessionDataBean.getUserId() + "  order by qel.CREATIONTIME desc ";
+		   "WHERE qel.QUERY_EXECUTION_ID = cqel.COUNT_QUERY_EXECUTION_ID and cqel.USER_ID="+
+		   sessionDataBean.getUserId() + " and qel.QUERY_TYPE='C' and qel.WORKFLOW_ID IS NULL order by qel.CREATIONTIME desc ";
 		List<List<String>> queryResultList = executeQuery(sql, sessionDataBean, false, false, null,
 				0, lastIndex);
 		return queryResultList;
