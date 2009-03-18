@@ -818,7 +818,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	 */
 	protected boolean shouldAddNodeFor(IExpression expression)
 	{
-		return expression.isInView();
+		return true;
 	}
 
 	/**
