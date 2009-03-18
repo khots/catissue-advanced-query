@@ -29,7 +29,6 @@
 	<%
 	String srcVocabURN = VIProperties.sourceVocabUrn;
 	String sourceVocabMessage =(String)request.getSession().getAttribute(Constants.SRC_VOCAB_MESSAGE); 
-	System.out.println(VISearchAlgorithm.EXACT_PHRASE);
 	%>
 	// selectedPvs will store that appears right side of the page
 	selectedPvs =new Array();
