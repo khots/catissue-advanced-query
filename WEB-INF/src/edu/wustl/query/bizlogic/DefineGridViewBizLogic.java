@@ -17,9 +17,11 @@ import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
+import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IOutputEntity;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
+import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.common.tree.QueryTreeNodeData;
 import edu.wustl.common.util.Utility;
@@ -427,8 +429,17 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 		{
 			uniqueKeyId = itr.next();
 			currentSelectedObject = queryDetailsObj.getUniqueIdNodesMap().get(uniqueKeyId);	
-			queryDetailsObj.setCurrentSelectedObject(currentSelectedObject);
-			addEntityAndAttributes(queryDetailsObj,false,xmlString);
+		   
+			 //Get current selected Object expression ID
+			int expId = currentSelectedObject.getExpressionId();
+			IQuery query = queryDetailsObj.getQuery();
+			IConstraints constaraints = query.getConstraints();
+			IExpression expression = constaraints.getExpression(expId);
+			if(expression.isVisible() && expression.isInView())
+			{
+				queryDetailsObj.setCurrentSelectedObject(currentSelectedObject);
+				addEntityAndAttributes(queryDetailsObj,false,xmlString);
+			}
 		}
 	}
 
