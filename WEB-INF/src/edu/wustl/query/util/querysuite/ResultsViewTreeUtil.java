@@ -362,13 +362,17 @@ public class ResultsViewTreeUtil
 	 	
 	 	List<OutputTreeDataNode> childrenList = parentChildrenMap.get(mainEntityTreeDataNode);
 
+	 	List <OutputTreeDataNode> mainEntityChildrenNode =  new ArrayList<OutputTreeDataNode>();
+	 	
+	 	
 	 	//Add these direct children to IQuery with rule
         //Get the constraints from old patient Data query. This is required to get the rules added on children nodes 	 	
 	 	IConstraints parentQueryConstraints  = parentQuery.getConstraints();
 	 	Map <OutputTreeDataNode,Integer> childrenExpIdsMap =  new HashMap<OutputTreeDataNode, Integer>();
 	 	if(childrenList != null && !childrenList.isEmpty())
 		{
-		 	for(OutputTreeDataNode childNode : childrenList)
+	 		mainEntityChildrenNode.addAll(childrenList);
+	 		for(OutputTreeDataNode childNode : childrenList)
 		 	{
 		 		int childExpressionId = childNode.getExpressionId();
 		 		IExpression childExpression = parentQueryConstraints.getExpression(childExpressionId);
@@ -393,13 +397,15 @@ public class ResultsViewTreeUtil
 		 	}
 			
 		 	//Now for each children, add further children
-		 	for(OutputTreeDataNode childNode : childrenList)
+		 	for(int i=0; i< mainEntityChildrenNode.size(); i++)
 		 	{
+		 		OutputTreeDataNode childNode = mainEntityChildrenNode.get(i);
 		 		int childRootExpId = childrenExpIdsMap.get(childNode);
 		 		EntityInterface childRootEntity = childNode.getOutputEntity().getDynamicExtensionsEntity();
 		 		List <OutputTreeDataNode> childrenOutPutList = parentChildrenMap.get(childNode);
 		 		if(childrenOutPutList != null  && !childrenOutPutList.isEmpty())
 		 		{  
+		 			mainEntityChildrenNode.addAll(childrenOutPutList);
 		 			for(OutputTreeDataNode outputNode : childrenOutPutList)
 		 			{
 		 				int expId =  outputNode.getExpressionId();
@@ -408,7 +414,10 @@ public class ResultsViewTreeUtil
 		 				EntityInterface childEntity =  outputNode.getOutputEntity().getDynamicExtensionsEntity();
 		 				int expressionId = addExpressionAndRuleToQuery(m_queryObject, iRule, childEntity);
 		 				IPath path = getIPath(childRootEntity,childEntity);
-		 		 		if (!m_queryObject.isPathCreatesCyclicGraph(childRootExpId, expressionId, path))
+		 				
+		 				//Adding to Map
+		 				childrenExpIdsMap.put(outputNode, expressionId);
+		 				if (!m_queryObject.isPathCreatesCyclicGraph(childRootExpId, expressionId, path))
 		 		 		{
 		 		 	    	QueryAddContainmentsUtil.linkTwoNodes(childRootExpId, expressionId, path, m_queryObject);
 		 		 		}
