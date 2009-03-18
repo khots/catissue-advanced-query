@@ -189,14 +189,15 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @return
 	 * @throws VocabularyException
 	 */
-	public List<IConcept> searchConcept(String term, String vocabURN,int maxToReturn,VISearchAlgorithm searchAloAlgorithm)
+	public List<IConcept> searchConcept(String term, String vocabURN,int maxToReturn,String  searchCriteria)
 			throws VocabularyException
 	{
 		IVocabulary vocabulary = vocabularyManager.getVocabulary(vocabURN);
-		
+		VISearchAlgorithm searchAloAlgorithm=VISearchAlgorithm.valueOf(searchCriteria);
+		//String searchAloAlgorithm=searchAlgo.getAlgorithm();
 		if(searchAloAlgorithm.equals(VISearchAlgorithm.EXACT_PHRASE))
 		{
-			if(!term.startsWith("\"") || !term.endsWith("\""))
+			if(term.indexOf("\"")!=-1)
 			{
 				term = term.replace("\"", "");
 			}
