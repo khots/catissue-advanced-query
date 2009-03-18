@@ -538,6 +538,12 @@ PUBLIC
 		scope="request">
         </action>
         
+    	<action path="/ProjectChangeAjaxHandler" 
+        type="edu.wustl.query.action.ProjectChangeHandlerAction"
+        validate="false"
+		scope="request">
+        </action>
+        
         <action path="/SaveWorkflowAjaxHandler" 
         type="edu.wustl.query.action.SaveWorkflowAjaxHandlerAction"
         validate="false"
@@ -583,7 +589,6 @@ PUBLIC
 		
 		<action path="/ShowResetCountPopUp"
           type = "edu.wustl.query.action.ShowResetCountPopUpAction"
-          name="categorySearchForm"
           validate="false"
 		  scope="request">
             <forward name="success"  path=".query.resetCountPopUp" />
@@ -592,7 +597,6 @@ PUBLIC
         		
 		<action path="/DeleteQueryPopup"
           type = "edu.wustl.query.action.ShowResetCountPopUpAction"
-          name="categorySearchForm"
           validate="false"
 		  scope="request">
             <forward name="success"  path=".query.deleteQueryPopUp" />
@@ -614,7 +618,6 @@ PUBLIC
 			scope="request">
 			<forward name="queryWizard" path="/QueryWizard.do?operation=add&amp;pageOf=workflow&amp;menuSelected=1" />
 			<forward name="queryGetCount" path="/QueryGetCount.do?operation=add&amp;pageOf=workflow&amp;menuSelected=1" />
-
 		</action>
 		
 		<action path="/QueryResultsView" 
