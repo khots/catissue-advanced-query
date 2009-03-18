@@ -196,6 +196,7 @@ function cancelGetCountQuery(queryId,executionLogId,removeExecutedCount)
 	var projectId=document.getElementById("selectedProject").value;
 	var url="WorkflowAjaxHandler.do?operation=execute&queryId="+queryId+'&state='+'cancel'+"&executionLogId="+executionLogId+"&workflowId="+document.getElementById("id").value+"&selectedProject="+projectId+"&removeExecutedCount="+removeExecutedCount;
 	//changeExecuteLinkToExecute(queryId,0);
+	
 	var request=newXMLHTTPReq();
 	if(request == null)
 	{
@@ -840,10 +841,7 @@ function workflowResponseHandler(response)
 							}
 								
 						}
-						if((document.getElementById("cancel_"+queryIndex)==null)&&(document.getElementById("cancelajaxcall_"+queryIndex).value=='false')&&jsonResponse.result.projectId==document.getElementById('selectedProject').value&&status!="Completed"&&status!="Cancelled"&&status!="Query Failed")
-						{
-								changeLinkToCancel(queryId,executionLogId);
-						}
+						
 
 
 						if(status!="Completed"&&status!="Cancelled"&&status!="Query Failed"&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false'
@@ -851,15 +849,20 @@ function workflowResponseHandler(response)
 						{
 							
 							workflowExecuteGetCountQuery(queryId,executionLogId);
+							
 						}
 						
 						if((status=="Completed"||status=="Cancelled"||status=="Query Failed")
-							&&jsonResponse.result.projectId==document.getElementById('selectedProject').value)
+							&&jsonResponse.result.projectId==document.getElementById('selectedProject').value
+							&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
 						{
 							changeExecuteLinkToExecute(queryId,0);
 		
 						}
-						
+						else
+						{
+							changeLinkToCancel(queryId,executionLogId);
+						}
 					}
           } 
 
