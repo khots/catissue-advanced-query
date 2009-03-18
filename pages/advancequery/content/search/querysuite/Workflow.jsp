@@ -859,7 +859,7 @@ function workflowResponseHandler(response)
 							changeExecuteLinkToExecute(queryId,0);
 		
 						}
-						else
+						else if(jsonResponse.result.projectId==document.getElementById('selectedProject').value)
 						{
 							changeLinkToCancel(queryId,executionLogId);
 						}
