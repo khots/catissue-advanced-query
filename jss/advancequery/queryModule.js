@@ -1943,7 +1943,7 @@ var jsReady = false;
 			editVocabURN=vocabCodeDetail[0];
 	   }
 	   var width=(screen.width * 90 )/100;
-	   var height=( screen.height * 65)/100;
+	   var height=( screen.height * 68)/100;
 	   pvwindow=dhtmlmodal.open('Search Permissible Values', 'iframe', 'LoadingVocabularies.do','Search Permissible Values for \"'+entityName+'\"', 'width='+width+' height='+height+',center=1,resize=0,scrolling=1');
 	}
 	/** if Concept already selected and again VI pop is open then
@@ -2053,23 +2053,5 @@ var jsReady = false;
 		}
 		alert(message);
 		return false;
-	}
-	function checkForVISplChar(textFieldValue)
-	{
-	     var splChar= new Array('&','(',')','[',']'); 
-	     var splCharsize = splChar.length;
-	     //alert("textFieldValue "+textFieldValue);
-	   	for( i=0; i < splCharsize ; i++)
-		{ 
-		   
-		 //  alert('<%= splChar[i] %>');
-		   if( textFieldValue.indexOf( splChar[i] ) != -1)
-		  {
-		    alert("Special Character are not allowed for search");
-			return true;
-		  }
-	   }
-	 
-		  return false;
 	}
 	
