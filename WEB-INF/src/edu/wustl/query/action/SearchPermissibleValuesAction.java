@@ -55,6 +55,7 @@ public class SearchPermissibleValuesAction extends Action
 	{
 
 		String searchTerm = request.getParameter(Constants.SEARCH_TERM);
+		String searchCriteria = request.getParameter("searchCriteria");
 		String operation = request.getParameter(Constants.OPERATION);
 		String targetVocabs = request.getParameter("targetVocabsForSearchTerm");
 		//get the id of the component on which user click to search for PVs
@@ -81,7 +82,7 @@ public class SearchPermissibleValuesAction extends Action
 				{
 					searchTerm = searchTerm.trim();
 					String html = searchTermInTargetVocab(searchTerm, targetVocabs, componentId,
-							request);
+							request,searchCriteria);
 					response.getWriter().write(html);
 				}
 				catch (VocabularyException e)
@@ -107,7 +108,7 @@ public class SearchPermissibleValuesAction extends Action
 	 */
 	@SuppressWarnings("unchecked")
 	private String searchTermInTargetVocab(String searchTerm, String targetVocabs,
-			String componentId, HttpServletRequest request) throws VocabularyException,
+			String componentId, HttpServletRequest request,String searchCriteria) throws VocabularyException,
 			PVManagerException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
@@ -136,7 +137,7 @@ public class SearchPermissibleValuesAction extends Action
 			//TODO: Pass the actual enum value for the selected search algorithm.
 			//Change the VISearchAlgorithm.ANY_WORD to the value of the selected algorithm.
 			List<IConcept> conceptList = bizLogic.searchConcept(searchTerm, vocabURN,
-					VIProperties.maxToReturnFromSearch,VISearchAlgorithm.ANY_WORD);
+					VIProperties.maxToReturnFromSearch,searchCriteria);
 			/**
 			 * to maintain the order of search results to show on UI
 			 */
