@@ -188,7 +188,7 @@ function addQuery()
 			rowContents[0]=createCheckBox("chkbox","checkbox_"+(counter+queryCount),'',(counter+queryCount),false);
 		}
 		operandsTdContent=getText(queryIds[counter]);
-		var trImgDown=createImageElement("images/advancequery/ic_notrun06.gif","notStarted_"+counter);
+		var trImgDown=createImageElement("images/advancequery/ic_notrun06.gif","notStarted_"+(counter+queryCount));
 		rowContents[1]=trImgDown;
 		rowContents[2]=createTextElement(getText(queryTitles[counter]));
 		rowContents[3]=createTextElement(getText(queryTypes[counter]));
@@ -414,7 +414,7 @@ function  reSetDropDowns(queryTitle)
 function deleteWorkflowItem(index)
 {
 	var url='DeleteQueryPopup.do?index='+index;
-	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select queries', 'width=400px,height=120px,center=1,resize=1,scrolling=1');
+	pvwindow=dhtmlmodal.open('Delete Query', 'iframe', url,'Delete Query', 'width=400px,height=120px,center=1,resize=1,scrolling=0');
 
 }
 
@@ -480,7 +480,7 @@ function deleteQuery(index)
 		}
 		else
 		{
-			pvwindow1=dhtmlmodal.open('delete Queries', 'iframe', './pages/advancequery/content/search/querysuite/depentQueryPopup.jsp','Delete Query', 'width=400px,height=120px,center=1,resize=1,scrolling=1');
+			pvwindow1=dhtmlmodal.open('Delete Query', 'iframe', './pages/advancequery/content/search/querysuite/depentQueryPopup.jsp','Delete Query', 'width=400px,height=120px,center=1,resize=1,scrolling=0');
 		}
 }
 function setCheckboxCount()
@@ -626,7 +626,22 @@ function changeExecuteLinkToExecute(queryId,executionLogId)
 	}
 	imageForCompletedCounts(index);
 }
-
+function changeCancelLinkExecute(index)
+{
+	
+		var queryTitle=document.getElementById("displayQueryTitle_"+index).value;
+			var object=document.getElementById("cancel_"+index);
+	//document.getElementById("cancelajaxcall_"+index).value='false';
+	 var t =	escape(queryTitle);
+	if(object!=null)
+	{
+		var parentIObj=object.parentNode;
+		parentIObj.removeChild(object);
+		parentIObj.appendChild(createLink("Execute ","execute_"+index,"javascript:executeGetCountQuery('"+escape(t)+"','"+0+"')"));
+		enableDeleteLink(index);
+	}
+	imageForNotRunning(index);
+}
 function disableDeleteLink(index)
 {
 	var deleteLink=document.getElementById("delete_"+index);
@@ -640,31 +655,56 @@ function enableDeleteLink(index)
 	deleteLink.className="bluelink";
 }
 
+
+/* ------------------------------------------------------------------
+ * Function - checkFordependentQueries()
+ * This function checks if the current query is a part of atleast one 
+ * other joined query in the current workflow page. 
+ *
+ * Input - index - The index to the current query's postfix expression 
+ *
+ * Returns - 
+ * a) true	- if atleast one query containing the current query is found
+ * b) false	- if no query is found that contains the current query.	
+ *  ------------------------------------------------------------------
+ */
 function checkFordependentQueries(index)
 {
-	var expression=document.getElementById("expression_"+index).value;
-	//var queryIds=selectedQueryId.split(",");
-	//alert("index" +index);
-	//alert("queryIds ="+queryIds);
+	
+	var input=document.getElementById("expression_"+index).value;
 	var rows=document.getElementById("table1").rows.length;
 	for(var i=0;i<rows;i++)
 	{
-		var idsToCompare=document.getElementById("expression_"+i).value;
-		///alert("idsToCompare =" +idsToCompare);
-			if(i!=index && document.getElementById("displayQueryType_"+i).value!='Data' )
+		var exp=document.getElementById("expression_"+i).value;
+		if (exp == input)
+		{	
+			continue;
+		}
+		while(exp.indexOf(input) != - 1)
+		{
+			var startingPlace = exp.indexOf(input);
+			var endingPlace = startingPlace + input.length;
+			if (startingPlace > 0 && exp.substring(startingPlace-1,startingPlace) != '_')
 			{
-				//alert(" i =" +i);
-				//for(var counter=0;counter<queryIds.length;counter++)
-				//{
-					//alert(" queryIds[counter] =" +queryIds[counter]);
-					var queryIdPosition=idsToCompare.indexOf(expression);
-					if(queryIdPosition!=-1)
-					{
-						return true;
-					}
-				//}
+				//return false;
 			}
+			else if (endingPlace < exp.length && exp.substring(endingPlace,endingPlace+1)!= "_" )
+			{
+				//return false;
+			}
+			else 
+			{
+				return true;
+			}
+
+			if (exp.substring(startingPlace,exp.length).indexOf('_') != -1)
+			{
+				endingPlace = endingPlace + exp.substring(startingPlace,exp.length).indexOf('_')-1;
+			}
+			exp = exp.substring(endingPlace, exp.length);
+		}
 	}
+		
 	return false;
 }
 
@@ -686,10 +726,20 @@ function imageForCompletedCounts(index)
 	v = "images/advancequery/ic_complete05.gif";
 	x.setAttribute("src", v);	
 	//x.setAttribute("onMouseOver","Tip('Completed')");
-		x.onmouseover=function chnageToolTip(x){ Tip('Completed'); };
+	x.onmouseover=function chnageToolTip(x){ Tip('Completed'); };
 
 
 }
 
+function imageForNotRunning(index)
+{
+  var x = document.getElementById("notStarted_"+index);
+  var v = x.getAttribute("src");
+  v = "images/advancequery/ic_notrun06.gif";
+  x.setAttribute("src", v);	
+ //x.setAttribute("onMouseOver","Tip('In Progress')");
+ 	x.onmouseover=function chnageToolTip(x){ Tip('Not Run'); };
+
+}
 
 
