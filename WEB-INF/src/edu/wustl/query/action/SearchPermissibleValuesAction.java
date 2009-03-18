@@ -31,6 +31,7 @@ import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.bizlogic.SearchPermissibleValueBizlogic;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.VIProperties;
+import edu.wustl.vi.enums.VISearchAlgorithm;
 
 /**
  * @author amit_doshi
@@ -132,9 +133,10 @@ public class SearchPermissibleValuesAction extends Action
 			String[] vocabDetail = allTrgVocabs.nextToken().split("##");
 			String vocabURN = vocabDetail[0], vocabDisName = vocabDetail[1];
 			html.append(bizLogic.getRootVocabularyHTMLForSearch("srh_" + vocabURN, vocabDisName));
-			//TODO: Pass the flag value as true for finding the exact match. 
+			//TODO: Pass the actual enum value for the selected search algorithm.
+			//Change the VISearchAlgorithm.ANY_WORD to the value of the selected algorithm.
 			List<IConcept> conceptList = bizLogic.searchConcept(searchTerm, vocabURN,
-					VIProperties.maxToReturnFromSearch,false);
+					VIProperties.maxToReturnFromSearch,VISearchAlgorithm.ANY_WORD);
 			/**
 			 * to maintain the order of search results to show on UI
 			 */

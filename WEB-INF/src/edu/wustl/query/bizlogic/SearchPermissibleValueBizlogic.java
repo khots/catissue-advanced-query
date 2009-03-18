@@ -27,6 +27,7 @@ import edu.wustl.common.vocab.utility.VIError;
 import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.VIProperties;
+import edu.wustl.vi.enums.VISearchAlgorithm;
 
 
 /**
@@ -188,17 +189,21 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @return
 	 * @throws VocabularyException
 	 */
-	public List<IConcept> searchConcept(String term, String vocabURN,int maxToReturn,boolean findExactMatch)
+	public List<IConcept> searchConcept(String term, String vocabURN,int maxToReturn,VISearchAlgorithm searchAloAlgorithm)
 			throws VocabularyException
 	{
 		IVocabulary vocabulary = vocabularyManager.getVocabulary(vocabURN);
-		String searchAlgorithm = VIProperties.searchAlgorithm;
-		if(findExactMatch)
+		
+		if(searchAloAlgorithm.equals(VISearchAlgorithm.EXACT_PHRASE))
 		{
+			if(!term.startsWith("\"") || !term.endsWith("\""))
+			{
+				term = term.replace("\"", "");
+			}
 			term = "\"" + term + "\"";
-			searchAlgorithm = "LuceneQuery";
 		}
-		return vocabulary.searchConcept(term, searchAlgorithm, maxToReturn);
+		
+		return vocabulary.searchConcept(term,searchAloAlgorithm.getAlgorithm(), maxToReturn);
 
 	}
 	
