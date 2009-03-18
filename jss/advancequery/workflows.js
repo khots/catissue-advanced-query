@@ -414,7 +414,7 @@ function  reSetDropDowns(queryTitle)
 function deleteWorkflowItem(index)
 {
 	var url='DeleteQueryPopup.do?index='+index;
-	pvwindow=dhtmlmodal.open('Delete Query', 'iframe', url,'Delete Query', 'width=400px,height=120px,center=1,resize=1,scrolling=0');
+	pvwindow=dhtmlmodal.open('Delete Query1', 'iframe', url,'Delete Query', 'width=400px,height=120px,center=1,resize=1,scrolling=0');
 
 }
 
@@ -480,7 +480,7 @@ function deleteQuery(index)
 		}
 		else
 		{
-			pvwindow1=dhtmlmodal.open('Delete Query', 'iframe', './pages/advancequery/content/search/querysuite/depentQueryPopup.jsp','Delete Query', 'width=400px,height=120px,center=1,resize=1,scrolling=0');
+			pvwindow1=dhtmlmodal.open('Delete Query2', 'iframe', './pages/advancequery/content/search/querysuite/depentQueryPopup.jsp','Delete Query', 'width=400px,height=120px,center=1,resize=1,scrolling=0');
 		}
 }
 function setCheckboxCount()
