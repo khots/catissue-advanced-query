@@ -28,16 +28,16 @@ function MM_preloadImages() { //v3.0
     if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
 }
 
-function test(title)
+function execute(title)
 {
-	 var t =	escape(title);
+	var t =	escape(title);
 	executeGetCountQuery(escape(t),0);
 }
 
 function showPopUp(pageOf)
 {
 	var url='QueryAction.do?pageOf='+pageOf+'&queryId=queryId&queryTitle=queryTitle&queryType=queryType';
-	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select queries', 'width=930px,height=400px,center=1,resize=1,scrolling=1');
+	pvwindow=dhtmlmodal.open('Select queries', 'iframe', url,'Select Queries', 'width=930px,height=400px,center=1,resize=1,scrolling=1');
 }
 
 function updateUI()
@@ -251,12 +251,12 @@ function cancelExecuteQuery(response)
 }
 function removeCountResults1(queryIndex)
 {
-		var lableObject=document.getElementById("label_"+queryIndex);
-		lableObject.innerHTML="";
+	var lableObject=document.getElementById("label_"+queryIndex);
+	lableObject.innerHTML="";
 }
 function showResetCountPopup()
 {
-	var selectedProject=document.getElementById('selectedProject');
+	/*var selectedProject=document.getElementById('selectedProject');
 	var currentProject=document.getElementById('selectedProject').value;
 	if(previousProject!='-1' && previousProject!=currentProject)
 	{
@@ -268,7 +268,9 @@ function showResetCountPopup()
 			'width=400px,height=150px,center=1,resize=1,scrolling=1');
 		}
 	}
-	previousProject=currentProject;
+	previousProject=currentProject;*/
+	onProjectChange();
+
 }
 function isQueryExecuted()
 {
@@ -504,7 +506,8 @@ function executeGetCountQuery(queryTitle,executionLogId)
 			for(var count = 0; count < numOfRows; count++)
 			{
 				var title=document.getElementById("identifier_"+count);
-				if(title.value==queryTitle)
+				var type=document.getElementById("displayQueryType_"+count).value;
+				if(title.value==queryTitle&&type=="Count")
 				{
 							var object=title.parentNode;
 							var tdChildCollection=object.getElementsByTagName('input');
@@ -559,7 +562,9 @@ function responseHandler(response)
 				{
 					
 					var title=document.getElementById("identifier_"+count);
-					if(title.value==queryTitle)
+					var type=document.getElementById("displayQueryType_"+count);
+
+					if(title.value==queryTitle&&type=="Count")
 					{
 						var object=title.parentNode;
 						var tdChildCollection=object.getElementsByTagName('input');
@@ -779,17 +784,17 @@ function workflowResponseHandler(response)
 
 		  var jsonResponse = eval('('+ response+')');
           var hasValue = false;
-          if(jsonResponse.executionQueryResults!=null)
+          if(jsonResponse.result.executionQueryResults!=null)
           {
-             var num = jsonResponse.executionQueryResults.length; 
-		
+             var num = jsonResponse.result.executionQueryResults.length; 
+				
 				for(var i=0;i<num;i++)
 				{
-					 var queryId = jsonResponse.executionQueryResults[i].queryId;
-					 var queryResult = jsonResponse.executionQueryResults[i].queryResult;
-					 var status = jsonResponse.executionQueryResults[i].status;
-					 var executionLogId = jsonResponse.executionQueryResults[i].executionLogId;
-
+					 var queryId = jsonResponse.result.executionQueryResults[i].queryId;
+					 var queryResult = jsonResponse.result.executionQueryResults[i].queryResult;
+					 var status = jsonResponse.result.executionQueryResults[i].status;
+					 var executionLogId = jsonResponse.result.executionQueryResults[i].executionLogId;
+					
 						if(queryResult!=-1)
 						{
 							var identifier=document.getElementById("queryIdForRow_"+queryId);
@@ -811,7 +816,7 @@ function workflowResponseHandler(response)
 								  // setCountDropDown=false;
 								  //setDropDowns(qTitle);
 								} */
-								if( queryResult>0)
+								if( queryResult>0&&jsonResponse.result.projectId==document.getElementById('selectedProject').value)
 								{
 									setDropDowns(qTitle);
 									//setCountDropDown=true;
@@ -824,7 +829,8 @@ function workflowResponseHandler(response)
 	
 							}
 
-							if(document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
+							if(document.getElementById("cancelajaxcall_"+queryIndex).value=='false'&&
+								jsonResponse.result.projectId==document.getElementById('selectedProject').value)
 							{
 								var lableObject=document.getElementById("label_"+queryIndex);
 								if(lableObject!=null)
@@ -835,24 +841,26 @@ function workflowResponseHandler(response)
 							}
 								
 						}
-						if((document.getElementById("cancel_"+queryIndex)==null)&&(document.getElementById("cancelajaxcall_"+queryIndex).value=='false'))
+						if((document.getElementById("cancel_"+queryIndex)==null)&&(document.getElementById("cancelajaxcall_"+queryIndex).value=='false')&&jsonResponse.result.projectId==document.getElementById('selectedProject').value&&status!="Completed"&&status!="Cancelled"&&status!="Query Failed")
 						{
-							changeLinkToCancel(queryId,executionLogId);
+								changeLinkToCancel(queryId,executionLogId);
 						}
-					
-						if(status!="Completed"&&status!="Cancelled"&&status!="Query Failed"&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
+
+
+						if(status!="Completed"&&status!="Cancelled"&&status!="Query Failed"&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false'
+							&& jsonResponse.result.projectId==document.getElementById('selectedProject').value)
 						{
 							
 							workflowExecuteGetCountQuery(queryId,executionLogId);
 						}
 						
-						if((status=="Completed"||status=="Cancelled"||status=="Query Failed"))
+						if((status=="Completed"||status=="Cancelled"||status=="Query Failed")
+							&&jsonResponse.result.projectId==document.getElementById('selectedProject').value)
 						{
 							changeExecuteLinkToExecute(queryId,0);
 		
 						}
 						
-						//workflowExecuteGetCountQuery(queryId,executionLogId);
 					}
           } 
 
@@ -874,6 +882,222 @@ function getPatientdata()
 	document.forms[0].action="SaveWorkflow.do?submittedFor=ForwardTo&nextPageOf=queryWizard";
 	document.forms[0].submit();
 }
+
+// added for showing counts on changing project
+function onProjectChange()
+{
+	//document.getElementById("cancelajaxcall_"+index).value='true';
+	 initUI();
+	setIsDoneOnWorkflowNameChange();
+	if(document.getElementById("isdone").value=='false')
+	{
+		saveWorkflow();
+	}
+	else
+	{
+		getCountsForChangedProject();
+	}
+}
+
+function saveWorkflow()
+{
+	
+		var rows=document.getElementById("table1").rows.length;
+		var operators="";
+		var workflowName=document.getElementById("name").value;
+		var operands="";
+		var workflowName=document.getElementById("name").value;
+		var identifier="";
+		var displayQueryTitle="";
+				var expression="";
+		for(i=0;i<rows;i++)
+		{
+			operands=operands+document.getElementById("operands_"+i).value+",";
+			operators=operators+document.getElementById("operators_"+i).value+",";
+			displayQueryTitle=displayQueryTitle+document.getElementById("displayQueryTitle_"+i).value+",";
+			expression=expression+document.getElementById("expression_"+i).value+",";
+			var title=document.getElementById("identifier_"+i);
+			var object=title.parentNode;
+			var tdChildCollection=object.getElementsByTagName('input');
+			var queryId=tdChildCollection[2].id;
+			identifier=identifier+document.getElementById(queryId).value+",";
+		}
+		var url="SaveWorkflowAjaxHandler.do?operands="+operands+"&operators="+operators+"&workflowName="+workflowName+"&displayQueryTitle="+displayQueryTitle+"&workflowId="+document.getElementById("id").value+"&identifier="+identifier+"&expression="+ encodeURIComponent(expression)+"&excuteType=workflow";
+
+		var request=newXMLHTTPReq();
+		if(request == null)
+		{
+			alert ("Your browser does not support AJAX!");
+			return;
+		}
+		var handlerFunction = getReadyStateHandler(request,projectChangeHandler,true); 
+		request.onreadystatechange = handlerFunction; 
+		request.open("POST",url,true);    
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+		request.send("");
+}
+
+function projectChangeHandler(response)
+{
+	var jsonResponse = eval('('+ response+')');
+    var hasValue = false;
+
+	 if(jsonResponse.errormessage!=null)
+	 {
+		   document.getElementById("errormessage").innerHTML=jsonResponse.errormessage;
+	 }
+
+	//set workflow id 
+	 if(jsonResponse.workflowId!="")
+     {
+		 document.getElementById("id").value=jsonResponse.workflowId;
+		 document.getElementById("operation").value="edit";
+
+	 }
+	 if((jsonResponse.workflowId!=null||jsonResponse.workflowId!="")&&(jsonResponse.errormessage==null||
+		jsonResponse.errormessage==""))
+	{
+		document.getElementById("isdone").value=true;
+	   
+	}
+
+
+	//set the name identifier mapping 
+	if(jsonResponse.executionQueryResults!=null)
+	  {
+		 var num = jsonResponse.executionQueryResults.length; 
+			for(var i=0;i<num;i++)
+			{
+				 var queryTitle = jsonResponse.executionQueryResults[i].queryTitle;
+
+
+				//var nameIdentifier=document.getElementById("table1").rows;
+					var numOfRows =document.getElementById("table1").rows.length;
+					for(var count = 0; count < numOfRows; count++)
+					{
+						
+						var title=document.getElementById("identifier_"+count);
+						if(title.value==queryTitle)
+						{
+							var object=title.parentNode;
+							var tdChildCollection=object.getElementsByTagName('input');
+							var queryId=tdChildCollection[2].id;
+							document.getElementById(queryId).value=jsonResponse.executionQueryResults[i].queryId;
+							document.getElementById(queryId).id="queryIdForRow_"+jsonResponse.executionQueryResults[i].queryId;
+						
+						}
+					}
+
+			
+					if((jsonResponse.workflowId!=null||jsonResponse.workflowId!="")&&(jsonResponse.errormessage==null||
+						jsonResponse.errormessage==""))
+					{
+						 getCountsForChangedProject();
+					}
+
+			}
+	   }
+
+}
+
+function  getCountsForChangedProject()
+{
+	var projectId=document.getElementById("selectedProject").value;
+
+	var url="ProjectChangeAjaxHandler.do?workflowId="+document.getElementById("id").value+"&selectedProject="+projectId;
+
+	var request=newXMLHTTPReq();
+	if(request == null)
+	{
+		alert ("Your browser does not support AJAX!");
+		return;
+	}
+	var handlerFunction = getReadyStateHandler(request,getCountsForChangedProjectResponseHandler,true); 
+	request.onreadystatechange = handlerFunction; 
+	request.open("POST",url,true);    
+	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+	request.send("");
+
+}
+function getCountsForChangedProjectResponseHandler(response)
+{
+	  var jsonResponse = eval('('+ response+')');
+	  removeAllCounts();
+	   if(jsonResponse.executionQueryResults!=null)
+       {
+		    var num = jsonResponse.executionQueryResults.length; 
+		
+				for(var i=0;i<num;i++)
+				{
+					var queryId = jsonResponse.executionQueryResults[i].queryId;
+					var queryResult = jsonResponse.executionQueryResults[i].queryResult;
+					var status = jsonResponse.executionQueryResults[i].status;
+					var executionLogId = jsonResponse.executionQueryResults[i].executionLogId;
+					var identifier=document.getElementById("queryIdForRow_"+queryId);
+					if(identifier!=null&&identifier!=undefined)
+					{
+						var object=identifier.parentNode;
+
+						var tdChildCollection=object.getElementsByTagName('input');
+						var qTitle = tdChildCollection[1].value;
+						var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
+						var selectedquery=selectedqueryId.split("_");
+						queryIndex=selectedquery[1];
+						//removeCountResults1(queryIndex);
+						if(executionLogId!="0" && executionLogId!="")
+						{
+							document.getElementById("cancelajaxcall_"+queryIndex).value='false';
+							workflowExecuteGetCountQuery(queryId,executionLogId);
+						}
+					}
+				}
+
+	   }
+		  
+}
+function removeAllCounts()
+{
+	var rows=document.getElementById("table1").rows.length;
+	for(var i=0;i<rows;i++)
+	{
+
+		var lableObject=document.getElementById("label_"+i);
+		if(lableObject!=null && lableObject!= undefined)
+		lableObject.innerHTML="";
+	}
+}
+function initUI()
+{
+	var rows=document.getElementById("table1").rows.length;
+	for(var i=0;i<rows;i++)
+	{
+		changeCancelLinkExecute(i);
+
+	}
+	clearSelBoxList();
+}
+function clearSelBoxList()
+{	
+	var dropDowns= document.getElementsByTagName("select");
+	for(var i=0;i<dropDowns.length;i++)
+	{
+		
+	   if(dropDowns[i].name=="countQueryDropDown")
+	   {
+
+		if(dropDowns[i] != null)
+		 {
+			while(dropDowns[i].length > 0)
+			 {
+				dropDowns[i].remove(dropDowns[i].length - 1);
+			  }
+			 dropDowns[i].disabled=true;
+		  }
+	   }
+	}
+}
+
+//ends here project change count
 //-->
 </script>
 <script type="text/javascript">
@@ -1163,7 +1387,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 										
 										<logic:notEqual name="query_type_data" value="${qtype}">
                                         <td valign="top" width="100">
-											<html:link styleId="execute_${queryIndex}" href="#" styleClass="bluelink" onclick="javascript:test('${workflowForm.displayQueryTitle[queryIndex]}')"
+											<html:link styleId="execute_${queryIndex}" href="#" styleClass="bluelink" onclick="javascript:execute('${workflowForm.displayQueryTitle[queryIndex]}')"
 											>
 												Execute
 											</html:link>
