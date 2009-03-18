@@ -66,7 +66,7 @@ function closePopup()
 					}
 					else
 					{
-						alert("Query with title "+(document.getElementById("queryTitleControl_"+count).value)+" already in present in workflow");
+						alert("Query with title "+(document.getElementById("queryTitleControl_"+count).value)+" is already present in workflow");
 					}
 				}	
 			}
