@@ -72,7 +72,7 @@ public class WorkflowAction extends Action
 		{
 			request.setAttribute(Constants.WORKFLOW_ID,  request.getAttribute(Constants.WORKFLOW_ID));
 		}
-
+		//request.setAttribute(Constants.CREATEDBY,  ((SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA)).getUserId());
 		return mapping.findForward(Constants.SUCCESS);
 	}
 
