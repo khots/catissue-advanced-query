@@ -146,11 +146,16 @@ public class ValidateQueryBizLogic
 		HttpSession session = request.getSession();
 		AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory
 				.configureDefaultAbstractUIQueryManager(ValidateQueryBizLogic.class, request, query);
-		queryUIManager.updateQueryForValidation();
+		
+		//session.setAttribute("TEMP_QUERY", (IQuery)queryUIManager.getAbstractQuery().getQuery());
 
 		if (((Query) query).getType().equals(QueryType.GET_DATA.type))
 		{
 			Variables.queryGeneratorClassName = "edu.wustl.common.query.impl.PassTwoXQueryGenerator";
+		}
+		else
+		{
+			queryUIManager.updateQueryForValidation();
 		}
 		IQueryGenerator queryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
 		String selectSql = null;
@@ -174,7 +179,7 @@ public class ValidateQueryBizLogic
 		session.setAttribute(Constants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
 		Map<String, IOutputTerm> outputTermsColumns = queryGenerator.getOutputTermsColumns();
 
-		QueryDetails queryDetailsObj = new QueryDetails(session);
+		
 		session.setAttribute(Constants.OUTPUT_TERMS_COLUMNS, outputTermsColumns);
 		session.setAttribute(Constants.SAVE_GENERATED_SQL, selectSql);
 		List<OutputTreeDataNode> rootOutputTreeNodeList = queryGenerator
@@ -183,11 +188,14 @@ public class ValidateQueryBizLogic
 		session.setAttribute(Constants.NO_OF_TREES, Long.valueOf(rootOutputTreeNodeList.size()));
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
 				.getAllChildrenNodes(rootOutputTreeNodeList);
-		queryDetailsObj.setUniqueIdNodesMap(uniqueIdNodesMap);
+		
 		//This method will check if main objects for all the dependant objects are present in query or not.
-		Map<EntityInterface, List<EntityInterface>> mainEntityMap = QueryCSMUtil
-				.setMainObjectErrorMessage(query, session, queryDetailsObj);
+		
 		session.setAttribute(Constants.ID_NODES_MAP, uniqueIdNodesMap);
+		QueryDetails queryDetailsObj = new QueryDetails(session);
+		queryDetailsObj.setUniqueIdNodesMap(uniqueIdNodesMap);
+		Map<EntityInterface, List<EntityInterface>> mainEntityMap = QueryCSMUtil
+		.setMainObjectErrorMessage(query, session, queryDetailsObj);
 		return mainEntityMap;
 	}
 
