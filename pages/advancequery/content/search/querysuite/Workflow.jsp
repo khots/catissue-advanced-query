@@ -500,11 +500,11 @@ function executeGetCountQuery(queryTitle,executionLogId)
 	}
 	else
 	{
-				
 		//var nameIdentifier=document.getElementsByName("identifier");
 		var numOfRows =document.getElementById("table1").rows.length;
 			for(var count = 0; count < numOfRows; count++)
 			{
+
 				var title=document.getElementById("identifier_"+count);
 				var type=document.getElementById("displayQueryType_"+count).value;
 				if(title.value==queryTitle&&type=="Count")
@@ -562,8 +562,7 @@ function responseHandler(response)
 				{
 					
 					var title=document.getElementById("identifier_"+count);
-					var type=document.getElementById("displayQueryType_"+count);
-
+					var type=document.getElementById("displayQueryType_"+count).value;
 					if(title.value==queryTitle&&type=="Count")
 					{
 						var object=title.parentNode;
