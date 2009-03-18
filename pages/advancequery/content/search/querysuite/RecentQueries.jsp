@@ -89,10 +89,10 @@ function responseHandler(response)
 			  <tr>
 			  <td><table width="100%" border="0"  cellspacing="1" cellpadding="4" >
 		              <tr class="td_bgcolor_grey">
-                <td width="55%"  height='25' valign="middle" class="grid_header_text">Title</td>
+                <td width="55%"  height='25' valign="middle" class="grid_header_text">Query Title</td>
                 <td  width="15%" valign="middle" class="grid_header_text">Status </td>
                 <td   width="10%" valign="middle" class="grid_header_text">Result</td>
-                <td   width="20%" valign="middle" class="grid_header_text">Date</td>             	 
+                <td   width="20%" valign="middle" class="grid_header_text">Creation Date</td>             	 
 				
 					<tbody id="table1">
 					<c:forEach var="recentQueriesBean" items="${requestScope.recentQueriesBeanList}">
