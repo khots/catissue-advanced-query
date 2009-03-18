@@ -1,0 +1,10 @@
+The search text might contain a special character.
+
+Try one of the following options:
+	- Check if your search text has any of the following special characters:
+	  # @ ! ~ $ % ^ & * ( ) [ ] { } - _ + = / \ , ' : ; | ? `, and so on.
+	  If any of the special character is there use one of the following option:
+	  1. Delete the special character.
+	  2. If you typed 'Glucose^' or 'Glucose!' type 'Glucose^ 75g' or 'Glucose'. It means if your search text has 'any word followed by special character' then try using 'any word followed by special character followed by any word'.
+	  3. Your search text should not start with the special character. For example, '@Glucose' is invalid search text.
+	  4. Avoid using '[',']','(' and ')' in search text.
