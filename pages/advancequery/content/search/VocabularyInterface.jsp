@@ -617,7 +617,7 @@ function restoreDefault()
 	document.getElementById("divForSearchingMode").style.display = 'none';
 	document.getElementById("divForSearchingMode").innerHTML="";
 	document.getElementById("searchtextfield").value="";
-	document.getElementById("findExactMatch").checked=false;
+	document.getElementById("findAnyWord").checked=true;
 	
 	label.innerHTML="";
 	pervVocabCheckboxId="vocab_"+'<%=srcVocabURN%>';
