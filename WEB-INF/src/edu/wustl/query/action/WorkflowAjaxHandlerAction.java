@@ -244,8 +244,15 @@ public class WorkflowAjaxHandlerAction extends Action
                         }
                     }
                     response.setContentType(Constants.CONTENT_TYPE_TEXT);
-                    writer.write(new JSONObject().put("executionQueryResults",
-                            executionQueryResults).toString());
+                    
+                    JSONObject resultObject = null;
+                    resultObject = new JSONObject();
+                    resultObject.put("executionQueryResults", executionQueryResults);
+                    resultObject.put("projectId", request.getParameter(Constants.SELECTED_PROJECT));
+                    writer.write(new JSONObject().put("result", resultObject).toString());
+                    
+//                    writer.write(new JSONObject().put("executionQueryResults",
+//                            executionQueryResults).toString());
 
                 }
             }
