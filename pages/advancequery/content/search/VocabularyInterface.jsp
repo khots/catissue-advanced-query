@@ -78,11 +78,6 @@ function addPermissibleValuesToList()
 		
 	}
 	}
-	/*if(selectedPvs.length>0) //Check to enable 'OK'  button
-	{
-		//In each case ok button should be enabled because Requirement has changed, user  should able to add any entity without  limit
-		document.getElementById("deactivateDiv").innerHTML="<a href='javascript:addPvsToCondition();'><img id='okImage' src='images/advancequery/b_ok.gif' border='0' alt='OK' width='44' height='23'></a>"
-	}*/
 }
 // method is used to create the rows in the talbe
 function createRows(vocabURN,selectedPvsCheckedBoxId,conceptDetail)
@@ -177,17 +172,6 @@ function deleteSelectedPvsRow()
 	}
 		deleteFromArray(checkedObjtodelete,selectedPvs);
 		selectedPvs=removeElementsFromArray(selectedPvs, isNullOrUndefined);
-		/* In each case ok button should be enabled because Requirement has changed, user  should able to add any entity without  limit
-		if(selectedPvs.length==0)
-			{
-				document.getElementById("deactivateDiv").innerHTML="<a href='javascript:doNothing();'><img id='okImage' src='images/advancequery/b_ok_inactive.gif' border='0' alt='OK' width='44' height='23'></a>"
-			}
-		if(parent.conceptCodes.length >0) // VI open in Edit Mode then 'OK' Button should be enabled.
-		{
-			document.getElementById("deactivateDiv").innerHTML="<a href='javascript:addPvsToCondition();'><img id='okImage' src='images/advancequery/b_ok.gif' border='0' alt='OK' width='44' height='23'></a>";
-		}*/
-		
-		
 }
 //method is used to delete the rows from the table
 function deleteRows(rowObjArray)
@@ -214,10 +198,10 @@ function addPvsToCondition()
 				var selectedIdFromList=document.getElementById(selectedPvs[k]).value;
 				var selectedIdFromListWithoutCode=selectedIdFromList.substring(selectedIdFromList.indexOf(":")+1);
 				//require for UI javascript and set the values to parent window
-				pvNameList=pvNameList+selectedIdFromListWithoutCode.trim()+"#";
-				pvConceptCodeList=pvConceptCodeList+selectedPvs[k]+"#";
+				pvNameList=pvNameList+selectedIdFromListWithoutCode.trim()+"D#N";
+				pvConceptCodeList=pvConceptCodeList+selectedPvs[k]+"D#C";
 				//required to store in session
-				pvNameListWithCode=pvNameListWithCode+document.getElementById(selectedPvs[k]).value+"#";
+				pvNameListWithCode=pvNameListWithCode+document.getElementById(selectedPvs[k]).value+"D#C";
 			}					
 		}catch(e)
 		{}
@@ -373,10 +357,11 @@ function getCheckedBoxId(checkedBoxId)
 		selectedPvsCheckedBoxIdArray[selectedPvsCheckedBox]=checkedBoxId;
 		selectedPvsCheckedBox++;
 	}
-	else if( !document.getElementById(checkedBoxId).checked)
+	else if(document.getElementById(checkedBoxId).checked==0)
 	{
 		checkedBoxId=checkedBoxId.replace("srh_","");//if ids for search result
 		deleteValueFromArray(checkedBoxId,selectedPvsCheckedBoxIdArray);
+		
 	}
 }
 
@@ -433,13 +418,15 @@ function checkallAndAddToArray(rootCheckedBoxId)
 /* to unchecked all checkboxes and delete values from array */
 function uncheckAllAndDeleteFromArray(rootCheckedBoxId)
 {
+
 		void(d2=document);
 		void(e2=d2.getElementsByName(rootCheckedBoxId));
 		for(var i=0;i<e2.length;i++)
 		{
 			void(e2[i].checked=0)
-			deleteValueFromArray(e2[i].id,selectedPvsCheckedBoxIdArray)
+			//deleteValueFromArray(e2[i].id,selectedPvsCheckedBoxIdArray); Changes regarding Bug Fixed :11810
 		}
+		selectedPvsCheckedBoxIdArray=new Array(); //delete all selected PVs by assignin new array
 }
 	
 function checkedUncheckedAllPvs(vocabName)
@@ -521,7 +508,6 @@ function serachForTermInVocab(operation)
 	
 function getSearchTermResult(searchRequest)
  {
-	
 	if(searchRequest.readyState == 4)  
 	{	  		
 		if(searchRequest.status == 200)
@@ -560,6 +546,7 @@ function getSearchTermResult(searchRequest)
 		}
 	}
 };
+/* this method returns the selected criteria for search*/
 function getSelectedSearchCriteria()
 {
 	var searchCriteria=document.getElementsByName("searchCriteria");
@@ -574,9 +561,9 @@ function getSelectedSearchCriteria()
 			}
 	return criteria;
 }
+/* this method will be used in case of multiple vocabulary*/
 function isVocabSelected(targetVocabsForSearchTerm)
 {
-	
 	if(targetVocabsForSearchTerm.length>0)
 	{
 		return true;
@@ -600,7 +587,6 @@ function restoreDefaultVocab()
 			var selectedCheckedBoxVocabDivID="main_div_"+checkBoxId;
 			document.getElementById(selectedCheckedBoxVocabDivID).style.display = 'none';
 			getMappingsOfConcepts(checkBoxId,'<%=srcVocabURN%>');
-			
 		}
 		else
 		{
@@ -618,7 +604,6 @@ function restoreDefault()
 	document.getElementById("divForSearchingMode").innerHTML="";
 	document.getElementById("searchtextfield").value="";
 	document.getElementById("findAnyWord").checked=true;
-	
 	label.innerHTML="";
 	pervVocabCheckboxId="vocab_"+'<%=srcVocabURN%>';
 	<%if(sourceVocabMessage!=null)
@@ -626,7 +611,6 @@ function restoreDefault()
 		//set the messgage if concept code greater then configured value
 		label.innerHTML='<%=sourceVocabMessage%>';
 	<%}%>
-	
 	var targetVocabsForMappingMode="";
 	void(d=document);
 	void(vocabCheckboxes=d.getElementsByName("vocabNameAndVersionCheckbox"));
@@ -659,7 +643,7 @@ function restoreDefault()
 	numberOfPvs=0;
 	set_mode="Mapping";
 };
-
+/*this method is used when MED Entity open in edit mode from Edit Query*/
 function editSelectedPV()
 {
 	label=document.getElementById("searhLabel");
@@ -668,7 +652,6 @@ function editSelectedPV()
 		//set the messgage if concept code greater then configured value
 		label.innerHTML='<%=sourceVocabMessage%>';
 	<%}%>
-	
 	/* if the VI pop is opened in edit mode*/
 	var conceptCodesArray=parent.conceptCodes;
 	for(k=0;k<conceptCodesArray.length;k++)
@@ -684,13 +667,6 @@ function editSelectedPV()
 		document.getElementById("vocab_"+vocabURN).checked=true;
 		pervVocabCheckboxId="vocab_"+vocabURN;
 	}
-	//need to enabled the ok button
-	/*if(selectedPvs.length>0) //Check to enable 'OK'  button
-	{
-		// In each case ok button should be enabled because Requirement has changed, user  should able to add any entity without  limit
-			document.getElementById("deactivateDiv").innerHTML="<a href='javascript:addPvsToCondition();'><img id='okImage' src='images/advancequery/b_ok.gif' border='0' alt='OK' width='44' height='23'></a>";
-	}*/
-	
 };
 
 /*  To support different window resolution */
