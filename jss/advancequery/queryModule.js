@@ -1966,8 +1966,8 @@ var jsReady = false;
 			var componentIdOfID=compIdOfID + "_textBox";
 			var listboxName = document.getElementById(componentId);
 			//set the concept code to the ID attribute
-			var permValuesWithCode=pvConceptCodeList.split('#');
-			var permValuesNames = pvNameList.split('#');
+			var permValuesWithCode=pvConceptCodeList.split("D#C");
+			var permValuesNames = pvNameList.split("D#N");
 			var medConceptCodeList=new Array();
 			var j=0;
 			var pvValueList="";
