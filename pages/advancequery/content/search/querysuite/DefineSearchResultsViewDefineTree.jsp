@@ -12,7 +12,7 @@
 <body>
  <input type="hidden" name="pageOf" id="pageOf" value="DefineView">
  <input type="hidden" name="isWorkflow" id="isWorkflow" value="">
-
+ <input type="hidden" name="requestFrom" value="">
   <table border="0"  height="100%" width="100%"  cellpadding="1" cellspacing="3" valign="top">
 	
 <tr  valign="top">
@@ -47,7 +47,7 @@
 	<td colspan="2" height="40"><table  border="0"><tr>
 		<td  align="left" style="padding-left:2px;"><a href="javascript:validateQuery('saveDefineView');"><img alt="Save" src="images/advancequery/b_save.gif"       
 			border="0" /></a></td>
-        <td align="left" style="padding-left:5px;"><a href="javascript:showWorkFlowWizard();"><img border="0" alt="Back To Workflow" src="images/advancequery/b_back_to_workflow.gif"   
+        <td id="BackToWorkflowTd" align="left" style="padding-left:5px;"><a href="javascript:showWorkFlowWizard();"><img border="0" alt="Back To Workflow" src="images/advancequery/b_back_to_workflow.gif"   
 		     /></a></td></tr></table></td>
 			 <td align="right">
 			 <table border="0" cellpadding="0" cellspacing="0"><tr>
@@ -84,6 +84,7 @@
     document.getElementById("isWorkflow").value="true";
 	document.getElementById("projectList").style.display="none";
  }
+ document.getElementById("BackToWorkflowTd").innerHTML = '<a href="javascript:cancel_GPD_query()"><img  alt="Cancel" src="images/advancequery/b_cancel.gif" border="0" /></a>';
  document.getElementById("buttontr").style.display="none";  
  
  </script>
