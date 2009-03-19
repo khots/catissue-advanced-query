@@ -97,21 +97,21 @@ else
 						</td>
 					</tr>
 					<tr >
-					    <td>&nbsp;</td>
-						<td  align="left" valign="top" colspan="3" class="small_txt_grey"><bean:message key="query.chooseCategoryLable"/></font></td>
+					    <td></td>
+						<td  align="left" valign="top" colspan="3" class="small_txt_grey" height="20"><bean:message key="query.chooseCategoryLable"/></font></td>
 					</tr>
 					<tr id="collapsableHeader" valign="top"  width="97%" height="20">
-						<td valign="top"   ></td>
+						<td ></td>
 						<td id="advancedSearchHeaderTd" valign="top" style="border-top: 1px solid #cccccc; border-left:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" height="29">
 							<img src="images/advancequery/t_adv_option.gif" />									
 						</td>
 						<th id="imageContainer" valign="middle" align="right" style="border-top: 1px solid #cccccc; border-right:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" >
 							<a id="image" onClick="expand()" style="display:block"> <img src="images/advancequery/nolines_plus.gif" /> </a>
 						</th>
-						<td  >&nbsp;</td>
+						<td  ></td>
 					</tr>
-					<tr valign="top" ><td valign="top" id="td1">&nbsp;</td>
-						<td  colspan="2"><table  border="0" class="collapsableTable" style="display:none" width="100%" cellspacing="1" cellpadding="2"  id="collapsableTable" >
+					<tr valign="top" ><td valign="top" id="td1"></td>
+						<td  colspan="2"><table  border="0" class="collapsableTable" style="display:none"  cellspacing="1" cellpadding="2"  id="collapsableTable" >
 								<tr id="class_view">
 									<td colspan="2" class="content_txt" valign="top" ><html:checkbox  property="classChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.class"/></html:checkbox></td>
 								</tr>
