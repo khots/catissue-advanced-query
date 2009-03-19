@@ -39,11 +39,16 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 <td style="padding:0 5px 10px 5px;" valign="top">
 
 <table border="0" width="100%" cellspacing="0" cellpadding="0"  id="table1"  class="login_box_bg" height="100%">
+	<tr class="table_header_query" >
+					<td colspan='3' height="26">
+					<img border='0' src="images/advancequery/t_gpd_view_results.gif">
+					</td>
+				</tr>
 <html:form method="GET" action="<%=formAction%>">
-		<tr>
+		<!--<tr>
 		<td  height="10"	></td>
-		</tr>
-		<tr >	
+		</tr>-->
+		<!--<tr >	
 			<!--<td width="33%" align="center" valign="top" background="images/advancequery/top_bg_wiz.gif">
 				<img src="images/advancequery/1_inactive.gif" /> <!-- width="118" height="25" /-->
 			<!--</td>
@@ -53,36 +58,35 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 			<td width="33%" align="center" valign="top" height="29" background="images/advancequery/top_bg_wiz.gif">
 				<img src="images/advancequery/3_active.gif" /> <!--  width="139" height="38" /-->
 			<!--</td>-->
-		<td>	<table border="0" cellpadding="0" cellspacing="0" width="100%" background="images/advancequery/top_bg_wiz.gif" height="36" ><tr>	<td width="33%" align="center" valign="top"    >
+		<!--<td>	
+		<table border="0" cellpadding="0" cellspacing="0" width="100%" background="images/advancequery/top_bg_wiz.gif" height="36" >
+		<tr>	<td width="33%" align="center" valign="top"    >
 				<img src="images/advancequery/define_filters_inactive.gif"/> <!-- width="118" height="25" /-->
-			</td>
+			<!--</td>
 			<td width="33%" align="center" valign="top">
 				<img src="images/advancequery/2_inactive.gif" /> <!-- width="199" height="38" /-->
-			</td>
+			<!--</td>
 			<td width="33%" align="center"  valign="middle" >
 				<img src="images/advancequery/3_active.gif" /> <!--  width="139" height="38" /-->
-			</td></tr>
-			</table></td>
-		</tr>
-<tr valign="top">
-		<td colspan = "2" width = "25%">
-	<table width="100%" cellpadding="0" cellspacing="0" border="0" height="30">
-
+			<!--</td></tr>
+			</table>
+		</td>
+		</tr>-->
+<tr >
+		<td colspan = "2"valign="top">
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" >
 	<tr>
-	<td style="padding-left:10px;" class = "info_msg" >
-		<div id = "exportMessageDiv" style = "display:none" >
+	<td class = "info_msg"  colspan="2" valign="middle">
+		<div id = "exportMessageDiv" style = "display:none;padding-left:10px;padding-bottom:5px;padding-top:5px" >
 			Request for data download has been submitted.	
 		</div>
-		
-	</td>
+			</td>
 </tr>
-
 <tr>
-<td style = "padding-right:10px;" width = "25%">&nbsp;</td><td align="left" style="padding-left:5px;"><a href="javascript:openPopupWindow()" class="bluelink">Export</a></td>
+<td style = "padding-right:10px;" width = "25%">&nbsp;</td><td align="left" valign="middle" style="padding-left:5px;" height="25"><a href="javascript:openPopupWindow()" class="bluelink"><img  alt="Export" src="images/advancequery/ic_excel.gif" border="0" align="absmiddle" style="padding-right:4px;"/>Export</a></td>
 </tr>
 </table>
 </td></tr>
-
 <tr  valign="top" height="90%">
 <td>
 <table border="0" cellspacing="0" cellpadding="0" height="98%" width="100%" bordercolor="red" id="table1">
@@ -138,4 +142,3 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 </tr>
 </html:form>
 </table>
-<br>
