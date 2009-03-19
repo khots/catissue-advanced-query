@@ -25,7 +25,6 @@
 
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlwindow.js"></script>
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/js/modal.js"></script>
-<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/modal.js"></script>
 </head>
 <body onunload='closeWaitPage()'>
 <script type='text/JavaScript' src='jss/advancequery/scwcalendar.js'></script>
@@ -78,7 +77,7 @@
 			<td nowrap id="workflowname">
 			&nbsp;
 				<span class="content_txt_bold"><bean:message key="workflow.name"/>:</span><span>
-				<input type="text" styleClass="textfield_undefined" class="textfield_inactive" size="50" styleId="workflowName" property="workflowName" disabled="disabled" value="<%=workflowName%>"/></span>&nbsp;&nbsp;
+				<input type="text" class="textfield_inactive" size="50" styleId="workflowName" property="workflowName" disabled="disabled" value="<%=workflowName%>"/></span>&nbsp;&nbsp;
 			</td>
 			
 			<td  >
