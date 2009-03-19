@@ -313,8 +313,10 @@ function createCheckBox(name,id,displayValue,count,disable)
 			chkbox.disabled = true;
 		}
 		chkbox.onclick=function addEvent(){
-			
+			//	alert("addEvent");
 			setCheckboxCount();
+			setSelectedCheckBoxes();
+
 		}
 
 		return chkbox;
@@ -428,6 +430,10 @@ function deleteQuery(index)
 
 		if(checkboxControl!=null && checkboxControl!=undefined)
 		{
+
+		//also remove from the array of checked chkboxes
+			//removeSelectedCheckBoxes(index);
+
 			var table=document.getElementById("table1");
 			var oldNoOfRows=document.getElementById("table1").rows.length;
 			var deleteQuery =document.getElementById('displayQueryTitle_'+index).value;
@@ -435,7 +441,9 @@ function deleteQuery(index)
 			++i;
 			for( ;i<=(oldNoOfRows-1);i++)
 			{
+
 				document.getElementById("checkbox_"+i).id="checkbox_"+(i-1);
+			
 				document.getElementById("displayQueryTitle_"+i).id="displayQueryTitle_"+(i-1);
 				//document.getElementById("queryTypeControl_"+i).id="queryTypeControl_"+(i-1);
 				document.getElementById("selectedqueryId_"+i).id="selectedqueryId_"+(i-1);
@@ -470,13 +478,18 @@ function deleteQuery(index)
 				}
 				document.getElementById("notStarted_"+i).id="notStarted_"+(i-1);
 				document.getElementById("expression_"+i).id="expression_"+(i-1);
+
+					//replace(scripts,i);
 			}
-			
+
 			table.deleteRow(index);
+			document.getElementById("isdone").value="false";
+
 		}
 		
 		reSetDropDowns(deleteQuery);
 		setCheckboxCount();
+		uncheckselectedCheckBoxes();
 		}
 		else
 		{
@@ -485,7 +498,6 @@ function deleteQuery(index)
 }
 function setCheckboxCount()
 {	
-	
 	var checkboxArray=document.getElementById("table1").rows;
 	var selectedCheckboxes=0;
 	if(checkboxArray!=null)
@@ -509,8 +521,103 @@ function setCheckboxCount()
 	{
 		disableButtons();
 	}
-	
+
 }
+/*Thhis method sets the array of checkboxes selected on UI 
+This is useful while performing ' a Minus b  ' 
+or  b Minus a ' kind of queries */
+function setSelectedCheckBoxes()
+{
+
+	var queryCount=document.getElementById("table1").rows.length;
+		for(var counter=0;counter<queryCount;counter++)
+			{
+				var checkboxControl=document.getElementById("checkbox_"+(counter));
+				if(checkboxControl.checked==true)
+				{
+						var index=scripts.indexOf(counter);
+						if(index==-1)
+						{
+							scripts.push(counter);
+						}
+				}
+				else
+				{
+					var index1=scripts.indexOf(counter);
+						if(index1!=-1)
+						{
+							scripts.splice(scripts.indexOf(counter),1); 
+						}
+
+				}
+			}
+
+	/*var chkbox=document.getElementById('checkbox_'+index);
+	if(chkbox!=null && chkbox!=undefined)
+	{
+		if(chkbox.checked)
+		{
+			scripts.push(index);
+		}
+		else
+		{
+			scripts.splice(scripts.indexOf(index),1); 
+		}
+	}*/
+
+
+}
+/*function removeSelectedCheckBoxes(index)
+{
+
+		var chkbox=document.getElementById('checkbox_'+index);
+	if(chkbox!=null && chkbox!=undefined&&chkbox.checked)
+	{
+		scripts.splice(scripts.indexOf(index),1); 
+	}
+
+
+}*/
+/*function replace(arrayName,replaceTo)
+{
+	alert("replaceTo"+(replaceTo-1));
+	var chkbox=document.getElementById('checkbox_'+(replaceTo-1));
+
+	//alert(chkbox!=null && chkbox!=undefined);
+	//add new event
+	if(chkbox!=null && chkbox!=undefined)
+	{
+		chkbox.onclick=function addEvent4(){	
+	//	alert("addEvent4");
+		alert("chkbox "+chkbox.id);
+		var selectedquery=(chkbox.id).split("_");
+	
+		var index=selectedquery[1];
+	//	alert("chkbox "+chkbox.value);
+		//alert("index" +index);
+		//alert("replaceTo "+(replaceTo-1));
+			setCheckboxCount(index);
+			setSelectedCheckBoxes(index);
+
+		}
+		if(chkbox.checked)
+		{
+		  //for(var i=0; i<arrayName.length;i++ )
+		 // {  
+		////replace if added in the array to new index
+		//alert("arrayName[i]="+arrayName[i] + "replaceTo="+replaceTo);
+			//if(arrayName[i]==replaceTo)
+			//  {
+				//alert("replacing");
+				//arrayName.splice(i,1,replaceTo-1);    
+				var replaceWith=--replaceTo;
+				arrayName.splice(scripts.indexOf(replaceTo),1,replaceWith);  ;
+			//  }
+		 // }
+		}
+	}
+
+}*/
 function enableButtons()
 {
 	var buttonStatus=document.getElementById("buttonStatus");
@@ -561,6 +668,7 @@ function setOnclickEventOnDeselect(chckCount,selected)
 	var chckbox=document.getElementById("checkbox_"+chckCount);
 		chckbox.onclick=function addEvent2(){
 			setCheckboxCount();
+			
 		}
 	//chckbox.setAttribute("onclick","javascript:setCheckboxCount("+chckCount+")");
 	if(numOfChkSelected!=2)
@@ -570,6 +678,7 @@ function setOnclickEventOnDeselect(chckCount,selected)
 	}
 
 }
+
 function changeLinkToCancel(queryId,executionLogId)
 {
 
@@ -743,3 +852,7 @@ function imageForNotRunning(index)
 }
 
 
+function addEvent3(){
+			setCheckboxCount();
+			setSelectedCheckBoxes();
+}
