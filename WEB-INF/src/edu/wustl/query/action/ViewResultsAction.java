@@ -34,7 +34,6 @@ import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.IQueryParseUtil;
 import edu.wustl.query.util.querysuite.QueryDetails;
-import edu.wustl.query.util.querysuite.ResultsViewTreeUtil;
 import edu.wustl.query.viewmanager.AbstractViewIQueryGenerator;
 import edu.wustl.query.viewmanager.ViewType;
 
@@ -88,13 +87,14 @@ public class ViewResultsAction extends Action
 		queryDetails.setCurrentSelectedObject(rootNode);
 		queryDetails.setQuery(getPatientDataQuery);
 		queryDetails.setParentChildrenMap(parentChildrenMap);
-		
+		AbstractQueryUIManager abstractQueryUIManager =
+			AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, getPatientDataQuery);
 		AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
 		.getDefaultViewIQueryGenerator();
-		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails);
+		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,abstractQueryUIManager.getAbstractQuery());
 		
 		//IQuery generatedQuery = ResultsViewTreeUtil.generateIQuery(rootNode,parentChildrenMap,rootEntity,getPatientDataQuery);
-		AbstractQueryUIManager abstractQueryUIManager =
+		abstractQueryUIManager =
 			AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
 		
 		//Get Data for generated IQuery
