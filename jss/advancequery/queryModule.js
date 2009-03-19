@@ -57,7 +57,7 @@
 					var parentId = jsonResponse.childrenNodes[i].parentId;
 					
 					//Add children to result output tree 
-	                resultTree.insertNewChild(parentId,nodeId,displayName,0,"folder.gif","folder.gif","folder.gif","");
+	                resultTree.insertNewChild(parentId,nodeId,displayName,0,"ic_small_folder.gif","ic_small_folder.gif","ic_small_folder.gif","");
 				} 
 	         }
 	    }
@@ -1872,6 +1872,15 @@ var jsReady = false;
 		  request.send(actionURL);		
 		}
 		
+	}
+	function cancel_GPD_query()
+	{
+
+		forwardTo="ShowDashboard.do";
+		document.forms[0].requestFrom.value="MyQueries"; 
+
+		document.forms[0].action = forwardTo;
+		document.forms[0].submit(); 
 	}
 	function displayValidationMessage(text)
 	{		
