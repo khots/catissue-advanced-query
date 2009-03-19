@@ -46,13 +46,18 @@
 	 <input type="hidden" name="isWorkflow" id="isWorkflow" value="">
    
  <input type="hidden" name="pageOf" id="pageOf" value="pageOfGetData">
- <table border="0" width="100%" >
+ <table cellspacing="0" cellpadding="0" border="0" width="100%" >
 	<tr><td style="padding-left:5px; padding-right:5px;">
  <table  width="100%" border="0" cellspacing="0" cellpadding="0" align="center" class="login_box_bg">
+ <tr>
+	<td class="table_header_query" height="28">
+		<img src="images/advancequery/t_get_patient_data.gif" altText="Get Patient Data"/>
+	</td>
+</tr>
  <tr><td>
   <table border="0" width="100%" cellspacing="0" cellpadding="0"  height="450" bgcolor="#ffffff">	
 	 <tr id='emptyTr'>
-	 <td height='10'>
+	 <td colspan="3" height='10'>
 	 </td>
 	 </tr>
 	 <tr style="padding-left:2px;" id="workflowname">
@@ -63,34 +68,34 @@
 			</td>
 	  </tr>
 	 <tr>	
-			<td width="33%" align="center" valign="middle" height="36"  background="images/advancequery/top_bg_wiz.gif" >
+			<td style="padding-left:92px;" width="142" align="center" valign="bottom" height="30"  background="images/advancequery/top_bg_wiz.gif" >
 				<img src="images/advancequery/define_filters_active.gif"/> <!-- width="118" height="25" /-->
 			</td>
-			<td width="33%" align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
+			<td width="185" align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
 				<img src="images/advancequery/2_inactive.gif" /> <!-- width="199" height="38" /-->
 			</td>
-			<td width="33%" align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
-				<img src="images/advancequery/3_inactive.gif" /> <!--  width="139" height="38" /-->
+			<td align="center" background="images/advancequery/top_bg_wiz.gif" valign="top">
+				&nbsp;<!--<img src="images/advancequery/3_inactive.gif" /> --><!--  width="139" height="38" /-->
 			</td>
 		</tr>
 	<tr>
 	<td colspan="3">
 	<table border="0" width="100%" cellspacing="0" cellpadding="0"  id="table1">			 
 	<tr>
-		<td>
+		<td style="padding-top:5px;">
 		<table border="0" width="100%" cellspacing="0" cellpadding="0"   id="table2" >																					
 		
 		<tr>
 			<td  valign="top" width="100%" colspan="4">
-				<table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="3" >			
+				<table border="0"  height="100%" width="100%" cellpadding="0" cellspacing="0" >			
 					<tr>
-						<td valign="bottom" width="10%" >
+						<td valign="bottom" align="left" width="10%" style="padding-left:1px; padding-right:5px;">
 						<%@ include file="/pages/advancequery/content/search/querysuite/ChooseSearchCategory.jsp" %>
 						</td>
 					
 					
 
-					<td valign="top">
+					<td valign="top" style="padding-right:5px;">
                     <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  >        
 					        <tr id="rowMsg">
 													<td id="validationMessagesSection"  class='validationMessageCss'  valign="middle">
@@ -167,14 +172,14 @@
 			</tr>
 			<tr>
 					
-					<td colspan="4">
+					<td colspan="3">
 					<table border="0" width="100%" cellspacing="0" cellpadding="0" height="40">
 					<tr valign="middle">
 					 <td width="50%" align="left" colspan="2">
 					  <table border="0" cellspacing="0" cellpadding="0"  >
 						<tr>
 							 <td style="padding-left:8px; display:none;" valign="top" ><a href="javascript:validateQuery('save');" ><img alt="Save" src="images/advancequery/b_save.gif" border="0"/></a></td>
-							 <td style="padding-left:5px;" valign="top"><a href="javascript:showWorkFlowWizard();"><img  alt="Back to Workflow" src="images/advancequery/b_back_to_workflow.gif" border="0" /></a></td>
+							 <td id="BackToWorkflowTd" style="padding-left:6px;" valign="top"><a href="javascript:showWorkFlowWizard();"><img  alt="Back to Workflow" src="images/advancequery/b_back_to_workflow.gif" border="0" /></a></td>
 						</tr>
 					 </table>
 					</td>
@@ -210,7 +215,7 @@
    else
    {
      document.getElementById("workflowname").style.display="none";
-	
+	 document.getElementById("BackToWorkflowTd").innerHTML = '<a href="javascript:cancel_GPD_query()"><img  alt="Cancel" src="images/advancequery/b_cancel.gif" border="0" /></a>';
    }
  
  </script>
