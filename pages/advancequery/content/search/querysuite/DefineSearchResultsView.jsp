@@ -10,6 +10,7 @@
 <link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTree.css">
 <meta http-equiv="Content-Language" content="en-us">
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlwindow.js"></script>
 <script src="jss/advancequery/queryModule.js"></script>
 <script type="text/javascript" src="jss/advancequery/wz_tooltip.js"></script>
 <script language="JavaScript" type="text/javascript" src="dhtml_comp/jss/dhtmXTreeCommon.js"></script>
@@ -36,6 +37,11 @@
 	<tr><td  valign="top" align="center" style="padding-left:5px; padding-right:5px;">
 
 <table border="0" width="90%" cellspacing="0" cellpadding="0"   class="login_box_bg">
+	 <tr>
+		<td class="table_header_query" height="28">
+			<img src="images/advancequery/t_get_patient_data.gif" altText="Get Patient Data"/>
+		</td>
+	</tr>
 	<tr>
 		<td>
 			<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
@@ -56,18 +62,18 @@
 						<table border="0" width="100%" cellspacing="0" cellpadding="0"   id="table2" >
 							<tr>
 								
-								<td width="33%" align="center" valign="top" background="images/advancequery/top_bg_wiz.gif">
+								<td style="padding-left:85px;" width="142" align="center" valign="top" background="images/advancequery/top_bg_wiz.gif">
 									<img src="images/advancequery/define_filters_inactive.gif" /> <!-- width="118" height="25" /-->
 								</td>
-								<td width="33%" align="center" valign="top" height="36"  background="images/advancequery/top_bg_wiz.gif">
+								<td width="185" align="center" valign="top" height="36"  background="images/advancequery/top_bg_wiz.gif">
 									<img src="images/advancequery/2_active.gif" /> <!-- width="199" height="38" /-->
 								</td>
-								<td width="33%" align="center" valign="top" background="images/advancequery/top_bg_wiz.gif">
-									<img src="images/advancequery/3_inactive.gif" /> <!--  width="139" height="38" /-->
+								<td align="center" valign="top" background="images/advancequery/top_bg_wiz.gif">
+									&nbsp;<!--<img src="images/advancequery/3_inactive.gif" /> <!--  width="139" height="38" /-->
 								</td>
 							</tr>
-							<tr valign="top"   width="100%">
-								<td colspan="3" valign="top"  width="100%">
+							<tr valign="top" >
+								<td colspan="3" valign="top" >
 									<table border="0" cellspacing="0" cellpadding="0"  valign="top" width="100%">
 									<tr valign="top">
 										<td valign="top"   width="100%">
