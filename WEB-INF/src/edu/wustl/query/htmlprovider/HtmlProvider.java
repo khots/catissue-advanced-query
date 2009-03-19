@@ -1072,7 +1072,7 @@ public class HtmlProvider
 		String componentId = generateComponentName(attributeInterface);
 		enumratedAttributeMap.put(Constants.ATTRIBUTE_INTERFACE+componentId, attributeInterface);
 		return "\n<td valign='top'><img  src=\"images/advancequery/ic_lookup.gif\" width=\"22\" height=\"20\" align='left' onclick=\"openPermissibleValuesConfigWindow('" + componentId	+ "','"+entity.getName()+"','"+componentIdOfID+"')\"" +
-				" border=\"0\"/ title='Search for concept from Vocabularies'></td>";
+				" border=\"0\"/ title='Search for concepts from Vocabularies'></td>";
 		
 	}
 	
