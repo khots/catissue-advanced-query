@@ -117,17 +117,17 @@
 			 </query>
 		</TestCase> 
 
-		 <TestCase>
+		<!-- <TestCase>
 			 <name>Find Patients over the age of 18 diagnosised Schizophrenia over last 3 years and taking Haloperidol / Risperidine / Alzapaine drugs</name>
 			 <tmtTestCaseId>6075</tmtTestCaseId>
-			  <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV>  -->
+			   <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV> 
 			 <expectedResultsCSV>TC11_Expected_Results.csv</expectedResultsCSV>
-			  <!--  <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV>  -->
+			  <!--  <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV>  
 			 		 
 			 <query type = "saved_query"
 			 	    	 id = "291">
 			 </query>
-		</TestCase> 
+		</TestCase> -->
 
 		 <TestCase>
 			 <name>Find Patients over the age of 40</name>
