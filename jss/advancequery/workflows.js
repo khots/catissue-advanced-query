@@ -523,6 +523,18 @@ function setCheckboxCount()
 	}
 
 }
+function indexOf(scripts,counter)
+{
+	var index=-1;
+	for(var i=0;i<scripts.length;i++)
+	{
+		if(scripts[i]==counter)
+		{
+			index=i;
+		}
+	}
+	return index;
+}
 /*Thhis method sets the array of checkboxes selected on UI 
 This is useful while performing ' a Minus b  ' 
 or  b Minus a ' kind of queries */
@@ -535,7 +547,7 @@ function setSelectedCheckBoxes()
 				var checkboxControl=document.getElementById("checkbox_"+(counter));
 				if(checkboxControl.checked==true)
 				{
-						var index=scripts.indexOf(counter);
+						var index=indexOf(scripts,counter);
 						if(index==-1)
 						{
 							scripts.push(counter);
@@ -543,10 +555,10 @@ function setSelectedCheckBoxes()
 				}
 				else
 				{
-					var index1=scripts.indexOf(counter);
+					var index1=indexOf(scripts,counter);
 						if(index1!=-1)
 						{
-							scripts.splice(scripts.indexOf(counter),1); 
+							scripts.splice(indexOf(scripts,counter),1); 
 						}
 
 				}
@@ -682,7 +694,6 @@ function setOnclickEventOnDeselect(chckCount,selected)
 function changeLinkToCancel(queryId,executionLogId)
 {
 
-//	alert("hi");
 	var identifier=document.getElementById("queryIdForRow_"+queryId);
 	//alert("identifier "+identifier);
 	var object=identifier.parentNode;//document.getElementById("selectedqueryId_"+queryIndex);
