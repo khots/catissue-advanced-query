@@ -196,6 +196,7 @@ public class ValidateQueryBizLogic
 		queryDetailsObj.setUniqueIdNodesMap(uniqueIdNodesMap);
 		Map<EntityInterface, List<EntityInterface>> mainEntityMap = QueryCSMUtil
 		.setMainObjectErrorMessage(query, session, queryDetailsObj);
+		session.setAttribute(Constants.MAIN_ENTITY_MAP, mainEntityMap);
 		return mainEntityMap;
 	}
 
