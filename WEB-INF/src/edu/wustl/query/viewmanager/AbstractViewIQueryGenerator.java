@@ -2,6 +2,8 @@ package edu.wustl.query.viewmanager;
 
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.QueryModuleException;
@@ -21,5 +23,14 @@ public abstract class AbstractViewIQueryGenerator
 	/**
 	 * @return
 	 */
-	public abstract IQuery createIQueryForTreeView(QueryDetails queryDetails)throws QueryModuleException;
+	public abstract IQuery createIQueryForTreeView(QueryDetails queryDetails,AbstractQuery query)throws QueryModuleException;
+	
+	/**
+	 * This method formats the output to be displayed for tree view. 
+	 * @param displayData data to be displayed.
+	 * @param rootEntity root entity.
+	 * @param query abstractQuery.
+	 * @return formatted output.
+	 */
+	public abstract StringBuffer getFormattedOutputForTreeView(StringBuffer displayData,EntityInterface rootEntity,AbstractQuery query);
 }
