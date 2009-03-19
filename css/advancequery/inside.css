@@ -428,7 +428,7 @@ html, body {
 }
 .error_msg{
 color: #FF0000;
-font-size: 11px;
+font-size: 12px;
 font-family: Arial,Verdana ,Helvetica, sans-serif;
 }
 
@@ -438,7 +438,7 @@ font-family: Arial,Verdana ,Helvetica, sans-serif;
 
 .success_msg{
 color: #009900;
-font-size: 11px;
+font-size: 12px;
 font-family: Arial,Verdana ,Helvetica, sans-serif;
 }
 
@@ -448,7 +448,7 @@ font-family: Arial,Verdana ,Helvetica, sans-serif;
 
 .info_msg{
 color: #0066FF;
-font-size: 11px;
+font-size: 12px;
 font-family: Arial,Verdana ,Helvetica, sans-serif;
 }
 
