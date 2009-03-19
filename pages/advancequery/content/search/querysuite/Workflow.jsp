@@ -15,7 +15,7 @@
 <script  src="jss/advancequery/wz_tooltip.js"></script>
 <script src="jss/ajax.js"></script>	
 <script type="text/JavaScript">
-
+var scripts=new Array();
 <%
 String qType_GetCount= (QueryType.GET_COUNT).type;
 String qType_GetData= (QueryType.GET_DATA).type;
@@ -62,11 +62,15 @@ function minusQueries()
 
 function addCQToList(operation)
 {
+	/*for(i=0;i<scripts.length;i++)
+	{
+		alert("addCQToList 1 ="+scripts[i]);
+	}*/
 	var queryIdsToAdd='';
 	var queryCount=0;
 	queryCount=document.getElementById("table1").rows.length;
 	var selectedQueryCount=0;
-	for(var counter=0;counter<queryCount;counter++)
+	/*for(var counter=0;counter<queryCount;counter++)
 	{
 		var checkboxControl=document.getElementById("checkbox_"+(counter));
 		if(checkboxControl!=null && checkboxControl!=undefined && checkboxControl.checked==true)
@@ -74,6 +78,11 @@ function addCQToList(operation)
 			queryIdsToAdd=queryIdsToAdd+","+counter;
 			selectedQueryCount=selectedQueryCount+1;
 		}
+	}*/
+	for (i=0;i<scripts.length;i++)
+	{
+		queryIdsToAdd=queryIdsToAdd+","+scripts[i] ;	
+		selectedQueryCount=selectedQueryCount+1;
 	}
 
 	if(queryIdsToAdd!=""&& selectedQueryCount==2)
@@ -97,6 +106,8 @@ function uncheckselectedCheckBoxes()
 					checkboxControl.checked=false;
 				}
 			}
+		//also delete array contents
+		scripts.splice(0,scripts.length); 
 }
 function createCQ(queryIdsToAdd,operation,queryCount)
 {
@@ -426,14 +437,14 @@ function runWorkflowResponseHandler(response)
 						}
 					}
 
-			
-					if((jsonResponse.workflowId!=null||jsonResponse.workflowId!="")&&(jsonResponse.errormessage==null||
+		
+
+			}
+			if((jsonResponse.workflowId!=null||jsonResponse.workflowId!="")&&(jsonResponse.errormessage==null||
 						jsonResponse.errormessage==""))
 					{
 						 runSavedWorkflow();
 					}
-
-			}
 	   }
 
 }
@@ -889,6 +900,8 @@ function getPatientdata()
 function onProjectChange()
 {
 	//document.getElementById("cancelajaxcall_"+index).value='true';
+	//initializeLoadingDiv();
+
 	 initUI();
 	setIsDoneOnWorkflowNameChange();
 	if(document.getElementById("isdone").value=='false')
@@ -1055,7 +1068,8 @@ function getCountsForChangedProjectResponseHandler(response)
 				}
 
 	   }
-		  
+
+		  // clearLoadingDiv();
 }
 function removeAllCounts()
 {
@@ -1077,6 +1091,19 @@ function initUI()
 
 	}
 	clearSelBoxList();
+}
+function initializeLoadingDiv()
+{
+		var loading=document.getElementById("loading");
+		document.getElementById("loading").className = "loading-visible";
+
+
+}
+function clearLoadingDiv()
+{
+		var loading=document.getElementById("loading");
+		document.getElementById("loading").className = "loading-invisible";
+
 }
 function clearSelBoxList()
 {	
@@ -1272,6 +1299,24 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 							</tr>
 						</table>
 					</td>
+						<!--<td valign="middle">
+						<table  border="0" cellspacing="0" cellpadding="0" valign="middle">
+							<tr>
+							<td>
+
+							<div id="loading" class="loading-invisible">
+								<table cellpadding="0" cellspacing="0"><tr><td>
+								<img align="absmiddle" src="images/advancequery/loading.gif" border="0" height="23px" width="80px">
+								</td>
+								</tr>
+								</table>
+							</div>
+
+							</td>
+							</tr>
+						</table>
+					</td>
+					-->
 					<td >
 						<table  border="0" cellpadding="4" cellspacing="0" align="right">
                           <tr>
@@ -1322,7 +1367,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 												
 						   					<c:set var="chkId">chk_<c:out value="${queryIndex}"/></c:set>
 						   					<html:checkbox property="chkbox" styleId="checkbox_${queryIndex}"
-											onclick="javascript:setCheckboxCount()" disabled="true"></html:checkbox>
+											onclick="javascript:addEvent3()" disabled="true"></html:checkbox>
 						   				</td>
 										</logic:equal>
 										<logic:notEqual name="query_type_data" value="${qtype}">
@@ -1330,7 +1375,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 												
 						   					<c:set var="chkId">chk_<c:out value="${queryIndex}"/></c:set>
 						   					<html:checkbox property="chkbox" styleId="checkbox_${queryIndex}"
-											onclick="javascript:setCheckboxCount()" disabled="false"></html:checkbox>
+											onclick="javascript:addEvent3()" disabled="false"></html:checkbox>
 						   				</td>
 										</logic:notEqual>
 									 <td  width="10" valign="middle" valign="top" style="padding:1px 5px 0 5px">
