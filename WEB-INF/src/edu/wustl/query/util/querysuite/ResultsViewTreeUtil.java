@@ -14,7 +14,6 @@ import edu.wustl.cab2b.client.ui.dag.ambiguityresolver.AmbiguityObject;
 import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
-import edu.wustl.cab2b.common.queryengine.Cab2bQuery;
 import edu.wustl.common.query.impl.CommonPathFinder;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
@@ -296,7 +295,6 @@ public class ResultsViewTreeUtil
  		//For each tagged Entity ,get the tagged Attributes and add them to Ioutput Attribute list
  		ParameterizedQuery query = (ParameterizedQuery)m_queryObject.getQuery();
  		List <IOutputAttribute> outputAttributeList =  new ArrayList<IOutputAttribute>();
- 		Cab2bQuery cab2bQuery = (Cab2bQuery)query;
 	    IConstraints constraints = query.getConstraints();
  		Set <EntityInterface> taggedEntityKeySet= eachTaggedEntityPathExpressionsMap.keySet();
  		for(EntityInterface taggedEntity : taggedEntityKeySet)
@@ -315,7 +313,7 @@ public class ResultsViewTreeUtil
  			}
  		}
  	   //Setting the IOutPut Attribute List to Query 
- 	  cab2bQuery.setOutputAttributeList(outputAttributeList);
+ 		query.setOutputAttributeList(outputAttributeList);
 	}
 
 	/**
