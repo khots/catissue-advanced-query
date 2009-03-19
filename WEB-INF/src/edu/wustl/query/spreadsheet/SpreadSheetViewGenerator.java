@@ -4,8 +4,6 @@ package edu.wustl.query.spreadsheet;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.query.factory.ViewIQueryGeneratorFactory;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
