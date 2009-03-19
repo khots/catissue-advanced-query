@@ -253,9 +253,9 @@
 		</ant>
 	</target>
 	
-	<target name = "add_curated_Path">
+	<target name = "add_curated_path">
 		<echo message="In Add curated path in Query Integraion Xml"/>
-		<ant dir="." inheritAll="false" antfile="deploy.xml" target="add_curated_Path">
+		<ant dir="." inheritAll="false" antfile="deploy.xml" target="add_curated_path">
 			<property name="jboss.server.url" value="${jboss.server.url}"/>
  			<property name="database.type" value="${database.type}" />
 			<property name="database.host" value="${database.host}" />
