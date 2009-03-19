@@ -695,7 +695,7 @@ function keypress(e) // Bug Fixed # 11683
 <table width="100%"  border="0" align="center" cellpadding="2" cellspacing="0">
 	<tr>
 		<td colspan="3" >
-		<table cellpadding="0" cellspacing="0" >
+		<table cellpadding="1" cellspacing="0" >
 			<tr>
 			<td class="content_txt_bold" nowrap>Select Vocabulary:&nbsp;&nbsp;</td>
 			<c:set var="srcVocabURN" value="<%=srcVocabURN%>"/>
@@ -704,14 +704,14 @@ function keypress(e) // Bug Fixed # 11683
 					<c:choose>
 						<c:when test="${vocabs.vocabURN eq srcVocabURN}">
 								<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.vocabURN}" value="${vocabs.name}:${vocabs.version}"   
-								onclick= "getMappingsOfConcepts(this.id,'${vocabs.vocabURN}');" checked='true'></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;
+								onclick= "getMappingsOfConcepts(this.id,'${vocabs.vocabURN}');" checked='true'></td><td class="content_txt">&nbsp;&nbsp;${vocabs.displayName}&nbsp;&nbsp;&nbsp;
 								<input type="hidden"id="hidden_${vocabs.vocabURN}" value="${vocabs.displayName}"/>
 
 								</td>			
 						</c:when>
 						<c:otherwise>
 								<td><input type="radio"  name="vocabNameAndVersionCheckbox" id="vocab_${vocabs.vocabURN}" value="${vocabs.name}:${vocabs.version}"   
-								onclick= "getMappingsOfConcepts(this.id,'${vocabs.vocabURN}');"></td><td class="content_txt">${vocabs.displayName}&nbsp;&nbsp;&nbsp;
+								onclick= "getMappingsOfConcepts(this.id,'${vocabs.vocabURN}');"></td><td class="content_txt">&nbsp;&nbsp;${vocabs.displayName}&nbsp;&nbsp;&nbsp;
 								<input type="hidden"id="hidden_${vocabs.vocabURN}" value="${vocabs.displayName}"/>
 								</td>
 						</c:otherwise>
@@ -732,11 +732,8 @@ function keypress(e) // Bug Fixed # 11683
 		<table cellpadding="0" cellspacing="0" ><tr>
 			
 			<td class="content_txt_bold" nowrap>Select Criteria:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			<td><input type="radio"	name="searchCriteria" id="findAnyWord" value='<%=VISearchAlgorithm.ANY_WORD%>' checked='true'/></td><td class="content_txt"  >Any Word&nbsp;&nbsp;&nbsp;</td>
-			<td><input type="radio" name="searchCriteria" id="findExactPhrase" value='<%=VISearchAlgorithm.EXACT_PHRASE%>'/></td><td class="content_txt"  >Exact Phrase&nbsp;&nbsp;&nbsp;</td>
-			<td><input type="radio"	name="searchCriteria" id="findExactMatch" value='<%=VISearchAlgorithm.EXACT_MATCH%>'/></td><td class="content_txt"  >Exact Match&nbsp;&nbsp;&nbsp;</td>
-			
-			
+			<td><input type="radio"	name="searchCriteria" id="findAnyWord" value='<%=VISearchAlgorithm.ANY_WORD%>' checked='true'/></td><td class="content_txt"  >&nbsp;&nbsp;Any Word&nbsp;&nbsp;&nbsp;</td>
+			<td><input type="radio" name="searchCriteria" id="findExactPhrase" value='<%=VISearchAlgorithm.EXACT_PHRASE%>'/></td><td class="content_txt"  >&nbsp;&nbsp;Exact Phrase&nbsp;&nbsp;&nbsp;</td>
 		</tr>
 		</table>
 	</td>
