@@ -202,6 +202,16 @@ public class QueryFrameworkTestCase extends TestCase
 
 	}
 
+	public void testXQuery_AllPatients_over_the_ageof_40_6113()
+	{
+
+	}
+
+	public void testXQuery_AllPatients_over_the_ageof_40_had_OccultBlood_or_StoolGuiacLabTest_6113()
+	{
+
+	}
+
 	/*public void testXQuery_PersonUpi_is_NOT_NULL_AND_DOB_less_than_10_10_1920()
 	{
 		
