@@ -654,7 +654,7 @@
 			</classpath>
 		</sql>
 		<!--echo message="Adding curated Path" />
-		<antcall target="add_curated_Path"  / --> 
+		<antcall target="add_curated_path"  / --> 
 		
 	</target>
 	
@@ -1121,7 +1121,7 @@ Thanking You,
 		</delete>
 	</target>
 	
-	<target name = "add_curated_Path">
+	<target name = "add_curated_path">
 		
       <echo message="In deploy xml add curated path"/>		
 		<property name="temp.query" value="querytemp" />
