@@ -186,7 +186,7 @@ private void processDataNodeClick(String nodeId,HttpServletRequest request,List<
 		IExpression expression = constraints.getExpression(rootNodeExpd);
 		EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
 		List<EntityInterface> mainEntityList = QueryAddContainmentsUtil.getAllMainObjects(patientDataQuery);
-	   
+		AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request,patientDataQuery);
 		//Check if the entity, for which children nodes are to be shown , is main entity or not 
 		Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap = IQueryParseUtil.getParentChildrensForaMainNode(labelTreeDataNode);
 		if((mainEntityList.contains(entity)) && (!parentChildrenMap.isEmpty()))
@@ -209,10 +209,10 @@ private void processDataNodeClick(String nodeId,HttpServletRequest request,List<
 
 		    		AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
 		    		.getDefaultViewIQueryGenerator();
-		    		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails);
+		    		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,abstractQueryUIManager.getAbstractQuery());
 		    		
 		    		//IQuery generatedQuery = ResultsViewTreeUtil.generateIQuery(mainEntityTreeDataNode,parentChildrenMap,mainEntity,patientDataQuery);
-			    	AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
+			    	abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
 			    	DataQueryResultsBean dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID, rootData ,ViewType.TREE_VIEW); 
 			    	List<List<Object>>  dataList = dataQueryResultsBean.getAttributeList();
 			   				
@@ -270,20 +270,20 @@ private void processLabelNodeClick(String nodeId,HttpServletRequest request,List
 	//Here we generate the iQuery
 	AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
 	.getDefaultViewIQueryGenerator();
-	IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails);
+	AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request,patientDataQuery);
+	IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,abstractQueryUIManager.getAbstractQuery());
 	
 	//IQuery generatedQuery = ResultsViewTreeUtil.generateIQuery(labelTreeDataNode,parentChildrenMap,rootEntity,patientDataQuery);
 	
 	//Here we get the list of primary key indexes in the Output attribute list of generated IQuery
 	List<Integer> primaryKeyIndexesList = getPrimaryKeysIndexes(rootEntity, generatedQuery);
 	
-	AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
+	abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
 
 	DataQueryResultsBean dataQueryResultsBean = getDataqueryResultsBean(rootData, queryExecutionID,abstractQueryUIManager);;
 	List<IOutputAttribute> outputAttributesList = ((ParameterizedQuery) generatedQuery)
 	.getOutputAttributeList();
 	List<List<Object>>  dataList = dataQueryResultsBean.getAttributeList();
-	String format = edu.wustl.query.util.global.Utility.getTagValue(rootEntity,Constants.TAGGED_VALUE_RESULTVIEW);
  	if(dataList.size() >0)
 	{
 		for(int i=0; i< dataList.size(); i++)
@@ -298,7 +298,7 @@ private void processLabelNodeClick(String nodeId,HttpServletRequest request,List
 			createPrimaryKeyData(primaryKeyIndexesList,labelNodeDataList,primaryKeySetData);
 			//Separating data to be displayed in the results tree
 			separateResultsViewData(primaryKeyIndexesList,newList,displayData);
-			displayData = getFormattedOutput(displayData, format);
+			displayData = queryGenerator.getFormattedOutputForTreeView(displayData, rootEntity,abstractQueryUIManager.getAbstractQuery());
 			//Creating the Tree node Id
 			String dataNodeId = createTreeNodeId(rootData,uniqueParentNode, uniqueCurrentNodeId,primaryKeySetData);
             String displayName = "<span class=\"content_txt\">"+  displayData +"</span>";	  
