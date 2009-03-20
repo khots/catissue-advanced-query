@@ -207,7 +207,7 @@ function changeResPerPage(controlId)
 
 function retrieveMyQueries(pageOf)
 {
-	var url='RetrieveQueryAction.do?pageOf='+pageOf+'&requestFor=nextPage&pageNum=1';
+	var url='RetrieveQueryAction.do?pageOf='+pageOf+'&pageNum=1';
 	document.forms[0].action=url;
 	document.forms[0].submit();	
 }
