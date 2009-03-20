@@ -1,6 +1,10 @@
 
 package edu.wustl.query.bizlogic;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +18,7 @@ import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.query.factory.PermissibleValueManagerFactory;
 import edu.wustl.common.query.pvmanager.impl.LexBIGPermissibleValueManager;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
+import edu.wustl.common.util.global.Variables;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.vocab.IConcept;
 import edu.wustl.common.vocab.IDefinition;
@@ -57,7 +62,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @return
 	 * @throws PVManagerException
 	 */
-	public List<IConcept> getPermissibleValueList(AttributeInterface attribute,
+	/*public List<IConcept> getPermissibleValueList(AttributeInterface attribute,
 			EntityInterface entity) throws PVManagerException
 	{
 		List<IConcept> permissibleConcepts = new ArrayList<IConcept>();
@@ -75,7 +80,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 							+ entity.getName(), e);
 		}
 		return permissibleConcepts;
-	}
+	}*/
 	/**
 	 * This method returns the list of permissible values 
 	 * @param attribute
@@ -84,9 +89,9 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @throws PVManagerException
 	 */
 	public List<IConcept> getConfiguredPermissibleValueList(AttributeInterface attribute,
-			EntityInterface entity,List<Boolean> showMessage) throws PVManagerException
+			EntityInterface entity,List<Integer> showMessage) throws PVManagerException
 	{
-		List<IConcept> permissibleConcepts = null;
+		List<IConcept> permissibleConcepts =  new ArrayList<IConcept>();;
 		try
 		{
 			List<PermissibleValueInterface> permissibleValues = pvManager.getPermissibleValueList(
@@ -94,13 +99,31 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			/*If the permissible values are more than the configured value
 			 * take the subset.
 			 */
-			if(permissibleValues.size() > VIProperties.maxPVsToShow)
+		/*	if(permissibleValues.size() > VIProperties.maxPVsToShow)
 			{
 				permissibleValues = permissibleValues.subList(0, VIProperties.maxPVsToShow);
 				showMessage.add(true);// may be all concept will not resolved
-			}
+			}*/
 			IVocabulary sourceVocabulary = getVocabulary(VIProperties.sourceVocabUrn);
-			permissibleConcepts = resolvePermissibleCodesToConcept(sourceVocabulary,permissibleValues);
+			//permissibleConcepts = resolvePermissibleCodesToConcept(sourceVocabulary,permissibleValues);
+			if(permissibleValues != null)
+			{
+				for(PermissibleValueInterface perValue:permissibleValues)
+				{
+					List<IConcept> concepts = sourceVocabulary.getConceptForCode(perValue.getValueAsObject().toString());
+					if(permissibleConcepts.size()>=VIProperties.maxPVsToShow)
+					{
+						showMessage.add(1);
+						showMessage.add(permissibleConcepts.size());//number of result to show
+						showMessage.add(permissibleValues.size());//total number of result
+						break;
+					}
+					if(concepts != null && !concepts.isEmpty())
+					{
+						permissibleConcepts.addAll(concepts);
+					}
+				}
+			}
 		}
 		catch (VocabularyException e)
 		{
@@ -111,7 +134,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		return permissibleConcepts;
 	}
 	
-	private List<IConcept> resolvePermissibleCodesToConcept(IVocabulary sourceVocabulary,
+	/*private List<IConcept> resolvePermissibleCodesToConcept(IVocabulary sourceVocabulary,
 			List<PermissibleValueInterface> permissibleValues) throws VocabularyException
 	{
 		List<IConcept> permissibleConcepts = new ArrayList<IConcept>();
@@ -127,7 +150,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 			}
 		}
 		return permissibleConcepts;
-	}
+	}*/
 	
 	public List<PermissibleValueInterface> getPermissibleValueListFromDB(AttributeInterface attribute,
 			EntityInterface entity) throws PVManagerException
@@ -145,7 +168,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @throws PVManagerException
 	 */
 	public Map<String, List<IConcept>> getMappedConcepts(AttributeInterface attribute,
-			IVocabulary targetVocabulary, EntityInterface entity)
+			IVocabulary targetVocabulary, EntityInterface entity,List<Integer> showMessage)
 			throws VocabularyException, PVManagerException
 	{
 		IVocabulary sourceVocabulary = getVocabulary(VIProperties.sourceVocabUrn);
@@ -167,6 +190,9 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 						maxPVsToShow=maxPVsToShow+conList.size();
 						if(maxPVsToShow>=VIProperties.maxPVsToShow)
 						{
+							showMessage.add(1);
+							showMessage.add(maxPVsToShow);//number of result to show
+							showMessage.add(permissibleValues.size());//total number of result
 							break;
 						}
 					}
@@ -194,7 +220,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	{
 		IVocabulary vocabulary = vocabularyManager.getVocabulary(vocabURN);
 		VISearchAlgorithm searchAloAlgorithm=VISearchAlgorithm.valueOf(searchCriteria);
-		//String searchAloAlgorithm=searchAlgo.getAlgorithm();
+		
 		if(searchAloAlgorithm.equals(VISearchAlgorithm.EXACT_PHRASE))
 		{
 			if(term.indexOf("\"")!=-1)
@@ -221,10 +247,13 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 * @return
 	 * @throws VocabularyException 
 	 */
-	public String getInfoMessage() throws VocabularyException
+	public String getInfoMessage(int noResult,int totalResult) throws VocabularyException
 	{
-		//return "<tr><td class='black_ar_tt' colspan='3'>" + Constants.VI_INFO_MESSAGE1 +count+Constants.VI_INFO_MESSAGE2+ "<td></tr>";
-		return Constants.MSG_DEL+ VocabUtil.getVocabProperties().getProperty("too.many.results.message");
+		System.out.println( VocabUtil.getVocabProperties().getProperty("too.many.results.default.message."));
+		String message=VocabUtil.getVocabProperties().getProperty("too.many.results.default.message");
+		message=message.replace("##", noResult+"");
+		message=message.replace("@@", totalResult+"");
+		return Constants.MSG_DEL+message ;
 	}
 	/**
 	 * This method returns the HTML for child nodes for all the vocabularies which
@@ -402,7 +431,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	public String getErrorMessageAsHTML(String msg)
 	{
 		return "<table width='100%' height='100%'>"
-				+ "<tr><td class='black_ar_tt' style='color:red'>"
+				+ "<tr><td class='black_ar_tt' style='color:red' valign='top'>"
 				+msg+
 				"<td></tr></table>";
 	}
@@ -501,5 +530,47 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	{
 		IVocabulary vocabulary = vocabularyManager.getVocabulary(urn);
 		return vocabulary;
+	}
+	public String getSearchMessage() throws VocabularyException
+	{
+		String message=VocabUtil.getVocabProperties().getProperty("too.many.results.search.message");
+		return Constants.MSG_DEL+message ;
+		
+	}
+	public String getExceptionMessage(VocabularyException e)
+	{
+		String message="";
+		if(e.getError().equals(VIError.LB_PARAM_EXCPTION))
+		{
+				FileReader fr=null;
+			try
+			{
+					fr = new FileReader(Variables.applicationHome+"\\WEB-INF\\classes\\VISplCharHelp.txt");
+				
+				BufferedReader br=new BufferedReader(fr);
+				String msg="";
+				String line="";
+				while((line=br.readLine())!=null)
+				{
+					msg=msg+line;
+				}
+				 message= getErrorMessageAsHTML(msg);
+			}
+			catch (FileNotFoundException e1)
+			{
+				
+				e1.printStackTrace();
+			}
+			catch (IOException e2)
+			{
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+		}
+		else
+		{
+			message= getErrorMessageAsHTML(e.getError().getErrorMessage());
+		}
+		return message;
 	}
 }
