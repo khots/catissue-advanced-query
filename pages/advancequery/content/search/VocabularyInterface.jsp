@@ -261,7 +261,7 @@ function getMappingsOfConcepts(vocabCheckBoxId,vocabURN)
 						request.open("POST",actionUrl,true);
 						request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 						request.send(param);
-						 
+		
 					}
 					else if(innerData.length>0)
 					{
@@ -344,7 +344,7 @@ function setMappedConceptsToVocabDIV(request,selectedCheckedBoxVocabDivID)
 			hideCursor();
 			document.getElementById("divForMappingMode").scrollTop=0;
 			document.getElementById("divForMappingMode").scrollLeft=0;
-		}
+			tt_Hide(); // to hide the tooltip on the already shown concept concepts		}
 	}
 };
 
@@ -504,6 +504,7 @@ function serachForTermInVocab(operation)
 			searchRequest.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 			searchRequest.send(param);
 			pervVocabCheckboxId=currentcheckedBoxID;
+			
 	}
 }
 	
@@ -544,6 +545,7 @@ function getSearchTermResult(searchRequest)
 			var searchAbortButtonDiv=document.getElementById("searchAbortButtonDiv");
 			searchAbortButtonDiv.innerHTML="<a  href=\"javascript:serachForTermInVocab('search');\"><img src='images/advancequery/b_go.gif' border='0' alt='Search' ></a>";
 			hideCursor();
+			tt_Hide(); // to hide the tooltip on the already shown concept concepts
 		}
 	}
 };
