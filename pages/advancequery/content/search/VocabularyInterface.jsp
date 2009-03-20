@@ -484,7 +484,7 @@ function serachForTermInVocab(operation)
 			}
 			else // if operation is abort change the button to search and set the flag
 			{
-				searchAbortButtonDiv.innerHTML="<a  href=\"javascript:serachForTermInVocab('search');\"><img src='images/advancequery/b_go.gif' border='0' alt='GO' ></a>";
+				searchAbortButtonDiv.innerHTML="<a  href=\"javascript:serachForTermInVocab('search');\"><img src='images/advancequery/b_go.gif' border='0' alt='Search' ></a>";
 				searchRequest.abort();
 				operationAborted=true;
 			}
@@ -496,6 +496,7 @@ function serachForTermInVocab(operation)
 				return;
 			}
 			// send request only first time when user click on the check box for other click  just hide and show the div 
+			searchTerm=encodeURIComponent(searchTerm); /* This is required because user can enter any term which can contains spl char like & ,% and ^ etc*/ 
 			var param = "searchTerm="+searchTerm+"&targetVocabsForSearchTerm="+targetVocabsForSearchTerm+"&operation="+operation+"&searchCriteria="+criteria;
 			var actionUrl="SearchPermissibleValues.do";
 			searchRequest.onreadystatechange=function(){getSearchTermResult(searchRequest)};
@@ -541,7 +542,7 @@ function getSearchTermResult(searchRequest)
 				label.innerHTML=responseTextValue;
 			}
 			var searchAbortButtonDiv=document.getElementById("searchAbortButtonDiv");
-			searchAbortButtonDiv.innerHTML="<a  href=\"javascript:serachForTermInVocab('search');\"><img src='images/advancequery/b_go.gif' border='0' alt='abort' ></a>";
+			searchAbortButtonDiv.innerHTML="<a  href=\"javascript:serachForTermInVocab('search');\"><img src='images/advancequery/b_go.gif' border='0' alt='Search' ></a>";
 			hideCursor();
 		}
 	}
@@ -694,10 +695,10 @@ function keypress(e) // Bug Fixed # 11683
 <table width="100%"   border="0" cellspacing="0" cellpadding="4"><tr><td>
 <table width="100%"  border="0" align="center" cellpadding="2" cellspacing="0">
 	<tr>
-		<td colspan="3" >
+		<td class="content_txt_bold" width="5%" nowrap>Select Vocabulary:</td>
+		<td colspan="2" >
 		<table cellpadding="1" cellspacing="0" >
 			<tr>
-			<td class="content_txt_bold" nowrap>Select Vocabulary:&nbsp;&nbsp;</td>
 			<c:set var="srcVocabURN" value="<%=srcVocabURN%>"/>
 			<logic:iterate name="Vocabulries" id="vocabs">
 			<c:set var="urn" value="${vocabs.vocabURN}" />
@@ -728,10 +729,9 @@ function keypress(e) // Bug Fixed # 11683
 		</td>
 	</tr>
 	<tr>
-	<td colspan="3" valign="top" height="20px" >
+	<td class="content_txt_bold"  width="5%" nowrap>Select Criteria:</td>
+	<td colspan="2" valign="top" height="20px" >
 		<table cellpadding="0" cellspacing="0" ><tr>
-			
-			<td class="content_txt_bold" nowrap>Select Criteria:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			<td><input type="radio"	name="searchCriteria" id="findAnyWord" value='<%=VISearchAlgorithm.ANY_WORD%>' checked='true'/></td><td class="content_txt"  >&nbsp;&nbsp;Any Word&nbsp;&nbsp;&nbsp;</td>
 			<td><input type="radio" name="searchCriteria" id="findExactPhrase" value='<%=VISearchAlgorithm.EXACT_PHRASE%>'/></td><td class="content_txt"  >&nbsp;&nbsp;Exact Phrase&nbsp;&nbsp;&nbsp;</td>
 		</tr>
@@ -739,15 +739,17 @@ function keypress(e) // Bug Fixed # 11683
 	</td>
   </tr>
 	<tr>
-	    <td height="30" valign="top" colspan="3">
+	<td class="content_txt_bold"  width="5%"  nowrap>Search:</td>
+	    <td height="30" valign="top" colspan="2">
 			<table height="30" border="0" cellpadding="0" cellspacing="0">
-		      <tr><td><label><input name="searchtextfield" type="text" class="texttype" id="searchtextfield" value="" onkeyup="keypress(event)"></label></td>
+		      <tr>
+			  <td><label><input name="searchtextfield" type="text" class="texttype" id="searchtextfield" value="" onkeyup="keypress(event)"></label></td>
 				<td>&nbsp;</td>
-				<td><div id="searchAbortButtonDiv"><a href="javascript:serachForTermInVocab('search');"><img src="images/advancequery/b_go.gif" border="0" alt="Go"></a></div></td>
+				<td><div id="searchAbortButtonDiv"><a href="javascript:serachForTermInVocab('search');"><img src="images/advancequery/b_go.gif" border="0" alt="Search"></a></div></td>
 				<!--<td><a  href="javascript:serachForTermInVocab('search');"><img src="images/advancequery/b_go.gif" border='0' alt="Go" ></a>
 				<a  href="javascript:serachForTermInVocab('abort');"><img src="images/advancequery/b_abort.gif" border='0' alt="abort" ></a>
 				</td>-->
-				<td style="padding-left:10px"><a href='javascript:doNothing();' onclick='restoreDefaultVocab();' ><img src="images/advancequery/b_restore_defaults.gif" border='0' alt="Restore Default" ></a></td>
+				<td style="padding-left:10px"><a href='javascript:doNothing();' onclick='restoreDefaultVocab();' ><img src="images/advancequery/b_restore_defaults.gif" border='0' alt="Reloads the Permissible Values from default Vocabulary." ></a></td>
 				<!--<td style="padding-left:10px"><input type="checkbox" id="findExactMatch" value="findExactMatch"/></td><td class="content_txt"  >Exact Match</td>-->
 				<!-- <td id="searhLabel" class="content_txt"  align="right" style="padding-left:10px;color:blue">&nbsp;</td>  -->
 				</tr>
@@ -766,6 +768,10 @@ function keypress(e) // Bug Fixed # 11683
 		<td colspan="3" height="23px" id="searhLabel" class="content_txt"  align="left" style="padding-left:10px;color:blue">&nbsp;</td>  
   </td>
   </tr>
+</table>
+
+<!-- Header end -->
+<table width="100%"  border="0" align="center" cellpadding="2" cellspacing="0">
   <tr>
 		<td width="45%"  >
 	
