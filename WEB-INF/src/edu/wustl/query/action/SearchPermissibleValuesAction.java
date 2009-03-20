@@ -1,6 +1,8 @@
 
 package edu.wustl.query.action;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -11,6 +13,9 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -21,17 +26,18 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
+import edu.wustl.common.util.global.Variables;
 import edu.wustl.common.vocab.IConcept;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.VocabularyException;
 import edu.wustl.common.vocab.impl.Concept;
 import edu.wustl.common.vocab.impl.Vocabulary;
+import edu.wustl.common.vocab.utility.VIError;
 import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.bizlogic.SearchPermissibleValueBizlogic;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.VIProperties;
-import edu.wustl.vi.enums.VISearchAlgorithm;
 
 /**
  * @author amit_doshi
@@ -87,7 +93,7 @@ public class SearchPermissibleValuesAction extends Action
 				}
 				catch (VocabularyException e)
 				{
-					response.getWriter().write(bizLogic.getErrorMessageAsHTML(e.getError().getErrorMessage()));
+					response.getWriter().write(bizLogic.getExceptionMessage(e));
 				}
 			}
 
@@ -175,7 +181,7 @@ public class SearchPermissibleValuesAction extends Action
 							+notMEDMappedConcept.size();
 			if (uiListSize>=VIProperties.maxPVsToShow)
 			{
-				html.append(bizLogic.getInfoMessage());
+				html.append(bizLogic.getSearchMessage());
 			}
 			html.append(bizLogic.getEndHTML());
 		}

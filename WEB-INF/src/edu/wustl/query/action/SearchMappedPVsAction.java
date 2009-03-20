@@ -206,7 +206,7 @@ public class SearchMappedPVsAction extends Action
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		StringBuffer html = new StringBuffer();
-		List<Boolean> showMessage=new ArrayList<Boolean>();
+		List<Integer> showMessage=new ArrayList<Integer>();
 		List<IConcept> pvList = bizLogic.getConfiguredPermissibleValueList(attribute, entity,showMessage);
 		String srcVocabURN = VIProperties.sourceVocabUrn;
 		String vocabDisName = bizLogic.getDisplayNameForVocab(srcVocabURN);
@@ -222,8 +222,8 @@ public class SearchMappedPVsAction extends Action
 			html.append(bizLogic.getEndHTML());
 			if( !showMessage.isEmpty())// Need to show Message Too Many Result on UI 
 			{
-				html.append(bizLogic.getInfoMessage());
-				request.getSession().setAttribute(Constants.SRC_VOCAB_MESSAGE, bizLogic.getInfoMessage()
+				html.append(bizLogic.getInfoMessage(showMessage.get(1),showMessage.get(2)));
+				request.getSession().setAttribute(Constants.SRC_VOCAB_MESSAGE, bizLogic.getInfoMessage(showMessage.get(1),showMessage.get(2))
 						.replace(Constants.MSG_DEL,""));
 			}
 		}
@@ -254,7 +254,7 @@ public class SearchMappedPVsAction extends Action
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		IVocabulary souVocabulary = bizLogic.getVocabulary(VIProperties.sourceVocabUrn);
 		// Get the target vocabulary info from parameter
-		
+		List<Integer> showMessage=new ArrayList<Integer>();
 		String targetVocabDisName=bizLogic.getDisplayNameForVocab(targetVocabURN);
 		IVocabulary targVocabulary = bizLogic.getVocabulary(targetVocabURN);
 		
@@ -263,8 +263,8 @@ public class SearchMappedPVsAction extends Action
 			{
 				html.append(bizLogic.getRootVocabularyNodeHTML(targetVocabURN,targetVocabDisName));
 				Map<String, List<IConcept>> vocabMappings = bizLogic.getMappedConcepts(attribute,
-						targVocabulary, entity);
-				html.append(getMappedHTMLForTargetVocab(targetVocabURN,vocabMappings));
+						targVocabulary, entity,showMessage);
+				html.append(getMappedHTMLForTargetVocab(targetVocabURN,vocabMappings,showMessage));
 	
 			}
 		return html.toString();
@@ -279,12 +279,12 @@ public class SearchMappedPVsAction extends Action
 	 * @throws NumberFormatException 
 	 */
 	private StringBuffer getMappedHTMLForTargetVocab(String vocabURN,
-			Map<String, List<IConcept>> vocabMappings) throws NumberFormatException, VocabularyException
+			Map<String, List<IConcept>> vocabMappings,List<Integer> showMessage) throws NumberFormatException, VocabularyException
 	{
 		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
 				.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		StringBuffer mappedHTML=new StringBuffer();
-		int maxPv=0;
+		//int maxPv=0;
 		
 		
 		if (vocabMappings != null && vocabMappings.size()!=0)
@@ -295,7 +295,7 @@ public class SearchMappedPVsAction extends Action
 			{
 				String conceptCode = iterator.next();
 				List<IConcept> mappingList = vocabMappings.get(conceptCode);
-				maxPv=maxPv+mappingList.size();
+				//maxPv=maxPv+mappingList.size();
 				ListIterator<IConcept> mappingListItr = mappingList.listIterator();
 				while (mappingListItr.hasNext())
 				{
@@ -312,10 +312,15 @@ public class SearchMappedPVsAction extends Action
 		}
 		
 		mappedHTML.append(bizLogic.getEndHTML());
-		if(maxPv>=VIProperties.maxPVsToShow)
+		/*if(maxPv>=VIProperties.maxPVsToShow)
 		{
-			mappedHTML.append(bizLogic.getInfoMessage());
+			mappedHTML.append(bizLogic.getInfoMessage(maxPv,));
+		}*/
+		if( !showMessage.isEmpty())// Need to show Message Too Many Result on UI 
+		{
+			mappedHTML.append(bizLogic.getInfoMessage(showMessage.get(1),showMessage.get(2)));
 		}
+		
 		return mappedHTML;
 	}
 }
