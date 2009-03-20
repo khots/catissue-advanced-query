@@ -7,11 +7,12 @@
 	<tr><td colspan='2' align='left'>If yes, try one of the following options:</td</tr>
 	<tr><td colspan='2' align='left'>&nbsp;</td></tr>
 	<tr><td>&nbsp;</td><td>1.Delete the special character in your search criteria.</td></tr>
-	<tr><td>&nbsp;</td><td>2.Type <span class='black_ar_tt' style='color:blue;font-weight: bold;;font-weight: bold;'>'Glucose @ 75g' </span> 
+	<tr><td>&nbsp;</td><td>2.Do not use [, ], (, and ) in the search criteria.</td></tr>
+	<tr><td>&nbsp;</td><td>3.If you select the Any Word option button, do not use ^ in your search criteria.</td></tr>
+	<tr><td>&nbsp;</td><td>4.Type <span class='black_ar_tt' style='color:blue;font-weight: bold;;font-weight:bold;'>'Glucose @ 75g' </span> 
 								or <span class='black_ar_tt' style='color:blue;font-weight: bold;'>'Glucose'</span> 
 								instead of <span class='black_ar_tt' style='color:blue;font-weight: bold;'>'@Glucose'</span> 
 								or <span class='black_ar_tt' style='color:blue;font-weight: bold;'>'Glucose@'. </span>
 								It means, do not begin or end a search 	criteria with a special character.</td></tr> 
-	<tr><td>&nbsp;</td><td>3.Do not use [, ], % , (, and ) in the search criteria.</td></tr>
-	<tr><td>&nbsp;</td><td>4.If you select the Any Word option button, do not use ^ in your search criteria.</td></tr>
+	
 </table>
