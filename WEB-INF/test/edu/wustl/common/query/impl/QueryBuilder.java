@@ -384,10 +384,11 @@ public class QueryBuilder
 
 	private static void addBasicDemographicsConditions(IExpression demographicsExpression)
 	{
+		//select current date from sysibm.SYSDUMMY1
 		addCondition(demographicsExpression, "effectiveEndTimeStamp",
-				RelationalOperator.GreaterThan, "01/26/2009");
+				RelationalOperator.GreaterThan, "03/01/2009");
 		addCondition(demographicsExpression, "effectiveStartTimeStamp",
-				RelationalOperator.LessThan, "01/26/2009");
+				RelationalOperator.LessThan, "03/01/2009");
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
