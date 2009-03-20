@@ -3,7 +3,7 @@ options
 	STATIC = false;
 	LOOKAHEAD = 3;
 	FORCE_LA_CHECK = true;
-	//DEBUG_PARSER = true;
+	DEBUG_PARSER = true;
 	//DEBUG_TOKEN_MANAGER = true;
 }
 
@@ -31,7 +31,7 @@ public class WherePartParser
 	
 	public static void main(String[] args) throws ParseException, FileNotFoundException
 	{
-		InputStream in = new FileInputStream("WherePart8.txt");
+		InputStream in = new FileInputStream("WherePartEmpty.txt");
 		
 		WherePartParser parser = new WherePartParser(in);
 		parser.parse();
@@ -84,6 +84,12 @@ public void parse() throws ParseException:
 	Token t = null;	
 }
 {
+	<EOF>
+	{
+		//System.out.println("EMPTY CONDITON PARSED SUCCESSFULLY !!");
+	}
+|	
+
 	ConditionTree() <EOF>
 	{
 		//System.out.println("CONDITON PARSED SUCCESSFULLY !!");
@@ -153,6 +159,7 @@ private void ConditionsOnOneEntity() :
 		}	
 	)*
 }
+
 
 
 
