@@ -233,6 +233,14 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @throws DynamicExtensionsSystemException
 	 * @throws XQueryDataTypeInitializationException 
 	 */
+	
+	/*
+	 * Change History
+	 *        Author           Date            Reviewed By                  Comments
+	 *    JuberAhamadPatel  20-Dec-2008       Siddharth Shah                 Initial
+	 *    Siddharth Shah    20-Mar-2009       Siddharth Shah            Added the condition of adding AND to wherePart in build0WherePart
+	 *    																does not return empty string  
+	 */   
 	private String formQuery() throws SqlException, MultipleRootsException, SQLXMLException,
 			DynamicExtensionsSystemException, XQueryDataTypeInitializationException
 	{
@@ -240,6 +248,10 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 
 		formedQuery.append(buildSelectPart());
 		String wherePart = buildWherePart(constraints.getRootExpression(), null);
+		if(!("".equals(wherePart)))
+		{
+			wherePart = wherePart + Constants.QUERY_AND;
+		}
 		wherePart = addJoiningTableCondition(wherePart);
 		PredicateGenerator predicateGenerator = new PredicateGenerator(forVariables, wherePart);
 
@@ -260,13 +272,18 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @throws XQueryDataTypeInitializationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
+	
+	/*
+	 * Change History
+	 *        Author           Date            Reviewed By                  Comments
+	 *    JuberAhamadPatel  21-Dec-2008       Siddharth Shah                 Initial
+	 */ 
 	private String addJoiningTableCondition(String wherePart) throws MultipleRootsException,
 			SqlException, XQueryDataTypeInitializationException, DynamicExtensionsSystemException
 	{
 		StringBuilder completeWherePart = new StringBuilder(wherePart);
 		Set<Integer> processedAlias = new HashSet<Integer>();
 		IExpression parentExpression = joinGraph.getRoot();
-		completeWherePart.append(Constants.QUERY_AND);
 		completeWherePart.append(processChildExpressions(processedAlias, parentExpression));
 		return Utility.removeLastAnd(completeWherePart.toString());
 	}
