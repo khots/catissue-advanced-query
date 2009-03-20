@@ -200,7 +200,7 @@ function checkAlreadyPresent(itemToadd)
 function changeResPerPage(controlId)
 {
 	var resultsPerPage=document.getElementById(controlId).value;
-	var url='RetrieveQueryAction.do?pageOf=myQueriesForWorkFlow&requestFor=nextPage&pageNum=1&numResultsPerPage='+resultsPerPage;
+	var url='RetrieveQueryAction.do?pageOf=${requestScope.pageOf}&requestFor=nextPage&pageNum=1&numResultsPerPage='+resultsPerPage;
 	document.forms[0].action=url;
 	document.forms[0].submit();	
 }
