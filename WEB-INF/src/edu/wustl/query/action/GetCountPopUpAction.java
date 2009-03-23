@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -44,6 +45,7 @@ public class GetCountPopUpAction extends Action
 		//get the userId from session data bean
 		SessionDataBean sessionData = (SessionDataBean) request.getSession().getAttribute(
 				Constants.SESSION_DATA);
+		HttpSession session = request.getSession();
 		Long userId = sessionData.getUserId();
 		if (userId == null)
 		{
@@ -61,9 +63,16 @@ public class GetCountPopUpAction extends Action
 		}
 
 		//retrieve the Selected Project from the GetCounts.jsp
-		String selectedProject = (String) request.getSession().getAttribute(
+		String selectedProject = (String)session.getAttribute(
 				Constants.SELECTED_PROJECT);
 		categorySearchForm.setCurrentSelectedProject(selectedProject);
+		boolean hasSecurePrivilege = true;
+		session.removeAttribute(Constants.HAS_SECURE_PRIVILEGE);
+        if (!selectedProject.equals("") && Long.valueOf(selectedProject) > 0)
+        {
+        	hasSecurePrivilege = qUIManager.hasSecurePrivilege(request);
+        }
+         session.setAttribute(Constants.HAS_SECURE_PRIVILEGE,hasSecurePrivilege);
 		//		request.setAttribute(Constants.SELECTED_PROJECT,selectedProject);
 
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
