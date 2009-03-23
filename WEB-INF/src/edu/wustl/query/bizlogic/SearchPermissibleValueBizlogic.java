@@ -542,11 +542,25 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		String message="";
 		if(e.getError().equals(VIError.LB_PARAM_EXCPTION))
 		{
-				FileReader fr=null;
-			try
-			{
-					fr = new FileReader(Variables.applicationHome+"\\WEB-INF\\classes\\VISplCharHelp.txt");
-				
+				message = getMessageFromFile();
+		}
+		else
+		{
+			message= getErrorMessageAsHTML(e.getError().getErrorMessage());
+		}
+		return message;
+	}
+	/**
+	 * @param message
+	 * @return
+	 */
+	public String getMessageFromFile()
+	{
+		FileReader fr=null;
+		String message="";
+		try
+		{
+				fr = new FileReader(Variables.applicationHome+"\\WEB-INF\\classes\\VISplCharHelp.txt");
 				BufferedReader br=new BufferedReader(fr);
 				String msg="";
 				String line="";
@@ -555,22 +569,17 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 					msg=msg+line;
 				}
 				 message= getErrorMessageAsHTML(msg);
-			}
-			catch (FileNotFoundException e1)
-			{
+		}
+		catch (FileNotFoundException e1)
+		{
 				
 				e1.printStackTrace();
-			}
-			catch (IOException e2)
-			{
+		}
+		catch (IOException e2)
+		{
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
-			}
 		}
-		else
-		{
-			message= getErrorMessageAsHTML(e.getError().getErrorMessage());
-		}
-		return message;
+				return message;
 	}
 }
