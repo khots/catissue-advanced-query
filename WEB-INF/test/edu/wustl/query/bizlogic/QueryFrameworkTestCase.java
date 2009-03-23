@@ -212,6 +212,16 @@ public class QueryFrameworkTestCase extends TestCase
 
 	}
 
+	public void testXQuery_Allpatients_overage40_havehad_POSITIVE_OccultBlood_or_StoolGuiacTest_done_colonoscopy_6116()
+	{
+
+	}
+
+	public void testXQuery_All_male_patients_between45and50_with_prostatecancer_6061()
+	{
+
+	}
+
 	/*public void testXQuery_PersonUpi_is_NOT_NULL_AND_DOB_less_than_10_10_1920()
 	{
 		
