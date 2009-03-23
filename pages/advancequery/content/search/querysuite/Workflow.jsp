@@ -90,6 +90,7 @@ function addCQToList(operation)
 		
 		createCQ(queryIdsToAdd,operation,queryCount);
 		uncheckselectedCheckBoxes();
+		setCheckboxCount();
 		
 	}		
 }
@@ -733,7 +734,8 @@ function executeGetDataQuery(dataQueryId)
 	var countQueryId = document.getElementById("countQueryDropDown_"+dataQueryId);
     if(countQueryId.selectedIndex== -1)
 	{
-	  alert("please first execute a get count query");
+	  //alert("please first execute a get count query");
+	  dhtmlmodal.open('Execute get count query', 'iframe', './pages/advancequery/content/search/querysuite/executeGetCountPopup.jsp','Execute get count query', 'width=400px,height=120px,center=1,resize=1,scrolling=0');
 	  return;
 	}
 	var selectedProject = document.getElementById('selectedProject').value;
