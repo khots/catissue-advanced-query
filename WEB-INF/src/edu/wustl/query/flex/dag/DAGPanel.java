@@ -272,7 +272,7 @@ public class DAGPanel
 		}
 		else
 		{
-			if (mode.equals("Edit"))
+			if (Constants.EDIT_MODE.equals(mode))
 			{
 				Rule rule = ((Rule) (expression.getOperand(0)));
 				rule.removeAllConditions();
@@ -296,7 +296,7 @@ public class DAGPanel
 		int expressionId;
 		if (errMsg.equals(""))
 		{
-			if (mode.equals("Edit"))
+			if (Constants.EDIT_MODE.equals(mode))
 			{
 				Rule rule = ((Rule) (expression.getOperand(0)));
 				rule.removeAllConditions();
