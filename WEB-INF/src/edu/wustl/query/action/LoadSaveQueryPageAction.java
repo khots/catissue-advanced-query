@@ -13,14 +13,18 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.wustl.common.exception.BizLogicException;
+import edu.wustl.common.factory.AbstractBizLogicFactory;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.SaveQueryForm;
+import edu.wustl.query.bizlogic.QueryBizLogic;
 import edu.wustl.query.htmlprovider.SavedQueryHtmlProvider;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
@@ -42,8 +46,8 @@ public class LoadSaveQueryPageAction extends Action
 	     {
 	    	 isworkflow=request.getParameter(Constants.IS_WORKFLOW);
 	     }
-       
-       String pageOf= (String)request.getAttribute(Constants.PAGE_OF);
+	    
+         String pageOf= (String)request.getAttribute(Constants.PAGE_OF);
         if(pageOf==null)
         {
         	
@@ -73,6 +77,7 @@ public class LoadSaveQueryPageAction extends Action
 				isDagEmpty = false;
 			}
 		}
+		checkIsQueryAlreadyShared(queryObject,request);
 		if(isDagEmpty)
 		{
 			// Handle null query 
@@ -89,6 +94,29 @@ public class LoadSaveQueryPageAction extends Action
 	}
 
 	
+	/**
+	 * It will check weather the Query is shared or not & set the shared_queries flag in the request 
+	 * accordingly.
+	 * @param queryObject query which is to be checked. 
+	 * @param request 
+	 */
+	private void checkIsQueryAlreadyShared(IQuery queryObject, HttpServletRequest request)
+	{
+		try
+		{
+			QueryBizLogic queryBizLogic = (QueryBizLogic)AbstractBizLogicFactory.getBizLogic(ApplicationProperties.getValue("app.bizLogicFactory"),
+				"getBizLogic", Constants.ADVANCE_QUERY_INTERFACE_ID);
+			
+			boolean isShared = queryBizLogic.isSharedQuery((IParameterizedQuery)queryObject);
+			request.setAttribute(Constants.SAHRED_QUERIES, isShared);
+		}
+		catch (BizLogicException e) {
+			ActionErrors errors = Utility.setActionError(e.getMessage(),"errors.item");
+			saveErrors(request, errors);
+		}
+	}
+
+
 	/**
 	 * This Method generates Html for Save query page 
 	 * @param form
