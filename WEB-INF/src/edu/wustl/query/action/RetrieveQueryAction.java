@@ -3,26 +3,21 @@ package edu.wustl.query.action;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.hibernate.HibernateException;
-
 import edu.wustl.cider.util.CiderUtility;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.Utility;
-import edu.wustl.common.util.dbManager.HibernateUtility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.SaveQueryForm;
-import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
@@ -55,7 +50,7 @@ public class RetrieveQueryAction extends Action
 			initializeParameterizeQueryCollection(request, saveQueryForm,
 					  authorizedQueryCollection,
 					sharedQueryCollection);
-			//user in workflow popup
+			//user in work flow pop up
 			request.setAttribute(Constants.PAGE_OF, request.getParameter(Constants.PAGE_OF));
 			request.setAttribute(Constants.MY_QUERIES_COUNT,  authorizedQueryCollection.size());
 			request.setAttribute(Constants.SHARED_QUERIES_COUNT, sharedQueryCollection.size());
