@@ -1176,6 +1176,10 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 		<td height="28" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_new_workflow.gif" alt="New Workflow" width="124" height="26" hspace="5" vspace="0">
 		</td>
 	</logic:equal>
+		<logic:equal name="workflowForm" property="operation" value="add">
+		<td height="28" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_new_workflow.gif" alt="New Workflow" width="124" height="26" hspace="5" vspace="0">
+		</td>
+	</logic:equal>
 		<logic:equal name="workflowForm" property="operation" value="search">
 		<td height="28" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_edit_workflow.gif" alt="New Workflow" width="110" height="26" hspace="5" vspace="0">
 		</td>
