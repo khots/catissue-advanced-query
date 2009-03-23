@@ -385,6 +385,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	/**  Constant for  */
 	public static final String EDIT_LIMITS = "<font color='blue'>Limit succesfully edited.</font>";
 	/**  Constant for  */
+	public static final String EDIT_MODE = "Edit";
+	/**  Constant for  */
 	public static final String DELETE_LIMITS = "<font color='blue'>Limit succesfully deleted.</font>";
 
 	/**  Constant for  */
