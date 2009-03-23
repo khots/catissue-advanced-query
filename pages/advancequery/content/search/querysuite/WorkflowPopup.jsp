@@ -22,7 +22,10 @@
 <%@ page import="org.apache.struts.action.ActionMessages, edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.common.querysuite.queryobject.impl.AbstractQuery"%>
 <%@ page import="edu.wustl.query.util.global.Constants"%>
+<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlwindow.js"></script>
+<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/modal.js"></script>
 <script language="JavaScript" type="text/javascript" src="jss/advancequery/newReleaseMsg.js"></script>
+<link rel="stylesheet" type="text/css" href="css/advancequery/catissue_suite.css" />
 <script>
 function closePopup()
 {
@@ -66,7 +69,10 @@ function closePopup()
 					}
 					else
 					{
-						alert("Query with title "+(document.getElementById("queryTitleControl_"+count).value)+" is already present in workflow");
+						//alert("Query with title "+(document.getElementById("queryTitleControl_"+count).value)+" is already present in workflow");
+						document.getElementById("sameQueryTitle").value=(document.getElementById("queryTitleControl_"+count).value);
+						dhtmlmodal.open('Query title', 'iframe', './pages/advancequery/content/search/querysuite/QueryTitlePopup.jsp','Query title', 'width=400px,height=120px,center=1,resize=1,scrolling=0');
+
 					}
 				}	
 			}
@@ -241,6 +247,7 @@ int queryCount = 0;%>
 <logic:notEqual name="totalPages" value="0">
 <table width="100%" border="0" cellspacing="0" cellpadding="4">
 <tr>
+ <input type="hidden" name="sameQueryTitle" id="sameQueryTitle" value="">
 	<td>
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="login_box_bg">
 			<tr >
@@ -393,7 +400,7 @@ int queryCount = 0;%>
 								<table>
 									<tr>
 										<td class="content_txt_bold" style="padding-left:5px;">
-											<bean:message key="userSearch.resultsPerPage"/>
+											Show Items : 
 										</td>
 										<td>
 											<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}">
