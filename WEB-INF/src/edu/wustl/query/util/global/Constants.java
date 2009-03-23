@@ -902,5 +902,5 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	/**
 	 * for setting  project of last executed query on work flow page 
 	 */
-	public static final String  EXECUTED_FOR_PROJECT= "-1";
+	public static final String  EXECUTED_FOR_PROJECT= "executedForProject";
 }
