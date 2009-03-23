@@ -220,7 +220,7 @@ function sendValueToParent(pvConceptCodeList,pvNameListWithCode,pvNameList)
 function getMappingsOfConcepts(vocabCheckBoxId,vocabURN)
 {
 		continueMapping=true;
-		if(! isSelectedPVListEmpty())
+		if(! isSelectedPVListEmpty() && pervVocabCheckboxId!=vocabCheckBoxId) //Bug Fixed : #11767
 		{
 			continueMapping=confirm("All the selected Permissible Values will be removed. Do you want to continue? ");  
 		}
