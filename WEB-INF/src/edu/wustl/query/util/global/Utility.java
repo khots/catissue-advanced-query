@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -39,7 +43,11 @@ import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
+import edu.wustl.query.bizlogic.WorkflowBizLogic;
+import edu.wustl.query.querymanager.Count;
+import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.IQueryUpdationUtil;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 
 public class Utility extends edu.wustl.common.util.Utility
 {
@@ -698,4 +706,80 @@ public class Utility extends edu.wustl.common.util.Utility
 		}
 		return value;
 	}
+	
+	/**
+     * Private method used to generate the List of JSON objects.
+     *
+     * @param executionIdMap
+     *            Execution Id Map
+     * @param workflowBizLogic
+     *            Instance of BizLogic to be used.
+     * @param qUIManager
+     *            Instance of the Query UI Manager.
+     * @param projectId
+     *            Project Id
+     * @return The List of JSON Objects
+     * @throws QueryModuleException
+     *             if error while executing the query.
+     */
+	public static List<JSONObject> generateExecutionQueryResults(Map<Long, Integer> executionIdMap,
+            WorkflowBizLogic workflowBizLogic, AbstractQueryUIManager qUIManager,
+            boolean hasSecurePrivilege) throws QueryModuleException
+    {
+		Count resultCount = null;
+        JSONObject jsonObject = null;
+        List<JSONObject> executionQueryResults = new ArrayList<JSONObject>();
+
+	    Set<Long> titleset = executionIdMap.keySet();
+        Iterator<Long> iterator = titleset.iterator();
+        while (iterator.hasNext())
+        {
+            Long query = iterator.next();
+
+            resultCount = workflowBizLogic
+                    .getCount(executionIdMap.get(query));
+            boolean hasFewRecords = qUIManager.checkTooFewRecords(
+                      resultCount,hasSecurePrivilege);
+            if (hasFewRecords)
+            {
+            	resultCount.setCount(0);
+            } 
+            jsonObject = createResultJSON(query,
+                        resultCount.getCount(), resultCount
+                                .getStatus(), resultCount
+                                .getQueryExectionId());
+            executionQueryResults.add(jsonObject);
+        }
+        return executionQueryResults;
+	}
+	
+	/**
+     * @param queryId =Query identifier for which execute request sent
+     * @param errormessage
+     * @param workflowId
+     * @param queryIndex=row number where results to be displayed
+     * @param resultCount=value of result count for query
+     * @returns jsonObject
+     *
+     * creates the jsonObject for input parameters
+     */
+    public static JSONObject createResultJSON(Long queryId, int resultCount,
+            String status, int executionLogId)
+    {
+        JSONObject resultObject = null;
+        resultObject = new JSONObject();
+        try
+        {
+            resultObject.append("queryId", queryId);
+            resultObject.append("queryResult", resultCount);
+            resultObject.append("status", status);
+            resultObject.append("executionLogId", executionLogId);
+        }
+        catch (JSONException e)
+        {
+            Logger.out.info("error in initializing json object " + e);
+        }
+
+        return resultObject;
+    }
 }
