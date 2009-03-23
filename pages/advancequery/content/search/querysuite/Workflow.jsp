@@ -747,6 +747,7 @@ function executeGetDataQuery(dataQueryId)
 		}
 	else
 	{
+		showHourGlass();
       var countqId =countQueryId.options[countQueryId.selectedIndex].value;
 	  var hiddnid=  document.getElementById("dataQueryId");
 	  var hid=   document.getElementById("countQueryId") 
