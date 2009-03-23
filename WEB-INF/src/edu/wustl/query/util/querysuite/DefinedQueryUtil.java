@@ -50,14 +50,14 @@ public class DefinedQueryUtil
 	 * @throws UserNotAuthorizedException
 	 * @throws BizLogicException
 	 */
-	public void updateQuery(IQuery query) throws UserNotAuthorizedException, BizLogicException
+	public void updateQuery(IQuery query, SessionDataBean sessionDataBean, boolean isShared) throws UserNotAuthorizedException, BizLogicException, DAOException
 	{
 		IParameterizedQuery parameterizedQuery = populateParameterizedQueryData(query);
 		parameterizedQuery.setId(query.getId());
 		edu.wustl.query.bizlogic.QueryBizLogic bizLogic = (edu.wustl.query.bizlogic.QueryBizLogic) AbstractBizLogicFactory
 				.getBizLogic(ApplicationProperties.getValue("app.bizLogicFactory"), "getBizLogic",
 						Constants.ADVANCE_QUERY_INTERFACE_ID);
-		bizLogic.update(parameterizedQuery, Constants.HIBERNATE_DAO);
+		bizLogic.updateSavedQueries(parameterizedQuery, sessionDataBean, isShared);
 
 	}
 
