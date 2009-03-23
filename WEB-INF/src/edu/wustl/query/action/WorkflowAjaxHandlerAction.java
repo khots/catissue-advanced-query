@@ -4,10 +4,8 @@ package edu.wustl.query.action;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,7 +14,6 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.wustl.cider.query.CiderWorkFlowDetails;
@@ -32,8 +29,8 @@ import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.querymanager.AbstractQueryManager;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
-import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
  * @author niharika_sharma
@@ -144,9 +141,12 @@ public class WorkflowAjaxHandlerAction extends Action
                         project_id = (Integer.valueOf((request
                                 .getParameter(Constants.SELECTED_PROJECT))));
                     }
-
-
-                    // Get the executionType
+                    boolean hasSecurePrivilege = true;
+                    if(request.getSession().getAttribute(Constants.HAS_SECURE_PRIVILEGE)!=null)
+                    {
+                  	  hasSecurePrivilege = (Boolean)(request.getSession().getAttribute(Constants.HAS_SECURE_PRIVILEGE));
+                    }
+					// Get the executionType
                     String execType = request
                             .getParameter(Constants.REQ_ATTRIB_EXECUTION_TYPE);
                     if (execType != null
@@ -179,9 +179,9 @@ public class WorkflowAjaxHandlerAction extends Action
                                 .runWorkflow(workflowdetails,
                                         request);
                         executionQueryResults=
-                               generateExecutionQueryResults(
+                               Utility.generateExecutionQueryResults(
                                         executionIdMap, workflowBizLogic,
-                                        qUIManager, project_id,userId);
+                                        qUIManager,hasSecurePrivilege);
                     }
                     else
                     {
@@ -206,9 +206,9 @@ public class WorkflowAjaxHandlerAction extends Action
                                     .executeGetCountQuery(workflowdetails, queryId,
                                             request);
                             executionQueryResults=
-                                    generateExecutionQueryResults(
+                            	Utility.generateExecutionQueryResults(
                                             executionIdMap, workflowBizLogic,
-                                            qUIManager, project_id,userId);
+                                            qUIManager,hasSecurePrivilege);
 
                         } else
                         {
@@ -226,20 +226,16 @@ public class WorkflowAjaxHandlerAction extends Action
                             boolean hasFewRecords = false;
                             if (project_id > 0)
                             {
-                                hasFewRecords = qUIManager.checkTooFewRecords(Long
-                                        .valueOf(project_id), resultCount,userId);
+                            	hasFewRecords = qUIManager.checkTooFewRecords(resultCount,hasSecurePrivilege);
                             }
                             if (hasFewRecords)
                             {
-                                jsonObject = createResultJSON(queryId, 0,
-                                        resultCount.getStatus(), resultCount
-                                                .getQueryExectionId());
-                            } else
-                            {
-                                jsonObject = createResultJSON(queryId, resultCount
-                                        .getCount(), resultCount.getStatus(),
-                                        resultCount.getQueryExectionId());
-                            }
+                            	resultCount.setCount(0);
+                            } 
+                            jsonObject = Utility.createResultJSON(queryId,
+                                    resultCount.getCount(), resultCount
+                                            .getStatus(), resultCount
+                                            .getQueryExectionId());
                             executionQueryResults.add(jsonObject);
                         }
                     }
@@ -282,92 +278,4 @@ public class WorkflowAjaxHandlerAction extends Action
 
 		return null;
 	}
-
-    /**
-     * Private method used to generate the List of JSON objects.
-     *
-     * @param executionIdMap
-     *            Execution Id Map
-     * @param workflowBizLogic
-     *            Instance of BizLogic to be used.
-     * @param qUIManager
-     *            Instance of the Query UI Manager.
-     * @param projectId
-     *            Project Id
-     * @return The List of JSON Objects
-     * @throws QueryModuleException
-     *             if error while executing the query.
-     */
-	private List<JSONObject> generateExecutionQueryResults(Map<Long, Integer> executionIdMap,
-            WorkflowBizLogic workflowBizLogic, AbstractQueryUIManager qUIManager,
-            int projectId,Long userId) throws QueryModuleException
-    {
-        Count resultCount = null;
-        JSONObject jsonObject = null;
-        List<JSONObject> executionQueryResults = new ArrayList<JSONObject>();
-
-	    Set<Long> titleset = executionIdMap.keySet();
-        Iterator<Long> iterator = titleset.iterator();
-        while (iterator.hasNext())
-        {
-            Long query = iterator.next();
-
-            resultCount = workflowBizLogic
-                    .getCount(executionIdMap.get(query));
-//            executionQueryResults.add(createResultJSON(query,
-//                    resultCount.getCount(), resultCount
-//                            .getStatus(), resultCount
-//                            .getQueryExectionId()));
-            boolean hasFewRecords = false;
-            if (projectId > 0)
-            {
-                hasFewRecords = qUIManager.checkTooFewRecords(
-                        Long.valueOf(projectId), resultCount,userId);
-            }
-            if (hasFewRecords)
-            {
-                jsonObject = createResultJSON(query, 0,
-                        resultCount.getStatus(), resultCount
-                                .getQueryExectionId());
-            } else
-            {
-                jsonObject = createResultJSON(query,
-                        resultCount.getCount(), resultCount
-                                .getStatus(), resultCount
-                                .getQueryExectionId());
-            }
-            executionQueryResults.add(jsonObject);
-        }
-        return executionQueryResults;
-	}
-
-    /**
-     * @param queryId =Query identifier for which execute request sent
-     * @param errormessage
-     * @param workflowId
-     * @param queryIndex=row number where results to be displayed
-     * @param resultCount=value of result count for query
-     * @returns jsonObject
-     *
-     * creates the jsonObject for input parameters
-     */
-    private JSONObject createResultJSON(Long queryId, int resultCount,
-            String status, int executionLogId)
-    {
-        JSONObject resultObject = null;
-        resultObject = new JSONObject();
-        try
-        {
-            resultObject.append("queryId", queryId);
-            resultObject.append("queryResult", resultCount);
-            resultObject.append("status", status);
-            resultObject.append("executionLogId", executionLogId);
-        }
-        catch (JSONException e)
-        {
-            Logger.out.info("error in initializing json object " + e);
-        }
-
-        return resultObject;
-    }
 }
