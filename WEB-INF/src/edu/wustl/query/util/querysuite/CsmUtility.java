@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
@@ -29,6 +30,41 @@ public class CsmUtility {
 		PrivilegeCache privilegeCache = PrivilegeManager.getInstance().getPrivilegeCache(sessionDataBean.getUserName());
 		return privilegeCache;
 
+	}
+	
+	/**
+	 * It will check weather the object with the given objectId is shared or not.
+	 * I will check weather yhe 
+	 * @param objectId of the object which is to be checked for sharing.
+	 * @return true if object with given objectId has associated public Protection Group 
+	 * @throws CSObjectNotFoundException
+	 * @throws CSException
+	 */
+	public boolean checkIsSharedQuery(String objectId) throws CSObjectNotFoundException, CSException
+	{
+		ProtectionElement pe = new ProtectionElement();
+		List<ProtectionElement> peList = new ArrayList<ProtectionElement>();
+		PrivilegeUtility privilegeUtility = new PrivilegeUtility();
+		pe.setObjectId(objectId);
+		boolean sharedQuery=false;
+		//ProtectionGroupSearchCriteria groupSearchCriteria = new ProtectionGroupSearchCriteria
+		ProtectionElementSearchCriteria searchCriteria = new ProtectionElementSearchCriteria(pe);
+		peList = privilegeUtility.getUserProvisioningManager().getObjects(searchCriteria);
+		if (peList != null && !peList.isEmpty())
+		{
+			pe = peList.get(0);
+			Set<ProtectionGroup> pgSet = privilegeUtility.getUserProvisioningManager()
+					.getProtectionGroups(pe.getProtectionElementId().toString());
+			for (ProtectionGroup pg : pgSet)
+			{
+				if (pg.getProtectionGroupName().equals(Constants.PUBLIC_QUERY_PROTECTION_GROUP))
+				{
+					sharedQuery = true;
+				}
+			}
+		}
+		return sharedQuery;
+		
 	}
 	public void  checkExecuteQueryPrivilege(
 			Collection<IParameterizedQuery> authorizedQueryCollection,
