@@ -4,7 +4,7 @@
 
 package edu.wustl.common.query.impl;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -81,7 +81,7 @@ public class DataXQueryGeneratorTest
 
 		IExpression race = QueryBuilder.findExpression(Constants.RACE, joinGraph.getRoot(),
 				joinGraph);
-		QueryBuilder.addCondition(race, "id", RelationalOperator.In, "3452");
+		QueryBuilder.addCondition(race, "id", RelationalOperator.In, "3326");
 
 		List<IOutputAttribute> outputAttributes = new ArrayList<IOutputAttribute>();
 		QueryBuilder.addOutputAttribute(outputAttributes, joinGraph.getRoot(), "personUpi");
@@ -90,12 +90,9 @@ public class DataXQueryGeneratorTest
 
 		String xquery = generator.generateQuery(query);
 
-		ResultSet rs = executeParametrizedXQuery(xquery, "000000000000000001000823");
-		if (!rs.next())
-		{
-			fail("No Results !!!");
-		}
-
+		int count = executeParametrizedXQuery(xquery, "1317900");
+		assertEquals(1, count);
+		
 	}
 
 	@Test
@@ -119,11 +116,8 @@ public class DataXQueryGeneratorTest
 
 		String xquery = generator.generateQuery(query);
 
-		ResultSet rs = executeParametrizedXQuery(xquery, "000000000000000001000823");
-		if (!rs.next())
-		{
-			fail("No Results !!!");
-		}
+		int count = executeParametrizedXQuery(xquery, "1317900");
+		assertEquals(1, count);
 
 	}
 
@@ -140,7 +134,7 @@ public class DataXQueryGeneratorTest
 		IExpression demographics = QueryBuilder.findExpression(Constants.DEMOGRAPHICS, joinGraph
 				.getRoot(), joinGraph);
 		QueryBuilder.addCondition(demographics, "dateOfBirth", RelationalOperator.Between,
-				"01/01/1950", "01/01/1980");
+				"01/01/1920", "01/01/1980");
 
 		List<IOutputAttribute> outputAttributes = new ArrayList<IOutputAttribute>();
 		QueryBuilder.addOutputAttribute(outputAttributes, joinGraph.getRoot(), "personUpi");
@@ -149,11 +143,8 @@ public class DataXQueryGeneratorTest
 
 		String xquery = generator.generateQuery(query);
 
-		ResultSet rs = executeParametrizedXQuery(xquery, "000000000000000001000823");
-		if (!rs.next())
-		{
-			fail("No Results !!!");
-		}
+		int count = executeParametrizedXQuery(xquery, "1317900");
+		assertEquals(1, count);
 
 	}
 
@@ -169,7 +160,7 @@ public class DataXQueryGeneratorTest
 
 		IExpression address = QueryBuilder.findExpression(Constants.ADDRESS, joinGraph.getRoot(),
 				joinGraph);
-		QueryBuilder.addCondition(address, "line1", RelationalOperator.Contains, "S");
+		QueryBuilder.addCondition(address, "line1", RelationalOperator.Contains, "UNKNOWN");
 
 		List<IOutputAttribute> outputAttributes = new ArrayList<IOutputAttribute>();
 		QueryBuilder.addOutputAttribute(outputAttributes, joinGraph.getRoot(), "personUpi");
@@ -178,15 +169,13 @@ public class DataXQueryGeneratorTest
 
 		String xquery = generator.generateQuery(query);
 
-		ResultSet rs = executeParametrizedXQuery(xquery, "000000000000000001000823");
-		if (!rs.next())
-		{
-			fail("No Results !!!");
-		}
+		int count = executeParametrizedXQuery(xquery, "1317900");
+		assertEquals(1, count);
 
 	}
 
-	private ResultSet executeParametrizedXQuery(String xquery, String... values) throws Exception
+	
+	private int executeParametrizedXQuery(String xquery, String... values) throws Exception
 	{
 		PreparedStatement ps = params.getPreparedStatement(xquery);
 
@@ -195,7 +184,15 @@ public class DataXQueryGeneratorTest
 			ps.setString(i + 1, values[i]);
 		}
 
-		return ps.executeQuery();
+		ResultSet rs =  ps.executeQuery();
+		
+		int count =0;
+		while(rs.next())
+		{
+			count++;
+		}
+		
+		return count;
 	}
 
 }
