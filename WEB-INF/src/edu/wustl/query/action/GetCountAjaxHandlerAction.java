@@ -5,6 +5,7 @@ import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -13,7 +14,6 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.factory.AbstractQueryManagerFactory;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.querysuite.queryobject.IQuery;
@@ -44,6 +44,7 @@ public class GetCountAjaxHandlerAction extends Action
 			HttpServletRequest request, HttpServletResponse response)
 	{
 		int queryExecID = 0;
+		HttpSession session = request.getSession();
 		try {
 			boolean abortExecution	= Boolean.valueOf(request.getParameter(Constants.ABORT_EXECUTION));
 			Writer writer = response.getWriter();
@@ -68,33 +69,37 @@ public class GetCountAjaxHandlerAction extends Action
 			if(!abortExecution)
 			{
 				boolean isNewQuery = Boolean.valueOf(request.getParameter(Constants.IS_NEW_QUERY));
+				AbstractQueryUIManager qUIManager	= AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
 				if(isNewQuery)	//if a new getcount query is fired from the pop-up
 				{
 					//retrieve the Selected Project from the GetCountPopUp.jsp
 					String selectedProject_value = request.getParameter(Constants.SELECTED_PROJECT);
 					if(selectedProject_value!=null)
 					{
-						request.getSession().setAttribute(Constants.SELECTED_PROJECT,selectedProject_value);
+						session.setAttribute(Constants.SELECTED_PROJECT,selectedProject_value);
 					}
+					boolean hasSecurePrivilege = true;
+					session.removeAttribute(Constants.HAS_SECURE_PRIVILEGE);
+			        if (!selectedProject_value.equals("") && Long.valueOf(selectedProject_value) > 0)
+			        {
+			       	  	hasSecurePrivilege = qUIManager.hasSecurePrivilege(request);
+			        }
+			        session.setAttribute(Constants.HAS_SECURE_PRIVILEGE,hasSecurePrivilege);
 					IQuery query = (IQuery)request.getSession().getAttribute(DAGConstant.QUERY_OBJECT);
 					queryTitle = query.getName();
-					AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(),request,query);
+					qUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(),request,query);
 					queryExecID	= qUIManager.searchQuery(null);
 				}
 				
-				SessionDataBean sessionData = (SessionDataBean) request
-                .getSession().getAttribute(Constants.SESSION_DATA);
-				Long userId = sessionData.getUserId();
-				
 				//retrieve count with query execution id
-				AbstractQueryUIManager qUIManager	= AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
 				Count countObject = qUIManager.getCount(queryExecID);
-				String projectId = (String)request.getSession().getAttribute(Constants.SELECTED_PROJECT);
 				boolean hasFewRecords = false;
-				if(projectId != null && !projectId.equals(""))
-				{
-					hasFewRecords = qUIManager.checkTooFewRecords(Long.valueOf(projectId),countObject,userId);
-				}
+				boolean hasSecurePrivilege = true;
+                if(request.getSession().getAttribute(Constants.HAS_SECURE_PRIVILEGE)!=null)
+                {
+                   hasSecurePrivilege = (Boolean)(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE));
+                }
+				hasFewRecords = qUIManager.checkTooFewRecords(countObject,hasSecurePrivilege);
 				JSONObject resultObject = null;
 				if(hasFewRecords)
 				{
