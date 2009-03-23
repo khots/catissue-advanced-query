@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import edu.wustl.common.beans.SecurityDataBean;
+import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.security.PrivilegeCache;
 import edu.wustl.common.security.PrivilegeManager;
@@ -18,10 +19,12 @@ import edu.wustl.common.security.SecurityManager;
 import edu.wustl.common.security.exceptions.SMException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.CsmUtility;
 import gov.nih.nci.security.authorization.domainobjects.ProtectionElement;
 import gov.nih.nci.security.authorization.domainobjects.User;
 import gov.nih.nci.security.dao.ProtectionElementSearchCriteria;
 import gov.nih.nci.security.exceptions.CSException;
+import gov.nih.nci.security.exceptions.CSObjectNotFoundException;
 
 public class SavedQueryAuthorization implements Roles
 {
@@ -137,4 +140,31 @@ public class SavedQueryAuthorization implements Roles
 	{
 		return "User_" + csmUserId;
 	}
+
+	/**
+	 * It will check weather the given query is shared or not will return true or false accordingly
+	 * @param query
+	 * @return true if query is shared else false
+	 * @throws DAOException
+	 */
+	public boolean checkIsSharedQuery(IParameterizedQuery query) throws DAOException
+	{
+		CsmUtility csmUtility=new CsmUtility();
+		String objectId= ((ParameterizedQuery)query).getObjectId();
+		boolean isShared=false;
+		try
+		{
+			isShared = csmUtility.checkIsSharedQuery(objectId);
+		}
+		catch (CSObjectNotFoundException e)
+		{
+			throw new DAOException(e);
+		}
+		catch (CSException e)
+		{
+			throw new DAOException(e);
+		}
+		return isShared;
+	}
+	 
 }
