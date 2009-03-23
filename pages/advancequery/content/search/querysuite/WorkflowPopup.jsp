@@ -400,7 +400,7 @@ int queryCount = 0;%>
 								<table>
 									<tr>
 										<td class="content_txt_bold" style="padding-left:5px;">
-											Show Items : 
+											<bean:message key="userSearch.resultsPerPage"/>
 										</td>
 										<td>
 											<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}">
