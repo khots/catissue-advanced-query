@@ -13,9 +13,19 @@
 	String workflowName=(String)request.getAttribute(Constants.WORKFLOW_NAME);
 	String pageOf = (String)request.getAttribute("pageOf");
 	String isworkflow = (String)request.getAttribute(Constants.IS_WORKFLOW);
+	boolean isShared = (Boolean)request.getAttribute(Constants.SAHRED_QUERIES);
+	String valueOfchkBox;
 	String isSaveButtonDisable = "";
 	 String action;
 	 request.setAttribute("pageOf",pageOf);
+	 if(isShared==true)
+	 {
+		valueOfchkBox="false";
+	 }
+	 else
+	 {
+		valueOfchkBox="true";
+	 }
 	if("true".equals(isworkflow))
 	{
 	  action= Constants.SAVE_QUERY_ACTION+"?isWorkflow="+isworkflow;
@@ -129,7 +139,7 @@
 				   </tr>
 				   </table>
 				   </div>-->
-				   <html:checkbox property="shareQuery" styleId="shareQuery"/>&nbsp;				
+				   <html:checkbox property="shareQuery" styleId="shareQuery" disabled="<%=isShared%>" value="<%=valueOfchkBox%>"/>&nbsp;				
 				   <bean:message
 							key="query.shareQuery.permission" /></td>
 
