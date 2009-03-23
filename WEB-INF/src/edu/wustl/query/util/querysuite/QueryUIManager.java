@@ -125,7 +125,8 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 		DefinedQueryUtil definedQueryUtil = new DefinedQueryUtil();
 		try
 		{
-			definedQueryUtil.updateQuery(query);
+			definedQueryUtil.updateQuery(query,(SessionDataBean) session
+					.getAttribute(Constants.SESSION_DATA), false);
 		}
 		catch (UserNotAuthorizedException e)
 		{
@@ -133,6 +134,11 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 			throw queryModExp;
 		}
 		catch (BizLogicException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
+		}
+		catch (DAOException e)
 		{
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
 			throw queryModExp;
