@@ -898,4 +898,9 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String AQ_STRUTS_CONFIG_DTD_FILE_NAME = "struts-config_1_1.dtd";
 	public static final String STRUTS_NODE_ACTION = "action";
 	public static final String NODE_ACTION_ATTRIBUTE_PATH = "path";
+	
+	/**
+	 * for setting  project of last executed query on work flow page 
+	 */
+	public static final String  EXECUTED_FOR_PROJECT= "-1";
 }
