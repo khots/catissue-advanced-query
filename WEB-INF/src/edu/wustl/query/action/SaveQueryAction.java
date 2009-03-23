@@ -97,6 +97,7 @@ public class SaveQueryAction extends BaseAction
 							"getBizLogic", Constants.ADVANCE_QUERY_INTERFACE_ID);
 			SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
 					Constants.SESSION_DATA);
+			boolean isShared = ((SaveQueryForm) actionForm).isShareQuery();
 
 			/*IParameterizedQuery queryClone = new DyExtnObjectCloner().clone(parameterizedQuery);
 			new HibernateCleanser(queryClone).clean();*/
@@ -108,7 +109,7 @@ public class SaveQueryAction extends BaseAction
 			else
 			{
 				DefinedQueryUtil queryUtil=new DefinedQueryUtil();
-				queryUtil.updateQuery(parameterizedQuery);
+				queryUtil.updateQuery(parameterizedQuery,sessionDataBean,isShared);
 			}
 			// save query to workflow if it is a workflow query
 			String isworkflow = request.getParameter(Constants.IS_WORKFLOW);
