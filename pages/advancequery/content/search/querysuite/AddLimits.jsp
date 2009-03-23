@@ -43,6 +43,7 @@
  <html:form method="GET" action="<%=formAction%>" style="margin:0;padding:0;">
 	<html:hidden property="stringToCreateQueryObject" value="" />
 	<html:hidden property="nextOperation" value="" />
+	<html:hidden property="requestFrom" value="" />
 	 <input type="hidden" name="isWorkflow" id="isWorkflow" value="">
    
  <input type="hidden" name="pageOf" id="pageOf" value="pageOfGetData">
