@@ -1,8 +1,6 @@
 
 package edu.wustl.query.action;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -13,9 +11,6 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -26,18 +21,17 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
-import edu.wustl.common.util.global.Variables;
 import edu.wustl.common.vocab.IConcept;
 import edu.wustl.common.vocab.IVocabulary;
 import edu.wustl.common.vocab.VocabularyException;
 import edu.wustl.common.vocab.impl.Concept;
 import edu.wustl.common.vocab.impl.Vocabulary;
-import edu.wustl.common.vocab.utility.VIError;
 import edu.wustl.common.vocab.utility.VocabUtil;
 import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.bizlogic.SearchPermissibleValueBizlogic;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.VIProperties;
+import edu.wustl.vi.enums.VISearchAlgorithm;
 
 /**
  * @author amit_doshi
@@ -61,22 +55,23 @@ public class SearchPermissibleValuesAction extends Action
 	{
 
 		String searchTerm = request.getParameter(Constants.SEARCH_TERM);
-		String searchCriteria = request.getParameter("searchCriteria");
+		String ANY_WORD = request.getParameter(Constants.ANY_WORD);
+		String searchCriteria = request.getParameter(Constants.SEARCH_CRITERIA);
 		String operation = request.getParameter(Constants.OPERATION);
-		String targetVocabs = request.getParameter("targetVocabsForSearchTerm");
+		String targetVocabs = request.getParameter(Constants.TARGET_VOCABS);
+		SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
+		.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
 		//get the id of the component on which user click to search for PVs
 		String componentId = request.getParameter(Constants.COMPONENT_ID);
-		if (componentId == null)
+		componentId = getComponentId(request, componentId);
+		if(ANY_WORD!=null && VISearchAlgorithm.valueOf(ANY_WORD).equals(VISearchAlgorithm.ANY_WORD))
 		{
-			//need to save componetid into the session for next Ajax requests
-			componentId = (String) request.getSession().getAttribute(Constants.COMPONENT_ID);
+			response.getWriter().write(bizLogic.getMessageFromFile());
 		}
-
-		if (searchTerm != null && targetVocabs != null)
+		else if (searchTerm != null && targetVocabs != null)
 		{
 			// AJAX Request handler for Getting search term Result data for source to target vocabularies
-			SearchPermissibleValueBizlogic bizLogic = (SearchPermissibleValueBizlogic) BizLogicFactory
-					.getInstance().getBizLogic(Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID);
+			
 			if (operation.equals(Constants.ABORT))
 			{
 				response.getWriter().write(
@@ -99,6 +94,21 @@ public class SearchPermissibleValuesAction extends Action
 
 		}
 		return null;
+	}
+
+	/**
+	 * @param request
+	 * @param componentId
+	 * @return
+	 */
+	private String getComponentId(HttpServletRequest request, String componentId)
+	{
+		if (componentId == null)
+		{
+			//need to save componetid into the session for next Ajax requests
+			componentId = (String) request.getSession().getAttribute(Constants.COMPONENT_ID);
+		}
+		return componentId;
 	}
 
 	/**
