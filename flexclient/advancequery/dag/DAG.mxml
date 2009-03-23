@@ -146,6 +146,16 @@ Application
 	private var existingSecondOpComboBox : ComboBox = null;
 	private var existingOpComboBox : ComboBox = null;
 	
+	
+	//pankaj
+	 //private var actualHeight : int = 0; 
+	 //private var actualWidth : int = 0;
+	 
+	 private var lastAddedNodeX : int =0;
+	 private  var lastAddedNodeY : int =0;
+	  
+	 private  var lastAddedNodeExpId = 0; 
+	 
 	/**
 	* Timer handler  to check container has been initialized.	
 	*/
@@ -261,6 +271,12 @@ Application
 		
 		dagNode.x = pt.x;
 		dagNode.y = pt.y;
+		
+		if(dagNode.expressionId == lastAddedNodeExpId)
+		{
+			lastAddedNodeX = pt.x;
+			lastAddedNodeY = pt.y;
+		}
 
 		var ass:Association;
 		var inAssociations:ArrayCollection;
@@ -884,6 +900,10 @@ Application
 		var x:int=0;
 		var y:int=0;
 		var nodeColor:int=0;
+		
+		var changeX : Boolean = false; 
+		
+		
 		newNode.id = node.expressionId.toString();
 		if(isOutputView)
 		{
@@ -898,14 +918,60 @@ Application
 		if(mainPanel.getChildren().length==0)
 		{
 			x = 20;
-			y = (mainPanel.y+50);
+			y = (mainPanel.y);
+			
+			lastAddedNodeX = x;
+			lastAddedNodeY = y;
 		}
 		else
 		{ 
-			var length:int=mainPanel.getChildren().length;
-			x = 20;
-			y = (mainPanel.y+50)+(40*length);
+/* 			var length:int=mainPanel.getChildren().length;
+			x = 20 + (200 * actualWidth);
+			y = (mainPanel.y)+(40*actualHeight);
+			
+			
+			if(y  >= mainPanel.height)
+			{
+				
+				changeX = true;	
+				actualWidth++;
+			}	
+			var lastNode : DAGNode = mainPanel.getChildAt(length-1) as DAGNode;
+			if(lastNode != null &&  changeX == true)
+			{
+
+				var x1 : int = lastNode.getX() +  lastNode.width + 10;
+             	x = x1;
+             	y = (mainPanel.y);
+             	actualHeight=0;
+    	        changeX =  false;		
+    		}
+    		else if(lastNode != null &&  changeX == false) 
+    		{
+    			y = (mainPanel.y)+(40*actualHeight);	
+    			
+    		}
+ */			
+ 
+          // var lastAddedNode : DAGNode = mainPanel.getChildAt(0) as DAGNode;
+       
+           //  Alert.show("Node Height is :"+lastAddedNode.getHeight());
+            // Alert.show("NOde Width is :"+ lastAddedNode.getWidth());
+               
+      
+            var newX :int = lastAddedNodeX +  100;//lastAddedNode.getWidth()/2;
+            var newY :int = lastAddedNodeY + 50;//(lastAddedNode.getHeight()*(3/2));
+            
+           lastAddedNodeX = newX;
+           lastAddedNodeY  = newY;
+           
+            x =  newX;
+            y =  newY;
+              
+               
+ 
 		}
+		//actualHeight++;
 		newNode.dagpathList = new ArrayCollection();
 		trace("mainPanel.y = " + mainPanel.y);			
 		trace("DAG X= " + x + "Y= " + y + "name=" + name);
@@ -915,15 +981,19 @@ Application
 		mainPanel.addChild(newNode);
 		totalNodes.addItem(newNode);
 		currentExp.text =getExprssionString();
+		
+		
+		
+		lastAddedNodeExpId = newNode.expressionId;
 	}
 	/**
 	 Draw link between 2 nodes. 
 	*/
-	private function drawLine():void{
+	private function drawLine():void
+	{
 		CursorManager.setBusyCursor();
 		
 		var dagNode1:DAGNode = DAGNode(mainPanel.getChildByName(node1));
-		
 		var dagNode2:DAGNode = DAGNode(mainPanel.getChildByName(node2));
 			
 		if(dagNode1 == null || dagNode2 == null)
@@ -1005,7 +1075,6 @@ Application
 	*/	
 	public function link(node1:String,node2:String):void
 	{
-		
 		firstNode=node1;
 		secondNode=node2;
 		rpcService.addEventListener("result",getPathHandler);
@@ -1190,8 +1259,17 @@ Application
 	*/
 	public function editLimit(strToCreateQueyObject:String,entityName:String):void
 	{
+		
+		if(strToCreateQueyObject=="")	
+		{
+			showValidationMessagesToUser(DAGConstants.EMPTY_LIMIT_ERROR_MESSAGE);
+		}
+		else
+		{
 			rpcService.addEventListener(ResultEvent.RESULT,editNodeHandler);
 			rpcService.editNode(strToCreateQueyObject,entityName);
+		}
+							
 	}
 	/**
 	* Edit node handler
