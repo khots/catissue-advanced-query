@@ -60,6 +60,7 @@ import edu.wustl.query.queryengine.impl.IQueryGenerator;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.global.Variables;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
  * @author juberahamad_patel
@@ -1295,7 +1296,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	/* (non-Javadoc)
 	 * @see edu.wustl.query.queryengine.impl.IQueryGenerator#generateQuery(edu.wustl.common.querysuite.queryobject.IQuery)
 	 */
-	public abstract String generateQuery(IQuery query) throws MultipleRootsException, SqlException;
+	public abstract String generateQuery(IQuery query) throws QueryModuleException;
 
 	/* (non-Javadoc)
 	 * @see edu.wustl.query.queryengine.impl.IQueryGenerator#getAttributeColumnNameMap()
