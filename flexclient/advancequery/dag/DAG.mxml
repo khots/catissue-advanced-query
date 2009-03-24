@@ -209,7 +209,7 @@ Application
 	private function faultHandler (event:FaultEvent):void
 	{		
 		var errorMessage:ErrorMessage = event.message as ErrorMessage;	
-		AlertManager.showError("Fault occur at server please contact Administrator.");
+	    AlertManager.showError("Fault occur at server please contact Administrator.");
 		trace(errorMessage.faultString);
 		trace(errorMessage);
 		rpcService.removeEventListener("result",linkNodesHandler);
@@ -1260,15 +1260,15 @@ Application
 	public function editLimit(strToCreateQueyObject:String,entityName:String):void
 	{
 		
-		if(strToCreateQueyObject=="")	
+		/*if(strToCreateQueyObject=="")	
 		{
 			showValidationMessagesToUser(DAGConstants.EMPTY_LIMIT_ERROR_MESSAGE);
 		}
 		else
-		{
+		{*/
 			rpcService.addEventListener(ResultEvent.RESULT,editNodeHandler);
 			rpcService.editNode(strToCreateQueyObject,entityName);
-		}
+		//}
 							
 	}
 	/**
