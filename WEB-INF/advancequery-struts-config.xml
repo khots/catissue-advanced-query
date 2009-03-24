@@ -622,8 +622,9 @@ PUBLIC
 		
 		<action path="/QueryResultsView" 
         	type="edu.wustl.query.action.ViewResultsAction"
+            name="categorySearchForm"
             validate="false"
-			scope="request" >
+            scope="request" >
 		  <forward name="success" path=".query.viewSearchResults"/>
         </action>
         
