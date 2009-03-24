@@ -788,7 +788,8 @@ function executeGetDataQuery(dataQueryId)
 		var exId= document.getElementById(executinIDElement).value;
 		var projectId=document.getElementById("selectedProject").value;
 	    var workflowId=document.getElementById("id").value;
-		document.forms[0].action="\QueryResultsView.do?dataQueryId="+dataQueryId+"&queryExecutionId="+exId+"&selectedProject="+projectId+"&workflowId="+workflowId;
+		var workflowName =document.getElementById("name").value;
+		document.forms[0].action="\QueryResultsView.do?dataQueryId="+dataQueryId+"&queryExecutionId="+exId+"&selectedProject="+projectId+"&workflowId="+workflowId+"&workflowName="+workflowName;
 	   document.forms[0].submit();
 	 }
 	  
