@@ -721,7 +721,7 @@ function changeLinkToCancel(queryId,executionLogId)
 	 imageForProgressiveCounts(index);
 }
 
-function changeExecuteLinkToExecute(queryId,executionLogId)
+function changeExecuteLinkToExecute(queryId,executionLogId,status)
 {
 	var identifier=document.getElementById("queryIdForRow_"+queryId);
 	var object=identifier.parentNode;
@@ -744,7 +744,18 @@ function changeExecuteLinkToExecute(queryId,executionLogId)
 		parentIObj.appendChild(createLink("Execute ","execute_"+index,"javascript:executeGetCountQuery('"+escape(t)+"','"+0+"')"));
 		enableDeleteLink(index);
 	}
-	imageForCompletedCounts(index);
+	if(status=='Completed')
+	{
+		imageForCompletedCounts(index);
+	}
+	 else if(status=='Cancelled')
+	{
+		imageForCancelled(index);
+	}
+		if(status=='Query Failed')
+	{
+		imageForFailed(index);
+	}
 }
 function changeCancelLinkExecute(index)
 {
@@ -861,7 +872,25 @@ function imageForNotRunning(index)
  	x.onmouseover=function chnageToolTip(x){ Tip('Not Run'); };
 
 }
+function imageForCancelled(index)
+{
+  var x = document.getElementById("notStarted_"+index);
+  var v = x.getAttribute("src");
+  v = "images/advancequery/ic_wf_cancel.gif";
+  x.setAttribute("src", v);	
+  x.onmouseover=function chnageToolTip(x){ Tip('Cancelled'); };
 
+}
+
+function imageForFailed(index)
+{
+  var x = document.getElementById("notStarted_"+index);
+  var v = x.getAttribute("src");
+  v = "images/advancequery/ic_wf_error.gif";
+  x.setAttribute("src", v);	
+ x.onmouseover=function chnageToolTip(x){ Tip('Failed'); };
+
+}
 
 function addEvent3(){
 			setCheckboxCount();
