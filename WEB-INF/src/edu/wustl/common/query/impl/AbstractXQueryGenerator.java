@@ -56,6 +56,8 @@ import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
+import edu.wustl.query.util.querysuite.QueryModuleError;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 import edu.wustl.query.xquerydatatypes.XQueryAttributeType;
 import edu.wustl.query.xquerydatatypes.XQueryDataTypeInitializationException;
 
@@ -132,7 +134,7 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	 * @parameters : char QueryType = representing the kind of query whether aggregate or normal
 	 */
 	@Override
-	public String generateQuery(IQuery query) throws MultipleRootsException, SqlException
+	public String generateQuery(IQuery query) throws QueryModuleException
 	{
 		String formedQuery = null;
 		try
@@ -143,16 +145,27 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 		}
 		catch (SQLXMLException e)
 		{
-			throw new SqlException("problem while trying to build xquery", e);
+			throw new QueryModuleException("problem while trying to build xquery"+ e.getMessage(), QueryModuleError.SQL_EXCEPTION);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			throw new SqlException("problem while trying to build xquery", e);
+			throw new QueryModuleException("problem while trying to build xquery"+ e.getMessage(), QueryModuleError.GENERIC_EXCEPTION);
 		}
 		catch (XQueryDataTypeInitializationException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new QueryModuleException("problem while trying to build xquery"+ e.getMessage(), QueryModuleError.GENERIC_EXCEPTION);
+		}
+		catch (MultipleRootsException e) 
+		{
+			throw new QueryModuleException("problem while trying to build xquery"+ e.getMessage(), QueryModuleError.MULTIPLE_ROOT);
+		}
+		catch (NumberFormatException e) 
+		{
+			throw new QueryModuleException("problem while trying to build xquery"+ e.getMessage(), QueryModuleError.GENERIC_EXCEPTION);
+		}
+		catch (SqlException e) 
+		{
+			throw new QueryModuleException("problem while trying to build xquery"+ e.getMessage(), QueryModuleError.SQL_EXCEPTION);
 		}
 
 		if (!Variables.isExecutingTestCase)
