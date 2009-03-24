@@ -415,6 +415,42 @@ public class WorkflowForm extends AbstractActionForm
 	public void setQueryIdList(String[] queryIdList) {
 		this.queryIdList = queryIdList;
 	}
+	
+//	private Long createdBy;
+//
+//	/**
+//	 * @return for user id
+//	 */
+//	public Long getCreatedBy() {
+//		return createdBy;
+//	}
+//
+//	/**
+//	 * @param createdBy  for  setting the User id
+//	 */
+//	public void setCreatedBy(Long createdBy) {
+//		this.createdBy = createdBy;
+//	}
+
+	/**
+	 * added for get Count ->>>latest project Id
+	 */
+	Long executedForProject;
+
+	/**
+	 * @return latest project Id
+	 */
+	public Long getExecutedForProject() {
+		return executedForProject;
+	}
+
+	/**
+	 * set value of latest project Id
+	 * @param executedForProject=latest project Id
+	 */
+	public void setExecutedForProject(Long executedForProject) {
+		this.executedForProject = executedForProject;
+	}
 
 	/**
 	 * @param domain object from which form object will generate
