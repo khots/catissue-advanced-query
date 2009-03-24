@@ -70,6 +70,7 @@ public class QueryGetCountAction extends Action
 			session.removeAttribute(Constants.MAIN_EXPRESSIONS_ENTITY_EXP_ID_MAP);
 			session.removeAttribute(Constants.MAIN_ENTITY_LIST);
 			session.removeAttribute(Constants.Query_Type);
+			session.removeAttribute("queryName");
 		}
 
 		searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
@@ -100,7 +101,6 @@ public class QueryGetCountAction extends Action
 			sessionData.setLastName("admin@admin.com");
 			sessionData.setAdmin(true);
 			sessionData.setSecurityRequired(false);
-			request.setAttribute("queryType", "GetCount");
 			session.setAttribute(Constants.SESSION_DATA, sessionData);
 		}
 		else
