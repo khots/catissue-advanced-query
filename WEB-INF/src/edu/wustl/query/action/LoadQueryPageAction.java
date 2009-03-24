@@ -34,6 +34,8 @@ public class LoadQueryPageAction extends Action
 				.get(Constants.WORKFLOW_NAME)));
 		session.setAttribute(Constants.WORKFLOW_ID, Utility
 				.toString(map.get(Constants.WORKFLOW_ID)));
+		session.setAttribute(Constants.EXECUTED_FOR_PROJECT, Utility
+				.toString(map.get(Constants.EXECUTED_FOR_PROJECT)));
 		return mapping.findForward(request.getParameter(Constants.NEXT_PAGE_OF));
 
 	}

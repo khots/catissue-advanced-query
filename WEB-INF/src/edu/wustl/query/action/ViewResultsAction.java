@@ -111,6 +111,8 @@ public class ViewResultsAction extends Action
 		session.setAttribute(Constants.EXECUTION_ID_OF_QUERY, queryExecutionID);
 		session.setAttribute(Constants.PATIENT_QUERY_ROOT_OUT_PUT_NODE_LIST,rootOutputTreeNodeList);
 		session.setAttribute(Constants.PATIENT_DATA_QUERY,getPatientDataQuery);
+		session.setAttribute(Constants.EXECUTED_FOR_PROJECT,  request.getParameter(
+				Constants.EXECUTED_FOR_PROJECT));
 
 		
 		String labelNodeId = getUniqueNodeID(rootNode, uniqueIdNodesMap);

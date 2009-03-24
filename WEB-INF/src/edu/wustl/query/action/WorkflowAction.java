@@ -56,8 +56,18 @@ public class WorkflowAction extends Action
 				*/
 				id=(String) request.getAttribute(Constants.WORKFLOW_ID);
 			}
-			setQueryExecutionid(form,(SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA)
-					,Long.valueOf(id));
+			SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA);
+			//added for get Count ->>>latest project Id
+			Long latestProjectId =null;
+			if(request.getAttribute(Constants.EXECUTED_FOR_PROJECT)==null)
+			{
+				latestProjectId = getLatestProjectId(Long.valueOf(id),sessionDataBean.getUserId());
+			}
+			else
+			{
+				latestProjectId=(Long) request.getAttribute(Constants.EXECUTED_FOR_PROJECT);
+			}
+			setQueryExecutionid(form,sessionDataBean,Long.valueOf(id), latestProjectId);
 		}
 	   else
 		{
@@ -68,6 +78,7 @@ public class WorkflowAction extends Action
 			request.setAttribute(Constants.ID, request.getParameter(Constants.ID));
 		}
 		setProjectList(request);
+		//request.setAttribute(Constants.EXECUTED_FOR_PROJECT,2);
 		if(request.getAttribute(Constants.WORKFLOW_ID)!=null)
 		{
 			request.setAttribute(Constants.WORKFLOW_ID,  request.getAttribute(Constants.WORKFLOW_ID));
@@ -76,7 +87,20 @@ public class WorkflowAction extends Action
 		return mapping.findForward(Constants.SUCCESS);
 	}
 
-	private void setProjectList(HttpServletRequest request) throws QueryModuleException
+	/**
+	 * Get the latest project Id
+	 * @param id The workflowId
+	 * @param userId The userId
+	 * @return The Latest projectId
+	 * @throws BizLogicException
+	 */
+	private Long getLatestProjectId(Long id, Long userId) throws BizLogicException
+    {
+        WorkflowBizLogic workflowBizLogic=new WorkflowBizLogic();
+        return workflowBizLogic.getLatestProject(id, userId);
+    }
+
+    private void setProjectList(HttpServletRequest request) throws QueryModuleException
 	{
 		//Retrieve the Project list
 
@@ -91,15 +115,16 @@ public class WorkflowAction extends Action
 			request.setAttribute(Constants.PROJECT_NAME_VALUE_BEAN, projectList);
 		}
 	}
-	private void setQueryExecutionid(ActionForm form,SessionDataBean sessionDataBean,Long id) throws  BizLogicException
+	private void setQueryExecutionid(ActionForm form,SessionDataBean sessionDataBean,Long id, Long projectId) throws  BizLogicException
 	{
 		WorkflowForm  workflowForm=(WorkflowForm)form;
 		WorkflowBizLogic workflowBizLogic=new WorkflowBizLogic();
-		List<Integer> queryexecutionId=workflowBizLogic.generateExecutionIdMap(id, sessionDataBean.getUserId());
+		List<Integer> queryexecutionId=workflowBizLogic.generateExecutionIdMap(id, sessionDataBean.getUserId(),projectId);
 
 		Integer[] queryExeId = new Integer[queryexecutionId.size()];
 		queryexecutionId.toArray(queryExeId);
 		workflowForm.setQueryExecId(queryExeId);
+		workflowForm.setExecutedForProject(projectId);
 
 	}
 }

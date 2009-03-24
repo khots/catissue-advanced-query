@@ -9,6 +9,8 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import edu.wustl.common.util.Utility;
 import edu.wustl.query.util.global.Constants;
 
 /**
@@ -30,11 +32,22 @@ public class RedirectToWorkflowAction extends Action
 				.getAttribute(Constants.WORKFLOW_ID));
 		request.setAttribute(Constants.SYSTEM_IDENTIFIER, Long.valueOf(workflowId
 				));
-
+		
+		
 		if (workflowId != null && workflowName != null)
 		{
 			session.removeAttribute(Constants.WORKFLOW_ID);
 			session.removeAttribute(Constants.WORKFLOW_NAME);
+
+		}
+
+		// added for get Count ->>>latest project Id
+		String executedForProject = (String) session.getAttribute(Constants.EXECUTED_FOR_PROJECT);
+		if(executedForProject!=null)
+		{
+			request.setAttribute(Constants.EXECUTED_FOR_PROJECT, Long.valueOf(executedForProject
+			));
+			session.removeAttribute(Constants.EXECUTED_FOR_PROJECT);
 
 		}
 		return (mapping.findForward(Constants.QUERYWIZARD));
