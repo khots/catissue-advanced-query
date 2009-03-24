@@ -45,7 +45,12 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 					</td>
 				</tr>
 <html:form method="GET" action="<%=formAction%>">
+   <input type="hidden" name="isWorkflow" id="isWorkflow" value="true">
+    <input type="hidden" name="currentPage" id="currentPage" value="resultsView">
+	 <input type="hidden" name="isQuery" id="isQuery" value="true">
+		<tr>
 		<!--<tr>
+
 		<td  height="10"	></td>
 		</tr>-->
 		<!--<tr >	
@@ -125,9 +130,9 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 					 <table border="0" cellspacing="0" cellpadding="0">
 					  <tr>
 						
-						<td valign="top" align="right" style="padding-right:5px; display:none;" ><a href="javascript:previousFromDefineResults();"><img alt= "<< Redefine Filters" src="images/advancequery/b_redefine_filter.gif" border="0"  
+						<td valign="top" align="right" style="padding-right:5px; " ><a href="javascript:previousFromDefineResults('ViewResults');"><img alt= "<< Redefine Filters" src="images/advancequery/b_redefine_filter.gif" border="0"  
 		     /></a></td>
-						<td valign="top" align="right" style="padding-right:5px; display:none;"><a href="javascript:saveClientQueryToServer('next');"><img alt="<< Redefine Results View" src="images/advancequery/b_redefine_results_view.gif" border="0" /></a></td>
+						<td valign="top" align="right" style="padding-right:5px; "><a href="javascript:redefineResultsView();"><img alt="<< Redefine Results View" src="images/advancequery/b_redefine_results_view.gif" border="0" /></a></td>
 						</tr>
 					</table>
 					 </td>
