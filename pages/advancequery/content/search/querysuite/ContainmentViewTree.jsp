@@ -389,7 +389,8 @@
 	    obj.options.selectedIndex++;
 	  }
 	}	
-    function selectOptions(element)
+   
+	function selectOptions(element)
 	{
 		for(i=0;i<element.length;i++) 
 		{
@@ -422,9 +423,17 @@ function initTreeView()
 		tree.setOnClickHandler();	
 		tree.enableCheckBoxes(1);
 	    tree.enableThreeStateCheckboxes(true);
-		tree.loadXML('<%= fileName %>',deleteFile);
-      //select previously selected items
- <%
+		var bool = tree.loadXML('<%= fileName %>',afterXmlLoad);
+    
+	  //select previously selected items
+
+		
+}
+
+// set nodes checked after xml is loaded
+function afterXmlLoad()
+{
+  <%
     if(selectedColumnNameValueBeanList!=null)
   {
 	for(int i=0;i<selectedColumnNameValueBeanList.size();i++) {
@@ -432,18 +441,11 @@ function initTreeView()
 	String name = nameValueBean.getName();
 	String value = nameValueBean.getValue();
   %>
-	    tree.setCheck("<%=value%>",true);
-		tree.openItem("<%=value%>");
+	     tree.setCheck("<%=value%>",true);
+	    tree.openItem("<%=value%>");
 <%  
    }//end of for
   }%> //end of if
-		
-}
-
-
-function deleteFile()
-{
- 
   
 }
 
