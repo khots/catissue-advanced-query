@@ -159,21 +159,10 @@ public class ValidateQueryBizLogic
 		}
 		IQueryGenerator queryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
 		String selectSql = null;
-		try
-		{
-			//selectSql = "select personUpi_1 Column0 from xmltable(' for $Person_1 in db2-fn:xmlcolumn(\"DEMOGRAPHICS.XMLDATA\")/Person where exists($Person_1/personUpi)  return <return><Person_1>{$Person_1}</Person_1></return>' columns personUpi_1 varchar(1000) path 'Person_1/Person/personUpi')";
-			selectSql = queryGenerator
-					.generateQuery((IQuery) queryUIManager.getAbstractQuery()
-							.getQuery());
-		}
-		catch (MultipleRootsException e)
-		{
-			throw new QueryModuleException(e.getMessage(), QueryModuleError.MULTIPLE_ROOT);
-		}
-		catch (SqlException e)
-		{
-			throw new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
-		}
+		//selectSql = "select personUpi_1 Column0 from xmltable(' for $Person_1 in db2-fn:xmlcolumn(\"DEMOGRAPHICS.XMLDATA\")/Person where exists($Person_1/personUpi)  return <return><Person_1>{$Person_1}</Person_1></return>' columns personUpi_1 varchar(1000) path 'Person_1/Person/personUpi')";
+		selectSql = queryGenerator
+				.generateQuery((IQuery) queryUIManager.getAbstractQuery()
+						.getQuery());
 		Map<AttributeInterface, String> attributeColumnNameMap = queryGenerator
 				.getAttributeColumnNameMap();
 		session.setAttribute(Constants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
