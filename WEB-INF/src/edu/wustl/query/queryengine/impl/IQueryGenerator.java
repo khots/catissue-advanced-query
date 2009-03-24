@@ -13,6 +13,7 @@ import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
  * To Generate SQL for the given Query Object.
@@ -28,11 +29,11 @@ public interface IQueryGenerator
 	 * 
 	 * @param query The Reference to Query Object.
 	 * @return the String representing SQL for the given Query object.
-	 * @throws MultipleRootsException When there are multpile roots present in a
+	 * @throws MultipleRootsException When there are multiple roots present in a
 	 *             graph.
 	 * @throws SqlException When there is error in the passed IQuery object.
 	 */
-	String generateQuery(IQuery query) throws MultipleRootsException, SqlException;
+	String generateQuery(IQuery query) throws QueryModuleException;
 
 	List<OutputTreeDataNode> getRootOutputTreeNodeList();
 
