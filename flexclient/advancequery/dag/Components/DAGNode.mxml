@@ -42,7 +42,7 @@
 		[Bindable]
 		public var nodeType:String="";
 		[Bindable]
-		public var operatorArray:Array = ["AND","OR"];
+		public var operatorArray:Array = ["AND"];
 		[Bindable]
 		public var operatorSelectedIndex:int=0;
 		[Bindable]
