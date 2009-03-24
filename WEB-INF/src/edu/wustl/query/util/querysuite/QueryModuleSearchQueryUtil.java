@@ -19,8 +19,6 @@ import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.query.queryobject.util.QueryObjectProcessor;
-import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
-import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
@@ -226,25 +224,12 @@ public class QueryModuleSearchQueryUtil
 	{
 		IQueryGenerator sqlGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
 		QueryModuleException queryModExp;
-		try
-		{
-			session.setAttribute(Constants.SAVE_GENERATED_SQL, sqlGenerator.generateQuery(query));
-			Map<AttributeInterface, String> attributeColumnNameMap = sqlGenerator
-					.getAttributeColumnNameMap();
-			session.setAttribute(Constants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
-			session.setAttribute(Constants.OUTPUT_TERMS_COLUMNS, sqlGenerator
-					.getOutputTermsColumns());
-		}
-		catch (MultipleRootsException e)
-		{
-			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.MULTIPLE_ROOT);
-			throw queryModExp;
-		}
-		catch (SqlException e)
-		{
-			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
-			throw queryModExp;
-		}
+		session.setAttribute(Constants.SAVE_GENERATED_SQL, sqlGenerator.generateQuery(query));
+		Map<AttributeInterface, String> attributeColumnNameMap = sqlGenerator
+				.getAttributeColumnNameMap();
+		session.setAttribute(Constants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
+		session.setAttribute(Constants.OUTPUT_TERMS_COLUMNS, sqlGenerator
+				.getOutputTermsColumns());
 		List<OutputTreeDataNode> rootOutputTreeNodeList = sqlGenerator.getRootOutputTreeNodeList();
 		session.setAttribute(Constants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
 		queryDetailsObj.setRootOutputTreeNodeList(rootOutputTreeNodeList);
