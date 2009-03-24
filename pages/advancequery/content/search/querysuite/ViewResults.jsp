@@ -83,7 +83,7 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 			</td>
 </tr>
 <tr>
-<td style = "padding-right:10px;" width = "25%">&nbsp;</td><td align="left" valign="middle" style="padding-left:5px;" height="25"><a href="javascript:openPopupWindow()" class="bluelink"><img  alt="Export" src="images/advancequery/ic_excel.gif" border="0" align="absmiddle" style="padding-right:4px;"/>Export</a></td>
+<td style = "padding-right:10px;" width = "25%">&nbsp;</td><td align="left" valign="middle" style="padding-left:5px;" height="25"><a href="javascript:openPopupWindow()" class="bluelink"><img  alt="Export" src="images/advancequery/ic_excel.gif" border="0" hspace="3" align="absmiddle" style="padding-right:5px;"/>Export</a></td>
 </tr>
 </table>
 </td></tr>
