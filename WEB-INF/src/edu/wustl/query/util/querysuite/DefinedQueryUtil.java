@@ -1,6 +1,7 @@
 
 package edu.wustl.query.util.querysuite;
 
+import edu.wustl.cab2b.common.queryengine.ICab2bQuery;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
@@ -69,9 +70,15 @@ public class DefinedQueryUtil
 	public IParameterizedQuery populateParameterizedQueryData(IQuery query)
 	{
 		IParameterizedQuery originalQuery=(IParameterizedQuery)query;
+		if(!(query instanceof ICab2bQuery))
+		{
+			return originalQuery;
+		}
+		
 		IParameterizedQuery parameterizedQuery = QueryObjectFactory.createParameterizedQuery(query);
 		parameterizedQuery.setName(originalQuery.getName());
-		parameterizedQuery.setOutputAttributeList(originalQuery.getOutputAttributeList());
+		parameterizedQuery.getOutputAttributeList().clear();
+		parameterizedQuery.getOutputAttributeList().addAll(originalQuery.getOutputAttributeList());
 		
 		return parameterizedQuery;
 	}
