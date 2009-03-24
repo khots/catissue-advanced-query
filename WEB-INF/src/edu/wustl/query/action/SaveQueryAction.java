@@ -20,6 +20,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.wustl.cab2b.common.queryengine.Cab2bQuery;
+import edu.wustl.cab2b.common.queryengine.ICab2bQuery;
 import edu.wustl.common.action.BaseAction;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
@@ -38,6 +40,7 @@ import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.bizlogic.WorkflowBizLogic;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.DefinedQueryUtil;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
 import gov.nih.nci.security.exceptions.CSException;
@@ -207,8 +210,10 @@ public class SaveQueryAction extends BaseAction
 		 */
 
 		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) query;
-
-		parameterizedQuery = QueryObjectFactory.createParameterizedQuery(query);
+		if(parameterizedQuery instanceof ICab2bQuery)
+		{
+		 parameterizedQuery = QueryObjectFactory.createParameterizedQuery(query);
+		}
 		if(query.getId()!=null)
 		{
 			parameterizedQuery.setId(query.getId());
@@ -216,13 +221,6 @@ public class SaveQueryAction extends BaseAction
 
 		HttpSession session = request.getSession();
 		setQueryDescriptionAndTitle(saveActionForm, parameterizedQuery);
-
-		//		if(parameterizedQuery.getOutputTerms()!=null)
-		//		{
-		//			parameterizedQuery.getOutputTerms().clear();
-		//	     	parameterizedQuery.getOutputTerms().addAll(query.getOutputTerms());
-		//		}
-
 		boolean isError = isError(request, saveActionForm, parameterizedQuery, session);
 
 		if (isError)
@@ -282,7 +280,7 @@ public class SaveQueryAction extends BaseAction
 		List<IOutputAttribute> selectedOutputAttributeList = new ArrayList<IOutputAttribute>();
 		if (selectedColumnsMetadata == null)
 		{
-			selectedOutputAttributeList=query.getOutputAttributeList();
+			selectedOutputAttributeList=query.getOutputAttributeList(); 
 		}
 		else
 		{
@@ -290,7 +288,7 @@ public class SaveQueryAction extends BaseAction
 		}
 		//parameterizedQuery.getOutputTerms().clear();
 		parameterizedQuery.getOutputTerms();//.addAll(query.getOutputTerms()); 
-		parameterizedQuery.setOutputAttributeList(selectedOutputAttributeList);
+		Utility.setQueryOutputAttributeList(query, selectedOutputAttributeList);
 	}
 
 	/**
