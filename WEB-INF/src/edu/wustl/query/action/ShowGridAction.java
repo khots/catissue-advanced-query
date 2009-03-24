@@ -22,6 +22,7 @@ import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.spreadsheet.SpreadSheetData;
 import edu.wustl.query.spreadsheet.SpreadSheetViewGenerator;
@@ -68,6 +69,8 @@ public class ShowGridAction extends BaseAction
 			IQuery query = (IParameterizedQuery) defaultBizLogic.retrieve(ParameterizedQuery.class
 					.getName(), queryid);
 			queryDetailsObj.setQuery(query);
+			session.setAttribute(Constants.QUERY_OBJECT, query);
+			session.setAttribute("queryName", query.getName());
 
 			AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory
 				.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
