@@ -26,6 +26,7 @@ import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.query.queryobject.locator.Position;
@@ -47,7 +48,9 @@ import edu.wustl.common.querysuite.queryobject.IDateOffsetLiteral;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IExpressionAttribute;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
+import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
+import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.IRule;
@@ -61,14 +64,18 @@ import edu.wustl.common.querysuite.queryobject.impl.DateOffsetLiteral;
 import edu.wustl.common.querysuite.queryobject.impl.Expression;
 import edu.wustl.common.querysuite.queryobject.impl.ExpressionAttribute;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
+import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
+import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.Query;
 import edu.wustl.common.querysuite.queryobject.impl.Rule;
 import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.Collections;
 import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.domain.SelectedConcept;
+import edu.wustl.query.enums.QueryType;
 import edu.wustl.query.htmlprovider.GenerateHTMLDetails;
 import edu.wustl.query.htmlprovider.HtmlProvider;
 import edu.wustl.query.util.global.Constants;
@@ -86,6 +93,10 @@ import edu.wustl.query.util.querysuite.TemporalQueryUtility;
  *@author aniket_pandit
  */
 
+/**
+ * @author rinku_rohra
+ *
+ */
 public class DAGPanel
 {
 
@@ -157,7 +168,11 @@ public class DAGPanel
 		{
 			query = m_queryObject.getQuery();
 		}
-		((Query) query).setType(qtype);
+		String querytype=query.getType();
+		if(querytype==null)  
+		{
+		  ((Query) query).setType(qtype);
+		}
 		session.setAttribute(DAGConstant.QUERY_OBJECT, query);
 		try
 		{
@@ -1432,8 +1447,7 @@ public class DAGPanel
 			{
 				visibleExpression.add(Integer.valueOf(expression.getExpressionId()));
 			}
-             System.out.println();  
-			//As we require expressions added on Add Limit page or main Entities added Define Search Results View   
+             //As we require expressions added on Add Limit page or main Entities added Define Search Results View   
 			/*EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
 			if (expression.containsRule()
 					|| QueryAddContainmentsUtil.checkIfMainObject(entity, mainEntityList))
@@ -2150,26 +2164,91 @@ public class DAGPanel
 		m_queryObject.setQuery(query);
 	}
 
+	
+	public String isDeletableNode(int expId)
+	{
+	    String message="";
+		IParameterizedQuery query = (IParameterizedQuery)(m_queryObject.getQuery());
+	    
+	    Boolean isAttrpresent = isAttributePresent(expId);    
+	   if( query.getType().equals(QueryType.GET_DATA.type) && query.getId()!=null)
+	   {
+		    try
+		    {
+			 DefaultBizLogic defaultBizLogic = new DefaultBizLogic();
+		     IQuery retreivedQuery = (IParameterizedQuery) defaultBizLogic.retrieve(ParameterizedQuery.class
+				         .getName(), query.getId());
+		    IConstraints constraints= retreivedQuery.getConstraints();
+		    for(IExpression expression: constraints)
+		    {
+		    	if(expression.getExpressionId()==expId)
+		    		
+		    	  message=Constants.CANNOT_DELETE_NODE; 
+		    }
+		   
+		    
+		   }catch (DAOException e)
+			{
+		    	Logger.out.error(e.getMessage(), e);
+			}
+	   }
+	  
+	  if(isAttrpresent && message==""){
+	    message = Constants.REMOVE_SELECTED_ATTRIBUTES;
+	    		 
+	  }
+	 return message;
+	}
+	
+	
 	/**
 	 * 
 	 * @param expId
 	 */
 	public void deleteExpression(int expId)
 	{
-		int expressionId = expId;
-		m_queryObject.removeExpression(expressionId);
-
-		//Removing the expression also from the list
-		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
-		HttpSession session = request.getSession();
-		List<Integer> expressionIdsList = (List<Integer>) session
-				.getAttribute("allLimitExpressionIds");
-		if (expressionIdsList != null)
-		{
-			expressionIdsList.remove(Integer.valueOf(expressionId));
-		}
+		  int expressionId = expId;
+		   m_queryObject.removeExpression(expressionId);
+			//Removing the expression also from the list
+			//HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
+			//HttpSession session = request.getSession();
+//			List<Integer> expressionIdsList = (List<Integer>) session
+//					.getAttribute("allLimitExpressionIds");
+//			if (expressionIdsList != null)
+//			{
+//				expressionIdsList.remove(Integer.valueOf(expressionId));
+//			}
+		    
+	   	
 	}
 
+ 	
+ // This Method removes the output Attributes assosiated with given expression Id to be remove 	
+	private Boolean isAttributePresent(int expId) {
+		IParameterizedQuery query = (IParameterizedQuery)(m_queryObject.getQuery());
+		 List<IOutputAttribute> outputAttributeList = query.getOutputAttributeList();
+		// List <IOutputAttribute> newoutputAttributeList = new ArrayList<IOutputAttribute>();
+		 Iterator<IOutputAttribute> it = outputAttributeList.iterator();
+		 int atrrExp;
+		 while(it.hasNext())
+		  {
+			 
+			  OutputAttribute attribute= (OutputAttribute)it.next();
+			  atrrExp= attribute.getExpression().getExpressionId();
+			   if(atrrExp ==expId)
+			   {
+				   return true;
+				   //newoutputAttributeList.add(attribute);
+			   }
+		  
+		  }
+		return false;
+		 // edu.wustl.query.util.global.Utility.setQueryOutputAttributeList(query, newoutputAttributeList); 
+	}
+
+  	
+
+	
 	/**
 	 * 
 	 * @param expId
