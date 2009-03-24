@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
@@ -28,7 +29,9 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.tree.QueryTreeNodeData;
 import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
@@ -51,6 +54,7 @@ public class ViewResultsAction extends Action
 		int queryExecutionID = 0; 
 		String dataQueryId = request.getParameter("dataQueryId");
 		String workflowId= request.getParameter(Constants.WORFLOW_ID);
+		String workflowName= request.getParameter("workflowName");
 		Long iqueryId = Long.valueOf(0);
 		if(dataQueryId != null && !dataQueryId.equals(""))
 		{
@@ -108,6 +112,7 @@ public class ViewResultsAction extends Action
 		session.setAttribute(Constants.ID_NODES_MAP, uniqueIdNodesMap);
 		session.setAttribute(Constants.DATA_QUERY_ID,iqueryId);
 		session.setAttribute(Constants.WORKFLOW_ID, workflowId);
+		session.setAttribute(Constants.WORKFLOW_NAME,workflowName);
 		session.setAttribute(Constants.EXECUTION_ID_OF_QUERY, queryExecutionID);
 		session.setAttribute(Constants.PATIENT_QUERY_ROOT_OUT_PUT_NODE_LIST,rootOutputTreeNodeList);
 		session.setAttribute(Constants.PATIENT_DATA_QUERY,getPatientDataQuery);
