@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.QueryResultObjectDataBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
@@ -544,14 +545,11 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 			QueryDetails queryDetailsObj, SelectedColumnsMetadata selectedColumnsMetadata)
 	{
 		String[] selectedColumnIds = categorySearchForm.getSelectedColumnNames();
-		List<QueryOutputTreeAttributeMetadata> attribureMetadataList = new ArrayList<QueryOutputTreeAttributeMetadata>();
 		List<IOutputAttribute> outputAttributeList = new ArrayList<IOutputAttribute>();
-		List<NameValueBean> selectedColumnNameValue = new ArrayList<NameValueBean>();
 		IOutputAttribute attr;
 		String columnId;
-		//String[] split;
 		String expressionId;
-		OutputTreeDataNode outputTreeDataNode;
+		String attrId;
 		int lenOfCIds = selectedColumnIds.length;
 		for (int i = 0; i < lenOfCIds; i++)
 		{
@@ -559,48 +557,12 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 			columnId = selectedColumnIds[i];
 			String[] split = columnId.split(Constants.EXPRESSION_ID_SEPARATOR);
 			expressionId = split[QueryModuleConstants.INDEX_PARAM_ZERO];
-			outputTreeDataNode = getMatchingOutputTreeDataNode(queryDetailsObj, expressionId);
-			if (outputTreeDataNode != null)
-			{
-				List<QueryOutputTreeAttributeMetadata> attributes = outputTreeDataNode
-						.getAttributes();
-				NameValueBean nameValueBean;
-				for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
-				{
-					if (columnId.equals(attributeMetaData.getUniqueId()))
-					{
-						if(attributeMetaData.getAttribute().getName().equals(Constants.NAME) 
-								&& attributeMetaData.getAttribute().getEntity().getName().equals(Constants.MED_ENTITY_NAME))
-						{
-							for(QueryOutputTreeAttributeMetadata idAttr:attributes)
-							{
-								if(idAttr.getAttribute().getName().equals(Constants.ID))
-								{
-									attribureMetadataList.add(idAttr);
-									attr = new OutputAttribute(queryDetailsObj.getQuery().getConstraints().getExpression(outputTreeDataNode
-											.getExpressionId()), idAttr.getAttribute());
-									outputAttributeList.add(attr);
-									nameValueBean = new NameValueBean(idAttr.getDisplayName(),
-											idAttr.getUniqueId());
-									selectedColumnNameValue.add(nameValueBean);
-								}
-							}
-						}
-						attribureMetadataList.add(attributeMetaData);
-						attr = new OutputAttribute(queryDetailsObj.getQuery().getConstraints().getExpression(outputTreeDataNode
-								.getExpressionId()), attributeMetaData.getAttribute());
-						outputAttributeList.add(attr);
-						nameValueBean = new NameValueBean(attributeMetaData.getDisplayName(),
-								attributeMetaData.getUniqueId());
-						selectedColumnNameValue.add(nameValueBean);
-						break;
-					}
-				}
-			}
+			attrId = split[1];
+			AttributeInterface attrib =  EntityCache.getInstance().getAttributeById(Long.valueOf(attrId));
+			attr = new OutputAttribute(queryDetailsObj.getQuery().getConstraints().getExpression(Integer.valueOf(expressionId)), attrib);
+			outputAttributeList.add(attr);
 		}
-		selectedColumnsMetadata.setSelectedAttributeMetaDataList(attribureMetadataList);
 		selectedColumnsMetadata.setSelectedOutputAttributeList(outputAttributeList);
-		selectedColumnsMetadata.setSelectedColumnNameValueBeanList(selectedColumnNameValue);
 	}
 
 	/**

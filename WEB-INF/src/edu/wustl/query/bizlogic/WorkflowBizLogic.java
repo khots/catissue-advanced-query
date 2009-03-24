@@ -4,6 +4,7 @@ package edu.wustl.query.bizlogic;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -461,18 +462,42 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	 * @throws BizLogicException
 	 */
 	public void addWorkflowItem(Long workflowId, IQuery query, SessionDataBean sessionDataBean)
-			throws DAOException, UserNotAuthorizedException, BizLogicException
+	throws DAOException, UserNotAuthorizedException, BizLogicException
 	{
-		DefaultBizLogic defaultBizLogic = new DefaultBizLogic();
-		Workflow workflow = (Workflow) defaultBizLogic.retrieve(Workflow.class.getName(),
-				workflowId);
-		WorkflowItem workflowItem = new WorkflowItem();
-		workflowItem.setQuery(query);
-		List workflowItemList = workflow.getWorkflowItemList();
-		workflowItemList.add(workflowItem);
-		workflow.setWorkflowItemList(workflowItemList);
-		defaultBizLogic.update(workflow, null, Constants.HIBERNATE_DAO, sessionDataBean);//.update(DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO),  workflow, null, sessionDataBean);
+	DefaultBizLogic defaultBizLogic = new DefaultBizLogic();
+	Workflow workflow = (Workflow) defaultBizLogic.retrieve(Workflow.class.getName(),
+	workflowId);
+	if(isQueryAlreadyExists(workflow.getWorkflowItemList(), query.getId()))
+	{
+	WorkflowItem workflowItem = new WorkflowItem();
+	workflowItem.setQuery(query);
+	List workflowItemList = workflow.getWorkflowItemList();
+	workflowItemList.add(workflowItem);
+	workflow.setWorkflowItemList(workflowItemList);
+	defaultBizLogic.update(workflow, null, Constants.HIBERNATE_DAO, sessionDataBean);
 	}
+	}
+
+	
+	public boolean isQueryAlreadyExists(List<WorkflowItem> workflowItemList, Long queryId)
+	{
+		if(workflowItemList!=null&&queryId!=null)
+		{
+			Iterator<WorkflowItem> workflowItemIter=workflowItemList.iterator();
+			while (workflowItemIter.hasNext()) {
+				if(workflowItemIter.next().getQuery().getId().equals(queryId))
+				{
+					return false;
+				}
+				
+			}
+		}
+		return true;
+	}
+
+	
+	
+	
 	/**
      * This method returns the map of query execution ids
      *
