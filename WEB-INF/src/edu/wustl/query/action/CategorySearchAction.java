@@ -11,6 +11,7 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -24,11 +25,16 @@ import edu.wustl.cab2b.common.beans.MatchedClass;
 import edu.wustl.cab2b.common.exception.CheckedException;
 import edu.wustl.cab2b.common.util.Constants;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
+import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
+import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.CategorySearchForm;
+import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
 import edu.wustl.query.util.querysuite.EntityCacheFactory;
+import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 /**
@@ -57,8 +63,10 @@ public class CategorySearchAction extends Action
 		//getQueryrTitle
 
 		setIsQueryAttribute(request);
-		CategorySearchForm searchForm = (CategorySearchForm) form;
+	    CategorySearchForm searchForm = (CategorySearchForm) form;
+		HttpSession session= request.getSession();
 		String currentPage = getCurrentPage(request, searchForm);
+		
 		String forward = edu.wustl.query.util.global.Constants.SUCCESS;
 		String workflow = request.getParameter(edu.wustl.query.util.global.Constants.IS_WORKFLOW);
 		if ("true".equals(workflow))
@@ -70,7 +78,8 @@ public class CategorySearchAction extends Action
 			request.setAttribute(edu.wustl.query.util.global.Constants.WORKFLOW_NAME, workflowName);
 		}
 
-		if (currentPage != null && currentPage.equalsIgnoreCase("resultsView"))
+				
+		if ((currentPage != null && currentPage.equalsIgnoreCase("resultsView")))
 		{
 			searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
 		}
@@ -79,8 +88,9 @@ public class CategorySearchAction extends Action
 			String textfieldValue = searchForm.getTextField();
 			if (currentPage != null && currentPage.equalsIgnoreCase("prevToAddLimits"))
 			{
-				searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
-				textfieldValue = "";
+				 setOutputAttributeList(searchForm, session);
+			     searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
+				 textfieldValue = "";
 			}
 			else if (currentPage != null
 					&& currentPage
@@ -96,6 +106,23 @@ public class CategorySearchAction extends Action
 			forward = search(request, response, searchForm, textfieldValue);
 		} //end of else  
 		return mapping.findForward(forward);
+	}
+
+
+	private void setOutputAttributeList(CategorySearchForm searchForm,
+			HttpSession session) {
+		List<IOutputAttribute> selectedOutputAttributeList = new ArrayList<IOutputAttribute>();
+		 QueryDetails queryDetails = new QueryDetails(session);
+		 IParameterizedQuery query= (IParameterizedQuery)queryDetails.getQuery();
+		if(searchForm.getSelectedColumnNames()!=null)
+		{
+		 SelectedColumnsMetadata selectedColumnsMetadata = new SelectedColumnsMetadata();
+		 DefineGridViewBizLogic defineGridViewBizLogic = new DefineGridViewBizLogic();
+		 defineGridViewBizLogic.getSelectedColumnsMetadata(searchForm, queryDetails,
+		 selectedColumnsMetadata);
+		 selectedOutputAttributeList = selectedColumnsMetadata.getSelectedOutputAttributeList();
+        }
+		edu.wustl.query.util.global.Utility.setQueryOutputAttributeList(query, selectedOutputAttributeList);
 	}
 
 	
