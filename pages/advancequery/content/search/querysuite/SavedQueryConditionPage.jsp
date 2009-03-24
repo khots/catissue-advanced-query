@@ -13,9 +13,10 @@
 	String workflowName=(String)request.getAttribute(Constants.WORKFLOW_NAME);
 	String pageOf = (String)request.getAttribute("pageOf");
 	String isworkflow = (String)request.getAttribute(Constants.IS_WORKFLOW);
+	String queryName= (String)request.getAttribute("query_Name");
 	boolean isShared = (Boolean)request.getAttribute(Constants.SAHRED_QUERIES);
 	String valueOfchkBox;
-	String isSaveButtonDisable = "";
+    String isSaveButtonDisable = "";
 	 String action;
 	 request.setAttribute("pageOf",pageOf);
 	 if(isShared==true)
@@ -37,8 +38,6 @@
 		isSaveButtonDisable = "disabled='disabled'";
 	}
 %>
-
-
 
 <html:html>
 	<head>
@@ -110,7 +109,7 @@
 					<bean:message key="query.title"/><span class="red_star">*</span>:
 					</td>
 					<td >
-						<html:text       styleClass="textfield_QueryTitle"      styleId="title" property="title" />
+						<html:text       styleClass="textfield_QueryTitle"      styleId="title" property="title" value="<%=queryName%>" />
 					</td>
 					
 				</tr>
