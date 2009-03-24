@@ -190,6 +190,9 @@ function shortOperator(operation)
 
 function submitWorflow()
 {
+	document.forms[0].action="SaveWorkflow.do";
+	document.forms[0].forwardTo.value="";
+
 	document.forms[0].submit();
 }
 function cancelGetCountQuery(queryId,executionLogId,removeExecutedCount)
@@ -255,7 +258,7 @@ function cancelExecuteQuery(response)
 				var selectedqueryId=tdChildCollection[0].id;//object.childNodes[0].id;//object.id;
 				var selectedquery=selectedqueryId.split("_");
 				index=selectedquery[1];
-				changeExecuteLinkToExecute(queryId,0);
+				changeExecuteLinkToExecute(queryId,0,'Cancelled');
 				document.getElementById("cancelajaxcall_"+index).value='false';
 
 			}
@@ -282,6 +285,7 @@ function showResetCountPopup()
 		}
 	}
 	previousProject=currentProject;*/
+	document.getElementById("executedForProject").value=document.getElementById('selectedProject').value;;
 	onProjectChange();
 
 }
@@ -730,7 +734,6 @@ function workflowExecuteGetCountQuery(queryId,executionLogId)
 function executeGetDataQuery(dataQueryId)
 {
   
-
 	var countQueryId = document.getElementById("countQueryDropDown_"+dataQueryId);
     if(countQueryId.selectedIndex== -1)
 	{
@@ -870,7 +873,7 @@ function workflowResponseHandler(response)
 							&&jsonResponse.result.projectId==document.getElementById('selectedProject').value
 							&&document.getElementById("cancelajaxcall_"+queryIndex).value=='false')
 						{
-							changeExecuteLinkToExecute(queryId,0);
+							changeExecuteLinkToExecute(queryId,0,status);
 		
 						}
 						else if(jsonResponse.result.projectId==document.getElementById('selectedProject').value)
@@ -1152,6 +1155,8 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <html:form action="SaveWorkflow" >
  <input type="hidden" name="dataQueryId" id="dataQueryId" value="">
  <input type="hidden" name="countQueryId" id="countQueryId" value="">
+<html:hidden property="executedForProject" styleId="executedForProject" value="${workflowForm.executedForProject}"/>
+
 <html:hidden property="operation" styleId="operation" value="${requestScope.operation}"/>
 <html:hidden property="id" styleId="id" value="${requestScope.id}"/>
 <select name="queryId" id="queryId" style="display:none">
@@ -1165,6 +1170,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <html:hidden property="forwardTo"/>
 <c:set var="query_type_data" value="<%=qType_GetData%>" scope="page"/>
 <c:set var="query_type_count" value="<%=qType_GetCount%>" scope="page"/>
+<c:set var="latestProject" value="${workflowForm.executedForProject}" scope="page"/>
 <input type="hidden" name="isdone" value="true" id="isdone">
  <input type="button" name="btn" id="btn" onclick="updateUI()" style="display:none">
 
@@ -1331,7 +1337,12 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 							 <SELECT name="selectedProject" id="selectedProject" class="texttype" onchange="showResetCountPopup()">
 							   <option VALUE="-1">Unspecified</option>
 								<c:forEach var="project" items="${requestScope.projectsNameValueBeanList}">
+								 <logic:equal name="latestProject"  value="${project.value}">
+									<OPTION VALUE="${project.value}" selected="selected">${project.name}
+								 </logic:equal>
+								 <logic:notEqual name="latestProject"  value="${project.value}">
 									<OPTION VALUE="${project.value}">${project.name}
+								</logic:notEqual>
 								</c:forEach>
 							</SELECT>
                             </td>
