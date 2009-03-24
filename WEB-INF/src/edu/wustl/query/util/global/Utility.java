@@ -35,6 +35,7 @@ import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.dao.queryExecutor.PagenatedResultData;
 import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
@@ -705,6 +706,13 @@ public class Utility extends edu.wustl.common.util.Utility
 			}
 		}
 		return value;
+	}
+
+	
+	public static void setQueryOutputAttributeList(IParameterizedQuery query,
+			List<IOutputAttribute> newoutputAttributeList) {
+		query.getOutputAttributeList().clear();
+		  query.getOutputAttributeList().addAll(newoutputAttributeList);
 	}
 	
 	/**
