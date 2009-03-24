@@ -368,4 +368,22 @@ public class ITableManager
 
         return null;
     }
+
+    /**
+     * This method returns the latest project that was accessed on the workflow
+     * page.
+     *
+     * @param workflowId
+     *            The Workflow Id.
+     * @param userId
+     *            The Current Logged In User Id
+     * @return The Project Id that was last accessed
+     * @throws SQLException
+     * @throws DAOException
+     */
+    public Long getLatestProjectId(Long workflowId, Long userId)
+            throws SQLException, DAOException
+    {
+        return (long)-1;
+    }
 }
