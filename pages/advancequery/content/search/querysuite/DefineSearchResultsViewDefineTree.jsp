@@ -51,7 +51,7 @@
 		     /></a></td></tr></table></td>
 			 <td align="right">
 			 <table border="0" cellpadding="0" cellspacing="0"><tr>
-				 <td align="right" style="padding-right:2px;"><a href="javascript:previousFromDefineResults();"><img alt= "<< Redefine Filters" src="images/advancequery/b_redefine_filter.gif" border="0"  
+				 <td align="right" style="padding-right:2px;"><a href="javascript:previousFromDefineResults('DefineResultsView');"><img alt= "<< Redefine Filters" src="images/advancequery/b_redefine_filter.gif" border="0"  
 		     /></a></td></tr></table></td>
 			<!--  <td align="right" valign="top">
 		   <img src="images/advancequery/b_back_to_workflow.gif" hspace="3" vspace="3" onclick="javascript:showWorkFlowWizard()"/>
@@ -81,12 +81,13 @@
  if("<%=isworkflow%>"=="true")
  
  {
-    document.getElementById("isWorkflow").value="true";
-	document.getElementById("projectList").style.display="none";
+  
+	document.getElementById("isWorkflow").value="true";
+    document.getElementById("workflowname").style.display="block";
  }
  document.getElementById("BackToWorkflowTd").innerHTML = '<a href="javascript:cancel_GPD_query()"><img  alt="Cancel" src="images/advancequery/b_cancel.gif" border="0" /></a>';
  document.getElementById("buttontr").style.display="none";  
- 
+
  </script>
 </body>
 </html>
