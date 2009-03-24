@@ -533,7 +533,8 @@ public class WorkflowBizLogic extends DefaultBizLogic
      * @throws BizLogicException
      */
     public Map<Long, Integer> generateQueryExecIdMap(Long userId,
-			Long workflowId, Long projectId) throws BizLogicException {
+			Long workflowId, Long projectId) throws BizLogicException
+	{
 		// Get the map of execution Ids from DB
 		ITableManager itableManager = ITableManagerFactory
 				.getDefaultITableManager();
@@ -554,4 +555,39 @@ public class WorkflowBizLogic extends DefaultBizLogic
 		}
 
 	}
+
+    /**
+     * This method returns the latest project that was accessed on the workflow
+     * page.
+     *
+     * @param workflowId
+     *            The Workflow Id.
+     * @param userId
+     *            The Current Logged In User Id
+     * @return The Project Id that was last accessed
+     * @throws BizLogicException
+     *             if there is an error while fetching the projectId
+     */
+    public Long getLatestProject(Long workflowId, Long userId)
+            throws BizLogicException
+    {
+        // Get the map of execution Ids from DB
+        ITableManager itableManager = ITableManagerFactory
+                .getDefaultITableManager();
+
+        try {
+            Long projectId = itableManager
+                    .getLatestProjectId(workflowId,userId);
+            return projectId;
+        } catch (DAOException ex) {
+            BizLogicException bizLogicException = new BizLogicException(ex
+                    .getMessage(), ex);
+            throw bizLogicException;
+
+        } catch (SQLException ex) {
+            BizLogicException bizLogicException = new BizLogicException(ex
+                    .getMessage(), ex);
+            throw bizLogicException;
+        }
+    }
 }
