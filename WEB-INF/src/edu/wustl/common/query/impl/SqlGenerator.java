@@ -59,6 +59,8 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
+import edu.wustl.query.util.querysuite.QueryModuleError;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
  * To generate SQL from the given Query Object.
@@ -86,11 +88,24 @@ public class SqlGenerator extends QueryGenerator
 	 * @throws SqlException When there is error in the passed IQuery object.
 	 * @see edu.wustl.common.querysuite.queryengine.ISqlGenerator#generateSQL(edu.wustl.common.querysuite.queryobject.IQuery)
 	 */
-	public String generateQuery(IQuery query) throws MultipleRootsException, SqlException,
-			RuntimeException
+	public String generateQuery(IQuery query) throws QueryModuleException, RuntimeException
 	{
 		Logger.out.debug("Srarted SqlGenerator.generateSQL().....");
-		String sql = buildQuery(query);
+		String sql;
+		try
+		{
+			sql = buildQuery(query);
+		}
+		catch (MultipleRootsException e)
+		{
+			throw new QueryModuleException("problem while trying to build xquery" + e.getMessage(),
+					QueryModuleError.MULTIPLE_ROOT);
+		}
+		catch (SqlException e)
+		{
+			throw new QueryModuleException("problem while trying to build xquery" + e.getMessage(),
+					QueryModuleError.SQL_EXCEPTION);
+		}
 		Logger.out.debug("Finished SqlGenerator.generateSQL()...SQL:" + sql);
 		return sql;
 	}
@@ -150,13 +165,13 @@ public class SqlGenerator extends QueryGenerator
 		IExpression rootExpression = constraints.getRootExpression();
 
 		// Initializin map variables.
-		
+
 		aliasNameMap = new HashMap<String, String>();
 		createAliasAppenderMap();
 
 		addactivityStatusToEmptExpr(rootExpression.getExpressionId());
 		// Identifying empty Expressions.
-		
+
 		checkForEmptyExpression(rootExpression.getExpressionId());
 
 		//pAndExpressions = new HashSet<IExpression>();
@@ -370,11 +385,10 @@ public class SqlGenerator extends QueryGenerator
 		{
 			selectAttribute.insert(0, Constants.SELECT_DISTINCT);
 		}
-		
+
 		Utility.removeLastComma(selectAttribute);
 		return selectAttribute.toString();
 	}
-
 
 	/**
 	 * To get the From clause of the Query.
@@ -388,8 +402,8 @@ public class SqlGenerator extends QueryGenerator
 	 * @throws SqlException When there is problem in creating from part. problem
 	 *             can be like: no primary key found in entity for join.
 	 */
-	private String getFromPartSQL(IExpression expression, String leftAlias, Set<Integer> processedAlias)
-			throws SqlException
+	private String getFromPartSQL(IExpression expression, String leftAlias,
+			Set<Integer> processedAlias) throws SqlException
 	{
 		StringBuffer buffer = new StringBuffer();
 
@@ -447,10 +461,13 @@ public class SqlGenerator extends QueryGenerator
 					buffer.append(Constants.LEFT_JOIN);
 					buffer.append(superClassEntity.getTableProperties().getName());
 					buffer.append(' ').append(superClassAlias).append(Constants.ON);
-					String leftAttribute = subClassAlias + Constants.QUERY_DOT + primaryKeyColumnName;
-					String rightAttribute = superClassAlias + Constants.QUERY_DOT + primaryKeyColumnName;
-					buffer.append(Constants.QUERY_DOT).append(leftAttribute).append(Constants.QUERY_EQUALS).
-						append(rightAttribute).append(Constants.QUERY_CLOSING_PARENTHESIS);
+					String leftAttribute = subClassAlias + Constants.QUERY_DOT
+							+ primaryKeyColumnName;
+					String rightAttribute = superClassAlias + Constants.QUERY_DOT
+							+ primaryKeyColumnName;
+					buffer.append(Constants.QUERY_DOT).append(leftAttribute).append(
+							Constants.QUERY_EQUALS).append(rightAttribute).append(
+							Constants.QUERY_CLOSING_PARENTHESIS);
 				}
 				theLeftEntity = superClassEntity;
 				superClassEntity = superClassEntity.getParentEntity();
@@ -516,12 +533,14 @@ public class SqlGenerator extends QueryGenerator
 
 					ConstraintPropertiesInterface constraintProperties = eavAssociation
 							.getConstraintProperties();
-					Collection<ConstraintKeyPropertiesInterface> srcCnstrKeyPropColl=constraintProperties.getSrcEntityConstraintKeyPropertiesCollection();
-					Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyPropColl=constraintProperties.getTgtEntityConstraintKeyPropertiesCollection();
+					Collection<ConstraintKeyPropertiesInterface> srcCnstrKeyPropColl = constraintProperties
+							.getSrcEntityConstraintKeyPropertiesCollection();
+					Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyPropColl = constraintProperties
+							.getTgtEntityConstraintKeyPropertiesCollection();
 					AttributeInterface primaryKey;
 					String leftAttribute = null;
 					String rightAttribute = null;
-					
+
 					if (!srcCnstrKeyPropColl.isEmpty() && !tgtCnstrKeyPropColl.isEmpty())// Many
 					// to
 					// Many
@@ -531,19 +550,20 @@ public class SqlGenerator extends QueryGenerator
 						String middleTableName = constraintProperties.getName();
 						String middleTableAlias = getAliasForMiddleTable(childExpression,
 								middleTableName);
-						for(ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyPropColl)
+						for (ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyPropColl)
 						{
-							
+
 							primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();//getPrimaryKey(leftEntity);
 							leftAttribute = leftAlias + Constants.QUERY_DOT
-								+ primaryKey.getColumnProperties().getName();
+									+ primaryKey.getColumnProperties().getName();
 							rightAttribute = middleTableAlias + Constants.QUERY_DOT
-								+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
 							// Forming joing with middle table.
-							buffer.append(Constants.LEFT_JOIN).append(middleTableName).append(Constants.SPACE).append(middleTableAlias)
-								.append(Constants.ON);
-							buffer.append(Constants.QUERY_OPENING_PARENTHESIS).append(leftAttribute)
-								.append(Constants.QUERY_EQUALS).append(rightAttribute);
+							buffer.append(Constants.LEFT_JOIN).append(middleTableName).append(
+									Constants.SPACE).append(middleTableAlias).append(Constants.ON);
+							buffer.append(Constants.QUERY_OPENING_PARENTHESIS)
+									.append(leftAttribute).append(Constants.QUERY_EQUALS).append(
+											rightAttribute);
 							/*
 							 * Adding descriminator column condition for the 1st
 							 * parent node while forming FROM part left joins. This
@@ -558,52 +578,54 @@ public class SqlGenerator extends QueryGenerator
 							buffer.append(Constants.QUERY_CLOSING_PARENTHESIS);
 
 						}
-						
-						for(ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyPropColl)
+
+						for (ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyPropColl)
 						{
-							
+
 							// Forming join with child table.
 							leftAttribute = middleTableAlias + Constants.QUERY_DOT
 									+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
 							primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();//getPrimaryKey(rightEntity);
 							rightAttribute = rightAlias + Constants.QUERY_DOT
 									+ primaryKey.getColumnProperties().getName();
-	
-							buffer.append(Constants.LEFT_JOIN).append(rightEntity.getTableProperties().getName())
-								.append(Constants.SPACE).append(rightAlias).append(Constants.ON);
-							buffer.append(Constants.QUERY_OPENING_PARENTHESIS).append(leftAttribute)
-							.append(Constants.QUERY_EQUALS).append(rightAttribute);
-	
+
+							buffer.append(Constants.LEFT_JOIN).append(
+									rightEntity.getTableProperties().getName()).append(
+									Constants.SPACE).append(rightAlias).append(Constants.ON);
+							buffer.append(Constants.QUERY_OPENING_PARENTHESIS)
+									.append(leftAttribute).append(Constants.QUERY_EQUALS).append(
+											rightAttribute);
+
 							/*
 							 * Adding descriminator column condition for the child
 							 * node while forming FROM part left joins.
 							 */
-							buffer.append(getDescriminatorCondition(actualEavAssociation
-									.getTargetEntity(), rightAlias))
-									.append(Constants.QUERY_CLOSING_PARENTHESIS);
+							buffer.append(
+									getDescriminatorCondition(actualEavAssociation
+											.getTargetEntity(), rightAlias)).append(
+									Constants.QUERY_CLOSING_PARENTHESIS);
 						}
 					}
 					else
 					{
-						
+
 						if (srcCnstrKeyPropColl.isEmpty())// Many
 						// Side
 						{
-							for(ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyPropColl)
+							for (ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyPropColl)
 							{
 								leftAttribute = leftAlias + Constants.QUERY_DOT
-								+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+										+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
 								primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
 								rightAttribute = rightAlias + Constants.QUERY_DOT
 										+ primaryKey.getColumnProperties().getName();
 							}
-							
-							
+
 						}
 						else
 						// One Side
 						{
-							for(ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyPropColl)
+							for (ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyPropColl)
 							{
 								primaryKey = cnstrKeyProp.getSrcPrimaryKeyAttribute();
 								leftAttribute = leftAlias + Constants.QUERY_DOT
@@ -612,10 +634,11 @@ public class SqlGenerator extends QueryGenerator
 										+ cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
 							}
 						}
-						buffer.append(Constants.LEFT_JOIN).append(rightEntity.getTableProperties().getName())
-							 .append(Constants.SPACE).append(rightAlias).append(Constants.ON);
+						buffer.append(Constants.LEFT_JOIN).append(
+								rightEntity.getTableProperties().getName()).append(Constants.SPACE)
+								.append(rightAlias).append(Constants.ON);
 						buffer.append(Constants.QUERY_OPENING_PARENTHESIS).append(leftAttribute)
-							  .append(Constants.QUERY_EQUALS).append(rightAttribute);
+								.append(Constants.QUERY_EQUALS).append(rightAttribute);
 
 						/*
 						 * Adding descriminator column condition for the 1st
@@ -632,9 +655,9 @@ public class SqlGenerator extends QueryGenerator
 						 * Adding descriminator column condition for the child
 						 * node while forming FROM part left joins.
 						 */
-						buffer.append(getDescriminatorCondition(actualEavAssociation
-								.getTargetEntity(), rightAlias))
-								.append(Constants.QUERY_CLOSING_PARENTHESIS);
+						buffer.append(
+								getDescriminatorCondition(actualEavAssociation.getTargetEntity(),
+										rightAlias)).append(Constants.QUERY_CLOSING_PARENTHESIS);
 					}
 
 					buffer.append(getParentHeirarchy(childExpression, childEntity, rightEntity));
@@ -674,7 +697,8 @@ public class SqlGenerator extends QueryGenerator
 				String columnName = entity.getDiscriminatorColumn();
 				String columnValue = entity.getDiscriminatorValue();
 				// Assuming Discrimanator is of type String.
-				String condition = aliasName + Constants.QUERY_DOT + columnName + Constants.QUERY_EQUALS + "'" + columnValue + "'";
+				String condition = aliasName + Constants.QUERY_DOT + columnName
+						+ Constants.QUERY_EQUALS + "'" + columnValue + "'";
 				sql = " " + LogicalOperator.And + " " + condition;
 			}
 		}
@@ -690,8 +714,8 @@ public class SqlGenerator extends QueryGenerator
 	 */
 	private String getAliasForMiddleTable(IExpression childExpression, String middleTableName)
 	{
-		return getAliasForClassName(Constants.QUERY_DOT + middleTableName) + Constants.QUERY_UNDERSCORE
-				+ aliasAppenderMap.get(childExpression);
+		return getAliasForClassName(Constants.QUERY_DOT + middleTableName)
+				+ Constants.QUERY_UNDERSCORE + aliasAppenderMap.get(childExpression);
 	}
 
 	/**
@@ -728,20 +752,26 @@ public class SqlGenerator extends QueryGenerator
 					AttributeInterface primaryKey = getPrimaryKey(entity);
 					String primaryKeyColumnName = primaryKey.getColumnProperties().getName();
 
-					String leftAttributeColumn = leftEntityalias + Constants.QUERY_DOT + primaryKeyColumnName;
-					String rightAttributeColumn = rightEntityalias + Constants.QUERY_DOT + primaryKeyColumnName;
+					String leftAttributeColumn = leftEntityalias + Constants.QUERY_DOT
+							+ primaryKeyColumnName;
+					String rightAttributeColumn = rightEntityalias + Constants.QUERY_DOT
+							+ primaryKeyColumnName;
 					String sql = null;
 					if (isReverse)
 					{
 						sql = Constants.INNER_JOIN + parent.getTableProperties().getName() + " "
 								+ rightEntityalias + Constants.ON;
-						sql += Constants.QUERY_OPENING_PARENTHESIS + leftAttributeColumn + Constants.QUERY_EQUALS + rightAttributeColumn + Constants.QUERY_CLOSING_PARENTHESIS;
+						sql += Constants.QUERY_OPENING_PARENTHESIS + leftAttributeColumn
+								+ Constants.QUERY_EQUALS + rightAttributeColumn
+								+ Constants.QUERY_CLOSING_PARENTHESIS;
 					}
 					else
 					{
 						sql = Constants.INNER_JOIN + entity.getTableProperties().getName() + " "
 								+ leftEntityalias + Constants.ON;
-						sql += Constants.QUERY_OPENING_PARENTHESIS + rightAttributeColumn + Constants.QUERY_EQUALS + leftAttributeColumn + Constants.QUERY_CLOSING_PARENTHESIS;
+						sql += Constants.QUERY_OPENING_PARENTHESIS + rightAttributeColumn
+								+ Constants.QUERY_EQUALS + leftAttributeColumn
+								+ Constants.QUERY_CLOSING_PARENTHESIS;
 					}
 					// joinSqlList.add(0, sql);
 					joinSqlList.add(sql);
@@ -770,8 +800,6 @@ public class SqlGenerator extends QueryGenerator
 		return combinedJoinPart.toString();
 	}
 
-		
-	
 	/**
 	 * To form the Pseudo-And condition for the expression.
 	 * 
@@ -793,8 +821,10 @@ public class SqlGenerator extends QueryGenerator
 
 		ConstraintPropertiesInterface constraintProperties = eavAssociation
 				.getConstraintProperties();
-		Collection<ConstraintKeyPropertiesInterface> srcCnstrKeyPopColl=constraintProperties.getSrcEntityConstraintKeyPropertiesCollection();
-		Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyPopColl=constraintProperties.getTgtEntityConstraintKeyPropertiesCollection();
+		Collection<ConstraintKeyPropertiesInterface> srcCnstrKeyPopColl = constraintProperties
+				.getSrcEntityConstraintKeyPropertiesCollection();
+		Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyPopColl = constraintProperties
+				.getTgtEntityConstraintKeyPropertiesCollection();
 		if (!srcCnstrKeyPopColl.isEmpty() && !tgtCnstrKeyPopColl.isEmpty())// Many
 		// to
 		// many
@@ -818,7 +848,8 @@ public class SqlGenerator extends QueryGenerator
 			}
 			else
 			{
-				selectAttribute += constraintProperties.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().getName();
+				selectAttribute += constraintProperties.getTgtEntityConstraintKeyProperties()
+						.getTgtForiegnKeyColumnProperties().getName();
 			}
 			pseudoAndSQL = Constants.SELECT + selectAttribute;
 			Set<Integer> processedAlias = new HashSet<Integer>();
@@ -833,8 +864,6 @@ public class SqlGenerator extends QueryGenerator
 		return pseudoAndSQL;
 	}
 
-
-
 	public void addActivityStatusCondition(IRule rule)
 	{
 		IExpression expression = rule.getContainingExpression();
@@ -847,7 +876,7 @@ public class SqlGenerator extends QueryGenerator
 			rule.addCondition(condition);
 		}
 	}
-	
+
 	/**
 	 * Check for activity status present in entity.
 	 * 
@@ -897,7 +926,6 @@ public class SqlGenerator extends QueryGenerator
 		return attributeName;
 	}
 
-	
 	/**
 	 * To Modify value as per the Data type. 1. In case of String datatype,
 	 * replace occurence of single quote by singlequote twice. 2. Enclose the
@@ -996,27 +1024,23 @@ public class SqlGenerator extends QueryGenerator
 		return value;
 	}
 
-	
-	
-	
-	
 	private String getSelectForOutputTerms(List<IOutputTerm> terms)
 	{
 		outputTermsColumns = new HashMap<String, IOutputTerm>();
 		StringBuilder s = new StringBuilder();
 		for (IOutputTerm term : terms)
 		{
-			String termString = Constants.QUERY_OPENING_PARENTHESIS + getTermString(term.getTerm()) + Constants.QUERY_CLOSING_PARENTHESIS;
+			String termString = Constants.QUERY_OPENING_PARENTHESIS + getTermString(term.getTerm())
+					+ Constants.QUERY_CLOSING_PARENTHESIS;
 			termString = modifyForTimeInterval(termString, term.getTimeInterval());
 			String columnName = Constants.COLUMN_NAME + selectIndex++;
 			s.append(termString + " " + columnName + Constants.QUERY_COMMA);
 			outputTermsColumns.put(columnName, term);
 		}
-		
+
 		Utility.removeLastComma(s);
 		return s.toString();
-		
-		
+
 	}
 
 	private String modifyForTimeInterval(String termString, TimeInterval<?> timeInterval)
@@ -1026,11 +1050,12 @@ public class SqlGenerator extends QueryGenerator
 			return termString;
 		}
 		termString = termString + "/" + timeInterval.numSeconds();
-		termString = "ROUND" + Constants.QUERY_OPENING_PARENTHESIS + termString + Constants.QUERY_CLOSING_PARENTHESIS;
+		termString = "ROUND" + Constants.QUERY_OPENING_PARENTHESIS + termString
+				+ Constants.QUERY_CLOSING_PARENTHESIS;
 		return termString;
 	}
-	
-	protected String getTemporalCondition(String operandquery) 
+
+	protected String getTemporalCondition(String operandquery)
 	{
 		return operandquery;
 	}
