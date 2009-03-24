@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
@@ -92,7 +93,8 @@ public class FetchQueryAction extends Action
 			if (queryList != null && !queryList.isEmpty())
 			{
 				IParameterizedQuery parameterizedQuery = queryList.get(0);
-				request.getSession().setAttribute(Constants.QUERY_OBJECT, parameterizedQuery);
+				HttpSession session = request.getSession();
+				session.setAttribute(Constants.QUERY_OBJECT, parameterizedQuery);
 				//					Map<IExpression, Collection<IParameterizedCondition>> expressionIdConditionCollectionMap = QueryUtility
 				//							.getAllParameterizedConditions(parameterizedQuery);
 
@@ -102,16 +104,17 @@ public class FetchQueryAction extends Action
 					if (query.getType().equalsIgnoreCase(Constants.QUERY_TYPE_GET_COUNT))
 					{
 						target = "editCountQuery";
-						request.getSession().setAttribute(Constants.Query_Type, Constants.QUERY_TYPE_GET_COUNT);
+						session.setAttribute(Constants.Query_Type, Constants.QUERY_TYPE_GET_COUNT);
 					}
 					else
 					{
 						target = "editDataQuery";
-						request.getSession().setAttribute(Constants.Query_Type, Constants.QUERY_TYPE_GET_DATA);
+						session.setAttribute(Constants.Query_Type, Constants.QUERY_TYPE_GET_DATA);
 					}
-
+					session.setAttribute("queryName", query.getName());
+					
 					request.setAttribute(Constants.CURRENT_PAGE, "editQuery");
-
+					
 				}
 				else
 				{
@@ -120,7 +123,7 @@ public class FetchQueryAction extends Action
 							parameterizedQuery, false, Constants.EXECUTE_QUERY_PAGE,
 							customFormulaIndexMap);
 					request.setAttribute(Constants.HTML_CONTENTS, htmlContents);
-					request.getSession().setAttribute(
+					session.setAttribute(
 							QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP, customFormulaIndexMap);
 					saveQueryForm.setQueryString(htmlContents);
 					target = Constants.SUCCESS;
