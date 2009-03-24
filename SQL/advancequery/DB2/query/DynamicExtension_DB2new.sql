@@ -6339,7 +6339,7 @@ insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) 
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (545,'Inherited','Inherited',59);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (546,'Inherited','Inherited',59);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (547,'Inherited','Inherited',59);
-insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (548,'PV_FILTER','name like ''DOSAGE_FORM->^%''',61);
+insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (548,'PV_FILTER','CONCEPT_NAME like ''DOSAGE_FORM->^%''',61);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (549,'PV_VIEW','MED_LOOKUP_VIEW',61);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (550,'DEFAULT_CONDITION','In!=!FACILITY_ID',62);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (551,'VI_HIDDEN','VI_HIDDEN',62);
@@ -6444,7 +6444,7 @@ insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) 
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (650,'Inherited','Inherited',64);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (651,'Inherited','Inherited',64);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (652,'Inherited','Inherited',64);
-insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (653,'PV_FILTER','name like ''UNIT->^%''',66);
+insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (653,'PV_FILTER','CONCEPT_NAME like ''UNIT->^%''',66);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (654,'PV_VIEW','MED_LOOKUP_VIEW',66);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (655,'DEFAULT_CONDITION','In!=!FACILITY_ID',67);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (656,'VI_HIDDEN','VI_HIDDEN',67);
@@ -6676,7 +6676,7 @@ insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) 
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (882,'Inherited','Inherited',81);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (883,'Inherited','Inherited',81);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (884,'Inherited','Inherited',81);
-insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (885,'PV_FILTER','name like ''PHARMACY_FREQUENCY_MODIFIER->^%''',83);
+insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (885,'PV_FILTER','CONCEPT_NAME like ''PHARMACY_FREQUENCY_MODIFIER->^%''',83);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (886,'PV_VIEW','MED_LOOKUP_VIEW',83);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (887,'DEFAULT_CONDITION','In!=!FACILITY_ID',84);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (888,'VI_HIDDEN','VI_HIDDEN',84);
@@ -6697,7 +6697,7 @@ insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) 
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (903,'Inherited','Inherited',86);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (904,'Inherited','Inherited',86);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (905,'Inherited','Inherited',86);
-insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (906,'PV_FILTER','name like ''PHARMACY_FREQUENCY->^%''',88);
+insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (906,'PV_FILTER','CONCEPT_NAME like ''PHARMACY_FREQUENCY->^%''',88);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (907,'PV_VIEW','MED_LOOKUP_VIEW',88);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (908,'DEFAULT_CONDITION','In!=!FACILITY_ID',89);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (909,'VI_HIDDEN','VI_HIDDEN',89);
