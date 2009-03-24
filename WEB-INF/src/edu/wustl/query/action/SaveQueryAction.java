@@ -288,7 +288,7 @@ public class SaveQueryAction extends BaseAction
 		}
 		//parameterizedQuery.getOutputTerms().clear();
 		parameterizedQuery.getOutputTerms();//.addAll(query.getOutputTerms()); 
-		Utility.setQueryOutputAttributeList(query, selectedOutputAttributeList);
+		Utility.setQueryOutputAttributeList(parameterizedQuery, selectedOutputAttributeList);
 	}
 
 	/**
