@@ -1175,7 +1175,7 @@
 
 	function produceQuery(isEditLimit, url,nameOfFormToPost, entityName , attributesList) 
 	{
-        var strToCreateQueyObject = createQueryString(nameOfFormToPost, entityName , attributesList,'addLimit');
+	        var strToCreateQueyObject = createQueryString(nameOfFormToPost, entityName , attributesList,'addLimit');
  	  
 	/*	if(navigator.appName == "Microsoft Internet Explorer")
 		{
@@ -1533,6 +1533,14 @@
 	}
 
 	
+	function redefineResultsView()
+	{
+	   
+	
+	}
+	
+	
+	
 	function defineSearchResultsView()
 	{
 		 
@@ -1554,18 +1562,46 @@
 		document.forms['categorySearchForm'].currentPage.value = "AddLimits222";
 		document.forms['categorySearchForm'].submit();
 	}
-	function previousFromDefineResults()
+	
+	function redefineResultsView()
 	{
-		waitCursor();
+	   var action ="DefineSearchResultsView.do";
+	   document.forms[0].action=action;
+	   document.forms[0].submit(); 
+	  	
+	}
+	
+	
+	function previousFromDefineResults(pageOf)
+	{
+		//waitCursor();
+		
 		if(document.getElementById("workflow")!=null)	
 	 	  var action ="SearchCategory.do?workflow="+(document.getElementById("workflow").value);
 	    else
         var action="SearchCategory.do";
 		document.forms[0].action=action;
 		document.forms[0].isQuery.value = "true";  // change for flex
-		document.forms[0].currentPage.value = "prevToAddLimits";
+		if(pageOf=="ViewResults")
+		{
+		 
+		  document.forms[0].currentPage.value = "resultsView";
+		}
+		if(pageOf=="DefineResultsView") 
+	  	{ 
+	    	
+			document.forms[0].currentPage.value = "prevToAddLimits";
+		  // select selected column names in listbox
+		   var selectedColumns = document.forms[0].selectedColumnNames;
+		   if(selectedColumns!=null && selectedColumns.length!=0)
+			{
+					selectOptions(document.forms[0].selectedColumnNames);
+			}
+		}
+					
+		////////////
 		document.forms[0].submit();
-		hideCursor();
+		//hideCursor();
 	}
 	function setIncludeDescriptionValue()
 	{
