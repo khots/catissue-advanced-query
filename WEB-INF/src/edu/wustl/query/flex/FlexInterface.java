@@ -303,13 +303,19 @@ public class FlexInterface
 		dagPanel.addExpressionToView(expId);
 	}
 
+	
+  	public String isDeletableNode(int expId)
+	{
+	  return dagPanel.isDeletableNode(expId);	
+	} 
+	
 	/**
 	 * Deletes node from DAG
 	 * @param expId
 	 */
 	public void deleteNode(int expId)
 	{
-		dagPanel.deleteExpression(expId);//delete Expression 
+		 dagPanel.deleteExpression(expId);//delete Expression 
 	}
 
 	/**
