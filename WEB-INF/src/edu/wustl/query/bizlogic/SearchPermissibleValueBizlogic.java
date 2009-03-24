@@ -560,7 +560,8 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		String message="";
 		try
 		{
-				fr = new FileReader(Variables.applicationHome+"\\WEB-INF\\classes\\VISplCharHelp.txt");
+				fr = new FileReader(Variables.applicationHome+System.getProperty("file.separator")+"WEB-INF"+System.getProperty("file.separator")+
+							"classes"+System.getProperty("file.separator")+"VISplCharHelp.txt");
 				BufferedReader br=new BufferedReader(fr);
 				String msg="";
 				String line="";
