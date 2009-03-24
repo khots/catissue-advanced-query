@@ -18,12 +18,15 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
+import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
+import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.logger.Logger;
@@ -31,6 +34,7 @@ import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
 import edu.wustl.query.bizlogic.ValidateQueryBizLogic;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.IQueryTreeGenerationUtil;
 import edu.wustl.query.util.querysuite.IQueryUpdationUtil;
 import edu.wustl.query.util.querysuite.QueryDetails;
@@ -74,6 +78,8 @@ public class DefineSearchResultsViewAction extends Action
 		 }
 		
 		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
+		
+		setSelectedoutputattributes((IParameterizedQuery)query,searchForm);
 		String entityId = request.getParameter(Constants.MAIN_ENTITY_ID);
 		/*if(entityId == null)
 		{
@@ -101,10 +107,11 @@ public class DefineSearchResultsViewAction extends Action
 		/*
 		 * changes made for defined Query
 		 */
-        ((ParameterizedQuery)query).setName(searchForm.getQueryTitle());
-        
-
-		session.setAttribute(Constants.QUERY_OBJECT,query);
+        if(searchForm.getQueryTitle()!=null)
+	    { 	
+	     ((ParameterizedQuery)query).setName(searchForm.getQueryTitle());
+        // session.setAttribute(Constants.QUERY_OBJECT,query);
+	    }
 		String fileName = getFileName();
 		writeXMLToTempFile(xmlString.toString(), fileName);
 		ActionForward target = null;
@@ -119,9 +126,29 @@ public class DefineSearchResultsViewAction extends Action
 			request.setAttribute(Constants.XML_FILE_NAME, fileName);
 			target = mapping.findForward(Constants.SUCCESS);
 		}
+	  session.setAttribute(Constants.QUERY_OBJECT, query);	
 		return target;
 	}
 
+//Attributes are shown selected on Define view page when page is navigated from view Result page	
+	private void setSelectedoutputattributes(IParameterizedQuery query,CategorySearchForm searchform)
+	{
+		
+		List<IOutputAttribute> selectedOutputAttributeList = new ArrayList<IOutputAttribute>();
+		selectedOutputAttributeList=query.getOutputAttributeList();
+		List<NameValueBean> selectedColumnNameValue = new ArrayList<NameValueBean>();  
+		for(IOutputAttribute outputAttribute : selectedOutputAttributeList)
+		  {
+			AttributeInterface attributeInterface = outputAttribute.getAttribute();
+			String uniqueid= outputAttribute.getExpression().getExpressionId()+Constants.EXPRESSION_ID_SEPARATOR+ attributeInterface.getId();
+			String displayName=Utility.getDisplayNameForColumn(attributeInterface);
+			NameValueBean nameValueBean= new NameValueBean(displayName,uniqueid);
+			selectedColumnNameValue.add(nameValueBean);  
+		  }
+		searchform.setSelectedColumnNameValueBeanList(selectedColumnNameValue);
+	}
+	
+	
 	/**
 	 * This method sets the selected column name value bean list 
 	 * @param searchForm
@@ -130,6 +157,7 @@ public class DefineSearchResultsViewAction extends Action
 	private void setSelectedColumnsNVBeanList(CategorySearchForm searchForm,
 			List<NameValueBean> prevSelectedColumnNVBList)
 	{
+		
 		List<NameValueBean> defaultSelectedColumnNameValueBeanList = searchForm.getSelectedColumnNameValueBeanList(); 
 	     if(defaultSelectedColumnNameValueBeanList==null)
 	     {
