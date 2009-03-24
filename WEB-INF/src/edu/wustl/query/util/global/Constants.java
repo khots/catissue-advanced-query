@@ -379,6 +379,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	/**  Constant for  */
 	public static final String EMPTY_LIMIT_ERROR_MESSAGE = "<font color='red'>Please enter at least one condition to add a limit to limit set.</font>";
 	/**  Constant for  */
+	public static final String CANNOT_DELETE_NODE="Cannot delete an object in the edit mode. However, you can edit the conditions or attributes for the selected object.";
+	/**  Constant for  */
+	public static final String REMOVE_SELECTED_ATTRIBUTES="Clear the attributes on the Define Result View page for the selected object, and then try deleting the object.";
+	/**  Constant for  */
 	public static final String EMPTY_DAG_ERROR_MESSAGE = "<font color='red'>Limit set should contain at least one limit.</font>";
 	/**  Constant for  */
 	public static final String MULTIPLE_ROOTS_EXCEPTION = "<font color='red'>Expression graph should be a connected graph.</font>";
