@@ -39,8 +39,7 @@ public class RedirectToWorkflowAction extends Action
 			session.removeAttribute(Constants.WORKFLOW_ID);
 			session.removeAttribute(Constants.WORKFLOW_NAME);
 		}
-		session.removeAttribute("queryName");
-	    // added for get Count ->>>latest project Id
+		// added for get Count ->>>latest project Id
 		String executedForProject = (String) session.getAttribute(Constants.EXECUTED_FOR_PROJECT);
 		if(executedForProject!=null)
 		{
