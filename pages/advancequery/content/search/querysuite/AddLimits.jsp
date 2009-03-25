@@ -36,18 +36,18 @@
 	{
 		isQuery="false";
 	}
-	
-	
 %>
 
  <html:form method="GET" action="<%=formAction%>" style="margin:0;padding:0;">
 	<html:hidden property="stringToCreateQueryObject" value="" />
 	<html:hidden property="nextOperation" value="" />
+
+	<input type="hidden" name="isWorkflow" id="isWorkflow" value="">
+    <input type="hidden" name="pageOf" id="pageOf" value="pageOfGetData">
+
 	<html:hidden property="requestFrom" value="" />
 	 <input type="hidden" name="isWorkflow" id="isWorkflow" value="">
-   
- <input type="hidden" name="pageOf" id="pageOf" value="pageOfGetData">
- <table cellspacing="0" cellpadding="0" border="0" width="100%" >
+  <table cellspacing="0" cellpadding="0" border="0" width="100%" >
 	<tr><td style="padding-left:5px; padding-right:5px;">
  <table  width="100%" border="0" cellspacing="0" cellpadding="0" align="center" class="login_box_bg">
  <tr>
@@ -98,20 +98,20 @@
 
 					<td valign="top" style="padding-right:5px;">
                     <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  >        
-					        <tr id="rowMsg">
-													<td id="validationMessagesSection"  class='validationMessageCss'  valign="middle">
-														<div id="validationMessagesRow"   class='validationMessageCss' style="overflow:auto; display:none"></div>
-													</td>
-												</tr>			
-							<tr>
+					      <tr>
 							<td >
 								<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%"  class='login_box_bg'>
-																													
+										 																			                          
 												<tr id="AddLimitsButtonMsg" border="0">
 													<td id="AddLimitsButtonSection" height="10" >
 														<div id="AddLimitsMsgRow"  border="0"></div>
 													</td>
 												</tr>
+												<tr id="rowMsg">
+													<td id="validationMessagesSection"  class='validationMessageCss'  valign="middle">
+														<div id="validationMessagesRow"   class='validationMessageCss' style="overflow:auto; display:none"></div>
+													</td>
+												</tr>	
 												<tr>
 													<td width="100%" id="addLimitsSection">
 													<div id="addLimits" style="overflow:auto; height:100%;width:100%"></div></td>
