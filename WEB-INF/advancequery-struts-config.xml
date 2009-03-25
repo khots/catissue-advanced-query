@@ -16,7 +16,7 @@ PUBLIC
 				
 	</form-beans>
 	
-	<!-- Global Exception Definitions -->
+	<!-- Global Exception Definitions Removed, will use global definitions in CIDER's struts-config.xml
 	<global-exceptions>
 		<exception
 			type="edu.wustl.common.exception.UserNotAuthenticatedException"
@@ -25,7 +25,7 @@ PUBLIC
 			handler="edu.wustl.common.util.CommonExceptionHandler"
 			key="" scope="request" type="java.lang.Exception"
 			path=".query.errorPageDef" />
-	</global-exceptions>
+	</global-exceptions>  -->
 	
 	<action-mappings>
 	
