@@ -23,7 +23,7 @@ public abstract class AbstractViewIQueryGenerator
 	/**
 	 * @return
 	 */
-	public abstract IQuery createIQueryForTreeView(QueryDetails queryDetails,AbstractQuery query)throws QueryModuleException;
+	public abstract IQuery createIQueryForTreeView(QueryDetails queryDetails,boolean hasSecurePrivilege)throws QueryModuleException;
 	
 	/**
 	 * This method formats the output to be displayed for tree view. 
@@ -32,5 +32,5 @@ public abstract class AbstractViewIQueryGenerator
 	 * @param query abstractQuery.
 	 * @return formatted output.
 	 */
-	public abstract StringBuffer getFormattedOutputForTreeView(StringBuffer displayData,EntityInterface rootEntity,AbstractQuery query);
+	public abstract StringBuffer getFormattedOutputForTreeView(StringBuffer displayData,EntityInterface rootEntity,boolean hasSecurePrivilege);
 }
