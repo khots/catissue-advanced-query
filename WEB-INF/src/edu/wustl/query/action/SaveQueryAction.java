@@ -130,6 +130,7 @@ public class SaveQueryAction extends BaseAction
 			target = Constants.SUCCESS;
 			setActionErrors(request);
 			request.setAttribute(Constants.QUERY_SAVED, Constants.TRUE);
+			request.getSession().setAttribute(Constants.QUERY_OBJECT, parameterizedQuery);
 		}
 		catch (BizLogicException bizLogicException)
 		{
