@@ -30,8 +30,11 @@ public class RedirectToWorkflowAction extends Action
 		String workflowName = (String) session.getAttribute(Constants.WORKFLOW_NAME);
 		request.setAttribute(Constants.WORKFLOW_ID, (String) session
 				.getAttribute(Constants.WORKFLOW_ID));
+		if(workflowId!=null)
+		{
 		request.setAttribute(Constants.SYSTEM_IDENTIFIER, Long.valueOf(workflowId
 				));
+		}
 		
 		
 		if (workflowId != null && workflowName != null)
