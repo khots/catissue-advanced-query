@@ -4,156 +4,164 @@
 // "columnContents" contains controls to be added to be added to each column
 function addRowToTable(tableId,columnContents,operandsTdContent,operatorsTdContent,expr)
 {
-	var tableObj=document.getElementById(tableId);
-	var rowObj=document.createElement("tr");
-	rowObj.height="22";
-	rowObj.className="td_bgcolor_white";
-	var columnObj;
-	var columnCount=columnContents.length;
-	var id=0;
-
-	var queryControls=document.getElementById("table1").rows;
-	var queryCount=0;
-	if(queryControls!=null && queryControls!=undefined)
+	if(!isAlreadyPresent(columnContents))
 	{
-		queryCount=queryControls.length;
-	}
-	//To add icons showing the status
+		var tableObj=document.getElementById(tableId);
+		var rowObj=document.createElement("tr");
+		rowObj.height="22";
+		rowObj.className="td_bgcolor_white";
+		var columnObj;
+		var columnCount=columnContents.length;
+		var id=0;
 
-	//var imgObj=document.createElement("td");
-	//imgObj.width="20";
-	//var trImgDown=createImageElement("images/advancequery/ic_notrun06.gif","notStarted_"+queryCount);
-	//imgObj.appendChild(trImgDown);
-	//rowObj.appendChild(imgObj);
-
-	for(var counter=0;counter<columnCount-2;counter++)
-	{
-		if(columnContents[counter]!=null)
+		var queryControls=document.getElementById("table1").rows;
+		var queryCount=0;
+		if(queryControls!=null && queryControls!=undefined)
 		{
-			columnObj=document.createElement("td");
-			//columnObj.className="aligntop";
-			if(counter==0)
-			{
-				columnObj.width="10";//set width for checkbox control
-
-			}
-
-			columnObj.className="aligntop";
-			if(counter==1)
-			{
-				columnObj.className="workflowicon";//set width for checkbox control
-				 columnObj.width="10";
-
-			}
-			columnObj.appendChild(columnContents[counter]);
-			if(columnContents[counter].name=="selectedqueryId")
-			{
-				id=columnContents[counter].value;
-				columnObj.appendChild(createHiddenElement("identifier","identifier_"+queryCount,columnContents[7]));
-				columnObj.appendChild(createHiddenElement("queryIdForRow","queryIdForRow_"+id,id));
-				columnObj.appendChild(createHiddenElement("queryExecId","queryExecId_"+queryCount,0));
-			}
-			rowObj.appendChild(columnObj);
+			queryCount=queryControls.length;
 		}
-	}
+		//To add icons showing the status
+
+		//var imgObj=document.createElement("td");
+		//imgObj.width="20";
+		//var trImgDown=createImageElement("images/advancequery/ic_notrun06.gif","notStarted_"+queryCount);
+		//imgObj.appendChild(trImgDown);
+		//rowObj.appendChild(imgObj);
+
+		for(var counter=0;counter<columnCount-2;counter++)
+		{
+			if(columnContents[counter]!=null)
+			{
+				columnObj=document.createElement("td");
+				//columnObj.className="aligntop";
+				if(counter==0)
+				{
+					columnObj.width="10";//set width for checkbox control
+
+				}
+
+				columnObj.className="aligntop";
+				if(counter==1)
+				{
+					columnObj.className="workflowicon";//set width for checkbox control
+					 columnObj.width="10";
+
+				}
+				columnObj.appendChild(columnContents[counter]);
+				if(columnContents[counter].name=="selectedqueryId")
+				{
+					id=columnContents[counter].value;
+					columnObj.appendChild(createHiddenElement("identifier","identifier_"+queryCount,columnContents[7]));
+					columnObj.appendChild(createHiddenElement("queryIdForRow","queryIdForRow_"+id,id));
+					columnObj.appendChild(createHiddenElement("queryExecId","queryExecId_"+queryCount,0));
+				}
+				rowObj.appendChild(columnObj);
+			}
+		}
+			
+		//Create all the hidden controls and add them to a "td"
+		var operandsTd=document.createElement("td");
+		operandsTd.className="aligntop";
+		operandsTd.width="125";
+		//operandsTd.className="aligntop";
 		
-	//Create all the hidden controls and add them to a "td"
-	var operandsTd=document.createElement("td");
-	operandsTd.className="aligntop";
-	operandsTd.width="125";
-	//operandsTd.className="aligntop";
-	
-	var tble1=document.createElement("table");
-	tble1.depth="3";
-	var tbody1=document.createElement("tbody");
-	tbody1.depth="5";
-	var operandsTr=document.createElement("tr");
-	var operandsTd1=document.createElement("td");
-	operandsTd1.className="aligntop";
-	//operandsTd1.className="aligntop";
-	operandsTd1.width="100";
-	var operandsTd2=document.createElement("td");
-	operandsTd2.className="aligntop";
+		var tble1=document.createElement("table");
+		tble1.depth="3";
+		var tbody1=document.createElement("tbody");
+		tbody1.depth="5";
+		var operandsTr=document.createElement("tr");
+		var operandsTd1=document.createElement("td");
+		operandsTd1.className="aligntop";
+		//operandsTd1.className="aligntop";
+		operandsTd1.width="100";
+		var operandsTd2=document.createElement("td");
+		operandsTd2.className="aligntop";
 
-	//operandsTd2.className="aligntop";
-	var operandsTd3=document.createElement("td");
-	operandsTd3.className="aligntop";
-	//operandsTd3.className="aligntop";
+		//operandsTd2.className="aligntop";
+		var operandsTd3=document.createElement("td");
+		operandsTd3.className="aligntop";
+		//operandsTd3.className="aligntop";
 
 
-	
-	var operandsControl=createHiddenElement("operands","operands_"+queryCount,operandsTdContent);	
-	operandsTd2.appendChild(operandsControl);
-	
-	var operatorControl=createHiddenElement("operators","operators_"+queryCount,operatorsTdContent);
-	operandsTd2.appendChild(operatorControl);
-	
-	var queryTitleControl;
-	var queryTypeControl;
-    var exprControl;
+		
+		var operandsControl=createHiddenElement("operands","operands_"+queryCount,operandsTdContent);	
+		operandsTd2.appendChild(operandsControl);
+		
+		var operatorControl=createHiddenElement("operators","operators_"+queryCount,operatorsTdContent);
+		operandsTd2.appendChild(operatorControl);
+		
+		var queryTitleControl;
+		var queryTypeControl;
+		var exprControl;
 
-	queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,(columnContents[7]));
-	queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,(columnContents[8]));
-	exprControl=createHiddenElement("expression","expression_"+queryCount,expr);
+		queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,(columnContents[7]));
+		queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,(columnContents[8]));
+		exprControl=createHiddenElement("expression","expression_"+queryCount,expr);
 
-	operandsTd2.appendChild(queryTitleControl);
-	operandsTd2.appendChild(queryTypeControl);
-	operandsTd2.appendChild(exprControl);
-	var query_type=columnContents[8];
-	if(query_type=="Data")
-     operandsTd1.appendChild(createLink("View Results ","execute_"+queryCount,"javascript:executeGetDataQuery('"+id+"')"));
+		operandsTd2.appendChild(queryTitleControl);
+		operandsTd2.appendChild(queryTypeControl);
+		operandsTd2.appendChild(exprControl);
+		var query_type=columnContents[8];
+		if(query_type=="Data")
+		 operandsTd1.appendChild(createLink("View Results ","execute_"+queryCount,"javascript:executeGetDataQuery('"+id+"')"));
+		else
+		{
+			 var t =	escape(columnContents[7]);
+			 operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+escape(t)+"','"+0+"')"));
+		}
+			operandsTd1.className="aligntop";
+
+		operandsTd3.appendChild(createLink("Delete ","delete_"+queryCount,"javascript:deleteWorkflowItem('"+queryCount+"')"));
+		operandsTd3.className="aligntop";
+		operandsTd3.appendChild(createHiddenElement("cancelajaxcall","cancelajaxcall_"+(queryCount),'false'));
+
+		operandsTr.appendChild(operandsTd1);
+		operandsTr.appendChild(operandsTd2);
+		operandsTr.appendChild(operandsTd3);
+		tbody1.appendChild(operandsTr);
+		tble1.appendChild(tbody1);
+		operandsTd.appendChild(tble1);
+
+		rowObj.appendChild(operandsTd);
+		
+		/*var reorderTd=document.createElement("td");
+		reorderTd.align="center";
+
+		var tble2=document.createElement("table");
+		var tbody2=document.createElement("tbody");
+		tble2.cellspacing="0";
+		tble2.cellpadding="0"
+
+		var trInsideTd=document.createElement("tr");
+		var reorderTd1=document.createElement("td");
+		var reorderTd2=document.createElement("td");
+		var reorderTd3=document.createElement("td");
+
+		var trImgup=createImageElement("images/advancequery/ic_up.gif","up_"+queryCount);//new Image();
+		//trImgup.src = "images/advancequery/ic_up.gif";
+		trImgup.onMouseOver="Tip('Move Up')";
+		reorderTd1.appendChild(trImgup);
+		reorderTd2.width="2";
+		var trImgDown=createImageElement("images/advancequery/ic_down.gif","down_"+queryCount);//new Image( );
+		//trImgDown.src = "images/advancequery/ic_down.gif";
+		//trImgDown.onMouseOver="Tip('Move Down')";
+		reorderTd3.appendChild(trImgDown);
+		
+		trInsideTd.appendChild(reorderTd1);
+		trInsideTd.appendChild(reorderTd2);
+		trInsideTd.appendChild(reorderTd3);
+		tbody2.appendChild(trInsideTd);
+		tble2.appendChild(tbody2);
+		reorderTd.appendChild(tble2);
+		rowObj.appendChild(reorderTd);*/
+		tableObj.appendChild(rowObj);
+		document.getElementById("isdone").value="false";
+	}
 	else
 	{
-		 var t =	escape(columnContents[7]);
-		 operandsTd1.appendChild(createLink("Execute ","execute_"+queryCount,"javascript:executeGetCountQuery('"+escape(t)+"','"+0+"')"));
+		document.getElementById("sameQueryTitle").value=columnContents[7]
+		dhtmlmodal.open('Same Query title', 'iframe', './pages/advancequery/content/search/querysuite/QueryTitlePopup.jsp','Query title', 'width=400px,height=120px,center=1,resize=1,scrolling=0');
 	}
-		operandsTd1.className="aligntop";
-
-	operandsTd3.appendChild(createLink("Delete ","delete_"+queryCount,"javascript:deleteWorkflowItem('"+queryCount+"')"));
-	operandsTd3.className="aligntop";
-	operandsTd3.appendChild(createHiddenElement("cancelajaxcall","cancelajaxcall_"+(queryCount),'false'));
-
-	operandsTr.appendChild(operandsTd1);
-	operandsTr.appendChild(operandsTd2);
-	operandsTr.appendChild(operandsTd3);
-	tbody1.appendChild(operandsTr);
-	tble1.appendChild(tbody1);
-	operandsTd.appendChild(tble1);
-
-	rowObj.appendChild(operandsTd);
-	
-	/*var reorderTd=document.createElement("td");
-	reorderTd.align="center";
-
-	var tble2=document.createElement("table");
-	var tbody2=document.createElement("tbody");
-	tble2.cellspacing="0";
-	tble2.cellpadding="0"
-
-	var trInsideTd=document.createElement("tr");
-	var reorderTd1=document.createElement("td");
-	var reorderTd2=document.createElement("td");
-	var reorderTd3=document.createElement("td");
-
-	var trImgup=createImageElement("images/advancequery/ic_up.gif","up_"+queryCount);//new Image();
-	//trImgup.src = "images/advancequery/ic_up.gif";
-	trImgup.onMouseOver="Tip('Move Up')";
-	reorderTd1.appendChild(trImgup);
-	reorderTd2.width="2";
-	var trImgDown=createImageElement("images/advancequery/ic_down.gif","down_"+queryCount);//new Image( );
-	//trImgDown.src = "images/advancequery/ic_down.gif";
-	//trImgDown.onMouseOver="Tip('Move Down')";
-	reorderTd3.appendChild(trImgDown);
-	
-	trInsideTd.appendChild(reorderTd1);
-	trInsideTd.appendChild(reorderTd2);
-	trInsideTd.appendChild(reorderTd3);
-	tbody2.appendChild(trInsideTd);
-	tble2.appendChild(tbody2);
-	reorderTd.appendChild(tble2);
-	rowObj.appendChild(reorderTd);*/
-	tableObj.appendChild(rowObj);
-	document.getElementById("isdone").value="false";
 }
 
 function hasInnerText()
@@ -895,4 +903,24 @@ function imageForFailed(index)
 function addEvent3(){
 			setCheckboxCount();
 			setSelectedCheckBoxes();
+}
+
+function isAlreadyPresent(columnContents)
+{
+			var alreadyPresent=false;
+			var numOfRows =document.getElementById("table1").rows.length;
+			for(var count = 0; count < numOfRows; count++)
+			{
+
+			//queryTitleControl=createHiddenElement("displayQueryTitle","displayQueryTitle_"+queryCount,(columnContents[7]));
+		//queryTypeControl=createHiddenElement("displayQueryType","displayQueryType_"+queryCount,(columnContents[8]));
+				var title=document.getElementById("identifier_"+count);
+				var type=document.getElementById("displayQueryType_"+count).value;
+				if(title.value==columnContents[7]&&type==columnContents[8])
+				{
+					alreadyPresent=true;
+				}
+			}
+
+return alreadyPresent;
 }
