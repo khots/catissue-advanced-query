@@ -27,6 +27,7 @@ import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.domain.SelectedConcept;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.QueryModuleConstants;
 
 /**
  * This class generates UI for 'Add Limits' and 'Edit Limits' section.
@@ -489,7 +490,7 @@ public class HtmlProvider
 	private String getAttributesString(Collection<AttributeInterface> attributeCollection)
 	{
 		StringBuffer attributesList = new StringBuffer();
-		StringBuffer semicolon = new StringBuffer(";");
+		StringBuffer semicolon = new StringBuffer(QueryModuleConstants.ENTITY_SEPARATOR);
 		if (!attributeCollection.isEmpty())
 		{
 			List<AttributeInterface> attributes =
@@ -907,7 +908,7 @@ public class HtmlProvider
 				&& attributeDetails.isParameterizedCondition())
 				|| !forPage.equalsIgnoreCase(Constants.EXECUTE_QUERY_PAGE))
 		{
-			attributesList = attributesList + ";" + componentId;
+			attributesList = attributesList + QueryModuleConstants.ENTITY_SEPARATOR + componentId;
 		}
 		if (isBGColor)
 		{
@@ -1052,7 +1053,7 @@ public class HtmlProvider
 				conditions, isShowAll, entityExpressionIdListMap,parameterList));
 				expressionEntityString.append(expressionId.intValue()).append(colon)
 						.append(Utility.parseClassName(
-							entity.getName())).append(Constants.ENTITY_SEPARATOR);
+							entity.getName())).append(QueryModuleConstants.ENTITY_SEPARATOR);
 			}
 		}
 		return expressionEntityString;
