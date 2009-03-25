@@ -1599,20 +1599,19 @@ function setPreviousProject()
 function retrieveCounts()
 {
 
-	var rows=parent.window.document.getElementById("table1").rows.length;
-	if(rows>0)
+	var rows=document.getElementById("table1").rows.length;
+	if(initalizeflagforLoadingDiv())
 	{
-			initializeLoadingDiv();
-
+		initializeLoadingDiv();
 	}
 	for(var i=0;i<rows;i++)
 	{
-		var executionId=parent.window.document.getElementById("queryExecId_"+i).value;
-		var id=parent.window.document.getElementById("queryExecId_"+i).id;
-		var object=parent.window.document.getElementById("queryExecId_"+i).parentNode;//parent.window.id.parentNode;
+		var executionId=document.getElementById("queryExecId_"+i).value;
+		var id=document.getElementById("queryExecId_"+i).id;
+		var object=document.getElementById("queryExecId_"+i).parentNode;
 		var tdChildCollection=object.getElementsByTagName('input');
 		var queryIdForRow=tdChildCollection[2].id;
-		var queryId=parent.window.document.getElementById(queryIdForRow).value;
+		var queryId=document.getElementById(queryIdForRow).value;
 		if(executionId!='0' && executionId!="")
 		{
 			workflowExecuteGetCountQuery(queryId,executionId);
