@@ -125,8 +125,7 @@ public class CsmUtility {
 			Query query = null;
 			
 			query = session1.createQuery("select id from " + IParameterizedQuery.class.getName()
-					
-					 );
+					+ "  order by  id desc");
 
 		
 			return query.list();
@@ -159,7 +158,7 @@ public class CsmUtility {
 				Query query = null;
 				
 				query = session1.createQuery("from " + IParameterizedQuery.class.getName()  + 
-						" query where  query.id in  "+objectToRead
+						" query where  query.id in  "+objectToRead +" order by query.id desc"
 						 );
 	
 			
