@@ -2,6 +2,7 @@
 package edu.wustl.query.util.querysuite;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
@@ -36,8 +37,7 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 	public QueryUIManager(HttpServletRequest request, IQuery query) throws QueryModuleException
 	{
 
-		this.request = request;
-		this.session = request.getSession();
+		HttpSession session = request.getSession();
 		SessionDataBean sessionDataBean = ((SessionDataBean) session
 				.getAttribute(Constants.SESSION_DATA));
 		long user_id = sessionDataBean.getUserId();
@@ -87,15 +87,14 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 	 * This method inserts defined queries.
 	 * @throws QueryModuleException
 	 */
-	public void insertDefinedQueries() throws QueryModuleException
+	public void insertDefinedQueries(SessionDataBean sessionDataBean) throws QueryModuleException
 	{
 		QueryModuleException queryModExp;
 		//inserts Defined Query
 		DefinedQueryUtil definedQueryUtil = new DefinedQueryUtil();
 		try
 		{
-			definedQueryUtil.insertQuery(query, (SessionDataBean) session
-					.getAttribute(Constants.SESSION_DATA), false);
+			definedQueryUtil.insertQuery(query, sessionDataBean, false);
 		}
 		catch (UserNotAuthorizedException e)
 		{
@@ -118,15 +117,14 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 	 * This method updates the defined queries in database.
 	 * @throws QueryModuleException
 	 */
-	public void updateDefinedQueries() throws QueryModuleException
+	public void updateDefinedQueries(SessionDataBean sessionDataBean) throws QueryModuleException
 	{
 		QueryModuleException queryModExp;
 		//inserts Defined Query
 		DefinedQueryUtil definedQueryUtil = new DefinedQueryUtil();
 		try
 		{
-			definedQueryUtil.updateQuery(query,(SessionDataBean) session
-					.getAttribute(Constants.SESSION_DATA), false);
+			definedQueryUtil.updateQuery(query,sessionDataBean, false);
 		}
 		catch (UserNotAuthorizedException e)
 		{
