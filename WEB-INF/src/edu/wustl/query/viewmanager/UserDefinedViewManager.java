@@ -26,7 +26,7 @@ public class UserDefinedViewManager extends ViewManager
 	public List<IOutputAttribute> getSelectedColumnList(IQuery query) throws QueryModuleException
 	{
 		List<IOutputAttribute> outputAttributes =((ParameterizedQuery)query).getOutputAttributeList();
-		if(outputAttributes==null || outputAttributes.size()==0)
+		if(outputAttributes==null || outputAttributes.isEmpty())
 		{
 			throw new QueryModuleException("No output attribute defined for query using Define View!", QueryModuleError.GENERIC_EXCEPTION);
 		}

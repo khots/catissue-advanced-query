@@ -1,6 +1,7 @@
 
 package edu.wustl.query.queryexecutionmanager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +33,8 @@ public class DataQueryResultsBean
 	 */
 	public DataQueryResultsBean()
 	{
-
+		attributeList = new ArrayList<List<Object>>();
+		dataTypesList = new ArrayList<String>();
 	}
 
 	/**

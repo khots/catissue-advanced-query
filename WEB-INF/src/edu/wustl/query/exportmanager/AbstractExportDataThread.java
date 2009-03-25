@@ -16,6 +16,7 @@ import edu.wustl.query.queryexecutionmanager.DataQueryExecution;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.QueryModuleException;
+import edu.wustl.query.viewmanager.ViewType;
 
 /**
  * This Abstract class is responsible for carrying out the generic logic of exporting data.
@@ -117,16 +118,13 @@ public abstract class AbstractExportDataThread implements Runnable
 	 */
 	private final List executeQuery(ExportDataObject exportDataObject) throws QueryModuleException
 	{
-		DataQueryExecution dataQueryExecutor = DataQueryExecutorFactory
-				.getDefaultDataQueryExecutor();
-
 		AbstractQuery abstractQuery = (AbstractQuery) exportDataObject.getExportObjectDetails()
 				.get(Constants.ABSTRACT_QUERY);
 
-		List<NodeInfo> primaryKeyList = ITableManagerFactory.getDefaultITableManager().getUpiList(
-				abstractQuery.getQueryExecId());
-
-		return dataQueryExecutor.executeDataQueryForExport(abstractQuery, primaryKeyList);
+		DataQueryExecution dataQueryExecutor = DataQueryExecutorFactory
+		.getDefaultDataQueryExecutor(abstractQuery, abstractQuery.getQueryExecId(), ViewType.SPREADSHEET_VIEW);
+		
+		return dataQueryExecutor.executeForExport();
 	}
 
 	/**

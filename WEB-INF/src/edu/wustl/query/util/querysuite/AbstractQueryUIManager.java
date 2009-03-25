@@ -3,14 +3,12 @@ package edu.wustl.query.util.querysuite;
 /**
  * This class is base for all QueryUIManager classes.
  */
-import java.sql.SQLException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.NodeInfo;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.AbstractQuery;
-import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.viewmanager.ViewType;
@@ -58,7 +56,7 @@ public abstract class AbstractQueryUIManager {
 	 */
 	abstract public void updateQueryForValidation() throws QueryModuleException;
 	
-	abstract public DataQueryResultsBean getData(int countQueryExecId,List<NodeInfo> upiList, ViewType viewType) throws QueryModuleException, DAOException, SQLException;
+//	abstract public DataQueryResultsBean getData(int countQueryExecId,List<NodeInfo> upiList, ViewType viewType) throws QueryModuleException, DAOException, SQLException;
 	
 	abstract public DataQueryResultsBean getData(int countQueryExecId, ViewType viewType) throws QueryModuleException;
 	

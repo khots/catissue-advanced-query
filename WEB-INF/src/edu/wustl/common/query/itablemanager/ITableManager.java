@@ -46,7 +46,7 @@ public class ITableManager
 	 * @return
 	 * @throws DAOException
 	 */
-	public static synchronized ITableManager getInstance() throws DAOException
+	public static synchronized ITableManager getInstance()
 	{
 		if (sINSTANCE == null)
 		{

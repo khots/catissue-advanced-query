@@ -4,8 +4,8 @@ package edu.wustl.query.queryexecutionmanager;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wustl.common.beans.NodeInfo;
-import edu.wustl.common.query.AbstractQuery;
+import com.hp.hpl.jena.query.QueryBuildException;
+
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
 /**
@@ -26,8 +26,7 @@ public class DataQueryExecution
 	 * @param primaryKeyList
 	 * @return
 	 */
-	public List<List<Object>> executeDataQuery(AbstractQuery abstractQuery,
-			List<List<Object>> primaryKeyList)
+	public List<List<Object>> execute() throws QueryModuleException 
 	{
 
 		return new ArrayList<List<Object>>();
@@ -39,8 +38,7 @@ public class DataQueryExecution
 	 * @param primaryKeyList
 	 * @return
 	 */
-	public List<List<Object>> executeDataQueryForExport(AbstractQuery abstractQuery,
-			List<NodeInfo> primaryKeyList) throws QueryModuleException
+	public List<List<Object>> executeForExport() throws QueryModuleException
 	{
 
 		return new ArrayList<List<Object>>();
