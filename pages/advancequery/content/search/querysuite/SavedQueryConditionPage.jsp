@@ -48,26 +48,6 @@
 		<script language="JavaScript" type="text/javascript" src="jss/advancequery/script.js"></script>
 		<script language="JavaScript" type="text/javascript" src="jss/advancequery/overlib_mini.js"></script>
 		<script language="JavaScript" type="text/javascript" src="jss/advancequery/calender.js"></script>
-		<c:if test="${querySaved eq 'true'}">
-          <script>
-           window.onunload=function()
-		   {
-		        var forwardTo="";
-				var parentWindowForm = window.opener.document.forms[0];
-				if("<%=isworkflow%>"=="true")
-			     forwardTo="RedirectToWorkflow.do";
-				else
-				{
-				 forwardTo="ShowDashboard.do?requestFrom=MyQueries";
-				 parentWindowForm.requestFrom.value="MyQueries"; 
-				}
-				parentWindowForm.action = forwardTo; 
-                parentWindowForm.submit(); 
-               // window.self.close();
-		   }
-		   		   
-		  </script>
-       </c:if>
 		
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 		<title>
@@ -82,13 +62,13 @@
 		  <td>
 			<table summary="" cellpadding="0" cellspacing="0"  border="0" align="center" width="100%" class="login_box_bg" >
 					
-				<tr class="table_header_query" >
+				<!--<tr class="table_header_query" >
 					<td colspan='3' height="26">
 					<img border='0' src="images/advancequery/t_query_info.gif">
 					</td>
-				</tr>
+				</tr>-->
 				<tr>
-					<td style="padding-left:10px;padding-bottom:5px;padding-top:5px;" class='error_msg' colspan="3" nowrap><html:errors/>
+					<td id="Error_msg" style="padding-left:10px;padding-bottom:5px;padding-top:5px;" class='error_msg' colspan="3" nowrap><html:errors/>
 					</td>
 					<tr>
 				<tr>
@@ -101,7 +81,7 @@
 								<bean:message key="workflow.name"/>:
 					</td>
 					<td style="padding-bottom:10px;">
-						<input type="text" name="workflowName" value="<%=workflowName%>" class="textfield_inactive" disabled="disabled" />
+						<input type="text" name="workflowName" value="<%=workflowName%>" size="50" class="textfield_inactive" disabled="disabled" />
 					</td>
 				  </tr>
 				  <tr>
