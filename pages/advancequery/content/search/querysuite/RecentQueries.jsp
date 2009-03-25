@@ -127,7 +127,7 @@ function responseHandler(response)
 <td >
 			<table width="100%" border="0" cellpadding="0" cellspacing="0">
 			<tr class="tr_color_lgrey">				
-				<td align="left" height="30" style="padding-left:5px;"><span class="content_txt_bold">Show Last:</span>
+				<td align="left" height="30" style="padding-left:5px;"><span class="content_txt_bold">Show Items:</span>
 				<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${requestScope.numResultsPerPage}" styleClass="textfield_undefined">
 							 <c:forEach var="item" items="${requestScope.resultsPerPageOptions}" varStatus="i">
 									<html:option value="${item}">${item}</html:option>
