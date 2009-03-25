@@ -182,7 +182,8 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/LoadSaveQueryPage.do"/>
 			<forward name="failure" path="/LoadSaveQueryPage.do"/>
-		<!--<forward name="workflow" path="/RedirectToWorkflow.do"/> -->
+			<forward name="workflow" path="/RedirectToWorkflow.do"/>
+			<forward name="showdashboard" path="/ShowDashboard.do?requestFrom=MyQueries"/>
 		</action>
 		<action path="/RetrieveQueryAction"
 			type="edu.wustl.query.action.RetrieveQueryAction"
