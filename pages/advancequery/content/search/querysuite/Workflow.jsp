@@ -345,7 +345,7 @@ function setIsDoneOnWorkflowNameChange()
 
 function runWorkflow()
 {
-
+	initializeLoadingDiv();
 	setIsDoneOnWorkflowNameChange();
 	if(document.getElementById("isdone").value=='false')
 	{
@@ -883,6 +883,7 @@ function workflowResponseHandler(response)
 						}
 					}
           } 
+		  clearLoadingDiv();
 
 }
 function cancelWorkflow()
@@ -907,7 +908,7 @@ function getPatientdata()
 function onProjectChange()
 {
 	//document.getElementById("cancelajaxcall_"+index).value='true';
-	//initializeLoadingDiv();
+	initializeLoadingDiv();
 
 	 initUI();
 	setIsDoneOnWorkflowNameChange();
@@ -1045,7 +1046,7 @@ function getCountsForChangedProjectResponseHandler(response)
 {
 	  var jsonResponse = eval('('+ response+')');
 	  removeAllCounts();
-	   if(jsonResponse.executionQueryResults!=null)
+	   if(jsonResponse.executionQueryResults!=null&&jsonResponse.executionQueryResults!="")
        {
 		    var num = jsonResponse.executionQueryResults.length; 
 		
@@ -1076,7 +1077,10 @@ function getCountsForChangedProjectResponseHandler(response)
 
 	   }
 
-		  // clearLoadingDiv();
+		else
+		{	
+			clearLoadingDiv();
+		}
 }
 function removeAllCounts()
 {
@@ -1109,7 +1113,10 @@ function initializeLoadingDiv()
 function clearLoadingDiv()
 {
 		var loading=document.getElementById("loading");
-		document.getElementById("loading").className = "loading-invisible";
+		if(loading.className=="loading-visible")
+		{
+			document.getElementById("loading").className = "loading-invisible";
+		}
 
 }
 function clearSelBoxList()
@@ -1157,7 +1164,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
  <input type="hidden" name="dataQueryId" id="dataQueryId" value="">
  <input type="hidden" name="countQueryId" id="countQueryId" value="">
 <html:hidden property="executedForProject" styleId="executedForProject" value="${workflowForm.executedForProject}"/>
-
+<input type="hidden" name="sameQueryTitle" id="sameQueryTitle" value="">
 <html:hidden property="operation" styleId="operation" value="${requestScope.operation}"/>
 <html:hidden property="id" styleId="id" value="${requestScope.id}"/>
 <select name="queryId" id="queryId" style="display:none">
@@ -1302,7 +1309,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 			<td valign="top">
 				<table width="100%" border="0" cellpadding="3" cellspacing="0">
 				<tr>
-					<td valign="middle">
+					<td valign="middle"  width="35%">
 						<table  border="0" cellspacing="0" cellpadding="0" valign="middle">
 							<tr>
 							<td>
@@ -1313,14 +1320,16 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 							</tr>
 						</table>
 					</td>
-						<!--<td valign="middle">
-						<table  border="0" cellspacing="0" cellpadding="0" valign="middle">
+						<td valign="top" align="right" width="17%">
+						<table  border="0" cellspacing="0" cellpadding="0" align="right">
 							<tr>
-							<td>
+							<td align="right">
 
-							<div id="loading" class="loading-invisible">
-								<table cellpadding="0" cellspacing="0"><tr><td>
-								<img align="absmiddle" src="images/advancequery/loading.gif" border="0" height="23px" width="80px">
+							<div id="loading" class="loading-invisible" align="right">
+								<table cellpadding="0" cellspacing="0" align="right">
+								<tr>
+								<td width="100%" align="right" valign="top">
+									<img alt="Loading" src="images/advancequery/load.gif" >
 								</td>
 								</tr>
 								</table>
@@ -1330,9 +1339,9 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 							</tr>
 						</table>
 					</td>
-					-->
-					<td >
-						<table  border="0" cellpadding="4" cellspacing="0" align="right">
+				
+					<td  width="48%">
+						<table  border="0" cellpadding="4" cellspacing="0" align="left">
                           <tr>
                             <td  align="right"  nowrap ><span class="content_txt_bold"><bean:message  key="workflow.project"/></span>&nbsp;
 							 <SELECT name="selectedProject" id="selectedProject" class="texttype" onchange="showResetCountPopup()">
@@ -1589,7 +1598,13 @@ function setPreviousProject()
 
 function retrieveCounts()
 {
+
 	var rows=parent.window.document.getElementById("table1").rows.length;
+	if(rows>0)
+	{
+			initializeLoadingDiv();
+
+	}
 	for(var i=0;i<rows;i++)
 	{
 		var executionId=parent.window.document.getElementById("queryExecId_"+i).value;
@@ -1603,6 +1618,7 @@ function retrieveCounts()
 			workflowExecuteGetCountQuery(queryId,executionId);
 		}
 	}
+	 //clearLoadingDiv();
 }retrieveCounts();
 </script>
 </body>
