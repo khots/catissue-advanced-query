@@ -165,4 +165,15 @@
 			 </query>
 		</TestCase> 
 
+		<TestCase>
+			 <name>Count of patients over the age of 40 have had a POSITIVE Occult Blood or Stool Guiac Lab Test</name>
+			 <tmtTestCaseId>6116</tmtTestCaseId>
+			  <!-- <dbInitCSV>DEMOGRAPHICS_init_tc1.csv</dbInitCSV>  -->
+			 <expectedResultsCSV>TC15_Expected_Results.csv</expectedResultsCSV>
+			  <!--  <dbCleanUpCSV>DEMOGRAPHICS_clean_tc1.csv</dbCleanUpCSV>  -->
+			 		 
+			 <query type = "saved_query"
+			 	    	 id = "702">
+			 </query>
+		</TestCase>
 </TestCases>
