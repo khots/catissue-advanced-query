@@ -465,11 +465,157 @@ int queryCount = 0;%>
 </tr>
 </table>
 </logic:notEqual>
+
+
+
+<!-- if no query -->
 <table width="100%" cellpadding="4" cellspacing="0">
 <logic:equal name="totalPages" value="0">
-					<td class="content_txt_bold" style="padding-left:5px;" valign="top">
-					<bean:message key="meassges.emptyquery"/>
-					</td>	
+
+<table width="100%" border="0" cellspacing="0" cellpadding="4">
+<tr>
+ <input type="hidden" name="sameQueryTitle" id="sameQueryTitle" value="">
+	<td>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="login_box_bg">
+			<tr >
+				<td width="20%" align="left" valign="top" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_explore.gif" alt="Explore" width="64" height="26" valign="absmiddle"></td>
+
+				<td valign="top" background="images/advancequery/bg_content_header.gif">
+				<c:set var="query_type_data" value="myQueriesForWorkFlow"/>
+				 <c:set var="qtype" value="${requestScope.pageOf}"/>
+				
+				  <logic:equal name="query_type_data" value="${qtype}">
+					<img src="images/advancequery/t_myqueries.gif" alt="My Queries " width="99" height="26" valign="absmiddle">
+				  </logic:equal>
+				   <logic:notEqual name="query_type_data" value="${qtype}">
+						<img src="images/advancequery/t_shared_queries.gif" alt="My Queries " width="125" height="26" valign="absmiddle">
+				   </logic:notEqual>
+				
+				</td>
+
+			</tr>
+			<tr>
+				<td valign="top" style="border-right:1px solid #DDDDDD; border-bottom:1px solid #DDDDDD;" height="300px">
+					<table width="99%" border="0" cellpadding="2" cellspacing="0">
+					<tr>
+							<td width="2" >&nbsp;</td>
+							<td colspan="2" valign="bottom" class="blue_title">Queries</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td width="18" align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle">
+							</td>
+							<td valign="top"  class="content_txt">
+
+							<logic:equal name="query_type_data" value="${qtype}">
+								<b>
+							</logic:equal>
+
+
+							<a href="javascript:retrieveMyQueries('myQueriesForWorkFlow')" class="blacklink"><bean:message key="workflow.myqueries"/> 
+						</a>&nbsp;(${requestScope.myQueriesCount})</td>
+						</tr>
+						<tr>
+							<td >&nbsp;</td>
+							<td align="left" valign="top"><img src="images/advancequery/ic_folder.gif" alt="explore" width="16" height="16"  align="absmiddle">
+							
+							</td>
+							<td valign="top"  class="content_txt">
+							
+							<logic:notEqual name="query_type_data" value="${qtype}">
+								<b>
+							</logic:notEqual>
+
+							<a href="javascript:retrieveMyQueries('sharedQueriesForWorkFlow')" class="blacklink"><bean:message key="workflow.sharedqueries"/></a>&nbsp;(${requestScope.sharedQueriesCount})</td>
+						</tr>
+					</table>		
+				</td>
+				<td style="border-bottom:1px solid #DDDDDD;" valign="top">
+					<table width="100%" border="0" cellspacing="0" cellpadding="4">
+						<tr>
+						
+						<td align="left" valign="middle"><a href="javascript:closePopup()" class="greylink2" disabled="true"><bean:message key="workflow.add"/></a></td>
+						<td align="right">
+							<table border="0" cellspacing="0" cellpadding="2">
+								<tr>
+								<!--    <td class="content_txt"><bean:message key="workflow.show"/></td>
+								<td><select name="select" class="textfield_undefined" disabled="true">
+									<option>All</option>
+									<option>Get Count</option>
+									<option>Get Patient Data</option>
+								  </select></td>-->
+								</tr>
+						  </table>
+						</td>
+						</tr>
+					</table>
+
+					<table width="100%" border="0" cellspacing="0" cellpadding="4">
+						<tr>
+							<td>
+								<table width="100%" border="0" cellpadding="2" cellspacing="1" bgcolor="#EAEAEA">
+									  <tr class="td_bgcolor_grey">
+										<td width="10" height="25" valign="middle" ><input id="selectAllCheckbox"   type="checkbox" name="checkbox8" value="checkbox" onClick="javascript:selectAllCheckboxes()">                 
+										</td>
+
+										<td valign="middle" class="grid_header_text"><bean:message key="workflow.queryTitle"/></td>
+										<td width="111" valign="middle" class="grid_header_text"><bean:message key="workflow.querytype"/></td>
+										</tr>
+
+
+										</tr>
+									</table>
+							</td>
+
+						</tr>
+
+						<tr>
+							<td class="content_txt_bold" style="padding-left:5px;" valign="top">
+							<bean:message key="meassges.emptyquery"/>
+							</td>	
+						</td>
+
+					</table>
+				</td>
+
+			</tr>
+
+			<tr valign="bottom">
+			<td class="tr_color_lgrey" height="25px">&nbsp;</td>
+			<td colspan="2" class="tr_color_lgrey" valign="bottom">
+
+		<!--	<table height="*" width="100%" border="0" cellpadding="0" cellspacing="0">
+					<tr class="tr_color_lgrey">					
+						<td class="content_txt_bold" width="200">						  
+								<table>
+									<tr>
+										<td class="content_txt_bold" style="padding-left:5px;">
+											<bean:message key="userSearch.resultsPerPage"/>
+										</td>
+										<td>
+											<html:select property="value(numResultsPerPage)" styleId="numResultsPerPage" onchange="changeResPerPage('numResultsPerPage')" value="${sessionScope.numResultsPerPage}">
+												<html:options collection="resultsPerPageOptions" labelProperty="name" property="value"/>
+											</html:select>
+										</td>
+									</tr>
+								</table>
+							
+						  </td>
+						<td class="content_txt_bold" align="center">
+							<bean:message key="userSearch.showing"/> ${sessionScope.pageNum} <bean:message key="userSearch.of"/>  <c:out value="${sessionScope.totalPages}"></c:out>
+						</td>	
+					
+					
+					</tr>
+					
+		</table>-->
+		</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+</table>
+
 </logic:equal >
 </table>
 </html:form>
