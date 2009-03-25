@@ -17,6 +17,6 @@ function confirmDelete()
   </tr>
 </table>
 <script>
-document.getElementById("queryTitleDiv").innerHTML="Query with title " + parent.window.document.getElementById("sameQueryTitle").value +" is already present in workflow";
+document.getElementById("queryTitleDiv").innerHTML='Query with title "' + parent.window.document.getElementById("sameQueryTitle").value +' " is already present in workflow';
 </script>
 </body>
