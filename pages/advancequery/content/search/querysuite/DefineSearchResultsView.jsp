@@ -32,6 +32,7 @@
 %>
 <html:form method="GET" action="<%=defineSearchResultsViewAction%>" style="margin:0;padding:0;">
 <html:hidden property="currentPage" value="prevToAddLimits"/>
+<input type="hidden" name="requestFrom" value="MyQueries">
 <input type="hidden" name="isQuery" value="true">
 <table border="0" width="100%" cellspacing="0" cellpadding="0" >
 	<tr><td  valign="top" align="center" style="padding-left:5px; padding-right:5px;">
