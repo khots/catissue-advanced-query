@@ -8,9 +8,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
-import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
 import edu.wustl.query.util.global.Constants;
@@ -24,9 +22,6 @@ public class DefineViewAction extends Action {
 	   HttpSession session = request.getSession();
 	   String isworkflow= request.getParameter(Constants.IS_WORKFLOW);
 	   String pageOf= request.getParameter(Constants.PAGE_OF);
-	   IQuery queryObject = (IQuery) session.getAttribute(
-				Constants.QUERY_OBJECT);	  
-	   String queryName=(String)request.getAttribute("queryName");
 	   request.setAttribute(Constants.IS_WORKFLOW, isworkflow);
 	   request.setAttribute(Constants.PAGE_OF,pageOf);
 	   QueryDetails queryDetails = new QueryDetails(session);
