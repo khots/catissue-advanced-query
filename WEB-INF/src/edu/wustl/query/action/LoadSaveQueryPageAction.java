@@ -64,9 +64,7 @@ public class LoadSaveQueryPageAction extends Action
 		} 
 		
 		  IQuery queryObject = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
-		  String queryName=(String)session.getAttribute("queryName");
-		  request.setAttribute("query_Name",queryName);
-		String target = Constants.FAILURE;
+		  String target = Constants.FAILURE;
 		
 		
 		boolean isDagEmpty = true;
