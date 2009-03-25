@@ -175,6 +175,11 @@ private void processDataNodeClick(String nodeId,HttpServletRequest request,List<
 	
 	//Retrieve the required session attributes
 	int queryExecutionID =   (Integer)session.getAttribute("queryExecutionId");
+	boolean hasSecurePrivilege = true;
+    if(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE)!=null)
+    {
+   	  hasSecurePrivilege = (Boolean)(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE));
+    }
 	Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map)session.getAttribute(Constants.ID_NODES_MAP);
 	IQuery patientDataQuery  = (IQuery)session.getAttribute(Constants.PATIENT_DATA_QUERY);
     
@@ -215,7 +220,7 @@ private void processDataNodeClick(String nodeId,HttpServletRequest request,List<
 
 		    		AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
 		    		.getDefaultViewIQueryGenerator();
-		    		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,abstractQueryUIManager.getAbstractQuery());
+		    		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,hasSecurePrivilege);
 		    		
 		    		//IQuery generatedQuery = ResultsViewTreeUtil.generateIQuery(mainEntityTreeDataNode,parentChildrenMap,mainEntity,patientDataQuery);
 			    	abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
@@ -258,6 +263,11 @@ private void processLabelNodeClick(String nodeId,HttpServletRequest request,List
 		
 	//Retrieve the required session attributes
 	int queryExecutionID =   (Integer)session.getAttribute("queryExecutionId");
+	boolean hasSecurePrivilege = true;
+    if(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE)!=null)
+    {
+   	  hasSecurePrivilege = (Boolean)(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE));
+    }
 	Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map<String, OutputTreeDataNode>)session.getAttribute(Constants.ID_NODES_MAP);
 	IQuery patientDataQuery  = (IQuery)session.getAttribute(Constants.PATIENT_DATA_QUERY);
 		
@@ -277,7 +287,7 @@ private void processLabelNodeClick(String nodeId,HttpServletRequest request,List
 	AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
 	.getDefaultViewIQueryGenerator();
 	AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request,patientDataQuery);
-	IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,abstractQueryUIManager.getAbstractQuery());
+	IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,hasSecurePrivilege);
 	
 	//IQuery generatedQuery = ResultsViewTreeUtil.generateIQuery(labelTreeDataNode,parentChildrenMap,rootEntity,patientDataQuery);
 	
@@ -290,7 +300,7 @@ private void processLabelNodeClick(String nodeId,HttpServletRequest request,List
 	List<IOutputAttribute> outputAttributesList = ((ParameterizedQuery) generatedQuery)
 	.getOutputAttributeList();
 	List<List<Object>>  dataList = dataQueryResultsBean.getAttributeList();
- 	if(dataList.size() >0)
+	if(dataList.size() >0)
 	{
 		for(int i=0; i< dataList.size(); i++)
 		{
@@ -304,7 +314,7 @@ private void processLabelNodeClick(String nodeId,HttpServletRequest request,List
 			createPrimaryKeyData(primaryKeyIndexesList,labelNodeDataList,primaryKeySetData);
 			//Separating data to be displayed in the results tree
 			separateResultsViewData(primaryKeyIndexesList,newList,displayData);
-			displayData = queryGenerator.getFormattedOutputForTreeView(displayData, rootEntity,abstractQueryUIManager.getAbstractQuery());
+			displayData = queryGenerator.getFormattedOutputForTreeView(displayData, rootEntity,hasSecurePrivilege);
 			//Creating the Tree node Id
 			String dataNodeId = createTreeNodeId(rootData,uniqueParentNode, uniqueCurrentNodeId,primaryKeySetData);
             String displayName = "<span class=\"content_txt\">"+  displayData +"</span>";	  
