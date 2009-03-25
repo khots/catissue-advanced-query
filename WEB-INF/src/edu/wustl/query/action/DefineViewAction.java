@@ -19,6 +19,9 @@ public class DefineViewAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 	   CategorySearchForm categorysearchform = (CategorySearchForm) form;
+	   String selectedColumnNamesList = request.getParameter(Constants.SELECTED_COLUMN_NAMES_LIST);
+	   String[] selectedColumnNames = selectedColumnNamesList.split(",");
+	   categorysearchform.setSelectedColumnNames(selectedColumnNames);
 	   HttpSession session = request.getSession();
 	   String isworkflow= request.getParameter(Constants.IS_WORKFLOW);
 	   String pageOf= request.getParameter(Constants.PAGE_OF);
