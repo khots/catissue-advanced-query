@@ -58,8 +58,6 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	/**  Constant for  */
 	public static final String SUCCESS = "success";
 	/**  Constant for  */
-	public static final String ENTITY_SEPARATOR = ";";
-	/**  Constant for  */
 	public static final String ATTRIBUTE_SEPARATOR = "|";
 	/**  Constant for  */
 	public static final String KEY_SEPARATOR = "*&*";
