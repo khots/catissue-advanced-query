@@ -399,6 +399,7 @@ function runWorkflowResponseHandler(response)
 	 if(jsonResponse.errormessage!=null)
 	 {
 		   document.getElementById("errormessage").innerHTML=jsonResponse.errormessage;
+		   clearLoadingDiv();
 	 }
 
 	//set workflow id 
@@ -547,6 +548,7 @@ function responseHandler(response)
 	 if(jsonResponse.errormessage!=null)
      {
            document.getElementById("errormessage").innerHTML=jsonResponse.errormessage;
+		   clearLoadingDiv();
 	 }
 
 	//set workflow id 
@@ -968,6 +970,7 @@ function projectChangeHandler(response)
 	 if(jsonResponse.errormessage!=null)
 	 {
 		   document.getElementById("errormessage").innerHTML=jsonResponse.errormessage;
+		   clearLoadingDiv();
 	 }
 
 	//set workflow id 
@@ -1105,17 +1108,14 @@ function initUI()
 }
 function initializeLoadingDiv()
 {
-		var loading=document.getElementById("loading");
-		document.getElementById("loading").className = "loading-visible";
-
-
+	document.getElementById("loading").className = "loading-visible";
 }
 function clearLoadingDiv()
 {
 		var loading=document.getElementById("loading");
 		if(loading.className=="loading-visible")
 		{
-			document.getElementById("loading").className = "loading-invisible";
+			loading.className = "loading-invisible";
 		}
 
 }
