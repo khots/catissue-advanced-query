@@ -110,9 +110,7 @@ public class FetchQueryAction extends Action
 					{
 						target = "editDataQuery";
 						session.setAttribute(Constants.Query_Type, Constants.QUERY_TYPE_GET_DATA);
-					}
-					session.setAttribute("queryName", query.getName());
-					
+					}								
 					request.setAttribute(Constants.CURRENT_PAGE, "editQuery");
 					
 				}
