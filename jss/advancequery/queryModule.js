@@ -728,7 +728,7 @@
 		} 
 		else
 		{
-			var listOfEntities = text.split(";");
+			var listOfEntities = text.split("!&&!");
 			var row ='<table width="100%" border="0" bordercolor="#FFFFFF" cellspacing="0" cellpadding="1">';
 			for(i=1; i<listOfEntities.length; i++)
 			{
@@ -760,7 +760,7 @@
 		else
 		{
 		
-			var listOfEntities = text.split(";");
+			var listOfEntities = text.split("!&&!");
 			var length = listOfEntities.length;
 			var temp = listOfEntities[length-1].split("*&*");
 			var key = temp[1];
@@ -881,7 +881,7 @@
 	{
 		waitCursor();
 		var strToCreateQueyObject ="";
-		var attribute = attributesList.split(";");
+		var attribute = attributesList.split("!&&!");
 		for(i=1; i<attribute.length; i++)
 		{
 			var opId =  attribute[i]+"_combobox";
@@ -926,15 +926,15 @@
 								}
 							}
 							if(valString == "")
-								strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + " " +";";
+								strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + " " +"!&&!";
 							else
-								strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + valString +";";
+								strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + valString +"!&&!";
 						} else 
 						{
 							if(textId == "")
-								strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + " " +";";
+								strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + " " +"!&&!";
 							else
-								strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + textId +";";
+								strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + textId +"!&&!";
 						}
 					//}
 				}
@@ -961,11 +961,11 @@
 							values = values + "&DEL_VAL&" +  selectedValue;
 							ob.options[ob.selectedIndex].selected = false;
 						}
-						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + values +";";
+						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + values +"!&&!";
 					}
 					else if(ob.value == "")
 					{
-						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + " " +";";
+						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + " " +"!&&!";
 					}
 				}
 				var radioButtonTrue = attribute[i]+"_radioButton_true";
@@ -976,15 +976,15 @@
 					var objFalse = document.getElementById(radioButtonFalse);
 					if(objTrue.checked)
 					{
-						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + 'true' +";";
+						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + 'true' +"!&&!";
 					}
 					else if(objFalse.checked)
 					{
-						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + 'false' +";";
+						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + 'false' +"!&&!";
 					}
 					else if(!objTrue.checked && !objFalse.checked)
 					{
-						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + " " +";";
+						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + " " +"!&&!";
 					}
 				}
 				else
@@ -1009,24 +1009,24 @@
 				}
 				if(textId != "" && textId1 == "")
 				{
-					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + textId +"!*=*!"+"missingTwoValues"+";";
+					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + textId +"!*=*!"+"missingTwoValues"+"!&&!";
 				}
 				if(textId1 != "" && textId == "")
 				{
-					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + "missingTwoValues" +"!*=*!"+"textId1"+";";
+					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + "missingTwoValues" +"!*=*!"+"textId1"+"!&&!";
 				}
 				if(textId != "" && textId1!= "")
 				{
-					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + textId +"!*=*!"+textId1+";";
+					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + textId +"!*=*!"+textId1+"!&&!";
 				}
 				if(textId == "" && textId1== "")
 				{
-					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + " " +"!*=*!"+" "+";";
+					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + " " +"!*=*!"+" "+"!&&!";
 				}
 			}
 			if(op == "Is Null" || op == "Is Not Null")
 			{
-				strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op +";";
+				strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op +"!&&!";
 			}
 		}
 		
@@ -1036,16 +1036,16 @@
 	 function createQueryString(nameOfFormToPost, entityName , attributesList,callingFrom)
         {
          waitCursor();
-	
+
 		var strToCreateQueyObject ="";
-		var attribute = attributesList.split(";");
+		var attribute = attributesList.split("!&&!");
 		for(i=1; i<attribute.length; i++)
 		{
 			var opId =  attribute[i]+"_combobox";
 			var textBoxId = attribute[i]+"_textBox";
 			var textBoxId1 = attribute[i]+"_textBox1";
 			var enumBox = attribute[i]+"_enumeratedvaluescombobox";
-			
+						
 			//var radioButtonFalse = attribute[i]+"_radioButton_false";
 			if(navigator.appName == "Microsoft Internet Explorer")
 			{					
@@ -1062,12 +1062,12 @@
 				{
 					enumValue = document.forms[nameOfFormToPost].elements[enumBox].value;	
 				}
-			}		
+			}	
 			if(op != "Between")
 			{
 				if (document.getElementById(textBoxId))
 				{
-					textId = document.getElementById(textBoxId).value;		
+					textId = document.getElementById(textBoxId).value;	
 					if(textId != "")
 					{
 						if(op == "In" || op =="Not In")
@@ -1082,10 +1082,10 @@
 									valString = valString  + "&DEL_VAL&" + inVals[g];
 								}
 							}
-							strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + valString +";";
+							strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + valString +"!&&!";
 						} else 
 						{
-							strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + textId +";";
+							strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + textId +"!&&!";
 						}
 					}
 				}
@@ -1112,7 +1112,7 @@
 							values = values + "&DEL_VAL&" +  selectedValue;
 							ob.options[ob.selectedIndex].selected = false;
 						}
-						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + values +";";
+						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + values +"!&&!";
 					}
 				}
 				var radioButtonTrue = attribute[i]+"_radioButton_true";
@@ -1123,11 +1123,11 @@
 					var objFalse = document.getElementById(radioButtonFalse);
 					if(objTrue.checked)
 					{
-						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + 'true' +";";
+						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + 'true' +"!&&!";
 					}
 					else if(objFalse.checked)
 					{
-						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + 'false' +";";
+						strToCreateQueyObject = strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + 'false' +"!&&!";
 					}
 				}
 				else
@@ -1152,30 +1152,29 @@
 				}
 				if(textId != "" && textId1 == "")
 				{
-					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + textId +"!*=*!"+"missingTwoValues"+";";
+					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + textId +"!*=*!"+"missingTwoValues"+"!&&!";
 				}
 				if(textId1 != "" && textId == "")
 				{
-					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + "missingTwoValues" +"!*=*!"+"textId1"+";";
+					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + "missingTwoValues" +"!*=*!"+"textId1"+"!&&!";
 				}
 				if(textId != "" && textId1!= "")
 				{
-					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + textId +"!*=*!"+textId1+";";
+					strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op + "!*=*!" + textId +"!*=*!"+textId1+"!&&!";
 				}
 			}
 			if(op == "Is Null" || op == "Is Not Null")
 			{
-				strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op +";";
+				strToCreateQueyObject =  strToCreateQueyObject + "@#condition#@"+ attribute[i] + "!*=*!" + op +"!&&!";
 			}
 		}
-  
-           return strToCreateQueyObject;
+	         return strToCreateQueyObject;
           
          } 
 
 	function produceQuery(isEditLimit, url,nameOfFormToPost, entityName , attributesList) 
 	{
-	        var strToCreateQueyObject = createQueryString(nameOfFormToPost, entityName , attributesList,'addLimit');
+		       var strToCreateQueyObject = createQueryString(nameOfFormToPost, entityName , attributesList,'addLimit');
  	  
 	/*	if(navigator.appName == "Microsoft Internet Explorer")
 		{
@@ -1632,8 +1631,8 @@
 					selectOptions(document.forms[0].selectedColumnNames);
 			}
 		}
-					
-		////////////
+
+	////////////
 		document.forms[0].submit();
 		//hideCursor();
 	}
@@ -2133,4 +2132,3 @@ var jsReady = false;
 		alert(message);
 		return false;
 	}
-	
