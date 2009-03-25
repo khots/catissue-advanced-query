@@ -5,23 +5,18 @@ package edu.wustl.query.util.querysuite;
  */
 import java.sql.SQLException;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.NodeInfo;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.querymanager.Count;
-import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.viewmanager.ViewType;
 
 public abstract class AbstractQueryUIManager {
 	
-	protected HttpServletRequest request;
-	protected HttpSession session;
 	protected boolean isSavedQuery;
 	protected QueryDetails queryDetailsObj;
 
@@ -32,15 +27,10 @@ public abstract class AbstractQueryUIManager {
 	 * @return status
 	 */
 	public int searchQuery(String option) throws QueryModuleException {
-		session.removeAttribute(Constants.HYPERLINK_COLUMN_MAP);
-		//QueryModuleError status = QueryModuleError.SUCCESS;
 		int query_exec_id = 0;
-		
-
 			if (queryDetailsObj.getSessionData() != null) {
-				query_exec_id = processQuery();
+				query_exec_id = processQuery(queryDetailsObj.getSessionData());
 			}
-		
 		return query_exec_id;
 	}
 
@@ -49,7 +39,7 @@ public abstract class AbstractQueryUIManager {
 	 * 
 	 * @throws QueryModuleException
 	 */
-	public abstract int processQuery() throws QueryModuleException ;
+	protected abstract int processQuery(SessionDataBean sessionDataBean) throws QueryModuleException ;
 	
 	public abstract Count getCount(int query_execution_id) throws QueryModuleException;
 	
