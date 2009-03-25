@@ -13,9 +13,16 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.test.annotation.ExpectedException;
 
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.dao.DatabaseConnectionParams;
+import edu.wustl.common.query.exeptions.SQLXMLException;
+import edu.wustl.common.querysuite.exceptions.CyclicException;
+import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
@@ -68,6 +75,7 @@ public class CountXQueryGeneratorTest
 		params.closeSession();
 	}
 
+	
 	@Test
 	public void RaceInTest() throws Exception
 	{
@@ -85,9 +93,10 @@ public class CountXQueryGeneratorTest
 
 		int count = getCountFor(xquery);
 		assertEquals(8, count);
-		
+
 	}
 
+	
 	@Test
 	public void RaceNotInTest() throws Exception
 	{
@@ -107,6 +116,7 @@ public class CountXQueryGeneratorTest
 
 	}
 
+	
 	@Test
 	public void UpiEqualsTest() throws Exception
 	{
@@ -115,8 +125,7 @@ public class CountXQueryGeneratorTest
 		IJoinGraph joinGraph = constraints.getJoinGraph();
 
 		IExpression person = joinGraph.getRoot();
-		QueryBuilder.addCondition(person, "personUpi", RelationalOperator.Equals,
-				"1317900");
+		QueryBuilder.addCondition(person, "personUpi", RelationalOperator.Equals, "1317900");
 
 		setSelectAttributes(query);
 
@@ -124,9 +133,10 @@ public class CountXQueryGeneratorTest
 
 		int count = getCountFor(xquery);
 		assertEquals(1, count);
-		
+
 	}
 
+	
 	@Test
 	public void UpiNotEqualsTest() throws Exception
 	{
@@ -135,8 +145,7 @@ public class CountXQueryGeneratorTest
 		IJoinGraph joinGraph = constraints.getJoinGraph();
 
 		IExpression person = joinGraph.getRoot();
-		QueryBuilder.addCondition(person, "personUpi", RelationalOperator.NotEquals,
-				"1317900");
+		QueryBuilder.addCondition(person, "personUpi", RelationalOperator.NotEquals, "1317900");
 
 		setSelectAttributes(query);
 
@@ -147,6 +156,7 @@ public class CountXQueryGeneratorTest
 
 	}
 
+	
 	@Test
 	public void DOBBetweenTest() throws Exception
 	{
@@ -158,7 +168,7 @@ public class CountXQueryGeneratorTest
 				.getRoot(), joinGraph);
 		QueryBuilder.addCondition(demographics, "dateOfBirth", RelationalOperator.Between,
 				"01/01/1950", "01/01/1980");
-		
+
 		setSelectAttributes(query);
 
 		String xquery = generator.generateQuery(query);
@@ -168,6 +178,7 @@ public class CountXQueryGeneratorTest
 
 	}
 
+	
 	@Test
 	public void UpiStartsWithTest() throws Exception
 	{
@@ -176,8 +187,7 @@ public class CountXQueryGeneratorTest
 		IJoinGraph joinGraph = constraints.getJoinGraph();
 
 		IExpression person = joinGraph.getRoot();
-		QueryBuilder.addCondition(person, "personUpi", RelationalOperator.StartsWith,
-				"13179");
+		QueryBuilder.addCondition(person, "personUpi", RelationalOperator.StartsWith, "13179");
 
 		setSelectAttributes(query);
 
@@ -188,6 +198,7 @@ public class CountXQueryGeneratorTest
 
 	}
 
+	
 	@Test
 	public void UpiEndsWithTest() throws Exception
 	{
@@ -196,8 +207,7 @@ public class CountXQueryGeneratorTest
 		IJoinGraph joinGraph = constraints.getJoinGraph();
 
 		IExpression person = joinGraph.getRoot();
-		QueryBuilder.addCondition(person, "personUpi", RelationalOperator.EndsWith,
-				"900");
+		QueryBuilder.addCondition(person, "personUpi", RelationalOperator.EndsWith, "900");
 
 		setSelectAttributes(query);
 
@@ -207,6 +217,7 @@ public class CountXQueryGeneratorTest
 		assertEquals(1, count);
 	}
 
+	
 	@Test
 	public void AddressContainsTest() throws Exception
 	{
@@ -227,11 +238,108 @@ public class CountXQueryGeneratorTest
 
 	
 	
+	@Test
+	public void DemoLabDetailsTest() throws Exception
+	{
+		IParameterizedQuery query = QueryBuilder.skeletalDemograpihcsQuery();
+		IConstraints constraints = query.getConstraints();
+		IJoinGraph joinGraph = constraints.getJoinGraph();
+
+		IExpression demographics = QueryBuilder.findExpression(Constants.DEMOGRAPHICS, joinGraph
+				.getRoot(), joinGraph);
+		QueryBuilder.addCondition(demographics, "dateOfBirth", RelationalOperator.GreaterThan,
+				"01/01/1920");
+
+		IExpression person = joinGraph.getRoot();
+		IExpression labPrecedure = QueryBuilder.createExpression(constraints, person,
+				Constants.LABORATORY_PROCEDURE);
+		IExpression details = QueryBuilder.createExpression(constraints, labPrecedure,
+				Constants.LABORATORY_PROCEDURE_DETAILS);
+		QueryBuilder.addBasicVersionConditions(details);
+		QueryBuilder.addCondition(details, "ageAtProcedure", RelationalOperator.GreaterThan, "5");
+
+		setSelectAttributes(query);
+		String xquery = generator.generateQuery(query);
+
+		int count = getCountFor(xquery);
+		assertEquals(4878, count);
+
+	}
+
+	
+	
+	@Test
+	public void LabDetailsEncounterDetailsPersonTest() throws Exception
+	{
+		IParameterizedQuery query = QueryBuilder.skeletalLabProcedureDetailsQuery();
+		IConstraints constraints = query.getConstraints();
+		IJoinGraph joinGraph = constraints.getJoinGraph();
+
+		IExpression labProcedure = joinGraph.getRoot();
+		IExpression encounter = QueryBuilder.createExpression(constraints, labProcedure,
+				Constants.ENCOUNTER);
+		QueryBuilder.addCondition(encounter, "patientAccountNumber", RelationalOperator.Equals,
+				"128261112");
+		IExpression details = QueryBuilder.createExpression(constraints, encounter,
+				Constants.ENCOUNTER_DETAILS);
+		QueryBuilder.addBasicVersionConditions(details);
+		IExpression person = QueryBuilder
+				.createExpression(constraints, labProcedure, Constants.PERSON);
+		QueryBuilder.addBasicPersonConditions(person, "N");
+		IExpression demographics = QueryBuilder.createExpression(constraints, person,
+				Constants.DEMOGRAPHICS);
+		QueryBuilder.addBasicVersionConditions(demographics);
+
+		setSelectAttributes(query);
+		String xquery = generator.generateQuery(query);
+
+		int count = getCountFor(xquery);
+		assertEquals(43, count);
+
+	}
+
+	
+	@Test
+	public void DemoLabDetailsLabTypeTest() throws Exception
+	{
+		IParameterizedQuery query = QueryBuilder.skeletalDemograpihcsQuery();
+		IConstraints constraints = query.getConstraints();
+		IJoinGraph joinGraph = constraints.getJoinGraph();
+
+		IExpression labProcedure = QueryBuilder.createExpression(constraints, joinGraph.getRoot(),
+				Constants.LABORATORY_PROCEDURE);
+		IExpression details = QueryBuilder.createExpression(constraints, labProcedure,
+				Constants.LABORATORY_PROCEDURE_DETAILS);
+		QueryBuilder.addBasicVersionConditions(details);
+		IExpression type = QueryBuilder.createExpression(constraints, labProcedure,
+				Constants.LABORATORY_PROCEDURE_TYPE);
+		QueryBuilder.addCondition(type, "id", RelationalOperator.NotIn, "2345");
+
+		setSelectAttributes(query);
+		String xquery = generator.generateQuery(query);
+
+		int count = getCountFor(xquery);
+		assertEquals(4945, count);
+
+	}
+
+	
+	@Test(expected = Exception.class)
+	public void PersonWithoutDemoTest() throws Exception
+	{
+		IParameterizedQuery query = QueryBuilder.skeletalPersonQuery();
+		setSelectAttributes(query);
+		String xquery = generator.generateQuery(query);
+
+	}
+
+	
+	
 	private int getCountFor(String xquery) throws Exception
 	{
 		int counter = 0;
 		ResultSet rs = params.getResultSet(xquery);
-		
+
 		while (rs.next())
 		{
 			counter++;

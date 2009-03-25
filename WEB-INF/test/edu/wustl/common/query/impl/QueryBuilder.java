@@ -56,7 +56,7 @@ public class QueryBuilder
 	 * @throws CyclicException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private static IParameterizedQuery skeletalPersonQuery()
+	public static IParameterizedQuery skeletalPersonQuery()
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
 			CyclicException
 	{
@@ -91,7 +91,7 @@ public class QueryBuilder
 
 		IExpression person = findExpression(Constants.PERSON, joinGraph.getRoot(), joinGraph);
 		IExpression demographics = createExpression(constraints, person, Constants.DEMOGRAPHICS);
-		addBasicDemographicsConditions(demographics);
+		addBasicVersionConditions(demographics);
 
 		return query;
 	}
@@ -209,10 +209,42 @@ public class QueryBuilder
 
 		IExpression labProcedure = findExpression(Constants.LABORATORY_PROCEDURE, joinGraph
 				.getRoot(), joinGraph);
-		createExpression(constraints, labProcedure, Constants.LABORATORY_PROCEDURE_DETAILS);
+		IExpression details = createExpression(constraints, labProcedure,
+				Constants.LABORATORY_PROCEDURE_DETAILS);
+		addBasicVersionConditions(details);
 
 		return query;
 
+	}
+
+	public static IParameterizedQuery skeletalEncounterQuery()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
+			CyclicException
+	{
+		IParameterizedQuery query = null;
+		query = QueryObjectFactory.createParameterizedQuery();
+		IConstraints constraints = QueryObjectFactory.createConstraints();
+		query.setConstraints(constraints);
+
+		createExpression(constraints, null, Constants.ENCOUNTER);
+
+		return query;
+
+	}
+
+	public static IParameterizedQuery skeletalEncounterDetailsQuery()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
+			CyclicException, MultipleRootsException
+	{
+		IParameterizedQuery query = skeletalEncounterQuery();
+		IConstraints constraints = query.getConstraints();
+		IJoinGraph joinGraph = constraints.getJoinGraph();
+
+		IExpression encounter = findExpression(Constants.ENCOUNTER, joinGraph.getRoot(), joinGraph);
+		IExpression details = createExpression(constraints, encounter, Constants.ENCOUNTER_DETAILS);
+		addBasicVersionConditions(details);
+
+		return query;
 	}
 
 	public static void addCondition(IExpression expression, String attributeName,
@@ -274,6 +306,7 @@ public class QueryBuilder
 
 		return expression;
 	}
+	
 
 	private static IRule getRule(IExpression expression)
 	{
@@ -376,19 +409,19 @@ public class QueryBuilder
 		return null;
 	}
 
-	private static void addBasicPersonConditions(IExpression personExpression, String researchOptOut)
+	public static void addBasicPersonConditions(IExpression personExpression, String researchOptOut)
 	{
 		addCondition(personExpression, "activeUpiFlag", RelationalOperator.Equals, "A");
 		addCondition(personExpression, "researchOptOut", RelationalOperator.In, researchOptOut);
 	}
 
-	private static void addBasicDemographicsConditions(IExpression demographicsExpression)
+	public static void addBasicVersionConditions(IExpression expression)
 	{
 		//select current date from sysibm.SYSDUMMY1
-		addCondition(demographicsExpression, "effectiveEndTimeStamp",
-				RelationalOperator.GreaterThan, "03/01/2009");
-		addCondition(demographicsExpression, "effectiveStartTimeStamp",
-				RelationalOperator.LessThan, "03/01/2009");
+		addCondition(expression, "effectiveEndTimeStamp", RelationalOperator.GreaterThan,
+				"03/01/2009");
+		addCondition(expression, "effectiveStartTimeStamp", RelationalOperator.LessThan,
+				"03/01/2009");
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
