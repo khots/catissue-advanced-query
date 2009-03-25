@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.cider.query.CiderQuery;
 import edu.wustl.cider.querymanager.CiderQueryManager;
+import edu.wustl.cider.querymanager.CiderQueryPrivilege;
 import edu.wustl.common.query.impl.PassOneXQueryGenerator;
 import edu.wustl.common.query.impl.QueryUtility;
 import edu.wustl.common.querysuite.queryobject.IQuery;
@@ -94,8 +95,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("QUERY - PERSON UPI NOT NULL and DEMOGRAPHICS DOB>10/10/1985");
 			
 			query = QueryUtility.getQuery(1L);
-			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
+			CiderQueryPrivilege privilege = new CiderQueryPrivilege(true,false);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224",privilege);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -142,8 +143,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("QUERY - PERSON UPI NOT NULL and LABS, ACCESSION NUMBER CONTAINS 2008295007131");
 			
 			query = QueryUtility.getQuery(2L);
-			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
+			CiderQueryPrivilege privilege = new CiderQueryPrivilege(true,false);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224",privilege);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -198,8 +199,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("QUERY - PERSON UPI NOT NULL");
 			
 			query = QueryUtility.getQuery(5L);
-			
-			ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
+			CiderQueryPrivilege privilege = new CiderQueryPrivilege(true,false);
+			ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224",privilege);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -448,8 +449,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("QUERY - DEMOGRAPHICS DOB between 1940 and 1970");
 			
 			query = QueryUtility.getQuery(7L);
-			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
+			CiderQueryPrivilege privilege = new CiderQueryPrivilege(true,false);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224",privilege);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -494,8 +495,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("QUERY - PERSON UPI STARTS WITH 000000000000000008690");
 			
 			query = QueryUtility.getQuery(8L);
-			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
+			CiderQueryPrivilege privilege = new CiderQueryPrivilege(true,false);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224",privilege);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -539,8 +540,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("QUERY - PERSON UPI ENDS WITH 3");
 			
 			query = QueryUtility.getQuery(3L);
-			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
+			CiderQueryPrivilege privilege = new CiderQueryPrivilege(true,false);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224",privilege);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
@@ -585,8 +586,8 @@ public class ASynchronousQueriesTestCases extends TestCase
 			System.out.println("QUERY - PERSON UI IN 000000000000000008690923");
 			
 			query = QueryUtility.getQuery(4L);
-			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
+			CiderQueryPrivilege privilege = new CiderQueryPrivilege(true,false);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224",privilege);
 			
 			queryExecId = manager.execute(ciderQueryObj);
 			
