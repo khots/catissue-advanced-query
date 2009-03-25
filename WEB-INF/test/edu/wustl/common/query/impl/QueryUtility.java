@@ -31,6 +31,7 @@ import org.w3c.dom.NodeList;
 
 import edu.wustl.cider.query.CiderQuery;
 import edu.wustl.cider.querymanager.CiderQueryManager;
+import edu.wustl.cider.querymanager.CiderQueryPrivilege;
 import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.JDBCDAO;
@@ -178,8 +179,8 @@ public class QueryUtility
 			*/
 			CiderQueryManager manager = new CiderQueryManager();
 			int noOfRecords = 0;
-			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224");
+			CiderQueryPrivilege privilege = new CiderQueryPrivilege(true,false);
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, null, "10.88.199.224",privilege);
 			queryExecId = manager.execute(ciderQueryObj);
 			
 			Count count = manager.getQueryCount(queryExecId);
