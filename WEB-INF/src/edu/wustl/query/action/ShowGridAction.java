@@ -70,8 +70,7 @@ public class ShowGridAction extends BaseAction
 					.getName(), queryid);
 			queryDetailsObj.setQuery(query);
 			session.setAttribute(Constants.QUERY_OBJECT, query);
-			session.setAttribute("queryName", query.getName());
-
+			
 			AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory
 				.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
 			SpreadSheetViewGenerator spreadSheetViewGenerator = 
