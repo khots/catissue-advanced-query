@@ -133,13 +133,16 @@ public class DefineSearchResultsViewAction extends Action
 //Attributes are shown selected on Define view page when page is navigated from view Result page	
 	private void setSelectedoutputattributes(IParameterizedQuery query,CategorySearchForm searchform)
 	{
-		
 		List<IOutputAttribute> selectedOutputAttributeList = new ArrayList<IOutputAttribute>();
 		selectedOutputAttributeList=query.getOutputAttributeList();
 		List<NameValueBean> selectedColumnNameValue = new ArrayList<NameValueBean>();  
 		for(IOutputAttribute outputAttribute : selectedOutputAttributeList)
 		  {
 			AttributeInterface attributeInterface = outputAttribute.getAttribute();
+			if(attributeInterface.getEntity().getName().equals(Constants.MED_ENTITY_NAME) && attributeInterface.getName().equals(Constants.ID))
+			{
+					continue;
+			}
 			String uniqueid= outputAttribute.getExpression().getExpressionId()+Constants.EXPRESSION_ID_SEPARATOR+ attributeInterface.getId();
 			String displayName=Utility.getDisplayNameForColumn(outputAttribute);
 			NameValueBean nameValueBean= new NameValueBean(displayName,uniqueid);

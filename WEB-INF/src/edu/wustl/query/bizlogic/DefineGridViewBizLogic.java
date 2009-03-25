@@ -559,6 +559,19 @@ private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String cl
 			expressionId = split[QueryModuleConstants.INDEX_PARAM_ZERO];
 			attrId = split[1];
 			AttributeInterface attrib =  EntityCache.getInstance().getAttributeById(Long.valueOf(attrId));
+			if(attrib.getName().equals(Constants.NAME) 
+					&& attrib.getEntity().getName().equals(Constants.MED_ENTITY_NAME))
+			{
+				for(AttributeInterface idAttr:attrib.getEntity().getAttributeCollection())
+				{
+					if(idAttr.getName().equals(Constants.ID))
+					{
+						//attribureMetadataList.add(idAttr);
+						attr =new OutputAttribute(queryDetailsObj.getQuery().getConstraints().getExpression(Integer.valueOf(expressionId)), idAttr);;
+						outputAttributeList.add(attr);
+					}
+				}
+			}
 			attr = new OutputAttribute(queryDetailsObj.getQuery().getConstraints().getExpression(Integer.valueOf(expressionId)), attrib);
 			outputAttributeList.add(attr);
 		}
