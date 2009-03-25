@@ -17,6 +17,8 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
 
 import edu.wustl.cider.query.CiderWorkFlowDetails;
+import edu.wustl.cider.querymanager.CiderQueryPrivilege;
+import edu.wustl.cider.util.global.CiderConstants;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
@@ -146,6 +148,16 @@ public class WorkflowAjaxHandlerAction extends Action
                     {
                   	  hasSecurePrivilege = (Boolean)(request.getSession().getAttribute(Constants.HAS_SECURE_PRIVILEGE));
                     }
+                    
+                    CiderQueryPrivilege privilege = null;
+            		if(request.getSession().getAttribute(CiderConstants.CIDER_QUERY_PRIVILEGE)!=null)
+            		{
+            			privilege =(CiderQueryPrivilege)request.getSession().getAttribute(CiderConstants.CIDER_QUERY_PRIVILEGE);
+            		}
+            		else
+            		{
+            			privilege = new CiderQueryPrivilege(true,false);
+            		}
 					// Get the executionType
                     String execType = request
                             .getParameter(Constants.REQ_ATTRIB_EXECUTION_TYPE);
@@ -171,7 +183,7 @@ public class WorkflowAjaxHandlerAction extends Action
                         // specific to
                         // Cider and AdvancedQuery.
                         CiderWorkFlowDetails workflowdetails = new CiderWorkFlowDetails(
-                                project_id, userId.intValue(), workflow);
+                                project_id, userId.intValue(), workflow,privilege);
 
 
 
@@ -197,7 +209,7 @@ public class WorkflowAjaxHandlerAction extends Action
                                     Long.valueOf(workflowId));
 
                             CiderWorkFlowDetails workflowdetails = new CiderWorkFlowDetails(
-                                    project_id, userId.intValue(), workflow);
+                                    project_id, userId.intValue(), workflow,privilege);
 
                             // queryExecId =
                             // workflowBizLogic.executeGetCountQuery(queryId,
