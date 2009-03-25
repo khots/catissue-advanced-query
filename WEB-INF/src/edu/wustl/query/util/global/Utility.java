@@ -715,6 +715,23 @@ public class Utility extends edu.wustl.common.util.Utility
 		  query.getOutputAttributeList().addAll(newoutputAttributeList);
 	}
 	
+	
+	
+	/** This method is used to get a display name
+	 * @param outputAttribute
+	 * @return
+	 */
+	public static String getDisplayNameForColumn(IOutputAttribute outputAttribute)
+	{
+		String columnDisplayName = "";
+		AttributeInterface attribute = outputAttribute.getAttribute();
+		String className = Utility.parseClassName(outputAttribute.getExpression().getQueryEntity().getDynamicExtensionsEntity().getName());
+		className = Utility.getDisplayLabel(className);
+		String attributeLabel = Utility.getDisplayLabel(attribute.getName());
+		columnDisplayName = className +" : " + attributeLabel ;
+		return columnDisplayName;
+	}
+	
 	/**
      * Private method used to generate the List of JSON objects.
      *
