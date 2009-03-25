@@ -20,7 +20,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.wustl.cab2b.common.queryengine.Cab2bQuery;
 import edu.wustl.cab2b.common.queryengine.ICab2bQuery;
 import edu.wustl.common.action.BaseAction;
 import edu.wustl.common.beans.SessionDataBean;
@@ -287,8 +286,6 @@ public class SaveQueryAction extends BaseAction
 		{
 			selectedOutputAttributeList = selectedColumnsMetadata.getSelectedOutputAttributeList();
 		}
-		//parameterizedQuery.getOutputTerms().clear();
-		parameterizedQuery.getOutputTerms();//.addAll(query.getOutputTerms()); 
 		Utility.setQueryOutputAttributeList(parameterizedQuery, selectedOutputAttributeList);
 	}
 
