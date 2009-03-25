@@ -74,12 +74,7 @@ public class DefinedQueryUtil
 		{
 			return originalQuery;
 		}
-		
 		IParameterizedQuery parameterizedQuery = QueryObjectFactory.createParameterizedQuery(query);
-		parameterizedQuery.setName(originalQuery.getName());
-		parameterizedQuery.getOutputAttributeList().clear();
-		parameterizedQuery.getOutputAttributeList().addAll(originalQuery.getOutputAttributeList());
-		
 		return parameterizedQuery;
 	}
 
