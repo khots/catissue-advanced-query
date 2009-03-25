@@ -16,7 +16,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
@@ -29,9 +28,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.tree.QueryTreeNodeData;
 import edu.wustl.common.util.Utility;
-import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
-import edu.wustl.query.domain.Workflow;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
@@ -95,7 +92,12 @@ public class ViewResultsAction extends Action
 			AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, getPatientDataQuery);
 		AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
 		.getDefaultViewIQueryGenerator();
-		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,abstractQueryUIManager.getAbstractQuery());
+		boolean hasSecurePrivilege = true;
+	    if(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE)!=null)
+	    {
+	   	  hasSecurePrivilege = (Boolean)(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE));
+	    }
+		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,hasSecurePrivilege);
 		
 		//IQuery generatedQuery = ResultsViewTreeUtil.generateIQuery(rootNode,parentChildrenMap,rootEntity,getPatientDataQuery);
 		abstractQueryUIManager =
