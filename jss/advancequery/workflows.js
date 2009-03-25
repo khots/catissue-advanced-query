@@ -924,3 +924,25 @@ function isAlreadyPresent(columnContents)
 
 return alreadyPresent;
 }
+
+//used for not executed query when switches from the 
+//getdata/count/view result 
+// if project selected is one for whilch loading div is not required
+function initalizeflagforLoadingDiv()
+{
+	var rows=document.getElementById("table1").rows.length;
+
+	if(rows>0)
+	{
+			for(var i=0;i<rows;i++)
+			{
+				var executionId=document.getElementById("queryExecId_"+i).value;
+				if(executionId!='0' && executionId!="")
+				{
+					return true;
+					
+				}
+			}
+	}
+	return false;
+}
