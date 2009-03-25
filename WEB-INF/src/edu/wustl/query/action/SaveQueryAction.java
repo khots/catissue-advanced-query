@@ -84,7 +84,11 @@ public class SaveQueryAction extends BaseAction
 				target = saveQuery(request, parameterizedQuery, actionForm);
 			}
 		}
-
+		String isworkflow = request.getParameter(Constants.IS_WORKFLOW);
+		if(Constants.TRUE.equals(isworkflow))
+			target = Constants.PAGE_OF_WORKFLOW;
+		else
+			target = Constants.SHOW_DASHBOARD;
 		return actionMapping.findForward(target);
 	}
 
