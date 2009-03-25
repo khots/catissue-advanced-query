@@ -1361,7 +1361,29 @@
         document.getElementById('conditionList').value = buildquerystr;
 		*/
         // Save query
-        document.getElementById('saveQueryForm').submit();
+        //document.getElementById('saveQueryForm').submit();
+		var queryTitle = document.getElementById("title").value;
+		if(queryTitle=="")
+		{
+			document.getElementById("Error_msg").innerHTML = "Query Title is mandatory";
+			return;
+		}
+		document.forms[0].target= "_parent";
+		document.forms[0].submit();
+		parent.pvwindow.hide();
+		/*var forwardTo="";
+		var parentWindowForm = parent.document.forms[0];
+		if("<%=isworkflow%>"=="true")
+		 forwardTo="RedirectToWorkflow.do";
+		else
+		{
+		 forwardTo="ShowDashboard.do?requestFrom=MyQueries";
+		 parentWindowForm.requestFrom.value="MyQueries"; 
+		}
+		parent.pvwindow.hide();
+		parentWindowForm.action = forwardTo; 
+		parentWindowForm.submit(); */
+        // window.self.close();
 	}
 	
 	function ExecuteSavedQuery()
@@ -1463,13 +1485,24 @@
 			  workflow=document.getElementById("isWorkflow").value;
 			 if(document.getElementById("pageOf")!=null) 
               pageof=document.getElementById("pageOf").value; 
-			 var url = "DefineView.do?isWorkflow="+workflow+"&pageOf="+pageof;
-            
-			 window.open('','SaveQuery','height=315,width=800');
-    		 document.forms[0].action = url;
-			 document.forms[0].target = "SaveQuery";
-			 document.forms[0].submit();
-			 document.forms[0].target='_self';
+			 
+			 var element = document.forms[0].selectedColumnNames;
+			 var selectedColumnNamesList='';
+			 for(i=0;i<element.length;i++) 
+			{
+				if(i==(element.length-1))
+					selectedColumnNamesList = selectedColumnNamesList + element.options[i].value;
+				else
+					selectedColumnNamesList = selectedColumnNamesList + element.options[i].value + ',';
+			}
+            var url = "DefineView.do?isWorkflow="+workflow+"&pageOf="+pageof+"&selectedColumnNamesList="+selectedColumnNamesList;
+			
+			 //window.open('','SaveQuery','height=315,width=800');
+			 pvwindow	= dhtmlmodal.open('Query Information', 'iframe', url,'Query Information', 'width=800px,height=305px,center=1,resize=0,scrolling=1,menubar=0,toolbar=0');
+    		//document.forms[0].action = url;
+			//document.forms[0].target = "SaveQuery";
+			//document.forms[0].submit();
+			// document.forms[0].target='_self';
  		   	/*	if (platform.indexOf("mac") != -1)
 			{
 		    	alert("1");
@@ -1503,8 +1536,9 @@
 		    }
 		    else
 		    {
-			 pvwindow	= window.open(url,'SaveQuery','height=330,width=800');
+			 //pvwindow	= window.open(url,'SaveQuery','height=330,width=800');
 		    	//NewWindow(url,'name','870','300','yes');
+				pvwindow	= dhtmlmodal.open('Query Information', 'iframe', url,'Query Information', 'width=800px,height=305px,center=1,resize=0,scrolling=1,menubar=0,toolbar=0');
 		    }
 			hideCursor();
 		
