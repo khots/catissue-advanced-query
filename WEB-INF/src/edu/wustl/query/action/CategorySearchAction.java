@@ -28,13 +28,13 @@ import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
-import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
 import edu.wustl.query.util.querysuite.EntityCacheFactory;
 import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleConstants;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 /**
@@ -271,7 +271,7 @@ public class CategorySearchAction extends Action
 			String entityId = entity.getId().toString();
 			String description = entity.getDescription();
 			entitiesString = entitiesString
-					.append(edu.wustl.query.util.global.Constants.ENTITY_SEPARATOR);
+					.append(QueryModuleConstants.ENTITY_SEPARATOR);
 			entitiesString = entitiesString.append(entityName);
 			entitiesString = entitiesString
 					.append(edu.wustl.query.util.global.Constants.ATTRIBUTE_SEPARATOR);
