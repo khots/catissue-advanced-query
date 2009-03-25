@@ -141,7 +141,7 @@ public class DefineSearchResultsViewAction extends Action
 		  {
 			AttributeInterface attributeInterface = outputAttribute.getAttribute();
 			String uniqueid= outputAttribute.getExpression().getExpressionId()+Constants.EXPRESSION_ID_SEPARATOR+ attributeInterface.getId();
-			String displayName=Utility.getDisplayNameForColumn(attributeInterface);
+			String displayName=Utility.getDisplayNameForColumn(outputAttribute);
 			NameValueBean nameValueBean= new NameValueBean(displayName,uniqueid);
 			selectedColumnNameValue.add(nameValueBean);  
 		  }
