@@ -771,6 +771,10 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	/**  Constant for Query Title */
 	public static final String QUERY_TITLE="queryTitle";
 	public static final String MY_QUERIESFOR_DASHBOARD = "myQueriesforDashboard";
+	/**  Constant for showdashboard */
+	public static final String SHOW_DASHBOARD="showdashboard";
+	/**  Constant for selectedColumnNamesList */
+	public static final String SELECTED_COLUMN_NAMES_LIST = "selectedColumnNamesList";
 	public static final String WORKFLOW_NAME = "worflowName";
 	public static final String WORKFLOW_ID = "worflowId";
 	public static final String IS_WORKFLOW="isWorkflow";
