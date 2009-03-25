@@ -15,6 +15,7 @@ import edu.wustl.query.spreadsheet.SpreadSheetViewGenerator;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 import edu.wustl.query.viewmanager.NodeId;
 import edu.wustl.query.viewmanager.ViewType;
 import edu.wustl.common.query.impl.PassTwoXQueryGenerator;
@@ -86,7 +87,7 @@ public class SpreadSheetViewGeneratorTestCases extends TestCase
 		return query;
 	}
 	
-	private QueryDetails getQueryDetailsObj() throws DAOException, MultipleRootsException, SqlException
+	private QueryDetails getQueryDetailsObj() throws QueryModuleException, DAOException
 	{
 		IQuery query =getDataQuery();
 		QueryDetails queryDetailsObj = new QueryDetails();
