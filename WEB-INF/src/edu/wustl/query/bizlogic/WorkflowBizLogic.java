@@ -9,12 +9,15 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 import edu.wustl.cider.query.CiderQuery;
 import edu.wustl.cider.query.CiderWorkFlowDetails;
+import edu.wustl.cider.querymanager.CiderQueryPrivilege;
+import edu.wustl.cider.util.global.CiderConstants;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.AbstractDAO;
@@ -250,14 +253,22 @@ public class WorkflowBizLogic extends DefaultBizLogic
 			    long userId = ((CiderWorkFlowDetails) workflowDetails).getUserId();
 			    Long workflowId = workflowDetails.getWorkflow().getId();
 
-
+			    CiderQueryPrivilege privilege = null;
+		        HttpSession session = request.getSession();
+				if(session.getAttribute(CiderConstants.CIDER_QUERY_PRIVILEGE)!=null)
+				{
+					privilege =(CiderQueryPrivilege)session.getAttribute(CiderConstants.CIDER_QUERY_PRIVILEGE);
+				}
+				else
+				{
+					privilege = new CiderQueryPrivilege(true,false);
+				}
 		        AbstractQuery ciderQuery = new CiderQuery(query, 0, null,
 		                userId,
                         projectIdVal,
                         request.getRemoteAddr(),
-                        workflowId
+                        workflowId,privilege
                         );
-
 		        // get the latest execution ids for this workflow first'
 //                Map<Long, Integer> preExecIdMap = new HashMap<Long, Integer>();
 		        Map<Long, Integer> preExecIdMap = generateQueryExecIdMap(userId, workflowId, projectIdVal);
