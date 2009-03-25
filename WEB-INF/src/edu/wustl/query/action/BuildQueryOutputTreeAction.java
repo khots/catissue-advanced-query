@@ -192,11 +192,17 @@ private void processDataNodeClick(String nodeId,HttpServletRequest request,List<
 		if((mainEntityList.contains(entity)) && (!parentChildrenMap.isEmpty()))
 	    {
 	        //For main OutputTreeDataNode, get the map of all parent/children map 
-	    	Set<OutputTreeDataNode> mainEntitiesKeySet = parentChildrenMap.keySet();
-		    Iterator<OutputTreeDataNode> keySetItr = mainEntitiesKeySet.iterator();
-		    while(keySetItr.hasNext())
-		    {
-		    	OutputTreeDataNode mainEntityTreeDataNode = keySetItr.next();
+	    	//Set<OutputTreeDataNode> mainEntitiesKeySet = parentChildrenMap.keySet();
+			System.out.println(""); 
+			
+			List<OutputTreeDataNode> childrenList =  parentChildrenMap.get(labelTreeDataNode);
+			Iterator<OutputTreeDataNode> itr = childrenList.iterator();
+			//Iterator<OutputTreeDataNode> keySetItr = mainEntitiesKeySet.iterator();
+		    //while(keySetItr.hasNext())
+		    while(itr.hasNext())
+			{
+		    	//OutputTreeDataNode mainEntityTreeDataNode = keySetItr.next();
+		    	OutputTreeDataNode mainEntityTreeDataNode = itr.next();
 		    	EntityInterface mainEntity = mainEntityTreeDataNode.getOutputEntity().getDynamicExtensionsEntity();
 		    	if(mainEntityTreeDataNode.getExpressionId() != labelTreeDataNode.getExpressionId() && mainEntityList.contains(mainEntity))
 			    {
