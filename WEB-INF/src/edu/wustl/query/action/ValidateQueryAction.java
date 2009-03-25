@@ -18,6 +18,7 @@ import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.bizlogic.ValidateQueryBizLogic;
+import edu.wustl.query.enums.QueryType;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 
@@ -81,7 +82,8 @@ public class ValidateQueryAction extends Action
 				
 				
 			}
-		    if(parameterizedQuery!=null && dataQueryId==null)
+			
+		    if(parameterizedQuery!=null && dataQueryId==null && parameterizedQuery.getType().equals(QueryType.GET_COUNT.type))
 		    {
 		    	parameterizedQuery.setName(request.getParameter("queyTitle"));
 		    }
