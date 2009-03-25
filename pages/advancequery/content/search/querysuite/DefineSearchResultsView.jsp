@@ -47,7 +47,7 @@
 			<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
 		</td>
 	</tr>
-	 <tr style="padding-left:2px;" id="workflowname">
+	 <tr style="padding-left:2px;" id="workflowname" style="display:none;">
 			<td nowrap height="30">
 			&nbsp;
 				<span class="content_txt"><bean:message key="workflow.name"/>:</span><span>
