@@ -85,7 +85,9 @@
 	document.getElementById("isWorkflow").value="true";
     document.getElementById("workflowname").style.display="block";
  }
+ else{
  document.getElementById("BackToWorkflowTd").innerHTML = '<a href="javascript:cancel_GPD_query()"><img  alt="Cancel" src="images/advancequery/b_cancel.gif" border="0" /></a>';
+ }
  document.getElementById("buttontr").style.display="none";  
 
  </script>
