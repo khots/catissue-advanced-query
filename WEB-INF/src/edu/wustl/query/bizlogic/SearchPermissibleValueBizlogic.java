@@ -430,7 +430,7 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 	 */
 	public String getErrorMessageAsHTML(String msg)
 	{
-		return "<table width='100%' height='100%'>"
+		return "<table>"
 				+ "<tr><td class='black_ar_tt' style='color:red' valign='top'>"
 				+msg+
 				"<td></tr></table>";
@@ -536,51 +536,5 @@ public class SearchPermissibleValueBizlogic extends DefaultBizLogic
 		String message=VocabUtil.getVocabProperties().getProperty("too.many.results.search.message");
 		return Constants.MSG_DEL+message ;
 		
-	}
-	public String getExceptionMessage(VocabularyException e)
-	{
-		String message="";
-		if(e.getError().equals(VIError.LB_PARAM_EXCPTION))
-		{
-				message = getMessageFromFile();
-		}
-		else
-		{
-			message= getErrorMessageAsHTML(e.getError().getErrorMessage());
-		}
-		return message;
-	}
-	/**
-	 * @param message
-	 * @return
-	 */
-	public String getMessageFromFile()
-	{
-		FileReader fr=null;
-		String message="";
-		try
-		{
-				fr = new FileReader(Variables.applicationHome+System.getProperty("file.separator")+"WEB-INF"+System.getProperty("file.separator")+
-							"classes"+System.getProperty("file.separator")+"VISplCharHelp.txt");
-				BufferedReader br=new BufferedReader(fr);
-				String msg="";
-				String line="";
-				while((line=br.readLine())!=null)
-				{
-					msg=msg+line;
-				}
-				 message= getErrorMessageAsHTML(msg);
-		}
-		catch (FileNotFoundException e1)
-		{
-				
-				e1.printStackTrace();
-		}
-		catch (IOException e2)
-		{
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-		}
-				return message;
 	}
 }
