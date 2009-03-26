@@ -17,15 +17,18 @@ import edu.wustl.cab2b.client.ui.query.IPathFinder;
 import edu.wustl.common.query.impl.CommonPathFinder;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
+import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
+import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IExpressionOperand;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IRule;
+import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.query.flex.dag.DAGResolveAmbiguity;
@@ -377,11 +380,32 @@ public class ResultsViewTreeUtil
 		 		
 		 		IRule iRule = getRuleFromExpression(childExpression);
 		 		
+		 		
+		 		//Adding custom Formula childExpression.
+		 		
+		 		ICustomFormula customFormula = null;
+		 		for (IExpressionOperand expressionOperand : childExpression)
+				{
+					if(expressionOperand instanceof ICustomFormula)
+					{
+						customFormula = (ICustomFormula)expressionOperand;
+						break;
+					}
+				}
+		 		
+		 		
 		 		//Now get the Entity,from child node 
 		 		EntityInterface childEntity =  childNode.getOutputEntity().getDynamicExtensionsEntity();
 		 		
 		 		//Now add that expression to generated  IQuery
 		 		int expressionId = addExpressionAndRuleToQuery(m_queryObject, iRule, childEntity);
+
+		 		//Adding custom Formula 
+		 		if(customFormula != null)
+		 		{
+		 			constraints = m_queryObject.getQuery().getConstraints();
+		 			constraints.getExpression(expressionId).addOperand(QueryObjectFactory.createLogicalConnector(LogicalOperator.And),customFormula);
+		 		}
 		 		
 		 		//This map is used for retrieving the expression id a children that is added to iQuery
 		 		childrenExpIdsMap.put(childNode, expressionId);
@@ -411,6 +435,28 @@ public class ResultsViewTreeUtil
 		 				IRule iRule = getRuleFromExpression(childExpression);
 		 				EntityInterface childEntity =  outputNode.getOutputEntity().getDynamicExtensionsEntity();
 		 				int expressionId = addExpressionAndRuleToQuery(m_queryObject, iRule, childEntity);
+		 				
+		 				//Adding custom Formula childExpression.
+				 		
+				 		ICustomFormula customFormula = null;
+				 		for (IExpressionOperand expressionOperand : childExpression)
+						{
+							if(expressionOperand instanceof ICustomFormula)
+							{
+								customFormula = (ICustomFormula)expressionOperand;
+								break;
+							}
+						}
+				 		
+				 		//Adding custom Formula 
+				 		if(customFormula != null)
+				 		{
+				 			constraints = m_queryObject.getQuery().getConstraints();
+				 			constraints.getExpression(expressionId).addOperand(QueryObjectFactory.createLogicalConnector(LogicalOperator.And),customFormula);
+				 		}
+		 				
+		 				
+		 				
 		 				IPath path = getIPath(childRootEntity,childEntity);
 		 				
 		 				//Adding to Map
