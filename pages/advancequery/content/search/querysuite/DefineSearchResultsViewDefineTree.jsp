@@ -87,6 +87,7 @@
  }
  else{
  document.getElementById("BackToWorkflowTd").innerHTML = '<a href="javascript:cancel_GPD_query()"><img  alt="Cancel" src="images/advancequery/b_cancel.gif" border="0" /></a>';
+ document.getElementById("workflowname").innerHTML = '<td>&nbsp;</td>';
  }
  document.getElementById("buttontr").style.display="none";  
 
