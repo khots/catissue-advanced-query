@@ -69,7 +69,7 @@ public class ShowGridAction extends BaseAction
 			IQuery query = (IParameterizedQuery) defaultBizLogic.retrieve(ParameterizedQuery.class
 					.getName(), queryid);
 			queryDetailsObj.setQuery(query);
-			session.setAttribute(Constants.QUERY_OBJECT, query);
+			//session.setAttribute(Constants.QUERY_OBJECT, query);
 			
 			AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory
 				.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
