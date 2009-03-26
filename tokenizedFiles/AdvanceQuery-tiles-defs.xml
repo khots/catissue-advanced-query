@@ -12,7 +12,8 @@
 		@@tilesHeader@@
 		@@tilesAppHeader@@
 		@@tilesMainMenu@@
-		@@tilesQuickLaunch@@	
+		<!--  @@tilesQuickLaunch@@-->	
+		<put name="quicklaunch" value="/pages/QueryQuickLaunch.jsp" />
 		@@tilesContent@@
 		@@tilesFooter@@
 	</definition>
@@ -23,7 +24,8 @@
 		@@tilesHeader@@
 		@@tilesAppHeader@@
 		@@tilesMainMenu@@
-		@@tilesQuickLaunch@@	
+		<!--  @@tilesQuickLaunch@@-->	
+		<put name="quicklaunch" value="/pages/QueryQuickLaunch.jsp" />
 		@@tilesContent@@
 		@@tilesFooter@@
 	</definition>
