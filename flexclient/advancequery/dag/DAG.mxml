@@ -827,7 +827,7 @@ Application
 			}
 			else
 			{
-				AlertManager.showWarning("The selected classes may not be linked together because a cyclic graph is created.");
+				AlertManager.showWarning("Circular reference error: It is not possible to connect the selected objects.");
 			}
 				
 		}
@@ -998,14 +998,14 @@ Application
 			
 		if(dagNode1 == null || dagNode2 == null)
 		{
-			AlertManager.showWarning("Two classes must be selected before pressing the 'Add Link' button.");
+			AlertManager.showWarning("Select two objects and click Add Link.");
 			CursorManager.removeBusyCursor();	
 		}
 		else
 		{
 			if(dagNode1.getOutAssociation(node2) != null)
 			{
-				AlertManager.showWarning("The selected classes are already linked in the Diagrammatic View.");
+				AlertManager.showWarning("The selected objects are already connected in the Diagrammatic View.");
 		  		CursorManager.removeBusyCursor();   	   
 			}
 			else
@@ -1028,7 +1028,7 @@ Application
 		ambiguityPanel.pathList= event.result as ArrayCollection;
 		if(ambiguityPanel.pathList==null || ambiguityPanel.pathList.length==0)
 		{
-			AlertManager.showInfo("No paths present.");
+			AlertManager.showInfo("Missing connection error: It is not possible to connect the selected objects. Report a missing connection to the administrator at (314) 362-8853.");
 		}
 		else
 		{
@@ -1468,7 +1468,7 @@ Application
 	 	}
 	 	else
 	 	{
-	 	     AlertManager.showWarning("A calculated predicate may not be added to the selected class as it does not contain any date, timestamp, or quantitative attributes.");	
+	 	     AlertManager.showWarning("Temporal query error: Selected object(s) do not contain any date, timestamp, or quantitative attributes.");	
 	 	}
 	 }
 	 
@@ -1484,7 +1484,7 @@ Application
 		}
 		else
 		{
-			 AlertManager.showWarning("A calculated predicate may not be added to the selected classes as either one or both do not contain any date, timestamp, or quantitative attributes.");
+			 AlertManager.showWarning("Temporal query error: Selected object(s) do not contain any date, timestamp, or quantitative attributes.");
 		}
 	}
 	
