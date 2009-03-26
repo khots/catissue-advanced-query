@@ -64,11 +64,7 @@ public class SearchPermissibleValuesAction extends Action
 		//get the id of the component on which user click to search for PVs
 		String componentId = request.getParameter(Constants.COMPONENT_ID);
 		componentId = getComponentId(request, componentId);
-		if(ANY_WORD!=null && VISearchAlgorithm.valueOf(ANY_WORD).equals(VISearchAlgorithm.ANY_WORD))
-		{
-			response.getWriter().write(bizLogic.getMessageFromFile());
-		}
-		else if (searchTerm != null && targetVocabs != null)
+		if (searchTerm != null && targetVocabs != null)
 		{
 			// AJAX Request handler for Getting search term Result data for source to target vocabularies
 			
@@ -88,7 +84,7 @@ public class SearchPermissibleValuesAction extends Action
 				}
 				catch (VocabularyException e)
 				{
-					response.getWriter().write(bizLogic.getExceptionMessage(e));
+					response.getWriter().write(bizLogic.getErrorMessageAsHTML(e.getError().getErrorMessage()));
 				}
 			}
 
