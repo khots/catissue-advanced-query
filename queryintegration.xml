@@ -276,7 +276,7 @@
 									<replacefilter token="@@tilesHeader@@" value="${tilesHeader}"/>
 									<replacefilter token="@@tilesAppHeader@@" value="${tilesAppHeader}"/>
 									<replacefilter token="@@tilesMainMenu@@" value="${tilesMainMenu}"/>
-									<replacefilter token="@@tilesQuickLaunch@@" value="${tilesQuickLaunch}"/>
+									<!--replacefilter token="@@tilesQuickLaunch@@" value="${tilesQuickLaunch}"/-->
 									<replacefilter token="@@tilesContent@@" value="${tilesContent}"/>
 									<replacefilter token="@@tilesFooter@@" value="${tilesFooter}"/>
 						</replace>
