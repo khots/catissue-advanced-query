@@ -5,12 +5,16 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.wustl.cider.querymanager.CiderQueryPrivilege;
+import edu.wustl.cider.util.global.CiderConstants;
+import edu.wustl.cider.util.global.Utility;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
@@ -41,6 +45,7 @@ public class WorkflowAction extends Action
     public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+		HttpSession session = request.getSession();
 		if (request.getParameter(Constants.OPERATION) != null && (request.getParameter("id") != null || request.getAttribute(Constants.WORKFLOW_ID)!=null)
 				&& (!"".equals(request.getParameter(Constants.ID))))
 		{
@@ -67,6 +72,19 @@ public class WorkflowAction extends Action
 			{
 				latestProjectId=(Long) request.getAttribute(Constants.EXECUTED_FOR_PROJECT);
 			}
+			boolean hasSecurePrivilege = true;
+			boolean hasLimitedPrivilege = false;
+			Long userId = sessionDataBean.getUserId();
+			if(latestProjectId!=null && latestProjectId > 0)
+			{
+				hasSecurePrivilege = Utility.hasSecurePrivilege(latestProjectId, userId);
+				hasLimitedPrivilege = Utility.hasLimitedPrivilege(latestProjectId, userId);
+			}
+			session.removeAttribute(CiderConstants.CIDER_QUERY_PRIVILEGE);
+			CiderQueryPrivilege privilege = new CiderQueryPrivilege(hasSecurePrivilege,hasLimitedPrivilege);
+			session.setAttribute(CiderConstants.CIDER_QUERY_PRIVILEGE,privilege);
+			session.removeAttribute(Constants.HAS_SECURE_PRIVILEGE);
+	        session.setAttribute(Constants.HAS_SECURE_PRIVILEGE,hasSecurePrivilege);
 			setQueryExecutionid(form,sessionDataBean,Long.valueOf(id), latestProjectId);
 		}
 	   else
