@@ -78,10 +78,11 @@ public class ITableManager
 	 * @param patientDeid
 	 * @param queryExecLogId
 	 * @param upi
+	 * @param count
 	 * @throws SQLException
 	 * @throws DAOException
 	 */
-	public void insertITableEntry(int count_query_exec_id, String upi, String dob)
+	public void insertITableEntry(int count_query_exec_id, String upi, String dob, int count)
 			throws SQLException, DAOException
 	{
 		// CODE TO INSERT DATA INTO QUERY_ITABLE
@@ -179,6 +180,7 @@ public class ITableManager
 		finally
 		{
 			stmt.close();
+			stmt=null;
 			DB_CONNECTION_PARAMS.closeSession();
 		}
 		return resultSet;
@@ -286,6 +288,7 @@ public class ITableManager
 				if (resultSet != null)
 				{
 					resultSet.close();
+					resultSet=null;
 				}
 				DB_CONNECTION_PARAMS.closeSession();
 			}
@@ -338,6 +341,7 @@ public class ITableManager
 				if (resultSet != null)
 				{
 					resultSet.close();
+					resultSet=null;
 				}
 				DB_CONNECTION_PARAMS.closeSession();
 			}
