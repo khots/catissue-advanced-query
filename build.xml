@@ -109,7 +109,6 @@
 				<include name="**/*.xml" />
 				<include name="**/*.hbm.xml" />
 				<include name="**/*.ser" />
-				<include name="**/VISplCharHelp.txt" />
 			</fileset>
 			<fileset dir="${base.dir}" >
 				<include name="log4j.properties" />
@@ -409,7 +408,6 @@
 		    <include name = "dbutil.properties"/>
 		    <include name = "dynamicUI.xml"/>
 		    <include name = "query.properties"/>
-		  	<include name = "VISplCharHelp.txt"/>
 		   </fileset>
 		</copy>
 		
