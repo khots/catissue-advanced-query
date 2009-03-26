@@ -137,6 +137,7 @@ public class CompositeQueryExecutor
 		String status = checkStatus();
 		Count count = new Count();
 		int result;
+		ResultSet resultSet =null;
 		try
 		{
 			if (status.equals(Constants.QUERY_CANCELLED))
@@ -155,7 +156,7 @@ public class CompositeQueryExecutor
 				//wrong impl. CiderGraph.generateSQL() shd get executed on the database which will return int value of the count
 				// count = iTableManager.getCount(ciderQuery.getQueryExecId());
 
-				ResultSet resultSet = iTableManager.executeCompositeQuery(sql);
+				 resultSet = iTableManager.executeCompositeQuery(sql);
 				if(resultSet!=null)
 				{
 					result = resultSet.getInt(1);
@@ -175,6 +176,21 @@ public class CompositeQueryExecutor
 			QueryModuleException queryModExp = new QueryModuleException(sqe.getMessage(),
 					QueryModuleError.SQL_EXCEPTION);
 			throw queryModExp;
+		}
+		finally
+		{
+			if(resultSet!=null)
+			{
+				 try {
+					resultSet.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				 resultSet=null;
+				 
+			}
+			
 		}
 		count.setQueryExectionId(ciderQuery.getQueryExecId());
 
