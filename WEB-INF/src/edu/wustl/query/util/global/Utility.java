@@ -34,12 +34,14 @@ import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.dao.queryExecutor.PagenatedResultData;
+import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
+import edu.wustl.common.querysuite.queryobject.impl.AbstractQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
@@ -672,15 +674,15 @@ public class Utility extends edu.wustl.common.util.Utility
 	 * @return
 	 * @throws DAOException
 	 */
-	public static IQuery getQuery(Long queryId) throws DAOException
+	public static IAbstractQuery getQuery(Long queryId) throws DAOException
 	{
-		IQuery query = null;
+		IAbstractQuery query = null;
 
 		if (queryId != null)
 		{
 			AbstractDAO dao = DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
 			dao.openSession(null);
-			query = (IParameterizedQuery) dao.retrieve(ParameterizedQuery.class.getName(), queryId);
+			query = (IAbstractQuery) dao.retrieve(AbstractQuery.class.getName(), queryId);
 			dao.closeSession();
 		}
 
