@@ -40,7 +40,6 @@
 	set_mode="Mapping";
 	var label;
 	var pervVocabCheckboxId="vocab_"+'<%=srcVocabURN%>';
-	var anyWordCriteria=true;
 	var searchImg="<img src='images/advancequery/loading_msg.gif' border='0' alt='Searching...' >   ";
 	/*to close the model widow*/
 function cancelWindow()
@@ -610,7 +609,6 @@ function restoreDefault()
 	document.getElementById("divForSearchingMode").innerHTML="";
 	document.getElementById("searchtextfield").value="";
 	document.getElementById("findAnyWord").checked=true;
-	anyWordCriteria=true;
 	label.innerHTML="";
 	pervVocabCheckboxId="vocab_"+'<%=srcVocabURN%>';
 	<%if(sourceVocabMessage!=null)
@@ -694,39 +692,7 @@ function keypress(e) // Bug Fixed # 11683
 	   serachForTermInVocab('search');
 	}
 }   
-/* this function is used to get the message if user select the ANy_WORD option*/
-function getWarningMessage()
-{
-		
-			if(document.getElementById("findAnyWord").checked==0)
-			{
-				anyWordCriteria=false;
-			}
-			else if(document.getElementById("findAnyWord").checked && !anyWordCriteria)
-			{
-				var request = newXMLHTTPReq();
-				var param = "ANY_WORD="+document.getElementById("findAnyWord").value;
-				var actionUrl="SearchPermissibleValues.do";
-				request.onreadystatechange=function(){getWarningMsg(request)};
-				request.open("POST",actionUrl,true);
-				request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-				request.send(param);
-			}
-}
-function getWarningMsg(request)
-{
-	if(request.readyState == 4)  
-	{	  		
-		if(request.status == 200)
-		{	
-			var responseTextValue =  request.responseText;
-			document.getElementById("divForMappingMode").style.display = 'none';
-			document.getElementById("divForSearchingMode").style.display = '';
-			document.getElementById("divForSearchingMode").innerHTML = responseTextValue;
-			anyWordCriteria=true;
-		}
-	}
-}
+
 </script>
 </head>
 <body onLoad="editSelectedPV();">
@@ -771,8 +737,8 @@ function getWarningMsg(request)
 	<td class="content_txt_bold"  width="5%" nowrap>Select Criteria:</td>
 	<td colspan="2" valign="top" height="20px" >
 		<table cellpadding="0" cellspacing="0" ><tr>
-			<td><input type="radio"	name="searchCriteria" id="findAnyWord" value='<%=VISearchAlgorithm.ANY_WORD%>' checked='true' onclick="getWarningMessage();"/></td><td class="content_txt"  >&nbsp;&nbsp;Any Word&nbsp;&nbsp;&nbsp;</td>
-			<td><input type="radio" name="searchCriteria" id="findExactPhrase" value='<%=VISearchAlgorithm.EXACT_PHRASE%>' onclick="getWarningMessage();"/></td><td class="content_txt"  >&nbsp;&nbsp;Exact Phrase&nbsp;&nbsp;&nbsp;</td>
+			<td><input type="radio"	name="searchCriteria" id="findAnyWord" value='<%=VISearchAlgorithm.ANY_WORD%>' checked='true' /></td><td class="content_txt"  >&nbsp;&nbsp;Any Word&nbsp;&nbsp;&nbsp;</td>
+			<td><input type="radio" name="searchCriteria" id="findExactPhrase" value='<%=VISearchAlgorithm.EXACT_PHRASE%>' /></td><td class="content_txt"  >&nbsp;&nbsp;Exact Phrase&nbsp;&nbsp;&nbsp;</td>
 		</tr>
 		</table>
 	</td>
@@ -830,7 +796,7 @@ function getWarningMsg(request)
 				<td valign="top"  width="100%"  >
 					<!-- for tree view we required this width: 260px; height: 300px;  -->
 					<script>document.write('<div  id="divForMappingMode" style=" width: '+divWidth+'px; height:'+divHeight+'px ;overflow:auto;"  >')</script>
-					<table  border="0" cellpadding="0" cellspacing="0" width="100%" >
+					<table  border="0" cellpadding="0" cellspacing="0" width="" >
 					<logic:iterate name="Vocabulries" id="vocabs">
 					<c:set var="urn" value="${vocabs.vocabURN}" />
 					<c:choose>
@@ -924,7 +890,7 @@ function getWarningMsg(request)
 					<td valign="top">
 						<script>document.write('<div  id="divForSearchingMode" style=" width: '+divWidth+'px; height:'+divHeight+'px ;  overflow:auto;">')</script>
 						<!-- <div width="100%"   style=" border:1px solid Silver; overflow:auto;"  >-->
-						<table  cellpadding="0" cellspacing="0"  border="0" width="100%">
+						<table  cellpadding="0" cellspacing="0"  border="0" width="">
 						<logic:iterate name="Vocabulries" id="vocabs">
 							<tr><td valign="top"><div id = "selectedPermValues_Div_${vocabs.vocabURN}" style="display:none">
 						
