@@ -339,8 +339,8 @@
 			    {   
 			    	if(arithmeticOperand == "+" && operandType == "Date")
 				    {
-				    	AlertManager.showWarning("A date/timestamp may only be subtracted from another date/timestamp.  Please change the operator to a minus sign.");
-           	 	    	        createBigTip("A date/timestamp may only be subtracted from another date/timestamp.  Please change the operator to a minus sign.");
+				    	AlertManager.showWarning("Temporal condition error: Cannot add two dates.");
+           	 	    	        createBigTip("Temporal condition error: Cannot add two dates.");
         			}else if (arithmeticOperand == "-" && operandType == "Date")
         			{
 					    		destroyBigTip();

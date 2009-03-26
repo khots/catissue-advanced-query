@@ -432,8 +432,8 @@
            	 			arithmeticOperand= cb2.selectedItem.toString();
            	 	    	if((arithmeticOperand == "+") || (arithmeticOperand == "/") || (arithmeticOperand == "*"))
            	 	    	{
-           	 	    		AlertManager.showWarning("A date/timestamp may only be subtracted from another date/timestamp.  Please change the operator to a minus sign.");           	 	    		
-           	 	    		createBigTip("A date/timestamp may only be subtracted from another date/timestamp.  Please change the operator to a minus sign.");
+           	 	    		AlertManager.showWarning("Temporal condition error: Cannot add two dates.");           	 	    		
+           	 	    		createBigTip("Temporal condition error: Cannot add two dates.");
            	 	    	}
            	 	    	else
            	 	    	{
@@ -501,8 +501,8 @@
            	 		}
            	 		else if((firstOperandType=="Integer" && secondOperandType=="Date") && (cb2.selectedItem.toString()=="-"))
            	 		{
-           	 			AlertManager.showWarning("A date/timestamp may not be subtracted from a quantitative attribute.  Please change the operator to a plus sign.");
-           	 			createBigTip("A date/timestamp may not be subtracted from a quantitative attribute.  Please change the operator to a plus sign.");
+           	 			AlertManager.showWarning("Temporal condition error: A timestamp value cannot be subtracted from a numeric attribute");
+           	 			createBigTip("Temporal condition error: A timestamp value cannot be subtracted from a numeric attribute.");
            	 		}
            	 		else
            	 		{
