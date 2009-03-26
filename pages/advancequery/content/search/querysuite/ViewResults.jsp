@@ -127,14 +127,14 @@ String formAction = Constants.DefineSearchResultsViewJSPAction;
 					</td>
 							
 					<td width="50%" align="right">
-					 <table border="0" cellspacing="0" cellpadding="0">
+					<!-- <table border="0" cellspacing="0" cellpadding="0">
 					  <tr>
 						
 						<td valign="top" align="right" style="padding-right:5px; " ><a href="javascript:previousFromDefineResults('ViewResults');"><img alt= "<< Redefine Filters" src="images/advancequery/b_redefine_filter.gif" border="0"  
 		     /></a></td>
 						<td valign="top" align="right" style="padding-right:5px; "><a href="javascript:redefineResultsView();"><img alt="<< Redefine Results View" src="images/advancequery/b_redefine_results_view.gif" border="0" /></a></td>
 						</tr>
-					</table>
+					</table> -->
 					 </td>
 					 <td></td>
 					</tr>
