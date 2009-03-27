@@ -52,7 +52,7 @@ import gov.nih.nci.security.exceptions.CSException;
  */
 public class SaveQueryAction extends BaseAction
 {
-
+	private static org.apache.log4j.Logger logger = Logger.getLogger(SaveQueryAction.class);
 	@Override
 	protected ActionForward executeAction(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -109,12 +109,14 @@ public class SaveQueryAction extends BaseAction
 			new HibernateCleanser(queryClone).clean();*/
 			if (parameterizedQuery.getId() == null)
 			{
+				logger.info("In saveQueryAction.java , for fresh Query before insertSavedQueries");
 				bizLogic.insertSavedQueries(parameterizedQuery, sessionDataBean,
 						((SaveQueryForm) actionForm).isShareQuery());
 			}
 			else
 			{
 				DefinedQueryUtil queryUtil=new DefinedQueryUtil();
+				logger.info("In saveQueryAction.java , For Edit Query case  before updateQuery");
 				queryUtil.updateQuery(parameterizedQuery,sessionDataBean,isShared);
 			}
 			// save query to workflow if it is a workflow query
@@ -138,7 +140,8 @@ public class SaveQueryAction extends BaseAction
 		catch (BizLogicException bizLogicException)
 		{
 			setActionError(request, bizLogicException.getMessage());
-			Logger.out.error(bizLogicException.getMessage(), bizLogicException);
+			logger.info("In saveQueryAction , Exception Occured while saving query");
+			logger.error(bizLogicException.getMessage(), bizLogicException);
 		}
 		catch (UserNotAuthorizedException exception)
 		{
