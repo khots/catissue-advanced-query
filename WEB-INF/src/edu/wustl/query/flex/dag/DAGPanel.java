@@ -384,7 +384,6 @@ public class DAGPanel
 					IPath path = paths.get(i);
 					createLogForPah(path);
 					updatePathForIntraModelAssociation(sourceExpressionId, destExpressionId, path);
-					path = clonePath(path);
 					linkTwoNode(sourceNode, destNode, path, new ArrayList());
 					String pathStr = Long.valueOf(path.getPathId()).toString();
 					DAGPath dagPath = new DAGPath();
@@ -415,30 +414,7 @@ public class DAGPanel
 		
 	}
 
-	private Path clonePath(IPath pathIn)
-	{
-		//Path newPath = (Path)path;
-		Path newPath = new Path();
-		Path path = (Path) pathIn;
-		newPath.setSourceEntity(path.getSourceEntity());
-		newPath.setSourceEntityId(path.getSourceEntity().getId());
-		newPath.setTargetEntity(path.getTargetEntity());
-		newPath.setTargetEntityId(path.getTargetEntity().getId());
-		newPath.setIntermediatePaths(path.getIntermediatePaths());
-		newPath.setPathId(path.getPathId());
-		List<IAssociation> newAssociationLidt = new ArrayList<IAssociation>();
-				
-		for (IAssociation association : path.getIntermediateAssociations())
-		{
-			IntraModelAssociation newAssociation=new IntraModelAssociation();			
-			newAssociation.setDynamicExtensionsAssociation(((IntraModelAssociation)association).getDynamicExtensionsAssociation());
-			newAssociationLidt.add(newAssociation);
-		}
-		newPath.setIntermediateAssociations(newAssociationLidt);
-		return newPath;
-	}
-
-	/**
+		/**
 	 * This method Will search if the path already exists in the query object before
 	 * and if it is present then it will set intramodel association of that path in the current path.
 	 * @param sourceExpressionId Id of the source Expression from which the path is going to start 
