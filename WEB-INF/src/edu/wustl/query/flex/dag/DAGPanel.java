@@ -35,7 +35,10 @@ import edu.wustl.common.querysuite.exceptions.CyclicException;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.metadata.associations.IAssociation;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
+import edu.wustl.common.querysuite.metadata.associations.impl.IntraModelAssociation;
+import edu.wustl.common.querysuite.metadata.associations.impl.ModelAssociation;
 import edu.wustl.common.querysuite.metadata.path.IPath;
+import edu.wustl.common.querysuite.metadata.path.Path;
 import edu.wustl.common.querysuite.queryobject.ArithmeticOperator;
 import edu.wustl.common.querysuite.queryobject.IArithmeticOperand;
 import edu.wustl.common.querysuite.queryobject.ICondition;
@@ -99,7 +102,7 @@ import edu.wustl.query.util.querysuite.TemporalQueryUtility;
  */
 public class DAGPanel
 {
-
+	private static org.apache.log4j.Logger logger = Logger.getLogger(DAGPanel.class);
 	private IClientQueryBuilderInterface m_queryObject;
 	private IPathFinder m_pathFinder;
 	private IExpression expression;
@@ -184,11 +187,11 @@ public class DAGPanel
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			Logger.out.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			Logger.out.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		expressionIdsList.add(Integer.valueOf(node.getExpressionId()));
 		session.setAttribute("allLimitExpressionIds", expressionIdsList);
@@ -379,8 +382,10 @@ public class DAGPanel
 				for (int i = 0; i < paths.size(); i++)
 				{
 					IPath path = paths.get(i);
+					createLogForPah(path);
 					updatePathForIntraModelAssociation(sourceExpressionId, destExpressionId, path);
-					linkTwoNode(sourceNode, destNode, paths.get(i), new ArrayList());
+					path = clonePath(path);
+					linkTwoNode(sourceNode, destNode, path, new ArrayList());
 					String pathStr = Long.valueOf(path.getPathId()).toString();
 					DAGPath dagPath = new DAGPath();
 					dagPath.setToolTip(getPathDisplayString(path));
@@ -395,6 +400,42 @@ public class DAGPanel
 			}
 		}
 		return dagPathList;
+	}
+
+	private void createLogForPah(IPath path)
+	{
+		logger.info("In link node method of DagPanel.java ");
+		logger.info("PAth Id id : "+ path.getPathId());
+		logger.info("source Entity : "+ path.getSourceEntity());
+		logger.info("destination Entity : "+ path.getTargetEntity());
+		for(IAssociation association : 	path.getIntermediateAssociations())
+		{
+			logger.info("Intramodel Association Id : "+((ModelAssociation)association).getId());
+		}
+		
+	}
+
+	private Path clonePath(IPath pathIn)
+	{
+		//Path newPath = (Path)path;
+		Path newPath = new Path();
+		Path path = (Path) pathIn;
+		newPath.setSourceEntity(path.getSourceEntity());
+		newPath.setSourceEntityId(path.getSourceEntity().getId());
+		newPath.setTargetEntity(path.getTargetEntity());
+		newPath.setTargetEntityId(path.getTargetEntity().getId());
+		newPath.setIntermediatePaths(path.getIntermediatePaths());
+		newPath.setPathId(path.getPathId());
+		List<IAssociation> newAssociationLidt = new ArrayList<IAssociation>();
+				
+		for (IAssociation association : path.getIntermediateAssociations())
+		{
+			IntraModelAssociation newAssociation=new IntraModelAssociation();			
+			newAssociation.setDynamicExtensionsAssociation(((IntraModelAssociation)association).getDynamicExtensionsAssociation());
+			newAssociationLidt.add(newAssociation);
+		}
+		newPath.setIntermediateAssociations(newAssociationLidt);
+		return newPath;
 	}
 
 	/**
@@ -465,6 +506,7 @@ public class DAGPanel
 			if (associationList.get(i).equals(association))
 			{
 				associationList.remove(i);
+				logger.info("replacing the association, In update path for assocition in dagpanel.java  association id:"+((ModelAssociation)association).getId());
 				associationList.add(i, association);
 			}
 
@@ -505,7 +547,7 @@ public class DAGPanel
 		}
 		catch (Exception e)
 		{
-			Logger.out.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		return map.get(ambiguityObject);
 	}
@@ -1256,7 +1298,7 @@ public class DAGPanel
 		}
 		catch (CyclicException e)
 		{
-			Logger.out.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 
 		}
 	}
@@ -1322,7 +1364,7 @@ public class DAGPanel
 			text = text.concat(edu.wustl.cab2b.common.util.Utility.getOnlyEntityName(association
 					.getTargetEntity()));
 		}
-		Logger.out.debug(text);
+		logger.debug(text);
 		return text;
 
 	}
@@ -2189,7 +2231,7 @@ public class DAGPanel
 		    
 		   }catch (DAOException e)
 			{
-		    	Logger.out.error(e.getMessage(), e);
+		    	logger.error(e.getMessage(), e);
 			}
 	   }
 	  
