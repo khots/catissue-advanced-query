@@ -30,6 +30,7 @@ import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
 import edu.wustl.query.util.querysuite.EntityCacheFactory;
@@ -46,7 +47,7 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 public class CategorySearchAction extends Action
 {
-
+	private static org.apache.log4j.Logger logger = Logger.getLogger(CategorySearchAction.class);
 	/**
 	 * This method loads the data required for categorySearch.jsp
 	 * @param mapping mapping
@@ -77,7 +78,6 @@ public class CategorySearchAction extends Action
 					edu.wustl.query.util.global.Constants.WORKFLOW_NAME);
 			request.setAttribute(edu.wustl.query.util.global.Constants.WORKFLOW_NAME, workflowName);
 		}
-
 				
 		if ((currentPage != null && currentPage.equalsIgnoreCase("resultsView")))
 		{
@@ -102,6 +102,7 @@ public class CategorySearchAction extends Action
 				IParameterizedQuery parameterizedQuery = (IParameterizedQuery) request.getSession()
 						.getAttribute(edu.wustl.query.util.global.Constants.QUERY_OBJECT);
 				searchForm.setQueryTitle(parameterizedQuery.getName());
+				logger.info("In categorySearchAction  : opening the query in edit mode QueryId :" + parameterizedQuery.getId());
 			}
 			forward = search(request, response, searchForm, textfieldValue);
 		} //end of else  
