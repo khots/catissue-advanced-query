@@ -16,6 +16,7 @@ import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.enums.QueryType;
 import edu.wustl.query.flex.dag.DAGConstant;
@@ -30,7 +31,7 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
  */
 public class QueryGetCountAction extends Action
 {
-
+	private static org.apache.log4j.Logger logger = Logger.getLogger(QueryGetCountAction.class);
 	/**
 	 * This method loads the data required for GetCounts.jsp
 	 * @param mapping mapping
@@ -53,6 +54,7 @@ public class QueryGetCountAction extends Action
 					.getAttribute(Constants.QUERY_OBJECT);
 			request.setAttribute("isQuery", "true");
 			searchForm.setQueryTitle(parameterizedQuery.getName());
+			logger.info("In QueryGetCountQueryAction Query opened in Edit mode : "+ parameterizedQuery.getId());
 		}
 		else
 		{
