@@ -8055,7 +8055,7 @@ insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) 
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2259,'Inherited','Inherited',248);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2260,'Inherited','Inherited',248);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2261,'PREDEFINED_VIEW','PREDEFINED_VIEW',259);
-insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2262,'PV_FILTER','synonym like ''T_HL7_U_0069^%''',259);
+insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2262,'PV_FILTER','synonym like ''99701^%''',259);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2263,'PV_VIEW','MED_LOOKUP_VIEW',259);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2264,'resultorder','2',259);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2265,'resultview','Encounter',259);
