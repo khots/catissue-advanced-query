@@ -5803,7 +5803,7 @@ insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) 
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (9,'NOT_VIEWABLE','NOT_VIEWABLE',8);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (10,'VI_IGNORE_PREDICATE','VI_IGNORE_PREDICATE',9);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (11,'PREDEFINED_VIEW','PREDEFINED_VIEW',9);
-insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (12,'PV_FILTER','synonym like ''T_HL7_L_0007^%''',10);
+insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (12,'PV_FILTER','concept_name like ''PHARMACY_FREQ/FREQ_MOD->%''',10);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (13,'PV_VIEW','MED_LOOKUP_VIEW',10);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (14,'DEFAULT_CONDITION','In!=!FACILITY_ID',11);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (15,'VI_HIDDEN','VI_HIDDEN',11);
