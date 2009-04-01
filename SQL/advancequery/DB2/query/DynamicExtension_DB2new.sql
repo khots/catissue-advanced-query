@@ -8516,7 +8516,7 @@ insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) 
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2720,'Inherited','Inherited',290);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2721,'NOT_VIEWABLE','NOT_VIEWABLE',290);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2722,'NOT_SEARCHABLE','NOT_SEARCHABLE',290);
-insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2723,'PV_FILTER','synonym like ''T_HL7_L_0007^%''',292);
+insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2723,'PV_FILTER','concept_name like ''INFECTION_CONTROL_CODE->%''',292);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2724,'PV_VIEW','MED_LOOKUP_VIEW',292);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2725,'Inherited','Inherited',293);
 insert into dyextn_tagged_value (IDENTIFIER,T_KEY,T_VALUE,ABSTRACT_METADATA_ID) values (2726,'Inherited','Inherited',293);
