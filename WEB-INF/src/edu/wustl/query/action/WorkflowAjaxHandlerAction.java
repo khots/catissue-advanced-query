@@ -227,7 +227,7 @@ public class WorkflowAjaxHandlerAction extends Action
                             // First sleep for say 5 seconds
                             try
                             {
-                                Thread.sleep(1000);
+                                Thread.sleep(5000);
                             }
                             catch (InterruptedException ie)
                             {

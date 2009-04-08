@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.wustl.common.dao.DatabaseConnectionParams;
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.query.factory.AbstractQueryManagerFactory;
 import edu.wustl.common.query.factory.ITableManagerFactory;
@@ -13,6 +14,7 @@ import edu.wustl.common.query.itablemanager.ITableManager;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.querymanager.AbstractQueryManager;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
@@ -81,9 +83,11 @@ public class CompositeQueryExecutor
 	 */
 	public void cancel(int queryExecId) throws QueryModuleException
 	{
+		DatabaseConnectionParams dbConnectionParams = new DatabaseConnectionParams();
 		try
 		{
-			iTableManager.changeStatus(Constants.QUERY_CANCELLED, queryExecId);
+			dbConnectionParams.openSession(Constants.JNDI_NAME_CIDER);
+			iTableManager.changeStatus(Constants.QUERY_CANCELLED, queryExecId, dbConnectionParams);
 		}
 		catch (DAOException de)
 		{
@@ -96,6 +100,22 @@ public class CompositeQueryExecutor
 			QueryModuleException queryModExp = new QueryModuleException(sqe.getMessage(),
 					QueryModuleError.SQL_EXCEPTION);
 			throw queryModExp;
+		}
+		finally
+		{
+			try
+			{
+				dbConnectionParams.commit();
+				dbConnectionParams.closeSession();
+			}
+			catch (SQLException e)
+			{
+				Logger.out.debug(e.getMessage());
+			}
+			catch (DAOException e) 
+			{
+				Logger.out.debug(e.getMessage());
+			} 
 		}
 	}
 

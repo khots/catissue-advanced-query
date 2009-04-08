@@ -82,7 +82,7 @@ public class ITableManager
 	 * @throws SQLException
 	 * @throws DAOException
 	 */
-	public void insertITableEntry(int count_query_exec_id, String upi, String dob, int count)
+	public void insertITableEntry(int count_query_exec_id, String upi, String dob, int count, DatabaseConnectionParams dbConnectionParams)
 			throws SQLException, DAOException
 	{
 		// CODE TO INSERT DATA INTO QUERY_ITABLE
@@ -129,7 +129,7 @@ public class ITableManager
 	 * @throws SQLException
 	 * @throws DAOException
 	 */
-	public void changeStatus(String status, int queryExecId) throws SQLException, DAOException
+	public void changeStatus(String status, int queryExecId, DatabaseConnectionParams dbConnectionParams) throws SQLException, DAOException
 	{
 
 	}
