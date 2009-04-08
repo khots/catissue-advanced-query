@@ -809,4 +809,24 @@ public class Utility extends edu.wustl.common.util.Utility
 
         return resultObject;
     }
+    /**
+     * This method checks if attribute is already present in outputAttributeList of IQuery.
+     * @param query
+     * @param attribute
+     * @return isPresent
+     */
+    public static boolean isPresentInOutputAttrList(IQuery query, AttributeInterface attribute, IExpression expression)
+	{
+		boolean isPresent = false;
+		for(IOutputAttribute outputAttribute : ((ParameterizedQuery)query).getOutputAttributeList())
+		{
+			if(outputAttribute.getAttribute().equals(attribute) 
+					&& outputAttribute.getExpression().equals(expression))
+			{
+				isPresent = true;
+				break;
+			}
+		}
+		return isPresent;
+	}
 }

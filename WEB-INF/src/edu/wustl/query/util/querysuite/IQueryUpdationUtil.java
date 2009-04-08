@@ -744,4 +744,26 @@ public abstract class IQueryUpdationUtil
 		return personUpisList;
 	}
 
+	public static List<IExpression> getAllMainExpressionList(IQuery query)
+	{
+		IConstraints constraints = query.getConstraints();
+
+		List<EntityInterface> mainEntityList = new ArrayList<EntityInterface>();
+
+		List<IExpression> queryMainExpressionList = new ArrayList<IExpression>();
+
+		//For each Expression in the Query Constraints
+		for (IExpression expression : constraints)
+		{
+			EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
+
+			mainEntityList = QueryCSMUtil.getAllMainEntities(entity, mainEntityList);
+			if (mainEntityList.contains(entity))
+			{
+				queryMainExpressionList.add(expression);
+			}
+
+		}
+		return queryMainExpressionList;
+	}
 }

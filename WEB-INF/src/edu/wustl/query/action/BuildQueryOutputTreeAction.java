@@ -3,6 +3,7 @@ package edu.wustl.query.action;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Formatter;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -132,24 +133,19 @@ private String createTreeNodeId(String rootData, String uniqueParentNode,
 
 /**
  * 
- * @param primaryKeyIndexesList
  * @param labelNodeDataList
  * @param displayData
  */
-private void separateResultsViewData(List<Integer> primaryKeyIndexesList,
-		List<Object> labelNodeDataList, StringBuffer displayData) {
+private void separateResultsViewData(List<Object> labelNodeDataList, StringBuffer displayData) {
 	for(int j=0; j<labelNodeDataList.size(); j++)
 	{
-		if(!primaryKeyIndexesList.contains(j))
+		if(labelNodeDataList.get(j)== null)
 		{
-			if(labelNodeDataList.get(j)== null)
-			{
-				displayData.append(" "+"!=!");
-			}
-			else
-			{
-				displayData.append(labelNodeDataList.get(j).toString().trim()+"!=!");
-			}
+			displayData.append(" "+Constants.DEFAULT_CONDITIONS_SEPARATOR);
+		}
+		else
+		{
+			displayData.append(labelNodeDataList.get(j).toString().trim()+Constants.DEFAULT_CONDITIONS_SEPARATOR);
 		}
 	}
 }
@@ -198,7 +194,6 @@ private void processDataNodeClick(String nodeId,HttpServletRequest request,List<
 	    {
 	        //For main OutputTreeDataNode, get the map of all parent/children map 
 	    	//Set<OutputTreeDataNode> mainEntitiesKeySet = parentChildrenMap.keySet();
-			System.out.println(""); 
 			
 			List<OutputTreeDataNode> childrenList =  parentChildrenMap.get(labelTreeDataNode);
 			Iterator<OutputTreeDataNode> itr = childrenList.iterator();
@@ -305,15 +300,13 @@ private void processLabelNodeClick(String nodeId,HttpServletRequest request,List
 		for(int i=0; i< dataList.size(); i++)
 		{
 			List <Object> labelNodeDataList = dataList.get(i);
-			List<Object> newList  = new ArrayList<Object>();
-			newList.addAll(labelNodeDataList);
-			arrangeAttributes(outputAttributesList,newList);
-			StringBuffer displayData = new StringBuffer(""); 
 			StringBuffer primaryKeySetData = new StringBuffer("");
 			//creating primary key data set
 			createPrimaryKeyData(primaryKeyIndexesList,labelNodeDataList,primaryKeySetData);
+			List<Object> newList = arrangeAttributes(outputAttributesList,labelNodeDataList);
+			StringBuffer displayData = new StringBuffer(""); 
 			//Separating data to be displayed in the results tree
-			separateResultsViewData(primaryKeyIndexesList,newList,displayData);
+			separateResultsViewData(newList,displayData);
 			displayData = queryGenerator.getFormattedOutputForTreeView(displayData, rootEntity,hasSecurePrivilege);
 			//Creating the Tree node Id
 			String dataNodeId = createTreeNodeId(rootData,uniqueParentNode, uniqueCurrentNodeId,primaryKeySetData);
@@ -351,31 +344,17 @@ private void createPrimaryKeyData(List<Integer> primaryKeyIndexesList,
 }
 
 /**
- * Formatting output to be shown on tree view.
- * @param displayData
- * @param format
- * @return formatted string
- */
-private StringBuffer getFormattedOutput(StringBuffer displayData,
-		String format)
-{
-	String[] split = displayData.toString().split("!=!");
-	Formatter formatter = new Formatter();
-	displayData = new StringBuffer(formatter.format(format,split).toString());
-	return displayData;
-}
-
-/**
  * This method changes position of attributes in data list in the order to be
  * shown on the tree view. 
  * @param outputAttributesList
- * @param list
+ * @param oldList data list in original order
  */
-private void arrangeAttributes(List<IOutputAttribute> outputAttributesList,
-		List<Object> list)
+private List<Object> arrangeAttributes(List<IOutputAttribute> outputAttributesList,
+		List<Object> oldList)
 {
-	List<Object> oldList  = new ArrayList<Object>();
-	oldList.addAll(list);
+	List<Object> list  = new ArrayList<Object>();
+	// map that contains the data to be displayed and the position is considered as key.
+	Map<Integer,Object> resultOrderVsValue = new HashMap<Integer, Object>();
 	for(int counter = 0;counter < outputAttributesList.size();counter++)
 	{
 		AttributeInterface attribute = outputAttributesList.get(counter).getAttribute();
@@ -395,9 +374,22 @@ private void arrangeAttributes(List<IOutputAttribute> outputAttributesList,
 		}
 		if(!value.equals(""))
 		{
-			list.set(Integer.valueOf(value).intValue(),oldList.get(counter));
+			resultOrderVsValue.put(Integer.valueOf(value).intValue(),oldList.get(counter));
 		}
 	}
+		int i=0;
+		// add data in new list in the order to be displayed in tree view.
+		while(resultOrderVsValue.get(i)!=null)
+		{
+			list.add(resultOrderVsValue.get(i));
+			i++;
+		}
+		// adding remaining data in new list like Age, Deid
+		for(i=outputAttributesList.size();i<oldList.size();i++)
+		{
+			list.add(oldList.get(i));
+		}
+	return list;
 }
 
 	/**

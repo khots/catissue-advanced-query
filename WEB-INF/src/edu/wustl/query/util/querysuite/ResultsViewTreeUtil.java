@@ -32,6 +32,8 @@ import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.query.flex.dag.DAGResolveAmbiguity;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
 
 
 /**
@@ -170,7 +172,7 @@ public class ResultsViewTreeUtil
 	public static Map<EntityInterface, List<Integer>> addAllTaggedEntitiesToIQuery(
 			Map<EntityInterface, List<EntityInterface>> eachTaggedEntityPathMap,
 			IClientQueryBuilderInterface m_queryObject,
-			EntityInterface rootEntity, int rootExpId)
+			EntityInterface rootEntity, int rootExpId,Map<Integer, Integer> expressionIdMap)
 	{
 		Map <EntityInterface, List<Integer>> eachTaggedEntityPathExpressionsMap = new HashMap<EntityInterface, List<Integer>>(); 
 	    
@@ -183,7 +185,7 @@ public class ResultsViewTreeUtil
  			for(int i= pathList.size()-1; i >=0; i--)
  			{
  				EntityInterface pathEntity = pathList.get(i);
- 				if(pathEntity.getName().equalsIgnoreCase(rootEntity.getName()))
+ 				if(pathEntity.equals(rootEntity))
  				{
  					pathExpressionsList.add(rootExpId);
  				}
@@ -233,17 +235,18 @@ public class ResultsViewTreeUtil
  		boolean isMatchFound = false ;
  		for(IExpression expression : constraints)
  		{
- 			if(expression.getQueryEntity().getDynamicExtensionsEntity().getName().equals(pathEntity.getName()))
+ 			if(expression.getQueryEntity().getDynamicExtensionsEntity().equals(pathEntity))
  			{
  				pathExpressionsList.add(expression.getExpressionId());
  				isMatchFound = true;
+ 				break;
  			}
  		}
  		//If no match is found with any of the expression, only then add the expression to query
  		if(!isMatchFound)
 		{
 				//add new expression to Query and add that expression id to pathExpressionsList
-				int expressionId = ((ClientQueryBuilder) m_queryObject).addExpression(pathEntity);
+				int expressionId =addExpressionToIQuery(m_queryObject, pathEntity, null);
 				pathExpressionsList.add(expressionId);
 		}
  	}
@@ -297,7 +300,7 @@ public class ResultsViewTreeUtil
 	{
  		//For each tagged Entity ,get the tagged Attributes and add them to Ioutput Attribute list
  		ParameterizedQuery query = (ParameterizedQuery)m_queryObject.getQuery();
- 		List <IOutputAttribute> outputAttributeList =  new ArrayList<IOutputAttribute>();
+ 		List <IOutputAttribute> outputAttributeList =  query.getOutputAttributeList();
 	    IConstraints constraints = query.getConstraints();
  		Set <EntityInterface> taggedEntityKeySet= eachTaggedEntityPathExpressionsMap.keySet();
  		for(EntityInterface taggedEntity : taggedEntityKeySet)
@@ -308,15 +311,17 @@ public class ResultsViewTreeUtil
  			Collection <AttributeInterface> attributeCollection= taggedEntity.getAllAttributes();
  			for(AttributeInterface attribute : attributeCollection)
  			{
- 				if(edu.wustl.query.util.global.Utility.istagPresent(attribute,"resultview"))
+ 				IExpression expression = constraints.getExpression(taggedEntityExpId);
+ 				if(edu.wustl.query.util.global.Utility.istagPresent(attribute,Constants.TAGGED_VALUE_RESULTVIEW)
+ 						&& !Utility.isPresentInOutputAttrList(query, attribute, expression))
  				{
  					//If the Attribute is tagged ,then Create IOutPut attribute and add to list
- 					outputAttributeList.add(new OutputAttribute(constraints.getExpression(taggedEntityExpId),attribute));    					
+ 					outputAttributeList.add(new OutputAttribute(expression,attribute));    					
  				}
  			}
  		}
  	   //Setting the IOutPut Attribute List to Query 
- 		query.setOutputAttributeList(outputAttributeList);
+ 		//query.setOutputAttributeList(outputAttributeList);
 	}
 
 	/**
@@ -347,7 +352,7 @@ public class ResultsViewTreeUtil
 	 * @param parentQuery
 	 * @throws MultipleRootsException
 	 */
- 	public static void updateGeneratedQuery(IQuery generatedQuery,Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap,OutputTreeDataNode mainEntityTreeDataNode,IQuery parentQuery) throws MultipleRootsException
+ 	public static void updateGeneratedQuery(IQuery generatedQuery,Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap,OutputTreeDataNode mainEntityTreeDataNode,IQuery parentQuery,Map<Integer, Integer> expressionIdMap) throws MultipleRootsException
 	{
  		IClientQueryBuilderInterface m_queryObject = new ClientQueryBuilder();
 		m_queryObject.setQuery(generatedQuery);
@@ -399,6 +404,7 @@ public class ResultsViewTreeUtil
 		 		
 		 		//Now add that expression to generated  IQuery
 		 		int expressionId = addExpressionAndRuleToQuery(m_queryObject, iRule, childEntity);
+		 		expressionIdMap.put(childExpressionId, expressionId);
 
 		 		//Adding custom Formula 
 		 		if(customFormula != null)
@@ -435,6 +441,7 @@ public class ResultsViewTreeUtil
 		 				IRule iRule = getRuleFromExpression(childExpression);
 		 				EntityInterface childEntity =  outputNode.getOutputEntity().getDynamicExtensionsEntity();
 		 				int expressionId = addExpressionAndRuleToQuery(m_queryObject, iRule, childEntity);
+		 				expressionIdMap.put(expId, expressionId);
 		 				
 		 				//Adding custom Formula childExpression.
 				 		

@@ -40,7 +40,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'personUpi') 
+where name = 'personUpi' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Person')))  
 and SRC_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
@@ -65,7 +67,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'personUpi') 
+where name = 'personUpi' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Person'))) 
 and SRC_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
@@ -91,7 +95,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'personUpi') 
+where name = 'personUpi' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Person')))  
 and SRC_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
@@ -117,7 +123,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'personUpi') 
+where name = 'personUpi' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Person')))  
 and TGT_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
@@ -142,7 +150,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'personUpi') 
+where name = 'personUpi' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Person')))  
 and TGT_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
@@ -168,7 +178,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'personUpi') 
+where name = 'personUpi' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Person'))) 
 and TGT_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
@@ -192,7 +204,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'id') 
+where name = 'id' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Facility')))  
 and SRC_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
@@ -217,7 +231,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'patientAccountNumber') 
+where name = 'patientAccountNumber' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Encounter')))  
 and SRC_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
@@ -242,7 +258,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'id') 
+where name = 'id' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Facility'))) 
 and TGT_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
@@ -267,7 +285,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'patientAccountNumber') 
+where name = 'patientAccountNumber' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Encounter')))  
 and TGT_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
@@ -292,7 +312,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'id') 
+where name = 'id' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Facility')))  
 and SRC_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
@@ -317,7 +339,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'patientAccountNumber') 
+where name = 'patientAccountNumber' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Encounter')))  
 and SRC_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
@@ -343,7 +367,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'id') 
+where name = 'id' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Facility')))  
 and TGT_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
@@ -368,7 +394,9 @@ where CNSTR_KEY_PROP_ID =
 (select identifier from DYEXTN_CONSTRAINTKEY_PROP
 where primary_attribute_id in 
 (select identifier from dyextn_abstract_metadata
-where name = 'patientAccountNumber') 
+where name = 'patientAccountNumber' and identifier in 
+(select identifier from dyextn_attribute where entiy_id in 
+(select identifier from dyextn_abstract_metadata where name='Encounter')))  
 and TGT_CONSTRAINT_KEY_ID=
 (select identifier from dyextn_constraint_properties
 where association_id = 
