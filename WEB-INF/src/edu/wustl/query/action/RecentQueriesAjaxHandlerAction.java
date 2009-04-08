@@ -56,6 +56,14 @@ public class RecentQueriesAjaxHandlerAction extends Action
 		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory
 				.getDefaultAbstractUIQueryManager();
 		Count countObject = ((CiderQueryUIManager) qUIManager).getCount(queryExecutionId);
+		try
+        {
+            Thread.sleep(5000);
+        }
+        catch (InterruptedException ie)
+        {
+            Logger.out.debug(ie.getMessage(),ie);
+        } 
 		return countObject;
 	}
 

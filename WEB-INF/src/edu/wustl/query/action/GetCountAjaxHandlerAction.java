@@ -123,6 +123,14 @@ public class GetCountAjaxHandlerAction extends Action
 				AbstractQueryManager qManager = AbstractQueryManagerFactory.getDefaultAbstractQueryManager();
 				qManager.cancel(queryExecID);
 			}
+			try
+            {
+                Thread.sleep(5000);
+            }
+            catch (InterruptedException ie)
+            {
+                Logger.out.debug(ie.getMessage(),ie);
+            }
 			
 		}
 		//if some exception occurs anywhere while handling the Ajax call (doing getCount, aborting the execution), 
