@@ -681,6 +681,7 @@ function setDropDowns(queryTitle)
 			  var optn = parent.window.document.createElement("OPTION");
 			 optn.text=queryTitle;
 			 optn.value=queryId;
+			 optn.title = queryTitle;
 			 dropDowns[i].options.add(optn);
 			 dropDowns[i].disabled=false;
 			}
