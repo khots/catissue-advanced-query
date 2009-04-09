@@ -39,13 +39,18 @@ import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttribute
 import edu.wustl.common.query.queryobject.util.QueryObjectProcessor;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
+import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.metadata.associations.IAssociation;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
+import edu.wustl.common.querysuite.queryobject.ArithmeticOperator;
 import edu.wustl.common.querysuite.queryobject.ICondition;
+import edu.wustl.common.querysuite.queryobject.IConnector;
+import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.querysuite.queryobject.ITerm;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
@@ -1138,5 +1143,55 @@ public abstract class AbstractXQueryGenerator extends QueryGenerator
 	{
 		return selectDistinct;
 	}
+	
+	/**
+	 * This method will modify the Custom Formula provided by the UI
+	 * parameter - formula - Original ICustomFormula
+	 * return - modified ICustomFormula
+	 */
+	/*
+	 * Change History
+	 *        Author           Date            Reviewed By                  Comments
+	 *    Siddharth Shah    01-Apr-2008       Abhijeet Ranadive              Initial
+	 */ 
+	protected ICustomFormula getNewCustomformula(ICustomFormula formula)
+	{
+        ICustomFormula newFormula = QueryObjectFactory.createCustomFormula();
+        ITerm newRhs = QueryObjectFactory.createTerm();
+        ITerm newLhs = QueryObjectFactory.createTerm();
+        
+        //Get LHS from the Custom Formula
+        newLhs.addOperand(formula.getLhs().getOperand(0));
+        newFormula.setLhs(newLhs);
+        
+        //Get RHS from Custom Formula and add it to the RHS of new Custom Formula
+        ITerm rhs = formula.getAllRhs().get(0);
+        newRhs.addOperand(rhs.getOperand(0));
+        
+        //Get Relational Operator from the formula
+        RelationalOperator connector = formula.getOperator();
+        newFormula.setOperator(connector);
+        
+        ////Get Arithmetic Operator from the formula
+        IConnector<ArithmeticOperator> operator = formula.getLhs().getConnector(0, 1);
+        if(operator.getOperator().equals(ArithmeticOperator.Minus))
+        {
+              IConnector<ArithmeticOperator> newOperator = QueryObjectFactory.createArithmeticConnector(ArithmeticOperator.Plus);
+              newRhs.addOperand(newOperator,formula.getLhs().getOperand(1));
+
+        }
+        else if(operator.getOperator().equals(ArithmeticOperator.Plus))
+        {
+              IConnector<ArithmeticOperator> newOperator = QueryObjectFactory.createArithmeticConnector(ArithmeticOperator.Minus);
+              newRhs.addOperand(newOperator,formula.getLhs().getOperand(1));
+        }
+        // Add RHS created to new Formula
+        newFormula.addRhs(newRhs);
+        
+        return newFormula;
+
+	}
+
+	
 
 }

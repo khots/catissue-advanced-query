@@ -43,6 +43,7 @@ import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.metadata.category.Category;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IConnector;
+import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
@@ -1058,6 +1059,14 @@ public class SqlGenerator extends QueryGenerator
 	protected String getTemporalCondition(String operandquery)
 	{
 		return operandquery;
+	}
+	
+	/**
+	 * Overridden method of Query Generator
+	 */
+	protected ICustomFormula getNewCustomformula(ICustomFormula formula)
+	{
+		return formula;
 	}
 
 }

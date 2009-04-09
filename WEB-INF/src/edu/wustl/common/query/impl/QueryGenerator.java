@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.domaininterface.IntegerTypeInformationInterf
 import edu.common.dynamicextensions.domaininterface.LongTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
@@ -176,6 +177,7 @@ public abstract class QueryGenerator implements IQueryGenerator
 	 * @param parentExpression The Parent Expression.
 	 * @return The query string
 	 * @throws SqlException When there is error in the passed IQuery object.
+
 	 */
 	protected String buildWherePart(IExpression expression, IExpression parentExpression)
 			throws SqlException
@@ -509,8 +511,11 @@ public abstract class QueryGenerator implements IQueryGenerator
 
 	protected String getCustomFormulaString(ICustomFormula formula)
 	{
-		return getCustomFormulaProcessor().asString(formula);
+		ICustomFormula newCustomFormula = getNewCustomformula(formula);
+		return getCustomFormulaProcessor().asString(newCustomFormula);
 	}
+
+	protected abstract ICustomFormula getNewCustomformula(ICustomFormula formula);
 
 	private CustomFormulaProcessor getCustomFormulaProcessor()
 	{

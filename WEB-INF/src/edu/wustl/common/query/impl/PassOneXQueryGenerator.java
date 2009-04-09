@@ -6,11 +6,15 @@ package edu.wustl.common.query.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
@@ -19,8 +23,12 @@ import edu.wustl.common.query.impl.predicate.AbstractPredicate;
 import edu.wustl.common.query.impl.predicate.PredicateGenerator;
 import edu.wustl.common.query.impl.predicate.Predicates;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
+import edu.wustl.common.querysuite.queryobject.ICondition;
+import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
+import edu.wustl.common.querysuite.queryobject.IParameter;
+import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
 
@@ -28,6 +36,8 @@ import edu.wustl.query.util.global.Utility;
  * @author juberahamad_patel
  *
  */
+
+
 public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 {
 
@@ -35,6 +45,8 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 	 * map of for variables and corresponding expressions created in pass one xquery
 	 */
 	private Map<IExpression, String> passOneForVariables;
+	private Set<IExpression> processedExpressions;
+	
 
 	public PassOneXQueryGenerator()
 	{
@@ -48,12 +60,19 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 	 * @throws MultipleRootsException
 	 * @throws DynamicExtensionsSystemException
 	 */
+	/*
+	 * Change History
+	 *        Author           Date            Reviewed By                  Comments
+	 *    JuberAhamadPatel  15-Feb-2009       Siddharth Shah                 Initial
+	 *    Siddharth Shah    28-Mar-2009       Abhijeet Ranadive            Modified the For clause in case of Temporal conditions  
+	 */ 
 	@Override
 	protected String buildXQueryForClause(PredicateGenerator predicateGenerator)
 			throws MultipleRootsException, DynamicExtensionsSystemException
 	{
 
 		StringBuilder xqueryForClause = new StringBuilder(1024);
+		processedExpressions = new HashSet<IExpression>();
 
 		setPassOneForVariables();
 
@@ -75,8 +94,144 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 					laterPart.toString());
 
 		}
+		
+		// To check whether the queries have Temporal Conditions defined and
+		// if it contains temporal formula then add For clauses for child elements also
+		Collection<ICustomFormula> formula =  QueryUtility.getCustomFormulas(constraints);
+		if(!(formula.isEmpty()))
+		{
+			Set<IExpression> expressions = new HashSet<IExpression>();
+			for (ICustomFormula newFormula : formula)
+			{
+				// If the query has Custom Formula then add it to the Set of IExpression
+				expressions.addAll(QueryUtility.getExpressionsInFormula(newFormula));
+				// A flag which indicates whether the all the expressions  
+				// on which Temporal conditions are defined have 
+				// Version Tag or not
+				boolean hasVersionElements = getVersionElements(expressions);
+				if(!hasVersionElements)
+				{
+					// If the expressions do not have Version tag then add them
+					// to the FOR clause
+					xqueryForClause.append(getTemporalFors(predicateGenerator));
+				}
+			}
+		}
 
 		return xqueryForClause.toString();
+	}
+	
+/**
+ * This method is used to get the Alias name for the attribute
+ * @param predicates - the set of Predicates formed from WHERE clause
+ */
+	private void insertParameters(Predicates predicates)
+	{
+		for (Entry<IParameter<ICondition>, IExpression> entry : getParameters().entrySet())
+		{
+			AttributeInterface attribute = entry.getKey().getParameterizedObject().getAttribute();
+			String attributeAlias = Utility.getAliasFor(attribute, entry.getValue());
+
+			for (AbstractPredicate predicate : predicates.getPredicates())
+			{
+				if (attributeAlias.equals(predicate.getAttributeAlias()))
+				{
+					predicate.setRhs(Constants.QUERY_DOLLAR + attributeAlias);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * This method creates the FOR clauses for expressions which are not Main Expressions
+	 * and expressions which does not have Version Tag defined on it
+	 * @param predicateGenerator - gives the set of predicates for each FOR clause
+	 * @return - xqueryForClause - will create a String of FOR clauses
+	 */
+	/**
+	 * Change History
+	 *        Author           Date            Reviewed By                  Comments
+	 *    Siddharth Shah    01-Apr-2008       Abhijeet Ranadive              Initial
+	 */ 
+	
+	private String getTemporalFors(PredicateGenerator predicateGenerator)
+	{
+		StringBuilder xqueryForClause = new StringBuilder(1024);
+
+			for (Entry<IExpression, String> entry : getForVariables().entrySet())
+			{
+				IExpression entryExpression = entry.getKey();
+				if(getMainExpressions().contains(entryExpression) || passOneForVariables.containsKey(entryExpression))
+					{
+						continue;
+					}
+				else
+					{
+					if(!(processedExpressions.contains(entryExpression)))
+					{
+						xqueryForClause.append(Constants.QUERY_FOR);
+						String variable = entry.getValue();
+						StringBuilder entityPath = new StringBuilder();
+						String entityName = entryExpression.getQueryEntity().getDynamicExtensionsEntity()
+							.getName();
+						entityPath.append(getTargetRoles().get(entryExpression)).append('/').append(
+							deCapitalize(entityName));
+						IExpression parent = joinGraph.getParentList(entryExpression).get(0);
+						String parentPath = getEntityPaths().get(parent);
+						xqueryForClause.append(variable).append(' ').append(Constants.IN).append(' ');
+						xqueryForClause.append(parentPath).append('/').append(
+							Constants.QUERY_OPENING_PARENTHESIS).append(entityPath.toString()).append(
+							Constants.QUERY_COMMA).append(".[not(").append(entityPath.toString())
+							.append(")]/<nothing/>").append(Constants.QUERY_CLOSING_PARENTHESIS);
+					
+						Predicates predicates = predicateGenerator.getPredicates(entryExpression);
+						if (predicates != null)
+							{
+								insertParameters(predicates);
+								xqueryForClause.append('[').append(predicates.assemble()).append(']');
+							}
+						processedExpressions.add(entryExpression);
+					}
+
+					}		 			 
+
+			}
+		return xqueryForClause.toString();
+	}
+
+	/**
+	 * This method identifies whether all the expressions on which Temporal conditions are
+	 * defined have Version Tag or not
+	 * @param expressions - Set of IExpressions with Temporal Conditions defined on them
+	 * @return - boolean value which indicates whether all expressions have Temporal conditions
+	 * defined on them or not.
+	 */
+	/**
+	 * Change History
+	 *        Author           Date            Reviewed By                  Comments
+	 *    Siddharth Shah    01-Apr-2008       Abhijeet Ranadive              Initial
+	 */ 
+	private boolean getVersionElements(Set<IExpression> expressions) {
+		Set<IExpression> temporalExpressions = new HashSet<IExpression>();
+		for(IExpression expression : expressions)
+		{
+			EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
+			Collection<TaggedValueInterface> taggedValues = entity.getTaggedValueCollection();
+			for(TaggedValueInterface value : taggedValues)
+			{
+				System.out.println();
+				if(value.getKey().equals(Constants.VERSION))
+				{
+					temporalExpressions.add(expression);
+					break;
+				}
+			}
+		}
+		if(expressions.size() == temporalExpressions.size())
+		{
+			return true;
+		}
+		return false;
 	}
 
 	/**
