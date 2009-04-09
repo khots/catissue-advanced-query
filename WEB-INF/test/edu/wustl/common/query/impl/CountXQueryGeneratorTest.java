@@ -4,7 +4,7 @@
 
 package edu.wustl.common.query.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -13,16 +13,9 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.test.annotation.ExpectedException;
 
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.dao.DatabaseConnectionParams;
-import edu.wustl.common.query.exeptions.SQLXMLException;
-import edu.wustl.common.querysuite.exceptions.CyclicException;
-import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
