@@ -1,5 +1,6 @@
 package edu.wustl.query.action;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.factory.AbstractBizLogicFactory;
+import edu.wustl.common.query.QueryPrivilege;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.query.factory.ViewIQueryGeneratorFactory;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
@@ -31,6 +33,7 @@ import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.IQueryParseUtil;
 import edu.wustl.query.util.querysuite.QueryDetails;
@@ -92,12 +95,12 @@ public class ViewResultsAction extends Action
 			AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, getPatientDataQuery);
 		AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
 		.getDefaultViewIQueryGenerator();
-		boolean hasSecurePrivilege = true;
-	    if(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE)!=null)
+		QueryPrivilege privilege = new QueryPrivilege();
+	    if(session.getAttribute(Constants.QUERY_PRIVILEGE)!=null)
 	    {
-	   	  hasSecurePrivilege = (Boolean)(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE));
+	    	privilege = (QueryPrivilege)(session.getAttribute(Constants.QUERY_PRIVILEGE));
 	    }
-		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,hasSecurePrivilege);
+		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,privilege.isSecurePrivilege());
 		
 		//IQuery generatedQuery = ResultsViewTreeUtil.generateIQuery(rootNode,parentChildrenMap,rootEntity,getPatientDataQuery);
 		abstractQueryUIManager =
@@ -106,7 +109,13 @@ public class ViewResultsAction extends Action
 		//Get Data for generated IQuery
 		DataQueryResultsBean  dataQueryResultsBean = abstractQueryUIManager.getData(queryExecutionID, ViewType.TREE_VIEW);
 		List<List<Object>> dataList = dataQueryResultsBean.getAttributeList();
-		
+		//set person upi count in session if too few records (<10) and user does not have privilege to view those records. 
+		if(privilege.isSecurePrivilege() && dataList.size() < Variables.resultLimit)
+		{
+			session.setAttribute(Constants.PERSON_UPI_COUNT,dataList.size());
+			dataList = new ArrayList<List<Object>>();
+		}
+				
 		//Get the unique node Id map
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor.getAllChildrenNodes(rootOutputTreeNodeList);
 		
@@ -187,12 +196,4 @@ public class ViewResultsAction extends Action
 		treeNode.setParentObjectName("");
 		return treeNode;
 	}
-}   
-	
-    
-	
-	
-	
-	
-
-
+}
