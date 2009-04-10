@@ -6,9 +6,9 @@ package edu.wustl.query.util.querysuite;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import edu.wustl.common.beans.NameValueBean;
-import edu.wustl.common.beans.NodeInfo;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.AbstractQuery;
+import edu.wustl.common.query.QueryPrivilege;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.viewmanager.ViewType;
@@ -39,7 +39,7 @@ public abstract class AbstractQueryUIManager {
 	 */
 	protected abstract int processQuery(SessionDataBean sessionDataBean) throws QueryModuleException ;
 	
-	public abstract Count getCount(int query_execution_id) throws QueryModuleException;
+	public abstract Count getCount(int query_execution_id,QueryPrivilege privilege) throws QueryModuleException;
 	
 	/**
 	 * This method gets the required objects (in case of Cider objects will be Projects)
@@ -62,17 +62,16 @@ public abstract class AbstractQueryUIManager {
 	
 	abstract public DataQueryResultsBean getData(int countQueryExecId, String data, ViewType viewType) throws QueryModuleException;
 	/**
-	 * This method checks if query returns too few records or not.
-	 * @param projectId based on which the results are filtered
+	 * This method audits the query if it returns too few records and does not have privilege.
 	 * @param countObject having status,result count
-	 * @return hasTooFewRecords
+	 * @param privilege of query based on project id and user id.
 	 * @throws QueryModuleException
 	 */
-	abstract public boolean checkTooFewRecords(Count countObject, boolean hasSecurePrivilege) throws QueryModuleException;
+	abstract public void auditTooFewRecords(Count countObject,QueryPrivilege privilege) throws QueryModuleException;
 	
 	abstract public AbstractQuery getAbstractQuery();
 	
 	abstract public void setAbstractQuery(AbstractQuery abstractQuery);
 	
-	abstract public boolean hasSecurePrivilege(HttpServletRequest request);
+	abstract public QueryPrivilege getPrivilege(HttpServletRequest request);
 }
