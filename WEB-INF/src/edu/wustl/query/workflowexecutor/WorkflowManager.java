@@ -4,6 +4,7 @@ package edu.wustl.query.workflowexecutor;
 import java.util.Map;
 
 import edu.wustl.common.query.AbstractQuery;
+import edu.wustl.common.query.QueryPrivilege;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
@@ -46,11 +47,11 @@ public class WorkflowManager
         return workflowExecutor.execute();
     }
 
-	public Count getCount(int queryExecId) throws QueryModuleException
+	public Count getCount(int queryExecId,QueryPrivilege privilege) throws QueryModuleException
 	{
 		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory
 		.getDefaultAbstractUIQueryManager();
-		Count countObject = qUIManager.getCount(queryExecId);
+		Count countObject = qUIManager.getCount(queryExecId,privilege);
 
 		return countObject;
 	}
