@@ -10406,6 +10406,139 @@ insert into path (PATH_ID,FIRST_ENTITY_ID,INTERMEDIATE_PATH,LAST_ENTITY_ID) valu
 insert into path (PATH_ID,FIRST_ENTITY_ID,INTERMEDIATE_PATH,LAST_ENTITY_ID) values (121,35,'121',46);
 insert into path (PATH_ID,FIRST_ENTITY_ID,INTERMEDIATE_PATH,LAST_ENTITY_ID) values (122,35,'122',61);
 insert into path (PATH_ID,FIRST_ENTITY_ID,INTERMEDIATE_PATH,LAST_ENTITY_ID) values (123,140,'123',142);
+
+/* insert scripts for adding the primary keys for lab & medicationOrder */
+insert into dyext_entiy_composite_key_rel values(32,79,2);
+insert into dyext_entiy_composite_key_rel values(32,368,3);
+insert into dyextn_database_properties (identifier) values (634);
+
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id , TGT_CONSTRAINT_KEY_ID) values ( 634,368,179);
+
+insert into dyextn_database_properties (identifier) values (635);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id ,TGT_CONSTRAINT_KEY_ID) values ( 635,79,179);
+
+insert into dyextn_database_properties values (636 ,'DE_AT_1050');
+insert into dyextn_database_properties values (637 ,'DE_AT_1049');
+insert into dyextn_column_properties (identifier,cnstr_key_prop_id) values (636, 634);
+insert into dyextn_column_properties (identifier,cnstr_key_prop_id) values (637, 635);
+
+insert into dyextn_database_properties (identifier) values(638);
+
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id , TGT_CONSTRAINT_KEY_ID) values ( 638,368,170);
+
+insert into dyextn_database_properties (identifier) values(639);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id ,TGT_CONSTRAINT_KEY_ID) values ( 639,79,170);
+
+insert into dyextn_database_properties  values (640 ,'DE_AT_1051');
+insert into dyextn_database_properties values (641 ,'DE_AT_1052');
+insert into dyextn_column_properties (identifier,cnstr_key_prop_id) values (640, 638 );
+insert into dyextn_column_properties (identifier,cnstr_key_prop_id) values (641, 639 );
+
+insert into dyextn_database_properties (identifier) values (642);
+
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id , TGT_CONSTRAINT_KEY_ID) values ( 642,368,159);
+
+insert into dyextn_database_properties (identifier) values(643);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id ,TGT_CONSTRAINT_KEY_ID) values ( 643,79,159);
+
+insert into dyextn_database_properties values (644 ,'DE_AT_1053');
+insert into dyextn_database_properties values (645 ,'DE_AT_1054');
+insert into dyextn_column_properties (identifier,cnstr_key_prop_id) values (644, 642 );
+insert into dyextn_column_properties (identifier,cnstr_key_prop_id) values (645, 643 );
+
+insert into dyextn_database_properties (identifier) values (646);
+
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id , TGT_CONSTRAINT_KEY_ID) values ( 646,368,156);
+
+insert into dyextn_database_properties (identifier) values (647);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id ,TGT_CONSTRAINT_KEY_ID) values ( 647,79,156);
+
+insert into dyextn_database_properties values (648 ,'DE_AT_1055');
+insert into dyextn_database_properties values (649 ,'DE_AT_1056');
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (648, 646 );
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (649, 647);
+insert into dyext_entiy_composite_key_rel values(140,79,1);
+insert into dyext_entiy_composite_key_rel values(140,34,2);
+insert into dyext_entiy_composite_key_rel values(140,143,3);
+
+insert into dyextn_database_properties (identifier) values (650);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id , TGT_CONSTRAINT_KEY_ID) values ( 650,79,267);
+
+insert into dyextn_database_properties (identifier) values (651);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id ,TGT_CONSTRAINT_KEY_ID) values ( 651,34,267);
+
+insert into dyextn_database_properties (identifier) values (652);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id , TGT_CONSTRAINT_KEY_ID) values ( 652,143,267);
+
+insert into dyextn_database_properties values (653 ,'DE_AT_1057');
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (653, 650 );
+
+insert into dyextn_database_properties values (654 ,'DE_AT_1058');
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (654, 651);
+
+
+insert into dyextn_database_properties values (655 ,'DE_AT_1059');
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (655, 652 );
+
+
+
+insert into dyextn_database_properties (identifier) values (656);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id , TGT_CONSTRAINT_KEY_ID) values ( 656,79,206);
+
+insert into dyextn_database_properties (identifier) values (657);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id ,TGT_CONSTRAINT_KEY_ID) values ( 657,34,206);
+
+insert into dyextn_database_properties (identifier) values (658);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id , TGT_CONSTRAINT_KEY_ID) values ( 658,143,206);
+
+insert into dyextn_database_properties values (659 ,'DE_AT_1060');
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (659, 656 );
+
+insert into dyextn_database_properties values (660 ,'DE_AT_1061');
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (660, 657);
+
+
+insert into dyextn_database_properties values (661 ,'DE_AT_1062');
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (661, 658 );
+
+
+insert into dyextn_database_properties (identifier) values (662);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id , TGT_CONSTRAINT_KEY_ID) values ( 662,79,202);
+
+insert into dyextn_database_properties (identifier) values (663);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id ,TGT_CONSTRAINT_KEY_ID) values ( 663,34,202);
+
+insert into dyextn_database_properties (identifier) values (664);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id , TGT_CONSTRAINT_KEY_ID) values ( 664,143,202);
+
+insert into dyextn_database_properties values (665 ,'DE_AT_1063');
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (665, 662 );
+
+insert into dyextn_database_properties values (666 ,'DE_AT_1064');
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (666, 663);
+
+
+insert into dyextn_database_properties values (667 ,'DE_AT_1065');
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (667, 664 );
+insert into dyextn_database_properties (identifier) values (668);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id , TGT_CONSTRAINT_KEY_ID) values ( 668,79,197);
+
+insert into dyextn_database_properties (identifier) values (669);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id ,TGT_CONSTRAINT_KEY_ID) values ( 669,34,197);
+
+insert into dyextn_database_properties (identifier) values (670);
+insert into dyextn_constraintKey_prop (Identifier,primary_attribute_Id , TGT_CONSTRAINT_KEY_ID) values ( 670,143,197);
+
+insert into dyextn_database_properties values (671 ,'DE_AT_1066');
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (671, 668 );
+
+insert into dyextn_database_properties values (672 ,'DE_AT_1067');
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (672, 669);
+
+
+insert into dyextn_database_properties values (673 ,'DE_AT_1068');
+insert into dyextn_column_properties(identifier,cnstr_key_prop_id) values (673, 670 );
+
 commit;
 /*ends*/
 alter table DE_COLL_ATTR_RECORD_VALUES add constraint FK847DA57775255CA5 foreign key (COLLECTION_ATTR_RECORD_ID) references DYEXTN_ATTRIBUTE_RECORD;
