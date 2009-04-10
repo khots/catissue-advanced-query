@@ -1,4 +1,3 @@
-
 package edu.wustl.query.bizlogic;
 
 import java.sql.SQLException;
@@ -25,6 +24,7 @@ import edu.wustl.common.dao.DAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.query.AbstractQuery;
+import edu.wustl.common.query.QueryPrivilege;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.query.factory.ITableManagerFactory;
 import edu.wustl.common.query.itablemanager.ITableManager;
@@ -376,9 +376,9 @@ public class WorkflowBizLogic extends DefaultBizLogic
 	 * @return
 	 * @throws QueryModuleException
 	 */
-	public Count getCount(int queryExecId) throws QueryModuleException
+	public Count getCount(int queryExecId,QueryPrivilege privilege) throws QueryModuleException
 	{
-		Count count = workflowManager.getCount(queryExecId);
+		Count count = workflowManager.getCount(queryExecId,privilege);
 //		Count count = new Count();
 //		count.setCount(new Date().getSeconds());
 //		count.setQuery_exection_id(queryExecId);
