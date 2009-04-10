@@ -30,7 +30,10 @@ public class RecentQueriesBean
 	 * execution id assigned to query
 	 */
 	private Long queyExecutionId;
-	
+	/**
+	 *added for the secure Privilege 
+	 */
+	private boolean isSecurePrivilege=true;
 	/**
 	 * @return query title
 	 */
@@ -114,5 +117,22 @@ public class RecentQueriesBean
 	{
 		this.queyExecutionId = queyExecutionId;
 	}
-
+	
+	/**
+	 * 
+	 * @param isSecurePrivilege is true if query is executed for a project 
+	 * not having identified privilege.
+	 */
+	public void setIsSecurePrivilege(boolean isSecurePrivilege)
+	{
+		this.isSecurePrivilege = isSecurePrivilege;
+	}
+	/**
+	 * 
+	 * @return true if query has secure privilege
+	 */
+	public boolean getIsSecurePrivilege()
+	{
+		return isSecurePrivilege;
+	}
 }
