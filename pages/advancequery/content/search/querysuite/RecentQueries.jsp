@@ -25,13 +25,18 @@ function initializeAjaxCall()
 	var noOfRows=document.getElementById("table1").rows.length;
 	for(var i=1;i<=noOfRows;i++)
 	{
-		recentQueryAjaxCall(document.getElementById("queryExecutionId_"+i).value,i);
+		var status=document.getElementById("queryStatus_"+i).value;
+		var hasPrivilege=document.getElementById("isSecurePrivilege_"+i).value;
+		if(status!="Completed"&&status!="Cancelled"&&status!="Query Failed")
+		{
+			recentQueryAjaxCall(document.getElementById("queryExecutionId_"+i).value,i,hasPrivilege);
+		}
 	}
 }
 
-function recentQueryAjaxCall(executionLogId,index)
+function recentQueryAjaxCall(executionLogId,index,hasPrivilege)
 {
-	var url="RecentQueriesAjaxHandler.do?executionLogId="+executionLogId+"&index="+index;
+	var url="RecentQueriesAjaxHandler.do?executionLogId="+executionLogId+"&index="+index+"&queryPrivilege="+hasPrivilege;
 	var request=newXMLHTTPReq();
 	if(request == null)
 	{
@@ -55,7 +60,7 @@ function responseHandler(response)
 			var status = jsonResponse.resultObject.status;
 			var executionId = jsonResponse.resultObject.executionId;
 			var index = jsonResponse.resultObject.index;
-			
+			var hasPrivilege = jsonResponse.resultObject.queryPrivilege;
 			if(queryCount!=-1)
 			{
 				var StatusObject=document.getElementById("StatusId_"+index);
@@ -72,7 +77,7 @@ function responseHandler(response)
 			}	
 			if(status!="Completed"&&status!="Cancelled"&&status!="Query Failed")
 			  {
-					recentQueryAjaxCall(executionId,index);
+					recentQueryAjaxCall(executionId,index,hasPrivilege);
 			  }
           }
 
@@ -99,15 +104,16 @@ function responseHandler(response)
 						<%
 					  count++;
 					%>
-
 					 <tr bgcolor="ffffff" class="content_txt">
 							<td  width="55%"  styleClass="content_txt" valign="top"><c:out value='${recentQueriesBean.queryTitle}'/></td>
 							<td   width="15%" styleClass="content_txt" valign="top">
-							<label id="StatusId_<%=count%>"></label>
+							<label id="StatusId_<%=count%>">${recentQueriesBean.status}</label>
 							</td>
 							<td  width="10%" styleClass="content_txt" valign="top">
-							<label id="CountId_<%=count%>"></label>
+							<label id="CountId_<%=count%>">${recentQueriesBean.resultCount}</label>
 								<input type="hidden" name="queryExecutionId"  id="queryExecutionId_<%=count%>" value="${recentQueriesBean.queyExecutionId}"/>
+								<input type="hidden" name="queryStatus"  id="queryStatus_<%=count%>" value="${recentQueriesBean.status}"/>
+								<input type="hidden" name="isSecurePrivilege"  id="isSecurePrivilege_<%=count%>" value="${recentQueriesBean.isSecurePrivilege}"/>
 							</td>
 							<td   width="20%" styleClass="content_txt" valign="top"><c:out value='${recentQueriesBean.queryCreationDate}'/></td>         
 						</tr>
