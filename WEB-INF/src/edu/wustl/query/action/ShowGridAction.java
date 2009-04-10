@@ -22,7 +22,6 @@ import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.logger.Logger;
-import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.queryexecutionmanager.DataQueryResultsBean;
 import edu.wustl.query.spreadsheet.SpreadSheetData;
 import edu.wustl.query.spreadsheet.SpreadSheetViewGenerator;
@@ -58,11 +57,11 @@ public class ShowGridAction extends BaseAction
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
-
 		try
 		{
+			SpreadSheetData spreadsheetData = new SpreadSheetData();
 			QueryDetails queryDetailsObj = new QueryDetails(session);
-
+			
 			Long queryid = (Long) session.getAttribute(Constants.DATA_QUERY_ID);
 
 			DefaultBizLogic defaultBizLogic = new DefaultBizLogic();
@@ -75,18 +74,24 @@ public class ShowGridAction extends BaseAction
 				.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
 			SpreadSheetViewGenerator spreadSheetViewGenerator = 
 				SpreadsheetGeneratorFactory.configureDefaultSpreadsheetGenerator(ViewType.USER_DEFINED_SPREADSHEET_VIEW);
-			SpreadSheetData spreadsheetData = new SpreadSheetData();
 
 			String idOfClickedNode = request.getParameter(Constants.TREE_NODE_ID);
 			NodeId node = new NodeId(idOfClickedNode);
 			List<IQuery> queries = spreadSheetViewGenerator.createSpreadsheet(node,
 					queryDetailsObj, spreadsheetData,queryUIManager.getAbstractQuery());
-			
-			executeQuery(queries, spreadsheetData, request, queryDetailsObj.getQueryExecutionId(),
-					node.getRootData());
-
+			if(session.getAttribute(Constants.PERSON_UPI_COUNT)!=null 
+					&& ((Integer)session.getAttribute(Constants.PERSON_UPI_COUNT))<Variables.resultLimit)
+			{
+				session.setAttribute(Constants.ABSTRACT_QUERY, queryUIManager.getAbstractQuery());
+				spreadsheetData.setDataList(new ArrayList<List<Object>>());
+				spreadsheetData.setDataTypeList(new ArrayList<String>());
+			}
+			else
+			{
+				executeQuery(queries, spreadsheetData, request, queryDetailsObj.getQueryExecutionId(),
+						node.getRootData());
+			}
 			setGridData(request, spreadsheetData);
-
 		}
 		catch (QueryModuleException ex)
 		{
