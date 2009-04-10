@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import edu.wustl.cider.query.CiderQuery;
 import edu.wustl.common.query.AbstractQuery;
+import edu.wustl.common.query.QueryPrivilege;
 import edu.wustl.common.query.factory.AbstractQueryManagerFactory;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
@@ -314,11 +315,11 @@ public class WorkflowExecutor
 	 * @return
 	 * @throws QueryModuleException
 	 */
-	public Count getCount(int queryExecId) throws QueryModuleException
+	public Count getCount(int queryExecId,QueryPrivilege privilege) throws QueryModuleException
 	{
 		AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory
 		.getDefaultAbstractUIQueryManager();
-		Count countObject = qUIManager.getCount(queryExecId);
+		Count countObject = qUIManager.getCount(queryExecId,privilege);
 		return countObject;
 	}
 }
