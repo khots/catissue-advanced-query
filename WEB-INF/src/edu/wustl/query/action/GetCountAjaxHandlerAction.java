@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.wustl.common.query.QueryPrivilege;
 import edu.wustl.common.query.factory.AbstractQueryManagerFactory;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.querysuite.queryobject.IQuery;
@@ -68,6 +69,7 @@ public class GetCountAjaxHandlerAction extends Action
 			//If Abort Execution is not clicked, then only keep on getting the count, else call the cancel()
 			if(!abortExecution)
 			{
+				QueryPrivilege privilege = new QueryPrivilege();
 				boolean isNewQuery = Boolean.valueOf(request.getParameter(Constants.IS_NEW_QUERY));
 				AbstractQueryUIManager qUIManager	= AbstractQueryUIManagerFactory.getDefaultAbstractUIQueryManager();
 				if(isNewQuery)	//if a new getcount query is fired from the pop-up
@@ -78,37 +80,22 @@ public class GetCountAjaxHandlerAction extends Action
 					{
 						session.setAttribute(Constants.SELECTED_PROJECT,selectedProject_value);
 					}
-					boolean hasSecurePrivilege = true;
-					session.removeAttribute(Constants.HAS_SECURE_PRIVILEGE);
-			        if (!selectedProject_value.equals("") && Long.valueOf(selectedProject_value) > 0)
-			        {
-			       	  	hasSecurePrivilege = qUIManager.hasSecurePrivilege(request);
-			        }
-			        session.setAttribute(Constants.HAS_SECURE_PRIVILEGE,hasSecurePrivilege);
-					IQuery query = (IQuery)request.getSession().getAttribute(DAGConstant.QUERY_OBJECT);
+					qUIManager.getPrivilege(request);
+			        IQuery query = (IQuery)request.getSession().getAttribute(DAGConstant.QUERY_OBJECT);
 					queryTitle = query.getName();
 					qUIManager = AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(),request,query);
 					queryExecID	= qUIManager.searchQuery(null);
 				}
 				
-				//retrieve count with query execution id
-				Count countObject = qUIManager.getCount(queryExecID);
-				boolean hasFewRecords = false;
-				boolean hasSecurePrivilege = true;
-                if(request.getSession().getAttribute(Constants.HAS_SECURE_PRIVILEGE)!=null)
+				if(request.getSession().getAttribute(Constants.QUERY_PRIVILEGE)!=null)
                 {
-                   hasSecurePrivilege = (Boolean)(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE));
+                	privilege = (QueryPrivilege)(session.getAttribute(Constants.QUERY_PRIVILEGE));
                 }
-				hasFewRecords = qUIManager.checkTooFewRecords(countObject,hasSecurePrivilege);
+                //retrieve count with query execution id
+				Count countObject = qUIManager.getCount(queryExecID,privilege);
+				qUIManager.auditTooFewRecords(countObject,privilege);
 				JSONObject resultObject = null;
-				if(hasFewRecords)
-				{
-					resultObject = createResultJSON(countObject,0);
-				}
-				else
-				{
-					resultObject = createResultJSON(countObject,countObject.getCount());
-				}
+				resultObject = createResultJSON(countObject,countObject.getCount());
 				if(isNewQuery)
 				{
 					resultObject.append(Constants.QUERY_TITLE, queryTitle);
