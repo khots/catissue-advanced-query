@@ -912,6 +912,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	 */
 	public static final String  EXECUTED_FOR_PROJECT= "executedForProject";
 	
-	public static final String HAS_SECURE_PRIVILEGE = "hasSecurePrivilege";
-	
+	public static final String QUERY_PRIVILEGE = "queryPrivilege";
+	public static final int RECENT_QUERY_BIZLOGIC_ID = 102;
+	public static final String PERSON_UPI_COUNT = "PersonUpiCount";
+	public static final String TOO_FEW_RECORDS= "TOO_FEW_RECORDS";
 }
