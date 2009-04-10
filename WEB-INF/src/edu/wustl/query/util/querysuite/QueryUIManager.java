@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.query.AbstractQuery;
+import edu.wustl.common.query.QueryPrivilege;
 import edu.wustl.common.query.factory.AbstractQueryFactory;
 import edu.wustl.common.query.factory.AbstractQueryManagerFactory;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
@@ -77,7 +78,7 @@ public abstract class QueryUIManager extends AbstractQueryUIManager
 	}
 
 	@Override
-	public Count getCount(int query_execution_id) throws QueryModuleException
+	public Count getCount(int query_execution_id,QueryPrivilege privilege) throws QueryModuleException
 	{
 		// TODO Auto-generated method stub
 		return null;
