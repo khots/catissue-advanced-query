@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -16,6 +15,7 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
 
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.query.QueryPrivilege;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.query.bizlogic.WorkflowBizLogic;
 import edu.wustl.query.util.global.Constants;
@@ -35,7 +35,6 @@ public class ProjectChangeHandlerAction extends Action {
 	{
 		List<JSONObject> executionQueryResults = new ArrayList<JSONObject>();
 		Writer writer = response.getWriter();
-		HttpSession session = request.getSession();
 		  String workflowId=request.getParameter("workflowId");
 		  String projectId =request.getParameter(Constants.SELECTED_PROJECT);
 		  WorkflowBizLogic workflowBizLogic=new WorkflowBizLogic();
@@ -44,15 +43,9 @@ public class ProjectChangeHandlerAction extends Action {
 				  Long.valueOf(workflowId),  Long.valueOf(projectId));
           AbstractQueryUIManager qUIManager = AbstractQueryUIManagerFactory
           .getDefaultAbstractUIQueryManager();
-          boolean hasSecurePrivilege = true;
-          session.removeAttribute(Constants.HAS_SECURE_PRIVILEGE);
-          if (Long.valueOf(projectId) > 0)
-          {
-        	  hasSecurePrivilege = qUIManager.hasSecurePrivilege(request);
-          }
-          session.setAttribute(Constants.HAS_SECURE_PRIVILEGE,hasSecurePrivilege);
+          QueryPrivilege privilege = qUIManager.getPrivilege(request);
           executionQueryResults=Utility.generateExecutionQueryResults(map,
-		             workflowBizLogic,  qUIManager, hasSecurePrivilege);
+		             workflowBizLogic,  qUIManager, privilege);
 
           response.setContentType(Constants.CONTENT_TYPE_TEXT);
           writer.write(new JSONObject().put("executionQueryResults",
