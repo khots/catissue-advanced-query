@@ -66,15 +66,8 @@ public class GetCountPopUpAction extends Action
 		String selectedProject = (String)session.getAttribute(
 				Constants.SELECTED_PROJECT);
 		categorySearchForm.setCurrentSelectedProject(selectedProject);
-		boolean hasSecurePrivilege = true;
-		session.removeAttribute(Constants.HAS_SECURE_PRIVILEGE);
-        if (!selectedProject.equals("") && Long.valueOf(selectedProject) > 0)
-        {
-        	hasSecurePrivilege = qUIManager.hasSecurePrivilege(request);
-        }
-         session.setAttribute(Constants.HAS_SECURE_PRIVILEGE,hasSecurePrivilege);
-		//		request.setAttribute(Constants.SELECTED_PROJECT,selectedProject);
-
-		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
+		// set privilege in session based on project id and user id.
+		qUIManager.getPrivilege(request);
+       	return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);
 	}
 }
