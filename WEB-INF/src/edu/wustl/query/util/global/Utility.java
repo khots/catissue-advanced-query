@@ -34,6 +34,7 @@ import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.QuerySessionData;
 import edu.wustl.common.dao.queryExecutor.PagenatedResultData;
+import edu.wustl.common.query.QueryPrivilege;
 import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
@@ -751,7 +752,7 @@ public class Utility extends edu.wustl.common.util.Utility
      */
 	public static List<JSONObject> generateExecutionQueryResults(Map<Long, Integer> executionIdMap,
             WorkflowBizLogic workflowBizLogic, AbstractQueryUIManager qUIManager,
-            boolean hasSecurePrivilege) throws QueryModuleException
+            QueryPrivilege privilege) throws QueryModuleException
     {
 		Count resultCount = null;
         JSONObject jsonObject = null;
@@ -764,13 +765,9 @@ public class Utility extends edu.wustl.common.util.Utility
             Long query = iterator.next();
 
             resultCount = workflowBizLogic
-                    .getCount(executionIdMap.get(query));
-            boolean hasFewRecords = qUIManager.checkTooFewRecords(
-                      resultCount,hasSecurePrivilege);
-            if (hasFewRecords)
-            {
-            	resultCount.setCount(0);
-            } 
+                    .getCount(executionIdMap.get(query),privilege);
+            qUIManager.auditTooFewRecords(
+                      resultCount,privilege);
             jsonObject = createResultJSON(query,
                         resultCount.getCount(), resultCount
                                 .getStatus(), resultCount
