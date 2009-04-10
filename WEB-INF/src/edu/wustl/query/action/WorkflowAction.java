@@ -44,6 +44,8 @@ public class WorkflowAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
+		// in case of back to workflow the person upi count in session should be removed
+		session.removeAttribute(Constants.PERSON_UPI_COUNT);
 		if (request.getParameter(Constants.OPERATION) != null && (request.getParameter("id") != null || request.getAttribute(Constants.WORKFLOW_ID)!=null)
 				&& (!"".equals(request.getParameter(Constants.ID))))
 		{
