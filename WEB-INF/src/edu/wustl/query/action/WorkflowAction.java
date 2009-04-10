@@ -13,8 +13,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.cider.querymanager.CiderQueryPrivilege;
-import edu.wustl.cider.util.global.CiderConstants;
-import edu.wustl.cider.util.global.Utility;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
@@ -72,19 +70,15 @@ public class WorkflowAction extends Action
 			{
 				latestProjectId=(Long) request.getAttribute(Constants.EXECUTED_FOR_PROJECT);
 			}
-			boolean hasSecurePrivilege = true;
-			boolean hasLimitedPrivilege = false;
+			CiderQueryPrivilege privilege = new CiderQueryPrivilege();
 			Long userId = sessionDataBean.getUserId();
 			if(latestProjectId!=null && latestProjectId > 0)
 			{
-				hasSecurePrivilege = Utility.hasSecurePrivilege(latestProjectId, userId);
-				hasLimitedPrivilege = Utility.hasLimitedPrivilege(latestProjectId, userId);
+				privilege.setHasSecurePrivilege(latestProjectId, userId);
+				privilege.sethasLimitedPrivilege(latestProjectId, userId);
 			}
-			session.removeAttribute(CiderConstants.CIDER_QUERY_PRIVILEGE);
-			CiderQueryPrivilege privilege = new CiderQueryPrivilege(hasSecurePrivilege,hasLimitedPrivilege);
-			session.setAttribute(CiderConstants.CIDER_QUERY_PRIVILEGE,privilege);
-			session.removeAttribute(Constants.HAS_SECURE_PRIVILEGE);
-	        session.setAttribute(Constants.HAS_SECURE_PRIVILEGE,hasSecurePrivilege);
+			session.removeAttribute(Constants.QUERY_PRIVILEGE);
+			session.setAttribute(Constants.QUERY_PRIVILEGE,privilege);
 			setQueryExecutionid(form,sessionDataBean,Long.valueOf(id), latestProjectId);
 		}
 	   else
