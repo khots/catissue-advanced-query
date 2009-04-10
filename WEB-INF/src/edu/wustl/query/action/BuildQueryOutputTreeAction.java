@@ -2,7 +2,6 @@ package edu.wustl.query.action;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +21,7 @@ import org.json.JSONObject;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.common.query.QueryPrivilege;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.query.factory.ViewIQueryGeneratorFactory;
 import edu.wustl.common.query.pvmanager.impl.MedLookUpManager;
@@ -171,10 +171,10 @@ private void processDataNodeClick(String nodeId,HttpServletRequest request,List<
 	
 	//Retrieve the required session attributes
 	int queryExecutionID =   (Integer)session.getAttribute("queryExecutionId");
-	boolean hasSecurePrivilege = true;
-    if(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE)!=null)
+	QueryPrivilege privilege = new QueryPrivilege();
+    if(session.getAttribute(Constants.QUERY_PRIVILEGE)!=null)
     {
-   	  hasSecurePrivilege = (Boolean)(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE));
+    	privilege = (QueryPrivilege)(session.getAttribute(Constants.QUERY_PRIVILEGE));
     }
 	Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map)session.getAttribute(Constants.ID_NODES_MAP);
 	IQuery patientDataQuery  = (IQuery)session.getAttribute(Constants.PATIENT_DATA_QUERY);
@@ -215,7 +215,7 @@ private void processDataNodeClick(String nodeId,HttpServletRequest request,List<
 
 		    		AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
 		    		.getDefaultViewIQueryGenerator();
-		    		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,hasSecurePrivilege);
+		    		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,privilege.isSecurePrivilege());
 		    		
 		    		//IQuery generatedQuery = ResultsViewTreeUtil.generateIQuery(mainEntityTreeDataNode,parentChildrenMap,mainEntity,patientDataQuery);
 			    	abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
@@ -250,75 +250,80 @@ private void processDataNodeClick(String nodeId,HttpServletRequest request,List<
 @SuppressWarnings("unchecked")
 private void processLabelNodeClick(String nodeId,HttpServletRequest request,List<JSONObject> jsonObjectList) throws Exception
 {
-	NodeId node = new NodeId(nodeId);
-	String rootData = node.getRootData();
-	String uniqueCurrentNodeId = node.getUniqueCurrentNodeId();
-	String uniqueParentNode = node.getUniqueParentNodeId();
 	HttpSession session = request.getSession();
-		
-	//Retrieve the required session attributes
-	int queryExecutionID =   (Integer)session.getAttribute("queryExecutionId");
-	boolean hasSecurePrivilege = true;
-    if(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE)!=null)
-    {
-   	  hasSecurePrivilege = (Boolean)(session.getAttribute(Constants.HAS_SECURE_PRIVILEGE));
-    }
-	Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map<String, OutputTreeDataNode>)session.getAttribute(Constants.ID_NODES_MAP);
-	IQuery patientDataQuery  = (IQuery)session.getAttribute(Constants.PATIENT_DATA_QUERY);
-		
-	//If node Id ends with Label, then it's label node
-	OutputTreeDataNode labelTreeDataNode =  uniqueIdNodesMap.get(uniqueCurrentNodeId);
-	IOutputEntity outputEntity = labelTreeDataNode.getOutputEntity();
-	EntityInterface rootEntity = outputEntity.getDynamicExtensionsEntity();
-		
-	//Now for labelTreeDataNode, get All the parent /children Map from root 
-	Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap = IQueryParseUtil.getParentChildrensForaMainNode(labelTreeDataNode);
-
-	QueryDetails queryDetails = new QueryDetails();
-	queryDetails.setCurrentSelectedObject(labelTreeDataNode);
-	queryDetails.setQuery(patientDataQuery);
-	queryDetails.setParentChildrenMap(parentChildrenMap);
-	//Here we generate the iQuery
-	AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
-	.getDefaultViewIQueryGenerator();
-	AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request,patientDataQuery);
-	IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,hasSecurePrivilege);
-	
-	//IQuery generatedQuery = ResultsViewTreeUtil.generateIQuery(labelTreeDataNode,parentChildrenMap,rootEntity,patientDataQuery);
-	
-	//Here we get the list of primary key indexes in the Output attribute list of generated IQuery
-	List<Integer> primaryKeyIndexesList = getPrimaryKeysIndexes(rootEntity, generatedQuery);
-	
-	abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
-
-	DataQueryResultsBean dataQueryResultsBean = getDataqueryResultsBean(rootData, queryExecutionID,abstractQueryUIManager);;
-	List<IOutputAttribute> outputAttributesList = ((ParameterizedQuery) generatedQuery)
-	.getOutputAttributeList();
-	List<List<Object>>  dataList = dataQueryResultsBean.getAttributeList();
-	if(dataList.size() >0)
+	//person upi count is set in session only if user does not have privilege to view those records (<10). 
+    if(session.getAttribute(Constants.PERSON_UPI_COUNT)==null)
 	{
-		for(int i=0; i< dataList.size(); i++)
-		{
-			List <Object> labelNodeDataList = dataList.get(i);
-			StringBuffer primaryKeySetData = new StringBuffer("");
-			//creating primary key data set
-			createPrimaryKeyData(primaryKeyIndexesList,labelNodeDataList,primaryKeySetData);
-			List<Object> newList = arrangeAttributes(outputAttributesList,labelNodeDataList);
-			StringBuffer displayData = new StringBuffer(""); 
-			//Separating data to be displayed in the results tree
-			separateResultsViewData(newList,displayData);
-			displayData = queryGenerator.getFormattedOutputForTreeView(displayData, rootEntity,hasSecurePrivilege);
-			//Creating the Tree node Id
-			String dataNodeId = createTreeNodeId(rootData,uniqueParentNode, uniqueCurrentNodeId,primaryKeySetData);
-            String displayName = "<span class=\"content_txt\">"+  displayData +"</span>";	  
-			String parentId = nodeId;
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.append("identifier", dataNodeId);
-			jsonObject.append("displayName",displayName);
-			jsonObject.append("parentId",parentId);
+		NodeId node = new NodeId(nodeId);
+		String rootData = node.getRootData();
+		String uniqueCurrentNodeId = node.getUniqueCurrentNodeId();
+		String uniqueParentNode = node.getUniqueParentNodeId();
+		
 			
-			//populating the json object list
-			jsonObjectList.add(jsonObject);
+		//Retrieve the required session attributes
+		int queryExecutionID =   (Integer)session.getAttribute("queryExecutionId");
+		Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map<String, OutputTreeDataNode>)session.getAttribute(Constants.ID_NODES_MAP);
+		IQuery patientDataQuery  = (IQuery)session.getAttribute(Constants.PATIENT_DATA_QUERY);
+			
+		//If node Id ends with Label, then it's label node
+		OutputTreeDataNode labelTreeDataNode =  uniqueIdNodesMap.get(uniqueCurrentNodeId);
+		IOutputEntity outputEntity = labelTreeDataNode.getOutputEntity();
+		EntityInterface rootEntity = outputEntity.getDynamicExtensionsEntity();
+			
+		//Now for labelTreeDataNode, get All the parent /children Map from root 
+		Map <OutputTreeDataNode, List<OutputTreeDataNode>>parentChildrenMap = IQueryParseUtil.getParentChildrensForaMainNode(labelTreeDataNode);
+	
+		QueryDetails queryDetails = new QueryDetails();
+		queryDetails.setCurrentSelectedObject(labelTreeDataNode);
+		queryDetails.setQuery(patientDataQuery);
+		queryDetails.setParentChildrenMap(parentChildrenMap);
+		//Here we generate the iQuery
+		AbstractViewIQueryGenerator queryGenerator = ViewIQueryGeneratorFactory
+		.getDefaultViewIQueryGenerator();
+		AbstractQueryUIManager abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request,patientDataQuery);
+		QueryPrivilege privilege = new QueryPrivilege();
+	    if(session.getAttribute(Constants.QUERY_PRIVILEGE)!=null)
+	    {
+	    	privilege = (QueryPrivilege)(session.getAttribute(Constants.QUERY_PRIVILEGE));
+	    }
+		IQuery generatedQuery = queryGenerator.createIQueryForTreeView(queryDetails,privilege.isSecurePrivilege());
+		
+		//IQuery generatedQuery = ResultsViewTreeUtil.generateIQuery(labelTreeDataNode,parentChildrenMap,rootEntity,patientDataQuery);
+		
+		//Here we get the list of primary key indexes in the Output attribute list of generated IQuery
+		List<Integer> primaryKeyIndexesList = getPrimaryKeysIndexes(rootEntity, generatedQuery);
+		
+		abstractQueryUIManager =AbstractQueryUIManagerFactory.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
+	
+		DataQueryResultsBean dataQueryResultsBean = getDataqueryResultsBean(rootData, queryExecutionID,abstractQueryUIManager);;
+		List<IOutputAttribute> outputAttributesList = ((ParameterizedQuery) generatedQuery)
+		.getOutputAttributeList();
+		List<List<Object>>  dataList = dataQueryResultsBean.getAttributeList();
+		if(dataList.size() >0)
+		{
+			for(int i=0; i< dataList.size(); i++)
+			{
+				List <Object> labelNodeDataList = dataList.get(i);
+				StringBuffer primaryKeySetData = new StringBuffer("");
+				//creating primary key data set
+				createPrimaryKeyData(primaryKeyIndexesList,labelNodeDataList,primaryKeySetData);
+				List<Object> newList = arrangeAttributes(outputAttributesList,labelNodeDataList);
+				StringBuffer displayData = new StringBuffer(""); 
+				//Separating data to be displayed in the results tree
+				separateResultsViewData(newList,displayData);
+				displayData = queryGenerator.getFormattedOutputForTreeView(displayData, rootEntity,privilege.isSecurePrivilege());
+				//Creating the Tree node Id
+				String dataNodeId = createTreeNodeId(rootData,uniqueParentNode, uniqueCurrentNodeId,primaryKeySetData);
+	            String displayName = "<span class=\"content_txt\">"+  displayData +"</span>";	  
+				String parentId = nodeId;
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.append("identifier", dataNodeId);
+				jsonObject.append("displayName",displayName);
+				jsonObject.append("parentId",parentId);
+				
+				//populating the json object list
+				jsonObjectList.add(jsonObject);
+			}
 		}
 	}
 }
