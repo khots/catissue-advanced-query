@@ -18,10 +18,10 @@ import org.json.JSONObject;
 
 import edu.wustl.cider.query.CiderWorkFlowDetails;
 import edu.wustl.cider.querymanager.CiderQueryPrivilege;
-import edu.wustl.cider.util.global.CiderConstants;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
+import edu.wustl.common.query.QueryPrivilege;
 import edu.wustl.common.query.factory.AbstractQueryManagerFactory;
 import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.util.logger.Logger;
@@ -40,7 +40,7 @@ import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
  */
 public class WorkflowAjaxHandlerAction extends Action
 {
-
+	private static org.apache.log4j.Logger logger =Logger.getLogger(RecentQueriesAjaxHandlerAction.class);
 	/* (non-Javadoc)
 	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping,
 	 * org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest
@@ -143,22 +143,12 @@ public class WorkflowAjaxHandlerAction extends Action
                         project_id = (Integer.valueOf((request
                                 .getParameter(Constants.SELECTED_PROJECT))));
                     }
-                    boolean hasSecurePrivilege = true;
-                    if(request.getSession().getAttribute(Constants.HAS_SECURE_PRIVILEGE)!=null)
-                    {
-                  	  hasSecurePrivilege = (Boolean)(request.getSession().getAttribute(Constants.HAS_SECURE_PRIVILEGE));
-                    }
-                    
-                    CiderQueryPrivilege privilege = null;
-            		if(request.getSession().getAttribute(CiderConstants.CIDER_QUERY_PRIVILEGE)!=null)
+                    QueryPrivilege privilege = null;
+                    if(request.getSession().getAttribute(Constants.QUERY_PRIVILEGE)!=null)
             		{
-            			privilege =(CiderQueryPrivilege)request.getSession().getAttribute(CiderConstants.CIDER_QUERY_PRIVILEGE);
+            			privilege =(QueryPrivilege)request.getSession().getAttribute(Constants.QUERY_PRIVILEGE);
             		}
-            		else
-            		{
-            			privilege = new CiderQueryPrivilege(true,false);
-            		}
-					// Get the executionType
+            		// Get the executionType
                     String execType = request
                             .getParameter(Constants.REQ_ATTRIB_EXECUTION_TYPE);
                     if (execType != null
@@ -183,7 +173,7 @@ public class WorkflowAjaxHandlerAction extends Action
                         // specific to
                         // Cider and AdvancedQuery.
                         CiderWorkFlowDetails workflowdetails = new CiderWorkFlowDetails(
-                                project_id, userId.intValue(), workflow,privilege);
+                                project_id, userId.intValue(), workflow,(CiderQueryPrivilege)privilege);
 
 
 
@@ -193,7 +183,7 @@ public class WorkflowAjaxHandlerAction extends Action
                         executionQueryResults=
                                Utility.generateExecutionQueryResults(
                                         executionIdMap, workflowBizLogic,
-                                        qUIManager,hasSecurePrivilege);
+                                        qUIManager,privilege);
                     }
                     else
                     {
@@ -209,7 +199,7 @@ public class WorkflowAjaxHandlerAction extends Action
                                     Long.valueOf(workflowId));
 
                             CiderWorkFlowDetails workflowdetails = new CiderWorkFlowDetails(
-                                    project_id, userId.intValue(), workflow,privilege);
+                                    project_id, userId.intValue(), workflow,(CiderQueryPrivilege)privilege);
 
                             // queryExecId =
                             // workflowBizLogic.executeGetCountQuery(queryId,
@@ -220,7 +210,7 @@ public class WorkflowAjaxHandlerAction extends Action
                             executionQueryResults=
                             	Utility.generateExecutionQueryResults(
                                             executionIdMap, workflowBizLogic,
-                                            qUIManager,hasSecurePrivilege);
+                                            qUIManager,privilege);
 
                         } else
                         {
@@ -231,19 +221,14 @@ public class WorkflowAjaxHandlerAction extends Action
                             }
                             catch (InterruptedException ie)
                             {
-                                Logger.out.debug(ie.getMessage(),ie);
+                            	logger.debug(ie.getMessage(),ie);
                             }
 
-                            resultCount = workflowBizLogic.getCount(queryExecId);
-                            boolean hasFewRecords = false;
+                            resultCount = workflowBizLogic.getCount(queryExecId,privilege);
                             if (project_id > 0)
                             {
-                            	hasFewRecords = qUIManager.checkTooFewRecords(resultCount,hasSecurePrivilege);
+                            	qUIManager.auditTooFewRecords(resultCount,privilege);
                             }
-                            if (hasFewRecords)
-                            {
-                            	resultCount.setCount(0);
-                            } 
                             jsonObject = Utility.createResultJSON(queryId,
                                     resultCount.getCount(), resultCount
                                             .getStatus(), resultCount
@@ -265,13 +250,13 @@ public class WorkflowAjaxHandlerAction extends Action
                 }
             }
 	        catch (Exception e) {
-	        	Logger.out.debug(e.getMessage(),e);
+	        	logger.debug(e.getMessage(),e);
 				try {
 						response.setContentType("text/xml");
 						writer.write(Constants.QUERY_EXCEPTION);
 					}
 				catch (IOException e1) {
-					Logger.out.debug(e1.getMessage(),e1);
+					logger.debug(e1.getMessage(),e1);
 				}
 			}
 	        finally
