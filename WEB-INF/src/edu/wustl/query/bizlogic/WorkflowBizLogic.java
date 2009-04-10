@@ -255,9 +255,9 @@ public class WorkflowBizLogic extends DefaultBizLogic
 
 			    CiderQueryPrivilege privilege = null;
 		        HttpSession session = request.getSession();
-				if(session.getAttribute(CiderConstants.CIDER_QUERY_PRIVILEGE)!=null)
+				if(session.getAttribute(Constants.QUERY_PRIVILEGE)!=null)
 				{
-					privilege =(CiderQueryPrivilege)session.getAttribute(CiderConstants.CIDER_QUERY_PRIVILEGE);
+					privilege =(CiderQueryPrivilege)session.getAttribute(Constants.QUERY_PRIVILEGE);
 				}
 				else
 				{
