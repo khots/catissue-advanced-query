@@ -94,9 +94,8 @@ public class QueryServletContextListenerUtil
 
 	private static void readProperties()
 	{
-		File file = new File(Variables.applicationHome + System.getProperty("file.separator") + "WEB-INF" + System.getProperty("file.separator")
-				+ "classes" + System.getProperty("file.separator") + "query.properties");
-
+		File file = new File(Variables.propertiesDirPath + System.getProperty("file.separator") + "query.properties");
+		
 		if (file.exists())
 		{
 			Properties queryProperties = new Properties();
@@ -119,6 +118,7 @@ public class QueryServletContextListenerUtil
 				Variables.properties = queryProperties;
 				Variables.csmUtility = queryProperties.getProperty("query.csmUtility");
 				Variables.spreadSheetGeneratorClassName = queryProperties.getProperty("query.spreadSheetGeneratorClassName");
+				Variables.ajaxCallSleepTime = Integer.parseInt(queryProperties.getProperty("ajaxCall.sleepTime"));
 			}
 			catch (FileNotFoundException e)
 			{

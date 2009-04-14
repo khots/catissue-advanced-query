@@ -8,7 +8,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.wustl.query.util.global.Constants;;
+import edu.wustl.query.util.global.Constants;
 
 public class ShowResetCountPopUpAction extends Action 
 {

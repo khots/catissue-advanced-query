@@ -218,7 +218,7 @@
 				<replacefilter token="${lexbig.config.path}" value="${jboss.lexbig.config.path}" />
 		</replace-->
 		<!--XQueryGenerator logger path token replacement-->
-		<replace dir="${base.dir}/WEB-INF/classes" propertyfile="${base.dir}/WEB-INF/classes/query.properties">
+		<replace dir="${temp.dir}/query-properties" propertyfile="${temp.dir}/query-properties">
 	  		<replacefilter token="${xquery.jboss.path}" value="${jboss.server.url}" /> 
 	  	</replace>
 

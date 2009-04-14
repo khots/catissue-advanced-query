@@ -18,6 +18,7 @@ import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
@@ -61,7 +62,7 @@ public class RecentQueriesAjaxHandlerAction extends Action
 		Count countObject = qUIManager.getCount(queryExecutionId,privilege);
 		try
         {
-            Thread.sleep(5000);
+            Thread.sleep(Variables.ajaxCallSleepTime);
         }
         catch (InterruptedException ie)
         {

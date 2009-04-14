@@ -32,6 +32,7 @@ import edu.wustl.query.querymanager.AbstractQueryManager;
 import edu.wustl.query.querymanager.Count;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.global.Utility;
+import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 
 /**
@@ -217,7 +218,7 @@ public class WorkflowAjaxHandlerAction extends Action
                             // First sleep for say 5 seconds
                             try
                             {
-                                Thread.sleep(5000);
+                                Thread.sleep(Variables.ajaxCallSleepTime);
                             }
                             catch (InterruptedException ie)
                             {
