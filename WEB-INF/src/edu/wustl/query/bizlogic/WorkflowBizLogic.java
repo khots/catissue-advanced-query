@@ -16,7 +16,6 @@ import org.hibernate.Session;
 import edu.wustl.cider.query.CiderQuery;
 import edu.wustl.cider.query.CiderWorkFlowDetails;
 import edu.wustl.cider.querymanager.CiderQueryPrivilege;
-import edu.wustl.cider.util.global.CiderConstants;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.AbstractDAO;
@@ -388,14 +387,11 @@ public class WorkflowBizLogic extends DefaultBizLogic
 
 	}
 
-	public Map<Integer,Count> getCount(List<Integer> queryExecId,QueryPrivilege privilege) throws QueryModuleException
+	public Map<Integer,Count> getCount(Map<Long,Integer> queryExecId,QueryPrivilege privilege) throws QueryModuleException
 	{
 		Map<Integer,Count> resultCountMap=new HashMap<Integer, Count>();
 		//TO DO Gaurav 
-//		Count count = workflowManager.getCount(queryExecId,privilege);
-//
-//
-//		return count;
+
 		return resultCountMap;
 		
 
