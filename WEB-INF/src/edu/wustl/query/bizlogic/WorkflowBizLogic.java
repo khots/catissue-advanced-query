@@ -388,6 +388,19 @@ public class WorkflowBizLogic extends DefaultBizLogic
 
 	}
 
+	public Map<Integer,Count> getCount(List<Integer> queryExecId,QueryPrivilege privilege) throws QueryModuleException
+	{
+		Map<Integer,Count> resultCountMap=new HashMap<Integer, Count>();
+		//TO DO Gaurav 
+//		Count count = workflowManager.getCount(queryExecId,privilege);
+//
+//
+//		return count;
+		return resultCountMap;
+		
+
+	}
+
 	/**
 	 * Overriding the parent class's method to validate the enumerated attribute values
 	 */
