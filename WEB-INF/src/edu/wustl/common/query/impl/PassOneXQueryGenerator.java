@@ -329,9 +329,19 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 	 * @param prefix
 	 * @return
 	 */
+	/*
+	 * Change History
+	 *        Author           Date            Reviewed By                  Comments
+	 *    JuberAhamadPatel  15-Feb-2009       Siddharth Shah                 Initial
+	 *    Siddharth Shah    15-Apr-2009                                    Bug Id 12170  
+	 */ 
 	private String getAllDownstreamPredicates(PredicateGenerator predicateGenerator,
 			IExpression expression, String prefix)
 	{
+		//Changes for bug ID 12170 begins
+		//boolean value to detect whether the entity is Version Tagged or Not
+		boolean hasVersion = false;
+		//Changes for bug ID 12170 ends
 		StringBuilder downStreamPredicates = new StringBuilder();
 		Predicates localPredicates = predicateGenerator.getPredicates(expression);
 
@@ -341,7 +351,31 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 		}
 
 		replaceRhsForVariables(localPredicates);
-		downStreamPredicates.append(localPredicates.assemble(prefix)).append(Constants.QUERY_AND);
+		
+		// Changes for bug 12170 begins
+		EntityInterface entity = expression.getQueryEntity().getDynamicExtensionsEntity();
+		Collection<TaggedValueInterface> taggedValues = new ArrayList<TaggedValueInterface>();
+		taggedValues = entity.getTaggedValueCollection();
+		for(TaggedValueInterface value : taggedValues)
+		{
+			if(value.getValue().equals(Constants.VERSION))
+			{
+				hasVersion = true;
+			}
+		}
+		
+		if(hasVersion)
+		{
+			// If the expression has Version Tag
+			downStreamPredicates.append(localPredicates.assemble(prefix)).append(Constants.QUERY_AND);
+		}
+		else
+		{
+			// If the expression does not have Version Tag
+			prefix = prefix.substring(0, prefix.length() - 1);
+			downStreamPredicates.append(prefix).append("[").append(localPredicates.assemble("")).append("]").append(Constants.QUERY_AND);
+		}
+		// Changes for bug 12170 ends
 
 		List<IExpression> children = getNonMainNonEmptyChildren(expression);
 
@@ -351,8 +385,10 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			return Utility.removeLastAnd(downStreamPredicates.toString());
 		}
 
+		
 		for (IExpression child : children)
 		{
+			String appendPredicates = "";
 			//skip children that do not have for variables
 			if (!getForVariables().containsKey(child))
 			{
@@ -368,16 +404,20 @@ public class PassOneXQueryGenerator extends AbstractXQueryGenerator
 			{
 				newPrefix.append(targetRole).append('/');
 			}
-
+			
 			newPrefix.append(entityName).append('/');
-			downStreamPredicates.append(
-					getAllDownstreamPredicates(predicateGenerator, child, newPrefix.toString()))
-					.append(Constants.QUERY_AND);
+			appendPredicates = getAllDownstreamPredicates(predicateGenerator, child, newPrefix.toString());
+			if(!(appendPredicates.equals("")))
+			{
+				downStreamPredicates.append(appendPredicates).append(Constants.QUERY_AND);
+			}
+
 		}
 
 		return Utility.removeLastAnd(downStreamPredicates.toString());
 
 	}
+
 
 	/**
 	 * build the let clause
