@@ -4,6 +4,7 @@
 
 package edu.wustl.common.query.itablemanager;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -82,8 +83,8 @@ public class ITableManager
 	 * @throws SQLException
 	 * @throws DAOException
 	 */
-	public void insertITableEntry(int count_query_exec_id, String upi, String dob, int count, DatabaseConnectionParams dbConnectionParams)
-			throws SQLException, DAOException
+	public void insertITableEntry(int count_query_exec_id, String upi, String dob, int count, PreparedStatement statement)
+			throws SQLException
 	{
 		// CODE TO INSERT DATA INTO QUERY_ITABLE
 
