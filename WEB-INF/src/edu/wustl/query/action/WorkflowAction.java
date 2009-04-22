@@ -45,6 +45,7 @@ public class WorkflowAction extends Action
 	{
 		HttpSession session = request.getSession();
 		// in case of back to workflow the person upi count in session should be removed
+		CiderQueryPrivilege privilege = new CiderQueryPrivilege();
 		session.removeAttribute(Constants.PERSON_UPI_COUNT);
 		if (request.getParameter(Constants.OPERATION) != null && (request.getParameter("id") != null || request.getAttribute(Constants.WORKFLOW_ID)!=null)
 				&& (!"".equals(request.getParameter(Constants.ID))))
@@ -72,15 +73,12 @@ public class WorkflowAction extends Action
 			{
 				latestProjectId=(Long) request.getAttribute(Constants.EXECUTED_FOR_PROJECT);
 			}
-			CiderQueryPrivilege privilege = new CiderQueryPrivilege();
 			Long userId = sessionDataBean.getUserId();
 			if(latestProjectId!=null && latestProjectId > 0)
 			{
 				privilege.setHasSecurePrivilege(latestProjectId, userId);
 				privilege.sethasLimitedPrivilege(latestProjectId, userId);
 			}
-			session.removeAttribute(Constants.QUERY_PRIVILEGE);
-			session.setAttribute(Constants.QUERY_PRIVILEGE,privilege);
 			setQueryExecutionid(form,sessionDataBean,Long.valueOf(id), latestProjectId);
 		}
 	   else
@@ -97,6 +95,8 @@ public class WorkflowAction extends Action
 		{
 			request.setAttribute(Constants.WORKFLOW_ID,  request.getAttribute(Constants.WORKFLOW_ID));
 		}
+		session.removeAttribute(Constants.QUERY_PRIVILEGE);
+		session.setAttribute(Constants.QUERY_PRIVILEGE,privilege);
 		//request.setAttribute(Constants.CREATEDBY,  ((SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA)).getUserId());
 		return mapping.findForward(Constants.SUCCESS);
 	}
