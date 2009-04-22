@@ -109,7 +109,7 @@
 	}
 	function buildSpreadsheet(id)
 	{
-		window.parent.frames[1].location = "ShowGrid.do?pageOf=pageOfQueryModule&nodeId="+id;
+		window.parent.frames['gridFrame'].location = "ShowGrid.do?pageOf=pageOfQueryModule&nodeId="+id;
 	}
 	 function showWorkFlowWizard()
  {
