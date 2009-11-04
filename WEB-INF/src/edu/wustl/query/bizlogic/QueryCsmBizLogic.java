@@ -4,25 +4,21 @@
 
 package edu.wustl.query.bizlogic;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.common.beans.QueryResultObjectDataBean;
-import edu.wustl.common.dao.DAOFactory;
-import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
-import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.dbManager.DBUtil;
-import edu.wustl.common.util.logger.Logger;
-import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.common.querysuite.querableobject.QueryableObjectUtility;
+import edu.wustl.common.querysuite.querableobjectInterface.QueryableObjectInterface;
+import edu.wustl.common.util.logger.LoggerConfig;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
+import edu.wustl.dao.daofactory.IDAOFactory;
+import edu.wustl.dao.exception.DAOException;
+import edu.wustl.query.util.querysuite.AdvanceQueryDAO;
 
 /**
  * @author supriya_dankh
@@ -32,57 +28,10 @@ public class QueryCsmBizLogic
 {
 
 	/**
-	 * @param selectSql
-	 * @param sessionData
-	 * @param queryResulObjectDataMap
-	 * @param root 
-	 * @param hasConditionOnIdentifiedField 
-	 * @return
-	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
+	 * logger for this class.
 	 */
-	public List executeCSMQuery(String selectSql, QueryDetails queryDetailsObj,
-			Map<Long, QueryResultObjectDataBean> queryResulObjectDataMap, OutputTreeDataNode root,
-			boolean hasConditionOnIdentifiedField)
-	//throws DAOException, ClassNotFoundException
-	{
-		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		List<List<String>> dataList = new ArrayList<List<String>>();
-		try
-		{
-			dao.openSession(queryDetailsObj.getSessionData());
-			dataList = dao.executeQuery(selectSql, queryDetailsObj.getSessionData(),
-					queryDetailsObj.getSessionData().isSecurityRequired(),
-					hasConditionOnIdentifiedField, queryResulObjectDataMap);
-			dao.commit();			
-		}
-		/*catch(ClassNotFoundException e)
-		{
-			
-		}*/
-		catch (DAOException t)
-		{
-			Logger.out.debug(t.getMessage(),t);
-		}
-
-		catch (Exception e)
-		{
-			Logger.out.debug(e.getMessage(),e);
-		}
-		finally
-		{
-			try
-			{
-				dao.closeSession();
-			}
-			catch (DAOException e)
-			{
-				// TODO Auto-generated catch block
-				Logger.out.debug(e.getMessage(),e);
-			}
-		}
-		return dataList;
-	}
+	private static org.apache.log4j.Logger logger = LoggerConfig
+			.getConfiguredLogger(QueryCsmBizLogic.class);
 
 	/**
 	 * Retrieves the main entity list if the entity is Abstract
@@ -90,67 +39,101 @@ public class QueryCsmBizLogic
 	 * @param lastEntity The entity on which the query has been fired
 	 * @return List of main entities
 	 */
-	public static List<EntityInterface> getMainEntityList(EntityInterface firstEntity,
-			EntityInterface lastEntity)
+	public static List<QueryableObjectInterface> getMainEntityList(
+			QueryableObjectInterface firstEntity, QueryableObjectInterface lastEntity)
 	{
-
 		Long id1 = firstEntity.getId();
 		Long id2 = lastEntity.getId();
+		String appName = AdvanceQueryDAO.getInstance().getAppName();
+		IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
+		JDBCDAO jdbcdao = null;
+		ResultSet resultset = null;
 
-		Connection conn = DBUtil.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
-		List<Long> firstEntityIdList = new ArrayList<Long>();
-		List<EntityInterface> mainEntityList = new ArrayList<EntityInterface>();
+		List<QueryableObjectInterface> mainEntityList = null;
 		try
 		{
-			stmt = conn.createStatement();
-			rs = stmt
-					.executeQuery("Select FIRST_ENTITY_ID from PATH where INTERMEDIATE_PATH in (Select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID = "
+			jdbcdao = daoFactory.getJDBCDAO();
+			jdbcdao.openSession(null);
+			resultset = jdbcdao
+					.getQueryResultSet("Select FIRST_ENTITY_ID from PATH where INTERMEDIATE_PATH in (Select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID = "
 							+ id1
 							+ " and LAST_ENTITY_ID = "
 							+ id2
 							+ ") and LAST_ENTITY_ID = "
 							+ id2);
-			while (rs.next())
-			{
-				if (rs.getInt(1) != id1)
-				{
-					firstEntityIdList.add(rs.getLong(1));
-				}
-			}
-			Collection<EntityInterface> allEntities = firstEntity.getEntityGroup()
-					.getEntityCollection();
-			for (Long firstEntityId : firstEntityIdList)
-			{
-				for (EntityInterface tempEntity : allEntities)
-				{
-					if (Integer.parseInt(tempEntity.getId().toString()) == Integer
-							.parseInt(firstEntityId.toString()))
-					{
-						mainEntityList.add(tempEntity);
-						break;
-					}
-				}
-			}
+			mainEntityList = createMainEntityList(firstEntity, resultset);
 		}
 		catch (SQLException e)
 		{
-			Logger.out.debug(e.getMessage(),e);
+			logger.error(e.getMessage(), e);
+		}
+		catch (DAOException e)
+		{
+			logger.error(e.getMessage(), e);
 		}
 		finally
 		{
 			try
 			{
-				rs.close();
-				stmt.close();
-				DBUtil.closeConnection();
+				resultset.close();
+				jdbcdao.closeSession();
+			}
+			catch (DAOException e)
+			{
+				logger.error(e.getMessage(), e);
 			}
 			catch (SQLException e)
 			{
-				Logger.out.debug(e.getMessage(),e);
+				logger.error(e.getMessage(), e);
 			}
 		}
 		return mainEntityList;
+	}
+
+	/**
+	 * @param firstEntity
+	 * @param resultset
+	 * @return
+	 * @throws SQLException
+	 */
+	private static List<QueryableObjectInterface> createMainEntityList(
+			QueryableObjectInterface firstEntity, ResultSet resultset) throws SQLException
+	{
+		List<Long> firstEntityIdList = new ArrayList<Long>();
+		List<QueryableObjectInterface> mainEntityList = new ArrayList<QueryableObjectInterface>();
+		while (resultset.next())
+		{
+			if (resultset.getInt(1) != firstEntity.getId())
+			{
+				firstEntityIdList.add(resultset.getLong(1));
+			}
+		}
+		addToMainEntityList(firstEntity, firstEntityIdList, mainEntityList);
+		return mainEntityList;
+	}
+
+	/**
+	 * 
+	 * @param firstEntity
+	 * @param firstEntityIdList
+	 * @param mainEntityList
+	 */
+	private static void addToMainEntityList(QueryableObjectInterface firstEntity,
+			List<Long> firstEntityIdList, List<QueryableObjectInterface> mainEntityList)
+	{
+		Collection<EntityInterface> allEntities = firstEntity.getEntity().getEntityGroup()
+				.getEntityCollection();
+		for (Long firstEntityId : firstEntityIdList)
+		{
+			for (EntityInterface tempEntity : allEntities)
+			{
+				if (Integer.parseInt(tempEntity.getId().toString()) == Integer
+						.parseInt(firstEntityId.toString()))
+				{
+					mainEntityList.add(QueryableObjectUtility.createQueryableObject(tempEntity));
+					break;
+				}
+			}
+		}
 	}
 }

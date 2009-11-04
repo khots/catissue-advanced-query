@@ -49,6 +49,7 @@
 		<mapping resource="edu/wustl/common/hbm/OutputTerm.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/PersistentGraph.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/Parameter.hbm.xml" />
+		<mapping resource="edu/wustl/query/hbm/Execution.hbm.xml"/>
 		
     </session-factory>
     

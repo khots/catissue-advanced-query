@@ -5,18 +5,19 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import net.sf.ehcache.CacheException;
+import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 public class QueryServletContextListener implements ServletContextListener
 {
 
-	String DATASOURCE_JNDI_NAME = "java:/query";
+	final static String DATASOURCE_JNDI_NAME = "java:/query";
 
 	public void contextInitialized(ServletContextEvent sce)
 	{
 		try
 		{
+			ErrorKey.init("~");
 			ServletContext servletContext = sce.getServletContext();
 			ApplicationProperties
 					.initBundle(servletContext.getInitParameter("resourcebundleclass"));
@@ -34,7 +35,7 @@ public class QueryServletContextListener implements ServletContextListener
 	public void contextDestroyed(ServletContextEvent sce)
 	{
 		//  shutting down the cacheManager
-		try
+		/*try
 		{
 			//CatissueCoreCacheManager catissueCoreCacheManager = CatissueCoreCacheManager.getInstance();
 			//catissueCoreCacheManager.shutdown();
@@ -43,7 +44,7 @@ public class QueryServletContextListener implements ServletContextListener
 		{
 			//logger.debug("Exception occured while shutting instance of CatissueCoreCacheManager");
 			//e.printStackTrace();
-		}
+		}*/
 	}
 
 }

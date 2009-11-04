@@ -3,10 +3,11 @@ package edu.wustl.query.flex.dag;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
+import edu.wustl.common.querysuite.querableobjectInterface.QueryableAttributeInterface;
 import edu.wustl.common.querysuite.queryobject.ArithmeticOperator;
 import edu.wustl.common.querysuite.queryobject.IConnector;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
@@ -22,6 +23,11 @@ import edu.wustl.common.querysuite.queryobject.TimeInterval;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 
+/**
+ * 
+ * @author baljeet_dhindhwal
+ *
+ */
 public class TwoNodesTemporalQuery
 {
 
@@ -29,10 +35,33 @@ public class TwoNodesTemporalQuery
 	private IDateOffsetAttribute dateOffsetAttr2 = null;
 	private IExpressionAttribute IExpression1 = null;
 	private IExpressionAttribute IExpression2 = null;
-	private IDateOffsetLiteral dateOffSetLiteral = null;
-	private ILiteral dateLiteral = null;
+	private IDateOffsetLiteral dateOffSetLiteral1 = null;
+	private IDateOffsetLiteral dateOffSetLiteral2 = null;
+	private ILiteral dateLiteral1 = null;
+	private ILiteral dateLiteral2 = null;
 	private ITerm lhsTerm = null;
-	private ITerm rhsTerm = null;
+	//private ITerm rhsTerm = null;
+	
+	private ArrayList <ITerm> rhsTermsList = null;
+	
+	/**
+	 * This method returns the  rhsTermsList
+	 * @return
+	 */
+	public ArrayList<ITerm> getRhsTermsList() 
+	{
+		return rhsTermsList;
+	}
+
+	/**
+	 * This method sets the rhsTermsList
+	 * @param rhsTermsList
+	 */
+	public void setRhsTermsList(ArrayList<ITerm> rhsTermsList) 
+	{
+		this.rhsTermsList = rhsTermsList;
+	}
+
 	private IConnector iCon = null;
 	private ICustomFormula customFormula = null;
 	private IExpression srcIExpression = null;
@@ -43,19 +72,22 @@ public class TwoNodesTemporalQuery
 	private int srcExpressionId = 0;
 	private int destExpressionId = 0;
 
-	private AttributeInterface srcAttributeById = null;
-	private AttributeInterface destAttributeById = null;
+	private QueryableAttributeInterface srcAttributeById = null;
+	private QueryableAttributeInterface destAttributeById = null;
 
 	private String firstAttributeType = null;
 	private String secondAttributeType = null;
 
-	private TimeInterval timeInterval = null;
+	private TimeInterval timeInterval1 = null;
+	
+	private TimeInterval timeInterval2 = null;
 
 	private TimeInterval qAttrInterval1 = null;
 
 	private TimeInterval qAttrInterval2 = null;
 
-	private INumericLiteral intLiteral = null;
+	private INumericLiteral intLiteral1 = null;
+	private INumericLiteral intLiteral2 = null;
 
 	private SimpleDateFormat formatter;
 
@@ -117,7 +149,7 @@ public class TwoNodesTemporalQuery
 	/**
 	 * @return Returns the destAttributeById.
 	 */
-	public AttributeInterface getDestAttributeById()
+	public QueryableAttributeInterface getDestAttributeById()
 	{
 		return destAttributeById;
 	}
@@ -125,7 +157,7 @@ public class TwoNodesTemporalQuery
 	/**
 	 * @param destAttributeById The destAttributeById to set.
 	 */
-	public void setDestAttributeById(AttributeInterface destAttributeById)
+	public void setDestAttributeById(QueryableAttributeInterface destAttributeById)
 	{
 		this.destAttributeById = destAttributeById;
 	}
@@ -133,7 +165,7 @@ public class TwoNodesTemporalQuery
 	/**
 	 * @return Returns the srcAttributeById.
 	 */
-	public AttributeInterface getSrcAttributeById()
+	public QueryableAttributeInterface getSrcAttributeById()
 	{
 		return srcAttributeById;
 	}
@@ -141,7 +173,7 @@ public class TwoNodesTemporalQuery
 	/**
 	 * @param srcAttributeById The srcAttributeById to set.
 	 */
-	public void setSrcAttributeById(AttributeInterface srcAttributeById)
+	public void setSrcAttributeById(QueryableAttributeInterface srcAttributeById)
 	{
 		this.srcAttributeById = srcAttributeById;
 	}
@@ -181,17 +213,17 @@ public class TwoNodesTemporalQuery
 	/**
 	 * @return Returns the dateLiteral.
 	 */
-	public ILiteral getDateLiteral()
+	public ILiteral getDateLiteral1()
 	{
-		return dateLiteral;
+		return dateLiteral1;
 	}
 
 	/**
 	 * @param dateLiteral The dateLiteral to set.
 	 */
-	public void setDateLiteral(ILiteral dateLiteral)
+	public void setDateLiteral1(ILiteral dateLiteral1)
 	{
-		this.dateLiteral = dateLiteral;
+		this.dateLiteral1 = dateLiteral1;
 	}
 
 	/**
@@ -229,18 +261,40 @@ public class TwoNodesTemporalQuery
 	/**
 	 * @return Returns the dateOffSetLiteral.
 	 */
-	public IDateOffsetLiteral getDateOffSetLiteral()
+	public IDateOffsetLiteral getDateOffSetLiteral1()
 	{
-		return dateOffSetLiteral;
+		return dateOffSetLiteral1;
 	}
 
 	/**
 	 * @param dateOffSetLiteral The dateOffSetLiteral to set.
 	 */
-	public void setDateOffSetLiteral(IDateOffsetLiteral dateOffSetLiteral)
+	public void setDateOffSetLiteral1(IDateOffsetLiteral dateOffSetLiteral1)
 	{
-		this.dateOffSetLiteral = dateOffSetLiteral;
+		this.dateOffSetLiteral1 = dateOffSetLiteral1;
 	}
+	
+//
+	/**
+	 * @return Returns the dateOffSetLiteral.
+	 */
+	public IDateOffsetLiteral getDateOffSetLiteral2()
+	{
+		return dateOffSetLiteral2;
+	}
+
+	/**
+	 * @param dateOffSetLiteral The dateOffSetLiteral to set.
+	 */
+	public void setDateOffSetLiteral2(IDateOffsetLiteral dateOffSetLiteral2)
+	{
+		this.dateOffSetLiteral2 = dateOffSetLiteral2;
+	}
+	
+	
+	
+	
+//	
 
 	/**
 	 * @return Returns the destExpressionId.
@@ -341,18 +395,18 @@ public class TwoNodesTemporalQuery
 	/**
 	 * @return Returns the rhsTerm.
 	 */
-	public ITerm getRhsTerm()
+/*	public ITerm getRhsTerm()
 	{
 		return rhsTerm;
-	}
+	}*/
 
 	/**
 	 * @param rhsTerm The rhsTerm to set.
 	 */
-	public void setRhsTerm(ITerm rhsTerm)
+	/*public void setRhsTerm(ITerm rhsTerm)
 	{
 		this.rhsTerm = rhsTerm;
-	}
+	}*/
 
 	/**
 	 * @return Returns the srcExpressionId.
@@ -470,26 +524,63 @@ public class TwoNodesTemporalQuery
 		if ((!timeIntervalValue.equals("null")) && (!timeValue.equals("null")))
 		{
 			//Creating the dateOffSet Literal 
-			setTimeInterval(timeIntervalValue);
-			dateOffSetLiteral = QueryObjectFactory.createDateOffsetLiteral(timeValue, timeInterval);
+			timeInterval1 = setTimeInterval(timeIntervalValue);
+			dateOffSetLiteral1 = QueryObjectFactory.createDateOffsetLiteral(timeValue, timeInterval1);
 		}
 		else
 		{
 			checkAttributeType(timeValue);
 		}
 	}
+	
+/**
+ * This method creates both dateOffSetLiterals for "Between" operator   
+ * @param timeIntervalValue1
+ * @param timeValue1
+ * @param timeIntervalValue2
+ * @param timeValue2
+ */
+	public void createBothLiterals(String timeIntervalValue1, String timeValue1,String timeIntervalValue2, String timeValue2)
+	{
+		if((firstAttributeType.equals(DAGConstant.DATE_ATTRIBUTE)) && (secondAttributeType.equals(DAGConstant.DATE_ATTRIBUTE)))
+		{
+			//Then in that case create both date Literals
+			timeInterval1 = setTimeInterval(timeIntervalValue1);
+			dateOffSetLiteral1 = QueryObjectFactory.createDateOffsetLiteral(timeValue1, timeInterval1);
+
+			timeInterval2 = setTimeInterval(timeIntervalValue2);
+			dateOffSetLiteral2 = QueryObjectFactory.createDateOffsetLiteral(timeValue2, timeInterval2);
+			
+		}
+		else if((firstAttributeType.equals(DAGConstant.INTEGER_ATTRIBUTE)) && (secondAttributeType.equals(DAGConstant.INTEGER_ATTRIBUTE)))
+		{
+			//In this case , create both integer Literals
+			intLiteral1 = QueryObjectFactory.createNumericLiteral(timeValue1);
+			intLiteral2 = QueryObjectFactory.createNumericLiteral(timeValue2);
+		}
+		else 
+		{
+				//This is the case when one attribute type is Date and other attribute type is Integer 
+				//Both will be Date  Literals 
+				Date date = dateFormater(timeValue1);
+				dateLiteral1 = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
+				date = dateFormater(timeValue2);
+				dateLiteral2 = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
+		}
+	}
+    	
 
 	private void checkAttributeType(String timeValue)
 	{
-		if ((firstAttributeType.equals("Integer")) && (secondAttributeType.equals("Integer")))
+		if ((firstAttributeType.equals(DAGConstant.INTEGER_ATTRIBUTE)) && (secondAttributeType.equals(DAGConstant.INTEGER_ATTRIBUTE)))
 		{
-			intLiteral = QueryObjectFactory.createNumericLiteral(timeValue);
+			intLiteral1 = QueryObjectFactory.createNumericLiteral(timeValue);
 		}
 		else if (!timeValue.equals("null"))
 		{
 			Date date = dateFormater(timeValue);
 
-			dateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
+			dateLiteral1 = QueryObjectFactory.createDateLiteral(new java.sql.Date(date.getTime()));
 		}
 	}
 
@@ -519,16 +610,18 @@ public class TwoNodesTemporalQuery
 		return date;
 	}
 
-	public void setTimeInterval(String timeIntervalValue)
+	public TimeInterval setTimeInterval(String timeIntervalValue)
 	{
+		TimeInterval timeInterval = null;
 		for (TimeInterval time : TimeInterval.values())
 		{
 			if (timeIntervalValue.equals(time.name() + "s"))
 			{
-				timeInterval = time;
+				timeInterval  = time;
 				break;
 			}
 		}
+		return timeInterval;
 	}
 
 	public void setQAttrTInterval1(String timeIntervalValue)
@@ -561,83 +654,164 @@ public class TwoNodesTemporalQuery
 		return t;
 	}
 
-	public void createDateOffsetLiteral(String timeIntervalValue)
-	{
-		setTimeInterval(timeIntervalValue);
-		dateOffSetLiteral = QueryObjectFactory.createDateOffsetLiteral(timeInterval);
+	public ILiteral getDateLiteral2() {
+		return dateLiteral2;
 	}
 
-	public void createOnlyRHS()
+	public void setDateLiteral2(ILiteral dateLiteral2) {
+		this.dateLiteral2 = dateLiteral2;
+	}
+
+	public INumericLiteral getIntLiteral1() {
+		return intLiteral1;
+	}
+
+	public void setIntLiteral1(INumericLiteral intLiteral1) {
+		this.intLiteral1 = intLiteral1;
+	}
+
+	public INumericLiteral getIntLiteral2() {
+		return intLiteral2;
+	}
+
+	public void setIntLiteral2(INumericLiteral intLiteral2) {
+		this.intLiteral2 = intLiteral2;
+	}
+
+	public void createDateOffsetLiteral(String timeIntervalValue)
+	{
+		timeInterval1 = setTimeInterval(timeIntervalValue);
+		dateOffSetLiteral1 = QueryObjectFactory.createDateOffsetLiteral(timeInterval1);
+	}
+	//This method was required only in case of "IS NULL" and "IS NOT NULL"
+	/*public void createOnlyRHS()
 	{
 		rhsTerm = QueryObjectFactory.createTerm();
-		if (dateOffSetLiteral != null)
+		if (dateOffSetLiteral1 != null)
 		{
-			rhsTerm.addOperand(dateOffSetLiteral);
+			rhsTerm.addOperand(dateOffSetLiteral1);
 		}
 		else if (intLiteral != null)
 		{
 			rhsTerm.addOperand(intLiteral);
 		}
+	}*/
 
-	}
-
+	/**
+	 * 
+	 */
 	public void createLHSAndRHS()
 	{
+		rhsTermsList = new ArrayList<ITerm>();
 		lhsTerm = QueryObjectFactory.createTerm();
-		rhsTerm = QueryObjectFactory.createTerm();
+		ITerm rhsTerm1 = QueryObjectFactory.createTerm();
 		if (IExpression1 != null && IExpression2 != null)
 		{
 			lhsTerm.addOperand(IExpression1);
 			lhsTerm.addOperand(iCon, IExpression2);
-			if (dateOffSetLiteral != null)
+			if(dateOffSetLiteral1 != null && dateOffSetLiteral2 != null)
 			{
-				rhsTerm.addOperand(dateOffSetLiteral);
+				rhsTerm1.addOperand(dateOffSetLiteral1);
+				rhsTermsList.add(rhsTerm1);
+				
+				//This second rhsTerm will be required in case of "Between" operator
+				ITerm rhsTerm2 = QueryObjectFactory.createTerm();
+				rhsTerm2.addOperand(dateOffSetLiteral2);
+				rhsTermsList.add(rhsTerm2);
 			}
-			else if (intLiteral != null)
+			else if(intLiteral1 != null && intLiteral2 != null)
 			{
-				rhsTerm.addOperand(intLiteral);
+				rhsTerm1.addOperand(intLiteral1);
+				rhsTermsList.add(rhsTerm1);
+				
+				//Create second rhsTerm 
+				ITerm rhsTerm2 = QueryObjectFactory.createTerm();
+				rhsTerm2.addOperand(intLiteral2);
+				rhsTermsList.add(rhsTerm2);
 			}
-
+			else if (dateOffSetLiteral1 != null)
+			{
+				rhsTerm1.addOperand(dateOffSetLiteral1);
+				rhsTermsList.add(rhsTerm1);
+			}
+			else if(intLiteral1 != null)
+			{
+				rhsTerm1.addOperand(intLiteral1);
+				rhsTermsList.add(rhsTerm1);
+			}
 		}
 		else
 		{
-			addOperand();
+			addDifferentLHSOperand(rhsTerm1);
 		}
 	}
 
-	private void addOperand()
+	private void addDifferentLHSOperand(ITerm rhsTerm)
 	{
 		if (IExpression1 != null && dateOffsetAttr2 != null)
 		{
 			lhsTerm.addOperand(IExpression1);
 			lhsTerm.addOperand(iCon, dateOffsetAttr2);
-			rhsTerm.addOperand(dateLiteral);
+			rhsTerm.addOperand(dateLiteral1);
+			
+			rhsTermsList.add(rhsTerm);
+			if(dateLiteral2 != null)
+			{
+				//Then this is the case of Between operartor
+				ITerm rhsTerm2 = QueryObjectFactory.createTerm();
+				rhsTerm2.addOperand(dateLiteral2);
+				rhsTermsList.add(rhsTerm2);
+			}
 
 		}
 		else
 		{
 			lhsTerm.addOperand(dateOffsetAttr1);
 			lhsTerm.addOperand(iCon, IExpression2);
-			rhsTerm.addOperand(dateLiteral);
-
+			rhsTerm.addOperand(dateLiteral1);
+			rhsTermsList.add(rhsTerm);
+			if(dateLiteral2 != null)
+			{
+				//Then this is the case of Between operartor
+				ITerm rhsTerm2 = QueryObjectFactory.createTerm();
+				rhsTerm2.addOperand(dateLiteral2);
+				rhsTermsList.add(rhsTerm2);
+			}
 		}
 	}
 
 	/**
 	 * @return Returns the timeInterval.
 	 */
-	public TimeInterval getTimeInterval()
+	public TimeInterval getTimeInterval1()
 	{
-		return timeInterval;
+		return timeInterval1;
 	}
 
 	/**
 	 * @param timeInterval The timeInterval to set.
 	 */
-	public void setTimeInterval(TimeInterval timeInterval)
+	public void setTimeInterval1(TimeInterval timeInterval1)
 	{
-		this.timeInterval = timeInterval;
+		this.timeInterval1 = timeInterval1;
 	}
+	
+	/**
+	 * @return Returns the timeInterval.
+	 */
+	public TimeInterval getTimeInterval2()
+	{
+		return timeInterval2;
+	}
+
+	/**
+	 * @param timeInterval The timeInterval to set.
+	 */
+	public void setTimeInterval2(TimeInterval timeInterval2)
+	{
+		this.timeInterval2 = timeInterval2;
+	}
+	
 
 	/**
 	 * @return Returns the destIExpression.

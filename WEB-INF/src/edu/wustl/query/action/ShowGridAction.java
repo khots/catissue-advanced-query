@@ -1,8 +1,7 @@
-
 package edu.wustl.query.action;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,28 +13,28 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.common.action.BaseAction;
-import edu.wustl.common.beans.QueryResultObjectDataBean;
-import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
-import edu.wustl.common.querysuite.queryobject.IOutputTerm;
+import edu.wustl.common.query.factory.AbstractQueryUIManagerFactory;
+import edu.wustl.common.query.factory.SpreadsheetGeneratorFactory;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.querysuite.security.utility.Utility;
-import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
-import edu.wustl.query.bizlogic.QueryOutputTreeBizLogic;
+import edu.wustl.common.util.logger.LoggerConfig;
+import edu.wustl.query.queryexecutionmanager.DataQueryResultStatus;
+import edu.wustl.query.spreadsheet.SpreadSheetData;
+import edu.wustl.query.spreadsheet.SpreadSheetViewGenerator;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Variables;
+import edu.wustl.query.util.querysuite.AbstractQueryUIManager;
 import edu.wustl.query.util.querysuite.QueryDetails;
-import edu.wustl.query.util.querysuite.QueryModuleUtil;
+import edu.wustl.query.util.querysuite.QueryModuleException;
+import edu.wustl.query.viewmanager.NodeId;
+import edu.wustl.query.viewmanager.ViewType;
 
 /**
  * This class is invoked when user clicks on a node from the tree. It loads the data required for grid formation.
  * @author deepti_shelar
  */
-public class ShowGridAction extends BaseAction
+public class ShowGridAction extends AbstractQueryBaseAction
 {
-
+	private static org.apache.log4j.Logger logger = LoggerConfig.getConfiguredLogger(ShowGridAction.class);
 	/**
 	 * This method loads the data required for Query Output tree. 
 	 * With the help of QueryOutputTreeBizLogic it generates a string which will be then passed to client side and tree is formed accordingly. 
@@ -47,106 +46,114 @@ public class ShowGridAction extends BaseAction
 	 * @return ActionForward actionForward
 	 */
 	@Override
-	protected ActionForward executeAction(ActionMapping mapping, ActionForm form,
+	protected ActionForward executeBaseAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+		//cancel a previously running thread if any
 		HttpSession session = request.getSession();
-		
-	
-		Map<EntityInterface, List<EntityInterface>> mainEntityMap = (Map<EntityInterface, List<EntityInterface>>) session
-				.getAttribute(Constants.MAIN_ENTITY_MAP);
-		
-		//Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map<String, OutputTreeDataNode>) session.getAttribute(Constants.ID_NODES_MAP);
-		
-		//List<OutputTreeDataNode> rootOutputTreeNodeList = (List<OutputTreeDataNode>)session.getAttribute(Constants.TREE_ROOTS);
-		//SessionDataBean sessionData = getSessionData(request);
-		
+		request.getSession().removeAttribute(Constants.STATUS);
+		Long dataQueryExId = (Long) session.getAttribute(Constants.SPREADSHEET_DQ_EXECUTION_ID);
 		String idOfClickedNode = request.getParameter(Constants.TREE_NODE_ID);
-		QueryOutputTreeBizLogic treeBizLogic = new QueryOutputTreeBizLogic();
-		idOfClickedNode = treeBizLogic.decryptId(idOfClickedNode);
-		Map spreadSheetDatamap = null;
-		String actualParentNodeId = idOfClickedNode.substring(idOfClickedNode
-				.lastIndexOf(Constants.NODE_SEPARATOR) + 2, idOfClickedNode.length());
-		String actualId = actualParentNodeId.substring(actualParentNodeId.lastIndexOf('_') + 1,
-				actualParentNodeId.length());
-		
-		String forward = Constants.SUCCESS;
-		if (actualId != null && actualId.equals(Constants.HASHED_NODE_ID))
+	     if(idOfClickedNode!=null && dataQueryExId!=null)
 		{
-			getErrorMessageUserNotAuthorized(request);
-			forward= Constants.FAILURE;
-		}
+		AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory
+		.getDefaultAbstractUIQueryManager();
+		queryUIManager.cancelDataQuery(dataQueryExId);
+			 session.removeAttribute(Constants.SPREADSHEET_DQ_EXECUTION_ID);
+		} 
+		//String queryExcutionId = "DataQueryExecutionId1";
+		ActionForward forward = mapping.findForward(Constants.SUCCESS); 
+        Long dataQueryExecId = (Long) session.getAttribute(Constants.SPREADSHEET_DQ_EXECUTION_ID);
+        SpreadSheetData spreadsheetData = new SpreadSheetData();
+		try{
+         if(dataQueryExecId==null)  //data query execution is not set
+          {
+		    Long dataQEId;
+		    QueryDetails queryDetailsObj = new QueryDetails(session);
+			// DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
+			IQuery query  = (IQuery)session.getAttribute(Constants.PATIENT_DATA_QUERY);
+		    	queryDetailsObj.setQuery(query);
+			//session.setAttribute(Constants.QUERY_OBJECT, query);
+			AbstractQueryUIManager queryUIManager = AbstractQueryUIManagerFactory
+				.configureDefaultAbstractUIQueryManager(this.getClass(), request, query);
+			SpreadSheetViewGenerator viewGenerator = 
+				SpreadsheetGeneratorFactory.configureDefaultSpreadsheetGenerator(ViewType.USER_DEFINED_SPREADSHEET_VIEW);
 
-		else
+			//String idOfClickedNode = request.getParameter(Constants.TREE_NODE_ID);
+			NodeId node = new NodeId(idOfClickedNode);
+			IQuery  generatedQuery = viewGenerator.createSpreadsheet(node,
+					queryDetailsObj, spreadsheetData,queryUIManager.getAbstractQuery());
+			if(session.getAttribute(Constants.PERSON_UPI_COUNT)!=null 
+					&& ((Integer)session.getAttribute(Constants.PERSON_UPI_COUNT))<Variables.resultLimit)
+		   {
+			    		session.setAttribute(Constants.ABSTRACT_QUERY, queryUIManager.getAbstractQuery());
+						spreadsheetData.setDataList(new ArrayList<List<Object>>());
+						spreadsheetData.setDataTypeList(new ArrayList<String>());
+						request.setAttribute("status",DataQueryResultStatus.NO_RECORDS_FOUND);
+		   }
+			else
+			{
+				session.setAttribute("GeneratedQuery",generatedQuery);
+				session.setAttribute(Constants.SPREADSHEET_COLUMN_LIST, spreadsheetData.getColumnsList());
+				queryUIManager = AbstractQueryUIManagerFactory
+				.configureDefaultAbstractUIQueryManager(this.getClass(), request, generatedQuery);
+				dataQEId = getDataqueryExecutionId(session,node,queryDetailsObj.getQueryExecutionId(),queryUIManager);
+				session.setAttribute(Constants.SPREADSHEET_DQ_EXECUTION_ID,dataQEId); 
+			}
+			
+		}
+	}
+		catch (QueryModuleException ex)
 		{
-			spreadSheetDatamap = getspreadSheetDataMap(session, idOfClickedNode, actualParentNodeId);
-			spreadSheetDatamap.put(Constants.MAIN_ENTITY_MAP, mainEntityMap);
-			request.getSession().setAttribute(Constants.ENTITY_IDS_MAP,
-					spreadSheetDatamap.get(Constants.ENTITY_IDS_MAP));
-			request.getSession().setAttribute(Constants.EXPORT_DATA_LIST,
-					spreadSheetDatamap.get(Constants.EXPORT_DATA_LIST));
-
-			QueryModuleUtil.setGridData(request, spreadSheetDatamap);
+			logger.error(ex.getMessage(),ex);
+			generateErrorMessage(request, ex.getMessage());
 		}
-
-		return mapping.findForward(forward);
+		request.setAttribute(Constants.PAGE_OF, Constants.PAGE_OF_QUERY_RESULTS); 
+		return forward;
 	}
 
 	/**
-	 * This Method returns the Map containing the results to be displayed on spreadsheet
-	 * @param session
-	 * @param idOfClickedNode
-	 * @param actualParentNodeId
-	 * @return
-	 * @throws DAOException
-	 * @throws ClassNotFoundException
+	 * @param request
+	 * @param message
 	 */
-	private Map getspreadSheetDataMap(HttpSession session, String idOfClickedNode,
-			String actualParentNodeId) throws DAOException, ClassNotFoundException
+	private void generateErrorMessage(HttpServletRequest request, String message)
 	{
-		Map spreadSheetDatamap;
-		Map<Long, QueryResultObjectDataBean> queryResultObjectDataMap = (Map<Long, QueryResultObjectDataBean>) session
-		.getAttribute(Constants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP);
-		SelectedColumnsMetadata selectedColumnsMetadata = (SelectedColumnsMetadata) session
-		.getAttribute(Constants.SELECTED_COLUMN_META_DATA);
-		Map<String, IOutputTerm> outputTermsColumns = (Map<String, IOutputTerm>) session
-		.getAttribute(Constants.OUTPUT_TERMS_COLUMNS);
-		String recordsPerPageStr = (String) session.getAttribute(Constants.RESULTS_PER_PAGE);
-		int recordsPerPage = Integer.valueOf((recordsPerPageStr));
-		Map<Long, Map<AttributeInterface, String>> columnMap = (Map<Long, Map<AttributeInterface, String>>) session
-		.getAttribute(Constants.ID_COLUMNS_MAP);
-		QueryDetails queryDetailsObj = new QueryDetails(session);
-		QueryOutputSpreadsheetBizLogic outputSpreadsheetBizLogic = new QueryOutputSpreadsheetBizLogic();
-		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
-		boolean hasConditionOnIdentifiedField = Utility.isConditionOnIdentifiedField(query);
-		session.setAttribute(Constants.HAS_CONDITION_ON_IDENTIFIED_FIELD,
-				hasConditionOnIdentifiedField);
-		if (idOfClickedNode.endsWith(Constants.LABEL_TREE_NODE))
+		ActionErrors errors = new ActionErrors();
+		ActionError error = new ActionError("errors.item", message);
+		errors.add(ActionErrors.GLOBAL_ERROR, error);
+		saveErrors(request, errors);
+	}
+
+	/**
+	 * @param query
+	 * @param spreadsheetData
+	 * @param request
+	 * @param queryExecutionId
+	 * @param data 
+	 * @throws QueryModuleException
+	 */
+
+	
+	private Long getDataqueryExecutionId(HttpSession session,NodeId node, Long queryExecutionID,
+			AbstractQueryUIManager queryUIManager)throws QueryModuleException 
+	{
+		Long dataQueryExecId;
+		String rootData = node.getRootData();
+		if(rootData.equalsIgnoreCase(Constants.NULL_ID))
 		{
-			spreadSheetDatamap = outputSpreadsheetBizLogic.processSpreadsheetForLabelNode(
-					queryDetailsObj, columnMap, idOfClickedNode, recordsPerPage,
-					selectedColumnsMetadata, hasConditionOnIdentifiedField,
-					queryResultObjectDataMap, query.getConstraints(), outputTermsColumns);
+			 dataQueryExecId =  queryUIManager.executeDataQuery(queryExecutionID, ViewType.SPREADSHEET_VIEW);
+			 session.setAttribute(Constants.ABSTRACT_QUERY, queryUIManager.getAbstractQuery()); 
 		}
 		else
 		{
-			spreadSheetDatamap = outputSpreadsheetBizLogic.processSpreadsheetForDataNode(
-					queryDetailsObj, actualParentNodeId, recordsPerPage,
-					selectedColumnsMetadata, hasConditionOnIdentifiedField,
-					queryResultObjectDataMap, query.getConstraints(), outputTermsColumns);
+			if(rootData.indexOf(Constants.UNDERSCORE)>-1)
+			{
+				rootData = rootData.substring(rootData.lastIndexOf(Constants.UNDERSCORE)+1);
+			}
+			
+			dataQueryExecId = queryUIManager.executeDataQuery(queryExecutionID, rootData ,ViewType.SPREADSHEET_VIEW);
 		}
-		return spreadSheetDatamap;
-	}
+		return dataQueryExecId;
+	} 
 
-	/**Method that will add an error message in action errors when id perticular data node is -1 i.e. user is not authorized to see 
-	 * this particular record. 
-	 * @param request
-	 */
-	private void getErrorMessageUserNotAuthorized(HttpServletRequest request)
-	{
-		ActionErrors errors = new ActionErrors();
-		ActionError error = new ActionError("query.userNotAuthorizedError");
-		 errors.add(ActionErrors.GLOBAL_ERROR, error);
-		saveErrors(request, errors);
-	}
 }

@@ -8,22 +8,22 @@
 
 	<!-- Home tab pages definitions start -->
 	<definition name=".query.mainTitlePageDef" path="/pages/Layout.jsp">
-		@@tilesTitle@@
 		@@tilesHeader@@
 		@@tilesAppHeader@@
 		@@tilesMainMenu@@
-		@@tilesQuickLaunch@@	
+		<!--  @@tilesQuickLaunch@@-->	
+		<put name="quicklaunch" value="/pages/QueryQuickLaunch.jsp" />
 		@@tilesContent@@
 		@@tilesFooter@@
 	</definition>
 
 	<!-- Home tab pages definitions start -->
 	<definition name=".query.homePageDef" path="/pages/Layout.jsp">
-		@@tilesTitle@@
 		@@tilesHeader@@
 		@@tilesAppHeader@@
 		@@tilesMainMenu@@
-		@@tilesQuickLaunch@@	
+		<!--  @@tilesQuickLaunch@@-->	
+		<put name="quicklaunch" value="/pages/QueryQuickLaunch.jsp" />
 		@@tilesContent@@
 		@@tilesFooter@@
 	</definition>
@@ -33,7 +33,11 @@
 	</definition>
 	
 	<!-- Home tab pages definitions end -->
-
+	
+	<definition name=".terms.andConditions" 
+	path="/pages/advancequery/content/TermsAndConditions.jsp">
+	</definition>
+	
 	<definition name=".query.configurationSuccessDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/advancequery/content/search/ConfigureResultView.jsp" />
 	</definition>
@@ -66,10 +70,13 @@
 	<definition name=".query.queryResultsTreeViewNodeDef" path="/pages/advancequery/content/search/TreeNodeView.jsp">
 	</definition>
 	
-		<definition name=".query.getCount" extends=".query.searchHomeDef">
+	<definition name=".query.getCount" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/advancequery/content/search/querysuite/GetCounts.jsp" />
 	</definition>
 	
+	<definition name=".query.saveQuery" extends=".query.searchHomeDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/SavedQueryConditionPage.jsp" />
+	</definition>
 	
 	<definition name=".query.searchHomeDef" extends=".query.homePageDef">
 		<put name="content" value="/pages/advancequery/content/search/Home.jsp" />
@@ -217,6 +224,10 @@
 	<definition name=".query.querySavedQueryListDef" path="/pages/advancequery/content/search/querysuite/SavedQueryListView.jsp">
 	</definition>
 	
+	<definition name=".query.savedQueryListDeftile" extends=".query.homePageDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/SavedQueryListView.jsp"/>
+	</definition>
+	
 	<definition name=".query.queryWorkFlowPopup" path="/pages/advancequery/content/search/querysuite/WorkflowPopup.jsp">
 	</definition>
 	 <!-- Definition code : Deepti Shelar : For pagination : 20/07/2007 -->
@@ -239,25 +250,53 @@
 	</definition>
 	
 	
-	<definition name=".query.queryWorkFlowWizardDef" extends=".query.mainTitlePageDef">
+	<definition name=".query.queryWorkFlowWizardDefOld" extends=".query.mainTitlePageDef">
 		<put name="content" value="/pages/advancequery/content/search/querysuite/Workflow.jsp"/>
+	</definition>
+	
+	<definition name=".query.queryWorkFlowWizardDef" extends=".query.mainTitlePageDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/NewWorkflow.jsp"/>
 	</definition>
 	
 	<definition name=".query.queryWorkFlowConfirmMsgDef" extends=".query.mainTitlePageDef">
 		<put name="content" value="/pages/advancequery/content/search/querysuite/WorkflowConfirmationMsg.jsp"/>
 	</definition>
 	
-	<definition name=".query.redirectToWorkflowPageDef" extends=".query.searchHomeDef">
+	<!-- <definition name=".query.redirectToWorkflowPageDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/workflow/Workflow.jsp" />
 	</definition>
+	 -->
 
 	<definition name=".query.workflowViewPageDef" path="/pages/advancequery/content/search/querysuite/WorkflowList.jsp">
+	</definition>
+	
+	<definition name=".query.workflowList" extends=".query.homePageDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/WorkflowList.jsp"/>
 	</definition>
 	
 	<definition name=".query.querySearchWizardDef" extends=".query.homePageDef">
 	<put name="content" value="/pages/advancequery/content/search/querysuite/new_search_screen.jsp"/>
 	</definition>
 	
-	<definition name=".query.recentQueryListDef" path="/pages/advancequery/content/search/querysuite/RecentQueries.jsp">
+	<definition name=".query.forDasboardrecentQueryListDef" path="/pages/advancequery/content/search/querysuite/RecentQueries.jsp">
+	</definition>
+	
+	<definition name=".query.recentQueryListDef" extends=".query.homePageDef">
+		<put name="content" value="/pages/advancequery/content/search/querysuite/RecentQueries.jsp"/>
+	</definition>
+	
+	<definition name=".query.resetCountPopUp" path="/pages/advancequery/content/search/querysuite/ShowResetCountPopUp.jsp">
+	</definition>
+	
+	<definition name=".query.deleteQueryPopUp" path="/pages/advancequery/content/search/querysuite/deleteQueryConfim.jsp">
+	</definition>
+	
+	<definition name=".query.paramQueriesDef" path="/pages/advancequery/content/search/querysuite/ParameterizedQueryQPopUp.jsp">
+	</definition>
+		
+	<definition name=".query.not.paramQueriesDef" path="/pages/advancequery/content/search/querysuite/NoParameters.jsp">
+	</definition>
+	
+	<definition name=".query.save.saveAsQueryDef" path="/pages/advancequery/content/search/querysuite/SaveAsQuery.jsp">
 	</definition>
 </tiles-definitions>

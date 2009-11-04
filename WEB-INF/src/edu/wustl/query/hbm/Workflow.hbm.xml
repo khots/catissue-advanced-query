@@ -25,7 +25,7 @@
 			 />
 		<property 
 			name="createdOn" 
-			type="date" 
+			type="timestamp"
 			update="true" 
 			insert="true"
 			column="CREATED_ON" 
@@ -49,6 +49,23 @@
 				class="edu.wustl.query.domain.WorkflowItem" />
 		</list>
 
+		<property 
+			name="createdBy" 
+			type="long" 
+			update="true" 
+			insert="true"
+			column="USER_ID" 
+			length="1024" 
+			 />
+			
+			<property 
+			name="description" 
+			type="string" 
+			update="true" 
+			insert="true"
+			column="WORKFLOW_DESCRIPTION" 
+			length="1024" 
+			 />
 	</class>
 
 </hibernate-mapping>

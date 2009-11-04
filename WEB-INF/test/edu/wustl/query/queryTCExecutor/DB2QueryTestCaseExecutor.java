@@ -3,7 +3,7 @@ package edu.wustl.query.queryTCExecutor;
 import java.io.IOException;
 
 import edu.wustl.common.query.impl.QueryUtility;
-import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.bizlogic.Constants;
 
 
@@ -37,3 +37,4 @@ public class DB2QueryTestCaseExecutor extends AbstractQueryTestCaseExecutor
 
 
 }
+

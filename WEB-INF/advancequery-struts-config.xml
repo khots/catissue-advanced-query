@@ -8,24 +8,24 @@ PUBLIC
 	
 	<form-beans>
 		<!--Query-->		
-		<form-bean name="categorySearchForm" type="edu.wustl.query.actionForm.CategorySearchForm"/>
-		<form-bean name="advanceSearchForm" type="edu.wustl.query.actionForm.AdvanceSearchForm"/>  
-		<form-bean name="saveQueryForm" type="edu.wustl.query.actionForm.SaveQueryForm"/>
-		<form-bean name="workflowForm" type="edu.wustl.query.actionForm.WorkflowForm"/>		
-		<form-bean name="showRetrieveRecentForm" type="edu.wustl.query.actionForm.ShowRetrieveRecentForm"/>		
+		<form-bean name="categorySearchForm" type="edu.wustl.query.actionforms.CategorySearchForm"/>
+		<form-bean name="advanceSearchForm" type="edu.wustl.query.actionforms.AdvanceSearchForm"/>  
+		<form-bean name="saveQueryForm" type="edu.wustl.query.actionforms.SaveQueryForm"/>
+		<form-bean name="workflowForm" type="edu.wustl.query.actionforms.WorkflowForm"/>		
+		<form-bean name="showRetrieveRecentForm" type="edu.wustl.query.actionforms.ShowRetrieveRecentForm"/>		
 				
 	</form-beans>
 	
-	<!-- Global Exception Definitions -->
+	<!-- Global Exception Definitions Removed, will use global definitions in CIDER's struts-config.xml
 	<global-exceptions>
 		<exception
 			type="edu.wustl.common.exception.UserNotAuthenticatedException"
 			key="" scope="request" path=".query.redirectToLoginPageDef" />
 		<exception
-			handler="edu.wustl.common.util.CommonExceptionHandler"
+			handler="edu.wustl.cider.util.CiderExceptionHandler"
 			key="" scope="request" type="java.lang.Exception"
 			path=".query.errorPageDef" />
-	</global-exceptions>
+	</global-exceptions>  -->
 	
 	<action-mappings>
 	
@@ -34,6 +34,10 @@ PUBLIC
 					type="edu.wustl.query.action.ForwardAction">
 		 			<forward name="success" path=".query.homePageDef" /> 
 		</action>
+		
+		<action path="/Forward"
+					type="org.apache.struts.actions.ForwardAction"
+					parameter=".terms.andConditions" />
 		
 		<action path="/QueryHome"
 					type="org.apache.struts.actions.ForwardAction"
@@ -113,7 +117,16 @@ PUBLIC
 		  scope="request">
             <forward name="success"  path="/pages/advancequery/content/search/querysuite/GetCountPopUp.jsp" />
         </action>
-        
+        <action path="/BuildQueryOutputTreeAjaxHandler"
+			type="edu.wustl.query.action.BuildQueryOuputTreeAjaxHandlerAction"
+			validate="false"
+			scope="request">
+		</action> 
+		 <action path="/ShowGridAjaxHandler"
+			type="edu.wustl.query.action.ShowGridAjaxHandlerAction"
+			validate="false"
+			scope="request">
+		</action> 
         <action path="/GetCountAjaxHandler"
 			type="edu.wustl.query.action.GetCountAjaxHandlerAction"
 			validate="false"
@@ -126,7 +139,10 @@ PUBLIC
 			validate="false"
 			scope="request">
 			<forward name="success" path=".query.searchCategory"/>
+			<forward name="CountQuery" path=".query.getCount"/>
+			<forward name="DataQuery" path=".query.searchCategory"/>
 		</action>
+		
 		<action path="/ValidateQuery"
 			type="edu.wustl.query.action.ValidateQueryAction"
 			name="categorySearchForm"
@@ -135,6 +151,13 @@ PUBLIC
 		    <forward name="success" path=".query.searchCategory"/>
 		</action>
 		
+		<action path="/DefineView"
+			type="edu.wustl.query.action.DefineViewAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path="/LoadSaveQueryPage.do"/>
+		</action>
 		<action path="/ValidateDefineView"
 			type="edu.wustl.query.action.ValidateDefineViewAction"
 			name="categorySearchForm"
@@ -142,22 +165,12 @@ PUBLIC
 			scope="request">
 		    <forward name="success" path=".query.searchCategory"/>
 		</action>
-		
-		<action path="/SearchDefineViewResults"
-			type="edu.wustl.query.action.SearchDefineViewResultsAction"
-			name="categorySearchForm"
-			validate="false"
-			scope="request">
-		<forward name="success" path=".query.viewSearchResults"/>
-		<forward name="decisionMakingPage" path="/OpenDecisionMakingPage.do?pageOf=DefineView"/>
-		<forward name="validateResults" path ="/DefineSearchResultsView.do" />
-		</action>		
 		<action path="/LoadSaveQueryPage"
             type="edu.wustl.query.action.LoadSaveQueryPageAction"
             name="saveQueryForm"
             validate="false"
             scope="request">
-            <forward name="success" path="/pages/advancequery/content/search/querysuite/SavedQueryConditionPage.jsp"/>
+            <forward name="success" path=".query.saveQuery"/>
         </action>
         <action path="/SaveQueryAction"
 			type="edu.wustl.query.action.SaveQueryAction"
@@ -167,7 +180,8 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/LoadSaveQueryPage.do"/>
 			<forward name="failure" path="/LoadSaveQueryPage.do"/>
-		<!--<forward name="workflow" path="/RedirectToWorkflow.do"/> -->
+			<forward name="workflow" path="/RedirectToWorkflow.do"/>
+			<forward name="showdashboard" path="/ShowDashboard.do?requestFrom=MyQueries"/>
 		</action>
 		<action path="/RetrieveQueryAction"
 			type="edu.wustl.query.action.RetrieveQueryAction"
@@ -176,19 +190,19 @@ PUBLIC
 			scope="request">
 			<forward name="success" path=".query.queryViewPageDef"/>
 			<forward name="failure" path=".query.errorPageDef"/>
+			
 			<forward name="MyQueries" path=".query.querySavedQueryListDef"/>
-			<forward name="displayQueriesInPopup" path=".query.queryWorkFlowPopup"/>
+			<forward name="sharedQueries" path=".query.querySavedQueryListDef"/>
+			
+			<forward name="myQueriesForMainMenu" path=".query.savedQueryListDeftile"/>
+			<forward name="sharedQueriesForMainMenu" path=".query.savedQueryListDeftile"/>
+
+			<!--  for popup-->
+			<forward name="myQueriesForWorkFlow" path=".query.queryWorkFlowPopup"/>
+			<forward name="sharedQueriesForWorkFlow" path=".query.queryWorkFlowPopup"/>
+			
 		</action>
-		<action path="/ExecuteQueryAction"
-			type="edu.wustl.query.action.ExecuteQueryAction"
-			name="saveQueryForm"
-			validate="false"
-			scope="request">
-			<forward name="success" path=".query.viewSearchResults"/>
-			<forward name="treeNodeLimitExceededRecords" path="/OpenDecisionMakingPage.do" />			
-			<forward name="failure" path="/RetrieveQueryAction.do"/>
-			<forward name="InvalidValues" path="/FetchQuery.do"/>
-		</action>
+	
 		<action path="/DeleteQuery"
 			type="edu.wustl.query.action.DeleteQueryAction"
 			validate="false"
@@ -204,6 +218,8 @@ PUBLIC
 			<forward name="success" path=".query.collectQueryParameter"/>
 			<forward name="failure" path="/RetrieveQueryAction.do"/>
 			<forward name="executeQuery" path="/ExecuteQueryAction.do"/>
+			<forward name="editDataQuery" path="/SearchCategory.do" />
+			<forward name="editCountQuery" path="/QueryGetCount.do" />
 		</action>
 		<action path="/loadDefineSearchRules"
 			type="edu.wustl.query.action.LoadDefineSearchRulesAction"
@@ -259,29 +275,6 @@ PUBLIC
 			scope="request">
 			<forward name="success" path=".query.defineSearchResultsViewBNT"/>			
 		</action>
-		<action path="/DefineQueryResultsView"
-			type="edu.wustl.query.action.DefineQueryResultsViewAction"
-			name="categorySearchForm"
-			validate="false"
-			scope="request">
-			<forward name="success" path=".query.defineQueryResultsView"/>			
-		</action>
-		
-		<action path="/ConfigureGridView"
-			type="edu.wustl.query.action.ConfigureGridViewAction"
-			name="categorySearchForm"
-			validate="false"
-			scope="request">
-			<forward name="success" path=".query.queryResultsSpreadsheetViewDef"/>			
-		</action>
-		<action path="/OpenDecisionMakingPage"
-			type="edu.wustl.query.action.OpenDecisionMakingPageAction"
-			name="categorySearchForm"
-			validate="false"
-			scope="request">
-			<forward name="success" path=".query.openDecisionMakingPage"/>		
-			<forward name="viewAllRecords" path=".query.viewSearchResults"/>		
-		</action>
 		<action path="/LoadingVocabularies"
 			type="edu.wustl.query.action.LoadingVocabulariesAction"
 			name="categorySearchForm"
@@ -289,20 +282,26 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/pages/advancequery/content/search/LoadingVocabularies.jsp"/>
 		</action>
-		
 		<action path="/SearchPermissibleValues"
 			type="edu.wustl.query.action.SearchPermissibleValuesAction"
 			name="categorySearchForm"
 			validate="false"
 			scope="request">
-			<forward name="success" path="/pages/advancequery/content/search/SearchPermissibleValues.jsp"/>
+			<forward name="success" path="/pages/advancequery/content/search/VocabularyInterface.jsp"/>
 		</action>
 		<action path="/SearchMappedPV"
 			type="edu.wustl.query.action.SearchMappedPVsAction"
 			name="categorySearchForm"
 			validate="false"
 			scope="request">
-			<forward name="success" path="/pages/advancequery/content/search/SearchPermissibleValues.jsp"/>
+			<forward name="success" path="/pages/advancequery/content/search/VocabularyInterface.jsp"/>
+		</action>
+		<action path="/ShowVITooltip"
+			type="edu.wustl.query.action.ShowVITooltipAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path="/pages/advancequery/content/search/VocabularyInterface.jsp"/>
 		</action>
 		<action path="/SelectedPermissibleValue"
 			type="edu.wustl.query.action.SelectedPermissibleValueAction"
@@ -311,107 +310,7 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/pages/advancequery/content/search/Refresh.jsp"/>
 		</action>		
-	<!--Commented out By Baljeet as it is related to Shopping Cart -->
-	<!--	<action path="/ViewCart"
-			type="edu.wustl.query.action.querysuite.ViewCartAction"
-			name="advanceSearchForm"
-			validate="false"
-			scope="request">
-			<forward name="view" path=".query.shoppingCartDef" />
-			<forward name="differentCartView" path=".query.queryResultsSpreadsheetViewDef" />
-			<forward name="access_denied" path=".query.searchHomeDef" />
-		</action>
-		
-	-->	
-		
-		
-	<!--	<action path="/ExportCart"
-			type="edu.wustl.query.action.querysuite.ExportCartAction"
-			name="advanceSearchForm"
-			validate="false"
-			scope="request">			
-			<forward name="shoppingCartExport" path=".query.shoppingCartDef" />
-     		<forward name="access_denied" path=".query.searchHomeDef" />
-		</action>
-	-->	
-		
-	<!--	<action path="/AddDeleteCart"
-			type="edu.wustl.query.action.querysuite.AddDeleteCartAction"
-			name="advanceSearchForm"
-			validate="false"
-			scope="request">
-			<forward name="shoppingCartAdd" path=".query.queryResultsSpreadsheetViewDef" />
-			<forward name="duplicateObject" path=".query.queryResultsSpreadsheetViewDef" />
-			<forward name="shoppingCartDelete" path=".query.shoppingCartDef" />
-			<forward name="access_denied" path=".query.searchHomeDef" />
-		</action>
-	-->
-		
-	<!--	<action path="/BulkCart"
-			type="edu.wustl.query.action.querysuite.BulkCartAction"
-			name="advanceSearchForm"
-			validate="false"
-			scope="request">
-			<forward name="requestToOrder" path="/RequestToOrder.do"/>
-			<forward name="bulkTransfers" path="/BulkTransferEvents.do?menuSelected=15"/>
-			<forward name="bulkDisposals" path="/BulkDisposalEvents.do?menuSelected=15"/>
-			<forward name="createShipmentRequest" path="/ProcessMyListCreateShipmentRequest.do?menuSelected=15"/>
-			<forward name="createShipment" path="/ProcessMyListCreateShipment.do?menuSelected=15"/>
-			<forward name="editMultipleSp" path="/MultipleSpecimenFlexInitAction.do?operation=edit"/>
-			<forward name="access_denied" path=".query.searchHomeDef" />
-			<forward name="access_denied" path=".query.searchHomeDef" />
-		</action>
-	-->	
-		
-	<!--	<action path="/AddSpecimenToCart"
-			type="edu.wustl.query.action.NewShopingCartAction"
-			name="newSpecimenForm"
-			validate="false"
-			scope="request">
-			<forward name="pageOfNewSpecimen" path="/QuerySpecimenSearch.do?pageOf=pageOfNewSpecimenCPQuery" />
-			<forward name="pageOfEditSpecimen" path="/NewSpecimen.do?pageOf=pageOfNewSpecimen" />
-		</action>
-	-->	
-	<!--	
-		<action path="/AddScgToCart"
-			type="edu.wustl.query.action.NewShopingCartAction"
-			name="viewSpecimenSummaryForm"
-			validate="false"
-			scope="request">
-			<forward name="success" path="/redirecttoSCG.do" />	
-		</action>
-	-->
 	
-	<!--		<action path="/AddMltipleSpecimenToCart"
-			type="edu.wustl.query.action.NewShopingCartAction"
-			name="viewSpecimenSummaryForm"
-			validate="false"
-			scope="request">
-			<forward name="success" path="/pages/AnticipatorySpecimens.jsp" />	
-			<forward name="multipleSpWithMenu" path=".query.viewSpecimenSummary" />	
-			<forward name="failure" path="/pages/AnticipatorySpecimens.jsp" />
-			<forward name="multipleSpWithMenuFaliure" path=".query.viewSpecimenSummary" />
-			<forward name="printMultiple" path="/printMultiple.do" />
-		</action>
-	-->	
-		
-	<!--	<action path="/AddDeriveSpecimenToCart"
-			type="edu.wustl.query.action.NewShopingCartAction"
-			name="createSpecimenForm"
-			validate="false"
-			scope="request">
-			<forward name="pageOfNewSpecimen" path="/QuerySpecimenSearch.do?operation=search&amp;pageOf=pageOfNewSpecimenCPQuery&amp;id=0" />
-		</action>
-		-->
-		
-	<!--	<action path="/AddAliquotSpecimenToCart"
-			type="edu.wustl.query.action.NewShopingCartAction"
-			name="aliquotForm"
-			validate="false"
-			scope="request">
-			<forward name="pageOfNewSpecimen" path=".query.aliquotSummaryCpQueryDef" />
-		</action>
-	-->
 		<action path="/QueryMessageAction"
 			type="edu.wustl.query.action.QueryMessageAction"
 			name="categorySearchForm"
@@ -420,76 +319,43 @@ PUBLIC
 			<forward name="success" path=".query.searchCategory"/>
 		</action>
 		
-		<!-- Applet Action mapping for query Module -->
-	<!--	<action path="/ViewSearchResultsAction" 
-			type="edu.wustl.query.action.querysuite.ViewSearchResultsAction" 
-			parameter="method">
-		<forward name="success" path=".query.viewSearchResults"/>
-		</action>
-	-->	
-		<!--
-		<action path="/addToLimitSet" 
-			type="edu.wustl.query.action.querysuite.AddToLimitSetAction" 
-			parameter="method">
-		</action>
-		-->
-	<!--
-		<action path="/PathFinderAction" 
-			type="edu.wustl.query.action.querysuite.PathFinderAction" 
-			parameter="method">
-		</action>
-		<action path="/getDagViewDataAction" 
-			type="edu.wustl.query.action.querysuite.GetDagViewDataAction" 
-			parameter="method">
-		</action>
-    -->
     		
 		<!-- Action code : Query Module changes for pagination starts : 20/07/2007 -->
 		
 		<action path="/QueryTreeView"
 			type="edu.wustl.query.action.QueryTreeViewAction">
 			<forward name="success" path=".query.queryTreeViewDef" />
-		</action>
-		
-		<action path="/QueryGridView"
-			type="edu.wustl.query.action.QueryGridViewAction">
-			<forward name="success" path=".query.queryResultsSpreadsheetViewDef" />
-		</action>
+		</action>	
 		<!-- Action code : Query Module changes for pagination ends : 20/07/2007 -->		
 		
 		<!-- Action code : Query Module Ends : 06/11/06 -->	
 
 	   <action path="/ComboDataAction" type="edu.wustl.query.action.ComboDataAction" scope="request"/>
 	   
-	   <!--Added By Baljeet As a Default Action for Query -->
 	   <action path="/QueryAction"
           type = "edu.wustl.query.action.QueryAction">
             <forward name="success"  path="/RetrieveQueryAction.do" />
-        </action>   
-	   					
-         <action path="/SpreadsheetExport"
-			type="edu.wustl.query.action.SpreadsheetExportAction"
-			name="advanceSearchForm"
-			validate="false"
-			scope="request">
-		</action>
-       <!--Added By Rinku to change num of records per page -->
-         <action path="/SpreadsheetView"
-           type="edu.wustl.query.action.SpreadsheetViewAction"
-	       scope="request">
-	      <forward name="pageOfQueryResults" path=".query.queryResultsSpreadsheetViewDef" />	
-		  <forward name="pageOfQueryModule" path=".query.queryResultsSpreadsheetViewDef" />
-	    </action>
-	    
-	            <!--  To Do  change the action  class name --> 
+        </action>
+	   
+	  
+	   <!--  To Do  change the action  class name --> 
         <action path="/QueryWorkflowWizard" 
         		type="edu.wustl.query.action.WorkflowAction"
+        		name="workflowForm" 
         		validate="false"
 				scope="request">
         	<forward name="success" path=".query.queryWorkFlowWizardDef"/>
         	<forward name="failure" path="/QueryWorkflowWizard.do"/>
         </action>
         
+          <action path="/QueryWorkflowWizardOld" 
+        		type="edu.wustl.query.action.WorkflowAction"
+        		name="workflowForm" 
+        		validate="false"
+				scope="request">
+        	<forward name="success" path=".query.queryWorkFlowWizardDefOld"/>
+        	<forward name="failure" path="/QueryWorkflowWizard.do"/>
+        </action>
          <action path="/Workflow"
              type="org.apache.struts.actions.ForwardAction"
              parameter=".query.redirectToWorkflowPageDef"/> 
@@ -499,14 +365,37 @@ PUBLIC
         		name="workflowForm"
         		validate="false"
 				scope="request">
-        <!-- <forward name="success" path="/QueryWorkflowWizard.do" /> -->
-       		 <forward name="success" path=".query.queryWorkFlowConfirmMsgDef" />
-       		 <forward name="failure" path="/QueryWorkflowWizard.do"/>
-       		 <forward name="loadQueryPage" path="/LoadQueryPage.do"/>
+		   	<forward name="success" path="/SearchWorkflow.do?operation=search&amp;pageOf=pageOfWorkflow"/>
+	      	<forward name="failure" path="/QueryWorkflowWizard.do"/>
+	      	<forward name="loadQueryPage" path="/LoadQueryPage.do"/>
         </action>
+                 
+        <action path="/SearchWorkflow"  
+        		type="edu.wustl.query.action.SearchWorkflowAction" 
+        		name="workflowForm"
+        		validate="false"
+				scope="request">
+		   	<forward name="success" path="/WorkflowSearchAuthorized.do?pageOf=pageOfWorkflow"/>
+	       	<forward name="failure" path="/QueryWorkflowWizard.do"/>
+        </action>
+        
+        
+        
         
         <action path="/WorkflowAjaxHandler" 
         type="edu.wustl.query.action.WorkflowAjaxHandlerAction"
+        validate="false"
+		scope="request">
+        </action>
+        
+    	<action path="/ProjectChangeAjaxHandler" 
+        type="edu.wustl.query.action.ProjectChangeHandlerAction"
+        validate="false"
+		scope="request">
+        </action>
+        
+        <action path="/SaveWorkflowAjaxHandler" 
+        type="edu.wustl.query.action.SaveWorkflowAjaxHandlerAction"
         validate="false"
 		scope="request">
         </action>
@@ -525,11 +414,23 @@ PUBLIC
 			<forward name="pageOfWorkflow" path="/QueryWorkflowWizard.do?operation=edit&amp;pageOf=pageOfWorkflow"/>
 			<forward name="failure" path="/QueryWorkflowWizard.do?operation=edit&amp;pageOf=pageOfWorkflow"/>
 		</action>
+		
+		<action path="/WorkflowSearchAuthorized"
+		    type="edu.wustl.query.action.WorkflowCommonSearchAction"
+			name="workflowForm"
+			validate="false"
+			scope="request">
+			<forward name="pageOfWorkflow" path="/QueryWorkflowWizard.do?operation=edit&amp;pageOf=pageOfWorkflow"/>
+			<forward name="failure" path="/QueryWorkflowWizard.do?operation=edit&amp;pageOf=pageOfWorkflow"/>
+		</action>
+		
 		<action path="/RetrieveWorkflowAction"
 			type="edu.wustl.query.action.RetrieveWorkflowAction"
 			validate="false"
+			name="workflowForm"
 			scope="request">
-			<forward name="success" path=".query.workflowViewPageDef"/>
+			<forward name="dashboardWorkflowList" path=".query.workflowViewPageDef"/>
+			<forward name="mainMenuWorkflowList" path=".query.workflowList"/>
 			<forward name="failure" path=".query.errorPageDef"/>
 		</action>
         <!-- TO DO  -->
@@ -543,15 +444,32 @@ PUBLIC
 			name="workflowForm"
 			validate="false"
 			scope="request">
-			<forward name="queryWizard" path="/QueryWorkflowWizard.do?operation=add&amp;pageOf=workflow&amp;menuSelected=1" />
+			<forward name="queryWizard" path="/WorkflowSearch.do?operation=edit&amp;pageOf=pageOfWorkflow&amp;menuSelected=1" />
 		</action>
+		
+		<action path="/ShowResetCountPopUp"
+          type = "edu.wustl.query.action.ShowResetCountPopUpAction"
+          validate="false"
+		  scope="request">
+            <forward name="success"  path=".query.resetCountPopUp" />
+        </action>
+        
+        		
+		<action path="/DeleteQueryPopup"
+          type = "edu.wustl.query.action.ShowResetCountPopUpAction"
+          validate="false"
+		  scope="request">
+            <forward name="success"  path=".query.deleteQueryPopUp" />
+        </action>
+        
         
         <action path="/RetrieveRecentQueries"
 			type="edu.wustl.query.action.RetrieveRecentQueriesAction"
 			name="showRetrieveRecentForm"
 			validate="false"
 			scope="request">
-			<forward name="success" path=".query.recentQueryListDef"/>
+			<forward name="forDashboard" path=".query.forDasboardrecentQueryListDef"/>
+			<forward name="forMainMenu" path=".query.recentQueryListDef"/>
 		</action>
 		
 		<action path="/LoadQueryPage"
@@ -560,8 +478,137 @@ PUBLIC
 			scope="request">
 			<forward name="queryWizard" path="/QueryWizard.do?operation=add&amp;pageOf=workflow&amp;menuSelected=1" />
 			<forward name="queryGetCount" path="/QueryGetCount.do?operation=add&amp;pageOf=workflow&amp;menuSelected=1" />
-
 		</action>
+		
+		<action path="/QueryResultsView" 
+        	type="edu.wustl.query.action.ViewResultsAction"
+            name="categorySearchForm"
+            validate="false"
+            scope="request" >
+		  <forward name="success" path=".query.viewSearchResults"/>
+        </action>
+        
+        <action path="/UpdateTreeView" 
+        	type="edu.wustl.query.action.UpdateResultsViewTreeAction"
+            validate="false"
+			scope="request" >
+        </action>
+        
+        <action path="/ExecuteQuery" 
+        	type="edu.wustl.query.action.ExecuteQueryAction"
+            name="saveQueryForm"
+            validate="false"
+			scope="request" >
+			<!-- This is correct mapping  -->
+			<forward name="showParameterizedPage" path=".query.collectQueryParameter" />
+			<forward name="showParameterizedPopUp" path=".query.paramQueriesDef" />
+			<forward name="notParameterized" path=".query.not.paramQueriesDef" />
+        </action>
+        
+        <action path="/EditQuery" 
+        	type="edu.wustl.query.action.EditQueryAction"
+        	name="saveQueryForm"
+            validate="false"
+			scope="request" >
+			<forward name="failure" path="/RetrieveQueryAction.do"/>
+			<forward name="editDataQuery" path="/SearchCategory.do" />
+			<forward name="editCountQuery" path="/QueryGetCount.do" />
+        </action>
+        
+            
+        <action path="/WorkflowTemplate" 
+        	type="edu.wustl.query.action.WorkflowTemplateAction"
+        	name="workflowForm"
+            validate="false"
+			scope="request" >
+			<forward name="failure" path="/QueryWorkflowWizard.do"/>
+			<forward name="success" path="/QueryWorkflowWizard.do" />
+        </action>
+        
+        
+        <!-- This action is added for updating IQuery with parameterized conditions   -->
+        <action path="/UpdateQueryAction"
+			type="edu.wustl.query.action.UpdateParameterizedConditionsAction"
+			name="saveQueryForm"
+			validate="false"
+			scope="request">
+         </action>
+         
+        <action path="/ShowParamQueryAttributes" 
+        	type="edu.wustl.query.action.ShowParamQueryAttributesAction"
+            validate="false"
+			scope="request" >
+        </action>
+         
+       <action path="/RetrieveParamQueries" 
+        	type="edu.wustl.query.action.RetrieveParamQueriesAction"
+            validate="false"
+			scope="request" >
+			<!--<forward name="success" path="/ExecutePQsInWorkflow.do"/> -->
+        </action>
+        
+       <action path="/ExecutePQsInWorkflow" 
+        	type="edu.wustl.query.action.ExecutePQsInWorkflowAction"
+            validate="false"
+			scope="request" >
+		<!-- 	<forward name="success" path=".query.paramQueriesDef"/> -->
+        </action>
+        
+        <action path="/LoadingParameters"
+			type="edu.wustl.query.action.LoadingParametrsAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path="/pages/advancequery/content/search/querysuite/LoadingParameters.jsp"/>
+		</action>
+        
+        <action path="/UpdatePQForWorkflow" 
+        	type="edu.wustl.query.action.UpdatePQForWorkflowAction"
+            validate="false"
+			scope="request" >
+			<forward name="success" path=".query.paramQueriesDef"/>
+        </action>
+        <action path="/Category"
+			type="edu.wustl.query.action.CategoryAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+			<forward name="success" path=".query.searchCategory"/>
+		</action>
+		<action path="/SearchEntity"
+			type="edu.wustl.query.action.SearchEntityAction"
+			name="categorySearchForm"
+			validate="false"
+			scope="request">
+		</action>
+                
+        <action path="/ParamerizedQueryPopUp" 
+        	type="edu.wustl.query.action.ParamerizedQueryPopUpAction"
+            validate="false"
+			scope="request" >
+			<forward name="success" path=".query.paramQueriesDef"/>
+        </action>
+        
+          <action path="/SaveAsQuery" 
+        	type="edu.wustl.query.action.SaveAsQueryAction"
+            validate="false"
+			scope="request" >
+        </action>
+        
+        
+            <action path="/ExecuteDataPQ" 
+        	type="edu.wustl.query.action.ExecuteDataPQsAction"
+            validate="false"
+			scope="request" 
+			name="saveQueryForm">
+			<!-- <forward name="success" path=".query.paramQueriesDef"/>
+			<forward name="execute" path="/QueryResultsView.do"/> -->
+        </action> 
+        <action path="/ValidateQueryTitle" 
+        	type="edu.wustl.query.action.ValidateQueryTitleAjaxHandlerAction"
+            validate="false"
+			scope="request" >
+        </action> 
 	</action-mappings>
 	
 	<controller processorClass="edu.wustl.common.struts.ApplicationRequestProcessor" />

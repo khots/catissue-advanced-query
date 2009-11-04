@@ -2,9 +2,10 @@
 package edu.wustl.query.bizlogic;
 
 import edu.wustl.common.bizlogic.IBizLogic;
-import edu.wustl.common.bizlogic.QueryBizLogic;
 import edu.wustl.query.util.global.Constants;
-
+/**
+ * @author siddharth_shah
+ */
 public class BizLogicFactory
 {
 
@@ -16,27 +17,39 @@ public class BizLogicFactory
 		factory = new BizLogicFactory();
 	}
 
+	/**
+	 * Default Constructor.
+	 */
 	protected BizLogicFactory()
 	{
+    	// TODO Auto-generated constructor stub
 	}
 
 	/**
 	 * Setter method in singleton class is to setup mock unit testing.
+	 * @param externalFactory - BizLogicFactory
 	 * */
 	public static void setBizLogicFactory(BizLogicFactory externalFactory)
 	{
 		factory = externalFactory;
 	}
 
+	/**
+	 * @return BizLogicFactory
+	 */
 	public static BizLogicFactory getInstance()
 	{
 		return factory;
 	}
 
-	public IBizLogic getBizLogic(int FORM_ID)
+	/**
+	 * @param formId - form id
+	 * @return IBizLogic
+	 */
+	public IBizLogic getBizLogic(int formId)
 	{
 		IBizLogic bizLogic = null;
-		switch (FORM_ID)
+		switch(formId)
 		{
 			case Constants.SIMPLE_QUERY_INTERFACE_ID :
 				bizLogic = new QueryBizLogic();
@@ -52,13 +65,13 @@ public class BizLogicFactory
 			case Constants.QUERY_INTERFACE_BIZLOGIC_ID :
 				bizLogic = new QueryBizLogic();
 				break;
-				
 			case Constants.WORKFLOW_BIZLOGIC_ID :
 				bizLogic = new WorkflowBizLogic();
 				break;
-			
-			case Constants.SEARCH_PV_FROM_VOCAB_BILOGIC_ID :
+			case Constants.PV_VOCAB_BILOGIC_ID :
 				bizLogic = new SearchPermissibleValueBizlogic();
+				break;
+			default:
 				break;
 		}
 		return bizLogic;

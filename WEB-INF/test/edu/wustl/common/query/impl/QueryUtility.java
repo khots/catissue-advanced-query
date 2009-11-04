@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -30,19 +31,21 @@ import org.w3c.dom.NodeList;
 
 import edu.wustl.cider.query.CiderQuery;
 import edu.wustl.cider.querymanager.CiderQueryManager;
-import edu.wustl.common.dao.AbstractDAO;
-import edu.wustl.common.dao.DAOFactory;
-import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.query.impl.PassOneXQueryGenerator;
+import edu.wustl.cider.querymanager.CiderQueryPrivilege;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
-import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.dao.HibernateDAO;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.bizlogic.Constants;
 import edu.wustl.query.bizlogic.QueryFrameworkTestCase;
+import edu.wustl.query.querymanager.Count;
+import edu.wustl.query.util.querysuite.DAOUtil;
 import edu.wustl.query.util.querysuite.QueryModuleException;
+
 
 /**
  * This class is responsible for creating tables on which each test case
@@ -82,10 +85,10 @@ public class QueryUtility
 		{
 			if (queryId != null)
 			{
-				AbstractDAO dao = DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
-
+				//AbstractDAO dao = DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+				HibernateDAO dao = DAOUtil.getHibernateDAO(null);
 				dao.openSession(null);
-				query = (IParameterizedQuery) dao.retrieve(ParameterizedQuery.class.getName(), Long
+				query = (IParameterizedQuery) dao.retrieveById(ParameterizedQuery.class.getName(), Long
 						.valueOf(queryId));
 				System.out.println("Step 2. Retrieving IQuery from Database.... Query_Id.... "
 						+ queryId);
@@ -159,11 +162,11 @@ public class QueryUtility
 	 * @throws QueryModuleException 
 	 * @throws QueryModuleException
 	 */
-	public static int runQueryAndPopulateITable(IQuery query) throws MultipleRootsException,
+	public static Long runQueryAndPopulateITable(IQuery query) throws MultipleRootsException,
 			SqlException, DAOException, QueryModuleException
 	{
 //		JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		
+		Long queryExecId = 0L;
 		try
 		{
 			/*HttpServletRequest request = new MockHttpServletRequest();
@@ -174,14 +177,28 @@ public class QueryUtility
 			HttpSession session = request.getSession();
 			session.setAttribute(arg0, arg1);
 			*/
+			CiderQueryManager manager = new CiderQueryManager();
+			Long noOfRecords = 0L;
+			CiderQueryPrivilege privilege = new CiderQueryPrivilege();
+			CiderQuery ciderQueryObj = new CiderQuery(query, -1L, "", -1L, null, "10.88.199.224",privilege);
+			queryExecId = manager.execute(ciderQueryObj);
 			
-			String xquery = xQueryGenerator.generateQuery(query);
-			System.out.println();
-			System.out.println("XQUERY :: " + xquery);
-			System.out.println();
+			Count count = manager.getQueryCount(queryExecId);
 			
-			CiderQuery ciderQueryObj = new CiderQuery(query, -1, "", -1L, -1L);
-			int queryExecId = new CiderQueryManager().execute(ciderQueryObj);
+			while(!count.getStatus().equalsIgnoreCase(Constants.QUERY_COMPLETED))
+			{
+				if(count.getStatus().equalsIgnoreCase(Constants.QUERY_CANCELLED))
+				{
+					System.out.println("QUERY CANCELLED.......");
+				}
+				
+				count = manager.getQueryCount(queryExecId);
+			}
+			
+			noOfRecords = count.getCount();
+
+			System.out.println("No of Records :: "+noOfRecords);
+			System.out.println("TEST CASE EXECUTED.....");
 			
 //			jdbcDao.openSession(null);
 //			
@@ -193,7 +210,6 @@ public class QueryUtility
 			// QueryModuleSqlUtil.executeCreateTable(tempTableName, xquery, null);
 			System.out.println("Step 3. Executed XQuery on DB and ITABLE Populated....");
 			
-			return queryExecId;
 		}
 		catch (MultipleRootsException ex)
 		{
@@ -233,6 +249,12 @@ public class QueryUtility
 			System.out.println("\t Remaining Steps cannot be executed....");
 			throw ex;
 		}*/
+		catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return queryExecId;
 	}
 
 	/**
@@ -325,7 +347,7 @@ public class QueryUtility
 	 * @param csvFileName CSV File in which records are to be inserted  
 	 * @throws Exception 
 	 */
-	public static void exportResultsToCSV(String tableName, String csvFileName, int queryExecId) throws Exception
+	public static void exportResultsToCSV(String tableName, String csvFileName, Long queryExecId) throws Exception
 	{
 		Connection con = null;
 
@@ -344,8 +366,6 @@ public class QueryUtility
 		try
 		{
 			Properties props = new Properties();
-			// props.put("user",     "db2admin");
-			// props.put("password", "chak11##");
 			props.put("user", x.dbUserName);
 			props.put("password", x.dbPassword);
 
@@ -355,7 +375,6 @@ public class QueryUtility
 
 			String URL = "jdbc:" + x.dbType + "://" + x.dbHost + ":" + x.dbPort + "/" + x.dbName
 					+ ":currentSchema=" + x.dbSchema + ";";
-			// con = DriverManager.getConnection("jdbc:db2://localhost:50000/TEST1:currentSchema=DB2ADMIN;", props);
 			con = DriverManager.getConnection(URL, props);
 
 			String sql = "CALL SYSPROC.ADMIN_CMD(?)";
@@ -365,11 +384,10 @@ public class QueryUtility
 //			param = param + " of DEL messages on server select * from " + tableName;
 
 			String param = "export to " + Constants.testHome + csvFileName;
-			param = param + " of DEL messages on server select UPI from " + tableName+ " where QUERY_EXECUTION_ID="+queryExecId;
+			param = param + " of DEL messages on server select UPI from " + tableName+ " where COUNT_QUERY_EXECUTION_ID="+queryExecId + " order by UPI";
 			
 			// set the input parameter
 			callStmt1.setString(1, param);
-			/////System.out.println("CALL ADMIN_CMD('" + param + "')");
 
 			// execute export by calling ADMIN_CMD
 			callStmt1.execute();
@@ -516,7 +534,8 @@ public class QueryUtility
 	{
 		if (script != null)
 		{
-			JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+			//JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+			JDBCDAO jdbcDao =DAOUtil.getJDBCDAO(null);
 
 			try
 			{
@@ -535,7 +554,8 @@ public class QueryUtility
 			}
 			finally
 			{
-				jdbcDao.closeSession();
+				//jdbcDao.closeSession();
+				DAOUtil.closeJDBCDAO(jdbcDao);
 			}
 		}
 	}
@@ -685,7 +705,7 @@ public class QueryUtility
 			FileNotFoundException, IOException
 	{
 		BufferedReader input = null;
-
+		JDBCDAO jdbcDao = null;
 		try
 		{
 			File tempfile = new File(Constants.testHome + scriptFileName);
@@ -693,9 +713,7 @@ public class QueryUtility
 
 			String line = null;
 
-			JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-
-			jdbcDao.openSession(null);
+			jdbcDao = DAOUtil.getJDBCDAO(null);
 
 			while ((line = input.readLine()) != null)
 			{
@@ -706,7 +724,6 @@ public class QueryUtility
 					.println("PRE-REQUISITE: Running Common scripts.... Running scripts from file.. "
 							+ scriptFileName);
 			jdbcDao.commit();
-			jdbcDao.closeSession();
 		}
 		catch (FileNotFoundException ex)
 		{
@@ -731,6 +748,10 @@ public class QueryUtility
 							+ "Check scripts from file.. " + scriptFileName);
 			System.out.println("Remaining steps cannot be executed....");
 			throw ex;
+		}
+		finally
+		{
+			DAOUtil.closeJDBCDAO(jdbcDao);
 		}
 	}
 

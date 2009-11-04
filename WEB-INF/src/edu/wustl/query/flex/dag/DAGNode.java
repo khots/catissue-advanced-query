@@ -9,12 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.wustl.cab2b.client.ui.util.ClientConstants;
-import edu.wustl.cab2b.client.ui.util.CommonUtils;
+import edu.wustl.common.querysuite.querableobjectInterface.QueryableObjectInterface;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IRule;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
-import edu.wustl.query.htmlprovider.HtmlUtility;
+import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.global.Utility;
+import edu.wustl.query.util.global.VIProperties;
 
 public class DAGNode implements Externalizable, Comparable<DAGNode>
 {
@@ -22,7 +24,8 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 	private String nodeName = "";
 	private int expressionId = 0;
 	private String toolTip = "";
-	private String operatorBetweenAttrAndAssociation = "";
+	/** operator between attribute and association*/
+	private String operator = "";
 	private String nodeType = DAGConstant.CONSTRAINT_VIEW_NODE;
 	public List<DAGNode> associationList = new ArrayList<DAGNode>();
 	public List<String> operatorList = new ArrayList<String>();
@@ -55,7 +58,7 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 
 	public DAGNode()
 	{
-		setOperatorBetweenAttrAndAssociation(ClientConstants.OPERATOR_AND);
+		setOperator(ClientConstants.OPERATOR_AND);
 	}
 
 	public String getNodeName()
@@ -97,28 +100,57 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 		}
 		int totalConditions = rule.size();
 
-		sb.append("Condition(s) on  \n");
-		generateFormattedString(sb, rule, totalConditions);
+		if (totalConditions > 0)
+		{
+			sb.append("Condition(s) on  \n");
+			generateFormattedString(sb, rule, totalConditions);
+		}
+		else
+		{
+			sb.append("No Condition Added \n");
+		}
+
 		this.toolTip = sb.toString();
 	}
 
 	private void generateFormattedString(StringBuffer sb, IRule rule, int totalConditions)
 	{
-		int condnctr =0;
+		int condnctr = 0;
 		for (int i = 0; i < totalConditions; i++)
 		{
 			ICondition condition = rule.getCondition(i);
-			if(!HtmlUtility.isAttrHidden(condition.getAttribute()))
+			if (!condition.getAttribute().isTagPresent(Constants.TAGGED_VALUE_VI_HIDDEN))
 			{
 				sb.append((condnctr + 1) + ") ");
-				String formattedAttributeName = CommonUtils.getFormattedString(condition.getAttribute()
-						.getName());
+//				String formattedAttributeName = CommonUtils.getFormattedString(condition
+//						.getAttribute().getName());
+				String formattedAttributeName = Utility.getFormattedString(condition
+						.getAttribute().getDisplayName());
+
 				sb.append(formattedAttributeName).append(' ');
-				List<String> values = condition.getValues();
+				
+				List<String> values = new ArrayList<String>();
+				values.addAll(condition.getValues());
+				QueryableObjectInterface parentEntity = condition.getAttribute().getActualEntity();
+				if (parentEntity != null
+						&& parentEntity.getName().equals(VIProperties.medClassName)
+						&& condition.getAttribute().getName().equals("name"))
+				{
+					List<String> newValues = new ArrayList<String>();
+					for (String conValue : values)
+					{
+						String[] nameValue = conValue.split(Constants.ID_DEL);
+						if(nameValue.length>2)
+						{
+							newValues.add(nameValue[2]);
+						}
+					}
+					values.clear();
+					values.addAll(newValues);
+				}
 				RelationalOperator operator = condition.getRelationalOperator();
 				sb.append(
-						edu.wustl.cab2b.client.ui.query.Utility
-								.displayStringForRelationalOperator(operator)).append(' ');
+						Utility.displayStringForRelationalOperator(operator)).append(' ');
 				checkEquality(sb, values);
 				sb.append('\n');
 				condnctr++;
@@ -137,7 +169,7 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 			}
 			else
 			{
-				sb.append(')');
+				sb.append('(');
 				generateFomulaString(sb, values, size);
 				sb.append(')');
 			}
@@ -177,14 +209,14 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 		return toolTip;
 	}
 
-	public String getOperatorBetweenAttrAndAssociation()
+	public String getOperator()
 	{
-		return operatorBetweenAttrAndAssociation;
+		return operator;
 	}
 
-	public void setOperatorBetweenAttrAndAssociation(String operatorBetweenAttrAndAssociation)
+	public void setOperator(String operator)
 	{
-		this.operatorBetweenAttrAndAssociation = operatorBetweenAttrAndAssociation;
+		this.operator = operator;
 	}
 
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
@@ -193,7 +225,7 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 		nodeName = in.readUTF();
 		toolTip = in.readUTF();
 		expressionId = in.readInt();
-		operatorBetweenAttrAndAssociation = in.readUTF();
+		operator = in.readUTF();
 		nodeType = in.readUTF();
 		associationList = (List<DAGNode>) in.readObject();
 		operatorList = (List<String>) in.readObject();
@@ -210,7 +242,7 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 		out.writeUTF(nodeName);
 		out.writeUTF(toolTip);
 		out.writeInt(expressionId);
-		out.writeUTF(operatorBetweenAttrAndAssociation);
+		out.writeUTF(operator);
 		out.writeUTF(nodeType);
 		out.writeObject(associationList);
 		out.writeObject(operatorList);
@@ -227,8 +259,8 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 		StringBuffer buff = new StringBuffer(128);
 		buff.append("\n nodeName: ").append(nodeName).append("\n toolTip: ").append(toolTip)
 				.append("\n expressionId: ").append(expressionId).append(
-						"\n operatorBetweenAttrAndAssociation:").append(
-						operatorBetweenAttrAndAssociation);
+						"\n operator:").append(
+								operator);
 		return buff.toString();
 	}
 
@@ -242,15 +274,21 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 	@Override
 	public boolean equals(Object obj)
 	{
-		DAGNode node = (DAGNode) obj;
 		boolean equal = false;
-		if (this.expressionId == node.expressionId)
-		{
-			equal = true;
+		if (obj!=null && obj instanceof DAGNode) {
+			DAGNode node = (DAGNode) obj;
+			if (this.expressionId == node.expressionId) {
+				equal = true;
+			}
 		}
 		return equal;
 	}
 
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return super.hashCode();
+	}
 	public List<DAGNode> getAssociationList()
 	{
 		return associationList;

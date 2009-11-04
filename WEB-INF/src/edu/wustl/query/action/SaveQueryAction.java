@@ -4,9 +4,7 @@
 
 package edu.wustl.query.action;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -19,27 +17,25 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 
-import edu.wustl.common.action.BaseAction;
+import edu.wustl.cab2b.common.queryengine.ICab2bQuery;
 import edu.wustl.common.beans.SessionDataBean;
-import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.exception.BizLogicException;
-import edu.wustl.common.factory.AbstractBizLogicFactory;
-import edu.wustl.common.hibernate.HibernateCleanser;
-import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
+import edu.wustl.common.factory.AbstractFactoryConfig;
+import edu.wustl.common.factory.IFactory;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
-import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
-import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
-import edu.wustl.common.util.logger.Logger;
-import edu.wustl.metadata.util.DyExtnObjectCloner;
-import edu.wustl.query.actionForm.SaveQueryForm;
+import edu.wustl.common.util.logger.LoggerConfig;
+import edu.wustl.query.actionforms.SaveQueryForm;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
+import edu.wustl.query.bizlogic.WorkflowBizLogic;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.DefinedQueryUtil;
 import edu.wustl.query.util.querysuite.QueryModuleConstants;
 import gov.nih.nci.security.exceptions.CSException;
 
@@ -49,16 +45,16 @@ import gov.nih.nci.security.exceptions.CSException;
  * @author chetan_patil
  * @created Sep 11, 2007, 3:50:16 PM
  */
-public class SaveQueryAction extends BaseAction
+public class SaveQueryAction extends AbstractQueryBaseAction
 {
-
+	private static org.apache.log4j.Logger logger = LoggerConfig.getConfiguredLogger(SaveQueryAction.class);
 	@Override
-	protected ActionForward executeAction(ActionMapping actionMapping, ActionForm actionForm,
+	protected ActionForward executeBaseAction(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
 		IQuery query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
-		String target = Constants.FAILURE;
+		String target = edu.wustl.common.util.global.Constants.FAILURE;
 		if (query == null)
 		{
 			// Handle null query 
@@ -78,88 +74,96 @@ public class SaveQueryAction extends BaseAction
 
 			IParameterizedQuery parameterizedQuery = populateParameterizedQueryData(query,
 					actionForm, request);
-			if(parameterizedQuery!=null)
+			if (parameterizedQuery != null)
 			{
-				target = saveQuery(request, parameterizedQuery,actionForm);
+				target = saveQuery(request, parameterizedQuery, actionForm);
+				String isworkflow = request.getParameter(Constants.IS_WORKFLOW);
+				if(Constants.TRUE.equals(isworkflow))
+				{
+					target = Constants.PAGE_OF_WORKFLOW;
+				}
+				else
+				{
+					target = Constants.SHOW_DASHBOARD;
+				}
 			}
 		}
-
+		
 		return actionMapping.findForward(target);
 	}
-
-	private String saveQuery(HttpServletRequest request, 
-			IParameterizedQuery parameterizedQuery, ActionForm actionForm) throws CSException, DAOException
+ 
+	/**
+	 * 
+	 * @param request
+	 * @param parameterizedQuery
+	 * @param actionForm
+	 * @return
+	 * @throws CSException
+	 */
+	private String saveQuery(HttpServletRequest request, IParameterizedQuery parameterizedQuery,
+			ActionForm actionForm) throws CSException
 	{
-		String target=Constants.FAILURE;
-			try
+		String target = edu.wustl.common.util.global.Constants.FAILURE;
+		try
+		{
+			IFactory factory = AbstractFactoryConfig.getInstance ().getBizLogicFactory ();
+			edu.wustl.query.bizlogic.QueryBizLogic bizLogic=(edu.wustl.query.bizlogic.QueryBizLogic)factory.getBizLogic (Constants.ADVANCE_QUERY_INTERFACE_ID);
+			SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
+					edu.wustl.common.util.global.Constants.SESSION_DATA);
+			boolean isShared = ((SaveQueryForm) actionForm).isShareQuery();
+
+			/*IParameterizedQuery queryClone = new DyExtnObjectCloner().clone(parameterizedQuery);
+			new HibernateCleanser(queryClone).clean();*/
+			if (parameterizedQuery.getId() == null)
 			{
-				//removed for not inserting csm for query
-//				edu.wustl.query.bizlogic.QueryBizLogic bizLogic = (edu.wustl.query.bizlogic.QueryBizLogic) AbstractBizLogicFactory.getBizLogic(ApplicationProperties
-//							.getValue("app.bizLogicFactory"), "getBizLogic",
-//							Constants.ADVANCE_QUERY_INTERFACE_ID);
-				IBizLogic bizLogic = AbstractBizLogicFactory.getBizLogic(ApplicationProperties
-						.getValue("app.bizLogicFactory"), "getBizLogic",
-						Constants.QUERY_INTERFACE_BIZLOGIC_ID);
-				//SessionDataBean sessionDataBean = (SessionDataBean)request.getSession().getAttribute(Constants.SESSION_DATA);
-				//removed for not inserting csm for query
-				//User user = new PrivilegeUtility().getUserProvisioningManager().getUser(sessionDataBean.getUserName());
-				//sessionDataBean.setCsmUserId(user.getUserId().toString());
-				IParameterizedQuery queryClone = new DyExtnObjectCloner().clone(parameterizedQuery);
-				new HibernateCleanser(queryClone).clean();
-				//removed for not inserting csm for query
-				//bizLogic.insertSavedQueries(queryClone, sessionDataBean, 
-					//	((SaveQueryForm)actionForm).isShareQuery(),user);
-				bizLogic.insert(queryClone, Constants.HIBERNATE_DAO);
-				target = Constants.SUCCESS;
-				setActionErrors(request);
-				request.setAttribute(Constants.QUERY_SAVED, Constants.TRUE);
+				logger.info("In saveQueryAction.java , for fresh Query before insertSavedQueries");
+				bizLogic.insertSavedQueries(parameterizedQuery, sessionDataBean,
+						((SaveQueryForm) actionForm).isShareQuery());
 			}
-			catch (BizLogicException bizLogicException)
+			else
 			{
-				setActionError(request, bizLogicException.getMessage());
-				Logger.out.error(bizLogicException.getMessage(), bizLogicException);
+				DefinedQueryUtil queryUtil=new DefinedQueryUtil();
+				logger.info("In saveQueryAction.java , For Edit Query case  before updateQuery");
+				queryUtil.updateQuery(parameterizedQuery,sessionDataBean,isShared);
 			}
-			catch (UserNotAuthorizedException exception)
+			// save query to workflow if it is a workflow query
+			String isworkflow = request.getParameter(Constants.IS_WORKFLOW);
+			if (isworkflow != null && isworkflow.equals("true"))
 			{
-				setErrors(request, parameterizedQuery, exception, setUser(request));
+				String workflowId = (String) request.getSession().getAttribute(
+						Constants.EXECUTED_FOR_WFID);
+				WorkflowBizLogic wfbzlogic = new WorkflowBizLogic();
+				wfbzlogic.addWorkflowItem((long) Integer.valueOf(workflowId), parameterizedQuery);
 			}
+
+			target = Constants.SUCCESS;
+			setActionErrors(request);
+			request.setAttribute(Constants.QUERY_SAVED, Constants.TRUE);
+			request.getSession().setAttribute(Constants.QUERY_OBJECT, parameterizedQuery);
+		}
+		catch (BizLogicException bizLogicException)
+		{
+			setActionError(request, bizLogicException.getMessage());
+			logger.info("In saveQueryAction , Exception Occured while saving query");
+			logger.error(bizLogicException.getMessage(), bizLogicException);
+		}
+	
 		return target;
 	}
 
-
-	private String setUser(HttpServletRequest request)
-	{
-		final SessionDataBean sessionDataBean = getSessionData(request);
-		String userName = "";
-		if (sessionDataBean != null)
-		{
-			userName = sessionDataBean.getUserName();
-		}
-		return userName;
-	}
-
+	
 
 	private void setActionErrors(HttpServletRequest request)
 	{
-		ActionErrors errors = new ActionErrors();
-		ActionError error = new ActionError("query.saved.success");
-		errors.add(ActionErrors.GLOBAL_ERROR, error);
-		saveErrors(request, errors);
+		ActionMessage message=   new ActionMessage("query.saved.success");
+		ActionMessages messages=new ActionMessages();
+		messages.add(ActionErrors.GLOBAL_MESSAGE,message);
+	//	errors.add(ActionErrors.GLOBAL_ERROR, error);
+	//	saveErrors(request, errors);
+		saveMessages(request, messages);
 	}
 
-
-	private void setErrors(HttpServletRequest request, IParameterizedQuery parameterizedQuery,
-			UserNotAuthorizedException exception, String userName)
-	{
-		final ActionErrors errors = new ActionErrors();
-		final ActionError error = new ActionError("access.addedit.object.denied", userName,
-				parameterizedQuery.getClass().getName());
-		errors.add(ActionErrors.GLOBAL_ERROR, error);
-		saveErrors(request, errors);
-
-		Logger.out.error(exception.getMessage(),
-				exception);
-	}
+	
 
 	/**
 	 * This method sets the error action 
@@ -186,7 +190,6 @@ public class SaveQueryAction extends BaseAction
 			HttpServletRequest request)
 	{
 		SaveQueryForm saveActionForm = (SaveQueryForm) actionForm;
-		
 
 		/**
 		 * Name: Abhishek Mehta
@@ -198,39 +201,30 @@ public class SaveQueryAction extends BaseAction
 		 */
 
 		IParameterizedQuery parameterizedQuery = (IParameterizedQuery) query;
-
-		if (query.getId() == null)
+		if(parameterizedQuery instanceof ICab2bQuery)
 		{
-			parameterizedQuery = QueryObjectFactory.createParameterizedQuery(query);
+		 parameterizedQuery = QueryObjectFactory.createParameterizedQuery(query);
+		}
+		if(query.getId()!=null)
+		{
+			parameterizedQuery.setId(query.getId());
 		}
 
 		HttpSession session = request.getSession();
 		setQueryDescriptionAndTitle(saveActionForm, parameterizedQuery);
+		boolean isError = isError(request, saveActionForm, parameterizedQuery, session);
 
-		//		if(parameterizedQuery.getOutputTerms()!=null)
-		//		{
-		//			parameterizedQuery.getOutputTerms().clear();
-		//	     	parameterizedQuery.getOutputTerms().addAll(query.getOutputTerms());
-		//		}
-
-		boolean isError=isError(request, saveActionForm, parameterizedQuery, session);
-		
-		if(isError)
+		if (isError)
 		{
-		  parameterizedQuery=null;
+			parameterizedQuery = null;
 		}
-		else
-		{	
-		  // Saving view 
-			setQueryOutputAttributeList(parameterizedQuery, session);
-	    }
 		return parameterizedQuery;
 	}
 
-	private boolean isError( HttpServletRequest request,  SaveQueryForm saveActionForm,
-			IParameterizedQuery parameterizedQuery,  HttpSession session)
+	private boolean isError(HttpServletRequest request, SaveQueryForm saveActionForm,
+			IParameterizedQuery parameterizedQuery, HttpSession session)
 	{
-		boolean isError=false;
+		boolean isError = false;
 		CreateQueryObjectBizLogic bizLogic = new CreateQueryObjectBizLogic();
 		String conditionList = request.getParameter(Constants.CONDITIONLIST);
 		String cfRHSList = request.getParameter(QueryModuleConstants.STR_TO_FORM_TQ);
@@ -239,58 +233,46 @@ public class SaveQueryAction extends BaseAction
 		session.removeAttribute(QueryModuleConstants.CUSTOM_FORMULA_INDEX_MAP);
 		Map<String, String> displayNameMap = getDisplayNamesForConditions(saveActionForm, request);
 		String error = "";
-		error = bizLogic.setInputDataToQuery(conditionList, parameterizedQuery.getConstraints(),
+		if(conditionList!=null)
+		{
+			error = bizLogic.setInputDataToQuery(conditionList, parameterizedQuery.getConstraints(),
 				displayNameMap, parameterizedQuery);
-		error = bizLogic.setInputDataToTQ(parameterizedQuery, Constants.SAVE_QUERY_PAGE, cfRHSList,
+		}
+		StringBuffer tmpError = new StringBuffer(error.trim());
+		if(cfRHSList!=null && cfRHSList.length()>0)
+		{
+			error = bizLogic.setInputDataToTQ(parameterizedQuery, Constants.SAVE_QUERY_PAGE, cfRHSList,
 				customFormulaIndexMap);
-		String tmpError= error.trim();
-		if (error != null && tmpError.length() > 0)
+		}
+		tmpError.append(error);
+		if (tmpError.length() > 0)
 		{
 			setActionError(request, error);
-		    isError=true;
+			isError = true;
 		}
-	  return isError; 
+		return isError;
 	}
 
-	/**
-	 * This Method sets the  selected column to the output 
-	 * @param parameterizedQuery
-	 * @param session
-	 */
-	private void setQueryOutputAttributeList(IParameterizedQuery parameterizedQuery,
-			 HttpSession session)
-	{
-		 SelectedColumnsMetadata selectedColumnsMetadata = (SelectedColumnsMetadata) session
-			.getAttribute(Constants.SELECTED_COLUMN_META_DATA);
-  List<IOutputAttribute> selectedOutputAttributeList = new ArrayList<IOutputAttribute>();
-  if (selectedColumnsMetadata != null)
- {
-		selectedOutputAttributeList = selectedColumnsMetadata.getSelectedOutputAttributeList();
-	 }
-  //parameterizedQuery.getOutputTerms().clear();
-  parameterizedQuery.getOutputTerms();//.addAll(query.getOutputTerms()); 
-  parameterizedQuery.setOutputAttributeList(selectedOutputAttributeList);
-	}
-
+	
 	/**
 	 * This method sets title and description of the query
 	 * @param saveActionForm
 	 * @param parameterizedQuery
 	 */
-	private void setQueryDescriptionAndTitle( SaveQueryForm saveActionForm,
+	private void setQueryDescriptionAndTitle(SaveQueryForm saveActionForm,
 			IParameterizedQuery parameterizedQuery)
 	{
-		 String queryTitle = saveActionForm.getTitle();
+		String queryTitle = saveActionForm.getTitle();
 		if (queryTitle != null)
 		{
 			parameterizedQuery.setName(queryTitle);
 		}
 
-		 String queryDescription = saveActionForm.getDescription();
+		String queryDescription = saveActionForm.getDescription();
 		if (queryDescription == null)
 		{
 			parameterizedQuery.setDescription("");
-			
+
 		}
 		else
 		{

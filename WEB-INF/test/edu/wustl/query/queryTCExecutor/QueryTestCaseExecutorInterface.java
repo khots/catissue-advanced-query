@@ -5,7 +5,7 @@ import java.util.Map;
 
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
-import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.util.querysuite.QueryModuleException;
 
 
@@ -36,7 +36,7 @@ public interface QueryTestCaseExecutorInterface
 	 * @throws SqlException 
 	 * @throws MultipleRootsException 
 	 */
-	public int executeQuery(Long queryId) throws DAOException, IOException, ClassNotFoundException, MultipleRootsException, SqlException, QueryModuleException;
+	public Long executeQuery(Long queryId) throws DAOException, IOException, ClassNotFoundException, MultipleRootsException, SqlException, QueryModuleException;
 	
 	/**
 	 * 
@@ -48,7 +48,7 @@ public interface QueryTestCaseExecutorInterface
 	 * @throws SqlException 
 	 * @throws MultipleRootsException 
 	 */
-	public int executeQuery(String fileName) throws IOException, ClassNotFoundException, MultipleRootsException, SqlException, DAOException, QueryModuleException;
+	public Long executeQuery(String fileName) throws IOException, ClassNotFoundException, MultipleRootsException, SqlException, DAOException, QueryModuleException;
 	
 	/**
 	 * import CSV specified in dbInitScriptsFile into the EXPECTED_RESULTS table
@@ -60,7 +60,7 @@ public interface QueryTestCaseExecutorInterface
 	 * @throws IOException 
 	 * @throws Exception 
 	 */
-	public boolean validateResults(String actualResultsCSVFileName, String expectedresultsCSVFileName, int queryExecId) throws IOException, Exception; 
+	public boolean validateResults(String actualResultsCSVFileName, String expectedresultsCSVFileName, Long queryExecId) throws IOException, Exception; 
 	
 	/**
 	 * run cleanup scripts specified in CSV
@@ -85,3 +85,4 @@ public interface QueryTestCaseExecutorInterface
 	 */
 	public boolean executeTestCase(Map<String, String> details) throws DAOException, IOException, NumberFormatException, ClassNotFoundException, MultipleRootsException, SqlException, QueryModuleException, Exception;
 }
+

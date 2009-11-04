@@ -25,6 +25,7 @@
 	<property name="test.lib" value="${base.dir}/WEB-INF/test/lib" />
 	<property name="test.class.dir" value="${base.dir}/WEB-INF/classes" />
 	<property name="junit.report.dir" value="${test.dir}/report" />
+	<property name="framework.report.dir" value="${base.dir}/report" />
 	<!-- csm related properties -->
 	<property name="temp.dir" value="${base.dir}/tempQuey"/>
 	<property name="project.src.domain" value="${base.dir}/WEB-INF/src/edu/wustl/query/domain/"/>
@@ -43,6 +44,13 @@
     <property name="FLEX_APP_ROOT" value="flexclient"/>
 	<property name="flex.dir" value="${base.dir}/WEB-INF/flex" />
 	<!-- flex related properties finish -->
+	
+	<!-- Properties to RUN SearchPermissibleValueBizlogicTestCases -->
+	<property name="test.lexbig.folder" value="C:\LexBigTestData" />
+	<property name="LG_CONFIG_FILE" value="${test.lexbig.folder}/config/config.props"/>
+	<!-- END Properties to RUN SearchPermissibleValueBizlogicTestCases -->
+	
+	<property name="test.util.dir" value="${base.dir}/WEB-INF/test/edu/wustl/common/query/util/" />
 	<path id="app.classpath">
 		<fileset dir="${lib.dir}">
 			<include name="*.jar" />
@@ -93,8 +101,9 @@
 
 	<!-- Compile all files, generated and hand-written -->
 	<target name="compile" depends="init">
+		<antcall target="clean" />
 		<javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false" debug="yes" target="1.5">
-			<src path="${src.dir}" />
+			<src path="${src.dir}:${test.util.dir}" />
 			<classpath>
 				<fileset dir="${lib.dir}">
 					<include name="*.jar" />
@@ -118,11 +127,11 @@
 		<!--replace dir="${base.dir}/query-properties" propertyfile="${base.dir}/query-properties/vocab.properties">
 			<replacefilter token="${lexbig.config.path}" value="${jboss.lexbig.config.path}" />
 	   </replace-->
-		<!--replaced the token for XQuery logger path-->
+		<!--replaced the token for XQuery logger path 
 		<replace dir="${base.dir}/WEB-INF/classes" propertyfile="${base.dir}/WEB-INF/classes/query.properties">
 	  		<replacefilter token="${xquery.jboss.path}" value="${jboss.server.url}" /> 
 	  	</replace>
-
+		-->
 	</target>
 
 	<!-- Creates the WAR (Web Application Archive) file of the application -->
@@ -162,9 +171,10 @@
 			<replacefilter token="@@dataSource@@" value="${datasource}"/>
 		</replace>
 		
-		<antcall target="copydeletedjars" >
+		<!--antcall target="copydeletedjars" >
 			<param name="deleteFromDir" value="${base.dir}/WEB-INF/lib"  />
-		</antcall>
+		</antcall -->
+		
 
 		<war destfile="query.war" webxml="WEB-INF/web.xml" 
 			duplicate="preserve" manifest="${base.dir}/MANIFEST.MF" >
@@ -232,7 +242,7 @@
 			<include name="commons-fileupload.jar" /> 
 			<include name="commons-lang-2.1.jar" /> 
 			<include name="commons-logging-1.0.4.jar" /> 
-			<include name="dom4*.jar" /> 
+			<!--include name="dom4*.jar" / -->
 			<include name="ehcache-1.1.jar" />
 			<include name="ehcache-1.2.2.jar" /> 
 			<include name="freemarker.jar" /> 
@@ -282,6 +292,10 @@
 	<target name="deploy">
 		<!--antcall target="clean" /-->
 		<antcall target="compile" />
+		<!-- need to replace the jboss path for XQuery -->
+		<replace dir="${base.dir}/WEB-INF/classes" propertyfile="${base.dir}/WEB-INF/classes/query.properties">
+	  		<replacefilter token="${xquery.jboss.path}" value="${jboss.server.url}" /> 
+	  	</replace>
 		<antcall target="create_war" />
 	
 		 <copy file="query.war" todir="${jboss.server.url}/deploy" />
@@ -389,6 +403,7 @@
 		<copy todir="${zip.dir}" overwrite="true">
 			<fileset dir="${base.dir}/WEB-INF">
 				<include name="advancequery-struts-config.xml" />
+				<include name="struts-config_1_1.dtd" />
 				<!--include name="AdvanceQuery-tiles-defs.xml" /-->
 			</fileset>
 		</copy>
@@ -727,7 +742,6 @@
 		</jar>
 	</target>
 	
-	
 	<!-- Cobertura -->
 			  <path id="cobertura.classpath">
 			    <fileset dir="./cobertura">
@@ -741,7 +755,7 @@
 			  <taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
 
 		<target name="generate_codecoverage_report" >
-				<ant antfile="cobertura.xml" target="instrument"/>
+			  	<ant antfile="cobertura.xml" target="instrument"/>
 				<ant target="run_junit"/>
 				<ant antfile="cobertura.xml" target="coverage.report"/>
 				<ant antfile="cobertura.xml" target="coverage.check"/>
@@ -753,10 +767,12 @@
 			 	<mkdir dir="${junit.report.dir}"/>
 
 		      	<junit printsummary="yes" haltonerror="no" haltonfailure="no"
-		      		fork="yes">
+		      		fork="yes" maxmemory="1024m">
 
 		      		<sysproperty key="net.sourceforge.cobertura.datafile"
 		      				file="./cobertura/coverage.ser" />
+		      		<!-- set System property to RUN JUnit for VI in AQ added by amit_doshi-->
+		      		<sysproperty key="LG_CONFIG_FILE" value="${LG_CONFIG_FILE}"/>
 
 
 		      		<!--formatter type="plain" usefile="false"/-->
@@ -771,9 +787,10 @@
 					<!--	<pathelement location="${junit.classes.dir}"/> -->
 						<pathelement location="./cobertura/instrumented/"/>
 						<pathelement location="${target.dir}"/>
-						<pathelement location="${lib.dir}/junit-4.1.jar"/>
+						<!-- <pathelement location="${lib.dir}/junit-4.1.jar"/>  -->
 						 <fileset dir="${lib.dir}">
 			                  <include name="*.jar"/>
+						 	  <include name="*.dll"/>
 						 </fileset>
 						<fileset dir="${test.lib}">
 							  <include name="*.jar" />
@@ -807,6 +824,7 @@
 		        </javac>
 		 		<copy file="${test.dir}/conf/QueryHibernate.cfg.xml" todir="${target.dir}" overwrite="true"/>
 		    	<copy file="${test.dir}/conf/DynamicExtensionsHibernate.cfg.xml" todir="${target.dir}" overwrite="true"/>
+		 		<copy file="${test.dir}/conf/SMRoleGroupConf.xml" todir="${target.dir}" overwrite="true"/>
 				<replace dir="${target.dir}" propertyfile="queryInstall.properties"> 
 						<include name ="log4j.properties"/>
 						<include name ="QueryHibernate.cfg.xml"/>
@@ -818,7 +836,22 @@
 							<replacefilter token="@@host@@" value="${database.host}"/>
 							<replacefilter token="@@port@@" value="${database.port}"/>
 							<replacefilter token="@@username@@" value="${database.username}"/>
-					</replace>		 	
+					</replace>	
+			 	<replace dir="${base.dir}/WEB-INF/test/conf" propertyfile="queryInstall.properties">
+	 				<include name="log4j.properties" />
+	 				<include name="query.TestHibernate.cfg.xml" />
+	 				<replacefilter token="@@jbosshome@@" value="${jboss.server.url}" />
+	 				<replacefilter token="@@username@@" value="${database.username}" />
+	 				<replacefilter token="@@password@@" value="${database.password}" />
+	 				<replacefilter token="@@databasename@@" value="${database.name}" />
+	 				<replacefilter token="@@databaseschema@@" value="${database.schema}" />
+			 		<replacefilter token="@@dbhost@@" value="${database.host}"/>
+			 		<replacefilter token="@@dbport@@" value="${database.port}"/>
+	 			</replace>
+		 		<replace dir="${base.dir}/WEB-INF/test/conf">
+	 				<include name="ApplicationSecurityConfig.xml" />
+	 				<replacefilter token="@@hibernate-config-file@@" value="${basedir}/WEB-INF/test/conf/query.TestHibernate.cfg.xml" />
+	 			</replace>
 		    </target>
 	
 	
@@ -826,5 +859,61 @@
      
 		
 		
-	</target>	
+	</target>
+	
+	
+	<target name="run_framework" depends = "compile_test_cases">
+				 	<mkdir dir="${framework.report.dir}"/>
+
+			      	<junit printsummary="yes" haltonerror="no" haltonfailure="no"
+			      		fork="yes">
+
+			      		<sysproperty key="net.sourceforge.cobertura.datafile"
+			      				file="./cobertura/coverage.ser" />
+
+
+			      		<!--formatter type="plain" usefile="false"/-->
+			      		<formatter type="xml"/>
+			      		<batchtest todir="${framework.report.dir}">
+			      			<fileset dir="${test.dir}">
+			      				<include name="**/FrameworkTestAll.java"/>
+						    </fileset>
+						</batchtest>
+
+						<classpath>
+							<pathelement location="./cobertura/instrumented/"/>
+							<pathelement location="${target.dir}"/>
+							 <fileset dir="${lib.dir}">
+				                  <include name="*.jar"/>
+							 </fileset>
+							<fileset dir="${test.lib}">
+								  <include name="*.jar" />
+						    </fileset>
+						</classpath>
+
+			      		<classpath refid="cobertura.classpath" />
+			      	</junit>
+
+					<junitreport todir="${framework.report.dir}">
+						<fileset dir="${framework.report.dir}">
+							<include name="TEST-*.xml" />
+						</fileset>
+						<report todir="${framework.report.dir}" />
+					</junitreport>
+		</target>
+			<target name="run_javacc">
+		            <javacc
+		                target="${base.dir}/WEB-INF/src/edu/wustl/common/query/impl/predicate/WherePartParser.jj"
+		                outputdirectory="${base.dir}/WEB-INF/src/edu/wustl/common/query/impl/predicate"
+		                javacchome="${base.dir}/WEB-INF/lib"
+		                static="false"
+		            />
+
+		            </target>
+
+		 
+
+
+	
 </project>
+

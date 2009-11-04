@@ -6,6 +6,7 @@ package edu.wustl.query.annotations.xmi;
 
 import java.io.Serializable;
 
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 
 /**
@@ -21,6 +22,7 @@ public class PathObject implements Serializable
 	private static final long serialVersionUID = 1L;
 	EntityInterface sourceEntity;
 	EntityInterface targetEntity;
+	AssociationInterface association;
 
 	/**
 	 * This method overrides the equals method of the Object Class.
@@ -40,11 +42,13 @@ public class PathObject implements Serializable
 					&& pathObject.getSourceEntity().getId() != null
 					&& pathObject.getTargetEntity().getId() != null && sourceEntity != null
 					&& targetEntity != null && sourceEntity.getId() != null
-					&& targetEntity.getId() != null)
+					&& targetEntity.getId() != null && association!=null & pathObject.getAssociation()!=null
+					&& association.getId() !=null && pathObject.getAssociation().getId() !=null)
 			{
 
 				if ((sourceEntity.getId().compareTo(pathObject.getSourceEntity().getId()) == 0)
-						&& (targetEntity.getId().compareTo(pathObject.getTargetEntity().getId()) == 0))
+						&& (targetEntity.getId().compareTo(pathObject.getTargetEntity().getId()) == 0)
+						&& association.getId().compareTo(pathObject.getAssociation().getId())==0)
 				{
 
 					equals = true;
@@ -52,6 +56,23 @@ public class PathObject implements Serializable
 			}
 		}
 		return equals;
+	}
+	
+	/**
+	 * @return the association used in path
+	 */
+	public AssociationInterface getAssociation()
+	{
+		return association;
+	}
+	
+	
+	/**
+	 * @param association association to set 
+	 */
+	public void setAssociation(AssociationInterface association)
+	{
+		this.association = association;
 	}
 
 	/**

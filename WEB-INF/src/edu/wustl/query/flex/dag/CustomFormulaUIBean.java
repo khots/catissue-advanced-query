@@ -7,7 +7,7 @@ import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 public class CustomFormulaUIBean
 {
 
-	private ICustomFormula cf;
+	private ICustomFormula customFormula;
 	private CustomFormulaNode twoNode;
 	private SingleNodeCustomFormulaNode singleNode;
 	private boolean isCalculatedResult = false;
@@ -45,29 +45,29 @@ public class CustomFormulaUIBean
 		this.outputTerm = outputTerm;
 	}
 
-	public CustomFormulaUIBean(ICustomFormula cf, CustomFormulaNode twoNode,
+	public CustomFormulaUIBean(ICustomFormula customFormula, CustomFormulaNode twoNode,
 			SingleNodeCustomFormulaNode singleNode, IOutputTerm outputTerm)
 	{
-		this.cf = cf;
+		this.customFormula = customFormula;
 		this.singleNode = singleNode;
 		this.twoNode = twoNode;
 		this.outputTerm = outputTerm;
 	}
 
 	/**
-	 * @return Returns the cf.
+	 * @return Returns the CustomFormula.
 	 */
-	public ICustomFormula getCf()
+	public ICustomFormula getCustomFormula()
 	{
-		return cf;
+		return customFormula;
 	}
 
 	/**
-	 * @param cf The cf to set.
+	 * @param cf The CustomFormula to set.
 	 */
-	public void setCf(ICustomFormula cf)
+	public void setCustomFormula(ICustomFormula CustomFormula)
 	{
-		this.cf = cf;
+		this.customFormula = CustomFormula;
 	}
 
 	/**

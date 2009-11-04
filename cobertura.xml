@@ -33,15 +33,58 @@
       <ignore regex="org.apache.log4j.*"/>
 	
 	  <fileset dir="./WEB-INF/classes">
-			<include name="**/PassOneXQueryGenerator.class"/>
-			<include name="**/AbstractXQueryGenerator.class"/>
-			<include name="**/CIDERQueryExecutionThread.class"/>
-			<include name="**/CiderQueryManager.class"/>
+	  		<include name="**/workflowexecutor/*.class"/>
+	  		<include name="**/predicate/*Predicate*.class"/>
+	  		<include name="**/impl/*.class"/>
+	  		<include name="**/bizlogic/*.class"/>
+	  		<include name="**/helper/*.class"/>
+	  		<include name="**/category/*.class"/>
+	  		<include name="**/spreadsheet/*.class"/>
+	  	    <include name="**/htmlprovider/*.class"/>
+	  		<include name="**/querysuite/*.class"/>
+	  		<include name="**/processor/*.class"/>
+	  		<include name="**/DirectedGraph.class"/>
+	  		<include name="**/ResultsViewComponentGenerator.class"/>
+	  	    <include name="**/QueryParameterUtil.class" />
+	  	
+	  		<!-- Temporarily excluded since (writing testcases) -->
+	  		
+	  		<!-- Bean class -->
+	  		<exclude name="**/SpreadSheetData.class"/>
+	  		<exclude name="**/OutputTreeDataNode.class"/>
+	  		<exclude name="**/QueryDetails.class"/>
+	  		<exclude name="**/TemporalColumnUIBean.class"/>
+	  		<!-- Interface/abstract class -->
+	  		<exclude name="**/IQueryGenerator.class"/>
+	  		<exclude name="**/AbstractSecurityEventHandler.class"/>
+	  		<exclude name="**/AbstractQueryGenerator.class"/>
+	  		<exclude name="**/impl/*Test*.class"/>
 	      	<exclude name="**/bizlogic/*Test*.class"/>
 	      	<exclude name="**/bizlogic/*Factory*.class"/>
-	      	<exclude name="**/bizlogic/*Manager*.class"/>
-      	
-       </fileset>
+	  		<exclude name="**/htmlprovider/*Test*.class"/>
+	  		<exclude name="**/*Test*.class"/>
+	  		<exclude name="**/*Factory*.class"/>
+	  		<exclude name="**/*Constants*.class"/>
+	  		<exclude name="**/*Error*.class"/>
+	  		<exclude name="**/*Exception*.class"/>
+	  		
+	  		<exclude name="**/AnnotationUtil.class"/>
+	  		<exclude name="**/DefaultQueryBizLogic.class"/>
+		  	
+	  		<!-- Requires actionForm, hence excluded -->
+	  		<exclude name="**/QueryModuleActionUtil.class"/>
+	  	
+	  		<!-- pvmanager excluded -->
+	  		<exclude name="**/pvmanager/**.class"/>
+	  		<exclude name="**/pvmanager/impl/**.class"/>
+	  			
+	  		<exclude name="**/QueryUIManager.class"/>
+	  		<exclude name="**/RecentQueriesBizlogic.class"/>
+	  		<exclude name="**/SQLLogger.class"/>
+	  		<exclude name="**/LocalDEPermissibleValueManager.class"/>
+		  	<exclude name="**/MedLookUpManager.class"/>
+		  	<exclude name="**/ConceptValue.class"/>
+	  </fileset>
     </cobertura-instrument>
   </target>
 
@@ -57,6 +100,10 @@
     				  srcdir="${basedir}/WEB-INF/src"
                       destdir="./cobertura/report"
                       format="html"/>
+  	<cobertura-report datafile="./cobertura/coverage.ser" 
+  	    				  srcdir="${basedir}/WEB-INF/src"
+  	                      destdir="./cobertura/report"
+  	                      format="xml"/>
 
   </target>
 
@@ -77,3 +124,4 @@
   <!--removed the leading '9' for every number ie. 4 is 94, 0 is 90, ...-->
 
 </project>
+

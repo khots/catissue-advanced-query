@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -19,15 +18,15 @@ import edu.wustl.query.util.global.Constants;
  * And then it forwards control to simpleSearchDataView.jsp.
  * @author deepti_shelar
  */
-public class QueryGridViewAction extends Action
+public class QueryGridViewAction extends AbstractQueryBaseAction
 {
 
 	@Override
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
+	protected ActionForward executeBaseAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
-		int pageNum = Constants.START_PAGE;
+		int pageNum = edu.wustl.common.util.global.Constants.START_PAGE;
 		request.setAttribute(Constants.PAGE_NUMBER, Integer.toString(pageNum));
 		List dataList = (List) session.getAttribute(Constants.PAGINATION_DATA_LIST);
 		request.setAttribute(Constants.PAGINATION_DATA_LIST, dataList);
@@ -35,8 +34,8 @@ public class QueryGridViewAction extends Action
 				.getAttribute(Constants.SPREADSHEET_COLUMN_LIST);
 		request.setAttribute(Constants.SPREADSHEET_COLUMN_LIST, columnsList);
 		session.setAttribute(Constants.PAGINATION_DATA_LIST, null);
-		String pageOf = request.getParameter(Constants.PAGEOF);
-		request.setAttribute(Constants.PAGEOF, pageOf);
+		String pageOf = request.getParameter(edu.wustl.common.util.global.Constants.PAGEOF);
+		request.setAttribute(edu.wustl.common.util.global.Constants.PAGEOF, pageOf);
 		return mapping.findForward(Constants.SUCCESS);
 	}
 }

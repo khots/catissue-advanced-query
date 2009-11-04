@@ -7,7 +7,7 @@ import edu.wustl.common.query.impl.QueryUtility;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.bizlogic.Constants;
 import edu.wustl.query.bizlogic.QueryFrameworkTestCase;
 import edu.wustl.query.util.querysuite.QueryModuleException;
@@ -41,7 +41,7 @@ public abstract class AbstractQueryTestCaseExecutor implements QueryTestCaseExec
 	 * @throws MultipleRootsException 
 	 * @throws QueryModuleException 
 	 */
-	public int executeQuery(Long queryId) throws IOException, ClassNotFoundException, MultipleRootsException, SqlException, DAOException, QueryModuleException
+	public Long executeQuery(Long queryId) throws IOException, ClassNotFoundException, MultipleRootsException, SqlException, DAOException, QueryModuleException
 	{
 		IQuery query = QueryUtility.getQuery(queryId);
 		return QueryUtility.runQueryAndPopulateITable(query);
@@ -58,7 +58,7 @@ public abstract class AbstractQueryTestCaseExecutor implements QueryTestCaseExec
 	 * @throws DAOException 
 	 * @throws QueryModuleException 
 	 */
-	public int executeQuery(String fileName) throws IOException, ClassNotFoundException, MultipleRootsException, SqlException, DAOException, QueryModuleException
+	public Long executeQuery(String fileName) throws IOException, ClassNotFoundException, MultipleRootsException, SqlException, DAOException, QueryModuleException
 	{
 		IQuery query = QueryUtility.getQuery(fileName);
 		return QueryUtility.runQueryAndPopulateITable(query);
@@ -73,7 +73,7 @@ public abstract class AbstractQueryTestCaseExecutor implements QueryTestCaseExec
 	 * @return
 	 * @throws Exception 
 	 */
-	public boolean validateResults(String actualResultsCSVFileName, String expectedResultsCSVFileName, int queryExecId) throws Exception
+	public boolean validateResults(String actualResultsCSVFileName, String expectedResultsCSVFileName, Long queryExecId) throws Exception
 	{
 		if(actualResultsCSVFileName != null && expectedResultsCSVFileName != null &&
 				!actualResultsCSVFileName.equals("") && !expectedResultsCSVFileName.equals(""))
@@ -118,7 +118,7 @@ public abstract class AbstractQueryTestCaseExecutor implements QueryTestCaseExec
 	 */
 	public boolean executeTestCase(Map<String, String> details) throws Exception
 	{
-		int queryExecId = -1;
+		Long queryExecId = -1L;
         System.out.println("    *************************************************************");
         System.out.println("TEST CASE FOR ...."+details.get(Constants.name));
         System.out.println("TMT Test Case Id :: "+details.get(Constants.tmtTestCaseId));
@@ -150,3 +150,4 @@ public abstract class AbstractQueryTestCaseExecutor implements QueryTestCaseExec
 	}
 	
 }
+

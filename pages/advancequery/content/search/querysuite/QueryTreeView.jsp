@@ -1,4 +1,4 @@
-<%@ page import="edu.wustl.query.actionForm.CategorySearchForm"%>
+<%@ page import="edu.wustl.query.actionforms.CategorySearchForm"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.lang.*"%>
 
@@ -23,8 +23,15 @@ function divHeight(treeNumber, currentNumber)
 {
 	
 	var treeName = "treebox" + currentNumber;
- 
-	  var divHt = 100 / treeNumber;
+    if(navigator.appName == "Microsoft Internet Explorer")
+	{
+	  var divHt = 96 / treeNumber;
+	}
+	else
+	{
+		var divHt = 90 / treeNumber;
+	}
+	  
 	  divHt = divHt + "%";
       document.getElementById("table1").style.height="100%";
       document.getElementById(treeName).style.height=divHt;
@@ -33,36 +40,51 @@ function divHeight(treeNumber, currentNumber)
 }
 //style="position: relative;zoom: 1;"
 </script> 
+<style>
+#treebox
+ {
+	  width:100%;
+	  height:100%; 
+	  border:0 solid blue;
+	  background-color:#d7d7d7;
+	  overflow:hidden;
+  }
 
+</style>
 </head>
 <%
 Long trees = (Long)request.getSession().getAttribute("noOfTrees");
 int noOfTrees = trees.intValue();
-
+Integer treeExpansionLimit = (Integer)session.getAttribute("treeExpansionLimit");	
+System.out.println("treeExpansionLimit:"+treeExpansionLimit);
 %>
  <script>
 
-var trees = new Array();
+//var trees = new Array();
+var resultTree;
+var tree_expansion_Limit ;
 function initTreeView()
 {
-	
-	
-var treeNo = 0;
-		<%  
-			String rootNodeIdOfFirstTree = "";
-			boolean isrootNodeIdOfFirstTree = false;
+   var treeNo = 0;
+  	<%  
+	    String rootNodeIdOfFirstTree = "";
+		boolean isrootNodeIdOfFirstTree = false;
 		for(int i=0;i<noOfTrees;i++) 
 		{
 			
-			String divId = "treebox"+i;
+			String divId = "treebox";
 			String treeDataId = Constants.TREE_DATA+"_"+i;
 			%>
-			divHeight(<%=noOfTrees%>, <%=i%>);
-			trees[treeNo]=new dhtmlXTreeObject(<%=divId%>,"100%","100%",0);
-			trees[treeNo].setImagePath("dhtml_comp/imgs/");
-			trees[treeNo].setOnClickHandler(treeNodeClicked);
+           
+		    tree_expansion_Limit = "<%=treeExpansionLimit%>";
+			//divHeight(<%=noOfTrees%>, <%=i%>);
+			resultTree=new dhtmlXTreeObject(<%=divId%>,"100%","100%",0);
+			resultTree.setImagePath("dhtml_comp/imgs/");
+			//resultTree.setStyle("font-family: Arial, Helvetica, sans-serif;font-size: 12px;font-weight: bold;color: #000000;background-color: #E2E2E2;");
+			resultTree.setOnClickHandler(getTreeNodeChildren);
 			<%
-					Vector treeData = (Vector)request.getAttribute(treeDataId);
+			
+			Vector treeData = (Vector)request.getAttribute(treeDataId);
 					if(treeData != null && treeData.size() != 0)
 						{
 							Iterator itr  = treeData.iterator();
@@ -84,23 +106,29 @@ var treeNo = 0;
 								String img = "results.gif";
 								if(nodeId.endsWith(Constants.LABEL_TREE_NODE))
 								{
-									 img = "ic_folder.gif";
+									// alert("nodeId"+nodeId);
+									 img ="wait_ax.gif";
 								}
 								if (parentId.equals("0"))
 								{
-									nodeColapseCode += "tree.closeAllItems('" + nodeId + "');";
+                                     nodeColapseCode += "tree.closeAllItems('" + nodeId + "');";
 								}
 			%>
-			trees[treeNo].insertNewChild("<%=parentId%>","<%=nodeId%>","<%=data.getDisplayName()%>",0,"<%=img%>","<%=img%>","<%=img%>","");
-			trees[treeNo].setUserData("<%=nodeId%>","<%=nodeId%>","<%=data%>");	
-			trees[treeNo].setItemText("<%=nodeId%>","<%=data.getDisplayName()%>","<%=data.getDisplayName()%>");
+			
+			//alert("nodeId"+"<%=nodeId%>");
+			var displayLabel = "<font size='2' color='#297cc7' face='Arial'><b>"+ "<%=data.getDisplayName()%>"+"</b></font>";
+			resultTree.insertNewChild("<%=parentId%>","<%=nodeId%>",displayLabel,0,"<%=img%>","<%=img%>","<%=img%>","");
+			resultTree.setUserData("<%=nodeId%>","<%=nodeId%>","<%=data%>");	
+			resultTree.setItemText("<%=nodeId%>",displayLabel,"<%=data.getDisplayName()%>");
 			<%	
 							}
 			}	%>
 treeNo = treeNo + 1;						
 		<%}
 	%>	
-		trees[0].selectItem("<%=rootNodeIdOfFirstTree%>",true);
+		
+	//Note : automatic node selection of first node is commented
+	resultTree.selectItem("<%=rootNodeIdOfFirstTree%>",true);
 	
 }
 </script>
@@ -120,26 +148,26 @@ treeNo = treeNo + 1;
 <body onload="initTreeView()">
 <html:errors />
 <%
-	String formAction = Constants.DefineSearchResultsViewJSPAction;
+	String formAction = Constants.ResultsViewJSPAction;
 %>
-<html:form method="GET" action="<%=formAction%>">
+<html:form method="GET" action="<%=formAction%>" > 
 <html:hidden property="currentPage" value=""/>
 <html:hidden property="stringToCreateQueryObject" value="" />
 
-<table id="table1" border="0" height="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="width:100%;" bordercolorlight="#000000" class='tbBordersAllbordersBlack'>
-	<tr>
-		<td valign="top" width="90%" height="100%">
-			<%  for(int i=0;i<noOfTrees;i++) {
+<table  id="table1" border="0"  cellspacing="0" cellpadding="0" style="width:100%" height="100%">
+	<tr height="100%" id="treeRow">
+		<td valign="top" style="padding-top:10px;">
+		<%  for(int i=0;i<noOfTrees;i++) {
 			String divId = "treebox"+i;
 			%>
 
-				<div id="<%=divId%>"  style="width:100%;background-color:white;">
+				<div class="content_txt" id="treebox"  style="width:100%;background-color:white;height:100%">
 				</div>
 			<% } %>
 		</td>
 	</tr>									
 </table>
-		
+	
 </html:form>
 </body>
 </html> 

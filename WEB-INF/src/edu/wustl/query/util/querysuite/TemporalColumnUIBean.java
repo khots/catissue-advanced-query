@@ -8,27 +8,42 @@ import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 
+/**Bean class for TemporalColumn.
+ * @author vijay_pande
+ *
+ */
 public class TemporalColumnUIBean
 {
 
-	OutputTreeDataNode node;
-	String sql;
-	List<String> columnsList;
-	Map<String, IOutputTerm> outputTermsColumns;
-	int columnIndex = 0;
-	IConstraints constraints;
+	private OutputTreeDataNode node;
+	private String sql;
+	private List<String> columnsList;
+	private Map<String, IOutputTerm> outputTermsColumns;
+	private int columnIndex = 0;
+	private IConstraints constraints;
 
+	/**
+	 * Default constructor.
+	 */
 	public TemporalColumnUIBean()
 	{
 
 	}
 
+	/**Parameterized constructor.
+	 * @param node OutputTreeDataNode node
+	 * @param selectSql2 sql string
+	 * @param columnsList columns list
+	 * @param outputTermsColumns output terms columns map
+	 * @param columnIndex column index
+	 * @param constraints constraints of query
+	 */
 	public TemporalColumnUIBean(OutputTreeDataNode node, String selectSql2,
 			List<String> columnsList, Map<String, IOutputTerm> outputTermsColumns, int columnIndex,
 			IConstraints constraints)
 	{
 		this.node = node;
-		this.sql = selectSql2;
+		sql = selectSql2;
 		this.columnsList = columnsList;
 		this.outputTermsColumns = outputTermsColumns;
 		this.columnIndex = columnIndex;

@@ -293,6 +293,13 @@
 	</tag>
 </entity>
 <entity>
+	<name>OptOutIndicator</name>
+	<tag>
+			<tag-name>NOT_SEARCHABLE</tag-name>
+			<tag-value>NOT_SEARCHABLE</tag-value>
+	</tag>
+</entity>
+<entity>
 	<name>VipIndicator</name>
 	<tag>
 		<tag-name>PV_FILTER</tag-name>

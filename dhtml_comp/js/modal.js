@@ -50,6 +50,7 @@ close:function(t){ //user initiated function used to close modal window
 },
 
 forceclose:function(t){ //function attached to default "close" icon of window to bypass "onclose" event, and just close window
+beforepopupclose()
 	dhtmlwindow.rememberattrs(t) //remember window's dimensions/position on the page before closing
 	t.style.display="none"
 	this.veilstack--
@@ -64,6 +65,8 @@ show:function(t){
 }
 } //END object declaration
 
-
+function beforepopupclose()
+{
+}
 document.write('<div id="interVeil"></div>')
 dhtmlwindow.addEvent(window, function(){if (typeof dhtmlmodal!="undefined") dhtmlmodal.adjustveil()}, "resize")

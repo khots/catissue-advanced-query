@@ -6,7 +6,7 @@ package edu.wustl.common.query.queryobject.util;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.wustl.common.querysuite.querableobjectInterface.QueryableAttributeInterface;
 
 /**
  * Interface for InheritanceUtils method.
@@ -29,7 +29,7 @@ public interface InheritanceUtilsInterface
 	 * @param attribute Attribute for which actual attribute is expected.
 	 * @return The actual attribute
 	 */
-	AttributeInterface getActualAttribute(AttributeInterface attribute);
+	QueryableAttributeInterface getActualAttribute(QueryableAttributeInterface attribute);
 
 	/**
 	 * Returns actual association if passed association is a derieved one. Else
@@ -39,3 +39,4 @@ public interface InheritanceUtilsInterface
 	 */
 	AssociationInterface getActualAassociation(AssociationInterface association);
 }
+

@@ -1,38 +1,51 @@
 package edu.wustl.common.query.factory;
 
+import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.util.Utility;
 import edu.wustl.query.util.global.Variables;
-import edu.wustl.common.query.AbstractQuery;
+
 /**
  * Factory to return the AbstractQuery instance.
+ *
  * @author maninder_randhawa
  *
  */
-public class AbstractQueryFactory {
+public final class AbstractQueryFactory
+{
 
-	/**
-	 * Method to create instance of class AbstractQuery. 
-	 * @return The reference of AbstractQuery. 
-	 */
-	public static AbstractQuery getDefaultAbstractQuery()
-	{
+    /**
+     * Private Constructor.
+     */
+    private AbstractQueryFactory()
+    {
+        // empty constructor.
+    }
 
-		return (AbstractQuery) Utility.getObject(Variables.abstractQueryClassName);
-	}
+    /**
+     * Method to create instance of class AbstractQuery.
+     *
+     * @return The reference of AbstractQuery.
+     */
+    public static AbstractQuery getDefaultAbstractQuery()
+    {
+        return (AbstractQuery) Utility
+                .getObject(Variables.abstractQueryClassName);
+    }
 
-	/**
-	 * Method to create instance of class AbstractQuery. 
-	 * @return The reference of AbstractQuery. 
-	 */
-	public static AbstractQuery configureAbstractQuery(String className)
-	{
+    /**
+     *
+     */
+    /**
+     * Method to create instance of class AbstractQuery.
+     *
+     * @param className
+     *            The Class name.
+     * @return The reference of AbstractQuery.
+     */
+    public static AbstractQuery configureAbstractQuery(String className)
+    {
+        return (AbstractQuery) Utility.getObject(className);
+    }
 
-		return (AbstractQuery) Utility.getObject(className);
-	}
-	
-	
-	
-	
-	
-	
 }
+

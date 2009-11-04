@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import edu.wustl.common.query.exeptions.SQLXMLException;
-import edu.wustl.common.query.impl.AbstractXQueryGenerator;
 import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.query.util.global.Utility;
 
 /**
 * @author juberahamad_patel
@@ -24,19 +24,21 @@ public class PredicateGenerator
 	 * the map of expressions that have a for variable associated with them and those varibale
 	 */
 	final private Map<IExpression, String> forVariables;
-	
+
 	/**
 	 * map of expression and corresponding predicates 
 	 *  
 	 */
 	final private Map<IExpression, Predicates> predicates;
 
+	private String xQueryWherePart;
+
 	public PredicateGenerator(Map<IExpression, String> forVariables, String wherePart)
 			throws SQLXMLException
 	{
 		this.forVariables = forVariables;
 		predicates = new LinkedHashMap<IExpression, Predicates>();
-		
+
 		WherePartParser parser = new WherePartParser(wherePart, this);
 		try
 		{
@@ -81,6 +83,7 @@ public class PredicateGenerator
 			}
 		}
 
+		predicate.createAttributeAlias(expression);
 		Predicates values = predicates.get(expression);
 		if (values == null)
 		{
@@ -91,6 +94,18 @@ public class PredicateGenerator
 		predicates.put(expression, values);
 
 	}
-	
-	
+
+	public void setXQueryWherePart(StringBuilder xQueryWherePart)
+	{
+		if (xQueryWherePart.length() != 0)
+		{
+			this.xQueryWherePart = Utility.removeLastAnd(xQueryWherePart.toString());
+		}
+	}
+
+	public String getXQueryWherePart()
+	{
+		return xQueryWherePart;
+	}
+
 }

@@ -1,4 +1,6 @@
-<%@ page import="edu.wustl.query.actionForm.CategorySearchForm"%>
+<!-- Page Modified by (amit_doshi) Bug Fixed :- 12511 -->
+
+<%@ page import="edu.wustl.query.actionforms.CategorySearchForm"%>
 <%@ page import="edu.wustl.query.util.global.Constants"%>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
@@ -6,16 +8,43 @@
 <head>
 <script src="jss/advancequery/queryModule.js"></script>
 <script type="text/javascript" src="jss/advancequery/ajax.js"></script> 
+<script  src="dhtml_comp/js/dhtmlXCommon.js"></script>
+<script  src="dhtml_comp/js/dhtmlXTabbar.js"></script>
+<script  src="dhtml_comp/js/dhtmlXTabBar_start.js"></script>
+<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTabbar.css">
+<link rel='STYLESHEET' type='text/css' href='dhtml_comp/css/style.css'>
+<link rel='STYLESHEET' type='text/css' href='dhtml_comp/css/inside.css'>
 <script>
 <%
 String height = "";
 String currentPage = (String)request.getAttribute(Constants.CURRENT_PAGE);
-System.out.println("currentPage         "+currentPage);
+System.out.println("currentPage"+currentPage);
 	String formName = Constants.categorySearchForm ;
 	String SearchCategory = Constants.SearchCategory ;
+	Boolean iseditedQuery=false;
+	if(request.getAttribute(Constants.IS_EDITED_QUERY)!=null || (request.getParameter(Constants.IS_EDITED_QUERY)!=null && request.getParameter(Constants.IS_EDITED_QUERY).equalsIgnoreCase("true")))
+	{
+		iseditedQuery = true;
+	}
 %>
+
+var tabbar;
+var confirmAnswer;
+var tabSelectedByDefault;
+var mainTabstyle="width:265px; height:650px;";
+var searchDivstyle="width:259px;height:490px;overflow:auto;border-top:1px solid #cccccc;";
+
+var browser=navigator.appName;
+var contentHeight = "630px";
+var contentWidth = "267px";
+	if(navigator.userAgent.indexOf('Safari')!=-1)
+		 {
+			mainTabstyle="width:275px; height:660px;";
+			searchDivstyle="width:265px;height:490px;overflow:auto;";
+		 }
 	if(navigator.appName == "Microsoft Internet Explorer")
 		{
+			contentHeight = "631px";
 			<%
 				height = "60%";
 			%>
@@ -56,7 +85,153 @@ System.out.println("currentPage         "+currentPage);
 		retriveSearchedEntities('<%= SearchCategory %>','<%=formName%>','<%=currentPage%>', key);
 		return ;
 	}
+	function defaultsearchTab(tabbar,isDisableOther)
+	{
+		//selectedTab = "searchTab";
+		tabSelectedByDefault = true;
+		switchToTab("searchTab");
+		tabbar.setTabActive("searchTab");
+		if(isDisableOther)
+		{
+			tabbar.disableTab('categoryTab',true); 
+		}
+	}
+	function defaultcategoryTab(tabbar,isDisableOther)
+	{
+		tabSelectedByDefault = true;
+		switchToTab("categoryTab");
+		tabbar.setTabActive("categoryTab");
+		getAllCategories("Category.do?isQuery="+'<%=isQuery%>');
+		if(isDisableOther)
+		{
+			tabbar.disableTab('searchTab',true); 
+		}
+	}
+	function categoryTab(tabbar)
+	{
+		var dataQuery = document.getElementById("pageOf").value
+				if(tabbar.getActiveTab()!="categoryTab")
+				{
+				   var isDagEmpty = CheckDagContent();
+				   var answer= true;
+				   var url		='./pages/advancequery/content/search/querysuite/ConfirmationPopUpYesNo.jsp?messageKey=query.clearDag';
+				   if(!isDagEmpty)	
+					{
+					   pvwindow=dhtmlmodal.open('Clear DAG', 'iframe', url,'Clear DAG', 'width=450px,height=105px,center=1,resize=1,scrolling=0');
+						pvwindow.onclose=function()
+						{
+							if(confirmAnswer=="true")
+							{
+								changeActiveTabToCategory(tabbar);
+								tabbar.setTabActive("categoryTab");
+							}
+	  						return true;
+						}
+					}
+					else
+				 	 {
+						changeActiveTabToCategory(tabbar);
+						return true;
+				 	 }
+				 	 
+			 	}
+			
+		return false;
+	}
+	function searchTab(tabbar)
+	{
+		if(tabbar.getActiveTab()!="searchTab")
+		{
+		   var isDagEmpty = CheckDagContent();
+		   var answer= true;
+		   var url		='./pages/advancequery/content/search/querysuite/ConfirmationPopUpYesNo.jsp?messageKey=query.clearDag'; 
+		  if(!isDagEmpty)
+			{
+			  pvwindow=dhtmlmodal.open('Clear DAG', 'iframe', url,'Clear DAG ', 'width=450px,height=105px,center=1,resize=1,scrolling=0');
+			  pvwindow.onclose=function()
+			  {
+				  if(confirmAnswer=="true")
+					{
+					  changeActiveTabToEntities(tabbar);
+					  tabbar.setTabActive("searchTab");
+					}
+					return true;
+			  }
+			}
+		  else
+		  {
+			  changeActiveTabToEntities(tabbar);  
+			  return true;
+		  }
+           // answer = confirm ("Query in DAG will be cleared. Do you want to search entities?")
+		  
+		}
+		return false;
+	}
 
+function changeActiveTabToCategory(tabbar)
+{
+	switchToTab("categoryTab");
+	getAllCategories("Category.do");
+	clearDag();
+}
+
+function changeActiveTabToEntities(tabbar)
+{
+	switchToTab("searchTab");
+	searchEntity("SearchEntity.do");
+	clearDag();
+}	
+
+function my_func(idn,ido){
+               
+						
+				if( ! tabSelectedByDefault)
+				{
+						if(idn=='categoryTab')
+						{
+							return categoryTab(tabbar);
+							
+						}
+						else
+						{
+							return searchTab(tabbar);
+						}
+					
+						
+				}
+				tabSelectedByDefault = false;
+				return true;
+            };
+	
+	//This function will the called while switching between Tabs
+	function switchToTab(selectedTab)
+	{
+		var msgRow = document.getElementById('AddLimitsMsgRow');
+		//var catTab = document.getElementById('categorySet');
+		if(msgRow != null)
+		{
+			msgRow.innerHTML = " <table border='0' width='100%' height='28' background='images/advancequery/bg_content_header.gif' cellspacing='0' cellpadding='0'>"+
+            "<tr width='100%'><td style='border-bottom: 1px solid #cccccc;padding-left:5px;' valign='middle' class='PageSubTitle' colspan='8' >Define Limits </td></tr></table>";
+		}
+		var validationMsgRow = document.getElementById('validationMessagesRow');
+		if(validationMsgRow != null)
+		{
+			validationMsgRow.innerHTML = "";
+		}
+		var addLimitsSection = document.getElementById('addLimits');
+		if(addLimitsSection != null)
+		{
+			addLimitsSection.innerHTML = "";
+		}
+		var addLimitsButton = document.getElementById('AddLimitsButtonRow');
+		if(addLimitsButton != null)
+		{
+			addLimitsButton.innerHTML = "";
+		}
+
+	}
+	
 </script>
 </head>
 <%
@@ -78,51 +253,78 @@ else
 <body onkeyup="checkKey(event)" >
 <% } %>
 <html:errors />
-
 <html:form method="GET" action="SearchCategory.do" focus="textField">
 <html:hidden property="currentPage" value=""/>
-	<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" height="100%" bordercolorlight="#000000" id="table11">
+<input type="hidden" name="isEditedQuery" id="isEditedQuery" value="<%=iseditedQuery%>"/>
+<table summary="" cellpadding="0" cellspacing="0" border="0" width="100%">
+  <table summary="" cellpadding="0" cellspacing="0" border="0" width="100%">
 		<tr>
-			<td valign="top"> 
-				<table border="0" width="100%" valign="top" cellspacing="0" height="100%">
-					
-					<tr bordercolorlight="#000000" >
+			<td>
+				<script>document.write('<div  id="a_tabbar" style="'+mainTabstyle+'">')</script>
+			</td>
+            <td>
+			<div id='html_1' style="width:100%;">
+				<table border="0" width="100%" cellspacing="0" cellpadding="0">
+				<tr> 
+					<td colspan="4">&nbsp;</td>
+				</tr>
+				<tr> 
+					<td>&nbsp;</td>
+				<td  colspan="2" valign="middle" class="small_txt_grey1"  height="30">
+									<span valign="middle"><bean:message key="query.selectCategory.msg"/></span>		
+					</td>
+				<td>&nbsp;</td>
+				</tr>
+				<tr> 
+					<td>&nbsp;</td>
+					<td colspan="2" id='categorySetTd'  bordercolor="#cccccc" width="100%" >
+								<div id="categorySet"  style="padding :0px; width :100%; height : 552px;overflow : auto; border-top:1px solid #cccccc; "></div>
+							 </td>
+					<td>&nbsp;</td>
+				</tr>
+				</table>
+			</div>
+			</td> 
+          <td>
+		   <div id='html_2' style="width:100%;">
+				<table border="0" width="100%" cellspacing="0" cellpadding="0">
+				<tr> 
+					<td colspan="4">&nbsp;</td>
+				</tr>
+				<tr> 
+					<td>&nbsp;</td>
+					<td  width="70%" valign="middle" ><html:text styleId="textSearch" property="textField" styleClass="textfield_undefined" onkeydown="setFocusOnSearchButton(event)" size="30"/></td>
+					<td  width="44" valign="middle" align="left" style="padding-left:4px;" >
+						<a id="goButton"  href="javascript:retriveSearchedEntities('<%= SearchCategory %>','<%=formName%>','<%=currentPage%>')">
+							<img border="0" alt="Go" src="images/advancequery/b_go_blue.gif" align="absmiddle" hspace="3" /></a>
+					</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr> 
+					<td>&nbsp;</td>
+					<td colspan="2" class="small_txt_grey" height="20"><bean:message key="query.chooseCategoryLable"/></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr id="collapsableHeader" valign="top"   height="20">
 						<td>&nbsp;</td>
-						<td width="75%" valign="middle" ><html:text property="textField" styleClass="textfield_undefined" onkeydown="setFocusOnSearchButton(event)" size="30"/></td>
-						<td width="25%" valign="middle" >
-					
-							<img src="images/advancequery/b_go_blue.gif" width="44" align="absmiddle" hspace="3" onclick="retriveSearchedEntities('<%= SearchCategory %>','<%=formName%>','<%=currentPage%>');"/>
-					    </td>
-					</tr>
-					<tr >
-					    <td>&nbsp;</td>
-						<td  align="left" valign="top" colspan="3" class="small_txt_grey"><bean:message key="query.chooseCategoryLable"/></font></td>
-					</tr>
-					<tr id="collapsableHeader" valign="top"  width="97%" height="20">
-						<td valign="top"   >&nbsp;</td>
-						<td id="advancedSearchHeaderTd" valign="top" style="border-top: 1px solid #cccccc; border-left:1px solid #cccccc;border-bottom:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif">
-							<img src="images/advancequery/t_adv_option.gif" height="22px"/>									
+						<td id="advancedSearchHeaderTd" valign="middle" style="border-top: 1px solid #cccccc; border-left:1px solid #cccccc;padding-bottom:4px;" class="table_header_query" height="29">
+							<span class="PageSubTitle" valign="middle"><bean:message key="query.advancedOptions"/></span>		
 						</td>
-						<th id="imageContainer" valign="middle" align="right" style="border-top: 1px solid #cccccc; border-right:1px solid #cccccc;border-bottom:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" >
-							<a id="image" onClick="expand()" style="display:block"> <img src="images/advancequery/nolines_plus.gif" /> </a>
-						</th>
-						<td  >&nbsp;</td>
-					</tr>
-					<tr valign="top" ><td valign="top" id="td1">&nbsp;</td>
-						<td colspan="2"><table  class="collapsableTable" style="display:none" width="100%" cellspacing="0" cellpadding="0"  id="collapsableTable" >
+						<td id="imageContainer" valign="middle" align="right" style="border-top: 1px solid #cccccc; border-right:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" >
+							<a id="image" onClick="expand()" style="display:block"><img src="images/advancequery/nolines_plus.gif" id="plusImage"/></a></td>
+						<td>&nbsp;</td>
+				</tr>
+				<tr valign="top" >
+						<td>&nbsp;</td>
+						<td  colspan="2" >
+						<div id="collapsableTable" style="display:none;height:50">
+						<table  border="0"   cellspacing="1" cellpadding="2"   width="100%" class="login_box_bg">
 								<tr id="class_view">
-									<td class="standardTextQuery" style="border-top: 1px solid #cccccc; "><html:checkbox  property="classChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.class"/></html:checkbox></td>
+									<td  class="content_txt"  valign="top" ><html:checkbox  property="classChecked" styleId="classCheckbox" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.class"/></html:checkbox></td>
 								</tr>
 								<tr id="attribute_view" >
-									<td class="standardTextQuery"><html:checkbox  property="attributeChecked" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>' >&nbsp; <bean:message key="query.attribute"/></html:checkbox></td>
+									<td class="content_txt" valign="top"><html:checkbox  property="attributeChecked" styleId="attributeCheckbox" onclick="setIncludeDescriptionValue()" value='<%=Constants.ON%>' >&nbsp; <bean:message key="query.attribute"/></html:checkbox></td>
 								</tr>
-								<tr id="permissible_view" >
-									<td class="standardTextQuery"><html:checkbox property="permissibleValuesChecked" disabled="true" onclick="permissibleValuesSelected(this)" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.permissibleValues"/></html:checkbox></td>
-								</tr>
-								<tr id="description_view" >
-									<td class="standardTextQuery"><html:checkbox  property="includeDescriptionChecked" value='<%=Constants.ON%>'>&nbsp; <bean:message key="query.includeDescription"/> </html:checkbox></td>
-								</tr>
-								<tr><td>&nbsp;</td></tr>
 								<tr id="radio_view" >
 									<td class="standardTextQuery">
 										<!-- Bug #5131: Removing the radios until Concept Code search is fixed  -->
@@ -130,33 +332,74 @@ else
 										<!-- html:radio property="selected" value="conceptCode_radioButton" onclick="radioButtonSelected(this)" disabled="true" /--><!--bean:message key="query.conceptCode"/-->
 									</td>
 								</tr>											
-							</table>
+						</table>
+						<div>
 						</td>
-						<td valign="top" style="display:none" id="td3">&nbsp;</td>
-					</tr>							 	
-					<tr>
-						<td height="5px"></td>
-				 	</tr>
-					<tr valign="top" class="row" width="98%"  height="1%">
-						<td  height="1%">&nbsp;</td>
-						<td colspan="2"  valign="top" style="border-top: 1px solid #cccccc; border-left:1px solid #cccccc;border-bottom:0px solid #cccccc;border-right:1px solid #cccccc;" background="images/advancequery/bg_content_header.gif" height="30">
-							
-							<img src="images/advancequery/t_search_results.gif" />		
-						</td>
-						<td  height="1%">&nbsp;</td>
+						<td>&nbsp;</td>
 					</tr>
-					<tr valign="top" class="row" width="100" height="400">
-						<td width="100" height="400">&nbsp;</td>
-						<td height="400" width="100" colspan="2" id='resultSetTd' class="tdWithoutTopBorder" bordercolor="#cccccc">
-							<div id="resultSet"  style="border : padding : 4px; width : 230px; height : 550px; overflow : auto; "></div>
-						</td>
+					<tr valign="top"   height="10" >
 						<td >&nbsp;</td>
+						<td colspan="2"  valign="middle"  class="small_txt_grey1" >
+							Select an object to query
+						</td>
+						<td>&nbsp;</td>
 					</tr>
-					
-			</table>
-		</td>
-	</tr>														
-</table>
-</html:form>
+					<tr valign="top"   height="20" >
+						<td >&nbsp;</td>
+						<td width="100" colspan="2" id='resultSetTd'>
+						<script>document.write('<div  id="resultSet" style="'+searchDivstyle+'">')</script>
+						</div>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+				</table>
+			</div>
+			</td>
+        </tr>
+	</table>
+
+	</html:form>
+<script>
+			tabbar=new dhtmlXTabBar("a_tabbar","top");
+            tabbar.setImagePath("dhtml_comp/imgs/");
+
+          //  tabbar.setSkinColors("#FCFBFC","#F4F3EE");
+			tabbar.setSkinColors("#FFFFFF","#FFFFFF");
+			tabbar.addTab("categoryTab"," <span id='simple_tab'> Simple </span> ","120");
+            tabbar.addTab("searchTab","  <span id='Advanced_tab'> Advanced </span>","120px");
+			tabbar.setContent("categoryTab","html_1");
+            tabbar.setContent("searchTab","html_2");
+            tabbar.setTabActive("categoryTab");
+			tabbar.setSize(contentWidth,contentHeight,true);
+			//tabbar.setSkin("modern");
+			tabbar.setOnSelectHandler(my_func);
+		//	tabbar.setSkinColors("white","#D9EEFC");
+			//tabbar.onClick(my_func);
+       
+			
+</script>
+
+<script>
+ /*var resultSetTd = document.getElementById("resultSetTd");
+ resultSetTd.style.height="565px";*/
+ var dataQuery = document.getElementById("pageOf").value
+ var isCategoryQuery=<%=request.getAttribute(Constants.IS_Category)%>
+ if(isCategoryQuery!=null)
+{ 
+	if(isCategoryQuery)
+	{
+		 defaultcategoryTab(tabbar,<%=iseditedQuery%>);
+	}
+	else
+	{
+		defaultsearchTab(tabbar,<%=iseditedQuery%>);		
+	}
+}
+else
+{
+  defaultcategoryTab(tabbar,false);
+}
+
+</script>
 </body>
 </html>

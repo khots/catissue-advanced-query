@@ -4,14 +4,13 @@ package edu.wustl.query.action;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.domain.Entity;
-import edu.wustl.cab2b.server.cache.EntityCache;
-import edu.wustl.query.actionForm.CategorySearchForm;
+import edu.wustl.common.querysuite.querableobject.QueryableObjectUtility;
+import edu.wustl.common.querysuite.querableobjectInterface.QueryableObjectInterface;
+import edu.wustl.query.actionforms.CategorySearchForm;
 import edu.wustl.query.htmlprovider.GenerateHTMLDetails;
 import edu.wustl.query.htmlprovider.HtmlProvider;
 import edu.wustl.query.util.global.Constants;
@@ -22,7 +21,7 @@ import edu.wustl.query.util.global.Constants;
  * @author deepti_shelar
  *
  */
-public class LoadDefineSearchRulesAction extends Action
+public class LoadDefineSearchRulesAction extends AbstractQueryBaseAction
 {
 
 	/**
@@ -35,34 +34,31 @@ public class LoadDefineSearchRulesAction extends Action
 	 * @return ActionForward actionForward
 	 */
 	@Override
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
+	protected ActionForward executeBaseAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		CategorySearchForm searchForm = (CategorySearchForm) form;
-		String entityName = searchForm.getEntityName();
-
-		GenerateHTMLDetails generateHTMLDetails = new GenerateHTMLDetails();
-		generateHTMLDetails.setSearchString(searchForm.getTextField());
-		generateHTMLDetails.setAttributeChecked(Boolean.valueOf(searchForm.getAttributeChecked()));
-		generateHTMLDetails.setPermissibleValuesChecked(Boolean.valueOf(searchForm
-				.getPermissibleValuesChecked()));
-
-		HtmlProvider htmlProvider = new HtmlProvider(generateHTMLDetails);
-
+		String entityId = searchForm.getEntityName();
+        String pageOf = request.getParameter(Constants.PAGE_OF);
+        GenerateHTMLDetails generateHTMLDetails = null;
+        if(searchForm.getTextField()!=null)
+        {
+        	generateHTMLDetails = new GenerateHTMLDetails();
+        	generateHTMLDetails.setSearchString(searchForm.getTextField());
+        	generateHTMLDetails.setAttributeChecked(Boolean.valueOf(searchForm.getAttributeChecked()));
+        	generateHTMLDetails.setPermissibleValuesChecked(Boolean.valueOf(searchForm
+    				.getPermissibleValuesChecked()));
+        }
+        QueryableObjectInterface queryObject = QueryableObjectUtility.getQueryableObjectFromCache(Long.valueOf(entityId));
+        HtmlProvider htmlProvider = new HtmlProvider(generateHTMLDetails);
 		String html = "";
-		/*	Map searchedEntitiesMap = (Map) request.getSession().getAttribute(Constants.SEARCHED_ENTITIES_MAP);
-			if (searchedEntitiesMap != null)
-			{
-		*/Entity entity = (Entity) EntityCache.getCache().getEntityById(Long.valueOf((entityName)));
-		
-		if (entity != null)
+		if (queryObject != null)
 		{
-			request.getSession().removeAttribute(edu.wustl.query.util.global.Constants.SELECTED_CONCEPT_LIST);
-			html = htmlProvider.generateHTML(entity, null,generateHTMLDetails,null);
+			html = htmlProvider.generateHTML(queryObject, null,pageOf);
 		}
-		//	}
+		generateHTMLDetails = htmlProvider.getGenerateHTMLDetails();
 		request.getSession().setAttribute(Constants.ENUMRATED_ATTRIBUTE, generateHTMLDetails.getEnumratedAttributeMap());
-		request.getSession().setAttribute(Constants.ENTITY_NAME, entityName);
+		request.getSession().setAttribute(Constants.ENTITY_NAME,entityId);
 		response.setContentType(Constants.CONTENT_TYPE_TEXT);
 		response.getWriter().write(html);
 		return null;

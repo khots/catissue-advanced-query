@@ -1,3 +1,4 @@
+
 package edu.wustl.query.domain;
 
 import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
@@ -8,28 +9,29 @@ import edu.wustl.common.querysuite.queryobject.IAbstractQuery;
  */
 public class WorkflowItem
 {
+
 	private Long id;
 	private int position;
 	private IAbstractQuery query;
 
 	/**
 	 * This method returns the workFlowItem id 
-	 * @return workFlowItem id 
+	 * @return workFlowItem id.
 	 */
 	public Long getId()
 	{
 		return id;
 	}
-	
+
 	/**
-	 * This method sets the workFlowItem id 
-	 * @param id is workFlowItem id 
+	 * This method sets the workFlowItem id
+	 * @param id is workFlowItem id.
 	 */
 	public void setId(Long id)
 	{
 		this.id = id;
 	}
-	
+
 	/**
 	 * returns the position of an item in workFlow
 	 * @return position of item in workFlow
@@ -38,7 +40,7 @@ public class WorkflowItem
 	{
 		return position;
 	}
-	
+
 	/**
 	 * @param position  is position of item in workFlow
 	 */
@@ -46,7 +48,7 @@ public class WorkflowItem
 	{
 		this.position = position;
 	}
-	
+
 	/**
 	 * @return the query from workflowItem
 	 */
@@ -56,7 +58,7 @@ public class WorkflowItem
 	}
 
 	/**
-	 * @param query the Query object in workFlowItem 
+	 * @param query the Query object in workFlowItem.
 	 */
 	public void setQuery(IAbstractQuery query)
 	{

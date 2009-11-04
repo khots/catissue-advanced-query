@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -20,11 +19,11 @@ import edu.wustl.query.util.global.Constants;
  * And then it forwards control to QueryTreeView.jsp.
  * @author deepti_shelar
  */
-public class QueryTreeViewAction extends Action
+public class QueryTreeViewAction extends AbstractQueryBaseAction
 {
 
 	@Override
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
+	protected ActionForward executeBaseAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();

@@ -9,7 +9,7 @@ public class SelectedConcept
 	private String conceptName;
 	private String conceptCode;
 	private String medCode;
-	
+
 	/**
 	 * 
 	 * @return
@@ -18,6 +18,7 @@ public class SelectedConcept
 	{
 		return vocabName;
 	}
+
 	/**
 	 * 
 	 * @param vocabName
@@ -26,6 +27,7 @@ public class SelectedConcept
 	{
 		this.vocabName = vocabName;
 	}
+
 	/**
 	 * 
 	 * @return
@@ -34,6 +36,7 @@ public class SelectedConcept
 	{
 		return vocabVersion;
 	}
+
 	/**
 	 * 
 	 * @param vocabVersion
@@ -42,6 +45,7 @@ public class SelectedConcept
 	{
 		this.vocabVersion = vocabVersion;
 	}
+
 	/**
 	 * 
 	 * @return
@@ -50,6 +54,7 @@ public class SelectedConcept
 	{
 		return conceptName;
 	}
+
 	/**
 	 * 
 	 * @param conceptName
@@ -58,6 +63,7 @@ public class SelectedConcept
 	{
 		this.conceptName = conceptName;
 	}
+
 	/**
 	 * 
 	 * @return
@@ -66,6 +72,7 @@ public class SelectedConcept
 	{
 		return conceptCode;
 	}
+
 	/**
 	 * 
 	 * @param conceptCode
@@ -74,6 +81,7 @@ public class SelectedConcept
 	{
 		this.conceptCode = conceptCode;
 	}
+
 	/**
 	 * 
 	 * @return
@@ -82,6 +90,7 @@ public class SelectedConcept
 	{
 		return medCode;
 	}
+
 	/**
 	 * 
 	 * @param medCode

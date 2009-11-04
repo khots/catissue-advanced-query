@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 import edu.wustl.common.query.AbstractQuery;
 import edu.wustl.common.query.itablemanager.ITableManager;
-import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  * This class represents the Thread to execute the query
@@ -23,9 +23,9 @@ import edu.wustl.common.util.dbManager.DAOException;
 public class QueryExecutionThread implements Runnable
 {
 
-	AbstractQuery abstractQueryObj;
+	protected AbstractQuery abstractQueryObj;
 	// JDBC result set for this query
-	ResultSet results;
+	protected ResultSet results;
 
 	/**
 	 * External Condition which controls cancel
@@ -33,6 +33,14 @@ public class QueryExecutionThread implements Runnable
 	 */
 	protected boolean cancelThread = false;
 
+	/**
+	 * Default Constructor
+	 */
+	protected QueryExecutionThread()
+	{
+		
+	}
+	
 	/**
 	 * PARAMETERIZED CONSTRUCTOR
 	 * @param abstractQueryObj 
@@ -49,13 +57,12 @@ public class QueryExecutionThread implements Runnable
 	 * @throws DAOException 
 	 * @throws SQLException 
 	 */
-	public static int getQueryExecutionId(AbstractQuery abstractQueryObj) throws DAOException,
+	public static Long getQueryExecutionId(AbstractQuery abstractQueryObj) throws DAOException,
 			SQLException
 	{
 		ITableManager manager = ITableManager.getInstance();
 
-		return manager.insertNewQuery(-1L, abstractQueryObj.getUserId(), abstractQueryObj
-				.getQuery().getId());
+		return manager.insertCountQuery(abstractQueryObj);
 	}
 
 	/**

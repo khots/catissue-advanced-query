@@ -7,7 +7,7 @@
 <%@ page import="edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.Variables"%>
 <%@ page import="edu.wustl.common.tree.QueryTreeNodeData"%>
-<%@ page import="edu.wustl.query.actionForm.CategorySearchForm"%>
+<%@ page import="edu.wustl.query.actionforms.CategorySearchForm"%>
 <%@ page import="edu.wustl.common.beans.NameValueBean"%>
 <html>
 <head>
@@ -22,7 +22,6 @@
 	<script  src="dhtml_comp/jss/dhtmlXCommon.js"></script>
 	<script src="jss/advancequery/script.js"></script>
 	<%
-	String callAction=Constants.CONFIGURE_GRID_VIEW_ACTION;
 	CategorySearchForm form = (CategorySearchForm)request.getAttribute("categorySearchForm");
 	String currentSelectedNodeInTree = form.getCurrentSelectedNodeInTree();
 	String showSelected = "false";
@@ -30,7 +29,6 @@
 %>
 	
 
-<html:form method="GET" action="<%=callAction%>">
 <html:hidden property="operation" value=""/>
 <body>
 <table border="0" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF"  bordercolorlight="#000000" >
@@ -110,8 +108,6 @@
 			</tr>
 </table>
 </body>
-</html:form>
-
 <SCRIPT LANGUAGE="JavaScript">
 
     function addOption(theSel, theText, theValue)
@@ -309,25 +305,7 @@
 			element.options[i].selected=true;
 		}
 	}
-    function onSubmit(theSelTo,operation)
-	{		
-		
-		
-		if(operation == 'finish')
-		{
-			if(theSelTo.length==0)
-			{
-				alert("We need to add atleast one column to define view");
-				return ;
-			}
-			selectOptions(document.forms[0].selectedColumnNames);
-		}
-		document.forms[0].operation.value = operation;
-		document.forms[0].action =  "ConfigureGridView.do";	
-		document.forms[0].submit();		
-	}
-	
-</script>
+ </script>
     <script>
 	var tree;	 
 function initTreeView()

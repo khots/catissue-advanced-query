@@ -1,0 +1,8 @@
+<Roles>
+	<Role>
+		<RoleType>ADMINISTRATOR_ROLE</RoleType>
+		<RoleName>Administrator</RoleName>
+		<GroupType>ADMINISTRATOR_GROUP_ID</GroupType>
+		<GroupName>Administrator_Group</GroupName>
+	</Role>
+</Roles>

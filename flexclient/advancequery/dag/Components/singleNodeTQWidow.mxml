@@ -14,7 +14,8 @@
 		import mx.collections.ArrayCollection;
 		import Components.DAGConstants;
 		import mx.managers.PopUpManager;
-		import mx.controls.List;		
+		import mx.controls.List;
+		import mx.controls.Alert;		
 		 [Bindable]
 		 public var entityLabelString : String = null;	
 		
@@ -73,15 +74,125 @@
            PopUpManager.removePopUp(this);
            this.parentApplication.operationforView=""; //to overcome from edit mode
         }
+        
+        private function allBetweenValidations() : Boolean
+        {
+        	var isValid : Boolean = true;
+			var operand : String  =  attributesCb.selectedItem.toString();
+			var nodeList : ArrayCollection = entityDp[operand];
+			var operandType : String  = String(nodeList.getItemAt(1));
+			var isfirstTextInputValid : Boolean  =  true;
+			var isSecondTextInputValid : Boolean =  true;
+			var firstTimeIntervalCb : ComboBox ;
+			var secondTimeIntervalCb : ComboBox
+			if(operandType == "Date")
+            {
+	            var firstVBox : VBox = myBox.getChildByName("firstBetweenVBox") as VBox;
+	            if(firstVBox != null)
+	            {
+	             	//Get the first input box controls
+	             	var firstInputBox : TextInput = firstVBox.getChildByName("firstBetweenInput") as TextInput;
+	           		isfirstTextInputValid = validateTextInput(firstInputBox);
+	             	firstTimeIntervalCb = firstVBox.getChildByName("firstBetweenCb") as ComboBox;
+	            }
+		        var secondVBox : VBox = myBox.getChildByName("secondBetweenVBox") as VBox;
+		       	if(secondVBox != null)
+	 	        {
+	    	         var secondInputBox : TextInput = secondVBox.getChildByName("secondBetweenInput") as TextInput;
+	                 isSecondTextInputValid = validateTextInput(secondInputBox);
+	                 secondTimeIntervalCb = secondVBox.getChildByName("secondBetweenCb") as ComboBox; 
+	             }
+	        }
+	        else
+	        {
+	        
+	              	 	//This is case when second operand is an Quantative attribute
+	              	 	//In this we we will have Date Literals
+	              	 	var datePicker1 : DateField = myBox.getChildByName("datePicker1") as DateField;
+	              	 	if(datePicker1 != null)
+	              	 	{
+	              	 	
+	              	 	} 
+	              	 	var datePicker2 : DateField = myBox.getChildByName("datePicker2") as DateField;
+	              	 	if(datePicker2 != null)
+	              	 	{
+
+	              		}	    	
+	          }
+	          if(firstTimeIntervalCb.selectedIndex == -1 || secondTimeIntervalCb.selectedIndex ==-1)
+	          {
+	             	createBigTip("Please select the values from  Time Interval dropdown boxes.")
+				 	AlertManager.showWarning("Please select the values from Time Interval dropdown boxes.");
+					isValid = false;
+	          } 
+	          else if(isfirstTextInputValid == false || isSecondTextInputValid == false)
+	          {
+	               	createBigTip("Please enter the values for Time value Input boxes.")
+	               	AlertManager.showWarning("Please enter the values for Time value Input boxes.");
+					isValid = false;
+	          } 
+	               
+        	return isValid;
+        }
+        
+        private function  allValidations() : Boolean
+        {
+        	 //Here first validate if all combo boxes are selected for a value
+			var isValid : Boolean = true;
+			if(arithmaticOpsCb.selectedIndex == -1 || attributesCb.selectedIndex == -1 || relationalOpsCb.selectedIndex == -1)
+			{
+				//if  value from any of the combo box is not selected then return
+				createBigTip("Please select the values from dropdown boxes.")
+				AlertManager.showWarning("Please select the values from dropdown boxes.");
+				isValid = false;
+			}
+			else
+			{
+				//If  all comboboxes are selected on LHS then 
+				//then validate the RHS side
+				if(relationalOpsCb.selectedItem.toString() == "Between")
+				{
+	               isValid = allBetweenValidations();
+	            }
+	            else
+	            {
+	            	//This is the case if it's not between relational op
+	            	var  existingTextBox : TextInput = myBox.getChildByName("timeInputBox") as TextInput;
+	            	if(existingTextBox != null)
+	            	{
+	            		var isTextInputValid : Boolean = validateTextInput(existingTextBox);
+	            		if(isTextInputValid == false)
+	            		{
+	            			createBigTip("Please enter the value for Time value for Input box.")
+	               			AlertManager.showWarning("Please enter the value for Time value for Input box.");
+							isValid = false;
+	            		}
+	            	}
+	            }
+			}
+			
+        	return isValid;
+        }
 		
 		private function submitData() : void
 		{
+			var isValid:Boolean = allValidations();
+			if(isValid == false)
+			   return ;		
+			else
+			{
+				destroyBigTip();
+			}
 			var flag:Boolean = validateColumnName();
            	  if(flag == false) 
            	  	 return;           	  	 
            	  	 
-			var rhsTimeValue : String = "";
-          	var rhsTimeIntervalValue : String =  "";
+			var rhsTimeValue1 : String = "";
+          	var rhsTimeIntervalValue1 : String =  "";
+          	
+          	var rhsTimeValue2 : String = "";
+          	var rhsTimeIntervalValue2 : String =  "";
+          	
            	var customFormulaString : String = "";
             
             var lhsTimeValue : String = "";
@@ -138,28 +249,123 @@
              }
              
              //Handling RHS time value and Intervals
+             //if Relational operator is "Between", rthen we will have two 
+             //time values and two time Intervals
+             if(relationalOpsCb.selectedItem.toString() == "Between")
+             {
+             	var operand : String  =  attributesCb.selectedItem.toString();
+				var nodeList : ArrayCollection = entityDp[operand];
+				var operandType : String  = String(nodeList.getItemAt(1));
+             	
+              	if(operandType == "Date")
+              	{
+	              	var firstVBox : VBox = myBox.getChildByName("firstBetweenVBox") as VBox;
+	             	if(firstVBox != null)
+	             	{
+	             		//Get the first input box controls
+	             		var firstInputBox : TextInput = firstVBox.getChildByName("firstBetweenInput") as TextInput;
+	             		rhsTimeValue1 = firstInputBox.text;
+	             		singleNodeCustomFormula.setTimeValue1(rhsTimeValue1);
+	             		
+	             		var firstTimeIntervalCb : ComboBox = firstVBox.getChildByName("firstBetweenCb") as ComboBox;
+	             	    rhsTimeIntervalValue1 = firstTimeIntervalCb.selectedItem.toString();
+	             	    singleNodeCustomFormula.setTimeInterval1(rhsTimeIntervalValue1);
+	             	}
+	             	else
+	             	{
+	             		singleNodeCustomFormula.setTimeValue1("null");
+	             		singleNodeCustomFormula.setTimeInterval1("null");
+	             	}
+	             	
+	             	var secondVBox : VBox = myBox.getChildByName("secondBetweenVBox") as VBox;
+	             	if(secondVBox != null)
+	             	{
+	             		var secondInputBox : TextInput = secondVBox.getChildByName("secondBetweenInput") as TextInput;
+	             		rhsTimeValue2 = secondInputBox.text;
+	             		singleNodeCustomFormula.setTimeValue2(rhsTimeValue2);
+	                    
+	                    var secondTimeIntervalCb : ComboBox = secondVBox.getChildByName("secondBetweenCb") as ComboBox; 
+	             	    rhsTimeIntervalValue2 = secondTimeIntervalCb.selectedItem.toString();
+	             	    singleNodeCustomFormula.setTimeInterval2(rhsTimeIntervalValue2); 
+	             	}
+	             	else
+	             	{
+	             		singleNodeCustomFormula.setTimeValue2("null");
+	             		singleNodeCustomFormula.setTimeInterval2("null");
+	             	}
+	              }
+	              else
+	              {
+	              	 //This is case when second operand is an Quantative attribute
+	              	 //In this we we will have Date Literals
+	              	 var datePicker1 : DateField = myBox.getChildByName("datePicker1") as DateField;
+	              	 if(datePicker1 != null)
+	              	 {
+	              	 	month = (datePicker1.selectedDate.getMonth()+1).toString();
+	           	 	 	if(month.length == 1)
+	           	 	 	{
+	           	 	    	month = "0"+month;
+	           	 	 	}
+	           	 	    
+	           	 	 	day = datePicker1.selectedDate.getDate().toString();
+	           	 	 	if(day.length == 1)
+	           	 	 	{
+	           	 	    	 day = "0"+day;
+	           	 	 	}
+						//timeStamp is added to the datePicker	
+						
+	     				rhsTimeValue1 = month + "/" + day +"/" + datePicker1.selectedDate.getFullYear();
+	           	 	 	singleNodeCustomFormula.setTimeValue1(rhsTimeValue1);
+	           	 	 	singleNodeCustomFormula.setTimeInterval1("null");
+	              	 	
+	              	 } 
+	              	 var datePicker2 : DateField = myBox.getChildByName("datePicker2") as DateField;
+	              	 if(datePicker2 != null)
+	              	 {
+	              	 	month = (datePicker2.selectedDate.getMonth()+1).toString();
+	           	 	 	if(month.length == 1)
+	           	 	 	{
+	           	 	    	month = "0"+month;
+	           	 	 	}
+	           	 	    
+	           	 	 	day = datePicker2.selectedDate.getDate().toString();
+	           	 	 	if(day.length == 1)
+	           	 	 	{
+	           	 	    	 day = "0"+day;
+	           	 	 	}
+						//timeStamp is added to the datePicker	
+						
+	     				rhsTimeValue2 = month + "/" + day +"/" + datePicker2.selectedDate.getFullYear();
+	           	 	 	singleNodeCustomFormula.setTimeValue2(rhsTimeValue2);
+	           	 	 	singleNodeCustomFormula.setTimeInterval2("null");
+	              	 }
+	              }
+             } 
+             else
+             {
              existingTextBox = myBox.getChildByName("timeInputBox") as TextInput;
              if(existingTextBox != null)
              {
              	if(this.parentApplication.view == "Result")
              	{
-             		singleNodeCustomFormula.setTimeValue("null");
-             		singleNodeCustomFormula.setTimeInterval("null");
-             	}else
+             		singleNodeCustomFormula.setTimeValue1("null");
+             		singleNodeCustomFormula.setTimeInterval1("null");
+             	}
+             	else
              	{
 	             	//Means there exists the Time Intervals also
-	             	rhsTimeValue = existingTextBox.text;
-	             	singleNodeCustomFormula.setTimeValue(rhsTimeValue);
+	             	rhsTimeValue1 = existingTextBox.text;
+	             	singleNodeCustomFormula.setTimeValue1(rhsTimeValue1);
 	             	existingTimeIntervalCb = myBox.getChildByName("timeIntervalCb") as ComboBox;
 	               	if(existingTimeIntervalCb != null)
 	                {
-	                   rhsTimeIntervalValue = existingTimeIntervalCb.selectedItem.toString();
-	                   singleNodeCustomFormula.setTimeInterval(rhsTimeIntervalValue);
+	                   rhsTimeIntervalValue1 = existingTimeIntervalCb.selectedItem.toString();
+	                   singleNodeCustomFormula.setTimeInterval1(rhsTimeIntervalValue1);
 	                }
 	                else
 	                {
 	                	//This condition should not exist if text Input is there 
-	                	singleNodeCustomFormula.setTimeInterval("null");
+	                	singleNodeCustomFormula.setTimeInterval1("null");
 	                }	                
                 }
              }
@@ -167,8 +373,8 @@
              {
              	if(this.parentApplication.view == "Result")
              	{
-           	  	   singleNodeCustomFormula.setTimeValue("null");
-           	  	   singleNodeCustomFormula.setTimeInterval("null");
+           	  	   singleNodeCustomFormula.setTimeValue1("null");
+           	  	   singleNodeCustomFormula.setTimeInterval1("null");
            	  	}else
            	  	{
 	             	//Means there exists the Date Picker, so get the Date Picker
@@ -188,17 +394,26 @@
 	           	 	    	 day = "0"+day;
 	           	 	 	}
 						//timeStamp is added to the datePicker	
-						if(existingTimeStampText != null){           	 	 
-	           	 	 		rhsTimeValue = month + "/" + day +"/" + existingRHSDatePicker.selectedDate.getFullYear() + " " + existingTimeStampText.text;
-	     				}else{
-	     					rhsTimeValue = month + "/" + day +"/" + existingRHSDatePicker.selectedDate.getFullYear();
+						if(existingTimeStampText != null)
+						{           	 	 
+	           	 	 		rhsTimeValue1 = month + "/" + day +"/" + existingRHSDatePicker.selectedDate.getFullYear() + " " + existingTimeStampText.text;
+	     				}
+	     				else
+	     				{
+	     					rhsTimeValue1 = month + "/" + day +"/" + existingRHSDatePicker.selectedDate.getFullYear();
 	     				}	           	 	 	
-	           	 	 	singleNodeCustomFormula.setTimeValue(rhsTimeValue);
-	           	 	 	singleNodeCustomFormula.setTimeInterval("null");
+	           	 	 	singleNodeCustomFormula.setTimeValue1(rhsTimeValue1);
+	           	 	 	singleNodeCustomFormula.setTimeInterval1("null");
 	                }
                 }             	
              	
              }
+                //If the operator is not Between, then second time value and
+                //time intervals will be null 
+                singleNodeCustomFormula.setTimeValue2("null");
+             	singleNodeCustomFormula.setTimeInterval2("null");
+             }
+             //Here ends else
              
             
 	             var lhsTime :  String = "";
@@ -214,19 +429,30 @@
 	             
 	             if(this.parentApplication.view != "Result") 
 	             {
-		             var rhsTime : String = "";
-		             if(rhsTimeIntervalValue != null && rhsTimeIntervalValue != "")
+		             if(rhsTimeIntervalValue1 != "" && rhsTimeIntervalValue2 != "")
 		             {
-		             	rhsTime = rhsTimeValue + rhsTimeIntervalValue;
+		             	//This is the case of "Between" operator
+		             	customFormulaString =  lhsTimeValue + "\n" + arithmaticOpsCb.selectedItem.toString() + "\n" 
+		             	+  entityName + "." + attributesCb.selectedItem.toString() + "\n" + relationalOpsCb.selectedItem.toString() 
+		             	+ "\n" + rhsTimeValue1 + " " + rhsTimeIntervalValue1 + " AND "+ rhsTimeValue2 + " " + rhsTimeIntervalValue2;
+		             	
 		             }
 		             else
 		             {
-		             	rhsTime = rhsTimeValue;
-		             }
-		             customFormulaString =  lhsTimeValue + "\n" + arithmaticOpsCb.selectedItem.toString() + "\n" 
-		             +  entityName + "." + attributesCb.selectedItem.toString() + "\n" + relationalOpsCb.selectedItem.toString() 
-		             + "\n" + rhsTime;
-	             	 
+		             	//This is the case when relational operartor is other than "Between"
+		             	var rhsTime : String = "";
+		             	if(rhsTimeIntervalValue1 != null && rhsTimeIntervalValue1 != "")
+		             	{
+		             		rhsTime = rhsTimeValue1 + rhsTimeIntervalValue1;
+		             	}
+		             	else
+		             	{
+		             		rhsTime = rhsTimeValue1;
+		             	}
+		             	customFormulaString =  lhsTimeValue + "\n" + arithmaticOpsCb.selectedItem.toString() + "\n" 
+		             	+  entityName + "." + attributesCb.selectedItem.toString() + "\n" + relationalOpsCb.selectedItem.toString() 
+		             	+ "\n" + rhsTime;
+	             	}
 	             	 //Setting the custom Column Name             
 	             	 singleNodeCustomFormula.setCustomColumnName(customColumnName.text);
 	             	 singleNodeCustomFormula.setCCInterval("null");
@@ -260,7 +486,7 @@
 			 
 			  //Setting the node view
              singleNodeCustomFormula.setNodeView(this.parentApplication.view);
-             
+            
              //Invoking the RPC Method
              if(submitButton1.label == "OK")
              {
@@ -276,6 +502,9 @@
              	this.parentApplication.rpcService.formSingleNodeFormula(singleNodeCustomFormula, "edit");
              	this.parentApplication.operationforView=""; //to overcome from edit mode
              }
+             //ExternalInterface.call("setQueryUpdatedFlag");
+             var url : URLRequest = new URLRequest("javascript: setQueryUpdatedFlag()");
+		        navigateToURL(url,"_self"); 
              
 		}
 		private function editCustomNodeHandler(event : ResultEvent) : void
@@ -292,6 +521,360 @@
             this.parentApplication.addSingleNodeCustomNode(node);
             			
 		}
+		
+		/*
+		  This method adds controls for Between  operator
+		*/
+		public function addControlsForBetween():void
+		{
+           		//The input field and possible conditions comboBox are added using V-Box
+				//First adding labels
+				var label1 : Label = new Label();
+           	 	label1.id = "firstBetweenLabel";
+           	 	label1.name = "firstBetweenLabel";
+           	 	label1.text = "Time Value";
+           	 	label1.width = 100;
+           	 	label1.buttonMode = true;
+	           	label1.setStyle("color","#0000FF");   				
+   				label1.setStyle("fontWeight","bold"); 
+        	   	labelHBox.addChild(label1);
+        	   	 	        	
+        	   	 	        	
+        	   	 	        	var label2 : Label = new Label();
+           	 	        		label2.id = "secondBetweenLabel";
+           	 	        		label2.name = "secondBetweenLabel";
+           	 	        		label2.text = "Time Value";
+           	 	        		label2.width = 100;
+           	 	        		label2.buttonMode = true;
+	           	 	        	label2.setStyle("color","#0000FF");   				
+   					 			label2.setStyle("fontWeight","bold"); 
+        	   	 	        	labelHBox.addChild(label2);
+
+							  	
+							  	var firstInputVBox : VBox = new VBox();   
+								firstInputVBox.id = "firstBetweenVBox";
+								firstInputVBox.name = "firstBetweenVBox";
+								firstInputVBox.percentHeight = 100;
+								firstInputVBox.width = 100;
+
+                                //Adding first input control
+								var textBox1 : TextInput = new TextInput();
+           	   					textBox1.id = "firstBetweenInput";
+           	   					textBox1.name = "firstBetweenInput"
+						   	 	textBox1.width = 100;
+						    	textBox1.setStyle("borderColor","blue");
+								textBox1.restrict = "0-9 \\- \\.";
+								textBox1.addEventListener(Event.CHANGE,validateBetweenInputText1);
+								firstInputVBox.addChild(textBox1);
+								
+								
+								//Adding the first combo box
+								 var comboBox1 : ComboBox = new ComboBox();
+                       	  		comboBox1.id = "firstBetweenCb";
+                       	   		comboBox1.name = "firstBetweenCb";
+                       	   		comboBox1.width = 100;
+                           		comboBox1.rowCount = 10;
+                       	   		comboBox1.dataProvider = timeIntervalsDp;
+                       	   		comboBox1.setStyle("borderColor","blue");
+								
+								firstInputVBox.addChild(comboBox1);
+								
+							    myBox.addChild(firstInputVBox);                                  
+								
+								var secondInputVBox : VBox = new VBox();   
+								secondInputVBox.id = "secondBetweenVBox";
+								secondInputVBox.name = "secondBetweenVBox";
+								secondInputVBox.percentHeight = 100; 
+								secondInputVBox.width = 100; 				           				        
+           					
+           					    //Adding second input control
+								var textBox2 : TextInput = new TextInput();
+           	   					textBox2.id = "secondBetweenInput";
+           	   					textBox2.name = "secondBetweenInput"
+						   	 	textBox2.width = 100;
+						   	 	textBox2.restrict = "0-9 \\- \\.";
+						    	textBox2.setStyle("borderColor","blue");
+                                textBox2.addEventListener(Event.CHANGE, validateBetweenInputText2); 
+           					    secondInputVBox.addChild(textBox2);
+           					     
+           					     //Adding the second combo box
+           					    var comboBox2 : ComboBox = new ComboBox();
+                       	  		comboBox2.id = "secondBetweenCb";
+                       	   		comboBox2.name = "secondBetweenCb";
+                       	   		comboBox2.width = 100;
+                           		comboBox2.rowCount = 10;
+                       	   		comboBox2.dataProvider = timeIntervalsDp;
+                       	   		comboBox2.setStyle("borderColor","blue");
+
+           					    secondInputVBox.addChild(comboBox2);
+           					
+           					    //Adding to main panel 
+           					    myBox.addChild(secondInputVBox); 
+
+		}
+		
+		
+		/*
+		    This method removes controls for "Between" operator 
+		*/
+		public function removeControlsRelatedBetween():void
+		{
+			        var existingLabel1 :Label = labelHBox.getChildByName("firstBetweenLabel") as Label; 
+                     if(existingLabel1 != null)
+                        {
+                        	labelHBox.removeChild(existingLabel1);
+                        }
+                        
+                        var existingLabel2 :Label = labelHBox.getChildByName("secondBetweenLabel") as Label; 
+                        if(existingLabel2 != null)
+                        {
+                        	labelHBox.removeChild(existingLabel2);
+                        }
+                        
+                        var existingVBox1 : VBox  = myBox.getChildByName("firstBetweenVBox") as VBox;
+                        if(existingVBox1 != null)
+                        {
+                        	myBox.removeChild(existingVBox1);
+                        } 
+                    
+                        var existingVBox2 : VBox  = myBox.getChildByName("secondBetweenVBox")as VBox;
+                   	    if(existingVBox2 != null)
+                   	    {
+                   	    	myBox.removeChild(existingVBox2);
+                   	    }
+                   	    
+                   	    
+                   	    //Removing any existing Calender Components
+                        var datePicker1 : DateField = myBox.getChildByName("datePicker1") as DateField;
+                        if(datePicker1 != null)
+                        {
+                        	myBox.removeChild(datePicker1);
+                        }   
+                        
+                        var datePicker2 : DateField = myBox.getChildByName("datePicker2") as DateField;
+                        if(datePicker2 != null)
+                        {
+                        	myBox.removeChild(datePicker2);
+                        } 
+                        
+                        //Remove corresponding label Controls also
+                        var datePickerLabel1: Label = labelHBox.getChildByName("datePickerLabel1") as Label;
+           	 			if(datePickerLabel1 != null)
+           	 			{
+           	 				labelHBox.removeChild(datePickerLabel1);
+           	 			}
+           	 			
+           	 			var datePickerLabel2: Label = labelHBox.getChildByName("datePickerLabel2") as Label;
+           	 			if(datePickerLabel2 != null)
+           	 			{
+           	 				labelHBox.removeChild(datePickerLabel2);
+           	 			}
+           	 			
+		} 
+		
+		/*
+		   This method removes controls for "Between" operator 
+		*/
+		public function removeControlsForBetween():void
+		{
+			//Remove existing controls which are not required for "Between"
+			var  timeInputBox : TextInput = myBox.getChildByName("timeInputBox") as TextInput;
+		   	if(timeInputBox != null)
+		 	{
+				//Then remove the controls 
+				removeLHSTxtAndIntervals();
+			}
+			//if the date picker exists then remove the existing DatePicker
+			var rhsDatePicker : DateField = myBox.getChildByName("rhsDatePicker") as DateField;
+			if(rhsDatePicker != null)
+			{
+				myBox.removeChild(rhsDatePicker);
+			}
+						 
+			var rhsPickerLabel : Label = labelHBox.getChildByName("rhsDatePickerLabel") as Label;
+			if(rhsPickerLabel != null)
+			{
+				labelHBox.removeChild(rhsPickerLabel);
+			}  
+		} 
+		
+		/*
+		
+		*/
+		public function addCalenderControlsForBetween(): void
+		{
+			//Adding first calender control
+			var datePicker1 : DateField = myBox.getChildByName("datePicker1") as DateField;
+           	if(datePicker1 == null)
+           	{
+           	 	datePicker1 =  new DateField();
+	           	datePicker1.id = "datePicker1";
+	           	datePicker1.name = "datePicker1";
+	           	datePicker1.width = 100;
+	           	datePicker1.focusEnabled = true;
+	           	datePicker1.formatString = "MM/DD/YYYY";
+	           	datePicker1.showToday = true;
+	           	datePicker1.yearNavigationEnabled = true;
+	           	datePicker1.setStyle("borderColor","#0000FF");   				
+	           	datePicker1.addEventListener(FlexEvent.CREATION_COMPLETE,showTodayDateHandler1);    	
+	           	
+	           	//Adding datePicket as childs
+	            myBox.addChild(datePicker1); 
+	         }
+	         //Creating the DatePicker Label
+	         var datePickerLabel1: Label = labelHBox.getChildByName("datePickerLabel1") as Label;
+           	 if(datePickerLabel1 == null)
+           	 {
+           		datePickerLabel1 = new Label();
+           	 	datePickerLabel1.name = "datePickerLabel1";
+           	 	datePickerLabel1.text = "Select Date"; 	 	   				
+   				datePickerLabel1.setStyle("color","#0000FF");   				
+   				datePickerLabel1.setStyle("fontWeight","bold");
+           	 	labelHBox.addChild(datePickerLabel1);
+           	 }
+           	 
+           	 //Adding Second Calender Control
+           	 			//Adding first calender control
+			var datePicker2 : DateField = myBox.getChildByName("datePicker2") as DateField;
+           	if(datePicker2 == null)
+           	{
+           	 	datePicker2 =  new DateField();
+	           	datePicker2.id = "datePicker2";
+	           	datePicker2.name = "datePicker2";
+	           	datePicker2.width = 100;
+	           	datePicker2.focusEnabled = true;
+	           	datePicker2.formatString = "MM/DD/YYYY";
+	           	datePicker2.showToday = true;
+	           	datePicker2.yearNavigationEnabled = true;
+	           	datePicker2.setStyle("borderColor","#0000FF");   				
+	           	datePicker2.addEventListener(FlexEvent.CREATION_COMPLETE,showTodayDateHandler2);    	
+	           	
+	           	//Adding datePicket as childs
+	            myBox.addChild(datePicker2); 
+	         }
+	         //Creating the DatePicker Label
+	         var datePickerLabel2: Label = labelHBox.getChildByName("datePickerLabel2") as Label;
+           	 if(datePickerLabel2 == null)
+           	 {
+           		datePickerLabel2 = new Label();
+           	 	datePickerLabel2.name = "datePickerLabel2";
+           	 	datePickerLabel2.text = "Select Date"; 	 	   				
+   				datePickerLabel2.setStyle("color","#0000FF");   				
+   				datePickerLabel2.setStyle("fontWeight","bold");
+           	 	labelHBox.addChild(datePickerLabel2);
+           	 }
+		}
+		
+		
+		/*
+		    This method handles the Right hand side controls based on the Relational Operators selected 
+		*/
+		private function handleRightHandSideControls() : void
+		{
+			//First check operand type
+			var operandType : String  = null;  //Specifies the type of Attribute either date or NonDate 
+			var operand : String = ""; //Specifies selected attrinbute 
+            var nodeList : ArrayCollection =  null;
+            var arithmeticOperand : String = null;
+             
+			if(attributesCb.selectedIndex > -1)
+			{
+		 		operand  =  attributesCb.selectedItem.toString();
+				nodeList = entityDp[operand];
+				operandType = String(nodeList.getItemAt(1));
+       		
+       		    
+       		    //Only for Date type operand , Between operator is supoported
+       		    if(relationalOpsCb.selectedItem.toString() == "Between")
+       		    {
+       		    	if(operandType == "Date")
+       		    	{
+       		    		arithmeticOperand = arithmaticOpsCb.selectedItem.toString();
+       		    		if(arithmeticOperand == "-")
+       		    		{
+       		    			destroyBigTip();
+       		    		
+							removeControlsForBetween();
+							//Now Add controls related to "Between" 
+                        	addControlsForBetween();						
+               			}
+               			else
+               			{
+               				//IN case of "+" operator, addition of two dates is not possible
+               				AlertManager.showWarning("Temporal condition error: Cannot add two dates.");
+           	 	    	    createBigTip("Temporal condition error: Cannot add two dates.");
+               			}
+       		    	}
+       		    	else if(operandType == "Integer")
+       		    	{
+       		    		destroyBigTip();
+       		    		//Here i need to add Calender contols 
+       		    		removeControlsForBetween();
+       		    		
+       		    		removeControlsRelatedBetween();
+       		    		
+       		    		//Adding calender controls for between
+       		    		addCalenderControlsForBetween();
+       		    	}
+       		    }
+       		    else
+       		    {
+       		    	//Remove controls which are related to "Between"
+       		    	arithmeticOperand = arithmaticOpsCb.selectedItem.toString();
+       		    	
+       		    	removeControlsRelatedBetween();
+       		    	
+       		    	//Add controls which are required for other relational operators,if they don't exist
+       		    	if(operandType == "Date")
+       		    	{
+       		    		if(arithmeticOperand == "-")
+       		    		{
+       		    			destroyBigTip();
+							//Selected attribute type is of Date type , then on LHS it should be a text Input and TimeInterval drop down 
+						   addTextAndTimeIntervals(); 	
+       		    		}
+       		    		else
+       		    		{
+       		    			AlertManager.showWarning("Temporal condition error: Cannot add two dates.");           	 	    		
+           	 	    		createBigTip("Temporal condition error: Cannot add two dates.");
+       		    		}
+       		    	}
+        			else if(operandType == "Integer")
+				    {
+				    	 AlertManager.showWarning("Not a valid use case for Temporal Conditions. Please change selected attributes.");
+           	 	         createBigTip("Not a valid use case for Temporal Conditions. Please change selected attributes.");
+
+				    	/*destroyBigTip();
+					 	//If Selected attribute type is not of Date type
+                    	//Removing the Text boxes and Time Intervals 
+                    	removeLHSTxtAndIntervals();
+                    	if(this.parentApplication.view != "Result")
+                    	{
+	                    	//Add Date Picker for RHS 
+	                    	addRHSDatePicker();
+                    	}*/
+					}
+        			/*else if(operandType == "TimeStamp")
+				    {
+				    	destroyBigTip();
+					 	//If Selected attribute type is not of Date type
+                    	//Removing the Text boxes and Time Intervals 
+                    	removeLHSTxtAndIntervals();
+                    	if(this.parentApplication.view != "Result")
+                    	{
+	                    	//Add Date Picker for RHS 
+	                    	addRHSDatePicker();
+	                    	addRHSTimePicker();
+                    	}
+					}*/      		   
+				}
+       		} 
+			//check if the operand type is Date and relational operator selected is "Between" 
+			
+			//if operator is not "Between" and operand type is "Date" or "Integer"
+			
+			//If operator is "Between" and  operand type is "Integer".
+		}
 		private function validate() : void
 		{
 			var operandType : String  = null;  //Specifies the type of Attribute either date or NonDate 
@@ -299,94 +882,173 @@
 			var nodeAttributeId : String = null; //
 			var nodeList : ArrayCollection =  null;
 			var arithmeticOperand : String = null;
-			
-			if(attributesCb.selectedIndex > -1){
+
+			if(attributesCb.selectedIndex > -1)
+			{
 		 		operand  =  attributesCb.selectedItem.toString();
 				nodeList = entityDp[operand];
 				operandType = String(nodeList.getItemAt(1));
        		}       		
-       		           		
-       	 	if(operandType == "Integer") 
+       	 	/*if(operandType == "Integer") 
        	 	{
        	 	    //Creating the ComboBox
-          			existingfirstOpComboBox= firstComboPlace.getChildByName("fstOpComboBox") as ComboBox;
-          			if(existingfirstOpComboBox == null)
-    	        	{
-    	        		var firstOpComboBox : ComboBox =  new ComboBox();
-	   	       			firstOpComboBox.id = "fstOpComboBox";
-	   	       			firstOpComboBox.name = "fstOpComboBox";
-	   	       			firstOpComboBox.dataProvider = timeIntervalsDp;       	       		  	              
-	   	              	firstOpComboBox.rowCount = 10;
-	   	       			//Adding datePicket as childs
-	   	 	   			firstComboPlace.addChild(firstOpComboBox);       	 	   			 
-    	     		}	
-       	 	}else{
+          		
+          		//Changes made as no TQ condition is supported for Between Date and Integer 
+          		/*
+          		existingfirstOpComboBox= firstComboPlace.getChildByName("fstOpComboBox") as ComboBox;
+          		if(existingfirstOpComboBox == null)
+    	        {
+    	        	var firstOpComboBox : ComboBox =  new ComboBox();
+	   	       		firstOpComboBox.id = "fstOpComboBox";
+	   	       		firstOpComboBox.name = "fstOpComboBox";
+	   	       		firstOpComboBox.dataProvider = timeIntervalsDp;       	       		  	              
+	   	            firstOpComboBox.rowCount = 10;
+	   	       		//Adding datePicket as childs
+	   	 	   		firstComboPlace.addChild(firstOpComboBox);       	 	   			 
+    	     	}	
+    	     	*/
+    	     	// AlertManager.showWarning("Not a valid use case for Temporal Conditions. Please change selected attributes.");
+           	 	 //createBigTip("Not a valid use case for Temporal Conditions. Please change selected attributes.");
+
+       	 	//}
+       	 	/*else
+       	 	{
+       	 		destroyBigTip();
        	 		existingfirstOpComboBox= firstComboPlace.getChildByName("fstOpComboBox") as ComboBox;
-				if(existingfirstOpComboBox != null){  
-    	        		firstComboPlace.removeChild(existingfirstOpComboBox);
-    				}
-       	 	}
-       	 	
+				if(existingfirstOpComboBox != null)
+				{  
+    	        	firstComboPlace.removeChild(existingfirstOpComboBox);
+    			}
+       	 	}*/
 			if(arithmaticOpsCb.selectedIndex > -1 && attributesCb.selectedIndex > -1)
 			{
 				operand  =  attributesCb.selectedItem.toString();
 				nodeList = entityDp[operand];
 				operandType = String(nodeList.getItemAt(1));				
 			    arithmeticOperand = arithmaticOpsCb.selectedItem.toString();
-           	 		
-			    existingLHSDatePicker = myBox.getChildByName("leftDatePicker") as DateField;
-			    if(existingLHSDatePicker != null)
-			    {   
-			    	if(arithmeticOperand == "+" && operandType == "Date")
-				    {
-				    	AlertManager.showWarning("A date/timestamp may only be subtracted from another date/timestamp.  Please change the operator to a minus sign.");
-           	 	    	        createBigTip("A date/timestamp may only be subtracted from another date/timestamp.  Please change the operator to a minus sign.");
-        			}else if (arithmeticOperand == "-" && operandType == "Date")
-        			{
+			    if(relationalOpsCb.selectedIndex >-1)
+			    {
+			    	var selectedRelationalOp : String = relationalOpsCb.selectedItem.toString()
+			    	if(selectedRelationalOp == "Between")
+			    	{
+			    		if(operandType == "Date")
+       		    		{
+							arithmeticOperand = arithmaticOpsCb.selectedItem.toString();
+       		    			if(arithmeticOperand == "-")
+       		    			{
+       		    				destroyBigTip();
+       		    		
+								removeControlsForBetween();
+							
+								removeControlsRelatedBetween();
+								//Now Add controls related to "Between" 
+                        		addControlsForBetween();						
+               				}
+               				else
+               				{
+               					//IN case of "+" operator, addition of two dates is not possible
+               					AlertManager.showWarning("Temporal condition error: Cannot add two dates.");
+           	 	    	    	createBigTip("Temporal condition error: Cannot add two dates.");
+               				}
+											
+       		    		}
+       		    	  else if(operandType == "Integer")
+       		    	  {
+       		    		/*destroyBigTip();
+       		    		//Here i need to add Calender contols 
+       		    		removeControlsForBetween();
+       		    		
+       		    		removeControlsRelatedBetween();
+       		    		
+       		    		//Adding calender controls for between
+       		    		addCalenderControlsForBetween();
+       		    		
+       		    		*/
+       		    		 AlertManager.showWarning("Not a valid use case for Temporal Conditions. Please change selected attributes.");
+           	 	 		createBigTip("Not a valid use case for Temporal Conditions. Please change selected attributes.");
+       		    	}	
+			     }
+			    else
+			    {
+			    	removeControlsRelatedBetween();
+			    	existingLHSDatePicker = myBox.getChildByName("leftDatePicker") as DateField;
+			    	if(existingLHSDatePicker != null)
+			    	{   
+			    		if(arithmeticOperand == "+" && operandType == "Date")
+				    	{
+				    		AlertManager.showWarning("Temporal condition error: Cannot add two dates.");
+           	 	    	        createBigTip("Temporal condition error: Cannot add two dates.");
+        				}
+        				else if (arithmeticOperand == "-" && operandType == "Date")
+        				{
 					    		destroyBigTip();
 							    //Selected attribute type is of Date type , then on LHS it should be a text Input and TimeInterval drop down 
 							    addTextAndTimeIntervals();    
 					    	
-        			}else if(operandType == "Integer")
-				    {
-				    	destroyBigTip();
+        				}
+        				else if(operandType == "Integer")
+				    	{
+				    	/*destroyBigTip();
 					 	//If Selected attribute type is not of Date type
                     	//Removing the Text boxes and Time Intervals 
                     	removeLHSTxtAndIntervals();
-                    	if(this.parentApplication.view != "Result"){
+                    	if(this.parentApplication.view != "Result")
+                    	{
 	                    	//Add Date Picker for RHS 
 	                    	addRHSDatePicker();
-                    	}
-					}
-        			else if(operandType == "TimeStamp")
-				    {
-				    	destroyBigTip();
-					 	//If Selected attribute type is not of Date type
-                    	//Removing the Text boxes and Time Intervals 
-                    	removeLHSTxtAndIntervals();
-                    	if(this.parentApplication.view != "Result"){
-	                    	//Add Date Picker for RHS 
-	                    	addRHSDatePicker();
-	                    	addRHSTimePicker();
-                    	}
-					}else{
-						destroyBigTip();						
-					}
-					
+                    	}*/
+                    	 	AlertManager.showWarning("Not a valid use case for Temporal Conditions. Please change selected attributes.");
+           	 	 			createBigTip("Not a valid use case for Temporal Conditions. Please change selected attributes.");
+
+						}
+			    	}
+    	    			/*else if(operandType == "TimeStamp")
+					    {
+					    	destroyBigTip();
+						 	//If Selected attribute type is not of Date type
+                    		//Removing the Text boxes and Time Intervals 
+                    		removeLHSTxtAndIntervals();
+                    		if(this.parentApplication.view != "Result")
+                    		{
+	                    		//Add Date Picker for RHS 
+	                    		addRHSDatePicker();
+	                    		addRHSTimePicker();
+                    		}
+						}
+						else
+						{
+							destroyBigTip();						
+						}*/
+				    }
 			    }
 			    else
 			    {
-			    	//If there dosen't exists any date Picker on left hand side
-			    }
-			}
-			else
-			{
+			    	//This is the case when no relation op is selected
+			    	if(operandType == "Date")
+			    	{
+			    		if(arithmeticOperand == "+")
+			    		{
+			    			AlertManager.showWarning("Temporal condition error: Cannot add two dates.");
+           	 	    	    createBigTip("Temporal condition error: Cannot add two dates.");
+			    		}
+			    		else
+			    		{
+					    	destroyBigTip();
+							//Selected attribute type is of Date type , then on LHS it should be a text Input and TimeInterval drop down 
+							addTextAndTimeIntervals();   
+			    		}
+			    	}
+			    	else if(operandType == "Integer")
+			    	{
+			    		AlertManager.showWarning("Not a valid use case for Temporal Conditions. Please change selected attributes.");
+           	 	 		createBigTip("Not a valid use case for Temporal Conditions. Please change selected attributes.");
+			    	}
+			    } 
 			}
 		}
 		
 		private function addTextAndTimeIntervals() : void
 		{
-			
 			 //Remove Date Picker and corresponding Labels
 			 existingRHSDatePicker = myBox.getChildByName("rhsDatePicker") as DateField;
 			 if(existingRHSDatePicker != null)
@@ -447,7 +1109,9 @@
            	    textBox.id = "timeInputBox";
            	    textBox.name = "timeInputBox"
 			 	textBox.width = 100;
+			 	textBox.restrict = "0-9 \\- \\.";
 			 	textBox.setStyle("borderColor","#000FF");
+			 	textBox.addEventListener(Event.CHANGE, validateInput);
            	    myBox.addChild(textBox);
            	}
            	existingTimeIntervalCb = myBox.getChildByName("timeIntervalCb") as ComboBox;   
@@ -620,7 +1284,24 @@
 	    		}
     		}
     		
-    		private function validateColumnName():Boolean{    			
+    		private function validateTextInput(textInput : TextInput) : Boolean
+    		{
+    			var strVal:StringValidator = new StringValidator();    			
+                strVal.source = textInput;
+                strVal.property = "text";
+                strVal.required = true;
+                
+                var event:ValidationResultEvent = strVal.validate();
+				var isValid:Boolean = (event.type == ValidationResultEvent.VALID);
+				return isValid;      
+    		}
+    		
+    		
+    		/*
+    		     This method validates the custom column name  
+    		*/
+    		private function validateColumnName():Boolean
+    		{    			
     			var strVal:StringValidator = new StringValidator();    			
                 strVal.source = customColumnName;
                 strVal.property = "text";
@@ -635,7 +1316,8 @@
     			createBigTip function is create a errorString which is displayed while validation messages appears.
     			it will disable submitButton control.    			  
     		*/ 	
-		    private function createBigTip(s:String):void {		      
+		    private function createBigTip(s:String):void 
+		    {		      
 		      submitButton1.enabled=false;
 		      submitButton1.errorString = s;		           
 		    }
@@ -644,7 +1326,8 @@
     			destroyBigTip function is remove a errorString which was displayed while validation messages appears.
     			it will enable submitButton control.    			  
     		*/
-		    private function destroyBigTip():void {
+		    private function destroyBigTip():void 
+		    {
 		      submitButton1.enabled=true;
 		      submitButton1.errorString="";		      
 		      
@@ -652,8 +1335,10 @@
 		    /**
 		       for calculare query remove component
 		    */
-		    private function removeComponent():void {
-		      if(this.parentApplication.view=="Result"){
+		    private function removeComponent():void 
+		    {
+		      if(this.parentApplication.view=="Result")
+		      {
 		      	relationalOpsCb.visible = false;
 		      	timeIntervalCb.visible = false;
 		      	timeInputBox.visible = false;
@@ -662,7 +1347,9 @@
 		      	lb6.visible = false;
 		      	timeIntervalCb6.visible = true;
 		      	lb7.visible = true;
-		      }else{
+		      }
+		      else
+		      {
 		      	relationalOpsCb.visible = true;
 		      	timeIntervalCb.visible = true;
 		      	timeInputBox.visible = true;
@@ -676,20 +1363,112 @@
 		    /**
 		       setting default values for today date and current time
 		    */
-		    private function showTodayDateHandler(event:FlexEvent):void{
-		    	if(this.parentApplication.operationforView != "edit"){        	
+		    private function showTodayDateHandler(event:FlexEvent):void
+		    {
+		    	if(this.parentApplication.operationforView != "edit")
+		    	{        	
 	           		existingRHSDatePicker= myBox.getChildByName("rhsDatePicker") as DateField;
 	           		existingRHSDatePicker.selectedDate = new Date();        		
       			}           		
            	} 
+           	
+           	/**
+		       setting default values for today date and current time
+		    */
+		    private function showTodayDateHandler1(event:FlexEvent):void
+		    {
+		    	if(this.parentApplication.operationforView != "edit")
+		    	{        	
+	           		var datePicker : DateField = myBox.getChildByName("datePicker1") as DateField;
+	           		datePicker.selectedDate = new Date();        		
+      			}           		
+           	}
+           	
+             /**
+		       setting default values for today date and current time
+		    */
+		    private function showTodayDateHandler2(event:FlexEvent):void
+		    {
+		    	if(this.parentApplication.operationforView != "edit")
+		    	{        	
+	           		var datePicker : DateField = myBox.getChildByName("datePicker2") as DateField;
+	           		datePicker.selectedDate = new Date();        		
+      			}           		
+           	}  
            	/**
 		       setting default values for today date
 		    */
-           	private function showTodayDate():void{
-           		if(this.parentApplication.operationforView != "edit"){           			
+           	private function showTodayDate():void
+           	{
+           		if(this.parentApplication.operationforView != "edit")
+           		{           			
            			datePicker.selectedDate = new Date();
            		}
-           	}     
+           	} 
+           	
+           	
+           private function validateInput(event : Event) : void
+           	{
+           		var txtInput : TextInput = myBox.getChildByName("timeInputBox") as TextInput;
+           		var inputString: String = txtInput.text;
+           		var subString : String = inputString.substr(1,inputString.length-1);
+           		if(subString.match("-"))
+           		{
+           			AlertManager.showWarning("Not a valid Input. Please change value");
+           			createBigTip("Not a valid Input. Please change value");
+           		}
+           		else
+           		{
+           			destroyBigTip();
+           		}
+           	}
+           
+           private function validateBetweenInputText1(event : Event): void
+           	{
+           		var firstVBox : VBox = myBox.getChildByName("firstBetweenVBox") as VBox; 
+           		if(firstVBox != null)
+           		{
+           			var firstInputText  : TextInput = firstVBox.getChildByName("firstBetweenInput") as TextInput;
+           		    if(firstInputText != null)
+           		    {
+           		    	var inputString: String = firstInputText.text;
+           		    	var subString : String = inputString.substr(1,inputString.length-1);
+           		    	if(subString.match("-"))
+           				{
+           					AlertManager.showWarning("Not a valid Input. Please change value");
+           					createBigTip("Not a valid Input. Please change value");
+           				}
+           				else
+           				{
+           					destroyBigTip();
+           				}
+           		    }	
+           		}
+           	}
+           	
+           	private function validateBetweenInputText2(event : Event): void
+           	{
+           		var secondVBox : VBox = myBox.getChildByName("secondBetweenVBox")as VBox;
+           		if(secondVBox != null)
+           		{
+           			var secondInputText  : TextInput = secondVBox.getChildByName("secondBetweenInput") as TextInput; 
+           			if(secondInputText != null)
+           			{
+           				var inputString: String = secondInputText.text;
+           		    	var subString : String = inputString.substr(1,inputString.length-1);
+           		    	if(subString.match("-"))
+           				{
+           					AlertManager.showWarning("Not a valid Input. Please change value");
+           					createBigTip("Not a valid Input. Please change value");
+           				}
+           				else
+           				{
+           					destroyBigTip();
+           				}
+           			}
+           		}
+           	}
+    
 			
 		]]>
 	</mx:Script>
@@ -722,8 +1501,8 @@
 			</mx:VBox>	
 			<mx:ComboBox id="relationalOpsCb" dataProvider="{relationalDp}" width="100" 
 				borderThickness="0" borderColor="blue"  prompt="--Select--" itemRenderer="mx.controls.Label" 
-				rowCount="10" close="truncateLongText(event)" toolTip=""/>
-			<mx:TextInput id="timeInputBox" name="timeInputBox"  width="100" restrict="0-9" borderColor="blue"/> 
+				rowCount="10" close="truncateLongText(event)" toolTip="" change="handleRightHandSideControls()" />
+			<mx:TextInput id="timeInputBox" name="timeInputBox"  width="100" restrict="0-9 \- \."  borderColor="blue" change="validateInput(event)"/> 
 	    	<mx:ComboBox id="timeIntervalCb" name="timeIntervalCb" dataProvider="{timeIntervalsDp}" 
 	    		width="100"  borderThickness="0" borderColor="blue" prompt="--Select--" 
 	    		itemRenderer="mx.controls.Label" rowCount="10" close="truncateLongText(event)" toolTip=""/>
@@ -732,7 +1511,7 @@
 	    <mx:HBox x="20" horizontalGap="6" width="100%">
          <mx:Label id="columnLabel" width="170" text="Please Enter Column Name :"  fontWeight="bold" color="blue"/>
               
-         <mx:TextInput id="customColumnName" width="250" restrict="0-9 A-Z a-z" borderColor="blue" focusOut="validateColumnName()"/>
+         <mx:TextInput id="customColumnName" width="250" restrict="0-9 A-Z a-z" borderColor="blue"  focusOut="validateColumnName()"/>
          <mx:ComboBox id="timeIntervalCb6" name="timeIntervalCb6" dataProvider="{timeIntervalsDp}" 
          	width="100"  borderThickness="0" borderColor="blue" prompt="--Select--" 
          	itemRenderer="mx.controls.Label" rowCount="10" close="truncateLongText(event)" toolTip="" visible="false"/>
@@ -748,3 +1527,5 @@
 	</mx:VBox>
 
 </mx:TitleWindow>
+
+

@@ -18,11 +18,11 @@ import edu.wustl.query.util.global.Utility;
 public class Predicates
 {
 
-	final private List<AbstractPredicate> predicates;
+	final private List<AbstractPredicate> predicateList;
 
 	public Predicates()
 	{
-		predicates = new ArrayList<AbstractPredicate>();
+		predicateList = new ArrayList<AbstractPredicate>();
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class Predicates
 	 */
 	public void addPredicate(AbstractPredicate predicate)
 	{
-		predicates.add(predicate);
+		predicateList.add(predicate);
 	}
 
 	/**
@@ -42,14 +42,14 @@ public class Predicates
 	public String assemble(String prefix)
 	{
 		String newPrefix = prefix;
-		
+
 		if (newPrefix == null)
 		{
 			newPrefix = "";
 		}
 
 		StringBuilder string = new StringBuilder();
-		for (AbstractPredicate predicate : predicates)
+		for (AbstractPredicate predicate : predicateList)
 		{
 			string.append(predicate.assemble(prefix)).append(Constants.QUERY_AND);
 		}
@@ -68,13 +68,13 @@ public class Predicates
 		return assemble("");
 	}
 
-	
 	/**
 	 * @return the predicates
 	 */
 	public List<AbstractPredicate> getPredicates()
 	{
-		return predicates;
+		return predicateList;
 	}
 
 }
+

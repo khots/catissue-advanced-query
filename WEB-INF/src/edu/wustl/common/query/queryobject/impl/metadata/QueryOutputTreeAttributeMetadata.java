@@ -4,9 +4,8 @@
 
 package edu.wustl.common.query.queryobject.impl.metadata;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
-import edu.wustl.common.util.global.Constants;
+import edu.wustl.common.querysuite.querableobjectInterface.QueryableAttributeInterface;
 
 /**
  * @author prafull_kadam
@@ -19,7 +18,7 @@ public class QueryOutputTreeAttributeMetadata
 	/**
 	 * Reference to the attribute for which the metadata is to be stored.
 	 */
-	private AttributeInterface attribute;
+	private QueryableAttributeInterface attribute;
 	/**
 	 * The name of the column in the temporary table for the given attribute.
 	 */
@@ -35,7 +34,7 @@ public class QueryOutputTreeAttributeMetadata
 	 * @param treeDataNode TODO
 	 * @param displayName TODO
 	 */
-	public QueryOutputTreeAttributeMetadata(AttributeInterface attribute, String columnName,
+	public QueryOutputTreeAttributeMetadata(QueryableAttributeInterface attribute, String columnName,
 			OutputTreeDataNode treeDataNode, String displayName)
 	{
 		this.attribute = attribute;
@@ -48,7 +47,7 @@ public class QueryOutputTreeAttributeMetadata
 	 * To get the attribute whose metadata is stored in this class.
 	 * @return the attribute reference
 	 */
-	public AttributeInterface getAttribute()
+	public QueryableAttributeInterface getAttribute()
 	{
 		return attribute;
 	}
@@ -80,8 +79,9 @@ public class QueryOutputTreeAttributeMetadata
 
 	public String getUniqueId()
 	{
-		String id = this.getTreeDataNode().getExpressionId() + Constants.EXPRESSION_ID_SEPARATOR
+		String id = this.getTreeDataNode().getExpressionId() + edu.wustl.query.util.global.Constants.EXPRESSION_ID_SEPARATOR
 				+ this.attribute.getId(); //TODO
 		return id;
 	}
 }
+

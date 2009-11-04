@@ -2,7 +2,7 @@
 package edu.wustl.query.flex.dag;
 
 /**
- * 
+ *
  * @author baljeet_dhindhwal
  * @version 1.0
  *
@@ -30,7 +30,7 @@ public class DAGConstant
 	/**  Constant for  */
 	public static final String CUSTOM_FORMULA_NODE_LIST = "customFormulaNodeList";
 	/**  Constant for  */
-	public static final String SINGLE_NODE_CUSTOM_FORMULA_NODE_LIST = "singleNodeCFList";
+	public static final String SINGLE_NODE_CF_NODE_LIST = "singleNodeCFList";
 	/**  Constant for  */
 	public static final String REPAINT_OPERATION = "rePaint";
 	/**  Constant for  */
@@ -54,26 +54,47 @@ public class DAGConstant
 	/**  Constant for  */
 	public static final String NULL_STRING = "null";
 
-	//Error Codes 
-	/**  Constant for  */
+	//Error Codes
+	/**  Constant for  success.*/
 	public static final int SUCCESS = 0;
-	/**  Constant for  */
+	/**  Constant for  empty dag.*/
 	public static final int EMPTY_DAG = 1;
-	/**  Constant for  */
+	/**  Constant for multiple roots. */
 	public static final int MULTIPLE_ROOT = 2;
-	/**  Constant for  */
+	/**  Constant for  no results.*/
 	public static final int NO_RESULT_PRESENT = 3;
-	/**  Constant for  */
+	/**  Constant for  sql exception.*/
 	public static final int SQL_EXCEPTION = 4;
-	/**  Constant for  */
+	/**  Constant for  dao exception.*/
 	public static final int DAO_EXCEPTION = 5;
-	/**  Constant for  */
+	/**  Constant for  class not found error.*/
 	public static final int CLASS_NOT_FOUND = 6;
-	/**  Constant for  */
+	/**  Constant for  no paths present error.*/
 	public static final int NO_PATHS_PRESENT = 7;
-	/**  Constant for  */
+	/**  Constant for  DE exception.*/
 	public static final int DYNAMIC_EXTENSION_EXCEPTION = 8;
-	/**  Constant for  */
+	/**  Constant for  cyclic graph.*/
 	public static final int CYCLIC_GRAPH = 9;
 
+	/**
+	 *
+	 */
+	public static final String DATE_ATTRIBUTE = "Date";
+
+	/**
+	 *
+	 */
+    public static final String INTEGER_ATTRIBUTE  =  "Integer";
+    /**
+     * constant for invalid nodes in DAG.
+     */
+    public static final String ERROR_NODES_INVALID  =  "NodesInvalid";
+    /**
+     * constant for invalid entity names for quantitative attributes.
+     */
+    public static final String ENTITY_NAME_INVALID  =  "EntityNameInvalid";
+    /**
+     * constant for invalid parent for quantitative attributes.
+     */
+    public static final String PARENT_INVALID  =  "ParentInvalid";
 }

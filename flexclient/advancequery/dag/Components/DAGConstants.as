@@ -26,12 +26,13 @@ package Components
 		public static  var TREE_NODES_LIMIT:int =10;
 		public static  var NO_MAIN_OBJECT_IN_QUERY:int =11;
 		//messages 
-		public static var EMPTY_LIMIT_ERROR_MESSAGE:String = "<li><font color='red'>Please enter at least one condition to add a limit to limit set.</font></li>";
+		public static var EMPTY_LIMIT_ERROR_MESSAGE:String = "<span class='error_msg'>Please enter at least one condition to add a limit to limit set.</span>";
 		public static var GENERIC_MESSAGE:String="<li><font color='red'>Error occured while executing query.Please report this problem to the Adminstrator.</font></li>";
-		public static var MULTIPLE_ROOT_MESSAGE:String="<li><font color='red'>Expression graph should be a connected graph and without multiple roots.</font></li>"
-		public static var NO_RESULT_PRESENT_MESSAGE:String="<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>Zero records found for this query.</font></li>"
-		public static var EDIT_LIMITS_MESSAGE:String = "<li><font color='blue'>Limit succesfully edited.</font></li>";
-		public static var DELETE_LIMITS_MESSAGE:String = "<li><font color='blue'>Limit succesfully deleted.</font></li>";
-		public static var EMPTY_DAG_MESSAGE:String = "<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>DAG is empty.</font></li>";
+		public static var MULTIPLE_ROOT_MESSAGE:String="<span class='error_msg'>Expression graph should be a connected graph and without multiple roots.</span>"
+		public static var NO_RESULT_PRESENT_MESSAGE:String="<span class='info_msg'>Zero records found for this query.</span>"
+		public static var EDIT_LIMITS_MESSAGE:String = "<span class='success_msg'>Limit succesfully edited.</span>";
+		public static var DELETE_LIMITS_MESSAGE:String = "<span class='success_msg'>Limit succesfully deleted.</span>";
+		public static var EMPTY_DAG_MESSAGE:String = "<span class='info_msg'>DAG is empty.</span>";
 	}
 }
+

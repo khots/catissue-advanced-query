@@ -2,28 +2,17 @@
 package edu.wustl.query.flex;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
-import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
-import edu.wustl.common.beans.NameValueBean;
-import edu.wustl.common.cde.CDE;
-import edu.wustl.common.cde.CDEManager;
-import edu.wustl.common.cde.PermissibleValue;
 import edu.wustl.common.query.impl.CommonPathFinder;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.metadata.path.Path;
 import edu.wustl.common.querysuite.queryobject.IExpression;
-import edu.wustl.common.util.global.Constants;
+import edu.wustl.common.querysuite.utils.ConstraintsObjectBuilder;
+import edu.wustl.common.querysuite.utils.IConstraintsObjectBuilderInterface;
 import edu.wustl.query.flex.dag.CustomFormulaNode;
 import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.flex.dag.DAGNode;
@@ -31,129 +20,19 @@ import edu.wustl.query.flex.dag.DAGPanel;
 import edu.wustl.query.flex.dag.DAGPath;
 import edu.wustl.query.flex.dag.SingleNodeCustomFormulaNode;
 
+/**
+ * This class act as an interface between Flex Client and Java
+ * All flex client requests are handled through this class interface.
+ * @author baljeet_dhindhwal
+ *
+ */
 public class FlexInterface
 {
 
-	public FlexInterface()
-	{
-
-	}
-
-	private List<String> toStrList(List<NameValueBean> nvBeanList)
-	{
-		List<String> strList = new ArrayList<String>();
-		for (NameValueBean bean : nvBeanList)
-		{
-			strList.add(bean.getName());
-		}
-		return strList;
-	}
-
-	public List<String> getTissueSidePVList()
-	{
-		List<NameValueBean> aList = CDEManager.getCDEManager().getPermissibleValueList(
-				"Tissue Side", null);
-		return toStrList(aList);
-	}
-
-	public List<String> getPathologicalStatusPVList()
-	{
-		List<NameValueBean> aList = CDEManager.getCDEManager().getPermissibleValueList(
-				"Pathological Status", null);
-		return toStrList(aList);
-	}
-
-	public List<String> getSpecimenClassStatusPVList()
-	{
-		Map specimenTypeMap = getSpecimenTypeMap();
-		Set specimenKeySet = specimenTypeMap.keySet();
-		List<NameValueBean> specimenClassList = new ArrayList<NameValueBean>();
-
-		Iterator itr1 = specimenKeySet.iterator();
-		while (itr1.hasNext())
-		{
-			String specimenKey = (String) itr1.next();
-			specimenClassList.add(new NameValueBean(specimenKey, specimenKey));
-		}
-		return toStrList(specimenClassList);
-	}
-
-	public List<String> getFluidSpecimenTypePVList()
-	{
-		Map specimenTypeMap = getSpecimenTypeMap();
-		List<NameValueBean> aList = (List) specimenTypeMap.get("Fluid");
-		return toStrList(aList);
-	}
-
-	public List<String> getTissueSpecimenTypePVList()
-	{
-		Map specimenTypeMap = getSpecimenTypeMap();
-		List<NameValueBean> aList = (List) specimenTypeMap.get("Tissue");
-		return toStrList(aList);
-	}
-
-	public List<String> getMolecularSpecimenTypePVList()
-	{
-		Map specimenTypeMap = getSpecimenTypeMap();
-		List<NameValueBean> aList = (List<NameValueBean>) specimenTypeMap.get("Molecular");
-		return toStrList(aList);
-	}
-
-	public List<String> getCellSpecimenTypePVList()
-	{
-		Map specimenTypeMap = getSpecimenTypeMap();
-		List<NameValueBean> aList = (List<NameValueBean>) specimenTypeMap.get("Cell");
-		return toStrList(aList);
-	}
-
-	private Map getSpecimenTypeMap()
-	{
-		CDE specimenClassCDE = CDEManager.getCDEManager().getCDE("Specimen");
-		Set setPV = specimenClassCDE.getPermissibleValues();
-		Iterator itr = setPV.iterator();
-
-		//List specimenClassList = CDEManager.getCDEManager().getPermissibleValueList("Specimen", null);
-		Map<String, List> subTypeMap = new HashMap<String, List>();
-		//specimenClassList.add(new NameValueBean(Constants.SELECT_OPTION, "-1"));
-
-		while (itr.hasNext())
-		{
-			List<NameValueBean> innerList = new ArrayList<NameValueBean>();
-			Object obj = itr.next();
-			PermissibleValue pv = (PermissibleValue) obj;
-			//String tmpStr = pv.getValue();
-			//specimenClassList.add(new NameValueBean(tmpStr, tmpStr));
-
-			Set list1 = pv.getSubPermissibleValues();
-			Iterator itr1 = list1.iterator();
-			innerList.add(new NameValueBean(Constants.SELECT_OPTION, "-1"));
-
-			while (itr1.hasNext())
-			{
-				Object obj1 = itr1.next();
-				PermissibleValue pv1 = (PermissibleValue) obj1;
-				//Setting Specimen Type
-				String tmpInnerStr = pv1.getValue();
-				innerList.add(new NameValueBean(tmpInnerStr, tmpInnerStr));
-			}
-
-			subTypeMap.put(pv.getValue(), innerList);
-		}
-		//System.out.println("subTypeMap "+subTypeMap);
-		return subTypeMap;
-	}
-
-	public List getSpecimenTypeStatusPVList()
-	{
-		return CDEManager.getCDEManager().getPermissibleValueList("Specimen Type", null);
-	}
-
-	public List getSCGList()
-	{
-		return null;
-	}
-
 	//--------------DAG-----------------------------
+	/**
+	 * Restores query object in DAG.
+	 */
 	public void restoreQueryObject()
 	{
 		if (dagPanel == null)
@@ -167,50 +46,54 @@ public class FlexInterface
 	}
 
 	/**
-	 * Add Nodes in define Result view
-	 * @param nodesStr
-	 * @return
+	 * Add Nodes in define Result view.
+	 * @param nodesStr node string
+	 * @return Dag node
 	 */
 	public DAGNode addNodeToView(String nodesStr)
 	{
-		DAGNode dagNode = dagPanel.addNodeToOutPutView(nodesStr);
-		return dagNode;
+		return dagPanel.addNodeToOutPutView(nodesStr);
 	}
 
 	/**
-	 * Repaints DAG
-	 * @return
+	 * Repaints DAG.
+	 * @return map
 	 */
 	public Map<String, Object> repaintDAG()
 	{
 		return dagPanel.repaintDAG();
 	}
 
+	/**
+	 * Gets search results.
+	 * @return int
+	 */
 	public int getSearchResult()
 	{
 		return dagPanel.search();
 	}
 
 	/**
-	 * create DAG Node
-	 * @param strToCreateQueryObject
-	 * @param entityName
+	 * create DAG Node.
+	 * @param strToCreateQueryObject string to create query object
+	 * @param entityName name of entity
+	 * @return dag node
 	 */
 	public DAGNode createNode(String strToCreateQueryObject, String entityName)
 	{
-		DAGNode dagNode = dagPanel.createQueryObject(strToCreateQueryObject, entityName, "Add");
-		return dagNode;
+		return dagPanel.createQueryObject(strToCreateQueryObject, entityName, "Add");
 	}
 
 	/**
-	 * 
-	 * @param expressionId
-	 * @return
-	 * @throws PVManagerException 
+	 *
+	 * @param expressionId expression id
+	 * @param pageOf String
+	 * @return html string
+	 * @throws PVManagerException PV exception
 	 */
-	public String getLimitUI(int expressionId) throws PVManagerException
+	public String getLimitUI(int expressionId,String pageOf) throws PVManagerException
 	{
-		Map map = dagPanel.editAddLimitUI(expressionId);
+		Map map = dagPanel.editAddLimitUI(expressionId,pageOf);
 		String htmlStr = (String) map.get(DAGConstant.HTML_STR);
 		IExpression expression = (IExpression) map.get(DAGConstant.EXPRESSION);
 		dagPanel.setExpression(expression);
@@ -218,31 +101,35 @@ public class FlexInterface
 	}
 
 	/**
-	 * Edit Node
-	 * @param strToCreateQueryObject
-	 * @param entityName
-	 * @return
+	 * Edit Node.
+	 * @param strToCreateQueryObject string to create query object
+	 * @param entityName name of entity
+	 * @return dag node
 	 */
 	public DAGNode editNode(String strToCreateQueryObject, String entityName)
 	{
-		DAGNode dagNode = dagPanel.createQueryObject(strToCreateQueryObject, entityName, "Edit");
-		return dagNode;
+		return dagPanel.createQueryObject(strToCreateQueryObject, entityName, "Edit");
 	}
 
 	/**
-	 * Checks validity of nodes for query
-	 * @param linkedNodeList
-	 * @return True if both nodes have any of the attribute as Date, else False 
+	 * Checks validity of nodes for query.
+	 * @param linkedNodeList list og dag nodes
+	 * @return error string.
 	 */
-	public boolean checkIfNodesAreValid(List<DAGNode> linkedNodeList)
+	public String checkIfNodesAreValid(List<DAGNode> linkedNodeList)
 	{
-		boolean areNodesValid = false;
+		String error = "";
 
-		areNodesValid = dagPanel.checkForValidAttributes(linkedNodeList);
+		error = dagPanel.checkForValidAttributes(linkedNodeList);
 
-		return areNodesValid;
+		return error;
 	}
 
+	/**
+	 * This method checks if single node TQ is valid.
+	 * @param linkedNodeList list of dag nodes
+	 * @return isNodeValid
+	 */
 	public boolean checkIfSingleNodeValid(List<DAGNode> linkedNodeList)
 	{
 		boolean isNodeValid = false;
@@ -250,47 +137,80 @@ public class FlexInterface
 		return isNodeValid;
 	}
 
-	public Map getSingleNodeQueryDate(List<DAGNode> linkedNodeList)
+
+	/**
+	 * This method returns the data related to single node Temporal Query
+	 * to populate Single Node TQ pop up .
+	 * @param linkedNodeList : List of selected DAG nodes
+	 * @return Map containing data related to single node Temporal Query
+	 */
+	public Map<String, Object> getSingleNodeQueryDate(List<DAGNode> linkedNodeList)
 	{
 		DAGNode sourceNode = linkedNodeList.get(0);
-		Map singleNodeDataMap = dagPanel.getSingleNodeQueryData(sourceNode.getExpressionId(),
-				sourceNode.getNodeName());
+		Map<String, Object> singleNodeDataMap = dagPanel.getSingleNodeQueryData
+		(sourceNode.getExpressionId(),sourceNode.getNodeName());
 
 		return singleNodeDataMap;
 	}
 
-	public Map getSingleNodeEditData(SingleNodeCustomFormulaNode customNode)
+
+	/**
+	 * This method returns the data related to single node Temporal Query
+	 * when Single node TQ is edited.
+	 * @param customNode Single Node TQ that is to be edited
+	 * @return returns the data related to single node Temporal Query
+	 */
+	public Map<String, Object> getSingleNodeEditData(SingleNodeCustomFormulaNode customNode)
 	{
-		Map singleNodeDataMap = dagPanel.getSingleNodeQueryData(customNode.getNodeExpressionId(),
-				customNode.getEntityName());
+		Map<String, Object> singleNodeDataMap = dagPanel.getSingleNodeQueryData(customNode
+				.getNodeExpressionId(), customNode.getEntityName());
 		return singleNodeDataMap;
 	}
 
-	public Map retrieveQueryData(List<DAGNode> linkedNodeList)
+
+	/**
+	 * This method returns the data related to two node Temporal Query
+	 * to populate two nodes TQ pop up.
+	 * @param linkedNodeList List of selected DAG nodes
+	 * @return map containing data related to two node Temporal Query
+	 */
+	public Map<String, Object> retrieveQueryData(List<DAGNode> linkedNodeList)
 	{
 		DAGNode sourceNode = linkedNodeList.get(0);
 		DAGNode destinationNode = linkedNodeList.get(1);
-		Map queryDataMap = dagPanel.getQueryData(sourceNode.getExpressionId(), destinationNode
-				.getExpressionId(), sourceNode.getNodeName(), destinationNode.getNodeName());
+		Map<String, Object> queryDataMap = dagPanel.getQueryData(sourceNode.getExpressionId(),
+				destinationNode.getExpressionId(), sourceNode.getNodeName(), destinationNode
+						.getNodeName());
 		return queryDataMap;
 	}
 
-	public Map retrieveEditQueryData(CustomFormulaNode customNode)
+	/**
+	 * This method returns the data related to single node Temporal Query
+	 * when two node TQ is edited.
+	 * @param customNode : Two node TQ to be edited
+	 * @return : Map containing data related to two node Temporal Query.
+	 */
+	public Map<String, Object> retrieveEditQueryData(CustomFormulaNode customNode)
 	{
-		Map queryDataMap = dagPanel.getQueryData(customNode.getFirstNodeExpId(), customNode
-				.getSecondNodeExpId(), customNode.getFirstNodeName(), customNode
-				.getSecondNodeName());
+		Map<String, Object> queryDataMap = dagPanel.getQueryData(customNode.getFirstNodeExpId(),
+				customNode.getSecondNodeExpId(), customNode.getFirstNodeName(), customNode
+						.getSecondNodeName());
 		return queryDataMap;
 	}
 
+	/**
+	 * This method removes the custom formula from query when
+	 * a two node custom formula is deleted from query in dag.
+	 * @param nodeID : Custom formula node Id to be removed
+	 */
 	public void removeCustomFormula(String nodeID)
 	{
 		dagPanel.removeCustomFormula(nodeID);
 	}
 
 	/**
-	 * Deletes node from output view
-	 * @param expId
+	 * Deletes node from output view.
+	 * @param expId : Expression id
 	 */
 	public void deleteFromView(int expId)
 	{
@@ -298,66 +218,84 @@ public class FlexInterface
 	}
 
 	/**
-	 * Adds node to output view
-	 * @param expId
+	 * Adds node to output view.
+	 * @param expId : Expression ID
 	 */
 	public void addToView(int expId)
 	{
 		dagPanel.addExpressionToView(expId);
 	}
 
+
 	/**
-	 * Deletes node from DAG
-	 * @param expId
+	 * This method checks if node can be deleted in case of Data Query.
+	 * @param expId : expression Id
+	 * @return : corresponding message
 	 */
-	public void deleteNode(int expId)
+
+  	public String isDeletableNode(int expId)
 	{
-		dagPanel.deleteExpression(expId);//delete Expression 
+	  return dagPanel.isDeletableNode(expId);
 	}
 
 	/**
-	 * Gets path List between nodes
-	 * @param linkedNodeList
-	 * @return
+	 * Deletes node from DAG.
+	 * @param expId : Expression Id
+	 */
+	public void deleteNode(int expId)
+	{
+		 dagPanel.deleteExpression(expId);//delete Expression
+	}
+
+	/**
+	 * Gets path List between nodes.
+	 * @param linkedNodeList : Selected nodes from DAG
+	 * @return List of paths between two selected nodes.
 	 */
 	private List<IPath> getPathList(List<DAGNode> linkedNodeList)
 	{
 		DAGNode sourceNode = linkedNodeList.get(0);
 		DAGNode destinationNode = linkedNodeList.get(1);
-		List<IPath> pathsList = dagPanel.getPaths(sourceNode, destinationNode);
-		return pathsList;
+		return dagPanel.getPaths(sourceNode, destinationNode);
 	}
 
 	/**
-	 * Gets association(path) between 2 nodes
-	 * @param linkedNodeList
-	 * @return
+	 * Gets association(path) between 2 nodes.
+	 * @param linkedNodeList : Selected nodes from DAG
+	 * @return List of DAG paths
 	 */
-	public List getpaths(List<DAGNode> linkedNodeList)
+	public List<DAGPath> getpaths(List<DAGNode> linkedNodeList)
 	{
 		List<IPath> pathsList = getPathList(linkedNodeList);
 		List<DAGPath> pathsListStr = new ArrayList<DAGPath>();
 		for (int i = 0; i < pathsList.size(); i++)
 		{
-			Path p = (Path) pathsList.get(i);
+			Path tempPath = (Path) pathsList.get(i);
 			DAGPath path = new DAGPath();
 			path.setToolTip(DAGPanel.getPathDisplayString(pathsList.get(i)));
-			path.setId(Long.valueOf(p.getPathId()).toString());
+			path.setId(Long.valueOf(tempPath.getPathId()).toString());
 			pathsListStr.add(path);
 		}
 		return pathsListStr;
 	}
 
 	/**
-	 * Gets association(path) between 2 nodes
-	 * @param linkedNodeList
-	 * @return
+	 * This method forms the custom formula when two nodes tq condition is added on dag.
+	 * @param customFormulaNode : Custom formula node object
+	 * @param operation : add or edit operation
+	 * @return : Custom formula node object
 	 */
 	public CustomFormulaNode formTemporalQuery(CustomFormulaNode customFormulaNode, String operation)
 	{
 		return dagPanel.formTemporalQuery(customFormulaNode, operation);
 	}
 
+	/**
+	 * This method forms the custom formula when single node tq condition is added on dag.
+	 * @param node : SingleNodeCustomFormulaNode node
+	 * @param operation : add or edit operation
+	 * @return SingleNodeCustomFormulaNode node
+	 */
 	public SingleNodeCustomFormulaNode formSingleNodeFormula(SingleNodeCustomFormulaNode node,
 			String operation)
 	{
@@ -365,9 +303,10 @@ public class FlexInterface
 	}
 
 	/**
-	 * Links 2 nodes
-	 * @param linkedNodeList
-	 * @param selectedPaths
+	 * Links 2 nodes.
+	 * @param linkedNodeList : Selected nodes from DAG
+	 * @param selectedPaths : List of paths between selected nodes
+	 * @return : List of paths between two selected nodes
 	 */
 
 	public List<DAGPath> linkNodes(List<DAGNode> linkedNodeList, List<DAGPath> selectedPaths)
@@ -396,9 +335,9 @@ public class FlexInterface
 	}
 
 	/**
-	 * Deletes associaton between 2 nodes
-	 * @param linkedNodeList
-	 * @param linkName
+	 * Deletes association between 2 nodes.
+	 * @param linkedNodeList : Selected nodes from DAG
+	 * @param linkName : Name of the link
 	 */
 	public void deleteLink(List<DAGNode> linkedNodeList, String linkName)
 	{
@@ -406,10 +345,10 @@ public class FlexInterface
 	}
 
 	/**
-	 * Sets logical operator set from UI
-	 * @param node
-	 * @param operandIndex
-	 * @param operator
+	 * Sets logical operator set from UI.
+	 * @param node : Corresponding edited DAG node
+	 * @param operandIndex : Index of operand
+	 * @param operator : Operator
 	 */
 	public void setLogicalOperator(DAGNode node, int operandIndex, String operator)
 	{
@@ -418,22 +357,20 @@ public class FlexInterface
 	}
 
 	/**
-	 *Initalises DAG 
-	 *
+	 *This method is always invoked when DAG is loaded
+	 * hence initializes the DAG.
 	 */
 	public void initFlexInterface()
 	{
-		queryObject = new ClientQueryBuilder();
+		IConstraintsObjectBuilderInterface queryObject = new ConstraintsObjectBuilder();
 		IPathFinder pathFinder = new CommonPathFinder();
 		dagPanel = new DAGPanel(pathFinder);
 		dagPanel.setQueryObject(queryObject);
-		
-		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
-		HttpSession session = request.getSession();
-		session.removeAttribute("allLimitExpressionIds");
 	}
 
-	private IClientQueryBuilderInterface queryObject = null;
+	/**
+	 *  DagPanel Object.
+	 */
 	private DAGPanel dagPanel = null;
 	//private HttpSession session = null;
 

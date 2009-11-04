@@ -1,6 +1,14 @@
 package edu.wustl.common.query.authoriztion;
 
-public interface Roles 
+/**
+ * Enum for defining the various roles. Current there is a single role defined
+ * to 'Execute Query'.
+ *
+ * @author gaurav_sawant
+ *
+ */
+public enum Roles
 {
-	public static final String EXECUTE_QUERY = "EXECUTE_QUERY";
+    EXECUTE_QUERY
 }
+

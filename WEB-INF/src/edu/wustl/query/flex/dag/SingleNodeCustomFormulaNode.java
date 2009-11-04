@@ -19,8 +19,11 @@ public class SingleNodeCustomFormulaNode implements Externalizable
 	private int nodeExpressionId = 0;
 	private String selectedArithmeticOp = "";
 	private String selectedLogicalOp = "";
-	private String timeValue = "";
-	private String timeInterval = "";
+	private String timeValue1 = "";
+	private String timeInterval1 = "";
+	
+	private String timeValue2 = "";
+	private String timeInterval2 = "";
 	private String lhsTimeValue = "";
 	private String lhsTimeInterval = "";
 	private String operation = "";
@@ -291,33 +294,65 @@ public class SingleNodeCustomFormulaNode implements Externalizable
 	/**
 	 * @return Returns the timeInterval.
 	 */
-	public String getTimeInterval()
+	public String getTimeInterval1()
 	{
-		return timeInterval;
+		return timeInterval1;
 	}
 
 	/**
 	 * @param timeInterval The timeInterval to set.
 	 */
-	public void setTimeInterval(String timeInterval)
+	public void setTimeInterval1(String timeInterval1)
 	{
-		this.timeInterval = timeInterval;
+		this.timeInterval1 = timeInterval1;
 	}
 
 	/**
 	 * @return Returns the timeValue.
 	 */
-	public String getTimeValue()
+	public String getTimeValue1()
 	{
-		return timeValue;
+		return timeValue1;
 	}
 
 	/**
 	 * @param timeValue The timeValue to set.
 	 */
-	public void setTimeValue(String timeValue)
+	public void setTimeValue1(String timeValue1)
 	{
-		this.timeValue = timeValue;
+		this.timeValue1 = timeValue1;
+	}
+	
+	/**
+	 * @return Returns the timeInterval.
+	 */
+	public String getTimeInterval2()
+	{
+		return timeInterval2;
+	}
+
+	/**
+	 * @param timeInterval The timeInterval to set.
+	 */
+	public void setTimeInterval2(String timeInterval2)
+	{
+		this.timeInterval2 = timeInterval2;
+	}
+
+	/**
+	 * @return Returns the timeValue.
+	 */
+	public String getTimeValue2()
+	{
+		return timeValue2;
+	}
+
+	/**
+	 * @param timeValue The timeValue to set.
+	 */
+	public void setTimeValue2(String timeValue2)
+	{
+		this.timeValue2 = timeValue2;
 	}
 
 	public void writeExternal(ObjectOutput out) throws IOException
@@ -331,8 +366,11 @@ public class SingleNodeCustomFormulaNode implements Externalizable
 		out.writeInt(nodeExpressionId);
 		out.writeUTF(selectedArithmeticOp);
 		out.writeUTF(selectedLogicalOp);
-		out.writeUTF(timeValue);
-		out.writeUTF(timeInterval);
+		out.writeUTF(timeValue1);
+		out.writeUTF(timeInterval1);
+		
+		out.writeUTF(timeValue2);
+		out.writeUTF(timeInterval2);
 		out.writeUTF(lhsTimeValue);
 		out.writeUTF(lhsTimeInterval);
 		out.writeUTF(operation);
@@ -354,8 +392,11 @@ public class SingleNodeCustomFormulaNode implements Externalizable
 		nodeExpressionId = input.readInt();
 		selectedArithmeticOp = input.readUTF();
 		selectedLogicalOp = input.readUTF();
-		timeValue = input.readUTF();
-		timeInterval = input.readUTF();
+		timeValue1 = input.readUTF();
+		timeInterval1 = input.readUTF();
+		
+		timeValue2 = input.readUTF();
+		timeInterval2 = input.readUTF();
 		lhsTimeValue = input.readUTF();
 		lhsTimeInterval = input.readUTF();
 		operation = input.readUTF();

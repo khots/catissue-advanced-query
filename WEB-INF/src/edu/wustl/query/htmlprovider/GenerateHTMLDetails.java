@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.wustl.common.querysuite.querableobjectInterface.QueryableAttributeInterface;
 
 /**
  * @author vijay_pande
@@ -30,8 +30,40 @@ public class GenerateHTMLDetails
 	/**
 	 *
 	 */
-	private String[] searcStrings;
+	private String[] searchStrings;
 	
+	/**
+	 * Method to set search string array.
+	 * @param searchStrings search string array
+	 */
+	@Deprecated
+	public void setSearchStrings(String[] searchStrings)
+	{
+		System.arraycopy(searchStrings, 0, this.searchString, 0, searchStrings.length);
+//		this.searchStrings = searchStrings;
+	}
+
+	/**
+	 * 
+	 */
+	private String queryId ;
+	
+	
+	
+	public String getQueryId() 
+	{
+		return queryId;
+	}
+
+	/**
+	 * 
+	 * @param queryID
+	 */
+	public void setQueryId(String queryId) 
+	{
+		this.queryId = queryId;
+	}
+
 	/**
 	 * Method to get String value of searchString.
 	 * @return searchString value of searchString
@@ -48,7 +80,7 @@ public class GenerateHTMLDetails
 	public void setSearchString(String searchString)
 	{
 		this.searchString = searchString;
-		this.searcStrings = prepareSearchString(searchString);
+		prepareSearchString(searchString);
 	}
 
 	/**
@@ -88,12 +120,12 @@ public class GenerateHTMLDetails
 	}
 
 	/**
-	 * Method to get String[]  of searcStrings.
-	 * @return searcStrings
+	 * Method to get String[]  of searchStrings.
+	 * @return searchStrings
 	 */
-	public String[] getSearcStrings()
+	public String[] getSearchStrings()
 	{
-		return searcStrings;
+		return this.searchStrings.clone();
 	}
 
 	/**
@@ -101,29 +133,27 @@ public class GenerateHTMLDetails
 	 * @param searchString String
 	 * @return String[] array of strings , taken from user.
 	 */
-	private String[] prepareSearchString(String searchString)
+	private void prepareSearchString(String searchString)
 	{
 		int counter = 0;
 		StringTokenizer tokenizer = new StringTokenizer(searchString);
-		String[] searchStrings = new String[tokenizer.countTokens()];
+		this.searchStrings = new String[tokenizer.countTokens()];
 		while (tokenizer.hasMoreTokens())
 		{
-			searchStrings[counter] = tokenizer.nextToken().toLowerCase();
-			counter++;
+			searchStrings[counter++] = tokenizer.nextToken().toLowerCase();
 		}
-		return searchStrings;
 	}
 
 	/**
 	 * enumratedAttributeMap for storing the AttributeInterface object in session which has Permissible Values
 	 */
-	Map<String,AttributeInterface> enumratedAttributeMap= new HashMap<String,AttributeInterface>();
+	private Map<String,QueryableAttributeInterface> enumratedAttributeMap= new HashMap<String,QueryableAttributeInterface>();
 	
-	public Map<String, AttributeInterface> getEnumratedAttributeMap() {
+	public Map<String, QueryableAttributeInterface> getEnumratedAttributeMap() {
 		return enumratedAttributeMap;
 	}
 
-	public void setEnumratedAttributeMap(Map<String, AttributeInterface> enumratedAttributeMap) {
+	public void setEnumratedAttributeMap(Map<String,QueryableAttributeInterface> enumratedAttributeMap) {
 		this.enumratedAttributeMap = enumratedAttributeMap;
 	}
 	

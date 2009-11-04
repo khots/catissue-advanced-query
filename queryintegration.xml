@@ -5,7 +5,7 @@
 	<property name="cider.struts.config.file" value="struts-config.xml" />
 	<property name="cider.hibernate.config.file" value="hibernate.cfg.xml" />
 	<property name="cider.tiles.def.file" value="tiles-defs.xml" />
-	
+	<property environment="env" />
 	<!--Advance Query Related  Start-->
 	<!--
 		Check user selected deploy.AdvanceQuery to true and
@@ -44,19 +44,19 @@
 		<!-- Inject db specific information to configuration files -->
 		<echo message="datatype : ${database.type}" />
 		<if>			
-			<equals arg1="mysql" arg2="${database.type}" />
+			<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
 			<then>				
 				<antcall target="aq_mysql_config" />
 			</then>
 			<elseif>
-				<equals arg1="oracle" arg2="${database.type}" />
+				<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
 				<then>
 					<echo message="${database.type}" />
 					<antcall target="aq_oracle_config" />
 				</then>
 			</elseif>
 			<elseif>
-				<equals arg1="db2" arg2="${database.type}" />
+				<equals arg1="db2" arg2="${database.type}" casesensitive="false"/>
 					<then>
 						<echo message="${database.type}" />
 						<antcall target="aq_db2_config" />
@@ -68,10 +68,8 @@
 					level="error" />
 			</else>
 		</if>
-		<!--Copying the Query property file to cider classes -->
-		<copy file="query.properties" todir="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/"
-					overwrite="true" />
-		
+		<!--Copying the Query property file to cider-properties folder -->
+		<copy file="query.properties" todir="${deploy.temp.dir}/cider-properties" overwrite="true" />
 		
 		<!--Copying the vocab.properties file for VI-->
 		<copy file="query-properties/vocab.properties" todir="${deploy.temp.dir}/cider-properties" overwrite="true"/>
@@ -116,6 +114,7 @@
 			<fileset dir=".">
 				<include name="advancequery-struts-config.xml" />
 				<include name="AdvanceQuery-tiles-defs.xml" />
+				<include name="struts-config_1_1.dtd" />
 			</fileset>
 		</copy>
 
@@ -140,13 +139,46 @@
 		</copy>
 
 		<!--Copying the  flex client files for advance query-->
-		<copy todir="${deploy.temp.dir}/${war.dir}/flexclient" overwrite="true">
-			<fileset dir="flexclient" />
-		</copy>
+		<!-- Compiling the DAG --> 
+		<!-- This is added for selennium  test cases -->
+		
 		<copy todir="${deploy.temp.dir}/${war.dir}/WEB-INF/flex"
 			overwrite="true">
 			<fileset dir="flex" />
 		</copy>
+		<echo message="To compile flex is: ${flex.dag.compile}"/>
+		<echo message="Flex home is: ${FLEX_HOME}"/>
+		
+		
+		<!-- Note that we are using flexTasks.jar from the lib directory of CIDER because of some issues in removing deploytemp folder -->
+		<taskdef resource="flexTasks.tasks" classpath="../../lib/flexTasks.jar" />
+		<if>
+			<equals arg1="Yes" arg2="${flex.dag.compile}" casesensitive="false"/>
+				<then>
+					<delete file="${parent.base.dir}/deploytempCider/AdvanceQuery/flexclient/advancequery/dag/DAG.swf" />
+						<echo  message="Compiling the DAG" />
+					<mxmlc file="${parent.base.dir}/deploytempCider/AdvanceQuery/flexclient/advancequery/dag/DAG.mxml" keep-generated-actionscript="true">
+							<load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
+							<source-path path-element="${FLEX_HOME}/frameworks"/>
+				            <!--compiler.library-path dir="${FLEX_HOME}/frameworks" append="true">
+				                <include name="libs" />
+				                <include name="../bundles/{locale}" />
+				            </compiler.library-path -->
+							
+							<compiler.include-libraries dir="${FLEX_HOME}" append="true">
+							    <include name="SeleniumFlexAPI.swc" />
+							</compiler.include-libraries>
+							
+						</mxmlc> 
+					     <echo message="DAG compilation done"/>
+				</then>
+		</if>
+     		
+		
+		<copy todir="${deploy.temp.dir}/${war.dir}/flexclient" overwrite="true">
+			<fileset dir="flexclient" />
+		</copy>
+
 		<!-- 3) Inject advancequery-struts-config.xml entry in cider web.xml -->
 		<replace file="${deploy.temp.dir}/${war.dir}/WEB-INF/web.xml">
 			<replacefilter token="/WEB-INF/${cider.struts.config.file}"
@@ -236,12 +268,13 @@
 			<property name="database.username" value="${database.username}" />
 			<property name="database.password" value="${database.password}" />
 			<property name="database.schema" value="${database.schema}" />
+			<property name="jboss.server.url" value="${jboss.server.url}"/>
 		</ant>
 	</target>
 	
-	<target name = "add_curated_Path">
+	<target name = "add_curated_path">
 		<echo message="In Add curated path in Query Integraion Xml"/>
-		<ant dir="." inheritAll="false" antfile="deploy.xml" target="add_curated_Path">
+		<ant dir="." inheritAll="false" antfile="deploy.xml" target="add_curated_path">
 			<property name="jboss.server.url" value="${jboss.server.url}"/>
  			<property name="database.type" value="${database.type}" />
 			<property name="database.host" value="${database.host}" />
@@ -259,16 +292,53 @@
 				<property file="${deploy.temp.dir}/AdvanceQuery/mainTiles.properties"></property>
 						<replace dir="${deploy.temp.dir}/AdvanceQuery/" propertyfile="mainTiles.properties"> 
 									<include name ="AdvanceQuery-tiles-defs.xml"/>
-									<replacefilter token="@@tilesTitle@@" value="${tilesTitle}"/>
 									<replacefilter token="@@tilesHeader@@" value="${tilesHeader}"/>
 									<replacefilter token="@@tilesAppHeader@@" value="${tilesAppHeader}"/>
 									<replacefilter token="@@tilesMainMenu@@" value="${tilesMainMenu}"/>
-									<replacefilter token="@@tilesQuickLaunch@@" value="${tilesQuickLaunch}"/>
+									<!--replacefilter token="@@tilesQuickLaunch@@" value="${tilesQuickLaunch}"/-->
 									<replacefilter token="@@tilesContent@@" value="${tilesContent}"/>
 									<replacefilter token="@@tilesFooter@@" value="${tilesFooter}"/>
 						</replace>
 			<echo message="${tilesTitle}"/>
 				</target>
-
+	<target name="aq_create_category">
+				<ant dir="." inheritAll="false" antfile="deploy.xml" target="create_category">
+					<property name="database.type" value="${database.type}" />
+					<property name="database.host" value="${database.host}" />
+					<property name="database.port" value="${database.port}" />
+					<property name="database.name" value="${database.name}" />
+					<property name="database.username" value="${database.username}" />
+					<property name="database.password" value="${database.password}" />
+					<property name="database.schema" value="${database.schema}" />
+					<property name="categoryDefinationFilePath" value="${categoryDefinationFilePath}"/>
+					<property name="jboss.server.url" value="${jboss.server.url}" />
+				</ant>
+			</target>
+	
+	<target name="aq_import_xmi">
+		<ant dir="." inheritAll="false" antfile="deploy.xml" target="import_xmi">
+			<property name="database.type" value="${database.type}" />
+			<property name="database.host" value="${database.host}" />
+			<property name="database.port" value="${database.port}" />
+			<property name="database.name" value="${database.name}" />
+			<property name="database.username" value="${database.username}" />
+			<property name="database.password" value="${database.password}" />
+			<property name="database.schema" value="${database.schema}" />
+			<property name="jboss.server.url" value="${jboss.server.url}" />
+		</ant>
+	</target>
+	
+	<target name="aq_update_DE_identifiers">
+		<ant dir="." inheritAll="false" antfile="deploy.xml" target="update_DE_identifiers">
+			<property name="database.type" value="${database.type}" />
+			<property name="database.host" value="${database.host}" />
+			<property name="database.port" value="${database.port}" />
+			<property name="database.name" value="${database.name}" />
+			<property name="database.username" value="${database.username}" />
+			<property name="database.password" value="${database.password}" />
+			<property name="database.schema" value="${database.schema}" />
+			
+		</ant>
+	</target>
 	<!--Advance Query Related  End -->
 </project>

@@ -42,7 +42,7 @@
 		[Bindable]
 		public var nodeType:String="";
 		[Bindable]
-		public var operatorArray:Array = ["AND","OR"];
+		public var operatorArray:Array = ["AND"];
 		[Bindable]
 		public var operatorSelectedIndex:int=0;
 		[Bindable]
@@ -346,11 +346,35 @@
 			orderOfAss.remove(pathName);
 		}
 		/**
+		* Check if node is deletable
+		*/
+		public function isDeletableNode():void
+		{
+		  this.parentApplication.rpcService.isDeletableNode(this.expressionId);
+		  this.parentApplication.rpcService.addEventListener(ResultEvent.RESULT,isDeletableHandler);
+	    }
+	    
+		public function isDeletableHandler(event:ResultEvent):void
+		{
+		  var message : String = event.result as String;
+		    this.parentApplication.rpcService.removeEventListener(ResultEvent.RESULT,isDeletableHandler);	
+			if(message!="")
+			{ 
+			     Alert.show(message);	
+			}
+			else
+			{
+			    deleteNode();
+			}
+		
+		}
+	  	
+
+		/**
 		* Delete node.
 		*/
 		public function deleteNode():void
 		{
-				
 				var ass:Association;
 				var length:int  = inAssociations.length as int;
 				for(var i:int=0;i<length;i++)
@@ -366,10 +390,9 @@
 					ass = Association(outAssociations.getItemAt(0));
 					deletePath(ass.associatedLink);
 					DAGNode(this.parent.getChildByName(ass.associatedNode)).removeInAssociation(this.name,ass.associatedLink);
-				}
+				} 
 				this.parentApplication.rpcService.deleteNode(this.expressionId);
 				this.parentApplication.rpcService.addEventListener(ResultEvent.RESULT,deleteHandler);
-				
 		}
 		/**
 		* Handling menu click event 
@@ -378,7 +401,7 @@
 		{
 			if(event.label == DAGConstants.DELETE)
 			{
-				deleteNode();
+				isDeletableNode();
 			}
 			if(event.label ==DAGConstants.EDIT)
 			{
@@ -429,32 +452,72 @@
 		*/
 		public function deleteHandler(event:ResultEvent):void
 		{
-			for(var j:int =0;j<this.parentApplication.selectedNodeList.length;j++)	
-			{
-				var dd:DAGNode = this.parentApplication.selectedNodeList.getItemAt(j) as DAGNode;
-				dd.unSelect();
+				   for(var j:int =0;j<this.parentApplication.selectedNodeList.length;j++)	
+					{
+						var dd:DAGNode = this.parentApplication.selectedNodeList.getItemAt(j) as DAGNode;
+						dd.unSelect();
+					}
+					//this.parent.removeChild(this.parent.getChildByName(this.name));
+					for(var i:int =0;i<this.parentApplication.totalNodes.length;i++)	
+					{
+						var dagNode:DAGNode = this.parentApplication.totalNodes.getItemAt(i) as DAGNode;
+						if(dagNode.name==this.name)
+						{
+							this.parentApplication.totalNodes.removeItemAt(i);
+							this.parentApplication.selectedNodeList.removeAll();
+							this.parentApplication.count = 0;
+							this.parentApplication.node1 = "";
+							this.parentApplication.node2 = "";
+						}
+					}
+					
+					this.parent.removeChild(this.parent.getChildByName(this.name));
+					
+					//this.parentApplication.rpcService.removeEventListener(ResultEvent.RESULT,deleteHandler,false);
+					if(this.nodeType==DAGConstants.CONSTRAINT_VIEW_NODE)
+					{
+						var paramArray:Array = new Array(DAGConstants.DELETE_LIMITS_MESSAGE);
+						ExternalInterface.call("showEntityInformation",paramArray);
+					}
+					this.parentApplication.currentExp.text = this.parentApplication.getExprssionString();
+				    this.parentApplication.rpcService.removeEventListener(ResultEvent.RESULT,deleteHandler);
+				    
+				    
+				    //Start from here to remove corresponding TQ associated with that expression
+				   removeCorrespondingCNodes();
 			}
-			this.parent.removeChild(this.parent.getChildByName(this.name));
-			for(var i:int =0;i<this.parentApplication.totalNodes.length;i++)	
-			{
-				var dagNode:DAGNode = this.parentApplication.totalNodes.getItemAt(i) as DAGNode;
-				if(dagNode.name==this.name)
-				{
-					this.parentApplication.totalNodes.removeItemAt(i);
-					this.parentApplication.selectedNodeList.removeAll();
-					this.parentApplication.count = 0;
-					this.parentApplication.node1 = "";
-					this.parentApplication.node2 = "";
-				}
+		
+		/*
+            This method removes corresponding Associated Custom formula Nodes to a Node 		
+		*/
+		private function removeCorrespondingCNodes() : void
+		{
+			//First get the all associated two nodes TQs  
+			var customNodeName : String = "";
+			var twoNodesCustomNode : CustomFormulaNode = null;
 			
-			}
-			this.parentApplication.rpcService.removeEventListener(ResultEvent.RESULT,deleteHandler,false);
-			if(this.nodeType==DAGConstants.CONSTRAINT_VIEW_NODE)
+			var associtedCustomNodes : ArrayCollection = this.parentApplication.getAllAsscoiatedCNodes(this);
+            for(var t : int = 0; t<associtedCustomNodes.length ;t++)
 			{
-				var paramArray:Array = new Array(DAGConstants.DELETE_LIMITS_MESSAGE);
-				ExternalInterface.call("showEntityInformation",paramArray);
+				customNodeName = associtedCustomNodes[t] as String;
+				twoNodesCustomNode = this.parentApplication.mainPanel.getChildByName(customNodeName) as CustomFormulaNode;
+				if(twoNodesCustomNode != null)
+				{
+					twoNodesCustomNode.deleteCustomNode();
+				}
 			}
-			this.parentApplication.currentExp.text = this.parentApplication.getExprssionString();
+             
+            //Get the all associated single node TQs
+            var associatedSingleCNodes : ArrayCollection = this.parentApplication.getAllSingleAssociatedNodes(this);
+            for(var n : int = 0; n < associatedSingleCNodes.length ; n++)
+			{
+				customNodeName = associatedSingleCNodes[n] as String;
+				var  singleCustomNode : SingleNodeCustomFormulaNode = this.parentApplication.mainPanel.getChildByName(customNodeName) as SingleNodeCustomFormulaNode;
+				if(singleCustomNode != null)
+				{
+					singleCustomNode.deleteCustomNode();
+				}
+			}	
 		}
 		/**
 		* Error handler
@@ -519,3 +582,4 @@
 			</mx:Repeater>
 		</mx:VBox>
 </mx:Box>
+

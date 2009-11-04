@@ -1,4 +1,5 @@
 
+
 package edu.wustl.query.bizlogic;
 
 /**
@@ -13,7 +14,6 @@ import junit.framework.TestCase;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.query.impl.PassOneXQueryGenerator;
 import edu.wustl.common.query.impl.QueryUtility;
-import edu.wustl.common.query.impl.XQueryEntityManagerMock;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.queryTCExecutor.QueryTestCaseExecutorFactory;
 import edu.wustl.query.queryTCExecutor.QueryTestCaseExecutorInterface;
@@ -33,7 +33,6 @@ public class QueryFrameworkTestCase extends TestCase
 	public static PassOneXQueryGenerator xQueryGenerator = new PassOneXQueryGenerator();
 	// public static IQueryGenerator xQueryGenerator = QueryGeneratorFactory.getDefaultQueryGenerator();
 
-	XQueryEntityManagerMock entityManager = new XQueryEntityManagerMock();
 	public static String xmlFileName = "FrameWork.xml";
 	Map<String, String> details;
 	public static QueryTestCaseExecutorInterface executor;
@@ -43,12 +42,14 @@ public class QueryFrameworkTestCase extends TestCase
 
 	static
 	{
-		Logger.configure();
+		//Logger.configure();
+		org.apache.log4j.Logger logger = Logger
+		.getLogger(QueryFrameworkTestCase.class);
 		try
 		{
 			EntityCache.getInstance();
 
-			Utility.initTest();
+			// Utility.initTest();
 
 			Properties props = new Properties();
 			props.load(new FileInputStream("queryInstall.properties"));
@@ -67,7 +68,7 @@ public class QueryFrameworkTestCase extends TestCase
 			/**
 			 * Indicating - Do not LOG XQueries
 			 */
-			Variables.isExecutingTCFramework = true;
+			Variables.isExecutingTestCase = true;
 
 			Variables.queryGeneratorClassName = "edu.wustl.common.query.impl.PassOneXQueryGenerator";
 
@@ -151,24 +152,58 @@ public class QueryFrameworkTestCase extends TestCase
 		}
 	}*/
 
-	public void testXQuery_PersonUpi_is_NOT_NULL()
+	public void testXQuery_Query_1()
 	{
-		//    	IQuery query = XQueryGeneratorMock.createQuery2();
-		//    	QueryUtility.serializeIQueryToFile("query_1.xml", query);
+
 	}
 
-	/*public void testXQuery_PersonUpi_is_NOT_NULL_AND_DOB_greater_than_10_10_1920()
+	public void testXQuery_Query_2()
 	{
-		
+
+	}
+
+	public void testXQuery_Query_3()
+	{
+
 	}
 	
-	public void testXQuery_PersonUpi_is_NOT_NULL_AND_DOB_less_than_10_10_1920()
+	public void testXQuery_Query_4()
 	{
-		
+
+	}
+
+	public void testXQuery_Query_5()
+	{
+
 	}
 	
-	public void testXQuery_Find_all_Persons_where_PersonUpi_CONTAINS_values_000000000000000008690923()
+	public void testXQuery_Query_6()
 	{
-		
-	}*/
+
+	}
+	
+	public void testXQuery_Query_7()
+	{
+
+	}
+	
+	public void testXQuery_Query_8()
+	{
+
+	}
+	
+	public void testXQuery_Query_9()
+	{
+
+	}
+	
+	public void testXQuery_Query_10()
+	{
+
+	}
+	
+	public void testXQuery_Query_11()
+	{
+
+	}
 }

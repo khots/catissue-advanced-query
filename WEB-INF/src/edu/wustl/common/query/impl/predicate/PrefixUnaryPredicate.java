@@ -24,7 +24,7 @@ public class PrefixUnaryPredicate extends AbstractPredicate
 	public String assemble(String prefix)
 	{
 		StringBuilder predicate = new StringBuilder();
-		predicate.append(operator).append(prefix).append(attribute).append(')');
+		predicate.append(getOperator()).append(prefix).append(getLhs()).append(')');
 
 		return predicate.toString();
 	}

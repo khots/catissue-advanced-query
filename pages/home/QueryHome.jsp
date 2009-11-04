@@ -63,7 +63,7 @@ table#browserDetailsContainer
 									key="app.disclaimer" /></a></td>
 
 							</tr>
-							<logic:empty scope="session" name="<%=Constants.SESSION_DATA%>">
+							<logic:empty scope="session" name="<%=edu.wustl.common.util.global.Constants.SESSION_DATA%>">
 							<tr>
 								<td><a
 									href="Accessibility.do?PAGE_TITLE_KEY=app.accessibility&FILE_NAME_KEY=app.accessibility.file"
@@ -76,7 +76,7 @@ table#browserDetailsContainer
 									key="app.help" /></a></td>
 							</tr>
 							</logic:empty>
-							<logic:notEmpty scope="session" name="<%=Constants.SESSION_DATA%>">
+							<logic:notEmpty scope="session" name="<%=edu.wustl.common.util.global.Constants.SESSION_DATA%>">
 							<tr>
 								<td style="padding-bottom:16px;"><a
 									href="Accessibility.do?PAGE_TITLE_KEY=app.accessibility&FILE_NAME_KEY=app.accessibility.file"
@@ -133,7 +133,7 @@ table#browserDetailsContainer
 					<tr>
 						<td colspan="3" align="left" class="showhide1">
 						<%@ include file="/pages/advancequery/common/ActionErrors.jsp" %>
-						<logic:empty scope="session" name="<%=Constants.SESSION_DATA%>">
+						<logic:empty scope="session" name="<%=edu.wustl.common.util.global.Constants.SESSION_DATA%>">
 							<html:form styleId="form1" styleClass="whitetable_bg"
 								action="/Login.do">
 								<table width="98%" border="0" cellpadding="4" cellspacing="0">
@@ -178,12 +178,12 @@ table#browserDetailsContainer
 							</html:form>
 
 						</logic:empty> <logic:notEmpty scope="session"
-							name="<%=Constants.SESSION_DATA%>">
+							name="<%=edu.wustl.common.util.global.Constants.SESSION_DATA%>">
 							<tr>
 								<TD class="welcomeContent">
 								<%
 													Object obj = request.getSession().getAttribute(
-													Constants.SESSION_DATA);
+															edu.wustl.common.util.global.Constants.SESSION_DATA);
 											if (obj != null) {
 												SessionDataBean sessionData = (SessionDataBean) obj;
 										%> Dear <%=sessionData.getLastName()%>, &nbsp;<%=sessionData.getFirstName()%><br>
@@ -303,3 +303,4 @@ table#browserDetailsContainer
 			src="images/advancequery/uIEnhancementImages/spacer.gif" alt="Spacer" width="1" height="1" /></td>
 	</tr>
 </table>
+

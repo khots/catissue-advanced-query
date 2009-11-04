@@ -20,6 +20,10 @@ import edu.wustl.query.util.global.Constants;
 public class TemporalQueryUtility
 {
 
+	/**
+	 * This method returns relational operators valid for temporal query.
+	 * @return list of relational operators.
+	 */
 	public static List<String> getRelationalOperators()
 	{
 		/**
@@ -28,15 +32,14 @@ public class TemporalQueryUtility
 		List<String> relationalOperatorsList = new ArrayList<String>();
 		for (RelationalOperator operator : RelationalOperator.values())
 		{
-			if ((!operator.getStringRepresentation().equals(Constants.Contains))
-					&& (!operator.getStringRepresentation().equals(Constants.STRATS_WITH))
-					&& (!operator.getStringRepresentation().equals(Constants.ENDS_WITH))
-					&& (!operator.getStringRepresentation().equals(Constants.IN))
-					&& (!operator.getStringRepresentation().equals(Constants.Between))
-					&& (!operator.getStringRepresentation().equals(Constants.Not_In))
-					&& (!operator.getStringRepresentation().equalsIgnoreCase(Constants.IS_NULL))
-					&& (!operator.getStringRepresentation().equalsIgnoreCase(Constants.IS_NOT_NULL))
-					&& (!operator.getStringRepresentation().equalsIgnoreCase(Constants.NOT_BETWEEN)))
+			if ((!operator.getStringRepresentation().equalsIgnoreCase(Constants.Contains))
+				&& (!operator.getStringRepresentation().equalsIgnoreCase(Constants.STRATS_WITH))
+				&& (!operator.getStringRepresentation().equalsIgnoreCase(Constants.ENDS_WITH))
+				&& (!operator.getStringRepresentation().equalsIgnoreCase(Constants.IN))
+				&& (!operator.getStringRepresentation().equalsIgnoreCase(Constants.Not_In))
+				&& (!operator.getStringRepresentation().equalsIgnoreCase(Constants.IS_NULL))
+				&& (!operator.getStringRepresentation().equalsIgnoreCase(Constants.IS_NOT_NULL))
+				&& (!operator.getStringRepresentation().equalsIgnoreCase(Constants.NOT_BETWEEN)))
 
 			{
 				relationalOperatorsList.add(operator.getStringRepresentation());
@@ -45,6 +48,10 @@ public class TemporalQueryUtility
 		return relationalOperatorsList;
 	}
 
+	/**
+	 * This method returns the time interval.
+	 * @return time interval.
+	 */
 	public static List<String> getTimeIntervals()
 	{
 		List<String> timeIntervalList = new ArrayList<String>();
@@ -63,6 +70,11 @@ public class TemporalQueryUtility
 		return timeIntervalList;
 	}
 
+	/**
+	 * Gets time interval.
+	 * @param timeIntervalValue interval value
+	 * @return TimeInterval
+	 */
 	public static TimeInterval getTimeInterval(String timeIntervalValue)
 	{
 		TimeInterval timeInterval = null;
@@ -77,6 +89,11 @@ public class TemporalQueryUtility
 		return timeInterval;
 	}
 
+	/**
+	 * Returns relational operator based on the string passed.
+	 * @param relationalOp relational operator
+	 * @return RelationalOperator
+	 */
 	public static RelationalOperator getRelationalOperator(String relationalOp)
 	{
 		RelationalOperator relOp = null;

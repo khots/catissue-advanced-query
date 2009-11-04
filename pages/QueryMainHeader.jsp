@@ -25,7 +25,7 @@
 					src="images/advancequery/uIEnhancementImages/ic_summary.gif" alt="Summary"
 					width="10" height="10" hspace="5" vspace="0" border="0" /><bean:message key="app.summary" /></a></td>
 
-				<logic:notEmpty scope="session" name="<%=Constants.SESSION_DATA%>">
+				<logic:notEmpty scope="session" name="<%=edu.wustl.common.util.global.Constants.SESSION_DATA%>">
 					<td width="14%" align="right" valign="top"><a
 						href="Logout.do"> <img
 						src="images/advancequery/uIEnhancementImages/logout_button1.gif" name="Image1"
@@ -33,7 +33,7 @@
 						onmouseover="MM_swapImage('Image1','','images/advancequery/uIEnhancementImages/logout_button.gif',1)"
 						onmouseout="MM_swapImgRestore()" /> </a></td>
 				</logic:notEmpty>
-				<logic:empty scope="session" name="<%=Constants.SESSION_DATA%>">
+				<logic:empty scope="session" name="<%=edu.wustl.common.util.global.Constants.SESSION_DATA%>">
 					<td width="14%" valign="middle" align="right"><a
 						href="Home.do" class="white"> <bean:message
 						key="app.loginMessage" /> </a> <img

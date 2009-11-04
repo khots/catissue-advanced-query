@@ -3,9 +3,9 @@ package edu.wustl.query.htmlprovider;
 import java.util.List;
 import java.util.Map;
 
+import edu.wustl.common.querysuite.querableobjectInterface.QueryableAttributeInterface;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IParameter;
-import edu.wustl.query.domain.SelectedConcept;
 
 /**
  * This class holds details of an Attribute, required to Generate Html.
@@ -22,7 +22,7 @@ public class AttributeDetails
 	/**
 	 * Map containing Attribute and its conditions.
 	 */
-	private Map<String, ICondition> attributeNameConditionMap;
+	private Map<QueryableAttributeInterface, ICondition> attributeNameConditionMap;
 
 	/**
 	 * List of operators for an attribute.
@@ -42,7 +42,7 @@ public class AttributeDetails
 	/**
 	 * If operator isBetween.
 	 */
-	private boolean isBetween;
+	private boolean between;
 
 	/**
 	 *	Values for selected operator.
@@ -62,34 +62,13 @@ public class AttributeDetails
 	/**
 	 * Is Parameterized Condition.
 	 */
-	private boolean isParameterizedCondition;
+	private boolean parameterizedCondition;
 
 	/**
 	 * Parameter for parameterized query.
 	 */
 	private IParameter<?> paramater;
 
-	/**
-	 * 
-	 */
-	private List<SelectedConcept> selectedConcepts;
-		
-	/**
-	 * @return the selectedConcepts
-	 */
-	public List<SelectedConcept> getSelectedConcepts()
-	{
-		return selectedConcepts;
-	}
-
-	
-	/**
-	 * @param selectedConcepts the selectedConcepts to set
-	 */
-	public void setSelectedConcepts(List<SelectedConcept> selectedConcepts)
-	{
-		this.selectedConcepts = selectedConcepts;
-	}
 
 	/**
 	 * @return the attrName
@@ -110,7 +89,7 @@ public class AttributeDetails
 	/**
 	 * @return the attributeNameConditionMap
 	 */
-	public Map<String, ICondition> getAttributeNameConditionMap()
+	public Map<QueryableAttributeInterface, ICondition> getAttributeNameConditionMap()
 	{
 		return attributeNameConditionMap;
 	}
@@ -118,7 +97,7 @@ public class AttributeDetails
 	/**
 	 * @param attributeNameConditionMap the attributeNameConditionMap to set
 	 */
-	public void setAttributeNameConditionMap(Map<String, ICondition> attributeNameConditionMap)
+	public void setAttributeNameConditionMap(Map<QueryableAttributeInterface, ICondition> attributeNameConditionMap)
 	{
 		this.attributeNameConditionMap = attributeNameConditionMap;
 	}
@@ -171,19 +150,19 @@ public class AttributeDetails
 	}
 
 	/**
-	 * @return the isBetween
+	 * @return the between
 	 */
 	public boolean isBetween()
 	{
-		return isBetween;
+		return between;
 	}
 
 	/**
-	 * @param isBetween the isBetween to set
+	 * @param between the isBetween to set
 	 */
-	public void setBetween(boolean isBetween)
+	public void setBetween(boolean between)
 	{
-		this.isBetween = isBetween;
+		this.between = between;
 	}
 
 	/**
@@ -235,19 +214,19 @@ public class AttributeDetails
 	}
 
 	/**
-	 * @return the isParameterizedCondition
+	 * @return the parameterizedCondition
 	 */
 	public boolean isParameterizedCondition()
 	{
-		return isParameterizedCondition;
+		return parameterizedCondition;
 	}
 
 	/**
-	 * @param isParameterizedCondition the isParameterizedCondition to set
+	 * @param parameterizedCondition the parameterizedCondition to set
 	 */
-	public void setParameterizedCondition(boolean isParameterizedCondition)
+	public void setParameterizedCondition(boolean parameterizedCondition)
 	{
-		this.isParameterizedCondition = isParameterizedCondition;
+		this.parameterizedCondition = parameterizedCondition;
 	}
 
 	/**

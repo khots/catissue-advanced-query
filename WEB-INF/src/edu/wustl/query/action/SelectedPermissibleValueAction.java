@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -17,7 +16,7 @@ import edu.wustl.query.util.global.Constants;
  * @author amit_doshi
  * Action Class to responsible to handle the selected permissible values from VI
  */
-public class SelectedPermissibleValueAction extends Action {
+public class SelectedPermissibleValueAction extends AbstractQueryBaseAction {
 	
 	/**
 	 * This method loads the data required for categorySearch.jsp
@@ -29,7 +28,7 @@ public class SelectedPermissibleValueAction extends Action {
 	 * @return ActionForward actionForward
 	 */
 	@Override
-	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response)throws Exception
+	protected ActionForward executeBaseAction(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response)throws Exception
 	{
 		List<SelectedConcept> selectedConceptList=new ArrayList<SelectedConcept>();
 		String conceptCodes=request.getParameter("ConceptCodes");

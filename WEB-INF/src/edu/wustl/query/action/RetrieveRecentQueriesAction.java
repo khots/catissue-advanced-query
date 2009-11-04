@@ -1,86 +1,191 @@
 
 package edu.wustl.query.action;
 
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.struts.action.Action;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import edu.wustl.cider.util.CiderUtility;
+import edu.wustl.cider.util.global.Utility;
 import edu.wustl.common.beans.RecentQueriesBean;
 import edu.wustl.common.beans.SessionDataBean;
-import edu.wustl.common.dao.AbstractDAO;
-import edu.wustl.common.dao.DAOFactory;
-import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.dao.queryExecutor.PagenatedResultData;
-import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
-import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.query.actionForm.ShowRetrieveRecentForm;
+import edu.wustl.common.exception.BizLogicException;
+import edu.wustl.common.factory.AbstractFactoryConfig;
+import edu.wustl.common.util.logger.LoggerConfig;
+import edu.wustl.dao.exception.DAOException;
+import edu.wustl.query.actionforms.ShowRetrieveRecentForm;
+import edu.wustl.query.bizlogic.RecentQueriesBizlogic;
 import edu.wustl.query.util.global.Constants;
 import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleException;
+import edu.wustl.security.exception.SMException;
 
 /**
-* @author chitra_garg
-*retrieves the recent queries and set the pagination on 
-*retrieved data
-*/
-public class RetrieveRecentQueriesAction extends Action
+ * This class is used to retrieve the recent queries and set the pagination on
+ * the retrieved data.
+ *
+ * @author chitra_garg
+ */
+public class RetrieveRecentQueriesAction extends AbstractQueryBaseAction
 {
+	/**
+	 * logger for this class.
+	 */
+	private static org.apache.log4j.Logger logger = LoggerConfig
+			.getConfiguredLogger(RetrieveRecentQueriesAction.class);
+	/**
+	 * Static constant for index - status image.
+	 */
+	private static final int INDEX_STATUS_IMAGE = 0;
+	/**
+	 * Static constant for index - query title.
+	 */
+	private static final int INDEX_QUERY_TITLE = 1;
+	/**
+	 * Static constant for index - result count.
+	 */
+	private static final int INDEX_RESULT_COUNT = 2;
+	/**
+	 * Static constant for index - query creation date.
+	 */
+	private static final int INDEX_QUERY_CREATION_DATE = 3;
+	/**
+	 * Static constant for index - action icons.
+	 */
+	private static final int INDEX_ACTIONS = 4;
+	/**
+	 * Static constant for index - status text.
+	 */
+	private static final int INDEX_STATUS_TEXT = 5;
+	/**
+	 * Static constant for index - query execution id.
+	 */
+	private static final int INDEX_QUERY_EXEC_ID = 6;
+	/**
+	 * Static constant for index - query privilege.
+	 */
+	private static final int INDEX_PRIVILEGE = 7;
+	/**
+	 * Static constant for index - query id.
+	 */
+	private static final int INDEX_QUERY_ID = 8;
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
+	/**
+	 * The actual execute method.
+	 *
+	 * @param actionMapping
+	 *            Action Mapping.
+	 * @param actionForm
+	 *            Action Form.
+	 * @param request
+	 *            HttpServletRequest object.
+	 * @param response
+	 *            HttpServletResponse object.
+	 * @return The Action Forward object.
+	 * @throws Exception
+	 *             Exception.
+	 * @see org.apache.struts.action.Action#execute
+	 *      (org.apache.struts.action.ActionMapping,
+	 *      org.apache.struts.action.ActionForm,
+	 *      javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+	protected ActionForward executeBaseAction(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		populateRecentQueries(request, (ShowRetrieveRecentForm) actionForm);
-
-		return actionMapping.findForward(Constants.SUCCESS);
+		if( request
+				.getParameter(Constants.QUERY_NAME_LIKE)==null)
+		{
+			request.setAttribute(Constants.QUERY_NAME_LIKE, request
+				.getParameter(Constants.QUERY_NAME_LIKE));
+		}
+		else
+		{
+			String namecontains=request
+			.getParameter(Constants.QUERY_NAME_LIKE).replaceAll("'","&#39;");
+			request.setAttribute(Constants.QUERY_NAME_LIKE, namecontains);
+		}
+		return actionMapping.findForward(request.getParameter(Constants.PAGE_OF));
 
 	}
 
 	/**
-	 * set the total recent queries count for 
-	 * a user in session 
-	 * @param request
-	 * @return
-	 * @throws QueryModuleException 
+	 * Method to set the total recent queries count for a user in session.
+	 *
+	 * @param sessionDataBean
+	 *            SessionDatabean
+	 * @return The recent query count
+	 * @throws QueryModuleException
+	 *             Query Module Exception
+	 * @throws SMException
+	 *             Security Manager Exception
 	 */
-	private int setRecentQueriesCount(HttpServletRequest request) throws QueryModuleException
+	public int setRecentQueriesCount(SessionDataBean sessionDataBean) throws QueryModuleException,
+			SMException
 	{
-		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
-				Constants.SESSION_DATA);
-		String sql = "select count(*) from  QUERY_EXECUTION_LOG where USER_ID= "
-				+ sessionDataBean.getUserId();
-		int numberOfQueries = 0;
-		List<List<String>> resultCount = executeQuery(sql, sessionDataBean, false, false, null, -1,
-				-1);
-		if (resultCount != null)
+		try
 		{
-			numberOfQueries = Integer.valueOf(resultCount.get(0).get(0));
+			RecentQueriesBizlogic bizLogic =
+				(edu.wustl.query.bizlogic.RecentQueriesBizlogic) AbstractFactoryConfig
+					.getInstance().getBizLogicFactory().getBizLogic(
+							Constants.RECENT_QUERY_BIZLOGIC_ID);
+			String sql = "SELECT COUNT(*) " + "FROM QUERY_EXECUTION_LOG qel, "
+					+ "COUNT_QUERY_EXECUTION_LOG cqel " + "WHERE qel.QUERY_EXECUTION_ID = "
+					+ "cqel.COUNT_QUERY_EXECUTION_ID and qel.USER_ID="
+					+ sessionDataBean.getUserId()
+					+ " and qel.QUERY_TYPE='C' and qel.WORKFLOW_ID IS NULL";
+			int numberOfQueries = 0;
+			List<List<String>> resultCount = bizLogic.executeQuery(sql, sessionDataBean, -1, -1);
+			if (resultCount != null)
+			{
+				numberOfQueries = Integer.valueOf(resultCount.get(0).get(0));
+			}
+			return numberOfQueries;
+		}
+		catch (BizLogicException bizlogicException)
+		{
+			throw new QueryModuleException(bizlogicException.getMessage(), bizlogicException,
+					QueryModuleError.GENERIC_EXCEPTION);
 		}
 
-		return numberOfQueries;
 	}
 
 	/**
-	 * This method set the total number of records to display 
+	 * This method set the total number of records to display.
+	 *
 	 * @param request
-	 * @return
-	 * @throws QueryModuleException 
+	 *            The HttpServletRequest object.
+	 * @return The recent queries count that is set for display.
+	 * @throws QueryModuleException
+	 *             Query Module Exception
+	 * @throws SMException
+	 *             Security Manager Exception
 	 */
 	private int setDisplayedRecentQueryCount(HttpServletRequest request)
-			throws QueryModuleException
+			throws QueryModuleException, SMException
 	{
 
-		int recordCountToDisplay = setRecentQueriesCount(request);
+		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
+				edu.wustl.common.util.global.Constants.SESSION_DATA);
+		int recordCountToDisplay = setRecentQueriesCount(sessionDataBean);
 		String showLastfromRequest = request.getParameter(Constants.SHOW_LAST);
 		int showLast = 0;
 		if (showLastfromRequest == null)
 		{
-			showLast = Constants.SHOW_LAST_COUNT;//25;
+			showLast = Constants.SHOW_LAST_COUNT;// 25;
 		}
 		else
 		{
@@ -88,6 +193,7 @@ public class RetrieveRecentQueriesAction extends Action
 
 		}
 		request.setAttribute(Constants.RESULTS_PER_PAGE, showLast);
+
 		if (showLast < recordCountToDisplay)
 		{
 			recordCountToDisplay = showLast;
@@ -97,251 +203,134 @@ public class RetrieveRecentQueriesAction extends Action
 	}
 
 	/**
-	 * set the pagination related data 
-	 * @param request = HttpRequest
-	 * @param requestFor = requested for page 
-	 * @param showRetrieveRecentForm =ShowRetrieveRecentForm
-	 * @return
-	 * @throws QueryModuleException 
+	 * This method populates the data related to the recent queries in the given
+	 * request object.
+	 *
+	 * @param request
+	 *            The HttpServletRequest object.
+	 * @param showRetrieveRecentForm
+	 *            The Action form.
+	 * @throws DAOException
+	 *             The Hibernate DAO Exception.
+	 * @throws QueryModuleException
+	 *             Query Module Exception.
+	 * @throws BizLogicException
+	 *             Business Logic Exception.
+	 * @throws SMException
+	 *             Security Manager Exception.
 	 */
-	private int setPagiantion(HttpServletRequest request,
-			ShowRetrieveRecentForm showRetrieveRecentForm) throws QueryModuleException
-	{
-		int totalRecords = setDisplayedRecentQueryCount(request);
-		int maxRecords = getNumberOfRecordsPerPage();
-		int totalPages = 0;
-		if (totalRecords > 0)
-		{
-			totalPages = totalRecords % maxRecords == 0
-					? totalRecords / maxRecords
-					: (totalRecords / maxRecords) + 1;
-		}
-		int pageNum = getPageNumber(request);
-
-		request.getSession().setAttribute("pageNum", pageNum);
-		request.getSession().setAttribute(Constants.TOTAL_PAGES, totalPages);//const
-		request.getSession().setAttribute(Constants.TOTAL_RESULTS, totalRecords);
-		//drop down box
-		request.setAttribute(Constants.RESULTS_PER_PAGE_OPTIONS, Constants.SHOW_LAST_OPTION);
-
-		return totalRecords;
-	}
-
 	private void populateRecentQueries(HttpServletRequest request,
 			ShowRetrieveRecentForm showRetrieveRecentForm) throws DAOException,
-			QueryModuleException
+			QueryModuleException, BizLogicException, SMException
 	{
-		int totalCount = setPagiantion(request, showRetrieveRecentForm);
+		String queryNameLike = request.getParameter(Constants.QUERY_NAME_LIKE);
+		if ("".equals(queryNameLike))
+		{
+			queryNameLike = "";
+		}
+
+		RecentQueriesBizlogic bizLogic =
+			(edu.wustl.query.bizlogic.RecentQueriesBizlogic) AbstractFactoryConfig
+				.getInstance().getBizLogicFactory()
+					.getBizLogic(Constants.RECENT_QUERY_BIZLOGIC_ID);
 		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
-				Constants.SESSION_DATA);
+				edu.wustl.common.util.global.Constants.SESSION_DATA);
 
-		int pageNum = getPageNumber(request);//return the page number for requested
-		int recordsPerPage = getNumberOfRecordsPerPage();//records per  page
-		int lastIndex = calculateLastIndex(totalCount, pageNum, recordsPerPage);
+		request.setAttribute(Constants.PAGE_OF, request.getParameter(Constants.PAGE_OF));
+		request.setAttribute(Constants.RESULTS_PER_PAGE_OPTIONS, Constants.SHOW_LAST_OPTION);
+		int lastIndex = setDisplayedRecentQueryCount(request);
+		List<List<String>> queryResultList = bizLogic.retrieveQueries(sessionDataBean, lastIndex);
 
-		List<List<String>> queryResultList = retrieveQueries(sessionDataBean, pageNum,
-				recordsPerPage, lastIndex);
-
-		List<RecentQueriesBean> recentQueriesBeanList = populateRecentQueryBean(sessionDataBean,
-				queryResultList);
+		List<RecentQueriesBean> recentQueriesBeanList = bizLogic.populateRecentQueryBean(
+				sessionDataBean, queryResultList, queryNameLike);
 		showRetrieveRecentForm.setRecentQueriesBeanList(recentQueriesBeanList);
 		request.setAttribute(Constants.RECENT_QUERIES_BEAN_LIST, recentQueriesBeanList);
 
-
+		final List<Object[]> attributesList = setAttributeList(recentQueriesBeanList);
+		request.setAttribute("msgBoardItemList", CiderUtility.getmyData(attributesList));
+		List<String> columnList = getHeaderColumnList();
+		request.setAttribute("identifierFieldIndex", "5,6,7,8");
+		request.setAttribute("columns", Utility.getcolumns(columnList));
+		request.setAttribute("colWidth", "\"4,67,7,14,8,0,0,0,0\"");
+		request.setAttribute("isWidthInPercent", true);
+		request.setAttribute("colTypes", "\"ro,str,str,str,str,int,str,int,str\"");
+		request.setAttribute("colDataTypes", "\"txt,txt,txt,txt,txt,ro,ro,ro,ro\"");
+		request.setAttribute("records", recentQueriesBeanList.size());
 	}
-
 	/**
-	 * This method returns the  Query List
-	 * 
-	 * @param sessionDataBean
-	 * @param sql
-	 * @param pageNum
-	 * @param recordsPerPage
-	 * @param lastIndex
-	 * @return
-	 * @throws QueryModuleException 
+	 * This method returns header column list for recent queries.
+	 * @return header column list
 	 */
-	private List<List<String>> retrieveQueries(SessionDataBean sessionDataBean, int pageNum,
-			int recordsPerPage, int lastIndex) throws QueryModuleException
+	private List<String> getHeaderColumnList()
 	{
-		String sql = "select * from  QUERY_EXECUTION_LOG where USER_ID="
-				+ sessionDataBean.getUserId() + " order by CREATIONTIME desc ";
-		List<List<String>> queryResultList = executeQuery(sql, sessionDataBean, false, false, null,
-				(pageNum - 1) * recordsPerPage, lastIndex);
-		return queryResultList;
+		List<String> columnList = new ArrayList<String>();
+		columnList.add(" &nbsp;");
+		columnList.add("Title");
+		columnList.add("Patients");
+		columnList.add("Executed On");
+		columnList.add("Action(s)");
+		columnList.add("");
+		columnList.add("");
+		columnList.add("");
+		columnList.add("");
+		return columnList;
 	}
-
 	/**
-	 * @param sessionDataBean =session related data 
-	 * @param queryResultList =List of queries for which 
-	 * RecentQueryBean list is to be populate
-	 * @return= RecentQueriesBean List
-	 * @throws DAOException
+	 * This method sets the object array required for displaying queries on the recent queries page.
+	 * @param recentQueriesBeanList list of recent queries bean
+	 * @return list of object array
 	 */
-	private List<RecentQueriesBean> populateRecentQueryBean(SessionDataBean sessionDataBean,
-			List<List<String>> queryResultList) throws DAOException
-	{
-		List<RecentQueriesBean> recentQueriesBeanList = new ArrayList<RecentQueriesBean>();
-
-		for (List<String> parameterizedQuery : queryResultList)
-		{
-			RecentQueriesBean recentQueriesBean = new RecentQueriesBean();
-			recentQueriesBean.setQueryCreationDate(parameterizedQuery.get(0));//new Timestamp((new Date()).getTime()));
-			recentQueriesBean.setResultCount(100L);
-			recentQueriesBean.setStatus(parameterizedQuery.get(2));
-
-			String title = retrieveQueryName(Long.valueOf(parameterizedQuery.get(5)),
-					sessionDataBean);//query id from listparameterizedQuery.get(5)
-			recentQueriesBean.setQueryTitle(title);
-			recentQueriesBean.setQueyExecutionId(Long.valueOf(parameterizedQuery.get(4)));
-			recentQueriesBeanList.add(recentQueriesBean);
-		}
-		return recentQueriesBeanList;
-	}
-
-	/**
-	 * This method set the last index of records to be fetched
-	 * @param totalCount=total records
-	 * @param pageNum=page number for which last index is to be manipulate
-	 * @param recordsPerPage= number of records per page
-	 * @return =last index
-	 */
-	private int calculateLastIndex(int totalCount, int pageNum, int recordsPerPage)
-	{
-		if (recordsPerPage * pageNum > totalCount)
-		{
-			return totalCount - (recordsPerPage * (pageNum - 1));
-		}
-		return recordsPerPage;
-	}
-
-	/**
-	 * This method returns the page number 
-	 * @param request
-	 * @param requestFor = request for which page 
-	 * @return 
-	 */
-	private int getPageNumber(HttpServletRequest request)
-	{
-		//String requestFor=request.getParameter("requestFor");
-		Object pageNumObj = getSessionAttribute(request, Constants.PAGE_NUMBER);
-		int pageNum = 0;
-		if (pageNumObj != null)///&& requestFor != null)
-		{
-			pageNum = Integer.parseInt(pageNumObj.toString());
-		}
-		else
-		{
-			pageNum = 1;
-		}
-
-		return pageNum;
-	}
-
-	/**
-	 * this method returns the given attribute from request
-	 * or session
-	 * @param request
-	 * @param attributeName
-	 * @return
-	 */
-	private Object getSessionAttribute(HttpServletRequest request, String attributeName)
-	{
-		Object object = null;
-		if (request != null)
-		{
-			object = request.getParameter(attributeName);
-			if (object == null)
-			{
-				object = request.getAttribute(attributeName);
-				if (object == null)
-				{
-					object = request.getSession().getAttribute(attributeName);
-				}
-			}
-		}
-
-		return object;
-	}
-
-	/**
-	 * @param id=query id
-	 * @param sessionDataBean session specific data
-	 * @return
-	 * @throws DAOException
-	 */
-	private String retrieveQueryName(Long id, SessionDataBean sessionDataBean) throws DAOException
+	private List<Object[]> setAttributeList(List<RecentQueriesBean> recentQueriesBeanList)
 	{
 
-		String sourceObjectName = ParameterizedQuery.class.getName();
-		AbstractDAO dao = DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
-		dao.openSession(sessionDataBean);
-
-		String name = ((ParameterizedQuery) dao.retrieve(sourceObjectName, id)).getName();
-		dao.closeSession();
-
-		return name;
-	}
-
-	/**
-	 * @return number of results per page
-	 */
-	private int getNumberOfRecordsPerPage()
-	{
-		return Constants.PER_PAGE_RESULTS;
-	}
-
-	/**
-	 * Executes the query & returns the results specified by the offset values i.e. startIndex & noOfRecords.
-	 * @param query 
-	 * @param sessionDataBean =session related data
-	 * @param isSecureExecute
-	 * @param hasConditionOnIdentifiedField
-	 * @param queryResultObjectDataMap
-	 * @param startIndex
-	 * @param noOfRecords
-	 * @return
-	 * @throws QueryModuleException
-	 */
-	public List<List<String>> executeQuery(String query, SessionDataBean sessionDataBean,
-			boolean isSecureExecute, boolean hasConditionOnIdentifiedField,
-			Map queryResultObjectDataMap, int startIndex, int noOfRecords)
-			throws QueryModuleException
-	{
-		QueryModuleException queryModExp;
-		List<List<String>> queryResultList = null;
-		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		try
+		final List<Object[]> attributesList = new ArrayList<Object[]>();
+		Object[] attributes = null;
+		int index = 0;
+		NumberFormat numberFormat = NumberFormat.getNumberInstance();
+		for (RecentQueriesBean recentQueriesBean : recentQueriesBeanList)
 		{
-			dao.openSession(sessionDataBean);
-			PagenatedResultData pagiPagenatedResultData = (PagenatedResultData) dao.executeQuery(
-					query, sessionDataBean, false, false, null, startIndex, noOfRecords);
-			queryResultList = pagiPagenatedResultData.getResult();
-
-		}
-		catch (ClassNotFoundException e)
-		{
-			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.CLASS_NOT_FOUND);
-			throw queryModExp;
-		}
-		catch (DAOException e)
-		{
-			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
-			throw queryModExp;
-		}
-		finally
-		{
+			index++;
+			attributes = new Object[9];
+			attributes[INDEX_STATUS_IMAGE] = "";
+			attributes[INDEX_QUERY_TITLE] = recentQueriesBean.getQueryTitle();
+			attributes[INDEX_RESULT_COUNT] = numberFormat
+					.format(recentQueriesBean.getResultCount());
+			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
+			Date date=null;
 			try
 			{
-				dao.closeSession();
+				date=dateFormat.parse(recentQueriesBean.getQueryCreationDate());
 			}
-			catch (DAOException e)
+			catch (ParseException e)
 			{
-				queryModExp = new QueryModuleException(e.getMessage(),
-						QueryModuleError.DAO_EXCEPTION);
-				throw queryModExp;
+				logger.debug(e.getMessage(),e);
 			}
+			attributes[INDEX_QUERY_CREATION_DATE] =
+				edu.wustl.common.util.Utility.parseDateToString
+					(date, Constants.DATE_PATTERN_MM_DD_YYYY_HH_MM);
+			attributes[INDEX_ACTIONS] = "<div> <a title=\"Query Execution Details\"  id=\"abcd" + index + "\" href=\"ShowParamRecentQueries.do?AjaxRequest=Yes&queryId="
+				+ recentQueriesBean.getQueryId() + "&queryExecutionId="+ recentQueriesBean.getQueyExecutionId() + "&pageOf="
+				+ Constants.PAGE_OF_RECENT_QUERIES + "\" " + "class='jt' style=font-size=10px' align='right' " +
+				"\" rel=\"ShowParamRecentQueries.do?AjaxRequest=Yes&queryId="
+				+ recentQueriesBean.getQueryId() + "&queryExecutionId="+ recentQueriesBean.getQueyExecutionId() + "&pageOf="
+				+ Constants.PAGE_OF_RECENT_QUERIES + "\" "+">"
+				+ "<img src='images/advancequery/application_form.png' " + " hspace='0' border='0'/></a>";
+			if (recentQueriesBean.getStatus().equals(Constants.QUERY_IN_PROGRESS)
+					|| recentQueriesBean.getStatus().equals(Constants.GENERATING_QUERY))
+			{
+				attributes[INDEX_ACTIONS] = attributes[INDEX_ACTIONS] + "<img id=\"cancel" + index
+						+ "\" src='images/advancequery/cancel.png' "
+						+ "title='Cancel' alt='Cancel' hspace='0' "
+						+ "border='0' style='cursor: pointer;' "
+						+ " onmouseup='javascript:cancel(" + index + ")'/>";
+			}
+			attributes[INDEX_ACTIONS] = attributes[INDEX_ACTIONS] + "</div>";
+			attributes[INDEX_STATUS_TEXT] = recentQueriesBean.getStatus();
+			attributes[INDEX_QUERY_EXEC_ID] = recentQueriesBean.getQueyExecutionId();
+			attributes[INDEX_PRIVILEGE] = recentQueriesBean.isIsSecurePrivilege();
+			attributes[INDEX_QUERY_ID] = recentQueriesBean.getQueryId();
+			attributesList.add(attributes);
 		}
-		return queryResultList;
+		return attributesList;
 	}
 }

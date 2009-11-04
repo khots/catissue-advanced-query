@@ -1,13 +1,14 @@
 package edu.wustl.common.query.pvmanager.impl;
 
 import edu.common.dynamicextensions.domain.PermissibleValue;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 
 /**
  * This class is a wrapper for a  concept code in LexBig
  * @author namita_hardikar
  *
  */
-public class ConceptValue extends PermissibleValue //implements ConceptValueInteface 
+public class ConceptValue extends PermissibleValue implements Cloneable//implements ConceptValueInteface 
 {
 
 	private static final long serialVersionUID = 0L;
@@ -88,4 +89,11 @@ public class ConceptValue extends PermissibleValue //implements ConceptValueInte
 
 	}
 
+	@Override
+	public PermissibleValueInterface clone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
+

@@ -49,9 +49,12 @@
         
         private var selectedLogicalOp : String = "";
 
-        private var timeValue : String = null;
-        private var timeInterval : String = null; 
+        private var timeValue1 : String = null;
+        private var timeInterval1 : String = null;
         
+        private var timeValue2 : String = null;
+        private var timeInterval2 : String = null;
+         
         private var operation : String = null;
         private var customColumnName : String = "";
         private var nodeView : String = "";
@@ -243,24 +246,45 @@
   			return this.selectedLogicalOp;
   		}
   		
-  		public function setTimeValue(timeValue : String) : void
+  		public function setTimeValue1(timeValue1 : String) : void
   		{
-  			this.timeValue = timeValue;
+  			this.timeValue1 = timeValue1;
   		}
-  		public function getTimeValue() : String
+  		public function getTimeValue1() : String
   		{
-  			return this.timeValue;
-  		}
-  		
-  		public function setTimeInterval(timeInterval : String) : void
-  		{
-  			this.timeInterval = timeInterval;
-  		}
-  		public function getTimeInterval() : String
-  		{
-  			return this.timeInterval;
+  			return this.timeValue1;
   		}
   		
+  		public function setTimeInterval1(timeInterval1 : String) : void
+  		{
+  			this.timeInterval1 = timeInterval1;
+  		}
+  		public function getTimeInterval1() : String
+  		{
+  			return this.timeInterval1;
+  		}
+  		
+  		//here
+  		 public function setTimeValue2(timeValue2 : String) : void
+  		{
+  			this.timeValue2 = timeValue2;
+  		}
+  		public function getTimeValue2() : String
+  		{
+  			return this.timeValue2;
+  		}
+  		
+  		public function setTimeInterval2(timeInterval2 : String) : void
+  		{
+  			this.timeInterval2 = timeInterval2;
+  		}
+  		public function getTimeInterval2() : String
+  		{
+  			return this.timeInterval2;
+  		}
+
+  		
+  		//here
   		/**
 		* Read serialized data
 		*/
@@ -285,9 +309,15 @@
 			 
 			 selectedLogicalOp = input.readUTF();
 			 
-			 timeValue = input.readUTF();
+			 timeValue1 = input.readUTF();
 			 
-			 timeInterval = input.readUTF();
+			 timeInterval1 = input.readUTF();
+			 
+			 			 
+			 timeValue2 = input.readUTF();
+			 
+			 timeInterval2 = input.readUTF();
+			 
 			 operation = input.readUTF();
 			 customColumnName = input.readUTF();
 			 this.x = input.readInt();
@@ -317,8 +347,10 @@
         	out.writeUTF(secondSelectedAttrType);
         	out.writeUTF(selectedArithmeticOp);
         	out.writeUTF(selectedLogicalOp);
-        	out.writeUTF(timeValue);
-        	out.writeUTF(timeInterval);
+        	out.writeUTF(timeValue1);
+        	out.writeUTF(timeInterval1);
+        	out.writeUTF(timeValue2);
+        	out.writeUTF(timeInterval2);
         	out.writeUTF(operation);
         	out.writeUTF(customColumnName);
         	out.writeInt(this.x);
@@ -361,7 +393,13 @@
   	   	  	 editCustomFormula();
   	   	  }
   	   }
-  	   private function deleteCustomNode() : void
+  	   
+  	   
+  	   /*
+        This method is marked as Public as it is invoked from  removeCorrespondingCNodes() method of
+        DAGNode.mxml, when we remove the corresponding expression 
+      */
+  	   public function deleteCustomNode() : void
   	   {
   	   	  var nodeName : String = this.name;
   	   	  this.parentApplication.rpcService.addEventListener(ResultEvent.RESULT,nodeRemoveHandler);
@@ -423,3 +461,4 @@
   </mx:HBox> 
   
 </mx:Box>
+

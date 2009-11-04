@@ -3,7 +3,14 @@ package edu.wustl.query.domain;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+import java.util.Map.Entry;
+
+import org.apache.commons.lang.math.NumberUtils;
 
 import edu.wustl.common.actionForm.IValueObject;
 import edu.wustl.common.domain.AbstractDomainObject;
@@ -16,8 +23,9 @@ import edu.wustl.common.querysuite.queryobject.impl.Minus;
 import edu.wustl.common.querysuite.queryobject.impl.Operation;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.Union;
-import edu.wustl.query.actionForm.WorkflowForm;
+import edu.wustl.query.actionforms.WorkflowForm;
 import edu.wustl.query.util.global.CompositeQueryOperations;
+import edu.wustl.query.util.global.Constants;
 
 /**
  * @author vijay_pande
@@ -51,7 +59,49 @@ public class Workflow extends AbstractDomainObject
 	 */
 	private Date createdOn;
 
-	//	private User createdBy;
+	private Long createdBy;
+
+	/**
+	 * @return for user id
+	 */
+	public Long getCreatedBy()
+	{
+		Long createdBy = this.createdBy;
+		return createdBy;
+	}
+
+	/**
+	 * @param createdBy  for  setting the User id
+	 */
+	public void setCreatedBy(Long createdBy)
+	{
+		this.createdBy = createdBy;
+	}
+
+	/**
+	 * For Work-flow description
+	 */
+	private String description; 
+
+
+	/**
+	 * For Work-flow description
+	 */
+	public String getDescription()
+	{
+		return description;
+	}
+
+
+	/**
+	 * @param description workflow description
+	 */
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	private final Map<String,IAbstractQuery> queryIdMap = new HashMap<String, IAbstractQuery>();
 
 	/**
 	 * Default constructor for workflow
@@ -92,10 +142,11 @@ public class Workflow extends AbstractDomainObject
 
 	/**
 	 * Method to set id of the workflow
-	 * 
+	 *
 	 * @param id of type Long
 	 */
-	public void setId(Long id)
+	@Override
+    public void setId(Long id)
 	{
 		this.id = id;
 	}
@@ -104,7 +155,8 @@ public class Workflow extends AbstractDomainObject
 	 * Method to set id of the workflow
 	 * @return id of type Long
 	 */
-	public Long getId()
+	@Override
+    public Long getId()
 	{
 		return this.id;
 	}
@@ -133,7 +185,9 @@ public class Workflow extends AbstractDomainObject
 	 */
 	public Date getCreatedOn()
 	{
-		return createdOn;
+		//return createdOn;
+		Date temp = this.createdOn;
+		return temp;
 	}
 
 	/**
@@ -142,48 +196,54 @@ public class Workflow extends AbstractDomainObject
 	 */
 	public void setCreatedOn(Date createdOn)
 	{
-		this.createdOn = createdOn;
+		Date temp=createdOn;
+		this.createdOn = temp;
 	}
 
-	//	public User getCreatedBy()
-	//	{
-	//		return createdBy;
-	//	}
-	//
-	//	public void setCreatedBy(User createdBy)
-	//	{
-	//		this.createdBy = createdBy;
-	//	}
 
 	/**
-	 * @param workflow form
+	 * @param form workflow form
 	 * @throws AssignDataException
 	 * Method to populate domain object from formBean
 	 */
-	public void setAllValues(IValueObject form) throws AssignDataException
+	@Override
+    public void setAllValues(IValueObject form) throws AssignDataException
 	{
 		WorkflowForm workFlowForm = (WorkflowForm) form;
+		String[] displayQueryTitle =workFlowForm.getDisplayQueryTitle();
 		this.workflowItemList = new ArrayList<WorkflowItem>();
 		this.setName(workFlowForm.getName());
 		this.setCreatedOn(new Date());
-		String[] operators = workFlowForm.getOperators();
-		String[] operands = workFlowForm.getOperands();
+		String[] identifier=workFlowForm.getQueryIdForRow();
+		String[] expressions = workFlowForm.getExpression();
+		//Long[] workflowItemId=workFlowForm.getWorkflowItemId();
+//		String[] expressions = new String[] {""};
 		int numberOfRows = 0;
-		if (operators != null)
+		if (expressions != null)
 		{
-			numberOfRows = operators.length;
+			numberOfRows = expressions.length;
 		}
 		for (int i = 0; i < numberOfRows; i++)
 		{
-			IAbstractQuery query = getQuery(operators[i], operands[i]);
-			WorkflowItem workflowItem = new WorkflowItem();
+//			IAbstractQuery query = getQuery(operators[i], operands[i],displayQueryTitle[i]);
+            IAbstractQuery query = getQuery(expressions[i]);
+            query.setName(displayQueryTitle[i]);
 
+			WorkflowItem workflowItem = new WorkflowItem();
+			//workflowItem.setId(workflowItemId[i]);
+			//
+			if(!identifier[i].contains("_"))
+			{
+				query.setId(Long.parseLong(identifier[i]));
+			}
 			workflowItem.setQuery(query);
 			workflowItem.setPosition(i);
 			this.workflowItemList.add(workflowItem);
 		}
 
 		this.setWorkflowItemList(workflowItemList);
+		this.description=workFlowForm.getWfDescription();
+		this.id=workFlowForm.getId();
 	}
 
 	/**
@@ -191,28 +251,43 @@ public class Workflow extends AbstractDomainObject
 	 * @return label of domain object
 	 */
 
-	public String getMessageLabel()
+	@Override
+    public String getMessageLabel()
 	{
 		return this.getClass().toString();
 	}
 
-	private IAbstractQuery getQuery(String operators, String operands)
+	/**
+	 * @param operators String of operators
+	 * @param operands String of operands
+	 * @param queryTitle String of query Title
+	 * @return IAbstractQuery
+	 */
+	public IAbstractQuery getQuery(String operators, String operands,String queryTitle)
 	{
 		IAbstractQuery query = null;
 
 		if (operators.equals(CompositeQueryOperations.NONE.getOperation()))
 		{
 			query = new ParameterizedQuery();
-			query.setId(Long.parseLong(operands));
+			//query.setId(Long.parseLong(operands));
+			((ParameterizedQuery)query).setName(queryTitle);
 		}
 		else
 		{
 			query = getCompositeQuery(operators, operands);
+			((CompositeQuery)query).setName(queryTitle);
 		}
 		return query;
 	}
 
-	private IAbstractQuery getCompositeQuery(String operators, String operands)
+
+	/**
+	 * @param operators String of operators
+	 * @param operands String of operands
+	 * @return
+	 */
+	public IAbstractQuery getCompositeQuery(String operators, String operands)
 	{
 		String[] operand = operands.split("_");
 		IAbstractQuery compositeQuery = new CompositeQuery();
@@ -240,31 +315,168 @@ public class Workflow extends AbstractDomainObject
 			compositeQuery = new CompositeQuery();
 			((CompositeQuery) compositeQuery).setOperation(getOperationForCompositeQuery(
 					operator[0], operandOne, operandTwo));
-			//			String name = "CompositeQuery_"+ new Date().getTime();
-			//			((CompositeQuery)compositeQuery).setName(name);
+						String name = "CompositeQuery_"+ new Date().getTime();
+						((CompositeQuery)compositeQuery).setName(name);
+						((CompositeQuery)compositeQuery).setType("operation");
 		}
 		return compositeQuery;
 	}
 
-	private IOperation getOperationForCompositeQuery(String operation, IAbstractQuery operandOne,
+	/**
+	 * @param operation String of operation
+	 * @param operandOne IAbstractQuery
+	 * @param operandTwo IAbstractQuery
+	 * @return IOperation
+	 */
+	public IOperation getOperationForCompositeQuery(String operation, IAbstractQuery operandOne,
 			IAbstractQuery operandTwo)
 	{
 		Operation operationObj = null;
+		operationObj = getOperation(operation, operationObj);
+
+		if(operationObj!=null)
+		{
+			operationObj.setOperandOne(operandOne);
+			operationObj.setOperandTwo(operandTwo);
+		}
+		return operationObj;
+	}
+
+	/**
+	 * @param operation String operation
+	 * @param operationObj Operation
+	 * @return Operation
+	 */
+	private Operation getOperation(String operation, Operation operationObj)
+	{
 		if (operation.equals(CompositeQueryOperations.UNION.getOperation()))
 		{
 			operationObj = new Union();
 		}
 		else if (operation.equals(CompositeQueryOperations.MINUS.getOperation()))
 		{
-			operationObj = new Intersection();
+			operationObj = new Minus();
 		}
 		else if (operation.equals(CompositeQueryOperations.INTERSECTION.getOperation()))
 		{
-			operationObj = new Minus();
+			operationObj = new Intersection();
 		}
-
-		operationObj.setOperandOne(operandOne);
-		operationObj.setOperandTwo(operandTwo);
 		return operationObj;
+	}
+
+    /**
+     * Forms the IAbstract Query object based on the post fix expression.
+     * @param expression The post fix expression
+     * @return The corresponding IAbstractQuery object.
+     */
+    public IAbstractQuery getQuery(String expression)
+    {
+        Stack<IAbstractQuery> stack = new Stack<IAbstractQuery>();
+
+        String[] exprStack = expression.split("_");
+        for (String var : exprStack)
+        {
+            var = var.trim();
+            if (NumberUtils.isNumber(var))
+            {
+                // Its a queryId, so skip
+                IAbstractQuery queryVar = null;
+                if (queryIdMap.containsKey(var))
+                {
+                    queryVar = queryIdMap.get(var);
+                }
+                else
+                {
+                    queryVar = new ParameterizedQuery();
+                    queryIdMap.put(var, queryVar);
+                }
+                stack.push(queryVar);
+            }
+            else
+            {
+                // Its an operator, so pop last 2 from stack, create a new CQ
+                // with current operator and the popped operands and then push
+                // the new node.
+                IAbstractQuery op1 = stack.pop();
+                IAbstractQuery op2 = stack.pop();
+                IAbstractQuery op3 = null;
+
+                String key = getKey(op2) + "_" + getKey(op1) + "_" + var; 
+                if (queryIdMap.containsKey(key))
+                {
+                    op3 = queryIdMap.get(key);
+                }
+                else
+                {
+                    op3 = new CompositeQuery();
+
+                    Operation operationObj = null;
+                    CompositeQueryOperations opr = CompositeQueryOperations.get(var);
+                    if (opr.equals(CompositeQueryOperations.UNION))
+                    {
+                        operationObj = new Union();
+                    }
+                    else if (opr.equals(CompositeQueryOperations.MINUS))
+                    {
+                        operationObj = new Minus();
+                    }
+                    else if (opr.equals(CompositeQueryOperations.INTERSECTION))
+                    {
+                        operationObj = new Intersection();
+                    }
+                    operationObj.setOperandOne(op1);
+                    operationObj.setOperandTwo(op2);
+                    ((CompositeQuery) op3).setOperation(operationObj);
+                    ((CompositeQuery) op3).setType(Constants.QUERY_TYPE_GET_COUNT);
+
+                    queryIdMap.put(key, op3);
+                    Set<Entry<String, IAbstractQuery>> entrySet = queryIdMap.entrySet();
+                    int s = entrySet.size();
+                }
+
+                stack.push(op3);
+            }
+        }
+        return stack.pop();
+    }
+
+	/**
+	 * This method returns the true 'key' of the operand that is passed.
+	 * <ol>
+	 * <li>If the operand is a Parameterized Query then the key is the same as
+	 * the Query Id.</li>
+	 * <li>If the operand is a saved Composite query, then the key is the same
+	 * as the query Id.</li>If the operand is an unsaved Composite Query then
+	 * the key is the "postfix" expression formed for that operand.
+	 * <li></li>
+	 * </ol>
+	 *
+	 * @param operand
+	 *            IAbstractQuery.
+	 * @return Key corresponding to the given operand.
+	 */
+	private String getKey(IAbstractQuery operand)
+	{
+		String keyOfOperand = null;
+		// start method - private String getKey(IAbstractQuery op)
+		if (operand.getId() == null)
+		{
+			// get Key for Op2
+			Set<Entry<String, IAbstractQuery>> operandEntrySet = queryIdMap
+					.entrySet();
+			for (Entry<String, IAbstractQuery> entry : operandEntrySet)
+			{
+				if (operand.equals(entry.getValue()))
+				{
+					keyOfOperand = entry.getKey();
+					break;
+				}
+			}
+		}
+		else
+		{
+			keyOfOperand = operand.getId().toString();
+		}
+		return keyOfOperand;
 	}
 }

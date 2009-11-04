@@ -3,7 +3,7 @@
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 
-<%@ page import="edu.wustl.query.util.global.Constants"%>
+<%@ page import="edu.wustl.common.util.global.Constants"%>
 <%@ page import="edu.wustl.common.util.global.ApplicationProperties"%>
 <%@ page import="edu.wustl.common.util.XMLPropertyHandler"%>
 <%@ page import="java.text.MessageFormat"%>
@@ -33,7 +33,7 @@
 		var pageLoadTime;
 		<%
 			int timeOut = -1;
-			int advanceTime = Integer.parseInt(XMLPropertyHandler.getValue(Constants.SESSION_EXPIRY_WARNING_ADVANCE_TIME));
+			int advanceTime = Integer.parseInt(XMLPropertyHandler.getValue(edu.wustl.query.util.global.Constants.SESSION_EXPIRY_WARNING));
 			String tempMsg = ApplicationProperties.getValue("app.session.advanceWarning");
 			Object[] args = new Object[] {"" + advanceTime};
 			String advanceTimeoutMesg = MessageFormat.format(tempMsg,args);
@@ -168,3 +168,4 @@
 
 </body>
 </html>
+

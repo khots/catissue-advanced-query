@@ -2,15 +2,14 @@ package edu.wustl.common.query.pvmanager;
 
 import java.util.List;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.wustl.common.query.pvmanager.impl.PVManagerException;
+import edu.wustl.common.querysuite.querableobjectInterface.QueryableAttributeInterface;
 
 public interface IPermissibleValueManager
 {
-	public List<PermissibleValueInterface> getPermissibleValueList(AttributeInterface attribute,EntityInterface entity) throws PVManagerException;
-	public boolean showListBoxForPV(AttributeInterface attribute,EntityInterface entity) throws PVManagerException;
-	public boolean isEnumerated(AttributeInterface attribute,EntityInterface entity);
-	public boolean showIcon(AttributeInterface attribute, EntityInterface entity)throws PVManagerException;;
+	List<PermissibleValueInterface> getPermissibleValueList(QueryableAttributeInterface attribute) throws PVManagerException;
+	boolean isEnumerated(QueryableAttributeInterface attribute);
+	boolean showIcon(QueryableAttributeInterface atttribute)throws PVManagerException;
 }
+

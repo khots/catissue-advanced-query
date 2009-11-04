@@ -1,6 +1,5 @@
 package edu.wustl.query.queryTCExecutor;
 
-import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.Constants;
 
 /**
@@ -39,7 +38,7 @@ public class QueryTestCaseExecutorFactory
      */
 	public QueryTestCaseExecutorInterface getTestCaseExecutor(String DATABASE_TYPE)
     {
-		Logger.out.debug("In QueryTestCaseExecutorFactory , DATABASE TYPE : "+DATABASE_TYPE);
+		System.out.println("In QueryTestCaseExecutorFactory , DATABASE TYPE : "+DATABASE_TYPE);
 		
 		QueryTestCaseExecutorInterface testCaseExecutor = null;
         
@@ -63,3 +62,4 @@ public class QueryTestCaseExecutorFactory
         return testCaseExecutor;
     }
 }
+

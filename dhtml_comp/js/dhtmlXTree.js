@@ -128,8 +128,13 @@ function dhtmlXTreeItemObject(itemId,itemText,parentObject,treeObject,actionHand
  return itemId;
 };
  
- dhtmlXTreeObject.prototype._globalIdStorageSub=function(itemId){
+ dhtmlXTreeObject.prototype._globalIdStorageSub=function(itemId)
+	 {
+
  for(var i=0;i<this._globalIdStorageSize;i++)
+		 {
+ 
+       
  if(this._globalIdStorage[i]==itemId)
 {
  this._globalIdStorage[i]=this._globalIdStorage[this._globalIdStorageSize-1];
@@ -138,18 +143,23 @@ function dhtmlXTreeItemObject(itemId,itemText,parentObject,treeObject,actionHand
  this._globalIdStorage[this._globalIdStorageSize]=0;
  this.globalNodeStorage[this._globalIdStorageSize]=0;
 }
+
+		 }
 };
  
  
  dhtmlXTreeObject.prototype._globalIdStorageFind=function(itemId,skipXMLSearch,skipParsing){
  
  for(var i=0;i<this._globalIdStorageSize;i++)
- if(this._globalIdStorage[i]==itemId)
+	 {
+	 
+ 
+ if((this._globalIdStorage[i]+"")==(itemId+""))
 {
  return this.globalNodeStorage[i];
 }
  
- 
+	 }
  return null;
 };
 
@@ -304,18 +314,25 @@ function dhtmlXTreeItemObject(itemId,itemText,parentObject,treeObject,actionHand
 };
 
  
- dhtmlXTreeObject.prototype.insertNewChild=function(parentId,itemId,itemText,itemActionHandler,image1,image2,image3,optionStr,childs){
+ dhtmlXTreeObject.prototype.insertNewChild=function(parentId,itemId,itemText,itemActionHandler,image1,image2,image3,optionStr,childs)
+{
+	
+
  return this.insertNewItem(parentId,itemId,itemText,itemActionHandler,image1,image2,image3,optionStr,childs);
 }
 
  
- dhtmlXTreeObject.prototype.insertNewItem=function(parentId,itemId,itemText,itemActionHandler,image1,image2,image3,optionStr,childs){
- var parentObject=this._globalIdStorageFind(parentId);
- if(!parentObject)return(-1);
- return this._attachChildNode(parentObject,itemId,itemText,itemActionHandler,image1,image2,image3,optionStr,childs);
+ dhtmlXTreeObject.prototype.insertNewItem=function(parentId,itemId,itemText,itemActionHandler,image1,image2,image3,optionStr,childs)
+	{
+		var parentObject=this._globalIdStorageFind(parentId);
+		
+		if(!parentObject)return(-1);
+		return this._attachChildNode(parentObject,itemId,itemText,itemActionHandler,image1,image2,image3,optionStr,childs);
 };
  
- dhtmlXTreeObject.prototype.insertNewChild=function(parentId,itemId,itemText,itemActionHandler,image1,image2,image3,optionStr,childs){
+ dhtmlXTreeObject.prototype.insertNewChild=function(parentId,itemId,itemText,itemActionHandler,image1,image2,image3,optionStr,childs)
+	 {
+
  return this.insertNewItem(parentId,itemId,itemText,itemActionHandler,image1,image2,image3,optionStr,childs);
 }
  
@@ -1916,6 +1933,7 @@ dhtmlXTreeObject.prototype._getPrevNode=function(node,mode){
  return node.parentObject;
  else return -1;
 };
+
 
 
 

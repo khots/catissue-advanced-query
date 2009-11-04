@@ -10,8 +10,8 @@ package edu.wustl.query.querymanager;
  */
 public class Count
 {
-   private int count;
-   private int query_exection_id;
+   private Long count;
+   private Long queryExectionId;
    private String status;
    
     /**
@@ -24,13 +24,13 @@ public class Count
    /**
     * 
     * @param count
-    * @param query_exection_id
+    * @param queryExectionId
     * @param status
     */
-   public Count(int count,int query_exection_id,String status)
+   public Count(Long count,Long queryExectionId,String status)
    {
 	   this.count = count;
-	   this.query_exection_id = query_exection_id;
+	   this.queryExectionId = queryExectionId;
 	   this.status = status;
    }
 
@@ -38,7 +38,7 @@ public class Count
     * 
     * @return
     */
-	public int getCount()
+	public Long getCount()
 	{
 		return count;
 	}
@@ -47,7 +47,7 @@ public class Count
 	 * 
 	 * @param count
 	 */
-	public void setCount(int count)
+	public void setCount(Long count)
 	{
 		this.count = count;
 	}
@@ -56,18 +56,18 @@ public class Count
 	 * 
 	 * @return
 	 */
-	public int getQuery_exection_id()
+	public Long getQueryExectionId()
 	{
-		return query_exection_id;
+		return queryExectionId;
 	}
 	
 	/**
 	 * 
-	 * @param query_exection_id
+	 * @param queryExectionId
 	 */
-	public void setQuery_exection_id(int query_exection_id)
+	public void setQueryExectionId(Long queryExectionId)
 	{
-		this.query_exection_id = query_exection_id;
+		this.queryExectionId = queryExectionId;
 	}
 	
 	/**

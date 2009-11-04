@@ -1,4 +1,4 @@
-<%@ page import="edu.wustl.query.actionForm.CategorySearchForm"%>
+<%@ page import="edu.wustl.query.actionforms.CategorySearchForm"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.lang.*"%>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
@@ -215,7 +215,7 @@ treeNo = treeNo + 1;
 <% } %>
 <html:errors />
 <%
-	String formAction = Constants.DefineSearchResultsViewJSPAction;
+	String formAction = Constants.ResultsViewJSPAction;
 %>
 <html:form method="GET" action="<%=formAction%>">
 <html:hidden property="currentPage" value=""/>

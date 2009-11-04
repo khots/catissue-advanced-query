@@ -3,144 +3,186 @@ package edu.wustl.common.query.exeptions;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+import edu.wustl.common.util.logger.LoggerConfig;
+
 /**
- * This class is responsible for handling exceptions 
- * when Query Execution Id is not generated 
- * 
+ * This class is responsible for handling exceptions when Query Execution Id is
+ * not generated.
+ *
  * @author ravindra_jain
  * @version 1.0
  * @since January 8, 2009
  */
 public class QueryExecIdNotGeneratedException extends Exception
 {
+    /**
+     * Static logger instance.
+     */
+    private static org.apache.log4j.Logger logger = LoggerConfig
+            .getConfiguredLogger(QueryExecIdNotGeneratedException.class);
+    /**
+     * Default serial version ID.
+     */
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default serial version ID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * wrapped exception instance.
+     */
+    private Exception wrapException;
 
-	private Exception wrapException;
+    /**
+     * message initialized with super.getMessage().
+     */
+    private String message = super.getMessage();
 
-	/**
-	 *  message initialized with super.getMessage()
-	 */
-	private String message = super.getMessage();
+    /**
+     * message which is used as supporting message to the main message.
+     */
+    private String supportingMessage;
 
-	/**
-	 *  message which is used as supporting message to the main message
-	 */
-	private String supportingMessage;
+    /**
+     * Constructor with mesasge string.
+     *
+     * @param messageString
+     *            Message String.
+     */
+    public QueryExecIdNotGeneratedException(String messageString)
+    {
+        this(messageString, null);
+    }
 
-	/**
-	 * Constructor
-	 * @param message
-	 */
-	public QueryExecIdNotGeneratedException(String message)
-	{
-		this(message, null);
-	}
+    /**
+     * Constructor with parent exception.
+     *
+     * @param exception
+     *            Exception.
+     */
+    public QueryExecIdNotGeneratedException(Exception exception)
+    {
+        this(exception.getMessage(), exception);
+    }
 
-	/**
-	 * Constructor
-	 * @param ex
-	 */
-	public QueryExecIdNotGeneratedException(Exception ex)
-	{
-		this(ex.getMessage(),ex);
-	}
+    /**
+     * Constructor with message string and parent exception.
+     *
+     * @param messageString
+     *            Message String.
+     * @param exception
+     *            Wrapped Exception.
+     */
+    public QueryExecIdNotGeneratedException(String messageString,
+            Exception exception)
+    {
+        super(messageString, exception);
+        this.wrapException = exception;
+    }
 
-	/**
-	 * 
-	 * @param message
-	 * @param wrapException
-	 */
-	public QueryExecIdNotGeneratedException(String message, Exception wrapException)
-	{
-		super(message, wrapException);
-		this.wrapException = wrapException;
-	}
+    /**
+     * Returns the wrapped exception.
+     *
+     * @return Returns the wrapException.
+     */
+    public Exception getWrapException()
+    {
+        return wrapException;
+    }
 
-	/**
-	 * @return Returns the wrapException.
-	 */
-	public Exception getWrapException()
-	{
-		return wrapException;
-	}
+    /**
+     * Sets the exception to be wrapped.
+     *
+     * @param exception
+     *            The wrapException to set.
+     */
+    public void setWrapException(Exception exception)
+    {
+        this.wrapException = exception;
+    }
 
-	/**
-	 * @param wrapException The wrapException to set.
-	 */
-	public void setWrapException(Exception wrapException)
-	{
-		this.wrapException = wrapException;
-	}
+    /**
+     * Overriden method to print the stack trace.
+     */
+    @Override
+    public void printStackTrace()
+    {
+        super.printStackTrace();
+        if (wrapException != null)
+        {
+            logger.error(wrapException.getMessage(), wrapException);
+        }
+    }
 
-	/**
-	 * 
-	 */
-	public void printStackTrace()
-	{
-		super.printStackTrace();
-		if (wrapException != null)
-		{
-			wrapException.printStackTrace();
-		}
-	}
+    /**
+     * Overriden method to print the stack trace to the printwriter object.
+     *
+     * @param thePrintWriter
+     *            Printwriter object.
+     */
+    @Override
+    public void printStackTrace(PrintWriter thePrintWriter)
+    {
+        super.printStackTrace(thePrintWriter);
+        if (wrapException != null)
+        {
+            wrapException.printStackTrace(thePrintWriter);
+        }
+    }
 
-	/**
-	 * @param thePrintWriter
-	 */
-	public void printStackTrace(PrintWriter thePrintWriter)
-	{
-		super.printStackTrace(thePrintWriter);
-		if (wrapException != null)
-		{
-			wrapException.printStackTrace(thePrintWriter);
-		}
-	}
+    /**
+     * Overrirden method to print the stack trace.
+     *
+     * @param thePrintStream
+     *            Printstream.
+     */
+    @Override
+    public void printStackTrace(PrintStream thePrintStream)
+    {
+        super.printStackTrace(thePrintStream);
+        if (wrapException != null)
+        {
+            wrapException.printStackTrace(thePrintStream);
+        }
+    }
 
-	/**
-	 * @param thePrintStream
-	 */
-	public void printStackTrace(PrintStream thePrintStream)
-	{
-		super.printStackTrace(thePrintStream);
-		if (wrapException != null)
-		{
-			wrapException.printStackTrace(thePrintStream);
-		}
-	}
+    /**
+     * Returns the message string.
+     *
+     * @return Returns the message.
+     */
+    @Override
+    public String getMessage()
+    {
+        return message;
+    }
 
-	/**
-	 * @return Returns the message.
-	 */
-	public String getMessage()
-	{
-		return message;
-	}
+    /**
+     * Sets the message string.
+     *
+     * @param messageString
+     *            The message to set.
+     */
+    public void setMessage(String messageString)
+    {
+        this.message = messageString;
+    }
 
-	/**
-	 * @param message The message to set.
-	 */
-	public void setMessage(String message)
-	{
-		this.message = message;
-	}
+    /**
+     * Returns the supporting messsage.
+     *
+     * @return Returns the supportingMessage.
+     */
+    public String getSupportingMessage()
+    {
+        return supportingMessage;
+    }
 
-	/**
-	 * @return Returns the supportingMessage.
-	 */
-	public String getSupportingMessage()
-	{
-		return supportingMessage;
-	}
-
-	/**
-	 * @param supportingMessage The supportingMessage to set.
-	 */
-	public void setSupportingMessage(String supportingMessage)
-	{
-		this.supportingMessage = supportingMessage;
-	}
+    /**
+     * Sets the supporting message.
+     *
+     * @param supportingMessageString
+     *            The supportingMessage to set.
+     */
+    public void setSupportingMessage(String supportingMessageString)
+    {
+        this.supportingMessage = supportingMessageString;
+    }
 }

@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -19,6 +18,7 @@ import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.metadata.path.ICuratedPath;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.query.util.global.Constants;
 
 /**
  * This class is used to find all the possible paths between two entities.
@@ -38,15 +38,10 @@ public class CommonPathFinder implements IPathFinder
 			Connection connection = null;
 			try
 			{
-				InitialContext initialContext = new InitialContext();
-				Context env = (Context) initialContext.lookup("java:comp/env");
-                String dsName = (String) env.lookup("DataSource");
-                Logger.out.info("Data source name found: " + dsName);
-                
-                DataSource dataSource = (DataSource)initialContext.lookup(dsName);
-                Logger.out.info("Data source found: " + dataSource);
-                
-				connection = dataSource.getConnection();
+				InitialContext ctx = new InitialContext();
+			    DataSource ds = (DataSource)ctx.lookup(Constants.JNDI_NAME_CIDER);
+			    connection = ds.getConnection();
+				
 				Logger.out.info("Connection established: " + connection);
 				
 				pathFinder = PathFinder.getInstance(connection);
@@ -113,4 +108,20 @@ public class CommonPathFinder implements IPathFinder
 	{
 		return pathFinder.getInterModelAssociations(arg0);
 	}
+
+	public List<IPath> getAllPathsForQuery(EntityInterface srcEntity, EntityInterface destEntity)
+	{
+		//PathFinder pathFinder= getPathFinderInstance();
+		return pathFinder.getAllPathsForQuery(srcEntity, destEntity);
+	}
+
+	/**
+	 * To set Path Finder
+	 * @param pathFinder
+	 */
+	public static void setPathFinder(PathFinder pathFinder)
+	{
+		CommonPathFinder.pathFinder = pathFinder;
+	}
 }
+

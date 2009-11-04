@@ -4,17 +4,33 @@ import edu.wustl.common.query.pvmanager.IPermissibleValueManager;
 import edu.wustl.common.util.Utility;
 import edu.wustl.query.util.global.Variables;
 
-
-public class PermissibleValueManagerFactory
+/**
+ * Factory to return the Permissible Value Manager instance.
+ *
+ * @author Gaurav Sawant
+ *
+ */
+public final class PermissibleValueManagerFactory
 {
+    /**
+     * Private default constructor.
+     */
+    private PermissibleValueManagerFactory()
+    {
+        // empty constructor.
+    }
 
-	public static IPermissibleValueManager getPermissibleValueManager()
-	{
-		IPermissibleValueManager permissibleValueManager = null;
-		//permissibleValueManager = Class.forName("edu.wustl.query.pvmanager.impl.CIDERPermissibleValueManager");
-		permissibleValueManager=(IPermissibleValueManager)Utility.getObject(Variables.properties.getProperty("permissiblevalue.manager.impl"));
-		return permissibleValueManager;
-		
-	}
-	
+    /**
+     * Method to get the instance of the PermissibleValueManager.
+     *
+     * @return instance of the PermissibleValueManager.
+     */
+    public static IPermissibleValueManager getPermissibleValueManager()
+    {
+        IPermissibleValueManager permissibleValueManager = (IPermissibleValueManager) Utility
+                .getObject(Variables.properties
+                        .getProperty("permissiblevalue.manager.impl"));
+        return permissibleValueManager;
+    }
 }
+

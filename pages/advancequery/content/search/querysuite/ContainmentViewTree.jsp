@@ -7,7 +7,7 @@
 <%@ page import="edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.Variables"%>
 <%@ page import="edu.wustl.common.tree.QueryTreeNodeData"%>
-<%@ page import="edu.wustl.query.actionForm.CategorySearchForm"%>
+<%@ page import="edu.wustl.query.actionforms.CategorySearchForm"%>
 <%@ page import="edu.wustl.common.beans.NameValueBean"%>
 <%@ page language="java" isELIgnored="false"%>
 <html>
@@ -21,8 +21,8 @@
 	<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlXTree.js"></script>
 	<script  src="dhtml_comp/jss/dhtmlXCommon.js"></script>
 	<script src="jss/advancequery/script.js"></script>
+	<script src="jss/advancequery/queryModule.js"></script>
 	<%
-	String callAction=Constants.CONFIGURE_GRID_VIEW_ACTION;
 	CategorySearchForm form = (CategorySearchForm)request.getAttribute("categorySearchForm");
 	String currentSelectedNodeInTree = form.getCurrentSelectedNodeInTree();
 	String showSelected = "false";
@@ -36,60 +36,61 @@
    %>
 	
 
-<html:form method="GET" action="<%=callAction%>">
 <html:hidden property="operation" value=""/>
 <body>
-<table border="0" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF"  bordercolorlight="#000000" >
-	<tr >
-		<td width="1px" >&nbsp;</td>
-		<td valign="top"  width="100"></td>
-	</tr>
-		
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" >
 	<tr>
-		<td width="1px">&nbsp;	</td>
-		<td valign="top"  width="90%" height="90%">
-			<div id="treeBox" style="background-color:white;overflow:auto;height:378;width:240;border-left:solid 1px;border-right:solid 1px;border-top:solid 1px;border-bottom:solid 1px;border-color:#7f9db9;"></div>
+	
+		<td valign="top"    style="padding: 5px 5px 3px 5px;*padding: 5px 5px 0 5px;">
+			<div id="treeBox" style="overflow:auto;height:407;*height:425;padding: 5px;" class="biglistbox"></div>
 		</td>
-		<td width="1%"> &nbsp; </td>
-		   <td align="center" valign="center" style="padding-left:10px;padding-right:10px;">
-			<table>
-			 <tr><td><img src="images/advancequery/b_add.gif"  align="absmiddle" hspace="3" property="shiftRight" styleId ="shiftRight" onclick="moveOptionsRight(document.forms[0].columnNames,document.forms[0].selectedColumnNames);"/></td></tr>
+		
+		   <td align="left" valign="middle" >
+			<table width="90" align="center" border="0">
+			 <tr><td align="center"><img src="images/advancequery/b_add.gif"  align="absmiddle" hspace="3" property="shiftRight" styleId ="shiftRight" onclick="moveOptionsRight(document.forms[0].columnNames,document.forms[0].selectedColumnNames);"/></td></tr>
 			
-			<tr><td><img src="images/advancequery/b_remove.gif"  align="absmiddle" hspace="3" onclick="moveOptionsLeft(document.forms[0].selectedColumnNames, document.forms[0].columnNames);"/></td></tr>
+			<tr><td align="center"><img src="images/advancequery/b_remove.gif"  align="absmiddle" hspace="3" onclick="moveOptionsLeft(document.forms[0].selectedColumnNames, document.forms[0].columnNames);"/></td></tr>
 			</table>
 		</td>
-		<td width="1%"> &nbsp; </td>
-		<td class="" valign="top" width="60" height="85%">
+		
+		<td valign="top" >
 <!-- Mandar : 434 : for tooltip -->
-		   <div id="emptyList" style="height:378;width:250;overflow:hidden;"> 
-		   <select name="heg" style="height:378;width:250;" multiple="true">
+		<table>
+		<tr>
+		<td style="padding: 3px 5px 1px 5px;*padding: 3px 5px 0 5px;">
+		   <div id="emptyList" style="height:417;*height:425;overflow:hidden;" class="biglistbox"> 
+		   <select name="heg" style="height:417;*height:425;width:268;"  multiple="true" id="dfsdf">
 				<option value="">
 			</select></div>	
-			
-		 <div id="elementList" style="OVERFLOW: auto;WIDTH:250px;HEIGHT: 378px;border:0px solid;border-color:#7f9db9;"  onscroll="OnDivScroll();"> 
-			 <select  id="lstAttributeNames" name="selectedColumnNames" styleClass="" size="22" multiple="true" style="" onfocus="OnSelectFocus();">
+			</td>
+			<td style="padding: 3px 5px 1px 5px;*padding: 3px 5px 0 5px;">
+		 <div id="elementList" style="OVERFLOW: auto;height:417;*height:425; bgcolor:#000000;" class="biglistbox"  onscroll="OnDivScroll();"> 
+			 <select  id="lstAttributeNames" name="selectedColumnNames" class="textfield_undefined" size="22" multiple="true" style="" onfocus="OnSelectFocus();">
 			  <logic:iterate id="columnNameValue" name="selectedColumnNameValueBeanList">	
 				<option value="${columnNameValue.value}"/><span class="content_txt"> <bean:write name="columnNameValue" property="name"/></span>
               </logic:iterate> 
 			</select>
-		   </div> 
-		</td>
-		<td width="1%"> &nbsp; </td>
-		 <td align="center" valign="center" style="padding-left:10px;padding-right:10px;">
-		  <table>		
-				<tr><td><img src="images/advancequery/ic_up.gif" align="absmiddle"  onclick="moveUp(document.forms[0].selectedColumnNames);"/>  
+		   </div></td>
+		   <td>
+		     <table>		
+			 <!--<tr>
+			 <td class="content_txt">Re-order</td>
+			 </tr>-->
+				<tr><td align="center"><img src="images/advancequery/ic_up.gif" align="absmiddle"  onclick="moveUpAllSelected(document.forms[0].selectedColumnNames);"/>  
 			</td></tr>
-			<tr><td><img src="images/advancequery/ic_down.gif"  align="absmiddle" onclick="moveDown(document.forms[0].selectedColumnNames);"/></td></tr>
+			<tr>
+			 <td class="content_txt">Re-order</td>
+			 </tr>
+			<tr><td align="center"><img src="images/advancequery/ic_down.gif"  align="absmiddle" onclick="moveDownAllSelected(document.forms[0].selectedColumnNames);"/></td></tr>
+			</table></td>
+			</tr>
 			</table>
 		</td>
+		
 </tr>
-<tr><td> &nbsp;
-</td>
-</tr>					
-
 </table>
 </body>
-</html:form>
+
 
 <script> 
       
@@ -123,14 +124,14 @@
     //if so then making the size of the selectbox to count of
     //items in selectbox,so that vertival scrollbar
     // won't appear in selectbox
-    if (lstAttributeNames.options.length > 22)
+    if (lstAttributeNames.options.length > 26)
     {
           
 		lstAttributeNames.size=lstAttributeNames.options.length;
     }
     else
     {
-        lstAttributeNames.size=22;
+        lstAttributeNames.size=26;
     }
 }
 	
@@ -158,7 +159,7 @@
         lstCollegeNames.focus();
         lstCollegeNames.size=22;
     }
-   removeBorder();
+  // removeBorder();
 }
 	
 	function addOption(theSel, theText, theValue)
@@ -175,7 +176,10 @@
 				}
 	    }
 	    if(exists=="false")
+	    {
 		    theSel.options[selLength] = newOpt;
+		    setQueryUpdatedFlag();
+	    }
 	}
 	
    
@@ -231,7 +235,7 @@
 				addOption(theSelTo, selectedText[i], selectedValues[i]);
 			}
 		}
-        if(document.getElementById("lstAttributeNames").offsetWidth >=250)
+      /*  if(document.getElementById("lstAttributeNames").offsetWidth >=260)
 		   {
 		     e=document.getElementById("elementList");
              e.style.border =1+'px solid';
@@ -241,7 +245,7 @@
 			  e=document.getElementById("elementList");
              e.style.border =0+'px solid';
 			
-			}
+			} */
 	     OnDivScroll();
 	}
    	function moveOptionsLeft(theSelFrom, theSelTo)
@@ -265,7 +269,9 @@
 		  
 		if(selectedCount==0)
 			alert("Please select column name.");
-		removeBorder();
+		else
+			setQueryUpdatedFlag();
+		//removeBorder();
 	}
 	function deleteOption(theSel, theIndex)
     { 
@@ -280,31 +286,50 @@
    	}
  	
  
-   function removeBorder()
+  /* function removeBorder()
 	{
 	    e=document.getElementById("elementList");
-		if(document.getElementById("lstAttributeNames").offsetWidth >=250)
+		if(document.getElementById("lstAttributeNames").offsetWidth >=260)
 		{
-		  e.style.border =1+'px solid';
+		  e.style.border =0+'px solid';
       	}
 	    else
 		{
 		  e.style.border =0+'px solid';
 		}
-	}
+	}*/
 	
 	function moveUpAllSelected(theSelFrom)
 	{
 		var selLength = theSelFrom.length;
+		//alert("moveUpAllSelected "+selLength);
 		var selectedCount = 0;
 		var i;
-		for(i=selLength-1; i>=0; i--)
+		for(i=0; i<selLength; i++)
 		{
 		    if(theSelFrom.options[i].selected)
 		    {
-		    	selectedCount++;
+		    	if(i==0)
+				{
+				  return;
+				}
+				if(selectedCount == 0) 
+				  selectedCount = i;
 				moveUpOneByOne(theSelFrom,i);
 			}
+		 else{
+		   if(selectedCount>0)
+		  {
+		    break;   
+		  }
+		 }
+
+		}
+		 if(selectedCount>0)
+		 {
+		   var ind = i-1;   
+           theSelFrom.options[ind].selected = false;
+           theSelFrom.options[selectedCount-1].selected=true;
 		}
 	}
 	function moveUpOneByOne(obj,index)
@@ -326,25 +351,10 @@
 	    obj.options[index-1].value = currentValue;
 	    self.focus();
 	    index--;
+	    setQueryUpdatedFlag();
 	  }
 	}
-    function typeChange(namesArray,valuesArray)
-    { 
-	    var columnsList = "columnNames";
-	    ele = document.getElementById(columnsList);
-	    //To Clear the Combo Box
-	    ele.options.length = 0;
-				
-	    //ele.options[0] = new Option('-- Select --','-1');
-	    var j=0;
-	    //Populating the corresponding Combo Box
-	    for(i=0;i<namesArray.length;i++)
-	    {
-	    	ele.options[j++] = new Option(namesArray[i],valuesArray[i]);
-	    }
-    }
-
-
+   
 	function moveUp(obj)
 	{
 	  var currernt;
@@ -367,6 +377,62 @@
 	  }
 	}
 	
+	
+	
+	function typeChange(namesArray,valuesArray)
+    { 
+	    var columnsList = "columnNames";
+	    ele = document.getElementById(columnsList);
+	    //To Clear the Combo Box
+	    ele.options.length = 0;
+				
+	    //ele.options[0] = new Option('-- Select --','-1');
+	    var j=0;
+	    //Populating the corresponding Combo Box
+	    for(i=0;i<namesArray.length;i++)
+	    {
+	    	ele.options[j++] = new Option(namesArray[i],valuesArray[i]);
+	    }
+    }
+
+
+	
+	
+	function moveDownAllSelected(theSelFrom)
+	{
+		var selLength = theSelFrom.length;
+		//alert("moveUpAllSelected "+selLength);
+		var selectedCount = -1;
+		var i;
+		for(i=selLength-1; i>=0; i--)
+		{
+		    if(theSelFrom.options[i].selected)
+		    {
+		    	if(i==selLength-1)
+				{
+				  return;
+				}
+				if(selectedCount == -1) 
+				  selectedCount = i;
+				  moveDownOneByOne(theSelFrom,i);
+			}
+		 else{
+		   if(selectedCount>0)
+		  {
+		    break;   
+		  }
+		 }
+
+		}
+		 if(selectedCount>=0)
+		 {
+		   var ind = i+1;   
+           theSelFrom.options[ind].selected = false;
+           theSelFrom.options[selectedCount+1].selected=true;
+		}
+	}
+	
+	
 	function moveDown(obj)
 	{
 	  var currernt;
@@ -387,30 +453,37 @@
 	    obj.options.selectedIndex++;
 	  }
 	}	
-    function selectOptions(element)
+
+		function moveDownOneByOne(obj,index)
+	{
+	  var currernt;
+	  var reverse;
+	  var currerntValue;
+	  var reverseValue;
+	  if(index != obj.length-1)
+	  {
+	    current = obj.options[index].text;
+	    currentValue = obj.options[index].value;
+	    reverse = obj.options[index+1].text;
+	    reverseValue = obj.options[index+1].value;
+	    obj.options[index].text = reverse;
+	    obj.options[index].value = reverseValue;
+	    obj.options[index+1].text = current;
+	    obj.options[index+1].value = currentValue;
+	    self.focus();
+	    index++;
+	    setQueryUpdatedFlag();
+	  }
+	}	
+   
+	function selectOptions(element)
 	{
 		for(i=0;i<element.length;i++) 
 		{
 			element.options[i].selected=true;
 		}
 	}
-    function onSubmit(theSelTo,operation)
-	{		
-		if(operation == 'finish')
-		{
-			if(theSelTo.length==0)
-			{
-				alert("We need to add atleast one column to define view");
-				return ;
-			}
-			selectOptions(document.forms[0].selectedColumnNames);
-		}
-		document.forms[0].operation.value = operation;
-		document.forms[0].action =  "ConfigureGridView.do";	
-		document.forms[0].submit();		
-	}
-	
-</script>
+ </script>
     <script>
 	var tree;	 
 function initTreeView()
@@ -420,9 +493,17 @@ function initTreeView()
 		tree.setOnClickHandler();	
 		tree.enableCheckBoxes(1);
 	    tree.enableThreeStateCheckboxes(true);
-		tree.loadXML('<%= fileName %>',deleteFile);
-      //select previously selected items
- <%
+		var bool = tree.loadXML('<%= fileName %>',afterXmlLoad);
+    
+	  //select previously selected items
+
+		
+}
+
+// set nodes checked after xml is loaded
+function afterXmlLoad()
+{
+  <%
     if(selectedColumnNameValueBeanList!=null)
   {
 	for(int i=0;i<selectedColumnNameValueBeanList.size();i++) {
@@ -430,18 +511,11 @@ function initTreeView()
 	String name = nameValueBean.getName();
 	String value = nameValueBean.getValue();
   %>
-	    tree.setCheck("<%=value%>",true);
-		tree.openItem("<%=value%>");
+	     tree.setCheck("<%=value%>",true);
+	    tree.openItem("<%=value%>");
 <%  
    }//end of for
   }%> //end of if
-		
-}
-
-
-function deleteFile()
-{
- 
   
 }
 

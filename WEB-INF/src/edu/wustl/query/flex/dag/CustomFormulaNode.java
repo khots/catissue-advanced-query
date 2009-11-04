@@ -33,14 +33,54 @@ public class CustomFormulaNode implements Externalizable
 	private String selectedArithmeticOp = "";
 	private String selectedLogicalOp = "";
 
-	private String timeValue = "";
-	private String timeInterval = "";
+	private String timeValue1 = "";
+	private String timeInterval1 = "";
+	
+	private String timeValue2 = "";
+	private String timeInterval2 = "";
+	
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getTimeInterval2() 
+	{
+		return timeInterval2;
+	}
+
+	/**
+	 * 
+	 * @param timeInterval2
+	 */
+	public void setTimeInterval2(String timeInterval2) 
+	{
+		this.timeInterval2 = timeInterval2;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getTimeValue2() 
+	{
+		return timeValue2;
+	}
+
+     /**
+      * 
+      * @param timeValue2
+      */
+	public void setTimeValue2(String timeValue2) 
+	{
+		this.timeValue2 = timeValue2;
+	}
 
 	private String operation = "";
 
 	private String customColumnName = "";
-	private int x;
-	private int y;
+	private int xLocation;
+	private int yLocation;
 	private String nodeView = "";
 	private String qAttrInterval1 = "";
 	private String qAttrInterval2 = "";
@@ -115,35 +155,35 @@ public class CustomFormulaNode implements Externalizable
 	}
 
 	/**
-	 * @return Returns the x.
+	 * @return Returns the xLocation.
 	 */
-	public int getX()
+	public int getXLocation()
 	{
-		return x;
+		return xLocation;
 	}
 
 	/**
-	 * @param x The x to set.
+	 * @param xLocation The xLocation to set.
 	 */
-	public void setX(int x)
+	public void setXLocation(int xLocation)
 	{
-		this.x = x;
+		this.xLocation = xLocation;
 	}
 
 	/**
-	 * @return Returns the y.
+	 * @return Returns the yLocation.
 	 */
-	public int getY()
+	public int getYLocation()
 	{
-		return y;
+		return yLocation;
 	}
 
 	/**
-	 * @param y The y to set.
+	 * @param yLocation The yLocation to set.
 	 */
-	public void setY(int y)
+	public void setYLocation(int yLocation)
 	{
-		this.y = y;
+		this.yLocation = yLocation;
 	}
 
 	/**
@@ -357,63 +397,66 @@ public class CustomFormulaNode implements Externalizable
 	/**
 	 * @return Returns the timeInterval.
 	 */
-	public String getTimeInterval()
+	public String getTimeInterval1()
 	{
-		return timeInterval;
+		return timeInterval1;
 	}
 
 	/**
 	 * @param timeInterval The timeInterval to set.
 	 */
-	public void setTimeInterval(String timeInterval)
+	public void setTimeInterval1(String timeInterval1)
 	{
-		this.timeInterval = timeInterval;
+		this.timeInterval1 = timeInterval1;
 	}
 
 	/**
 	 * @return Returns the timeValue.
 	 */
-	public String getTimeValue()
+	public String getTimeValue1()
 	{
-		return timeValue;
+		return timeValue1;
 	}
 
 	/**
 	 * @param timeValue The timeValue to set.
 	 */
-	public void setTimeValue(String timeValue)
+	public void setTimeValue1(String timeValue1)
 	{
-		this.timeValue = timeValue;
+		this.timeValue1 = timeValue1;
 	}
 
 	/**
 	 * Reading searilized data
 	 */
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	public void readExternal(ObjectInput inputObject) throws IOException, ClassNotFoundException
 	{
-		name = in.readUTF();
-		firstNodeName = in.readUTF();
-		secondNodeName = in.readUTF();
-		firstNodeExpId = in.readInt();
-		secondNodeExpId = in.readInt();
-		firstSelectedAttrName = in.readUTF();
-		secondSelectedAttrName = in.readUTF();
-		firstSelectedAttrId = in.readUTF();
-		secondSelectedAttrId = in.readUTF();
-		firstSelectedAttrType = in.readUTF();
-		secondSelectedAttrType = in.readUTF();
-		selectedArithmeticOp = in.readUTF();
-		selectedLogicalOp = in.readUTF();
-		timeValue = in.readUTF();
-		timeInterval = in.readUTF();
-		operation = in.readUTF();
-		customColumnName = in.readUTF();
-		x = in.readInt();
-		y = in.readInt();
-		nodeView = in.readUTF();
-		qAttrInterval1 = in.readUTF();
-		qAttrInterval2 = in.readUTF();
-		ccInterval = in.readUTF();
+		name = inputObject.readUTF();
+		firstNodeName = inputObject.readUTF();
+		secondNodeName = inputObject.readUTF();
+		firstNodeExpId = inputObject.readInt();
+		secondNodeExpId = inputObject.readInt();
+		firstSelectedAttrName = inputObject.readUTF();
+		secondSelectedAttrName = inputObject.readUTF();
+		firstSelectedAttrId = inputObject.readUTF();
+		secondSelectedAttrId = inputObject.readUTF();
+		firstSelectedAttrType = inputObject.readUTF();
+		secondSelectedAttrType = inputObject.readUTF();
+		selectedArithmeticOp = inputObject.readUTF();
+		selectedLogicalOp = inputObject.readUTF();
+		timeValue1 = inputObject.readUTF();
+		timeInterval1 = inputObject.readUTF();
+		timeValue2 = inputObject.readUTF();
+		timeInterval2 = inputObject.readUTF();
+		
+		operation = inputObject.readUTF();
+		customColumnName = inputObject.readUTF();
+		xLocation = inputObject.readInt();
+		yLocation = inputObject.readInt();
+		nodeView = inputObject.readUTF();
+		qAttrInterval1 = inputObject.readUTF();
+		qAttrInterval2 = inputObject.readUTF();
+		ccInterval = inputObject.readUTF();
 	}
 
 	/**
@@ -434,12 +477,14 @@ public class CustomFormulaNode implements Externalizable
 		out.writeUTF(secondSelectedAttrType);
 		out.writeUTF(selectedArithmeticOp);
 		out.writeUTF(selectedLogicalOp);
-		out.writeUTF(timeValue);
-		out.writeUTF(timeInterval);
+		out.writeUTF(timeValue1);
+		out.writeUTF(timeInterval1);
+		out.writeUTF(timeValue2);
+		out.writeUTF(timeInterval2);
 		out.writeUTF(operation);
 		out.writeUTF(customColumnName);
-		out.writeInt(x);
-		out.writeInt(y);
+		out.writeInt(xLocation);
+		out.writeInt(yLocation);
 		out.writeUTF(nodeView);
 		out.writeUTF(qAttrInterval1);
 		out.writeUTF(qAttrInterval2);

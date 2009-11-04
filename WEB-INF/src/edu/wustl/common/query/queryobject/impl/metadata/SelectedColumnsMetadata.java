@@ -1,12 +1,13 @@
 
 package edu.wustl.common.query.queryobject.impl.metadata;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
+import edu.wustl.common.querysuite.querableobjectInterface.QueryableAttributeInterface;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 
 /**
@@ -14,9 +15,13 @@ import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
  * @author deepti_shelar
  *
  */
-public class SelectedColumnsMetadata
+public class SelectedColumnsMetadata implements Serializable
 {
 
+	/**
+	 * Default serial version UID
+	 */
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Selected object by user at the time of defining columns
 	 */
@@ -28,11 +33,11 @@ public class SelectedColumnsMetadata
 	/**
 	 * List of name value bean object for selected columns
 	 */
-	private List<NameValueBean> selectedColumnNameValueBeanList;
+	private List<NameValueBean> selectedColumnNVBList;
 	/**
 	 * Returns true/false Whether view is defined.
 	 */
-	private boolean isDefinedView;
+	private boolean isdefinedview;
 	/**
 	 * List of output attribute objects.
 	 */
@@ -44,21 +49,21 @@ public class SelectedColumnsMetadata
 	 */
 	public boolean isDefinedView()
 	{
-		return isDefinedView;
+		return isdefinedview;
 	}
 
 	/**
 	 * 
 	 * @param isDefinedView
 	 */
-	public void setDefinedView(boolean isDefinedView)
+	public void setDefinedView(boolean isdefinedview)
 	{
-		this.isDefinedView = isDefinedView;
+		this.isdefinedview = isdefinedview;
 	}
 
-	public List<AttributeInterface> getAttributeList()
+	public List<QueryableAttributeInterface> getAttributeList()
 	{
-		List<AttributeInterface> attributeList = new ArrayList<AttributeInterface>();
+		List<QueryableAttributeInterface> attributeList = new ArrayList<QueryableAttributeInterface>();
 		if (selectedAttributeMetaDataList != null)
 		{
 			for (QueryOutputTreeAttributeMetadata metadata : selectedAttributeMetaDataList)
@@ -91,16 +96,16 @@ public class SelectedColumnsMetadata
 	 */
 	public List<NameValueBean> getSelectedColumnNameValueBeanList()
 	{
-		return selectedColumnNameValueBeanList;
+		return selectedColumnNVBList;
 	}
 
 	/**
 	 * @param selectedColumnNameValueBeanList the selectedColumnNameValueBeanList to set
 	 */
 	public void setSelectedColumnNameValueBeanList(
-			List<NameValueBean> selectedColumnNameValueBeanList)
+			List<NameValueBean> selectedColumnNVBList)
 	{
-		this.selectedColumnNameValueBeanList = selectedColumnNameValueBeanList;
+		this.selectedColumnNVBList = selectedColumnNVBList;
 	}
 
 	/**
@@ -136,3 +141,4 @@ public class SelectedColumnsMetadata
 		this.selectedOutputAttributeList = selectedOutputAttributeList;
 	}
 }
+

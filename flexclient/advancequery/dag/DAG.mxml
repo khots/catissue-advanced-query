@@ -117,6 +117,7 @@ Application
 	public var isOutputView:Boolean=false;
 
 	public var view:String ="";
+	public var pageOf:String ="";
 	public var dagPathUIMap:HashMap;
 	public var totalNodes:ArrayCollection;
 	public var allPaths:ArrayCollection;
@@ -145,6 +146,29 @@ Application
 	private var existingSecondOpComboBox : ComboBox = null;
 	private var existingOpComboBox : ComboBox = null;
 	
+	
+	//pankaj
+	 //private var actualHeight : int = 0; 
+	 //private var actualWidth : int = 0;
+	 
+	 private var lastAddedNodeX : int =0;
+	 private var lastAddedNodeY : int =0;
+	 private var lastAddedNodeExpId: int =0; 
+	 
+	 private var lastAddedTwoNodeTqX : int = 0;
+	 private var lastAddedTwoNodeTqY : int = 0;
+	 
+	 private var lastAddedSingleNodeTqX : int = 0;
+	 private var lastAddedSingleNodeTqY : int = 0;
+	 
+	  [Bindable]
+                 [Embed(source='/assets/restore.png')]
+                 private var minusIcon:Class; 
+       [Bindable]
+                 [Embed(source='/assets/maximise.png')]
+                 private var plusIcon:Class;           
+	 
+	 
 	/**
 	* Timer handler  to check container has been initialized.	
 	*/
@@ -167,8 +191,14 @@ Application
 		ExternalInterface.addCallback("searchResult",searchResult);	
 		ExternalInterface.addCallback("addNodeToView",addNodeToView);
 		ExternalInterface.addCallback("isDAGEmpty",isDAGEmpty);
+		ExternalInterface.addCallback("clearDag",clearDag);         
 	}
 	
+	public function clearDag() : void
+    {
+    	mainPanel.removeAllChildren();
+    	totalNodes.removeAll();
+    }
 	/**
 	* Setup the callback function so that HTML can call flex methods
 	* Checks wheather HTML page is loaded or not.
@@ -198,7 +228,7 @@ Application
 	private function faultHandler (event:FaultEvent):void
 	{		
 		var errorMessage:ErrorMessage = event.message as ErrorMessage;	
-		AlertManager.showError("Fault occur at server please contact Administrator.");
+	    AlertManager.showError("Fault occur at server please contact Administrator.");
 		trace(errorMessage.faultString);
 		trace(errorMessage);
 		rpcService.removeEventListener("result",linkNodesHandler);
@@ -260,6 +290,12 @@ Application
 		
 		dagNode.x = pt.x;
 		dagNode.y = pt.y;
+		
+		if(dagNode.expressionId == lastAddedNodeExpId)
+		{
+			lastAddedNodeX = pt.x;
+			lastAddedNodeY = pt.y;
+		}
 
 		var ass:Association;
 		var inAssociations:ArrayCollection;
@@ -456,7 +492,6 @@ Application
 	*/
 	private function initApp():void
 	{
-		
 		registerClassAlias("edu.wustl.query.flex.dag.DAGNode", DAGNode);
 		registerClassAlias("edu.wustl.query.flex.dag.DAGPath", DAGPath);
 		registerClassAlias("edu.wustl.query.flex.dag.CustomFormulaNode",CustomFormulaNode);
@@ -465,6 +500,7 @@ Application
 		rpcService.channelSet = Utility.getChannelSet();
 		rpcService.destination="cdeService";
 		isQuery =Application.application.parameters.isQuery;
+		pageOf =Application.application.parameters.pageOf;
 		view= Application.application.parameters.view;
 		dagPathUIMap = new HashMap();
 		totalNodes = new ArrayCollection();
@@ -483,7 +519,6 @@ Application
 				readyTimer.addEventListener(TimerEvent.TIMER, timerHandler);
 				readyTimer.start();
 			}
-		
 			if(view==DAGConstants.ADD_LIMIT_VIEW)
 			{
 				if(isQuery=="true")
@@ -504,6 +539,30 @@ Application
 				rpcService.restoreQueryObject();
 		    }
 	}
+	
+	public function unselectSingleNode() : void
+	{
+          var node : DAGNode = selectedNodeList.getItemAt(0) as DAGNode;
+             node.unSelect();
+             node1="";
+			 node2="";
+			selectedNodeList.removeAll();
+			count=0;
+	}
+	
+	public function unselectBothNodes() : void
+	{
+		var selectedNode1 : DAGNode = selectedNodeList.getItemAt(0) as DAGNode;
+		var selectedNode2 : DAGNode = selectedNodeList.getItemAt(1) as DAGNode;
+          selectedNode1.unSelect();
+          selectedNode2.unSelect();
+         	node1="";
+			node2="";
+			selectedNodeList.removeAll();
+			count=0;
+	}
+
+	
 	/**
 	* Repaint handler DAG on NEXT, PREVIOUS and REDEFINE buttons.
 	*/
@@ -558,6 +617,25 @@ Application
 						nodeColor=0xFFFFAA;	
 			}	
 			
+		    //This is done to maintain specific position of the NOdes on DAG
+		   /* if(i == 0)
+		    {
+		    	//If it's first Node
+		    	xpos = 20;
+		    	ypos = (mainPanel.y);
+		    	
+		    	lastAddedNodeX = xpos;
+				lastAddedNodeY = ypos;
+		    }
+		    else
+		    {
+		    	//Else if this is not the first NOde
+		        xpos = lastAddedNodeX +  100;;
+		        ypos = lastAddedNodeY + 50;
+		        
+		        lastAddedNodeX = xpos;
+		        lastAddedNodeY = ypos;	
+		    }*/
 			xpos = node.x;
 			ypos = node.y;
 			node.initializeNode(node.nodeName,node.nodeType,node.expressionId,node.toolTip,xpos,ypos,nodeColor);
@@ -664,6 +742,7 @@ Application
 		for(var i: int=0; i<customNodeList.length; i++)
 		{
 		     var customNode : CustomFormulaNode = customNodeList.getItemAt(i) as CustomFormulaNode;
+
 		     var customNodeName : String = customNode.name;
 		     var nodeIds : Array = customNode.name.split("_");
 		     var firstNodeId : String = "";
@@ -689,7 +768,6 @@ Application
 		    	}
 		    }
 		    repaintDAGNodeMap.put(customNodeName,repaintDagNodeList);
-            
             addCustomFromulaNode(customNode);
 		}
 	}
@@ -783,15 +861,15 @@ Application
 	public function createNode(strToCreateQueyObject:String,entityName:String):void
 	{
 		
-		if(strToCreateQueyObject=="")	
+		/*if(strToCreateQueyObject=="")	
 		{
 			showValidationMessagesToUser(DAGConstants.EMPTY_LIMIT_ERROR_MESSAGE);
 		}
 		else
-		{
+		{*/
 			rpcService.addEventListener(ResultEvent.RESULT,getNodeResultHandler);
 			rpcService.createNode(strToCreateQueyObject,entityName);
-		}
+		//}
 	}
 	/**
 	* Link node Handler
@@ -810,7 +888,7 @@ Application
 			}
 			else
 			{
-				AlertManager.showWarning("The selected classes may not be linked together because a cyclic graph is created.");
+				AlertManager.showWarning("Circular reference error: It is not possible to connect the selected objects.");
 			}
 				
 		}
@@ -883,6 +961,10 @@ Application
 		var x:int=0;
 		var y:int=0;
 		var nodeColor:int=0;
+		
+		var changeX : Boolean = false; 
+		
+		
 		newNode.id = node.expressionId.toString();
 		if(isOutputView)
 		{
@@ -897,14 +979,27 @@ Application
 		if(mainPanel.getChildren().length==0)
 		{
 			x = 20;
-			y = (mainPanel.y+50);
+			y = (mainPanel.y);
+			
+			lastAddedNodeX = x;
+			lastAddedNodeY = y;
 		}
 		else
 		{ 
-			var length:int=mainPanel.getChildren().length;
-			x = 20;
-			y = (mainPanel.y+50)+(40*length);
+      
+            var newX :int = lastAddedNodeX +  100;//lastAddedNode.getWidth()/2;
+            var newY :int = lastAddedNodeY + 50;//(lastAddedNode.getHeight()*(3/2));
+            
+           lastAddedNodeX = newX;
+           lastAddedNodeY  = newY;
+           
+            x =  newX;
+            y =  newY;
+              
+               
+ 
 		}
+		//actualHeight++;
 		newNode.dagpathList = new ArrayCollection();
 		trace("mainPanel.y = " + mainPanel.y);			
 		trace("DAG X= " + x + "Y= " + y + "name=" + name);
@@ -914,27 +1009,31 @@ Application
 		mainPanel.addChild(newNode);
 		totalNodes.addItem(newNode);
 		currentExp.text =getExprssionString();
+		
+		
+		
+		lastAddedNodeExpId = newNode.expressionId;
 	}
 	/**
 	 Draw link between 2 nodes. 
 	*/
-	private function drawLine():void{
+	private function drawLine():void
+	{
 		CursorManager.setBusyCursor();
 		
 		var dagNode1:DAGNode = DAGNode(mainPanel.getChildByName(node1));
-		
 		var dagNode2:DAGNode = DAGNode(mainPanel.getChildByName(node2));
 			
 		if(dagNode1 == null || dagNode2 == null)
 		{
-			AlertManager.showWarning("Two classes must be selected before pressing the 'Add Link' button.");
+			AlertManager.showWarning("Select two objects and click Add Link.");
 			CursorManager.removeBusyCursor();	
 		}
 		else
 		{
 			if(dagNode1.getOutAssociation(node2) != null)
 			{
-				AlertManager.showWarning("The selected classes are already linked in the Diagrammatic View.");
+				AlertManager.showWarning("The selected objects are already connected in the Diagrammatic View.");
 		  		CursorManager.removeBusyCursor();   	   
 			}
 			else
@@ -957,7 +1056,7 @@ Application
 		ambiguityPanel.pathList= event.result as ArrayCollection;
 		if(ambiguityPanel.pathList==null || ambiguityPanel.pathList.length==0)
 		{
-			AlertManager.showInfo("No paths present.");
+			AlertManager.showInfo("Missing connection error: It is not possible to connect the selected objects. Report a missing connection to the administrator at (314) 362-8853.");
 		}
 		else
 		{
@@ -1004,7 +1103,6 @@ Application
 	*/	
 	public function link(node1:String,node2:String):void
 	{
-		
 		firstNode=node1;
 		secondNode=node2;
 		rpcService.addEventListener("result",getPathHandler);
@@ -1085,8 +1183,9 @@ Application
 	/**
 	Selectin nodes on DAG
 	*/
-	public function updateNodeSelection(event:MouseEvent):void {
-	selectedNode=null;
+	public function updateNodeSelection(event:MouseEvent):void 
+	{
+		selectedNode=null;
 		//if(event.shiftKey)
 		
 		if(!event.altKey && !event.ctrlKey && !event.shiftKey )
@@ -1096,8 +1195,9 @@ Application
 			var dagNode:DAGNode = DAGNode(mainPanel.getChildByName(event.currentTarget.name));
 			if(dagNode != null)
 			{
-				if(dagNode.name == node1 )
+				if(dagNode.name == node1)
 				{
+					
 					if(selectedNodeList!=null)
 					{
 						if(selectedNodeList.length==2)
@@ -1115,7 +1215,6 @@ Application
 					
 					}
 					dagNode.unSelect();
-	
 				}
 				else if(dagNode.name == node2)
 				{
@@ -1169,7 +1268,7 @@ Application
 	{
 		eNode=node;
 		rpcService.removeEventListener(ResultEvent.RESULT,getNodeResultHandler,false);
-		rpcService.getLimitUI(node.expressionId);
+		rpcService.getLimitUI(node.expressionId,pageOf);
 		rpcService.addEventListener(ResultEvent.RESULT,limitUIHandler);
 		
 	}
@@ -1190,15 +1289,15 @@ Application
 	public function editLimit(strToCreateQueyObject:String,entityName:String):void
 	{
 		
-		if(strToCreateQueyObject=="")	
+		/*if(strToCreateQueyObject=="")	
 		{
 			showValidationMessagesToUser(DAGConstants.EMPTY_LIMIT_ERROR_MESSAGE);
 		}
 		else
-		{
+		{*/
 			rpcService.addEventListener(ResultEvent.RESULT,editNodeHandler);
 			rpcService.editNode(strToCreateQueyObject,entityName);
-		}
+		//}
 							
 	}
 	/**
@@ -1398,23 +1497,27 @@ Application
 	 	}
 	 	else
 	 	{
-	 	     AlertManager.showWarning("A calculated predicate may not be added to the selected class as it does not contain any date, timestamp, or quantitative attributes.");	
+	 	     AlertManager.showWarning("Temporal query error: Selected object(s) do not contain any date, timestamp, or quantitative attributes.");	
 	 	}
 	 }
 	 
 	private function nodeValidityHandler(event : ResultEvent):void
 	{
-		var areNodesValid : Boolean = event.result as Boolean;
+		var areNodesValid : String = event.result as String;
 		rpcService.removeEventListener(ResultEvent.RESULT,nodeValidityHandler);
 		
-		if(areNodesValid == true)
+		if(areNodesValid == "true")
 		{
 		     rpcService.retrieveQueryData(selectedNodeList);
 		     rpcService.addEventListener(ResultEvent.RESULT,populateDataHandler);
 		}
-		else
+		else if(areNodesValid == "NodesInvalid")
 		{
-			 AlertManager.showWarning("A calculated predicate may not be added to the selected classes as either one or both do not contain any date, timestamp, or quantitative attributes.");
+			 AlertManager.showWarning("Temporal query error: Selected object(s) do not contain any date, timestamp, or quantitative attributes.");
+		}
+		else if(areNodesValid == "EntityNameInvalid" || areNodesValid == "ParentInvalid")
+		{
+			AlertManager.showWarning("Cannot create a temporal query on these two classes.");
 		}
 	}
 	
@@ -1485,7 +1588,8 @@ Application
                	singleNodeTQPope.buttonLabel = "Edit";
                	singleNodeTQPope.arithmaticOpsCb.selectedItem = customNode.getSelectedArithmeticOp();
                	singleNodeTQPope.attributesCb.selectedItem = customNode.getAtributeName();
-               	if(customNode.getAtributeType() == "Integer"){
+               	if(customNode.getAtributeType() == "Integer")
+               	{
 					//Creating the ComboBox
 	      			existingOpComboBox= singleNodeTQPope.firstComboPlace.getChildByName("fstOpComboBox") as ComboBox;
 		        	if(existingOpComboBox == null)
@@ -1512,7 +1616,8 @@ Application
                  //Setting the node name
                  singleNodeTQPope.customNodeName = customNode.name;
                
-                if(view != "Result"){ 
+                if(view != "Result")
+                { 
 			        //Setting the custom column name and time interval
 		        	singleNodeTQPope.customColumnName.text = customNode.getCustomColumnName();
 	        	}
@@ -1535,12 +1640,74 @@ Application
 					                	
                }	
                
+               //From here i need to handle edit
+               if(customNode.getSelectedLogicalOp() == "Between")
+               {
+					if(customNode.getAtributeType() == "Date")
+					{
+						//If attribute type is Date
+						singleNodeTQPope.removeControlsForBetween();
+						
+						//
+						singleNodeTQPope.removeControlsRelatedBetween();
+						
+						//Now Add controls related to "Between" 
+                        singleNodeTQPope.addControlsForBetween();	
+                        
+                        //Setting the corresponding values
+	               		var firstVBox : VBox = singleNodeTQPope.myBox.getChildByName("firstBetweenVBox") as VBox;
+	               		if(firstVBox != null)
+	               		{
+	               			var firstInputBox : TextInput = firstVBox.getChildByName("firstBetweenInput") as TextInput;
+	               			firstInputBox.text = customNode.getTimeValue1();
+	               			
+	               			var firstTimeIntervalCb : ComboBox = firstVBox.getChildByName("firstBetweenCb") as ComboBox;
+	               			firstTimeIntervalCb.selectedItem = customNode.getTimeInterval1();	
+	               		}
+	               		
+	               		var secondVBox : VBox = singleNodeTQPope.myBox.getChildByName("secondBetweenVBox") as VBox;
+	             		if(secondVBox != null)
+	             		{
+	             			var secondInputBox : TextInput = secondVBox.getChildByName("secondBetweenInput") as TextInput;
+	             			secondInputBox.text = customNode.getTimeValue2();
+	             			
+	             			var secondTimeIntervalCb : ComboBox = secondVBox.getChildByName("secondBetweenCb") as ComboBox; 
+	             			secondTimeIntervalCb.selectedItem = customNode.getTimeInterval2();
+	             		}
+					}
+					else
+					{
+						//If attribute type is Integer
+                    	singleNodeTQPope.removeControlsForBetween();
+       		    		
+       		    		singleNodeTQPope.removeControlsRelatedBetween();
+       		    		
+       		    		//Adding calender controls for between
+       		    		singleNodeTQPope.addCalenderControlsForBetween();
+       		    		
+       		    		//So set the corresponding the Date values
+       		    		var datePicker1 : DateField = singleNodeTQPope.myBox.getChildByName("datePicker1") as DateField;
+       		    		if(datePicker1 != null)
+       		    		{
+       		    			datePicker1.selectedDate  = new Date(customNode.getTimeValue1());
+       		    			
+       		    			
+       		    		}
+       		    		var datePicker2 : DateField = singleNodeTQPope.myBox.getChildByName("datePicker2") as DateField;
+       		    		if(datePicker2 != null)
+       		    		{
+       		    			datePicker2.selectedDate =  new Date(customNode.getTimeValue2());
+       		    		}
+					}
+               }
+               else 
+               {
                //Handling RHS DatePickers and Text Inputs
-               if(customNode.getTimeInterval() != "null")
+               if(customNode.getTimeInterval1() != "null")
                {
                	   //Means No DatePicker was there on rhs
-               	   singleNodeTQPope.timeInputBox.text = customNode.getTimeValue();
-               	   singleNodeTQPope.timeIntervalCb.selectedItem = customNode.getTimeInterval();  
+               	   singleNodeTQPope.timeInputBox.text = customNode.getTimeValue1();
+               	   singleNodeTQPope.timeIntervalCb.selectedItem = customNode.getTimeInterval1();  
                } 
                else
                {
@@ -1555,18 +1722,20 @@ Application
 	               		 if(customNode.getAtributeType() == "TimeStamp")
 	               		 {
 		               		 var timeStampText : TextInput =  singleNodeTQPope.addRHSTimePicker();
-		               		 var tmpTimeValue:Array = customNode.getTimeValue().split(' ',2);               		                		 
+		               		 var tmpTimeValue:Array = customNode.getTimeValue1().split(' ',2);               		                		 
 		               		 datePicker.selectedDate = new Date(tmpTimeValue[0].toString());
 		               		 timeStampText.text = tmpTimeValue[1].toString();
-	               		 }else
+	               		 }
+	               		 else
 	               		 {
-	               		 	datePicker.selectedDate = new Date(customNode.getTimeValue());
+	               		 	datePicker.selectedDate = new Date(customNode.getTimeValue1());
 	               		 }  
                		 }
-               }
+                }
+               
+               }//else ends if relational op is not Between
         	}
         }
-
 	     //Aligning the popup to center     
 	     PopUpManager.centerPopUp(singleNodeTQPope);
 	} 
@@ -1720,7 +1889,8 @@ Application
 	  }
 	  else
 	  {
-	  	 if(currentCustomNode != null){
+	  	 if(currentCustomNode != null)
+	  	 {
 		  	 popUp.firstEntityName = currentCustomNode.getFirstNodeName();
 		  	 
 		  	 popUp.secondEntityName = currentCustomNode.getSecondNodeName();
@@ -1745,7 +1915,8 @@ Application
 	   	    popUp.title ="Edit Condition";
 	        popUp.buttonLabel = "Edit";
 	        popUp.cb1.selectedItem = currentCustomNode.getFirstSelectedAttrName();
-	        if(currentCustomNode.getFirstSelectedAttrType() == "Integer"){
+	        if(currentCustomNode.getFirstSelectedAttrType() == "Integer")
+	        {
 				//Creating the ComboBox
       			existingfirstOpComboBox= popUp.firstComboPlace.getChildByName("fstOpComboBox") as ComboBox;   	       			
 	        	if(existingfirstOpComboBox == null)
@@ -1766,7 +1937,8 @@ Application
 	        }
 	        popUp.cb2.selectedItem = currentCustomNode.getSelectedArithmeticOp();
 	        popUp.cb3.selectedItem = currentCustomNode.getSecondSelectedAttrName();
-	        if(currentCustomNode.getSecondSelectedAttrType() == "Integer"){
+	        if(currentCustomNode.getSecondSelectedAttrType() == "Integer")
+	        {
 	        	//Creating the ComboBox
       			existingSecondOpComboBox= popUp.secondComboPlace.getChildByName("secondOpComboBox") as ComboBox;   	       			
 	        	if(existingSecondOpComboBox == null)
@@ -1807,24 +1979,129 @@ Application
 	        }
 	        else
 	        {
+                 //Here we handle the case of Between Operator  
+                if(currentCustomNode.getSelectedLogicalOp() == "Between")
+                {
+                	var firstAttributeType :String = currentCustomNode.getFirstSelectedAttrType();
+                	var secondAttributeType : String = currentCustomNode.getSecondSelectedAttrType();  
+                	if(firstAttributeType == "Integer" && secondAttributeType == "Integer")
+                	{
+                		//In this there will be only input boxes, So set Only time values
+                		    //This is the case if both the attributes are quantataive
+           					//In this case dropdowns related to corresponding input boxes are not required
+           					// So first add all controls related to Between and then remove only those dropdown 
+           					//controls
+           					 popUp.removeControlsForBetween();
+           					   
+           					 //Remove any Between control is present 
+							popUp.removeConntrolsRelatedToBetween();
+           					 
+           					//This will finally add controls for between
+           					popUp.addControlsForBetween(); 
+           					 
+           					 //Now removing the the dropdowns     
+           					popUp.removeBetweenDropdownsOnly();
+           					
+           					//Now set the values
+           				//Get first vbox related to Between , to set the selected time value and selected time Interval
+                	    var firstVBox :VBox = popUp.myBox.getChildByName("firstBetweenVBox") as VBox;
+                	
+                	   	//Setting first time value
+                	   	var firstTextInput : TextInput = firstVBox.getChildByName("firstBetweenInput") as TextInput;
+                 	   	firstTextInput.text = currentCustomNode.getTimeValue1();
+                 	   	
+                 	    //Get second vbox related to Between , to set the selected time value and selected time Interval
+	                    var secondVBox :VBox = popUp.myBox.getChildByName("secondBetweenVBox") as VBox;
+	                	
+	                     //Setting first time value
+	                	var secondTextInput : TextInput = secondVBox.getChildByName("secondBetweenInput") as TextInput;
+	                	secondTextInput.text = currentCustomNode.getTimeValue2();
+                	} 
+                	else if(firstAttributeType == "Date" && secondAttributeType == "Date")
+                	{
+                		//In this case there will be both Drop downs as well as Input controls
+                		//These are two possible cases where there is possibility of between operator 
+					    // So remove existing date picker or input control and add two input controls with 
+					  // possible values combo boxes
+						popUp.removeControlsForBetween();
+								
+						//Remove any Between control is present 
+						popUp.removeConntrolsRelatedToBetween();
+
+                        //Finally add controls for Between 
+                        popUp.addControlsForBetween(); 
+                        
+                        //Get first vbox related to Between , to set the selected time value and selected time Interval
+                	    var firstVBox :VBox = popUp.myBox.getChildByName("firstBetweenVBox") as VBox;
+                	
+                	   //Setting first time value
+                	   var firstTextInput : TextInput = firstVBox.getChildByName("firstBetweenInput") as TextInput;
+                 	   firstTextInput.text = currentCustomNode.getTimeValue1();
+                	
+                	   //Setting first time Interval
+                	   var firstCb : ComboBox = firstVBox.getChildByName("firstBetweenCb") as ComboBox;
+	                   firstCb.selectedItem = currentCustomNode.getTimeInterval1();
+	                	
+	                  //Get second vbox related to Between , to set the selected time value and selected time Interval
+	                  var secondVBox :VBox = popUp.myBox.getChildByName("secondBetweenVBox") as VBox;
+	                	
+	                     //Setting first time value
+	                	var secondTextInput : TextInput = secondVBox.getChildByName("secondBetweenInput") as TextInput;
+	                	secondTextInput.text = currentCustomNode.getTimeValue2();
+	                	
+	                	//Setting first time Interval
+	                	var secondCb : ComboBox = secondVBox.getChildByName("secondBetweenCb") as ComboBox;
+	                	secondCb.selectedItem = currentCustomNode.getTimeInterval2();
+                	}
+                	else
+                	{
+                		//In this, there will be date picker components
+                		//Then in this case we will be having only calender components on right hand side
+           				//So remove all other components on right hand side either related to Between or 
+           				//any other components
+           				      	 
+           				//This will remove any other component other then related to  Between
+           				 popUp.removeControlsForBetween();
+           				      	 
+           				 //This will remove components related to Between operator
+           				 popUp.removeConntrolsRelatedToBetween(); 
+           				      	 
+           				 //Now add calender components for Between
+                         popUp.addCalendersForBetween();
+                         
+                         //Set selected Dates
+                         var existingDatePicker1 : DateField  = popUp.myBox.getChildByName("datePicker1") as DateField;
+                         var date1 : Date = new Date(currentCustomNode.getTimeValue1());
+                         existingDatePicker1.selectedDate  = date1;
+                         
+                         var existingDatePicker2 : DateField  = popUp.myBox.getChildByName("datePicker2") as DateField;
+                         var date2 : Date = new Date(currentCustomNode.getTimeValue2());
+                         existingDatePicker2.selectedDate  = date2;
+                	}
+                }
+                else 
+                {  
+
 	        	//This is the condition when there is both time and time Interval 
-	       		 if(currentCustomNode.getTimeInterval() != "null")
+	       		 if(currentCustomNode.getTimeInterval1() != "null")
 	        	 {
-	        		popUp.txtInput.text = currentCustomNode.getTimeValue();
-	        		popUp.cb5.selectedItem = currentCustomNode.getTimeInterval(); 
+	        		popUp.txtInput.text = currentCustomNode.getTimeValue1();
+	        		popUp.cb5.selectedItem = currentCustomNode.getTimeInterval1(); 
 	              }
-		        else
-		        {
+		         else
+		         {
 		        	if((currentCustomNode.getFirstSelectedAttrType()=="Integer" && currentCustomNode.getSecondSelectedAttrType()=="Integer"))
 	            	{
 		            	// int + int = textbox input condition
 		            	existingfirstOpComboBox= popUp.firstComboPlace.getChildByName("fstOpComboBox") as ComboBox;
-						if(existingfirstOpComboBox != null){           	 		
+						if(existingfirstOpComboBox != null)
+						{           	 		
 	   	 	        		popUp.firstComboPlace.removeChild(existingfirstOpComboBox);
 	   	 				}
 	           	 				
 	   	       			existingSecondOpComboBox= popUp.secondComboPlace.getChildByName("secondOpComboBox") as ComboBox;           	 		
-		        		if(existingSecondOpComboBox != null){
+		        		if(existingSecondOpComboBox != null)
+		        		{
 	   	 					popUp.secondComboPlace.removeChild(existingSecondOpComboBox);
 		        		}
 		                //Removing the Time Interval Combo Box
@@ -1833,7 +2110,7 @@ Application
 	           	        {
 	           	      		popUp.myBox.removeChild(existingTimeIntervalCb);
 	           	      	}
-	           	      	//Removing the existing tome Interval Label
+	           	      	//Removing the existing time Interval Label
 	           	      	var existingIntervalLabel : Label = popUp.labelHBox.getChildByName(popUp.lb6.name) as Label;
 	           	       	if(existingIntervalLabel != null)
 	           	       	{
@@ -1841,7 +2118,7 @@ Application
 	           	       	}          	      
 	           	        popUp.removeTimestampText();
 	           	        var existingTextInput : TextInput = popUp.myBox.getChildByName(popUp.txtInput.name) as TextInput;
-	           	        existingTextInput.text = currentCustomNode.getTimeValue();
+	           	        existingTextInput.text = currentCustomNode.getTimeValue1();
 	            	}
 	            	else
 	            	{
@@ -1892,11 +2169,11 @@ Application
 			             datePicker.showToday = true;
 			             if(existingTimeStampText!=null)
 			             {               		 
-	               		 	tmpTimeValue = currentCustomNode.getTimeValue().split(' ',2); 
+	               		 	tmpTimeValue = currentCustomNode.getTimeValue1().split(' ',2); 
 						 	date = new Date(tmpTimeValue[0].toString());
 			             }else
 			             {
-						 	date = new Date(currentCustomNode.getTimeValue());
+						 	date = new Date(currentCustomNode.getTimeValue1());
 			             }
 		                 datePicker.selectedDate = date;
 		                 datePicker.setStyle("borderColor","#0000FF");
@@ -1922,9 +2199,12 @@ Application
 		           	 	}
 	   				}  	
 	            }
-		       }
+		       }//here else ends
+		       
+                } //ending else related to if not Between operator
 	        }
 	   }
+	   //selectedNodeList.removeAll();
 	   PopUpManager.centerPopUp(popUp);
 	}
 	
@@ -1942,15 +2222,25 @@ Application
 	 	{
 	 		customFormulaString += "\n" + node.getSelectedLogicalOp();
 	 	}
-	 	if((node.getTimeValue() != "") && (node.getTimeValue() != "null"))
+	 	if((node.getTimeValue1() != "") && (node.getTimeValue1() != "null"))
 	 	{
-	 		customFormulaString += "  "+ node.getTimeValue();
+	 		customFormulaString += "  "+ node.getTimeValue1();
 	 	}
-	 	if((node.getTimeInterval() != "") && (node.getTimeInterval() != "null"))
+	 	if((node.getTimeInterval1() != "") && (node.getTimeInterval1() != "null"))
 	 	{
-	 		customFormulaString += " " + node.getTimeInterval();
+	 		customFormulaString += " " + node.getTimeInterval1();
 	 	}
-	 	 
+	 	if(node.getSelectedLogicalOp() == "Between")
+	 	{
+		 	if((node.getTimeValue2() != "") && (node.getTimeValue2() != "null"))
+		 	{
+		 		customFormulaString += " AND "+ node.getTimeValue2();
+		 	}
+		 	if((node.getTimeInterval2() != "") && (node.getTimeInterval2() != "null"))
+		 	{
+		 		customFormulaString += " " + node.getTimeInterval2();
+		 	}
+		 }
 	 	return  customFormulaString;
 	 }
 	 
@@ -2019,7 +2309,19 @@ Application
 	          } */
          }
 	 	var customNode : SingleNodeCustomFormulaNode  = new SingleNodeCustomFormulaNode();
-	 	customNode.initializeNode(dagNode.x+dagNode.width+50,dagNode.y+dagNode.height+20,customNodeName);
+	 	
+	 	if(lastAddedSingleNodeTqX == 0 && lastAddedSingleNodeTqY == 0)
+	 	{
+	 		//This is the first time case
+	 		lastAddedSingleNodeTqX = dagNode.x+dagNode.width+50;
+	 		lastAddedSingleNodeTqY = dagNode.y+dagNode.height+20;
+	 	}
+	 	else
+	 	{
+	 		lastAddedSingleNodeTqX = lastAddedSingleNodeTqX + 50;
+	 		lastAddedSingleNodeTqY = lastAddedSingleNodeTqY + 40;
+	 	}
+	 	customNode.initializeNode(lastAddedSingleNodeTqX,lastAddedSingleNodeTqY,customNodeName);
 	 	
 	 	//Setting the node color according to view
 	 	if(node.getNodeView()=="AddLimit")
@@ -2044,8 +2346,11 @@ Application
 	 	
 	 	customNode.setSelectedArithmeticOp(node.getSelectedArithmeticOp());
 	 	customNode.setSelectedLogicalOp(node.getSelectedLogicalOp());
-	 	customNode.setTimeValue(node.getTimeValue());
-	 	customNode.setTimeInterval(node.getTimeInterval());
+	 	customNode.setTimeValue1(node.getTimeValue1());
+	 	customNode.setTimeInterval1(node.getTimeInterval1());
+	 	
+	     customNode.setTimeValue2(node.getTimeValue2());
+	 	customNode.setTimeInterval2(node.getTimeInterval2());
 	 	
 	 	customNode.setLhsTimeValue(node.getLhsTimeValue());
 	 	customNode.setLhsTimeInterval(node.getLhsTimeInterval());
@@ -2066,7 +2371,9 @@ Application
 	 	if(operation != "rePaint")
 	 	{
 	 		singleNodeTQPope.removeMe();
+	 		unselectSingleNode();
 	 	}
+	 	
 	 	
 	 }  
 	 
@@ -2078,17 +2385,26 @@ Application
 	 	 {
 	 	 	customFormulaString += "\n"+ node.getSelectedLogicalOp();
 	 	 }
-	 	 
-	 	 if((node.getTimeValue() != "") && (node.getTimeValue() != "null"))   
+		 if((node.getTimeValue1() != "") && (node.getTimeValue1() != "null"))   
 	 	 {
-	 	 	customFormulaString += " " + node.getTimeValue();
+	 	 	customFormulaString += " " + node.getTimeValue1();
 	 	 }
-	 	 if((node.getTimeInterval() != "") && (node.getTimeInterval()))
+	 	 if((node.getTimeInterval1() != "") && (node.getTimeInterval1()!="null"))
 	 	 {
-	 	 	customFormulaString += " " + node.getTimeInterval();
+	 	 	customFormulaString += " " + node.getTimeInterval1();
 	 	 }
-	 	    
-	 	return customFormulaString;
+	 	 if(node.getSelectedLogicalOp()=="Between")
+	 	 {
+	 	 	if((node.getTimeValue2() != "") && (node.getTimeValue2() != "null"))   
+	 	 	{
+	 	 		customFormulaString += " AND " + node.getTimeValue2();
+	 	 	}
+	 	 	if((node.getTimeInterval2() != "") && (node.getTimeInterval2()!="null"))
+	 	 	{
+	 	 		customFormulaString += " " + node.getTimeInterval2();
+	 	 	}	 
+	 	 }
+	 	 return customFormulaString;
 	 } 
 	 
 	 public function addCustomFromulaNode(node : CustomFormulaNode):void
@@ -2098,10 +2414,12 @@ Application
             var nodeList : ArrayCollection = null;
             var customNodeName : String = ""; 
             var nodeName  : String =  node.name;
+            
             var operation : String = node.getOperation();
             var existingCustomNode : CustomFormulaNode = null;
             
-            if((node.getNodeView()=="AddLimit" && view == "AddLimit") || (view == "Result")){
+            if((node.getNodeView()=="AddLimit" && view == "AddLimit") || (view == "Result"))
+            {
 			//to store operation type create/edit
 			operationforView = node.getOperation();            
 			//Initializing the DAG NOdes
@@ -2119,6 +2437,7 @@ Application
             	if((nodeList != null) && (nodeList.length > 0))
             	{
             		dagNode1 = nodeList.getItemAt(0) as DAGNode;
+            		
                     dagNode2 = nodeList.getItemAt(1) as DAGNode;
             	}
             	else
@@ -2167,7 +2486,20 @@ Application
         	//Setting the operation
         	customFormulaNode.setOperation(operation);
         	customFormulaNode.customFormula = customFormulaString;
-        	customFormulaNode.initializeNode(dagNode1.x+dagNode1.width+50,dagNode1.y+dagNode1.height+20,customNodeName);
+        	
+        	if(lastAddedTwoNodeTqX == 0 && lastAddedTwoNodeTqY ==0)
+        	{
+        		//This is first time case
+        		lastAddedTwoNodeTqX = dagNode1.x+dagNode1.width+50;
+        		lastAddedTwoNodeTqY = dagNode1.y+dagNode1.height+20;
+        	}
+        	else
+        	{
+        		lastAddedTwoNodeTqX = lastAddedTwoNodeTqX + 50;
+        		lastAddedTwoNodeTqY = lastAddedTwoNodeTqY + 40;
+        	}
+        	
+        	customFormulaNode.initializeNode(lastAddedTwoNodeTqX,lastAddedTwoNodeTqY,customNodeName);  
             
             //Setting the node color according to view
             if(node.getNodeView()=="AddLimit")
@@ -2202,9 +2534,13 @@ Application
              //Setting the Logical operator
              customFormulaNode.setSelectedLogicalOp(node.getSelectedLogicalOp()); 
              
-             //Setting time and time Intervals
-             customFormulaNode.setTimeValue(node.getTimeValue());
-             customFormulaNode.setTimeInterval(node.getTimeInterval());
+             //Setting time and time Intervals 
+             
+             customFormulaNode.setTimeValue1(node.getTimeValue1());
+             customFormulaNode.setTimeInterval1(node.getTimeInterval1());
+             
+             customFormulaNode.setTimeValue2(node.getTimeValue2());
+             customFormulaNode.setTimeInterval2(node.getTimeInterval2());
              
              //adding the Custom Columnm Name 
              customFormulaNode.setCustomColumnName(node.getCustomColumnName());
@@ -2230,6 +2566,7 @@ Application
             if(operation != "rePaint")
             {
            		 popUp.removeMe(); 	
+           		 unselectBothNodes();
             }
            
       }
@@ -2359,7 +2696,31 @@ Application
       				singleNodeTQPope.y = 0;
       		}		
        }
-
+       
+       private function resizeDag() : void
+       {
+             var buttonName : String = dagResizeButton.name ;
+             var url : URLRequest = null;
+             if(buttonName == "expandButton")
+             {
+             	//invoke corresponding javascript method 
+                 dagResizeButton.name = "collapseButton";
+                 dagResizeButton.setStyle("icon",minusIcon);
+                 dagResizeButton.toolTip = "Click to Collapse";
+                 //ExternalInterface.call("setQueryUpdatedFlag");
+                url  = new URLRequest("javascript: expandDag()");
+		       navigateToURL(url,"_self"); 
+                 
+             }
+             else
+             {
+             	 dagResizeButton.name = "expandButton";
+             	 dagResizeButton.setStyle("icon",plusIcon);
+                 dagResizeButton.toolTip = "Click to Expand";
+                 url  = new URLRequest("javascript: collapseDag()");
+		         navigateToURL(url,"_self"); 
+             }
+       }
 
 ]]>
 </mx:Script>
@@ -2368,11 +2729,17 @@ Application
 
 <mx:VBox width="100%" height="100%" backgroundColor="#f9e886" horizontalGap="0" verticalGap="0">
 		<mx:VBox backgroundColor="white" id="mainPanelx" verticalGap="0" width="100%" height="100%" fontSize="11">
-			<mx:Label text="Diagrammatic View" fontSize="11" fontWeight="bold" x="0" y="0" width="150"/>
+			
 			<mx:ApplicationControlBar top="0" dock="true" height="5%" width="100%" fillAlphas="[1.0, 1.0]" fillColors="[#f9e886, #f9e886]">
-				<mx:Button label="Add Link" click="drawLine()" fontSize="9" toolTip="Add Link to nodes" id="AdlnkBtn"/>
-				<mx:Button label="Clear All Paths" click="clearPaths()" fontSize="9" toolTip="Clear All Paths" id="ClrPathBtn"/>
-				<mx:Button label="Temporal Query" id="TQBtn" click="openTQPopUp()" fontSize="9" toolTip="Create temporal query on selected nodes"/>				
+				<mx:Image id="dagIcon" source="@Embed('/assets/dagview_icon.PNG')"/> 
+			    <mx:Label text="Diagrammatic View" fontSize="13" fontWeight="bold" x="0" y="0"   textAlign="left" width="40%"/>
+				<mx:Button label="Add Link" click="drawLine()" fontSize="9" toolTip="Add Link to nodes" id="AdlnkBtn" useHandCursor="true" buttonMode="true"/>
+				<mx:Button label="Clear All Paths" click="clearPaths()" fontSize="9" toolTip="Clear All Paths" id="ClrPathBtn" useHandCursor="true" buttonMode="true"/>
+				<mx:Button label="Temporal Query" id="TQBtn" click="openTQPopUp()" fontSize="9" toolTip="Create temporal query on selected nodes" useHandCursor="true" buttonMode="true"/>				
+			    <mx:Label text="" width="30%"/>
+			   
+			    
+			    <mx:Button icon= "@Embed(source='/assets/maximise.png')" id="dagResizeButton" click="resizeDag()" toolTip="Click To Expand" name="expandButton"/> 
 			</mx:ApplicationControlBar>
 			<mx:Canvas id="mainPanel" width="100%" height="95%" borderStyle="none">
 			</mx:Canvas>
@@ -2380,5 +2747,3 @@ Application
 	<mx:Label id="currentExp" fontFamily="Courier New" fontSize="11" fontWeight="bold"/>
 </mx:VBox>		
 </mx:Application>
-
-

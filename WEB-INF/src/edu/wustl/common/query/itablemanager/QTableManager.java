@@ -1,6 +1,6 @@
 package edu.wustl.common.query.itablemanager;
 
-import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  * This class is responsible for
@@ -71,3 +71,4 @@ public class QTableManager
 	}
 	
 }
+

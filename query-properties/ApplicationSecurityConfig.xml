@@ -6,7 +6,7 @@
 	<!-- For every application using the security api an entry should be made here -->
 		<application>
 			<context-name>
-				query
+				cider
 			</context-name>
 			<authentication>
 				<authentication-provider-class>
@@ -15,7 +15,7 @@
 			</authentication>
 			<authorization>
 				<authorization-provider-class>
-					edu.wustl.common.security.UserProvisioningManagerImpl
+					edu.wustl.security.impl.UserProvisioningManagerImpl
 				</authorization-provider-class>
 				<hibernate-config-file>
 					@@hibernate-config-file@@
@@ -24,3 +24,4 @@
 		</application>
 	</application-list>
 </security-config>
+

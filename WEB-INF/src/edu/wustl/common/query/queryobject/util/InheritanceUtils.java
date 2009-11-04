@@ -8,23 +8,23 @@ import java.util.Collection;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.util.InheritanceUtil;
+import edu.wustl.common.querysuite.querableobjectInterface.QueryableAttributeInterface;
+import edu.wustl.common.querysuite.querableobjectInterface.QueryableObjectInterface;
 
 /**
  * Factory pattern for calling InheritanceUtil class methods.
  * @author prafull_kadam
  */
-public class InheritanceUtils implements InheritanceUtilsInterface
+public final class InheritanceUtils implements InheritanceUtilsInterface
 {
 
 	private static InheritanceUtilsInterface instance = new InheritanceUtils();
 
 	/**
-	 * constructor for singolton implementation.
+	 * constructor for singleton implementation.
 	 */
-	protected InheritanceUtils()
+	private InheritanceUtils()
 	{
 	}
 
@@ -33,10 +33,15 @@ public class InheritanceUtils implements InheritanceUtilsInterface
 	 */
 	public static InheritanceUtilsInterface getInstance()
 	{
+
 		if (instance == null)
 		{
-			instance = new InheritanceUtils();
+			synchronized (instance)
+			{
+				instance = new InheritanceUtils();
+			}
 		}
+
 		return instance;
 	}
 
@@ -66,14 +71,14 @@ public class InheritanceUtils implements InheritanceUtilsInterface
 	 * @param attribute Attribute for which actual attribute is expected.
 	 * @return The actual attribute
 	 */
-	public AttributeInterface getActualAttribute(AttributeInterface attribute)
+	public QueryableAttributeInterface getActualAttribute(QueryableAttributeInterface attribute)
 	{
-		EntityInterface parentEntity = attribute.getEntity().getParentEntity();
+		QueryableObjectInterface parentEntity = attribute.getActualEntity().getParentEntity();
 		while (parentEntity != null)
 		{
-			Collection<AttributeInterface> attributeCollection = parentEntity
+			Collection<QueryableAttributeInterface> attributeCollection = parentEntity
 					.getAttributeCollection();
-			for (AttributeInterface att : attributeCollection)
+			for (QueryableAttributeInterface att : attributeCollection)
 			{
 				if (att.getName().equals(attribute.getName()))
 				{

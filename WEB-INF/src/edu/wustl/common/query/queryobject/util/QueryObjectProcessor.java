@@ -7,7 +7,6 @@ package edu.wustl.common.query.queryobject.util;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.exceptions.CyclicException;
@@ -45,7 +44,7 @@ public class QueryObjectProcessor
 	private List<IExpression> exprsToProcess;
 
 	/**
-	 * Default constructor, made it protected to keep its implemenation as singlton class.
+	 * Default constructor, made it protected to keep its implementation as singleton class.
 	 *
 	 */
 	protected QueryObjectProcessor()
@@ -91,7 +90,7 @@ public class QueryObjectProcessor
 
 	/**
 	 * Creates another node for the expression having multiple parent. It will also create heirarcy below that node.
-	 * @param expression The Expression id having multiple panrent.
+	 * @param expression The Expression id having multiple parent.
 	 * @throws CyclicException when adding an Edge in graph causes cycle in the graph.
 	 */
 	private void replaceMultipleParent(IExpression expression) throws CyclicException
@@ -112,7 +111,7 @@ public class QueryObjectProcessor
 			joinGraph.removeAssociation(parentExpression, expression);
 			joinGraph.putAssociation(parentExpression, newExpression, association);
 
-			// copying all expression info to new expression, including child expression heirarchy.
+			// copying all expression info to new expression, including child expression hierarchy.
 			copy(expression, newExpression);
 		}
 	}
@@ -139,7 +138,7 @@ public class QueryObjectProcessor
 					// this node also have multiple parent. So just adding this operand in new expression's operand list & updating joingraph.
 					toExpression.addOperand(operand);
 					joinGraph.putAssociation(toExpression, oldExpression, association);
-					// this will be handled seperately in method replaceMultipleParent.
+					// this will be handled separately in method replaceMultipleParent.
 				}
 				else
 				{
@@ -188,49 +187,5 @@ public class QueryObjectProcessor
 		return map;
 	}
 
-	/**
-	 * To get map of all Children nodes along with their ids under given output tree node.
-	 * @param root The root noe of the output tree.
-	 * @param map of all Children nodes along with their ids under given output tree node.
-	 */
-	private static void addAllChildrenNodes(OutputTreeDataNode root,
-			Map<String, OutputTreeDataNode> map)
-	{
-		map.put(root.getUniqueNodeId(), root);
-		List<OutputTreeDataNode> children = root.getChildren();
-		for (OutputTreeDataNode childNode : children)
-		{
-			addAllChildrenNodes(childNode, map);
-		}
-	}
-
-	/**
-	 * It returns all the nodes present all tress in results. 
-	 * @param keys set of trees
-	 * @return Map of uniqueNodeId and tree node
-	 */
-	public static Map<String, OutputTreeDataNode> getAllChildrenNodes(Set<OutputTreeDataNode> keys)
-	{
-		Map<String, OutputTreeDataNode> map = new HashMap<String, OutputTreeDataNode>();
-		for (OutputTreeDataNode root : keys)
-		{
-			addAllChildrenNodes(root, map);
-		}
-		return map;
-	}
-
-	/**
-	 * It returns all the nodes present all tress in results. 
-	 * @param keys set of trees
-	 * @return Map of uniqueNodeId and tree node
-	 */
-	public static Map<String, OutputTreeDataNode> getAllChildrenNodes(List<OutputTreeDataNode> keys)
-	{
-		Map<String, OutputTreeDataNode> map = new HashMap<String, OutputTreeDataNode>();
-		for (OutputTreeDataNode root : keys)
-		{
-			addAllChildrenNodes(root, map);
-		}
-		return map;
-	}
+	
 }

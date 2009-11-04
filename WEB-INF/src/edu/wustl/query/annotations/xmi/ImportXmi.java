@@ -30,10 +30,11 @@ import edu.common.dynamicextensions.domain.AbstractMetadata;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.xmi.XMIConfiguration;
 import edu.common.dynamicextensions.xmi.XMIUtilities;
 import edu.common.dynamicextensions.xmi.importer.XMIImportProcessor;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
-import edu.wustl.common.util.logger.Logger;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.query.bizlogic.AnnotationUtil;
 import edu.wustl.query.util.global.Constants;
 
@@ -56,13 +57,16 @@ public class ImportXmi
 
 	// XMI reader
 	private static XmiReader reader;
+	
+	private static org.apache.log4j.Logger logger = LoggerConfig.getConfiguredLogger(ImportXmi.class);
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args)
 	{
-		Logger.configure("");
+		//Logger.configure("");
+		
 		FileInputStream fileInputStream = null;
 		try
 		{
@@ -82,9 +86,9 @@ public class ImportXmi
 
 			File file = new File(fileName);
 
-			Logger.out.info("--------------------------------------------------\n");
-			Logger.out.info("Filename = " + file.getAbsolutePath());
-			Logger.out.info("Hook Entity = " + hookEntity);
+			logger.info("--------------------------------------------------\n");
+			logger.info("Filename = " + file.getAbsolutePath());
+			logger.info("Hook Entity = " + hookEntity);
 
 			String packageName = "";
 			//String conditionRecordObjectCsvFileName = "";
@@ -102,8 +106,8 @@ public class ImportXmi
 				domainModelName = file.getName().substring(0, indexOfExtension);
 			}
 
-			Logger.out.info("Name of the file = " + domainModelName);
-			Logger.out.info("\n--------------------------------------------------\n");
+			logger.info("Name of the file = " + domainModelName);
+			logger.info("\n--------------------------------------------------\n");
 			// get the default repository
 			rep = MDRManager.getDefault().getDefaultRepository();
 			// create an XMIReader
@@ -175,7 +179,7 @@ public class ImportXmi
 
 			boolean isEntityGroupSystemGenerated = false;
 			
-			boolean isCreateTable = false;
+			//boolean isCreateTable = false;
 			// this variable indicates that the import xmi is run only to store the metaData
 			// not to create the tables
 			
@@ -186,17 +190,28 @@ public class ImportXmi
 			//			}
 
 			List<String> containerNames = readFile(pathCsvFileName);
+			XMIConfiguration xmiConfiguration = XMIConfiguration.getInstance();
+			xmiConfiguration.setCreateTable(false);
+			xmiConfiguration.setAddIdAttr(false);
+			xmiConfiguration.setAddColumnForInherianceInChild(true);
+			xmiConfiguration.setAddInheritedAttribute(true);
+			xmiConfiguration.setEntityGroupSystemGenerated(isEntityGroupSystemGenerated);
 			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
+			xmiImportProcessor.setXmiConfigurationObject(xmiConfiguration);
+			//LoggerConfig.configureLogger(System.getProperty("user.dir"));
 			List<ContainerInterface> mainContainerList = xmiImportProcessor.processXmi(uml,
-					domainModelName, packageName, containerNames, isEntityGroupSystemGenerated,isCreateTable);
+					domainModelName, packageName, containerNames);
+//			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
+//			List<ContainerInterface> mainContainerList = xmiImportProcessor.processXmi(uml,
+//					domainModelName, packageName, containerNames, isEntityGroupSystemGenerated,isCreateTable);
 
 			boolean isEditedXmi = xmiImportProcessor.isEditedXmi;
-			Logger.out.info("\n--------------------------------------------------\n");
-			Logger.out.info("Package name = " + packageName);
-			Logger.out.info("isEditedXmi = " + isEditedXmi);
-			Logger.out.info("Forms have been created !!!!");
-			Logger.out.info("Associating with hook entity.");
-			Logger.out.info("\n--------------------------------------------------\n");
+			logger.info("\n--------------------------------------------------\n");
+			logger.info("Package name = " + packageName);
+			logger.info("isEditedXmi = " + isEditedXmi);
+			logger.info("Forms have been created !!!!");
+			logger.info("Associating with hook entity.");
+			logger.info("\n--------------------------------------------------\n");
 			//List<ContainerInterface> mainContainerList = getMainContainerList(pathCsvFileName,entityNameVsContainers);
 			if (!hookEntity.equalsIgnoreCase(AnnotationConstants.NONE))
 			{//Integrating with hook entity
@@ -216,15 +231,15 @@ public class ImportXmi
 							null, processedPathList);
 				}
 			}
-			Logger.out.info("--------------- Done ------------");
+			logger.info("--------------- Done ------------");
 
 		}
 		catch (Exception e)
 		{
-			Logger.out.info("Fatal error reading XMI.");
-			Logger.out.info("------------------------ERROR:--------------------------------\n");
-			Logger.out.info(e.getMessage(),e);
-			Logger.out.info("\n--------------------------------------------------------------");
+			logger.info("Fatal error reading XMI.");
+			logger.info("------------------------ERROR:--------------------------------\n");
+			logger.info(e.getMessage(),e);
+			logger.info("\n--------------------------------------------------------------");
 		}
 		finally
 		{
@@ -237,7 +252,7 @@ public class ImportXmi
 			}
 			catch (IOException io)
 			{
-				Logger.out.debug("Error. Specified file does not exist.");
+				logger.debug("Error. Specified file does not exist.");
 			}
 			XMIUtilities.cleanUpRepository();
 
@@ -303,6 +318,7 @@ public class ImportXmi
 				containerNames.add(tokens.nextToken());
 			}
 		}
+		bufRdr.close();
 		return containerNames;
 	}
 
@@ -350,11 +366,10 @@ public class ImportXmi
 	private static MofPackage getUmlPackage(ModelPackage umlMM)
 	{
 		// iterate through all instances of package
-		System.out.println("Here");
 		for (Iterator it = umlMM.getMofPackage().refAllOfClass().iterator(); it.hasNext();)
 		{
 			MofPackage pkg = (MofPackage) it.next();
-			Logger.out.info("\n\nName = " + pkg.getName());
+			logger.info("\n\nName = " + pkg.getName());
 			// is the package topmost and is it named "UML"?
 			if (pkg.getContainer() == null && "UML".equals(pkg.getName()))
 			{

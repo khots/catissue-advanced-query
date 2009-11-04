@@ -82,7 +82,6 @@
 
       </tr>
 	  <!--------new-------------->
-<html:form action="/SpreadsheetExport">	
 	<tr>
 		<td class="black_ar">
 						
@@ -93,7 +92,6 @@
 			
 		</td>
 	</tr>
-</html:form>
 <script>
 	/* 
 		to be used when you want to specify another javascript function for row selection.
@@ -114,3 +112,5 @@
 </td>
 </tr>
 </table>
+
+

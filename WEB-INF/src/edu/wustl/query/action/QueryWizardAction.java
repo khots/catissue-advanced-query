@@ -5,22 +5,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.beans.SessionDataBean;
-import edu.wustl.query.actionForm.CategorySearchForm;
+import edu.wustl.query.actionforms.CategorySearchForm;
+import edu.wustl.query.enums.QueryType;
 import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.util.global.Constants;
-import edu.wustl.query.util.querysuite.QueryModuleUtil;
+import edu.wustl.query.util.querysuite.QueryModuleActionUtil;
 
 /**
  * Action is called when user clicks on QueryWizard link on search tab.
  * @author deepti_shelar
  */
-public class QueryWizardAction extends Action
+public class QueryWizardAction extends AbstractQueryBaseAction
 {
 
 	/**
@@ -33,7 +33,7 @@ public class QueryWizardAction extends Action
 	 * @return ActionForward actionForward
 	 */
 	@Override
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
+	protected ActionForward executeBaseAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
@@ -41,23 +41,41 @@ public class QueryWizardAction extends Action
 		session.removeAttribute(Constants.QUERY_OBJECT);
 		session.removeAttribute(Constants.SELECTED_COLUMN_META_DATA);
 		session.removeAttribute(Constants.IS_SAVED_QUERY);
-		session.removeAttribute(edu.wustl.common.util.global.Constants.IS_SIMPLE_SEARCH);
+		session.removeAttribute(Constants.IS_SIMPLE_SEARCH);
 		session.removeAttribute(DAGConstant.ISREPAINT);
 		session.removeAttribute(DAGConstant.TQUIMap);
 		session.removeAttribute(Constants.EXPORT_DATA_LIST);
 		session.removeAttribute(Constants.ENTITY_IDS_MAP);
 		session.removeAttribute(Constants.MAIN_ENTITY_EXPRESSIONS_MAP);
-		session.removeAttribute(Constants.MAIN_EXPRESSION_TO_ADD_CONTAINMENTS);
+		session.removeAttribute(Constants.MAIN_EXPR_TO_ADD_CONTAINMENTS);
 		session.removeAttribute(Constants.ALL_ADD_LIMIT_EXPRESSIONS);
-		session.removeAttribute(Constants.MAIN_EXPRESSIONS_ENTITY_EXP_ID_MAP);
+		session.removeAttribute(Constants.MAIN_EXP_ENTITY_EXP_ID_MAP);
 		session.removeAttribute(Constants.MAIN_ENTITY_LIST);
-		
-		searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
+		session.removeAttribute(Constants.Query_Type);
+		QueryModuleActionUtil.setDefaultSelections(searchForm);
+		String pageOf = request.getParameter(Constants.PAGE_OF);
+		if (pageOf != null && pageOf.equals(Constants.PAGE_OF_WORKFLOW))
+		{
+			request.setAttribute(Constants.IS_WORKFLOW, Constants.TRUE);
+			String workflowName = (String) request.getSession().getAttribute(
+					Constants.WORKFLOW_NAME);
+			request.setAttribute(Constants.WORKFLOW_NAME, workflowName);
+		}
+
+		if(request.getParameter(Constants.PAGE_OF)==null||(request.getParameter(Constants.PAGE_OF)!=null&&
+				!request.getParameter(Constants.PAGE_OF).equals(Constants.PAGE_OF_WORKFLOW)))
+		{
+			session.removeAttribute(Constants.EXECUTED_FOR_WFID);
+			session.removeAttribute(Constants.WORKFLOW_NAME);
+			session.removeAttribute(Constants.WORKFLOW_ID);
+		}
+		QueryType qtype = QueryType.GET_DATA;
+		session.setAttribute(Constants.Query_Type, qtype.type);
 
 		//Added a Default session data bean......Need to be removed when there query will have login
 
 		SessionDataBean sessionBean = (SessionDataBean) session
-				.getAttribute(Constants.SESSION_DATA);
+				.getAttribute(edu.wustl.common.util.global.Constants.SESSION_DATA);
 		if (sessionBean == null)
 		{
 			// HttpSession newSession = request.getSession(true);
@@ -73,7 +91,8 @@ public class QueryWizardAction extends Action
 			sessionData.setAdmin(true);
 			sessionData.setSecurityRequired(false);
 
-			session.setAttribute(Constants.SESSION_DATA, sessionData);
+			session.setAttribute(edu.wustl.common.util.global.Constants.SESSION_DATA, sessionData);
+
 		}
 
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);

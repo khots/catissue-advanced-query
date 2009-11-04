@@ -1,6 +1,6 @@
 <%@ page import="java.util.*"%>
 <%@ page language="java" isELIgnored="false" %>
-<%@ page import="edu.wustl.query.actionForm.CategorySearchForm"%>
+<%@ page import="edu.wustl.query.actionforms.CategorySearchForm"%>
 <%@ page import="edu.wustl.common.beans.NameValueBean"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
@@ -10,7 +10,7 @@
 <head>
 <title>CIDER: Clinical Investigation Data Exploration Repository</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-
+<script type="text/javascript" src="jss/javaScript.js"></script>
 <script type="text/JavaScript">
 <!--
 
@@ -26,7 +26,17 @@ function retrieveRecentQueries()
 {
 	document.forms['form2'].notify.value="true";
 	parent.pvwindow.hide();
-	parent.document.forms[0].action="\ShowDashboard.do"
+	var actionString = "\ShowDashboard.do";
+    if( parent.document.forms[0].requestFrom == null)
+	{
+       actionString= "ShowDashboard.do?requestFrom=RecentQueries"
+	}
+	 else
+	{
+	   parent.document.forms[0].requestFrom.value="RecentQueries";
+	}
+	
+	parent.document.forms[0].action=actionString;
 	parent.document.forms[0].submit();
 }
 //-->
@@ -44,9 +54,10 @@ MM_reloadPage(true);
 </script>
 <link href="css/advancequery/inside.css" rel="stylesheet" type="text/css" media="screen">
 </head>
-<body onLoad="MM_preloadImages('images/advancequery/m_home_act.gif')">
+<body onLoad="MM_preloadImages('images/advancequery/m_home_act.gif'),setStatusProcessing()">
 <script type="text/javascript" src="wz_tooltip.js"></script>
 <table width="100%" border="0" cellspacing="0" cellpadding="4">
+<c:set var="currentSelectedProject" value="${requestScope.categorySearchForm.currentSelectedProject}"/>
   <tr>
     <td><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0"  class="login_box_bg">
       <tr>
@@ -56,16 +67,28 @@ MM_reloadPage(true);
           </tr>
           <tr >
             <td height="25" valign="middle" nowrap><span class="content_txt">Execution Status: <strong id="StatusId"></strong></span></td>
-            <td align="right" valign="middle">
+            <td align="right" valign="middle" nowrap>
 			<form id="form1" name="form1" method="post" action="">
-              <img src="images/advancequery/b_abort_execution.gif" alt="Abort Execution" width="116" height="23" onclick="abortExecutionAjaxAction();">&nbsp;<img src="images/advancequery/b_notify_me.gif" alt="Notify me when done" width="146" height="23" onclick="retrieveRecentQueries();">
+              <a id="cancelButton" href="javascript:abortExecutionAjaxAction();"><img border='0' src="images/advancequery/b_cancel.gif" alt="Cancel"></a>&nbsp;<img border='0' src="images/advancequery/b_notify_me_inact.gif" id="execInBack" alt="Execute in Background">
             </form></td>
           </tr>
           <tr>
-            <td height="25" colspan="2" valign="bottom"><span class="content_txt"><b id="CountId"></b> results found. </span></td>
+            <td height="25" colspan="2" valign="bottom"><span class="content_txt"><b id="CountId">0</b>  results found. </span></td>
           </tr>
           <tr>
-            <td colspan="2" valign="top" class="tr_color_lgrey"><span class="content_txt">Note: This query is executed without selecting a project, so results from all facilities are included in the count.  If you would want to execute this query for a specific project, you can select the project below and the results will be filtered based on the project rules.</span> </td>
+		  <c:choose>
+			 <c:when test="${currentSelectedProject==''}">
+	            <td colspan="2" valign="top" class="tr_color_lgrey"><span id="NoteId" class="content_txt">Note: The query "${requestScope.categorySearchForm.queryTitle}" is executed without selecting a project, so results from all facilities are included in the count.  If you would want to execute this query for a specific project, you can select the project below and the results will be filtered based on the project rules.</span> </td>								
+			 </c:when>
+			 <c:otherwise>
+				<c:forEach var="project" items="${requestScope.categorySearchForm.projectsNameValueBeanList}">
+					<c:if test="${project.value eq currentSelectedProject}">
+						<c:set var="currentSelectedProjectName" value="${project.name}"/>
+					</c:if>
+				</c:forEach>
+	            <td colspan="2" valign="top" class="tr_color_lgrey"><span id="NoteId" class="content_txt">Note: The query "${requestScope.categorySearchForm.queryTitle}" is executed for project "${currentSelectedProjectName}".The results will be filtered based on the project rules.</span> </td>
+			</c:otherwise>
+		</c:choose>
           </tr>
           <tr>
             <td height="10" colspan="2" class="tr_color_lgrey"></td>
@@ -73,25 +96,30 @@ MM_reloadPage(true);
             <td colspan="2" class="tr_color_lgrey"><table border="0" cellspacing="0" cellpadding="0">
               <tr>
                 <td valign="middle" class="content_txt">Select Project:</td>
-                <td valign="middle">&nbsp;</td>
+                <td valign="middle">&nbsp;</td> 
                 <td valign="middle"><form name="form2" method="post" action="">
-				<c:set var="currentSelectedProject" value="${requestScope.categorySearchForm.currentSelectedProject}"/>
 				<html:hidden property="notify" value="false" />
 				<html:hidden property="abortExecution" value="false" />
 				<html:hidden property="executionId" value="-1" />
 				<html:hidden property="isNewQuery" value="false" />
 				<html:hidden property="selectedProject" value="${currentSelectedProject}" />
-				<SELECT NAME="getCount" class="textfield" onChange="setProjectData(this,'form2')">
-						<c:if test="${currentSelectedProject==''}">
-								<OPTION VALUE="" selected>--Select--
-						</c:if>
+				<html:hidden property="selectedProjectName" value="" />
+				<SELECT NAME="getCount" id="getCount" class="textfield" onChange="setProjectData(this,'form2')" onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)">
+							<c:choose>
+								<c:when test="${currentSelectedProject==''}">
+									<OPTION title="Unspecified" VALUE="" selected>Unspecified
+								</c:when>
+								<c:otherwise>
+									<OPTION title="Unspecified.." VALUE="">Unspecified..
+								</c:otherwise>
+							</c:choose>
 						<c:forEach var="project" items="${requestScope.categorySearchForm.projectsNameValueBeanList}">
 							<c:choose>
 								<c:when test="${project.value eq currentSelectedProject}">
-									<OPTION VALUE="${project.value}" selected>${project.name}
+									<OPTION title="${project.name}" VALUE="${project.value}" selected>${project.name}
 								</c:when>
 								<c:otherwise>
-									<OPTION VALUE="${project.value}">${project.name}
+									<OPTION title="${project.name}" VALUE="${project.value}">${project.name}
 								</c:otherwise>
 							</c:choose>
 						</c:forEach>
@@ -99,7 +127,7 @@ MM_reloadPage(true);
 				</form></td>
                 <td valign="middle">&nbsp;</td>
                 <td valign="middle"><form id="form3" name="form3" method="post" action="">
-                    <img src="images/advancequery/b_get_count_inact.gif" alt="Get Count" width="84" height="23" onclick="">
+                    <img src="images/advancequery/b_get_count_inact.gif" id='getCount' alt="Get Count" width="84" height="23" onclick="">
                 </form></td>
               </tr>
             </table></td>
@@ -110,4 +138,5 @@ MM_reloadPage(true);
 </table>
 </body>
 </html>
+
 

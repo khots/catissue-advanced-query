@@ -28,14 +28,16 @@ MM_reloadPage(true);
 </head>
 <body onLoad="MM_preloadImages('images/advancequery/m_home_act.gif')">
 <script type="text/javascript" src="jss/advancequery/wz_tooltip.js"></script>
-<div class="wrapper">
-
-  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <table width="100%" border="0" cellpadding="0" cellspacing="0" class="contentLayout">
     <tr>
-      <td width="10" valign="top">&nbsp;</td>
-      <td valign="top" bgcolor="#FFFFFF"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0"  class="login_box_bg">
+      
+      <td valign="top" bgcolor="#FFFFFF"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0"  class="login_box_bg" height="100%">
           <tr>
-            <td height="28" background="images/advancequery/bg_content_header.gif"><img src="images/advancequery/t_new_search.gif" alt="New Search" width="115" height="26" hspace="5" vspace="0"></td>
+            <td height="28" background="images/advancequery/bg_content_header.gif">
+			<!--<img src="images/advancequery/t_new_search.gif" alt="New Search" width="115" height="26" hspace="5" vspace="0">-->
+			<span class="PageHeaderTitle">New Search</span>
+			<span
+			</td>
           </tr>
           <tr>
             <td align="center" valign="top"><table width="98%" border="0" cellspacing="0" cellpadding="0">
@@ -46,26 +48,26 @@ MM_reloadPage(true);
                 <tr>
                   <td align="left" valign="top" ><table border="0" cellpadding="4" cellspacing="0">
                     <tr bgcolor="#FFFFFF">
-                      <td width="15" valign="top" class="content_txt"><img src="images/advancequery/ic_number.gif" alt="Number" width="15" height="16"></td>
-                      <td height="30" valign="top" class="content_txt"><a href="QueryGetCount.do" class="bluelink"><b>Get the number of patients that satisfy my eligibility criteria.</b></a><br>
-                      Description: </td>
-					  <td  height="30">
-					  </td>
+                      <td width="15" valign="top" class="content_txt" style="padding:13px 10px 0 0;"><img src="images/advancequery/ic_number.gif" alt="Number" width="15" height="16"></td>
+                      <td  valign="top" class="content_txt"><a href="QueryGetCount.do" class="bluelink" style="line-height:30px;"><b>Get the number of patients that satisfy my eligibility criteria</b></a><br>
+					  <p align="justify"><b>Description:</b> Please select this option if you would like to know how many patients match eligibility criteria or to determine how many patients satisfy your study's inclusion criteria. This option is intended for relatively simple criteria such as the number of patients with an abnormal laboratory test value (e.g.: patients with a high PSA level) or the number of patients taking a particular medication (e.g.: patients taking warfarin).</p>
+                       </td>
+					  
                     </tr>
-                    <tr bgcolor="#FFFFFF" class="tr_color_lgrey">
+					
+                   <!-- <tr bgcolor="#FFFFFF" class="tr_color_lgrey">
                       <td valign="top" class="content_txt"><img src="images/advancequery/ic_patient_data.gif" alt="Patient Data" width="15" height="16"></td>
                       <td height="30" valign="top" class="content_txt"><a href="#" onClick="(alert('This feature is currently not available..!'))" class="bluelink"><b>Get individual patient level clinical information for my project.</b></a><br>
                         Description: </td>
 						  <td  height="30">
 						  </td>
-                    </tr>
+                    </tr> -->
                     <tr bgcolor="#FFFFFF">
-                      <td valign="top" class="content_txt"><img src="images/advancequery/ic_worflow.gif" alt="Workflow" width="15" height="16"></td>
-                      <td height="30" valign="top" class="content_txt"><a href="QueryWorkflowWizard.do" class="bluelink"><b>Define a set of queries for a workflow.</b></a><br>
-                        Description: </td>
-						  <td  height="30">
-						  </td>
+                      <td valign="top" class="content_txt" style="padding:13px 10px 0 0;"><img src="images/advancequery/ic_worflow.gif" alt="Workflow" width="15" height="16"></td>
+                      <td  valign="top" class="content_txt"><a href="QueryWorkflowWizard.do" class="bluelink" style="line-height:30px;"><b>Identify patient cohorts and download relevant data sets</b></a><br><p align="justify"><b>Description:</b> Please select this option to first identify patient cohorts matching your study's requirements and then to view and download appropriate clinical data for these patient groups.  Complex queries may be executed serially using this option including the ability to join individual query results (e.g. find all African-American patients over the age of 55 with a history of congestive heart failure [Query 1] who are also taking an ACE inhibitor [Query 2] and a diuretic [Query 3]) using set operations (i.e. union, intersection, and minus).  Furthermore, once one or more patient cohorts have been identified, relevant clinical variables  of these groups may be viewed and requested for download.</p></td>
+						  
                     </tr>
+					
                   </table></td>
                 </tr>
                 <tr>
@@ -75,17 +77,14 @@ MM_reloadPage(true);
             </table></td>
           </tr>
       </table></td>
-      <td width="10" valign="top">&nbsp;</td>
+   
     </tr>
-    <tr>
-      <td valign="top">&nbsp;</td>
-      <td valign="top">&nbsp;</td>
-      <td valign="top">&nbsp;</td>
-    </tr>
+   
   </table>
-  <div class="push"></div>
-</div>
+  
+
 
 </body>
 </html>
+
 

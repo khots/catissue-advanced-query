@@ -6,26 +6,29 @@
 <hibernate-configuration>
 	
     <session-factory>
+
     	<property name="show_sql">false</property>
-    	<property name="dialect">org.hibernate.dialect.DB2Dialect</property>
-      	<property name="connection.driver_class">com.ibm.db2.jcc.DB2Driver</property>
-        <property name="connection.username">@@username@@</property>
-        <property name="connection.password">@@password@@</property>
-         <!-- <property name="default.schema">@@databaseschema@@</property> -->
-        <property name="connection.url">jdbc:db2://@@host@@:@@port@@/@@databasename@@:currentSchema=@@databaseschema@@;</property>
-        <property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
-    	<property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
+   		<property name="dialect">org.hibernate.dialect.DB2Dialect</property>	
+		<property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+       	<!-- <property name="transaction.manager_lookup_class">org.hibernate.transaction.JBossTransactionManagerLookup</property> -->
+		<property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
 		<property name="hibernate.jdbc.batch_size">0</property>
+		<property name="hibernate.query.substitutions">true 1,false 0</property>
     
 <!-- My sql settings -->
        
-        <property name="hibernate.c3p0.max_size">2</property>
+       <!-- <property name="hibernate.c3p0.max_size">2</property>-->
 		<property name="hibernate.c3p0.min_size">2</property>
 		<property name="hibernate.c3p0.timeout">5000</property>
 		<property name="hibernate.c3p0.max_statements">100</property>
 		<property name="hibernate.c3p0.idle_test_period">3000</property>
 		<property name="hibernate.c3p0.acquire_increment">2</property>
 		<property name="hibernate.c3p0.validate">false</property>
+
+		<property name="hibernate.connection.driver_class">com.ibm.db2.jcc.DB2Driver</property>
+		 <property name="hibernate.connection.username">@@username@@</property>
+		<property name="hibernate.connection.password">@@password@@</property>
+		<property name="hibernate.connection.url">jdbc:db2://@@host@@:@@port@@/@@databasename@@:currentSchema=@@databaseschema@@;</property>
 		       
 	 
 <!-- My sql settings end -->   
@@ -57,7 +60,6 @@
       
         <mapping resource="edu/common/dynamicextensions/hbm/AssociationDisplayAttribute.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/databaseproperties/DatabaseProperties.hbm.xml"/>
-        <mapping resource="edu/common/dynamicextensions/hbm/databaseproperties/ConstraintKeyProperties.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/CaDSRValueDomainInfo.hbm.xml"/>
          
         <mapping resource="edu/common/dynamicextensions/hbm/FileAttributeRecordValue.hbm.xml"/>
@@ -81,6 +83,8 @@
         <mapping resource="edu/common/dynamicextensions/hbm/Path.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/PathAssociationRelation.hbm.xml"/>
 		<mapping resource="edu/common/dynamicextensions/hbm/DESQLAudit.hbm.xml"/>
+		<mapping resource="edu/common/dynamicextensions/hbm/databaseproperties/ConstraintKeyProperties.hbm.xml"/>
+		<mapping resource="edu/common/dynamicextensions/hbm/FormControlNotes.hbm.xml"/>
       
 
     </session-factory>

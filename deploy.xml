@@ -45,7 +45,7 @@
 	<property name="jboss.bin.run.jar" value="${jboss.home.dir}/bin/run.jar"/>
 	
 	 <property name ="datasource" value ="java:/query"/>
-	
+	<property name="categoryDefinationFilePath" value=""/>
 	<!-- Check for required properties -->
 	<target name="assert">
 		<if>
@@ -74,9 +74,9 @@
 
 		<if>
 			<or>
-				<equals arg1="mysql" arg2="${database.type}" />
-				<equals arg1="oracle" arg2="${database.type}" />
-				<equals arg1="db2" arg2="${database.type}" />
+				<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
+				<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
+				<equals arg1="db2" arg2="${database.type}" casesensitive="false"/>
 			</or>
 			<then />
 			<else>
@@ -86,7 +86,7 @@
 		
 		<!-- Validation for ORACLE_HOME ,tns name and sqlldr if database is oracle-->
 		<if>
-		<equals arg1="oracle" arg2="${database.type}" />
+		<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
 			<then>				
 				<available file="${oracle_home}" type="dir" property="IsOracleHomeBlank" />
 				<if>
@@ -158,7 +158,7 @@
         	<try>
         		<echo message="jdbc:mysql://${database.host}:${database.port}/${database.name}"  />
 					<if>
-						<equals arg1="mysql" arg2="${database.type}" />
+						<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
 						<then>							
 							<sql driver="${mysql.driver.string}" url="jdbc:mysql://${database.host}:${database.port}/${database.name}" userid="${database.username}" password="${database.password}">
 									<transaction>select 1;</transaction>
@@ -171,7 +171,7 @@
 							</sql>							
 						</then>					
 						<elseif >					
-							<equals arg1="oracle" arg2="${database.type}" />					
+							<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>					
 							<then>				
 								<sql driver="${oracle.driver.string}" url="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}" userid="${database.username}" password="${database.password}" rdbms="oracle">
 									<transaction>select sysdate from dual;</transaction>
@@ -214,11 +214,11 @@
 		<!--copy todir="${temp.dir}/LexBIGData" overwrite="false">
 					<fileset dir="${base.dir}/LexBIGData" />
 		</copy -->
-		<replace dir="${temp.dir}/query-properties" propertyfile="${temp.dir}/query-properties/vocab.properties">
+		<!--replace dir="${temp.dir}/query-properties" propertyfile="${temp.dir}/query-properties/vocab.properties">
 				<replacefilter token="${lexbig.config.path}" value="${jboss.lexbig.config.path}" />
-		</replace>
+		</replace-->
 		<!--XQueryGenerator logger path token replacement-->
-		<replace dir="${base.dir}/WEB-INF/classes" propertyfile="${base.dir}/WEB-INF/classes/query.properties">
+		<replace dir="${temp.dir}/query-properties" propertyfile="${temp.dir}/query-properties">
 	  		<replacefilter token="${xquery.jboss.path}" value="${jboss.server.url}" /> 
 	  	</replace>
 
@@ -555,19 +555,19 @@
 		<antcall target="configure_war" />
 		<!--<antcall target="adopter_configuration" /> -->
 		<if>
-			<equals arg1="mysql" arg2="${database.type}" />
+			<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
 			<then>
 				<antcall target="mysql_config" />
 			</then>
 			<elseif>
-				<equals arg1="oracle" arg2="${database.type}" />
+				<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
 				<then>
 					<antcall target="oracle_config" />
 					
 				</then>
 			</elseif>
 			<elseif>
-				<equals arg1="db2" arg2="${database.type}" />
+				<equals arg1="db2" arg2="${database.type}" casesensitive="false"/>
 				<then>
 					<antcall target="db2_config" />
 				</then>
@@ -581,6 +581,8 @@
 		
 		<!-- delete dir="${temp.dir}" / --> 
 	</target>
+	
+	<property name="LBConfigFile" value="${jboss.server.url}/data/LexBIGData/config/config.props" />
 	
 	<!--Target for deployment with jboss config-->
 	<target name="config_jboss_files">
@@ -597,6 +599,7 @@
 			<replacefilter token="@@app-dynamicuixml-file@@" value="${jboss.server.url}/query-properties/dynamicUI.xml" />
 			<replacefilter token="@@vocab-properties-file@@" value="${jboss.server.url}/query-properties/vocab.properties"/>
 			<replacefilter token="@@configured-vocabs-file@@" value="${jboss.server.url}/query-properties/configuredVocabs.properties"/>
+			<replacefilter token="@@lexbig-config-file@@" value="${LBConfigFile}"/>
 		</replace>
 
 		<copy todir="${jboss.server.url}/deploy" overwrite="true">
@@ -605,23 +608,33 @@
 			</fileset>
 		</copy>
 		<delete file="${jboss.server.url}/lib/hibernate2.jar" />
+		
+		<replace dir="${jboss.server.url}/query-properties" propertyfile="queryInstall.properties">
+			<include name="vocab.properties" />
+			<replacefilter token="@@source.vocab.name@@" value="${source.vocab.name}" />
+			<replacefilter token="@@source.vocab.version@@" value="${source.vocab.version}" />
+			<replacefilter token="@@source.vocab.urn@@" value="${source.vocab.urn}" />
+			<include name="configuredVocabs.properties" />
+			<replacefilter token="@@source.vocab.urn@@" value="${source.vocab.urn}" />
+		</replace>
+		
 	</target>
 	
 	<!--Target for Database Creation-->
 	<target name="deploy_db">
 		<if>
-			<equals arg1="mysql" arg2="${database.type}" />
+			<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
 			<then>
 				<antcall target="deploy_db_mysql" />
 			</then>
 			<elseif>
-				<equals arg1="oracle" arg2="${database.type}" />
+				<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
 				<then>
 					<antcall target="deploy_db_oracle" />
 				</then>
 			</elseif>
 			<elseif>
-				<equals arg1="db2" arg2="${database.type}" />
+				<equals arg1="db2" arg2="${database.type}" casesensitive="false"/>
 				<then>
 					<antcall target="deploy_db_db2" />
 				</then>
@@ -642,7 +655,7 @@
 			<transaction src="${db2.sql.dir}/query/DynamicExtension_DB2new.sql" /> 
 			<transaction src="${db2.sql.dir}/query/metadata_schema_script.sql" /> 
 			<transaction src="${db2.sql.dir}/query/query_schema_script.sql" />
-			<transaction src="${db2.sql.dir}/query/Query.sql" />
+			
 			<transaction src="${db2.sql.dir}/query/audit_tables.sql" />
 			<!--transaction src="${db2.sql.dir}/query/initDB2DB.sql" /-->
 			<transaction>commit;</transaction>
@@ -653,8 +666,18 @@
 			</classpath>
 		</sql>
 		<!--echo message="Adding curated Path" />
-		<antcall target="add_curated_Path"  / --> 
-		
+		<antcall target="add_curated_path"  / --> 
+		<antcall target="update_DE_identifiers" />
+		<antcall target="import_xmi" />
+		<sql driver="${db2.driver.string}" url="jdbc:db2://${database.host}:${database.port}/${database.name}:currentSchema=${database.schema};" userid="${database.username}" password="${database.password}" onerror="continue">
+			<transaction src="${db2.sql.dir}/query/Query.sql" />
+			<transaction>commit;</transaction>
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</sql>
 	</target>
 	
 	<!--MySQL Database Creation -->
@@ -890,12 +913,12 @@
 		<unwar src="${base.dir}/query.war" dest="${temp.dir}/query"/>
 		<delete file="${temp.dir}/query/WEB-INF/lib/mmtxProject.jar" />
 		<if>
-			<equals arg1="mysql" arg2="${database.type}" />
+			<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
 			<then>
 				<antcall target="update_metadata_for_model_changes_mysql" />
 			</then>
 			<elseif>
-				<equals arg1="oracle" arg2="${database.type}" />
+				<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
 				<then>
 					<antcall target="update_metadata_for_model_changes_oracle" />
 				</then>
@@ -946,7 +969,7 @@
 			<unwar src="${base.dir}/query.war" dest="${temp.dir}/query"/>
 			<delete file="${temp.dir}/query/WEB-INF/lib/mmtxProject.jar" />
 			<if>
-				<equals arg1="mysql" arg2="${database.type}" />
+				<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
 				<then>
 					<java classname="edu.wustl.common.util.global.QueryMetadataCleanup" fork="true">
 						<classpath refid="temp.classpath" />
@@ -957,7 +980,7 @@
 					</java>
 				</then>
 				<elseif>
-					<equals arg1="oracle" arg2="${database.type}" />
+					<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
 					<then>
 						<java classname="edu.wustl.common.util.global.QueryMetadataCleanup" fork="true">
 							<classpath refid="temp.classpath" />
@@ -1048,7 +1071,7 @@ Thanking You,
 		<!--<antcall target="configure_log4j" /> -->
 		
 		<if>
-			<equals arg1="mysql" arg2="${database.type}" />
+			<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
 			<then>
 				<replace dir="${temp.query}/WEB-INF/classes">
 					<include name="*.cfg.xml" />
@@ -1058,7 +1081,7 @@ Thanking You,
 				</replace>
 			</then>
 			<elseif>
-				<equals arg1="oracle" arg2="${database.type}" />
+				<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
 				<then>
 					<replace dir="${temp.query}/WEB-INF/classes">
 						<include name="*.cfg.xml" />
@@ -1069,13 +1092,13 @@ Thanking You,
 				</then>
 			</elseif>
 			<elseif>
-				<equals arg1="db2" arg2="${database.type}" />
+				<equals arg1="db2" arg2="${database.type}" casesensitive="false"/>
 				<then>
 					<replace dir="${temp.query}/WEB-INF/classes">
 						<include name="*.cfg.xml" />
 						<replacefilter token="@@DIALECT@@" value="${db2.dialect.string}" />
 						<replacefilter token="@@DRIVER@@" value="${db2.driver.string}" />
-						<replacefilter token="@@URL@@" value="jdbc:db2://${database.host}:${database.port}/${database.name}" />
+						<replacefilter token="@@URL@@" value="jdbc:db2://${database.host}:${database.port}/${database.name}:currentSchema=${database.schema};" />
 					</replace>
 				</then>
 			</elseif>
@@ -1120,7 +1143,7 @@ Thanking You,
 		</delete>
 	</target>
 	
-	<target name = "add_curated_Path">
+	<target name = "add_curated_path">
 		
       <echo message="In deploy xml add curated path"/>		
 		<property name="temp.query" value="querytemp" />
@@ -1140,7 +1163,7 @@ Thanking You,
 		
 		<!-- Replacing the dialect, driver and url -->
 		<if>
-			<equals arg1="mysql" arg2="${database.type}" />
+			<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
 			<then>
 				<replace dir="${temp.query}/WEB-INF/classes">
 					<include name="*.cfg.xml" />
@@ -1150,7 +1173,7 @@ Thanking You,
 				</replace>
 			</then>
 			<elseif>
-				<equals arg1="oracle" arg2="${database.type}" />
+				<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
 				<then>
 					<replace dir="${temp.query}/WEB-INF/classes">
 						<include name="*.cfg.xml" />
@@ -1161,7 +1184,7 @@ Thanking You,
 				</then>
 			</elseif>
 			<elseif>
-				<equals arg1="db2" arg2="${database.type}" />
+				<equals arg1="db2" arg2="${database.type}" casesensitive="false"/>
 				<then>
 					<replace dir="${temp.query}/WEB-INF/classes">
 						<include name="*.cfg.xml" />
@@ -1239,18 +1262,18 @@ Thanking You,
 	
 	<target name="upgrade_db_demodel" >
 		<if>
-			<equals arg1="mysql" arg2="${database.type}" />
+			<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
 			<then>
 				<antcall target="upgrade_db_demodel_mysql" />
 			</then>
 		<elseif>
-			<equals arg1="oracle" arg2="${database.type}" />
+			<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
 			<then>
 				<antcall target="upgrade_db_demodel_oracle" />
 			</then>
 		</elseif>
 		<elseif>
-			<equals arg1="db2" arg2="${database.type}" />
+			<equals arg1="db2" arg2="${database.type}" casesensitive="false"/>
 			<then>
 				<antcall target="upgrade_db_demodel_db2" />
 			</then>
@@ -1420,12 +1443,12 @@ Thanking You,
 		<!--unzip src="AdvanceQuery_Installable.zip" dest="${temp.dir}/AdvanceQuery"
 			overwrite="true" /-->
 		<if>
-			<equals arg1="mysql" arg2="${database.type}" />
+			<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
 			<then>
 				<antcall target="aq_deploy_db_mysql" />
 			</then>
 			<elseif>
-				<equals arg1="oracle" arg2="${database.type}" />
+				<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
 				<then>
 					<antcall target="aq_deploy_db_oracle" />
 				</then>
@@ -1453,7 +1476,7 @@ Thanking You,
 			<copy file="DE_conf/DynamicExtensionsHibernate.cfg.xml" todir="${temp.query}/WEB-INF/classes" overwrite="true" />
 
 			<if>
-				<equals arg1="mysql" arg2="${database.type}" />
+				<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
 				<then>
 					<replace dir="${temp.query}/WEB-INF/classes">
 						<include name="*.cfg.xml" />
@@ -1463,7 +1486,7 @@ Thanking You,
 					</replace>
 				</then>
 				<elseif>
-					<equals arg1="oracle" arg2="${database.type}" />
+					<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
 					<then>
 						<replace dir="${temp.query}/WEB-INF/classes">
 							<include name="*.cfg.xml" />
@@ -1474,7 +1497,7 @@ Thanking You,
 					</then>
 				</elseif>
 				<elseif>
-					<equals arg1="db2" arg2="${database.type}" />
+					<equals arg1="db2" arg2="${database.type}" casesensitive="false"/>
 					<then>
 						<replace dir="${temp.query}/WEB-INF/classes">
 							<include name="*.cfg.xml" />
@@ -1513,4 +1536,282 @@ Thanking You,
 				<fileset dir="${temp.query}" />
 			</delete>
 		</target>
+	<target name="create_category">
+					<property name="temp.query" value="querytemp" />	
+					<delete quiet="true" includeemptydirs="true">
+						<fileset dir="${temp.query}">
+							<include name="**/*" />
+						</fileset>
+					</delete>
+
+					<unwar src="${base.dir}/query.war" dest="querytemp" />
+				
+
+					<copy file="DE_conf/QueryHibernate.cfg.xml" todir="${temp.query}/WEB-INF/classes" overwrite="true" />
+					<copy file="DE_conf/DynamicExtensionsHibernate.cfg.xml" todir="${temp.query}/WEB-INF/classes" overwrite="true" />
+
+					<echo>Configuring logger ...</echo>
+					<!--<antcall target="configure_log4j" /> -->
+					
+					<if>
+						<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
+						<then>
+							<replace dir="${temp.query}/WEB-INF/classes">
+								<include name="*.cfg.xml" />
+								<replacefilter token="@@DIALECT@@" value="${mysql.dialect.string}" />
+								<replacefilter token="@@DRIVER@@" value="com.mysql.jdbc.Driver" />
+								<replacefilter token="@@URL@@" value="jdbc:mysql://${database.host}:${database.port}/${database.name}" />
+							</replace>
+						</then>
+						<elseif>
+							<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
+							<then>
+								<replace dir="${temp.query}/WEB-INF/classes">
+									<include name="*.cfg.xml" />
+									<replacefilter token="@@DIALECT@@" value="${oracle.dialect.string}" />
+									<replacefilter token="@@DRIVER@@" value="${oracle.driver.string}" />
+									<replacefilter token="@@URL@@" value="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}" />
+								</replace>
+							</then>
+						</elseif>
+						<elseif>
+							<equals arg1="db2" arg2="${database.type}" casesensitive="false"/>
+							<then>
+								<replace dir="${temp.query}/WEB-INF/classes">
+									<include name="*.cfg.xml" />
+									<replacefilter token="@@DIALECT@@" value="${db2.dialect.string}" />
+									<replacefilter token="@@DRIVER@@" value="${db2.driver.string}" />
+									<replacefilter token="@@URL@@" value="jdbc:db2://${database.host}:${database.port}/${database.name}:currentSchema=${database.schema};" />
+								</replace>
+							</then>
+						</elseif>
+					</if>
+					<echo>Replacing ...</echo>
+					<replace dir="${temp.query}/WEB-INF/classes">
+						<include name="*.cfg.xml" />
+						<replacefilter token="@@DATABASE_USERNAME@@" value="${database.username}" />
+						<replacefilter token="@@DATABASE_PASSWORD@@" value="${database.password}" />
+					</replace>
+
+					<echo>Importing</echo>
+					<java classname="edu.common.dynamicextensions.util.CategoryCreator" fork="true" maxmemory="1024M">
+						<arg value="${categoryDefinationFilePath}"/>
+						<arg value="true"/>
+								
+						<classpath>
+							<pathelement location="${temp.query}/WEB-INF/classes" />
+							<fileset dir="${temp.query}/WEB-INF/lib">
+								<include name="*.jar" />
+								<exclude name="uml-1.3.jar" />
+							</fileset>
+							<fileset dir="${lib.dir}">
+									<include name="*.jar" /> 
+								   <!--exclude name="commonpackage.jar" />
+								   <exclude name="washu-commons.jar" /-->
+								   <exclude name="uml-1.3.jar" />
+							</fileset>  	
+							
+							<fileset dir="${jboss.server.url}/lib">
+									<include name="jboss-j2ee.jar" /> 
+							</fileset>  	
+							
+						</classpath>
+					</java>
+
+					<delete quiet="true" includeemptydirs="true">
+						<fileset dir="${temp.query}" />
+					</delete>
+				</target>
+	<target name="update_DE_identifiers">
+		<property name="temp.query" value="querytemp" />
+		<unwar src="${base.dir}/query.war" dest="querytemp" />
+				<copy file="${db2.sql.dir}/query/update_DE_identifiers.sql" todir="${db2.sql.dir}/query/temp" overwrite="true" />
+			    <replace dir="${db2.sql.dir}/query/temp"> 
+			    	<include name ="update_DE_identifiers.sql"/>
+			    	<replacefilter token="@@SCHEMA_NAME@@" value="${database.schema}"/>
+			    </replace>
+			    <sql driver="${db2.driver.string}" url="jdbc:db2://${database.host}:${database.port}/${database.name}:currentSchema=${database.schema};" userid="${database.username}" password="${database.password}" onerror="continue" delimiter="#">
+			    	<transaction src="${db2.sql.dir}/query/temp/update_DE_identifiers.sql"/>
+			    	<classpath>
+			    		<fileset dir="${temp.query}/WEB-INF/lib">
+			    			<include name="*.jar" />
+			    			<exclude name="uml-1.3.jar" />
+			    			</fileset>	
+			    	</classpath>
+			    </sql>
+			</target>
+
+	<target name="exportQueryToXml">
+		<property name="xmlFilePath" value=""/>
+		<property name="queryTitle" value=""/>
+		<property name="temp.query" value="querytemp" />
+		<delete quiet="true" includeemptydirs="true">
+			<fileset dir="${temp.query}">
+				<include name="**/*" />
+			</fileset>
+		</delete>
+
+		<unwar src="${base.dir}/query.war" dest="querytemp" />
+
+		<copy file="DE_conf/QueryHibernate.cfg.xml" todir="${temp.query}/WEB-INF/classes" overwrite="true" />
+		<copy file="DE_conf/DynamicExtensionsHibernate.cfg.xml" todir="${temp.query}/WEB-INF/classes" overwrite="true" />
+
+		<if>
+			<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
+			<then>
+				<replace dir="${temp.query}/WEB-INF/classes">
+					<include name="*.cfg.xml" />
+					<replacefilter token="@@DIALECT@@" value="${mysql.dialect.string}" />
+					<replacefilter token="@@DRIVER@@" value="com.mysql.jdbc.Driver" />
+					<replacefilter token="@@URL@@" value="jdbc:mysql://${database.host}:${database.port}/${database.name}" />
+				</replace>
+			</then>
+			<elseif>
+				<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
+				<then>
+					<replace dir="${temp.query}/WEB-INF/classes">
+						<include name="*.cfg.xml" />
+						<replacefilter token="@@DIALECT@@" value="${oracle.dialect.string}" />
+						<replacefilter token="@@DRIVER@@" value="${oracle.driver.string}" />
+						<replacefilter token="@@URL@@" value="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}" />
+					</replace>
+				</then>
+			</elseif>
+			<elseif>
+				<equals arg1="db2" arg2="${database.type}" casesensitive="false"/>
+				<then>
+					<replace dir="${temp.query}/WEB-INF/classes">
+						<include name="*.cfg.xml" />
+						<replacefilter token="@@DIALECT@@" value="${db2.dialect.string}" />
+						<replacefilter token="@@DRIVER@@" value="${db2.driver.string}" />
+						<replacefilter token="@@URL@@" value="jdbc:db2://${database.host}:${database.port}/${database.name}:currentSchema=${database.schema};" />
+					</replace>
+				</then>
+			</elseif>
+		</if>
+		<replace dir="${temp.query}/WEB-INF/classes">
+			<include name="*.cfg.xml" />
+			<replacefilter token="@@DATABASE_USERNAME@@" value="${database.username}" />
+			<replacefilter token="@@DATABASE_PASSWORD@@" value="${database.password}" />
+		</replace>
+
+		<echo>Exporting Queries..</echo>
+		<java classname="edu.wustl.query.parser.ExportQuery" fork="true">
+			<arg value="${xmlFilePath}"/>
+			<arg value="${queryTitle}"/>
+			<classpath>
+				<pathelement location="${temp.query}/WEB-INF/classes" />
+				<fileset dir="${temp.query}/WEB-INF/lib">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${lib.dir}">
+						<include name="*.jar" /> 
+				</fileset>  	
+				<fileset dir="${jboss.server.url}/lib">
+						<include name="jboss-j2ee.jar" /> 
+				</fileset>  	
+				
+			</classpath>
+		</java>
+
+		<delete quiet="true" includeemptydirs="true">
+			<fileset dir="${temp.query}" />
+		</delete>
+		
+	</target>
+	
+	<target name="createQueryFromXml">
+		<property name="xmlDir" value=""/>
+		<property name="loginName" value=""/>
+		<property name="temp.query" value="querytemp" />
+		<delete quiet="true" includeemptydirs="true">
+			<fileset dir="${temp.query}">
+				<include name="**/*" />
+			</fileset>
+		</delete>
+
+		<unwar src="${base.dir}/query.war" dest="querytemp" />
+
+		<copy file="DE_conf/QueryHibernate.cfg.xml" todir="${temp.query}/WEB-INF/classes" overwrite="true" />
+		<copy file="DE_conf/DynamicExtensionsHibernate.cfg.xml" todir="${temp.query}/WEB-INF/classes" overwrite="true" />
+		
+		<if>
+			<equals arg1="mysql" arg2="${database.type}" casesensitive="false"/>
+			<then>
+				<replace dir="${temp.query}/WEB-INF/classes">
+					<include name="*.cfg.xml" />
+					<replacefilter token="@@DIALECT@@" value="${mysql.dialect.string}" />
+					<replacefilter token="@@DRIVER@@" value="com.mysql.jdbc.Driver" />
+					<replacefilter token="@@URL@@" value="jdbc:mysql://${database.host}:${database.port}/${database.name}" />
+				</replace>
+			</then>
+			<elseif>
+				<equals arg1="oracle" arg2="${database.type}" casesensitive="false"/>
+				<then>
+					<replace dir="${temp.query}/WEB-INF/classes">
+						<include name="*.cfg.xml" />
+						<replacefilter token="@@DIALECT@@" value="${oracle.dialect.string}" />
+						<replacefilter token="@@DRIVER@@" value="${oracle.driver.string}" />
+						<replacefilter token="@@URL@@" value="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}" />
+					</replace>
+				</then>
+			</elseif>
+			<elseif>
+				<equals arg1="db2" arg2="${database.type}" casesensitive="false"/>
+				<then>
+					<replace dir="${temp.query}/WEB-INF/classes">
+						<include name="*.cfg.xml" />
+						<replacefilter token="@@DIALECT@@" value="${db2.dialect.string}" />
+						<replacefilter token="@@DRIVER@@" value="${db2.driver.string}" />
+						<replacefilter token="@@URL@@" value="jdbc:db2://${database.host}:${database.port}/${database.name}:currentSchema=${database.schema};" />
+					</replace>
+				</then>
+			</elseif>
+		</if>
+		<replace dir="${temp.query}/WEB-INF/classes">
+			<include name="*.cfg.xml" />
+			<replacefilter token="@@DATABASE_USERNAME@@" value="${database.username}" />
+			<replacefilter token="@@DATABASE_PASSWORD@@" value="${database.password}" />
+		</replace>
+		<copy file="${basedir}/${temp.query}/WEB-INF/test/conf/ApplicationSecurityConfig.xml" todir="${base.dir}" overwrite="true"/>
+		<replace dir="${base.dir}/${temp.query}/WEB-INF/test/conf" propertyfile="queryInstall.properties">
+			<include name="log4j.properties" />
+			<include name="query.TestHibernate.cfg.xml" />
+			<replacefilter token="@@jbosshome@@" value="${jboss.server.url}" />
+			<replacefilter token="@@username@@" value="db2inst1" />
+			<replacefilter token="@@password@@" value="db2123" />
+			<replacefilter token="@@databasename@@" value="CTEST_DB" />
+			<replacefilter token="@@databaseschema@@" value="ADMINISTRATOR" />
+	 		<replacefilter token="@@dbhost@@" value="10.88.199.17"/>
+	 		<replacefilter token="@@dbport@@" value="50002"/>
+		</replace>
+		<replace dir="${base.dir}">
+	 				<include name="ApplicationSecurityConfig.xml" />
+	 				<replacefilter token="@@hibernate-config-file@@" value="${basedir}/${temp.query}/WEB-INF/test/conf/query.TestHibernate.cfg.xml" />
+	 	</replace>
+		<echo>Exporting Queries..</echo>
+		<java classname="edu.wustl.query.parser.ImportQuery" fork="true">
+			<arg value="${xmlDir}"/>
+			<arg value="${loginName}"/>
+			<classpath>
+				<pathelement location="${temp.query}/WEB-INF/classes" />
+				<fileset dir="${temp.query}/WEB-INF/lib">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${lib.dir}">
+						<include name="*.jar" /> 
+				</fileset>  	
+				<fileset dir="${jboss.server.url}/lib">
+						<include name="jboss-j2ee.jar" /> 
+				</fileset>  	
+				
+			</classpath>
+		</java>
+		<delete quiet="true" includeemptydirs="true">
+			<fileset dir="${temp.query}" />
+		</delete>
+		<delete file="ApplicationSecurityConfig.xml" quiet="true"/>
+	</target>
 </project>
+
+

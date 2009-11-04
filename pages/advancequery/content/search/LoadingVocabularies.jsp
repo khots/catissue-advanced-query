@@ -1,17 +1,16 @@
+<!--created by amit_doshi 19 Aug 2009 -->
+
 <script>
 
+/*To show the image on the loading frame*/
+var loadingImageTag="<img src='../images/advancequery/VI_Loading.gif' alt='Loading the Vocabulary Interface ...'  title='Loading the Vocabulary Interface ...' >";
+
+/* To froward the request to desired page*/
 function forwardToLocation()
 {
-	location.href ='SearchMappedPV.do?componentId='+parent.compId;
+	location.href ='SearchMappedPV.do?componentId='+parent.compId+"&editVocabURN="+parent.editVocabURN;
+	showLoadingFrame();
 }
 </script>
+<%@includefile="/pages/CommonLoadingFrame.jsp" %>
 
-<html>
-<body onLoad="forwardToLocation();">
- <table align="center" height="100%" width="100%" border="0" cellpadding="0" cellspacing="0">
-		<tr><td class="content_txt"  align="center" style="padding-left:10px;color:blue;font-size: 16px;">
-				Loading Vocabulary Interface,Please Wait... </td>
-		</tr>
- </table>
-</body>
-</html>

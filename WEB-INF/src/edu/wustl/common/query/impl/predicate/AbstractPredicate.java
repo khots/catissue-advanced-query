@@ -1,9 +1,11 @@
 /**
  * 
  */
+
 package edu.wustl.common.query.impl.predicate;
 
-
+import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.query.util.global.Utility;
 
 /**
  * @author juberahamad_patel
@@ -16,28 +18,40 @@ package edu.wustl.common.query.impl.predicate;
  */
 public abstract class AbstractPredicate
 {
+
 	/**
 	 * the attribute on which this predicate is.
 	 */
-	protected String attribute;
-	
+	private String lhs;
+
 	/**
 	 * operator involved in the predicate
 	 */
-	protected String operator;
-	
+	private String operator;
+
 	/**
 	 * right hand side of the predicate
 	 */
-	protected String rhs;
-	
-	public AbstractPredicate(String attribute, String operator, String rhs)
+	private String rhs;
+
+	/**
+	 * the alias of the attribute of this predicate
+	 */
+	private String attributeAlias;
+
+	/**
+	 * 
+	 * @param lhs
+	 * @param operator
+	 * @param rhs
+	 */
+	public AbstractPredicate(String lhs, String operator, String rhs)
 	{
-		this.attribute = attribute;
+		this.lhs = lhs;
 		this.operator = operator;
 		this.rhs = rhs;
 	}
-	
+
 	/**
 	 * build the string representation of the predicate relative to
 	 * the point represented by prefix 
@@ -46,7 +60,6 @@ public abstract class AbstractPredicate
 	 */
 	public abstract String assemble(String prefix);
 
-	
 	/**
 	 * @return the rhs
 	 */
@@ -55,7 +68,6 @@ public abstract class AbstractPredicate
 		return rhs;
 	}
 
-	
 	/**
 	 * @param rhs the rhs to set
 	 */
@@ -63,6 +75,50 @@ public abstract class AbstractPredicate
 	{
 		this.rhs = rhs;
 	}
-	
+
+	/**
+	 * @return the lhs
+	 */
+	public String getLhs()
+	{
+		return lhs;
+	}
+
+	/**
+	 * 
+	 * @return the operator
+	 */
+	protected String getOperator()
+	{
+		return operator;
+	}
+
+	/**
+	 * 
+	 * @return the alias of the attribute of this predicate
+	 */
+	public String getAttributeAlias()
+	{
+		return attributeAlias;
+	}
+
+	public void createAttributeAlias(IExpression expression)
+	{
+		String attributeName = null;
+		int index = getLhs().lastIndexOf('/');
+
+		if (index == -1)
+		{
+			attributeName = getLhs();
+		}
+		else
+		{
+			attributeName = getLhs().substring(index + 1);
+		}
+
+		attributeAlias = Utility.getAliasFor(attributeName, expression);
+
+	}
 
 }
+

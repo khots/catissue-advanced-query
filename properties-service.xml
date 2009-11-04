@@ -69,8 +69,10 @@
 		app.propertiesFile=@@app-properties-file@@
 		vocab.properties.file=@@vocab-properties-file@@
 		configured.vocabs.file=@@configured-vocabs-file@@
+		LG_CONFIG_FILE=@@lexbig-config-file@@
     </attribute>
 
   </mbean>
 
 </server>
+

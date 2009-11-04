@@ -17,8 +17,8 @@ import org.jnp.server.NamingBeanImpl;
 
 import com.ibm.db2.jcc.DB2DataSource;
 
+import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.util.global.Constants;
 
 /**
@@ -67,11 +67,17 @@ public class Utility
 	{
 		try
 		{
-			Logger.configure();
+			ErrorKey.init("~");
+			//Logger.configure();
+			// org.apache.log4j.Logger logger = LoggerConfig.getConfiguredLogger(Utility.class);
 			// Create a Properties object and set properties appropriately
 			System.setProperty("java.naming.factory.initial", NamingContextFactory.class.getName());
 			System.setProperty("java.naming.factory.url.pkgs",
 					"org.jboss.naming:org.jnp.interfaces");
+			System.setProperty("gov.nih.nci.security.configFile",
+			"WEB-INF/test/conf/ApplicationSecurityConfig.xml");
+			System.setProperty("gov.nih.nci.sdk.remote.catissuecore.securityLevel", "0");
+			System.setProperty("gov.nih.nci.sdk.applications.session.timeout", "3000");
 			// start JNDI server
 			NamingBeanImpl server = new NamingBeanImpl();
 			server.start();
@@ -80,13 +86,15 @@ public class Utility
 
 			// create data source and bind to JNDI
 			DataSource ciderDS = getDataSource();
+			
 			// DataSource queryDS = getDataSource();
 			initialContext.createSubcontext(Constants.JNDI_NAME_CIDER);
 			// initialContext.createSubcontext(Constants.JNDI_NAME_QUERY);
 			// initialContext.createSubcontext("java:/TransactionManager");
 
 			initialContext.rebind(Constants.JNDI_NAME_CIDER, ciderDS);
-			// initialContext.rebind(Constants.JNDI_NAME_QUERY, queryDS);
+			
+		// initialContext.rebind(Constants.JNDI_NAME_QUERY, queryDS);
 		}
 		catch (Exception ex)
 		{
@@ -127,3 +135,4 @@ public class Utility
 	}
 
 }
+

@@ -369,5 +369,17 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
     -->
-
+    <!-- filter to check login status -->
+	<filter>
+		<filter-name>loginFilter</filter-name>
+		<filter-class> 
+	    	edu.wustl.query.util.filter.QueryRequestFilter  
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>loginFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping> -->
+	
 </web-app>
+

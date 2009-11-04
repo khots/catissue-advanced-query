@@ -1,228 +1,253 @@
+
 package edu.wustl.common.query.pvmanager.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.wustl.common.dao.DAOFactory;
-import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
+import edu.wustl.common.vocab.utility.Logger;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.util.global.Constants;
+import edu.wustl.query.util.querysuite.DAOUtil;
 
-public class MedLookUpManager
+/**
+ *
+ * @author amit_doshi
+ *
+ */
+public final class MedLookUpManager
 {
-	Map<String,List<String> > pvMap = null;
-	private static MedLookUpManager medLookUpManager = null;
-	//private String lookUpTable=null;
-	
-	private MedLookUpManager()
-	{
-		
-	}
-	
+
+	private static final Logger log = Logger.getLogger(MedLookUpManager.class);
+	//private Map<String, List<String>> pvMap = null;
+	private static MedLookUpManager mLookUpMgrObj = null;
+	private static Map<String, String> conceptCodeVsConceptName = new HashMap<String, String>();
+	private static final String ErrMsg = "Error occured while fetching the permissible concept codes from MED.";
+
+	/**
+	 * This method is used to get the instance of MedLookUpManager
+	 * @return returns MedLookUpManager
+	 */
 	public static MedLookUpManager instance()
 	{
-		if(medLookUpManager == null)
+
+		if (mLookUpMgrObj == null)
 		{
-			medLookUpManager = new MedLookUpManager();
-			//medLookUpManager.lookUpTable = Variables.properties.getProperty("med.lookup.table");
-			//medLookUpManager.init();
-		}
-		
-		return medLookUpManager;
-		
-	}
-	
-	/*private void init()
-	{
-		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		try
-		{
-			dao.openSession(null);
-			List<List<String>> dataList = dao.executeQuery("select synonym,id from MED_LOOKUP_TABLE", null, false, false, null);
-			if(!dataList.isEmpty())
+			synchronized (MedLookUpManager.class)
 			{
-				pvMap = new HashMap<String, List<String>>();
-				String pvFilter;
-				for(int i=0; i < dataList.size(); i++)
-				{
-					pvFilter = dataList.get(i).get(0).substring(0,dataList.get(i).get(0).indexOf("^") + 1) + "%";
-					if(pvMap.containsKey(pvFilter))
-					{
-						pvMap.get(pvFilter).add(dataList.get(i).get(1));
-					}
-					else
-					{
-						List<String> pvList = new ArrayList<String>();
-						pvList.add(dataList.get(i).get(1));
-						pvMap.put(pvFilter,pvList);
-					}
-				}
+				mLookUpMgrObj = new MedLookUpManager();
+				//medLookUpManager.init();
 			}
 		}
-		catch (DAOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (ClassNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}*/
-	
-	/*public List<String> getPermissibleValues(String pvFilter)
-	{
-		if(pvMap != null)
-			return pvMap.get(pvFilter);
-		else
-			return null;
-	}*/
-	//change signature to accept pv_filter and pv_view.
-	//if pv_filter = null then dont go in for like condition.
-	public List<String> getPermissibleValues(List<String> pvFilter,String pvView) throws PVManagerException 
+		return mLookUpMgrObj;
+	}
+
+	/**
+	 * This method is used to get the distinct concept codes form the database.
+	  * @param pvLookupQuery PV lookup query
+	 * @return List of concept codes
+	 * @throws PVManagerException  throws PVManagerException
+	 */
+	public List<String> getPermissibleValues(String pvLookupQuery) throws PVManagerException
 	{
 		List<String> pvList = null;
-		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		String query = "";
+		JDBCDAO jdbcDAO = null;
 		try
 		{
-			dao.openSession(null);
-			//if a pvFilter value is give i.e a synonym is given 
-			if(pvFilter != null  &&(! pvFilter.equals("") ) ) {
-				query = getQueryWithSynonym(pvFilter,pvView);
-			}
-			else
-			{
-				query = getQueryDirectFromView(pvView);
-			}
-			List<List<String>> dataList = dao.executeQuery(query, null, false, false, null);
-			if(!dataList.isEmpty())
-			{
-				pvList = new ArrayList<String>();
-			
-				for(int i=0; i < dataList.size(); i++)
-				{
-					pvList.add(dataList.get(i).get(1));
-				}
-			}
+			jdbcDAO = DAOUtil.getJDBCDAO(null);
+			//execute query for PVLookupQuery
+			List<List<String>> dataList = jdbcDAO.executeQuery(pvLookupQuery);
+			pvList = getPermissibleValuesWithConcpetCode(dataList);
+
 		}
 		catch (DAOException e)
 		{
-			
-			throw new PVManagerException("Error occured while fetching the permissible concept codes from MED.",e);
-			
+			throw new PVManagerException(ErrMsg, e);
 		}
-		catch (ClassNotFoundException e)
-		{
-			throw new PVManagerException("Error occured while fetching the permissible concept codes from MED.",e);			
-		}	
 		finally
 		{
-			try
-			{
-				dao.closeSession();
-			}
-			catch (DAOException e)
-			{
-				throw new PVManagerException("Error occured while fetching the permissible concept codes from MED.",e);
-			}
+			handleFinally(jdbcDAO);
 		}
-		
 		return pvList;
-
 	}
-	public int getPermissibleValuesCount(List<String> pvFilterList,String pvView) throws PVManagerException 
+
+	/**
+	 * @param jdbcDAO instance of jdbcDAO
+	 */
+	private void handleFinally(JDBCDAO jdbcDAO)
 	{
-		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		StringBuffer countQuery=new StringBuffer();
-		int count=0;
 		try
 		{
-			dao.openSession(null);
-			//if a pvFilter value is give i.e a synonym is given 
-			if(pvFilterList != null  &&(! pvFilterList.isEmpty()) ) {
-				//countQuery="select count(*) from "+pvView+" where ";
-				countQuery.append("select count(*) from "+pvView+" where ");
-				//+pvFilter+"'";
-				int indx=0;
-				for(; indx<pvFilterList.size()-1;indx++)
-				{
-					countQuery.append("synonym like '");
-					countQuery.append(pvFilterList.get(indx));
-					countQuery.append("' or ");
-				}
-				countQuery.append("synonym like '");
-				countQuery.append(pvFilterList.get(indx));
-				countQuery.append("'");
-				
-				
-			}
-			else
+			if (jdbcDAO != null)
 			{
-				countQuery.append("select count(*) from "+pvView);
-			}
-			List<List<String>> dataListCount = dao.executeQuery(countQuery.toString(), null, false, false, null);
-			if(!dataListCount.isEmpty())
-			{
-				count=Integer.parseInt(dataListCount.get(0).get(0));
+				DAOUtil.closeJDBCDAO(jdbcDAO);
 			}
 		}
 		catch (DAOException e)
 		{
-			
-			throw new PVManagerException("Error occured while fetching the permissible concept codes from MED.",e);
-			
+			log.error(ErrMsg, e);
 		}
-		catch (ClassNotFoundException e)
+	}
+
+	/**
+	 * This method is used to get the Permissible Values with Concept Codes.
+	 * @param dataList list of data fetched form DB
+	 * @return returns List of Concept Codes of Permissible Values
+	 */
+	private List<String> getPermissibleValuesWithConcpetCode(List<List<String>> dataList)
+	{
+		List<String> pvList = null;
+		if (!dataList.isEmpty())
 		{
-			throw new PVManagerException("Error occured while fetching the permissible concept codes from MED.",e);			
-		}	
+			pvList = new ArrayList<String>();
+
+			for (int i = 0; i < dataList.size(); i++)
+			{
+				pvList.add(dataList.get(i).get(0));
+			}
+		}
+		return pvList;
+	}
+
+	/**
+	 * This method is used to get the volumes of concept in DB.
+	 * @return map of concept Code V/s VolumeInDb for the concept
+	 * @throws PVManagerException throws PVManagerException
+	 */
+	public Map<String, String> getVolumeInDb() throws PVManagerException
+	{
+		Map<String, String> conceptCodeVsVolumeInDb = null;
+		JDBCDAO jdbcDAO = null;
+		String query = "select * from concept_data_count";
+		try
+		{
+			jdbcDAO = DAOUtil.getJDBCDAO(null);
+			List<List<Object>> dataList = jdbcDAO.executeQuery(query);
+			if (!dataList.isEmpty())
+			{
+				conceptCodeVsVolumeInDb = new HashMap<String, String>();
+				for (int i = 0; i < dataList.size(); i++)
+				{
+					conceptCodeVsVolumeInDb.put((String) (dataList.get(i).get(0)),
+							(String) (dataList.get(i).get(Constants.ONE)));
+				}
+			}
+		}
+		catch (DAOException e)
+		{
+			throw new PVManagerException(ErrMsg, e);
+		}
 		finally
 		{
-			try
-			{
-				dao.closeSession();
-			}
-			catch (DAOException e)
-			{
-				throw new PVManagerException("Error occured while fetching the permissible concept codes from MED.",e);
-			}
+			handleFinally(jdbcDAO);
 		}
-		
-		return count;
+		return conceptCodeVsVolumeInDb;
+	}
 
-	}
-	
-	//accept the name of the view as well
-	//rename method.
-	private String getQueryWithSynonym(List<String> pvFilterList,String pvView)
+	/**
+	 * This method is used get the Permissible Value count for the Entity which has given PV filter and View.
+	 * @param pvLookupQuery PV lookup query
+	 * @return  - total number of permissible values for the Entity
+	 * @throws PVManagerException throws PVManagerException
+	 */
+	public int getPermissibleValuesCount(String pvLookupQuery) throws PVManagerException
 	{
-		
-		StringBuffer query = new StringBuffer("select synonym,id from ");
-		query.append(pvView);
-		query.append(Constants.WHERE);
-		int indx=0;
-		for(; indx<pvFilterList.size()-1;indx++)
+		JDBCDAO jdbcDAO = null; //(JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+		String countQuery = null;
+		int count = 0;
+		try
 		{
-			query.append("synonym like '");
-			query.append(pvFilterList.get(indx));
-			query.append("' or ");
+			jdbcDAO = DAOUtil.getJDBCDAO(null);
+			//if PV filter is not given then directly fire queries on VIEW
+			/*countQuery = "select count(distinct id) from " + pvView;
+			if (pvFilter != null && (!pvFilter.equals("")))
+			{
+				//if a pvFilter value is give i.e a synonym is given
+				countQuery = "select count(distinct id) from " + pvView + Constants.WHERE
+						+ pvFilter;
+			}*/
+			countQuery = pvLookupQuery.replace("select", "select count(");
+			countQuery = countQuery.replace("from", ") from");
+			List<List<String>> dataListCount = jdbcDAO.executeQuery(countQuery);
+			if (!dataListCount.isEmpty())
+			{
+				count = Integer.parseInt(dataListCount.get(0).get(0));
+			}
 		}
-		query.append("synonym like '");
-		query.append(pvFilterList.get(indx));
-		query.append("'");
-		
-		return query.toString();
+		catch (DAOException e)
+		{
+			throw new PVManagerException(ErrMsg, e);
+		}
+		finally
+		{
+			handleFinally(jdbcDAO);
+		}
+		return count;
 	}
-	
-	//get pv from view directly without like synonymn condition.
-	private String getQueryDirectFromView(String pvView)
+
+	/**
+	 * Method to get Med concept name based on concept Id.
+	 * @param attribute - IOutputAttribute
+	 * @param conceptId conceptId of the attribute
+	 * @return concept name  of the concept
+	 */
+	public String getConceptName(IOutputAttribute attribute, String conceptId)
 	{
-		StringBuffer query = new StringBuffer("select name,id from ");
-		query.append(pvView);
-		return query.toString();
+		String conceptName = "";
+		if (conceptId != null)
+		{
+			conceptName = conceptCodeVsConceptName.get(conceptId);
+			if (conceptName == null)
+			{
+				//String pvView = "";
+				/*QueryableObjectInterface entity = attribute.getExpression().getQueryEntity()
+						.getDynamicExtensionsEntity();*/
+				//pvView = entity.getTaggedValue(Constants.PERMISSIBLEVALUEVIEW);
+				JDBCDAO jdbcDAO = null;
+				String query = "";
+				try
+				{
+					jdbcDAO = DAOUtil.getJDBCDAO(null);
+					query = "select " + Constants.PRINT_NAME + " from concept " + Constants.WHERE
+							+ Constants.CONCEPT_ID + " = " + conceptId;
+					List<List<String>> dataList = jdbcDAO.executeQuery(query);
+
+					if (!dataList.isEmpty())
+					{
+						conceptName = dataList.get(0).get(0);
+					}
+				}
+				catch (DAOException e)
+				{
+					log.error(e.getMessage(), e);
+				}
+				finally
+				{
+					handleFinallyforGetConceptName(jdbcDAO);
+				}
+			}
+			conceptCodeVsConceptName.put(conceptId, conceptName);
+		}
+		return conceptName;
+	}
+
+	/**
+	 * This method will handle the finally for GetConcpetName method.
+	 * @param jdbcDAO -instance of JDBCDAO
+	 */
+	private void handleFinallyforGetConceptName(JDBCDAO jdbcDAO)
+	{
+		try
+		{
+			DAOUtil.closeJDBCDAO(jdbcDAO);
+		}
+		catch (DAOException e)
+		{
+			log.error(e.getMessage(), e);
+		}
 	}
 }
+

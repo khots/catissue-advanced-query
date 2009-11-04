@@ -1,0 +1,34 @@
+Form_Definition
+
+CIDER PERSON TEST CATEGORY
+
+cider
+
+Person~Person,LaboratoryProcedure~Person:LaboratoryProcedure,LaboratoryProcedureDetails~Person:LaboratoryProcedure:LaboratoryProcedureDetails,LaboratoryResult~Person:LaboratoryProcedure:LaboratoryProcedureDetails:LaboratoryResult,LaboratoryTestType~Person:LaboratoryProcedure:LaboratoryProcedureDetails:LaboratoryResult:LaboratoryTestType
+
+Display_Label:Laboratory Result,show=true
+instance:Person[1]->LaboratoryProcedure[1]->LaboratoryProcedureDetails[1]->LaboratoryResult[1]
+LaboratoryResult:resultComments,textField,Result Comments
+LaboratoryResult:resultTimeStamp,datePicker,Result Time Stamp
+LaboratoryResult:testSynonym,textField,Test Synonym
+
+Display_Label:Laboratory Procedure Data,show=true
+instance:Person[1]->LaboratoryProcedure[1]->LaboratoryProcedureDetails[1]
+LaboratoryProcedureDetails:ageAtProcedure,textField,Age at procedure
+LaboratoryProcedureDetails:collectionTimeStamp,datePicker,Collection Time Stamp
+LaboratoryProcedureDetails:effectiveEndTimeStamp,datePicker,Effective End Time Stamp
+LaboratoryProcedureDetails:effectiveStartTimeStamp,datePicker,Effective Start Time Stamp
+subcategory:Laboratory Result:multiline
+
+Display_Label:Laboratory Data,show=true
+instance:Person[1]->LaboratoryProcedure[1]
+LaboratoryProcedure:accessionNumber,textField,Accession Number
+LaboratoryProcedure:patientAccountNumber,textField,Patient Account Number
+LaboratoryProcedure:procedureSynonym,textField,Procedure Synonym
+subcategory:Laboratory Procedure Data:multiline
+
+
+Display_Label:Person,show=true
+instance:Person[1]
+Person:personUpi,textField,Person upi
+subcategory:Laboratory Data:multiline

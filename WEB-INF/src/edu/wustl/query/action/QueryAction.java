@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -14,11 +13,11 @@ import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.util.global.Constants;
 
-public class QueryAction extends Action
+public class QueryAction extends AbstractQueryBaseAction
 {
 
 	@Override
-	public ActionForward execute(ActionMapping mapping, ActionForm actionForm,
+	protected ActionForward executeBaseAction(ActionMapping mapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response)
 	{
 		HttpSession session = request.getSession();
@@ -26,7 +25,7 @@ public class QueryAction extends Action
 		session.removeAttribute(Constants.QUERY_OBJECT);
 		session.removeAttribute(Constants.SELECTED_COLUMN_META_DATA);
 		session.removeAttribute(Constants.IS_SAVED_QUERY);
-		session.removeAttribute(edu.wustl.common.util.global.Constants.IS_SIMPLE_SEARCH);
+		session.removeAttribute(Constants.IS_SIMPLE_SEARCH);
 		session.removeAttribute(DAGConstant.ISREPAINT);
 		session.removeAttribute(DAGConstant.TQUIMap);
 		session.removeAttribute(Constants.EXPORT_DATA_LIST);
@@ -34,7 +33,7 @@ public class QueryAction extends Action
 
 		//Added a Default session data bean......Need to be removed when there query will have login
 		SessionDataBean sessionBean = (SessionDataBean) session
-				.getAttribute(Constants.SESSION_DATA);
+				.getAttribute(edu.wustl.common.util.global.Constants.SESSION_DATA);
 		if (sessionBean == null)
 		{
 			final Long userId = Long.valueOf(1);
@@ -47,7 +46,7 @@ public class QueryAction extends Action
 			sessionData.setLastName("admin@admin.com");
 			sessionData.setAdmin(true);
 			sessionData.setSecurityRequired(false);
-			session.setAttribute(Constants.SESSION_DATA, sessionData);
+			session.setAttribute(edu.wustl.common.util.global.Constants.SESSION_DATA, sessionData);
 		}
 
 		return mapping.findForward(edu.wustl.query.util.global.Constants.SUCCESS);

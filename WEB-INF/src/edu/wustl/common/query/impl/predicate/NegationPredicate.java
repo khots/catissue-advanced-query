@@ -1,9 +1,8 @@
 /**
  * 
  */
+
 package edu.wustl.common.query.impl.predicate;
-
-
 
 /**
  * @author juberahamad_patel
@@ -15,7 +14,7 @@ public class NegationPredicate extends AbstractPredicate
 {
 
 	private AbstractPredicate predicate;
-	
+
 	/**
 	 * @param attribute
 	 * @param operator
@@ -25,7 +24,7 @@ public class NegationPredicate extends AbstractPredicate
 	{
 		super(null, null, null);
 		this.predicate = predicate;
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -36,26 +35,34 @@ public class NegationPredicate extends AbstractPredicate
 	{
 		StringBuilder predicate = new StringBuilder();
 		predicate.append("not(").append(this.predicate.assemble(prefix)).append(')');
-		
+
 		return predicate.toString();
-		
+
 	}
-	
+
 	/**
 	 * @return the rhs of the negated predicate
 	 */
+	@Override
 	public String getRhs()
 	{
 		return predicate.getRhs();
 	}
 
-	
 	/**
 	 * @param rhs the rhs to set in the negated predicate
 	 */
+	@Override
 	public void setRhs(String rhs)
 	{
 		predicate.setRhs(rhs);
 	}
 
+	@Override
+	public String getLhs()
+	{
+		return predicate.getLhs();
+	}
+
 }
+

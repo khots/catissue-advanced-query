@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 
@@ -14,7 +15,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
  * @author baljeet_dhindhwal
  *
  */
-public abstract class IQueryTreeGenerationUtil
+public class IQueryTreeGenerationUtil
 {
 	
 	/**
@@ -53,18 +54,21 @@ public abstract class IQueryTreeGenerationUtil
 	 */
 	private static void populateEntityIdMap(Map <Integer,List<Integer>> mainEntityContainmentIdsMap,Map<Integer, List<OutputTreeDataNode>> mainEntitiesContainmentMap)
 	{
-		Set<Integer> keySet = mainEntitiesContainmentMap.keySet();
-		Iterator<Integer> keySetItr = keySet.iterator();
-		while(keySetItr.hasNext())
+		//Set<Integer> keySet = mainEntitiesContainmentMap.keySet();
+		//Iterator<Integer> keySetItr = keySet.iterator();
+		Iterator<Map.Entry<Integer, List<OutputTreeDataNode> >> entrySetItr = 
+			mainEntitiesContainmentMap.entrySet().iterator();
+		while(entrySetItr.hasNext())
 		{
-			Integer mainEntityExpId = keySetItr.next();
+			//Integer mainEntityExpId = keySetItr.next();
+			Map.Entry<Integer, List<OutputTreeDataNode>> entry = entrySetItr.next();
 			List<Integer> expressionIdsList = new ArrayList<Integer>();
-			List<OutputTreeDataNode> containmentTreeDataNodes = mainEntitiesContainmentMap.get(mainEntityExpId);
+			List<OutputTreeDataNode> containmentTreeDataNodes = entry.getValue();
 			for (OutputTreeDataNode outputTreeDataNode : containmentTreeDataNodes)
 			{
 				expressionIdsList.add(Integer.valueOf(outputTreeDataNode.getExpressionId()));
 			}
-			mainEntityContainmentIdsMap.put(mainEntityExpId,expressionIdsList);
+			mainEntityContainmentIdsMap.put(entry.getKey(),expressionIdsList);
 		}
 	}
 

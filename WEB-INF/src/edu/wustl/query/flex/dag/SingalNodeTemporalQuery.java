@@ -3,10 +3,11 @@ package edu.wustl.query.flex.dag;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
+import edu.wustl.common.querysuite.querableobjectInterface.QueryableAttributeInterface;
 import edu.wustl.common.querysuite.queryobject.ArithmeticOperator;
 import edu.wustl.common.querysuite.queryobject.IConnector;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
@@ -20,6 +21,7 @@ import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.query.util.global.Constants;
 
 public class SingalNodeTemporalQuery
@@ -27,14 +29,19 @@ public class SingalNodeTemporalQuery
 
 	private IDateOffsetAttribute dateOffsetAttr = null;
 	private IExpressionAttribute attributeIExpression = null;
-	private AttributeInterface attributeById = null;
+	private QueryableAttributeInterface attributeById = null;
 	private IDateOffsetLiteral lhsDateOffSetLiteral = null;
-	private IDateOffsetLiteral rhsDateOffSetLiteral = null;
+	private IDateOffsetLiteral rhsDateOffSetLiteral1 = null;
+	private IDateOffsetLiteral rhsDateOffSetLiteral2 = null;
+	
 	private ILiteral lhsDateLiteral = null;
-	private ILiteral rhsDateLiteral = null;
+	private ILiteral rhsDateLiteral1 = null;
+	private ILiteral rhsDateLiteral2 = null;
 
 	private ITerm lhsTerm = null;
-	private ITerm rhsTerm = null;
+	//private ITerm rhsTerm = null;
+	private ArrayList <ITerm> rhsTermsList = null;
+
 	private IConnector iCon = null;
 	private ICustomFormula customFormula = null;
 	private IExpression entityIExpression = null;
@@ -44,17 +51,48 @@ public class SingalNodeTemporalQuery
 	private RelationalOperator relOp = null;
 
 	private String attributeType = null;
-	private TimeInterval rhsTimeInterval = null;
+	private TimeInterval rhsTimeInterval1 = null;
 	private TimeInterval lhsTimeInterval = null;
 
+
+	private TimeInterval rhsTimeInterval2 = null;
+	
 	private TimeInterval qAttrInterval = null;
 	private SimpleDateFormat formatter;
+	
+	private static org.apache.log4j.Logger logger = LoggerConfig.getConfiguredLogger(SingalNodeTemporalQuery.class);
 
+	/**
+	 * 
+	 * @return
+	 */
+	public ArrayList<ITerm> getRhsTermsList() 
+	{
+		return rhsTermsList;
+	}
+
+	/**
+	 * 
+	 * @param rhsTermsList
+	 */
+	public void setRhsTermsList(ArrayList<ITerm> rhsTermsList) 
+	{
+		this.rhsTermsList = rhsTermsList;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public TimeInterval getQAttrInterval()
 	{
 		return qAttrInterval;
 	}
 
+	/**
+	 * 
+	 * @param attrInterval
+	 */
 	public void setQAttrInterval(TimeInterval attrInterval)
 	{
 		qAttrInterval = attrInterval;
@@ -143,17 +181,35 @@ public class SingalNodeTemporalQuery
 	/**
 	 * @return Returns the rhsDateLiteral.
 	 */
-	public ILiteral getRhsDateLiteral()
+	public ILiteral getRhsDateLiteral1()
 	{
-		return rhsDateLiteral;
+		return rhsDateLiteral1;
 	}
 
 	/**
 	 * @param rhsDateLiteral The rhsDateLiteral to set.
 	 */
-	public void setRhsDateLiteral(ILiteral rhsDateLiteral)
+	public void setRhsDateLiteral1(ILiteral rhsDateLiteral1)
 	{
-		this.rhsDateLiteral = rhsDateLiteral;
+		this.rhsDateLiteral1 = rhsDateLiteral1;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public ILiteral getRhsDateLiteral2() 
+	{
+		return rhsDateLiteral2;
+	}
+
+	/**
+	 * 
+	 * @param rhsDateLiteral2
+	 */
+	public void setRhsDateLiteral2(ILiteral rhsDateLiteral2) 
+	{
+		this.rhsDateLiteral2 = rhsDateLiteral2;
 	}
 
 	/**
@@ -191,17 +247,33 @@ public class SingalNodeTemporalQuery
 	/**
 	 * @return Returns the rhsDateOffSetLiteral.
 	 */
-	public IDateOffsetLiteral getRhsDateOffSetLiteral()
+	public IDateOffsetLiteral getRhsDateOffSetLiteral1()
 	{
-		return rhsDateOffSetLiteral;
+		return rhsDateOffSetLiteral1;
 	}
 
 	/**
 	 * @param rhsDateOffSetLiteral The rhsDateOffSetLiteral to set.
 	 */
-	public void setRhsDateOffSetLiteral(IDateOffsetLiteral rhsDateOffSetLiteral)
+	public void setRhsDateOffSetLiteral1(IDateOffsetLiteral rhsDateOffSetLiteral1)
 	{
-		this.rhsDateOffSetLiteral = rhsDateOffSetLiteral;
+		this.rhsDateOffSetLiteral1 = rhsDateOffSetLiteral1;
+	}
+	
+	/**
+	 * @return Returns the rhsDateOffSetLiteral.
+	 */
+	public IDateOffsetLiteral getRhsDateOffSetLiteral2()
+	{
+		return rhsDateOffSetLiteral2;
+	}
+
+	/**
+	 * @param rhsDateOffSetLiteral The rhsDateOffSetLiteral to set.
+	 */
+	public void setRhsDateOffSetLiteral2(IDateOffsetLiteral rhsDateOffSetLiteral2)
+	{
+		this.rhsDateOffSetLiteral2 = rhsDateOffSetLiteral2;
 	}
 
 	/**
@@ -287,34 +359,57 @@ public class SingalNodeTemporalQuery
 	/**
 	 * @return Returns the rhsTerm.
 	 */
-	public ITerm getRhsTerm()
+/*	public ITerm getRhsTerm()
 	{
 		return rhsTerm;
 	}
-
+*/
 	/**
 	 * @param rhsTerm The rhsTerm to set.
 	 */
-	public void setRhsTerm(ITerm rhsTerm)
+/*	public void setRhsTerm(ITerm rhsTerm)
 	{
 		this.rhsTerm = rhsTerm;
 	}
-
+*/
 	/**
 	 * @return Returns the rhsTimeInterval.
 	 */
-	public TimeInterval getRhsTimeInterval()
+	public TimeInterval getRhsTimeInterval1()
 	{
-		return rhsTimeInterval;
+		return rhsTimeInterval1;
 	}
 
 	/**
 	 * @param rhsTimeInterval The rhsTimeInterval to set.
 	 */
-	public void setRhsTimeInterval(TimeInterval rhsTimeInterval)
+	public void setRhsTimeInterval1(TimeInterval rhsTimeInterval1)
 	{
-		this.rhsTimeInterval = rhsTimeInterval;
+		this.rhsTimeInterval1 = rhsTimeInterval1;
 	}
+	
+	
+	//here
+	/**
+	 * @return Returns the rhsTimeInterval.
+	 */
+	public TimeInterval getRhsTimeInterval2()
+	{
+		return rhsTimeInterval2;
+	}
+
+	/**
+	 * @param rhsTimeInterval The rhsTimeInterval to set.
+	 */
+	public void setRhsTimeInterval2(TimeInterval rhsTimeInterval2)
+	{
+		this.rhsTimeInterval2 = rhsTimeInterval2;
+	}
+
+	
+	
+	
+	//here
 
 	/**
 	 * @return Returns the entityExpressionId.
@@ -335,7 +430,7 @@ public class SingalNodeTemporalQuery
 	/**
 	 * @return Returns the attributeById.
 	 */
-	public AttributeInterface getAttributeById()
+	public QueryableAttributeInterface getAttributeById()
 	{
 		return attributeById;
 	}
@@ -343,7 +438,7 @@ public class SingalNodeTemporalQuery
 	/**
 	 * @param attributeById The attributeById to set.
 	 */
-	public void setAttributeById(AttributeInterface attributeById)
+	public void setAttributeById(QueryableAttributeInterface attributeById)
 	{
 		this.attributeById = attributeById;
 	}
@@ -370,7 +465,7 @@ public class SingalNodeTemporalQuery
 	public void createLHSAndRHS()
 	{
 		lhsTerm = QueryObjectFactory.createTerm();
-		rhsTerm = QueryObjectFactory.createTerm();
+		ITerm rhsTerm1 = QueryObjectFactory.createTerm();
 
 		//Updating lhsTerm
 		if (lhsDateLiteral != null)
@@ -386,18 +481,41 @@ public class SingalNodeTemporalQuery
 			addSecondLhsOperand();
 		}
 
+		addRhsTerms(rhsTerm1);
+	}
+
+	private void addRhsTerms(ITerm rhsTerm1) 
+	{
 		//Updating rhsTerm
-		if (rhsDateLiteral != null)
+		rhsTermsList = new ArrayList<ITerm>();
+		if (rhsDateLiteral1 != null)
 		{
 			//IF DatePicker on RHS
-			rhsTerm.addOperand(rhsDateLiteral);
+			rhsTerm1.addOperand(rhsDateLiteral1);
+			rhsTermsList.add(rhsTerm1);
+			
+			//this is the case of "Between" operator, where we have two Date Literals
+			if(rhsDateLiteral2 != null)
+			{
+				ITerm rhsTerm2 = QueryObjectFactory.createTerm();
+				rhsTerm2.addOperand(rhsDateLiteral2);
+				rhsTermsList.add(rhsTerm2);
+			}
 		}
 		else
 		{
 			//If No datePciker
-			rhsTerm.addOperand(rhsDateOffSetLiteral);
+			rhsTerm1.addOperand(rhsDateOffSetLiteral1);
+			rhsTermsList.add(rhsTerm1);
+			
+			//this is the case of "Between" operator, where we have two dateoffset Literals 
+			if(rhsDateOffSetLiteral2 != null)
+			{
+				ITerm rhsTerm2 = QueryObjectFactory.createTerm();
+				rhsTerm2.addOperand(rhsDateOffSetLiteral2);
+				rhsTermsList.add(rhsTerm2);
+			}
 		}
-
 	}
 
 	private void addSecondLhsOperand()
@@ -441,19 +559,85 @@ public class SingalNodeTemporalQuery
 				dateOffsetAttr = QueryObjectFactory.createDateOffsetAttribute(entityIExpression,
 						attributeById, TimeInterval.Day);
 			}
-
 		}
 	}
 
-	public void createRhsDateOffSetLiteral(String rhsTimeInterval)
+	/*public void createRhsDateOffSetLiteral(String rhsTimeInterval)
 	{
 		if ((!rhsTimeInterval.equals(DAGConstant.NULL_STRING)))
 		{
 			this.rhsTimeInterval = getTimeInterval(rhsTimeInterval);
 			rhsDateOffSetLiteral = QueryObjectFactory.createDateOffsetLiteral(this.rhsTimeInterval);
 		}
-	}
+	}*/
 
+	/**
+	 * This method creates both dateOffSetLiterals for "Between" operator   
+	 * @param timeIntervalValue1
+	 * @param timeValue1
+	 * @param timeIntervalValue2
+	 * @param timeValue2
+	 */
+
+	public void createBothLiterals(String timeIntervalValue1, String timeValue1,String timeIntervalValue2, String timeValue2)
+	{
+		if(attributeType.equals("Date"))
+		{
+			//In this case , we will have Both Date offset Literals
+			this.rhsTimeInterval1 = getTimeInterval(timeIntervalValue1);
+			rhsDateOffSetLiteral1 = QueryObjectFactory.createDateOffsetLiteral(timeValue1,
+					this.rhsTimeInterval1);
+			
+			this.rhsTimeInterval2 = getTimeInterval(timeIntervalValue2);
+			rhsDateOffSetLiteral2 = QueryObjectFactory.createDateOffsetLiteral(timeValue2,
+					this.rhsTimeInterval2);
+			
+			
+		}
+		else
+		{
+			//this is the case when attribute type is Integer, so we have Both date Pickers on RHS
+			//So we need to create both Date Literals
+			try
+			{
+				String datePattern = getDatePattern();
+				Date date = null;
+				formatter = new SimpleDateFormat(datePattern);
+				date = formatter.parse(timeValue1);
+				rhsDateLiteral1 = QueryObjectFactory.createDateLiteral(new java.sql.Date(date
+						.getTime()));
+			
+				 date = formatter.parse(timeValue2);
+				 rhsDateLiteral2 =  QueryObjectFactory.createDateLiteral(new java.sql.Date(date
+							.getTime()));
+			
+			
+			}
+			catch(ParseException  e)
+			{
+				logger.debug(e.getMessage(), e);
+			}
+		}
+		
+	}
+	
+	
+	private String getDatePattern()
+	{
+		   String pattern = "";
+		
+			//Date date = Utility.parseDate(rhsTimeValue, "MM/dd/yyyy HH:MM:SS");
+			if (attributeType.equals("DateTime"))
+			{
+				pattern = "MM/dd/yyyy HH:mm:ss";
+			}
+			else
+			{
+				pattern = "MM/dd/yyyy";
+			}
+           return  pattern;
+	}
+	
 	/**
 	 * 
 	 * @param rhsTimeValue
@@ -465,9 +649,9 @@ public class SingalNodeTemporalQuery
 				&& (!rhsTimeInterval.equals(DAGConstant.NULL_STRING)))
 		{
 			//It  means there exists TextInput and Time Intervals on LHS, so create dateOffSetLiteral
-			this.rhsTimeInterval = getTimeInterval(rhsTimeInterval);
-			rhsDateOffSetLiteral = QueryObjectFactory.createDateOffsetLiteral(rhsTimeValue,
-					this.rhsTimeInterval);
+			this.rhsTimeInterval1 = getTimeInterval(rhsTimeInterval);
+			rhsDateOffSetLiteral1 = QueryObjectFactory.createDateOffsetLiteral(rhsTimeValue,
+					this.rhsTimeInterval1);
 		}
 		else
 		{
@@ -497,7 +681,7 @@ public class SingalNodeTemporalQuery
 
 				formatter = new SimpleDateFormat(pattern);
 				date = formatter.parse(rhsTimeValue);
-				rhsDateLiteral = QueryObjectFactory.createDateLiteral(new java.sql.Date(date
+				rhsDateLiteral1 = QueryObjectFactory.createDateLiteral(new java.sql.Date(date
 						.getTime()));
 			}
 			catch (ParseException e)

@@ -3,9 +3,10 @@ package edu.wustl.query.util.querysuite;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpSession;
+
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
@@ -20,84 +21,73 @@ import edu.wustl.query.util.global.Constants;
 public class QueryDetails
 {
 
-	//private QueryDetails(){}	
 	private List<OutputTreeDataNode> rootOutputTreeNodeList;
 	private Map<String, OutputTreeDataNode> uniqueIdNodesMap;
-	private Map<EntityInterface, List<EntityInterface>> mainEntityMap;
 	private SessionDataBean sessionData;
-	private String randomNumber;
 	private Map<AttributeInterface, String> attributeColumnNameMap;
 	private Map<String, IOutputTerm> outputTermsColumns;
 	private IQuery query;
 	private List<QueryTreeNodeData> treeDataVector;
 	private OutputTreeDataNode currentSelectedObject;
-	private Map<Integer,String> parentNodesIdMap ;
-	
+	private Map<Integer, String> parentNodesIdMap;
 	private List<Integer> mainEntityList;
-	private Map <Integer,List<EntityInterface>> eachExpressionContainmentMap ;
-    private Map <Integer,List<Integer>> mainExpEntityExpressionIdMap;
+	private Map<Integer, List<Integer>> mainExpEntityExpressionIdMap;
+	private Long queryExecutionId = 0L;
 
 	/**
+	 * 
+	 */
+	private Map<OutputTreeDataNode, List<OutputTreeDataNode>> parentChildrenMap;
+
+	/**
+	 * returns the parentChildren Map
+	 * @return parentChildrenMap.
+	 */
+	public Map<OutputTreeDataNode, List<OutputTreeDataNode>> getParentChildrenMap()
+	{
+		return parentChildrenMap;
+	}
+
+	/**
+	 * sets the parentChildren Map
+	 * @param parentChildrenMap map
+	 */
+	public void setParentChildrenMap(
+			Map<OutputTreeDataNode, List<OutputTreeDataNode>> parentChildrenMap)
+	{
+		this.parentChildrenMap = parentChildrenMap;
+	}
+
+	/**
+	 * returns the mainExpEntity vs ExpressionId Map
 	 * @return the mainExpEntityExpressionIdMap
 	 */
-	public Map<Integer,List<Integer>> getMainExpEntityExpressionIdMap()
+	public Map<Integer, List<Integer>> getMainExpEntityExpressionIdMap()
 	{
 		return mainExpEntityExpressionIdMap;
 	}
-	
+
 	/**
+	 * Sets the mainExpEntity vs ExpressionId Map
 	 * @param mainExpEntityExpressionIdMap the mainExpEntityExpressionIdMap to set
 	 */
 	public void setMainExpEntityExpressionIdMap(
-			Map<Integer,List<Integer>> mainExpEntityExpressionIdMap)
+			Map<Integer, List<Integer>> mainExpEntityExpressionIdMap)
 	{
 		this.mainExpEntityExpressionIdMap = mainExpEntityExpressionIdMap;
 	}
 
-
-
-
-
-
 	/**
-	 * @return the eachExpressionContainmentMap
-	 */
-	public Map<Integer, List<EntityInterface>> getEachExpressionContainmentMap()
-	{
-		return eachExpressionContainmentMap;
-	}
-
-
-
-
-
-	
-	/**
-	 * @param eachExpressionContainmentMap the eachExpressionContainmentMap to set
-	 */
-	public void setEachExpressionContainmentMap(
-			Map<Integer, List<EntityInterface>> eachExpressionContainmentMap)
-	{
-		this.eachExpressionContainmentMap = eachExpressionContainmentMap;
-	}
-
-
-
-
-
-	/**
-	 * @return the parentNodesIdMap
+	 * returns the parentNodesIdMap.
+	 * @return the parentNodesIdMap. 
 	 */
 	public Map<Integer, String> getParentNodesIdMap()
 	{
 		return parentNodesIdMap;
 	}
 
-
-
-
-	
 	/**
+	 * sets the parentNodesIdMap
 	 * @param parentNodesIdMap the parentNodesIdMap to set
 	 */
 	public void setParentNodesIdMap(Map<Integer, String> parentNodesIdMap)
@@ -105,10 +95,8 @@ public class QueryDetails
 		this.parentNodesIdMap = parentNodesIdMap;
 	}
 
-
-
-
 	/**
+	 * returns the currentSelectedObject
 	 * @return the currentSelectedObject
 	 */
 	public OutputTreeDataNode getCurrentSelectedObject()
@@ -116,10 +104,8 @@ public class QueryDetails
 		return currentSelectedObject;
 	}
 
-
-
-	
 	/**
+	 * sets the currentSelectedObject
 	 * @param currentSelectedObject the currentSelectedObject to set
 	 */
 	public void setCurrentSelectedObject(OutputTreeDataNode currentSelectedObject)
@@ -127,9 +113,8 @@ public class QueryDetails
 		this.currentSelectedObject = currentSelectedObject;
 	}
 
-
-
 	/**
+	 * returns the treeDataVector.
 	 * @return the treeDataVector
 	 */
 	public List<QueryTreeNodeData> getTreeDataVector()
@@ -137,9 +122,8 @@ public class QueryDetails
 		return treeDataVector;
 	}
 
-
-	
 	/**
+	 * sets the treeDataVector
 	 * @param treeDataVector the treeDataVector to set
 	 */
 	public void setTreeDataVector(List<QueryTreeNodeData> treeDataVector)
@@ -147,8 +131,8 @@ public class QueryDetails
 		this.treeDataVector = treeDataVector;
 	}
 
-	
 	/**
+	 * returns the mainEntityList
 	 * @return the mainEntityList
 	 */
 	public List<Integer> getMainEntityList()
@@ -156,8 +140,8 @@ public class QueryDetails
 		return mainEntityList;
 	}
 
-	
 	/**
+	 * sets the mainEntityList.
 	 * @param mainEntityList the mainEntityList to set
 	 */
 	public void setMainEntityList(List<Integer> mainEntityList)
@@ -165,6 +149,18 @@ public class QueryDetails
 		this.mainEntityList = mainEntityList;
 	}
 
+	/**
+	 * default constructor
+	 */
+	public QueryDetails()
+	{
+		// to-do
+	}
+
+	/**
+	 * parameterized constructor.
+	 * @param session session to retrieve the required objects.
+	 */
 	public QueryDetails(HttpSession session)
 	{
 		//this.session = session;
@@ -172,20 +168,25 @@ public class QueryDetails
 				.getAttribute(Constants.SAVE_TREE_NODE_LIST);
 		uniqueIdNodesMap = (Map<String, OutputTreeDataNode>) session
 				.getAttribute(Constants.ID_NODES_MAP);
-		mainEntityMap = (Map<EntityInterface, List<EntityInterface>>) session
-				.getAttribute(Constants.MAIN_ENTITY_MAP);
-		sessionData = (SessionDataBean) session.getAttribute(Constants.SESSION_DATA);
-		this.randomNumber = QueryModuleUtil.generateRandomNumber(session);
+		//		mainEntityMap = (Map<QueryableObjectInterface, List<QueryableObjectInterface>>) session
+		//				.getAttribute(Constants.MAIN_ENTITY_MAP);
+		sessionData = (SessionDataBean) session
+				.getAttribute(edu.wustl.common.util.global.Constants.SESSION_DATA);
 		attributeColumnNameMap = (Map<AttributeInterface, String>) session
 				.getAttribute(Constants.ATTRIBUTE_COLUMN_NAME_MAP);
 		outputTermsColumns = (Map<String, IOutputTerm>) session
 				.getAttribute(Constants.OUTPUT_TERMS_COLUMNS);
 		query = (IQuery) session.getAttribute(Constants.QUERY_OBJECT);
+		if (session.getAttribute(Constants.EXECUTION_ID_OF_QUERY) != null)
+		{
+			queryExecutionId = (Long.valueOf(session.getAttribute(Constants.EXECUTION_ID_OF_QUERY)
+					.toString()));
+		}
 	}
 
 	/**
-	 * 
-	 * @return
+	 * returns the attributeColumnNameMap.
+	 * @return attributeColumnNameMap
 	 */
 	public Map<AttributeInterface, String> getAttributeColumnNameMap()
 	{
@@ -193,8 +194,8 @@ public class QueryDetails
 	}
 
 	/**
-	 * 
-	 * @param attributeColumnNameMap
+	 * sets the attributeColumnNameMap
+	 * @param attributeColumnNameMap to set to the attributeColumnNameMap.
 	 */
 	public void setAttributeColumnNameMap(Map<AttributeInterface, String> attributeColumnNameMap)
 	{
@@ -202,6 +203,7 @@ public class QueryDetails
 	}
 
 	/**
+	 * returns rootOutputTreeNodeList.
 	 * @return the rootOutputTreeNodeList
 	 */
 	public List<OutputTreeDataNode> getRootOutputTreeNodeList()
@@ -210,6 +212,7 @@ public class QueryDetails
 	}
 
 	/**
+	 * sets the rootOutputTreeNodeList.
 	 * @param rootOutputTreeNodeList the rootOutputTreeNodeList to set
 	 */
 	public void setRootOutputTreeNodeList(List<OutputTreeDataNode> rootOutputTreeNodeList)
@@ -218,38 +221,7 @@ public class QueryDetails
 	}
 
 	/**
-	 * @return the mainEntityMap
-	 */
-	public Map<EntityInterface, List<EntityInterface>> getMainEntityMap()
-	{
-		return mainEntityMap;
-	}
-
-	/**
-	 * @param mainEntityMap the mainEntityMap to set
-	 */
-	public void setMainEntityMap(Map<EntityInterface, List<EntityInterface>> mainEntityMap)
-	{
-		this.mainEntityMap = mainEntityMap;
-	}
-
-	/**
-	 * @return the randomNumber
-	 */
-	public String getRandomNumber()
-	{
-		return randomNumber;
-	}
-
-	/**
-	 * @param randomNumber the randomNumber to set
-	 */
-	public void setRandomNumber(String randomNumber)
-	{
-		this.randomNumber = randomNumber;
-	}
-
-	/**
+	 * returns sessionData.
 	 * @return the sessionData
 	 */
 	public SessionDataBean getSessionData()
@@ -258,6 +230,7 @@ public class QueryDetails
 	}
 
 	/**
+	 * Sets the sessionData.
 	 * @param sessionData the sessionData to set
 	 */
 	public void setSessionData(SessionDataBean sessionData)
@@ -266,6 +239,7 @@ public class QueryDetails
 	}
 
 	/**
+	 * returns uniqueIdNodesMap.
 	 * @return the uniqueIdNodesMap
 	 */
 	public Map<String, OutputTreeDataNode> getUniqueIdNodesMap()
@@ -274,6 +248,7 @@ public class QueryDetails
 	}
 
 	/**
+	 * sets the uniqueIdNodesMap.
 	 * @param uniqueIdNodesMap the uniqueIdNodesMap to set
 	 */
 	public void setUniqueIdNodesMap(Map<String, OutputTreeDataNode> uniqueIdNodesMap)
@@ -311,5 +286,21 @@ public class QueryDetails
 	public void setQuery(IQuery query)
 	{
 		this.query = query;
+	}
+
+	/**
+	 * @return the queryExecutionId
+	 */
+	public Long getQueryExecutionId()
+	{
+		return queryExecutionId;
+	}
+
+	/**
+	 * @param queryExecutionId the queryExecutionId to set
+	 */
+	public void setQueryExecutionId(Long queryExecutionId)
+	{
+		this.queryExecutionId = queryExecutionId;
 	}
 }
