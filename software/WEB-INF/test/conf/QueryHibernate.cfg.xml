@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	
+    <session-factory>
+     
+    	<property name="show_sql">false</property>
+    	<property name="dialect">org.hibernate.dialect.DB2Dialect</property>
+        <property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+		<!-- <property name="transaction.manager_lookup_class">org.hibernate.transaction.JBossTransactionManagerLookup</property> -->
+    	<property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
+		<property name="hibernate.jdbc.batch_size">0</property>
+		
+		<property name="hibernate.connection.driver_class">com.ibm.db2.jcc.DB2Driver</property>
+        <property name="hibernate.connection.username">@@username@@</property>
+		<property name="hibernate.connection.password">@@password@@</property>
+		<property name="hibernate.connection.url">jdbc:db2://@@host@@:@@port@@/@@databasename@@:currentSchema=@@databaseschema@@;</property>
+  <!--
+     	<property name="show_sql">false</property>
+    	<property name="dialect">org.hibernate.dialect.MySQLDialect</property>	
+    	<property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+        <property name="hibernate.cache.provider_class">net.sf.hibernate.cache.EhCacheProvider</property>
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+	    <property name="connection.url">jdbc:mysql://localhost:3306/suite</property>
+	    <property name="connection.username">virender</property>
+	    <property name="connection.password">virender</property>   
+	    <property name="hibernate.jdbc.batch_size">0</property>   
+  -->
+		<!--List of classes required for Query module-->
+		<mapping resource="edu/wustl/common/hbm/AbstractCategorialAttribute.hbm.xml"/>
+		<mapping resource="edu/wustl/common/hbm/AbstractCategorialClass.hbm.xml"/>
+		<mapping resource="edu/wustl/common/hbm/AbstractCategory.hbm.xml"/>
+		<mapping resource="edu/wustl/common/hbm/BaseExpression.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/Condition.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/Connector.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/Constraints.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/Expression.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/ExpressionOperand.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/IOperand.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/JoinGraph.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/ModelAssociation.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/OutputAttribute.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/AbstractQuery.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/QueryEntity.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/QueryHQL.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/Term.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/ArithmeticOperand.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/CustomFormula.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/OutputTerm.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/PersistentGraph.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/Parameter.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/Operation.hbm.xml" />
+		<mapping resource="edu/wustl/common/hbm/ResultView.hbm.xml" />
+		<mapping resource="edu/wustl/query/hbm/Workflow.hbm.xml" />
+		<mapping resource="edu/wustl/query/hbm/WorkflowItem.hbm.xml" />
+		<mapping resource="edu/wustl/query/hbm/Execution.hbm.xml" />
+		<mapping resource="edu/wustl/cider/hbm/User.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/IdentityProvider.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/Project.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/Facility.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/File.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/IrbProtocols.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/Request.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/ProjectRule.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/AuditEvent.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/AuditEventDetails.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/AuditEventLog.hbm.xml"/>
+   		<mapping resource="edu/wustl/cider/hbm/AbstractAuditEventLog.hbm.xml"/>
+    </session-factory>
+    
+</hibernate-configuration>

@@ -1,0 +1,919 @@
+<?xml version ="1.0"?>
+<!--Ant Script for create Build for Query -->
+<project name="Query Build" default="compile">
+	<import file="build-properties.xml"/>	
+	<!--define require dir and Properties for <if> </if> tag-->	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+	<classpath>
+	    <pathelement location="./WEB-INF/lib/ant-contrib.jar"/>
+	  </classpath>
+	</taskdef>
+
+	<!--define require dir and Properties -->
+	<property name="base.dir" value="." />
+	<property name="src.dir" value="${base.dir}/WEB-INF/src" />
+	
+	<property name="target.dir" value="${base.dir}/WEB-INF/classes" />
+	<property name="lib.dir" value="${base.dir}/WEB-INF/lib" />
+	<property name="hbm.dir" value="${src.dir}/edu/wustl/query/hbm" />
+	<property name="extra_lib.dir" value="${base.dir}/extra_lib" />
+	<property name="generateforce" value="true" />
+	<property name="junit.jar" value="${lib.dir}/junit-3.8.1.jar" />
+	<property name="cobertura.dir" value="${target.dir}/reports/coverage" />
+	<property name="report.dir" value="${base.dir}/WEB-INF" />
+	<property name="test.dir" value="${base.dir}/WEB-INF/test" />
+	<property name="test.lib" value="${base.dir}/WEB-INF/test/lib" />
+	<property name="test.class.dir" value="${base.dir}/WEB-INF/classes" />
+	<property name="junit.report.dir" value="${test.dir}/report" />
+	<property name="framework.report.dir" value="${base.dir}/report" />
+	<!-- csm related properties -->
+	<property name="temp.dir" value="${base.dir}/tempQuey"/>
+	<property name="project.src.domain" value="${base.dir}/WEB-INF/src/edu/wustl/query/domain/"/>
+	<property name="mysql.dialect.string" value="org.hibernate.dialect.MySQLDialect" />
+	<property name ="datasource" value ="java:/query"/>
+
+	<!-- Lexbig related properties -->
+	<property name="lexbig.config.path" value="pathOfJbossConfigFolder"/>
+	<property name="jboss.lexbig.config.path" value="${jboss.server.url}/data/LexBIGData/config/config.props" />
+	
+	<!--XQueryGenrator Logger properties-->
+	<property name="xquery.jboss.path" value="jbossHome" />
+	
+	<!-- flex related properties -->
+	<property name="FLEX_HOME" value="C:/Program Files/Adobe/Flex Builder 2/Flex SDK 2"/>
+    <property name="FLEX_APP_ROOT" value="flexclient"/>
+	<property name="flex.dir" value="${base.dir}/WEB-INF/flex" />
+	<!-- flex related properties finish -->
+	
+	<!-- Properties to RUN SearchPermissibleValueBizlogicTestCases -->
+	<property name="test.lexbig.folder" value="C:\LexBigTestData" />
+	<property name="LG_CONFIG_FILE" value="${test.lexbig.folder}/config/config.props"/>
+	<!-- END Properties to RUN SearchPermissibleValueBizlogicTestCases -->
+	
+	<property name="test.util.dir" value="${base.dir}/WEB-INF/test/edu/wustl/common/query/util/" />
+	<path id="app.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<path id="xdoclet.classpath">
+		<path refid="app.classpath" />
+		<pathelement location="${extra_lib.dir}/commons-net-1.2.2.jar" />
+		<pathelement location="${extra_lib.dir}/hibernate-tools.jar" />
+		<pathelement location="${extra_lib.dir}/servlet-api.jar" />
+		<pathelement location="${extra_lib.dir}/xdoclet-1.2.jar" />
+		<pathelement location="${extra_lib.dir}/xdoclet-hibernate-module-1.2.jar" />
+		<pathelement location="${extra_lib.dir}/xdoclet-xdoclet-module-1.2.jar" />
+		<pathelement location="${extra_lib.dir}/xerces.jar" />
+		<pathelement location="${extra_lib.dir}/xjavadoc-1.0.2.jar" />
+		<pathelement location="${extra_lib.dir}/xsdlib.jar" />
+	</path>
+
+	<path id="junit.classpath">
+		<pathelement location="${junit.jar}" />
+		<pathelement location="${target.dir}" />
+		<pathelement location="${base.dir}/cobertura/cobertura.jar" />
+		<pathelement location="${base.dir}/cobertura/lib/jakarta-oro-2.0.8.jar" />
+		<pathelement location="${base.dir}/cobertura/lib/asm-2.2.1.jar" />
+
+		<path refid="app.classpath" />
+	</path>
+
+	<!-- sub tasks -->
+	<target name="init" description="initialize">
+		<!-- Create the time stamp -->
+		<tstamp />
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${target.dir}" />
+		<!-- Create the temp directory for caCORE CSM war file-->
+		<mkdir dir="${temp.dir}"/>
+	</target>
+
+	<target name="clean" description="clean up">
+		<delete includeemptydirs="true">
+			<fileset dir="${target.dir}">
+				<include name="**/*" />
+				<exclude name="CVS" />
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- Compile all files, generated and hand-written -->
+	<target name="compile" depends="init">
+		<antcall target="clean" />
+		<javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false" debug="yes" target="1.5">
+			<src path="${src.dir}:${test.util.dir}" />
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="*.jar" />
+				</fileset>
+				<pathelement location="${ant.home}\lib\ant.jar"/>
+			</classpath>
+		</javac>
+		<copy todir="${target.dir}" overwrite="true">
+			<fileset dir="${src.dir}" >
+				<include name="**/*.properties" />
+				<include name="**/*.xml" />
+				<include name="**/*.hbm.xml" />
+				<include name="**/*.ser" />
+			</fileset>
+			<fileset dir="${base.dir}" >
+				<include name="log4j.properties" />
+			</fileset>
+			
+		</copy>
+		<!-- replaced the token for Lexbig config folder Path -->
+		<!--replace dir="${base.dir}/query-properties" propertyfile="${base.dir}/query-properties/vocab.properties">
+			<replacefilter token="${lexbig.config.path}" value="${jboss.lexbig.config.path}" />
+	   </replace-->
+		<!--replaced the token for XQuery logger path 
+		<replace dir="${base.dir}/WEB-INF/classes" propertyfile="${base.dir}/WEB-INF/classes/query.properties">
+	  		<replacefilter token="${xquery.jboss.path}" value="${jboss.server.url}" /> 
+	  	</replace>
+		-->
+	</target>
+
+	<!-- Creates the WAR (Web Application Archive) file of the application -->
+	<target name="build_war" depends="init, compile, create_war" />
+	
+	<target name="create_war">
+		<delete file="query.war" />
+		
+	     <delete file="${base.dir}/MANIFEST.MF"/>
+	     <manifest file="${base.dir}/MANIFEST.MF">	     	
+	        <attribute name="Built-By" value="${user.name}"/>
+	     	<attribute name="Version" value="${application.name} ${application.version}"/>
+	     	<attribute name="CSM-Version" value="${csm.version}"/>
+	     	<attribute name="caCore-Version" value="${cacore.version}"/>
+	     	<attribute name="Build-on" value="${TODAY}"/>
+	    </manifest>
+		<replace dir="${base.dir}/WEB-INF/classes" propertyfile="queryInstall.properties"> 
+			<include name ="log4j.properties"/>
+			<replacefilter token="@@jbosshome@@" value="${jboss.server.url}"/>
+		</replace>
+		
+		<!-- Copy these two config files from other directory which contains the tekenized files -->
+		<copy todir="${base.dir}/WEB-INF/classes" overwrite="true">
+			<fileset dir="${base.dir}/tokenizedFiles">
+				<include name="QueryHibernate.cfg.xml" />
+				<include name="DynamicExtensionsHibernate.cfg.xml" />
+			</fileset>
+		</copy>
+		
+		<!--Added By Baljeet for replacing the DataSource -->
+		<replace file="${base.dir}/WEB-INF/classes/QueryHibernate.cfg.xml">
+			<replacefilter token="${mysql.dialect.string}" value="${mysql.dialect.string}" />
+			<replacefilter token="@@dataSource@@" value="${datasource}"/>
+		</replace>
+		<replace file="${base.dir}/WEB-INF/classes/DynamicExtensionsHibernate.cfg.xml">
+			<replacefilter token="${mysql.dialect.string}" value="${mysql.dialect.string}" />
+			<replacefilter token="@@dataSource@@" value="${datasource}"/>
+		</replace>
+		
+		<!--antcall target="copydeletedjars" >
+			<param name="deleteFromDir" value="${base.dir}/WEB-INF/lib"  />
+		</antcall -->
+		
+
+		<war destfile="query.war" webxml="WEB-INF/web.xml" 
+			duplicate="preserve" manifest="${base.dir}/MANIFEST.MF" >
+			
+			<fileset dir="${base.dir}">
+				<include name="css/**" />
+				<include name="images/**" />
+				<include name="jss/**" />
+				<include name="dhtml_comp/**" />
+				<include name="pages/**" />
+				<include name="flexclient/**" />				
+				<include name="runtime/**" />
+				<include name="WEB-INF/**" />
+				<include name="ApplicationVersionInfo.txt" />
+		<!--		<include name="Query_User_Manual.pdf" />   -->
+				
+				<exclude name="**/WEB-INF/src*/**" />
+				<exclude name="**/WEB-INF/lib/*.zip" />
+				<!--exclude name="**/WEB-INF/lib/ant*.jar" / -->
+				<exclude name="**/WEB-INF/lib/junit*.jar" />
+				<!-- exclude name="**/WEB-INF/lib/dom4*.jar" / -->
+				<exclude name="**/*servlet.jar*" />
+				
+				<exclude name="**/*hibernate2.jar*" />
+				<exclude name="**/*jta.jar*" />
+				<exclude name="**/CVS*" />
+				<exclude name="**/WEB-INF/lib/jta.jar" />
+			</fileset>
+			
+			   <!-- change for csm related war -->
+					<!--<fileset dir="${temp.dir}/catissuecorecsm">
+						<include name="**/WEB-INF/**"  />
+						<include name="**/images/**" />
+						<include name="**/log/**" />
+						<include name="**/*" />
+							
+						<exclude name="**/WEB-INF/web.xml" />
+						<exclude name="**/WEB-INF/classes/edu/wustl/catissuecore/domain/**" />
+						<exclude name="**/WEB-INF/lib/csmapi.jar" />
+						<exclude name="**/WEB-INF/lib/dom4*.jar" />
+						<exclude name="**/WEB-INF/lib/jta.jar" />
+						<exclude name="**/WEB-INF/lib/cglib*.jar" />
+						<exclude name="**/META-INF/**" />
+						<exclude name="Happy.jsp" />
+						<exclude name="Criteria.jsp" />
+       				</fileset> -->
+			<!-- Chnages related to CSM war ends-->
+			
+		</war>
+
+	</target>	
+	
+	<target name="copydeletedjars">
+		<echo>deleting unneccesary jars from ${deleteFromDir}</echo>
+	<delete failonerror="false" >  
+		<fileset dir="${deleteFromDir}">
+			<include name="backport-util-concurrent-3.0.jar" /> 
+			<include name="c3p0-0.8.4.5.jar" />
+			<include name="c3p0-0.8.5.2.jar" /> 
+			<include name="castor-1.0.2.jar" /> 
+			<include name="cglib-2.1.jar" /> 
+			<include name="commons-collections-2.1.1.jar" />
+			<include name="commons-collections-3.1.jar" /> 
+			<include name="commons-discovery-0.2.jar" /> 
+			<include name="commons-fileupload.jar" /> 
+			<include name="commons-lang-2.1.jar" /> 
+			<include name="commons-logging-1.0.4.jar" /> 
+			<!--include name="dom4*.jar" / -->
+			<include name="ehcache-1.1.jar" />
+			<include name="ehcache-1.2.2.jar" /> 
+			<include name="freemarker.jar" /> 
+			<include name="jakarta-oro.jar" /> 
+			<include name="uml-1.3.jar" /> 
+			<include name="wsdl4j-1.5.1.jar" /> 
+			<include name="xalan-2.4.0.jar" /> 
+			<include name="p6spy.jar" /> 
+			<include name="sdkClient.jar" /> 
+			<include name="uuid-key-generator.jar" /> 
+			<include name="wsdl4j.jar" /> 
+			<include name="j2ee.jar" /> 
+			<include name="caGrid-1.0-caDSR-client.jar" /> 
+			<include name="caGrid-1.0-caDSR-common.jar" /> 
+			<include name="caGrid-1.0-caDSR-stubs.jar" /> 
+			<include name="caGrid-1.0-core.jar" /> 
+			<include name="caGrid-1.0-data-common.jar" /> 
+			<include name="caGrid-1.0-data-stubs.jar" /> 
+			<include name="caGrid-1.0-data-utils.jar" /> 
+			<include name="caGrid-1.0-fqp-client.jar" /> 
+			<include name="caGrid-1.0-fqp-common.jar" /> 
+			<include name="caGrid-1.0-fqp-stubs.jar" /> 
+			<include name="caGrid-1.0-metadata-common.jar" /> 
+			<include name="caGrid-1.0-metadata-security.jar" /> 
+			<include name="caGrid-1.0-sdkQuery.jar" /> 
+			<include name="caGrid-1.0-ServiceSecurityProvider-client.jar" /> 
+			<include name="caGrid-1.0-ServiceSecurityProvider-common.jar" /> 
+			<include name="jboss-common-jdbc-wrapper.jar"/>
+			<include name="mysql-connector-java-3.1.13-bin.jar"/>
+			<include name="ojdbc14.jar"/>
+			<include name="boot.jar" /> 
+			<include name="c3p0-0.9.0.jar" /> 
+			<include name="query-client.jar" /> 
+			<include name="experiment-client.jar" /> 
+			<include name="jboss-client.jar" /> 
+			<include name="junit-3.8.1.jar" /> 
+			<include name="mockobjects-core-0.09.jar" /> 
+			<!--include name="mysql-connector-java-5.0.8-bin.jar" / --> 
+			<include name="openide-util.jar" /> 
+			<include name="acrobat-core.jar" />
+		</fileset>		
+
+	</delete>
+</target>
+	
+	<!--Deploys the application war file at JBOSS server by coping it to deploy directory of application server-->
+	<target name="deploy">
+		<!--antcall target="clean" /-->
+		<antcall target="compile" />
+		<!-- need to replace the jboss path for XQuery -->
+		<replace dir="${base.dir}/WEB-INF/classes" propertyfile="${base.dir}/WEB-INF/classes/query.properties">
+	  		<replacefilter token="${xquery.jboss.path}" value="${jboss.server.url}" /> 
+	  	</replace>
+		<antcall target="create_war" />
+	
+		 <copy file="query.war" todir="${jboss.server.url}/deploy" />
+		 <!-- copy file="dynamicExtensions.war" todir="${jboss.server.url}/deploy" / -->
+	</target>				
+	
+
+
+	<!-- 
+		Generates the Hibernate mapping (HBM) files which are used in mapping 
+		the domain objects to database schema of the application. 
+		This generates the HBM files from the XDoclet tags written in the domain object classes. 
+	-->
+	<target name="generate_hbm" description="Generates Hibernate class descriptor files.">
+		<!-- Define the hibernatedoclet task -->
+		<taskdef name="hibernatedoclet" classname="xdoclet.modules.hibernate.HibernateDocletTask">
+			<classpath refid="xdoclet.classpath" />
+		</taskdef>
+
+		<!-- Execute the hibernatedoclet task -->
+		<hibernatedoclet destdir="${src.dir}" excludedtags="@version,@author,@todo"
+					     force="${generateforce}" mergedir="${src.dir}" verbose="false">
+			<fileset dir="${src.dir}">
+				<include name="**/domain/*.java" />
+				<include name="**/cde/*.java" />
+			</fileset>
+			<hibernate version="2.0" />
+		</hibernatedoclet>
+
+		<!-- Upgrade grammar from Hibernate1 to Hibernate2 -->
+		<replace dir="${src.dir}">
+			<include name="**/domain/*.hbm.xml" />
+			<include name="**/cde/*.hbm.xml" />
+			<replacefilter token="readonly=" value="inverse=" />
+			<replacefilter token="role=" value="name=" />
+			<replacefilter token="hibernate-mapping.dtd" value="hibernate-mapping-2.0.dtd" />
+		</replace>
+
+		<copy todir="${hbm.dir}">
+			<fileset dir="${src.dir}/edu/wustl/query/domain">
+				<include name="*.hbm.xml" />
+			</fileset>
+			<fileset dir="${src.dir}/edu/wustl/common/cde">
+				<include name="*.hbm.xml" />
+			</fileset>
+		</copy>
+
+		<delete>
+			<fileset dir="${src.dir}/edu/wustl/query/domain" includes="*.hbm.xml" />
+			<fileset dir="${src.dir}/edu/wustl/common/cde" includes="*.hbm.xml" />
+		</delete>
+	</target>
+	
+	<target name="createJavaDoc">
+		<javadoc destdir="${client.dir}/JavaDoc"
+   			author="true"
+   			version="true"
+   			use="true"
+   			windowtitle="JavaDoc">
+	  	 	<fileset dir="${project.src.domain}">
+	  	 		<include name="**/*.java" />
+	  	    </fileset>
+	    </javadoc>
+	</target>
+	
+	<target name="create_zip" depends="build_war,build_jar" >
+		<property name="zip.dir" value="${base.dir}/AdvanceQuery_Installable" />
+		<property name="zip.file" value="${base.dir}/AdvanceQuery_Installable.zip" />
+
+		<delete file="${zip.file}" />
+		<delete dir="${zip.dir}" />
+
+		<mkdir dir="${zip.dir}" />
+
+		<copy file="query.war" todir="${zip.dir}" overwrite="true" />
+		<copy file="dynamicExtensions.war" todir="${zip.dir}" overwrite="true" />
+		<copy file="query-ds.xml" todir="${zip.dir}" overwrite="true" />
+		<copy file="log4j.properties" todir="${zip.dir}" overwrite="true" />
+		<copy file="queryInstall.properties" todir="${zip.dir}" overwrite="true" />
+		<copy file="build-properties.xml" todir="${zip.dir}" overwrite="true" />
+		<copy file="MANIFEST.MF" todir="${zip.dir}" overwrite="true" />
+		<copy file="deploy.xml" todir="${zip.dir}" overwrite="true" />
+		<copy file="queryintegration.xml" todir="${zip.dir}" overwrite="true" />		
+		<!--copy file="log4j.xml" todir="${zip.dir}" overwrite="true" /> -->
+		<copy file="login-config.xml" todir="${zip.dir}" overwrite="true" />
+		<copy file="properties-service.xml" todir="${zip.dir}" overwrite="true" />
+		<copy file="${base.dir}/WEB-INF/classes/query.properties" todir="${zip.dir}" overwrite="true" />
+		<!--copy file="${base.dir}/WEB-INF/src/vocab.properties" todir="${zip.dir}" overwrite="true" /-->
+		<!--Copying the advance query jar to Zip file -->
+		<copy file= "AdvanceQuery.jar"  todir="${zip.dir}" overwrite="true" />
+		<copy file= "${base.dir}/cider.csv"  todir="${zip.dir}" overwrite="true" />
+		<copy file= "${base.dir}/cider.xmi"  todir="${zip.dir}" overwrite="true" />
+		<copy todir="${zip.dir}/query-properties" overwrite="true">
+			<fileset dir="${base.dir}/query-properties" />
+		</copy>		
+		<copy file= "${base.dir}/taggedvalues.xml"  todir="${zip.dir}" overwrite="true" />
+		<!-- Copy these two config files from tokenizedFiles directory which contains the tekenized files -->
+		<copy todir="${base.dir}/WEB-INF/classes" overwrite="true">
+			<fileset dir="${base.dir}/tokenizedFiles">
+				<include name="QueryHibernate.cfg.xml" />
+				<include name="DynamicExtensionsHibernate.cfg.xml" />
+			</fileset>
+		</copy>
+		
+		<copy todir="${zip.dir}" overwrite="true">
+			<fileset dir="${base.dir}/WEB-INF">
+				<include name="advancequery-struts-config.xml" />
+				<include name="struts-config_1_1.dtd" />
+				<!--include name="AdvanceQuery-tiles-defs.xml" /-->
+			</fileset>
+		</copy>
+		<!-- copy tokenized tiles-def and applicationResources.properties files in the zip-->
+		<copy file= "${base.dir}/tokenizedFiles/AdvanceQuery-tiles-defs.xml"  todir="${zip.dir}" overwrite="true" />
+		<copy file= "${base.dir}/tokenizedFiles/ApplicationResources.properties"  todir="${zip.dir}" overwrite="true" />
+		<copy todir="${zip.dir}" overwrite="true">
+		  <fileset dir="${base.dir}/WEB-INF/classes/">
+		    <include name = "QueryHibernate.cfg.xml"/>
+		  	<include name = "DynamicExtensionsHibernate.cfg.xml"/>
+		    <include name = "dbutil.properties"/>
+		    <include name = "dynamicUI.xml"/>
+		    <include name = "query.properties"/>
+		   </fileset>
+		</copy>
+		
+		<!---Copying css folder -->
+        <copy todir="${zip.dir}/css" overwrite="true"> 
+        	<fileset dir ="${base.dir}/css" />
+        </copy>
+ 		<!-- Copying LexBig jar to zip -->
+		
+		<copy todir="${zip.dir}/vi_jars" overwrite="true">
+					<fileset dir = "${base.dir}/vi_jars"/>
+		</copy>
+		
+		<!-- Copying LexBIGData folder to zip 
+		
+		<copy todir="${zip.dir}/LexBIGData" overwrite="true">
+							<fileset dir = "${base.dir}/LexBIGData"/>
+		</copy> -->
+		
+		<!--Copying jss folder -->
+		<copy todir="${zip.dir}/jss" overwrite="true"> 
+		    <fileset dir ="${base.dir}/jss" />
+		</copy> 
+		
+		<!--Coying Images -->
+		<copy todir="${zip.dir}/images" overwrite="true">
+			<fileset dir = "${base.dir}/images"/>
+		</copy>
+		
+		<!--Copying pages -->
+		<copy todir="${zip.dir}/pages/advancequery/content/search" overwrite="true"> 
+		    <fileset dir ="${base.dir}/pages/advancequery/content/search" />
+		</copy> 
+		
+		<copy todir="${zip.dir}/pages/advancequery/common" overwrite="true"> 
+		    <fileset dir ="${base.dir}/pages/advancequery/common" />
+		</copy> 
+		
+		<copy todir="${zip.dir}/pages/home" overwrite="true"> 
+		    <fileset dir ="${base.dir}/pages/home" />
+		</copy> 
+		
+		<copy todir="${zip.dir}/pages/home" overwrite="true"> 
+				    <fileset dir ="${base.dir}/pages/home" />
+				</copy> 
+		
+		<copy todir="${zip.dir}/pages/mainMenu" overwrite="true"> 
+		    <fileset dir ="${base.dir}/pages/mainMenu" />
+		</copy> 
+		
+		<copy todir="${zip.dir}/pages" overwrite="true"> 
+		    <fileset dir ="${base.dir}/pages" />
+		</copy> 
+		
+		<copy todir="${zip.dir}/pages/advancequery/content/search/querysuite" overwrite="true"> 
+		    <fileset dir ="${base.dir}/pages/advancequery/content/search/querysuite" />
+		</copy>
+		
+		<copy todir="${zip.dir}/pages/advancequery/common" overwrite="true"> 
+				    <fileset dir ="${base.dir}/pages/advancequery/common" />
+		</copy>
+		<!--Copying the flex related files from WEB-INF/flex -->
+        <copy todir="${zip.dir}/flex">
+		     <fileset dir = "${base.dir}/WEB-INF/flex"/>
+		</copy>
+		
+		<!-- Copying flex components-->
+		<copy todir="${zip.dir}/flexclient" overwrite="true"> 
+			<fileset dir ="${base.dir}/flexclient" />
+		</copy> 
+		
+		<!--Added By Baljeet for meta data loading -->
+		<!--copy todir ="${zip.dir}/csv" overwrite="true">
+			<fileset dir="${base.dir}/csv" />
+		</copy>
+		
+		<copy todir ="${zip.dir}/xmi" overwrite="true">
+			<fileset dir="${base.dir}/xmi" />	 
+        </copy --> 
+		
+		<!--Baljeet's changes ends here -->
+		
+		<copy todir="${zip.dir}/lib" overwrite="true">
+			<fileset file="lib" />
+		</copy>
+
+		<copy todir="${zip.dir}/SQL" overwrite="true">
+			<fileset dir="${base.dir}/SQL" />
+		</copy>
+		
+		<!-- DE conf files -->
+		<copy todir="${zip.dir}/DE_conf" overwrite="true">
+			<fileset dir="${base.dir}/DE_conf" />
+		</copy>
+		<!-- DE conf files end -->
+		<zip destfile="${zip.file}" basedir="${zip.dir}" />
+		<delete dir="${zip.dir}" />
+	</target>
+
+	
+  <!-- =================================================================== -->
+  <!-- Junit test case execution report                                    -->
+  <!-- =================================================================== -->
+	<target name="run_junit_testcases">
+		<mkdir dir="${target.dir}/reports" />
+		<mkdir dir="${target.dir}/reports/junit" />
+
+		<junit printsummary="yes" fork="yes" haltonfailure="no">
+			<formatter type="xml" />
+
+			<!--
+					Specify the name of the coverage data file to use.
+					The value specified below is the default.
+ 	     -->
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.dir}/coverage.ser" />
+
+
+			<classpath>
+				<pathelement path="${cobertura.dir}" />
+				<pathelement path="${target.dir}" />
+			</classpath>
+
+			<classpath refid="junit.classpath" />
+
+			<batchtest todir="${target.dir}/reports/junit">
+				<fileset dir="${src.dir}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+
+		</junit>
+	</target>
+	
+
+	<target name="gen_report_junit_testcases">
+		<antcall target="clean" />
+		<antcall target="compile" />
+		<antcall target="run_junit_testcases" />
+		<mkdir dir="${report.dir}/reports/junit" />
+		
+		<junitreport todir="${report.dir}/reports/junit">
+			<fileset dir="${target.dir}/reports/junit">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report todir="${report.dir}/reports/junit" />
+		</junitreport>
+	</target>
+	
+	
+	<!-- =================================================================== -->
+	<!-- Junit TestCases for Nightly Build  -->
+	<!-- =================================================================== -->
+	
+	
+  
+<!-- =================================================================== -->
+<!-- JMeter TestCases for Nightly Build  -->
+<!-- =================================================================== -->
+		<property name="Jmeter-Tests" value="${base.dir}/Jmeter-Tests"/>
+		<property name="testplan" value="CaTissueJMeterTests"/>
+		<property name="jtl" value="JTL"/>
+					
+		<mkdir dir="${base.dir}/${Jmeter-Tests}/${jtl}"/>
+	
+			<taskdef name="jmeter"	
+				classpath="${lib.dir}/ant-jmeter.jar"
+			    classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask"/>				
+	
+		<target name="JMeterTests" depends="runJmeterTests,JmeterReport"/>	
+		<target name="runJmeterTests"> 
+			<delete file="${Jmeter-Tests}/Mysql_CaTissueJMeterTests.html"/>
+			<delete file="${Jmeter-Tests}/Oracle_CaTissueJMeterTests.html"/>
+			<delete file="${Jmeter-Tests}/${testplan}.html"/>
+		 	<delete file="${Jmeter-Tests}/${jtl}/${testplan}.jtl"/>	
+			<jmeter
+			    jmeterhome="${jmeter.home.dir}"
+				testplan ="${Jmeter-Tests}/${testplan}.jmx"
+			    resultlog="${Jmeter-Tests}/${jtl}/${testplan}.jtl">
+			
+				<!-- Force suitable defaults -->
+				<property name="jmeter.save.saveservice.output_format" value="xml"/>
+				<property name="jmeter.save.saveservice.assertion_results" value="all"/>
+				<property name="jmeter.save.saveservice.bytesx" value="true"/>
+				<property name="file_format.testlog" value="${format}"/>
+				<property name="jmeter.save.saveservice.response_data.on_error" value="${funcMode}"/>
+			</jmeter>		
+		</target>
+
+		<target name="JmeterReport">
+			<xslt
+				force="true"
+			    in="${Jmeter-Tests}/${jtl}/${testplan}.jtl"
+			    out="${Jmeter-Tests}/${testplan}.html"
+			    style="${Jmeter-Tests}/jmeter-results-detail-report_21.xsl">
+				<param name="showData" expression="${show-data}"/>
+			</xslt>   
+		</target>  
+	
+	<!--  <property name="reportgenerator.input.jmeterfile" value="D:/Nightly_Build/XmlReport/CaTissueJMeterTests.jtl" />
+		  <property name="reportgenerator.input.junitfile" value="D:/Nightly_Build/XmlReport/TESTS-TestSuites.xml" />
+		  <property name="reportgenerator.output.file" value="D:/Nightly_Build/script/mail_setting.properties" />
+	-->
+	      <property name="reportgenerator.input.junit_mysql_fresh_file" value="${base.dir}/XmlReport/JUnitReports/mysql_fresh_report.xml" />
+	      <property name="reportgenerator.input.junit_mysql_upgrade_file" value="${base.dir}/XmlReport/JUnitReports/mysql_upgrade_report.xml" />
+		  <property name="reportgenerator.input.junit_oracle_fresh_file" value="${base.dir}/XmlReport/JUnitReports/oracle_fresh_report.xml" />
+		  <property name="reportgenerator.input.junit_oracle_upgrade_file" value="${base.dir}/XmlReport/JUnitReports/oracle_upgrade_report.xml" />
+				
+		  <property name="reportgenerator.input.jmeter_mysql_fresh_file" value="${base.dir}/XmlReport/JMeterReports/Mysql_Fresh_CaTissueJMeterTests.jtl" />
+		  <property name="reportgenerator.input.jmeter_mysql_upgrade_file" value="${base.dir}/XmlReport/JMeterReports/Mysql_Upgrade_CaTissueJMeterTests.jtl" />
+		  <property name="reportgenerator.input.jmeter_oracle_fresh_file" value="${base.dir}/XmlReport/JMeterReports/Oracle_Fresh_CaTissueJMeterTests.jtl" />
+		  <property name="reportgenerator.input.jmeter_oracle_upgrade_file" value="${base.dir}/XmlReport/JMeterReports/Oracle_Upgrade_CaTissueJMeterTests.jtl" />
+				
+		<target name="GenerateNightlyBuildReport" depends="compile">
+			<java classname="NightlyBuildReportGenerator" fork="true">
+			    <arg value="${reportgenerator.input.junit_mysql_fresh_file}" />
+			    <arg value="${reportgenerator.input.junit_mysql_upgrade_file}" />
+				<arg value="${reportgenerator.input.junit_oracle_fresh_file}" />
+				<arg value="${reportgenerator.input.junit_oracle_upgrade_file}" />
+				<arg value="${reportgenerator.input.jmeter_mysql_fresh_file}" />
+				<arg value="${reportgenerator.input.jmeter_mysql_upgrade_file}" />
+				<arg value="${reportgenerator.input.jmeter_oracle_fresh_file}" />
+				<arg value="${reportgenerator.input.jmeter_oracle_upgrade_file}" />
+				<!--<arg value="${reportgenerator.input.jmeterfile}" />
+				<arg value="${reportgenerator.input.junitfile}" />
+				<arg value="${reportgenerator.output.file}" />-->
+				<classpath>
+					<pathelement location="./WEB-INF/classes"/>
+				</classpath>
+			
+			</java>
+						
+		</target>
+
+  <!-- =================================================================== -->
+  <!-- Cobertura code coverage report                                      -->
+  <!-- =================================================================== -->
+
+	<taskdef classpathref="junit.classpath" resource="tasks.properties" />
+
+	<target name="instrument">
+
+		<mkdir dir="${cobertura.dir}" />
+		<!--
+	       Instrument the application classes, writing the
+	       instrumented classes into ${build.instrumented.dir}.
+	    -->
+		<cobertura-instrument datafile="${cobertura.dir}/coverage.ser" todir="${cobertura.dir}">
+			<!--
+	         The following line causes instrument to ignore any
+	         source line containing a reference to log4j, for the
+	         purposes of coverage reporting.
+	      -->
+			<ignore regex="org.apache.log4j.*" />
+
+			<fileset dir="${target.dir}">
+				<include name="**/*.class" />
+				<exclude name="**/*Test.class" />
+				<exclude name="**/Mock*.class" />
+			</fileset>
+		</cobertura-instrument>
+	</target>
+
+
+	<target name="gen_report_cobertura">
+		<antcall target="clean" />
+		<antcall target="compile" />
+		<antcall target="instrument" />
+		<antcall target="run_junit_testcases" />
+
+		<cobertura-report datafile="${cobertura.dir}/coverage.ser" srcdir="${src.dir}" destdir="${report.dir}/reports/coverage" />
+
+		<delete file="${cobertura.dir}/coverage.ser" />
+	</target>
+	
+ 
+	
+	<!--<target name="sendMail"  description="Send mail">
+	        <mail ssl="off" user="${proxy.username}" password="${proxy.password}" mailhost="${proxy.host}" tolist="${proxy.to}" cclist="${proxy.cc}" subject="${proxy.subject}" from="${proxy.from}" >
+	            <message> "${proxy.message}"</message>
+	            <fileset dir="${proxy.dir1}" includes="*.*" ></fileset>
+				<fileset dir="${proxy.dir2}" includes="${proxy.fileName}" ></fileset>
+	        </mail>
+	 </target>
+	-->
+
+	<target name="build_DomainObject_jar" depends="compile" description="To create jar which contains domain object along with its hbm file. This is required for Query Metedata loading.">
+		<jar taskname="buildJar" jarfile="${base.dir}/queryDomain.jar">
+			<fileset dir="${target.dir}">
+				<include name="**/*.hbm.xml" />
+				<include name="**/edu/wustl/query/domain/**" />
+				<include name="**/edu/wustl/query/actionForm/**" />
+				<include name="**/edu/wustl/query/bean/**" />
+			</fileset>
+		</jar>
+	</target>
+	
+
+
+		
+	<!-- flex related targets -->
+	<taskdef resource="flexTasks.tasks" classpath="${basedir}/lib/flexTasks.jar" />   
+	
+	<target name="compile_dag_flex">
+		         <mxmlc file="${FLEX_APP_ROOT}/dag/Dag.mxml" keep-generated-actionscript="true">
+		             <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
+		             <source-path path-element="${FLEX_HOME}/frameworks"/>
+		         </mxmlc>
+	     </target>
+	
+		<!-- flex related target finish -->
+	
+
+	<!-- Target create jar file added By Baljeet-->
+	
+	<target name="build_jar" depends="compile">
+		<tstamp />
+		<delete file="{base.dir}/AdvanceQuery.jar"/>
+		<jar jarfile="${base.dir}/AdvanceQuery.jar" basedir="${target.dir}">
+			
+			<manifest>
+				<attribute name="Built-At-Time" value="${TODAY} ${TSTAMP}" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<!-- Cobertura -->
+			  <path id="cobertura.classpath">
+			    <fileset dir="./cobertura">
+			      <include name="cobertura.jar"/>
+			    </fileset>
+			    <fileset dir="./cobertura/lib">
+			      <include name="**/*.jar"/>
+			    </fileset>
+			  </path>
+
+			  <taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
+
+		<target name="generate_codecoverage_report" >
+			  	<ant antfile="cobertura.xml" target="instrument"/>
+				<ant target="run_junit"/>
+				<ant antfile="cobertura.xml" target="coverage.report"/>
+				<ant antfile="cobertura.xml" target="coverage.check"/>
+		</target>
+	
+	
+		 <target name="run_junit" depends = "compile_test_cases">
+			 	<!--<delete dir="${junit.report.dir}"/> -->
+			 	<mkdir dir="${junit.report.dir}"/>
+
+		      	<junit printsummary="yes" haltonerror="no" haltonfailure="no"
+		      		fork="yes" maxmemory="1024m">
+
+		      		<sysproperty key="net.sourceforge.cobertura.datafile"
+		      				file="./cobertura/coverage.ser" />
+		      		<!-- set System property to RUN JUnit for VI in AQ added by amit_doshi-->
+		      		<sysproperty key="LG_CONFIG_FILE" value="${LG_CONFIG_FILE}"/>
+
+
+		      		<!--formatter type="plain" usefile="false"/-->
+		      		<formatter type="xml"/>
+		      		<batchtest todir="${junit.report.dir}">
+		      			<fileset dir="${test.dir}">
+		      				<include name="**/QueryTestAll.java"/>
+					    </fileset>
+					</batchtest>
+
+					<classpath>
+					<!--	<pathelement location="${junit.classes.dir}"/> -->
+						<pathelement location="./cobertura/instrumented/"/>
+						<pathelement location="${target.dir}"/>
+						<!-- <pathelement location="${lib.dir}/junit-4.1.jar"/>  -->
+						 <fileset dir="${lib.dir}">
+			                  <include name="*.jar"/>
+						 	  <include name="*.dll"/>
+						 </fileset>
+						<fileset dir="${test.lib}">
+							  <include name="*.jar" />
+					    </fileset>
+					</classpath>
+
+		      		<classpath refid="cobertura.classpath" />
+		      	</junit>
+
+				<junitreport todir="${junit.report.dir}">
+					<fileset dir="${junit.report.dir}">
+						<include name="TEST-*.xml" />
+					</fileset>
+					<report todir="${junit.report.dir}" />
+				</junitreport>
+
+			 	<!--<delete >
+					<fileset dir="${junit.report.dir}">
+						<include name="**/**/*.xml" />
+					</fileset>
+			 	</delete> -->
+			</target>
+
+		 <target name="compile_test_cases" depends="compile">
+		        <javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false" debug="true">
+		            <src path="${test.dir}"/>
+		            <classpath refid="app.classpath"/>
+		        	<classpath>
+		        		<pathelement location="${test.dir}\lib\jnpserver.jar"/>
+		        	</classpath>
+		        </javac>
+		 		<copy file="${test.dir}/conf/QueryHibernate.cfg.xml" todir="${target.dir}" overwrite="true"/>
+		    	<copy file="${test.dir}/conf/DynamicExtensionsHibernate.cfg.xml" todir="${target.dir}" overwrite="true"/>
+		 		<copy file="${test.dir}/conf/SMRoleGroupConf.xml" todir="${target.dir}" overwrite="true"/>
+				<replace dir="${target.dir}" propertyfile="queryInstall.properties"> 
+						<include name ="log4j.properties"/>
+						<include name ="QueryHibernate.cfg.xml"/>
+						<include name ="DynamicExtensionsHibernate.cfg.xml"/>
+							<replacefilter token="@@jbosshome@@" value="${jboss.server.url}"/>
+							<replacefilter token="@@databasename@@" value="${database.name}"/>
+							<replacefilter token="@@databaseschema@@" value="${database.schema}"/>
+							<replacefilter token="@@password@@" value="${database.password}"/>
+							<replacefilter token="@@host@@" value="${database.host}"/>
+							<replacefilter token="@@port@@" value="${database.port}"/>
+							<replacefilter token="@@username@@" value="${database.username}"/>
+					</replace>	
+			 	<replace dir="${base.dir}/WEB-INF/test/conf" propertyfile="queryInstall.properties">
+	 				<include name="log4j.properties" />
+	 				<include name="query.TestHibernate.cfg.xml" />
+	 				<replacefilter token="@@jbosshome@@" value="${jboss.server.url}" />
+	 				<replacefilter token="@@username@@" value="${database.username}" />
+	 				<replacefilter token="@@password@@" value="${database.password}" />
+	 				<replacefilter token="@@databasename@@" value="${database.name}" />
+	 				<replacefilter token="@@databaseschema@@" value="${database.schema}" />
+			 		<replacefilter token="@@dbhost@@" value="${database.host}"/>
+			 		<replacefilter token="@@dbport@@" value="${database.port}"/>
+	 			</replace>
+		 		<replace dir="${base.dir}/WEB-INF/test/conf">
+	 				<include name="ApplicationSecurityConfig.xml" />
+	 				<replacefilter token="@@hibernate-config-file@@" value="${basedir}/WEB-INF/test/conf/query.TestHibernate.cfg.xml" />
+	 			</replace>
+		    </target>
+	
+	
+	<target name = "compile_jsps">
+     
+		
+		
+	</target>
+	
+	
+	<target name="run_framework" depends = "compile_test_cases">
+				 	<mkdir dir="${framework.report.dir}"/>
+
+			      	<junit printsummary="yes" haltonerror="no" haltonfailure="no"
+			      		fork="yes">
+
+			      		<sysproperty key="net.sourceforge.cobertura.datafile"
+			      				file="./cobertura/coverage.ser" />
+
+
+			      		<!--formatter type="plain" usefile="false"/-->
+			      		<formatter type="xml"/>
+			      		<batchtest todir="${framework.report.dir}">
+			      			<fileset dir="${test.dir}">
+			      				<include name="**/FrameworkTestAll.java"/>
+						    </fileset>
+						</batchtest>
+
+						<classpath>
+							<pathelement location="./cobertura/instrumented/"/>
+							<pathelement location="${target.dir}"/>
+							 <fileset dir="${lib.dir}">
+				                  <include name="*.jar"/>
+							 </fileset>
+							<fileset dir="${test.lib}">
+								  <include name="*.jar" />
+						    </fileset>
+						</classpath>
+
+			      		<classpath refid="cobertura.classpath" />
+			      	</junit>
+
+					<junitreport todir="${framework.report.dir}">
+						<fileset dir="${framework.report.dir}">
+							<include name="TEST-*.xml" />
+						</fileset>
+						<report todir="${framework.report.dir}" />
+					</junitreport>
+		</target>
+			<target name="run_javacc">
+		            <javacc
+		                target="${base.dir}/WEB-INF/src/edu/wustl/common/query/impl/predicate/WherePartParser.jj"
+		                outputdirectory="${base.dir}/WEB-INF/src/edu/wustl/common/query/impl/predicate"
+		                javacchome="${base.dir}/WEB-INF/lib"
+		                static="false"
+		            />
+
+		            </target>
+
+		 
+
+
+	
+</project>
+

@@ -1,0 +1,106 @@
+<?xml version = "1.0" ?>
+
+<TestCases testHome="/home/Hudson/internal_conf/framework_home/"
+					 dbInitCommonScriptsFile="" dbCleanUpCommonScriptsFile="">
+		
+		<TestCase>
+			 <name>QUERY 1</name>
+			 <tmtTestCaseId>3</tmtTestCaseId>
+			 <expectedResultsCSV>TC1_Expected_Results.csv</expectedResultsCSV>
+			 <query type = "saved_query"
+			 	    	 id = "167">
+			 </query>
+		</TestCase>
+		
+		<TestCase>
+			 <name>QUERY 2</name>
+			 <tmtTestCaseId>5</tmtTestCaseId>
+			 <expectedResultsCSV>TC2_Expected_Results.csv</expectedResultsCSV>
+			 <query type = "saved_query"
+			 	    	 id = "181">
+			 </query>
+		</TestCase>
+		
+		<TestCase>
+			 <name>QUERY 3</name>
+			 <tmtTestCaseId>6</tmtTestCaseId>
+			 <expectedResultsCSV>TC3_Expected_Results.csv</expectedResultsCSV>
+			 <query type = "saved_query"
+			 	    	 id = "303">
+			 </query>
+		</TestCase>
+		
+		<TestCase>
+			 <name>QUERY 4</name>
+			 <tmtTestCaseId>7</tmtTestCaseId>
+			 <expectedResultsCSV>TC4_Expected_Results.csv</expectedResultsCSV>
+			 <query type = "saved_query"
+			 	    	 id = "182">
+			 </query>
+		</TestCase>
+		
+		<TestCase>
+			 <name>QUERY 5</name>
+			 <tmtTestCaseId>9</tmtTestCaseId>
+			 <expectedResultsCSV>TC5_Expected_Results.csv</expectedResultsCSV>
+			 <query type = "saved_query"
+			 	    	 id = "183">
+			 </query>
+		</TestCase>
+		
+		<TestCase>
+			 <name>QUERY 6</name>
+			 <tmtTestCaseId>11</tmtTestCaseId>
+			 <expectedResultsCSV>TC6_Expected_Results.csv</expectedResultsCSV>
+			 <query type = "saved_query"
+			 	    	 id = "184">
+			 </query>
+		</TestCase>
+		
+		<TestCase>
+			 <name>QUERY 7</name>
+			 <tmtTestCaseId>12</tmtTestCaseId>
+			 <expectedResultsCSV>TC7_Expected_Results.csv</expectedResultsCSV>
+			 <query type = "saved_query"
+			 	    	 id = "185">
+			 </query>
+		</TestCase>
+		
+		<TestCase>
+			 <name>QUERY 8</name>
+			 <tmtTestCaseId>13</tmtTestCaseId>
+			 <expectedResultsCSV>TC8_Expected_Results.csv</expectedResultsCSV>
+			 <query type = "saved_query"
+			 	    	 id = "186">
+			 </query>
+		</TestCase>
+		
+		<TestCase>
+			 <name>QUERY 9</name>
+			 <tmtTestCaseId>14</tmtTestCaseId>
+			 <expectedResultsCSV>TC9_Expected_Results.csv</expectedResultsCSV>
+			 <query type = "saved_query"
+			 	    	 id = "187">
+			 </query>
+		</TestCase>
+		
+		<TestCase>
+			 <name>QUERY 10</name>
+			 <tmtTestCaseId>15</tmtTestCaseId>
+			 <expectedResultsCSV>TC10_Expected_Results.csv</expectedResultsCSV>
+			 <query type = "saved_query"
+			 	    	 id = "188">
+			 </query>
+		</TestCase>
+		
+		<TestCase>
+			 <name>QUERY 11</name>
+			 <tmtTestCaseId>16</tmtTestCaseId>
+			 <expectedResultsCSV>TC11_Expected_Results.csv</expectedResultsCSV>
+			 <query type = "saved_query"
+			 	    	 id = "192">
+			 </query>
+		</TestCase>
+		
+</TestCases>
+
