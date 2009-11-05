@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Factory>
-<BizLogicFactory name ="bizLogicFactory" className = "edu.wustl.cider.bizlogic.BizLogicFactory"/>
-<ForwardToFactory name = "forwardToFactory" className = "edu.wustl.cider.util.ForwardToFactory"/>
-<DomainObjectFactory name = "domainObjectFactory" className = "edu.wustl.cider.domain.DomainObjectFactory"/>
-</Factory>
