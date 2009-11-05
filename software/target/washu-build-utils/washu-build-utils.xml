@@ -1,0 +1,417 @@
+<project name="washu-build-utils" xmlns:antunit="antlib:org.apache.ant.antunit" xmlns="antlib:org.apache.tools.ant"
+	xmlns:cs="antlib:com.puppycrawl.tools.checkstyle" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<property name="root.dir" value="${basedir}/../../.." />
+	<property name="software.dir" value="${root.dir}/software" />
+	<property name="target.dir" value="${software.dir}/target" />
+	<property name="lib.dir" value="${target.dir}/lib" />
+	<property name="washu-build-utils.dir" value="${software.dir}/target/washu-build-utils" />
+	<property name="washu-build-utils.resources.dir" value="${washu-build-utils.dir}/resources" />
+	<property name="common.dir" value="${software.dir}/common" />
+	<property file="${washu-build-utils.resources.dir}/static-analysis-tools.properties" />
+
+
+	<path id="pmd.classpath">
+		<fileset dir="${lib.dir}/test-pmd">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	<path id="cpd.classpath">
+		<path refid="pmd.classpath" />
+		<fileset dir="${lib.dir}/test-cpd">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	<path id="cobertura.classpath">
+		<fileset dir="${lib.dir}/test-cobertura">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${lib.dir}/extra">
+			<include name="log4j-1.29.jar" />
+		</fileset>
+	</path>
+	<path id="checkstyle.classpath">
+		<fileset dir="${lib.dir}/test-checkstyle">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	
+	<path id="jdepend.classpath">
+		<fileset dir="${lib.dir}/test-jdepend">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	<path id="spellchecker.classpath">
+		<fileset dir="${lib.dir}/test-spellchecker">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	<path id="junit.classpath">
+		<fileset dir="${lib.dir}/test-junit">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	<path id="extra.classpath">
+		<fileset dir="${lib.dir}/extra">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<macrodef name="run-outcontainer-junit-tests">
+		<attribute name="test.src.dir" />
+		<attribute name="classpath" default="" />
+		<attribute name="instrumented.classes" default="" />
+		<attribute name="cobertura.data.file" />
+		<attribute name="junit.report.dir" />
+		<attribute name="xml.output.dir" default="@{junit.report.dir}/xml" />
+		<sequential>
+			<delete dir="@{junit.report.dir}" />
+			<mkdir dir="@{junit.report.dir}" />
+			<mkdir dir="@{xml.output.dir}" />
+			<junit printsummary="on" haltonerror="no" haltonfailure="no" fork="yes" showoutput="yes">
+				<sysproperty key="net.sourceforge.cobertura.datafile" file="@{cobertura.data.file}" />
+				<classpath>
+					<pathelement path="@{instrumented.classes}" />
+					<pathelement path="@{classpath}" />
+					<path refid="junit.classpath" />
+				</classpath>
+				<formatter type="xml" />
+				<batchtest todir="@{xml.output.dir}">
+					<fileset dir="@{test.src.dir}">
+						<include name="**/*Test.java" />
+						<exclude name="**/Abstract*Test.java" />
+					</fileset>
+				</batchtest>
+			</junit>
+			<junitreport todir="@{junit.report.dir}">
+				<fileset dir="@{junit.report.dir}">
+					<include name="TEST-*.xml" />
+				</fileset>
+				<report todir="@{junit.report.dir}" />
+			</junitreport>
+		</sequential>
+	</macrodef>
+	<macrodef name="run-incontainer-junit-tests">
+		<sequential />
+	</macrodef>
+	<macrodef name="instrument-classes">
+		<attribute name="instrumented.dir" />
+		<attribute name="classes.dir" />
+		<attribute name="cobertura.data.file" default="@{instrumented.dir}/cobertura.ser" />
+		<sequential>
+			<delete dir="@{instrumented.dir}" />
+			<cobertura-instrument datafile="@{cobertura.data.file}" todir="@{instrumented.dir}">
+				<!--
+					The following line causes instrument to ignore any source line
+					containing a reference to log4j, for the purposes of coverage
+					reporting.
+				-->
+				<ignore regex="${cobertura.ignore.regex}" />
+				<fileset dir="@{classes.dir}">
+					<exclude name="**/*Test*.class" />
+					<exclude name="**/*Factory*.class" />
+					<exclude name="**/*Manager*.class" />
+					<exclude name="**/*Test*.class" />
+					<exclude name="**/I*.class" />
+				</fileset>
+			</cobertura-instrument>
+		</sequential>
+	</macrodef>
+	<macrodef name="generate-and-validate-cobertura-coverage">
+		<attribute name="cobertura.src.dir" />
+		<attribute name="cobertura.rpt.dir" />
+		<attribute name="cobertura.data.file" default="cobertura.ser" />
+		<attribute name="report.format" default="html" />
+
+		<sequential>
+
+			<delete dir="@{cobertura.rpt.dir}" />
+			<mkdir dir="@{cobertura.rpt.dir}" />
+			<cobertura-report datafile="@{cobertura.data.file}" srcdir="@{cobertura.src.dir}" destdir="@{cobertura.rpt.dir}" format="@{report.format}" />
+			<cobertura-check datafile="@{cobertura.data.file}" branchrate="${cobertura.branchrate}" linerate="${cobertura.linerate}" totalbranchrate="${cobertura.totalbranchrate}" totallinerate="${cobertura.totallinerate}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="static-analysis-pmd">
+		<attribute name="pmd.src.dir" />
+		<attribute name="pmd.rpt.dir" />
+		<attribute name="pmd.root-dir.name" />
+		<attribute name="pmd.sub-project.name" />
+		<attribute name="pmd.report-preprocessor.file" />
+		<attribute name="pmd.report-xsl.file" />
+		<attribute name="pmd.rule-set.file" default="${common.dir}/pmd/PMD_ruleset4WASHU.xml" />
+		<attribute name="pmd.xml.name" default="pmd_report.xml" />
+		<attribute name="pmd.html.name" default="pmd_report.html" />
+		<attribute name="pmd.fail.onerror" default="false" />
+		<attribute name="pmd.fail.onviolation" default="false" />
+		<sequential>
+			<property name="pmd.sub-project.rpt.dir" value="@{pmd.rpt.dir}/@{pmd.sub-project.name}/target" />
+			<mkdir dir="${pmd.sub-project.rpt.dir}" />
+			<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" />
+			<pmd rulesetfiles="@{pmd.rule-set.file}" shortFilenames="true" failonerror="@{pmd.fail.onerror}" failOnRuleViolation="@{pmd.fail.onviolation}" failurespropertyname="pmd.failure" targetjdk="1.5">
+				<formatter type="xml" toFile="${pmd.sub-project.rpt.dir}/@{pmd.xml.name}" />
+				<fileset dir="@{pmd.src.dir}">
+					<include name="**/*.java" />
+				</fileset>
+			</pmd>
+			<move file="${pmd.sub-project.rpt.dir}/@{pmd.xml.name}" tofile="${pmd.sub-project.rpt.dir}/@{pmd.xml.name}.bak" />
+			<xslt taskname="pmd" in="${pmd.sub-project.rpt.dir}/@{pmd.xml.name}.bak" out="${pmd.sub-project.rpt.dir}/@{pmd.xml.name}" style="@{pmd.report-preprocessor.file}">
+				<param name="relative.path" expression="@{pmd.root-dir.name}/@{pmd.sub-project.name}" />
+			</xslt>
+
+			<xslt taskname="pmd" in="${pmd.sub-project.rpt.dir}/@{pmd.xml.name}.bak" out="${pmd.sub-project.rpt.dir}/@{pmd.html.name}" style="@{pmd.report-xsl.file}" />
+		</sequential>
+	</macrodef>
+	<macrodef name="static-analysis-diff-pmd">
+		<attribute name="property.file" default="project.properties" />
+		<attribute name="differential.file.name" default="diff_list.txt" />
+		<attribute name="pmd.src.dir" />
+		<attribute name="pmd.rpt.dir" />
+		<attribute name="pmd.root-dir.name" />
+		<attribute name="pmd.sub-project.name" />
+		<attribute name="pmd.report-preprocessor.file" />
+		<attribute name="pmd.report-xsl.file" />
+		<attribute name="pmd.rule-set.file" default="${common.dir}/pmd/PMD_ruleset4WASHU.xml" />
+		<attribute name="pmd.xml.name" default="pmd_report.xml" />
+		<attribute name="pmd.html.name" default="pmd_report.html" />
+		<attribute name="pmd.fail.onerror" default="false" />
+		<attribute name="pmd.fail.onviolation" default="false" />
+		<sequential>
+			<delete file="@{differential.file.name}" />
+			<touch file="@{differential.file.name}" />
+			<property name="pmd.sub-project.rpt.dir" value="@{pmd.rpt.dir}/@{pmd.sub-project.name}/target" />
+			<mkdir dir="${pmd.sub-project.rpt.dir}" />
+			<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="project.test.pmd.classpath" />
+
+			<diffrevision old.revision.number="${pmd.revision.number}" differential.file.name="@{differential.file.name}" />
+			<pmd rulesetfiles="@{pmd.rule-set.file}" shortFilenames="true" failonerror="false" failurespropertyname="pmd.failure" targetjdk="1.5">
+				<formatter type="xml" toFile="${pmd.sub-project.rpt.dir}/@{pmd.xml.name}" />
+				<fileset dir="@{pmd.src.dir}">
+					<patternset>
+						<includesfile name="@{differential.file.name}" />
+					</patternset>
+				</fileset>
+			</pmd>
+			<move file="${pmd.sub-project.rpt.dir}/@{pmd.xml.name}" tofile="${pmd.sub-project.rpt.dir}/@{pmd.xml.name}.bak" />
+			<xslt taskname="pmd" in="${pmd.sub-project.rpt.dir}/@{pmd.xml.name}.bak" out="${pmd.sub-project.rpt.dir}/@{pmd.xml.name}" style="@{pmd.report-preprocessor.file}">
+				<param name="relative.path" expression="@{pmd.root-dir.name}/@{pmd.sub-project.name}" />
+			</xslt>
+
+			<xslt taskname="pmd" in="${pmd.sub-project.rpt.dir}/@{pmd.xml.name}.bak" out="${pmd.sub-project.rpt.dir}/@{pmd.html.name}" style="@{pmd.report-xsl.file}" />
+		</sequential>
+	</macrodef>
+	<macrodef name="static-analysis-cpd">
+		<attribute name="cpd.rpt.dir" />
+		<attribute name="cpd.src.dir" />
+		<attribute name="cpd.ignore.literals" default="true" />
+		<attribute name="cpd.ignore.identifiers" default="true" />
+		<attribute name="cpd.language" default="java" />
+		<attribute name="cpd.minimum.token.count" default="100" />
+		<attribute name="cpd.classpath"/>
+		<attribute name="cpd.report.file" default="cpd.csv" />
+		<sequential>
+			<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" classpathref="pmd.classpath" />
+			<cpd ignoreLiterals="@{cpd.ignore.literals}" ignoreIdentifiers="@{cpd.ignore.identifiers}" language="@{cpd.language}" minimumTokenCount="@{cpd.minimum.token.count}" outputFile="@{cpd.rpt.dir}/@{cpd.report.file}" format="csv">
+				<fileset dir="@{cpd.src.dir}">
+					<include name="**/*.java" />
+				</fileset>
+			</cpd>
+			<java failonerror="false" classname="com.build.tool.CPDmaxCount" classpathref="@{cpd.classpath}">
+				<arg value="@{cpd.minimum.token.count}" />
+				<arg value="@{cpd.rpt.dir}/@{cpd.report.file}" />
+			</java>
+		</sequential>
+	</macrodef>
+	<macrodef name="static-analysis-findbugs">
+		<attribute name="findbugs.home.dir" />
+		<attribute name="findbugs.src.dir" />
+		<attribute name="findbugs.rpt.dir" />
+		<attribute name="findbugs.classes.dir" />
+		<attribute name="findbugs.report-xsl.file" />
+		<attribute name="findbugs.app.classpath.ref" />
+		<attribute name="findbugs.xml.name" default="findbugs_report.xml" />
+		<attribute name="findbugs.html.name" default="findbugs_report.html" />
+		<sequential>
+			<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpathref="findbugs.classpath" />
+
+			<findbugs home="@{findbugs.home.dir}" output="xml:withMessages" outputFile="@{findbugs.rpt.dir}/@{findbugs.xml.name}" jvmargs="-Xms128m -Xmx512m">
+				<auxClasspath>
+					
+						<!--
+						<fileset dir="@{findbugs.app.classpath.dir}">
+							<include name="**/*.jar" />
+						</fileset>
+						-->
+					<fileset refid="@{findbugs.app.classpath.ref}" />
+				</auxClasspath>
+
+				<sourcePath path="@{findbugs.src.dir}" />
+				<class location="@{findbugs.classes.dir}" />
+			</findbugs>
+			<xslt taskname="findbugs" in="@{findbugs.rpt.dir}/@{findbugs.xml.name}" out="@{findbugs.rpt.dir}/@{findbugs.html.name}" style="@{findbugs.report-xsl.file}" />
+		</sequential>
+	</macrodef>
+	<macrodef name="static-analysis-checkstyle">
+		<attribute name="checkstyle.src.dir" />
+		<attribute name="checkstyle.rpt.dir" />
+		<attribute name="checkstyle.report-xsl.file" />
+		<attribute name="checkstyle.config.file" default="${common.dir}/checkstyle/checkstyle_checks.xml" />
+		<attribute name="checkstyle.xml.name" default="checkstyle_report.xml" />
+		<attribute name="checkstyle.html.name" default="checkstyle_report.html" />
+		<attribute name="checkstyle.fail.onviolation" default="false" />
+		<attribute name="checkstyle.classpath.ref.name" />
+		<sequential>
+			<taskdef resource="checkstyletask.properties" uri="antlib:com.puppycrawl.tools.checkstyle" classpathref="checkstyle.classpath" />
+			<cs:checkstyle config="@{checkstyle.config.file}" failureProperty="checkstyle.failure" failOnViolation="@{checkstyle.fail.onviolation}" maxerrors="0" maxwarnings="0" classpathref="@{checkstyle.classpath.ref.name}">
+				<formatter type="xml" tofile="@{checkstyle.rpt.dir}/@{checkstyle.xml.name}" />
+				<fileset dir="@{checkstyle.src.dir}">
+					<include name="**/*.java" />
+				</fileset>
+			</cs:checkstyle>
+			<xslt taskname="checkstyle" in="@{checkstyle.rpt.dir}/@{checkstyle.xml.name}" out="@{checkstyle.rpt.dir}/@{checkstyle.html.name}" style="@{checkstyle.report-xsl.file}">
+				<param name="output.dir" expression="@{checkstyle.rpt.dir}" />
+			</xslt>
+
+		</sequential>
+	</macrodef>
+
+	<macrodef name="static-analysis-diff-checkstyle">
+		<attribute name="differential.file.name" default="diff_list.txt" />
+		<attribute name="checkstyle.src.dir" />
+		<attribute name="checkstyle.rpt.dir" />
+		<attribute name="checkstyle.report-xsl.file" />
+		<attribute name="checkstyle.config.file" default="${common.dir}/checkstyle/checkstyle_checks.xml" />
+		<attribute name="checkstyle.xml.name" default="checkstyle_report.xml" />
+		<attribute name="checkstyle.html.name" default="checkstyle_report.html" />
+		<attribute name="checkstyle.fail.onviolation" default="false" />
+		<attribute name="checkstyle.classpath.ref.name" />
+
+		<sequential>
+			<delete file="@{differential.file.name}" />
+			<touch file="@{differential.file.name}" />
+
+			<diffrevision old.revision.number="${checkstyle.revision.number}" differential.file.name="@{differential.file.name}" />
+
+			<taskdef resource="checkstyletask.properties" uri="antlib:com.puppycrawl.tools.checkstyle" classpathref="checkstyle.classpath" />
+
+			<mkdir dir="@{checkstyle.rpt.dir}" />
+
+			<cs:checkstyle config="@{checkstyle.config.file}" failureProperty="checkstyle.failure" failOnViolation="@{checkstyle.fail.onviolation}" maxerrors="0" maxwarnings="0" classpathref="@{checkstyle.classpath.ref.name}">
+
+				<formatter type="xml" tofile="@{checkstyle.rpt.dir}/@{checkstyle.xml.name}" />
+
+				<fileset dir="@{checkstyle.src.dir}">
+					<patternset>
+						<includesfile name="@{differential.file.name}" />
+					</patternset>
+				</fileset>
+			</cs:checkstyle>
+
+			<xslt taskname="checkstyle" in="@{checkstyle.rpt.dir}/@{checkstyle.xml.name}" out="@{checkstyle.rpt.dir}/@{checkstyle.html.name}" style="@{checkstyle.report-xsl.file}" />
+		</sequential>
+	</macrodef>
+	<macrodef name="static-analysis-cobertura">
+		<attribute name="cobertura.src.dir" />
+		<attribute name="cobertura.rpt.dir" />
+		<attribute name="cobertura.classes.dir" />
+		<attribute name="cobertura.instrumented.dir" />
+		<attribute name="cobertura.report-xsl.file" />
+		<attribute name="cobertura.ser.file" />
+		<attribute name="cobertura.config.file" />
+		<sequential>
+			<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+			<cobertura-instrument todir="@{cobertura.instrumented.dir}" datafile="@{cobertura.instrumented.dir}/@{cobertura.ser.file}">
+				<fileset dir="@{cobertura.classes.dir}">
+					<include name="**" />
+				</fileset>
+			</cobertura-instrument>
+
+			<cobertura-report datafile="@{cobertura.instrumented.dir}/@{cobertura.ser.file}" format="html" destdir="@{cobertura.rpt.dir}">
+				<fileset dir="@{cobertura.src.dir}">
+					<include name="**/*.java" />
+				</fileset>
+			</cobertura-report>
+
+			<cobertura-check failureproperty="cobertura.failure" datafile="@{cobertura.instrumented.dir}/@{cobertura.ser.file}" haltonfailure="false" linerate="0" packagebranchrate="0" packagelinerate="0" totalbranchrate="25" totallinerate="30" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="static-analysis-jdepend">
+		<attribute name="jdepend.rpt.dir" />
+		<attribute name="jdepend.classes.dir" />
+		<sequential>
+
+			<!--taskdef name="jdepend" classname="org.apache.tools.ant.taskdefs.optional.jdepend.JDependTask">
+				<classpath refid="jdepend.classpath" />
+			</taskdef-->
+			<jdepend format="xml" outputfile="@{jdepend.rpt.dir}/jdepend-report.xml">
+				<classespath>
+					<pathelement location="@{jdepend.classes.dir}" />
+				</classespath>
+			</jdepend>
+			<xslt taskname="jdepend" in="@{jdepend.rpt.dir}/jdepend-report.xml" out="@{jdepend.rpt.dir}/jdepend/index.html" style="${ant.home}/etc/jdepend.xsl" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="static-analysis-jcsc">
+		<attribute name="jcsc.home.dir" />
+		<attribute name="jcsc.src.dir" />
+		<attribute name="jcsc.rpt.dir" />
+		<attribute name="jcsc.classes.dir" />
+		<attribute name="jcsc.rule-set.file" default="${common.dir}/jcsc/jcsc.jcsc.xml" />
+		<sequential>
+			<taskdef name="jcsc" classname="rj.tools.jcsc.ant.JCSCTask" classpathref="jcsc.classpath" />
+			<jcsc jcschome="@{jcsc.home.dir}" rules="@{jcsc.rule-set.file}" destdir="@{jcsc.rpt.dir}" copyassociatedfiles="true" worstcount="25" startdate="" failvalue="0.005" failseverity="5" ignoretestseverity="5" failproperty="jcsc.failproperty">
+
+				<fileset dir="@{jcsc.src.dir}">
+					<include name="**/edu/**/*.java" />
+				</fileset>
+
+				<!--fileset dir="${project.test.dir}">
+			                <include name="**/*.java"/>
+			            </fileset>
+			            <fileset dir="${project.uat.dir}">
+			                <include name="**/*.java"/ >
+			            </fileset -->
+			</jcsc>
+		</sequential>
+	</macrodef>
+	<macrodef name="static-analysis-spellchecker">
+		<attribute name="spellchecker.root.dir" />
+		<attribute name="spellchecker.rpt.dir" />
+		<attribute name="spellchecker.project.dictionary" />
+		<attribute name="spellchecker.includes" default="**/*.java,**/*.jsp,**/*.properties" />
+		<attribute name="spellchecker.output.file" default="spellchecker-report.txt" />
+		<sequential>
+			<taskdef name="spellcheck" classname="com.robmayhew.jsc.ant.SpellTask" classpathref="spellchecker.classpath" />
+			<spellcheck baseDir="@{spellchecker.root.dir}" outputFile="@{spellchecker.rpt.dir}/@{spellchecker.output.file}" includes="@{spellchecker.includes}" dictionary="@{spellchecker.project.dictionary}" />
+		</sequential>
+	</macrodef>
+	<macrodef name="generate-javadoc">
+		<attribute name="javadoc.output.dir" default="${root.dir}/docs" />
+		<attribute name="project.classpath.ref" default="project.classpath" />
+		<attribute name="javadoc.window.title" />
+		<attribute name="javadoc.package.names" default="edu.wustl.*"/>
+		<attribute name="project.src.dir" />
+		<sequential>
+			<javadoc destdir="@{javadoc.output.dir}" sourcepath="@{project.src.dir}" author="true" version="true" private="true" classpathref="@{project.classpath.ref}" use="true" breakiterator="yes" maxmemory="512m" windowtitle="@{javadoc.window.title}" packagenames="@{javadoc.package.names}"/>
+		</sequential>
+	</macrodef>
+	
+	<!--  example:     	
+	<publish-project-artifacts ivy.xml.file.location="${basedir}/ivy.xml" artifact.pattern="${lib.dir}/[artifact].[ext]" setting.ref="basic.settings" status="release" />
+	-->
+	<macrodef name="publish-project-artifacts">
+			<attribute name="ivy.xml.file.location" default="${basedir}" />
+			<attribute name="artifact.pattern" default="${basedir}" />
+			<attribute name="setting.ref" default="basic.settings" />
+			<attribute name="status" default="release" />
+
+			<sequential>
+				<ivy:resolve settingsref="@{setting.ref}" />
+				<ivy:publish settingsref="@{setting.ref}" artifactspattern="@{artifact.pattern}" 
+					resolver="washusvn" forcedeliver="yes" pubdate="now" status="@{status}"  />
+			</sequential>
+		</macrodef>
+
+</project>
