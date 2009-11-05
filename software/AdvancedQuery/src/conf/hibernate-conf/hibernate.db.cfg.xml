@@ -1,0 +1,4 @@
+<property name="hibernate.connection.driver_class">com.ibm.db2.jcc.DB2Driver</property>
+<property name="dialect">org.hibernate.dialect.DB2Dialect</property>
+<property name="connection.datasource">java:/AdvancedQuery</property>
+<property name="transaction.manager_lookup_class">org.hibernate.transaction.JBossTransactionManagerLookup</property>
