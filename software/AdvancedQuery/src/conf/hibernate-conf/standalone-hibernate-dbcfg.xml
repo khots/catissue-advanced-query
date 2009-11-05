@@ -1,0 +1,6 @@
+<property name="dialect">@@dialect@@</property>
+<property name="hibernate.connection.driver_class">@@driver@@</property>
+<property name="hibernate.connection.username">@@username@@</property>
+<property name="hibernate.connection.password">@@password@@</property>
+<property name="hibernate.connection.url">@@url@@</property>
+<property name="hibernate.default_schema">@@database.schema@@</property>
