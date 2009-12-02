@@ -1,0 +1,187 @@
+package edu.wustl.query.util.listener;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Properties;
+
+import javax.naming.InitialContext;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.sql.DataSource;
+
+import edu.wustl.cab2b.server.path.PathFinder;
+import edu.wustl.common.exception.ErrorKey;
+import edu.wustl.common.util.XMLPropertyHandler;
+import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.global.CommonServiceLocator;
+import edu.wustl.common.util.logger.LoggerConfig;
+import edu.wustl.query.util.global.AQConstants;
+import edu.wustl.query.util.global.Utility;
+import edu.wustl.query.util.global.Variables;
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Class QueryCoreServletContextListenerUtil.
+ */
+public class QueryCoreServletContextListenerUtil
+{
+
+	/** The logger. */
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(QueryCoreServletContextListenerUtil.class);
+	//String DATASOURCE_JNDI_NAME = "java:/clinportal";
+
+   /**
+	 * Context initialized.
+	 * @param sce the sce
+	 * @param jndiName the jndi name
+	 */
+	public static void contextInitialized(ServletContextEvent sce, String jndiName)
+	    {
+	        try
+	        {
+	            logger.info("entered contextInitialized method of query...jndiname : "+jndiName);
+	            //ErrorKey.init("~");
+	            ServletContext servletContext = sce.getServletContext();
+	            //Variables.applicationHome = sce.getServletContext().getRealPath("");
+	            String propDirPath =sce.getServletContext().getRealPath("WEB-INF");
+	            LoggerConfig.configureLogger(propDirPath);
+	            ErrorKey.init("~");
+	            //Logger.configDefaultLogger(servletContext);
+	            ApplicationProperties
+	                    .initBundle(servletContext.getInitParameter("resourcebundleclass"));
+	            CommonServiceLocator.getInstance().setAppHome(sce.getServletContext().getRealPath(""));
+	            setGlobalVariable();
+	            Utility.setReadDeniedAndEntitySqlMap();
+
+	            //Added by Baljeet....This method caches all the Meta data
+	            initEntityCache(jndiName);
+
+	        }
+	        catch (Exception e)
+	        {
+	            logger.error("Application failed to initialize");
+	            throw new RuntimeException(e.getLocalizedMessage(), e);
+
+	        }
+	        logger.info("exit from contextInitialized method of query...jndiname : "+jndiName);
+	    }
+
+	/**
+	 * Initializes the entity cache.
+	 * @param jndiName the jndi name
+	 */
+	private static void initEntityCache(String jndiName)
+	{
+		Connection conn = null;
+		try
+		{
+			//Added for initializing PathFinder and EntityCache
+			InitialContext ctx = new InitialContext();
+			DataSource dataSource = (DataSource) ctx.lookup(jndiName);
+			conn = dataSource.getConnection();
+			logger.info("Before PathFinder Call QueryCoreServletCOntextListenerUtil......Connection : "+conn);
+			PathFinder.getInstance(conn);
+			logger.info("After PathFinder Call in QueryCoreServletCOntextListenerUtil......Connection : "+conn);
+		}
+		catch (Exception e)
+		{
+			logger.error(e.getMessage());
+			logger.error("Exception occured while initialising entity cache");
+		}
+		finally
+		{
+			try
+			{
+				if(conn != null)
+				{
+					conn.close();
+				}
+			}
+			catch (SQLException e)
+			{
+				logger.error(e.getMessage());
+			}
+		}
+
+	}
+
+	/**
+	 * Sets the global variable.
+	 * @throws Exception the exception
+	 */
+	private static void setGlobalVariable() throws Exception
+	{
+		String path = System.getProperty("app.propertiesFile");
+		XMLPropertyHandler.init(path);
+//	/	File propetiesDirPath = new File(path);
+//		Variables.propertiesDirPath = propetiesDirPath.getParent();
+//
+//		Variables.applicationName = ApplicationProperties.getValue("app.name");
+//		Variables.applicationVersion = ApplicationProperties.getValue("app.version");
+		int maximumTreeNodeLimit = Integer.parseInt(XMLPropertyHandler
+				.getValue(AQConstants.MAXIMUM_TREE_NODE_LIMIT));
+		Variables.maximumTreeNodeLimit = maximumTreeNodeLimit;
+		Variables.maximumTreeNodeLimitForChildNode = Integer.parseInt(XMLPropertyHandler
+				.getValue(AQConstants.MAXIMUM_TREE_NODE_LIMIT_FOR_CHILD_NODE));
+		readProperties();
+		path = System.getProperty("app.propertiesFile");
+
+	}
+
+	/**
+	 * Read properties.
+	 */
+	private static void readProperties()
+	{
+	    String appHome = CommonServiceLocator.getInstance().getAppHome();
+		File file = new File(appHome + System.getProperty("file.separator")
+				+ "WEB-INF" + System.getProperty("file.separator") + "classes"
+				+ System.getProperty("file.separator") + "query.properties");
+		if (file.exists())
+		{
+			Properties queryProperties = new Properties();
+			try
+			{
+				queryProperties.load(new FileInputStream(file));
+
+				Variables.queryGeneratorClassName = queryProperties
+						.getProperty("query.queryGeneratorClassName");
+
+				Variables.properties = queryProperties;
+			}
+			catch (FileNotFoundException e)
+			{
+				logger.error(e.getMessage());
+			}
+			catch (IOException e)
+			{
+				logger.error(e.getMessage());
+			}
+		}
+
+	}
+
+	/**
+	 * Context destroyed.
+	 * @param sce the sce
+	 */
+	public static void contextDestroyed(ServletContextEvent sce)
+	{/*
+		//  shutting down the cacheManager
+		try
+		{
+			//CatissueCoreCacheManager catissueCoreCacheManager = CatissueCoreCacheManager.getInstance();
+			//catissueCoreCacheManager.shutdown();
+		}
+		catch (CacheException e)
+		{
+			//logger.debug("Exception occurred while shutting instance of CatissueCoreCacheManager");
+			//e.printStackTrace();
+		}
+	*/}
+}

@@ -1,0 +1,165 @@
+
+package edu.wustl.query.action;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
+import edu.common.dynamicextensions.ui.util.Constants;
+import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.exception.BizLogicException;
+import edu.wustl.common.querysuite.queryobject.IConstraints;
+import edu.wustl.common.querysuite.queryobject.ICustomFormula;
+import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
+import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.query.actionForm.SaveQueryForm;
+import edu.wustl.query.beans.SharedQueryBean;
+import edu.wustl.query.bizlogic.SaveQueryBizLogic;
+import edu.wustl.query.htmlprovider.SavedQueryHtmlProvider;
+import edu.wustl.query.util.global.AQConstants;
+/**
+ * Loads data for save query page.
+ * @author deepti_shelar
+ *
+ */
+public class LoadSaveQueryPageAction extends BaseAction
+{
+	/**
+	 * This action loads all the conditions from the query.
+	 * @param mapping mapping
+	 * @param form form
+	 * @param request request
+	 * @param response response
+	 * @throws Exception Exception
+	 * @return ActionForward actionForward
+	 */
+	public ActionForward executeAction(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		IQuery queryObject = (IQuery) request.getSession().getAttribute(AQConstants.QUERY_OBJECT);
+		String target = AQConstants.FAILURE;
+		boolean isDagEmpty = true;
+		if (queryObject != null)
+		{
+			isDagEmpty = isDagEmpty(queryObject);
+			if (isDagEmpty)
+			{
+				target = AQConstants.SUCCESS;
+				String errorMsg = ApplicationProperties.getValue("query.noLimit.error");
+				setActionError(request, errorMsg);
+				request.setAttribute(AQConstants.IS_QUERY_SAVED, AQConstants.IS_QUERY_SAVED);
+			}
+			else
+			{
+				target = getSavedQueryDetails(form, request, queryObject);
+			}
+			List<NameValueBean> coordinators = new ArrayList<NameValueBean>();
+			request.setAttribute(Constants.SELECTED_VALUES, coordinators);
+			String errorMessage = (String) request.getSession().getAttribute("errorMessageForEditQuery");
+			if (errorMessage != null)
+			{
+				setActionError(request, errorMessage);
+				request.getSession().removeAttribute("errorMessageForEditQuery");
+			}
+		}
+		return mapping.findForward(target);
+	}
+
+	/**
+	 * @param form form
+	 * @param request request
+	 * @param queryObject queryObject
+	 * @return target
+	 * @throws BizLogicException Exception
+	 */
+	private String getSavedQueryDetails(ActionForm form,
+			HttpServletRequest request, IQuery queryObject)
+			throws BizLogicException
+	{
+		String target;
+		boolean isShowAll = request.getParameter(AQConstants.SHOW_ALL) == null ? false : true;
+		Map<Integer, ICustomFormula> cFIndexMap = new HashMap<Integer, ICustomFormula>();
+		String htmlContents = new SavedQueryHtmlProvider().getHTMLForSavedQuery(queryObject,
+				isShowAll, AQConstants.SAVE_QUERY_PAGE, cFIndexMap);
+		request.getSession().setAttribute(AQConstants.CUSTOM_FORMULA_INDEX_MAP,
+				cFIndexMap);
+		request.setAttribute(AQConstants.HTML_CONTENTS, htmlContents);
+		String showAllLink = isShowAll ? AQConstants.SHOW_SELECTED_ATTRIBUTE
+				: AQConstants.SHOW_ALL_ATTRIBUTE;
+		request.setAttribute(AQConstants.SHOW_ALL_LINK, showAllLink);
+		if (!isShowAll)
+		{
+			request.setAttribute(AQConstants.SHOW_ALL, AQConstants.TRUE);
+		}
+		target = AQConstants.SUCCESS;
+		if (queryObject.getId() != null && queryObject instanceof ParameterizedQuery)
+		{
+			SaveQueryForm savedQueryForm = (SaveQueryForm) form;
+			savedQueryForm.setDescription(((ParameterizedQuery) queryObject).getDescription());
+			savedQueryForm.setTitle(((ParameterizedQuery) queryObject).getName());
+			SessionDataBean sessionDataBean = (SessionDataBean) request.getSession()
+			.getAttribute(edu.wustl.common.util.global.Constants.SESSION_DATA);
+			SaveQueryBizLogic bizLogic = new SaveQueryBizLogic();
+			String csmUserId = sessionDataBean.getCsmUserId();
+			SharedQueryBean bean = bizLogic.getSharingDetailsBean(queryObject);
+			if(csmUserId.equalsIgnoreCase(bean.getCsmUserId()))
+			{
+				request.setAttribute(AQConstants.IS_MY_QUERY, "true");
+			}
+			populateForm(bean,savedQueryForm);
+		}
+		return target;
+	}
+	/**
+	 * checks if the DAG contains any expression
+	 * @param queryObject query
+	 * @return true / false
+	 */
+	private boolean isDagEmpty(IQuery queryObject)
+	{
+		boolean isDagEmpty = true;
+		IConstraints constraints = queryObject.getConstraints();
+		for (IExpression exp : constraints)
+		{
+			isDagEmpty = false;
+			break;
+		}
+		return isDagEmpty;
+	}
+	/**
+	 * populates the form from the data of the bean.
+	 * @param bean share query bean
+	 * @param savedQueryForm form
+	 */
+	private void populateForm(SharedQueryBean bean, SaveQueryForm savedQueryForm) {
+		savedQueryForm.setShareTo(bean.getShareTo());
+		savedQueryForm.setProtocolCoordinatorIds(bean.getProtocolCoordinatorIds());
+	}
+
+	/**
+	 * This method sets the error action
+	 * @param request request
+	 * @param errorMessage message
+	 */
+	private void setActionError(HttpServletRequest request, String errorMessage)
+	{
+		ActionErrors errors = new ActionErrors();
+		ActionError error = new ActionError("errors.item", errorMessage);
+		errors.add(ActionErrors.GLOBAL_ERROR, error);
+		saveErrors(request, errors);
+	}
+}
