@@ -1,4 +1,0 @@
-<property name="hibernate.connection.driver_class">@@driver@@</property>
-<property name="dialect">@@dialect@@</property>
-<property name="connection.datasource">@@datasource@@</property>
-<property name="transaction.manager_lookup_class">org.hibernate.transaction.JBossTransactionManagerLookup</property>

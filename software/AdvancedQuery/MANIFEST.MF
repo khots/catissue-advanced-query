@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Ant-Version: Apache Ant 1.6.5
-Created-By: 1.5.0_06-b05 (Sun Microsystems Inc.)
-Built-By: nitesh_marwaha
-Version: query 1.0
-CSM-Version: 3.2
-caCore-Version: 3.2
-Build-on: November 4 2009
-
