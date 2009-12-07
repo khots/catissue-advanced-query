@@ -44,44 +44,74 @@ public class FetchQueryAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String target = AQConstants.FAILURE;
-		Long queryId = null;
 		SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
 		if (request.getAttribute("queryId") == null)
 		{
-			queryId = saveQueryForm.getQueryId();
-			if (queryId == null)
-			{
-				target = AQConstants.SUCCESS;
-				setActionError(request, "Query identifier is not valid.");
-			}
-			else
-			{
-				IBizLogic bizLogic = BizLogicFactory.getInstance().getBizLogic(
-						AQConstants.QUERY_INTERFACE_BIZLOGIC_ID);
-				try
-				{
-					List<IParameterizedQuery> queryList = bizLogic.retrieve(ParameterizedQuery.class
-							.getName(), "id", queryId);
-					if (queryList != null && !queryList.isEmpty())
-					{
-						target = getAppropriateTarget(request, saveQueryForm,
-								queryList);
-					}
-				}
-				catch (BizLogicException daoException)
-				{
-					setActionError(request, daoException.getMessage());
-				}
-			}
+			target = fetchQueryDetails(request, target, saveQueryForm);
 		}
 		else
 		{
-			queryId = (Long) request.getAttribute("queryId");
 			String htmlContent = saveQueryForm.getQueryString();
 			request.setAttribute(AQConstants.HTML_CONTENTS, htmlContent);
 			target = AQConstants.SUCCESS;
 		}
 		return actionMapping.findForward(target);
+	}
+
+	/**
+	 * @param request request
+	 * @param target target
+	 * @param saveQueryForm form
+	 * @return target
+	 */
+	private String fetchQueryDetails(HttpServletRequest request, String target,
+			SaveQueryForm saveQueryForm)
+	{
+		String finalTarget = target;
+		Long queryId;
+		queryId = saveQueryForm.getQueryId();
+		if (queryId == null)
+		{
+			finalTarget = AQConstants.SUCCESS;
+			setActionError(request, "Query identifier is not valid.");
+		}
+		else
+		{
+			IBizLogic bizLogic = BizLogicFactory.getInstance().getBizLogic(
+					AQConstants.QUERY_INTERFACE_BIZLOGIC_ID);
+			try
+			{
+				List<IParameterizedQuery> queryList = bizLogic.retrieve(ParameterizedQuery.class
+						.getName(), "id", queryId);
+				finalTarget = setAppropriateTarget(request, target,
+						saveQueryForm, queryList);
+			}
+			catch (BizLogicException daoException)
+			{
+				setActionError(request, daoException.getMessage());
+			}
+		}
+		return finalTarget;
+	}
+
+	/**
+	 * @param request request
+	 * @param target target
+	 * @param saveQueryForm form
+	 * @param queryList query list
+	 * @return target
+	 */
+	private String setAppropriateTarget(HttpServletRequest request,
+			String target, SaveQueryForm saveQueryForm,
+			List<IParameterizedQuery> queryList)
+	{
+		String finalTarget = target;
+		if (queryList != null && !queryList.isEmpty())
+		{
+			finalTarget = getAppropriateTarget(request, saveQueryForm,
+					queryList);
+		}
+		return finalTarget;
 	}
 
 	/**
@@ -118,7 +148,7 @@ public class FetchQueryAction extends Action
 	}
 	/**
 	 * Sets errors in request.
-	 * @param request http request
+	 * @param request request
 	 * @param errorMessage message to be displayed.
 	 */
 	private void setActionError(HttpServletRequest request, String errorMessage)

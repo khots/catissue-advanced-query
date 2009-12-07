@@ -105,7 +105,7 @@ public class CommonQueryBizLogic
 		}
 		catch (DAOException e)
 		{
-			throw (e);
+			throw e;
 		}
 		finally
 		{

@@ -439,11 +439,11 @@ public class CreateQueryObjectBizLogic
 				if (customFormula != null)
 				{
 					ITerm rhsTerm = QueryObjectFactory.createTerm();
-					if ((customFormula.getLhs().getTermType()).equals(TermType.DSInterval))
+					if (customFormula.getLhs().getTermType().equals(TermType.DSInterval))
 					{
 						value = setDateOffsetRHS(newRHSValues, rhsTerm);
 					}
-					else if ((customFormula.getLhs().getTermType()).equals(TermType.Timestamp))
+					else if (customFormula.getLhs().getTermType().equals(TermType.Timestamp))
 					{
 						Date date;
 						try
@@ -583,7 +583,7 @@ public class CreateQueryObjectBizLogic
 				.getEntityAttributesForQuery();
 		for (AttributeInterface attribute : attributes)
 		{
-			if (attribute.getName().equals(AQConstants.ID))
+			if (attribute.getName().equals(AQConstants.IDENTIFIER))
 			{
 				idAttribute = attribute;
 			}

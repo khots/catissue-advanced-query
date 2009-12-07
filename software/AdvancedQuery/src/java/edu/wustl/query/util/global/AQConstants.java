@@ -53,7 +53,7 @@ public class AQConstants
 	public static final int QUERY_INTERFACE_BIZLOGIC_ID = 67;
 	public static final String SQL = "SQL";
 	public static final String ID_COLUMN_ID = "ID_COLUMN_ID";
-	public static final String ID = "id";
+	public static final String IDENTIFIER = "id";
 	public static final String SAVE_TREE_NODE_LIST = "rootOutputTreeNodeList";
 	public static final String ATTRIBUTE_COLUMN_NAME_MAP = "attributeColumnNameMap";
 	public static final String IS_SAVED_QUERY = "isSavedQuery";
@@ -68,13 +68,13 @@ public class AQConstants
 	public static final String[] ATTRIBUTE_NAMES_FOR_TREENODE_LABEL = {"firstName", "lastName",
 			"title", "name", "label", "shorttitle"};
 	public static final String COLUMN_NAME = "Column";
-	public static final String ON = "on";
+	public static final String ON_STRING = "on";
 	public static final String OFF = "off";
 	public static final String PAGE_OF_QUERY_MODULE = "pageOfQueryModule";
 	public static final String RANDOM_NUMBER = "randomNumber";
 	public static final String IS_NOT_NULL = "is not null";
 	public static final String IS_NULL = "is null";
-	public static final String In = "In";
+	public static final String IN_OPERATOR = "In";
 	public static final String Not_In = "Not In";
 	public static final String Equals = "Equals";
 	public static final String Not_Equals = "Not Equals";
@@ -119,7 +119,7 @@ public class AQConstants
 	public static final String APPLET_SERVER_URL_PARAM_NAME = "serverURL";
 	public static final String TEMP_OUPUT_TREE_TABLE_NAME = "TEMP_OUTPUTTREE";
 	public static final String CREATE_TABLE = "Create table ";
-	public static final String AS = "as";
+	public static final String AS_CONSTANT = "as";
 	public static final String TREE_NODE_FONT = "<font color='#FF9BFF' face='Verdana'><i>";
 	public static final String TREE_NODE_FONT_CLOSE = "</i></font>";
 	public static final String ZERO_ID = "0";
@@ -297,7 +297,7 @@ public class AQConstants
 
 	public static final String SPECIMENT_VIEW_ATTRIBUTE = "defaultViewAttribute";
 	public static final String ON_UPPER_CASE = " ON ";
-	public static final String IN = "in";
+	public static final String IN_STRING = "in";
 	public static final String NULL = "NULL";
 	public static final String SELECT = "SELECT ";
 	public static final String LIKE = " LIKE ";
@@ -408,8 +408,8 @@ public class AQConstants
 
     public static final String SELECT_OPTION = "-- Select --";
 
-    public static final String AM = "AM";
-    public static final String PM = "PM";
+    public static final String AM_CONSTANT = "AM";
+    public static final String PM_CONSTANT = "PM";
     public static final String PUBLIC_QUERY_PROTECTION_GROUP = "PUBLIC_QUERY_PROTECTION_GROUP";
     public static final String ACTION = "action";
     public static final String SHARED_QUERY_BEAN = "sharedQueryBean";
@@ -426,7 +426,7 @@ public class AQConstants
 
 	public static final String LABEL_NA = "query.tree.label.NA";
 
-	//Constants to remove the 'magic number' checkstyle error
+	//Constants to remove the 'magic number' check style error
 	public static final int TWO = 2;
 	public static final int THREE = 3;
 	public static final int TEN = 10;

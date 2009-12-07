@@ -3,7 +3,7 @@ package edu.wustl.query.generator;
 import static edu.wustl.query.generator.SqlKeyWords.FROM;
 import static edu.wustl.query.generator.SqlKeyWords.INNER_JOIN;
 import static edu.wustl.query.generator.SqlKeyWords.LEFT_JOIN;
-import static edu.wustl.query.generator.SqlKeyWords.ON;
+import static edu.wustl.query.generator.SqlKeyWords.JOIN_ON;
 import static edu.wustl.query.generator.SqlKeyWords.SELECT;
 import static edu.wustl.query.generator.SqlKeyWords.WHERE;
 
@@ -164,7 +164,7 @@ public class FromBuilder
      */
     private String oneExprStr(String src, String joinConds)
     {
-        return LEFT_JOIN + src + ON + "(" + joinConds + ")";
+        return LEFT_JOIN + src + JOIN_ON + "(" + joinConds + ")";
     }
 
     /**
@@ -316,7 +316,7 @@ public class FromBuilder
                 String joinCond = equate(aliasOf(parent), primaryKey(entity(parent)), middleTabAlias, constraintProperty
                         .getSrcEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().getName());
 
-                res += constraintProperty.getName() + " " + middleTabAlias + ON + joinCond;
+                res += constraintProperty.getName() + " " + middleTabAlias + JOIN_ON + joinCond;
             }
         }
         if ("".equals(res))

@@ -158,7 +158,7 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 	{
 		StringBuffer toolTip = new StringBuffer(AQConstants.ONE_TWENTY_EIGHT);
 		IRule rule = null;
-		if ((expression).containsRule())
+		if (expression.containsRule())
 		{
 			rule = (IRule) expression.getOperand(0);
 		}

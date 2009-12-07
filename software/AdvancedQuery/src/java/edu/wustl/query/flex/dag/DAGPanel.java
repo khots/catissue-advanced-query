@@ -1833,7 +1833,7 @@ public class DAGPanel
 		RelationalOperator relOp = null;
 		for (RelationalOperator operator : RelationalOperator.values())
 		{
-			if ((operator.getStringRepresentation().equals(relationalOp)))
+			if (operator.getStringRepresentation().equals(relationalOp))
 			{
 				relOp = operator;
 				break;

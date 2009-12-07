@@ -134,7 +134,7 @@ final public class QueryModuleUtil
 			{
 				break;
 			}
-			if (AQConstants.ID.equals(attribute.getName()))
+			if (AQConstants.IDENTIFIER.equals(attribute.getName()))
 			{
 				idColumnName = columnName;
 				/*if (queryResultObjectDataBean.isMainEntity())
@@ -352,11 +352,11 @@ final public class QueryModuleUtil
 	{
 		if (actionForm.getClassChecked() == null)
 		{
-			actionForm.setClassChecked(AQConstants.ON);
+			actionForm.setClassChecked(AQConstants.ON_STRING);
 		}
 		if (actionForm.getAttributeChecked() == null)
 		{
-			actionForm.setAttributeChecked(AQConstants.ON);
+			actionForm.setAttributeChecked(AQConstants.ON_STRING);
 		}
 		if (actionForm.getPermissibleValuesChecked() == null)
 		{
@@ -408,7 +408,7 @@ final public class QueryModuleUtil
 			for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 			{
 				AttributeInterface attribute = attributeMetaData.getAttribute();
-				if (AQConstants.ID.equals(attribute.getName()))
+				if (AQConstants.IDENTIFIER.equals(attribute.getName()))
 				{
 					String sqlColumnName = attributeMetaData.getColumnName();
 					getParenIdColName = sqlColumnName;

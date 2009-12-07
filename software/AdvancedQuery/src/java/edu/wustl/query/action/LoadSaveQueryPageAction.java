@@ -29,6 +29,7 @@ import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.beans.SharedQueryBean;
 import edu.wustl.query.bizlogic.SaveQueryBizLogic;
+import edu.wustl.query.bizlogic.ShareQueryBizLogic;
 import edu.wustl.query.htmlprovider.SavedQueryHtmlProvider;
 import edu.wustl.query.util.global.AQConstants;
 /**
@@ -52,21 +53,9 @@ public class LoadSaveQueryPageAction extends BaseAction
 	{
 		IQuery queryObject = (IQuery) request.getSession().getAttribute(AQConstants.QUERY_OBJECT);
 		String target = AQConstants.FAILURE;
-		boolean isDagEmpty = true;
 		if (queryObject != null)
 		{
-			isDagEmpty = isDagEmpty(queryObject);
-			if (isDagEmpty)
-			{
-				target = AQConstants.SUCCESS;
-				String errorMsg = ApplicationProperties.getValue("query.noLimit.error");
-				setActionError(request, errorMsg);
-				request.setAttribute(AQConstants.IS_QUERY_SAVED, AQConstants.IS_QUERY_SAVED);
-			}
-			else
-			{
-				target = getSavedQueryDetails(form, request, queryObject);
-			}
+			target = setAppropriateTarget(form, request, queryObject);
 			List<NameValueBean> coordinators = new ArrayList<NameValueBean>();
 			request.setAttribute(Constants.SELECTED_VALUES, coordinators);
 			String errorMessage = (String) request.getSession().getAttribute("errorMessageForEditQuery");
@@ -77,6 +66,34 @@ public class LoadSaveQueryPageAction extends BaseAction
 			}
 		}
 		return mapping.findForward(target);
+	}
+
+	/**
+	 * @param form form
+	 * @param request request
+	 * @param queryObject queryObject
+	 * @return target
+	 * @throws BizLogicException Exception
+	 */
+	private String setAppropriateTarget(ActionForm form,
+			HttpServletRequest request, IQuery queryObject)
+			throws BizLogicException
+	{
+		String target;
+		boolean isDagEmpty;
+		isDagEmpty = isDagEmpty(queryObject);
+		if (isDagEmpty)
+		{
+			target = AQConstants.SUCCESS;
+			String errorMsg = ApplicationProperties.getValue("query.noLimit.error");
+			setActionError(request, errorMsg);
+			request.setAttribute(AQConstants.IS_QUERY_SAVED, AQConstants.IS_QUERY_SAVED);
+		}
+		else
+		{
+			target = getSavedQueryDetails(form, request, queryObject);
+		}
+		return target;
 	}
 
 	/**
@@ -106,6 +123,19 @@ public class LoadSaveQueryPageAction extends BaseAction
 			request.setAttribute(AQConstants.SHOW_ALL, AQConstants.TRUE);
 		}
 		target = AQConstants.SUCCESS;
+		populateForm(form, request, queryObject);
+		return target;
+	}
+
+	/**
+	 * @param form form
+	 * @param request request
+	 * @param queryObject request
+	 * @throws BizLogicException Exception
+	 */
+	private void populateForm(ActionForm form, HttpServletRequest request,
+			IQuery queryObject) throws BizLogicException
+	{
 		if (queryObject.getId() != null && queryObject instanceof ParameterizedQuery)
 		{
 			SaveQueryForm savedQueryForm = (SaveQueryForm) form;
@@ -120,9 +150,8 @@ public class LoadSaveQueryPageAction extends BaseAction
 			{
 				request.setAttribute(AQConstants.IS_MY_QUERY, "true");
 			}
-			populateForm(bean,savedQueryForm);
+			populateSharingDetails(bean,savedQueryForm);
 		}
-		return target;
 	}
 	/**
 	 * checks if the DAG contains any expression
@@ -145,7 +174,8 @@ public class LoadSaveQueryPageAction extends BaseAction
 	 * @param bean share query bean
 	 * @param savedQueryForm form
 	 */
-	private void populateForm(SharedQueryBean bean, SaveQueryForm savedQueryForm) {
+	private void populateSharingDetails(SharedQueryBean bean, SaveQueryForm savedQueryForm)
+	{
 		savedQueryForm.setShareTo(bean.getShareTo());
 		savedQueryForm.setProtocolCoordinatorIds(bean.getProtocolCoordinatorIds());
 	}

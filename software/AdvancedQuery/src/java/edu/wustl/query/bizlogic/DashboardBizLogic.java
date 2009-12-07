@@ -517,24 +517,24 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 				int hrs = Integer.parseInt(hours)-AQConstants.TWELVE;
 				if(hrs<AQConstants.TEN)
 				{
-					time = "0"+hrs + ":" + minutes+" "+AQConstants.PM;
+					time = "0"+hrs + ":" + minutes+" "+AQConstants.PM_CONSTANT;
 				}
 				else
 				{
-					time = hrs + ":" + minutes+" "+AQConstants.PM;
+					time = hrs + ":" + minutes+" "+AQConstants.PM_CONSTANT;
 				}
 			}
 			else if(Integer.parseInt(hours)==0)
 			{
-				time = "12:"+minutes+" "+AQConstants.AM;
+				time = "12:"+minutes+" "+AQConstants.AM_CONSTANT;
 			}
 			else if(Integer.parseInt(hours)==AQConstants.TWELVE)
 			{
-				time = time + " "+AQConstants.PM;
+				time = time + " "+AQConstants.PM_CONSTANT;
 			}
 			else
 			{
-				time = time + " "+AQConstants.AM;
+				time = time + " "+AQConstants.AM_CONSTANT;
 			}
 		}
 		executedOnTime = executedOnTime.substring(0, executedOnTime.indexOf(' '));

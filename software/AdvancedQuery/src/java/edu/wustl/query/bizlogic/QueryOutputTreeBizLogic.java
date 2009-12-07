@@ -447,7 +447,7 @@ public class QueryOutputTreeBizLogic
         {
             AttributeInterface attribute = attributeMetaData.getAttribute();
             sqlColumnName = attributeMetaData.getColumnName();
-            if (attribute.getName().equalsIgnoreCase(AQConstants.ID))
+            if (attribute.getName().equalsIgnoreCase(AQConstants.IDENTIFIER))
             {
                 idColumnOfCurrentNode = sqlColumnName;
             }

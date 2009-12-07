@@ -198,7 +198,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 				String aliasName = queryResObjData.getAliasName();
 				String link = "SimpleSearchEdit.do?"
 						+ edu.wustl.common.util.global.Constants.TABLE_ALIAS_NAME +
-						"=" + aliasName + "&" + AQConstants.ID + "="
+						"=" + aliasName + "&" + AQConstants.IDENTIFIER + "="
 						+ row.get(queryResObjData.getIdentifierColumnId()) + "&"
 						+ AQConstants.PAGE_OF + "="
 						+ Variables.aliasAndPageOfMap.get(aliasName);

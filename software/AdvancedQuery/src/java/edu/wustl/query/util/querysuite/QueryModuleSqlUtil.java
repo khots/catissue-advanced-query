@@ -82,7 +82,7 @@ final public class QueryModuleSqlUtil
 			/*QueryModuleSqlUtil.updateAuditQueryDetails(edu.wustl.query.util.global.Constants.IF_TEMP_TABLE_DELETED,
 					"true",queryDetailsObj.getAuditEventId());
 			*/
-			String newCreateTableSql = AQConstants.CREATE_TABLE + tableName + " " + AQConstants.AS + " "
+			String newCreateTableSql = AQConstants.CREATE_TABLE + tableName + " " + AQConstants.AS_CONSTANT + " "
             + createTableSql;
 			jdbcDao.executeUpdate(newCreateTableSql);
 			jdbcDao.commit();

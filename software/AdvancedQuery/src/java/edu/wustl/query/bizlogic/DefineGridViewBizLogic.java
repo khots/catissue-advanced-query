@@ -344,7 +344,7 @@ public class DefineGridViewBizLogic
 			{
 				queryResulObjectDataBean.getIdentifiedDataColumnIds().add(columnIndex);
 			}
-			if (AQConstants.ID.equals(element.getAttribute().getName()))
+			if (AQConstants.IDENTIFIER.equals(element.getAttribute().getName()))
 			{
 				/*if (queryResulObjectDataBean.isMainEntity())
 				{*/

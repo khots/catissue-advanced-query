@@ -49,7 +49,6 @@ import gov.nih.nci.security.exceptions.CSException;
  */
 public class SaveQueryAction extends BaseAction
 {
-
 	/**
 	 * This method saves/edits the query.
 	 * @param actionMapping Object of ActionMapping
@@ -209,26 +208,11 @@ public class SaveQueryAction extends BaseAction
 	{
 		SaveQueryForm saveActionForm = (SaveQueryForm) actionForm;
 		String error = "";
-		IParameterizedQuery pQuery = (IParameterizedQuery) query;
-		if (query.getId() == null)
-		{
-			pQuery = QueryObjectFactory.createParameterizedQuery(query);
-		}
+		IParameterizedQuery pQuery = createParameterizedQuery(query);
+		boolean errorMessage = false;
+		setQueryTitle(saveActionForm, pQuery);
+		setQueryDescription(saveActionForm, pQuery);
 		HttpSession session = request.getSession();
-		String queryTitle = saveActionForm.getTitle();
-		if (queryTitle != null)
-		{
-			pQuery.setName(queryTitle);
-		}
-		String queryDescription = saveActionForm.getDescription();
-		if (queryDescription == null)
-		{
-			pQuery.setDescription("");
-		}
-		else
-		{
-			pQuery.setDescription(queryDescription);
-		}
 		CreateQueryObjectBizLogic bizLogic = new CreateQueryObjectBizLogic();
 		String conditionList = request.getParameter(AQConstants.CONDITIONLIST);
 		String cfRHSList = request.getParameter(AQConstants.STR_TO_FORM_TQ);
@@ -243,12 +227,62 @@ public class SaveQueryAction extends BaseAction
 		if (error != null && error.trim().length() > 0)
 		{
 			setActionError(request, error);
-			return null;
+			errorMessage = true;
+			pQuery = null;
 		}
-		List<IOutputAttribute> selectedOutputAttributeList = saveView(session);
-		pQuery.getOutputTerms();
-		pQuery.setOutputAttributeList(selectedOutputAttributeList);
+		if(!errorMessage)
+		{
+			List<IOutputAttribute> selectedOutputAttributeList = saveView(session);
+			pQuery.getOutputTerms();
+			pQuery.setOutputAttributeList(selectedOutputAttributeList);
+		}
 		return pQuery;
+	}
+
+	/**
+	 * @param saveActionForm form
+	 * @param pQuery query
+	 */
+	private void setQueryDescription(SaveQueryForm saveActionForm,
+			IParameterizedQuery pQuery)
+	{
+		String queryDescription = saveActionForm.getDescription();
+		if (queryDescription == null)
+		{
+			pQuery.setDescription("");
+		}
+		else
+		{
+			pQuery.setDescription(queryDescription);
+		}
+	}
+
+	/**
+	 * @param query query
+	 * @return pQuery
+	 */
+	private IParameterizedQuery createParameterizedQuery(IQuery query)
+	{
+		IParameterizedQuery pQuery = (IParameterizedQuery) query;
+		if (query.getId() == null)
+		{
+			pQuery = QueryObjectFactory.createParameterizedQuery(query);
+		}
+		return pQuery;
+	}
+
+	/**
+	 * @param saveActionForm form
+	 * @param pQuery query
+	 */
+	private void setQueryTitle(SaveQueryForm saveActionForm,
+			IParameterizedQuery pQuery)
+	{
+		String queryTitle = saveActionForm.getTitle();
+		if (queryTitle != null)
+		{
+			pQuery.setName(queryTitle);
+		}
 	}
 
 	/**

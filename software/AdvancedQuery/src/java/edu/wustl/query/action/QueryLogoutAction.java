@@ -48,6 +48,6 @@ public class QueryLogoutAction extends BaseAction
 
 		session.invalidate();
 
-		return (mapping.findForward(AQConstants.SUCCESS));
+		return mapping.findForward(AQConstants.SUCCESS);
 	}
 }

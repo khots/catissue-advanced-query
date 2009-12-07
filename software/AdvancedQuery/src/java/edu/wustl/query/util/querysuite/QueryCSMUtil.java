@@ -818,7 +818,7 @@ public class QueryCSMUtil
 			{
 				AttributeInterface attribute = attributeMetaData.getAttribute();
 				String sqlColumnName = attributeMetaData.getColumnName().trim();
-				if (attribute.getName().equals(AQConstants.ID))
+				if (attribute.getName().equals(AQConstants.IDENTIFIER))
 				{
 					int index = selectSqlColumnList.indexOf(sqlColumnName);
 

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 package edu.wustl.query.action;
@@ -20,9 +20,9 @@ import edu.wustl.query.util.global.AQConstants;
  */
 public class QueryMessageAction extends Action
 {
-
 	/**
-	 * This method loads the html for addlimits section.This html is the replaced with the div data with the help of Ajax script.
+	 * This method loads the UI for add limits section.
+	 * This UI is the replaced with the div data with the help of Ajax script.
 	 * @param mapping mapping
 	 * @param form form
 	 * @param request request
@@ -36,12 +36,13 @@ public class QueryMessageAction extends Action
 	{
 		String message = (String) request.getSession().getAttribute(
 				AQConstants.NO_MAIN_OBJECT_IN_QUERY);
-		message = "<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>" + message
-				+ "</font></li>";
+		StringBuffer contents = new StringBuffer();
+		contents = contents.append("<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>")
+		.append(message).append("</font></li>");
+		message = contents.toString();
 		request.getSession().removeAttribute(AQConstants.NO_MAIN_OBJECT_IN_QUERY);
 		response.setContentType("text/html");
 		response.getWriter().write(message);
 		return null;
 	}
-
 }

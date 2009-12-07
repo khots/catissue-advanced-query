@@ -63,11 +63,7 @@ public class CategorySearchAction extends BaseAction
 		}
 		else
 		{
-			String textfieldValue = searchForm.getTextField();
-			if (currentPage != null && currentPage.equalsIgnoreCase("prevToAddLimits"))
-			{
-				textfieldValue = "";
-			}
+			String textfieldValue = setTextFieldValue(searchForm, currentPage);
 			if (textfieldValue != null && !textfieldValue.equals(""))
 			{
 				setEntities(request, response, searchForm, textfieldValue);
@@ -79,6 +75,22 @@ public class CategorySearchAction extends BaseAction
 			actionForward = mapping.findForward(target);
 		}
 		return actionForward;
+	}
+
+	/**
+	 * @param searchForm form
+	 * @param currentPage current page
+	 * @return textfieldValue
+	 */
+	private String setTextFieldValue(CategorySearchForm searchForm,
+			String currentPage)
+	{
+		String textfieldValue = searchForm.getTextField();
+		if (currentPage != null && currentPage.equalsIgnoreCase("prevToAddLimits"))
+		{
+			textfieldValue = "";
+		}
+		return textfieldValue;
 	}
 	/**
 	 *
@@ -209,11 +221,11 @@ public class CategorySearchAction extends BaseAction
 					&& (description.equalsIgnoreCase("on") ||
 						description.equalsIgnoreCase(AQConstants.TRUE)))
 			{
-				target.add(Integer.valueOf((Constants.CLASS_WITH_DESCRIPTION)));
+				target.add(Integer.valueOf(Constants.CLASS_WITH_DESCRIPTION));
 			}
 			else
 			{
-				target.add(Integer.valueOf((Constants.CLASS)));
+				target.add(Integer.valueOf(Constants.CLASS));
 			}
 		}
 		if (attCBChecked != null
@@ -240,7 +252,7 @@ public class CategorySearchAction extends BaseAction
 		int[] searchTarget = new int[target.size()];
 		for (int i = 0; i < target.size(); i++)
 		{
-			searchTarget[i] = (target.get(i)).intValue();
+			searchTarget[i] = target.get(i).intValue();
 		}
 		return searchTarget;
 	}

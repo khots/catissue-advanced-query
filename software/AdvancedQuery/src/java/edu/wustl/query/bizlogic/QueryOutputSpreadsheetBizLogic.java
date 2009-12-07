@@ -363,7 +363,7 @@ public class QueryOutputSpreadsheetBizLogic
 				queryResultObjectDataBean.setIdentifiedDataColumnIds(identifiedDataColumnIds);
 				queryResultObjectDataBean.setHasAssociatedIdentifiedData(true);
 			}
-			if (attribute.getName().equals(AQConstants.ID))
+			if (attribute.getName().equals(AQConstants.IDENTIFIER))
 			{
 				idColumnOfCurrentNode = sqlColumnName;
 				if (!selectedColumnMetaData.isDefinedView())
@@ -475,7 +475,7 @@ public class QueryOutputSpreadsheetBizLogic
 			Map<AttributeInterface, String> attributeColumnNameMap)
 	{
 		AttributeInterface idAttribute = expression.getQueryEntity().getDynamicExtensionsEntity()
-				.getAttributeByName(AQConstants.ID);
+				.getAttributeByName(AQConstants.IDENTIFIER);
 		return attributeColumnNameMap.get(idAttribute);
 	}
 
@@ -758,7 +758,7 @@ public class QueryOutputSpreadsheetBizLogic
 						defineViewNodeList.add(attribute.getEntity());
 					}
 
-					if (attribute.getName().equalsIgnoreCase(AQConstants.ID))
+					if (attribute.getName().equalsIgnoreCase(AQConstants.IDENTIFIER))
 					{
 						queryResultObjectDataBean.setMainEntityIdentifierColumnId(columnIndex);
 						queryResultObjectDataBean.setEntityId(columnIndex);
@@ -1087,7 +1087,7 @@ public class QueryOutputSpreadsheetBizLogic
 			AttributeInterface attribute = attributeMetaData.getAttribute();
 			String sqlColumnName = attributeMetaData.getColumnName();
 
-			if (attribute.getName().equalsIgnoreCase(AQConstants.ID))
+			if (attribute.getName().equalsIgnoreCase(AQConstants.IDENTIFIER))
 			{
 				idColumnOfCurrentNode = sqlColumnName;
 				queryResultObjectDataBean.setMainEntityIdentifierColumnId(columnIndex);

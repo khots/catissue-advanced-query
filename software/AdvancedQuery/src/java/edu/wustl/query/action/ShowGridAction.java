@@ -36,8 +36,8 @@ public class ShowGridAction extends BaseAction
 {
 
 	/**
-	 * This method loads the data required for Query Output tree. 
-	 * With the help of QueryOutputTreeBizLogic it generates a string which will be then passed to client side and tree is formed accordingly. 
+	 * This method loads the data required for Query Output tree.
+	 * With the help of QueryOutputTreeBizLogic it generates a string which will be then passed to client side and tree is formed accordingly.
 	 * @param mapping mapping
 	 * @param form form
 	 * @param request request
@@ -109,7 +109,7 @@ public class ShowGridAction extends BaseAction
 		Map<String, IOutputTerm> outputTermsColumns = (Map<String, IOutputTerm>) session
 				.getAttribute(AQConstants.OUTPUT_TERMS_COLUMNS);
 		String recordsPerPageStr = (String) session.getAttribute(AQConstants.RESULTS_PER_PAGE);
-		int recordsPerPage = Integer.valueOf((recordsPerPageStr));
+		int recordsPerPage = Integer.valueOf(recordsPerPageStr);
 		Map<Long, Map<AttributeInterface, String>> columnMap = (Map<Long, Map<AttributeInterface, String>>) session
 				.getAttribute(AQConstants.ID_COLUMNS_MAP);
 		//QueryDetails queryDetailsObj = new QueryDetails(session);
@@ -135,8 +135,8 @@ public class ShowGridAction extends BaseAction
 		return gridDatamap;
 	}
 
-	/**Method that will add an error message in action errors when id particular data node is -1 i.e. user is not authorized to see 
-	 * this particular record. 
+	/**Method that will add an error message in action errors when id particular data node is -1 i.e. user is not authorized to see
+	 * this particular record.
 	 * @param request
 	 */
 	private void getErrorMessageUserNotAuthorized(HttpServletRequest request)

@@ -16,8 +16,8 @@ import edu.wustl.query.htmlprovider.GenerateHTMLDetails;
 import edu.wustl.query.htmlprovider.HtmlProvider;
 
 /**
- * When the Link representing the searched entity is clicked, the UI for Add Limits section is 
- * generated with help of GenerateHtmlForAddLimitsBizLogic. The entity is taken from a map 
+ * When the Link representing the searched entity is clicked, the UI for Add Limits section is
+ * generated with help of GenerateHtmlForAddLimitsBizLogic. The entity is taken from a map
  * of user searched entities is already stored in session.
  * @author deepti_shelar
  *
@@ -25,7 +25,7 @@ import edu.wustl.query.htmlprovider.HtmlProvider;
 public class LoadDefineSearchRulesAction extends Action
 {
 	/**
-	 * This method loads the html for addlimits section.This html is the replaced with 
+	 * This method loads the html for addlimits section.This html is the replaced with
 	 * the div data with the help of Ajax script.
 	 * @param mapping mapping
 	 * @param form form
@@ -49,7 +49,7 @@ public class LoadDefineSearchRulesAction extends Action
 		HtmlProvider addLimitsBizLogic = new HtmlProvider(getHTML);
 
 		String html = "";
-		Entity entity = (Entity) EntityCache.getCache().getEntityById(Long.valueOf((entityName)));
+		Entity entity = (Entity) EntityCache.getCache().getEntityById(Long.valueOf(entityName));
 		if (entity != null)
 		{
 			html = addLimitsBizLogic.generateHTML(entity, null);

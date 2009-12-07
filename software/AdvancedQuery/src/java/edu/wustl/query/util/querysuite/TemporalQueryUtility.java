@@ -32,7 +32,7 @@ public class TemporalQueryUtility
 			if ((!opStr.equals(AQConstants.Contains))
 					&& (!opStr.equals(AQConstants.STRATS_WITH))
 					&& (!opStr.equals(AQConstants.ENDS_WITH))
-					&& (!opStr.equals(AQConstants.In))
+					&& (!opStr.equals(AQConstants.IN_OPERATOR))
 					&& (!opStr.equals(AQConstants.Between))
 					&& (!opStr.equals(AQConstants.Not_In))
 					&& (!opStr.equalsIgnoreCase(AQConstants.IS_NULL))

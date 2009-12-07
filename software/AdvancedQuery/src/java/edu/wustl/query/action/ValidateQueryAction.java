@@ -1,6 +1,8 @@
 
 package edu.wustl.query.action;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -15,10 +17,10 @@ import edu.wustl.query.bizlogic.ValidateQueryBizLogic;
 import edu.wustl.query.util.global.AQConstants;
 
 /**
- * When the user searches or saves a query , the query is checked for the conditions like DAG should not be empty , is there 
- * at least one node in view on define view page and does the query contain the main object. If all the conditions are satisfied 
+ * When the user searches or saves a query , the query is checked for the conditions like DAG should not be empty , is there
+ * at least one node in view on define view page and does the query contain the main object. If all the conditions are satisfied
  * further process is done else corresponding error message is shown.
- * 
+ *
  * @author shrutika_chintal
  *
  */
@@ -39,10 +41,7 @@ public class ValidateQueryAction extends Action
 					.getAttribute(AQConstants.VALIDATION_MESSAGE_FOR_ORDERING);
 			String isListEmpty = (String) session.getAttribute(AQConstants.IS_LIST_EMPTY);
 
-			if ((isListEmpty != null && isListEmpty.equals(AQConstants.FALSE)) || message == null)
-			{
-				message = " "; //if empty string is returned mac+safari gives problem and if message is set to null mozilla gives problem.
-			}
+			message = setBlankMessage(message, isListEmpty);
 			response.setContentType("text/html");
 			response.getWriter().write(message);
 		}
@@ -53,17 +52,43 @@ public class ValidateQueryAction extends Action
 			ValidateQueryBizLogic vBizLogic = new ValidateQueryBizLogic();
 			String validationMessage = vBizLogic.getValidationMessage(request,
 					query);
-			if(validationMessage == null)
-			{
-				response.getWriter().write(buttonClicked);
-			}
-			else 
-			{
-				response.setContentType("text/html");
-				response.getWriter().write(validationMessage);
-			}
+			updateResponse(response, buttonClicked, validationMessage);
 		}
 		return null;
 	}
 
+	/**
+	 * @param message message
+	 * @param isListEmpty to determine if list is empty
+	 * @return message
+	 */
+	private String setBlankMessage(String message, String isListEmpty)
+	{
+		String blankMessage = message;
+		if ((isListEmpty != null && isListEmpty.equals(AQConstants.FALSE)) || message == null)
+		{
+			blankMessage = " "; //if empty string is returned mac+safari gives problem and if message is set to null mozilla gives problem.
+		}
+		return blankMessage;
+	}
+
+	/**
+	 * @param response response
+	 * @param buttonClicked if button is clicked
+	 * @param validationMessage message
+	 * @throws IOException IOException
+	 */
+	private void updateResponse(HttpServletResponse response,
+			String buttonClicked, String validationMessage) throws IOException
+	{
+		if(validationMessage == null)
+		{
+			response.getWriter().write(buttonClicked);
+		}
+		else
+		{
+			response.setContentType("text/html");
+			response.getWriter().write(validationMessage);
+		}
+	}
 }

@@ -155,7 +155,7 @@ public class SaveQueryBizLogic extends DefaultQueryBizLogic implements IQueryBiz
 		IFactory factory = AbstractFactoryConfig.getInstance().getBizLogicFactory();
 		IBizLogic bizLogic = factory.getBizLogic(AQConstants.QUERY_INTERFACE_BIZLOGIC_ID);
 		final List<IQuery> queryList = bizLogic.retrieve(ParameterizedQuery.class.getName(),
-				AQConstants.ID, queryId);
+				AQConstants.IDENTIFIER, queryId);
 		IQuery query = null;
 		if (queryList != null && !queryList.isEmpty())
 		{
