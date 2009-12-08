@@ -268,9 +268,9 @@ int queryCount = 0;%>
 										String executedOn = dashBoardBean.getExecutedOn();
 										String ownerName = dashBoardBean.getOwnerName();
 									%>
-							<td valign="center" height='20' width="31%" align="left"
-								style="padding-left: 0.2em; * padding-left: 5px; font-size: 1em; font-family: verdana;"
-								onmouseover="<%=function%>"><%=newTitle%></td>
+							<td valign="center" height='20' width="31%" align="left">
+								<html:link style="padding-left: 0.2em; * padding-left: 5px; font-size: 1em; font-family: verdana;" href='#' onclick='<%=target%>'
+								onmouseover="<%=function%>"><%=newTitle%></html:link></td>
 							<td width="16%" align="left"
 								style="padding-left: 0.2em; * padding-left: 5px; font-size: 1em; font-family: verdana;">
 							<%=rootEntityName %> (<%=noOfRecords%>)</td>
