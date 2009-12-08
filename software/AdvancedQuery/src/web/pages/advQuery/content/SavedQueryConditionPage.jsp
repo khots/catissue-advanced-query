@@ -233,6 +233,9 @@ function checkForValidation()
 			<dynamicExtensions:multiSelectUsingCombo /></td>
 		</tr>
 		<tr>
+			<td class="small_txt_grey" colspan="3"><html:checkbox
+				property="editQuery" styleId="editQuery" value="<%=valueOfchkBox%>" />&nbsp;
+			<bean:message key="edit.query" /></td>
 		</tr>
 		<tr>
 			<td colspan='4' align="left">&nbsp;</td>
