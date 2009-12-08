@@ -38,12 +38,15 @@
 	String isMyQuery = (String) request
 			.getAttribute(AQConstants.IS_MY_QUERY);
 	String valueOfchkBox;
-	String chkDisabled = "false";
-	if (isMyQuery == null) {
+	boolean chkDisabled = false;
+	if (isMyQuery == null)
+	{
 		isMyQuery = "false";
 		valueOfchkBox = "false";
-		chkDisabled = "true";
-	} else {
+		chkDisabled = true;
+	}
+	else
+	{
 		valueOfchkBox = "true";
 	}
 	String isSaveButtonDisable = "";
@@ -51,7 +54,8 @@
 	Long queryIdLong = form.getQueryId();
 	String queryId = "" + queryIdLong;
 	boolean isRadioButtonDisabled = false;
-	if (isQuerySaved != null) {
+	if (isQuerySaved != null)
+	{
 		isSaveButtonDisable = "disabled='disabled'";
 		isRadioButtonDisabled = true;
 	}
@@ -234,16 +238,16 @@ function checkForValidation()
 		</tr>
 		<tr>
 			<td class="small_txt_grey" colspan="3"><html:checkbox
-				property="editQuery" styleId="editQuery" value="<%=valueOfchkBox%>" />&nbsp;
-			<bean:message key="edit.query" /></td>
+				property="editQuery" styleId="editQuery" value="<%=valueOfchkBox%>"
+				disabled='<%=chkDisabled%>' />&nbsp; <bean:message key="edit.query" /></td>
 		</tr>
 		<tr>
 			<td colspan='4' align="left">&nbsp;</td>
 		</tr>
 		<tr>
 			<td colspan='4' align="left"><input type="hidden"
-				name="queryString" id="queryString" value="" /> <input type="hidden"
-				name="buildQueryString" id="buildQueryString" value="" /> <!--input type="button" name="preview" value="Preview" class="actionButton"  disabled="true"/-->
+				name="queryString" id="queryString" value="" /> <input
+				type="hidden" name="buildQueryString" id="buildQueryString" value="" />
 			<%
 				if (isQuerySaved != null && isQuerySaved.equals("true")) {
 			%> <input type="button" name="close" value="Back to Dashboard"
