@@ -43,8 +43,7 @@ public class SpreadsheetExportAction extends BaseAction
 	{
 		QueryAdvanceSearchForm searchForm = (QueryAdvanceSearchForm) form;
 		HttpSession session = request.getSession();
-		String isChkAllAcrossAll = (String) request
-				.getParameter(AQConstants.CHECK_ALL_ACROSS_ALL_PAGES);
+		String isChkAllAcrossAll = (String) request.getParameter(AQConstants.CHECK_ALL_ACROSS_ALL_PAGES);
 		IParameterizedQuery query = (IParameterizedQuery) session.getAttribute(AQConstants.QUERY_OBJECT);
 		List<List<String>> exportList = new ArrayList<List<String>>();
 		ExportQueryBizLogic exportBizLogic = new ExportQueryBizLogic();
@@ -52,56 +51,57 @@ public class SpreadsheetExportAction extends BaseAction
 		//Extracting map from form bean which gives the serial numbers of selected rows
 		Map map = searchForm.getValues();
 		Object[] obj = map.keySet().toArray();
-		//Getting column data & grid data from session
-		List<String> columnList = (List<String>) session
-				.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
-		List<List<String>> dataList = getDataList(request, session,
-				isChkAllAcrossAll);
+		List<String> columnList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
+		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll);
 		List tmpColumnList = new ArrayList();
-		List tmpDataList = populateTemporaryList(columnList, dataList,
-				tmpColumnList);
+		List tmpDataList = populateTemporaryList(columnList, dataList,tmpColumnList);
 		columnList = tmpColumnList;
 		dataList = tmpDataList;
-		//    	Mandar 06-Apr-06 Bugid:1165 : Extra ID columns end
-		//Adding first row(column names) to exportData
+		//Mandar 06-Apr-06 Bugid:1165 : Extra ID columns end. Adding first row(column names) to exportData
 		exportList.add(columnList);
 		List<String> idIndexList = new ArrayList<String>();
 		int columnsSize = columnList.size();
 		Map<Integer, List<String>> entityIdsMap = (Map<Integer, List<String>>) session
 		.getAttribute(AQConstants.ENTITY_IDS_MAP);
-		if (isChkAllAcrossAll != null
-				&& isChkAllAcrossAll.equalsIgnoreCase("true"))
+		if (isChkAllAcrossAll != null && isChkAllAcrossAll.equalsIgnoreCase("true"))
 		{
-			for (int i = 0; i < dataList.size(); i++)
+			for (int counter = 0; counter < dataList.size(); counter++)
 			{
-				List<String> list = dataList.get(i);
+				List<String> list = dataList.get(counter);
 				List<String> subList = list.subList(0, columnsSize);
 				exportList.add(subList);
-				if (entityIdsMap != null && !entityIdsMap.isEmpty())
-				{
-					List<String> entityIdList = entityIdsMap.get(i);
-					idIndexList.addAll(entityIdList);
-				}
+				populateIndexList(idIndexList, entityIdsMap, counter);
 			}
 		}
 		else
 		{
-			for (int i = 0; i < obj.length; i++)
+			for (int counter = 0; counter < obj.length; counter++)
 			{
-				int indexOf = obj[i].toString().indexOf("_") + 1;
-				int index = Integer.parseInt(obj[i].toString().substring(indexOf));
+				int indexOf = obj[counter].toString().indexOf("_") + 1;
+				int index = Integer.parseInt(obj[counter].toString().substring(indexOf));
 				List<String> list = dataList.get(index);
 				List<String> subList = list.subList(0, columnsSize);
-				if (entityIdsMap != null && !entityIdsMap.isEmpty())
-				{
-					List<String> entityIdList = entityIdsMap.get(index);
-					idIndexList.addAll(entityIdList);
-				}
+				populateIndexList(idIndexList, entityIdsMap, index);
 				exportList.add(subList);
 			}
 		}
 		exportAndSend(response, session, exportList, idIndexList, entityIdsMap);
 		return null;
+	}
+
+	/**
+	 * @param idIndexList index list
+	 * @param entityIdsMap map
+	 * @param counter counter
+	 */
+	private void populateIndexList(List<String> idIndexList,
+			Map<Integer, List<String>> entityIdsMap, int counter)
+	{
+		if (entityIdsMap != null && !entityIdsMap.isEmpty())
+		{
+			List<String> entityIdList = entityIdsMap.get(counter);
+			idIndexList.addAll(entityIdList);
+		}
 	}
 
 	/**
@@ -149,8 +149,8 @@ public class SpreadsheetExportAction extends BaseAction
 		{
 			request.setAttribute(AQConstants.PAGE_NUMBER, pageNo);
 		}
-		int recordsPerPage = new Integer(recordsPerPageStr);
-		int pageNum = new Integer(pageNo);
+		int recordsPerPage = Integer.valueOf(recordsPerPageStr);
+		int pageNum = Integer.valueOf(pageNo);
 		if (isChkAllAcrossAll != null
 				&& isChkAllAcrossAll.equalsIgnoreCase("true"))
 		{

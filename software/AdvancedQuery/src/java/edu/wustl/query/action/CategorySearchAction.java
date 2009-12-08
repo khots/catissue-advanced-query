@@ -70,6 +70,20 @@ public class CategorySearchAction extends BaseAction
 				flag = false;
 			}
 		}
+		actionForward = setActionForward(mapping, flag, target);
+		return actionForward;
+	}
+
+	/**
+	 * @param mapping mapping
+	 * @param flag flag
+	 * @param target target
+	 * @return actionForward
+	 */
+	private ActionForward setActionForward(ActionMapping mapping,
+			 boolean flag, String target)
+	{
+		ActionForward actionForward = null;
 		if(flag)
 		{
 			actionForward = mapping.findForward(target);
@@ -213,47 +227,95 @@ public class CategorySearchAction extends BaseAction
 		String pvCBChecked = searchForm.getPermissibleValuesChecked();
 		String description = searchForm.getIncludeDescriptionChecked();
 		List<Integer> target = new ArrayList<Integer>();
-		if (clsCBChecked != null
-				&& (clsCBChecked.equalsIgnoreCase("on") || clsCBChecked
-						.equalsIgnoreCase(AQConstants.TRUE)))
-		{
-			if (description != null
-					&& (description.equalsIgnoreCase("on") ||
-						description.equalsIgnoreCase(AQConstants.TRUE)))
-			{
-				target.add(Integer.valueOf(Constants.CLASS_WITH_DESCRIPTION));
-			}
-			else
-			{
-				target.add(Integer.valueOf(Constants.CLASS));
-			}
-		}
-		if (attCBChecked != null
-				&& (attCBChecked.equalsIgnoreCase("on") || attCBChecked
-						.equalsIgnoreCase(AQConstants.TRUE)))
-		{
-			if (description != null
-				&& (description.equalsIgnoreCase("on") ||
-					description.equalsIgnoreCase(AQConstants.TRUE)))
-			{
-				target.add(Integer.valueOf(Constants.ATTRIBUTE_WITH_DESCRIPTION));
-			}
-			else
-			{
-				target.add(Integer.valueOf(Constants.ATTRIBUTE));
-			}
-		}
-		if (pvCBChecked != null
-				&& (pvCBChecked.equalsIgnoreCase("on") || pvCBChecked
-						.equalsIgnoreCase(AQConstants.TRUE)))
-		{
-			target.add(Integer.valueOf(Constants.PERMISSIBLEVALUE));
-		}
+		checkClassDescription(clsCBChecked, description, target);
+		checkAttributeDescription(attCBChecked, description, target);
+		checkPermissibleValues(pvCBChecked, target);
 		int[] searchTarget = new int[target.size()];
 		for (int i = 0; i < target.size(); i++)
 		{
 			searchTarget[i] = target.get(i).intValue();
 		}
 		return searchTarget;
+	}
+
+	/**
+	 * @param pvCBChecked string
+	 * @param target
+	 */
+	private void checkPermissibleValues(String pvCBChecked, List<Integer> target)
+	{
+		if (pvCBChecked != null
+				&& (pvCBChecked.equalsIgnoreCase("on") || pvCBChecked
+						.equalsIgnoreCase(AQConstants.TRUE)))
+		{
+			target.add(Integer.valueOf(Constants.PERMISSIBLEVALUE));
+		}
+	}
+
+	/**
+	 * @param clsCBChecked string
+	 * @param description description
+	 * @param target
+	 */
+	private void checkClassDescription(String clsCBChecked, String description,
+			List<Integer> target)
+	{
+		if (clsCBChecked != null
+				&& (clsCBChecked.equalsIgnoreCase("on") || clsCBChecked
+						.equalsIgnoreCase(AQConstants.TRUE)))
+		{
+			populateTargetForClass(description, target);
+		}
+	}
+
+	/**
+	 * @param description description
+	 * @param target
+	 */
+	private void populateTargetForClass(String description, List<Integer> target)
+	{
+		if (description != null
+				&& (description.equalsIgnoreCase("on") ||
+					description.equalsIgnoreCase(AQConstants.TRUE)))
+		{
+			target.add(Integer.valueOf(Constants.CLASS_WITH_DESCRIPTION));
+		}
+		else
+		{
+			target.add(Integer.valueOf(Constants.CLASS));
+		}
+	}
+
+	/**
+	 * @param attCBChecked string
+	 * @param description description
+	 * @param target
+	 */
+	private void checkAttributeDescription(String attCBChecked,
+			String description, List<Integer> target) {
+		if (attCBChecked != null
+				&& (attCBChecked.equalsIgnoreCase("on") || attCBChecked
+						.equalsIgnoreCase(AQConstants.TRUE)))
+		{
+			populateTargetForAttribute(description, target);
+		}
+	}
+
+	/**
+	 * @param description description
+	 * @param target
+	 */
+	private void populateTargetForAttribute(String description, List<Integer> target)
+	{
+		if (description != null
+			&& (description.equalsIgnoreCase("on") ||
+				description.equalsIgnoreCase(AQConstants.TRUE)))
+		{
+			target.add(Integer.valueOf(Constants.ATTRIBUTE_WITH_DESCRIPTION));
+		}
+		else
+		{
+			target.add(Integer.valueOf(Constants.ATTRIBUTE));
+		}
 	}
 }
