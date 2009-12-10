@@ -29,7 +29,6 @@ import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.beans.SharedQueryBean;
 import edu.wustl.query.bizlogic.SaveQueryBizLogic;
-import edu.wustl.query.bizlogic.ShareQueryBizLogic;
 import edu.wustl.query.htmlprovider.SavedQueryHtmlProvider;
 import edu.wustl.query.util.global.AQConstants;
 /**

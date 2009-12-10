@@ -169,8 +169,7 @@ public class FlexInterface
 	 */
 	public DAGNode addNodeToView(String nodesStr)
 	{
-		DAGNode dagNode = dagPanel.addNodeToOutPutView(nodesStr);
-		return dagNode;
+		return dagPanel.addNodeToOutPutView(nodesStr);
 	}
 
 	/**
@@ -194,8 +193,7 @@ public class FlexInterface
 	 */
 	public DAGNode createNode(String strToCreateQueryObject, String entityName)
 	{
-		DAGNode dagNode = dagPanel.createQueryObject(strToCreateQueryObject, entityName, "Add",null,null);
-		return dagNode;
+		return dagPanel.createQueryObject(strToCreateQueryObject, entityName, "Add",null,null);
 	}
 
 	/**
@@ -220,8 +218,7 @@ public class FlexInterface
 	 */
 	public DAGNode editNode(String strToCreateQueryObject, String entityName)
 	{
-		DAGNode dagNode = dagPanel.createQueryObject(strToCreateQueryObject, entityName, "Edit",null,null);
-		return dagNode;
+		return dagPanel.createQueryObject(strToCreateQueryObject, entityName, "Edit",null,null);
 	}
 
 	/**

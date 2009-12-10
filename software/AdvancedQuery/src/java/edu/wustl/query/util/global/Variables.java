@@ -74,33 +74,63 @@ public class Variables //extends edu.wustl.common.util.global.Variables
 	public static String prepareColTypes(List dataColl, boolean createCheckBoxColumn)
 	{
 		StringBuffer colType = new StringBuffer();
-		String tColType="";
 		if (dataColl != null && !dataColl.isEmpty())
 		{
 			List rowDataColl = (List) dataColl.get(0);
 
 			Iterator itr = rowDataColl.iterator();
-			if (createCheckBoxColumn)
-			{
-				colType.append("ch,");
-			}
+			colTypeForCheckbox(createCheckBoxColumn, colType);
 			while (itr.hasNext())
 			{
-				Object obj = itr.next();
-				if (obj != null && obj instanceof Number)
-				{
-					colType.append("int,");
-				}
-				else if (obj != null && obj instanceof Date)
-				{
-					colType.append("date,");
-				}
-				else
-				{
-					colType.append("str,");
-				}
+				populateColTypes(colType, itr);
 			}
 		}
+		String tColType = setColumnType(colType);
+		return tColType;
+	}
+
+	/**
+	 * @param colType colType
+	 * @param itr iterator
+	 */
+	private static void populateColTypes(StringBuffer colType, Iterator itr)
+	{
+		Object obj = itr.next();
+		if (obj != null && obj instanceof Number)
+		{
+			colType.append("int,");
+		}
+		else if (obj != null && obj instanceof Date)
+		{
+			colType.append("date,");
+		}
+		else
+		{
+			colType.append("str,");
+		}
+	}
+
+	/**
+	 * @param createCheckBoxColumn createCheckBoxColumn
+	 * @param colType colType
+	 */
+	private static void colTypeForCheckbox(boolean createCheckBoxColumn,
+			StringBuffer colType)
+	{
+		if (createCheckBoxColumn)
+		{
+			colType.append("ch,");
+		}
+	}
+
+	/**
+	 * @param colType type
+	 * @param tColType type
+	 * @return tColType
+	 */
+	private static String setColumnType(StringBuffer colType)
+	{
+		String tColType="";
 		if (colType.length() > 0)
 		{
 			tColType = colType.toString();
