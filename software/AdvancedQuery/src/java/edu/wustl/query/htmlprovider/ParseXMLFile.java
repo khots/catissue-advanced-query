@@ -106,20 +106,29 @@ public class ParseXMLFile
 	{
 		Node child;
 		String eleValue=TextConstants.EMPTY_STRING;
-		if (elem != null)
+		if (elem != null && elem.hasChildNodes())
 		{
-			if (elem.hasChildNodes())
+			for (child = elem.getFirstChild(); child != null; child = child.getNextSibling())
 			{
-				for (child = elem.getFirstChild(); child != null; child = child.getNextSibling())
-				{
-					if (child.getNodeType() == Node.TEXT_NODE)
-					{
-						eleValue=child.getNodeValue();
-					}
-				}
+				eleValue = setElementValue(child, eleValue);
 			}
 		}
 		return eleValue;
+	}
+
+	/**
+	 * @param child child
+	 * @param eleValue element value
+	 * @return eleValue
+	 */
+	private String setElementValue(Node child, String eleValue)
+	{
+		String elementValue = eleValue;
+		if (child.getNodeType() == Node.TEXT_NODE)
+		{
+			elementValue=child.getNodeValue();
+		}
+		return elementValue;
 	}
 
 	/**
@@ -128,7 +137,6 @@ public class ParseXMLFile
 	 */
 	private void readDynamicUIComponents(Node node)
 	{
-
 		// This node list will return two children.
 		// 1. non-enumerated
 		// 2. enumerated
@@ -139,21 +147,29 @@ public class ParseXMLFile
 			// Check if node is non-enumerated
 			if (child.getNodeType() == Node.ELEMENT_NODE)
 			{
-				if (child.getNodeName().equalsIgnoreCase("non-enumerated"))
-				{
-					/* Get all its children nodes and store corresponding details into the
-					appropriate data-structures.*/
-					NodeList dataTypeNodes = child.getChildNodes();
-					readDataTypeDetailsForAllNode(dataTypeNodes, nedtCondMap,nedtCompMap);
-				}
-				else
-				{
-					/*Get all its children nodes and store corresponding details into the
-					appropriate data-structures.*/
-					NodeList dataTypeNodes = child.getChildNodes();
-					readDataTypeDetailsForAllNode(dataTypeNodes, edtCondMap,edtompMap);
-				}
+				populateChildDetails(child);
 			}
+		}
+	}
+
+	/**
+	 * @param child child
+	 */
+	private void populateChildDetails(Node child)
+	{
+		if (child.getNodeName().equalsIgnoreCase("non-enumerated"))
+		{
+			/* Get all its children nodes and store corresponding details into the
+			appropriate data-structures.*/
+			NodeList dataTypeNodes = child.getChildNodes();
+			readDataTypeDetailsForAllNode(dataTypeNodes, nedtCondMap,nedtCompMap);
+		}
+		else
+		{
+			/*Get all its children nodes and store corresponding details into the
+			appropriate data-structures.*/
+			NodeList dataTypeNodes = child.getChildNodes();
+			readDataTypeDetailsForAllNode(dataTypeNodes, edtCondMap,edtompMap);
 		}
 	}
 
@@ -172,46 +188,95 @@ public class ParseXMLFile
 			Node dataTypeNode = dataTypeNodes.item(i);
 			if (dataTypeNode.getNodeType() == Node.ELEMENT_NODE)
 			{
-				// Node name like String, number, date, boolean
-				String nodeType = dataTypeNode.getNodeName();
-				// Get all the nodes under nodeType
-				NodeList childNodes = dataTypeNode.getChildNodes();
-				for (int childCnt = 0; childCnt < childNodes.getLength(); childCnt++)
-				{
-					// Read the condition node and populate the condition list
-					Node node = childNodes.item(childCnt);
-					if (node.getNodeType() == Node.ELEMENT_NODE)
-					{
-						if (node.getNodeName().equalsIgnoreCase("conditions"))
-						{
-							ArrayList<String> conditionList = new ArrayList<String>();
-							NodeList nodeConditions = node.getChildNodes();
-							for (int conditionCnt = 0; conditionCnt <
-							nodeConditions.getLength(); conditionCnt++)
-							{
-								Node conditionNode = nodeConditions.item(conditionCnt);
-								if (conditionNode.getNodeType() == Node.ELEMENT_NODE)
-								{
-									NodeList displayNodes = conditionNode.getChildNodes();
-									for (int j = 0; j < displayNodes.getLength(); j++)
-									{
-										if (displayNodes.item(j).getNodeType() == Node.ELEMENT_NODE)
-										{
-											conditionList.add(getElementValue(displayNodes.item(j)));
-											break;
-										}
-									}
-								}
-							}
-							dataTypeToCondMap.put(nodeType, conditionList);
-						}
-						// Read component details
-						else if (node.getNodeName().equalsIgnoreCase("components"))
-						{
-							dataTypeToCompMap.put(nodeType, getElementValue(node));
-						}
-					}
-				}
+				populateDataTypeDetails(dataTypeToCondMap, dataTypeToCompMap,
+						dataTypeNode);
+			}
+		}
+	}
+
+	/**
+	 * @param dataTypeToCondMap data type to condition Map
+	 * @param dataTypeToCompMap data Type To Component Map
+	 * @param dataTypeNode data type node
+	 */
+	private void populateDataTypeDetails(
+			Map<String, ArrayList<String>> dataTypeToCondMap,
+			Map<String, String> dataTypeToCompMap, Node dataTypeNode)
+	{
+		// Node name like String, number, date, boolean
+		String nodeType = dataTypeNode.getNodeName();
+		// Get all the nodes under nodeType
+		NodeList childNodes = dataTypeNode.getChildNodes();
+		for (int childCnt = 0; childCnt < childNodes.getLength(); childCnt++)
+		{
+			// Read the condition node and populate the condition list
+			Node node = childNodes.item(childCnt);
+			if (node.getNodeType() == Node.ELEMENT_NODE)
+			{
+				populateDataForElementNode(dataTypeToCondMap,
+						dataTypeToCompMap, nodeType, node);
+			}
+		}
+	}
+
+	/**
+	 * @param dataTypeToCondMap data type to condition Map
+	 * @param dataTypeToCompMap data Type To Component Map
+	 * @param nodeType node Type
+	 * @param node node
+	 */
+	private void populateDataForElementNode(
+			Map<String, ArrayList<String>> dataTypeToCondMap,
+			Map<String, String> dataTypeToCompMap, String nodeType, Node node)
+	{
+		if (node.getNodeName().equalsIgnoreCase("conditions"))
+		{
+			populateMap(dataTypeToCondMap, nodeType, node);
+		}
+		// Read component details
+		else if (node.getNodeName().equalsIgnoreCase("components"))
+		{
+			dataTypeToCompMap.put(nodeType, getElementValue(node));
+		}
+	}
+
+	/**
+	 * @param dataTypeToCondMap Map
+	 * @param nodeType node type
+	 * @param node node
+	 */
+	private void populateMap(Map<String, ArrayList<String>> dataTypeToCondMap,
+			String nodeType, Node node)
+	{
+		ArrayList<String> conditionList = new ArrayList<String>();
+		NodeList nodeConditions = node.getChildNodes();
+		for (int conditionCnt = 0; conditionCnt <
+		nodeConditions.getLength(); conditionCnt++)
+		{
+			Node conditionNode = nodeConditions.item(conditionCnt);
+			if (conditionNode.getNodeType() == Node.ELEMENT_NODE)
+			{
+				populateConditionList(conditionList,
+						conditionNode);
+			}
+		}
+		dataTypeToCondMap.put(nodeType, conditionList);
+	}
+
+	/**
+	 * @param conditionList conditionList
+	 * @param conditionNode conditionNode
+	 */
+	private void populateConditionList(ArrayList<String> conditionList,
+			Node conditionNode)
+	{
+		NodeList displayNodes = conditionNode.getChildNodes();
+		for (int j = 0; j < displayNodes.getLength(); j++)
+		{
+			if (displayNodes.item(j).getNodeType() == Node.ELEMENT_NODE)
+			{
+				conditionList.add(getElementValue(displayNodes.item(j)));
+				break;
 			}
 		}
 	}

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 package edu.wustl.common.query.queryobject.util;
@@ -69,6 +69,7 @@ public class InheritanceUtils implements InheritanceUtilsInterface
 	 */
 	public AttributeInterface getActualAttribute(AttributeInterface attribute)
 	{
+		AttributeInterface actualAttribute = attribute;
 		EntityInterface parentEntity = attribute.getEntity().getParentEntity();
 		while (parentEntity != null)
 		{
@@ -78,13 +79,13 @@ public class InheritanceUtils implements InheritanceUtilsInterface
 			{
 				if (att.getName().equals(attribute.getName()))
 				{
-					attribute = att;
+					actualAttribute = att;
 					break;
 				}
 			}
 			parentEntity = parentEntity.getParentEntity();
 		}
-		return attribute;
+		return actualAttribute;
 		//		return InheritanceUtil.getActualAttribute(attribute);
 	}
 

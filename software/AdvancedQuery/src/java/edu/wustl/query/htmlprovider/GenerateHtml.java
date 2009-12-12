@@ -162,16 +162,63 @@ public class GenerateHtml
 	public static String generateHTMLForTextBox(String componentId,AttributeDetails attrDetails)
 	{
 		String cssClass = CSS_TEXT;
-		//String componentId = generateComponentName(attributeInterface);
 		String textBoxId = componentId + "_textBox";
 		String textBoxId1 = componentId + "_textBox1";
-		//String dataType = attributeInterface.getDataType();
 		StringBuffer html = new StringBuffer(AQConstants.MAX_SIZE);
-		String newLine = "\n";
 		html.append("<td width='15%' valign='top' class=\"standardTextQuery\">\n");
 		getHtmlValueAndOperator(
 				attrDetails.getEditValues(),attrDetails.getSelectedOperator(), textBoxId, html);
 		html.append(endTD);
+		getHtmlForDate(componentId, attrDetails, cssClass,html);
+		getHtmlForBetweenOperator(attrDetails, textBoxId1, html);
+		if(attrDetails.getDataType().equalsIgnoreCase(AQConstants.DATE) )
+		{
+			if(attrDetails.getSelectedOperator() == null || attrDetails.getSelectedOperator().equalsIgnoreCase(RelationalOperator.Between.toString()) || attrDetails.isBetween())
+			{
+				getHtmlForCalendar(componentId, attrDetails, cssClass, html);
+			}
+		}
+		else
+		{
+			html.append("\n<td valign='top' />");
+		}
+		return html.toString();
+	}
+
+	/**
+	 * @param componentId component identifier
+	 * @param attrDetails attribute details
+	 * @param cssClass class
+	 * @param html string buffer
+	 * @param newLine new Line
+	 */
+	private static void getHtmlForCalendar(String componentId,
+			AttributeDetails attrDetails, String cssClass, StringBuffer html)
+	{
+		String newLine ="\n";
+		if(attrDetails.getSelectedOperator() == null && attrDetails.isBetween())
+		{
+			html.append(newLine).append(generateHTMLForCalendar(
+					componentId, false,true,cssClass));
+		}
+		else
+		{
+			html.append(newLine).append(generateHTMLForCalendar(
+				componentId, false,checkBetweenOperator(attrDetails.getSelectedOperator()),cssClass));
+		}
+	}
+
+	/**
+	 * @param componentId component identifier
+	 * @param attrDetails attribute details
+	 * @param cssClass class
+	 * @param html string buffer
+	 * @return newLine
+	 */
+	private static void getHtmlForDate(String componentId,
+			AttributeDetails attrDetails, String cssClass, StringBuffer html)
+	{
+		String newLine = "\n";
 		if (attrDetails.getDataType().equalsIgnoreCase(AQConstants.DATE))
 		{
 			html.append(newLine).append(generateHTMLForCalendar(componentId, true, false,cssClass));
@@ -180,6 +227,16 @@ public class GenerateHtml
 		{
 			html.append("\n<td valign='top' width='1%'>&nbsp;</td>");
 		}
+	}
+
+	/**
+	 * @param attrDetails attribute details
+	 * @param textBoxId1 text box
+	 * @param html string buffer
+	 */
+	private static void getHtmlForBetweenOperator(AttributeDetails attrDetails,
+			String textBoxId1, StringBuffer html)
+	{
 		html.append("<td width='15%'  valign='top' class=\"standardTextQuery\">\n");
 		if (isBetween(attrDetails))
 		{
@@ -191,28 +248,6 @@ public class GenerateHtml
 					+ "\" style=\"display:none\">");
 		}
 		html.append(endTD);
-		if(attrDetails.getDataType().equalsIgnoreCase(AQConstants.DATE) )
-		{
-			if(attrDetails.getSelectedOperator() == null || attrDetails.getSelectedOperator().equalsIgnoreCase(RelationalOperator.Between.toString()) || attrDetails.isBetween())
-			{
-				if(attrDetails.getSelectedOperator() == null && attrDetails.isBetween())
-				{
-					html.append(newLine).append(generateHTMLForCalendar(
-							componentId, false,true,cssClass));
-				}
-				else
-				{
-					html.append(newLine).append(generateHTMLForCalendar(
-						componentId, false,checkBetweenOperator(attrDetails.getSelectedOperator()),cssClass));
-				}
-			}
-		}
-		else
-		{
-			html.append("\n<td valign='top' />");
-			// html.append("\n<td valign='top' />");
-		}
-		return html.toString();
 	}
 	/**
 	 *
@@ -766,17 +801,14 @@ public class GenerateHtml
 	public static void getDateFormat(StringBuffer generatedHTML, boolean isBold,
 			AttributeInterface attribute, boolean isParameterized)
 	{
-		if (attribute.getDataType().equalsIgnoreCase(AQConstants.DATE))
+		if (attribute.getDataType().equalsIgnoreCase(AQConstants.DATE) && isParameterized)
 		{
-			if(isParameterized)
+			StringBuffer dateFormat = new StringBuffer(AQConstants.DATE_FORMAT);
+			if(isBold)
 			{
-				StringBuffer dateFormat = new StringBuffer(AQConstants.DATE_FORMAT);
-				if(isBold)
-				{
-					dateFormat.append("<b>").append(dateFormat).append("</b>");
-				}
-				generatedHTML.append("\n(" + dateFormat + ")");
+				dateFormat.append("<b>").append(dateFormat).append("</b>");
 			}
+			generatedHTML.append("\n(" + dateFormat + ")");
 		}
 	}
 }
