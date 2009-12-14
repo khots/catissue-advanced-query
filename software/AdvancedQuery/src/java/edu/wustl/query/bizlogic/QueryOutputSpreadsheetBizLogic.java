@@ -780,7 +780,7 @@ public class QueryOutputSpreadsheetBizLogic
 					}
 					else
 					{
-						String sqlColumnName = metaData.getColumnName();
+						String sqlColumnName = queryDetailsObj.getAttributeColumnNameMap().get(attribute);
 						sqlColumnNames.append(sqlColumnName);
 						sqlColumnNames.append(", ");
 						String columnDisplayName = metaData.getDisplayName();

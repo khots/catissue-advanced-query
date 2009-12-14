@@ -12,8 +12,8 @@ package Components
 		public static  var ADD_LIMIT_VIEW:String="AddLimit";
 		public static  var RESULT_VIEW:String="Result";
 		public static  var EQAULS:String="Equals";
-				
-		//Error Codes 
+
+		//Error Codes
 		public static  var SUCCESS:int=0;
 		public static  var EMPTY_DAG:int=1;
 		public static  var MULTIPLE_ROOT:int=2;
@@ -26,9 +26,9 @@ package Components
 		public static  var CYCLIC_GRAPH:int=9;
 		public static  var TREE_NODES_LIMIT:int =10;
 		public static  var NO_MAIN_OBJECT_IN_QUERY:int =11;
-		//messages 
+		//messages
 		public static var EMPTY_LIMIT_ERROR_MESSAGE:String = "<li><font color='red'>Please enter at least one condition to add a limit to limit set.</font></li>";
-		public static var GENERIC_MESSAGE:String="<li><font color='red'>Error occured while executing query.Please report this problem to the Adminstrator.</font></li>";
+		public static var GENERIC_MESSAGE:String="<li><font color='red'>Error occurred while executing query.Please report this problem to the Administrator.</font></li>";
 		public static var MULTIPLE_ROOT_MESSAGE:String="<li><font color='red'>Expression graph should be a connected graph and without multiple roots.</font></li>"
 		public static var NO_RESULT_PRESENT_MESSAGE:String="<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>Zero records found for this query.</font></li>"
 		public static var EDIT_LIMITS_MESSAGE:String = "<li><font color='blue'>Limit succesfully edited.</font></li>";
