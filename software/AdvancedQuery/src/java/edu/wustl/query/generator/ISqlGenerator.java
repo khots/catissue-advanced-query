@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 package edu.wustl.query.generator;
@@ -17,22 +17,23 @@ import edu.wustl.dao.exception.DAOException;
 
 /**
  * To Generate SQL for the given Query Object.
- * 
+ *
  * @author prafull_kadam
- * 
+ *
  */
-public interface ISqlGenerator {
+public interface ISqlGenerator
+{
 
     /**
      * Generates SQL for the given Query Object.
-     * 
+     *
      * @param query The Reference to Query Object.
      * @return the String representing SQL for the given Query object.
-     * @throws MultipleRootsException When there are multpile roots present in a
+     * @throws MultipleRootsException When there are multiple roots present in a
      *             graph.
      * @throws SqlException When there is error in the passed IQuery object.
-     * @throws DAOException 
-     * @throws RuntimeException 
+     * @throws DAOException
+     * @throws RuntimeException
      */
     String generateSQL(IQuery query) throws MultipleRootsException, SqlException, RuntimeException, DAOException;
 
@@ -43,12 +44,12 @@ public interface ISqlGenerator {
      *         that column represents.
      */
     Map<String, IOutputTerm> getOutputTermsColumns();
-    
+
 
     Map<AttributeInterface, String> getAttributeColumnNameMap();
-    
+
     /**
-     * @return boolean variable which determines if the query is 
+     * @return boolean variable which determines if the query is
      * on multiple entity groups.
      */
     boolean isQueryOnMultipleEntityGroups();

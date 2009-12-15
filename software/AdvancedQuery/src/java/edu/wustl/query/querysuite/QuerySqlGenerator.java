@@ -39,7 +39,8 @@ public class QuerySqlGenerator extends SqlGenerator
 
 		private QueryType queryType;
 
-		private enum QueryType {
+		private enum QueryType
+		{
 			rhsDate, rhsOffset;
 
 			private static QueryType fromTermType(TermType termType)

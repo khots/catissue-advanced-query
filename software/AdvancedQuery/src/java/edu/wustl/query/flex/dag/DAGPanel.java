@@ -1394,7 +1394,8 @@ public class DAGPanel
 	 */
 	private void populateJoinFormulaMap(JoinQueryNode joinQueryNode,
 			HttpSession session,
-			Map<String, Map<String, JoinFormulaUIBean>> jQUIMap) {
+			Map<String, Map<String, JoinFormulaUIBean>> jQUIMap)
+	{
 		if (jQUIMap == null)
 		{
 			jQUIMap = new HashMap<String, Map<String, JoinFormulaUIBean>>();

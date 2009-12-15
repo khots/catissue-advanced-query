@@ -21,7 +21,7 @@ import edu.wustl.query.util.global.AQConstants;
 public class QueryDetails
 {
 
-	//private QueryDetails(){}	
+	//private QueryDetails(){}
 	private List<OutputTreeDataNode> rootOutputTreeNodeList;
 	private Map<String, OutputTreeDataNode> uniqueIdNodesMap;
 	private Map<EntityInterface, List<EntityInterface>> mainEntityMap;
@@ -31,7 +31,7 @@ public class QueryDetails
 	private Map<AttributeInterface, String> attributeColumnNameMap;
 	private Map<String, IOutputTerm> outputTermsColumns;
 	private IQuery query;
-	private long auditEventId; 
+	private long auditEventId;
 
 	//private HttpSession session;
 
@@ -58,7 +58,7 @@ public class QueryDetails
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public Map<AttributeInterface, String> getAttributeColumnNameMap()
@@ -67,7 +67,7 @@ public class QueryDetails
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeColumnNameMap
 	 */
 	public void setAttributeColumnNameMap(Map<AttributeInterface, String> attributeColumnNameMap)
@@ -190,14 +190,16 @@ public class QueryDetails
 	/**
 	 * @return the auditEventId
 	 */
-	public long getAuditEventId() {
+	public long getAuditEventId()
+	{
 		return auditEventId;
 	}
 
 	/**
 	 * @param auditEventId the auditEventId to set
 	 */
-	public void setAuditEventId(long auditEventId) {
+	public void setAuditEventId(long auditEventId)
+	{
 		this.auditEventId = auditEventId;
 	}
 }
