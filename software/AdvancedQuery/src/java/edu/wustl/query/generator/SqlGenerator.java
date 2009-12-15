@@ -654,6 +654,20 @@ public class SqlGenerator implements ISqlGenerator
     {
         String sql = null;
         AttributeInterface attribute = condition.getAttribute();
+        if(fromBuilder == null)
+        {
+        	fromBuilder = new FromBuilder(joinGraph);
+        	if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.Oracle))
+        	{
+        		strTodateFunction = "TO_DATE";
+        		datePattern = "mm-dd-yyyy";
+        	}
+        	else if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.MySQL))
+        	{
+        		strTodateFunction = "STR_TO_DATE";
+        		datePattern = "%m-%d-%Y";
+        	}
+        }
         String attributeName = fromBuilder.aliasOf(attribute, expression);
 
         RelationalOperator operator = condition.getRelationalOperator();
@@ -1163,7 +1177,7 @@ public class SqlGenerator implements ISqlGenerator
         String appName = CommonServiceLocator.getInstance().getAppName();
         String databaseName = DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
         DatabaseType databaseType;
-        if (databaseName.equals(AQConstants.MYSQL_DATABASE))
+        if (databaseName.equalsIgnoreCase(AQConstants.MYSQL_DATABASE))
         {
             databaseType = DatabaseType.MySQL;
         }
