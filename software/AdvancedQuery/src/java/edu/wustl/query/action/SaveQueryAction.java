@@ -72,6 +72,11 @@ public class SaveQueryAction extends BaseAction
 		}
 		else
 		{
+			IParameterizedQuery pQuery = (IParameterizedQuery) query;
+			if(pQuery.getParameters() != null && !pQuery.getParameters().isEmpty())
+			{
+				pQuery.getParameters().removeAll(pQuery.getParameters());
+			}
 			IParameterizedQuery parameterizedQuery = populateParameterizedQueryData(query,
 					actionForm, request);
 			if (parameterizedQuery != null)

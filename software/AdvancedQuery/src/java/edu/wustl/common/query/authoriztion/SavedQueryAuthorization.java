@@ -351,6 +351,7 @@ public class SavedQueryAuthorization
 		ProtectionElement protectionElement = getProtectionElementForQuery(query, privilegeUtility);
 		UserProvisioningManager upManager = privilegeUtility.getUserProvisioningManager();
 		String peObjId = protectionElement.getObjectId();
+		upManager.assignProtectionElement(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP, peObjId);
 		upManager.deAssignProtectionElements(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP, peObjId);
 		/*String userPG = getUserProtectionGroup(csmUserId);
 		upManager.deAssignProtectionElements(userPG, peObjId);*/
