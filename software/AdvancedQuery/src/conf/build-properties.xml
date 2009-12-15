@@ -1,5 +1,5 @@
 	<project name="query Properties">
-		<property file="queryInstall.properties" />
+		<property file="./src/conf/queryInstall.properties" />
 		<property name="cacore.version" value="3.2" />
 		<property name="csm.version" value="3.2" />
 		<property name="application.name" value="query" />
