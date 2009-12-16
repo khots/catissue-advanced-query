@@ -275,18 +275,18 @@ public class QueryCSMUtil
 		List<String> values = condition.getValues();
 		String value = condition.getValue();
 		strToCreateObject.append("@#condition#@").append(attrName).
-		append(attrId).append(AQConstants.CONDITION_SEPERATOR).append(operator).
-		append(AQConstants.CONDITION_SEPERATOR);
+		append(attrId).append(AQConstants.CONDITION_SEPERATOR).append(operator.getStringRepresentation());
 		if(operator.equals(RelationalOperator.In) || operator.equals(RelationalOperator.NotIn))
 		{
+			strToCreateObject.append(AQConstants.CONDITION_SEPERATOR);
 			for(String val : values)
 			{
 				strToCreateObject.append('&').append(val);
 			}
 		}
-		else
+		else if(!(operator.equals(RelationalOperator.IsNotNull) || operator.equals(RelationalOperator.IsNull)))
 		{
-			strToCreateObject.append(value);
+			strToCreateObject.append(AQConstants.CONDITION_SEPERATOR).append(value);
 		}
 		strToCreateObject.append(';');
 	}
