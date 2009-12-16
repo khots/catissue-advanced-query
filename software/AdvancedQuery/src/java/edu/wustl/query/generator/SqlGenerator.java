@@ -276,7 +276,7 @@ public class SqlGenerator implements ISqlGenerator
     }
 
     /**
-     * Returns complete where part including PAND conditions.
+     * Returns complete where part which includes PAND conditions.
      * @param rootExpression The root expression
      * @return wherePart The where part
      * @throws SqlException SqlException

@@ -750,14 +750,12 @@ public class QueryOutputSpreadsheetBizLogic
 					nameValueBean.setName(attributeWithClassName);
 					nameValueBean.setValue(treeAttributeNodeId);
 					selectedColumnNameValue.add(nameValueBean);
-
 					if (queryResultObjectDataBean == null)
 					{
 						queryResultObjectDataBean = QueryCSMUtil.getQueryResulObjectDataBean(metaData
 								.getTreeDataNode(), queryDetailsObj);
 						defineViewNodeList.add(attribute.getEntity());
 					}
-
 					if (attribute.getName().equalsIgnoreCase(AQConstants.IDENTIFIER))
 					{
 						queryResultObjectDataBean.setMainEntityIdentifierColumnId(columnIndex);
@@ -780,7 +778,8 @@ public class QueryOutputSpreadsheetBizLogic
 					}
 					else
 					{
-						String sqlColumnName = queryDetailsObj.getAttributeColumnNameMap().get(attribute);
+						String sqlColumnName = queryDetailsObj.
+						getAttributeColumnNameMap().get(attribute);
 						sqlColumnNames.append(sqlColumnName);
 						sqlColumnNames.append(", ");
 						String columnDisplayName = metaData.getDisplayName();
@@ -841,7 +840,8 @@ public class QueryOutputSpreadsheetBizLogic
 	 */
 	private void setMainEntityColumnIdentifier(List tqColumnList,
 			Map<EntityInterface, Integer> entityIdIndexMap,
-			Iterator<QueryResultObjectDataBean> iterator) {
+			Iterator<QueryResultObjectDataBean> iterator)
+	{
 		QueryResultObjectDataBean element = iterator.next();
 		element.setTqColumnMetadataList(tqColumnList);
 		if (element.getMainEntityIdentifierColumnId() == -1)
@@ -882,12 +882,10 @@ public class QueryOutputSpreadsheetBizLogic
 		querySessionData.setSecureExecute(queryDetailsObj.getSessionData().isSecurityRequired());
 		querySessionData.setHasConditionOnIdentifiedField(hasConditionOnIdentifiedField);
 		querySessionData.setRecordsPerPage(recordsPerPage);
-		//QueryBizLogic qBizLogic = new QueryBizLogic();
 		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
 		PagenatedResultData pagenatedResultData = qBizLogic.execute(queryDetailsObj
 				.getSessionData(), querySessionData, startIndex);
 		List<List<String>> dataList = pagenatedResultData.getResult();
-
 		for (Long id : queryResultObjectDataBeanMap.keySet())
 		{
 			QueryResultObjectDataBean queryResultObjectDataBean = queryResultObjectDataBeanMap
@@ -913,12 +911,10 @@ public class QueryOutputSpreadsheetBizLogic
 		 * result will be fetched for each result page navigation.
 		 * object of class QuerySessionData will be saved session, which will contain the required
 		 * information for query execution while navigation through query result pages.
-		 *
-		 *  saving required query data in Session so that can be used later on while navigation through
-		 *  result pages using pagination.
+		 * saving required query data in Session so that can be used later on while navigation through
+		 * result pages using pagination.
 		 */
 		querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
-
 		return querySessionData;
 	}
 
@@ -937,7 +933,6 @@ public class QueryOutputSpreadsheetBizLogic
 		List<List<String>> newDataList = new ArrayList<List<String>>();
 		List<String> exportRow = new ArrayList<String>();
 		Map<Integer, List> entityIdsMap = new HashMap<Integer, List>();
-		//int i = 0;
 		int rowNo = 0;
 		for (List<String> row : dataList)
 		{
@@ -964,7 +959,6 @@ public class QueryOutputSpreadsheetBizLogic
 				row.add(fileTypeIndex, newColumn);
 				exportRow.add(fileTypeIndex, fileName);
 				entityIdsList.add(mainEntityId);
-				//i++;
 			}
 			newDataList.add(exportRow);
 			entityIdsMap.put(rowNo, entityIdsList);
@@ -972,7 +966,6 @@ public class QueryOutputSpreadsheetBizLogic
 		}
 		exportMetataDataMap.put(AQConstants.ENTITY_IDS_MAP, entityIdsMap);
 		exportMetataDataMap.put(AQConstants.EXPORT_DATA_LIST, newDataList);
-
 		return exportMetataDataMap;
 	}
 
@@ -1182,7 +1175,8 @@ public class QueryOutputSpreadsheetBizLogic
 	 */
 	private String populateQueryForDefaultView(QueryDetails queryDetailsObj,
 			String selectSql,
-			QueryResultObjectDataBean queryResultObjectDataBean, int columnIndex) {
+			QueryResultObjectDataBean queryResultObjectDataBean, int columnIndex)
+	{
 		Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
 		selectSql = QueryCSMUtil.updateEntityIdIndexMap(queryResultObjectDataBean, columnIndex,
 				selectSql, null, entityIdIndexMap, queryDetailsObj);

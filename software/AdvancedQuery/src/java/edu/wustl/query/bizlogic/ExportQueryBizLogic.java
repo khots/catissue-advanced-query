@@ -71,7 +71,7 @@ public class ExportQueryBizLogic
 	}
 
 	/**
-	 * Recursive method to populate the constraint list to be written in the exported csv file.
+	 * Method to populate the constraint list to be written in the exported csv file.
 	 * @param expression The Expression
 	 * @param formattedStr The StringBuffer object
 	 */

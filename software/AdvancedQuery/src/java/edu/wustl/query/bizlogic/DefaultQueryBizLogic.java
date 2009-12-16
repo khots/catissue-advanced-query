@@ -161,7 +161,7 @@ public class DefaultQueryBizLogic extends DefaultBizLogic implements IQueryBizLo
 		return null;
 	}
 
-	public String getSpecimenTypeCount(String specimanType, JDBCDAO jdbcDAO) throws DAOException,
+	public String getSpecimenTypeCount(String specimenType, JDBCDAO jdbcDAO) throws DAOException,
 			ClassNotFoundException
 	{
 		// TODO Auto-generated method stub

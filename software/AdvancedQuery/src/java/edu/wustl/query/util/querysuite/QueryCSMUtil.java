@@ -485,7 +485,7 @@ public class QueryCSMUtil
 	}
 
 	/**
-	 * This is a recursive method that will create list of all main entities.
+	 * This is a method that will create list of all main entities.
 	 * (Entities for which entity passed to it is having containment association)
 	 * @param entity entity
 	 * @param mainEntityList mainEntityList

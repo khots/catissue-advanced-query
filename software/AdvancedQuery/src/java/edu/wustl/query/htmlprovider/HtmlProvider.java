@@ -150,12 +150,12 @@ public class HtmlProvider
 	}
 
 	/**
-	 * This method generates the html for Add Limits and Edit Limits section.
+	 * This method generates the HTML for Add Limits and Edit Limits section.
 	 * This internally calls methods to generate other UI components like text, Calendar, Combobox etc.
 	 * @param entity entity to be presented on UI.
 	 * @param conditions List of conditions , These are required in case of edit limits,
-	 * 		For adding linits this parameter is null
-	 * @return String html generated for Add Limits section.
+	 * 		For adding limits this parameter is null
+	 * @return String HTML generated for Add Limits section.
 	 */
 	public String generateHTML(EntityInterface entity, List<ICondition> conditions)
 	{
@@ -177,7 +177,7 @@ public class HtmlProvider
 	}
 
 	/**
-	 * Generates html for all the attributes of the entity.
+	 * Generates HTML for all the attributes of the entity.
 	 * @param conditions list of conditions
 	 * @param attributeChecked boolean
 	 * @param permissibleValuesChecked boolean
@@ -366,7 +366,7 @@ public class HtmlProvider
 	 *            list of permissible values
 	 * @param editLimitPermissibleValues
 	 *            values list in case of edit limits
-	 * @return String html for enumerated value dropdown
+	 * @return String HTML for enumerated value drop down
 	 */
 	private String generateHTMLForEnumeratedValues(String  componentId,
 			List<PermissibleValueInterface> permissibleValues, List<String> editLimitPermissibleValues)
@@ -395,15 +395,14 @@ public class HtmlProvider
 				getHtmlEnumValues(editLimitPermissibleValues, html, perValue);
 			}
 			html.append("\n</select>\n</td>");
-			//html.append("\n</td>");
 		}
 		return html.toString();
 
 	}
 	/**
-	 *	Get html for enumerated values.
+	 *	Get HTML for enumerated values.
 	 * @param editLimitPermissibleValues values list in case of edit limits
-	 * @param html generated html
+	 * @param html generated HTML
 	 * @param perValue permissible value
 	 */
 	private void getHtmlEnumValues(List<String> editLimitPermissibleValues, StringBuffer html,
@@ -451,7 +450,7 @@ public class HtmlProvider
 
 	/**
 	 * Method to generate HTML for condition NULL.
-	 * @param generatedHTML generated html
+	 * @param generatedHTML generated HTML
 	 * @param attribute AttributeInterface
 	 * @param attributeDetails details of attribute
 	 */
@@ -495,7 +494,7 @@ public class HtmlProvider
 
 	/**
 	 * Method for generating HTML depending on condition.
-	 * @param generatedHTML generated html
+	 * @param generatedHTML generated HTML
 	 * @param attribute AttributeInterface
 	 */
 	private void generateHTMLForConditions(StringBuffer generatedHTML,
@@ -516,7 +515,7 @@ public class HtmlProvider
 
 	/**
 	 *
-	 * @param generatedHTML generated html
+	 * @param generatedHTML generated HTML
 	 * @param attribute AttributeInterface
 	 * @param forPage String
 	 */
@@ -538,14 +537,14 @@ public class HtmlProvider
 		}
 	}
 	/**
-	 * Method generates html for each entity of saved query.
+	 * Method generates HTML for each entity of saved query.
 	 * @param expressionID expression id
-	 * @param entity entity for which html tobe generated
+	 * @param entity entity for which HTML to be generated
 	 * @param conditions list of conditions
 	 * @param isShowAll boolean
 	 * @param entityList list of entities
 	 * @param parameterList list of parameters
-	 * @return generated html
+	 * @return generated HTML
 	 */
 	private StringBuffer getSaveQueryPageHtml(int expressionID, EntityInterface entity,
 			List<ICondition> conditions, boolean isShowAll, Map<EntityInterface,
@@ -627,8 +626,8 @@ public class HtmlProvider
 
 	/**
 	 *
-	 * @param entity for which html is to be generated
-	 * @param generatedHTML generated html
+	 * @param entity for which HTML is to be generated
+	 * @param generatedHTML generated HTML
 	 * @param collection collection of attributes
 	 * @param isEditLimits boolean
 	 * @return StringBuffer
@@ -678,11 +677,11 @@ public class HtmlProvider
 	}
 
 	/**
-	 * This method gets html for each attribute in saved query.
+	 * This method gets HTML for each attribute in saved query.
 	 * @param entity EntityInterface
 	 * @param dagNodeId String
 	 * @param attribute AttributeInterface
-	 * @return generated html
+	 * @return generated HTML
 	 */
 	private StringBuffer getHtmlAttributeSavedQuery(EntityInterface entity, String dagNodeId,
 			AttributeInterface attribute)
@@ -704,8 +703,8 @@ public class HtmlProvider
 	}
 
 	/**
-	 * This method generates the alternate css for each attribute in saved query.
-	 * @param generatedHTML generated html
+	 * This method generates the alternate CSS for each attribute in saved query.
+	 * @param generatedHTML generated HTML
 	 * @param isBGColor boolean
 	 * @param componentId component identifier
 	 * @return boolean
@@ -731,8 +730,8 @@ public class HtmlProvider
 	}
 
 	/**
-	 * Modifies html based on ForPage i.e SAVE_QUERY, EXECUTE_QUERY_PAGE.
-	 * @param dagNodeId dag node id
+	 * Modifies HTML based on ForPage i.e SAVE_QUERY, EXECUTE_QUERY_PAGE.
+	 * @param dagNodeId DAG node id
 	 * @param componentId id of component
 	 * @param name of Entity
 	 * @return StringBuffer
@@ -776,16 +775,16 @@ public class HtmlProvider
 		return generatedHTML;
 	}
 	/**
-	 * This method generates the html for Save Query section. This internally
+	 * This method generates the HTML for Save Query section. This internally
 	 * calls methods to generate other UI components like text, Calendar,
 	 * Combobox etc. This method is same as the generateHTML except that this
-	 * will generate html for selected conditions and will display only those
+	 * will generate HTML for selected conditions and will display only those
 	 * conditions with their values set by user.
-	 * @param expressionMap map which holds the list of all dag ids / expression ids for a particular entity
+	 * @param expressionMap map which holds the list of all DAG id's / expression id's for a particular entity
 	 * @param isShowAll boolean
 	 * @param forPage String
 	 * @param parameterList list of parameters
-	 * @return String html generated for Save Query section.
+	 * @return String HTML generated for Save Query section.
 	 */
 	public String getHtmlForSavedQuery(
 			Map<Integer, Map<EntityInterface, List<ICondition>>>  expressionMap, boolean isShowAll,
@@ -802,7 +801,7 @@ public class HtmlProvider
 		}
 		else
 		{
-			//get the map which holds the list of all dag ids / expression ids for a particular entity
+			//get the map which holds the list of all DAG id's / expression id's for a particular entity
 			expressionEntityString = getMapsForEntity(
 				expressionMap, isShowAll, parameterList, generatedHTML);
 		}
@@ -822,11 +821,11 @@ public class HtmlProvider
 	}
 
 	/**
-	 * Create a map which holds the list of all Expression(DAGNode) ids for a particular entity.
-	 * @param expressionMap map of enpression ids for an entity
+	 * Create a map which holds the list of all Expression(DAGNode) id's for a particular entity.
+	 * @param expressionMap map of expression id's for an entity
 	 * @param isShowAll boolean
 	 * @param parameterList list of parameters
-	 * @param generatedHTML generated html
+	 * @param generatedHTML generated HTML
 	 * @return expressionEntityString
 	 */
 	private StringBuffer getMapsForEntity(

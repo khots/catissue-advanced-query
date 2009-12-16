@@ -80,52 +80,78 @@ public class CreateQueryObjectBizLogic
 	 */
 	private Map getEntityDetails(Collection<AttributeInterface> attrCollection, Map conditionsMap)
 	{
-		String errorMessage = "";
 		Map ruleDetailsMap = new HashMap();
 		if (conditionsMap != null && !conditionsMap.isEmpty() && attrCollection != null
 				&& !attrCollection.isEmpty())
 		{
-			List<AttributeInterface> attributes = new ArrayList<AttributeInterface>();
-			List<String> attributeOperators = new ArrayList<String>();
-			List<String> secondAttributeValues = new ArrayList<String>();
-			ArrayList<ArrayList<String>> conditionValues = new ArrayList<ArrayList<String>>();
-			String[] params;
-			for (AttributeInterface attr : attrCollection)
-			{
-				params = paramsValue(conditionsMap, attr);
-				if (params != null)
-				{
-					attributes.add(attr);
-					attributeOperators.add(params[AQConstants.INDEX_PARAM_ZERO]);
-					secondAttributeValues.add(params[AQConstants.INDEX_PARAM_TWO]);
-					ArrayList<String> attributeValues = getConditionValuesList(params);
-					errorMessage = errorMessage
-					+ validateAttributeValues(attr.getDataType().trim(), attributeValues);
-					if ("".equals(errorMessage))
-					{
-						if (AQConstants.Between
-							.equals(params[AQConstants.INDEX_PARAM_ZERO]))
-						{
-							attributeValues = Utility.getAttributeValuesInProperOrder
-							(attr.getDataType(), attributeValues
-							.get(AQConstants.ARGUMENT_ZERO), attributeValues
-							.get(1));
-						}
-						conditionValues.add(attributeValues);
-					}
-				}
-			}
-			if ("".equals(errorMessage))
-			{
-				ruleDetailsMap.put(AQConstants.ATTRIBUTES, attributes);
-				ruleDetailsMap.put(AQConstants.ATTRIBUTE_OPERATORS, attributeOperators);
-				//ruleDetailsMap.put(AppletConstants.FIRST_ATTR_VALUES, firstAttributeValues);
-				ruleDetailsMap.put(AQConstants.SECOND_ATTR_VALUES, secondAttributeValues);
-				ruleDetailsMap.put(AQConstants.ATTR_VALUES, conditionValues);
-			}
-			ruleDetailsMap.put(AQConstants.ERROR_MESSAGE, errorMessage);
+			populateRuleDetailsMap(attrCollection, conditionsMap,
+					ruleDetailsMap);
 		}
 		return ruleDetailsMap;
+	}
+
+	/**
+	 * @param attrCollection Collection of attributes
+	 * @param conditionsMap conditions map
+	 * @param errorMessage error message
+	 * @param ruleDetailsMap rule details map
+	 */
+	private void populateRuleDetailsMap(
+			Collection<AttributeInterface> attrCollection, Map conditionsMap,
+			Map ruleDetailsMap)
+	{
+		StringBuffer errorMessage = new StringBuffer();
+		List<AttributeInterface> attributes = new ArrayList<AttributeInterface>();
+		List<String> attributeOperators = new ArrayList<String>();
+		List<String> secondAttributeValues = new ArrayList<String>();
+		ArrayList<ArrayList<String>> conditionValues = new ArrayList<ArrayList<String>>();
+		String[] params;
+		for (AttributeInterface attr : attrCollection)
+		{
+			params = paramsValue(conditionsMap, attr);
+			if (params != null)
+			{
+				attributes.add(attr);
+				attributeOperators.add(params[AQConstants.INDEX_PARAM_ZERO]);
+				secondAttributeValues.add(params[AQConstants.INDEX_PARAM_TWO]);
+				ArrayList<String> attributeValues = getConditionValuesList(params);
+				errorMessage.append(validateAttributeValues(attr.getDataType().trim(), attributeValues));
+				if ("".equals(errorMessage.toString()))
+				{
+					populateConditionValuesForBetween(conditionValues,
+							params, attr, attributeValues);
+				}
+			}
+		}
+		if ("".equals(errorMessage.toString()))
+		{
+			ruleDetailsMap.put(AQConstants.ATTRIBUTES, attributes);
+			ruleDetailsMap.put(AQConstants.ATTRIBUTE_OPERATORS, attributeOperators);
+			ruleDetailsMap.put(AQConstants.SECOND_ATTR_VALUES, secondAttributeValues);
+			ruleDetailsMap.put(AQConstants.ATTR_VALUES, conditionValues);
+		}
+		ruleDetailsMap.put(AQConstants.ERROR_MESSAGE, errorMessage.toString());
+	}
+
+	/**
+	 * @param conditionValues condition Values
+	 * @param params String array
+	 * @param attr attribute
+	 * @param attributeValues attribute Values
+	 */
+	private void populateConditionValuesForBetween(
+			ArrayList<ArrayList<String>> conditionValues, String[] params,
+			AttributeInterface attr, ArrayList<String> attributeValues)
+	{
+		if (AQConstants.Between
+			.equals(params[AQConstants.INDEX_PARAM_ZERO]))
+		{
+			attributeValues = Utility.getAttributeValuesInProperOrder
+			(attr.getDataType(), attributeValues
+			.get(AQConstants.ARGUMENT_ZERO), attributeValues
+			.get(1));
+		}
+		conditionValues.add(attributeValues);
 	}
 
 	/**
@@ -189,19 +215,8 @@ public class CreateQueryObjectBizLogic
 					|| AQConstants.INTEGER.equalsIgnoreCase(dataType))
 					|| AQConstants.LONG.equalsIgnoreCase(dataType))
 			{
-				Logger.out.debug(" Check for integer");
-
-				if (validator.convertToLong(enteredValue) == null)
-				{
-					errorMessages = errorMessages
-					+ ApplicationProperties.getValue("simpleQuery.intvalue.required");
-					Logger.out.debug(enteredValue + " is not a valid integer");
-				}
-				else if (!validator.isPositiveNumeric(enteredValue,
-						AQConstants.ARGUMENT_ZERO))
-				{
-					errorMessages = getErrorMessageForPositiveNum(errorMessages, enteredValue);
-				}
+				errorMessages = validateBigIntLongIntegerValues(validator,
+						errorMessages, enteredValue);
 
 			}// integer
 			else if ((AQConstants.DOUBLE.equalsIgnoreCase(dataType))
@@ -212,12 +227,7 @@ public class CreateQueryObjectBizLogic
 			} // double
 			else if (AQConstants.TINY_INT.equalsIgnoreCase(dataType))
 			{
-				if (!AQConstants.BOOLEAN_YES.equalsIgnoreCase(enteredValue.trim())
-				&& !AQConstants.BOOLEAN_NO.equalsIgnoreCase(enteredValue.trim()))
-				{
-					errorMessages = errorMessages
-					+ ApplicationProperties.getValue("simpleQuery.tinyint.format");
-				}
+				errorMessages = validateTinyInt(errorMessages, enteredValue);
 			}
 			else if (AQConstants.FIELD_TYPE_TIMESTAMP_TIME.equalsIgnoreCase(dataType))
 			{
@@ -235,6 +245,48 @@ public class CreateQueryObjectBizLogic
 	}
 
 	/**
+	 * @param errorMessages error Messages
+	 * @param enteredValue entered Value
+	 * @return errorMessage
+	 */
+	private String validateTinyInt(String errorMessages, String enteredValue)
+	{
+		String errorMessage = errorMessages;
+		if (!AQConstants.BOOLEAN_YES.equalsIgnoreCase(enteredValue.trim())
+		&& !AQConstants.BOOLEAN_NO.equalsIgnoreCase(enteredValue.trim()))
+		{
+			errorMessage = errorMessages
+			+ ApplicationProperties.getValue("simpleQuery.tinyint.format");
+		}
+		return errorMessage;
+	}
+
+	/**
+	 * @param validator validator
+	 * @param errorMessages error Messages
+	 * @param enteredValue entered Value
+	 * @return errorMessage
+	 */
+	private String validateBigIntLongIntegerValues(Validator validator,
+			String errorMessages, String enteredValue)
+	{
+		Logger.out.debug(" Check for integer");
+		String errorMessage = errorMessages;
+		if (validator.convertToLong(enteredValue) == null)
+		{
+			errorMessage = errorMessages
+			+ ApplicationProperties.getValue("simpleQuery.intvalue.required");
+			Logger.out.debug(enteredValue + " is not a valid integer");
+		}
+		else if (!validator.isPositiveNumeric(enteredValue,
+				AQConstants.ARGUMENT_ZERO))
+		{
+			errorMessage = getErrorMessageForPositiveNum(errorMessages, enteredValue);
+		}
+		return errorMessage;
+	}
+
+	/**
 	 * This methods returns error message for Positive Number.
 	 * @param errorMessages errorMessages
 	 * @param enteredValue enteredValue
@@ -242,11 +294,10 @@ public class CreateQueryObjectBizLogic
 	 */
 	private String getErrorMessageForPositiveNum(String errorMessages, String enteredValue)
 	{
-		StringBuffer strBuf = new StringBuffer();
+		StringBuffer strBuf = new StringBuffer(90);
 		strBuf.append(errorMessages);
-		strBuf.append("<li><font color\\='red'>"
-				+ ApplicationProperties.getValue("simpleQuery.intvalue.poisitive.required")
-				+ "</font></li>");
+		strBuf.append(AQConstants.FONT_COLOR).append(ApplicationProperties.getValue
+				("simpleQuery.intvalue.poisitive.required")).append("</font></li>");
 		Logger.out.debug(enteredValue + " is not a positive integer");
 		return strBuf.toString();
 	}
@@ -259,11 +310,12 @@ public class CreateQueryObjectBizLogic
 	 */
 	private String getErrorMessageForBetweenOperator(String errorMessages, String enteredValue)
 	{
-		errorMessages = errorMessages + "<li><font color\\='red'>"
-				+ ApplicationProperties.getValue
-				("simpleQuery.twovalues.required") + "</font></li>";
+		StringBuffer errorMessage = new StringBuffer(errorMessages);
+		errorMessage.append(AQConstants.FONT_COLOR).
+		append(ApplicationProperties.getValue
+				("simpleQuery.twovalues.required")).append("</font></li>");
 		Logger.out.debug(enteredValue + " two values required for 'Between' operator ");
-		return errorMessages;
+		return errorMessage.toString();
 	}
 
 	/**
@@ -276,12 +328,14 @@ public class CreateQueryObjectBizLogic
 	private String getErrorMessageForTimeFormat(Validator validator, String errorMessages,
 			String enteredValue)
 	{
+		StringBuffer errorMessage = new StringBuffer(errorMessages);
 		if (!validator.isValidTime(enteredValue, AQConstants.TIME_PATTERN_HH_MM_SS))
 		{
-			errorMessages = errorMessages + "<li><font color\\='red'>"
-			+ ApplicationProperties.getValue("simpleQuery.time.format") + "</font></li>";
+			errorMessage.append(AQConstants.FONT_COLOR).append
+			(ApplicationProperties.getValue("simpleQuery.time.format")).
+			append("</font></li>");
 		}
-		return errorMessages;
+		return errorMessage.toString();
 	}
 
 	/**
@@ -294,12 +348,14 @@ public class CreateQueryObjectBizLogic
 	private String getErrorMessageForDateFormat(Validator validator, String errorMessages,
 			String enteredValue)
 	{
+		StringBuffer errorMessage = new StringBuffer(errorMessages);
 		if (!validator.checkDate(enteredValue))
 		{
-			errorMessages = errorMessages + "<li><font color\\='red'>"
-			+ ApplicationProperties.getValue("simpleQuery.date.format") + "</font></li>";
+			errorMessage.append(AQConstants.FONT_COLOR).
+			append(ApplicationProperties.getValue("simpleQuery.date.format")).
+			append("</font></li>");
 		}
-		return errorMessages;
+		return errorMessage.toString();
 	}
 
 	/**
@@ -311,37 +367,62 @@ public class CreateQueryObjectBizLogic
 	{
 		Map<String, String[]> conditionsMap = new HashMap<String, String[]>();
 		String[] conditions = queryString.split(AQConstants.QUERY_CONDITION_DELIMITER);
-		String[] attrParams;
-		String condition;
 		int len = conditions.length;
-		for (int i = 0; i < len; i++)
+		for (int counter = 0; counter < len; counter++)
 		{
-			attrParams = new String[AQConstants.INDEX_LENGTH];
-			condition = conditions[i];
-			if (!"".equals(condition))
-			{
-				condition = condition.substring(AQConstants.ARGUMENT_ZERO, condition
-						.indexOf(AQConstants.ENTITY_SEPARATOR));
-				String attrName = null;
-				StringTokenizer tokenizer = new StringTokenizer(condition,
-						AQConstants.QUERY_OPERATOR_DELIMITER);
-				while (tokenizer.hasMoreTokens())
-				{
-					attrName = tokenizer.nextToken();
-					if (tokenizer.hasMoreTokens())
-					{
-						String operator = tokenizer.nextToken();
-						attrParams[AQConstants.INDEX_PARAM_ZERO] = operator;
-						if (tokenizer.hasMoreTokens())
-						{
-							populateArrayForBetween(attrParams, tokenizer, operator);
-						}
-					}
-				}
-				conditionsMap.put(attrName, attrParams);
-			}
+			populateConditionMap(conditionsMap, conditions, counter);
 		}
 		return conditionsMap;
+	}
+
+	/**
+	 * @param conditionsMap conditions Map
+	 * @param conditions conditions
+	 * @param counter counter
+	 */
+	private void populateConditionMap(Map<String, String[]> conditionsMap,
+			String[] conditions, int counter)
+	{
+		String[] attrParams;
+		String condition;
+		attrParams = new String[AQConstants.INDEX_LENGTH];
+		condition = conditions[counter];
+		if (!"".equals(condition))
+		{
+			condition = condition.substring(AQConstants.ARGUMENT_ZERO, condition
+					.indexOf(AQConstants.ENTITY_SEPARATOR));
+			String attrName = null;
+			StringTokenizer tokenizer = new StringTokenizer(condition,
+					AQConstants.QUERY_OPERATOR_DELIMITER);
+			while (tokenizer.hasMoreTokens())
+			{
+				attrName = populateAttributeParameters(attrParams,
+						tokenizer);
+			}
+			conditionsMap.put(attrName, attrParams);
+		}
+	}
+
+	/**
+	 * @param attrParams String array
+	 * @param tokenizer String
+	 * @return attrName
+	 */
+	private String populateAttributeParameters(String[] attrParams,
+			StringTokenizer tokenizer)
+	{
+		String attrName;
+		attrName = tokenizer.nextToken();
+		if (tokenizer.hasMoreTokens())
+		{
+			String operator = tokenizer.nextToken();
+			attrParams[AQConstants.INDEX_PARAM_ZERO] = operator;
+			if (tokenizer.hasMoreTokens())
+			{
+				populateArrayForBetween(attrParams, tokenizer, operator);
+			}
+		}
+		return attrName;
 	}
 
 	/**
@@ -427,10 +508,7 @@ public class CreateQueryObjectBizLogic
 		{
 			Map<String, String[]> newRHSMap = getNewRHSMap(rhsList);
 			ParameterizedQuery pQuery = null;
-			if (query instanceof ParameterizedQuery)
-			{
-				pQuery = (ParameterizedQuery) query;
-			}
+			pQuery = setPQuery(query, pQuery);
 			for (String key : newRHSMap.keySet())
 			{
 				String[] newRHSValues = newRHSMap.get(key);
@@ -514,14 +592,12 @@ public class CreateQueryObjectBizLogic
 	private ParameterizedQuery insertParameters(IQuery query, ParameterizedQuery pQuery,
 			ICustomFormula customFormula)
 	{
-		if (query instanceof ParameterizedQuery)
-		{
-			pQuery = (ParameterizedQuery) query;
-		}
-		IParameter<ICustomFormula> parameter = QueryObjectFactory.createParameter(customFormula,
-				null);
-		pQuery.getParameters().add(parameter);
-		return pQuery;
+		ParameterizedQuery tempQuery = pQuery;
+		tempQuery = setPQuery(query, pQuery);
+		IParameter<ICustomFormula> parameter = QueryObjectFactory.
+			createParameter(customFormula,null);
+		tempQuery.getParameters().add(parameter);
+		return tempQuery;
 	}
 
 	/**
@@ -542,14 +618,26 @@ public class CreateQueryObjectBizLogic
 				Set<IExpression> expressionsInFormula = QueryUtility.getExpressionsInFormula(cf);
 				for (IExpression exp : expressionsInFormula)
 				{
-					boolean removeOperand = exp.removeOperand(cf);
-					if (removeOperand && !(value.trim().equals("")))
-					{
-						exp.addOperand(QueryObjectFactory
-						.createLogicalConnector(LogicalOperator.And), customFormula);
-					}
+					addOperand(customFormula, value, cf, exp);
 				}
 			}
+		}
+	}
+
+	/**
+	 * @param customFormula customFormula
+	 * @param value value
+	 * @param customFormula1 customFormula1
+	 * @param exp expression
+	 */
+	private void addOperand(ICustomFormula customFormula, String value,
+			ICustomFormula customFormula1, IExpression exp)
+	{
+		boolean removeOperand = exp.removeOperand(customFormula1);
+		if (removeOperand && !(value.trim().equals("")))
+		{
+			exp.addOperand(QueryObjectFactory
+			.createLogicalConnector(LogicalOperator.And), customFormula);
 		}
 	}
 
@@ -616,16 +704,14 @@ public class CreateQueryObjectBizLogic
 	private String componentValues(Map<String, String> displayNamesMap, String errorMessage,
 			Map<String, String[]> newConditions, int expId, IRule rule, IQuery query)
 	{
+		StringBuffer errorMessages = new StringBuffer(errorMessage);
 		ICondition condition;
 		String componentName;
 		ArrayList<ICondition> removalList = new ArrayList<ICondition>();
 		List<ICondition> defaultConditions = new ArrayList<ICondition>();
 		int size = rule.size();
 		ParameterizedQuery pQuery = null;
-		if (query instanceof ParameterizedQuery)
-		{
-			pQuery = (ParameterizedQuery) query;
-		}
+		pQuery = setPQuery(query, pQuery);
 		for (int j = 0; j < size; j++)
 		{
 			condition = rule.getCondition(j);
@@ -634,9 +720,8 @@ public class CreateQueryObjectBizLogic
 			{
 				String[] params = newConditions.get(componentName);
 				ArrayList<String> attributeValues = getConditionValuesList(params);
-				errorMessage = errorMessage+ validateAttributeValues(
-				condition.getAttribute().getDataType(), attributeValues);
-
+				errorMessages.append(validateAttributeValues(
+				condition.getAttribute().getDataType(), attributeValues));
 				if (displayNamesMap != null && !(displayNamesMap.containsKey(componentName)))
 				{
 				}
@@ -652,38 +737,109 @@ public class CreateQueryObjectBizLogic
 				removalList.add(condition);
 				if (query instanceof ParameterizedQuery)
 				{
-					pQuery = (ParameterizedQuery) query;
-					List<IParameter<?>> parameterList = pQuery.getParameters();
-					boolean isparameter = false;
-					if (parameterList != null)
-					{
-						for (IParameter<?> parameter : parameterList)
-						{
-							if (parameter.getParameterizedObject() instanceof ICondition)
-							{
-								ICondition paramCondition = (ICondition) parameter
-										.getParameterizedObject();
-								if (paramCondition.getId().equals(condition.getId()))
-								{
-									isparameter = true;
-								}
-							}
-						}
-					}
-					if (!isparameter)
-					{
-						defaultConditions.add(condition);
-					}
+					pQuery = addDefaultConditions(query, condition,
+							defaultConditions);
 				}
 			}
-			if (displayNamesMap != null && displayNamesMap.containsKey(componentName))
-			{
+			populateParameters(displayNamesMap, condition, componentName,pQuery);
+		}
+		removeUnwantedConditions(rule, removalList, defaultConditions);
+		return errorMessages.toString();
+	}
 
-				IParameter<ICondition> parameter = QueryObjectFactory.createParameter(condition,
-						displayNamesMap.get(componentName));
-				pQuery.getParameters().add(parameter);
+	/**
+	 * @param query query
+	 * @param pQuery pQuery
+	 * @return tempQuery
+	 */
+	private ParameterizedQuery setPQuery(IQuery query, ParameterizedQuery pQuery)
+	{
+		ParameterizedQuery tempQuery = pQuery;
+		if (query instanceof ParameterizedQuery)
+		{
+			tempQuery = (ParameterizedQuery) query;
+		}
+		return tempQuery;
+	}
+
+	/**
+	 * @param displayNamesMap display Names Map
+	 * @param condition condition
+	 * @param componentName component Name
+	 * @param pQuery pQuery
+	 */
+	private void populateParameters(Map<String, String> displayNamesMap,
+			ICondition condition, String componentName,
+			ParameterizedQuery pQuery)
+	{
+		if (displayNamesMap != null && displayNamesMap.containsKey(componentName))
+		{
+
+			IParameter<ICondition> parameter = QueryObjectFactory.createParameter(condition,
+					displayNamesMap.get(componentName));
+			pQuery.getParameters().add(parameter);
+		}
+	}
+
+	/**
+	 * @param query query
+	 * @param condition condition
+	 * @param defaultConditions default Conditions
+	 * @return pQuery
+	 */
+	private ParameterizedQuery addDefaultConditions(IQuery query,
+			ICondition condition, List<ICondition> defaultConditions)
+	{
+		ParameterizedQuery pQuery;
+		pQuery = (ParameterizedQuery) query;
+		List<IParameter<?>> parameterList = pQuery.getParameters();
+		boolean isparameter = false;
+		if (parameterList != null)
+		{
+			isparameter = isParameter(condition, parameterList,
+					isparameter);
+		}
+		if (!isparameter)
+		{
+			defaultConditions.add(condition);
+		}
+		return pQuery;
+	}
+
+	/**
+	 * @param condition condition
+	 * @param parameterList parameter List
+	 * @param isParameter is parameter
+	 * @return ifParameter
+	 */
+	private boolean isParameter(ICondition condition,
+			List<IParameter<?>> parameterList, boolean isParameter)
+	{
+		boolean ifParameter = isParameter;
+		for (IParameter<?> parameter : parameterList)
+		{
+			if (parameter.getParameterizedObject() instanceof ICondition)
+			{
+				ICondition paramCondition = (ICondition) parameter
+						.getParameterizedObject();
+				if (paramCondition.getId().equals(condition.getId()))
+				{
+					ifParameter = true;
+				}
 			}
 		}
+		return ifParameter;
+	}
+
+	/**
+	 * @param rule rule
+	 * @param removalList removal List
+	 * @param defaultConditions default Conditions
+	 */
+	private void removeUnwantedConditions(IRule rule,
+			ArrayList<ICondition> removalList,
+			List<ICondition> defaultConditions)
+	{
 		for (ICondition removalEntity : removalList)
 		{
 			if (!defaultConditions.contains(removalEntity))
@@ -691,7 +847,6 @@ public class CreateQueryObjectBizLogic
 				rule.removeCondition(removalEntity);
 			}
 		}
-		return errorMessage;
 	}
 
 	/**
