@@ -567,7 +567,7 @@ public class GenerateHtml
 
 		while (iter.hasNext())
 		{
-			String operator = iter.next().toString();
+			String operator = iter.next();
 			if (operator.equalsIgnoreCase(attributeDetails.getSelectedOperator()))
 			{
 				html.append("\n<option  class=" + cssClass + " value=\"" + operator
@@ -682,7 +682,7 @@ public class GenerateHtml
 			String operator;
 			while (iter.hasNext())
 			{
-				operator = iter.next().toString();
+				operator = iter.next();
 				getHtmlSelectAttribute(oper, generateHTML, operator);
 			}
 			generateHTML.append("\n</select>");

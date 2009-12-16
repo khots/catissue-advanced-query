@@ -689,7 +689,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	        Map<IExpression, Collection<ICondition>> allSelectedConditions = QueryUtility
 	                .getAllSelectedConditions(query);
 	        Collection<Collection<ICondition>> values = allSelectedConditions.values();
-	        Boolean trueValue = new Boolean(true);
+	        Boolean trueValue = Boolean.valueOf(true);
 	        for (Collection<ICondition> conditions : values)
 	        {
 	            for (ICondition condition : conditions)

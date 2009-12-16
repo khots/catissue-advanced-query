@@ -726,8 +726,7 @@ public class QueryCSMUtil
 			AssociationInterface associationById = cache.getAssociationById(id);
 
 			RoleInterface targetRole = associationById.getTargetRole();
-			if (associationById != null
-					&& targetRole.getAssociationsType().getValue().equals(
+			if (targetRole.getAssociationsType().getValue().equals(
 							AQConstants.CONTAINTMENT_ASSOCIATION))
 			{
 				list.add(associationById);
