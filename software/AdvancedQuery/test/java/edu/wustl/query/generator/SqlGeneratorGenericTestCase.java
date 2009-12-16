@@ -17,7 +17,7 @@ import edu.wustl.query.util.global.AQConstants;
 /**
  * @author prafull_kadam
  * To test SQL generator class with positive & negative test cases.
- * It does not use Entity Manager, Test queries on dummy Entity.
+ * It does not use Entity Manager, Test query on dummy Entity.
  * Specifically test SQL representation of each data type with corresponding operators.
  */
 public class SqlGeneratorGenericTestCase extends TestCase

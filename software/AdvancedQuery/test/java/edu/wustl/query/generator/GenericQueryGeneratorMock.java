@@ -18,7 +18,6 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
-import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IExpression;
@@ -29,9 +28,9 @@ import edu.wustl.common.querysuite.queryobject.impl.Expression;
 
 /**
  * @author prafull_kadam
- * To create Queries on Dummy entity data.
+ * To create query on Dummy entity data.
  * It does not use Entity Manager, Test queries on dummy Entity.
- * Specifically designed to create entities & queries objects of each data type with possible operators.
+ * Specifically designed to create entities & query objects of each data type with possible operators.
 
  */
 public class GenericQueryGeneratorMock extends EntityManager
