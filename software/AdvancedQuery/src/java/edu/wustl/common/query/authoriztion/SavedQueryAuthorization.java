@@ -5,10 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.beans.SharedQueryBean;
+import edu.wustl.query.bizlogic.DashboardBizLogic;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.querysuite.CsmUtility;
 import edu.wustl.security.beans.SecurityDataBean;
@@ -18,6 +20,7 @@ import edu.wustl.security.privilege.PrivilegeManager;
 import edu.wustl.security.privilege.PrivilegeUtility;
 import gov.nih.nci.security.UserProvisioningManager;
 import gov.nih.nci.security.authorization.domainobjects.ProtectionElement;
+import gov.nih.nci.security.authorization.domainobjects.ProtectionGroup;
 import gov.nih.nci.security.authorization.domainobjects.User;
 import gov.nih.nci.security.dao.ProtectionElementSearchCriteria;
 import gov.nih.nci.security.exceptions.CSException;
@@ -343,18 +346,27 @@ public class SavedQueryAuthorization
 	 * @throws SMException the SM exception
 	 * @throws CSTransactionException the CS transaction exception
 	 * @throws CSObjectNotFoundException the CS object not found exception
+	 * @throws BizLogicException
 	 */
 	public void removePrevSharing(ParameterizedQuery query,String csmUserId)
-	throws SMException, CSTransactionException, CSObjectNotFoundException
+	throws SMException, CSTransactionException, CSObjectNotFoundException, BizLogicException
 	{
 		PrivilegeUtility privilegeUtility = new PrivilegeUtility();
 		ProtectionElement protectionElement = getProtectionElementForQuery(query, privilegeUtility);
 		UserProvisioningManager upManager = privilegeUtility.getUserProvisioningManager();
 		String peObjId = protectionElement.getObjectId();
-		upManager.assignProtectionElement(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP, peObjId);
-		upManager.deAssignProtectionElements(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP, peObjId);
-		/*String userPG = getUserProtectionGroup(csmUserId);
-		upManager.deAssignProtectionElements(userPG, peObjId);*/
+		Set<ProtectionGroup> pgSet = new DashboardBizLogic().
+		getPGsforQuery(query.getId().toString());
+		for (ProtectionGroup protectionGroup : pgSet)
+		{
+			String pgName = protectionGroup.getProtectionGroupName();
+			if(pgName.equals(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP))
+			{
+				upManager.deAssignProtectionElements
+				(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP, peObjId);
+				break;
+			}
+		}
 		Set<User> sharedUsers = getSharedUsers(query);
 		if(!sharedUsers.isEmpty())
 		{

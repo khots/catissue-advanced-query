@@ -193,6 +193,7 @@ public class SaveQueryBizLogic extends DefaultQueryBizLogic implements IQueryBiz
 			hibernateDao.commit();
 			SavedQueryAuthorization auth = new SavedQueryAuthorization();
 			auth.removePrevSharing((ParameterizedQuery)query, sessionDataBean.getCsmUserId());
+			sharedQueryBean.setQuery((ParameterizedQuery)query);
 			auth.shareQuery(sharedQueryBean, (ParameterizedQuery)query);
 		}
 		catch (Exception e)
