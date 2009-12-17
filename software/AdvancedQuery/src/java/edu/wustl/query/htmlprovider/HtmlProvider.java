@@ -164,7 +164,7 @@ public class HtmlProvider
 		Collection<AttributeInterface> attributeCollection = entity.getEntityAttributesForQuery();
 		String nameOfTheEntity = entity.getName();
 		String entityId = entity.getId().toString();
-		String eName = nameOfTheEntity.substring(nameOfTheEntity.lastIndexOf(".")+1);
+		String eName = nameOfTheEntity.substring(nameOfTheEntity.lastIndexOf('.')+1);
 		boolean isEditLimits = isEditLimits(conditions);
 		StringBuffer generatedHTML = new StringBuffer();
 		StringBuffer generatedPreHTML = new StringBuffer();

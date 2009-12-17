@@ -28,7 +28,7 @@ import java.util.Set;
  * @author deepti_shelar
  *
  */
-public class SecurityManager extends edu.wustl.security.manager.SecurityManager
+public class QuerySecurityManager extends edu.wustl.security.manager.SecurityManager
 {
 	/**
 	 * Gets the user role.

@@ -40,32 +40,6 @@ import edu.wustl.dao.exception.DAOException;
 
 public class QueryBizLogic extends DefaultBizLogic
 {
-
-	/*
-	    private static final String ALIAS_NAME_TABLE_NAME_MAP_QUERY = "select ALIAS_NAME ,TABLE_NAME from "
-	            + "CATISSUE_QUERY_TABLE_DATA";
-
-	    private static final String ALIAS_NAME_PRIVILEGE_TYPE_MAP_QUERY = "select ALIAS_NAME ,
-	    PRIVILEGE_ID from "+ "CATISSUE_QUERY_TABLE_DATA";
-
-	    private static final String GET_RELATION_DATA = "select FIRST_TABLE_ID, SECOND_TABLE_ID,"
-	            + "FIRST_TABLE_JOIN_COLUMN, SECOND_TABLE_JOIN_COLUMN "
-	            + "from CATISSUE_RELATED_TABLES_MAP";
-
-
-	    private static final String GET_TABLE_ALIAS = "select ALIAS_NAME from CATISSUE_QUERY_TABLE_DATA "
-	            + "where TABLE_ID=";
-
-	    private static final String GET_RELATED_TABLE_ALIAS_PART1 = "SELECT table2.alias_name "
-	            + " from catissue_table_relation relation, CATISSUE_QUERY_TABLE_DATA table1, "
-	            + " CATISSUE_QUERY_TABLE_DATA table2 "
-	            + " where relation.parent_table_id = table1.table_id and relation.child_table_id =
-	             table2.table_id "+ " and table1.alias_name = ";
-
-	    private static final String GET_RELATED_TABLE_ALIAS_PART2 = " and exists "
-	            + "(select * from catissue_search_display_data displayData "
-	            + " where relation.RELATIONSHIP_ID = displayData.RELATIONSHIP_ID)";
-	    */
 	/**
 	 * Bug#3549
 	 * Patch 1_1
@@ -108,22 +82,38 @@ public class QueryBizLogic extends DefaultBizLogic
 		int counter = 0;
 		while (iterator.hasNext())
 		{
-			List rowList = (List) iterator.next();
-			String columnValue = (String) rowList.get(counter++) + "." +
-			(String) rowList.get(counter++) + "."+ (String) rowList.get(counter++);
-			String tablesInPath = (String) rowList.get(counter++);
-			if ((tablesInPath != null) && (!"".equals(tablesInPath)))
-			{
-				columnValue = columnValue + "." + tablesInPath;
-			}
-			String columnName = (String) rowList.get(counter++);
-			NameValueBean nameValueBean = new NameValueBean();
-			nameValueBean.setName(columnName);
-			nameValueBean.setValue(columnValue);
-			columnNameValueBeanList.add(nameValueBean);
-			counter = 0;
+			counter = populateCOlumnNameValueBeanList(columnNameValueBeanList,
+					iterator, counter);
 		}
 		return columnNameValueBeanList;
+	}
+
+	/**
+	 * @param columnNameValueBeanList list
+	 * @param iterator iterator
+	 * @param counter counter
+	 * @return counter
+	 */
+	private int populateCOlumnNameValueBeanList(List columnNameValueBeanList,
+			Iterator iterator, int counter)
+	{
+		int tempCounter = counter;
+		List rowList = (List) iterator.next();
+		String columnValue = (String) rowList.get(counter++) + "." +
+		(String) rowList.get(counter++) + "."+ (String) rowList.get(counter++);
+		StringBuffer columnValues = new StringBuffer(columnValue);
+		String tablesInPath = (String) rowList.get(counter++);
+		if ((tablesInPath != null) && (!"".equals(tablesInPath)))
+		{
+			columnValues.append('.').append(tablesInPath);
+		}
+		String columnName = (String) rowList.get(counter++);
+		NameValueBean nameValueBean = new NameValueBean();
+		nameValueBean.setName(columnName);
+		nameValueBean.setValue(columnValues.toString());
+		columnNameValueBeanList.add(nameValueBean);
+		tempCounter = 0;
+		return tempCounter;
 	}
 
 	/**
@@ -167,6 +157,17 @@ public class QueryBizLogic extends DefaultBizLogic
 				whereClause);
 		jdbcDAO.closeSession();
 
+		Set objectNameValueBeanList = populateList(aliasName, tableList);
+		return objectNameValueBeanList;
+	}
+
+	/**
+	 * @param aliasName alias name
+	 * @param tableList table list
+	 * @return objectNameValueBeanList
+	 */
+	private Set populateList(String aliasName, List tableList)
+	{
 		Set objectNameValueBeanList = new TreeSet();
 		if (aliasName == null || "".equals(aliasName))
 		{
@@ -175,6 +176,16 @@ public class QueryBizLogic extends DefaultBizLogic
 			nameValueBean.setName(AQConstants.SELECT_OPTION);
 			objectNameValueBeanList.add(nameValueBean);
 		}
+		populateBeanList(tableList, objectNameValueBeanList);
+		return objectNameValueBeanList;
+	}
+
+	/**
+	 * @param tableList table List
+	 * @param objectNameValueBeanList bean list
+	 */
+	private void populateBeanList(List tableList, Set objectNameValueBeanList)
+	{
 		Iterator objIterator = tableList.iterator();
 		while (objIterator.hasNext())
 		{
@@ -184,7 +195,6 @@ public class QueryBizLogic extends DefaultBizLogic
 			nameValueBean.setValue((String) row.get(1));
 			objectNameValueBeanList.add(nameValueBean);
 		}
-		return objectNameValueBeanList;
 	}
 
 	/**

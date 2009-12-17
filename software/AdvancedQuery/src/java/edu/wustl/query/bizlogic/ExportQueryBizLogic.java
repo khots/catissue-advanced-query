@@ -19,8 +19,8 @@ import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.query.util.global.AQConstants;
 
 /**
- * This class contains the bizlogic to display the details of the query like query name, constraints,
- * export date in the exported csv file.
+ * This class contains the business logic to display the details of the query
+ * like query name, constraints, export date in the exported CSV file.
  * @author pooja_tavase
  *
  */
@@ -28,7 +28,7 @@ public class ExportQueryBizLogic
 {
 	/**
 	 * Gathers the query details( query title, export date and constraint list)
-	 * to be written in the exported csv file.
+	 * to be written in the exported CSV file.
 	 * @param query IParameterizedQuery object
 	 * @param exportList The exportList
 	 * @throws MultipleRootsException MultipleRootsException
@@ -71,7 +71,7 @@ public class ExportQueryBizLogic
 	}
 
 	/**
-	 * Method to populate the constraint list to be written in the exported csv file.
+	 * Method to populate the constraint list to be written in the exported CSV file.
 	 * @param expression The Expression
 	 * @param formattedStr The StringBuffer object
 	 */
@@ -91,39 +91,72 @@ public class ExportQueryBizLogic
 		}
 		for(int i=0;i<noOfRules;i++)
 		{
-			IExpressionOperand operand = expression.getOperand(i);
-			if (operand instanceof IRule)
+			getFormattedString(expression, formattedStr, i);
+		}
+	}
+
+	/**
+	 * @param expression expression
+	 * @param formattedStr formatted string
+	 * @param counter counter
+	 */
+	private void getFormattedString(IExpression expression,
+			StringBuffer formattedStr, int counter)
+	{
+		IExpressionOperand operand = expression.getOperand(counter);
+		if (operand instanceof IRule)
+		{
+			formatStringForRule(expression, formattedStr, counter);
+		}
+		else if (operand instanceof IExpression)
+		{
+			processForExpressions(formattedStr, operand);
+		}
+	}
+
+	/**
+	 * @param expression expression
+	 * @param formattedStr formatted string
+	 * @param counter counter
+	 */
+	private void formatStringForRule(IExpression expression,
+			StringBuffer formattedStr, int counter)
+	{
+		IRule rule = (IRule) expression.getOperand(counter);
+		int totalConditions = rule.size();
+		populateFormattedString(formattedStr, rule, totalConditions);
+		if(totalConditions > 1)
+		{
+			formattedStr.deleteCharAt(formattedStr.lastIndexOf(","));
+		}
+	}
+
+	/**
+	 * @param formattedStr String
+	 * @param rule rule
+	 * @param totalConditions total conditions
+	 */
+	private void populateFormattedString(StringBuffer formattedStr, IRule rule,
+			int totalConditions)
+	{
+		for(int j=0;j<totalConditions;j++)
+		{
+			ICondition condition = rule.getCondition(j);
+			String formattedAttrNm = edu.wustl.cab2b.common.util.Utility.
+			getFormattedString(condition.getAttribute().getName());
+			formattedStr.append(formattedAttrNm).append(' ');
+			List<String> values = condition.getValues();
+			RelationalOperator operator = condition.getRelationalOperator();
+			formattedStr.append(operator.getStringRepresentation()).append(' ');
+			for(String value : values)
 			{
-				IRule rule = (IRule) expression.getOperand(i);
-				int totalConditions = rule.size();
-				for(int j=0;j<totalConditions;j++)
-				{
-					ICondition condition = rule.getCondition(j);
-					String formattedAttrNm = edu.wustl.cab2b.common.util.Utility.
-					getFormattedString(condition.getAttribute().getName());
-					formattedStr.append(formattedAttrNm).append(' ');
-					List<String> values = condition.getValues();
-					RelationalOperator operator = condition.getRelationalOperator();
-					formattedStr.append(operator.getStringRepresentation()).append(' ');
-					for(String value : values)
-					{
-						formattedStr.append(' ').append(value).append(" and");
-					}
-					if(!values.isEmpty())
-					{
-					  formattedStr.delete(formattedStr.lastIndexOf("a"),formattedStr.length());
-					}
-					formattedStr.append(", ");
-				}
-				if(totalConditions > 1)
-				{
-					formattedStr.deleteCharAt(formattedStr.lastIndexOf(","));
-				}
-            }
-			else if (operand instanceof IExpression)
+				formattedStr.append(' ').append(value).append(" and");
+			}
+			if(!values.isEmpty())
 			{
-				processForExpressions(formattedStr, operand);
-            }
+			  formattedStr.delete(formattedStr.lastIndexOf("a"),formattedStr.length());
+			}
+			formattedStr.append(", ");
 		}
 	}
 

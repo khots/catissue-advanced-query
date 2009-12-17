@@ -14,14 +14,14 @@ import edu.wustl.common.util.Utility;
 import edu.wustl.query.util.global.AQConstants;
 
 /**
- * This class generates html for text box, radio button and
+ * This class generates HTML for text box, radio button and
  * other components for the Add Limits section of Query Page.
  * @author rukhsana_sameer
  */
 public class GenerateHtml
 {
 	/**
-	 * End tag for html tag td.
+	 * End tag for HTML tag td.
 	 */
 	public static final String endTD = "\n</td>";
 
@@ -42,8 +42,9 @@ public class GenerateHtml
 	 */
 	public static final String CSS_PV= "PermissibleValuesQuery";
 
+
 	/**
-	 * This method generates html for RadioButton.
+	 * This method generates HTML for RadioButton.
 	 * @param componentId
 	 * 		String
 	 * @param values
@@ -125,11 +126,11 @@ public class GenerateHtml
 	}
 
 	/**
-	 * Generates html for radio button depending upon value of radio button.
+	 * Generates HTML for radio button depending upon value of radio button.
 	 * @param componentId generated component id
 	 * @param values list of values
-	 * @param cssClass css class name
-	 * @param html generated html
+	 * @param cssClass CSS class name
+	 * @param html generated HTML
 	 */
 	private static void getHtmlForValuesNotNull(String componentId, List<String> values, String cssClass,
 			StringBuffer html)
@@ -151,7 +152,7 @@ public class GenerateHtml
 		}
 	}
 	/**
-	 * Generates html for textBox to hold the input for operator selected.
+	 * Generates HTML for textBox to hold the input for operator selected.
 	 *
 	 * @param componentId
 	 *            String
@@ -261,11 +262,11 @@ public class GenerateHtml
 	}
 
 	/**
-	 * Generate html for text box based upon operator and values.
+	 * Generate HTML for text box based upon operator and values.
 	 * @param values list of values
 	 * @param operator selected operator
 	 * @param textBoxId id of text box
-	 * @param html generated html
+	 * @param html generated HTML
 	 */
 	private static void getHtmlValueAndOperator(List<String> values, String operator, String textBoxId,
 			StringBuffer html)
@@ -283,7 +284,7 @@ public class GenerateHtml
 	 *
 	 * @param operator selected operator
 	 * @param textBoxId id of text box
-	 * @param html generated html
+	 * @param html generated HTML
 	 */
 	private static void getHtmlValueNull(String operator, String textBoxId, StringBuffer html)
 	{
@@ -308,7 +309,7 @@ public class GenerateHtml
 	 * @param values list of values
 	 * @param operator selected operator
 	 * @param textBoxId id of text box component
-	 * @param html generated html
+	 * @param html generated HTML
 	 */
 	private static void getHtmlValueNotNull(List<String> values, String operator, String textBoxId,
 			StringBuffer html)
@@ -344,10 +345,10 @@ public class GenerateHtml
 	}
 
 	/**
-	 * Method provides html for text box when operator is IsBetween.
+	 * Method provides HTML for text box when operator is IsBetween.
 	 * @param values list of values
 	 * @param textBoxId1 id of text box component
-	 * @param html generated html
+	 * @param html generated HTML
 	 */
 	private static void getHtmlTextBoxForBetweenOperator(List<String> values, String textBoxId1,
 			StringBuffer html)
@@ -373,7 +374,7 @@ public class GenerateHtml
 		}
 	}
 	/**
-	 * Generators html for Calendar.Depending upon the value of operator the
+	 * Generators HTML for Calendar.Depending upon the value of operator the
 	 * calendar is displayed(hidden/visible).
 	 * @param componentId String
 	 * @param isFirst
@@ -426,7 +427,7 @@ public class GenerateHtml
 	}
 
 	/**
-	 * Method provides html for Add Limits Header.
+	 * Method provides HTML for Add Limits Header.
 	 * @param entityName String
 	 * @param entityId String
 	 * @param attributeCollection String
@@ -453,7 +454,7 @@ public class GenerateHtml
 		return generatedPreHTML;
 	}
 	/**
-	 * Generates html for button.
+	 * Generates HTML for button.
 	 * @param entityName
 	 *            entityName
 	 * @param attributesStr
@@ -509,7 +510,7 @@ public class GenerateHtml
 		return generatedPreHTML;
 	}
 	/**
-	 * This method generates the combobox's html to show the operators valid for
+	 * This method generates the combobox's HTML to show the operators valid for
 	 * the attribute passed to it.
 	 * @param componentId
 	 *            String
@@ -554,7 +555,7 @@ public class GenerateHtml
 	}
 
 	/**
-	 * Method generates html for selected operator.
+	 * Method generates HTML for selected operator.
 	 * @param attributeDetails AttributeDetails
 	 * @param cssClass String
 	 * @param html StringBuffer
@@ -727,7 +728,7 @@ public class GenerateHtml
 		}
 	}
 	/**
-	 * Method generates html for bold attribute label.
+	 * Method generates HTML for bold attribute label.
 	 * @param attrLabel
 	 * 		String
 	 * @return StringBuffer
@@ -740,7 +741,7 @@ public class GenerateHtml
 	}
 
 	/**
-	 * This method provides the alternate css for alternate attributes of an entity.
+	 * This method provides the alternate CSS for alternate attributes of an entity.
 	 * @param generatedHTML
 	 * 			StringBuffer
 	 * @param isBGColor
@@ -790,7 +791,7 @@ public class GenerateHtml
 		return isBetween;
 	}
 	/**
-	 * Generates html for date format.
+	 * Generates HTML for date format.
 	 * @param generatedHTML
 	 * 			StringBuffer
 	 * @param isBold
