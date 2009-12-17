@@ -7,6 +7,7 @@ package edu.wustl.query.generator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.Attribute;
@@ -18,13 +19,19 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.wustl.cab2b.common.beans.MatchedClass;
+import edu.wustl.cab2b.common.beans.MatchedClassEntry;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.ICondition;
+import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.IRule;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.Expression;
+import edu.wustl.query.util.querysuite.EntityCacheFactory;
 
 /**
  * @author prafull_kadam
@@ -192,5 +199,170 @@ public class GenericQueryGeneratorMock extends EntityManager
 				return (AttributeInterface)attribute;
 		}
 		return null;
+	}
+
+	/**
+     * To create IQuery for the Participant as: [activityStatus = 'Active']
+     *
+     * @param expression The Expression reference created by function
+     *            creatParticipantExpression2()
+     * @return The corresponding join Graph reference.
+     */
+    public static IQuery creatParticipantQuery()
+    {
+        IQuery query = null;
+        try
+        {
+            query = QueryObjectFactory.createQuery();
+            IConstraints constraints = QueryObjectFactory.createConstraints();
+            query.setConstraints(constraints);
+
+            // creating Participant Expression.
+            EntityCache cache = EntityCacheFactory.getInstance();
+            EntityInterface participantEntity = GenericQueryGeneratorMock.createEntity("Participant");
+            participantEntity = getEntity(cache, participantEntity);
+            IQueryEntity participantConstraintEntity = QueryObjectFactory.createQueryEntity(participantEntity);
+            IExpression participantExpression = constraints.addExpression(participantConstraintEntity);
+            participantExpression.addOperand(createParticipantRule(participantEntity));
+            //
+            // // creating output tree.
+            participantExpression.setInView(true);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        return query;
+    }
+
+    /**
+     * Create Rule for given Participant as : activityStatus = 'Active'
+     *
+     * @param participantEntity The Dynamic Extension Entity Participant
+     * @return The Rule reference.
+     */
+    public static IRule createParticipantRule(EntityInterface participantEntity)
+    {
+        List<ICondition> conditions = new ArrayList<ICondition>();
+        conditions.add(createParticipantCondition(participantEntity));
+        IRule rule = QueryObjectFactory.createRule(conditions);
+
+        return rule;
+    }
+
+    /**
+     * Create Condition for given Participant Entity: activityStatus = 'Active'
+     *
+     * @param participantEntity the Dynamic Extension entity for participant.
+     * @return The Condition object.
+     */
+    public static ICondition createParticipantCondition(EntityInterface participantEntity)
+    {
+        List<String> values = new ArrayList<String>();
+        values.add("Active");
+        AttributeInterface attribute = findAttribute(participantEntity, "activityStatus");
+        ICondition condition = QueryObjectFactory.createCondition(attribute, RelationalOperator.Equals, values);
+
+        return condition;
+    }
+
+    /**
+     * TO create query for the TABLE_PER_SUB_CLASS inheritance strategy. It will
+     * create Query for Clinical Study class as: cs.unsignedConsentDocumentURL =
+     * 'XYZ' and cs.activityStatus = 'Active' Here, 1. unsignedConsentDocumentURL
+     * attribute is in the derived class i.e. Clinical Study. 2.
+     * activityStatus attribute is in the base class of Clinical Study i.e.
+     * SpecimenProtocol
+     *
+     * @return The reference to Query object.
+     */
+    public static IQuery createInheritanceQuery()
+    {
+        IQuery query = null;
+        try
+        {
+            query = QueryObjectFactory.createQuery();;
+            IConstraints constraints = QueryObjectFactory.createConstraints();
+            query.setConstraints(constraints);
+
+            EntityCache cache = EntityCacheFactory.getInstance();
+            EntityInterface clinicalStudyEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudy");
+            clinicalStudyEntity = getEntity(cache, clinicalStudyEntity);
+
+            // creating expression for Clinical Study.
+            IQueryEntity csConstraintEntity = QueryObjectFactory.createQueryEntity(clinicalStudyEntity);
+            IExpression csExpression = constraints.addExpression(csConstraintEntity);
+
+            List<String> csExpressionRule1Values1 = new ArrayList<String>();
+            csExpressionRule1Values1.add("XYZ");
+
+            ICondition csExpressionRule1Condition1 = QueryObjectFactory.createCondition(findAttribute(
+                    clinicalStudyEntity, "unsignedConsentDocumentURL"), RelationalOperator.Equals,
+                    csExpressionRule1Values1);
+            IRule csExpressionRule1 = QueryObjectFactory.createRule(null);
+            csExpressionRule1.addCondition(csExpressionRule1Condition1);
+
+            List<String> csExpressionRule1Values2 = new ArrayList<String>();
+            csExpressionRule1Values2.add("Active");
+            ICondition csExpressionRule1Condition2 = QueryObjectFactory.createCondition(findAttribute(
+                    clinicalStudyEntity.getParentEntity(), "activityStatus"), RelationalOperator.Equals,
+                    csExpressionRule1Values2);
+            csExpressionRule1.addCondition(csExpressionRule1Condition2);
+            csExpression.addOperand(csExpressionRule1);
+
+            setAllExpressionInView(constraints);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        return query;
+    }
+
+    /**
+     * To set all Expressions in the view.
+     * @param constraints The reference to constraints object.
+     */
+    private static void setAllExpressionInView(IConstraints constraints)
+    {
+        for(IExpression expression : constraints)
+        {
+            expression.setInView(true);
+        }
+    }
+
+    /**
+     * Get the entity.
+     * @param cache cache
+     * @param entity entity
+     * @return entity
+     */
+    public static EntityInterface getEntity(EntityCache cache, EntityInterface entity)
+	{
+		Collection<EntityInterface> entityCollection = new HashSet<EntityInterface>();
+		entityCollection.add(entity);
+		MatchedClass matchedClass = cache.getEntityOnEntityParameters(entityCollection);
+		MatchedClass resultantMatchedClass = new MatchedClass();
+		for (MatchedClassEntry matchedClassEntry : matchedClass.getMatchedClassEntries())
+		{
+			resultantMatchedClass.addMatchedClassEntry(matchedClassEntry);
+		}
+		matchedClass = cache.getCategories(entityCollection);
+		for (MatchedClassEntry matchedClassEntry : matchedClass.getMatchedClassEntries())
+		{
+			resultantMatchedClass.addMatchedClassEntry(matchedClassEntry);
+		}
+		resultantMatchedClass.setEntityCollection(resultantMatchedClass.getSortedEntityCollection());
+		for(EntityInterface tEntity : resultantMatchedClass.getEntityCollection())
+		{
+			if(tEntity.getName().equals("edu.wustl.clinportal.domain."+entity.getName()))
+			{
+				entity = tEntity;
+				break;
+			}
+		}
+		return entity;
 	}
 }

@@ -1,14 +1,12 @@
 package edu.wustl.query.bizlogic;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 import junit.framework.TestCase;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.cab2b.common.beans.MatchedClass;
-import edu.wustl.cab2b.common.beans.MatchedClassEntry;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.query.generator.GenericQueryGeneratorMock;
 import edu.wustl.query.util.querysuite.EntityCacheFactory;
@@ -37,28 +35,7 @@ public class CreateQueryObjectTestCase extends TestCase
 			EntityCache cache = EntityCacheFactory.getInstance();
 			EntityInterface entity = GenericQueryGeneratorMock.createEntity("Participant");
 			Long attributeId = null;
-			Collection<EntityInterface> entityCollection = new HashSet<EntityInterface>();
-			entityCollection.add(entity);
-			MatchedClass matchedClass = cache.getEntityOnEntityParameters(entityCollection);
-			MatchedClass resultantMatchedClass = new MatchedClass();
-			for (MatchedClassEntry matchedClassEntry : matchedClass.getMatchedClassEntries())
-			{
-				resultantMatchedClass.addMatchedClassEntry(matchedClassEntry);
-			}
-			matchedClass = cache.getCategories(entityCollection);
-			for (MatchedClassEntry matchedClassEntry : matchedClass.getMatchedClassEntries())
-			{
-				resultantMatchedClass.addMatchedClassEntry(matchedClassEntry);
-			}
-			resultantMatchedClass.setEntityCollection(resultantMatchedClass.getSortedEntityCollection());
-			for(EntityInterface tEntity : resultantMatchedClass.getEntityCollection())
-			{
-				if(tEntity.getName().equals("edu.wustl.clinportal.domain.Participant"))
-				{
-					entity = tEntity;
-					break;
-				}
-			}
+			entity = GenericQueryGeneratorMock.getEntity(cache, entity);
 			Collection<AttributeInterface> attrCollection = entity.getAllAttributes();
 
 			for(AttributeInterface attribute : attrCollection)
@@ -75,6 +52,25 @@ public class CreateQueryObjectTestCase extends TestCase
 		{
 			ex.printStackTrace();
 			fail();
+		}
+	}
+
+	/**
+	 * Test setInputDataToQuery method.
+	 */
+	public void testSetInputDataToQuery()
+	{
+		try
+		{
+			CreateQueryObjectBizLogic queryBizlogic = new CreateQueryObjectBizLogic();
+			IQuery query = GenericQueryGeneratorMock.creatParticipantQuery();
+			String queryInputString = "";
+			String errorMessage = queryBizlogic.setInputDataToQuery(queryInputString, query.getConstraints(), null, query);
+			assertEquals("",errorMessage);
+		}
+		catch (Exception e)
+		{
+			fail("Unexpected Exception while setting input data to query!!!");
 		}
 	}
 }
