@@ -430,8 +430,7 @@ public class SqlGenerator implements ISqlGenerator
             selectPart.append(fromBuilder.aliasOf(attribute, expression));
             String columnAliasName = COLUMN_NAME + selectIndex;
             selectPart.append(" " + columnAliasName + SELECT_COMMA);
-            // code to get displayname. & pass it to the Constructor along with
-            // treeNode.
+            // code to get display name. & pass it to the Constructor along with treeNode.
             String className = edu.wustl.query.util.global.Utility.parseClassName(deEntity.getName());
             String attributeLabel = edu.wustl.common.util.Utility.getDisplayLabel(attribute.getName());
             String displayNmForCol = className+" : "+attributeLabel;
@@ -630,8 +629,7 @@ public class SqlGenerator implements ISqlGenerator
 
             if (i == noOfConditions - 1) // Intermediate Condition.
             {
-            	// Last Condition, this will not followed by And logical
-                // operator.
+            	// Last Condition, this will not followed by And logical operator.
                 buffer.append(condition);
             }
             else
@@ -674,8 +672,7 @@ public class SqlGenerator implements ISqlGenerator
 
         if (operator.equals(RelationalOperator.Between))
         {
-            // Processing Between Operator, it will be treated as
-            // (op>=val1 and op<=val2)
+            // Processing Between Operator, it will be treated as (OP>=val1 and OP<=val2)
             sql = processBetweenOperator(condition, attributeName);
         }
         else if (operator.equals(RelationalOperator.In) || operator.equals(RelationalOperator.NotIn))
@@ -1002,14 +999,11 @@ public class SqlGenerator implements ISqlGenerator
 		    String strToDateFunction = strTodateFunction;
 		    if (strToDateFunction == null || strToDateFunction.trim().equals(""))
 		    {
-		        strToDateFunction = "STR_TO_DATE"; // using MySQL function
-		        // if the Value is not
-		        // defined.
+		        strToDateFunction = "STR_TO_DATE"; // using MySQL function if the Value is not defined.
 		    }
 		    if (datePattern == null || datePattern.trim().equals(""))
 		    {
-		        datePattern = "%m-%d-%Y"; // using MySQL function if the
-		        // Value is not defined.
+		        datePattern = "%m-%d-%Y"; // using MySQL function if the value is not defined.
 		    }
 		    String appName = CommonServiceLocator.getInstance().getAppName();
 		    if("MSSQLSERVER".equals(DAOConfigFactory.getInstance().getDAOFactory(appName).
@@ -1054,8 +1048,7 @@ public class SqlGenerator implements ISqlGenerator
         List<IExpression> operandList = joinGraph.getChildrenList(expression);
 
         boolean isEmpty = true;
-        if (!operandList.isEmpty()) // Check whether any of its children
-        // contains rule.
+        if (!operandList.isEmpty()) // Check whether any of its children contains rule.
         {
             for (IExpression subExpression : operandList)
             {
@@ -1065,11 +1058,8 @@ public class SqlGenerator implements ISqlGenerator
                 }
             }
         }
-
         isEmpty = isEmpty && !expression.containsRule();// check if there are
-        // rule present as
-        // subexpression.
-        // SRINATH
+        // rule present as subexpression. SRINATH
         isEmpty = isEmpty && !expression.containsCustomFormula();
         if (isEmpty)
         {
@@ -1234,27 +1224,6 @@ public class SqlGenerator implements ISqlGenerator
     }
 
     /**
-     * TODO need to re factor Remove DB type check;
-     * @return
-     */
-/*    private Object getPrimitiveOperationProcessor()
-    {
-
-    	Object oprProcessor;
-    	String appName = CommonServiceLocator.getInstance().getAppName();
-        DAOFactory daoFactory = (DAOFactory) DAOConfigFactory.getInstance().getDAOFactory(appName);
-    	if("MYSQL".equals(daoFactory.getDataBaseType()))
-        {
-    		oprProcessor = new MySQLPrimitiveOperationProcessor();
-        }
-        else
-        {
-        	oprProcessor =new OraclePrimitiveOperationProcessor();
-        }
-        return oprProcessor;
-    }*/
-
-    /**
      * Returns the term string.
      * @param term term
      * @return The term string
@@ -1262,9 +1231,6 @@ public class SqlGenerator implements ISqlGenerator
     private String getTermString(ITerm term)
     {
     	return getTermProcessor().convertTerm(term).getString();
-       /* TermString termString = getTermProcessor().convertTerm(term);
-        String termStr = termString.getString();
-        return termStr;*/
     }
 
     /**
@@ -1356,7 +1322,6 @@ public class SqlGenerator implements ISqlGenerator
             	if(!entityGroupList.contains(entityGroupName))
                 {
                     isQueryOnMultipleEntityGroups = true;
-                    //entityGroupList.add(entityGroupName);
                     break;
                 }
             }
