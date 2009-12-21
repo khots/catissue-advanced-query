@@ -939,11 +939,10 @@ public class QueryCsmCacheManager
 		List<List<String>> aList = new ArrayList<List<String>>();
 		ResultSet resultSet = null;
 		resultSet = jdbcDAO.getQueryResultSet(sql);
-		ResultSetMetaData metaData = resultSet.getMetaData();
-		int columnCount = metaData.getColumnCount();
-
 		if(resultSet != null)
 		{
+			ResultSetMetaData metaData = resultSet.getMetaData();
+			int columnCount = metaData.getColumnCount();
 			while (resultSet.next())
 			{
 				int counter = 1;
