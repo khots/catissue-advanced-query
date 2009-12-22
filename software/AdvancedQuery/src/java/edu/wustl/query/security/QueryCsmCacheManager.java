@@ -710,7 +710,7 @@ public class QueryCsmCacheManager
 	{
 		String tableName = (String) AbstractClient.objectTableNames.get(queryResultObjectData
 				.getAliasName());
-		return HibernateMetaData.getClassName(tableName);
+		return HibernateMetaData.getInstance().getClassName(tableName);
 	}
 
 	/**
