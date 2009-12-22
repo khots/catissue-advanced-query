@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -40,6 +41,7 @@ import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.util.HibernateMetaData;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.QueryCSMValidator;
@@ -212,6 +214,9 @@ public class QueryCsmCacheManager
 		       else
 		       {
 		    	   sql = sql + mainEntityId;
+		    	   List<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
+		    	   ColumnValueBean bean = new ColumnValueBean("mainEntityId",new Integer(mainEntityId));
+		    	   columnValueBean.add(bean);
 		    	   List<Long> allMainObjectIds = (List<Long>)hibernateDAO.executeQuery(sql);
 		    	   if(!allMainObjectIds.isEmpty())
 		    	   {
@@ -363,8 +368,11 @@ public class QueryCsmCacheManager
 			break;
 		}
   	   Long hookEntityId = null;
-  	   sql = "SELECT "+columnName+" FROM "+tableName+" WHERE IDENTIFIER = "+mainEntityId;
-  	   ResultSet resultSet = jdbcDAO.getQueryResultSet(sql);
+  	   sql = "SELECT "+columnName+" FROM "+tableName+" WHERE IDENTIFIER = ?";
+  	   LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
+	   ColumnValueBean bean = new ColumnValueBean("mainEntityId",Integer.valueOf(mainEntityId));
+	   columnValueBean.add(bean);
+  	   ResultSet resultSet = jdbcDAO.getResultSet(sql, columnValueBean,null);
   	   Long foreignKey = null;
   	   if(resultSet != null)
   	   {
@@ -396,20 +404,26 @@ public class QueryCsmCacheManager
 	{
 		AssociationInterface association;
 		String pathSql = "SELECT INTERMEDIATE_PATH FROM PATH WHERE FIRST_ENTITY_ID =" +
-		" (SELECT IDENTIFIER FROM DYEXTN_ABSTRACT_METADATA WHERE NAME = '"
-		+hookEntity.getName()+"') AND LAST_ENTITY_ID =" +
-				" (SELECT IDENTIFIER FROM DYEXTN_ABSTRACT_METADATA WHERE NAME =" +
-				" '"+originalEntity.getName()+"')";
-		ResultSet resultSet1 = jdbcDAO.getQueryResultSet(pathSql);
+		" (SELECT IDENTIFIER FROM DYEXTN_ABSTRACT_METADATA WHERE NAME = ?) AND LAST_ENTITY_ID =" +
+				" (SELECT IDENTIFIER FROM DYEXTN_ABSTRACT_METADATA WHERE NAME = ?)";
+
+		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
+		ColumnValueBean bean = new ColumnValueBean("hookEntityName",hookEntity.getName());
+		columnValueBean.add(bean);
+		bean = new ColumnValueBean("originalEntityName",originalEntity.getName());
+		columnValueBean.add(bean);
+		ResultSet resultSet1 = jdbcDAO.getResultSet(pathSql, columnValueBean, null);
 		String intermediatePath = "";
 		if(resultSet1 != null && resultSet1.next())
 		{
 			intermediatePath = resultSet1.getString(1);
 			intermediatePath = intermediatePath.substring(0, intermediatePath.indexOf('_'));
 		}
-		pathSql = "SELECT DE_ASSOCIATION_ID FROM INTRA_MODEL_ASSOCIATION WHERE ASSOCIATION_ID =" +
-				" "+intermediatePath;
-		resultSet1 = jdbcDAO.getQueryResultSet(pathSql);
+		pathSql = "SELECT DE_ASSOCIATION_ID FROM INTRA_MODEL_ASSOCIATION WHERE ASSOCIATION_ID = ?";
+		columnValueBean = new LinkedList<ColumnValueBean>();
+		bean = new ColumnValueBean("intermediatePath",intermediatePath);
+		columnValueBean.add(bean);
+		resultSet1 = jdbcDAO.getResultSet(pathSql, columnValueBean, null);
 		Long associationId = null;
 		if(resultSet1 != null && resultSet1.next())
 		{
@@ -833,10 +847,13 @@ public class QueryCsmCacheManager
 		}
 		else if (sql != null)
 		{
-			sql = sql + entityId;
+			sql = sql + " ?";
+			LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
+			ColumnValueBean bean = new ColumnValueBean("entityId",Long.valueOf(entityId));
+			columnValueBean.add(bean);
 			try
 			{
-				cpIdsList = executeQuery(sql);
+				cpIdsList = executeQuery(sql,columnValueBean);
 			}
 			catch (Exception e)
 			{
@@ -933,12 +950,12 @@ public class QueryCsmCacheManager
 	 * @throws SQLException SQLException
 	 * @return aList List of records.
 	 */
-	private List<List<String>> executeQuery(String sql)
+	private List<List<String>> executeQuery(String sql,LinkedList<ColumnValueBean> columnValueBean)
 			throws DAOException, ClassNotFoundException, SQLException
 	{
 		List<List<String>> aList = new ArrayList<List<String>>();
 		ResultSet resultSet = null;
-		resultSet = jdbcDAO.getQueryResultSet(sql);
+		resultSet = jdbcDAO.getResultSet(sql, columnValueBean, null);
 		if(resultSet != null)
 		{
 			ResultSetMetaData metaData = resultSet.getMetaData();
