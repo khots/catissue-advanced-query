@@ -55,7 +55,7 @@ public abstract class AbstractQueryExecutor
 	 * AQConstants required for forming/changing SQL.
 	 */
 	protected static final String SELECT_CLAUSE = "SELECT";
-	
+
 	/**
 	 * AQConstants required for forming/changing SQL.
 	 */
@@ -201,9 +201,7 @@ public abstract class AbstractQueryExecutor
 		this.startIndex = queryParams.getStartIndex();
 		this.noOfRecords = queryParams.getNoOfRecords();
 		this.getSublistOfResult = startIndex != -1; // this will be used, when it required to get sublist of the result set.
-		/**
-		 * setting noOfRecords = Integer.MAX_VALUE, if All records are expected from result. see getListFromResultSet method
-		 */
+		  //setting noOfRecords = Integer.MAX_VALUE, if All records are expected from result. see getListFromResultSet method
 		if (!getSublistOfResult)
 		{
 			this.noOfRecords = Integer.MAX_VALUE;
@@ -224,7 +222,6 @@ public abstract class AbstractQueryExecutor
 			ErrorKey errorKey = ErrorKey.getErrorKey("db.operation.error");
 			throw new DAOException(errorKey,sqlExp,"AbstractQueryExecutor :");
 		}
-
 		finally
 		{
 			try
@@ -275,15 +272,7 @@ public abstract class AbstractQueryExecutor
 		boolean isLongKeyOfMap = false;
 		if(queryResultObjectDataMap!=null && !queryResultObjectDataMap.isEmpty())
 		{
-			Iterator mapIterator = queryResultObjectDataMap.keySet().iterator();
-			while(mapIterator.hasNext())
-			{
-				if (mapIterator.next() instanceof Long)
-				{
-					isLongKeyOfMap = true;
-					break;
-				}
-			}
+			isLongKeyOfMap = isLongKeyOfMap(isLongKeyOfMap);
 		}
 		int columnCount = metaData.getColumnCount();
 
@@ -312,38 +301,7 @@ public abstract class AbstractQueryExecutor
 			// Srinath: rewrote to use resultSet getters of correct type.
 			for (int i = 1; i <= columnCount; i++)
 			{
-                Object retObj;
-                switch (metaData.getColumnType(i))
-                {
-                    case Types.CLOB :
-                        retObj = resultSet.getObject(i);
-                        break;
-                    case Types.DATE :
-                    case Types.TIMESTAMP :
-                        retObj = resultSet.getTimestamp(i);
-                        if (retObj == null)
-                        {
-                            break;
-                        }
-                        SimpleDateFormat formatter = new SimpleDateFormat(AQConstants.DATE_PATTERN_MM_DD_YYYY + " "
-                                + AQConstants.TIME_PATTERN_HH_MM_SS);
-                        retObj = formatter.format((java.util.Date) retObj);
-                        break;
-                    default :
-                        retObj = resultSet.getObject(i);
-                        if (retObj != null)
-                        {
-                            retObj = retObj.toString();
-                        }
-                }
-                if (retObj == null)
-                {
-                    aList.add("");
-                }
-                else
-                {
-                    aList.add(retObj);
-                }
+                populateListToFilter(metaData, aList, i);
             }
 			if(!isLongKeyOfMap && queryResultObjectDataMap!=null)
 			{
@@ -364,11 +322,7 @@ public abstract class AbstractQueryExecutor
 				//Aarti: Checking object level privileges on each record
 				if (AQConstants.SWITCH_SECURITY && isSecureExecute)
 				{
-					if (sessionDataBean != null & sessionDataBean.isSecurityRequired())
-					{
-						//call filterRowForSimpleSearch of method of csm cache manager changed for csm-query performance issue.
-						cacheManager.filterRowForSimpleSearch(sessionDataBean,queryResultObjectDataMap, aList,cache );
-					}
+					filterDataForSimpleSearch(cacheManager, cache, aList);
 				}
 			}
 			else
@@ -385,18 +339,106 @@ public abstract class AbstractQueryExecutor
 				//Aarti: Checking object level privileges on each record
 				if (AQConstants.SWITCH_SECURITY && isSecureExecute)
 				{
-					if (sessionDataBean != null & sessionDataBean.isSecurityRequired())
-					{
-						//Supriya :call filterRow of method of csm cache manager changed
-						//for csm-query performance issue.
-						cacheManager.filterRow(sessionDataBean, queryResultObjectDataMap, aList,cache );
-					}
+					filterDataForAdvancedSearch(cacheManager, cache, aList);
 				}
 			}
 			list.add(aList);
 			recordCount++;
 		}
 		return list;
+	}
+
+	/**
+	 * @param isLongKeyOfMap isLongKeyOfMap
+	 * @return flag
+	 */
+	private boolean isLongKeyOfMap(boolean isLongKeyOfMap)
+	{
+		boolean flag = isLongKeyOfMap;
+		Iterator mapIterator = queryResultObjectDataMap.keySet().iterator();
+		while(mapIterator.hasNext())
+		{
+			if (mapIterator.next() instanceof Long)
+			{
+				flag = true;
+				break;
+			}
+		}
+		return flag;
+	}
+
+	/**
+	 * @param metaData metaData
+	 * @param aList list
+	 * @param counter counter
+	 * @throws SQLException Exception
+	 */
+	private void populateListToFilter(ResultSetMetaData metaData,
+			List aList, int counter) throws SQLException
+	{
+		Object retObj;
+		switch (metaData.getColumnType(counter))
+		{
+		    case Types.CLOB :
+		        retObj = resultSet.getObject(counter);
+		        break;
+		    case Types.DATE :
+		    case Types.TIMESTAMP :
+		        retObj = resultSet.getTimestamp(counter);
+		        if (retObj == null)
+		        {
+		            break;
+		        }
+		        SimpleDateFormat formatter = new SimpleDateFormat(AQConstants.DATE_PATTERN_MM_DD_YYYY + " "
+		                + AQConstants.TIME_PATTERN_HH_MM_SS);
+		        retObj = formatter.format((java.util.Date) retObj);
+		        break;
+		    default :
+		        retObj = resultSet.getObject(counter);
+		        if (retObj != null)
+		        {
+		            retObj = retObj.toString();
+		        }
+		}
+		if (retObj == null)
+		{
+		    aList.add("");
+		}
+		else
+		{
+		    aList.add(retObj);
+		}
+	}
+
+	/**
+	 * @param cacheManager cacheManager
+	 * @param cache cache
+	 * @param aList list
+	 * @throws SMException Security Manager Exception
+	 */
+	private void filterDataForSimpleSearch(QueryCsmCacheManager cacheManager,
+			QueryCsmCache cache, List aList) throws SMException {
+		if (sessionDataBean != null & sessionDataBean.isSecurityRequired())
+		{
+			//call filterRowForSimpleSearch of method of csm cache manager changed for csm-query performance issue.
+			cacheManager.filterRowForSimpleSearch(sessionDataBean,queryResultObjectDataMap, aList,cache );
+		}
+	}
+
+	/**
+	 * @param cacheManager cacheManager
+	 * @param cache cache
+	 * @param aList list
+	 * @throws SMException Security Manager Exception
+	 */
+	private void filterDataForAdvancedSearch(QueryCsmCacheManager cacheManager,
+			QueryCsmCache cache, List aList) throws SMException {
+		if (sessionDataBean != null & sessionDataBean.isSecurityRequired())
+		{
+			//Supriya :call filterRow of method of csm cache manager changed
+			//for csm-query performance issue.
+			cacheManager.filterRow(sessionDataBean, queryResultObjectDataMap, aList,cache );
+		}
 	}
 
 	/**
