@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -18,10 +19,11 @@ import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 
 /**
  * This class is called from an Ant target to insert indirect paths between clinportal entities.
- * It takes a txt file as an input. The file contains list of entities to be connected on each line.
+ * It takes a text file as an input. The file contains list of entities to be connected on each line.
  * E.g : edu.wustl.clinportal.domain.ClinicalStudy,edu.wustl.clinportal.domain.ClinicalStudyRegistration,edu.wustl.clinportal.domain.Participant
  * @author deepti_shelar
  *
@@ -37,12 +39,9 @@ public class InsertPaths
 	public static void main(String[] args)
 	{
 		String fileName = "paths.txt";
-		/*if(args.length !=0)
-		{
-			fileName = args[0];
-		}*/
 		List<List<String>> pathList;
-		try {
+		try
+		{
 			pathList = parseFile(fileName);
 			writer = new BufferedWriter(new FileWriter("PathsLog.txt"));
 			String appName = CommonServiceLocator.getInstance().getAppName();
@@ -62,17 +61,22 @@ public class InsertPaths
 			writer.write("\nCompleted inserting indirect paths between clinportal entities.");
 			writer.flush();
 			writer.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
+		}
+		catch (IOException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		catch (DAOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -158,13 +162,16 @@ public class InsertPaths
 	 */
 	private static void insertPath(JDBCDAO dao, List<Long> entityIdList,
 			StringBuffer intermediatePath, Long maxPathId) throws DAOException,
-			SQLException, IOException {
+			SQLException, IOException
+	{
+		LinkedList<Object> data = new LinkedList<Object>();
 		Long srcEntId = entityIdList.get(0);
 		Long targetEntId = entityIdList.get(entityIdList.size() - 1);
-		String sql = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID="
-			+ srcEntId + " and LAST_ENTITY_ID="
-			+ targetEntId;
-		ResultSet resultSet = dao.getQueryResultSet(sql);
+		data.add(srcEntId);
+		data.add(targetEntId);
+		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
+		String sql = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID= ? and LAST_ENTITY_ID= ?";
+		ResultSet resultSet = dao.getResultSet(sql, columnValueBean, null);
 		boolean ifSamePathExists = false;
 		List<Long> idList = new ArrayList<Long>();
 		idList.add(srcEntId);
@@ -186,10 +193,16 @@ public class InsertPaths
 		dao.closeStatement(resultSet);
 		if(!ifSamePathExists)
 		{
-			sql = "INSERT INTO path values(" + maxPathId + "," + srcEntId + ",'"
-			+ intermediatePath.toString() + "',"
-			+ targetEntId + ")";
-			dao.executeUpdate(sql);
+			data = new LinkedList<Object>();
+			data.add(maxPathId);
+			data.add(srcEntId);
+			data.add(intermediatePath.toString());
+			data.add(targetEntId);
+			columnValueBean = populateColumnValueBean(data);
+			LinkedList<LinkedList<ColumnValueBean>> beanList = new LinkedList<LinkedList<ColumnValueBean>>();
+			beanList.add(columnValueBean);
+			sql = "INSERT INTO path values(?, ?, ?, ?)";
+			dao.executeUpdate(sql, beanList);
 			writer.write("\nInserted path between "+getEntityName(dao,idList));
 			dao.commit();
 		}
@@ -229,12 +242,16 @@ public class InsertPaths
 	{
 		List<Long> parententityIdList = new ArrayList<Long>();
 		ResultSet resultSet = null;
+		LinkedList<Object> data = new LinkedList<Object>();
+		LinkedList<ColumnValueBean> columnValueBean;
 		for (int c = 0; c < entityIdList.size(); c++)
 		{
 			Long entityId = entityIdList.get(c);
-			String sql = "select PARENT_ENTITY_ID from DYEXTN_ENTITY where IDENTIFIER='" + entityId
-					+ "'";
-			resultSet = dao.getQueryResultSet(sql);
+			data = new LinkedList<Object>();
+			data.add(entityId);
+			columnValueBean = populateColumnValueBean(data);
+			String sql = "select PARENT_ENTITY_ID from DYEXTN_ENTITY where IDENTIFIER=?";
+			resultSet = dao.getResultSet(sql, columnValueBean, null);
 			while (resultSet.next())
 			{
 				parententityIdList.add(resultSet.getLong(1));
@@ -258,24 +275,27 @@ public class InsertPaths
 			Long entityGrpId) throws SQLException, DAOException, IOException
 	{
 		List<Long> entityIdList = new ArrayList<Long>();
+		LinkedList<Object> data;
+		LinkedList<ColumnValueBean> columnValueBean;
 		String sql = "";
 		ResultSet resultSet = null;
 		for (String entityName : entityList)
 		{
+			data = new LinkedList<Object>();
+			data.add(entityName);
 			if(entityGrpId == null)
 			{
-				sql = "select dam.IDENTIFIER from DYEXTN_ABSTRACT_METADATA dam ,DYEXTN_ENTITY de where dam.NAME='"
-					+ entityName
-					+ "' and  dam.identifier= de.identifier ";
+				sql = "select dam.IDENTIFIER from DYEXTN_ABSTRACT_METADATA dam ,DYEXTN_ENTITY de where dam.NAME=?" +
+						" and  dam.identifier= de.identifier ";
 			}
 			else
 			{
-				sql = "select dam.IDENTIFIER from DYEXTN_ABSTRACT_METADATA dam ,DYEXTN_ENTITY de where dam.NAME='"
-					+ entityName
-					+ "' and  dam.identifier= de.identifier and de.ENTITY_GROUP_ID = '"
-					+ entityGrpId + "'";
+				data.add(entityGrpId);
+				sql = "select dam.IDENTIFIER from DYEXTN_ABSTRACT_METADATA dam ,DYEXTN_ENTITY" +
+					" de where dam.NAME= ? and  dam.identifier= de.identifier and de.ENTITY_GROUP_ID = ?";
 			}
-			resultSet = dao.getQueryResultSet(sql);
+			columnValueBean = populateColumnValueBean(data);
+			resultSet = dao.getResultSet(sql, columnValueBean, null);
 			if(resultSet.next())
 			{
 				entityIdList.add(resultSet.getLong(1));
@@ -304,17 +324,21 @@ public class InsertPaths
 	private static List<String> getIntermediatePaths(JDBCDAO dao, List<Long> entityIdList,
 			List<Long> parentEntityIdList) throws SQLException, IOException, DAOException
 	{
+		LinkedList<Object> data;
+		LinkedList<ColumnValueBean> columnValueBean;
 		List<String> intraModelId = new ArrayList<String>();
 		ResultSet resultSet = null;
 		for (int index = 0; index < entityIdList.size() - 1; index++)
 		{
 			if (index + 1 < entityIdList.size())
 			{
+				data = new LinkedList<Object>();
+				data.add(entityIdList.get(index));
+				data.add(entityIdList.get(index + 1));
+				columnValueBean = populateColumnValueBean(data);
 				boolean notFound = true;
-				String sql = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID="
-						+ entityIdList.get(index) + " and LAST_ENTITY_ID="
-						+ entityIdList.get(index + 1);
-				resultSet = dao.getQueryResultSet(sql);
+				String sql = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID= ? and LAST_ENTITY_ID= ?";
+				resultSet = dao.getResultSet(sql, columnValueBean, null);
 				while (resultSet.next())
 				{
 					notFound = false;
@@ -323,12 +347,14 @@ public class InsertPaths
 				dao.closeStatement(resultSet);
 				if (notFound)
 				{
+					data = new LinkedList<Object>();
+					data.add(parentEntityIdList.get(index));
+					data.add(entityIdList.get(index + 1));
+					columnValueBean = populateColumnValueBean(data);
 					ResultSet rs1;
-					String sql1 = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID="
-							+ parentEntityIdList.get(index) + " and LAST_ENTITY_ID="
-							+ entityIdList.get(index + 1);
-
-					rs1 = dao.getQueryResultSet(sql1);
+					String sql1 = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID=?" +
+							" and LAST_ENTITY_ID=?";
+					rs1 = dao.getResultSet(sql1, columnValueBean, null);
 					boolean found = false;
 					while (rs1.next())
 					{
@@ -338,11 +364,14 @@ public class InsertPaths
 					dao.closeStatement(rs1);
 					if (!found)
 					{
+						data = new LinkedList<Object>();
+						data.add(entityIdList.get(index));
+						data.add(parentEntityIdList.get(index + 1));
+						columnValueBean = populateColumnValueBean(data);
 						ResultSet rs2;
-						String sql2 = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID="
-								+ entityIdList.get(index) + " and LAST_ENTITY_ID="
-								+ parentEntityIdList.get(index + 1);
-						rs2 = dao.getQueryResultSet(sql2);
+						String sql2 = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID=?" +
+								" and LAST_ENTITY_ID=?";
+						rs2 = dao.getResultSet(sql2, columnValueBean, null);
 						while (rs2.next())
 						{
 							intraModelId.add(rs2.getString(1));
@@ -366,10 +395,12 @@ public class InsertPaths
 	private static String getEntityName(JDBCDAO dao,List<Long> idList) throws DAOException, SQLException, IOException
 	{
 		StringBuffer buffer = new StringBuffer();
+		LinkedList<Object> data = new LinkedList<Object>();
 		buffer.append('(');
 		for (Long id : idList)
 		{
-			buffer.append(',').append(id);
+			data.add(id);
+			buffer.append(',').append("?");
 		}
 		buffer.append(')');
 		if(buffer.charAt(1) == ',')
@@ -377,7 +408,8 @@ public class InsertPaths
 			buffer.replace(1, 2, "");
 		}
 		String sql = "select name from DYEXTN_ABSTRACT_METADATA where identifier in "+buffer.toString();
-		ResultSet resultSet = dao.getQueryResultSet(sql);
+		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
+		ResultSet resultSet = dao.getResultSet(sql, columnValueBean, null);
 		buffer = new StringBuffer();
 		while (resultSet.next())
 		{
@@ -386,5 +418,21 @@ public class InsertPaths
 		}
 		dao.closeStatement(resultSet);
 		return buffer.toString();
+	}
+
+	/**
+	 * @param data data
+	 * @return columnValueBean
+	 */
+	private static LinkedList<ColumnValueBean> populateColumnValueBean(LinkedList<Object> data)
+	{
+		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
+		ColumnValueBean bean = null;
+		for(Object object : data)
+		{
+			bean = new ColumnValueBean(object.toString(), object);
+			columnValueBean.add(bean);
+		}
+		return columnValueBean;
 	}
 }

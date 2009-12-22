@@ -473,4 +473,5 @@ public class AQConstants
 	public static final String PROCESSED_SAVED_QUERY = "savedQueryProcessed";
 
 	public static final String FONT_COLOR = "<li><font color\\='red'>";
+	public static final String COLUMN_VALUE_BEAN = "columnValueBean";
 }

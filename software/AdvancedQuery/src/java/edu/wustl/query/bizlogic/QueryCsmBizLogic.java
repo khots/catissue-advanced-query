@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.executor.AbstractQueryExecutor;
 import edu.wustl.query.util.global.Utility;
@@ -105,9 +107,16 @@ public class QueryCsmBizLogic
         {
             jdbcDAO = daoFact.getJDBCDAO();
             jdbcDAO.openSession(null);
-            resultSet = jdbcDAO.getQueryResultSet
-            ("Select FIRST_ENTITY_ID from PATH where INTERMEDIATE_PATH in (Select INTERMEDIATE_PATH" +
-            " from PATH where FIRST_ENTITY_ID = "+id1+" and LAST_ENTITY_ID = "+id2+") and LAST_ENTITY_ID = "+id2);
+            LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
+    		ColumnValueBean bean = new ColumnValueBean("id1",id1);
+    		columnValueBean.add(bean);
+    		bean = new ColumnValueBean("id2",id2);
+    		columnValueBean.add(bean);
+    		bean = new ColumnValueBean("id2",id2);
+    		columnValueBean.add(bean);
+    		String query = "Select FIRST_ENTITY_ID from PATH where INTERMEDIATE_PATH in (Select INTERMEDIATE_PATH" +
+            " from PATH where FIRST_ENTITY_ID = ? and LAST_ENTITY_ID = ?) and LAST_ENTITY_ID = ?";
+            resultSet = jdbcDAO.getResultSet(query, columnValueBean, null);
             while (resultSet.next())
             {
                 if (resultSet.getInt(1) != id1)

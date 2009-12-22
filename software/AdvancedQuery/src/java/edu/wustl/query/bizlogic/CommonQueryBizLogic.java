@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import oracle.sql.CLOB;
@@ -20,6 +21,7 @@ import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.query.executor.AbstractQueryExecutor;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.security.exception.SMException;
@@ -129,21 +131,28 @@ public class CommonQueryBizLogic
 		SimpleDateFormat fSDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String timeStamp = fSDateFormat.format(new Date());
 		String ipAddress = sessionData.getIpAddress();
-
+		LinkedList<Object> data = new LinkedList<Object>();
 		String userId = sessionData.getUserId().toString();
+		data.add(ipAddress);
+		data.add(timeStamp);
+		data.add(userId);
+		data.add(comments);
+		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
+		LinkedList<LinkedList<ColumnValueBean>> beanList = new LinkedList<LinkedList<ColumnValueBean>>();
+		beanList.add(columnValueBean);
 		String sqlForAudiEvent = "insert into catissue_audit_event" +
-				"(IP_ADDRESS,EVENT_TIMESTAMP,USER_ID ,COMMENTS) values ('"
-			+ ipAddress + "','" + timeStamp + "','" + userId + "','" + comments + "')";
-		jdbcDAO.executeUpdate(sqlForAudiEvent);
+				"(IP_ADDRESS,EVENT_TIMESTAMP,USER_ID ,COMMENTS) values (?,?,?,?)";
+		jdbcDAO.executeUpdate(sqlForAudiEvent, beanList);
 
-		String sql = "select max(identifier) from catissue_audit_event where USER_ID='"
-			+ userId + "'";
+		data = new LinkedList<Object>();
+		data.add(userId);
+		columnValueBean = populateColumnValueBean(data);
+		String sql = "select max(identifier) from catissue_audit_event where USER_ID=?";
 
 		List list;
-			list = jdbcDAO.executeQuery(sql);
+			list = jdbcDAO.executeQuery(sql, null, columnValueBean);
 			if (!list.isEmpty())
 			{
-
 				List columnList = (List) list.get(0);
 				if (!columnList.isEmpty())
 				{
@@ -154,11 +163,16 @@ public class CommonQueryBizLogic
 					}
 				}
 			}
+			data = new LinkedList<Object>();
+			data.add(sqlQuery1);
+			data.add(auditEventId);
+			columnValueBean = populateColumnValueBean(data);
+			beanList = new LinkedList<LinkedList<ColumnValueBean>>();
+			beanList.add(columnValueBean);
 			String sqlForQueryLog = "insert into catissue_audit_event_query_log" +
-					"(QUERY_DETAILS,AUDIT_EVENT_ID) values (\""
-				+ sqlQuery1 + "\",'" + auditEventId + "')";
+					"(QUERY_DETAILS,AUDIT_EVENT_ID) values (?,?)";
 			Logger.out.debug("sqlForQueryLog:" + sqlForQueryLog);
-			jdbcDAO.executeUpdate(sqlForQueryLog);
+			jdbcDAO.executeUpdate(sqlForQueryLog, beanList);
 			return auditEventId ;
 	}
 
@@ -222,14 +236,23 @@ public class CommonQueryBizLogic
 			IOException
 	{
 		List list;
+		LinkedList<Object> data = new LinkedList<Object>();
+		data.add(queryNo);
+		data.add(auditEventId);
+		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
+		LinkedList<LinkedList<ColumnValueBean>> beanList = new LinkedList<LinkedList<ColumnValueBean>>();
+		beanList.add(columnValueBean);
+
 		String sqlForQueryLog = "insert into catissue_audit_event_query_log" +
 				"(IDENTIFIER,QUERY_DETAILS,AUDIT_EVENT_ID) "
-				+ "values (" + queryNo + ",EMPTY_CLOB(),'" + auditEventId + "')";
-		jdbcDAO.executeUpdate(sqlForQueryLog);
-		String sql1 = "select QUERY_DETAILS from catissue_audit_event_query_log where IDENTIFIER="
-				+ queryNo + " for update";
+				+ "values (?,EMPTY_CLOB(),?)";
+		jdbcDAO.executeUpdate(sqlForQueryLog, beanList);
+		data = new LinkedList<Object>();
+		data.add(queryNo);
+		columnValueBean = populateColumnValueBean(data);
+		String sql1 = "select QUERY_DETAILS from catissue_audit_event_query_log where IDENTIFIER=? for update";
 
-		list = jdbcDAO.executeQuery(sql1);
+		list = jdbcDAO.executeQuery(sql1, null, columnValueBean);
 		CLOB clob = null;
 
 		if (!list.isEmpty())
@@ -274,16 +297,21 @@ public class CommonQueryBizLogic
 
 		String sql;
 		List list;
+
+		LinkedList<Object> data = new LinkedList<Object>();
+		data.add(auditEventId);
+		data.add(ipAddress);
+		data.add(timeStamp);
+		data.add(userId);
+		data.add(comments);
+
+		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
+		LinkedList<LinkedList<ColumnValueBean>> beanList = new LinkedList<LinkedList<ColumnValueBean>>();
+		beanList.add(columnValueBean);
 		String sqlForAudiEvent = "insert into catissue_audit_event" +
-				"(IDENTIFIER,IP_ADDRESS,EVENT_TIMESTAMP,USER_ID ,COMMENTS) values ('"
-				+ auditEventId
-				+ "','"
-				+ ipAddress
-				+ "',to_date('"
-				+ timeStamp
-				+ "','yyyy-mm-dd HH24:MI:SS'),'" + userId + "','" + comments + "')";
+				"(IDENTIFIER,IP_ADDRESS,EVENT_TIMESTAMP,USER_ID ,COMMENTS) values (?,?,"+ "to_date(?,'yyyy-mm-dd HH24:MI:SS'),?,?)";
 		Logger.out.info("sqlForAuditLog:" + sqlForAudiEvent);
-		jdbcDAO.executeUpdate(sqlForAudiEvent);
+		jdbcDAO.executeUpdate(sqlForAudiEvent,beanList);
 
 		long queryNo = 1;
 		sql = "select CATISSUE_AUDIT_EVENT_QUERY_SEQ.nextVal from dual";
@@ -302,5 +330,21 @@ public class CommonQueryBizLogic
 			}
 		}
 		return queryNo;
+	}
+
+	/**
+	 * @param data data
+	 * @return columnValueBean
+	 */
+	private static LinkedList<ColumnValueBean> populateColumnValueBean(LinkedList<Object> data)
+	{
+		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
+		ColumnValueBean bean = null;
+		for(Object object : data)
+		{
+			bean = new ColumnValueBean(object.toString(), object);
+			columnValueBean.add(bean);
+		}
+		return columnValueBean;
 	}
 }
