@@ -150,30 +150,37 @@ public class CommonQueryBizLogic
 		String sql = "select max(identifier) from catissue_audit_event where USER_ID=?";
 
 		List list;
-			list = jdbcDAO.executeQuery(sql, null, columnValueBean);
-			if (!list.isEmpty())
-			{
-				List columnList = (List) list.get(0);
-				if (!columnList.isEmpty())
-				{
-					String str = (String) columnList.get(0);
-					if (!"".equals(str))
-					{
-						auditEventId = Long.parseLong(str);
-					}
-				}
-			}
-			data = new LinkedList<Object>();
-			data.add(sqlQuery1);
-			data.add(auditEventId);
-			columnValueBean = populateColumnValueBean(data);
-			beanList = new LinkedList<LinkedList<ColumnValueBean>>();
-			beanList.add(columnValueBean);
-			String sqlForQueryLog = "insert into catissue_audit_event_query_log" +
-					"(QUERY_DETAILS,AUDIT_EVENT_ID) values (?,?)";
-			Logger.out.debug("sqlForQueryLog:" + sqlForQueryLog);
-			jdbcDAO.executeUpdate(sqlForQueryLog, beanList);
-			return auditEventId ;
+		list = jdbcDAO.executeQuery(sql, null, columnValueBean);
+		if (!list.isEmpty())
+		{
+			auditEventId = getAuditEventId(auditEventId, list);
+		}
+		insertQueryAuditDetails(sqlQuery1, jdbcDAO, auditEventId);
+		return auditEventId ;
+	}
+
+	/**
+	 * @param sqlQuery1 query
+	 * @param jdbcDAO DAO
+	 * @param auditEventId audit event identifier
+	 * @throws DAOException DAOException
+	 */
+	private void insertQueryAuditDetails(String sqlQuery1, JDBCDAO jdbcDAO,
+			long auditEventId) throws DAOException
+	{
+		LinkedList<Object> data;
+		LinkedList<ColumnValueBean> columnValueBean;
+		LinkedList<LinkedList<ColumnValueBean>> beanList;
+		data = new LinkedList<Object>();
+		data.add(sqlQuery1);
+		data.add(auditEventId);
+		columnValueBean = populateColumnValueBean(data);
+		beanList = new LinkedList<LinkedList<ColumnValueBean>>();
+		beanList.add(columnValueBean);
+		String sqlForQueryLog = "insert into catissue_audit_event_query_log" +
+				"(QUERY_DETAILS,AUDIT_EVENT_ID) values (?,?)";
+		Logger.out.debug("sqlForQueryLog:" + sqlForQueryLog);
+		jdbcDAO.executeUpdate(sqlForQueryLog, beanList);
 	}
 
 	/**
@@ -193,15 +200,7 @@ public class CommonQueryBizLogic
 			List list = jdbcDAO.executeQuery(sql);
 			if (!list.isEmpty())
 			{
-				List columnList = (List) list.get(0);
-				if (!columnList.isEmpty())
-				{
-					String str = (String) columnList.get(0);
-					if (!"".equals(str))
-					{
-						auditEventId = Long.parseLong(str);
-					}
-				}
+				auditEventId = getAuditEventId(auditEventId, list);
 			}
 			long queryNo = executeAuditEventQuery(comments, jdbcDAO,
 					auditEventId, sessionData);
@@ -219,6 +218,26 @@ public class CommonQueryBizLogic
 			"Failed while getting output stream from the CLOB object");
 		}
 		return auditEventId;
+	}
+
+	/**
+	 * @param auditEventId identifier
+	 * @param list list
+	 * @return auditEventId
+	 */
+	private long getAuditEventId(long auditEventId, List list)
+	{
+		long tempAuditEventId = auditEventId;
+		List columnList = (List) list.get(0);
+		if (!columnList.isEmpty())
+		{
+			String str = (String) columnList.get(0);
+			if (!"".equals(str))
+			{
+				tempAuditEventId = Long.parseLong(str);
+			}
+		}
+		return tempAuditEventId;
 	}
 
 	/**
@@ -240,21 +259,15 @@ public class CommonQueryBizLogic
 		data.add(queryNo);
 		data.add(auditEventId);
 		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
-		LinkedList<LinkedList<ColumnValueBean>> beanList = new LinkedList<LinkedList<ColumnValueBean>>();
+		LinkedList<LinkedList<ColumnValueBean>> beanList =
+			new LinkedList<LinkedList<ColumnValueBean>>();
 		beanList.add(columnValueBean);
-
 		String sqlForQueryLog = "insert into catissue_audit_event_query_log" +
 				"(IDENTIFIER,QUERY_DETAILS,AUDIT_EVENT_ID) "
 				+ "values (?,EMPTY_CLOB(),?)";
 		jdbcDAO.executeUpdate(sqlForQueryLog, beanList);
-		data = new LinkedList<Object>();
-		data.add(queryNo);
-		columnValueBean = populateColumnValueBean(data);
-		String sql1 = "select QUERY_DETAILS from catissue_audit_event_query_log where IDENTIFIER=? for update";
-
-		list = jdbcDAO.executeQuery(sql1, null, columnValueBean);
+		list = populateList(jdbcDAO, queryNo);
 		CLOB clob = null;
-
 		if (!list.isEmpty())
 		{
 			List columnList = (List) list.get(0);
@@ -266,7 +279,6 @@ public class CommonQueryBizLogic
 		//			get output stream from the CLOB object
 		OutputStream ostream = clob.getAsciiOutputStream();
 		OutputStreamWriter osw = new OutputStreamWriter(ostream);
-
 		//		use that output stream to write character data to the Oracle data store
 		osw.write(sqlQuery.toCharArray());
 		//write data and commit
@@ -274,6 +286,27 @@ public class CommonQueryBizLogic
 		osw.close();
 		ostream.close();
 		Logger.out.info("sqlForQueryLog:" + sqlForQueryLog);
+	}
+
+	/**
+	 * @param jdbcDAO DAO
+	 * @param queryNo query number
+	 * @return list
+	 * @throws DAOException DAOException
+	 */
+	private List populateList(JDBCDAO jdbcDAO, long queryNo)
+			throws DAOException
+	{
+		List list;
+		LinkedList<Object> data;
+		LinkedList<ColumnValueBean> columnValueBean;
+		data = new LinkedList<Object>();
+		data.add(queryNo);
+		columnValueBean = populateColumnValueBean(data);
+		String sql1 = "select QUERY_DETAILS from catissue_audit_event_query_log" +
+				" where IDENTIFIER=? for update";
+		list = jdbcDAO.executeQuery(sql1, null, columnValueBean);
+		return list;
 	}
 
 	/**
@@ -288,46 +321,34 @@ public class CommonQueryBizLogic
 	private long executeAuditEventQuery(String comments, JDBCDAO jdbcDAO,
 			long auditEventId, SessionDataBean sessionData)
 			throws DAOException
-		{
+	{
 		String ipAddress = sessionData.getIpAddress();
 		String userId = sessionData.getUserId().toString();
-
 		SimpleDateFormat fSDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String timeStamp = fSDateFormat.format(new Date());
-
 		String sql;
 		List list;
-
 		LinkedList<Object> data = new LinkedList<Object>();
 		data.add(auditEventId);
 		data.add(ipAddress);
 		data.add(timeStamp);
 		data.add(userId);
 		data.add(comments);
-
 		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
-		LinkedList<LinkedList<ColumnValueBean>> beanList = new LinkedList<LinkedList<ColumnValueBean>>();
+		LinkedList<LinkedList<ColumnValueBean>> beanList =
+			new LinkedList<LinkedList<ColumnValueBean>>();
 		beanList.add(columnValueBean);
 		String sqlForAudiEvent = "insert into catissue_audit_event" +
-				"(IDENTIFIER,IP_ADDRESS,EVENT_TIMESTAMP,USER_ID ,COMMENTS) values (?,?,"+ "to_date(?,'yyyy-mm-dd HH24:MI:SS'),?,?)";
+		"(IDENTIFIER,IP_ADDRESS,EVENT_TIMESTAMP,USER_ID ,COMMENTS) values" +
+		" (?,?,"+ "to_date(?,'yyyy-mm-dd HH24:MI:SS'),?,?)";
 		Logger.out.info("sqlForAuditLog:" + sqlForAudiEvent);
 		jdbcDAO.executeUpdate(sqlForAudiEvent,beanList);
-
 		long queryNo = 1;
 		sql = "select CATISSUE_AUDIT_EVENT_QUERY_SEQ.nextVal from dual";
 		list = jdbcDAO.executeQuery(sql);
-
 		if (!list.isEmpty())
 		{
-			List columnList = (List) list.get(0);
-			if (!columnList.isEmpty())
-			{
-				String str = (String) columnList.get(0);
-				if (!"".equals(str))
-				{
-					queryNo = Long.parseLong(str);
-				}
-			}
+			queryNo = getAuditEventId(queryNo, list);
 		}
 		return queryNo;
 	}

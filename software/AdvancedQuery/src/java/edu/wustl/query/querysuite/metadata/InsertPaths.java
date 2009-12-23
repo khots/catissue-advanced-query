@@ -64,17 +64,14 @@ public class InsertPaths
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (DAOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -209,7 +206,7 @@ public class InsertPaths
 	}
 	/**
 	 * Gets the maximum path id from Path table
-	 * @param dao dao
+	 * @param dao DAO
 	 * @return long id
 	 * @throws DAOException exception
 	 * @throws SQLException exception
@@ -313,7 +310,7 @@ public class InsertPaths
 
 	/**
 	 * Returns the string of intermediate path
-	 * @param dao dao
+	 * @param dao DAO
 	 * @param entityIdList list of entity identifiers
 	 * @param parentEntityIdList list of parent entity identifiers
 	 * @return path string
@@ -327,24 +324,12 @@ public class InsertPaths
 		LinkedList<Object> data;
 		LinkedList<ColumnValueBean> columnValueBean;
 		List<String> intraModelId = new ArrayList<String>();
-		ResultSet resultSet = null;
 		for (int index = 0; index < entityIdList.size() - 1; index++)
 		{
 			if (index + 1 < entityIdList.size())
 			{
-				data = new LinkedList<Object>();
-				data.add(entityIdList.get(index));
-				data.add(entityIdList.get(index + 1));
-				columnValueBean = populateColumnValueBean(data);
-				boolean notFound = true;
-				String sql = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID= ? and LAST_ENTITY_ID= ?";
-				resultSet = dao.getResultSet(sql, columnValueBean, null);
-				while (resultSet.next())
-				{
-					notFound = false;
-					intraModelId.add(resultSet.getString(1));
-				}
-				dao.closeStatement(resultSet);
+				boolean notFound = getIntermediatePath(dao, entityIdList,
+						intraModelId, index);
 				if (notFound)
 				{
 					data = new LinkedList<Object>();
@@ -368,20 +353,67 @@ public class InsertPaths
 						data.add(entityIdList.get(index));
 						data.add(parentEntityIdList.get(index + 1));
 						columnValueBean = populateColumnValueBean(data);
-						ResultSet rs2;
-						String sql2 = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID=?" +
-								" and LAST_ENTITY_ID=?";
-						rs2 = dao.getResultSet(sql2, columnValueBean, null);
-						while (rs2.next())
-						{
-							intraModelId.add(rs2.getString(1));
-						}
-						dao.closeStatement(rs2);
+						populateIntraModelIds(dao, columnValueBean,
+								intraModelId);
 					}
 				}
 			}
 		}
 		return intraModelId;
+	}
+
+	/**
+	 * @param dao DAO
+	 * @param columnValueBean bean
+	 * @param intraModelId identifier
+	 * @throws DAOException DAOException
+	 * @throws SQLException SQLException
+	 */
+	private static void populateIntraModelIds(JDBCDAO dao,
+			LinkedList<ColumnValueBean> columnValueBean,
+			List<String> intraModelId) throws DAOException, SQLException
+	{
+		ResultSet rs2;
+		String sql2 = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID=?" +
+				" and LAST_ENTITY_ID=?";
+		rs2 = dao.getResultSet(sql2, columnValueBean, null);
+		while (rs2.next())
+		{
+			intraModelId.add(rs2.getString(1));
+		}
+		dao.closeStatement(rs2);
+	}
+
+	/**
+	 * @param dao DAO
+	 * @param entityIdList entity list
+	 * @param intraModelId id's
+	 * @param index index
+	 * @return notFound
+	 * @throws DAOException DAOException
+	 * @throws SQLException SQLException
+	 */
+	private static boolean getIntermediatePath(JDBCDAO dao,
+			List<Long> entityIdList, List<String> intraModelId, int index)
+			throws DAOException, SQLException
+	{
+		LinkedList<Object> data;
+		LinkedList<ColumnValueBean> columnValueBean;
+		ResultSet resultSet;
+		data = new LinkedList<Object>();
+		data.add(entityIdList.get(index));
+		data.add(entityIdList.get(index + 1));
+		columnValueBean = populateColumnValueBean(data);
+		boolean notFound = true;
+		String sql = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID= ? and LAST_ENTITY_ID= ?";
+		resultSet = dao.getResultSet(sql, columnValueBean, null);
+		while (resultSet.next())
+		{
+			notFound = false;
+			intraModelId.add(resultSet.getString(1));
+		}
+		dao.closeStatement(resultSet);
+		return notFound;
 	}
 	/**
 	 *
