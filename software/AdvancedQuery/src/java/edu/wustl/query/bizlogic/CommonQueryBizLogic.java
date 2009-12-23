@@ -172,13 +172,13 @@ public class CommonQueryBizLogic
 		LinkedList<ColumnValueBean> columnValueBean;
 		LinkedList<LinkedList<ColumnValueBean>> beanList;
 		data = new LinkedList<Object>();
-		data.add(sqlQuery1);
 		data.add(auditEventId);
 		columnValueBean = populateColumnValueBean(data);
 		beanList = new LinkedList<LinkedList<ColumnValueBean>>();
 		beanList.add(columnValueBean);
 		String sqlForQueryLog = "insert into catissue_audit_event_query_log" +
-				"(QUERY_DETAILS,AUDIT_EVENT_ID) values (?,?)";
+				"(QUERY_DETAILS,AUDIT_EVENT_ID) values (\""
+				+ sqlQuery1 + "\",?)";
 		Logger.out.debug("sqlForQueryLog:" + sqlForQueryLog);
 		jdbcDAO.executeUpdate(sqlForQueryLog, beanList);
 	}
