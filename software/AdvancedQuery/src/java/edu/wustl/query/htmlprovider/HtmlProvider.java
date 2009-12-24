@@ -345,16 +345,7 @@ public class HtmlProvider
 	 */
 	private boolean isAttributeBold(String attrName)
 	{
-		boolean isBold = false;
-		for(String searchString : this.generateHTMLDetails.getSearcStrings())
-		{
-			if(attrName.indexOf(searchString)>=0)
-			{
-				isBold = true;
-				break;
-			}
-		}
-		return isBold;
+		return false;
 	}
 
 	/**
