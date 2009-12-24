@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +15,7 @@ import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.dao.util.DAOUtility;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.beans.DashBoardBean;
@@ -65,28 +67,13 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		Map <Long, DashBoardBean> dashBoardDataMap = new HashMap<Long, DashBoardBean>();
 		for (IParameterizedQuery parameterizedQuery : queryCollection)
 		{
-			Long queryId = parameterizedQuery.getId();
-			String sql = "select distinct mainAuditTable.identifier, mainAuditTable.EVENT_TIMESTAMP," +
-					" queryAudit.TEMP_TABLE_NAME from" +
-					" catissue_audit_event mainAuditTable, catissue_audit_event_query_log" +
-					" queryAudit"
-					+" where queryAudit.AUDIT_EVENT_ID = mainAuditTable.IDENTIFIER and" +
-					" mainAuditTable.user_id=" +userId+
-					" and queryAudit.query_id=" + queryId +
-					" order by mainAuditTable.EVENT_TIMESTAMP desc";
-
-			List<List<String>> dataList;
+			LinkedList<ColumnValueBean> columnValueBean = getColumnValueBean(
+					userId, parameterizedQuery);
+			String sql = dashBoardDetailsQuery();
 			try
 			{
-				dataList = Utility.executeSQL(sql);
-				if(dataList.isEmpty())
-				{
-					populateBeanWithNA(parameterizedQuery,dashBoardDataMap);
-				}
-				else
-				{
-					populateDashBoardData(dashBoardDataMap, parameterizedQuery, dataList);
-				}
+				getDataList(dashBoardDataMap, parameterizedQuery,
+						columnValueBean, sql);
 			}
 			catch (DAOException e)
 			{
@@ -105,6 +92,69 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 			}
 		}
 		return dashBoardDataMap;
+	}
+
+	/**
+	 * @return query
+	 */
+	private String dashBoardDetailsQuery()
+	{
+		String sql = "select distinct mainAuditTable.identifier, mainAuditTable.EVENT_TIMESTAMP," +
+				" queryAudit.TEMP_TABLE_NAME from" +
+				" catissue_audit_event mainAuditTable, catissue_audit_event_query_log" +
+				" queryAudit"
+				+" where queryAudit.AUDIT_EVENT_ID = mainAuditTable.IDENTIFIER and" +
+				" mainAuditTable.user_id=?"+
+				" and queryAudit.query_id=?"+
+				" order by mainAuditTable.EVENT_TIMESTAMP desc";
+		return sql;
+	}
+
+	/**
+	 * @param dashBoardDataMap Map
+	 * @param parameterizedQuery query
+	 * @param columnValueBean bean
+	 * @param sql SQL
+	 * @return dataList
+	 * @throws DAOException DAOException
+	 * @throws ClassNotFoundException ClassNotFoundException
+	 * @throws SMExceptionSecurity Manager Exception
+	 * @throws BizLogicException BizLogicException
+	 */
+	private void getDataList(
+			Map<Long, DashBoardBean> dashBoardDataMap,
+			IParameterizedQuery parameterizedQuery,
+			LinkedList<ColumnValueBean> columnValueBean, String sql)
+			throws DAOException, ClassNotFoundException, SMException,
+			BizLogicException
+	{
+		List<List<String>> dataList;
+		dataList = Utility.executeSQL(sql,columnValueBean);
+		if(dataList.isEmpty())
+		{
+			populateBeanWithNA(parameterizedQuery,dashBoardDataMap);
+		}
+		else
+		{
+			populateDashBoardData(dashBoardDataMap, parameterizedQuery, dataList);
+		}
+	}
+
+	/**
+	 * @param userId user identifier
+	 * @param parameterizedQuery query
+	 * @return bean
+	 */
+	private LinkedList<ColumnValueBean> getColumnValueBean(String userId,
+			IParameterizedQuery parameterizedQuery)
+	{
+		LinkedList<Object> data;
+		data = new LinkedList<Object>();
+		Long queryId = parameterizedQuery.getId();
+		data.add(userId);
+		data.add(queryId);
+		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
+		return columnValueBean;
 	}
 
 	/**
@@ -153,11 +203,14 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		String tempTableName = row.get(AQConstants.TWO);
 		String rootEntityName = "N/A";
 		String cntOfRootRecs = "N/A";
+		LinkedList<Object> data = new LinkedList<Object>();
+		data.add(auditEventId);
+		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
 		String sql = "select ROOT_ENTITY_NAME,COUNT_OF_ROOT_RECORDS from " +
-				"catissue_audit_event_query_log where AUDIT_EVENT_ID ="+auditEventId;
+				"catissue_audit_event_query_log where AUDIT_EVENT_ID =?";
 		try
 		{
-			List<List<String>> rootDatalist = Utility.executeSQL(sql);
+			List<List<String>> rootDatalist = Utility.executeSQL(sql,columnValueBean);
 			if(!rootDatalist.isEmpty())
 			{
 				List<String> record = (List<String>)rootDatalist.get(0);
@@ -422,13 +475,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		Collection<IParameterizedQuery> allQueries = new ArrayList<IParameterizedQuery>();
 		allQueries.addAll(myQueryCollection);
 		allQueries.addAll(sharedQueryColl);
-		if(allQueries != null)
-		{
-			for (IParameterizedQuery parameterizedQuery : allQueries)
-			{
-				allIds.add(parameterizedQuery.getId());
-			}
-		}
+		populateQueryIds(allIds, allQueries);
 		CsmUtility util = new CsmUtility();
 		try
 		{
@@ -439,22 +486,8 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 			{
 				for (IParameterizedQuery query : sortedAllQueries)
 				{
-					boolean found = false;
-					for (IParameterizedQuery myQuery : myQueryCollection)
-					{
-						if(query.getId().equals(myQuery.getId()))
-						{
-							found =true;
-							break;
-						}
-					}
-					if(!found)
-					{
-						if(!sharedQueryIds.contains(query.getId()))
-						{
-							sharedQueryIds.add(query.getId());
-						}
-					}
+					populateSharedQueryIds(myQueryCollection, sharedQueryIds,
+							query);
 				}
 			}
 			saveQueryForm.setSharedQueries(util.retrieveQueries(sharedQueryIds, ""));
@@ -462,6 +495,62 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		catch (DAOException e)
 		{
 			throw new BizLogicException(e);
+		}
+	}
+
+	/**
+	 * @param myQueryCollection collection of my queries
+	 * @param sharedQueryIds list of shared query identifiers
+	 * @param query query
+	 */
+	private void populateSharedQueryIds(
+			Collection<IParameterizedQuery> myQueryCollection,
+			List<Long> sharedQueryIds, IParameterizedQuery query)
+	{
+		boolean found = isQueryFound(myQueryCollection, query);
+		if(!found)
+		{
+			if(!sharedQueryIds.contains(query.getId()))
+			{
+				sharedQueryIds.add(query.getId());
+			}
+		}
+	}
+
+	/**
+	 * @param myQueryCollection collection of my queries
+	 * @param query query
+	 * @return found
+	 */
+	private boolean isQueryFound(
+			Collection<IParameterizedQuery> myQueryCollection,
+			IParameterizedQuery query)
+	{
+		boolean found = false;
+		for (IParameterizedQuery myQuery : myQueryCollection)
+		{
+			if(query.getId().equals(myQuery.getId()))
+			{
+				found =true;
+				break;
+			}
+		}
+		return found;
+	}
+
+	/**
+	 * @param allIds all identifiers of queries
+	 * @param allQueries collection of all queries
+	 */
+	private void populateQueryIds(Collection<Long> allIds,
+			Collection<IParameterizedQuery> allQueries)
+	{
+		if(allQueries != null)
+		{
+			for (IParameterizedQuery parameterizedQuery : allQueries)
+			{
+				allIds.add(parameterizedQuery.getId());
+			}
 		}
 	}
 	/**
@@ -477,15 +566,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		Set<IParameterizedQuery> sharedQueries = new HashSet<IParameterizedQuery>();
 		for (IParameterizedQuery query : allQueries)
 		{
-			boolean found = false;
-			for (IParameterizedQuery myQuery : myQueries)
-			{
-				if(query.getId().equals(myQuery.getId()))
-				{
-					found =true;
-					break;
-				}
-			}
+			boolean found = isQueryFound(myQueries, query);
 			if(!found)
 			{
 				sharedQueries.add(query);
@@ -503,43 +584,66 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		executedOnTime = executedOnTime.replace('-', '/');
 		StringTokenizer tokenizer = new StringTokenizer(executedOnTime," ");
 		String time = "";
-		String hours = "";
-		String minutes = "";
 		if(tokenizer.hasMoreTokens())
 		{
-			tokenizer.nextToken();
-			time = tokenizer.nextToken();
-			time = time.substring(0, time.lastIndexOf(':'));
-			hours = time.substring(0, time.lastIndexOf(':'));
-			minutes = time.substring(time.lastIndexOf(':')+1, time.length());
-			if(Integer.parseInt(hours)>AQConstants.TWELVE)
-			{
-				int hrs = Integer.parseInt(hours)-AQConstants.TWELVE;
-				if(hrs<AQConstants.TEN)
-				{
-					time = "0"+hrs + ":" + minutes+" "+AQConstants.PM_CONSTANT;
-				}
-				else
-				{
-					time = hrs + ":" + minutes+" "+AQConstants.PM_CONSTANT;
-				}
-			}
-			else if(Integer.parseInt(hours)==0)
-			{
-				time = "12:"+minutes+" "+AQConstants.AM_CONSTANT;
-			}
-			else if(Integer.parseInt(hours)==AQConstants.TWELVE)
-			{
-				time = time + " "+AQConstants.PM_CONSTANT;
-			}
-			else
-			{
-				time = time + " "+AQConstants.AM_CONSTANT;
-			}
+			time = getAppropriateTime(tokenizer);
 		}
 		executedOnTime = executedOnTime.substring(0, executedOnTime.indexOf(' '));
 		executedOnTime = executedOnTime +" "+ time;
 		return executedOnTime;
+	}
+
+	/**
+	 * @param tokenizer StringTokenizer
+	 * @return time
+	 */
+	private static String getAppropriateTime(StringTokenizer tokenizer)
+	{
+		String time;
+		String hours;
+		String minutes;
+		tokenizer.nextToken();
+		time = tokenizer.nextToken();
+		time = time.substring(0, time.lastIndexOf(':'));
+		hours = time.substring(0, time.lastIndexOf(':'));
+		minutes = time.substring(time.lastIndexOf(':')+1, time.length());
+		if(Integer.parseInt(hours)>AQConstants.TWELVE)
+		{
+			time = getPMTime(hours, minutes);
+		}
+		else if(Integer.parseInt(hours)==0)
+		{
+			time = "12:"+minutes+" "+AQConstants.AM_CONSTANT;
+		}
+		else if(Integer.parseInt(hours)==AQConstants.TWELVE)
+		{
+			time = time + " "+AQConstants.PM_CONSTANT;
+		}
+		else
+		{
+			time = time + " "+AQConstants.AM_CONSTANT;
+		}
+		return time;
+	}
+
+	/**
+	 * @param hours hours
+	 * @param minutes minutes
+	 * @return time
+	 */
+	private static String getPMTime(String hours, String minutes)
+	{
+		String time;
+		int hrs = Integer.parseInt(hours)-AQConstants.TWELVE;
+		if(hrs<AQConstants.TEN)
+		{
+			time = "0"+hrs + ":" + minutes+" "+AQConstants.PM_CONSTANT;
+		}
+		else
+		{
+			time = hrs + ":" + minutes+" "+AQConstants.PM_CONSTANT;
+		}
+		return time;
 	}
 
 	/**
@@ -560,5 +664,21 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 			query = parameterizedQuery;
 		}
 		return query;
+	}
+
+	/**
+	 * @param data data
+	 * @return columnValueBean
+	 */
+	private static LinkedList<ColumnValueBean> populateColumnValueBean(LinkedList<Object> data)
+	{
+		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
+		ColumnValueBean bean = null;
+		for(Object object : data)
+		{
+			bean = new ColumnValueBean(object.toString(), object);
+			columnValueBean.add(bean);
+		}
+		return columnValueBean;
 	}
 }

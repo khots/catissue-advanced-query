@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -40,6 +41,7 @@ import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.bizlogic.CommonQueryBizLogic;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
@@ -89,14 +91,22 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 * @throws DAOException DAOException
 	 * @throws ClassNotFoundException ClassNotFoundException
 	 */
-	public static List executeSQL(String sql) throws DAOException, ClassNotFoundException
+	public static List executeSQL(String sql,LinkedList<ColumnValueBean> columnValueBean) throws DAOException, ClassNotFoundException
 	{
 		String appName=CommonServiceLocator.getInstance().getAppName();
 		IDAOFactory daofactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
 		JDBCDAO jdbcDao = daofactory.getJDBCDAO();
 
 		jdbcDao.openSession(null);
-		List list = jdbcDao.executeQuery(sql);
+		List list = null;
+		if(columnValueBean == null)
+		{
+			list = jdbcDao.executeQuery(sql);
+		}
+		else
+		{
+			list = jdbcDao.executeQuery(sql, null, columnValueBean);
+		}
 		jdbcDao.closeSession();
 		return list;
 	}

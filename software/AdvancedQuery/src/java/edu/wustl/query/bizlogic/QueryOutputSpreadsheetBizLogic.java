@@ -640,7 +640,7 @@ public class QueryOutputSpreadsheetBizLogic
 		int intCount = -1;
 		try
 		{
-		    list = edu.wustl.query.util.global.Utility.executeSQL(sqlTofindOutCardinality);
+		    list = edu.wustl.query.util.global.Utility.executeSQL(sqlTofindOutCardinality,null);
 		}
 		catch (DAOException e)
 		{
