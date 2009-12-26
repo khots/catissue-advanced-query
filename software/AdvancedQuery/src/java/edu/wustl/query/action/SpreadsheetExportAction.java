@@ -46,8 +46,11 @@ public class SpreadsheetExportAction extends BaseAction
 		String isChkAllAcrossAll = (String) request.getParameter(AQConstants.CHECK_ALL_ACROSS_ALL_PAGES);
 		IParameterizedQuery query = (IParameterizedQuery) session.getAttribute(AQConstants.QUERY_OBJECT);
 		List<List<String>> exportList = new ArrayList<List<String>>();
-		ExportQueryBizLogic exportBizLogic = new ExportQueryBizLogic();
-		exportBizLogic.exportDetails(query,exportList);
+		if(query != null)
+		{
+			ExportQueryBizLogic exportBizLogic = new ExportQueryBizLogic();
+			exportBizLogic.exportDetails(query,exportList);
+		}
 		//Extracting map from form bean which gives the serial numbers of selected rows
 		Map map = searchForm.getValues();
 		Object[] obj = map.keySet().toArray();
