@@ -153,8 +153,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		Long queryId = parameterizedQuery.getId();
 		data.add(userId);
 		data.add(queryId);
-		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
-		return columnValueBean;
+		return populateColumnValueBean(data);
 	}
 
 	/**
@@ -214,14 +213,8 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 			if(!rootDatalist.isEmpty())
 			{
 				List<String> record = (List<String>)rootDatalist.get(0);
-				if(record.get(0).length() != 0)
-				{
-					rootEntityName = setRootEntityName(record);
-				}
-				if(record.get(1).length() != 0)
-				{
-					cntOfRootRecs = record.get(1);
-				}
+				rootEntityName = setRootEntityName(rootEntityName, record);
+				cntOfRootRecs = setRootRecordCount(cntOfRootRecs, record);
 			}
 		}
 		catch (DAOException e)
@@ -243,6 +236,36 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		String ownerName = user.getLastName() + "," + user.getFirstName();
 		bean.setOwnerName(ownerName);
 		dashBoardMap.put(pQuery.getId(), bean);
+	}
+
+	/**
+	 * @param cntOfRootRecs count
+	 * @param record record
+	 * @return count
+	 */
+	private String setRootRecordCount(String cntOfRootRecs, List<String> record)
+	{
+		String count = cntOfRootRecs;
+		if(record.get(1).length() != 0)
+		{
+			count = record.get(1);
+		}
+		return count;
+	}
+
+	/**
+	 * @param rootEntityName root Entity name
+	 * @param record record
+	 * @return rootEntity
+	 */
+	private String setRootEntityName(String rootEntityName, List<String> record)
+	{
+		String rootEntity = rootEntityName;
+		if(record.get(0).length() != 0)
+		{
+			rootEntity = setRootEntityName(record);
+		}
+		return rootEntity;
 	}
 
 	/**
@@ -290,8 +313,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	public User getQueryOwner(String queryId) throws BizLogicException
 	{
 		Set<ProtectionGroup> pgSet = getPGsforQuery(queryId);
-		User user = getOwnerOfTheQuery(pgSet);
-		return user;
+		return getOwnerOfTheQuery(pgSet);
 	}
 	/**
 	 * Returns PGs for given query.
@@ -508,12 +530,9 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 			List<Long> sharedQueryIds, IParameterizedQuery query)
 	{
 		boolean found = isQueryFound(myQueryCollection, query);
-		if(!found)
+		if(!found && !sharedQueryIds.contains(query.getId()))
 		{
-			if(!sharedQueryIds.contains(query.getId()))
-			{
-				sharedQueryIds.add(query.getId());
-			}
+			sharedQueryIds.add(query.getId());
 		}
 	}
 
@@ -581,16 +600,17 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	 */
 	public static String getFormattedDate(String executedOnTime)
 	{
-		executedOnTime = executedOnTime.replace('-', '/');
-		StringTokenizer tokenizer = new StringTokenizer(executedOnTime," ");
+		String tempExecutedOnTime = executedOnTime;
+		tempExecutedOnTime = executedOnTime.replace('-', '/');
+		StringTokenizer tokenizer = new StringTokenizer(tempExecutedOnTime," ");
 		String time = "";
 		if(tokenizer.hasMoreTokens())
 		{
 			time = getAppropriateTime(tokenizer);
 		}
-		executedOnTime = executedOnTime.substring(0, executedOnTime.indexOf(' '));
-		executedOnTime = executedOnTime +" "+ time;
-		return executedOnTime;
+		tempExecutedOnTime = tempExecutedOnTime.substring(0, tempExecutedOnTime.indexOf(' '));
+		tempExecutedOnTime = tempExecutedOnTime +" "+ time;
+		return tempExecutedOnTime;
 	}
 
 	/**

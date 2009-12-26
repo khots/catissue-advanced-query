@@ -42,25 +42,7 @@ public class InsertPaths
 		List<List<String>> pathList;
 		try
 		{
-			pathList = parseFile(fileName);
-			writer = new BufferedWriter(new FileWriter("PathsLog.txt"));
-			String appName = CommonServiceLocator.getInstance().getAppName();
-			if(appName == null)
-			{
-				appName = "Query";
-			}
-			IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
-			JDBCDAO dao = null;
-			dao = daoFactory.getJDBCDAO();
-			dao.openSession(null);
-			for (List<String> entityList : pathList)
-			{
-				System.out.println(entityList.toString());
-				getPathAndInsert(dao,entityList);
-			}
-			writer.write("\nCompleted inserting indirect paths between clinportal entities.");
-			writer.flush();
-			writer.close();
+			performMainFunction(fileName);
 		}
 		catch (IOException e)
 		{
@@ -74,6 +56,37 @@ public class InsertPaths
 		{
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * @param fileName name of the file
+	 * @throws IOException IOException
+	 * @throws DAOException DAOException
+	 * @throws SQLException SQLException
+	 */
+	private static void performMainFunction(String fileName)
+			throws IOException, DAOException, SQLException
+	{
+		List<List<String>> pathList;
+		pathList = parseFile(fileName);
+		writer = new BufferedWriter(new FileWriter("PathsLog.txt"));
+		String appName = CommonServiceLocator.getInstance().getAppName();
+		if(appName == null)
+		{
+			appName = "Query";
+		}
+		IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
+		JDBCDAO dao = null;
+		dao = daoFactory.getJDBCDAO();
+		dao.openSession(null);
+		for (List<String> entityList : pathList)
+		{
+			System.out.println(entityList.toString());
+			getPathAndInsert(dao,entityList);
+		}
+		writer.write("\nCompleted inserting indirect paths between clinportal entities.");
+		writer.flush();
+		writer.close();
 	}
 
 	/**
@@ -175,16 +188,8 @@ public class InsertPaths
 		idList.add(targetEntId);
 		while (resultSet.next())
 		{
-			String interPath = resultSet.getString("INTERMEDIATE_PATH");
-			if(intermediatePath.toString().equalsIgnoreCase(interPath))
-			{
-				writer.write("\nSame path already exists between "+getEntityName(dao,idList));
-				ifSamePathExists = true;
-			}
-			else
-			{
-				ifSamePathExists = false;
-			}
+			ifSamePathExists = ifIntermediatePathExists(dao, intermediatePath,
+					resultSet, idList);
 			continue;
 		}
 		dao.closeStatement(resultSet);
@@ -203,6 +208,34 @@ public class InsertPaths
 			writer.write("\nInserted path between "+getEntityName(dao,idList));
 			dao.commit();
 		}
+	}
+
+	/**
+	 * @param dao DAO
+	 * @param intermediatePath intermediate path
+	 * @param resultSet result set
+	 * @param idList list of identifiers
+	 * @return ifSamePathExists
+	 * @throws SQLException SQLException
+	 * @throws IOException IOException
+	 * @throws DAOException DAOException
+	 */
+	private static boolean ifIntermediatePathExists(JDBCDAO dao,
+			StringBuffer intermediatePath, ResultSet resultSet,
+			List<Long> idList) throws SQLException, IOException, DAOException
+	{
+		boolean ifSamePathExists;
+		String interPath = resultSet.getString("INTERMEDIATE_PATH");
+		if(intermediatePath.toString().equalsIgnoreCase(interPath))
+		{
+			writer.write("\nSame path already exists between "+getEntityName(dao,idList));
+			ifSamePathExists = true;
+		}
+		else
+		{
+			ifSamePathExists = false;
+		}
+		return ifSamePathExists;
 	}
 	/**
 	 * Gets the maximum path id from Path table
@@ -341,11 +374,7 @@ public class InsertPaths
 							" and LAST_ENTITY_ID=?";
 					rs1 = dao.getResultSet(sql1, columnValueBean, null);
 					boolean found = false;
-					while (rs1.next())
-					{
-						intraModelId.add(rs1.getString(1));
-						found = true;
-					}
+					found = isFound(intraModelId, rs1, found);
 					dao.closeStatement(rs1);
 					if (!found)
 					{
@@ -360,6 +389,25 @@ public class InsertPaths
 			}
 		}
 		return intraModelId;
+	}
+
+	/**
+	 * @param intraModelId identifier
+	 * @param rs1 result set
+	 * @param found found
+	 * @return isFound
+	 * @throws SQLException SQLException
+	 */
+	private static boolean isFound(List<String> intraModelId, ResultSet rs1,
+			boolean found) throws SQLException
+	{
+		boolean isFound = found;
+		while (rs1.next())
+		{
+			intraModelId.add(rs1.getString(1));
+			isFound = true;
+		}
+		return isFound;
 	}
 
 	/**

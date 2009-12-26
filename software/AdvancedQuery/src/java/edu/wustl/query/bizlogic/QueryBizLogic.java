@@ -127,6 +127,7 @@ public class QueryBizLogic extends DefaultBizLogic
 	public Set getAllTableNames(String aliasName, int forQI) throws DAOException,
 			ClassNotFoundException
 	{
+		String tempAliasName = aliasName;
 		String[] selectColumnNames = {AQConstants.TABLE_DISPLAY_NAME_COLUMN,
 				AQConstants.TABLE_ALIAS_NAME_COLUMN};
 		String[] whereColumnNames = {AQConstants.TABLE_FOR_SQI_COLUMN};
@@ -143,8 +144,8 @@ public class QueryBizLogic extends DefaultBizLogic
 			whereColCondns[1] = "=";
 			whereColumnValues = new String[AQConstants.TWO];
 			whereColumnValues[0] = String.valueOf(forQI);
-			aliasName = "'" + aliasName + "'";
-			whereColumnValues[1] = aliasName;
+			tempAliasName = "'" + aliasName + "'";
+			whereColumnValues[1] = tempAliasName;
 		}
 		String appName = CommonServiceLocator.getInstance().getAppName();
 		IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
@@ -157,8 +158,7 @@ public class QueryBizLogic extends DefaultBizLogic
 				whereClause);
 		jdbcDAO.closeSession();
 
-		Set objectNameValueBeanList = populateList(aliasName, tableList);
-		return objectNameValueBeanList;
+		return populateList(tempAliasName, tableList);
 	}
 
 	/**
