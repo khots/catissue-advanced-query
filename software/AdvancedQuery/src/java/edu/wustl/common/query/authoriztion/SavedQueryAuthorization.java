@@ -27,7 +27,6 @@ import gov.nih.nci.security.exceptions.CSException;
 import gov.nih.nci.security.exceptions.CSObjectNotFoundException;
 import gov.nih.nci.security.exceptions.CSTransactionException;
 
-// TODO: Auto-generated Javadoc
 /**
  * Class to create and insert protection elements for saved query.
  *
@@ -39,11 +38,9 @@ public class SavedQueryAuthorization
 
 	/**
 	 * Inserts authorization data.
-	 *
 	 * @param protectionObjects Set of objects for which protection elements has to insert
 	 * @param bean Object of SharedQueryBean
 	 * @param user logged in user
-	 *
 	 * @throws DAOException DAO Exception
 	 */
 	public void insertAuthData(Set<ParameterizedQuery> protectionObjects, SharedQueryBean bean, User user)
@@ -67,10 +64,8 @@ public class SavedQueryAuthorization
 
 	/**
 	 * Shares query : Populates security tables for protection group and PEs.
-	 *
 	 * @param bean SharedQueryBean
 	 * @param query Parameterized Query
-	 *
 	 * @throws CSException CSException
 	 * @throws SMException security manager exception
 	 * @throws CSTransactionException exception
@@ -79,7 +74,7 @@ public class SavedQueryAuthorization
 	public void shareQuery(SharedQueryBean bean, ParameterizedQuery query)
 			throws CSException, SMException, CSTransactionException,
 			CSObjectNotFoundException
-			{
+	{
 		String shareTo = bean.getShareTo();
 		if ("all".equals(shareTo))
 		{
@@ -97,9 +92,7 @@ public class SavedQueryAuthorization
 
 	/**
 	 * Shares the query to selected roles.
-	 *
 	 * @param bean Object of SharedQueryBean
-	 *
 	 * @throws SMException Security Manager Exception
 	 * @throws CSObjectNotFoundException CSObjectNotFoundException
 	 * @throws CSTransactionException CSTransactionException
@@ -126,10 +119,8 @@ public class SavedQueryAuthorization
 	}
 
 	/**
-	 * Converts the list of user ids to array.
-	 *
-	 * @param userIds List of user ids
-	 *
+	 * Converts the list of user identifiers to array.
+	 * @param userIds List of user identifiers
 	 * @return List of identifiers
 	 */
 	private String[] covertListToArray(List<Long> userIds)
@@ -146,9 +137,7 @@ public class SavedQueryAuthorization
 
 	/**
 	 * Shares the query to list of selected users.
-	 *
 	 * @param bean Object of SharedQueryBean
-	 *
 	 * @throws SMException Security Manager Exception
 	 * @throws CSTransactionException CSTransactionException
 	 */
@@ -168,10 +157,8 @@ public class SavedQueryAuthorization
 	/**
 	 * Sets the users as the owners of the query. These users should be able to
 	 * see the query.
-	 *
 	 * @param query Object of ParameterizedQuery
-	 * @param userIds List of user ids
-	 *
+	 * @param userIds List of user identifiers
 	 * @throws SMException Security Manager Exception
 	 * @throws CSTransactionException CSTransactionException
 	 */
@@ -187,10 +174,8 @@ public class SavedQueryAuthorization
 
 	/**
 	 * Shares the query to all user. This method creates a PE for query and
-	 * assigns this PE to PG of PUBLIC_QUERY_PROTECTION_GROUP
-	 *
+	 * assigns this PE to PG of PUBLIC_QUERY_PROTECTION_GROUP.
 	 * @param query Object of ParameterizedQuery
-	 *
 	 * @throws CSException Common Security Exception
 	 * @throws SMException Security Manager Exception
 	 */
@@ -208,12 +193,9 @@ public class SavedQueryAuthorization
 
 	/**
 	 * Returns the PE for passed query.
-	 *
 	 * @param query Object of ParameterizedQuery
 	 * @param privilegeUtility Object of PrivilegeUtility
-	 *
 	 * @return protectionElement The protection element
-	 *
 	 * @throws SMException Security Manager Exception
 	 */
 	private ProtectionElement getProtectionElementForQuery(
@@ -238,10 +220,8 @@ public class SavedQueryAuthorization
 
 	/**
 	 * Returns the array of dynamic groups.
-	 *
 	 * @param csmUserId CSM user id
-	 *
-	 * @return dynamicGroups string array of group ids
+	 * @return dynamicGroups string array of group identifiers
 	 */
 	private String[] getDynamicGroups(String csmUserId)
 	{
@@ -252,16 +232,14 @@ public class SavedQueryAuthorization
 	}
 
 	/**
-	 * This method returns collection of UserGroupRoleProtectionGroup objects that specify the
-	 * user group protection group linkage through a role. It is also used to specify the groups the protection
-	 * elements returned by this class should be added to.
-	 *
+	 * This method returns collection of UserGroupRoleProtectionGroup
+	 * objects that specify the user group protection group linkage
+	 * through a role. It is also used to specify the groups the
+	 * protection elements returned by this class should be added to.
 	 * @param query object of ParameterizedQuery
 	 * @param user logged in user
 	 * @param role Role of user
-	 *
 	 * @return authorizationData
-	 *
 	 * @throws SMException Security Manager Exception
 	 * @throws CSException Common Security Exception
 	 */
@@ -282,13 +260,11 @@ public class SavedQueryAuthorization
 	}
 
 	/**
-	 * Creates a bean of csm data.
-	 *
+	 * Creates a bean of CSM data.
 	 * @param csmUserId CSM user id
 	 * @param group group
 	 * @param pgName Protection group name
 	 * @param role Role of user
-	 *
 	 * @return securityDataBean
 	 */
 	private SecurityDataBean getSaveQuerySecurityBean(String csmUserId,
@@ -308,9 +284,7 @@ public class SavedQueryAuthorization
 
 	/**
 	 * Gets the PG for given user id.
-	 *
 	 * @param csmUserId CSM user id
-	 *
 	 * @return user protection group
 	 */
 	public String getUserProtectionGroup(String csmUserId)
@@ -320,40 +294,42 @@ public class SavedQueryAuthorization
 
 	/**
 	 * Returns the users to which this query is shared.
-	 *
 	 * @param query query
-	 *
 	 * @return set of users
-	 *
 	 * @throws SMException exception
 	 * @throws CSObjectNotFoundException exception
 	 */
-	public Set<User> getSharedUsers(ParameterizedQuery query) throws SMException, CSObjectNotFoundException
+	public Set<User> getSharedUsers(ParameterizedQuery query)
+	throws SMException, CSObjectNotFoundException
 	{
 		PrivilegeUtility privilegeUtility = new PrivilegeUtility();
-		ProtectionElement protectionElement = getProtectionElementForQuery(query, privilegeUtility);
-		UserProvisioningManager upManager = privilegeUtility.getUserProvisioningManager();
-		return upManager.getOwners(protectionElement.getProtectionElementId().toString());
+		ProtectionElement protectionElement =
+		getProtectionElementForQuery(query, privilegeUtility);
+		UserProvisioningManager upManager =
+		privilegeUtility.getUserProvisioningManager();
+		return upManager.getOwners
+		(protectionElement.getProtectionElementId().toString());
 	}
 
 
 	/**
-	 * Removes the prev sharing.
-	 *
+	 * Removes the previous sharing.
 	 * @param query the query
-	 * @param csmUserId the csm user id
-	 *
+	 * @param csmUserId the CSM user id
 	 * @throws SMException the SM exception
 	 * @throws CSTransactionException the CS transaction exception
 	 * @throws CSObjectNotFoundException the CS object not found exception
 	 * @throws BizLogicException
 	 */
 	public void removePrevSharing(ParameterizedQuery query,String csmUserId)
-	throws SMException, CSTransactionException, CSObjectNotFoundException, BizLogicException
+				throws SMException, CSTransactionException,
+				CSObjectNotFoundException, BizLogicException
 	{
 		PrivilegeUtility privilegeUtility = new PrivilegeUtility();
-		ProtectionElement protectionElement = getProtectionElementForQuery(query, privilegeUtility);
-		UserProvisioningManager upManager = privilegeUtility.getUserProvisioningManager();
+		ProtectionElement protectionElement =
+		getProtectionElementForQuery(query, privilegeUtility);
+		UserProvisioningManager upManager =
+		privilegeUtility.getUserProvisioningManager();
 		String peObjId = protectionElement.getObjectId();
 		Set<ProtectionGroup> pgSet = new DashboardBizLogic().
 		getPGsforQuery(query.getId().toString());
@@ -367,6 +343,22 @@ public class SavedQueryAuthorization
 				break;
 			}
 		}
+		removeOwnerForPE(query, upManager, peObjId);
+	}
+
+	/**
+	 * @param query query
+	 * @param upManager upManager
+	 * @param peObjId object id
+	 * @throws SMException Security manager exception
+	 * @throws CSObjectNotFoundException CSObjectNotFoundException
+	 * @throws CSTransactionException CSTransactionException
+	 */
+	private void removeOwnerForPE(ParameterizedQuery query,
+			UserProvisioningManager upManager, String peObjId)
+			throws SMException, CSObjectNotFoundException,
+			CSTransactionException
+	{
 		Set<User> sharedUsers = getSharedUsers(query);
 		if(!sharedUsers.isEmpty())
 		{

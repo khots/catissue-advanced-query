@@ -486,34 +486,8 @@ public class SqlGenerator implements ISqlGenerator
         for (int i = 0; i < noOfRules; i++)
         {
             IExpressionOperand operand = expression.getOperand(i);
-            String operandSQL = "";
-            boolean emptyExppression = false;
-            if (operand instanceof IRule)
-            {
-                // Processing Rule.
-                operandSQL = getSQL((IRule) operand);
-            }
-            else if (operand instanceof IExpression)
-            {
-                // Processing sub Expression.
-                emptyExppression = emptyExpressions.contains(operand);
-                if (!emptyExppression)
-                {
-                    operandSQL = getWherePartSQL((IExpression) operand);
-                }
-            }
-            else
-            {
-                operandSQL = getCustomFormulaString((ICustomFormula) operand);
-            }
-            if (!"".equals(operandSQL) && noOfRules != 1)
-            {
-                operandSQL = "(" + operandSQL + ")";
-                /*
-                 * putting RuleSQL in Braces so that it will not get mixed with
-                 * other Rules.
-                 */
-            }
+            String operandSQL = getOperandSQL(operand);
+            operandSQL = completeRule(noOfRules, operandSQL);
             if (i != noOfRules - 1)
             {
                 Connector connector = (Connector) expression.getConnector(i, i + 1);
@@ -523,14 +497,8 @@ public class SqlGenerator implements ISqlGenerator
                 IExpressionOperand nextOperand = expression.getOperand(nextIndex);
                 if (nextOperand instanceof IExpression && emptyExpressions.contains(nextOperand))
                 {
-                    for (; nextIndex < noOfRules; nextIndex++)
-                    {
-                        nextOperand = expression.getOperand(nextIndex);
-                        if (!(nextOperand instanceof IExpression && emptyExpressions.contains(nextOperand)))
-                        {
-                            break;
-                        }
-                    }
+                    nextIndex = checkExpressionOperands(expression, noOfRules,
+							nextIndex);
                     if (nextIndex == noOfRules)
                     // Expression over add closing parenthesis.
                     {
@@ -571,6 +539,79 @@ public class SqlGenerator implements ISqlGenerator
         }
         return buffer.toString();
     }
+
+    /**
+     * putting RuleSQL in Braces so that it will not get mixed with
+	 * other Rules.
+     * @param noOfRules number of rules
+     * @param operandSQL operand SQL
+     * @return operandSQL
+     */
+	private String completeRule(int noOfRules, String operandSQL)
+	{
+		String tempSQL = operandSQL;
+		if (!"".equals(operandSQL) && noOfRules != 1)
+		{
+			tempSQL = "(" + operandSQL + ")";
+		    /*
+		     * putting RuleSQL in Braces so that it will not get mixed with
+		     * other Rules.
+		     */
+		}
+		return tempSQL;
+	}
+
+    /**
+     * @param operand operand
+     * @return operandSQL
+     * @throws SqlException SqlException
+     */
+	private String getOperandSQL(IExpressionOperand operand)
+			throws SqlException
+	{
+		String operandSQL = "";
+		boolean emptyExppression = false;
+		if (operand instanceof IRule)
+		{
+		    // Processing Rule.
+		    operandSQL = getSQL((IRule) operand);
+		}
+		else if (operand instanceof IExpression)
+		{
+		    // Processing sub Expression.
+		    emptyExppression = emptyExpressions.contains(operand);
+		    if (!emptyExppression)
+		    {
+		        operandSQL = getWherePartSQL((IExpression) operand);
+		    }
+		}
+		else
+		{
+		    operandSQL = getCustomFormulaString((ICustomFormula) operand);
+		}
+		return operandSQL;
+	}
+
+    /**
+     * @param expression expression
+     * @param noOfRules number of rules
+     * @param nextIndex next index
+     * @return nextIndex
+     */
+	private int checkExpressionOperands(IExpression expression, int noOfRules,
+			int nextIndex)
+	{
+		IExpressionOperand nextOperand;
+		for (; nextIndex < noOfRules; nextIndex++)
+		{
+		    nextOperand = expression.getOperand(nextIndex);
+		    if (!(nextOperand instanceof IExpression && emptyExpressions.contains(nextOperand)))
+		    {
+		        break;
+		    }
+		}
+		return nextIndex;
+	}
 
     /**
      * To append the operand SQL to the SQL buffer, with required number of
@@ -632,10 +673,7 @@ public class SqlGenerator implements ISqlGenerator
         StringBuffer buffer = new StringBuffer("");
 
         int noOfConditions = rule.size();
-        if (noOfConditions == 0)
-        {
-            throw new SqlException("No conditions defined in the Rule!!!");
-        }
+        checkForEmptyConditions(noOfConditions);
         for (int i = 0; i < noOfConditions; i++)
         // Processing all conditions in Rule and combine them with AND operator.
         {
@@ -655,6 +693,19 @@ public class SqlGenerator implements ISqlGenerator
     }
 
     /**
+     * @param noOfConditions number of conditions.
+     * @throws SqlException SqlException
+     */
+	private void checkForEmptyConditions(int noOfConditions)
+			throws SqlException
+	{
+		if (noOfConditions == 0)
+        {
+            throw new SqlException("No conditions defined in the Rule!!!");
+        }
+	}
+
+    /**
      * To get the SQL Representation of the Condition.
      * @param condition The reference to condition.
      * @param expression The reference to Expression to which this condition
@@ -666,20 +717,7 @@ public class SqlGenerator implements ISqlGenerator
     {
         String sql = null;
         AttributeInterface attribute = condition.getAttribute();
-        if(fromBuilder == null)
-        {
-        	fromBuilder = new FromBuilder(joinGraph);
-        	if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.Oracle))
-        	{
-        		strTodateFunction = "TO_DATE";
-        		datePattern = "mm-dd-yyyy";
-        	}
-        	else if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.MySQL))
-        	{
-        		strTodateFunction = "STR_TO_DATE";
-        		datePattern = "%m-%d-%Y";
-        	}
-        }
+        setDatePatterns();
         String attributeName = fromBuilder.aliasOf(attribute, expression);
 
         RelationalOperator operator = condition.getRelationalOperator();
@@ -712,6 +750,27 @@ public class SqlGenerator implements ISqlGenerator
     }
 
     /**
+     * Set the date patterns as per the database.
+     */
+	private void setDatePatterns()
+	{
+		if(fromBuilder == null)
+        {
+        	fromBuilder = new FromBuilder(joinGraph);
+        	if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.Oracle))
+        	{
+        		strTodateFunction = "TO_DATE";
+        		datePattern = "mm-dd-yyyy";
+        	}
+        	else if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.MySQL))
+        	{
+        		strTodateFunction = "STR_TO_DATE";
+        		datePattern = "%m-%d-%Y";
+        	}
+        }
+	}
+
+    /**
      * Processing operators like =, !=, <, > , <=, >= etc.
      * @param condition the condition.
      * @param attributeName the Name of the attribute to returned in SQL.
@@ -730,35 +789,12 @@ public class SqlGenerator implements ISqlGenerator
             		+ operator + "' for condition:"+ condition);
         }
         String value = values.get(0);
-        if (dataType instanceof StringTypeInformationInterface)
-        {
-            if (!(operator.equals(RelationalOperator.Equals) || operator.equals(RelationalOperator.NotEquals)))
-            {
-                throw new SqlException("Incorrect operator found for String datatype for condition:" + condition);
-            }
-        }
+        checkComparisonOperatorForString(condition, dataType, operator);
 
-        if (dataType instanceof BooleanAttributeTypeInformation)
-        {
-            if (!(operator.equals(RelationalOperator.Equals) || operator.equals(RelationalOperator.NotEquals)))
-            {
-                throw new SqlException("Incorrect operator found for Boolean datatype for condition:" + condition);
-            }
-        }
+        checkComparisonOperatorForBoolean(condition, dataType, operator);
         String conditionStr = "";
-        if (dataType instanceof DateTypeInformationInterface)
-        {
-        	if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.MySQL))
-        	{
-        		attributeName =  strTodateFunction+"(DATE_FORMAT(DATE("+attributeName+"),'" +
-        		datePattern + "'),'" + datePattern + "')";
-        	}
-        	else if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.Oracle))
-        	{
-        		attributeName = strTodateFunction+"(TO_CHAR(TRUNC("+attributeName+"),'" +
-        		datePattern + "'),'" + datePattern + "')";
-        	}
-        }
+        attributeName = modifyStringForDateForComparisonOperator(attributeName,
+				dataType);
         value = modifyValueforDataType(value, dataType);
         conditionStr = attributeName + RelationalOperator.getSQL(operator) + value;
 
@@ -772,6 +808,73 @@ public class SqlGenerator implements ISqlGenerator
     }
 
     /**
+     * @param attributeName attribute Name
+     * @param dataType data Type
+     * @return attributeName
+     */
+	private String modifyStringForDateForComparisonOperator(
+			String attributeName, AttributeTypeInformationInterface dataType)
+	{
+		String tempAttribute = attributeName;
+		if (dataType instanceof DateTypeInformationInterface)
+        {
+        	if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.MySQL))
+        	{
+        		tempAttribute =  strTodateFunction+"(DATE_FORMAT(DATE("+attributeName+"),'" +
+        		datePattern + "'),'" + datePattern + "')";
+        	}
+        	else if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.Oracle))
+        	{
+        		tempAttribute = strTodateFunction+"(TO_CHAR(TRUNC("+attributeName+"),'" +
+        		datePattern + "'),'" + datePattern + "')";
+        	}
+        }
+		return tempAttribute;
+	}
+
+    /**
+     * @param condition condition
+     * @param dataType data Type
+     * @param operator operator
+     * @throws SqlException SqlException
+     */
+	private void checkComparisonOperatorForBoolean(ICondition condition,
+			AttributeTypeInformationInterface dataType,
+			RelationalOperator operator) throws SqlException
+	{
+		if (dataType instanceof BooleanAttributeTypeInformation)
+        {
+            if (!(operator.equals(RelationalOperator.Equals) ||
+            	operator.equals(RelationalOperator.NotEquals)))
+            {
+                throw new SqlException("Incorrect operator found" +
+                " for Boolean datatype for condition:" + condition);
+            }
+        }
+	}
+
+	/**
+	 * @param condition condition
+	 * @param dataType data Type
+	 * @param operator operator
+	 * @throws SqlException SqlException
+	 */
+	private void checkComparisonOperatorForString(ICondition condition,
+			AttributeTypeInformationInterface dataType,
+			RelationalOperator operator) throws SqlException
+	{
+		if (dataType instanceof StringTypeInformationInterface)
+        {
+            if (!(operator.equals(RelationalOperator.Equals) ||
+            operator.equals(RelationalOperator.NotEquals)))
+            {
+                throw new SqlException("Incorrect operator found " +
+                "for String datatype for condition:" + condition);
+            }
+        }
+	}
+
+    /**
      * To process String operators. for e.g. starts with, contains etc.
      * @param condition the condition.
      * @param attributeName the Name of the attribute to returned in SQL.
@@ -783,12 +886,7 @@ public class SqlGenerator implements ISqlGenerator
     {
         RelationalOperator operator = condition.getRelationalOperator();
 
-        if (!(condition.getAttribute().getAttributeTypeInformation() instanceof StringTypeInformationInterface
-        	|| condition.getAttribute().getAttributeTypeInformation() instanceof FileTypeInformationInterface))
-        {
-            throw new SqlException("Incorrect data type found for Operator '" + operator + "' for condition:"
-                    + condition);
-        }
+        checkInvalidDataTypeForLike(condition, operator);
 
         List<String> values = condition.getValues();
         if (values.size() != 1)
@@ -812,6 +910,22 @@ public class SqlGenerator implements ISqlGenerator
         }
         return str;
     }
+
+    /**
+     * @param condition condition
+     * @param operator operator
+     * @throws SqlException SqlException
+     */
+	private void checkInvalidDataTypeForLike(ICondition condition,
+			RelationalOperator operator) throws SqlException
+	{
+		if (!(condition.getAttribute().getAttributeTypeInformation() instanceof StringTypeInformationInterface
+        	|| condition.getAttribute().getAttributeTypeInformation() instanceof FileTypeInformationInterface))
+        {
+            throw new SqlException("Incorrect data type found for Operator '" + operator + "' for condition:"
+                    + condition);
+        }
+	}
 
     /**
      * To process 'Is Null' & 'Is Not Null' operator.
@@ -846,19 +960,31 @@ public class SqlGenerator implements ISqlGenerator
         AttributeTypeInformationInterface dataType = condition.getAttribute().getAttributeTypeInformation();
         StringBuffer valueStr = new StringBuffer();
 
-        if (valueList.isEmpty())
+        checkForInvalidConditions(condition, valueList, dataType);
+        getQueryStringForInOperator(buffer, valueList, dataType, valueStr);
+        if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.Oracle)
+        		&& dataType instanceof StringTypeInformationInterface)
         {
-            throw new SqlException("at least one value required for 'In' operand list for condition:" + condition);
+        	buffer = new StringBuffer("lower(" + attributeName + ") "+
+        	RelationalOperator.getSQL(condition.getRelationalOperator()) +" ("+ valueStr);
         }
+        return buffer.toString();
+    }
 
-        if (dataType instanceof BooleanAttributeTypeInformation)
-        {
-            throw new SqlException("Incorrect operator found for Boolean datatype for condition:" + condition);
-        }
-        for (int i = 0; i < valueList.size(); i++)
+    /**
+     * @param buffer buffer
+     * @param valueList value List
+     * @param dataType data Type
+     * @param valueStr String
+     * @throws SqlException SqlException
+     */
+	private void getQueryStringForInOperator(StringBuffer buffer,
+			List<String> valueList, AttributeTypeInformationInterface dataType,
+			StringBuffer valueStr) throws SqlException
+	{
+		for (int i = 0; i < valueList.size(); i++)
         {
             String value = modifyValueforDataType(valueList.get(i), dataType);
-
             if (i == valueList.size() - 1)
             {
             	valueStr.append("lower(").append(value).append("))");
@@ -870,14 +996,28 @@ public class SqlGenerator implements ISqlGenerator
                 buffer.append(value).append(',');
             }
         }
-        if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.Oracle)
-        		&& dataType instanceof StringTypeInformationInterface)
+	}
+
+    /**
+     * Check if the list of values is empty or the data type is boolean which is invalid.
+     * @param condition condition
+     * @param valueList String
+     * @param dataType data type
+     * @throws SqlException SqlException
+     */
+	private void checkForInvalidConditions(ICondition condition,
+			List<String> valueList, AttributeTypeInformationInterface dataType)
+			throws SqlException
+	{
+		if (valueList.isEmpty())
         {
-        	buffer = new StringBuffer("lower(" + attributeName + ") "+
-        	RelationalOperator.getSQL(condition.getRelationalOperator()) +" ("+ valueStr);
+            throw new SqlException("at least one value required for 'In' operand list for condition:" + condition);
         }
-        return buffer.toString();
-    }
+        if (dataType instanceof BooleanAttributeTypeInformation)
+        {
+            throw new SqlException("Incorrect operator found for Boolean datatype for condition:" + condition);
+        }
+	}
 
     /**
      * To get the SQL for the given condition with Between operator. It will be
@@ -897,16 +1037,7 @@ public class SqlGenerator implements ISqlGenerator
             throw new SqlException("Incorrect number of operand for Between operator in condition:" + condition);
         }
 
-        AttributeTypeInformationInterface dataType = condition.getAttribute().getAttributeTypeInformation();
-        if (!(dataType instanceof DateTypeInformationInterface ||
-        		dataType instanceof IntegerTypeInformationInterface
-                || dataType instanceof LongTypeInformationInterface ||
-                dataType instanceof DoubleTypeInformationInterface ||
-                dataType instanceof FloatTypeInformationInterface))
-        {
-            throw new SqlException("Incorrect Data type of operand for Between operator in condition:"
-            		+ condition);
-        }
+        AttributeTypeInformationInterface dataType = checkForValidDataType(condition);
 
         String firstValue = modifyValueforDataType(values.get(0), dataType);
         String secondValue = modifyValueforDataType(values.get(1), dataType);
@@ -918,6 +1049,28 @@ public class SqlGenerator implements ISqlGenerator
 
         return buffer.toString();
     }
+
+    /**
+     * Check for valid data type for between operator.
+     * @param condition condition
+     * @return dataType
+     * @throws SqlException SqlException
+     */
+	private AttributeTypeInformationInterface checkForValidDataType(
+			ICondition condition) throws SqlException
+	{
+		AttributeTypeInformationInterface dataType = condition.getAttribute().getAttributeTypeInformation();
+        if (!(dataType instanceof DateTypeInformationInterface ||
+        		dataType instanceof IntegerTypeInformationInterface
+                || dataType instanceof LongTypeInformationInterface ||
+                dataType instanceof DoubleTypeInformationInterface ||
+                dataType instanceof FloatTypeInformationInterface))
+        {
+            throw new SqlException("Incorrect Data type of operand for Between operator in condition:"
+            		+ condition);
+        }
+		return dataType;
+	}
 
     /**
      * To Modify value as per the Data type. 1. In case of String data type,
@@ -962,7 +1115,6 @@ public class SqlGenerator implements ISqlGenerator
         }
         else
         {
-        	System.out.println("");
         	data.add(value);
         	value="?";
         }
@@ -985,17 +1137,28 @@ public class SqlGenerator implements ISqlGenerator
 		{
 		    throw new SqlException("Incorrect value found in value part for boolean operator!!!");
 		}
-		if (value.equalsIgnoreCase(edu.wustl.query.util.global.AQConstants.TRUE))
-		{
-		    value = "1";
-		}
-		else
-		{
-		    value = "0";
-		}
+		value = setBooleanValue(value);
 		data.add(value);
 		value="?";
 		return value;
+	}
+
+	/**
+	 * @param value value
+	 * @return
+	 */
+	private String setBooleanValue(String value)
+	{
+		String booleanValue = value;
+		if (value.equalsIgnoreCase(edu.wustl.query.util.global.AQConstants.TRUE))
+		{
+			booleanValue = "1";
+		}
+		else
+		{
+			booleanValue = "0";
+		}
+		return booleanValue;
 	}
 
     /**
@@ -1018,15 +1181,8 @@ public class SqlGenerator implements ISqlGenerator
 		    value = (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "-"
 		            + calendar.get(Calendar.YEAR);
 		  //  CommonServiceLocator.getInstance().
-		    String strToDateFunction = strTodateFunction;
-		    if (strToDateFunction == null || strToDateFunction.trim().equals(""))
-		    {
-		        strToDateFunction = "STR_TO_DATE"; // using MySQL function if the Value is not defined.
-		    }
-		    if (datePattern == null || datePattern.trim().equals(""))
-		    {
-		        datePattern = "%m-%d-%Y"; // using MySQL function if the value is not defined.
-		    }
+		    String strToDateFunction = setStrToDateFunction();
+		    setDatePattern();
 		    String appName = CommonServiceLocator.getInstance().getAppName();
 		    data.add(value);
 		    if("MSSQLSERVER".equals(DAOConfigFactory.getInstance().getDAOFactory(appName).
@@ -1045,6 +1201,30 @@ public class SqlGenerator implements ISqlGenerator
 		    throw new SqlException(parseExp.getMessage(), parseExp);
 		}
 		return value;
+	}
+
+	/**
+	 * Set date pattern.
+	 */
+	private void setDatePattern()
+	{
+		if (datePattern == null || datePattern.trim().equals(""))
+		{
+		    datePattern = "%m-%d-%Y"; // using MySQL function if the value is not defined.
+		}
+	}
+
+	/**
+	 * @return strToDateFunction
+	 */
+	private String setStrToDateFunction()
+	{
+		String strToDateFunction = strTodateFunction;
+		if (strToDateFunction == null || strToDateFunction.trim().equals(""))
+		{
+		    strToDateFunction = "STR_TO_DATE"; // using MySQL function if the Value is not defined.
+		}
+		return strToDateFunction;
 	}
 
     /**
@@ -1070,7 +1250,24 @@ public class SqlGenerator implements ISqlGenerator
         Expression expression = (Expression) constraints.getExpression(expressionId);
         List<IExpression> operandList = joinGraph.getChildrenList(expression);
 
-        boolean isEmpty = true;
+        boolean isEmpty = checkIsEmpty(operandList);
+        isEmpty = isEmpty && !expression.containsRule();// check if there are
+        // rule present as subexpression. SRINATH
+        isEmpty = isEmpty && !expression.containsCustomFormula();
+        if (isEmpty)
+        {
+            emptyExpressions.add(expression); // Expression is empty.
+        }
+        return isEmpty;
+    }
+
+    /**
+     * @param operandList operand list
+     * @return isEmpty
+     */
+	private boolean checkIsEmpty(List<IExpression> operandList)
+	{
+		boolean isEmpty = true;
         if (!operandList.isEmpty()) // Check whether any of its children contains rule.
         {
             for (IExpression subExpression : operandList)
@@ -1081,15 +1278,8 @@ public class SqlGenerator implements ISqlGenerator
                 }
             }
         }
-        isEmpty = isEmpty && !expression.containsRule();// check if there are
-        // rule present as subexpression. SRINATH
-        isEmpty = isEmpty && !expression.containsCustomFormula();
-        if (isEmpty)
-        {
-            emptyExpressions.add(expression); // Expression is empty.
-        }
-        return isEmpty;
-    }
+		return isEmpty;
+	}
 
     /**
      * To create output tree for the given expression graph.
@@ -1132,22 +1322,35 @@ public class SqlGenerator implements ISqlGenerator
              */
             if (childExp.isInView())
             {
-                IOutputEntity childOutputEntity = getOutputEntity(childExp);
-                if (parentOutputTreeNode == null)
-                {
-                    // New root node for output tree found, so create root
-                    // node & add it in the rootOutputTreeNodeList.
-                    childNode = new OutputTreeDataNode(childOutputEntity, childExp.getExpressionId(), treeNo++);
-                    rootOpTreeNodLst.add(childNode);
-                }
-                else
-                {
-                    childNode = parentOutputTreeNode.addChild(childOutputEntity, childExp.getExpressionId());
-                }
+                childNode = getChildNode(parentOutputTreeNode, childExp);
             }
             completeTree(childExp, childNode);
         }
     }
+
+    /**
+     * @param parentOutputTreeNode parent output tree node
+     * @param childExp child expression
+     * @return childNode
+     */
+	private OutputTreeDataNode getChildNode(
+			OutputTreeDataNode parentOutputTreeNode, IExpression childExp)
+	{
+		OutputTreeDataNode childNode;
+		IOutputEntity childOutputEntity = getOutputEntity(childExp);
+		if (parentOutputTreeNode == null)
+		{
+		    // New root node for output tree found, so create root
+		    // node & add it in the rootOutputTreeNodeList.
+		    childNode = new OutputTreeDataNode(childOutputEntity, childExp.getExpressionId(), treeNo++);
+		    rootOpTreeNodLst.add(childNode);
+		}
+		else
+		{
+		    childNode = parentOutputTreeNode.addChild(childOutputEntity, childExp.getExpressionId());
+		}
+		return childNode;
+	}
 
     /**
      * To get the Output Entity for the given Expression.
@@ -1216,7 +1419,8 @@ public class SqlGenerator implements ISqlGenerator
      */
     private IAttributeAliasProvider getAliasProvider()
     {
-        return new IAttributeAliasProvider() {
+        return new IAttributeAliasProvider()
+        {
 
             public String getAliasFor(IExpressionAttribute exprAttr)
             {
@@ -1359,47 +1563,72 @@ public class SqlGenerator implements ISqlGenerator
      */
     private String replaceSpecialChars(String value, RelationalOperator operator)
     {
-    	System.out.println("");
     	String appName = CommonServiceLocator.getInstance().getAppName();
     	DAOFactory daoFactory = (DAOFactory) DAOConfigFactory.getInstance().getDAOFactory(appName);
     	if(AQConstants.ORACLE_DATABASE.equals(daoFactory.getDataBaseType()))
     	{
-    		if(value.contains("'"))
-    		{
-    			String character = "'";
-    			value = value.replaceAll(character, character+character);
-    		}
-    		if(value.contains("%"))
-    		{
-    			String character = "%";
-    			value = value.replaceAll(character, escapeCharOracle+character);
-    		}
-    		String finalValue = getOperatorSpecificValue(value, operator);
-    		if(value.contains("%"))
-    		{
-    			finalValue = finalValue + " "+escapeSeqOracle;
-    		}
-    		value = finalValue;
+    		value = replaceSpecialCharactersForOracle(value, operator);
     	}
     	else if(AQConstants.MYSQL_DATABASE.equals(daoFactory.getDataBaseType()))
     	{
-    		String character = "";
-    		if(value.contains("%") )
-    		{
-    			character = "%";
-    			String escapedValue = escapeCharacter + escapeCharacter + character;
-    			value = value.replaceAll(character, escapedValue);
-    		}
-    		if(value.contains("'"))
-    		{
-    			character = "'";
-    			String escapedValue = escapeCharacter + escapeCharacter + character;
-    			value = value.replaceAll(character, escapedValue);
-    		}
-    		value = getOperatorSpecificValue(value, operator);
+    		value = replaceSpecialCharactersForMySql(value, operator);
     	}
     	return value;
     }
+
+    /**
+     * @param value value
+     * @param operator operator
+     * @return value
+     */
+	private String replaceSpecialCharactersForMySql(String value,
+			RelationalOperator operator)
+	{
+		String tempValue = value;
+		String character = "";
+		if(tempValue.contains("%") )
+		{
+			character = "%";
+			String escapedValue = escapeCharacter + escapeCharacter + character;
+			tempValue = tempValue.replaceAll(character, escapedValue);
+		}
+		if(tempValue.contains("'"))
+		{
+			character = "'";
+			String escapedValue = escapeCharacter + escapeCharacter + character;
+			tempValue = tempValue.replaceAll(character, escapedValue);
+		}
+		tempValue = getOperatorSpecificValue(tempValue, operator);
+		return tempValue;
+	}
+
+	/**
+	 * @param value value
+	 * @param operator operator
+	 * @return value
+	 */
+	private String replaceSpecialCharactersForOracle(String value,
+			RelationalOperator operator)
+	{
+		String tempValue = value;
+		if(tempValue.contains("'"))
+		{
+			String character = "'";
+			value = value.replaceAll(character, character+character);
+		}
+		if(tempValue.contains("%"))
+		{
+			String character = "%";
+			tempValue = tempValue.replaceAll(character, escapeCharOracle+character);
+		}
+		String finalValue = getOperatorSpecificValue(tempValue, operator);
+		if(value.contains("%"))
+		{
+			finalValue = finalValue + " "+escapeSeqOracle;
+		}
+		tempValue = finalValue;
+		return tempValue;
+	}
     /**
      * This method changes the value as per RelationalOperator's value.
      * @param value entered by user.
