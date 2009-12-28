@@ -374,7 +374,7 @@ public class SavedQueryAuthorization
 			int index = 0;
 			for (User user : sharedUsers)
 			{
-				userIds[index++] = user.getUserId().toString();
+				userIds[index++] = user.getLoginName();
 			}
 			upManager.removeOwnerForProtectionElement(peObjId, userIds);
 		}

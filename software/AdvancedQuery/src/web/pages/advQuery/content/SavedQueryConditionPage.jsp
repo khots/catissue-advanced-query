@@ -38,6 +38,12 @@
 	String isMyQuery = (String) request
 			.getAttribute(AQConstants.IS_MY_QUERY);
 	String valueOfchkBox;
+	String multiSelectDisplay="display: none";
+	String querySharedTo = form.getShareTo();
+	if(querySharedTo.equalsIgnoreCase("users"))
+	{
+		multiSelectDisplay="display: block";
+	}
 	boolean chkDisabled = false;
 	if (isMyQuery == null)
 	{
@@ -233,7 +239,7 @@ function checkForValidation()
 		</tr>
 		<tr>
 			<td></td>
-			<td id="multiSelectId" class="black_ar_new" style="display: none">
+			<td id="multiSelectId" class="black_ar_new" style="<%=multiSelectDisplay%>">
 			<dynamicExtensions:multiSelectUsingCombo /></td>
 		</tr>
 		<tr>
