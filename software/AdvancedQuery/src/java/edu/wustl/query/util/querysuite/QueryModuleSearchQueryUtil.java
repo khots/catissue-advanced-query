@@ -264,7 +264,8 @@ public class QueryModuleSearchQueryUtil
 	private void getNewQuery(QueryOutputTreeBizLogic outputTreeBizLogic,
 			String selectSql, boolean alreadySavedQuery)
 			throws MultipleRootsException, SqlException, DAOException,
-			SQLException {
+			SQLException
+	{
 		if(isSavedQuery && !alreadySavedQuery)
 		{
 			String newSql=null;
@@ -292,6 +293,7 @@ public class QueryModuleSearchQueryUtil
 		List<OutputTreeDataNode> rootOutputTreeNodeList = sqlGenerator.getRootOutputTreeNodeList();
 		session.setAttribute(AQConstants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
 		queryDetailsObj.setRootOutputTreeNodeList(rootOutputTreeNodeList);
+		queryDetailsObj.setColumnValueBean(sqlGenerator.getColumnValueBean());
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
 		.getAllChildrenNodes(rootOutputTreeNodeList);
 		queryDetailsObj.setUniqueIdNodesMap(uniqueIdNodesMap);
@@ -335,6 +337,7 @@ public class QueryModuleSearchQueryUtil
 			session.setAttribute(AQConstants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
 			session.setAttribute(AQConstants.OUTPUT_TERMS_COLUMNS, sqlGenerator
 					.getOutputTermsColumns());
+			session.setAttribute(AQConstants.COLUMN_VALUE_BEAN, sqlGenerator.getColumnValueBean());
 		}
 		catch (MultipleRootsException e)
 		{

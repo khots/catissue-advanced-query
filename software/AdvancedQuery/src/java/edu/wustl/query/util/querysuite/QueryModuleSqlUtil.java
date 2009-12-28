@@ -6,6 +6,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.query.executor.AbstractQueryExecutor;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.Utility;
@@ -42,7 +44,7 @@ final public class QueryModuleSqlUtil
 	 * @return list of results
 	 * @throws ClassNotFoundException
 	 * @throws DAOException
-	 * @throws SMException 
+	 * @throws SMException
 	 */
     public static List<List<String>> executeQuery(final SessionDataBean sessionData,
             final QuerySessionData querySessionData) throws ClassNotFoundException, DAOException, SMException
@@ -67,7 +69,7 @@ final public class QueryModuleSqlUtil
 		 * @param tableName name of the table to be deleted before creating new one.
 		 * @param createTableSql sql to create table
 		 * @param sessionData session data.
-		 * @throws DAOException DAOException 
+		 * @throws DAOException DAOException
 		 */
 	public static void executeCreateTable(final String tableName, final String createTableSql,
 			QueryDetails queryDetailsObj) throws DAOException
@@ -82,9 +84,24 @@ final public class QueryModuleSqlUtil
 			/*QueryModuleSqlUtil.updateAuditQueryDetails(edu.wustl.query.util.global.Constants.IF_TEMP_TABLE_DELETED,
 					"true",queryDetailsObj.getAuditEventId());
 			*/
+			String newSql = modifySqlForCreateTable(createTableSql);
 			String newCreateTableSql = AQConstants.CREATE_TABLE + tableName + " " + AQConstants.AS_CONSTANT + " "
-            + createTableSql;
+            + newSql;
 			jdbcDao.executeUpdate(newCreateTableSql);
+			String deleteQuery = "DELETE FROM "+tableName;
+			jdbcDao.executeUpdate(deleteQuery);
+			jdbcDao.commit();
+			String insertSql = "INSERT INTO "+tableName + " "+createTableSql;
+			if(insertSql.contains("?"))
+			{
+				LinkedList<LinkedList<ColumnValueBean>> beanList = new LinkedList<LinkedList<ColumnValueBean>>();
+				beanList.add(queryDetailsObj.getColumnValueBean());
+				jdbcDao.executeUpdate(insertSql, beanList);
+			}
+			else
+			{
+				jdbcDao.executeUpdate(insertSql);
+			}
 			jdbcDao.commit();
 		}
 		catch (DAOException e)
@@ -96,6 +113,25 @@ final public class QueryModuleSqlUtil
 		{
 			jdbcDao.closeSession();
 		}
+	}
+
+	/**
+	 * @param createTableSql query
+	 * @return newSql
+	 */
+	private static String modifySqlForCreateTable(String createTableSql)
+	{
+		String whereClause="";
+		if(createTableSql.indexOf("where") != -1)
+		{
+			whereClause = "where";
+		}
+		else
+		{
+			whereClause = "WHERE";
+		}
+		String newSql = createTableSql.substring(0, createTableSql.lastIndexOf(whereClause)-1);
+		return newSql;
 	}
 
 	/**
@@ -124,7 +160,7 @@ final public class QueryModuleSqlUtil
 		selectSql = selectSql.append(AQConstants.NODE_SEPARATOR).append(index);
 		return selectSql.toString();
 	}
-	
+
 	/**
 	 * Method to get count for the given SQL query
 	 * @param sql original SQL for which count is required
@@ -132,7 +168,7 @@ final public class QueryModuleSqlUtil
 	 * @return count int value of count
 	 * @throws DAOException
 	 * @throws ClassNotFoundException
-	 * @throws SMException 
+	 * @throws SMException
 	 */
 	public static int getCountForQuery(final String sql, QueryDetails queryDetailsObj) throws DAOException,
 	ClassNotFoundException, SMException
@@ -145,7 +181,7 @@ final public class QueryModuleSqlUtil
 		try
 		{
 			String countSql = "Select count(*) from (" + sql + ") alias";
-			
+
 			QueryParams queryParams = new QueryParams();
             SessionDataBean sessionData = queryDetailsObj.getSessionData();
             queryParams.setQuery(countSql);
@@ -172,17 +208,17 @@ final public class QueryModuleSqlUtil
 		return count;
 	}
 	/**
-	 * 
+	 *
 	 * @param columnName
 	 * @param newColumnValue
 	 * @param auditEventId
 	 * @throws DAOException
-	 * @throws SQLException 
+	 * @throws SQLException
 	 * @throws SQLException
 	 */
 	public static void updateAuditQueryDetails(String columnName, String newColumnValue,
-			long auditEventId) throws DAOException, SQLException 
-			{
+			long auditEventId) throws DAOException, SQLException
+	{
 		String tableName = "catissue_audit_event_query_log";
 		String appName=CommonServiceLocator.getInstance().getAppName();
 		IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
@@ -190,7 +226,7 @@ final public class QueryModuleSqlUtil
 		jdbcDao.openSession(null);
 		ResultSet resultSet = jdbcDao.getQueryResultSet("select * from "+tableName+" where 1=0");
 		ResultSetMetaData metaData;
-		try 
+		try
 		{
 			metaData = resultSet.getMetaData();
 			int columnType = 0;
@@ -204,16 +240,23 @@ final public class QueryModuleSqlUtil
 				}
 			}
 			String value = getValueForDBType(newColumnValue, columnType);
-			String updateSql = AQConstants.UPDATE+" "+ tableName + " "+AQConstants.SET + " " + columnName + " = "+
-			value + " "+AQConstants.WHERE + " " + AQConstants.AUDIT_EVENT_ID + "=" + auditEventId;
-			jdbcDao.executeUpdate(updateSql);
+			LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
+			ColumnValueBean bean = new ColumnValueBean("value",value);
+			columnValueBean.add(bean);
+			bean = new ColumnValueBean("auditEventId",Long.valueOf(auditEventId));
+			columnValueBean.add(bean);
+			LinkedList<LinkedList<ColumnValueBean>> beanList = new LinkedList<LinkedList<ColumnValueBean>>();
+			beanList.add(columnValueBean);
+			String updateSql = AQConstants.UPDATE+" "+ tableName + " "+AQConstants.SET + " " + columnName + " = ?"+
+			" "+AQConstants.WHERE + " " + AQConstants.AUDIT_EVENT_ID + "= ?";
+			jdbcDao.executeUpdate(updateSql, beanList);
 			jdbcDao.commit();
 		}
 		catch (DAOException e)
 		{
 			Logger.out.error("Error while updating query auditing details :\n"+e);
 			throw e;
-		} 
+		}
 		catch (SQLException e1) {
 			Logger.out.error("Error while updating query auditing details :\n"+e1);
 			throw e1;
@@ -222,8 +265,9 @@ final public class QueryModuleSqlUtil
 		{
 			jdbcDao.closeSession();
 			resultSet.close();
-		}		
-			}
+		}
+	}
+
 	/**
 	 * Returns the value specific to data base type.
 	 * @param newColumnValue value to be converted
@@ -235,11 +279,11 @@ final public class QueryModuleSqlUtil
 		switch(columnType)
 		{
 		case Types.VARCHAR :
-			value = "'"+newColumnValue+"'";
+			value = newColumnValue;
 			break;
 		case Types.BIGINT :
 		case Types.BIT :
-		case Types.TINYINT : 
+		case Types.TINYINT :
 		case Types.NUMERIC :
 		default:
 			value = newColumnValue;

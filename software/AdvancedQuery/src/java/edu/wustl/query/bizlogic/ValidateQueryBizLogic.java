@@ -145,6 +145,7 @@ public class ValidateQueryBizLogic
 		session.setAttribute(AQConstants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
 		session.setAttribute(AQConstants.NO_OF_TREES, Long
 				.valueOf(rootOutputTreeNodeList.size()));
+		session.setAttribute(AQConstants.COLUMN_VALUE_BEAN, queryGenerator.getColumnValueBean());
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
 		.getAllChildrenNodes(rootOutputTreeNodeList);
 		queryDetailsObj.setUniqueIdNodesMap(uniqueIdNodesMap);

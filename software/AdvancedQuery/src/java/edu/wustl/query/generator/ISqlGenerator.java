@@ -4,6 +4,7 @@
 
 package edu.wustl.query.generator;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 
 /**
  * To Generate SQL for the given Query Object.
@@ -53,4 +55,9 @@ public interface ISqlGenerator
      * on multiple entity groups.
      */
     boolean isQueryOnMultipleEntityGroups();
+
+    /**
+     * @return the column value bean
+     */
+    LinkedList<ColumnValueBean> getColumnValueBean();
 }

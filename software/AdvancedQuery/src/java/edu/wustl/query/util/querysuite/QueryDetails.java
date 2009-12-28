@@ -1,6 +1,7 @@
 
 package edu.wustl.query.util.querysuite;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.query.util.global.AQConstants;
 
 /**
@@ -32,6 +34,7 @@ public class QueryDetails
 	private Map<String, IOutputTerm> outputTermsColumns;
 	private IQuery query;
 	private long auditEventId;
+	private LinkedList<ColumnValueBean> columnValueBean;
 
 	//private HttpSession session;
 
@@ -51,6 +54,8 @@ public class QueryDetails
 		outputTermsColumns = (Map<String, IOutputTerm>) session
 				.getAttribute(AQConstants.OUTPUT_TERMS_COLUMNS);
 		query = (IQuery) session.getAttribute(AQConstants.QUERY_OBJECT);
+		columnValueBean = (LinkedList<ColumnValueBean>)
+		session.getAttribute(AQConstants.COLUMN_VALUE_BEAN);
 		if(session.getAttribute("AUDIT_EVENT_ID") != null)
 		{
 			auditEventId =(Long) session.getAttribute("AUDIT_EVENT_ID");
@@ -202,4 +207,21 @@ public class QueryDetails
 	{
 		this.auditEventId = auditEventId;
 	}
+
+	/**
+	 * @return columnValueBean
+	 */
+	public LinkedList<ColumnValueBean> getColumnValueBean()
+	{
+		return columnValueBean;
+	}
+
+	/**
+	 * @param columnValueBean columnValueBean
+	 */
+	public void setColumnValueBean(LinkedList<ColumnValueBean> columnValueBean)
+	{
+		this.columnValueBean = columnValueBean;
+	}
+
 }

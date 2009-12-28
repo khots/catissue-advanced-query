@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,6 +72,7 @@ import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.daofactory.DAOFactory;
 import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.util.global.AQConstants;
 
@@ -175,6 +177,16 @@ public class SqlGenerator implements ISqlGenerator
     private JDBCDAO dao = null;
 
     /**
+     * column value bean for SQL injection.
+     */
+    private LinkedList<ColumnValueBean> columnValueBean =
+    	new LinkedList<ColumnValueBean>();
+
+    /**
+     * Required to populate column value bean.
+     */
+    private LinkedList<Object> data = new LinkedList<Object>();
+    /**
      * Default Constructor to instantiate SQL generator object.
      */
     public SqlGenerator() {}
@@ -194,8 +206,9 @@ public class SqlGenerator implements ISqlGenerator
     public String generateSQL(IQuery query) throws MultipleRootsException,
     SqlException, RuntimeException, DAOException
     {
+    	columnValueBean = new LinkedList<ColumnValueBean>();
+    	data = new LinkedList<Object>();
         Logger.out.debug("Srarted SqlGenerator.generateSQL().....");
-
         String appName=CommonServiceLocator.getInstance().getAppName();
         IDAOFactory daofactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
         dao = daofactory.getJDBCDAO();
@@ -203,6 +216,7 @@ public class SqlGenerator implements ISqlGenerator
         datePattern = dao.getDatePattern();
         String sql = buildQuery(query);
         Logger.out.debug("Finished SqlGenerator.generateSQL()...SQL:" + sql);
+        columnValueBean = populateColumnValueBean(data);
         return sql;
     }
 
@@ -921,8 +935,9 @@ public class SqlGenerator implements ISqlGenerator
         if (dataType instanceof StringTypeInformationInterface)// for data type
         // String it will be enclosed in single quote.
         {
+        	data.add(value);
             value = value.replaceAll("'", "''");
-            value = "'" + value + "'";
+            value = "?";
         }
         else if (dataType instanceof DateTypeInformationInterface) // for
         // data type date it will be enclosed in single quote.
@@ -944,6 +959,12 @@ public class SqlGenerator implements ISqlGenerator
         else if (dataType instanceof DoubleTypeInformationInterface && !new Validator().isDouble(value))
         {
              throw new SqlException("Non numeric value found in value part!!!");
+        }
+        else
+        {
+        	System.out.println("");
+        	data.add(value);
+        	value="?";
         }
         return value;
     }
@@ -972,6 +993,8 @@ public class SqlGenerator implements ISqlGenerator
 		{
 		    value = "0";
 		}
+		data.add(value);
+		value="?";
 		return value;
 	}
 
@@ -990,7 +1013,6 @@ public class SqlGenerator implements ISqlGenerator
 		{
 		    Date date = new Date();
 		    date = Utility.parseDate(value);
-
 		    Calendar calendar = Calendar.getInstance();
 		    calendar.setTime(date);
 		    value = (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "-"
@@ -1006,14 +1028,15 @@ public class SqlGenerator implements ISqlGenerator
 		        datePattern = "%m-%d-%Y"; // using MySQL function if the value is not defined.
 		    }
 		    String appName = CommonServiceLocator.getInstance().getAppName();
+		    data.add(value);
 		    if("MSSQLSERVER".equals(DAOConfigFactory.getInstance().getDAOFactory(appName).
 		    		getDataBaseType()))
 		   	{
-		    	value="CONVERT(datetime, '"+value+"', 110)";
+		    	value="CONVERT(datetime, ?, 110)";
 		   	}
 		    else
 		    {
-		    	value = strToDateFunction + "('" + value + "','" + datePattern + "')";
+		    	value = strToDateFunction + "(?,'" + datePattern + "')";
 		    }
 		}
 		catch (ParseException parseExp)
@@ -1336,6 +1359,7 @@ public class SqlGenerator implements ISqlGenerator
      */
     private String replaceSpecialChars(String value, RelationalOperator operator)
     {
+    	System.out.println("");
     	String appName = CommonServiceLocator.getInstance().getAppName();
     	DAOFactory daoFactory = (DAOFactory) DAOConfigFactory.getInstance().getDAOFactory(appName);
     	if(AQConstants.ORACLE_DATABASE.equals(daoFactory.getDataBaseType()))
@@ -1387,16 +1411,40 @@ public class SqlGenerator implements ISqlGenerator
     {
 		if (operator.equals(RelationalOperator.Contains))
 		{
-			value = "'%" + value + "%'";
+			value = "%" + value + "%";
 		}
 		else if (operator.equals(RelationalOperator.StartsWith))
 		{
-			value = "'" + value + "%'";
+			value = value + "%";
 		}
 		else if (operator.equals(RelationalOperator.EndsWith))
 		{
-			value = "'%" + value + "'";
+			value = "%" + value + "";
 		}
+		data.add(value);
+    	value="?";
 		return value;
+	}
+
+    /**
+     * Populates the linked list of ColumnValueBean.
+	 * @param data data
+	 * @return columnValueBean
+	 */
+	private static LinkedList<ColumnValueBean> populateColumnValueBean(LinkedList<Object> data)
+	{
+		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
+		ColumnValueBean bean = null;
+		for(Object object : data)
+		{
+			bean = new ColumnValueBean(object.toString(), object);
+			columnValueBean.add(bean);
+		}
+		return columnValueBean;
+	}
+
+	public LinkedList<ColumnValueBean> getColumnValueBean()
+	{
+		return columnValueBean;
 	}
   }
