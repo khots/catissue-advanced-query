@@ -29,6 +29,7 @@ import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.beans.SharedQueryBean;
 import edu.wustl.query.bizlogic.SaveQueryBizLogic;
+import edu.wustl.query.bizlogic.ShareQueryBizLogic;
 import edu.wustl.query.htmlprovider.SavedQueryHtmlProvider;
 import edu.wustl.query.util.global.AQConstants;
 /**
@@ -55,7 +56,31 @@ public class LoadSaveQueryPageAction extends BaseAction
 		if (queryObject != null)
 		{
 			target = setAppropriateTarget(form, request, queryObject);
+			SaveQueryForm savedQueryForm = (SaveQueryForm) form;
+			ShareQueryBizLogic bizLogic = new ShareQueryBizLogic();
+
 			List<NameValueBean> coordinators = new ArrayList<NameValueBean>();
+			long[] protocolCoordIds = savedQueryForm.getProtocolCoordinatorIds();
+			List users = new ArrayList();
+			users = bizLogic.getCSMUsers();
+			if (protocolCoordIds != null && protocolCoordIds.length > 0)
+			{
+				List<Long> prtCordIds = new ArrayList<Long>();
+
+				for (int i = 0; i < protocolCoordIds.length; i++)
+				{
+					prtCordIds.add(protocolCoordIds[i]);
+				}
+				for (Object object : users)
+				{
+					NameValueBean nameValueBean = (NameValueBean) object;
+					if (prtCordIds.contains(Long.parseLong(nameValueBean.getValue())))
+					{
+						coordinators.add(nameValueBean);
+					}
+				}
+			}
+
 			request.setAttribute(Constants.SELECTED_VALUES, coordinators);
 			String errorMessage = (String) request.getSession().getAttribute("errorMessageForEditQuery");
 			if (errorMessage != null)
