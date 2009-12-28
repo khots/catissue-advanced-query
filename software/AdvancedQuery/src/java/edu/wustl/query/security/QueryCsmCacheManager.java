@@ -39,6 +39,7 @@ import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.util.HibernateMetaData;
 import edu.wustl.dao.query.generator.ColumnValueBean;
@@ -817,7 +818,18 @@ public class QueryCsmCacheManager
 	{
 		String tableName = (String) AbstractClient.objectTableNames.get(queryResultObjectData
 				.getAliasName());
-		return HibernateMetaData.getInstance().getClassName(tableName);
+		HibernateDAO hibernateDAO = null;
+		try
+		{
+			hibernateDAO = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory(
+					CommonServiceLocator.getInstance().getAppName()).getDAO();
+		}
+		catch (DAOException e)
+		{
+			e.printStackTrace();
+		}
+		HibernateMetaData hibernateMetaData = hibernateDAO.getHibernateMetaData();
+		return hibernateMetaData.getClassName(tableName);
 	}
 
 	/**
