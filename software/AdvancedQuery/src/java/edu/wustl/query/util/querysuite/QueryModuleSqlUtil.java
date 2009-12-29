@@ -135,13 +135,13 @@ final public class QueryModuleSqlUtil
 	private static String modifySqlForCreateTable(String createTableSql)
 	{
 		String whereClause="";
-		if(createTableSql.indexOf("where") != -1)
+		if(createTableSql.indexOf("where") == -1)
 		{
-			whereClause = "where";
+			whereClause = "WHERE";
 		}
 		else
 		{
-			whereClause = "WHERE";
+			whereClause = "where";
 		}
 		String newSql = createTableSql.substring
 		(0, createTableSql.lastIndexOf(whereClause)-1);
@@ -168,7 +168,7 @@ final public class QueryModuleSqlUtil
 		{
 			idColumnName = columnNames.substring(0, columnNames.indexOf(','));
 		}
-		StringBuffer selectSql = new StringBuffer();
+		StringBuffer selectSql = new StringBuffer(80);
 		selectSql.append("select distinct ").append(columnNames)
 		.append(" from ").append(tableName).append(" where ").
 		append(idColumnName).append(" is not null");
