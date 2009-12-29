@@ -29,11 +29,11 @@ public class ShareQueryBizLogic
 		return users;
 	}
 	/**
-	 * Returns the list of NameValueBeans with name as "LastName,Firstname"
+	 * Returns the list of NameValueBeans with name as "LastName,FirstName"
 	 * and value as systemtIdentifier, of all users who are not disabled.
-	 * @return the list of NameValueBeans with name as "LastName,Firstname"
+	 * @return the list of NameValueBeans with name as "LastName,FirstName"
 	 * and value as systemtIdentifier, of all users who are not disabled.
-	 * @throws BizLogicException Biz logic exception
+	 * @throws BizLogicException BizLogic exception
 	 */
 	public List getCSMUsers() throws BizLogicException
 	{
@@ -58,8 +58,8 @@ public class ShareQueryBizLogic
 			// Creating name value beans.
 			for (int i = 0; i < users.size(); i++)
 			{
-				gov.nih.nci.security.authorization.domainobjects.User user = (gov.nih.nci.security.authorization.domainobjects.User) users
-						.get(i);
+				gov.nih.nci.security.authorization.domainobjects.User user =
+				(gov.nih.nci.security.authorization.domainobjects.User) users.get(i);
 				NameValueBean nameValueBean = new NameValueBean(); // NOPMD - Instantiating NameValueBean in loop
 				nameValueBean.setName(user.getLastName() + ", " + user.getFirstName());
 				nameValueBean.setValue(String.valueOf(user.getUserId()));
@@ -85,19 +85,39 @@ public class ShareQueryBizLogic
 		{
 			List<Long> prtCordIds = new ArrayList<Long>();
 
-			for (int i = 0; i < protocolCoordIds.length; i++)
-			{
-				prtCordIds.add(protocolCoordIds[i]);
-			}
-			for (Object object : users)
-			{
-				NameValueBean nameValueBean = (NameValueBean) object;
-				if (prtCordIds.contains(Long.parseLong(nameValueBean.getValue())))
-				{
-					coordinators.add(nameValueBean);
-				}
-			}
+			addProtocolIds(protocolCoordIds, prtCordIds);
+			populateCoordinatorList(coordinators, users, prtCordIds);
 		}
 		return coordinators;
+	}
+
+	/**
+	 * @param protocolCoordIds protocol coordinator id's
+	 * @param prtCordIds array
+	 */
+	private void addProtocolIds(long[] protocolCoordIds, List<Long> prtCordIds)
+	{
+		for (int i = 0; i < protocolCoordIds.length; i++)
+		{
+			prtCordIds.add(protocolCoordIds[i]);
+		}
+	}
+
+	/**
+	 * @param coordinators coordinators
+	 * @param users users
+	 * @param prtCordIds protocol coordinator id's
+	 */
+	private void populateCoordinatorList(List<NameValueBean> coordinators,
+			List users, List<Long> prtCordIds)
+	{
+		for (Object object : users)
+		{
+			NameValueBean nameValueBean = (NameValueBean) object;
+			if (prtCordIds.contains(Long.parseLong(nameValueBean.getValue())))
+			{
+				coordinators.add(nameValueBean);
+			}
+		}
 	}
 }

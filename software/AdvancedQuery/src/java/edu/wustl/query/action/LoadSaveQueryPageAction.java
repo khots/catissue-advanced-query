@@ -59,29 +59,7 @@ public class LoadSaveQueryPageAction extends BaseAction
 			SaveQueryForm savedQueryForm = (SaveQueryForm) form;
 			ShareQueryBizLogic bizLogic = new ShareQueryBizLogic();
 
-			List<NameValueBean> coordinators = new ArrayList<NameValueBean>();
-			long[] protocolCoordIds = savedQueryForm.getProtocolCoordinatorIds();
-			List users = new ArrayList();
-			users = bizLogic.getCSMUsers();
-			if (protocolCoordIds != null && protocolCoordIds.length > 0)
-			{
-				List<Long> prtCordIds = new ArrayList<Long>();
-
-				for (int i = 0; i < protocolCoordIds.length; i++)
-				{
-					prtCordIds.add(protocolCoordIds[i]);
-				}
-				for (Object object : users)
-				{
-					NameValueBean nameValueBean = (NameValueBean) object;
-					if (prtCordIds.contains(Long.parseLong(nameValueBean.getValue())))
-					{
-						coordinators.add(nameValueBean);
-					}
-				}
-			}
-
-			request.setAttribute(Constants.SELECTED_VALUES, coordinators);
+			saveCoordinatorList(request, savedQueryForm, bizLogic);
 			String errorMessage = (String) request.getSession().getAttribute("errorMessageForEditQuery");
 			if (errorMessage != null)
 			{
@@ -90,6 +68,51 @@ public class LoadSaveQueryPageAction extends BaseAction
 			}
 		}
 		return mapping.findForward(target);
+	}
+
+	/**
+	 * @param request request
+	 * @param savedQueryForm form
+	 * @param bizLogic bizLogic
+	 * @throws BizLogicException BizLogicException
+	 */
+	private void saveCoordinatorList(HttpServletRequest request,
+			SaveQueryForm savedQueryForm, ShareQueryBizLogic bizLogic)
+			throws BizLogicException
+	{
+		List<NameValueBean> coordinators = new ArrayList<NameValueBean>();
+		long[] protocolCoordIds = savedQueryForm.getProtocolCoordinatorIds();
+		List users = new ArrayList();
+		users = bizLogic.getCSMUsers();
+		if (protocolCoordIds != null && protocolCoordIds.length > 0)
+		{
+			List<Long> prtCordIds = new ArrayList<Long>();
+
+			for (int i = 0; i < protocolCoordIds.length; i++)
+			{
+				prtCordIds.add(protocolCoordIds[i]);
+			}
+			populateCoordinatorList(coordinators, users, prtCordIds);
+		}
+		request.setAttribute(Constants.SELECTED_VALUES, coordinators);
+	}
+
+	/**
+	 * @param coordinators coordinators
+	 * @param users users
+	 * @param prtCordIds protocol Coordinator identifiers
+	 */
+	private void populateCoordinatorList(List<NameValueBean> coordinators,
+			List users, List<Long> prtCordIds)
+	{
+		for (Object object : users)
+		{
+			NameValueBean nameValueBean = (NameValueBean) object;
+			if (prtCordIds.contains(Long.parseLong(nameValueBean.getValue())))
+			{
+				coordinators.add(nameValueBean);
+			}
+		}
 	}
 
 	/**

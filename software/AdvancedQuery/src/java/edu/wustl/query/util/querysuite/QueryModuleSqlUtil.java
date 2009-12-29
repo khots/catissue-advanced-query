@@ -26,7 +26,7 @@ import edu.wustl.query.util.global.Utility;
 import edu.wustl.security.exception.SMException;
 
 /**
- * Util class for sql related operations required for Query.
+ * Utility class for SQL related operations required for Query.
  * @author santhoshkumar_c
  *
  */
@@ -38,36 +38,39 @@ final public class QueryModuleSqlUtil
 
 	/**
 	 * Executes the query and returns the results.
-	 * @param selectSql sql to be executed
-	 * @param sessionData sessiondata
+	 * @param selectSql SQL to be executed
+	 * @param sessionData sessionData
 	 * @param querySessionData
 	 * @return list of results
 	 * @throws ClassNotFoundException
 	 * @throws DAOException
 	 * @throws SMException
 	 */
-    public static List<List<String>> executeQuery(final SessionDataBean sessionData,
-            final QuerySessionData querySessionData) throws ClassNotFoundException, DAOException, SMException
-            {
+    public static List<List<String>> executeQuery(final SessionDataBean
+    		sessionData,final QuerySessionData querySessionData)
+            throws ClassNotFoundException, DAOException, SMException
+    {
     	List<List<String>> dataList = new ArrayList<List<String>>();
     	QueryParams queryParams = new QueryParams();
     	queryParams.setQuery(querySessionData.getSql());
     	queryParams.setSessionDataBean(sessionData);
     	queryParams.setStartIndex(-1);
     	queryParams.setSecureToExecute(querySessionData.isSecureExecute());
-    	queryParams.setHasConditionOnIdentifiedField(querySessionData.isHasConditionOnIdentifiedField());
-    	queryParams.setQueryResultObjectDataMap(querySessionData.getQueryResultObjectDataMap());
+    	queryParams.setHasConditionOnIdentifiedField
+    	(querySessionData.isHasConditionOnIdentifiedField());
+    	queryParams.setQueryResultObjectDataMap
+    	(querySessionData.getQueryResultObjectDataMap());
     	queryParams.setNoOfRecords(querySessionData.getRecordsPerPage());
 
     	AbstractQueryExecutor queryExecutor = Utility.getQueryExecutor();
     	dataList = queryExecutor.getQueryResultList(queryParams).getResult();
     	return dataList;
-            }
+    }
 
 	/**
 		 * Creates a new table in database. First the table is deleted if exist already.
 		 * @param tableName name of the table to be deleted before creating new one.
-		 * @param createTableSql sql to create table
+		 * @param createTableSql SQL to create table
 		 * @param sessionData session data.
 		 * @throws DAOException DAOException
 		 */
@@ -81,28 +84,15 @@ final public class QueryModuleSqlUtil
 		{
 			jdbcDao.openSession(queryDetailsObj.getSessionData());
 			jdbcDao.deleteTable(tableName);
-			/*QueryModuleSqlUtil.updateAuditQueryDetails(edu.wustl.query.util.global.Constants.IF_TEMP_TABLE_DELETED,
-					"true",queryDetailsObj.getAuditEventId());
-			*/
 			String newSql = modifySqlForCreateTable(createTableSql);
-			String newCreateTableSql = AQConstants.CREATE_TABLE + tableName + " " + AQConstants.AS_CONSTANT + " "
-            + newSql;
+			String newCreateTableSql = AQConstants.CREATE_TABLE +
+			tableName + " " + AQConstants.AS_CONSTANT + " "+ newSql;
 			jdbcDao.executeUpdate(newCreateTableSql);
 			String deleteQuery = "DELETE FROM "+tableName;
 			jdbcDao.executeUpdate(deleteQuery);
 			jdbcDao.commit();
 			String insertSql = "INSERT INTO "+tableName + " "+createTableSql;
-			if(insertSql.contains("?"))
-			{
-				LinkedList<LinkedList<ColumnValueBean>> beanList = new LinkedList<LinkedList<ColumnValueBean>>();
-				beanList.add(queryDetailsObj.getColumnValueBean());
-				jdbcDao.executeUpdate(insertSql, beanList);
-			}
-			else
-			{
-				jdbcDao.executeUpdate(insertSql);
-			}
-			jdbcDao.commit();
+			executeInsertQuery(queryDetailsObj, jdbcDao, insertSql);
 		}
 		catch (DAOException e)
 		{
@@ -113,6 +103,29 @@ final public class QueryModuleSqlUtil
 		{
 			jdbcDao.closeSession();
 		}
+	}
+
+	/**
+	 * @param queryDetailsObj queryDetailsObj
+	 * @param jdbcDao jdbcDao
+	 * @param insertSql insert query
+	 * @throws DAOException DAOException
+	 */
+	private static void executeInsertQuery(QueryDetails queryDetailsObj,
+			JDBCDAO jdbcDao, String insertSql) throws DAOException
+	{
+		if(insertSql.contains("?"))
+		{
+			LinkedList<LinkedList<ColumnValueBean>> beanList =
+				new LinkedList<LinkedList<ColumnValueBean>>();
+			beanList.add(queryDetailsObj.getColumnValueBean());
+			jdbcDao.executeUpdate(insertSql, beanList);
+		}
+		else
+		{
+			jdbcDao.executeUpdate(insertSql);
+		}
+		jdbcDao.commit();
 	}
 
 	/**
@@ -130,7 +143,8 @@ final public class QueryModuleSqlUtil
 		{
 			whereClause = "WHERE";
 		}
-		String newSql = createTableSql.substring(0, createTableSql.lastIndexOf(whereClause)-1);
+		String newSql = createTableSql.substring
+		(0, createTableSql.lastIndexOf(whereClause)-1);
 		return newSql;
 	}
 
@@ -155,8 +169,9 @@ final public class QueryModuleSqlUtil
 			idColumnName = columnNames.substring(0, columnNames.indexOf(','));
 		}
 		StringBuffer selectSql = new StringBuffer();
-		selectSql.append("select distinct ").append(columnNames).append(" from ").append(tableName)
-				.append(" where ").append(idColumnName).append(" is not null");
+		selectSql.append("select distinct ").append(columnNames)
+		.append(" from ").append(tableName).append(" where ").
+		append(idColumnName).append(" is not null");
 		selectSql = selectSql.append(AQConstants.NODE_SEPARATOR).append(index);
 		return selectSql.toString();
 	}
@@ -165,7 +180,7 @@ final public class QueryModuleSqlUtil
 	 * Method to get count for the given SQL query
 	 * @param sql original SQL for which count is required
 	 * @param queryDetailsObj object of QueryDetails
-	 * @return count int value of count
+	 * @return count integer value of count
 	 * @throws DAOException
 	 * @throws ClassNotFoundException
 	 * @throws SMException
@@ -229,35 +244,17 @@ final public class QueryModuleSqlUtil
 		try
 		{
 			metaData = resultSet.getMetaData();
-			int columnType = 0;
-			int columnCount = metaData.getColumnCount();
-			for (int i = 1; i <= columnCount; i++) {
-				String columnNameInTable = metaData.getColumnName(i);
-				if(columnNameInTable.equalsIgnoreCase(columnName))
-				{
-					columnType = metaData.getColumnType(i);
-					break;
-				}
-			}
-			String value = getValueForDBType(newColumnValue, columnType);
-			LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
-			ColumnValueBean bean = new ColumnValueBean("value",value);
-			columnValueBean.add(bean);
-			bean = new ColumnValueBean("auditEventId",Long.valueOf(auditEventId));
-			columnValueBean.add(bean);
-			LinkedList<LinkedList<ColumnValueBean>> beanList = new LinkedList<LinkedList<ColumnValueBean>>();
-			beanList.add(columnValueBean);
-			String updateSql = AQConstants.UPDATE+" "+ tableName + " "+AQConstants.SET + " " + columnName + " = ?"+
-			" "+AQConstants.WHERE + " " + AQConstants.AUDIT_EVENT_ID + "= ?";
-			jdbcDao.executeUpdate(updateSql, beanList);
-			jdbcDao.commit();
+			LinkedList<LinkedList<ColumnValueBean>> beanList = populateBeanList(
+					columnName, newColumnValue, auditEventId, metaData);
+			executeUpdateQuery(columnName, tableName, jdbcDao, beanList);
 		}
 		catch (DAOException e)
 		{
 			Logger.out.error("Error while updating query auditing details :\n"+e);
 			throw e;
 		}
-		catch (SQLException e1) {
+		catch (SQLException e1)
+		{
 			Logger.out.error("Error while updating query auditing details :\n"+e1);
 			throw e1;
 		}
@@ -266,6 +263,72 @@ final public class QueryModuleSqlUtil
 			jdbcDao.closeSession();
 			resultSet.close();
 		}
+	}
+
+	/**
+	 * @param columnName columnName
+	 * @param tableName tableName
+	 * @param jdbcDao jdbcDao
+	 * @param beanList beanList
+	 * @throws DAOException DAOException
+	 */
+	private static void executeUpdateQuery(String columnName, String tableName,
+			JDBCDAO jdbcDao, LinkedList<LinkedList<ColumnValueBean>> beanList)
+			throws DAOException
+	{
+		String updateSql = AQConstants.UPDATE+" "+ tableName +
+		" "+AQConstants.SET + " " + columnName + " = ?"+
+		" "+AQConstants.WHERE + " " + AQConstants.AUDIT_EVENT_ID + "= ?";
+		jdbcDao.executeUpdate(updateSql, beanList);
+		jdbcDao.commit();
+	}
+
+	/**
+	 * @param columnName columnName
+	 * @param newColumnValue newColumnValue
+	 * @param auditEventId auditEventId
+	 * @param metaData metaData
+	 * @return metaData
+	 * @throws SQLException SQLException
+	 */
+	private static LinkedList<LinkedList<ColumnValueBean>> populateBeanList(
+			String columnName, String newColumnValue, long auditEventId,
+			ResultSetMetaData metaData) throws SQLException
+	{
+		int columnType = getColumnType(columnName, metaData);
+		String value = getValueForDBType(newColumnValue, columnType);
+		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
+		ColumnValueBean bean = new ColumnValueBean("value",value);
+		columnValueBean.add(bean);
+		bean = new ColumnValueBean("auditEventId",Long.valueOf(auditEventId));
+		columnValueBean.add(bean);
+		LinkedList<LinkedList<ColumnValueBean>> beanList =
+		new LinkedList<LinkedList<ColumnValueBean>>();
+		beanList.add(columnValueBean);
+		return beanList;
+	}
+
+	/**
+	 * @param columnName columnName
+	 * @param metaData metaData
+	 * @return columnType
+	 * @throws SQLException SQLException
+	 */
+	private static int getColumnType(String columnName,
+			ResultSetMetaData metaData) throws SQLException
+	{
+		int columnType = 0;
+		int columnCount = metaData.getColumnCount();
+		for (int counter = 1; counter <= columnCount; counter++)
+		{
+			String columnNameInTable = metaData.getColumnName(counter);
+			if(columnNameInTable.equalsIgnoreCase(columnName))
+			{
+				columnType = metaData.getColumnType(counter);
+				break;
+			}
+		}
+		return columnType;
 	}
 
 	/**
