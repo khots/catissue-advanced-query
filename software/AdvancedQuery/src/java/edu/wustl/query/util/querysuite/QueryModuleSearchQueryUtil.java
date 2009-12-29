@@ -273,6 +273,7 @@ public class QueryModuleSearchQueryUtil
 			if(queryDetailsObj.getSessionData().isSecurityRequired())
 			{
 				newSql = sqlGenerator.generateSQL(queryDetailsObj.getQuery());
+				queryDetailsObj.setColumnValueBean(sqlGenerator.getColumnValueBean());
 			}
 			else
 			{

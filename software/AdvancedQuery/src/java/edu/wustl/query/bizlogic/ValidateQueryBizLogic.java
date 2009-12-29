@@ -170,6 +170,7 @@ public class ValidateQueryBizLogic
 		{
 			selectSql = queryGenerator.generateSQL(queryClone);
 			session.setAttribute(AQConstants.SAVE_GENERATED_SQL, selectSql);
+			session.setAttribute(AQConstants.COLUMN_VALUE_BEAN, queryGenerator.getColumnValueBean());
 		}
 	}
 }
