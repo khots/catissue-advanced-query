@@ -49,7 +49,7 @@ public class SqlGeneratorGenericTestCase extends TestCase
             String sql = generator.generateSQL(query);
             assertEqualSql(
                     "Incorrect SQL formed for From clause of the Expression !!!",
-                    "select distinct Participant_1.ACTIVITY_STATUS Column0, Participant_1.BIRTH_DATE Column1, Participant_1.EMPI_ID Column2, Participant_1.LNAME_METAPHONE Column3, Participant_1.EMPI_ID_STATUS Column4, Participant_1.VITAL_STATUS Column5, Participant_1.SOCIAL_SECURITY_NUMBER Column6, Participant_1.GENOTYPE Column7, Participant_1.MIDDLE_NAME Column8, Participant_1.LAST_NAME Column9, Participant_1.IDENTIFIER Column10, Participant_1.GENDER Column11, Participant_1.FIRST_NAME Column12, Participant_1.ETHNICITY Column13, Participant_1.DEATH_DATE Column14  from (select * from CATISSUE_PARTICIPANT where ACTIVITY_STATUS != 'Disabled') Participant_1  where lower(Participant_1.ACTIVITY_STATUS) = lower('Active')",
+                    "select distinct Participant_1.ACTIVITY_STATUS Column0, Participant_1.BIRTH_DATE Column1, Participant_1.EMPI_ID Column2, Participant_1.LNAME_METAPHONE Column3, Participant_1.EMPI_ID_STATUS Column4, Participant_1.VITAL_STATUS Column5, Participant_1.SOCIAL_SECURITY_NUMBER Column6, Participant_1.GENOTYPE Column7, Participant_1.MIDDLE_NAME Column8, Participant_1.LAST_NAME Column9, Participant_1.IDENTIFIER Column10, Participant_1.GENDER Column11, Participant_1.FIRST_NAME Column12, Participant_1.ETHNICITY Column13, Participant_1.DEATH_DATE Column14  from (select * from CATISSUE_PARTICIPANT where ACTIVITY_STATUS != 'Disabled') Participant_1  where lower(Participant_1.ACTIVITY_STATUS) = lower(?)",
                     sql);
         }
         catch (Exception e)
@@ -76,7 +76,7 @@ public class SqlGeneratorGenericTestCase extends TestCase
             sql = generator.generateSQL(query);
             assertEqualSql(
                     "Incorrect SQL formed for Query !!!",
-                    "select distinct ClinicalStudy_1.UNSIGNED_CONSENT_DOC_URL Column0, ClinicalStudy_1.IDENTIFIER Column1, ClinicalStudy_1.ACTIVITY_STATUS Column2, ClinicalStudy_1.DESCRIPTION_URL Column3, ClinicalStudy_1.END_DATE Column4, ClinicalStudy_1.ENROLLMENT Column5, ClinicalStudy_1.IRB_IDENTIFIER Column6, ClinicalStudy_1.SHORT_TITLE Column7, ClinicalStudy_1.START_DATE Column8, ClinicalStudy_1.TITLE Column9, ClinicalStudy_1.IS_EMPI_ENABLE Column10  from (select CATISSUE_CLINICAL_STUDY.UNSIGNED_CONSENT_DOC_URL, CATISSUE_SPECIMEN_PROTOCOL.IDENTIFIER, CATISSUE_SPECIMEN_PROTOCOL.ACTIVITY_STATUS, CATISSUE_SPECIMEN_PROTOCOL.DESCRIPTION_URL, CATISSUE_SPECIMEN_PROTOCOL.END_DATE, CATISSUE_SPECIMEN_PROTOCOL.ENROLLMENT, CATISSUE_SPECIMEN_PROTOCOL.IRB_IDENTIFIER, CATISSUE_SPECIMEN_PROTOCOL.SHORT_TITLE, CATISSUE_SPECIMEN_PROTOCOL.START_DATE, CATISSUE_SPECIMEN_PROTOCOL.TITLE, CATISSUE_SPECIMEN_PROTOCOL.IS_EMPI_ENABLE from CATISSUE_CLINICAL_STUDY inner join CATISSUE_SPECIMEN_PROTOCOL on CATISSUE_CLINICAL_STUDY.IDENTIFIER=CATISSUE_SPECIMEN_PROTOCOL.IDENTIFIER where CATISSUE_SPECIMEN_PROTOCOL.ACTIVITY_STATUS != 'Disabled') ClinicalStudy_1  where lower(ClinicalStudy_1.UNSIGNED_CONSENT_DOC_URL) = lower('XYZ') And lower(ClinicalStudy_1.ACTIVITY_STATUS) = lower('Active')",
+                    "select distinct ClinicalStudy_1.UNSIGNED_CONSENT_DOC_URL Column0, ClinicalStudy_1.IDENTIFIER Column1, ClinicalStudy_1.ACTIVITY_STATUS Column2, ClinicalStudy_1.DESCRIPTION_URL Column3, ClinicalStudy_1.END_DATE Column4, ClinicalStudy_1.ENROLLMENT Column5, ClinicalStudy_1.IRB_IDENTIFIER Column6, ClinicalStudy_1.SHORT_TITLE Column7, ClinicalStudy_1.START_DATE Column8, ClinicalStudy_1.TITLE Column9, ClinicalStudy_1.IS_EMPI_ENABLE Column10  from (select CATISSUE_CLINICAL_STUDY.UNSIGNED_CONSENT_DOC_URL, CATISSUE_SPECIMEN_PROTOCOL.IDENTIFIER, CATISSUE_SPECIMEN_PROTOCOL.ACTIVITY_STATUS, CATISSUE_SPECIMEN_PROTOCOL.DESCRIPTION_URL, CATISSUE_SPECIMEN_PROTOCOL.END_DATE, CATISSUE_SPECIMEN_PROTOCOL.ENROLLMENT, CATISSUE_SPECIMEN_PROTOCOL.IRB_IDENTIFIER, CATISSUE_SPECIMEN_PROTOCOL.SHORT_TITLE, CATISSUE_SPECIMEN_PROTOCOL.START_DATE, CATISSUE_SPECIMEN_PROTOCOL.TITLE, CATISSUE_SPECIMEN_PROTOCOL.IS_EMPI_ENABLE from CATISSUE_CLINICAL_STUDY inner join CATISSUE_SPECIMEN_PROTOCOL on CATISSUE_CLINICAL_STUDY.IDENTIFIER=CATISSUE_SPECIMEN_PROTOCOL.IDENTIFIER where CATISSUE_SPECIMEN_PROTOCOL.ACTIVITY_STATUS != 'Disabled') ClinicalStudy_1  where lower(ClinicalStudy_1.UNSIGNED_CONSENT_DOC_URL) = lower(?) And lower(ClinicalStudy_1.ACTIVITY_STATUS) = lower(?)",
                     sql);
 
         }
@@ -100,13 +100,13 @@ public class SqlGeneratorGenericTestCase extends TestCase
 		{
 			RelationalOperator operator = RelationalOperator.In;
 			assertEquals("Incorrect SQL generated for Integer Attribute for Operator:" + operator,
-					"DummyEntity_1.INT_ATTRIBUTE in (1,2,3,4)", generator.getSQL(condition,
+					"DummyEntity_1.INT_ATTRIBUTE in (?,?,?,?)", generator.getSQL(condition,
 							expression));
 
 			operator = RelationalOperator.NotIn;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for Integer Attribute for Operator:" + operator,
-					"DummyEntity_1.INT_ATTRIBUTE NOT in (1,2,3,4)", generator.getSQL(condition,
+					"DummyEntity_1.INT_ATTRIBUTE NOT in (?,?,?,?)", generator.getSQL(condition,
 							expression));
 
 			List<String> values = new ArrayList<String>();
@@ -116,32 +116,32 @@ public class SqlGeneratorGenericTestCase extends TestCase
 			operator = RelationalOperator.LessThan;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for Integer Attribute for Operator:" + operator,
-					"DummyEntity_1.INT_ATTRIBUTE<1", generator.getSQL(condition, expression));
+					"DummyEntity_1.INT_ATTRIBUTE<?", generator.getSQL(condition, expression));
 
 			operator = RelationalOperator.LessThanOrEquals;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for Integer Attribute for Operator:" + operator,
-					"DummyEntity_1.INT_ATTRIBUTE<=1", generator.getSQL(condition, expression));
+					"DummyEntity_1.INT_ATTRIBUTE<=?", generator.getSQL(condition, expression));
 
 			operator = RelationalOperator.Equals;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for Integer Attribute for Operator:" + operator,
-					"DummyEntity_1.INT_ATTRIBUTE=1", generator.getSQL(condition, expression));
+					"DummyEntity_1.INT_ATTRIBUTE=?", generator.getSQL(condition, expression));
 
 			operator = RelationalOperator.NotEquals;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for Integer Attribute for Operator:" + operator,
-					"DummyEntity_1.INT_ATTRIBUTE!=1", generator.getSQL(condition, expression));
+					"DummyEntity_1.INT_ATTRIBUTE!=?", generator.getSQL(condition, expression));
 
 			operator = RelationalOperator.GreaterThan;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for Integer Attribute for Operator:" + operator,
-					"DummyEntity_1.INT_ATTRIBUTE>1", generator.getSQL(condition, expression));
+					"DummyEntity_1.INT_ATTRIBUTE>?", generator.getSQL(condition, expression));
 
 			operator = RelationalOperator.GreaterThanOrEquals;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for Integer Attribute for Operator:" + operator,
-					"DummyEntity_1.INT_ATTRIBUTE>=1", generator.getSQL(condition, expression));
+					"DummyEntity_1.INT_ATTRIBUTE>=?", generator.getSQL(condition, expression));
 
 			values.remove(0);
 			operator = RelationalOperator.IsNull;
@@ -163,7 +163,7 @@ public class SqlGeneratorGenericTestCase extends TestCase
 			operator = RelationalOperator.Between;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for Integer Attribute for Operator:" + operator,
-					"(DummyEntity_1.INT_ATTRIBUTE>=1 And DummyEntity_1.INT_ATTRIBUTE<=100)", generator.getSQL(condition,
+					"(DummyEntity_1.INT_ATTRIBUTE>=? And DummyEntity_1.INT_ATTRIBUTE<=?)", generator.getSQL(condition,
 							expression));
 
 		}
@@ -192,18 +192,18 @@ public class SqlGeneratorGenericTestCase extends TestCase
 			RelationalOperator operator = RelationalOperator.Equals;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for Boolean Attribute for Operator:" + operator,
-					"DummyEntity_1.BOOLEAN_ATTRIBUTE=1", generator.getSQL(condition,
+					"DummyEntity_1.BOOLEAN_ATTRIBUTE=?", generator.getSQL(condition,
 							expression));
 
 			operator = RelationalOperator.NotEquals;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for Boolean Attribute for Operator:" + operator,
-					"DummyEntity_1.BOOLEAN_ATTRIBUTE!=1", generator.getSQL(condition,
+					"DummyEntity_1.BOOLEAN_ATTRIBUTE!=?", generator.getSQL(condition,
 							expression));
 
 			values.set(0,AQConstants.FALSE);
 			assertEquals("Incorrect SQL generated for Boolean Attribute for Operator:" + operator,
-					"DummyEntity_1.BOOLEAN_ATTRIBUTE!=0", generator.getSQL(condition,
+					"DummyEntity_1.BOOLEAN_ATTRIBUTE!=?", generator.getSQL(condition,
 							expression));
 
 		}

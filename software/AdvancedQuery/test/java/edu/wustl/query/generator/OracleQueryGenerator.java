@@ -32,7 +32,7 @@ public class OracleQueryGenerator extends SqlGeneratorGenericTestCase
 			assertEquals(
 					"Incorrect SQL generated for Date Attribute on Oracle database for Operator:"
 							+ operator,
-					"DummyEntity_1.DATE_ATTRIBUTE in (TO_DATE('1-1-2000','mm-dd-yyyy'),TO_DATE('1-10-2000','mm-dd-yyyy'),TO_DATE('5-10-2000','mm-dd-yyyy'))",
+					"DummyEntity_1.DATE_ATTRIBUTE in (TO_DATE(?,'mm-dd-yyyy'),TO_DATE(?,'mm-dd-yyyy'),TO_DATE(?,'mm-dd-yyyy'))",
 					generator.getSQL(condition, expression));
 
 			operator = RelationalOperator.NotIn;
@@ -40,7 +40,7 @@ public class OracleQueryGenerator extends SqlGeneratorGenericTestCase
 			assertEquals(
 					"Incorrect SQL generated for Date Attribute on Oracle database for Operator:"
 							+ operator,
-					"DummyEntity_1.DATE_ATTRIBUTE NOT in (TO_DATE('1-1-2000','mm-dd-yyyy'),TO_DATE('1-10-2000','mm-dd-yyyy'),TO_DATE('5-10-2000','mm-dd-yyyy'))",
+					"DummyEntity_1.DATE_ATTRIBUTE NOT in (TO_DATE(?,'mm-dd-yyyy'),TO_DATE(?,'mm-dd-yyyy'),TO_DATE(?,'mm-dd-yyyy'))",
 					generator.getSQL(condition, expression));
 
 			values = new ArrayList<String>();
@@ -52,7 +52,7 @@ public class OracleQueryGenerator extends SqlGeneratorGenericTestCase
 			assertEquals(
 					"Incorrect SQL generated for Date Attribute on Oracle database for Operator:"
 							+ operator,
-					"TO_DATE(TO_CHAR(TRUNC(DummyEntity_1.DATE_ATTRIBUTE),'mm-dd-yyyy'),'mm-dd-yyyy')<TO_DATE('1-1-2000','mm-dd-yyyy')", generator
+					"TO_DATE(TO_CHAR(TRUNC(DummyEntity_1.DATE_ATTRIBUTE),'mm-dd-yyyy'),'mm-dd-yyyy')<TO_DATE(?,'mm-dd-yyyy')", generator
 							.getSQL(condition, expression));
 
 			operator = RelationalOperator.LessThanOrEquals;
@@ -60,7 +60,7 @@ public class OracleQueryGenerator extends SqlGeneratorGenericTestCase
 			assertEquals(
 					"Incorrect SQL generated for Date Attribute on Oracle database for Operator:"
 							+ operator,
-					"TO_DATE(TO_CHAR(TRUNC(DummyEntity_1.DATE_ATTRIBUTE),'mm-dd-yyyy'),'mm-dd-yyyy')<=TO_DATE('1-1-2000','mm-dd-yyyy')", generator
+					"TO_DATE(TO_CHAR(TRUNC(DummyEntity_1.DATE_ATTRIBUTE),'mm-dd-yyyy'),'mm-dd-yyyy')<=TO_DATE(?,'mm-dd-yyyy')", generator
 							.getSQL(condition, expression));
 
 			operator = RelationalOperator.Equals;
@@ -68,7 +68,7 @@ public class OracleQueryGenerator extends SqlGeneratorGenericTestCase
 			assertEquals(
 					"Incorrect SQL generated for Date Attribute on Oracle database for Operator:"
 							+ operator,
-					"TO_DATE(TO_CHAR(TRUNC(DummyEntity_1.DATE_ATTRIBUTE),'mm-dd-yyyy'),'mm-dd-yyyy')=TO_DATE('1-1-2000','mm-dd-yyyy')", generator
+					"TO_DATE(TO_CHAR(TRUNC(DummyEntity_1.DATE_ATTRIBUTE),'mm-dd-yyyy'),'mm-dd-yyyy')=TO_DATE(?,'mm-dd-yyyy')", generator
 							.getSQL(condition, expression));
 
 			operator = RelationalOperator.NotEquals;
@@ -76,7 +76,7 @@ public class OracleQueryGenerator extends SqlGeneratorGenericTestCase
 			assertEquals(
 					"Incorrect SQL generated for Date Attribute on Oracle database for Operator:"
 							+ operator,
-					"TO_DATE(TO_CHAR(TRUNC(DummyEntity_1.DATE_ATTRIBUTE),'mm-dd-yyyy'),'mm-dd-yyyy')!=TO_DATE('1-1-2000','mm-dd-yyyy')", generator
+					"TO_DATE(TO_CHAR(TRUNC(DummyEntity_1.DATE_ATTRIBUTE),'mm-dd-yyyy'),'mm-dd-yyyy')!=TO_DATE(?,'mm-dd-yyyy')", generator
 							.getSQL(condition, expression));
 
 			operator = RelationalOperator.GreaterThan;
@@ -84,7 +84,7 @@ public class OracleQueryGenerator extends SqlGeneratorGenericTestCase
 			assertEquals(
 					"Incorrect SQL generated for Date Attribute on Oracle database for Operator:"
 							+ operator,
-					"TO_DATE(TO_CHAR(TRUNC(DummyEntity_1.DATE_ATTRIBUTE),'mm-dd-yyyy'),'mm-dd-yyyy')>TO_DATE('1-1-2000','mm-dd-yyyy')", generator
+					"TO_DATE(TO_CHAR(TRUNC(DummyEntity_1.DATE_ATTRIBUTE),'mm-dd-yyyy'),'mm-dd-yyyy')>TO_DATE(?,'mm-dd-yyyy')", generator
 							.getSQL(condition, expression));
 
 			operator = RelationalOperator.GreaterThanOrEquals;
@@ -92,7 +92,7 @@ public class OracleQueryGenerator extends SqlGeneratorGenericTestCase
 			assertEquals(
 					"Incorrect SQL generated for Date Attribute on Oracle database for Operator:"
 							+ operator,
-					"TO_DATE(TO_CHAR(TRUNC(DummyEntity_1.DATE_ATTRIBUTE),'mm-dd-yyyy'),'mm-dd-yyyy')>=TO_DATE('1-1-2000','mm-dd-yyyy')", generator
+					"TO_DATE(TO_CHAR(TRUNC(DummyEntity_1.DATE_ATTRIBUTE),'mm-dd-yyyy'),'mm-dd-yyyy')>=TO_DATE(?,'mm-dd-yyyy')", generator
 							.getSQL(condition, expression));
 
 			values.remove(0);
@@ -120,7 +120,7 @@ public class OracleQueryGenerator extends SqlGeneratorGenericTestCase
 			assertEquals(
 					"Incorrect SQL generated for Date Attribute on MySQL database for Operator:"
 							+ operator,
-					"(DummyEntity_1.DATE_ATTRIBUTE>=TO_DATE('1-1-2000','mm-dd-yyyy') And DummyEntity_1.DATE_ATTRIBUTE<=TO_DATE('2-1-2000','mm-dd-yyyy'))", generator
+					"(DummyEntity_1.DATE_ATTRIBUTE>=TO_DATE(?,'mm-dd-yyyy') And DummyEntity_1.DATE_ATTRIBUTE<=TO_DATE(?,'mm-dd-yyyy'))", generator
 							.getSQL(condition, expression));
 		}
 		catch (Exception e)
@@ -144,13 +144,13 @@ public class OracleQueryGenerator extends SqlGeneratorGenericTestCase
 		{
 			RelationalOperator operator = RelationalOperator.In;
 			assertEquals("Incorrect SQL generated for String Attribute for Operator:" + operator,
-					"lower(DummyEntity_1.STRING_ATTRIBUTE) in (lower('1'),lower('2'),lower('3'),lower('4'))", generator.getSQL(
+					"lower(DummyEntity_1.STRING_ATTRIBUTE) in (lower(?),lower(?),lower(?),lower(?))", generator.getSQL(
 							condition, expression));
 
 			operator = RelationalOperator.NotIn;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for String Attribute for Operator:" + operator,
-					"lower(DummyEntity_1.STRING_ATTRIBUTE) NOT in (lower('1'),lower('2'),lower('3'),lower('4'))", generator.getSQL(
+					"lower(DummyEntity_1.STRING_ATTRIBUTE) NOT in (lower(?),lower(?),lower(?),lower(?))", generator.getSQL(
 							condition, expression));
 
 			List<String> values = new ArrayList<String>();
@@ -160,29 +160,29 @@ public class OracleQueryGenerator extends SqlGeneratorGenericTestCase
 			operator = RelationalOperator.Equals;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for String Attribute for Operator:" + operator,
-					"lower(DummyEntity_1.STRING_ATTRIBUTE) = lower('1')", generator.getSQL(condition, expression));
+					"lower(DummyEntity_1.STRING_ATTRIBUTE) = lower(?)", generator.getSQL(condition, expression));
 
 			operator = RelationalOperator.NotEquals;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for String Attribute for Operator:" + operator,
-					"lower(DummyEntity_1.STRING_ATTRIBUTE) != lower('1')", generator.getSQL(condition, expression));
+					"lower(DummyEntity_1.STRING_ATTRIBUTE) != lower(?)", generator.getSQL(condition, expression));
 
 			operator = RelationalOperator.Contains;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for String Attribute for Operator:" + operator,
-					"lower(DummyEntity_1.STRING_ATTRIBUTE) like lower('%1%')", generator.getSQL(condition,
+					"lower(DummyEntity_1.STRING_ATTRIBUTE) like lower(?)", generator.getSQL(condition,
 							expression));
 
 			operator = RelationalOperator.StartsWith;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for String Attribute for Operator:" + operator,
-					"lower(DummyEntity_1.STRING_ATTRIBUTE) like lower('1%')", generator.getSQL(condition,
+					"lower(DummyEntity_1.STRING_ATTRIBUTE) like lower(?)", generator.getSQL(condition,
 							expression));
 
 			operator = RelationalOperator.EndsWith;
 			condition.setRelationalOperator(operator);
 			assertEquals("Incorrect SQL generated for String Attribute for Operator:" + operator,
-					"lower(DummyEntity_1.STRING_ATTRIBUTE) like lower('%1')", generator.getSQL(condition,
+					"lower(DummyEntity_1.STRING_ATTRIBUTE) like lower(?)", generator.getSQL(condition,
 							expression));
 
 			values.remove(0);
