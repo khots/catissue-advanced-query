@@ -185,7 +185,7 @@ public class UpgradeSavedQueries
 		List<User> users = securityManager.getUsers();
 		for (User user : users)
 		{
-			Role role = securityManager.getUserRole(new Long(user.getUserId()));
+			Role role = securityManager.getUserRole(Long.valueOf(user.getUserId()));
 			if (role.getName().equalsIgnoreCase(
 					edu.wustl.security.global.Constants.ROLE_ADMIN))
 			{

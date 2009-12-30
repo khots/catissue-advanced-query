@@ -3617,7 +3617,7 @@ public class DAGPanel
 						int noOfLhsOperands = lhs.numberOfOperands();
 						for (int j = 0; j < noOfLhsOperands; j++)
 						{
-							String expIdFromLhs = new String();
+							String expIdFromLhs = "";
 							String arithmeticLhsOp = lhs.getOperand(j).toString();
 							int index = arithmeticLhsOp.indexOf(':');
 							String subString = arithmeticLhsOp.substring

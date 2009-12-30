@@ -26,7 +26,7 @@ public class GenerateHTMLDetails
 	/**
 	 *
 	 */
-	private String[] searcStrings;
+	private String[] searchStrings;
 
 	/**
 	 * Method to get String value of searchString.
@@ -44,7 +44,7 @@ public class GenerateHTMLDetails
 	public void setSearchString(String searchString)
 	{
 		this.searchString = searchString;
-		this.searcStrings = prepareSearchString(searchString);
+		this.searchStrings = prepareSearchString(searchString);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class GenerateHTMLDetails
 	 */
 	public String[] getSearcStrings()
 	{
-		return searcStrings;
+		return searchStrings;
 	}
 
 	/**

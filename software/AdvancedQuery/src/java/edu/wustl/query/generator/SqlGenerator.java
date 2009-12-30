@@ -232,7 +232,7 @@ public class SqlGenerator implements ISqlGenerator
      * @throws SqlException When there is error in the passed IQuery object.
      * @throws RuntimeException RuntimeException
      */
-    String buildQuery(IQuery query) throws MultipleRootsException, SqlException, RuntimeException
+    private String buildQuery(IQuery query) throws MultipleRootsException, SqlException, RuntimeException
     {
         IQuery queryClone = cloneQuery(query);
         constraints = queryClone.getConstraints();
@@ -271,7 +271,7 @@ public class SqlGenerator implements ISqlGenerator
      * @param query query
      * @return clone of the query
      */
-    IQuery cloneQuery(IQuery query)
+    private IQuery cloneQuery(IQuery query)
     {
         return new DyExtnObjectCloner().clone(query);
     }
@@ -494,7 +494,7 @@ public class SqlGenerator implements ISqlGenerator
      * @throws SqlException When there is error in the passed IQuery object.
      * @throws RuntimeException RuntimeException
      */
-    String getWherePartSQL(IExpression expression) throws SqlException, RuntimeException
+    private String getWherePartSQL(IExpression expression) throws SqlException, RuntimeException
     {
         StringBuffer buffer = new StringBuffer("");
         int currentNestingCounter = 0;
@@ -671,7 +671,7 @@ public class SqlGenerator implements ISqlGenerator
      * @param parenthesis either Opening parenthesis or closing parenthesis.
      * @return The n number of parenthesis.
      */
-    String getParenthesis(int number, String parenthesis)
+    private String getParenthesis(int number, String parenthesis)
     {
         String string = "";
         for (int i = 0; i < number; i++)
@@ -687,7 +687,7 @@ public class SqlGenerator implements ISqlGenerator
      * @return The SQL representation of the Rule.
      * @throws SqlException When there is error in the passed IQuery object.
      */
-    String getSQL(IRule rule) throws SqlException
+    private String getSQL(IRule rule) throws SqlException
     {
         StringBuffer buffer = new StringBuffer("");
 
@@ -1103,7 +1103,7 @@ public class SqlGenerator implements ISqlGenerator
      * @throws SqlException when there is problem with the values, for Ex.
      *             unable to parse date/integer/double etc.
      */
-    String modifyValueforDataType(String value, AttributeTypeInformationInterface dataType) throws SqlException
+    private String modifyValueforDataType(String value, AttributeTypeInformationInterface dataType) throws SqlException
     {
     	String tempValue = value;
         if (dataType instanceof StringTypeInformationInterface)// for data type

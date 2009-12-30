@@ -267,7 +267,7 @@ public class QueryCsmCacheManager
 		       {
 		    	   sql = sql + mainEntityId;
 		    	   List<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
-		    	   ColumnValueBean bean = new ColumnValueBean("mainEntityId",new Integer(mainEntityId));
+		    	   ColumnValueBean bean = new ColumnValueBean("mainEntityId",Integer.valueOf(mainEntityId));
 		    	   columnValueBean.add(bean);
 		    	   List<Long> allMainObjectIds = (List<Long>)hibernateDAO.executeQuery(sql);
 		    	   if(!allMainObjectIds.isEmpty())
