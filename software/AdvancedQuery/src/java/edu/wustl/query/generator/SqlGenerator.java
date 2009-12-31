@@ -320,16 +320,13 @@ public class SqlGenerator implements ISqlGenerator
             Connection connection = null;
             try
             {
-                EntityInterface rootDEEntity = constraints.getRootExpression()
-                .getQueryEntity().getDynamicExtensionsEntity();
-                boolean isCategory = edu.wustl.cab2b.common.util.Utility.isCategory(rootDEEntity);
                 // This is temporary work around, This connection parameter will be removed in future.
                 InitialContext context = new InitialContext();
                 DataSource dataSource = (DataSource) context.lookup("java:/catissuecore");
                 connection = dataSource.getConnection();
                  // if the root entity itself is category, then get the root
                  //entity of the category & pass it to the processCategory() method.
-                checkForCategory(rootDEEntity, isCategory);
+                //checkForCategory(rootDEEntity, isCategory);
                 new CategoryPreprocessor().processCategories(query);
             }
             catch (Exception e)
@@ -354,30 +351,6 @@ public class SqlGenerator implements ISqlGenerator
             }
         }
     }
-
-    /**
-     * @param rootDEEntity root entity
-     * @param isCategory isCategory
-     * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException DynamicExtensionsApplicationException
-     */
-	private void checkForCategory(EntityInterface rootDEEntity,
-			boolean isCategory) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
-	{
-		EntityInterface rootEntity;
-		if (isCategory)
-		{
-		    Category category = new CategoryOperations().
-		    getCategoryByEntityId(rootDEEntity.getId());
-		    rootEntity = EntityManager.getInstance().getEntityByIdentifier(
-		            category.getRootClass().getDeEntityId());
-		}
-		else
-		{
-		    rootEntity = rootDEEntity;
-		}
-	}
 
     /**
      * To check whether there is any Expression having Constraint Entity as category.
@@ -406,28 +379,29 @@ public class SqlGenerator implements ISqlGenerator
      */
     private String getSelectPart()
     {
+    	StringBuffer selectAttributes = new StringBuffer(80);
         selectIndex = 0;
-        String selectAttribute = "";
+        StringBuffer selectAttribute = new StringBuffer(80);
         for (OutputTreeDataNode rootOutputTreeNode : rootOpTreeNodLst)
         {
-            selectAttribute += getSelectAttributes(rootOutputTreeNode);
+        	selectAttributes.append(getSelectAttributes(rootOutputTreeNode));
         }
         // Deepti : added quick fix for bug 6950. Add distinct only when columns
         // do not include CLOB type.
         if (hasCLOBTypeCol)
         {
-            selectAttribute = SELECT + selectAttribute;
+            selectAttribute.append(SELECT).append(selectAttributes);
         }
         else
         {
-            selectAttribute = SELECT_DISTINCT + selectAttribute;
+        	selectAttribute.append(SELECT_DISTINCT).append(selectAttributes);
         }
-        return selectAttribute;
+        return selectAttribute.toString();
     }
 
     /**
      * Removes the last comma from the given string.
-     * @param select select clause
+     * @param selectString select clause
      * @return select clause with last comma removed
      */
     private String removeLastComma(String selectString)
@@ -566,16 +540,16 @@ public class SqlGenerator implements ISqlGenerator
      */
 	private String completeRule(int noOfRules, String operandSQL)
 	{
-		String tempSQL = operandSQL;
+		StringBuffer tempSQL = new StringBuffer();
 		if (!"".equals(operandSQL) && noOfRules != 1)
 		{
-			tempSQL = "(" + operandSQL + ")";
+			tempSQL.append("(").append(operandSQL).append(")");
 		    /*
 		     * putting RuleSQL in Braces so that it will not get mixed with
 		     * other Rules.
 		     */
 		}
-		return tempSQL;
+		return tempSQL.toString();
 	}
 
     /**
@@ -636,7 +610,7 @@ public class SqlGenerator implements ISqlGenerator
      * parenthesis.
      * @param buffer The reference to the String buffer containing SQL for SQL
      *            of operands of an expression.
-     * @param currentNestingCounter The current nesting count.
+     * @param nestingCounter The current nesting count.
      * @param operandSQL The SQL of the operand to be appended to buffer
      * @param nestingNumber The nesting number for the current operand's
      *            operator.
@@ -673,12 +647,12 @@ public class SqlGenerator implements ISqlGenerator
      */
     private String getParenthesis(int number, String parenthesis)
     {
-        String string = "";
+        StringBuffer string = new StringBuffer();
         for (int i = 0; i < number; i++)
         {
-            string += parenthesis;
+            string.append(parenthesis);
         }
-        return string;
+        return string.toString();
     }
 
     /**
@@ -792,7 +766,7 @@ public class SqlGenerator implements ISqlGenerator
     /**
      * Processing operators like =, !=, <, > , <=, >= etc.
      * @param condition the condition.
-     * @param attributeName the Name of the attribute to be returned in SQL.
+     * @param tempAttributeName the Name of the attribute to be returned in SQL.
      * @return SQL representation for given condition.
      * @throws SqlException when: 1. value list contains more/less than 1 value.
      * 2. other than = ,!= operator present for String data type.
@@ -939,10 +913,13 @@ public class SqlGenerator implements ISqlGenerator
 	private void checkInvalidDataTypeForLike(ICondition condition,
 			RelationalOperator operator) throws SqlException
 	{
-		if (!(condition.getAttribute().getAttributeTypeInformation() instanceof StringTypeInformationInterface
-        	|| condition.getAttribute().getAttributeTypeInformation() instanceof FileTypeInformationInterface))
+		if (!(condition.getAttribute().getAttributeTypeInformation()
+			instanceof StringTypeInformationInterface
+        	|| condition.getAttribute().getAttributeTypeInformation()
+        	instanceof FileTypeInformationInterface))
         {
-            throw new SqlException("Incorrect data type found for Operator '" + operator + "' for condition:"
+            throw new SqlException("Incorrect data type found for" +
+            		" Operator '" + operator + "' for condition:"
                     + condition);
         }
 	}
@@ -1054,7 +1031,8 @@ public class SqlGenerator implements ISqlGenerator
         List<String> values = condition.getValues();
         if (values.size() != AQConstants.TWO)
         {
-            throw new SqlException("Incorrect number of operand for Between operator in condition:" + condition);
+            throw new SqlException("Incorrect number of operand for Between operator" +
+            		" in condition:" + condition);
         }
 
         AttributeTypeInformationInterface dataType = checkForValidDataType(condition);
@@ -1063,9 +1041,11 @@ public class SqlGenerator implements ISqlGenerator
         String secondValue = modifyValueforDataType(values.get(1), dataType);
 
         buffer.append('(').append(attributeName);
-        buffer.append(RelationalOperator.getSQL(RelationalOperator.GreaterThanOrEquals)).append(firstValue);
+        buffer.append(RelationalOperator.getSQL(RelationalOperator.GreaterThanOrEquals))
+        .append(firstValue);
         buffer.append(' ').append(LogicalOperator.And).append(' ').append(attributeName)
-        .append(RelationalOperator.getSQL(RelationalOperator.LessThanOrEquals)).append(secondValue).append(')');
+        .append(RelationalOperator.getSQL(RelationalOperator.LessThanOrEquals))
+        .append(secondValue).append(')');
 
         return buffer.toString();
     }
@@ -1079,15 +1059,16 @@ public class SqlGenerator implements ISqlGenerator
 	private AttributeTypeInformationInterface checkForValidDataType(
 			ICondition condition) throws SqlException
 	{
-		AttributeTypeInformationInterface dataType = condition.getAttribute().getAttributeTypeInformation();
+		AttributeTypeInformationInterface dataType = condition
+		.getAttribute().getAttributeTypeInformation();
         if (!(dataType instanceof DateTypeInformationInterface ||
         		dataType instanceof IntegerTypeInformationInterface
                 || dataType instanceof LongTypeInformationInterface ||
                 dataType instanceof DoubleTypeInformationInterface ||
                 dataType instanceof FloatTypeInformationInterface))
         {
-            throw new SqlException("Incorrect Data type of operand for Between operator in condition:"
-            		+ condition);
+            throw new SqlException("Incorrect Data type of operand for" +
+            " Between operator in condition:"+ condition);
         }
 		return dataType;
 	}
@@ -1100,10 +1081,11 @@ public class SqlGenerator implements ISqlGenerator
      * @param dataType The DataType of the passed value.
      * @return The String representing encoded value for the given value &
      *         data type.
-     * @throws SqlException when there is problem with the values, for Ex.
+     * @throws SqlException when there is problem with the values, for e.g.
      *             unable to parse date/integer/double etc.
      */
-    private String modifyValueforDataType(String value, AttributeTypeInformationInterface dataType) throws SqlException
+    private String modifyValueforDataType(String value,
+    		AttributeTypeInformationInterface dataType) throws SqlException
     {
     	String tempValue = value;
         if (dataType instanceof StringTypeInformationInterface)// for data type
@@ -1167,7 +1149,7 @@ public class SqlGenerator implements ISqlGenerator
 
 	/**
 	 * @param value value
-	 * @return
+	 * @return booleanValue
 	 */
 	private String setBooleanValue(String value)
 	{
@@ -1186,7 +1168,7 @@ public class SqlGenerator implements ISqlGenerator
     /**
      * To Modify value for Date data type.
      * Enclose the given values by single Quotes for Date Data type.
-     * @param value the Modified value.
+     * @param tempValue the Modified value.
      * @return The String representing encoded value for the given value &
      * data type.
      * @throws SqlException when there is problem with the values, for e.g.
@@ -1194,15 +1176,16 @@ public class SqlGenerator implements ISqlGenerator
      */
 	private String modifyValueForDate(String tempValue) throws SqlException
 	{
-		String value = tempValue;
+		StringBuffer value = new StringBuffer();
 		try
 		{
 		    Date date = new Date();
-		    date = Utility.parseDate(value);
+		    date = Utility.parseDate(tempValue);
 		    Calendar calendar = Calendar.getInstance();
 		    calendar.setTime(date);
-		    value = (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "-"
-		            + calendar.get(Calendar.YEAR);
+		    value.append((calendar.get(Calendar.MONTH) + 1)).append("-")
+		    .append(calendar.get(Calendar.DAY_OF_MONTH)).append("-")
+		    .append(calendar.get(Calendar.YEAR));
 		  //  CommonServiceLocator.getInstance().
 		    String strToDateFunction = setStrToDateFunction();
 		    setDatePattern();
@@ -1211,11 +1194,11 @@ public class SqlGenerator implements ISqlGenerator
 		    if("MSSQLSERVER".equals(DAOConfigFactory.getInstance().getDAOFactory(appName).
 		    		getDataBaseType()))
 		   	{
-		    	value="CONVERT(datetime, ?, 110)";
+		    	value=new StringBuffer("CONVERT(datetime, ?, 110)");
 		   	}
 		    else
 		    {
-		    	value = strToDateFunction + "(?,'" + datePattern + "')";
+		    	value = new StringBuffer(strToDateFunction + "(?,'" + datePattern + "')");
 		    }
 		}
 		catch (ParseException parseExp)
@@ -1223,7 +1206,7 @@ public class SqlGenerator implements ISqlGenerator
 		    Logger.out.error(parseExp.getMessage(), parseExp);
 		    throw new SqlException(parseExp.getMessage(), parseExp);
 		}
-		return value;
+		return value.toString();
 	}
 
 	/**
@@ -1496,34 +1479,37 @@ public class SqlGenerator implements ISqlGenerator
             String termString = "(" + getTermString(term.getTerm()) + ")";
             termString = modifyForTimeInterval(termString, term.getTimeInterval());
             String columnName = COLUMN_NAME + selectIndex++;
-            selectClause.append(termString + " " + columnName + SELECT_COMMA);
+            selectClause.append(termString).append(" ").append(columnName).append(SELECT_COMMA);
             outputTermsColumns.put(columnName, term);
         }
         return removeLastComma(selectClause.toString());
     }
 
     /**
-     * @param termString termString
+     * @param tempString temporary term String
      * @param timeInterval timeInterval
      * @return termString
      */
     private String modifyForTimeInterval(String tempString, TimeInterval<?> timeInterval)
     {
-    	String termString = tempString;
+    	StringBuffer termString = new StringBuffer(tempString);
         if (timeInterval != null)
         {
-	        termString = tempString + "/" + timeInterval.numSeconds();
+	        termString.append(tempString).append("/").append(timeInterval.numSeconds());
+	        String term = termString.toString();
+	        termString = new StringBuffer();
 	        String appName = CommonServiceLocator.getInstance().getAppName();
-	        if("MSSQLSERVER".equals(DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType()))
+	        if("MSSQLSERVER".equals(DAOConfigFactory.getInstance().
+	        		getDAOFactory(appName).getDataBaseType()))
 	        {
-	        	termString = "cast(ROUND(" + termString + ",0)as bigint)";
+	        	termString.append("cast(ROUND(").append(term).append(",0)as bigint)");
 	        }
 	        else
 	        {
-	        	termString = "ROUND(" + termString + ")";
+	        	termString.append("ROUND(").append(term).append(")");
 	        }
         }
-        return termString;
+        return termString.toString();
     }
 
     /**
@@ -1581,9 +1567,9 @@ public class SqlGenerator implements ISqlGenerator
     }
     /**
      * This method replaces special characters with the escape sequences from the entered value.
-     * @param value entered by user.
+     * @param tempValue entered by user.
      * @param operator Relational operator
-     * @return special characters replaced by escape sequences.
+     * @return value special characters replaced by escape sequences.
      */
     private String replaceSpecialChars(String tempValue, RelationalOperator operator)
     {
@@ -1647,11 +1633,12 @@ public class SqlGenerator implements ISqlGenerator
 			tempValue = tempValue.replaceAll(character, escapeCharOracle+character);
 		}
 		String finalValue = getOperatorSpecificValue(tempValue, operator);
+		StringBuffer finalVal = new StringBuffer(finalValue);
 		if(value.contains("%"))
 		{
-			finalValue = finalValue + " "+escapeSeqOracle;
+			finalVal.append(" ").append(escapeSeqOracle);
 		}
-		tempValue = finalValue;
+		tempValue = finalVal.toString();
 		return tempValue;
 	}
     /**
@@ -1663,22 +1650,22 @@ public class SqlGenerator implements ISqlGenerator
     private String getOperatorSpecificValue(String value,
 			RelationalOperator operator)
     {
-    	String tempValue = value;
+    	StringBuffer tempValue = new StringBuffer(value);
 		if (operator.equals(RelationalOperator.Contains))
 		{
-			tempValue = "%" + value + "%";
+			tempValue.append("%").append(value).append("%");
 		}
 		else if (operator.equals(RelationalOperator.StartsWith))
 		{
-			tempValue = value + "%";
+			tempValue.append(value).append("%");
 		}
 		else if (operator.equals(RelationalOperator.EndsWith))
 		{
-			tempValue = "%" + value + "";
+			tempValue.append("%").append(value).append("");
 		}
-		data.add(tempValue);
-		tempValue="?";
-		return tempValue;
+		data.add(tempValue.toString());
+		tempValue=new StringBuffer("?");
+		return tempValue.toString();
 	}
 
     /**
@@ -1698,6 +1685,10 @@ public class SqlGenerator implements ISqlGenerator
 		return columnValueBean;
 	}
 
+	/**
+	 * Get the column value bean.
+	 * @return columnValueBean
+	 */
 	public LinkedList<ColumnValueBean> getColumnValueBean()
 	{
 		return columnValueBean;
