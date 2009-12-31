@@ -540,16 +540,16 @@ public class SqlGenerator implements ISqlGenerator
      */
 	private String completeRule(int noOfRules, String operandSQL)
 	{
-		StringBuffer tempSQL = new StringBuffer();
+		String tempSQL = operandSQL;
 		if (!"".equals(operandSQL) && noOfRules != 1)
 		{
-			tempSQL.append("(").append(operandSQL).append(")");
+			tempSQL = "(" + operandSQL + ")";
 		    /*
 		     * putting RuleSQL in Braces so that it will not get mixed with
 		     * other Rules.
 		     */
 		}
-		return tempSQL.toString();
+		return tempSQL;
 	}
 
     /**
