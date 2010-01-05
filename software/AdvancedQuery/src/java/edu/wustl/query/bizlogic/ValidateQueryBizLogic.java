@@ -74,8 +74,16 @@ public class ValidateQueryBizLogic
 		catch (SqlException e)
 		{
 			Logger.out.error(e);
-			validationMessage = "<li><font color='red'> "+ ApplicationProperties
-			.getValue("errors.executeQuery.genericmessage")+ "</font></li>";
+			if(e.getMessage()!=null)
+			{
+				validationMessage = "<li><font color='red'> "+ e.getMessage()
+				+ "</font></li>";
+			}
+			else
+			{
+				validationMessage = "<li><font color='red'> "+ ApplicationProperties
+				.getValue("errors.executeQuery.genericmessage")+ "</font></li>";
+			}
 		}
 		catch (RuntimeException e)
 		{

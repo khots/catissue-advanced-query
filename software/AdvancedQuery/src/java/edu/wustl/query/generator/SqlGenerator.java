@@ -789,7 +789,7 @@ public class SqlGenerator implements ISqlGenerator
         String conditionStr = "";
         attributeName = modifyStringForDateForComparisonOperator(attributeName,
 				dataType);
-        value = modifyValueforDataType(value, dataType);
+        value = modifyValueforDataType(value, dataType,condition);
         conditionStr = attributeName + RelationalOperator.getSQL(operator) + value;
 
         if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.Oracle)
@@ -981,7 +981,7 @@ public class SqlGenerator implements ISqlGenerator
 	{
 		for (int i = 0; i < valueList.size(); i++)
         {
-            String value = modifyValueforDataType(valueList.get(i), dataType);
+            String value = modifyValueforDataType(valueList.get(i), dataType,null);
             if (i == valueList.size() - 1)
             {
             	valueStr.append("lower(").append(value).append("))");
@@ -1006,7 +1006,7 @@ public class SqlGenerator implements ISqlGenerator
 			List<String> valueList, AttributeTypeInformationInterface dataType)
 			throws SqlException
 	{
-		if (valueList.isEmpty())
+		if (valueList.isEmpty() || valueList.get(0) == null)
         {
             throw new SqlException("at least one value required for 'In' operand list for condition:" + condition);
         }
@@ -1037,8 +1037,8 @@ public class SqlGenerator implements ISqlGenerator
 
         AttributeTypeInformationInterface dataType = checkForValidDataType(condition);
 
-        String firstValue = modifyValueforDataType(values.get(0), dataType);
-        String secondValue = modifyValueforDataType(values.get(1), dataType);
+        String firstValue = modifyValueforDataType(values.get(0), dataType, condition);
+        String secondValue = modifyValueforDataType(values.get(1), dataType, condition);
 
         buffer.append('(').append(attributeName);
         buffer.append(RelationalOperator.getSQL(RelationalOperator.GreaterThanOrEquals))
@@ -1085,7 +1085,7 @@ public class SqlGenerator implements ISqlGenerator
      *             unable to parse date/integer/double etc.
      */
     private String modifyValueforDataType(String value,
-    		AttributeTypeInformationInterface dataType) throws SqlException
+    		AttributeTypeInformationInterface dataType,ICondition condition) throws SqlException
     {
     	String tempValue = value;
         if (dataType instanceof StringTypeInformationInterface)// for data type
@@ -1103,18 +1103,18 @@ public class SqlGenerator implements ISqlGenerator
         else if (dataType instanceof BooleanTypeInformationInterface) // defining
         // value for boolean  data type.
         {
-        	tempValue = modifyValueForBoolean(tempValue);
+        	tempValue = modifyValueForBoolean(tempValue, condition);
         }
         else if (dataType instanceof IntegerTypeInformationInterface)
         {
             if (!new Validator().isNumeric(tempValue))
             {
-                throw new SqlException("Non numeric value found in value part!!!");
+                throw new SqlException("Non numeric value found in value part for condition : "+condition+"!!!");
             }
         }
         else if (dataType instanceof DoubleTypeInformationInterface && !new Validator().isDouble(tempValue))
         {
-             throw new SqlException("Non numeric value found in value part!!!");
+             throw new SqlException("Non numeric value found in value part for condition : "+condition+"!!!");
         }
         else
         {
@@ -1133,13 +1133,14 @@ public class SqlGenerator implements ISqlGenerator
      * @throws SqlException when there is problem with the values, for e.g.
      *             unable to parse date/integer/double etc.
      */
-	private String modifyValueForBoolean(String value) throws SqlException
+	private String modifyValueForBoolean(String value, ICondition condition) throws SqlException
 	{
 		String tempValue = value;
 		if (value == null || !(value.equalsIgnoreCase(edu.wustl.query.util.global.AQConstants.TRUE)
 				|| value.equalsIgnoreCase(edu.wustl.query.util.global.AQConstants.FALSE)))
 		{
-		    throw new SqlException("Incorrect value found in value part for boolean operator!!!");
+		    throw new SqlException("Incorrect value found in value part for" +
+		    " boolean operator for condition : "+condition+"!!!");
 		}
 		tempValue = setBooleanValue(value);
 		data.add(tempValue);
@@ -1679,8 +1680,11 @@ public class SqlGenerator implements ISqlGenerator
 		ColumnValueBean bean = null;
 		for(Object object : data)
 		{
-			bean = new ColumnValueBean(object.toString(), object);
-			columnValueBean.add(bean);
+			if(object != null)
+			{
+				bean = new ColumnValueBean(object.toString(), object);
+				columnValueBean.add(bean);
+			}
 		}
 		return columnValueBean;
 	}
