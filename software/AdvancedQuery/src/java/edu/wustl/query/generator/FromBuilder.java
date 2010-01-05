@@ -536,8 +536,11 @@ public class FromBuilder
 			if (foreignKey != null && !manyToMany(assoc))
 			{
 			    foreignKey = tableName(assoc.getEntity()) + "." + foreignKey;
-			    res.append(foreignKey);
-			    res.append(comma);
+			    if(res.indexOf(foreignKey) == -1)
+			    {
+				    res.append(foreignKey);
+				    res.append(comma);
+			    }
 			}
 		}
 
