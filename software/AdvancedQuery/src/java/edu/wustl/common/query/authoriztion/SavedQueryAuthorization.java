@@ -343,32 +343,28 @@ public class SavedQueryAuthorization
 				break;
 			}
 		}
-		removeOwnerForPE(query, upManager, peObjId);
+		removeOwnerForPE(query, upManager, protectionElement);
 	}
 
 	/**
 	 * @param query query
 	 * @param upManager upManager
-	 * @param peObjId object id
+	 * @param protectionElement protection element
 	 * @throws SMException Security manager exception
 	 * @throws CSObjectNotFoundException CSObjectNotFoundException
 	 * @throws CSTransactionException CSTransactionException
 	 */
 	private void removeOwnerForPE(ParameterizedQuery query,
-			UserProvisioningManager upManager, String peObjId)
+			UserProvisioningManager upManager, ProtectionElement protectionElement)
 			throws SMException, CSObjectNotFoundException,
 			CSTransactionException
 	{
 		Set<User> sharedUsers = getSharedUsers(query);
 		if(!sharedUsers.isEmpty())
 		{
-			String[] userIds = new String[sharedUsers.size()];
-			int index = 0;
-			for (User user : sharedUsers)
-			{
-				userIds[index++] = user.getUserId().toString();
-			}
-			upManager.removeOwnerForProtectionElement(peObjId, userIds);
+			String[] userIds = new String[0];
+			upManager.assignOwners(protectionElement.getProtectionElementId().toString(), userIds);
+			upManager.modifyProtectionElement(protectionElement);
 		}
 	}
 }
