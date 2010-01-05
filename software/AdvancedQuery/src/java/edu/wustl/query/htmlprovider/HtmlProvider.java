@@ -275,11 +275,40 @@ public class HtmlProvider
 	{
 		IParameter<?> parameter=null;
 		attributeDetails.setParameterList(parameterList);
+		boolean isPresentInMap = isAttributePresentInMap();
+		setIsParameterized(parameterList, isPresentInMap);
+		if (forPage!=null && forPage.equalsIgnoreCase(AQConstants.EXECUTE_QUERY_PAGE) && isPresentInMap)
+		{
+			parameter = HtmlUtility.isParameterized(attributeDetails.getAttributeNameConditionMap().
+					get(attributeDetails.getAttrName()),parameterList);
+			attributeDetails.setParameter(parameter);
+			attributeDetails.setParameterizedCondition(
+					attributeDetails.getAttributeNameConditionMap().
+					containsKey(attributeDetails.getAttrName())&& parameter!=null);
+		}
+	}
+
+	/**
+	 * @return isPresentInMap
+	 */
+	private boolean isAttributePresentInMap()
+	{
 		boolean isPresentInMap =
 				attributeDetails.getAttributeNameConditionMap()!=null &&
 				attributeDetails.getAttributeNameConditionMap().
 								get(attributeDetails.getAttrName())!=null;
-		if (forPage!=null && forPage.equalsIgnoreCase(AQConstants.EXECUTE_QUERY_PAGE) && isPresentInMap)
+		return isPresentInMap;
+	}
+
+	/**
+	 * @param parameterList parameterList
+	 * @param isPresentInMap isPresentInMap
+	 */
+	private void setIsParameterized(List<IParameter<?>> parameterList,
+			boolean isPresentInMap)
+	{
+		IParameter<?> parameter;
+		if(isPresentInMap)
 		{
 			parameter = HtmlUtility.isParameterized(attributeDetails.getAttributeNameConditionMap().
 					get(attributeDetails.getAttrName()),parameterList);
@@ -681,7 +710,8 @@ public class HtmlProvider
 		String name = Utility.parseClassName(entity.getName());
 		String componentId = generateComponentName(attribute);
 		generatedHTML.append(getHtmlForPage(dagNodeId,componentId,name));
-		GenerateHtml.getDateFormat(generatedHTML, false, attribute,attributeDetails.isParameterizedCondition());
+		GenerateHtml.getDateFormat(generatedHTML, false, attribute,
+				attributeDetails.isParameterizedCondition());
 		if ((forPage.equalsIgnoreCase(AQConstants.EXECUTE_QUERY_PAGE)
 		 	&& attributeDetails.isParameterizedCondition())
 		 	|| !forPage.equalsIgnoreCase(AQConstants.EXECUTE_QUERY_PAGE))
@@ -732,19 +762,38 @@ public class HtmlProvider
 		StringBuffer generatedHTML = new StringBuffer(AQConstants.MAX_SIZE);
 		String attrLabel = Utility.getDisplayLabel(attributeDetails.getAttrName());
 		String html="";
+		boolean isChecked=false;
+		String isDisabled = "disabled='true'";
+		if(attributeDetails.isParameterizedCondition())
+		{
+			isChecked=true;
+			isDisabled="";
+		}
 		if (forPage.equalsIgnoreCase(AQConstants.SAVE_QUERY_PAGE))
 		{
-		//	formName = "saveQueryForm";
-			html = " " + GenerateHtml.generateCheckBox(componentId, false)
+			html = " " + GenerateHtml.generateCheckBox(componentId, isChecked)
 			+ "<td valign='top' align='left' class='standardTextQuery'>"
 			+"<label for='" + componentId
 			+ "_displayName' title='" + dagNodeId + name + "." + attrLabel + "'>"
 			+ "<input type=\"textbox\"  class=\"formFieldSized20\"  name='"
 			+ componentId + "_displayName'     id='" + componentId
 			+ "_displayName' value='" + dagNodeId + name + "." + attrLabel
-			+ "' disabled='true'> " + "</label></td>";
+			+ "' "+isDisabled+"> " + "</label></td>";
 			generatedHTML.append(html);
 		}
+		getHtmlForSaveQueryPage(generatedHTML, attrLabel);
+		getHtmlForExecuteQueryPage(generatedHTML);
+		return generatedHTML;
+	}
+
+	/**
+	 * @param generatedHTML generatedHTML
+	 * @param attrLabel label
+	 */
+	private void getHtmlForSaveQueryPage(StringBuffer generatedHTML,
+			String attrLabel)
+	{
+		String html;
 		if (!forPage.equalsIgnoreCase(AQConstants.EXECUTE_QUERY_PAGE))
 		{
 			html="<td valign='top' align='left' "
@@ -753,17 +802,23 @@ public class HtmlProvider
 			generatedHTML
 					.append(html);
 		}
+	}
+
+	/**
+	 * @param generatedHTML generatedHTML
+	 */
+	private void getHtmlForExecuteQueryPage(StringBuffer generatedHTML)
+	{
+		String html;
 		if (forPage.equalsIgnoreCase(AQConstants.EXECUTE_QUERY_PAGE)
 				&& attributeDetails.isParameterizedCondition())
 		{
-		//	formName = "saveQueryForm";
 			html="<td valign='top' align='left' class='standardTextQuery' "
 				+ "nowrap='nowrap' width=\"15%\">"
 				+ attributeDetails.getParameter().getName() + " ";
 			generatedHTML
 					.append(html);
 		}
-		return generatedHTML;
 	}
 	/**
 	 * This method generates the HTML for Save Query section. This internally
@@ -788,7 +843,6 @@ public class HtmlProvider
 		if (expressionMap.isEmpty())
 		{
 			generatedHTML.append("No record found.");
-			//return generatedHTML.toString();
 		}
 		else
 		{

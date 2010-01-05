@@ -643,12 +643,12 @@ public class GenerateHtml
 		String select = "";
 		if(isSelected)
 		{
-			select="select";
+			select="CHECKED";
 		}
 		String tag = "<td class=\"standardTextQuery\"  width=\"5\" valign=\"top\">"
 				+ "<input type=\"checkbox\"   id='"
 				+ componentId
-				+ "_checkbox'"
+				+ "_checkbox' "
 				+ select
 				+ "  onClick=\"enableDisplayField(this.form,'" + componentId + "')\"></td>";
 		return tag;
