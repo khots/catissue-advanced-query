@@ -100,10 +100,21 @@ public class QueryAdvanceSearchForm extends ActionForm
      */
     String itemNodeId = "";
 
-    //Variables necessary for Configuration of Advance Search Results 
-    
+    //Variables necessary for Configuration of Advance Search Results.
+
+    /**
+     * Table name.
+     */
      private String tableName;
+
+     /**
+      * Selected column names.
+      */
      private String []selectedColumnNames;
+
+     /**
+      * Column names.
+      */
      private String []columnNames;
 
     /**
