@@ -22,7 +22,7 @@ import edu.wustl.query.util.global.AQConstants;
 
 /**
  * Action Handler for Deleting Saved query from database
- * @author deepti_shelar 
+ * @author deepti_shelar
  */
 public class DeleteQueryAction extends Action
 {
@@ -73,7 +73,7 @@ public class DeleteQueryAction extends Action
 	/**
 	 * Deletes the query
 	 * @param request request object
-	 * @param queryIdStr query id 
+	 * @param queryIdStr query id
 	 * @param object query object
 	 * @return target to be forwarded
 	 * @throws BizLogicException exception object
@@ -87,8 +87,7 @@ public class DeleteQueryAction extends Action
 		String queryName = query.getName();
 		bizLogic.delete(query, AQConstants.HIBERNATE_DAO);
 		String target = AQConstants.SUCCESS;
-		String message = queryName + " : " + 
-		ApplicationProperties.getValue("query.deletedSuccessfully.message");
+		String message = queryName;
 		setActionError(request,message);
 		return target;
 	}
@@ -101,7 +100,7 @@ public class DeleteQueryAction extends Action
 	private void setActionError(HttpServletRequest request, String errorMessage)
 	{
 		ActionErrors errors = new ActionErrors();
-		ActionError error = new ActionError("errors.item", errorMessage);
+		ActionError error = new ActionError("query.deletedSuccessfully.message", errorMessage);
 		errors.add(ActionErrors.GLOBAL_ERROR, error);
 		saveErrors(request, errors);
 	}

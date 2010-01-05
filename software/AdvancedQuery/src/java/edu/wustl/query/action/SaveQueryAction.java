@@ -127,9 +127,10 @@ public class SaveQueryAction extends BaseAction
 			QueryModuleSqlUtil.updateAuditQueryDetails
 			(AQConstants.QUERY_ID, queryId.toString(), auditEventId);
 			target = AQConstants.SUCCESS;
-			String errorMessage = ApplicationProperties.getValue("query.saved.success") + " "+
-			parameterizedQuery.getName();
-			setActionError(request,errorMessage);
+			ActionErrors errors = new ActionErrors();
+			ActionError error = new ActionError("query.saved.success", parameterizedQuery.getName());
+			errors.add(ActionErrors.GLOBAL_ERROR, error);
+			saveErrors(request, errors);
 			request.setAttribute(AQConstants.QUERY_SAVED, "true");
 			session.setAttribute(AQConstants.QUERY_OBJECT, parameterizedQuery);
 		}
