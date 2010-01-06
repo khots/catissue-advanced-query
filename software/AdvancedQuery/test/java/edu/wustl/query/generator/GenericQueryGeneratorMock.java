@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.Attribute;
@@ -15,21 +16,33 @@ import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.cab2b.common.beans.MatchedClass;
 import edu.wustl.cab2b.common.beans.MatchedClassEntry;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.querysuite.exceptions.CyclicException;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
+import edu.wustl.common.querysuite.queryobject.ArithmeticOperator;
 import edu.wustl.common.querysuite.queryobject.ICondition;
+import edu.wustl.common.querysuite.queryobject.IConnector;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
+import edu.wustl.common.querysuite.queryobject.ICustomFormula;
+import edu.wustl.common.querysuite.queryobject.IDateOffsetLiteral;
 import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.common.querysuite.queryobject.IExpressionAttribute;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.IRule;
+import edu.wustl.common.querysuite.queryobject.ITerm;
+import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
+import edu.wustl.common.querysuite.queryobject.TimeInterval;
 import edu.wustl.common.querysuite.queryobject.impl.Expression;
 import edu.wustl.query.util.querysuite.EntityCacheFactory;
 
@@ -42,7 +55,7 @@ import edu.wustl.query.util.querysuite.EntityCacheFactory;
  */
 public class GenericQueryGeneratorMock extends EntityManager
 {
-
+	private static GenericQueryGeneratorMock entityManager = new GenericQueryGeneratorMock();
 	private static DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 	/**
@@ -365,4 +378,112 @@ public class GenericQueryGeneratorMock extends EntityManager
 		}
 		return entity;
 	}
+
+    /**
+     * <pre>
+     * Participant (P)
+     *      CSR (C)
+     *      Temporal (C.registrationDate - P.birthDate &gt; 30 minutes)
+     * </pre>
+     *
+     * @return
+     */
+    public static IQuery createTemporalQueryParticipantCPR()
+    {
+        try
+        {
+            IQuery query = QueryObjectFactory.createQuery();
+            IConstraints constraints = query.getConstraints();
+            EntityCache cache = EntityCacheFactory.getInstance();
+            EntityInterface participantEntity = GenericQueryGeneratorMock.createEntity("Participant");
+            participantEntity = getEntity(cache,participantEntity);
+            IQueryEntity participantConstraintEntity = QueryObjectFactory.createQueryEntity(participantEntity);
+            IExpression participant = constraints.addExpression(participantConstraintEntity);
+
+            EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
+            csrEntity = getEntity(cache,csrEntity);
+            IQueryEntity csrConstraintEntity = QueryObjectFactory.createQueryEntity(csrEntity);
+            IExpression csr = constraints
+                    .addExpression(csrConstraintEntity);
+
+            participant.addOperand(csr);
+
+            AssociationInterface partCPR = getAssociationFrom(entityManager.getAssociation(
+                    "edu.wustl.clinportal.domain.Participant", "participant"),
+                    "edu.wustl.clinportal.domain.ClinicalStudyRegistration");
+
+            constraints.getJoinGraph().putAssociation(participant, csr,
+                    QueryObjectFactory.createIntraModelAssociation(partCPR));
+
+            IExpressionAttribute birthDate = QueryObjectFactory.createExpressionAttribute(
+                    participant, findAttribute(participantEntity,
+                            "birthDate"),false);
+            IExpressionAttribute registrationDate = QueryObjectFactory.createExpressionAttribute(csr,
+                    findAttribute(csrEntity,
+                            "registrationDate"),false);
+
+            ITerm lhs = QueryObjectFactory.createTerm();
+            lhs.addOperand(registrationDate);
+            lhs.addOperand(conn(ArithmeticOperator.Minus), birthDate);
+
+            IDateOffsetLiteral offSet = QueryObjectFactory.createDateOffsetLiteral("30", TimeInterval.Minute);
+            ITerm rhs = QueryObjectFactory.createTerm();
+            rhs.addOperand(offSet);
+
+            ICustomFormula formula = QueryObjectFactory.createCustomFormula();
+            participant.addOperand(getAndConnector(), formula);
+            formula.setLhs(lhs);
+            formula.addRhs(rhs);
+            formula.setOperator(RelationalOperator.GreaterThan);
+
+            participant.setInView(true);
+            return query;
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+			e.printStackTrace();
+		}
+        catch (DynamicExtensionsApplicationException e)
+        {
+			e.printStackTrace();
+		}
+        catch (CyclicException e)
+        {
+			e.printStackTrace();
+		}
+        return null;
+    }
+
+    public static AssociationInterface getAssociationFrom(Collection<AssociationInterface> associations,
+            String targetEntityName)
+    {
+        for (Iterator<AssociationInterface> iter = associations.iterator(); iter.hasNext();)
+        {
+            AssociationInterface theAssociation = iter.next();
+            if (theAssociation == null || theAssociation.getTargetEntity() == null)
+            {
+                System.out.println("FFOOOOO");
+            }
+            if (theAssociation.getTargetEntity().getName().equals(targetEntityName))
+            {
+                return theAssociation;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * To instantiate Logical connector for AND operator.
+     *
+     * @return reference to logical connector containing 'AND' logical operator.
+     */
+    private static IConnector<LogicalOperator> getAndConnector()
+    {
+        return QueryObjectFactory.createLogicalConnector(LogicalOperator.And);
+    }
+
+    private static IConnector<ArithmeticOperator> conn(ArithmeticOperator operator)
+    {
+        return QueryObjectFactory.createArithmeticConnector(operator);
+    }
 }
