@@ -333,7 +333,7 @@ public class HtmlProvider
 		boolean isBold = false;
 		if(attributeChecked)
 		{
-			isBold = isAttributeBold(attrName.toLowerCase());
+			isBold = isAttributeBold();
 		}
 		if(!isBold && permissibleValuesChecked)
 		{
@@ -355,10 +355,7 @@ public class HtmlProvider
 		{
 			for (int i = 0; i < permissibleValuesList.size(); i++)
 			{
-				PermissibleValueInterface perValue =
-					(PermissibleValueInterface) permissibleValuesList.get(i);
-				String value = perValue.getValueAsObject().toString();
-				if (isAttributeBold(value.toLowerCase()))
+				if (isAttributeBold())
 				{
 					isBold = true;
 					break;
@@ -369,10 +366,9 @@ public class HtmlProvider
 	}
 
 	/**
-	 * @param attrName name of attribute
 	 * @return boolean
 	 */
-	private boolean isAttributeBold(String attrName)
+	private boolean isAttributeBold()
 	{
 		return false;
 	}
@@ -431,7 +427,7 @@ public class HtmlProvider
 		String value = perValue.getValueAsObject().toString();
 		if (editLimitPermissibleValues != null
 				&& editLimitPermissibleValues.contains(value)
-				|| isAttributeBold(value.toLowerCase()))
+				|| isAttributeBold())
 		{
 			html.append("\n<option class=\"PermissibleValuesQuery\" title=\"" + value
 					+ "\" value=\"" + value + "\" SELECTED>" + value + "</option>");
