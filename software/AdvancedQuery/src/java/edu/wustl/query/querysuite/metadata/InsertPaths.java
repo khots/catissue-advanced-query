@@ -480,7 +480,7 @@ public class InsertPaths
 		for (Long id : idList)
 		{
 			data.add(id);
-			buffer.append(',').append("?");
+			buffer.append(',').append('?');
 		}
 		buffer.append(')');
 		if(buffer.charAt(1) == ',')
