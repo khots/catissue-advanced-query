@@ -329,7 +329,7 @@ public class FromBuilder
                 .getTgtForiegnKeyColumnProperties().getName());
 
                 res.append(constraintProperty.getName())
-                .append(" ").append(middleTabAlias).append(JOIN_ON).append(joinCond);
+                .append(' ').append(middleTabAlias).append(JOIN_ON).append(joinCond);
             }
         }
 		return res.toString();

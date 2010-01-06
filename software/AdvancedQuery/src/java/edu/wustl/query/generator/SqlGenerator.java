@@ -1184,8 +1184,8 @@ public class SqlGenerator implements ISqlGenerator
 		    date = Utility.parseDate(tempValue);
 		    Calendar calendar = Calendar.getInstance();
 		    calendar.setTime(date);
-		    value.append((calendar.get(Calendar.MONTH) + 1)).append("-")
-		    .append(calendar.get(Calendar.DAY_OF_MONTH)).append("-")
+		    value.append((calendar.get(Calendar.MONTH) + 1)).append('-')
+		    .append(calendar.get(Calendar.DAY_OF_MONTH)).append('-')
 		    .append(calendar.get(Calendar.YEAR));
 		  //  CommonServiceLocator.getInstance().
 		    String strToDateFunction = setStrToDateFunction();
@@ -1480,7 +1480,7 @@ public class SqlGenerator implements ISqlGenerator
             String termString = "(" + getTermString(term.getTerm()) + ")";
             termString = modifyForTimeInterval(termString, term.getTimeInterval());
             String columnName = COLUMN_NAME + selectIndex++;
-            selectClause.append(termString).append(" ").append(columnName).append(SELECT_COMMA);
+            selectClause.append(termString).append(' ').append(columnName).append(SELECT_COMMA);
             outputTermsColumns.put(columnName, term);
         }
         return removeLastComma(selectClause.toString());
@@ -1496,7 +1496,7 @@ public class SqlGenerator implements ISqlGenerator
     	StringBuffer termString = new StringBuffer(tempString);
         if (timeInterval != null)
         {
-	        termString.append(tempString).append("/").append(timeInterval.numSeconds());
+	        termString.append(tempString).append('/').append(timeInterval.numSeconds());
 	        String term = termString.toString();
 	        termString = new StringBuffer();
 	        String appName = CommonServiceLocator.getInstance().getAppName();
@@ -1507,7 +1507,7 @@ public class SqlGenerator implements ISqlGenerator
 	        }
 	        else
 	        {
-	        	termString.append("ROUND(").append(term).append(")");
+	        	termString.append("ROUND(").append(term).append(')');
 	        }
         }
         return termString.toString();
@@ -1637,7 +1637,7 @@ public class SqlGenerator implements ISqlGenerator
 		StringBuffer finalVal = new StringBuffer(finalValue);
 		if(value.contains("%"))
 		{
-			finalVal.append(" ").append(escapeSeqOracle);
+			finalVal.append(' ').append(escapeSeqOracle);
 		}
 		tempValue = finalVal.toString();
 		return tempValue;
@@ -1654,15 +1654,15 @@ public class SqlGenerator implements ISqlGenerator
     	StringBuffer tempValue = new StringBuffer(value);
 		if (operator.equals(RelationalOperator.Contains))
 		{
-			tempValue.append("%").append(value).append("%");
+			tempValue.append('%').append(value).append('%');
 		}
 		else if (operator.equals(RelationalOperator.StartsWith))
 		{
-			tempValue.append(value).append("%");
+			tempValue.append(value).append('%');
 		}
 		else if (operator.equals(RelationalOperator.EndsWith))
 		{
-			tempValue.append("%").append(value).append("");
+			tempValue.append('%').append(value).append("");
 		}
 		data.add(tempValue.toString());
 		tempValue=new StringBuffer("?");
