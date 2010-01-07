@@ -3,8 +3,6 @@ package edu.wustl.query.generator;
 import static edu.wustl.query.generator.SqlKeyWords.WHERE;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,9 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -31,7 +26,6 @@ import edu.common.dynamicextensions.domaininterface.FloatTypeInformationInterfac
 import edu.common.dynamicextensions.domaininterface.IntegerTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.LongTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
-import edu.wustl.cab2b.common.queryengine.querybuilders.CategoryPreprocessor;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
@@ -46,7 +40,6 @@ import edu.wustl.common.querysuite.queryobject.IExpressionOperand;
 import edu.wustl.common.querysuite.queryobject.IOutputEntity;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
-import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.IRule;
 import edu.wustl.common.querysuite.queryobject.ITerm;
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
@@ -232,8 +225,6 @@ public class SqlGenerator implements ISqlGenerator
         IQuery queryClone = cloneQuery(query);
         constraints = queryClone.getConstraints();
 
-        processExpressionsWithCategories(queryClone);
-
         this.joinGraph = (JoinGraph) constraints.getJoinGraph();
         IExpression rootExpression = constraints.getRootExpression();
 
@@ -298,74 +289,6 @@ public class SqlGenerator implements ISqlGenerator
         String wherePart = getWherePartSQL(rootExpression);
         wherePart = WHERE + wherePart;
         return wherePart;
-    }
-
-    /**
-     * To handle Expressions constrained on Categories. If Query contains an
-     * Expression having Constraint Entity as Category, then that Expression is
-     * expanded in such a way that it will look as if it is constrained on
-     * Classes without changing Query criteria.
-     * @param query query
-     * @throws SqlException if there is any error in processing category.
-     */
-    private void processExpressionsWithCategories(IQuery query) throws SqlException
-    {
-        if (containsCategrory())
-        {
-            Connection connection = null;
-            try
-            {
-                // This is temporary work around, This connection parameter will be removed in future.
-                InitialContext context = new InitialContext();
-                DataSource dataSource = (DataSource) context.lookup("java:/catissuecore");
-                connection = dataSource.getConnection();
-                 // if the root entity itself is category, then get the root
-                 //entity of the category & pass it to the processCategory() method.
-                //checkForCategory(rootDEEntity, isCategory);
-                new CategoryPreprocessor().processCategories(query);
-            }
-            catch (Exception e)
-            {
-                Logger.out.error(e.getMessage(), e);
-                throw new SqlException("Error in preprocessing category!!!!", e);
-            }
-            finally
-            {
-                if (connection != null) // Closing connection.
-                {
-                    try
-                    {
-                        connection.close();
-                    }
-                    catch (SQLException e)
-                    {
-                        Logger.out.error(e.getMessage(), e);
-                        throw new SqlException("Error in closing connection while preprocessing category!!!!", e);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * To check whether there is any Expression having Constraint Entity as category.
-     * @return true if there is any constraint put on category.
-     */
-    private boolean containsCategrory()
-    {
-    	boolean containsCategory = false;
-        Set<IQueryEntity> queryEntities = constraints.getQueryEntities();
-        for (IQueryEntity entity : queryEntities)
-        {
-            boolean isCategory = edu.wustl.cab2b.common.util.Utility.isCategory
-            (entity.getDynamicExtensionsEntity());
-            if (isCategory)
-            {
-              containsCategory = true;
-              break;
-            }
-        }
-        return containsCategory;
     }
 
     /**
