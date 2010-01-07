@@ -38,29 +38,26 @@ public class MysqlQueryExecutor extends AbstractQueryExecutor
 	}
 
 	/**
-	 * This method will 
+	 * This method will
 	 * - create statement object by executing SQL query, create scrollable resultset
 	 * - moves the cursor position to the startIndex, depending upon its value. if value of startIndex is -1, it will return all the query results.
 	 * - after getting required number of records, move cursor to last record & get the cursor position index.
 	 * - return the Results.
 	 * @return The reference to PagenatedResultData object, which will have pagenated data list & total no. of records that query can return.
-	 * @throws DAOException 
-	 * @throws SMException 
+	 * @throws DAOException
+	 * @throws SMException
 	 * @see edu.wustl.common.dao.queryExecutor.AbstractQueryExecutor#createStatemtentAndExecuteQuery()
 	 */
 	protected PagenatedResultData createStatemtentAndExecuteQuery(JDBCDAO jdbcDAO) throws SQLException, SMException, DAOException
 	{
-	
+
 		resultSet = jdbcDAO.getQueryResultSet(query);
 
-		if (getSublistOfResult)
+		if (getSublistOfResult && startIndex > 0)
 		{
-			if (startIndex > 0) // move cursor to the start index.
-			{
-				resultSet.absolute(startIndex);
-			}
+			resultSet.absolute(startIndex);
 		}
-		List list = getListFromResultSet(jdbcDAO); // get the resulset.
+		List list = getListFromResultSet(jdbcDAO); // get the result set.
 
 		// find the total number of records.
 		int totalRecords;
@@ -76,5 +73,5 @@ public class MysqlQueryExecutor extends AbstractQueryExecutor
 		return new PagenatedResultData(list, totalRecords);
 	}
 
-	
+
 }

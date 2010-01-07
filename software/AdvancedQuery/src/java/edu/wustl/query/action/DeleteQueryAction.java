@@ -16,7 +16,6 @@ import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
-import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.util.global.AQConstants;
 

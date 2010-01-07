@@ -15,7 +15,7 @@ import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.query.util.global.AQConstants;
 /**
- *This class has utility methods required to generate Html for Add Limits in Query.
+ *This class has utility methods required to generate HTML for Add Limits in Query.
  */
 
 public class HtmlUtility
@@ -23,15 +23,12 @@ public class HtmlUtility
 	/**
 	 * Method gets enumerated condition list.
 	 * @param dataType dataType of attribute
-	 * @param parseFile xml file which contains operator list
+	 * @param parseFile XML file which contains operator list
 	 * @return operator list
 	 */
 	private static List<String> getEnumConditionList(String dataType,ParseXMLFile parseFile)
 	{
 		List<String> operatorsList = new ArrayList<String>();
-		/*if (dataType.equalsIgnoreCase("long") || dataType.equalsIgnoreCase("double")
-				|| dataType.equalsIgnoreCase("short")
-				|| dataType.equalsIgnoreCase("integer") || dataType.equalsIgnoreCase("float"))*/
 		if(isNumber(dataType.toLowerCase()))
 		{
 			operatorsList = parseFile.getEnumConditionList(AQConstants.DATATYPE_NUMBER);
@@ -63,7 +60,7 @@ public class HtmlUtility
 	/**
 	 * Method gets non-enumerated condition list.
 	 * @param dataType data type of attribute
-	 * @param parseFile xml file which contains operator list
+	 * @param parseFile XML file which contains operator list
 	 * @return operator list
 	 */
 	private static List<String> getNonEnumConditionList(String dataType,ParseXMLFile parseFile)
@@ -83,7 +80,7 @@ public class HtmlUtility
 	/**
 	 * Returns list of possible non-enumerated/enumerated operators for attribute.
 	 * @param attributeInterface AttributeInterface
-	 * @param parseFile xml file which contains operator list
+	 * @param parseFile XML file which contains operator list
 	 * @return List listOf operators.
 	 */
 	public static List<String> getConditionsList(AttributeInterface attributeInterface,ParseXMLFile parseFile)
@@ -107,33 +104,15 @@ public class HtmlUtility
 			strObj = new ArrayList<String>(operatorsList);
 			operatorsList = new ArrayList<String>();
 			Collections.sort(strObj);
-			//operatorsList = getSortedOperatorList(strObj);
 		}
 		return strObj;
 	}
 
 	/**
-	 *
-	 * @param strObj List of sorted operators
-	 * @return list of operators in sorted order
-	 *//*
-	private static List<String> getSortedOperatorList(List<String> strObj)
-	{
-		List<String> operatorsList = new ArrayList<String>();
-		for (int i = 0; i < strObj.size(); i++)
-		{
-			if (strObj.get(i) != null)
-			{
-				operatorsList.add((String) strObj.get(i));
-			}
-		}
-		return operatorsList;
-	}*/
-	/**
-	 * Returns the map of name of the attribute and condition obj as its value.
+	 * Returns the map of name of the attribute and condition object as its value.
 	 * @param conditions
 	 *            list of conditions user had applied in case of edit limits
-	 * @return Map name of the attribute and condition obj
+	 * @return Map name of the attribute and condition object
 	 */
 	public static Map<String, ICondition> getMapOfConditions(List<ICondition> conditions)
 	{
@@ -167,50 +146,11 @@ public class HtmlUtility
 			while (permissibleValueInterface.hasNext())
 			{
 				PermissibleValue permValue = (PermissibleValue) permissibleValueInterface.next();
-				//getPermissibleValue(permissibleValues, permValue);
 				permissibleValues.add(permValue);
 			}
 		}
 		return permissibleValues;
 	}
-
-	/*private static void getPermissibleValue(List<PermissibleValueInterface> permissibleValues,
-			PermissibleValue permValue)
-	{
-		if (permValue instanceof StringValueInterface)
-		{
-			permissibleValues.add(((StringValueInterface) permValue));
-		}
-		else if (permValue instanceof ShortValueInterface)
-		{
-			permissibleValues.add(((ShortValueInterface) permValue));
-		}
-		else if (permValue instanceof LongValueInterface)
-		{
-			permissibleValues.add(((LongValueInterface) permValue));
-		}
-		else if (permValue instanceof DateValueInterface)
-		{
-			permissibleValues.add(((DateValueInterface) permValue));
-		}
-		else if (permValue instanceof BooleanValueInterface)
-		{
-			permissibleValues.add(((BooleanValueInterface) permValue));
-		}
-		else if (permValue instanceof IntegerValueInterface)
-		{
-			permissibleValues.add(((IntegerValueInterface) permValue));
-		}
-		else if (permValue instanceof DoubleValueInterface)
-		{
-			permissibleValues.add((DoubleValueInterface) permValue);
-		}
-		else if (permValue instanceof FloatValueInterface)
-		{
-			permissibleValues.add(((FloatValueInterface) permValue));
-		}
-		permissibleValues.add(permValue);
-	}*/
 
 	/**
 	 * @param condition ICondition
@@ -232,7 +172,6 @@ public class HtmlUtility
 	                	tempParameter = parameter;
 	                	break;
 	                }
-	                    //return parameter;
 	             }
 	        }
 		}

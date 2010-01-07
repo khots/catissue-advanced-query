@@ -86,7 +86,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	}
 	/**
 	 * Executes SQL through JDBC and returns the list of records.
-	 * @param sql sql to be fired
+	 * @param sql SQL to be fired
 	 * @return list list<string>
 	 * @throws DAOException DAOException
 	 * @throws ClassNotFoundException ClassNotFoundException
@@ -699,7 +699,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	        Map<IExpression, Collection<ICondition>> allSelectedConditions = QueryUtility
 	                .getAllSelectedConditions(query);
 	        Collection<Collection<ICondition>> values = allSelectedConditions.values();
-	        Boolean trueValue = Boolean.valueOf(true);
+	        Boolean trueValue = Boolean.TRUE;
 	        for (Collection<ICondition> conditions : values)
 	        {
 	            for (ICondition condition : conditions)

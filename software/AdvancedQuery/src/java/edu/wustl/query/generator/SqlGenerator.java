@@ -31,17 +31,12 @@ import edu.common.dynamicextensions.domaininterface.FloatTypeInformationInterfac
 import edu.common.dynamicextensions.domaininterface.IntegerTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.LongTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManager;
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.cab2b.common.queryengine.querybuilders.CategoryPreprocessor;
-import edu.wustl.cab2b.server.category.CategoryOperations;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
-import edu.wustl.common.querysuite.metadata.category.Category;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
@@ -836,14 +831,12 @@ public class SqlGenerator implements ISqlGenerator
 			AttributeTypeInformationInterface dataType,
 			RelationalOperator operator) throws SqlException
 	{
-		if (dataType instanceof BooleanAttributeTypeInformation)
-        {
-            if (!(operator.equals(RelationalOperator.Equals) ||
+		if (dataType instanceof BooleanAttributeTypeInformation &&
+				!(operator.equals(RelationalOperator.Equals) ||
             	operator.equals(RelationalOperator.NotEquals)))
-            {
-                throw new SqlException("Incorrect operator found" +
-                " for Boolean datatype for condition:" + condition);
-            }
+        {
+             throw new SqlException("Incorrect operator found" +
+             " for Boolean datatype for condition:" + condition);
         }
 	}
 
@@ -857,14 +850,12 @@ public class SqlGenerator implements ISqlGenerator
 			AttributeTypeInformationInterface dataType,
 			RelationalOperator operator) throws SqlException
 	{
-		if (dataType instanceof StringTypeInformationInterface)
+		if (dataType instanceof StringTypeInformationInterface &&
+				!(operator.equals(RelationalOperator.Equals) ||
+	            operator.equals(RelationalOperator.NotEquals)))
         {
-            if (!(operator.equals(RelationalOperator.Equals) ||
-            operator.equals(RelationalOperator.NotEquals)))
-            {
-                throw new SqlException("Incorrect operator found " +
-                "for String datatype for condition:" + condition);
-            }
+              throw new SqlException("Incorrect operator found " +
+              "for String datatype for condition:" + condition);
         }
 	}
 

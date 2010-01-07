@@ -3649,7 +3649,7 @@ public class DAGPanel
 								int noOfRhsOperands = rhs.numberOfOperands();
 								for (int k = 0; k < noOfRhsOperands; k++)
 								{
-									String expIdFromLhs = new String();
+									String expIdFromLhs = "";
 
 									String arithmeticRhsOp = rhs.getOperand(k).toString();
 									int index = arithmeticRhsOp.indexOf(':');
