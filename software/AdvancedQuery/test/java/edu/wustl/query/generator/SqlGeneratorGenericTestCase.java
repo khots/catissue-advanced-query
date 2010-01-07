@@ -125,6 +125,21 @@ public class SqlGeneratorGenericTestCase extends TestCase
         }
     }
 
+    public void testInheritanceQueryWithAssociation1()
+    {
+        IQuery query = GenericQueryGeneratorMock.createInheritanceQueryWithAssociation1();
+        try
+        {
+            generator.generateSQL(query);
+            assertFalse("It should throw null pointer exception....",true);
+        }
+        catch (Exception e)
+        {
+        	e.printStackTrace();
+            assertTrue("No tagged values present for the given association....",true);
+        }
+    }
+
 	/**
 	 * To test all Integer Operator Conditions.
 	 *
@@ -252,6 +267,20 @@ public class SqlGeneratorGenericTestCase extends TestCase
 		}
 	}
 
+	public void testAllGetConditions()
+	{
+		try
+		{
+			generator.getAttributeColumnNameMap();
+			generator.getColumnValueBean();
+			generator.getRootOutputTreeNodeList();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
     private void assertEqualSql(String msg, String expectedSql, String sql)
     {
         /*

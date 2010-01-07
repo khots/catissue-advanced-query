@@ -28,6 +28,7 @@ import edu.wustl.cab2b.common.beans.MatchedClassEntry;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.querysuite.exceptions.CyclicException;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
+import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.queryobject.ArithmeticOperator;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IConnector;
@@ -36,6 +37,7 @@ import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IDateOffsetLiteral;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IExpressionAttribute;
+import edu.wustl.common.querysuite.queryobject.IJoinGraph;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.IRule;
@@ -485,5 +487,81 @@ public class GenericQueryGeneratorMock extends EntityManager
     private static IConnector<ArithmeticOperator> conn(ArithmeticOperator operator)
     {
         return QueryObjectFactory.createArithmeticConnector(operator);
+    }
+
+    /**
+     * TO create Query with Inherited Entity, where Parent Expression's Entity
+     * is Inherited Entity.
+     *
+     * <pre>
+     * 	MolecularSpecimen: type equals 'DNA'
+     * 		SCHAR: Tissue Site Equals &quot;PROSTATE GLAND&quot;
+     * </pre>
+     *
+     * @return reference to Query Object
+     */
+    public static IQuery createInheritanceQueryWithAssociation1()
+    {
+        IQuery query = null;
+        try
+        {
+            query = QueryObjectFactory.createQuery();;
+            IConstraints constraints = QueryObjectFactory.createConstraints();
+            query.setConstraints(constraints);
+            IJoinGraph joinGraph = constraints.getJoinGraph();
+
+            EntityCache cache = EntityCacheFactory.getInstance();
+            EntityInterface participantEntity = GenericQueryGeneratorMock.createEntity("Participant");
+            participantEntity = getEntity(cache, participantEntity);
+
+            // creating expression for Clinical Study.
+            IQueryEntity participantConstraintEntity = QueryObjectFactory.createQueryEntity(participantEntity);
+            IExpression participantExpression = constraints.addExpression(participantConstraintEntity);
+            List<String> participantExpressionRule1Values = new ArrayList<String>();
+            participantExpressionRule1Values.add("XYZ");
+            ICondition partExpressionRule1Condition1 = QueryObjectFactory.createCondition(findAttribute(
+                    participantEntity, "lastName"), RelationalOperator.Equals, participantExpressionRule1Values);
+            IRule csExpressionRule1 = QueryObjectFactory.createRule(null);
+            csExpressionRule1.addCondition(partExpressionRule1Condition1);
+            participantExpression.addOperand(csExpressionRule1);
+
+
+            EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
+            csrEntity = getEntity(cache, csrEntity);
+
+            // creating CSR Expression under first CS
+            // Expression.
+            IQueryEntity csrConstraintEntity = QueryObjectFactory
+                    .createQueryEntity(csrEntity);
+            IExpression csrExpression1 = constraints
+                    .addExpression(csrConstraintEntity);
+
+            participantExpression.addOperand(getAndConnector(), csrExpression1);
+            AssociationInterface cSAndCSRAssociation = getAssociationFrom(entityManager
+                    .getAssociation("edu.wustl.clinportal.domain.Participant", ""),
+                    "edu.wustl.clinportal.domain.ClinicalStudyRegistration");
+            IIntraModelAssociation iCSAndCSRAssociation = QueryObjectFactory
+                    .createIntraModelAssociation(cSAndCSRAssociation);
+            joinGraph.putAssociation(participantExpression, csrExpression1
+                    , iCSAndCSRAssociation);
+
+            IRule csrExpression1Rule1 = QueryObjectFactory.createRule(null);
+            csrExpression1.addOperand(csrExpression1Rule1);
+
+            List<String> csrExpression1Rule1Values1 = new ArrayList<String>();
+            csrExpression1Rule1Values1.add("Active");
+            ICondition csrExpression1Rule1Condition1 = QueryObjectFactory.createCondition(
+                    findAttribute(csrEntity, "activityStatus"), RelationalOperator.Equals,
+                    csrExpression1Rule1Values1);
+            csrExpression1Rule1.addCondition(csrExpression1Rule1Condition1);
+
+            setAllExpressionInView(constraints);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        return query;
     }
 }

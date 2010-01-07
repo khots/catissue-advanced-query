@@ -205,4 +205,70 @@ public class OracleQueryGenerator extends SqlGeneratorGenericTestCase
 			fail("Unexpected Exception while testing String Conditions!!!");
 		}
 	}
+
+	/**
+	 * To test the Positive & Negative Test cases for Between Operator.
+	 *
+	 */
+	public void testBetweenOperator()
+	{
+		EntityInterface entity = GenericQueryGeneratorMock.createEntity("DummyEntity");
+		IExpression expression = GenericQueryGeneratorMock.createExpression(entity);
+		ICondition condition = GenericQueryGeneratorMock.createInCondition(entity, "string");
+
+		// Negative Test case, Using Between operator on String.
+		try
+		{
+			List<String> values = new ArrayList<String>();
+			values.add("str1");
+			values.add("str1");
+			condition.setValues(values);
+			RelationalOperator operator = RelationalOperator.Between;
+			condition.setRelationalOperator(operator);
+			generator.getSQL(condition, expression);
+			assertFalse("It should throw SQL exception....",true);
+		}
+		catch (Exception e)
+		{
+			assertTrue("Expected SqlException!!!, String operand can not have Between Operator in condition.",true);
+		}
+
+		// Negative Test case, Using Between operator on Boolean.
+		condition = GenericQueryGeneratorMock.createInCondition(entity, "boolean");
+		try
+		{
+			List<String> values = new ArrayList<String>();
+			values.add("true");
+			values.add("false");
+			condition.setValues(values);
+			RelationalOperator operator = RelationalOperator.Between;
+			condition.setRelationalOperator(operator);
+			generator.getSQL(condition, expression);
+			fail("Expected SqlException!!!, Boolean operand can not have Between Operator in condition.");
+		}
+		catch (Exception e)
+		{
+		}
+
+		// Negative Test case, Using Between operator with one value & more than 2 values.
+		condition = GenericQueryGeneratorMock.createInCondition(entity, "int");
+		try
+		{
+			List<String> values = new ArrayList<String>();
+			values.add("1");
+			condition.setValues(values);
+			RelationalOperator operator = RelationalOperator.Between;
+			condition.setRelationalOperator(operator);
+			generator.getSQL(condition, expression);
+			fail("Expected SqlException!!!, Two values required for Between Operator in condition.");
+
+			values.add("2");
+			values.add("3");
+			generator.getSQL(condition, expression);
+			fail("Expected SqlException!!!, Two values required for Between Operator in condition.");
+		}
+		catch (Exception e)
+		{
+		}
+	}
 }
