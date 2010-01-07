@@ -51,12 +51,6 @@ public interface ISqlGenerator
     Map<AttributeInterface, String> getAttributeColumnNameMap();
 
     /**
-     * @return boolean variable which determines if the query is
-     * on multiple entity groups.
-     */
-    boolean isQueryOnMultipleEntityGroups();
-
-    /**
      * @return the column value bean
      */
     LinkedList<ColumnValueBean> getColumnValueBean();

@@ -1281,7 +1281,7 @@ public class SqlGenerator implements ISqlGenerator
 
     /**
      * To create output tree for the given expression graph.
-     * @throws MultipleRootsException When there exists multiple roots in
+     * @throws MultipleRootsException When there exist multiple roots in
      * join graph.
      */
     private void createTree() throws MultipleRootsException
@@ -1527,36 +1527,6 @@ public class SqlGenerator implements ISqlGenerator
         return attrColNameMap;
     }
 
-    /**
-     * Checks if the query contains entities from multiple groups.
-     * @return <CODE>true</CODE> query contains entities from multiple groups,
-	 * <CODE>false</CODE> otherwise
-     */
-    public boolean isQueryOnMultipleEntityGroups()
-    {
-        boolean isQueryOnMultipleEntityGroups = false;
-
-        List<String> entityGroupList = new ArrayList<String>();
-        Set<IQueryEntity> queryEntityList = constraints.getQueryEntities();
-        for(IQueryEntity queryEntity : queryEntityList)
-        {
-            EntityInterface entityObject = queryEntity.getDynamicExtensionsEntity();
-            String entityGroupName = entityObject.getEntityGroup().getShortName();
-            if(entityGroupList.isEmpty())
-            {
-            	entityGroupList.add(entityGroupName);
-            }
-            else
-            {
-            	if(!entityGroupList.contains(entityGroupName))
-                {
-                    isQueryOnMultipleEntityGroups = true;
-                    break;
-                }
-            }
-        }
-        return isQueryOnMultipleEntityGroups;
-    }
     /**
      * This method replaces special characters with the escape sequences from the entered value.
      * @param tempValue entered by user.
