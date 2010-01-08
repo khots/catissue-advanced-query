@@ -1410,7 +1410,7 @@ public class SqlGenerator implements ISqlGenerator
     	StringBuffer termString = new StringBuffer(tempString);
         if (timeInterval != null)
         {
-	        termString.append(tempString).append('/').append(timeInterval.numSeconds());
+	        termString.append('/').append(timeInterval.numSeconds());
 	        String term = termString.toString();
 	        termString = new StringBuffer();
 	        String appName = CommonServiceLocator.getInstance().getAppName();
