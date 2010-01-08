@@ -6,56 +6,200 @@ import java.awt.Color;
 public class AQConstants
 {
 
-	//Shopping cart related
+	/**
+	 * Shopping cart related.
+	 */
+	/**
+	 * QUERY SHOPPING CART.
+	 */
 	public static final String QUERY_SHOPPING_CART = "queryShoppingCart";
+	/**
+	 * CHECK ALL ACROSS ALL PAGES.
+	 */
 	public static final String CHECK_ALL_ACROSS_ALL_PAGES = "isCheckAllAcrossAllChecked";
+	/**
+	 * SELECTED COLUMN METADATA.
+	 */
 	public static final String SELECTED_COLUMN_META_DATA = "selectedColumnMetaData";
+	/**
+	 * DELETE.
+	 */
 	public static final String DELETE = "delete";
-
+	/**
+	 * VALIDATION MESSAGE FOR ORDERING.
+	 */
 	public static final String VALIDATION_MESSAGE_FOR_ORDERING = "validationMessageForOrdering";
+	/**
+	 * PAGE OF QUERY MODULE.
+	 */
 	public static final String PAGEOF_QUERY_MODULE = "pageOfQueryModule";
+	/**
+	 * IS LIST EMPTY.
+	 */
 	public static final String IS_LIST_EMPTY = "isListEmpty";
+	/**
+	 * DELETE FROM SHOPPING CART.
+	 */
 	public static final String SHOPPING_CART_DELETE = "shoppingCartDelete";
+	/**
+	 * ADD TO SHOPPING CART.
+	 */
 	public static final String SHOPPING_CART_ADD = "shoppingCartAdd";
+	/**
+	 * PAGINATION DATA LIST.
+	 */
 	public static final String PAGINATION_DATA_LIST = "paginationDataList";
+	/**
+	 * LABEL TREE NODE.
+	 */
 	public static final String LABEL_TREE_NODE = "Label";
+	/**
+	 * HAS CONDITION ON IDENTIFIER FIELD.
+	 */
 	public static final String HAS_CONDITION_ON_IDENTIFIED_FIELD = "hasConditionOnIdentifiedField";
+	/**
+	 * NODE SEPARATOR.
+	 */
 	public static final String NODE_SEPARATOR = "::";
+	/**
+	 * UNDERSCORE.
+	 */
 	public static final String UNDERSCORE = "_";
+	/**
+	 * ADD TO ORDER LIST.
+	 */
 	public static final String ADD_TO_ORDER_LIST = "addToOrderList";
+	/**
+	 * REQUEST TO ORDER.
+	 */
 	public static final String REQUEST_TO_ORDER = "requestToOrder";
+	/**
+	 * BULK TRANSFERS.
+	 */
 	public static final String BULK_TRANSFERS = "bulkTransfers";
+	/**
+	 * BULK DISPOSALS.
+	 */
 	public static final String BULK_DISPOSALS = "bulkDisposals";
+	/**
+	 * OUTPUT TERM COLUMNS.
+	 */
 	public static final String OUTPUT_TERMS_COLUMNS = "outputTermsColumns";
+	/**
+	 * SUCCESS.
+	 */
 	public static final String SUCCESS = "success";
+	/**
+	 * ENTITY SEPARATOR.
+	 */
 	public static final String ENTITY_SEPARATOR = ";";
+	/**
+	 * ATTRIBUTE SEPARATOR.
+	 */
 	public static final String ATTRIBUTE_SEPARATOR = "|";
+	/**
+	 * KEY SEPARATOR.
+	 */
 	public static final String KEY_SEPARATOR = "*&*";
+	/**
+	 * KEY CODE.
+	 */
 	public static final String KEY_CODE = "key";
+	/**
+	 * EXPORT DATA LIST.
+	 */
 	public static final String EXPORT_DATA_LIST = "exportDataList";
+	/**
+	 * MAP OF ENTITY v/s IDENTIFIERS.
+	 */
 	public static final String ENTITY_IDS_MAP = "entityIdsMap";
+	/**
+	 * FINISH STRING.
+	 */
 	public static final String FINISH = "finish";
+	/**
+	 * QUERY RESULT OBJECT DATA MAP.
+	 */
 	public static final String QUERY_REASUL_OBJECT_DATA_MAP = "queryReasultObjectDataMap";
+	/**
+	 * DEFINE VIEW QUERY RESULT OBJECT DATA MAP.
+	 */
 	public static final String DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP = "defineViewQueryReasultObjectDataMap";
+	/**
+	 * CONTAINMENT ASSOCIATION.
+	 */
 	public static final String CONTAINTMENT_ASSOCIATION = "CONTAINTMENT";
+	/**
+	 * MAIN ENTITY MAP.
+	 */
 	public static final String MAIN_ENTITY_MAP = "mainEntityMap";
-
+	/**
+	 * NO MAIN OBJECT IN QUERY.
+	 */
 	public static final String NO_MAIN_OBJECT_IN_QUERY = "noMainObjectInQuery";
+	/**
+	 * QUERY ALREADY DELETED.
+	 */
 	public static final String QUERY_ALREADY_DELETED = "queryAlreadyDeleted";
+	/**
+	 * BACK.
+	 */
 	public static final String BACK = "back";
+	/**
+	 * RESTORE.
+	 */
 	public static final String RESTORE = "restore";
+	/**
+	 * SELECTED COLUMN NAME VALUE BEAN LIST.
+	 */
 	public static final String SELECTED_COLUMN_NAME_VALUE_BEAN_LIST = "selectedColumnNameValueBeanList";
+	/**
+	 * TREE DATA.
+	 */
 	public static final String TREE_DATA = "treeData";
+	/**
+	 * MAP OF ID v/s NODE.
+	 */
 	public static final String ID_NODES_MAP = "idNodesMap";
+	/**
+	 * DEFINE RESULTS VIEW.
+	 */
 	public static final String DEFINE_RESULTS_VIEW = "DefineResultsView";
+	/**
+	 * CURRENT PAGE.
+	 */
 	public static final String CURRENT_PAGE = "currentPage";
+	/**
+	 * ADD LIMITS.
+	 */
 	public static final String ADD_LIMITS = "AddLimits";
+	/**
+	 * QUERY INTERFACE IDENTIFIER.
+	 */
 	public static final int QUERY_INTERFACE_BIZLOGIC_ID = 67;
+	/**
+	 * SQL.
+	 */
 	public static final String SQL = "SQL";
+	/**
+	 * ID COLUMN ID.
+	 */
 	public static final String ID_COLUMN_ID = "ID_COLUMN_ID";
+	/**
+	 * IDENTIFIER.
+	 */
 	public static final String IDENTIFIER = "id";
+	/**
+	 * SAVE TREE NODE LIST.
+	 */
 	public static final String SAVE_TREE_NODE_LIST = "rootOutputTreeNodeList";
+	/**
+	 * ATTRIBUTE COLUMN NAME MAP.
+	 */
 	public static final String ATTRIBUTE_COLUMN_NAME_MAP = "attributeColumnNameMap";
+	/**
+	 * IS SAVED QUERY.
+	 */
 	public static final String IS_SAVED_QUERY = "isSavedQuery";
 	public static final String TREE_ROOTS = "treeRoots";
 	public static final String NO_OF_TREES = "noOfTrees";
