@@ -1169,10 +1169,6 @@ public class QueryCsmCacheManager
 
 		List tqColumnMetadataList = queryResultObjectDataBean
 		.getTqColumnMetadataList();
-		if (validator != null)
-		{
-			validator.hasPrivilegeToViewGlobalParticipant(null);
-		}
 		QueryCSMValidator queryCSMValidator = new QueryCSMValidator();
 		queryCSMValidator.hasPrivilegeToViewTemporalColumn(tqColumnMetadataList, aList, isAuthorizedUser);
 	}
