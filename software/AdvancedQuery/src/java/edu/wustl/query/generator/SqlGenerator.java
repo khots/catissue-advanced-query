@@ -1012,7 +1012,7 @@ public class SqlGenerator implements ISqlGenerator
         else if (dataType instanceof DateTypeInformationInterface) // for
         // data type date it will be enclosed in single quote.
         {
-        	tempValue = modifyValueForDate(tempValue);
+        	tempValue = modifyValueForDate(tempValue,condition);
         }
         else if (dataType instanceof BooleanTypeInformationInterface) // defining
         // value for boolean  data type.
@@ -1023,12 +1023,12 @@ public class SqlGenerator implements ISqlGenerator
         {
             if (!new Validator().isNumeric(tempValue))
             {
-                throw new SqlException("Non numeric value found in value part for condition : "+condition+"!!!");
+                throw new SqlException("Non numeric value found in value part!!!");
             }
         }
         else if (dataType instanceof DoubleTypeInformationInterface && !new Validator().isDouble(tempValue))
         {
-             throw new SqlException("Non numeric value found in value part for condition : "+condition+"!!!");
+             throw new SqlException("Non numeric value found in value part!!!");
         }
         else
         {
@@ -1049,14 +1049,14 @@ public class SqlGenerator implements ISqlGenerator
      */
 	private String modifyValueForBoolean(String value, ICondition condition) throws SqlException
 	{
-		String tempValue = value;
 		if (value == null || !(value.equalsIgnoreCase(edu.wustl.query.util.global.AQConstants.TRUE)
 				|| value.equalsIgnoreCase(edu.wustl.query.util.global.AQConstants.FALSE)))
 		{
-		    throw new SqlException("Incorrect value found in value part for" +
-		    " boolean operator for condition : "+condition+"!!!");
+			String entityName = Utility.parseClassName(condition.getAttribute().getEntity().getName());
+		    throw new SqlException("Please add a condition to attribute '"
+		    	+Utility.getDisplayLabel(condition.getAttribute().getName())+"' of "+entityName+".");
 		}
-		tempValue = setBooleanValue(value);
+		String tempValue = setBooleanValue(value);
 		data.add(tempValue);
 		tempValue="?";
 		return tempValue;
@@ -1068,7 +1068,7 @@ public class SqlGenerator implements ISqlGenerator
 	 */
 	private String setBooleanValue(String value)
 	{
-		String booleanValue = value;
+		String booleanValue;
 		if (value.equalsIgnoreCase(edu.wustl.query.util.global.AQConstants.TRUE))
 		{
 			booleanValue = "1";
@@ -1089,19 +1089,24 @@ public class SqlGenerator implements ISqlGenerator
      * @throws SqlException when there is problem with the values, for e.g.
      *             unable to parse date/integer/double etc.
      */
-	private String modifyValueForDate(String tempValue) throws SqlException
+	private String modifyValueForDate(String tempValue,ICondition condition) throws SqlException
 	{
 		StringBuffer value = new StringBuffer();
 		try
 		{
 		    Date date = new Date();
 		    date = Utility.parseDate(tempValue);
+		    if(date == null)
+		    {
+		    	String entityName = Utility.parseClassName(condition.getAttribute().getEntity().getName());
+		    	throw new SqlException("Please add a condition to attribute '"
+				    	+Utility.getDisplayLabel(condition.getAttribute().getName())+"' of "+entityName+".");
+		    }
 		    Calendar calendar = Calendar.getInstance();
 		    calendar.setTime(date);
 		    value.append((calendar.get(Calendar.MONTH) + 1)).append('-')
 		    .append(calendar.get(Calendar.DAY_OF_MONTH)).append('-')
 		    .append(calendar.get(Calendar.YEAR));
-		  //  CommonServiceLocator.getInstance().
 		    String strToDateFunction = setStrToDateFunction();
 		    setDatePattern();
 		    String appName = CommonServiceLocator.getInstance().getAppName();
@@ -1481,7 +1486,7 @@ public class SqlGenerator implements ISqlGenerator
 			RelationalOperator operator)
 	{
 		String tempValue = value;
-		String character = "";
+		String character;
 		if(tempValue.contains("%") )
 		{
 			character = "%";
