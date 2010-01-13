@@ -55,10 +55,9 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 	 * List of operators.
 	 */
 	public List<String> operatorList = new ArrayList<String>();
-	//private List<String> pathList  = new ArrayList<String>();
 
 	/**
-	 * List of dag paths.
+	 * List of DAG paths.
 	 */
 	public List<DAGPath> dagpathList = new ArrayList<DAGPath>();
 
@@ -139,7 +138,6 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 	public void setExpressionId(int expressionId)
 	{
 		this.expressionId = expressionId;
-
 	}
 
 	/**
@@ -157,8 +155,8 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 	public void setToolTip(IExpression expression)
 	{
 		StringBuffer toolTip = new StringBuffer(AQConstants.ONE_TWENTY_EIGHT);
-		IRule rule = null;
-		if (expression.containsRule())
+		IRule rule;
+		if (expression.containsRule() && expression.getOperand(0) instanceof IRule)
 		{
 			rule = (IRule) expression.getOperand(0);
 		}

@@ -236,28 +236,42 @@ public class QueryCSMUtil
 		EntityInterface deEntity =
 			queryEntity.getDynamicExtensionsEntity();
 		Long deEntityId = deEntity.getId();
-		ICondition idCondition = null;
-		if(String.valueOf(deEntityId).equals(mainEntityId))
+		if(String.valueOf(deEntityId).equals(mainEntityId) &&
+				expression.numberOfOperands() != 0 &&
+				expression.getOperand(0) instanceof Rule)
 		{
-			Rule rule = ((Rule) (expression.getOperand(0)));
-			for(ICondition condition : rule)
-			{
-				AttributeInterface conditionAttr =
-					condition.getAttribute();
-				String attrName = conditionAttr.getName();
-				if(attrName.equalsIgnoreCase("id"))
-				{
-					idCondition = processRuleForId
-					(oprVsLstOfVals, condition);
-				}
-				else
-				{
-					processRuleForOtherAttributes(strToCreateObject, condition,
-							conditionAttr, attrName);
-				}
-			}
-			rule.removeCondition(idCondition);
+			processRules(strToCreateObject, oprVsLstOfVals, expression);
 		}
+	}
+
+	/**
+	 * @param strToCreateObject strToCreateObject
+	 * @param oprVsLstOfVals Map
+	 * @param expression expression
+	 */
+	private static void processRules(StringBuffer strToCreateObject,
+			Map<RelationalOperator, List<String>> oprVsLstOfVals,
+			IExpression expression)
+	{
+		ICondition idCondition = null;
+		Rule rule = ((Rule) (expression.getOperand(0)));
+		for(ICondition condition : rule)
+		{
+			AttributeInterface conditionAttr =
+				condition.getAttribute();
+			String attrName = conditionAttr.getName();
+			if(attrName.equalsIgnoreCase("id"))
+			{
+				idCondition = processRuleForId
+				(oprVsLstOfVals, condition);
+			}
+			else
+			{
+				processRuleForOtherAttributes(strToCreateObject, condition,
+						conditionAttr, attrName);
+			}
+		}
+		rule.removeCondition(idCondition);
 	}
 
 	/**
@@ -448,16 +462,16 @@ public class QueryCSMUtil
 	private static List<EntityInterface> populateMainEntityList(
 			List<EntityInterface> mainEntityList, EntityInterface deEntity)
 	{
-		List<EntityInterface> temperoryList = mainEntityList;
-		mainEntityList = new ArrayList<EntityInterface>();
-		for (EntityInterface temperoryEntity : temperoryList)
+		List<EntityInterface> temporaryList = new ArrayList<EntityInterface>();
+
+		for (EntityInterface mainEntity : mainEntityList)
 		{
-			if (!(temperoryEntity.equals(deEntity)))
+			if (!(mainEntity.equals(deEntity)))
 			{
-				mainEntityList.add(temperoryEntity);
+				temporaryList.add(mainEntity);
 			}
 		}
-		return mainEntityList;
+		return temporaryList;
 	}
 
 	/**

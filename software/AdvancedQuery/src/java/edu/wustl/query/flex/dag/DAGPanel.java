@@ -195,17 +195,17 @@ public class DAGPanel
 
 	/**
 	 * Create query object.
-	 * @param strToCreateQueryObject strToCreateQueryObject
+	 * @param queryString strToCreateQueryObject
 	 * @param entityName entityName
 	 * @param mode mode(Add/Edit)
 	 * @param queryDetailsObj queryDetailsObj
-	 * @param operatorAndLstOfValues Map of operator and the values
+	 * @param operatorValueMap Map of operator and the values
 	 * @return node The node created
 	 */
 
-	public DAGNode createQueryObject(String strToCreateQueryObject, String entityName,
+	public DAGNode createQueryObject(String queryString, String entityName,
 		String mode, QueryDetails queryDetailsObj,
-		Map<RelationalOperator,List<String>> operatorAndLstOfValues)
+		Map<RelationalOperator,List<String>> operatorValueMap)
 	{
 		DAGNode node = null;
 		EntityInterface entity = null;
@@ -227,13 +227,13 @@ public class DAGPanel
 			IClientQueryBuilderInterface queryObject = new ClientQueryBuilder();
 			mQueryObject = queryObject;
 		}
-		if (query != null)
+		if (query == null)
 		{
-			mQueryObject.setQuery(query);
+			query = mQueryObject.getQuery();
 		}
 		else
 		{
-			query = mQueryObject.getQuery();
+			mQueryObject.setQuery(query);
 		}
 		if(session!=null)
 		{
@@ -248,17 +248,17 @@ public class DAGPanel
 			}
 			Long entityId = Long.parseLong(entityName);
 			entity = EntityCache.getCache().getEntityById(entityId);
-			if((strToCreateQueryObject != null && mode.equalsIgnoreCase(AQConstants.ADD))
+			if((queryString != null && mode.equalsIgnoreCase(AQConstants.ADD))
 					|| (queryDetailsObj == null))
 			{
 				CreateQueryObjectBizLogic queryBizLogic = new CreateQueryObjectBizLogic();
-				node = createQueryObjectLogic(strToCreateQueryObject, mode,
+				node = createQueryObjectLogic(queryString, mode,
 						node, entity, queryBizLogic);
 			}
 			if(queryDetailsObj != null)
 			{
-				modifyQueryObject(strToCreateQueryObject, entityName, mode, queryDetailsObj,
-						operatorAndLstOfValues, entity, query,originalRootExp);
+				modifyQueryObject(queryString, entityName, mode, queryDetailsObj,
+						operatorValueMap,query,originalRootExp);
 			}
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -279,18 +279,17 @@ public class DAGPanel
 	/**
 	 * Modify query object by adding main entity if its not present
 	 * and also adding main protocol object and link it if its not present in the query.
-	 * @param strToCreateQueryObject strToCreateQueryObject
+	 * @param queryString strToCreateQueryObject
 	 * @param entityName entityName
 	 * @param mode mode
 	 * @param queryDetailsObj queryDetailsObj
-	 * @param operatorAndLstOfValues operatorAndLstOfValues
-	 * @param entity entity
+	 * @param operatorValueMap operatorAndLstOfValues
 	 * @param query query
 	 * @param originalRootExp originalRootExp
 	 */
-	private void modifyQueryObject(String strToCreateQueryObject, String entityName, String mode,
+	private void modifyQueryObject(String queryString, String entityName, String mode,
 			QueryDetails queryDetailsObj,
-			Map<RelationalOperator, List<String>> operatorAndLstOfValues, EntityInterface entity,
+			Map<RelationalOperator, List<String>> operatorValueMap,
 			IQuery query, IExpression originalRootExp)
 	{
 		int secondExpId = 0;
@@ -313,12 +312,12 @@ public class DAGPanel
 			queryDetailsObj.getMainEntityMap();
 		Set<EntityInterface> keySet = mainEntityMap.keySet();
 		Iterator<EntityInterface> iterator = keySet.iterator();
-		if(strToCreateQueryObject != null)
+		if(queryString != null)
 		{
 			rootExpId = addMainEntityExpression(secondExpId, deEntity, constraints,
 					mainEntityMap, iterator);
 		}
-		if(rootExpId != 0 && secondExpId != 0 && strToCreateQueryObject != null)
+		if(rootExpId != 0 && secondExpId != 0 && queryString != null)
 		{
 			isPathPresent = linkInvisibleNodes(secondExpId, rootExpId, constraints);
 			if(!isPathPresent)
@@ -326,16 +325,16 @@ public class DAGPanel
 				isPathPresent = linkInvisibleNodes( originalRootExp.getExpressionId(), secondExpId, constraints);
 			}
 		}
-		String tEntityName = null;
+		/*String tEntityName = null;
 		if(entity !=null)
 		{
 			tEntityName = entity.getName();
-		}
+		}*/
 		if(queryDetailsObj.getSessionData().isSecurityRequired())
 		{
-			if(strToCreateQueryObject == null)
+			if(queryString == null)
 			{
-				strToCreateQueryObject = "";
+				queryString = "";
 			}
 			Set<IQueryEntity> queryEntities = constraints.getQueryEntities();
 			boolean isMainObjPresent = false;
@@ -353,12 +352,12 @@ public class DAGPanel
 			{
 				int mainProtocolExpId = addMainProtocolObjectInQuery
 				(query,queryDetailsObj.getSessionData().getUserName(),mode,
-						operatorAndLstOfValues,strToCreateQueryObject);
+						operatorValueMap,queryString);
 				if(mode.equalsIgnoreCase(AQConstants.ADD))
 				{
-					IExpression mainProtocolExpression =
+					IExpression mainProtocol =
 						constraints.getExpression(mainProtocolExpId);
-					mainProtocolExpression.setInView(false);
+					mainProtocol.setInView(false);
 					isPathPresent = linkInvisibleNodes(mainProtocolExpId, secondExpId, constraints);
 					if(!isPathPresent)
 					{
@@ -424,27 +423,27 @@ public class DAGPanel
 	 * @param query query
 	 * @param userName userName
 	 * @param mode mode
-	 * @param operatorAndLstOfValues operatorAndLstOfValues
+	 * @param operatorValueMap operatorAndLstOfValues
 	 * @param strToCreateObject strToCreateObject
 	 * @return mainProtocolExpId mainProtocolExpId
 	 */
 	private int addMainProtocolObjectInQuery(IQuery query, String userName,
-	String mode, Map<RelationalOperator,List<String>> operatorAndLstOfValues,String strToCreateObject)
+	String mode, Map<RelationalOperator,List<String>> operatorValueMap,String strToCreateObject)
 	{
 		List<Long> readDeniedIds = new ArrayList<Long>();
 		List<Long> allMainObjectIds = new ArrayList<Long>();
 		allMainObjectIds = populateAllMainProtocolObjectIds(userName, readDeniedIds);
 
 		EntityCache cache = EntityCacheFactory.getInstance();
-		EntityInterface mainProtocolEntity = DomainObjectFactory.getInstance().createEntity();
-		mainProtocolEntity.setName(Variables.mainProtocolObject.
+		EntityInterface mainProtocol = DomainObjectFactory.getInstance().createEntity();
+		mainProtocol.setName(Variables.mainProtocolObject.
 		substring(Variables.mainProtocolObject.lastIndexOf('.')+1, Variables.mainProtocolObject.length()));
-		mainProtocolEntity.setDescription(null);
+		mainProtocol.setDescription(null);
 		Long entityId = null;
 		Long attributeId = null;
 		StringBuffer formattedIds = new StringBuffer();
 		Collection<EntityInterface> entityCollection = new HashSet<EntityInterface>();
-		entityCollection.add(mainProtocolEntity);
+		entityCollection.add(mainProtocol);
 		MatchedClass matchedClass = cache.getEntityOnEntityParameters(entityCollection);
 		MatchedClass resultantMatchedClass = new MatchedClass();
 		for (MatchedClassEntry matchedClassEntry : matchedClass.getMatchedClassEntries())
@@ -461,17 +460,17 @@ public class DAGPanel
 		{
 			if(entity.getName().equals(Variables.mainProtocolObject))
 			{
-				mainProtocolEntity = entity;
-				attributeId = mainProtocolEntity.getAbstractAttributeByName("id").getId();
-				entityId = mainProtocolEntity.getId();
+				mainProtocol = entity;
+				attributeId = mainProtocol.getAbstractAttributeByName("id").getId();
+				entityId = mainProtocol.getId();
 				break;
 			}
 		}
 		if(!readDeniedIds.isEmpty())
 		{
-			if(operatorAndLstOfValues != null && !operatorAndLstOfValues.isEmpty())
+			if(operatorValueMap != null && !operatorValueMap.isEmpty())
 			{
-					strToCreateObject = modifyQueryForIdCondition(operatorAndLstOfValues,
+					strToCreateObject = modifyQueryForIdCondition(operatorValueMap,
 				strToCreateObject, readDeniedIds,allMainObjectIds, formattedIds,attributeId);
 			}
 			else
@@ -489,8 +488,8 @@ public class DAGPanel
 		DAGNode node = null;
 		try
 		{
-			if(operatorAndLstOfValues == null || ((operatorAndLstOfValues != null)
-					&& (operatorAndLstOfValues.isEmpty())))
+			if(operatorValueMap == null || ((operatorValueMap != null)
+					&& (operatorValueMap.isEmpty())))
 			{
 				strToCreateObject = populateStrToCreateObject(strToCreateObject, readDeniedIds,
 						attributeId, formattedIds);
@@ -500,7 +499,7 @@ public class DAGPanel
 				getMnProtocolExpForEdit(query, entityId);
 			}
 			node = createQueryObjectLogic(strToCreateObject, mode, node,
-					mainProtocolEntity, queryBizLogic);
+					mainProtocol, queryBizLogic);
 			IConstraints constraints = query.getConstraints();
 			for(IExpression expression : constraints)
 			{
@@ -979,7 +978,6 @@ public class DAGPanel
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map ruleDetailsMap;
-		//		int expressionId;
 		if (!strToCreateQueryObject.equalsIgnoreCase(""))
 		{
 			ruleDetailsMap = queryBizLogic.getRuleDetailsMap(strToCreateQueryObject, entity
@@ -993,7 +991,6 @@ public class DAGPanel
 			String errMsg = (String) ruleDetailsMap.get(AQConstants.ERROR_MESSAGE);
 			node = checkErrorMessages(mode, entity, attributes, attributeOperators,
 					conditionValues, errMsg);
-
 		}
 		return node;
 	}
@@ -1018,16 +1015,8 @@ public class DAGPanel
 		{
 			if ("Edit".equals(mode))
 			{
-				Rule rule = ((Rule) (expression.getOperand(0)));
-				rule.removeAllConditions();
-				List<ICondition> conditionsList = ((ClientQueryBuilder) mQueryObject)
-						.getConditions(attributes, attributeOperators, conditionValues);
-				for (ICondition condition : conditionsList)
-				{
-					rule.addCondition(condition);
-				}
-				expressionId = expression.getExpressionId();
-				node = createNode(expressionId, false);
+				node = modifyRule(attributes, attributeOperators,
+						conditionValues);
 			}
 			else
 			{
@@ -1042,6 +1031,46 @@ public class DAGPanel
 			node = new DAGNode();
 			node.setErrorMsg(errMsg);
 		}
+		return node;
+	}
+
+	/**
+	 * Modify the rule.
+	 * @param attributes attributes
+	 * @param attributeOperators attributeOperators
+	 * @param conditionValues conditionValues
+	 * @return node
+	 */
+	private DAGNode modifyRule(List<AttributeInterface> attributes,
+			List<String> attributeOperators, List<List<String>> conditionValues)
+	{
+		DAGNode node;
+		int expressionId;
+		Rule rule;
+		List<ICondition> conditionsList = ((ClientQueryBuilder) mQueryObject)
+				.getConditions(attributes, attributeOperators, conditionValues);
+		if(expression.numberOfOperands() == 0)
+		{
+			rule = (Rule)QueryObjectFactory.createRule(conditionsList);
+			expression.addOperand(rule);
+		}
+		else if(expression.getOperand(0) instanceof Rule)
+		{
+			rule = ((Rule) (expression.getOperand(0)));
+			rule.removeAllConditions();
+			for (ICondition condition : conditionsList)
+			{
+				rule.addCondition(condition);
+			}
+		}
+		else
+		{
+			rule = (Rule)QueryObjectFactory.createRule(conditionsList);
+			expression.addOperand(QueryObjectFactory
+					.createLogicalConnector(LogicalOperator.And),rule);
+		}
+		expressionId = expression.getExpressionId();
+		node = createNode(expressionId, false);
 		return node;
 	}
 
@@ -2862,7 +2891,7 @@ public class DAGPanel
 			{
 				Set<ICustomFormula> customFormulas = QueryUtility.getCustomFormulas(exp);
 				checkingCustomFormulas(customNodeList, sNcustomNodeList, joinQueryNodeList, query,
-						constraints, tQUIMap, jQUIMap, exp, customFormulas);
+						 tQUIMap, jQUIMap, exp, customFormulas);
 			}
 		}
 		session.setAttribute(DAGConstant.TQUIMap, tQUIMap);
@@ -2882,7 +2911,7 @@ public class DAGPanel
 	 */
 	private void checkingCustomFormulas(List<CustomFormulaNode> customNodeList,
 			List<SingleNodeCustomFormulaNode> sNcustomNodeList,
-			List<JoinQueryNode> joinQueryNodeList, IQuery query, IConstraints constraints,
+			List<JoinQueryNode> joinQueryNodeList, IQuery query,
 			Map<String, CustomFormulaUIBean> tQUIMap,
 			Map<String, Map<String, JoinFormulaUIBean>> jQUIMap, IExpression exp,
 			Set<ICustomFormula> customFormulas)
@@ -3173,13 +3202,13 @@ public class DAGPanel
 		{
 			IDateLiteral dateLit = (DateLiteral) operand;
 
-			if (dateLit.getDate() != null)
+			if (dateLit.getDate() == null)
 			{
-				singleCNode.setTimeValue(getDateInGivenFormat(dateLit.getDate()));
+				singleCNode.setTimeValue("");
 			}
 			else
 			{
-				singleCNode.setTimeValue("");
+				singleCNode.setTimeValue(getDateInGivenFormat(dateLit.getDate()));
 			}
 		}
 	}
@@ -3213,7 +3242,7 @@ public class DAGPanel
 		JoinFormulaNode joinFormulaNode = new JoinFormulaNode();
 		Set<IExpression> containingExpressions = QueryUtility.getExpressionsInFormula(customFormula);
 		String secondEntityName = null;
-		IExpression destExp = null;
+		//IExpression destExp = null;
 		int srcExpId = srcExp.getExpressionId();
 		int destExpId = 0;
 		String fullyQualifiedEntityName = srcExp.getQueryEntity().getDynamicExtensionsEntity()
@@ -3227,7 +3256,7 @@ public class DAGPanel
 		{
 			if (!exp.equals(srcExp))
 			{
-				destExp = exp;
+				//destExp = exp;
 				destExpId = exp.getExpressionId();
 				fullyQualifiedEntityName = exp.getQueryEntity().getDynamicExtensionsEntity()
 						.getName();
@@ -3330,14 +3359,14 @@ public class DAGPanel
 			else if (operand instanceof DateLiteral)
 			{
 				DateLiteral dateLit = (DateLiteral) operand;
-				if (dateLit.getDate() != null)
+				if (dateLit.getDate() == null)
 				{
-					cNode.setTimeValue(getDateInGivenFormat(dateLit.getDate()));
-					cNode.setTimeInterval(DAGConstant.NULL_STRING);
+					cNode.setTimeValue("");
 				}
 				else
 				{
-					cNode.setTimeValue("");
+					cNode.setTimeValue(getDateInGivenFormat(dateLit.getDate()));
+					cNode.setTimeInterval(DAGConstant.NULL_STRING);
 				}
 			}
 		}
