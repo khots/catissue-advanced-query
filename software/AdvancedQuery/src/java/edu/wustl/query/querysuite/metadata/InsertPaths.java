@@ -39,7 +39,6 @@ public class InsertPaths
 	public static void main(String[] args)
 	{
 		String fileName = "paths.txt";
-		List<List<String>> pathList;
 		try
 		{
 			performMainFunction(fileName);
@@ -260,7 +259,7 @@ public class InsertPaths
 
 	/**
 	 * Gets the list of parent entity identifiers
-	 * @param dao dao
+	 * @param dao DAO
 	 * @param entityIdList entity identifiers
 	 * @return list of parent entity identifiers
 	 * @throws SQLException exception
@@ -293,7 +292,7 @@ public class InsertPaths
 
 	/**
 	 * Gets the list of entity identifiers
-	 * @param dao dao
+	 * @param dao DAO
 	 * @param entityIdList entity identifiers
 	 * @param entityGrpId group id
 	 * @return list of entity identifiers
@@ -465,7 +464,7 @@ public class InsertPaths
 	}
 	/**
 	 *
-	 * @param dao dao
+	 * @param dao DAO
 	 * @param idList idList
 	 * @return entity name
 	 * @throws DAOException DAOException

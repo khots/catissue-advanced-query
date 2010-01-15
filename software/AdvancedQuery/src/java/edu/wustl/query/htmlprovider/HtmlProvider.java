@@ -209,7 +209,7 @@ public class HtmlProvider
 				attrLabel = new StringBuffer
 					(Utility.getDisplayLabel(attributeDetails.getAttrName()));
 				isBold = checkAttributeBold(attributeChecked, permissibleValuesChecked,
-						attribute, attributeDetails.getAttrName());
+						attribute);
 				if(isBold)
 				{
 					attrLabel = GenerateHtml.getBoldLabel(attrLabel.toString());
@@ -324,11 +324,10 @@ public class HtmlProvider
 	 * @param attributeChecked boolean
 	 * @param permissibleValuesChecked boolean
 	 * @param attribute AttributeInterface
-	 * @param attrName name of attribute
 	 * @return boolean
 	 */
 	private boolean checkAttributeBold(boolean attributeChecked, boolean permissibleValuesChecked,
-			AttributeInterface attribute, String attrName)
+			AttributeInterface attribute)
 	{
 		boolean isBold = false;
 		if(attributeChecked)
