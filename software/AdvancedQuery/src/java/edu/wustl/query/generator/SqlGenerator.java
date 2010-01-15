@@ -198,7 +198,7 @@ public class SqlGenerator implements ISqlGenerator
     {
     	columnValueBean = new LinkedList<ColumnValueBean>();
     	data = new LinkedList<Object>();
-        Logger.out.debug("Srarted SqlGenerator.generateSQL().....");
+        Logger.out.debug("Started SqlGenerator.generateSQL().....");
         String appName=CommonServiceLocator.getInstance().getAppName();
         IDAOFactory daofactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
         dao = daofactory.getJDBCDAO();
@@ -287,8 +287,9 @@ public class SqlGenerator implements ISqlGenerator
     private String getCompleteWherePart(IExpression rootExpression) throws SqlException, RuntimeException
     {
         String wherePart = getWherePartSQL(rootExpression);
-        wherePart = WHERE + wherePart;
-        return wherePart;
+        StringBuffer where = new StringBuffer();
+        where.append(WHERE).append(wherePart);
+        return where.toString();
     }
 
     /**
@@ -1540,7 +1541,7 @@ public class SqlGenerator implements ISqlGenerator
     private String getOperatorSpecificValue(String value,
 			RelationalOperator operator)
     {
-    	StringBuffer tempValue = new StringBuffer(value);
+    	StringBuffer tempValue = new StringBuffer();
 		if (operator.equals(RelationalOperator.Contains))
 		{
 			tempValue.append('%').append(value).append('%');
