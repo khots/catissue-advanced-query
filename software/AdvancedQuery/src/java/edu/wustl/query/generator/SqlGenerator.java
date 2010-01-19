@@ -1111,7 +1111,7 @@ public class SqlGenerator implements ISqlGenerator
 		    String strToDateFunction = setStrToDateFunction();
 		    setDatePattern();
 		    String appName = CommonServiceLocator.getInstance().getAppName();
-		    data.add(value);
+		    data.add(value.toString());
 		    if("MSSQLSERVER".equals(DAOConfigFactory.getInstance().getDAOFactory(appName).
 		    		getDataBaseType()))
 		   	{
