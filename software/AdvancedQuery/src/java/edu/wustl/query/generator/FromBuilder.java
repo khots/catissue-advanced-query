@@ -464,8 +464,7 @@ public class FromBuilder
             String columnName = entity.getDiscriminatorColumn();
             String columnValue = entity.getDiscriminatorValue();
             // Assuming Discriminator is of type String.
-            String condition = columnName + "='" + columnValue + "'";
-            return condition;
+            return columnName + "='" + columnValue + "'";
         }
     }
 

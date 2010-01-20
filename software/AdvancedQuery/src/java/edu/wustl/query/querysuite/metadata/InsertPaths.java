@@ -80,7 +80,6 @@ public class InsertPaths
 		dao.openSession(null);
 		for (List<String> entityList : pathList)
 		{
-			System.out.println(entityList.toString());
 			getPathAndInsert(dao,entityList);
 		}
 		writer.write("\nCompleted inserting indirect paths between clinportal entities.");

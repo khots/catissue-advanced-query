@@ -89,24 +89,7 @@ public class UpgradeSavedQueries
 		{
 			admin = getUserByName("abrink@pathology.wustl.edu");
 		}
-		if(admin == null)
-		{
-			List<User> adminUsers = getAdminUsers();
-			PrivilegeUtility privilegeUtility = new PrivilegeUtility();
-			UserProvisioningManager upManager = privilegeUtility
-					.getUserProvisioningManager();
-			List<ProtectionGroup> protectionGroups = upManager
-					.getProtectionGroups();
-			admin = getValidUser(adminUsers, protectionGroups);
-			if(admin == null)
-			{
-				throw new RuntimeException("User not found with Admin role and a valid protection group");
-			}
-			else
-			{
-				logger.info("Old saved queries assigned to Admin user : "+admin.getName());
-			}
-		}
+		admin = getValidAdminUser(admin);
 		for (IParameterizedQuery parameterizedQuery : queries)
 		{
 			logger.info("QUERY ID : " + parameterizedQuery.getId()
@@ -126,6 +109,35 @@ public class UpgradeSavedQueries
 			}
 		}
 		logger.info("SAVED QUERIES UPGRADED SUCCESSFULLY....");
+	}
+
+	/**
+	 * @param tempAdmin user
+	 * @return admin
+	 * @throws SMException Security Manager Exception
+	 */
+	private static User getValidAdminUser(User tempAdmin) throws SMException
+	{
+		User admin = tempAdmin;
+		if(admin == null)
+		{
+			List<User> adminUsers = getAdminUsers();
+			PrivilegeUtility privilegeUtility = new PrivilegeUtility();
+			UserProvisioningManager upManager = privilegeUtility
+					.getUserProvisioningManager();
+			List<ProtectionGroup> protectionGroups = upManager
+					.getProtectionGroups();
+			admin = getValidUser(adminUsers, protectionGroups);
+			if(admin == null)
+			{
+				throw new RuntimeException("User not found with Admin role and a valid protection group");
+			}
+			else
+			{
+				logger.info("Old saved queries assigned to Admin user : "+admin.getName());
+			}
+		}
+		return admin;
 	}
 
 	/**
