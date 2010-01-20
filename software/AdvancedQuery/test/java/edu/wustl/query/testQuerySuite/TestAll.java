@@ -8,7 +8,7 @@ package edu.wustl.query.testQuerySuite;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import edu.wustl.query.bizlogic.CreateQueryObjectTestCase;
-//import edu.wustl.query.generator.SqlGeneratorGenericTestCase;
+import edu.wustl.query.generator.SqlGeneratorGenericTestCase;
 import edu.wustl.query.htmlprovider.HtmlProviderTestCase;
 
 /**
@@ -25,7 +25,7 @@ public class TestAll
 	public static Test suite()
 	{
 		TestSuite suite = new TestSuite("Test suite for Query Interface Classes");
-		//suite.addTestSuite(SqlGeneratorGenericTestCase.class);
+		suite.addTestSuite(SqlGeneratorGenericTestCase.class);
 		//suite.addTestSuite(MySqlQueryGenerator.class);
 		suite.addTestSuite(CreateQueryObjectTestCase.class);
 		suite.addTestSuite(HtmlProviderTestCase.class);
