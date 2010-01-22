@@ -29,7 +29,6 @@ import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.QuerySessionData;
-import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.bizlogic.CommonQueryBizLogic;
@@ -46,7 +45,6 @@ import edu.wustl.security.exception.SMException;
  */
 public class QueryModuleSearchQueryUtil
 {
-	private Logger logger = Logger.getCommonLogger(QueryModuleSearchQueryUtil.class);
 	private HttpServletRequest request;
 	private HttpSession session;
 	private IQuery query;

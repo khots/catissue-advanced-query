@@ -306,30 +306,9 @@ public class AQConstants
 	String delimiter = "_";
 
 	/**
-	 * key prefix.
-	 */
-	String ARRAY_CONTENT_KEY_PREFIX = "SpecimenArrayContent:";
-	/**
-	 * Specify the ADD_TO_LIMIT_ACTION field
-	 */
-	String ADD_TO_LIMIT_ACTION = "/addToLimitSet.do";
-	/**
 	 * Specify the GET_SEARCH_RESULTS field.
 	 */
 	String GET_SEARCH_RESULTS = "/ViewSearchResultsAction.do";
-	/**
-	 * Specify the ADD_TO_LIMIT_ACTION field.
-	 */
-	String GET_DAG_VIEW_DATA = "/getDagViewDataAction.do";
-	public static final String DefineSearchResultsViewAction = "/DefineSearchResultsView.do";
-	/**
-	 * Specify the ADD_TO_LIMIT_ACTION field.
-	 */
-	String DAG_VIEW_DATA = "dagViewData";
-	/**
-	 * Specify the ADD_TO_LIMIT_ACTION field.
-	 */
-	String ENTITY_MAP = "entity_map";
 	/**
 	 * Specify the ADD_TO_LIMIT_ACTION field.
 	 */

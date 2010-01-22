@@ -152,7 +152,7 @@ public class InsertPaths
 			for (int index = 1; index < intraModelId.size(); index++)
 			{
 				intermediatePath.append('_');
-				intermediatePath.append(intraModelId.get(index).toString());
+				intermediatePath.append(intraModelId.get(index));
 			}
 			Long maxPathId = getNextPathId(dao);
 			insertPath(dao, entityIdList, intermediatePath, maxPathId);
