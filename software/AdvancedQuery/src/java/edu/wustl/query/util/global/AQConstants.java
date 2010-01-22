@@ -314,6 +314,7 @@ public class AQConstants
 	 */
 	public static final String ENTITY_STR = "entity_str";
 
+	public static final String DefineSearchResultsViewAction = "/DefineSearchResultsView.do";
 	public static final String ADD = "Add";
 	public static final String EDIT = "Edit";
 

@@ -361,7 +361,7 @@ public class DAGPanel
 					isPathPresent = linkInvisibleNodes(mainProtocolExpId, secondExpId, constraints);
 					if(!isPathPresent)
 					{
-						isPathPresent = linkInvisibleNodes(mainProtocolExpId, originalRootExp.getExpressionId(), constraints);
+						isPathPresent = linkInvisibleNodes(originalRootExp.getExpressionId(),mainProtocolExpId, constraints);
 					}
 				}
 			}
