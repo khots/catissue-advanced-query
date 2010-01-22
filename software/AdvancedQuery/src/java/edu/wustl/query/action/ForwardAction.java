@@ -7,13 +7,13 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.action.SecureAction;
 import edu.wustl.query.util.global.AQConstants;
 /**
  * This method forwards the request to next action/page.
  * @author deepti_shelar
  */
-public class ForwardAction  extends BaseAction
+public class ForwardAction  extends SecureAction
 {
 	/**
 	 * This method forwards the request to next action/page.
@@ -24,7 +24,7 @@ public class ForwardAction  extends BaseAction
 	 * @throws Exception Exception
 	 * @return ActionForward actionForward
 	 */
-	public ActionForward executeAction(ActionMapping mapping, ActionForm form,
+	public ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 	{
 		return mapping.findForward(AQConstants.SUCCESS);

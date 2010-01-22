@@ -17,7 +17,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
@@ -31,7 +31,7 @@ import edu.wustl.query.util.global.Utility;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class SpreadsheetViewAction extends BaseAction
+public class SpreadsheetViewAction extends SecureAction
 {
 
 	/**
@@ -42,7 +42,7 @@ public class SpreadsheetViewAction extends BaseAction
 	 * by getting pageNum from request object.
 	 * @Override
 	 */
-	protected ActionForward executeAction(ActionMapping mapping, ActionForm form,
+	protected ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		/**

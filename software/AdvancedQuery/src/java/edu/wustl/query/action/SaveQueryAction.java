@@ -21,7 +21,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.hibernate.HibernateCleanser;
@@ -47,7 +47,7 @@ import gov.nih.nci.security.exceptions.CSException;
  *
  * @author chetan_patil
  */
-public class SaveQueryAction extends BaseAction
+public class SaveQueryAction extends SecureAction
 {
 	/**
 	 * This method saves/edits the query.
@@ -59,7 +59,7 @@ public class SaveQueryAction extends BaseAction
 	 * @return Object of ActionForward
 	 */
 	@Override
-	protected ActionForward executeAction(ActionMapping actionMapping, ActionForm actionForm,
+	protected ActionForward executeSecureAction(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
@@ -196,7 +196,7 @@ public class SaveQueryAction extends BaseAction
 	private void setActionError(HttpServletRequest request, String errorMessage)
 	{
 		ActionErrors errors = new ActionErrors();
-		ActionError error = new ActionError("errors.item", errorMessage);
+		ActionError error = new ActionError("query.errors.item", errorMessage);
 		errors.add(ActionErrors.GLOBAL_ERROR, error);
 		saveErrors(request, errors);
 	}

@@ -19,7 +19,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
-import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
@@ -35,7 +35,7 @@ import edu.wustl.query.util.global.AQConstants;
  * @author deepti_shelar
  * @author chetan_patil
  */
-public class RetrieveQueryAction extends BaseAction
+public class RetrieveQueryAction extends SecureAction
 {
 	/**
 	 * This method is used to fetch and execute query.
@@ -46,7 +46,7 @@ public class RetrieveQueryAction extends BaseAction
 	 * @throws Exception Exception
 	 * @return ActionForward actionForward
 	 */
-	public ActionForward executeAction(ActionMapping actionMapping, ActionForm actionForm,
+	public ActionForward executeSecureAction(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 			{
 		cleanUpSession(request);

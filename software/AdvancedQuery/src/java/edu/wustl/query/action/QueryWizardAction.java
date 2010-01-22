@@ -9,7 +9,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.action.SecureAction;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.util.global.AQConstants;
@@ -19,7 +19,7 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
  * Action is called when user clicks on Advance Search link on search menu.
  * @author deepti_shelar
  */
-public class QueryWizardAction extends BaseAction
+public class QueryWizardAction extends SecureAction
 {
 
 	/**
@@ -32,7 +32,7 @@ public class QueryWizardAction extends BaseAction
 	 * @return ActionForward actionForward
 	 */
 	@Override
-	public ActionForward executeAction(ActionMapping mapping, ActionForm form,
+	public ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();

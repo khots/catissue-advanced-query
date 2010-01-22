@@ -14,7 +14,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
@@ -37,7 +37,7 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
  * @author deepti_shelar
  *
  */
-public class ConfigureGridViewAction extends BaseAction
+public class ConfigureGridViewAction extends SecureAction
 {
 	/**
 	 * creates meta data for selected columns and keeps it in session for further reference.
@@ -48,7 +48,7 @@ public class ConfigureGridViewAction extends BaseAction
 	 * @throws Exception Exception
 	 * @return ActionForward actionForward
 	 */
-	protected ActionForward executeAction(ActionMapping mapping,
+	protected ActionForward executeSecureAction(ActionMapping mapping,
 		ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception
 	{

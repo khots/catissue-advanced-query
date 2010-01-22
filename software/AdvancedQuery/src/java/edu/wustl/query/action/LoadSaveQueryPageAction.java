@@ -16,7 +16,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.ui.util.Constants;
-import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
@@ -37,7 +37,7 @@ import edu.wustl.query.util.global.AQConstants;
  * @author deepti_shelar
  *
  */
-public class LoadSaveQueryPageAction extends BaseAction
+public class LoadSaveQueryPageAction extends SecureAction
 {
 	/**
 	 * This action loads all the conditions from the query.
@@ -48,7 +48,7 @@ public class LoadSaveQueryPageAction extends BaseAction
 	 * @throws Exception Exception
 	 * @return ActionForward actionForward
 	 */
-	public ActionForward executeAction(ActionMapping mapping, ActionForm form,
+	public ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		IQuery queryObject = (IQuery) request.getSession().getAttribute(AQConstants.QUERY_OBJECT);

@@ -16,7 +16,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
@@ -32,7 +32,7 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
  * This class is invoked when user clicks on a node from the tree. It loads the data required for grid formation.
  * @author deepti_shelar
  */
-public class ShowGridAction extends BaseAction
+public class ShowGridAction extends SecureAction
 {
 
 	/**
@@ -46,7 +46,7 @@ public class ShowGridAction extends BaseAction
 	 * @return ActionForward actionForward
 	 */
 	@Override
-	protected ActionForward executeAction(ActionMapping mapping, ActionForm form,
+	protected ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();

@@ -21,7 +21,7 @@ import edu.wustl.cab2b.common.beans.MatchedClass;
 import edu.wustl.cab2b.common.exception.CheckedException;
 import edu.wustl.cab2b.common.util.Constants;
 import edu.wustl.cab2b.server.cache.EntityCache;
-import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.CategorySearchForm;
@@ -37,7 +37,7 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
  * @author deepti_shelar
  */
 
-public class CategorySearchAction extends BaseAction
+public class CategorySearchAction extends SecureAction
 {
 	/**
 	 * This method loads the data required for categorySearch.jsp.
@@ -48,7 +48,7 @@ public class CategorySearchAction extends BaseAction
 	 * @throws Exception Exception
 	 * @return ActionForward actionForward
 	 */
-	public ActionForward executeAction(ActionMapping mapping, ActionForm form,
+	public ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ActionForward actionForward = null;

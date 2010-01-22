@@ -14,7 +14,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.ExportReport;
 import edu.wustl.common.util.SendFile;
@@ -27,7 +27,7 @@ import edu.wustl.query.bizlogic.ExportQueryBizLogic;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.Utility;
 
-public class SpreadsheetExportAction extends BaseAction
+public class SpreadsheetExportAction extends SecureAction
 {
 	/**
 	 * This class exports the data of a spreadsheet to a file.
@@ -38,7 +38,7 @@ public class SpreadsheetExportAction extends BaseAction
 	 * @throws Exception Exception
 	 * @return ActionForward object
 	 */
-	public ActionForward executeAction(ActionMapping mapping, ActionForm form,
+	public ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		QueryAdvanceSearchForm searchForm = (QueryAdvanceSearchForm) form;

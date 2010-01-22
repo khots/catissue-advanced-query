@@ -15,7 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import edu.common.dynamicextensions.ui.util.Constants;
-import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.global.CommonServiceLocator;
@@ -25,7 +25,7 @@ import edu.wustl.query.bizlogic.ShareQueryBizLogic;
  * This class will be called for AJAX calls.
  *
  */
-public class ShareQueryAjaxAction extends BaseAction
+public class ShareQueryAjaxAction extends SecureAction
 {
 
 	/**
@@ -37,7 +37,7 @@ public class ShareQueryAjaxAction extends BaseAction
 	 * @return ActionForward
 	 */
 	@Override
-	protected ActionForward executeAction(ActionMapping mapping, ActionForm form,
+	protected ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String limit = request.getParameter("limit");

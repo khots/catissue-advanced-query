@@ -9,7 +9,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.dao.JDBCDAO;
@@ -17,7 +17,7 @@ import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.query.util.global.AQConstants;
 
-public class QueryLogoutAction extends BaseAction
+public class QueryLogoutAction extends SecureAction
 {
 
 	/**
@@ -27,7 +27,7 @@ public class QueryLogoutAction extends BaseAction
 	 * @param response object of HttpServletResponse
 	 * @throws Exception generic exception
 	 */
-	public ActionForward executeAction(ActionMapping mapping, ActionForm form,
+	public ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 
