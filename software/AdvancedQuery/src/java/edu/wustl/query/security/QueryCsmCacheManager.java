@@ -21,13 +21,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.cab2b.common.beans.MatchedClass;
 import edu.wustl.cab2b.common.beans.MatchedClassEntry;
 import edu.wustl.cab2b.server.cache.EntityCache;
@@ -41,8 +44,8 @@ import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
-import edu.wustl.dao.util.HibernateMetaData;
 import edu.wustl.dao.query.generator.ColumnValueBean;
+import edu.wustl.dao.util.HibernateMetaData;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.QueryCSMValidator;
@@ -324,18 +327,24 @@ public class QueryCsmCacheManager
 		long entityId = finalMainEntityId;
 		EntityInterface originalEntity = queryResultObjectDataBean.getEntity();
 		EntityCache entityCache = EntityCacheFactory.getInstance();
-		EntityInterface hookEntity = DomainObjectFactory.getInstance().createEntity();
-		String hookEntityName = mainProtObjFile.getProperty("hookEntity");
-		if(hookEntityName != null)
+		List<String> entityNames = getHookEntities(mainProtObjFile);
+		EntityInterface hookEntity = null;
+		for(String hookEntityName : entityNames)
 		{
+			hookEntity = DomainObjectFactory.getInstance().createEntity();
 			hookEntity.setName(hookEntityName.
 					substring(hookEntityName.lastIndexOf('.')+1, hookEntityName.length()));
+			hookEntity.setDescription(null);
+			hookEntity = populateHookEntity(entityCache, hookEntity, hookEntityName);
+			AssociationMetadataInterface association = hookEntity.getAssociation(originalEntity);
+			if(association != null)
+			{
+				break;
+			}
 		}
-		hookEntity.setDescription(null);
-		hookEntity = populateHookEntity(entityCache, hookEntity, hookEntityName);
 		Long hookEntityId = getAssociationDetails(mainEntityId, originalEntity,
 				hookEntity,queryResultObjectDataBean.getMainEntity());
-  	   String sql = mainProtObjFile.getProperty("hookEntityQuery");
+  	   String sql = mainProtObjFile.getProperty(hookEntity.getName());
   	   if(sql == null)
   	   {
   		 entityId = hookEntityId;
@@ -350,6 +359,24 @@ public class QueryCsmCacheManager
 		   }
   	   }
   	   return entityId;
+	}
+
+	/**
+	 * Get the list of possible hook entities.
+	 * @param mainProtObjFile property file
+	 * @return hookEntityList
+	 */
+	private List<String> getHookEntities(Properties mainProtObjFile)
+	{
+		List<String> hookEntityList = new ArrayList<String>();
+		String hookEntityString = mainProtObjFile.getProperty("hookEntity");
+		StringTokenizer tokens = new StringTokenizer(hookEntityString, ",");
+		while(tokens.hasMoreTokens())
+		{
+			hookEntityList.add(tokens.nextToken());
+		}
+
+		return hookEntityList;
 	}
 
 	/**
