@@ -433,10 +433,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 					sessionDataBean,queryNameLike);
 			setQueryCollectionForm(saveQueryForm, myQueryCollection, sharedQueryColl);
 			boolean isSuperAdminUser = ifSuperAdminUser(sessionDataBean.getCsmUserId());
-			if(isSuperAdminUser)
-			{
-				saveQueryForm.setAllQueries(getAllQueriesForUpgrade());
-			}
+			setAllQueriesForSuperAdmin(saveQueryForm, isSuperAdminUser);
 		}
 		catch (CSObjectNotFoundException e)
 		{
@@ -453,6 +450,20 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		catch (CSException e)
 		{
 			throw new BizLogicException(null,e,AQConstants.DASHBOARD_ERROR);
+		}
+	}
+
+	/**
+	 * @param saveQueryForm form
+	 * @param isSuperAdminUser isSuperAdmin
+	 * @throws DAOException DAOException
+	 */
+	private void setAllQueriesForSuperAdmin(SaveQueryForm saveQueryForm,
+			boolean isSuperAdminUser) throws DAOException
+	{
+		if(isSuperAdminUser)
+		{
+			saveQueryForm.setAllQueries(getAllQueriesForUpgrade());
 		}
 	}
 	/**
@@ -475,7 +486,6 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		}
 		catch (SMException e)
 		{
-			e.printStackTrace();
 			throw new BizLogicException(null,e,"Sm exception: while getting role for an user");
 		}
 		return isSuperAdmin;
@@ -609,8 +619,10 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 			time = getAppropriateTime(tokenizer);
 		}
 		tempExecutedOnTime = tempExecutedOnTime.substring(0, tempExecutedOnTime.indexOf(' '));
-		tempExecutedOnTime = tempExecutedOnTime +" "+ time;
-		return tempExecutedOnTime;
+		StringBuffer tempString = new StringBuffer(tempExecutedOnTime);
+		tempString.append(' ').append(time);
+		//tempExecutedOnTime = tempExecutedOnTime +" "+ time;
+		return tempString.toString();
 	}
 
 	/**
