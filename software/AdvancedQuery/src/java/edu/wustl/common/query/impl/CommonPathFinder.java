@@ -29,7 +29,6 @@ import edu.wustl.common.util.logger.Logger;
  */
 public class CommonPathFinder implements IPathFinder
 {
-
 	/** instance of PathFinder. */
 	private static PathFinder pathFinder = null;
 
@@ -40,52 +39,59 @@ public class CommonPathFinder implements IPathFinder
 	{
 		if (pathFinder == null)
 		{
-			Connection connection = null;
+			getPathFinder();
+		}
+	}
+
+	/**
+	 * Get the PathFinder instance.
+	 */
+	private void getPathFinder()
+	{
+		Connection connection = null;
+		try
+		{
+			InitialContext initialContext = new InitialContext();
+			Context env = (Context) initialContext.lookup("java:comp/env");
+		    String dsName = (String) env.lookup("DataSource");
+		    Logger.out.info("Data source name found: " + dsName);
+
+		    DataSource dataSource = (DataSource)initialContext.lookup(dsName);
+		    Logger.out.info("Data source found: " + dataSource);
+
+			connection = dataSource.getConnection();
+			Logger.out.info("Connection established: " + connection);
+
+			pathFinder = PathFinder.getInstance(connection);
+		}
+		catch (NamingException e)
+		{
+			Logger.out.error("CommonPathFinder:", e);
+			//TODO need to see how to handle exception
+		}
+		catch (SQLException e)
+		{
+			Logger.out.error("CommonPathFinder:", e);
+			//TODO need to see how to handle exception
+		}
+		finally
+		{
 			try
 			{
-				InitialContext initialContext = new InitialContext();
-				Context env = (Context) initialContext.lookup("java:comp/env");
-                String dsName = (String) env.lookup("DataSource");
-                Logger.out.info("Data source name found: " + dsName);
-
-                DataSource dataSource = (DataSource)initialContext.lookup(dsName);
-                Logger.out.info("Data source found: " + dataSource);
-
-				connection = dataSource.getConnection();
-				Logger.out.info("Connection established: " + connection);
-
-				pathFinder = PathFinder.getInstance(connection);
-			}
-			catch (NamingException e)
-			{
-				Logger.out.error("CommonPathFinder:", e);
-				//TODO need to see how to handle exception
+				if (connection != null)
+				{
+					connection.close();
+				}
 			}
 			catch (SQLException e)
 			{
 				Logger.out.error("CommonPathFinder:", e);
-				//TODO need to see how to handle exception
-			}
-			finally
-			{
-				try
-				{
-					if (connection != null)
-					{
-						connection.close();
-					}
-				}
-				catch (SQLException e)
-				{
-					Logger.out.error("CommonPathFinder:", e);
-				}
 			}
 		}
 	}
 
 	/**
 	 * This method gets all the possible paths between two entities.
-	 *
 	 * @param srcEntity Source Entity.
 	 * @param destEntity Destination Entity.
 	 *
@@ -99,10 +105,8 @@ public class CommonPathFinder implements IPathFinder
 
 	/**
 	 * This method gets all the paths for query.
-	 *
 	 * @param srcEntity Source Entity.
 	 * @param destEntity Destination Entity.
-	 *
 	 * @return All the paths
 	 */
 	public List<IPath> getAllPathsForQuery(EntityInterface srcEntity, EntityInterface destEntity)
@@ -113,9 +117,7 @@ public class CommonPathFinder implements IPathFinder
 
 	/**
 	 * Gets the path for associations.
-	 *
-	 * @param intraModelAssociationList List of intramodel association
-	 *
+	 * @param intraModelAssociationList List of intra-model association
 	 * @return IPath object
 	 */
 	public IPath getPathForAssociations(List<IIntraModelAssociation> intraModelAssociationList)
@@ -126,9 +128,7 @@ public class CommonPathFinder implements IPathFinder
 
 	/**
 	 * Auto connect.
-	 *
 	 * @param entitySet Set of entities.
-	 *
 	 * @return Set of curated paths.
 	 */
 	public Set<ICuratedPath> autoConnect(Set<EntityInterface> entitySet)
@@ -138,10 +138,8 @@ public class CommonPathFinder implements IPathFinder
 
 	/**
 	 * Gets the curated paths.
-	 *
 	 * @param srcEntity Source Entity.
 	 * @param destEntity Destination Entity.
-	 *
 	 * @return Curated paths between srcEntity and destEntity.
 	 */
 	public Set<ICuratedPath> getCuratedPaths(EntityInterface srcEntity, EntityInterface destEntity)
@@ -151,9 +149,7 @@ public class CommonPathFinder implements IPathFinder
 
 	/**
 	 * Gets the inter model associations.
-	 *
 	 * @param arg0 arg0
-	 *
 	 * @return List of inter model associations.
 	 */
 	public List<IInterModelAssociation> getInterModelAssociations(Long arg0)

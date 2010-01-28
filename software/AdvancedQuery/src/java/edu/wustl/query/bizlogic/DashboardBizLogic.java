@@ -621,7 +621,6 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		tempExecutedOnTime = tempExecutedOnTime.substring(0, tempExecutedOnTime.indexOf(' '));
 		StringBuffer tempString = new StringBuffer(tempExecutedOnTime);
 		tempString.append(' ').append(time);
-		//tempExecutedOnTime = tempExecutedOnTime +" "+ time;
 		return tempString.toString();
 	}
 
@@ -649,11 +648,15 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		}
 		else if(Integer.parseInt(hours)==AQConstants.TWELVE)
 		{
-			time = time + " "+AQConstants.PM_CONSTANT;
+			StringBuffer tempTime = new StringBuffer(time);
+			tempTime.append(' ').append(AQConstants.PM_CONSTANT);
+			time = tempTime.toString();
 		}
 		else
 		{
-			time = time + " "+AQConstants.AM_CONSTANT;
+			StringBuffer tempTime = new StringBuffer(time);
+			tempTime.append(' ').append(AQConstants.AM_CONSTANT);
+			time = tempTime.toString();
 		}
 		return time;
 	}
@@ -665,17 +668,19 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	 */
 	private static String getPMTime(String hours, String minutes)
 	{
-		String time;
+		StringBuffer time = new StringBuffer();
 		int hrs = Integer.parseInt(hours)-AQConstants.TWELVE;
 		if(hrs<AQConstants.TEN)
 		{
-			time = "0"+hrs + ":" + minutes+" "+AQConstants.PM_CONSTANT;
+			time.append('0').append(hrs).append(':').append(minutes).
+			append(' ').append(AQConstants.PM_CONSTANT);
 		}
 		else
 		{
-			time = hrs + ":" + minutes+" "+AQConstants.PM_CONSTANT;
+			time.append(hrs).append(':').append(minutes).append(' ').
+			append(AQConstants.PM_CONSTANT);
 		}
-		return time;
+		return time.toString();
 	}
 
 	/**
