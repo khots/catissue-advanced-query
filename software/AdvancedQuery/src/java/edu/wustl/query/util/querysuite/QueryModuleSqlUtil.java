@@ -86,11 +86,8 @@ final public class QueryModuleSqlUtil
 			jdbcDao.deleteTable(tableName);
 			String newSql = modifySqlForCreateTable(createTableSql);
 			String newCreateTableSql = AQConstants.CREATE_TABLE +
-			tableName + " " + AQConstants.AS_CONSTANT + " "+ newSql;
+			tableName + " " + AQConstants.AS_CONSTANT + " "+ newSql+"1=0";
 			jdbcDao.executeUpdate(newCreateTableSql);
-			String deleteQuery = "DELETE FROM "+tableName;
-			jdbcDao.executeUpdate(deleteQuery);
-			jdbcDao.commit();
 			String insertSql = "INSERT INTO "+tableName + " "+createTableSql;
 			executeInsertQuery(queryDetailsObj, jdbcDao, insertSql);
 		}
@@ -144,7 +141,7 @@ final public class QueryModuleSqlUtil
 			whereClause = "where";
 		}
 		String newSql = createTableSql.substring
-		(0, createTableSql.lastIndexOf(whereClause)-1);
+		(0, createTableSql.lastIndexOf(whereClause)+6);
 		return newSql;
 	}
 
