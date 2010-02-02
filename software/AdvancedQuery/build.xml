@@ -367,6 +367,7 @@
 		<copy file="./src/conf/queryMainTiles.properties" todir="${zip.dir}" overwrite="true" />
 		<copy file="./src/conf/queryHibernateCfg.properties" todir="${zip.dir}" overwrite="true" />
 		<copy file="${build.dir}/WEB-INF/classes/query.properties" todir="${zip.dir}" overwrite="true" />
+		<copy file="${build.dir}/WEB-INF/classes/queryDbutil.properties" todir="${zip.dir}" overwrite="true" />
 		<copy file="./src/conf/build-properties.xml" todir="${zip.dir}" overwrite="true" />
 		<copy file="MANIFEST.MF" todir="${zip.dir}" overwrite="true" />
 		<copy file="deploy.xml" todir="${zip.dir}" overwrite="true" />

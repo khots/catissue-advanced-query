@@ -73,6 +73,9 @@
 		<!--Copying the Query property file to suite classes -->
 		<copy file="query.properties" todir="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/" overwrite="true" />
 
+		<!-- Copying queryDbutil.properties to suite classes-->
+		<copy file="queryDbutil.properties" todir="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/" overwrite="true" />
+
 		<!--Copying the Advance Query jar file to deploytempSuite
 
 		<copy file="AdvanceQuery${aq.jar.version}.jar" todir="${deploy.temp.dir}/${war.dir}/WEB-INF/lib" overwrite="true" />
