@@ -1487,19 +1487,6 @@ public class SqlGenerator implements ISqlGenerator
 			RelationalOperator operator)
 	{
 		String tempValue = value;
-		String character;
-		if(tempValue.contains("%") )
-		{
-			character = "%";
-			String escapedValue = escapeCharacter + escapeCharacter + character;
-			tempValue = tempValue.replaceAll(character, escapedValue);
-		}
-		if(tempValue.contains("'"))
-		{
-			character = "'";
-			String escapedValue = escapeCharacter + escapeCharacter + character;
-			tempValue = tempValue.replaceAll(character, escapedValue);
-		}
 		tempValue = getOperatorSpecificValue(tempValue, operator);
 		return tempValue;
 	}
@@ -1513,22 +1500,8 @@ public class SqlGenerator implements ISqlGenerator
 			RelationalOperator operator)
 	{
 		String tempValue = value;
-		if(tempValue.contains("'"))
-		{
-			String character = "'";
-			tempValue = tempValue.replaceAll(character, character+character);
-		}
-		if(tempValue.contains("%"))
-		{
-			String character = "%";
-			tempValue = tempValue.replaceAll(character, escapeCharOracle+character);
-		}
 		String finalValue = getOperatorSpecificValue(tempValue, operator);
 		StringBuffer finalVal = new StringBuffer(finalValue);
-		if(value.contains("%"))
-		{
-			finalVal.append(' ').append(escapeSeqOracle);
-		}
 		tempValue = finalVal.toString();
 		return tempValue;
 	}
