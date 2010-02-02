@@ -209,12 +209,12 @@ public class CommonQueryBizLogic
 		}
 		catch (IOException e)
 		{
-			throw new DAOException(ErrorKey.getErrorKey("errors.item"), e,
+			throw new DAOException(ErrorKey.getErrorKey("query.errors.item"), e,
 			"Failed while writing to output stream.");
 		}
 		catch (SQLException e)
 		{
-			throw new DAOException(ErrorKey.getErrorKey("errors.item"), e,
+			throw new DAOException(ErrorKey.getErrorKey("query.errors.item"), e,
 			"Failed while getting output stream from the CLOB object");
 		}
 		return auditEventId;
