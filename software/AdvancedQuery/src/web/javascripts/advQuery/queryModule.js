@@ -1041,6 +1041,7 @@
 		{
 			row.style.display = 'block';
 			row.innerHTML = text;
+			window.document.getElementById("superiframe").className="HiddenFrame";
 		}
 	}
 	function showErrorPage()
@@ -1517,6 +1518,7 @@ var jsReady = false;
 
 	function validateQuery(text)
 	{
+		showHourGlass();
 		var request = newXMLHTTPReq();
 		var handlerFunction = getReadyStateHandler(request,displayValidationMessage,true);
 		request.onreadystatechange = handlerFunction;
