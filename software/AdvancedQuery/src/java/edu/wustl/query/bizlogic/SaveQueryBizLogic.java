@@ -222,11 +222,11 @@ public class SaveQueryBizLogic extends DefaultQueryBizLogic implements IQueryBiz
 	public IParameterizedQuery populateParameterizedQueryData(IQuery query)
 	{
 		IParameterizedQuery originalQuery=(IParameterizedQuery)query;
-		if(!(query instanceof ICab2bQuery))
+		if(query instanceof ICab2bQuery)
 		{
-			return originalQuery;
+			originalQuery = QueryObjectFactory.createParameterizedQuery(query);
 		}
-		return QueryObjectFactory.createParameterizedQuery(query);
+		return originalQuery;
 	}
 	/**
 	 * Sets the bean values

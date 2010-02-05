@@ -100,32 +100,12 @@ public class QueryCsmBizLogic
         String appName = CommonServiceLocator.getInstance().getAppName();
         IDAOFactory daoFact = DAOConfigFactory.getInstance().getDAOFactory(appName);
         JDBCDAO jdbcDAO = null;
-        ResultSet resultSet = null;
         List<Long> firstEntityIdList = new ArrayList<Long>();
         List<EntityInterface> mainEntityList = new ArrayList<EntityInterface>();
         try
         {
-            jdbcDAO = daoFact.getJDBCDAO();
-            jdbcDAO.openSession(null);
-            LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
-    		ColumnValueBean bean = new ColumnValueBean("id1",id1);
-    		columnValueBean.add(bean);
-    		bean = new ColumnValueBean("id2",id2);
-    		columnValueBean.add(bean);
-    		bean = new ColumnValueBean("id2",id2);
-    		columnValueBean.add(bean);
-    		String query = "Select FIRST_ENTITY_ID from PATH where INTERMEDIATE_PATH in (Select INTERMEDIATE_PATH" +
-            " from PATH where FIRST_ENTITY_ID = ? and LAST_ENTITY_ID = ?) and LAST_ENTITY_ID = ?";
-            resultSet = jdbcDAO.getResultSet(query, columnValueBean, null);
-            while (resultSet.next())
-            {
-                if (resultSet.getInt(1) != id1)
-                {
-                    firstEntityIdList.add(resultSet.getLong(1));
-                }
-            }
-			jdbcDAO.closeStatement(resultSet);
-
+            jdbcDAO = populateFirstEntityIdList(id1, id2, daoFact,
+					firstEntityIdList);
             populateMainEntityList(firstEntity, firstEntityIdList, mainEntityList);
         }
         catch (SQLException e)
@@ -149,6 +129,45 @@ public class QueryCsmBizLogic
         }
         return mainEntityList;
     }
+
+    /**
+     * @param id1 identifier
+     * @param id2 identifier
+     * @param daoFact DAOFactory
+     * @param firstEntityIdList firstEntityIdList
+     * @return jdbcDAO
+     * @throws DAOException DAOException
+     * @throws SQLException SQLException
+     */
+	private static JDBCDAO populateFirstEntityIdList(Long id1, Long id2,
+			IDAOFactory daoFact, List<Long> firstEntityIdList)
+			throws DAOException, SQLException
+	{
+		JDBCDAO jdbcDAO;
+		ResultSet resultSet;
+		jdbcDAO = daoFact.getJDBCDAO();
+		jdbcDAO.openSession(null);
+		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
+		ColumnValueBean bean = new ColumnValueBean("id1",id1);
+		columnValueBean.add(bean);
+		bean = new ColumnValueBean("id2",id2);
+		columnValueBean.add(bean);
+		bean = new ColumnValueBean("id2",id2);
+		columnValueBean.add(bean);
+		String query = "Select FIRST_ENTITY_ID from PATH where INTERMEDIATE_PATH in" +
+				" (Select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID = ?" +
+				" and LAST_ENTITY_ID = ?) and LAST_ENTITY_ID = ?";
+		resultSet = jdbcDAO.getResultSet(query, columnValueBean, null);
+		while (resultSet.next())
+		{
+		    if (resultSet.getInt(1) != id1)
+		    {
+		        firstEntityIdList.add(resultSet.getLong(1));
+		    }
+		}
+		jdbcDAO.closeStatement(resultSet);
+		return jdbcDAO;
+	}
 
     /**
      * Populates the main entity list.
@@ -176,7 +195,7 @@ public class QueryCsmBizLogic
 	}
 
     /**
-	 * @param selectSql The select sql
+	 * @param selectSql The select SQL
 	 * @param queryDetailsObj QueryDetails object
 	 * @param queryResulObjectDataMap The QueryResultObjectDataMap
 	 * @param root Object of OutputTreeDataNode
@@ -187,38 +206,7 @@ public class QueryCsmBizLogic
 	public List executeCSMQuery(String selectSql, QueryDetails queryDetailsObj,
 			Map<Long, QueryResultObjectDataBean> queryResulObjectDataMap, OutputTreeDataNode root,
 			boolean hasConditionOnIdentifiedField)
-	//throws DAOException, ClassNotFoundException
-	{/*
-		 String appName = CommonServiceLocator.getInstance().getAppName();
-        IDAOFactory daoFact = DAOConfigFactory.getInstance().getDAOFactory(appName);
-        JDBCDAO dao = null;
-		List<List<String>> dataList = new ArrayList<List<String>>();
-		try
-		{
-			dao = daoFact.getJDBCDAO();
-			dao.openSession(queryDetailsObj.getSessionData());
-			dataList = dao.executeQuery(selectSql, queryDetailsObj.getSessionData(),
-					queryDetailsObj.getSessionData().isSecurityRequired(),
-					hasConditionOnIdentifiedField, queryResulObjectDataMap);
-			dao.commit();
-			dao.closeSession();
-		}
-
-		catch (DAOException t)
-		{
-			t.printStackTrace();
-		}
-
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-
-		}
-		return dataList;
-	*/
+	{
 		return null;
-		}
+	}
 }
