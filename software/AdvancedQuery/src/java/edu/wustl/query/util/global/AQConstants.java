@@ -598,4 +598,7 @@ public class AQConstants
 
 	public static final String FONT_COLOR = "<li><font color\\='red'>";
 	public static final String COLUMN_VALUE_BEAN = "columnValueBean";
+
+	public static final String STYLE = "<li><font color='red'> ";
+	public static final String END_STYLE = "</font></li>";
 }

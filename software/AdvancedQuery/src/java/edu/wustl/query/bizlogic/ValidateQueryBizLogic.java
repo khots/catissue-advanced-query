@@ -61,6 +61,20 @@ public class ValidateQueryBizLogic
 					.getValue("query.defineView.noExpression.message");
 			return validationMessage;
 		}
+		validationMessage = validateQuery(request, query, validationMessage);
+		return validationMessage;
+	}
+
+	/**
+	 * @param request request
+	 * @param query query
+	 * @param validationMessage validationMessage
+	 * @return validationMessage
+	 */
+	private String validateQuery(HttpServletRequest request, IQuery query,
+			String message)
+	{
+		String validationMessage = message;
 		try
 		{
 			populateQuery(request, query);
@@ -68,37 +82,48 @@ public class ValidateQueryBizLogic
 		catch (MultipleRootsException e)
 		{
 			Logger.out.error(e);
-			validationMessage = "<li><font color='red'> "+ ApplicationProperties
-			.getValue("errors.executeQuery.multipleRoots")+ "</font></li>";
+			validationMessage = AQConstants.STYLE+ ApplicationProperties
+			.getValue("errors.executeQuery.multipleRoots")+ AQConstants.END_STYLE;
 		}
 		catch (SqlException e)
 		{
-			Logger.out.error(e);
-			if(e.getMessage()!=null)
-			{
-				validationMessage = "<li><font color='red'> "+ e.getMessage()
-				+ "</font></li>";
-			}
-			else
-			{
-				validationMessage = "<li><font color='red'> "+ ApplicationProperties
-				.getValue("errors.executeQuery.genericmessage")+ "</font></li>";
-			}
+			validationMessage = handleSQLException(e);
 		}
 		catch (RuntimeException e)
 		{
 			Logger.out.error(e);
-			validationMessage = "<li><font color='red'> "+ ApplicationProperties
-			.getValue("errors.executeQuery.genericmessage")+ "</font></li>";
+			validationMessage = AQConstants.STYLE+ ApplicationProperties
+			.getValue("errors.executeQuery.genericmessage")+ AQConstants.END_STYLE;
 			e.printStackTrace();
 		}
 		catch (DAOException e)
 		{
 			Logger.out.error(e);
-			validationMessage = "<li><font color='red'> "
+			validationMessage = AQConstants.STYLE
 			+ ApplicationProperties.getValue("errors.executeQuery.genericmessage")
-					+ "</font></li>";
+					+ AQConstants.END_STYLE;
 			e.printStackTrace();
+		}
+		return validationMessage;
+	}
+
+	/**
+	 * @param exception SQL exception.
+	 * @return validationMessage
+	 */
+	private String handleSQLException(SqlException exception)
+	{
+		String validationMessage;
+		Logger.out.error(exception);
+		if(exception.getMessage()==null)
+		{
+			validationMessage = AQConstants.STYLE+ ApplicationProperties
+			.getValue("errors.executeQuery.genericmessage")+ AQConstants.END_STYLE;
+		}
+		else
+		{
+			validationMessage = AQConstants.STYLE+ exception.getMessage()
+			+ AQConstants.END_STYLE;
 		}
 		return validationMessage;
 	}
@@ -160,14 +185,7 @@ public class ValidateQueryBizLogic
 		boolean isSavedQuery = Boolean.valueOf((String) session.getAttribute(AQConstants.IS_SAVED_QUERY));
 		//This method will check if main objects for all the dependent objects are present in query or not.
 		IQuery queryClone=null;
-		if(isSavedQuery)
-		{
-			session.setAttribute(AQConstants.SAVED_QUERY, AQConstants.TRUE);
-		}
-		else
-		{
-			session.setAttribute(AQConstants.SAVED_QUERY, AQConstants.FALSE);
-		}
+		isSavedQuery(session, isSavedQuery);
 		if(queryDetailsObj.getSessionData().isSecurityRequired())
 		{
 			queryClone = QueryCSMUtil
@@ -179,6 +197,22 @@ public class ValidateQueryBizLogic
 			selectSql = queryGenerator.generateSQL(queryClone);
 			session.setAttribute(AQConstants.SAVE_GENERATED_SQL, selectSql);
 			session.setAttribute(AQConstants.COLUMN_VALUE_BEAN, queryGenerator.getColumnValueBean());
+		}
+	}
+
+	/**
+	 * @param session session
+	 * @param isSavedQuery isSavedQuery
+	 */
+	private void isSavedQuery(HttpSession session, boolean isSavedQuery)
+	{
+		if(isSavedQuery)
+		{
+			session.setAttribute(AQConstants.SAVED_QUERY, AQConstants.TRUE);
+		}
+		else
+		{
+			session.setAttribute(AQConstants.SAVED_QUERY, AQConstants.FALSE);
 		}
 	}
 }
