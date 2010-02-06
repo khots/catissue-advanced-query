@@ -10,12 +10,29 @@ import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 
 public class TemporalColumnUIBean
 {
-
+	/**
+	 * node.
+	 */
 	private OutputTreeDataNode node;
+	/**
+	 * query.
+	 */
 	private String sql;
+	/**
+	 * column list.
+	 */
 	private List<String> columnsList;
+	/**
+	 * output term columns.
+	 */
 	private Map<String, IOutputTerm> outputTermsColumns;
+	/**
+	 * column index.
+	 */
 	private int columnIndex = 0;
+	/**
+	 * constraints.
+	 */
 	private IConstraints constraints;
 	/**
 	 * Empty constructor.
@@ -27,7 +44,7 @@ public class TemporalColumnUIBean
 	/**
 	 * Parameterized constructor
 	 * @param node OutputTreeDataNode
-	 * @param sql sql
+	 * @param sql SQL
 	 * @param columnsList columnsList
 	 * @param outputTermsColumns columns added for temporal condition
 	 * @param columnIndex index of temporal column

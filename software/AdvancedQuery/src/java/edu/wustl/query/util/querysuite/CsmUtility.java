@@ -143,12 +143,40 @@ public class CsmUtility
 				sharedQueryCollection.remove(pQueryId);
 				ifMyQuery = true;
 			}
-			if (pGroup.getProtectionGroupName().equals(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP)
-					&& !ifMyQuery)
-			{
-				sharedQueryCollection.add(pQueryId);
-			}
+			populateQueriesForPublicGroup(sharedQueryCollection, pQueryId,
+					ifMyQuery, pGroup);
 		}
+		populateSharedQueryIds(sharedQueryCollection, pQueryId, csmUserId,
+				owners);
+	}
+
+	/**
+	 * @param sharedQueryCollection collection
+	 * @param pQueryId query identifier
+	 * @param ifMyQuery ifMyQuery
+	 * @param pGroup protection group
+	 */
+	private static void populateQueriesForPublicGroup(
+			Collection<Long> sharedQueryCollection, Long pQueryId,
+			boolean ifMyQuery, ProtectionGroup pGroup)
+	{
+		if (pGroup.getProtectionGroupName().equals(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP)
+				&& !ifMyQuery)
+		{
+			sharedQueryCollection.add(pQueryId);
+		}
+	}
+
+	/**
+	 * @param sharedQueryCollection collection
+	 * @param pQueryId query identifier
+	 * @param csmUserId user identifier
+	 * @param owners owners
+	 */
+	private static void populateSharedQueryIds(
+			Collection<Long> sharedQueryCollection, Long pQueryId,
+			String csmUserId, Set<User> owners)
+	{
 		for (User user : owners)
 		{
 			if(user.getUserId().toString().equals(csmUserId))
@@ -215,7 +243,7 @@ public class CsmUtility
 			}
 			catch (BizLogicException e)
 			{
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 		return queries;

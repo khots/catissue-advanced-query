@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 package edu.wustl.query.util.querysuite;
@@ -20,6 +20,10 @@ import edu.wustl.query.util.global.AQConstants;
 public class TemporalQueryUtility
 {
 
+	/**
+	 * Get relational operators.
+	 * @return relationalOperatorsList
+	 */
 	public static List<String> getRelationalOperators()
 	{
 		/**
@@ -46,6 +50,10 @@ public class TemporalQueryUtility
 		return relationalOperatorsList;
 	}
 
+	/**
+	 * Get list of time intervals.
+	 * @return timeIntervalList
+	 */
 	public static List<String> getTimeIntervals()
 	{
 		List<String> timeIntervalList = new ArrayList<String>();
@@ -64,6 +72,11 @@ public class TemporalQueryUtility
 		return timeIntervalList;
 	}
 
+	/**
+	 * Get time interval.
+	 * @param timeIntervalValue timeIntervalValue
+	 * @return timeInterval
+	 */
 	public static TimeInterval getTimeInterval(String timeIntervalValue)
 	{
 		TimeInterval timeInterval = null;
@@ -78,6 +91,11 @@ public class TemporalQueryUtility
 		return timeInterval;
 	}
 
+	/**
+	 * Get relational operator.
+	 * @param relationalOp relational operator
+	 * @return relOp
+	 */
 	public static RelationalOperator getRelationalOperator(String relationalOp)
 	{
 		RelationalOperator relOp = null;
@@ -91,5 +109,4 @@ public class TemporalQueryUtility
 		}
 		return relOp;
 	}
-
 }
