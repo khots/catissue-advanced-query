@@ -181,8 +181,7 @@ public class UpgradeSavedQueries
 	{
 		ISecurityManager securityManager = SecurityManagerFactory
 				.getSecurityManager();
-		User user = securityManager.getUser(name);
-		return user;
+		return securityManager.getUser(name);
 	}
 
 	/**

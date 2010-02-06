@@ -17,13 +17,13 @@ public class QueryShoppingCart
 {
 
 	//List that will store attribute list of records added to shopping cart.
-	List<AttributeInterface> cartAttributeList;
+	private List<AttributeInterface> cartAttributeList;
 
 	//List of columns that should be displayed on cart.
-	List<String> columnList;
+	private List<String> columnList;
 
 	//List that will store actual data of records added to cart.
-	List<List<String>> cart;
+	private List<List<String>> cart;
 
 	public QueryShoppingCart()
 	{
