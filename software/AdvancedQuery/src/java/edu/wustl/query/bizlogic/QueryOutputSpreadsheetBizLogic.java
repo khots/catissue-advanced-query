@@ -740,7 +740,8 @@ public class QueryOutputSpreadsheetBizLogic
 			for (QueryOutputTreeAttributeMetadata metaData : selectedAttributeMetaDataList)
 			{
 				AttributeInterface attribute = metaData.getAttribute();
-				if (metaData.getAttribute().equals(outputAttribute.getAttribute()))
+				if (metaData.getAttribute().equals(outputAttribute.getAttribute())
+					&& metaData.getTreeDataNode().getExpressionId() == outputAttribute.getExpression().getExpressionId())
 				{
 					NameValueBean nameValueBean = new NameValueBean();
 					QueryResultObjectDataBean queryResultObjectDataBean = queryResultObjectDataBeanMap
@@ -778,8 +779,7 @@ public class QueryOutputSpreadsheetBizLogic
 					}
 					else
 					{
-						String sqlColumnName = queryDetailsObj.
-						getAttributeColumnNameMap().get(attribute);
+						String sqlColumnName = metaData.getColumnName();
 						sqlColumnNames.append(sqlColumnName);
 						sqlColumnNames.append(", ");
 						String columnDisplayName = metaData.getDisplayName();
