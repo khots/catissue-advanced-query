@@ -394,54 +394,78 @@ public class TwoNodesTemporalQuery
 	 */
 	public void createExpressions(boolean isJoinQuery)
 	{
-		boolean isDate = false;
 		//If Both attributes have type
 		if (firstAttributeType.equals(secondAttributeType))
 		{
-			if(isJoinQuery && AQConstants.DATE_TYPE.equals(firstAttributeType))
-			{
-				isDate = true;
-			}
-			IExpression1 = QueryObjectFactory.createExpressionAttribute(srcIExpression,
-					srcAttributeById, isDate);
-			IExpression2 = QueryObjectFactory.createExpressionAttribute(destIExpression,
-					destAttributeById, isDate);
+			createExpressionsForSameType(isJoinQuery);
 		}
 		else
 		{
 			//If The attribute type is of type Date
 			if (firstAttributeType.equals(AQConstants.DATE_TYPE))
 			{
-				IExpression1 = QueryObjectFactory.createExpressionAttribute(srcIExpression,
-						srcAttributeById, false);
-				if (qAttrInterval2 == null)
-				{
-					dateOffsetAttr2 = QueryObjectFactory.createDateOffsetAttribute
-					(destIExpression,destAttributeById, TimeInterval.Day);
-				}
-				else
-				{
-					dateOffsetAttr2 = QueryObjectFactory.createDateOffsetAttribute
-					(destIExpression,destAttributeById, qAttrInterval2);
-				}
+				processForDateTypeAttribute();
 			}
 			else
 			{
-				IExpression2 = QueryObjectFactory.createExpressionAttribute(destIExpression,
-						destAttributeById, false);
-				if (qAttrInterval1 == null)
-				{
-					dateOffsetAttr1 = QueryObjectFactory.createDateOffsetAttribute
-					(srcIExpression,srcAttributeById, TimeInterval.Day);
-				}
-				else
-				{
-					dateOffsetAttr1 = QueryObjectFactory.createDateOffsetAttribute
-					(srcIExpression,srcAttributeById, qAttrInterval1);
-				}
-
+				setDateOffsetAttribute();
 			}
 		}
+	}
+
+	/**
+	 * Set date offset attribute.
+	 */
+	private void setDateOffsetAttribute()
+	{
+		IExpression2 = QueryObjectFactory.createExpressionAttribute(destIExpression,
+				destAttributeById, false);
+		if (qAttrInterval1 == null)
+		{
+			dateOffsetAttr1 = QueryObjectFactory.createDateOffsetAttribute
+			(srcIExpression,srcAttributeById, TimeInterval.Day);
+		}
+		else
+		{
+			dateOffsetAttr1 = QueryObjectFactory.createDateOffsetAttribute
+			(srcIExpression,srcAttributeById, qAttrInterval1);
+		}
+	}
+
+	/**
+	 * Process for date type attribute.
+	 */
+	private void processForDateTypeAttribute()
+	{
+		IExpression1 = QueryObjectFactory.createExpressionAttribute(srcIExpression,
+				srcAttributeById, false);
+		if (qAttrInterval2 == null)
+		{
+			dateOffsetAttr2 = QueryObjectFactory.createDateOffsetAttribute
+			(destIExpression,destAttributeById, TimeInterval.Day);
+		}
+		else
+		{
+			dateOffsetAttr2 = QueryObjectFactory.createDateOffsetAttribute
+			(destIExpression,destAttributeById, qAttrInterval2);
+		}
+	}
+
+	/**
+	 * @param isJoinQuery
+	 * @param isDate
+	 */
+	private void createExpressionsForSameType(boolean isJoinQuery)
+	{
+		boolean isDate = false;
+		if(isJoinQuery && AQConstants.DATE_TYPE.equals(firstAttributeType))
+		{
+			isDate = true;
+		}
+		IExpression1 = QueryObjectFactory.createExpressionAttribute(srcIExpression,
+				srcAttributeById, isDate);
+		IExpression2 = QueryObjectFactory.createExpressionAttribute(destIExpression,
+				destAttributeById, isDate);
 	}
 
 	/**

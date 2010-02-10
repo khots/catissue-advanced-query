@@ -88,12 +88,12 @@ public class DAGResolveAmbiguity
 	{
 		if(sourceEntity != null && destinationEntity != null)
 		{
-			System.out.println("In getPaths() of DAGResolveAmbiguity.....sourceEntity" +
+			Logger.out.info("In getPaths() of DAGResolveAmbiguity.....sourceEntity" +
 			" : "+sourceEntity.getName()+"  destinationEntity : "+destinationEntity.getName());
 		}
 		else
 		{
-			System.out.println("In getPaths() of DAGResolveAmbiguity.....null sourceEntity" +
+			Logger.out.info("In getPaths() of DAGResolveAmbiguity.....null sourceEntity" +
 					" : "+sourceEntity+"....  null destinationEntity : "+destinationEntity);
 		}
 		Set<ICuratedPath> allCuratedPaths = m_pathFinder.getCuratedPaths(sourceEntity,
