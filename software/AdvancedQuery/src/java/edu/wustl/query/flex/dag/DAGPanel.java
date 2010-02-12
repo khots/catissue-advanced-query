@@ -1306,7 +1306,7 @@ public class DAGPanel
 		int srcExpressionId = node.getFirstNodeExpId();
 		tqBean.setSrcExpressionId(srcExpressionId);
 		IExpression srcIExpression = constraints.getExpression(srcExpressionId);
-		//Setting the src IExpression
+		//Setting the source IExpression
 		tqBean.setSrcIExpression(srcIExpression);
 		tqBean.setSrcAttributeById(getAttributeIdentifier(query, node.getFirstNodeExpId(), node
 				.getFirstSelectedAttrId()));
@@ -1314,14 +1314,14 @@ public class DAGPanel
 		tqBean.setDestExpressionId(destExpressionId);
 		tqBean.setDestAttributeById(getAttributeIdentifier(query, node.getSecondNodeExpId(), node
 				.getSecondSelectedAttrId()));
-		//Setting the dest IExpression
+		//Setting the destination IExpression
 		tqBean.setDestIExpression(constraints.getExpression(destExpressionId));
 		//Setting the attribute Types
 		tqBean.setFirstAttributeType(node.getFirstSelectedAttrType());
 		tqBean.setSecondAttributeType(node.getSecondSelectedAttrType());
 		//Setting the Arithmetic operator
 		tqBean.setArithOp(getArithmeticOperator(node.getSelectedArithmeticOp()));
-		//Setting the Relational Ops
+		//Setting the Relational Operator
 		tqBean.setRelOp(getRelationalOperator(node.getSelectedLogicalOp()));
 
 		setQAttrInterval(node, tqBean);
@@ -1501,60 +1501,6 @@ public class DAGPanel
 		}
 	}
 
-	/*private void updateJoinQueryUIBean(JoinFormulaNode joinFormulaNode, String joinQueryNodeId)
-	{
-		String id = joinFormulaNode.getName();
-		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
-		HttpSession session = request.getSession();
-
-		Map<String, Map<String, JoinFormulaUIBean>> JQUIMap = (Map<String, Map<String, JoinFormulaUIBean>>) session
-				.getAttribute(DAGConstant.JQUIMap);
-		if (JQUIMap != null)
-		{
-			Map<String, JoinFormulaUIBean> formulaMap = JQUIMap.get(joinQueryNodeId);
-			JoinFormulaUIBean joinFormulaUIBean = formulaMap.get(joinFormulaNode.getName());
-
-			if (joinFormulaUIBean != null)
-			{
-				if (joinFormulaUIBean.getJoinFormulaNode() != null)
-				{
-					joinFormulaUIBean.setJoinFormulaNode(joinFormulaNode);
-				}
-			}
-
-		}
-	}*/
-
-	/*private IOutputTerm createOutputTerm(String operation, String nodeId)
-	{
-		if (operation.equals(AQConstants.ADD))
-		{
-			return QueryObjectFactory.createOutputTerm();
-		}
-		else
-		{
-			return getExistingOutputTerm(nodeId);
-		}
-	}*/
-
-	/*private IOutputTerm getExistingOutputTerm(String nodeId)
-	{
-		IOutputTerm outputTerm = null;
-		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
-		HttpSession session = request.getSession();
-		Map<String, CustomFormulaUIBean> TQUIMap = (Map<String, CustomFormulaUIBean>) session
-				.getAttribute("TQUIMap");
-		if (TQUIMap != null)
-		{
-			CustomFormulaUIBean customFormulaUIBean = TQUIMap.get(nodeId);
-			if (customFormulaUIBean.isCalculatedResult())
-			{
-				outputTerm = customFormulaUIBean.getOutputTerm();
-			}
-		}
-		return outputTerm;
-	}*/
-
 	/**
 	 * @param customFormula customFormula
 	 * @param twoNode twoNode
@@ -1722,7 +1668,7 @@ public class DAGPanel
 
 	/**
 	 * Populate UI map for Temporal Query.
-	 * @param identifier id
+	 * @param identifier identifier
 	 * @param customFormulaUIBean customFormulaUIBean
 	 */
 	private void populateUIMap(String identifier, CustomFormulaUIBean customFormulaUIBean)
@@ -1762,10 +1708,9 @@ public class DAGPanel
 	private ICustomFormula getCustomFormula(ICustomFormula customFormula,
 			TwoNodesTemporalQuery tqBean)
 	{
-		//ICustomFormula customFormula = QueryObjectFactory.createCustomFormula();
 		if (tqBean.getRhsTerm() == null)
 		{
-			//Then custom formula will have only lhs and relational Operator
+			//Then custom formula will have only LHS and relational Operator
 			customFormula.setLhs(tqBean.getLhsTerm());
 			customFormula.setOperator(tqBean.getRelOp());
 		}
@@ -1825,7 +1770,6 @@ public class DAGPanel
 			if (joinFormulaUIBean != null)
 			{
 				customFormula = joinFormulaUIBean.getICustomFormula();
-				//deleteOutputTerm(customFormulaUIBean);
 			}
 		}
 		return customFormula;
@@ -1959,7 +1903,7 @@ public class DAGPanel
 	/**
 	 * @param isValid isValid
 	 * @param attribute attribute
-	 * @return <CODE>true</CODE> attribute and its datatype is valid,
+	 * @return <CODE>true</CODE> attribute and its data type is valid,
 	 * <CODE>false</CODE> otherwise
 	 */
 	private boolean checkSrcNodeDateAttribute(boolean isValid, AttributeInterface attribute)
@@ -2122,19 +2066,33 @@ public class DAGPanel
 			}
 			else
 			{
-				if ((destDataType.equals(AQConstants.INTEGER_TYPE)
-						|| destDataType.equals(AQConstants.LONG_TYPE)
-						|| destDataType.equals(AQConstants.DOUBLE_TYPE)
-						|| destDataType.equals(AQConstants.FLOAT_TYPE) || destDataType
-						.equals(AQConstants.SHORT_TYPE))
-						&& (!attribute.getName().equals("id")))
-				{
-					destNodeList = new ArrayList<String>();
-					destNodeList.add(0, attribute.getId().toString());
-					destNodeList.add(1, AQConstants.INTEGER_TYPE);
-					destNodeAttributesMap.put(attribute.getName(), destNodeList);
-				}
+				populateMapForPrimitiveTypes(destNodeAttributesMap, attribute,
+						destDataType);
 			}
+		}
+	}
+
+	/**
+	 * @param destNodeAttributesMap Map
+	 * @param attribute attribute
+	 * @param destDataType destination data type
+	 */
+	private void populateMapForPrimitiveTypes(
+			Map<String, List<String>> destNodeAttributesMap,
+			AttributeInterface attribute, String destDataType)
+	{
+		List<String> destNodeList;
+		if ((destDataType.equals(AQConstants.INTEGER_TYPE)
+				|| destDataType.equals(AQConstants.LONG_TYPE)
+				|| destDataType.equals(AQConstants.DOUBLE_TYPE)
+				|| destDataType.equals(AQConstants.FLOAT_TYPE) || destDataType
+				.equals(AQConstants.SHORT_TYPE))
+				&& (!attribute.getName().equals("id")))
+		{
+			destNodeList = new ArrayList<String>();
+			destNodeList.add(0, attribute.getId().toString());
+			destNodeList.add(1, AQConstants.INTEGER_TYPE);
+			destNodeAttributesMap.put(attribute.getName(), destNodeList);
 		}
 	}
 
@@ -2147,7 +2105,7 @@ public class DAGPanel
 	{
 		List<String> destNodeList;
 		/**
-		 * Storing all attributes of destination entity having DataType as Date
+		 * Storing all attributes of destination entity having DataType as Date.
 		 */
 		for (AttributeInterface attribute : destAttributeCollection)
 		{
@@ -2169,7 +2127,7 @@ public class DAGPanel
 	{
 		List<String> arithmeticOperatorList = new ArrayList<String>();
 		/**
-		 * Getting all arithmetic operators
+		 * Getting all arithmetic operators.
 		 */
 		for (ArithmeticOperator operator : ArithmeticOperator.values())
 		{
@@ -2241,7 +2199,6 @@ public class DAGPanel
 				if (iCusFormula != null)
 				{
 					IConstraints constraints = query.getConstraints();
-					//deleteOutputTerm(customFormulaUIBean);
 					for (IExpression expression2 : constraints)
 					{
 						expression2.removeOperand(iCusFormula);
@@ -2330,29 +2287,17 @@ public class DAGPanel
 	{
 		//TODO required to modify code logic will not work for multiple association
 		int sourceexpressionId = sourceNode.getExpressionId();
-		//IExpressionId destexpressionId = new ExpressionId(destNode
-		//.getExpressionId());
 
 		// If the first association is added, put operator between attribute condition and association
 		String operator = null;
-		// if (sourcePort == null) {
+
 		operator = sourceNode.getOperatorBetweenAttrAndAssociation();
-		//} else { // Get the logical operator associated with previous association
-		//   operator = sourceNode.getLogicalOperator(sourcePort);
-		// }
 
 		// Get the expressionId between which to add logical operator
 		int destId = link.getLogicalConnectorExpressionId();
 
 		mQueryObject.setLogicalConnector(sourceexpressionId, destId,
 				edu.wustl.cab2b.client.ui.query.Utility.getLogicalOperator(operator), false);
-
-		// Put appropriate parenthesis
-		// The code is required for multiple associations
-		//if (sourcePort != null) {
-		//IExpressionId previousExpId = link.getLogicalConnectorExpressionId();
-		//m_queryObject.addParenthesis(sourceexpressionId, previousExpId, destId);
-		// }
 	}
 
 	/**
@@ -2387,7 +2332,7 @@ public class DAGPanel
 	}
 
 	/**
-	 * Generates sql query.
+	 * Generates SQL query.
 	 * @return error code
 	 */
 	public int search()
@@ -2442,7 +2387,6 @@ public class DAGPanel
 		int customNodeNumber = 1;
 		boolean isContains = false;
 		Set keySet = tQUIMap.keySet();
-
 		if (keySet.isEmpty())
 		{
 			//This is the Initial case
@@ -2493,19 +2437,52 @@ public class DAGPanel
 		mQueryObject.setQuery(query);
 		IConstraints constraints = query.getConstraints();
 		positionMap = new QueryNodeLocator(DAGConstant.FOUR_HUNDRED, query).getPositionMap();
+		setRepaintAttribute(session);
+		Set<Integer> visibleExpression = populateNodeList(nodeList, constraints);
+		Map<String, CustomFormulaUIBean> tQUIMap = (Map<String, CustomFormulaUIBean>) session
+				.getAttribute(DAGConstant.TQUIMap);
+		Map<String, Map<String, JoinFormulaUIBean>> jQUIMap =
+			(Map<String, Map<String, JoinFormulaUIBean>>) session
+				.getAttribute(DAGConstant.JQUIMap);
+
+		if (tQUIMap == null && jQUIMap == null)
+		{
+			repaintFromSavedQuery(customNodeList, sNcustomNodeList, joinQueryNodeList, session,
+					query, constraints, visibleExpression, tQUIMap, jQUIMap);
+		}
+		else
+		{
+			repaintFromSessionQuery(customNodeList, sNcustomNodeList, joinQueryNodeList, query,
+					constraints, visibleExpression, tQUIMap, jQUIMap);
+		}
+		nodeMap.put(DAGConstant.DAG_NODE_LIST, nodeList);
+		nodeMap.put(DAGConstant.CUSTOM_FORMULA_NODE_LIST, customNodeList);
+		nodeMap.put(DAGConstant.SINGLE_NODE_CUSTOM_FORMULA_NODE_LIST, sNcustomNodeList);
+		nodeMap.put(DAGConstant.JOIN_QUERY_NODE_LIST, joinQueryNodeList);
+		return nodeMap;
+	}
+
+	/**
+	 * @param session session
+	 */
+	private void setRepaintAttribute(HttpSession session)
+	{
 		String isRepaint = (String) session.getAttribute(DAGConstant.ISREPAINT);
 		if ((isRepaint == null) || (isRepaint.equals(DAGConstant.ISREPAINT_FALSE)))
 		{
 			session.setAttribute(DAGConstant.ISREPAINT, DAGConstant.ISREPAINT_TRUE);
 		}
-		Set<Integer> visibleExpression = new HashSet<Integer>();
-		for (IExpression expression : constraints)
-		{
-			if (expression.isVisible())
-			{
-				visibleExpression.add(Integer.valueOf(expression.getExpressionId()));
-			}
-		}
+	}
+
+	/**
+	 * @param nodeList nodeList
+	 * @param constraints constraints
+	 * @return visibleExpression
+	 */
+	private Set<Integer> populateNodeList(List<DAGNode> nodeList,
+			IConstraints constraints)
+	{
+		Set<Integer> visibleExpression = addVisibleExpressions(constraints);
 		for (Integer expressionId : visibleExpression)
 		{
 			IExpression exp = constraints.getExpression(expressionId.intValue());
@@ -2528,28 +2505,24 @@ public class DAGPanel
 			}
 			nodeList.add(dagNode);
 		}
-		Map<String, CustomFormulaUIBean> tQUIMap = (Map<String, CustomFormulaUIBean>) session
-				.getAttribute(DAGConstant.TQUIMap);
-		Map<String, Map<String, JoinFormulaUIBean>> jQUIMap =
-			(Map<String, Map<String, JoinFormulaUIBean>>) session
-				.getAttribute(DAGConstant.JQUIMap);
+		return visibleExpression;
+	}
 
-		if (tQUIMap == null && jQUIMap == null)
+	/**
+	 * @param constraints constraints
+	 * @return visibleExpression
+	 */
+	private Set<Integer> addVisibleExpressions(IConstraints constraints)
+	{
+		Set<Integer> visibleExpression = new HashSet<Integer>();
+		for (IExpression expression : constraints)
 		{
-			repaintFromSavedQuery(customNodeList, sNcustomNodeList, joinQueryNodeList, session,
-					query, constraints, visibleExpression, tQUIMap, jQUIMap);
+			if (expression.isVisible())
+			{
+				visibleExpression.add(Integer.valueOf(expression.getExpressionId()));
+			}
 		}
-		else
-		{
-			repaintFromSessionQuery(customNodeList, sNcustomNodeList, joinQueryNodeList, query,
-					constraints, visibleExpression, tQUIMap, jQUIMap);
-		}
-
-		nodeMap.put(DAGConstant.DAG_NODE_LIST, nodeList);
-		nodeMap.put(DAGConstant.CUSTOM_FORMULA_NODE_LIST, customNodeList);
-		nodeMap.put(DAGConstant.SINGLE_NODE_CUSTOM_FORMULA_NODE_LIST, sNcustomNodeList);
-		nodeMap.put(DAGConstant.JOIN_QUERY_NODE_LIST, joinQueryNodeList);
-		return nodeMap;
+		return visibleExpression;
 	}
 
 	/**
@@ -2630,52 +2603,63 @@ public class DAGPanel
 					}
 					if (jQUIMap != null)
 					{
-						String id1 = null;
-						String id2 = null;
-
-						Set keySet = jQUIMap.keySet();
-						Iterator keySetItr = keySet.iterator();
-						while (keySetItr.hasNext())
-						{
-							String key = (String) keySetItr.next();
-							JoinQueryNode joinQueryNode = new JoinQueryNode();
-							List<JoinFormulaNode> joinFormulaList = new ArrayList<JoinFormulaNode>();
-							String[] ids = key.split("_");
-							boolean flag = false;
-							for (ICustomFormula c : customFormulas)
-							{
-								flag = sessionQTwoNodesJNode(joinFormulaList,
-										jQUIMap, c, key);
-							}
-							if (flag)
-							{
-								id1 = ids[1];
-								id2 = ids[2];
-								IExpression exp1 = constraints.getExpression(Integer
-										.parseInt(id1));
-								IExpression exp2 = constraints.getExpression(Integer
-										.parseInt(id2));
-								IQueryEntity constraintEntity1 = exp1.getQueryEntity();
-								IQueryEntity constraintEntity2 = exp2.getQueryEntity();
-								String firstEntityName = edu.wustl.cab2b.common.util.Utility
-								.getOnlyEntityName(constraintEntity1
-										.getDynamicExtensionsEntity());
-								String secondEntityName = edu.wustl.cab2b.common.util.Utility
-								.getOnlyEntityName(constraintEntity2
-										.getDynamicExtensionsEntity());
-								joinQueryNode.setFirstNodeExpressionId(Integer.parseInt(id1));
-								joinQueryNode.setSecondNodeExpressionId(Integer.parseInt(id2));
-								joinQueryNode.setFirstEntityName(firstEntityName);
-								joinQueryNode.setSecondEntityName(secondEntityName);
-								joinQueryNode.setJoinFormulaNodeList(joinFormulaList);
-								joinQueryNode.setOperation("rePaint");
-								joinQueryNode.setNodeView("AddLimit");
-								joinQueryNode.setName(key);
-								joinQueryNodeList.add(joinQueryNode);
-							}
-						}
+						populateJoinQueryNodeList(joinQueryNodeList,
+								constraints, jQUIMap, customFormulas);
 					}
 				}
+			}
+		}
+	}
+
+	/**
+	 * @param joinQueryNodeList joinQueryNodeList
+	 * @param constraints
+	 * @param jQUIMap join query map
+	 * @param customFormulas custom formulae
+	 */
+	private void populateJoinQueryNodeList(
+			List<JoinQueryNode> joinQueryNodeList, IConstraints constraints,
+			Map<String, Map<String, JoinFormulaUIBean>> jQUIMap,
+			Set<ICustomFormula> customFormulas)
+	{
+		String id1 = null;
+		String id2 = null;
+		Set keySet = jQUIMap.keySet();
+		Iterator keySetItr = keySet.iterator();
+		while (keySetItr.hasNext())
+		{
+			String key = (String) keySetItr.next();
+			JoinQueryNode joinQueryNode = new JoinQueryNode();
+			List<JoinFormulaNode> joinFormulaList = new ArrayList<JoinFormulaNode>();
+			String[] ids = key.split("_");
+			boolean flag = false;
+			for (ICustomFormula c : customFormulas)
+			{
+				flag = sessionQTwoNodesJNode(joinFormulaList, jQUIMap, c, key);
+			}
+			if (flag)
+			{
+				id1 = ids[1];
+				id2 = ids[2];
+				IExpression exp1 = constraints.getExpression(Integer.parseInt(id1));
+				IExpression exp2 = constraints.getExpression(Integer.parseInt(id2));
+				IQueryEntity constraintEntity1 = exp1.getQueryEntity();
+				IQueryEntity constraintEntity2 = exp2.getQueryEntity();
+				String firstEntityName = edu.wustl.cab2b.common.util.Utility
+				.getOnlyEntityName(constraintEntity1
+						.getDynamicExtensionsEntity());
+				String secondEntityName = edu.wustl.cab2b.common.util.Utility
+				.getOnlyEntityName(constraintEntity2
+						.getDynamicExtensionsEntity());
+				joinQueryNode.setFirstNodeExpressionId(Integer.parseInt(id1));
+				joinQueryNode.setSecondNodeExpressionId(Integer.parseInt(id2));
+				joinQueryNode.setFirstEntityName(firstEntityName);
+				joinQueryNode.setSecondEntityName(secondEntityName);
+				joinQueryNode.setJoinFormulaNodeList(joinFormulaList);
+				joinQueryNode.setOperation("rePaint");
+				joinQueryNode.setNodeView("AddLimit");
+				joinQueryNode.setName(key);
+				joinQueryNodeList.add(joinQueryNode);
 			}
 		}
 	}

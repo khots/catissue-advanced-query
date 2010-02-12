@@ -26,39 +26,102 @@ import edu.wustl.query.util.global.AQConstants;
  */
 public class TwoNodesTemporalQuery
 {
-
+	/**
+	 * Date offset attribute 1.
+	 */
 	private IDateOffsetAttribute dateOffsetAttr1 = null;
+	/**
+	 * Date offset attribute 2.
+	 */
 	private IDateOffsetAttribute dateOffsetAttr2 = null;
-	private IExpressionAttribute IExpression1 = null;
-	private IExpressionAttribute IExpression2 = null;
+	/**
+	 * First expression.
+	 */
+	private IExpressionAttribute iExpression1 = null;
+	/**
+	 * Second Expression.
+	 */
+	private IExpressionAttribute iExpression2 = null;
+	/**
+	 * Date offset literal.
+	 */
 	private IDateOffsetLiteral dateOffSetLiteral = null;
+	/**
+	 * Date literal.
+	 */
 	private ILiteral dateLiteral = null;
+	/**
+	 * LHS Term.
+	 */
 	private ITerm lhsTerm = null;
+	/**
+	 * RHS Term.
+	 */
 	private ITerm rhsTerm = null;
+	/**
+	 * IConnector object.
+	 */
 	private IConnector iCon = null;
+	/**
+	 * Custom Formula.
+	 */
 	private ICustomFormula customFormula = null;
+	/**
+	 * Source expression.
+	 */
 	private IExpression srcIExpression = null;
+	/**
+	 * Destination expression.
+	 */
 	private IExpression destIExpression = null;
-
+	/**
+	 * Arithmetic operator.
+	 */
 	private ArithmeticOperator arithOp = null;
+	/**
+	 * Relational operator.
+	 */
 	private RelationalOperator relOp = null;
+	/**
+	 * Source attribute identifier.
+	 */
 	private int srcExpressionId = 0;
+	/**
+	 * Destination attribute identifier.
+	 */
 	private int destExpressionId = 0;
-
+	/**
+	 * Source attribute.
+	 */
 	private AttributeInterface srcAttributeById = null;
+	/**
+	 * Destination attribute.
+	 */
 	private AttributeInterface destAttributeById = null;
-
+	/**
+	 * Data type of first data type.
+	 */
 	private String firstAttributeType = null;
+	/**
+	 * Data type of second attribute.
+	 */
 	private String secondAttributeType = null;
 
+	/**
+	 * time interval.
+	 */
 	private TimeInterval timeInterval = null;
 
 	private TimeInterval qAttrInterval1 = null;
 
 	private TimeInterval qAttrInterval2 = null;
-
+	/**
+	 * Numeric literal.
+	 */
 	private INumericLiteral intLiteral = null;
-
+	/**
+	 * Formatter.
+	 */
 	private SimpleDateFormat formatter;
 
 	//private String timeIntervalValue = null;
@@ -281,7 +344,7 @@ public class TwoNodesTemporalQuery
 	 */
 	public IExpressionAttribute getIExpression1()
 	{
-		return IExpression1;
+		return iExpression1;
 	}
 
 	/**
@@ -289,7 +352,7 @@ public class TwoNodesTemporalQuery
 	 */
 	public void setIExpression1(IExpressionAttribute expression1)
 	{
-		IExpression1 = expression1;
+		iExpression1 = expression1;
 	}
 
 	/**
@@ -297,7 +360,7 @@ public class TwoNodesTemporalQuery
 	 */
 	public IExpressionAttribute getIExpression2()
 	{
-		return IExpression2;
+		return iExpression2;
 	}
 
 	/**
@@ -305,7 +368,7 @@ public class TwoNodesTemporalQuery
 	 */
 	public void setIExpression2(IExpressionAttribute expression2)
 	{
-		IExpression2 = expression2;
+		iExpression2 = expression2;
 	}
 
 	/**
@@ -418,7 +481,7 @@ public class TwoNodesTemporalQuery
 	 */
 	private void setDateOffsetAttribute()
 	{
-		IExpression2 = QueryObjectFactory.createExpressionAttribute(destIExpression,
+		iExpression2 = QueryObjectFactory.createExpressionAttribute(destIExpression,
 				destAttributeById, false);
 		if (qAttrInterval1 == null)
 		{
@@ -437,7 +500,7 @@ public class TwoNodesTemporalQuery
 	 */
 	private void processForDateTypeAttribute()
 	{
-		IExpression1 = QueryObjectFactory.createExpressionAttribute(srcIExpression,
+		iExpression1 = QueryObjectFactory.createExpressionAttribute(srcIExpression,
 				srcAttributeById, false);
 		if (qAttrInterval2 == null)
 		{
@@ -462,9 +525,9 @@ public class TwoNodesTemporalQuery
 		{
 			isDate = true;
 		}
-		IExpression1 = QueryObjectFactory.createExpressionAttribute(srcIExpression,
+		iExpression1 = QueryObjectFactory.createExpressionAttribute(srcIExpression,
 				srcAttributeById, isDate);
-		IExpression2 = QueryObjectFactory.createExpressionAttribute(destIExpression,
+		iExpression2 = QueryObjectFactory.createExpressionAttribute(destIExpression,
 				destAttributeById, isDate);
 	}
 
@@ -474,23 +537,31 @@ public class TwoNodesTemporalQuery
 	public void createOnlyLHS()
 	{
 		lhsTerm = QueryObjectFactory.createTerm();
-		if (IExpression1 != null && IExpression2 != null)
+		if (iExpression1 != null && iExpression2 != null)
 		{
-			lhsTerm.addOperand(IExpression1);
-			lhsTerm.addOperand(iCon, IExpression2);
+			lhsTerm.addOperand(iExpression1);
+			lhsTerm.addOperand(iCon, iExpression2);
 		}
 		else
 		{
-			if (IExpression1 != null && dateOffsetAttr2 != null)
-			{
-				lhsTerm.addOperand(IExpression1);
-				lhsTerm.addOperand(iCon, dateOffsetAttr2);
-			}
-			else
-			{
-				lhsTerm.addOperand(IExpression2);
-				lhsTerm.addOperand(iCon, dateOffsetAttr1);
-			}
+			addOperandToLhsTerm();
+		}
+	}
+
+	/**
+	 * Add operand to LHS term.
+	 */
+	private void addOperandToLhsTerm()
+	{
+		if (iExpression1 != null && dateOffsetAttr2 != null)
+		{
+			lhsTerm.addOperand(iExpression1);
+			lhsTerm.addOperand(iCon, dateOffsetAttr2);
+		}
+		else
+		{
+			lhsTerm.addOperand(iExpression2);
+			lhsTerm.addOperand(iCon, dateOffsetAttr1);
 		}
 	}
 
@@ -645,25 +716,16 @@ public class TwoNodesTemporalQuery
 	{
 		lhsTerm = QueryObjectFactory.createTerm();
 		rhsTerm = QueryObjectFactory.createTerm();
-		if (IExpression1 != null && IExpression2 != null)
+		if (iExpression1 != null && iExpression2 != null)
 		{
 			if(iCon ==null)
 			{
-				lhsTerm.addOperand(IExpression1);
-				rhsTerm.addOperand(IExpression2);
+				lhsTerm.addOperand(iExpression1);
+				rhsTerm.addOperand(iExpression2);
 			}
 			else
 			{
-				lhsTerm.addOperand(IExpression1);
-				lhsTerm.addOperand(iCon, IExpression2);
-				if (dateOffSetLiteral != null)
-				{
-					rhsTerm.addOperand(dateOffSetLiteral);
-				}
-				else if (intLiteral != null)
-				{
-					rhsTerm.addOperand(intLiteral);
-				}
+				addOperandsToTerms();
 			}
 		}
 		else
@@ -673,21 +735,37 @@ public class TwoNodesTemporalQuery
 	}
 
 	/**
+	 * Add operands to LHS and RHS terms.
+	 */
+	private void addOperandsToTerms()
+	{
+		lhsTerm.addOperand(iExpression1);
+		lhsTerm.addOperand(iCon, iExpression2);
+		if (dateOffSetLiteral != null)
+		{
+			rhsTerm.addOperand(dateOffSetLiteral);
+		}
+		else if (intLiteral != null)
+		{
+			rhsTerm.addOperand(intLiteral);
+		}
+	}
+
+	/**
 	 * Add operand.
 	 */
 	private void addOperand()
 	{
-		if (IExpression1 != null && dateOffsetAttr2 != null)
+		if (iExpression1 != null && dateOffsetAttr2 != null)
 		{
-			lhsTerm.addOperand(IExpression1);
+			lhsTerm.addOperand(iExpression1);
 			lhsTerm.addOperand(iCon, dateOffsetAttr2);
 			rhsTerm.addOperand(dateLiteral);
-
 		}
 		else
 		{
 			lhsTerm.addOperand(dateOffsetAttr1);
-			lhsTerm.addOperand(iCon, IExpression2);
+			lhsTerm.addOperand(iCon, iExpression2);
 			rhsTerm.addOperand(dateLiteral);
 
 		}
