@@ -41,26 +41,6 @@ import edu.wustl.security.exception.SMException;
  */
 public class QueryOutputTreeBizLogic
 {
-
-    /**
-     * Creates new table which has the same structure and also same data , as the output tree structure has.
-     * @param String selectSql , from this sql , new table will be created .
-     * @param sessionData to be added to table name to have unique table for each session user.
-     * @param String tableName
-     * @throws SQLException
-     * @throws Exception Exception
-     */
-    //Siddharth Shah
-//  public void createOutputTreeTable(String selectSql, QueryDetails queryDetailsObj)
-//          throws DAOException
-//  {
-//      String tableName = AQConstants.TEMP_OUPUT_TREE_TABLE_NAME
-//              + queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
-//      String createTableSql = AQConstants.CREATE_TABLE + tableName + " " + AQConstants.AS + " "
-//              + selectSql;
-//      QueryModuleSqlUtil.executeCreateTable(tableName, createTableSql, queryDetailsObj);
-//  }
-
 	/**
 	 * Creates a temporary table to store query results.
 	 * @param selectSql the query
@@ -120,11 +100,7 @@ public class QueryOutputTreeBizLogic
         Vector<QueryTreeNodeData> treeDataVector = new Vector<QueryTreeNodeData>();
         if (dataList != null && !dataList.isEmpty())
         {
-        	String  size = ""+dataList.size();
-			if(dataList.size()==Variables.maximumTreeNodeLimit)
-			{
-				size = size + "/" +count;
-			}
+        	String size = getTreeSize(dataList, count);
             QueryTreeNodeData treeNode = new QueryTreeNodeData();
             String name = root.getOutputEntity().getDynamicExtensionsEntity().getName();
             name = edu.wustl.query.util.global.Utility.parseClassName(name);
@@ -141,6 +117,22 @@ public class QueryOutputTreeBizLogic
         }
         return treeDataVector;
     }
+
+    /**
+     * Gets the tree size.
+     * @param dataList dataList
+     * @param count count
+     * @return size
+     */
+	private String getTreeSize(List dataList, int count)
+	{
+		String  size = ""+dataList.size();
+		if(dataList.size()==Variables.maximumTreeNodeLimit)
+		{
+			size = size + "/" +count;
+		}
+		return size;
+	}
     /**
      * Updates the root node name and count for root records in audit tables.
      * @param root root node object
