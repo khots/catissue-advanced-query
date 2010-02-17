@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
+import edu.wustl.cab2b.common.cache.AbstractEntityCache;
 import edu.wustl.cab2b.server.path.PathFinder;
 import edu.wustl.common.querysuite.metadata.associations.IInterModelAssociation;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
@@ -37,7 +38,7 @@ public class CommonPathFinder implements IPathFinder
 	 */
 	public CommonPathFinder()
 	{
-		if (pathFinder == null)
+		if (AbstractEntityCache.isCacheReady)
 		{
 			getPathFinder();
 		}

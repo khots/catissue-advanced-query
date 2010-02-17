@@ -601,4 +601,6 @@ public class AQConstants
 
 	public static final String STYLE = "<li><font color='red'> ";
 	public static final String END_STYLE = "</font></li>";
+	public static final String CACHE_ERROR = "cacheError";
+	public static final String TABLESPACE = "tablespace";
 }

@@ -13,12 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
+import edu.wustl.cab2b.common.cache.AbstractEntityCache;
 import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
@@ -48,41 +51,53 @@ public class RetrieveQueryAction extends SecureAction
 	 */
 	public ActionForward executeSecureAction(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
-			{
+	{
 		cleanUpSession(request);
 		ActionForward actionForward = null;
-		DashboardBizLogic dashboardBizLogic = new DashboardBizLogic();
-		String pageOf = (String) request.getParameter(AQConstants.PAGE_OF);
-		SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
-		request.setAttribute("queryOption", pageOf);
+		if(AbstractEntityCache.isCacheReady)
+		{
+			DashboardBizLogic dashboardBizLogic = new DashboardBizLogic();
+			String pageOf = (String) request.getParameter(AQConstants.PAGE_OF);
+			SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
+			request.setAttribute("queryOption", pageOf);
 
-		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession()
-		.getAttribute(edu.wustl.common.util.global.Constants.SESSION_DATA);
-		if(pageOf ==null)
-		{
-			pageOf = "allQueries";
-		}
-		dashboardBizLogic.setDashboardQueries(sessionDataBean, saveQueryForm);
-		Collection<IParameterizedQuery> queries = getQueries(pageOf,
-				saveQueryForm);
-		if(queries == null)
-		{
-			saveQueryForm.setParameterizedQueryCollection(new ArrayList<IParameterizedQuery>());
-			queries = new ArrayList<IParameterizedQuery>();
+			SessionDataBean sessionDataBean = (SessionDataBean) request.getSession()
+			.getAttribute(edu.wustl.common.util.global.Constants.SESSION_DATA);
+			if(pageOf ==null)
+			{
+				pageOf = "allQueries";
+			}
+			dashboardBizLogic.setDashboardQueries(sessionDataBean, saveQueryForm);
+			Collection<IParameterizedQuery> queries = getQueries(pageOf,
+					saveQueryForm);
+			if(queries == null)
+			{
+				saveQueryForm.setParameterizedQueryCollection(new ArrayList<IParameterizedQuery>());
+				queries = new ArrayList<IParameterizedQuery>();
+			}
+			else
+			{
+				saveQueryForm.setParameterizedQueryCollection(queries);
+				Map<Long,DashBoardBean> dashBoardDetails = dashboardBizLogic.
+				getDashBoardDetails(queries,sessionDataBean.getUserId().toString());
+				saveQueryForm.setDashBoardDetailsMap(dashBoardDetails);
+			}
+			createMessage(request, queries);
+			actionForward = actionMapping.findForward(AQConstants.SUCCESS);
+			request.setAttribute(AQConstants.POPUP_MESSAGE, ApplicationProperties
+					.getValue("query.confirmBox.message"));
 		}
 		else
 		{
-			saveQueryForm.setParameterizedQueryCollection(queries);
-			Map<Long,DashBoardBean> dashBoardDetails = dashboardBizLogic.
-			getDashBoardDetails(queries,sessionDataBean.getUserId().toString());
-			saveQueryForm.setDashBoardDetailsMap(dashBoardDetails);
+			ActionErrors errors = new ActionErrors();
+			String errorMessage = ApplicationProperties.getValue("entityCache.error");
+			ActionError error = new ActionError("query.errors.item",errorMessage);
+			errors.add(ActionErrors.GLOBAL_ERROR, error);
+			saveErrors(request, errors);
+			actionForward = actionMapping.findForward(AQConstants.CACHE_ERROR);
 		}
-		createMessage(request, queries);
-		actionForward = actionMapping.findForward(AQConstants.SUCCESS);
-		request.setAttribute(AQConstants.POPUP_MESSAGE, ApplicationProperties
-				.getValue("query.confirmBox.message"));
 		return actionForward;
-			}
+	}
 	/**
 	 * Gets the appropriate list of queries as per the request
 	 * @param pageOf page of

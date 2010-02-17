@@ -4,16 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Properties;
 
-import javax.naming.InitialContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
-import javax.sql.DataSource;
 
-import edu.wustl.cab2b.server.path.PathFinder;
 import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -57,10 +52,6 @@ public class QueryCoreServletContextListenerUtil
 	            CommonServiceLocator.getInstance().setAppHome(sce.getServletContext().getRealPath(""));
 	            setGlobalVariable();
 	            Utility.setReadDeniedAndEntitySqlMap();
-
-	            //Added by Baljeet....This method caches all the Meta data
-	            initEntityCache(jndiName);
-
 	        }
 	        catch (Exception e)
 	        {
@@ -70,45 +61,6 @@ public class QueryCoreServletContextListenerUtil
 	        }
 	        logger.info("exit from contextInitialized method of query...jndiname : "+jndiName);
 	    }
-
-	/**
-	 * Initializes the entity cache.
-	 * @param jndiName the jndi name
-	 */
-	private static void initEntityCache(String jndiName)
-	{
-		Connection conn = null;
-		try
-		{
-			//Added for initializing PathFinder and EntityCache
-			InitialContext ctx = new InitialContext();
-			DataSource dataSource = (DataSource) ctx.lookup(jndiName);
-			conn = dataSource.getConnection();
-			logger.info("Before PathFinder Call QueryCoreServletCOntextListenerUtil......Connection : "+conn);
-			PathFinder.getInstance(conn);
-			logger.info("After PathFinder Call in QueryCoreServletCOntextListenerUtil......Connection : "+conn);
-		}
-		catch (Exception e)
-		{
-			logger.error(e.getMessage());
-			logger.error("Exception occured while initialising entity cache");
-		}
-		finally
-		{
-			try
-			{
-				if(conn != null)
-				{
-					conn.close();
-				}
-			}
-			catch (SQLException e)
-			{
-				logger.error(e.getMessage());
-			}
-		}
-
-	}
 
 	/**
 	 * Sets the global variable.

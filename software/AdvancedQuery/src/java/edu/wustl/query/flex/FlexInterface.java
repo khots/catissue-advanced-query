@@ -509,8 +509,11 @@ public class FlexInterface {
 	{
 		queryObject = new ClientQueryBuilder();
 		IPathFinder pathFinder = new CommonPathFinder();
-		dagPanel = new DAGPanel(pathFinder);
-		dagPanel.setQueryObject(queryObject);
+		if(pathFinder != null)
+		{
+			dagPanel = new DAGPanel(pathFinder);
+			dagPanel.setQueryObject(queryObject);
+		}
 	}
 
 	private IClientQueryBuilderInterface queryObject = null;

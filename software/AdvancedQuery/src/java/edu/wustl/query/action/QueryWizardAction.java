@@ -5,11 +5,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.wustl.cab2b.common.cache.AbstractEntityCache;
 import edu.wustl.common.action.SecureAction;
+import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.util.global.AQConstants;
@@ -35,22 +39,35 @@ public class QueryWizardAction extends SecureAction
 	public ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		HttpSession session = request.getSession();
-		CategorySearchForm searchForm = (CategorySearchForm) form;
-		session.removeAttribute(AQConstants.QUERY_OBJECT);
-		session.removeAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
-		session.removeAttribute(AQConstants.IS_SAVED_QUERY);
-		session.removeAttribute(AQConstants.IS_SIMPLE_SEARCH);
-		session.removeAttribute(DAGConstant.ISREPAINT);
-		session.removeAttribute(DAGConstant.TQUIMap);
-		session.removeAttribute(DAGConstant.JQUIMap);
-		session.removeAttribute(AQConstants.EXPORT_DATA_LIST);
-		session.removeAttribute(AQConstants.ENTITY_IDS_MAP);
-		session.removeAttribute(AQConstants.AUDIT_EVENT_ID);
-		session.removeAttribute("savedQuery");
-		session.removeAttribute("savedQueryProcessed");
-		searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
-		return mapping.findForward(edu.wustl.query.util.global.AQConstants.SUCCESS);
+		ActionForward actionForward = null;
+		if(AbstractEntityCache.isCacheReady)
+		{
+			HttpSession session = request.getSession();
+			CategorySearchForm searchForm = (CategorySearchForm) form;
+			session.removeAttribute(AQConstants.QUERY_OBJECT);
+			session.removeAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
+			session.removeAttribute(AQConstants.IS_SAVED_QUERY);
+			session.removeAttribute(AQConstants.IS_SIMPLE_SEARCH);
+			session.removeAttribute(DAGConstant.ISREPAINT);
+			session.removeAttribute(DAGConstant.TQUIMap);
+			session.removeAttribute(DAGConstant.JQUIMap);
+			session.removeAttribute(AQConstants.EXPORT_DATA_LIST);
+			session.removeAttribute(AQConstants.ENTITY_IDS_MAP);
+			session.removeAttribute(AQConstants.AUDIT_EVENT_ID);
+			session.removeAttribute("savedQuery");
+			session.removeAttribute("savedQueryProcessed");
+			searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
+			actionForward = mapping.findForward(edu.wustl.query.util.global.AQConstants.SUCCESS);
+		}
+		else
+		{
+			ActionErrors errors = new ActionErrors();
+			String errorMessage = ApplicationProperties.getValue("entityCache.error");
+			ActionError error = new ActionError("query.errors.item",errorMessage);
+			errors.add(ActionErrors.GLOBAL_ERROR, error);
+			saveErrors(request, errors);
+			actionForward = mapping.findForward(edu.wustl.query.util.global.AQConstants.FAILURE);
+		}
 
 		//Added a Default session data bean......Need to be removed when there query will have login
 
@@ -73,5 +90,6 @@ public class QueryWizardAction extends SecureAction
 
 			session.setAttribute(Constants.SESSION_DATA, sessionData);
 		}*/
+		return actionForward;
 	}
 }
