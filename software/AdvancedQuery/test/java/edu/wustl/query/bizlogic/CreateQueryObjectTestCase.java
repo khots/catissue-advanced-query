@@ -5,6 +5,7 @@ import java.util.Collection;
 import junit.framework.TestCase;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.cab2b.common.cache.AbstractEntityCache;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.global.CommonServiceLocator;
@@ -33,6 +34,10 @@ public class CreateQueryObjectTestCase extends TestCase
 		{
 			CreateQueryObjectBizLogic queryBizlogic = new CreateQueryObjectBizLogic();
 			EntityCache cache = EntityCacheFactory.getInstance();
+			while(AbstractEntityCache.isCacheReady == false)
+			{
+				continue;
+			}
 			EntityInterface entity = GenericQueryGeneratorMock.createEntity("Participant");
 			Long attributeId = null;
 			entity = GenericQueryGeneratorMock.getEntity(cache, entity);

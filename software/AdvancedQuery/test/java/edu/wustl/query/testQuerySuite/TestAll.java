@@ -26,9 +26,9 @@ public class TestAll
 	public static Test suite()
 	{
 		TestSuite suite = new TestSuite("Test suite for Query Interface Classes");
+		suite.addTestSuite(CreateQueryObjectTestCase.class);
 		suite.addTestSuite(SqlGeneratorGenericTestCase.class);
 		//suite.addTestSuite(MySqlQueryGenerator.class);
-		suite.addTestSuite(CreateQueryObjectTestCase.class);
 		suite.addTestSuite(HtmlProviderTestCase.class);
 		suite.addTestSuite(DashboardBizLogicTestCase.class);
 		return suite;
