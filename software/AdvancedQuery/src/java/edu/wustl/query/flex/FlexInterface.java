@@ -230,8 +230,7 @@ public class FlexInterface {
 		final Rule pRule = ruleSet
 				.getParameterRule(uri, strToCreateQueryObject);
 
-		final boolean isValid = pRule.isValid(strToCreateQueryObject);
-		return isValid;
+		return pRule.isValid(strToCreateQueryObject);
 	}
 
 	/**
@@ -394,8 +393,7 @@ public class FlexInterface {
 	{
 		DAGNode sourceNode = linkedNodeList.get(0);
 		DAGNode destinationNode = linkedNodeList.get(1);
-		List<IPath> pathsList = dagPanel.getPaths(sourceNode, destinationNode);
-		return pathsList;
+		return dagPanel.getPaths(sourceNode, destinationNode);
 	}
 
 	/**

@@ -85,8 +85,7 @@ public class Variables //extends edu.wustl.common.util.global.Variables
 				populateColTypes(colType, itr);
 			}
 		}
-		String tColType = setColumnType(colType);
-		return tColType;
+		return setColumnType(colType);
 	}
 
 	/**

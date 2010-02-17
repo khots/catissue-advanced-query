@@ -252,8 +252,7 @@ public class QueryAdvanceSearchForm extends ActionForm
      */
    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request)
     {
-        ActionErrors errors = new ActionErrors();
-        return errors;
+        return new ActionErrors();
     }
 
     /**

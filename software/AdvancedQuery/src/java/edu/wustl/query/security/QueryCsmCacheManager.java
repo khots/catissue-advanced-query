@@ -453,8 +453,7 @@ public class QueryCsmCacheManager
 	   columnValueBean.add(bean);
   	   ResultSet resultSet = jdbcDAO.getResultSet(sql, columnValueBean,null);
   	   Long foreignKey = null;
-  	   Long hookEntityId = getHookEntity(resultSet, foreignKey);
-  	   return hookEntityId;
+  	   return getHookEntity(resultSet, foreignKey);
 	}
 
 	/**
