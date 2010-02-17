@@ -12,6 +12,7 @@ import java.util.Map;
 
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.util.QueryParams;
+import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.common.util.logger.Logger;
@@ -82,11 +83,16 @@ final public class QueryModuleSqlUtil
 	    JDBCDAO jdbcDao = daoFactory.getJDBCDAO();
 		try
 		{
+			String tablespace = XMLPropertyHandler.getValue(AQConstants.TABLESPACE);
+			if(tablespace.length()!=0)
+			{
+				tablespace = "TABLESPACE " + tablespace;
+			}
 			jdbcDao.openSession(queryDetailsObj.getSessionData());
 			jdbcDao.deleteTable(tableName);
 			String newSql = modifySqlForCreateTable(createTableSql);
 			String newCreateTableSql = AQConstants.CREATE_TABLE +
-			tableName + " " + AQConstants.AS_CONSTANT + " "+ newSql+"1=0";
+			tableName + " " + tablespace + " " +AQConstants.AS_CONSTANT + " "+ newSql+"1=0";
 			jdbcDao.executeUpdate(newCreateTableSql);
 			String insertSql = "INSERT INTO "+tableName + " "+createTableSql;
 			executeInsertQuery(queryDetailsObj, jdbcDao, insertSql);
