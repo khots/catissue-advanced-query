@@ -10,6 +10,8 @@ import junit.framework.TestSuite;
 import edu.wustl.query.bizlogic.CreateQueryObjectTestCase;
 import edu.wustl.query.bizlogic.DashboardBizLogicTestCase;
 import edu.wustl.query.generator.SqlGeneratorGenericTestCase;
+import edu.wustl.query.htmlprovider.GenerateHtmlDetailsTestCase;
+import edu.wustl.query.htmlprovider.GenerateHtmlTestCase;
 import edu.wustl.query.htmlprovider.HtmlProviderTestCase;
 
 /**
@@ -31,6 +33,8 @@ public class TestAll
 		//suite.addTestSuite(MySqlQueryGenerator.class);
 		suite.addTestSuite(HtmlProviderTestCase.class);
 		suite.addTestSuite(DashboardBizLogicTestCase.class);
+		suite.addTestSuite(GenerateHtmlDetailsTestCase.class);
+		suite.addTestSuite(GenerateHtmlTestCase.class);
 		return suite;
 	}
 }
