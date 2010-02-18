@@ -129,5 +129,53 @@ public class GenerateHtmlTestCase extends TestCase
 		attributeDetails.setOperatorsList(operatorList);
 		GenerateHtml.generateHTMLForTextBox("birthDate94", attributeDetails);
 		GenerateHtml.generateHTMLForOperators("birthDate94", true, attributeDetails);
+
+		/**
+		 * For condition : first name in (...)
+		 */
+		attribute = GenericQueryGeneratorMock.findAttribute(participantEntity, "firstName");
+		participantCondition = GenericQueryGeneratorMock.createParticipantConditionForIn(participantEntity);
+		conditions = new ArrayList<ICondition>();
+		conditions.add(participantCondition);
+		attributeDetails.setConditions(conditions);
+		attributeDetails.setAttributeNameConditionMap(HtmlUtility.getMapOfConditions(conditions));
+		if(attributeDetails.getAttributeNameConditionMap()!=null)
+		{
+			condition = attributeDetails.getAttributeNameConditionMap().
+							get(attributeDetails.getAttrName());
+		}
+		attributeDetails.setEditValues(null);
+		attributeDetails.setSelectedOperator(null);
+		if(condition != null)
+		{
+			attributeDetails.setEditValues(condition.getValues());
+			attributeDetails.setSelectedOperator
+				(condition.getRelationalOperator().getStringRepresentation());
+		}
+		GenerateHtml.generateHTMLForTextBox("firstName99", attributeDetails);
+
+		/**
+		 * For condition : firstName is not null.
+		 */
+		attribute = GenericQueryGeneratorMock.findAttribute(participantEntity, "firstName");
+		participantCondition = GenericQueryGeneratorMock.createParticipantConditionForNotNull(participantEntity);
+		conditions = new ArrayList<ICondition>();
+		conditions.add(participantCondition);
+		attributeDetails.setConditions(conditions);
+		attributeDetails.setAttributeNameConditionMap(HtmlUtility.getMapOfConditions(conditions));
+		if(attributeDetails.getAttributeNameConditionMap()!=null)
+		{
+			condition = attributeDetails.getAttributeNameConditionMap().
+							get(attributeDetails.getAttrName());
+		}
+		attributeDetails.setEditValues(null);
+		attributeDetails.setSelectedOperator(null);
+		if(condition != null)
+		{
+			attributeDetails.setEditValues(condition.getValues());
+			attributeDetails.setSelectedOperator
+				(condition.getRelationalOperator().getStringRepresentation());
+		}
+		GenerateHtml.generateHTMLForTextBox("firstName99", attributeDetails);
 	}
 }

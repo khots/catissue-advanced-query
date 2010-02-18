@@ -21,6 +21,8 @@ public class GenerateHtmlDetailsTestCase extends TestCase
 
 		assertEquals("Incorrect Search String" , htmlDetails.getSearchString(),
 		"Participant");
+
+		String[] searchStrings = htmlDetails.getSearcStrings();
 	}
 
 }

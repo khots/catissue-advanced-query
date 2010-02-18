@@ -13,6 +13,8 @@ import edu.wustl.query.generator.SqlGeneratorGenericTestCase;
 import edu.wustl.query.htmlprovider.GenerateHtmlDetailsTestCase;
 import edu.wustl.query.htmlprovider.GenerateHtmlTestCase;
 import edu.wustl.query.htmlprovider.HtmlProviderTestCase;
+import edu.wustl.query.htmlprovider.ParseXMLFileTestCase;
+import edu.wustl.query.htmlprovider.SavedQueryHtmlProviderTestCase;
 
 /**
  * @author prafull_kadam
@@ -35,6 +37,8 @@ public class TestAll
 		suite.addTestSuite(DashboardBizLogicTestCase.class);
 		suite.addTestSuite(GenerateHtmlDetailsTestCase.class);
 		suite.addTestSuite(GenerateHtmlTestCase.class);
+		suite.addTestSuite(ParseXMLFileTestCase.class);
+		suite.addTestSuite(SavedQueryHtmlProviderTestCase.class);
 		return suite;
 	}
 }

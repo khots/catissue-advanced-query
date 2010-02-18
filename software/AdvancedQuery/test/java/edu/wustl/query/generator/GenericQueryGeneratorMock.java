@@ -267,7 +267,7 @@ public class GenericQueryGeneratorMock extends EntityManager
     }
 
     /**
-     * Create Condition for given Participant Entity: activityStatus = 'Active'
+     * Create Condition for given Participant Entity: activityStatus = 'Active'.
      *
      * @param participantEntity the Dynamic Extension entity for participant.
      * @return The Condition object.
@@ -278,6 +278,36 @@ public class GenericQueryGeneratorMock extends EntityManager
         values.add("Active");
         AttributeInterface attribute = findAttribute(participantEntity, "activityStatus");
         ICondition condition = QueryObjectFactory.createCondition(attribute, RelationalOperator.Equals, values);
+
+        return condition;
+    }
+
+    /**
+     * Create condition for the given participant entity :firstName is not null.
+     * @param participantEntity the Dynamic Extension entity for participant.
+     * @return The Condition object.
+     */
+    public static ICondition createParticipantConditionForNotNull(EntityInterface participantEntity)
+    {
+        List<String> values = new ArrayList<String>();
+        AttributeInterface attribute = findAttribute(participantEntity, "firstName");
+        ICondition condition = QueryObjectFactory.createCondition(attribute, RelationalOperator.IsNotNull, values);
+
+        return condition;
+    }
+
+    /**
+     * Create condition for the given participant entity :firstName in 'ABC','XYZ'.
+     * @param participantEntity the Dynamic Extension entity for participant.
+     * @return The Condition object.
+     */
+    public static ICondition createParticipantConditionForIn(EntityInterface participantEntity)
+    {
+        List<String> values = new ArrayList<String>();
+        values.add("ABC");
+        values.add("XYZ");
+        AttributeInterface attribute = findAttribute(participantEntity, "firstName");
+        ICondition condition = QueryObjectFactory.createCondition(attribute, RelationalOperator.In, values);
 
         return condition;
     }
