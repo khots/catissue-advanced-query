@@ -9,6 +9,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import edu.wustl.query.bizlogic.CreateQueryObjectTestCase;
 import edu.wustl.query.bizlogic.DashboardBizLogicTestCase;
+import edu.wustl.query.bizlogic.QueryCsmBizLogicTestCase;
 import edu.wustl.query.generator.SqlGeneratorGenericTestCase;
 import edu.wustl.query.htmlprovider.GenerateHtmlDetailsTestCase;
 import edu.wustl.query.htmlprovider.GenerateHtmlTestCase;
@@ -39,6 +40,7 @@ public class TestAll
 		suite.addTestSuite(GenerateHtmlTestCase.class);
 		suite.addTestSuite(ParseXMLFileTestCase.class);
 		suite.addTestSuite(SavedQueryHtmlProviderTestCase.class);
+		suite.addTestSuite(QueryCsmBizLogicTestCase.class);
 		return suite;
 	}
 }
