@@ -68,13 +68,13 @@ public class DefineGridViewBizLogic
 	 * @param queryDetailsObj Object of QueryDetails
 	 * @param treeDataVector vector to store tree data
 	 * @param currentSelectedObj Object of OutputTreeDataNode
-	 * @param prevSelectedColumnNameValueBeanList List of NameValueBean
+	 * @param prevSelCNVBList List of NameValueBean
 	 */
 	public void createTree(CategorySearchForm categorySearchForm, QueryDetails queryDetailsObj,
 			Vector<QueryTreeNodeData> treeDataVector, OutputTreeDataNode currentSelectedObj,
-			List<NameValueBean> prevSelectedColumnNameValueBeanList)
+			List<NameValueBean> prevSelCNVBList)
 	{
-		this.selectedColList = prevSelectedColumnNameValueBeanList;
+		this.selectedColList = prevSelCNVBList;
 		if (!queryDetailsObj.getUniqueIdNodesMap().isEmpty())
 		{
 			addRootNode(treeDataVector);

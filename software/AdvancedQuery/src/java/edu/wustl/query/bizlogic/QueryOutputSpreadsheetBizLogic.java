@@ -344,7 +344,7 @@ public class QueryOutputSpreadsheetBizLogic
 		}
 		Vector<Integer> identifiedDataColumnIds = new Vector<Integer>();
 		Vector<Integer> objectDataColumnIds = new Vector<Integer>();
-		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAtrributeIndexMetadataMap =
+		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAttrMap =
 			new HashMap<Integer, QueryOutputTreeAttributeMetadata>();
 		int columnIndex = 0;
 
@@ -374,9 +374,9 @@ public class QueryOutputSpreadsheetBizLogic
 			}
 			if (attribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase("file"))
 			{
-				int fileTypeIndex = columnIndex + fileTypeAtrributeIndexMetadataMap.size();
+				int fileTypeIndex = columnIndex + fileTypeAttrMap.size();
 				queryResultObjectDataBean.setClobeType(true);
-				fileTypeAtrributeIndexMetadataMap.put(fileTypeIndex, attributeMetaData);
+				fileTypeAttrMap.put(fileTypeIndex, attributeMetaData);
 			}
 			else
 			{
@@ -393,7 +393,7 @@ public class QueryOutputSpreadsheetBizLogic
 		if (queryResultObjectDataBean.isClobeType())
 		{
 			queryResultObjectDataBean
-					.setFileTypeAtrributeIndexMetadataMap(fileTypeAtrributeIndexMetadataMap);
+					.setFileTypeAtrributeIndexMetadataMap(fileTypeAttrMap);
 		}
 		if (!selectedColumnMetaData.isDefinedView())
 		{
@@ -894,9 +894,9 @@ public class QueryOutputSpreadsheetBizLogic
 			{
 				List<String> columnList = (List<String>) spreadSheetDataMap
 						.get(AQConstants.SPREADSHEET_COLUMN_LIST);
-				Map<Integer, Integer> fileTypeIndexMainEntityIndexMap = updateSpreadSheetColumnList(
+				Map<Integer, Integer> fileTypeIndxMap = updateSpreadSheetColumnList(
 						columnList, queryResultObjectDataBeanMap);
-				Map exportMetataDataMap = updateDataList(dataList, fileTypeIndexMainEntityIndexMap);
+				Map exportMetataDataMap = updateDataList(dataList, fileTypeIndxMap);
 				spreadSheetDataMap.put(AQConstants.ENTITY_IDS_MAP, exportMetataDataMap
 						.get(AQConstants.ENTITY_IDS_MAP));
 				spreadSheetDataMap.put(AQConstants.EXPORT_DATA_LIST, exportMetataDataMap
@@ -922,11 +922,11 @@ public class QueryOutputSpreadsheetBizLogic
 	 * If file type attribute column is present in the spreadsheet view
 	 * add the column to the data list.
 	 * @param dataList dataList
-	 * @param fileTypeIndexMainEntityIndexMap fileTypeIndexMainEntityIndexMap
+	 * @param fileTypeIndxMap fileTypeIndexMainEntityIndexMap
 	 * @return exportMetataDataMap
 	 */
 	public static Map updateDataList(List<List<String>> dataList,
-			Map<Integer, Integer> fileTypeIndexMainEntityIndexMap)
+			Map<Integer, Integer> fileTypeIndxMap)
 	{
 		Map<Integer, String> entityIdIndexMainEntityIdMap = new HashMap<Integer, String>();
 		Map<String, Object> exportMetataDataMap = new HashMap<String, Object>();
@@ -939,16 +939,16 @@ public class QueryOutputSpreadsheetBizLogic
 			List<String> entityIdsList = new ArrayList<String>();
 			exportRow = new ArrayList<String>();
 			exportRow.addAll(row);
-			for (Iterator<Integer> fileTypeIterator = fileTypeIndexMainEntityIndexMap.keySet()
+			for (Iterator<Integer> fileTypeIterator = fileTypeIndxMap.keySet()
 					.iterator(); fileTypeIterator.hasNext();)
 			{
 				int fileTypeIndex = fileTypeIterator.next();
-				int mainEntityIdIndex = fileTypeIndexMainEntityIndexMap.get(fileTypeIndex);
+				int mainEntityIdIndex = fileTypeIndxMap.get(fileTypeIndex);
 				String mainEntityId = row.get(mainEntityIdIndex);
 				entityIdIndexMainEntityIdMap.put(fileTypeIndex, mainEntityId);
 			}
 			int fileTypeIndex = 0;
-			for (Iterator<Integer> fileTypeIterator = fileTypeIndexMainEntityIndexMap.keySet()
+			for (Iterator<Integer> fileTypeIterator = fileTypeIndxMap.keySet()
 					.iterator(); fileTypeIterator.hasNext();)
 			{
 				fileTypeIndex = fileTypeIterator.next();
@@ -978,7 +978,7 @@ public class QueryOutputSpreadsheetBizLogic
 			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap)
 	{
 		Map<Integer, String> fileTypeIndexColumnNameMap = new TreeMap<Integer, String>();
-		Map<Integer, Integer> fileTypeIndexMainEntityIndexMap = new TreeMap<Integer, Integer>();
+		Map<Integer, Integer> fileTypeIndxMap = new TreeMap<Integer, Integer>();
 		// Stores all the file type attribute column names of all the entities in the map i.e. indexDisplayNameMap
 		for (Long id : queryResultObjectDataBeanMap.keySet())
 		{
@@ -986,20 +986,20 @@ public class QueryOutputSpreadsheetBizLogic
 					.get(id);
 			if (queryResultObjectDataBean.isClobeType())
 			{
-				Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAtrributeIndexMetadataMap =
+				Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAttrMap =
 					(Map<Integer, QueryOutputTreeAttributeMetadata>) queryResultObjectDataBean
 						.getFileTypeAtrributeIndexMetadataMap();
 				int mainEntityIdColumn = queryResultObjectDataBean
 						.getMainEntityIdentifierColumnId();
-				for (Iterator<Integer> iterator = fileTypeAtrributeIndexMetadataMap.keySet()
+				for (Iterator<Integer> iterator = fileTypeAttrMap.keySet()
 						.iterator(); iterator.hasNext();)
 				{
 					int fileTypeColumnId = iterator.next();
-					QueryOutputTreeAttributeMetadata metaData = fileTypeAtrributeIndexMetadataMap
+					QueryOutputTreeAttributeMetadata metaData = fileTypeAttrMap
 							.get(fileTypeColumnId);
 					String displayName = metaData.getDisplayName();
 					fileTypeIndexColumnNameMap.put(fileTypeColumnId, displayName);
-					fileTypeIndexMainEntityIndexMap.put(fileTypeColumnId, mainEntityIdColumn);
+					fileTypeIndxMap.put(fileTypeColumnId, mainEntityIdColumn);
 				}
 			}
 		}
@@ -1009,7 +1009,7 @@ public class QueryOutputSpreadsheetBizLogic
 			populateSpreadsheetColumnList(spreadsheetColumnsList,
 					fileTypeIndexColumnNameMap, columnNameIterator);
 		}
-		return fileTypeIndexMainEntityIndexMap;
+		return fileTypeIndxMap;
 	}
 
 	/**
@@ -1073,7 +1073,7 @@ public class QueryOutputSpreadsheetBizLogic
 		List resultList = new ArrayList();
 		int columnIndex = 0;
 		int addedFileTypeAttributes = 0;
-		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAtrributeIndexMetadataMap = new
+		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAttrMap = new
 		HashMap<Integer, QueryOutputTreeAttributeMetadata>();
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
@@ -1105,14 +1105,14 @@ public class QueryOutputSpreadsheetBizLogic
 			{
 				queryResultObjectDataBean.setClobeType(true);
 				int fileTypeIndex = columnIndex + addedFileTypeAttributes;
-				fileTypeAtrributeIndexMetadataMap.put(fileTypeIndex, attributeMetaData);
+				fileTypeAttrMap.put(fileTypeIndex, attributeMetaData);
 				addedFileTypeAttributes++;
 			}
 		}
 		if (queryResultObjectDataBean.isClobeType())
 		{
 			queryResultObjectDataBean
-					.setFileTypeAtrributeIndexMetadataMap(fileTypeAtrributeIndexMetadataMap);
+					.setFileTypeAtrributeIndexMetadataMap(fileTypeAttrMap);
 		}
 		if (!selectedColumnMetaData.isDefinedView())
 		{

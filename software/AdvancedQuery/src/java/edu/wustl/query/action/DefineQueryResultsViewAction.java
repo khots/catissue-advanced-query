@@ -65,12 +65,12 @@ public class DefineQueryResultsViewAction extends Action
 		DefineGridViewBizLogic defineGridViewBL = new DefineGridViewBizLogic();
 		defineGridViewBL.createTree(searchForm, queryDetailsObj, treeDataVector,
 				curSelObj, prevSelColNVBList);
-		List<NameValueBean> selectedColumnNameValueBeanList = searchForm
+		List<NameValueBean> selectedCNVBList = searchForm
 				.getSelColNVBeanList();
-		selColMetadata.setSelColNVBeanList(selectedColumnNameValueBeanList);
+		selColMetadata.setSelColNVBeanList(selectedCNVBList);
 		session.setAttribute(AQConstants.SELECTED_COLUMN_META_DATA, selColMetadata);
 		session.setAttribute(AQConstants.SELECTED_COLUMN_NAME_VALUE_BEAN_LIST,
-				selectedColumnNameValueBeanList);
+				selectedCNVBList);
 		session.setAttribute(AQConstants.TREE_DATA, treeDataVector);
 		return mapping.findForward(AQConstants.SUCCESS);
 	}

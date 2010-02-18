@@ -57,7 +57,7 @@ public class QueryResultObjectDataBean implements QueryDataBean
 	private boolean isClobeType;
 
 	/* this map will have the key as the index of the file type attribute and value as its metadata*/
-	private Map<Integer, ?extends Object> fileTypeAtrributeIndexMetadataMap = new HashMap<Integer, Object>();
+	private Map<Integer, ?extends Object> fileTypeAttrMap = new HashMap<Integer, Object>();
 
 	/*
 	 *
@@ -281,17 +281,17 @@ public class QueryResultObjectDataBean implements QueryDataBean
 	 */
 	public Map<Integer, ? extends Object> getFileTypeAtrributeIndexMetadataMap()
 	{
-		return fileTypeAtrributeIndexMetadataMap;
+		return fileTypeAttrMap;
 	}
 
 	/**
 	 * sets the map
-	 * @param fileTypeAtrributeIndexMetadataMap
+	 * @param fileTypeAttrMap
 	 */
 	public void setFileTypeAtrributeIndexMetadataMap(
-			Map<Integer, ? extends Object> fileTypeAtrributeIndexMetadataMap)
+			Map<Integer, ? extends Object> fileTypeAttrMap)
 	{
-		this.fileTypeAtrributeIndexMetadataMap = fileTypeAtrributeIndexMetadataMap;
+		this.fileTypeAttrMap = fileTypeAttrMap;
 	}
 
 	public List getTqColumnMetadataList()
