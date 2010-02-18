@@ -16,12 +16,11 @@ import edu.wustl.query.generator.SqlGenerator;
 
 public class QuerySqlGenerator extends SqlGenerator
 {
-
 	@Override
 	protected String getCustomFormulaString(ICustomFormula formula)
 	{
-		formula = modifyForRounding(formula);
-		return super.getCustomFormulaString(formula);
+		ICustomFormula modifiedFormula = modifyForRounding(formula);
+		return super.getCustomFormulaString(modifiedFormula);
 	}
 
 	private static class CaTissueFormula
@@ -100,7 +99,6 @@ public class QuerySqlGenerator extends SqlGenerator
 
 	private static class NormalizedFormula
 	{
-
 		// date (+/-) Interval = date
 		private IArithmeticOperand lhsDate;
 
@@ -121,6 +119,9 @@ public class QuerySqlGenerator extends SqlGenerator
 			return ((IDateOffset) lhsOffset).getTimeInterval();
 		}
 
+		/**
+		 * @return res
+		 */
 		private ICustomFormula roundedGenericForm()
 		{
 			ICustomFormula res = QueryObjectFactory.createCustomFormula();
@@ -129,14 +130,33 @@ public class QuerySqlGenerator extends SqlGenerator
 
 			if (relOper == RelationalOperator.Equals || relOper == RelationalOperator.NotEquals)
 			{
-				res.setOperator(relOper == RelationalOperator.Equals
-						? RelationalOperator.Between
-						: RelationalOperator.NotBetween);
-				res.addRhs(rhsLower());
-				res.addRhs(rhsUpper());
-				return res;
+				return populateResultForComparisonOp(res);
 			}
 			res.setOperator(relOper);
+			ITerm rhs = getRHS();
+			res.addRhs(rhs);
+			return res;
+		}
+
+		/**
+		 * @param res result
+		 * @return res
+		 */
+		private ICustomFormula populateResultForComparisonOp(ICustomFormula res)
+		{
+			res.setOperator(relOper == RelationalOperator.Equals
+					? RelationalOperator.Between
+					: RelationalOperator.NotBetween);
+			res.addRhs(rhsLower());
+			res.addRhs(rhsUpper());
+			return res;
+		}
+
+		/**
+		 * @return rhs
+		 */
+		private ITerm getRHS()
+		{
 			ITerm rhs;
 			if (relOper == RelationalOperator.LessThanOrEquals)
 			{
@@ -150,8 +170,7 @@ public class QuerySqlGenerator extends SqlGenerator
 			{
 				rhs = rhsTerm();
 			}
-			res.addRhs(rhs);
-			return res;
+			return rhs;
 		}
 
 		private ITerm rhsUpper()

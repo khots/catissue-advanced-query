@@ -234,9 +234,10 @@ final public class QueryModuleUtil
 	 * @param columnNamePositionMap map
 	 * @return string display name
 	 */
-	private static String getColDisplayName(String dspNameColName,
+	private static String getColDisplayName(String displayColumnName,
 			Map<String, String> columnNamePositionMap)
 	{
+		String dspNameColName = displayColumnName;
 		Set<String> keySet = columnNamePositionMap.keySet();
 		Iterator<String> iterator = keySet.iterator();
 		String position1=null,position2=null;
@@ -245,33 +246,44 @@ final public class QueryModuleUtil
 			position1 = iterator.next();
 			if(iterator.hasNext())
 			{
-				position2 = iterator.next();
-				if(Integer.parseInt(position1)<Integer.parseInt(position2))
-				{
-					if(dspNameColName == null)
-					{
-						dspNameColName = columnNamePositionMap.get(position1)+
-						", "+columnNamePositionMap.get(position2);
-					}
-					else
-					{
-						dspNameColName = dspNameColName + columnNamePositionMap.get
-						(position1)+", "+columnNamePositionMap.get(position2);
-					}
-				}
-				else
-				{
-					if(dspNameColName == null)
-					{
-						dspNameColName = columnNamePositionMap.get(position2)+
-						", "+columnNamePositionMap.get(position1);
-					}
-					else
-					{
-						dspNameColName = dspNameColName + columnNamePositionMap.get
-						(position2)+", "+columnNamePositionMap.get(position1);
-					}
-				}
+				dspNameColName = setDisplayColumnName(dspNameColName,
+						columnNamePositionMap, iterator, position1);
+			}
+		}
+		return dspNameColName;
+	}
+
+	private static String setDisplayColumnName(String displayColumnName,
+			Map<String, String> columnNamePositionMap,
+			Iterator<String> iterator, String position1)
+	{
+		String dspNameColName = displayColumnName;
+		String position2;
+		position2 = iterator.next();
+		if(Integer.parseInt(position1)<Integer.parseInt(position2))
+		{
+			if(dspNameColName == null)
+			{
+				dspNameColName = columnNamePositionMap.get(position1)+
+				", "+columnNamePositionMap.get(position2);
+			}
+			else
+			{
+				dspNameColName = dspNameColName + columnNamePositionMap.get
+				(position1)+", "+columnNamePositionMap.get(position2);
+			}
+		}
+		else
+		{
+			if(dspNameColName == null)
+			{
+				dspNameColName = columnNamePositionMap.get(position2)+
+				", "+columnNamePositionMap.get(position1);
+			}
+			else
+			{
+				dspNameColName = dspNameColName + columnNamePositionMap.get
+				(position2)+", "+columnNamePositionMap.get(position1);
 			}
 		}
 		return dspNameColName;

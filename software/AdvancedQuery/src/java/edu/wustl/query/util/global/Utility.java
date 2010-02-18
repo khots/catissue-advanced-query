@@ -387,33 +387,46 @@ public class Utility //extends edu.wustl.common.util.Utility
 					.getQueryResultObjectDataMap();
 			if (queryResultObjectDataBeanMap != null)
 			{
-				for (Iterator<Long> beanMapIterator = queryResultObjectDataBeanMap.keySet()
-						.iterator(); beanMapIterator.hasNext();)
-				{
-					Long identifier = beanMapIterator.next();
-					QueryResultObjectDataBean bean =
-						queryResultObjectDataBeanMap.get(identifier);
-					if (bean.isClobeType())
-					{
-						List<String> columnsList = (List<String>) request.getSession()
-								.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
-						QueryOutputSpreadsheetBizLogic queryBizLogic =
-							new QueryOutputSpreadsheetBizLogic();
-						Map<Integer, Integer> fileTypMnEntMap =
-							queryBizLogic.updateSpreadSheetColumnList(columnsList,
-										queryResultObjectDataBeanMap);
-						Map exportMetataDataMap = QueryOutputSpreadsheetBizLogic.
-						updateDataList(paginationDataList, fileTypMnEntMap);
-						request.getSession().setAttribute(AQConstants.ENTITY_IDS_MAP,
-							exportMetataDataMap.get(AQConstants.ENTITY_IDS_MAP));
-						request.getSession().setAttribute(AQConstants.EXPORT_DATA_LIST,
-							exportMetataDataMap.get(AQConstants.EXPORT_DATA_LIST));
-						break;
-					}
-				}
+				populateSessionData(request, paginationDataList,
+						queryResultObjectDataBeanMap);
 			}
 		}
 		return paginationDataList;
+	}
+
+	/**
+	 * @param request request
+	 * @param paginationDataList data list
+	 * @param queryResultObjectDataBeanMap map
+	 */
+	private static void populateSessionData(HttpServletRequest request,
+			List paginationDataList,
+			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap)
+	{
+		for (Iterator<Long> beanMapIterator = queryResultObjectDataBeanMap.keySet()
+				.iterator(); beanMapIterator.hasNext();)
+		{
+			Long identifier = beanMapIterator.next();
+			QueryResultObjectDataBean bean =
+				queryResultObjectDataBeanMap.get(identifier);
+			if (bean.isClobeType())
+			{
+				List<String> columnsList = (List<String>) request.getSession()
+						.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
+				QueryOutputSpreadsheetBizLogic queryBizLogic =
+					new QueryOutputSpreadsheetBizLogic();
+				Map<Integer, Integer> fileTypMnEntMap =
+					queryBizLogic.updateSpreadSheetColumnList(columnsList,
+								queryResultObjectDataBeanMap);
+				Map exportMetataDataMap = QueryOutputSpreadsheetBizLogic.
+				updateDataList(paginationDataList, fileTypMnEntMap);
+				request.getSession().setAttribute(AQConstants.ENTITY_IDS_MAP,
+					exportMetataDataMap.get(AQConstants.ENTITY_IDS_MAP));
+				request.getSession().setAttribute(AQConstants.EXPORT_DATA_LIST,
+					exportMetataDataMap.get(AQConstants.EXPORT_DATA_LIST));
+				break;
+			}
+		}
 	}
 
 	/**
@@ -427,23 +440,11 @@ public class Utility //extends edu.wustl.common.util.Utility
 		request.setAttribute("myData",getmyData(dataList));
 		request.setAttribute("columns", getcolumns(columnList));
 		boolean isWidthInPercent=false;
-		if( columnList.size()<AQConstants.TEN)
-		{
-			isWidthInPercent=true;
-		}
+		isWidthInPercent = setIsWidthPercent(columnList, isWidthInPercent);
 		request.setAttribute("colWidth",getcolWidth(columnList,isWidthInPercent));
 		request.setAttribute("isWidthInPercent",isWidthInPercent);
 		request.setAttribute("colTypes",getcolTypes(dataList));
-		int heightOfGrid = AQConstants.HUNDRED;
-		if(dataList!=null)
-		{
-			int noOfRows = dataList.size();
-			heightOfGrid = (noOfRows + AQConstants.TWO) * AQConstants.TWENTY;
-			if(heightOfGrid > AQConstants.TWO_HUNDRED_FORTY)
-			{
-				heightOfGrid = AQConstants.TWO_HUNDRED_THIRTY;
-			}
-		}
+		int heightOfGrid = setHeightOfGrid(dataList);
 		request.setAttribute("heightOfGrid", heightOfGrid);
 		int col = 0;
 		int index=0;
@@ -463,6 +464,41 @@ public class Utility //extends edu.wustl.common.util.Utility
 			}
 		}
 		request.setAttribute("hiddenColumnNumbers", hiddenColNos);
+	}
+
+	/**
+	 * @param dataList data list
+	 * @return
+	 */
+	private static int setHeightOfGrid(List dataList)
+	{
+		int heightOfGrid = AQConstants.HUNDRED;
+		if(dataList!=null)
+		{
+			int noOfRows = dataList.size();
+			heightOfGrid = (noOfRows + AQConstants.TWO) * AQConstants.TWENTY;
+			if(heightOfGrid > AQConstants.TWO_HUNDRED_FORTY)
+			{
+				heightOfGrid = AQConstants.TWO_HUNDRED_THIRTY;
+			}
+		}
+		return heightOfGrid;
+	}
+
+	/**
+	 * @param columnList column list
+	 * @param width width
+	 * @return isWidthInPercent
+	 */
+	private static boolean setIsWidthPercent(List columnList,
+			boolean width)
+	{
+		boolean isWidthInPercent = width;
+		if( columnList.size()<AQConstants.TEN)
+		{
+			isWidthInPercent=true;
+		}
+		return isWidthInPercent;
 	}
 
 	/**
@@ -524,29 +560,34 @@ public class Utility //extends edu.wustl.common.util.Utility
 			for (index=0;index<(dataList.size()-1);index++)
 			{
 				List row = (List)dataList.get(index);
-				int counter;
-				myData.append('\'');
-				for (counter=0;counter < (row.size()-1);counter++)
-				{
-					myData.append(Utility.toNewGridFormat(row.get(counter)).toString());
-					myData.append(',');
-				}
+				int counter = addToMyData(myData, row);
 				myData.append(Utility.toNewGridFormat(row.get(counter)).toString());
 				myData.append("\",");
 			}
 			List row = (List)dataList.get(index);
-			int rowCtr;
-			myData.append('\'');
-			for (rowCtr=0;rowCtr < (row.size()-1);rowCtr++)
-			{
-				myData.append(Utility.toNewGridFormat(row.get(rowCtr)).toString());
-				myData.append(',');
-			}
+			int rowCtr = addToMyData(myData, row);
 			myData.append(Utility.toNewGridFormat(row.get(rowCtr)).toString());
 			myData.append('\'');
 		}
 		myData.append(']');
 		return myData.toString();
+	}
+
+	/**
+	 * @param myData myData
+	 * @param row row
+	 * @return rowCtr
+	 */
+	private static int addToMyData(StringBuffer myData, List row)
+	{
+		int rowCtr;
+		myData.append('\'');
+		for (rowCtr=0;rowCtr < (row.size()-1);rowCtr++)
+		{
+			myData.append(Utility.toNewGridFormat(row.get(rowCtr)).toString());
+			myData.append(',');
+		}
+		return rowCtr;
 	}
 
 	/**
@@ -600,18 +641,8 @@ public class Utility //extends edu.wustl.common.util.Utility
                 (edu.wustl.security.global.Constants.VALIDATOR_CLASSNAME);
                 mainProtocolQuery = csmPropertyFile.getProperty
                 (AQConstants.MAIN_PROTOCOL_QUERY);
-                String readdenied = csmPropertyFile.getProperty
-                (edu.wustl.security.global.Constants.READ_DENIED_OBJECTS);
-                String [] readDeniedObjects=readdenied.split(",");
-                for(int i=0;i<readDeniedObjects.length;i++)
-                {
-                      readDeniedObjList.add(readDeniedObjects[i]);
-                      if(csmPropertyFile.getProperty(readDeniedObjects[i])!=null)
-                      {
-                          entityCSSqlMap.put(readDeniedObjects[i],csmPropertyFile.getProperty
-                        		  (readDeniedObjects[i]));
-                      }
-                }
+                populateEntityCSSqlMap(readDeniedObjList, entityCSSqlMap,
+						csmPropertyFile);
             }
             catch (FileNotFoundException e)
             {
@@ -632,10 +663,32 @@ public class Utility //extends edu.wustl.common.util.Utility
     }
 
     /**
+     * @param readDeniedObjList list of read denied objects
+     * @param entityCSSqlMap map
+     * @param csmPropertyFile property file
+     */
+	private static void populateEntityCSSqlMap(List<String> readDeniedObjList,
+			Map<String, String> entityCSSqlMap, Properties csmPropertyFile)
+	{
+		String readdenied = csmPropertyFile.getProperty
+		(edu.wustl.security.global.Constants.READ_DENIED_OBJECTS);
+		String [] readDeniedObjects=readdenied.split(",");
+		for(int i=0;i<readDeniedObjects.length;i++)
+		{
+		      readDeniedObjList.add(readDeniedObjects[i]);
+		      if(csmPropertyFile.getProperty(readDeniedObjects[i])!=null)
+		      {
+		          entityCSSqlMap.put(readDeniedObjects[i],csmPropertyFile.getProperty
+		        		  (readDeniedObjects[i]));
+		      }
+		}
+	}
+
+    /**
      * @param objName Object name
      * @param identifier Identifier
      * @param sessionDataBean A data bean that contains information related to user logged in
-     * @return cpIdsList List of CollectionProtocol ids
+     * @return cpIdsList List of CollectionProtocol identifiers
      */
 	  public static List getCPIdsList(String objName, Long identifier, SessionDataBean sessionDataBean)
 	    {
@@ -649,22 +702,10 @@ public class Utility //extends edu.wustl.common.util.Utility
 
 	            String appName=CommonServiceLocator.getInstance().getAppName();
 	            IDAOFactory daofactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
-
 	            try
 	            {
-	                jdbcDao = daofactory.getJDBCDAO();
-	                jdbcDao.openSession(sessionDataBean);
-
-	                List<Object> list = null;
-	                list = jdbcDao.executeQuery(cpQuery);
-	                if (list != null && !list.isEmpty())
-	                {
-	                    for(Object obj : list)
-	                    {
-	                        List list1 = (List)obj;
-	                        cpIdsList.add(Long.valueOf(list1.get(0).toString()));
-	                    }
-	                }
+	                jdbcDao = executeCPQuery(sessionDataBean, cpIdsList,
+							cpQuery, daofactory);
 	            }
 	            catch (Exception e)
 	            {
@@ -688,6 +729,44 @@ public class Utility //extends edu.wustl.common.util.Utility
 	        }
 	        return cpIdsList;
 	    }
+
+	  	/**
+	  	 * @param sessionDataBean bean
+	  	 * @param cpIdsList list
+	  	 * @param cpQuery query
+	  	 * @param daofactory DAO
+	  	 * @return jdbcDao
+	  	 * @throws DAOException DAOException
+	  	 */
+		private static JDBCDAO executeCPQuery(SessionDataBean sessionDataBean,
+				List cpIdsList, String cpQuery, IDAOFactory daofactory)
+				throws DAOException
+		{
+			JDBCDAO jdbcDao;
+			jdbcDao = daofactory.getJDBCDAO();
+			jdbcDao.openSession(sessionDataBean);
+
+			List<Object> list = null;
+			list = jdbcDao.executeQuery(cpQuery);
+			if (list != null && !list.isEmpty())
+			{
+			    populateCPIdsList(cpIdsList, list);
+			}
+			return jdbcDao;
+		}
+
+	  /**
+	   * @param cpIdsList list
+	   * @param list list
+	   */
+	private static void populateCPIdsList(List cpIdsList, List<Object> list)
+	{
+		for(Object obj : list)
+		{
+		    List list1 = (List)obj;
+		    cpIdsList.add(Long.valueOf(list1.get(0).toString()));
+		}
+	}
 	  /**
 	     * To check whether there is condition on identifier field or not.
 	     * @param query the reference to the Query Object.

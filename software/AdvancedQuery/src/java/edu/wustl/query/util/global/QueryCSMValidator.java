@@ -19,38 +19,67 @@ public class QueryCSMValidator
 	{
 		for (Object object : tqColMetadata)
 		{
-			TemporalColumnMetadata tqMetadata = (TemporalColumnMetadata) object;
-			String ageString = row.get(tqMetadata.getColumnIndex() - 1);
-			long age = 0;
-
-			if (tqMetadata.getTermType().equals(TermType.Timestamp) || !isAuthorizedUser)
-			{
-				row.set(tqMetadata.getColumnIndex() - 1, AQConstants.HASH_OUT);
-			}
-			else if (tqMetadata.getTermType().equals(TermType.DSInterval) &&
-					!ageString.equals(AQConstants.PHI_AGE))
-			{
-				age = Long.parseLong(ageString);
-			    if (tqMetadata.getPHIDate() != null && tqMetadata.isBirthDate())
-				{
-					java.util.Date todaysDate = new java.util.Date();
-					int year = tqMetadata.getPHIDate().getDate().getYear();
-					age = todaysDate.getYear()
-							- year
-							+ age;
-				}
-				if (!tqMetadata.getTimeInterval().name().equals(
-							YMInterval.Year.name()))
-				{
-						age = Math.round((age * tqMetadata.getTimeInterval()
-								.numSeconds())
-								/ YMInterval.Year.numSeconds());
-				}
-				if (Math.abs(age) > 89)
-				{
-					row.set(tqMetadata.getColumnIndex() - 1, AQConstants.PHI_AGE);
-				}
-			}
+			processTemporalQueryData(row, isAuthorizedUser, object);
 		}
+	}
+
+	private void processTemporalQueryData(List<String> row,
+			boolean isAuthorizedUser, Object object)
+	{
+		TemporalColumnMetadata tqMetadata = (TemporalColumnMetadata) object;
+		String ageString = row.get(tqMetadata.getColumnIndex() - 1);
+
+		if (tqMetadata.getTermType().equals(TermType.Timestamp) || !isAuthorizedUser)
+		{
+			row.set(tqMetadata.getColumnIndex() - 1, AQConstants.HASH_OUT);
+		}
+		else if (tqMetadata.getTermType().equals(TermType.DSInterval)
+				&& !ageString.equals(AQConstants.PHI_AGE))
+		{
+			processForDsInterval(row, tqMetadata, ageString);
+		}
+	}
+
+	/**
+	 * @param row row
+	 * @param tqMetadata temporal column meta data
+	 * @param ageString age
+	 */
+	private void processForDsInterval(List<String> row,
+			TemporalColumnMetadata tqMetadata, String ageString)
+	{
+		long age;
+		age = Long.parseLong(ageString);
+		age = getAgeAsPerBirthDate(tqMetadata, age);
+		if (!tqMetadata.getTimeInterval().name().equals(
+					YMInterval.Year.name()))
+		{
+			age = Math.round((age * tqMetadata.getTimeInterval()
+				.numSeconds())/ YMInterval.Year.numSeconds());
+		}
+		if (Math.abs(age) > 89)
+		{
+			row.set(tqMetadata.getColumnIndex() - 1, AQConstants.PHI_AGE);
+		}
+	}
+
+	/**
+	 * @param tqMetadata meta data
+	 * @param tempAge age
+	 * @return age
+	 */
+	private long getAgeAsPerBirthDate(TemporalColumnMetadata tqMetadata,
+			long tempAge)
+	{
+		long age = tempAge;
+		if (tqMetadata.getPHIDate() != null && tqMetadata.isBirthDate())
+		{
+			java.util.Date todaysDate = new java.util.Date();
+			int year = tqMetadata.getPHIDate().getDate().getYear();
+			age = todaysDate.getYear()
+					- year
+					+ age;
+		}
+		return age;
 	}
 }

@@ -21,27 +21,26 @@ import edu.wustl.query.util.global.AQConstants;
 public class GenerateHtml
 {
 	/**
-	 * End tag for HTML tag td.
+	 * End tag for HTML tag TD.
 	 */
-	public static final String endTD = "\n</td>";
+	public static final String END_TD_TAG = "\n</td>";
 
 	/**
-	 * css with white background.
+	 * CSS with white background.
 	 */
 	public static final String CSS_BGWHITE = "rowBGWhiteColor";
 	/**
-	 * css with grey background.
+	 * CSS with grey background.
 	 */
 	public static final String CSS_BGGREY = "rowBGGreyColor1";
 	/**
-	 * css for text box.
+	 * CSS for text box.
 	 */
 	public static final String CSS_TEXT = "standardTextQuery";
 	/**
-	 * css for permissible values.
+	 * CSS for permissible values.
 	 */
 	public static final String CSS_PV= "PermissibleValuesQuery";
-
 
 	/**
 	 * This method generates HTML for RadioButton.
@@ -55,11 +54,6 @@ public class GenerateHtml
 	{
 		String cssClass=CSS_TEXT;
 		StringBuffer html = new StringBuffer(AQConstants.MAX_SIZE);
-		//String componentId = generateComponentName(attribute) + "_radioButton";
-		/*String componentName = componentId + "_booleanAttribute";
-		String radioButtonTrueId = componentId + "_true";
-		String radioButtonFalseId = componentId + "_false";*/
-
 		html.append("\n<td class='" + cssClass + "' >");
 		if (values == null)
 		{
@@ -78,20 +72,19 @@ public class GenerateHtml
 				getHtmlForValuesNotNull(componentId, values, cssClass, html);
 			}
 		}
-		html.append(endTD);
+		html.append(END_TD_TAG);
 		html.append("\n<td class='" + cssClass + "'>&nbsp;");
-		html.append(endTD);
+		html.append(END_TD_TAG);
 		html.append("\n<td class='" + cssClass + "'>&nbsp;");
-		html.append(endTD);
+		html.append(END_TD_TAG);
 		html.append("\n<td class='" + cssClass + "'>&nbsp;");
-		html.append(endTD);
-
+		html.append(END_TD_TAG);
 		return html.toString();
 	}
 	/**
 	 *
 	 * @param componentId id of component
-	 * @param cssClass name of css class
+	 * @param cssClass name of CSS class
 	 * @param isRadioButtonTrue boolean
 	 * @param checked String
 	 * @return String
@@ -169,7 +162,7 @@ public class GenerateHtml
 		html.append("<td width='15%' valign='top' class=\"standardTextQuery\">\n");
 		getHtmlValueAndOperator(
 				attrDetails.getEditValues(),attrDetails.getSelectedOperator(), textBoxId, html);
-		html.append(endTD);
+		html.append(END_TD_TAG);
 		getHtmlForDate(componentId, attrDetails, cssClass,html);
 		getHtmlForBetweenOperator(attrDetails, textBoxId1, html);
 		if(attrDetails.getDataType().equalsIgnoreCase(AQConstants.DATE) )
@@ -248,7 +241,7 @@ public class GenerateHtml
 			html.append("<input type=\"text\" name=\"" + textBoxId1 + "\" id=\"" + textBoxId1
 					+ "\" style=\"display:none\">");
 		}
-		html.append(endTD);
+		html.append(END_TD_TAG);
 	}
 	/**
 	 *
@@ -422,7 +415,7 @@ public class GenerateHtml
 						+ "\">"
 						+ "\n" + imgStr) ;
 		}
-		innerStr = innerStr.append(endTD);
+		innerStr = innerStr.append(END_TD_TAG);
 		return innerStr.toString();
 	}
 
@@ -447,7 +440,7 @@ public class GenerateHtml
 					  "color=\"#000000\"><b>";
 		generatedPreHTML.append(html);
 		generatedPreHTML.append(header + " '" + entityName + "'</b></font>");
-		generatedPreHTML.append(endTD);
+		generatedPreHTML.append(END_TD_TAG);
 		generatedPreHTML.append("####");
 		generatedPreHTML.append(generateHTMLForButton(entityId,attributeCollection, isEditLimits));
 		generatedPreHTML.append("\n</tr></table>");
@@ -481,7 +474,7 @@ public class GenerateHtml
 				+ "\" onClick=\"produceQuery('" + buttonId
 				+ "', 'addToLimitSet.do', 'categorySearchForm', '" + entityName + "','"
 				+ attributesStr + "')\" value=\"" + buttonCaption + "\"></input>");
-		html.append(endTD);
+		html.append(END_TD_TAG);
 		return html.toString();
 	}
 	/**
@@ -504,7 +497,7 @@ public class GenerateHtml
 					  "color=\"#000000\"><b>";
 		generatedPreHTML.append(html);
 		generatedPreHTML.append(header + " '" + entityName + "'</b></font>");
-		generatedPreHTML.append(endTD);
+		generatedPreHTML.append(END_TD_TAG);
 		generatedPreHTML.append(generateHTMLForButton(nameOfTheEntity,attributeCollection,isEditLimits));
 		generatedPreHTML.append("\n</tr></table>");
 		return generatedPreHTML;
@@ -549,7 +542,7 @@ public class GenerateHtml
 			}
 			getHtmlForSelectedOperator(attributeDetails, cssClass, html, operatorsList);
 			html.append("\n</select>");
-			html.append(endTD);
+			html.append(END_TD_TAG);
 		}
 		return html.toString();
 	}
@@ -565,7 +558,6 @@ public class GenerateHtml
 			String cssClass, StringBuffer html, List<String> operatorsList)
 	{
 		Iterator<String> iter = operatorsList.iterator();
-
 		while (iter.hasNext())
 		{
 			String operator = iter.next();
@@ -587,7 +579,7 @@ public class GenerateHtml
 	public static void getTags(StringBuffer generatedHTML)
 	{
 		generatedHTML.append("\n<tr>\n<td valign=\"top\">");
-		generatedHTML.append(endTD);
+		generatedHTML.append(END_TD_TAG);
 		generatedHTML.append("\n</tr>");
 	}
 
@@ -623,7 +615,7 @@ public class GenerateHtml
 							continue;
 						}
 						//if the entity is present in the map
-						//add the dag id to the existing list
+						//add the DAG id to the existing list
 						dagIdList = (List<Integer>)entityExpressionIdMap.get(entity);
 						dagIdList.add(expressionId);
 						entityExpressionIdMap.put(entity, dagIdList);

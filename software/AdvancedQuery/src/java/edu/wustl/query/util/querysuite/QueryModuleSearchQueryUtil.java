@@ -86,32 +86,7 @@ public class QueryModuleSearchQueryUtil
 			}
 			if (queryDetailsObj.getSessionData() != null)
 			{
-				IQuery originalQuery=null;
-				if(newQuery != null)
-				{
-					originalQuery = queryDetailsObj.getQuery();
-					queryDetailsObj.setQuery(newQuery);
-				}
-				QueryOutputTreeBizLogic outputTreeBizLogic = auditQuery();
-				boolean hasCondOnIdentifiedField;
-				if(newQuery == null)
-				{
-					hasCondOnIdentifiedField = edu.wustl.query.util.global.Utility
-					.isConditionOnIdentifiedField(query);
-				}
-				else
-				{
-					queryDetailsObj.setQuery(newQuery);
-					hasCondOnIdentifiedField = edu.wustl.query.util.global.Utility
-							.isConditionOnIdentifiedField(newQuery);
-				}
-				setDataInSession(outputTreeBizLogic, hasCondOnIdentifiedField);
-				if(originalQuery != null)
-				{
-					query = originalQuery;
-					session.setAttribute(AQConstants.QUERY_OBJECT, originalQuery);
-					queryDetailsObj.setQuery(originalQuery);
-				}
+				modifyQuery(newQuery);
 			}
 		}
 		catch (QueryModuleException e)
@@ -119,6 +94,40 @@ public class QueryModuleSearchQueryUtil
 			status = e.getKey();
 		}
 		return status;
+	}
+
+	/**
+	 * @param newQuery new query
+	 * @throws QueryModuleException QueryModuleException
+	 */
+	private void modifyQuery(IQuery newQuery) throws QueryModuleException
+	{
+		IQuery originalQuery=null;
+		if(newQuery != null)
+		{
+			originalQuery = queryDetailsObj.getQuery();
+			queryDetailsObj.setQuery(newQuery);
+		}
+		QueryOutputTreeBizLogic outputTreeBizLogic = auditQuery();
+		boolean hasCondOnIdentifiedField;
+		if(newQuery == null)
+		{
+			hasCondOnIdentifiedField = edu.wustl.query.util.global.Utility
+			.isConditionOnIdentifiedField(query);
+		}
+		else
+		{
+			queryDetailsObj.setQuery(newQuery);
+			hasCondOnIdentifiedField = edu.wustl.query.util.global.Utility
+					.isConditionOnIdentifiedField(newQuery);
+		}
+		setDataInSession(outputTreeBizLogic, hasCondOnIdentifiedField);
+		if(originalQuery != null)
+		{
+			query = originalQuery;
+			session.setAttribute(AQConstants.QUERY_OBJECT, originalQuery);
+			queryDetailsObj.setQuery(originalQuery);
+		}
 	}
 
 	/**
@@ -181,9 +190,10 @@ public class QueryModuleSearchQueryUtil
 	 * @return int
 	 * @throws QueryModuleException
 	 */
-	private int setTreeData(int initialValue, List<QueryTreeNodeData> treeData)
+	private int setTreeData(int initValue, List<QueryTreeNodeData> treeData)
 			throws QueryModuleException
 	{
+		int initialValue = initValue;
 		int resultsSize = treeData.size();
 		if (resultsSize == 0)
 		{
@@ -208,16 +218,7 @@ public class QueryModuleSearchQueryUtil
 		{
 			long auditEventId = 0;
 			String selectSql = (String) session.getAttribute(AQConstants.SAVE_GENERATED_SQL);
-			if(session.getAttribute(AQConstants.AUDIT_EVENT_ID)== null)
-			{
-				auditEventId = queryBizLogic.insertQuery(selectSql, queryDetailsObj.getSessionData());
-				QueryModuleSqlUtil.updateAuditQueryDetails(AQConstants.QUERY_ID, query.getId().toString(), auditEventId);
-				session.setAttribute(AQConstants.AUDIT_EVENT_ID,auditEventId);
-			}
-			else
-			{
-				auditEventId = (Long)session.getAttribute(AQConstants.AUDIT_EVENT_ID);
-			}
+			auditEventId = getAuditEventId(queryBizLogic, selectSql);
 			boolean alreadySavedQuery = Boolean.valueOf((String)session.getAttribute("savedQuery"));
 			queryDetailsObj.setAuditEventId(auditEventId);
 			getNewQuery(outputTreeBizLogic, selectSql, alreadySavedQuery);
@@ -251,6 +252,29 @@ public class QueryModuleSearchQueryUtil
 	}
 
 	/**
+	 * @param queryBizLogic queryBizLogic
+	 * @param selectSql SQL
+	 * @return auditEventId
+	 * @throws DAOException DAOException
+	 * @throws SQLException SQLException
+	 */
+	private long getAuditEventId(CommonQueryBizLogic queryBizLogic,
+			String selectSql) throws DAOException, SQLException {
+		long auditEventId;
+		if(session.getAttribute(AQConstants.AUDIT_EVENT_ID)== null)
+		{
+			auditEventId = queryBizLogic.insertQuery(selectSql, queryDetailsObj.getSessionData());
+			QueryModuleSqlUtil.updateAuditQueryDetails(AQConstants.QUERY_ID, query.getId().toString(), auditEventId);
+			session.setAttribute(AQConstants.AUDIT_EVENT_ID,auditEventId);
+		}
+		else
+		{
+			auditEventId = (Long)session.getAttribute(AQConstants.AUDIT_EVENT_ID);
+		}
+		return auditEventId;
+	}
+
+	/**
 	 * @param outputTreeBizLogic outputTreeBizLogic
 	 * @param selectSql query
 	 * @param alreadySavedQuery alreadySavedQuery
@@ -260,10 +284,11 @@ public class QueryModuleSearchQueryUtil
 	 * @throws SQLException SQLException
 	 */
 	private void getNewQuery(QueryOutputTreeBizLogic outputTreeBizLogic,
-			String selectSql, boolean alreadySavedQuery)
+			String selectQuery, boolean alreadySavedQuery)
 			throws MultipleRootsException, SqlException, DAOException,
 			SQLException
 	{
+		String selectSql = selectQuery;
 		if(isSavedQuery && !alreadySavedQuery)
 		{
 			String newSql=null;
@@ -299,14 +324,7 @@ public class QueryModuleSearchQueryUtil
 		session.setAttribute(AQConstants.ID_NODES_MAP, uniqueIdNodesMap);
 		IQuery newQuery=null;
 		boolean alreadySavedQuery=false;
-		if(session.getAttribute(AQConstants.SAVED_QUERY) != null)
-		{
-			alreadySavedQuery = Boolean.valueOf((String)session.getAttribute(AQConstants.SAVED_QUERY));
-			if(alreadySavedQuery)
-			{
-				session.setAttribute(AQConstants.PROCESSED_SAVED_QUERY, AQConstants.TRUE);
-			}
-		}
+		alreadySavedQuery = setSessionAttrForSavedQuery(alreadySavedQuery);
 		if(queryDetailsObj.getSessionData().isSecurityRequired() && !alreadySavedQuery)
 		{
 			newQuery = QueryCSMUtil
@@ -318,6 +336,24 @@ public class QueryModuleSearchQueryUtil
 			session.setAttribute(AQConstants.PROCESSED_SAVED_QUERY, AQConstants.FALSE);
 		}
 		return newQuery;
+	}
+
+	/**
+	 * @param alreadySavedQuery alreadySavedQuery
+	 * @return
+	 */
+	private boolean setSessionAttrForSavedQuery(boolean savedQuery)
+	{
+		boolean alreadySavedQuery = savedQuery;
+		if(session.getAttribute(AQConstants.SAVED_QUERY) != null)
+		{
+			alreadySavedQuery = Boolean.valueOf((String)session.getAttribute(AQConstants.SAVED_QUERY));
+			if(alreadySavedQuery)
+			{
+				session.setAttribute(AQConstants.PROCESSED_SAVED_QUERY, AQConstants.TRUE);
+			}
+		}
+		return alreadySavedQuery;
 	}
 	/**
 	 * Calls sqlGenerator which validates IQuery object and throws appropriate exceptions
@@ -375,10 +411,7 @@ public class QueryModuleSearchQueryUtil
 		selectedColumnsMetadata.setCurrentSelectedObject(node);
 		QueryModuleException queryModExp;
 		int recordsPerPage = setRecordsPerPage();
-		if (query.getId() != null && isSavedQuery)
-		{
-			getSelectedColumnsMetadata(QueryDetailsObj, selectedColumnsMetadata);
-		}
+		checkForSavedQuery(QueryDetailsObj, selectedColumnsMetadata);
 
 		QueryResultObjectDataBean queryResulObjectDataBean = QueryCSMUtil
 				.getQueryResulObjectDataBean(node, QueryDetailsObj);
@@ -388,12 +421,7 @@ public class QueryModuleSearchQueryUtil
 		try
 		{
 			ISqlGenerator sqlGenerator = AbstractQueryGeneratorFactory.getDefaultQueryGenerator();
-			Map<String, IOutputTerm> outputTermsColumns = sqlGenerator.getOutputTermsColumns();
-			if (outputTermsColumns == null)
-			{
-				outputTermsColumns = (Map<String, IOutputTerm>) session
-						.getAttribute(AQConstants.OUTPUT_TERMS_COLUMNS);
-			}
+			Map<String, IOutputTerm> outputTermsColumns = populateOutputTerms(sqlGenerator);
 			session.setAttribute(AQConstants.OUTPUT_TERMS_COLUMNS, outputTermsColumns);
 			Map<String, List<String>> spreadSheetDatamap = outputSpreadsheetBizLogic
 					.createSpreadsheetData(AQConstants.TREENO_ZERO, node, QueryDetailsObj, null,
@@ -410,6 +438,35 @@ public class QueryModuleSearchQueryUtil
 		{
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.CLASS_NOT_FOUND);
 			throw queryModExp;
+		}
+	}
+
+	/**
+	 * @param sqlGenerator sqlGenerator
+	 * @return outputTermsColumns
+	 */
+	private Map<String, IOutputTerm> populateOutputTerms(
+			ISqlGenerator sqlGenerator)
+			{
+		Map<String, IOutputTerm> outputTermsColumns = sqlGenerator.getOutputTermsColumns();
+		if (outputTermsColumns == null)
+		{
+			outputTermsColumns = (Map<String, IOutputTerm>) session
+					.getAttribute(AQConstants.OUTPUT_TERMS_COLUMNS);
+		}
+		return outputTermsColumns;
+	}
+
+	/**
+	 * @param QueryDetailsObj QueryDetailsObj
+	 * @param selectedColumnsMetadata selectedColumnsMetadata
+	 */
+	private void checkForSavedQuery(QueryDetails QueryDetailsObj,
+			SelectedColumnsMetadata selectedColumnsMetadata)
+	{
+		if (query.getId() != null && isSavedQuery)
+		{
+			getSelectedColumnsMetadata(QueryDetailsObj, selectedColumnsMetadata);
 		}
 	}
 
