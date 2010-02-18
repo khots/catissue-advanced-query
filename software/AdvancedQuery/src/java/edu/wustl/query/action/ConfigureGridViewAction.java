@@ -79,7 +79,7 @@ public class ConfigureGridViewAction extends SecureAction
 
 		Map spreadSheetDataMap = new HashMap();
 		List<String> definedColumnsList = new ArrayList<String>();
-		List<NameValueBean> selectedColumnNameValueBeanList =
+		List<NameValueBean> selectedCNVBList =
 			categorySearchForm.getSelColNVBeanList();
 		String operation = (String) request.getParameter(AQConstants.OPERATION);
 		if (operation==null)
@@ -105,7 +105,7 @@ public class ConfigureGridViewAction extends SecureAction
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
 					recordsPerPage, 0, spreadSheetDataMap, sqlForSelectedColumns,
 					queryResultObjecctDataMap, hasConditionOnIdentifiedField);
-			selectedColumnNameValueBeanList = categorySearchForm.getSelColNVBeanList();
+			selectedCNVBList = categorySearchForm.getSelColNVBeanList();
 			session.setAttribute(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
 					queryResultObjecctDataMap);
 			spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
@@ -117,9 +117,9 @@ public class ConfigureGridViewAction extends SecureAction
 		{
 			Map<Long, QueryResultObjectDataBean> queryResultObjecctDataMap =
 			populateMapForBackOperation(session, selectedColumnsMetadata, spreadSheetDataMap);
-			selectedColumnNameValueBeanList =
+			selectedCNVBList =
 				selectedColumnsMetadata.getSelColNVBeanList();
-			categorySearchForm.setSelColNVBeanList(selectedColumnNameValueBeanList);
+			categorySearchForm.setSelColNVBeanList(selectedCNVBList);
 			definedColumnsList = (List<String>)
 			session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
@@ -147,14 +147,14 @@ public class ConfigureGridViewAction extends SecureAction
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
 					recordsPerPage, 0, spreadSheetDataMap, sqlForSelectedColumns,
 					queryResultObjecctDataMap, hasConditionOnIdentifiedField);
-			selectedColumnNameValueBeanList = null;
+			selectedCNVBList = null;
 			spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
 					queryResultObjecctDataMap);
 			spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
 					queryResultObjecctDataMap);
 		}
 		spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
-		selectedColumnsMetadata.setSelColNVBeanList(selectedColumnNameValueBeanList);
+		selectedColumnsMetadata.setSelColNVBeanList(selectedCNVBList);
 		selectedColumnsMetadata.setCurrentSelectedObject(currentSelectedObject);
 		spreadSheetDataMap.put(AQConstants.QUERY_SESSION_DATA, querySessionData);
 		spreadSheetDataMap.put(AQConstants.SELECTED_COLUMN_META_DATA,selectedColumnsMetadata);
