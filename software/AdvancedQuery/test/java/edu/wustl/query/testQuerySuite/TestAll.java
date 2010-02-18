@@ -7,6 +7,8 @@ package edu.wustl.query.testQuerySuite;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import edu.ustl.query.util.querysuite.QueryModuleSqlUtilTestCase;
+import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadataTestCase;
 import edu.wustl.query.bizlogic.CreateQueryObjectTestCase;
 import edu.wustl.query.bizlogic.DashboardBizLogicTestCase;
 import edu.wustl.query.bizlogic.QueryCsmBizLogicTestCase;
@@ -41,6 +43,8 @@ public class TestAll
 		suite.addTestSuite(ParseXMLFileTestCase.class);
 		suite.addTestSuite(SavedQueryHtmlProviderTestCase.class);
 		suite.addTestSuite(QueryCsmBizLogicTestCase.class);
+		suite.addTestSuite(SelectedColumnsMetadataTestCase.class);
+		suite.addTestSuite(QueryModuleSqlUtilTestCase.class);
 		return suite;
 	}
 }
