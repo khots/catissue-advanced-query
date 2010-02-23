@@ -74,6 +74,7 @@ public class QueryModuleSearchQueryUtil
 	public QueryModuleError searchQuery()
 	{
 		session.removeAttribute(AQConstants.HYPERLINK_COLUMN_MAP);
+		String isHideTree = (String)request.getAttribute(AQConstants.IS_HIDE_TREE);
 		QueryModuleError status = QueryModuleError.SUCCESS;
 		IQuery newQuery = null;
 		try

@@ -36,6 +36,7 @@ import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.PagenatedResultData;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.QuerySessionData;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.util.global.AQConstants;
@@ -53,6 +54,8 @@ import edu.wustl.query.util.querysuite.TemporalColumnUIBean;
  */
 public class QueryOutputSpreadsheetBizLogic
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(QueryOutputSpreadsheetBizLogic.class);
 
 	/**
 	 * SelectedColumnsMetadata.
@@ -644,11 +647,11 @@ public class QueryOutputSpreadsheetBizLogic
 		}
 		catch (DAOException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		catch (ClassNotFoundException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		Iterator iterator = list.iterator();
 		while (iterator.hasNext())

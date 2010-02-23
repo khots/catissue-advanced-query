@@ -20,6 +20,7 @@ import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.generator.ISqlGenerator;
 import edu.wustl.query.util.global.AQConstants;
@@ -37,6 +38,8 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
  */
 public class ValidateQueryBizLogic
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(ValidateQueryBizLogic.class);
 
 	/**
 	 * @param request -
@@ -94,7 +97,7 @@ public class ValidateQueryBizLogic
 			Logger.out.error(e);
 			validationMessage = AQConstants.STYLE+ ApplicationProperties
 			.getValue("errors.executeQuery.genericmessage")+ AQConstants.END_STYLE;
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		catch (DAOException e)
 		{
@@ -102,7 +105,7 @@ public class ValidateQueryBizLogic
 			validationMessage = AQConstants.STYLE
 			+ ApplicationProperties.getValue("errors.executeQuery.genericmessage")
 					+ AQConstants.END_STYLE;
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return validationMessage;
 	}

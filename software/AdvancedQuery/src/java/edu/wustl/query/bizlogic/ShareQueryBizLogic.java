@@ -3,6 +3,7 @@ package edu.wustl.query.bizlogic;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.global.Constants;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.security.exception.SMException;
 import edu.wustl.security.manager.SecurityManagerFactory;
@@ -14,6 +15,8 @@ import java.util.List;
 
 public class ShareQueryBizLogic
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(ShareQueryBizLogic.class);
 	public List<User> getUsers()
 	{
 		List<User> users = null;
@@ -23,8 +26,7 @@ public class ShareQueryBizLogic
 		}
 		catch (SMException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return users;
 	}

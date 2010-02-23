@@ -36,6 +36,7 @@ import edu.wustl.common.util.Collections;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.TemporalQueryUtility;
@@ -48,6 +49,8 @@ import edu.wustl.query.util.querysuite.TemporalQueryUtility;
  */
 public class CreateQueryObjectBizLogic
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(CreateQueryObjectBizLogic.class);
 
 	/**
 	 * Gets the map which holds the data to create the rule object and add it to query.
@@ -545,7 +548,7 @@ public class CreateQueryObjectBizLogic
 						}
 						catch (ParseException e)
 						{
-							e.printStackTrace();
+							logger.error(e.getMessage(), e);
 							errorMsg = e.getMessage();
 						}
 					}

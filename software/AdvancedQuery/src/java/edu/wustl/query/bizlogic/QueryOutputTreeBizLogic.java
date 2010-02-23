@@ -24,6 +24,7 @@ import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.QuerySessionData;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.util.global.AQConstants;
@@ -41,6 +42,8 @@ import edu.wustl.security.exception.SMException;
  */
 public class QueryOutputTreeBizLogic
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(QueryOutputTreeBizLogic.class);
 	/**
 	 * Creates a temporary table to store query results.
 	 * @param selectSql the query
@@ -320,7 +323,7 @@ public class QueryOutputTreeBizLogic
 				}
 				catch (java.text.ParseException e)
 				{
-					e.printStackTrace();
+					logger.error(e.getMessage(),e);
 				}
 				Calendar tempCurrentDate = GregorianCalendar.getInstance();
 				tempCurrentDate.setTime(currentDate);

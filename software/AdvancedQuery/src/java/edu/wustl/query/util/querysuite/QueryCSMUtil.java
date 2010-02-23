@@ -101,14 +101,7 @@ public class QueryCSMUtil
 			List<EntityInterface> mainEntityList = new ArrayList<EntityInterface>();
 			FlexInterface flexInterface = new FlexInterface();
 			flexInterface.initFlexInterface();
-			if(finalMnEntityLst == null)
-			{
-				mainEntityList = null;
-			}
-			else
-			{
-				updateFinalMainEntityList(finalMnEntityLst, mainEntityList);
-			}
+			mainEntityList = setMainEntityList(finalMnEntityLst, mainEntityList);
 			if (mainEntityList == null)//mainEntityList is null if the entity itself is main entity;
 			{
 				if(!isMainObjAdded)
@@ -129,6 +122,27 @@ public class QueryCSMUtil
 					dagPanel);
 		}
 		return queryClone;
+	}
+
+	/**
+	 * @param finalMnEntityLst finalMnEntityLst
+	 * @param mainEntityList mainEntityList
+	 * @return mainEntityList
+	 */
+	private static List<EntityInterface> setMainEntityList(
+			List<EntityInterface> finalMnEntityLst,
+			List<EntityInterface> tmpMainEntityLst)
+	{
+		List<EntityInterface> mainEntityList = tmpMainEntityLst;
+		if(finalMnEntityLst == null)
+		{
+			mainEntityList = null;
+		}
+		else
+		{
+			updateFinalMainEntityList(finalMnEntityLst, mainEntityList);
+		}
+		return mainEntityList;
 	}
 
 	/**
@@ -205,10 +219,8 @@ public class QueryCSMUtil
 		}
 		if(isMainObjPresent && queryDetailsObj.getSessionData().isSecurityRequired())
 		{
-			for(IExpression expression : constraints)
-			{
-				modifyRule(mainEntityId, strToCreateObject, oprVsLstOfVals, expression);
-			}
+			callModifyRule(mainEntityId, strToCreateObject, constraints,
+					oprVsLstOfVals);
 			dagPanel.createQueryObject(strToCreateObject.toString(),
 			mainEntity.getId().toString(),AQConstants.EDIT,queryDetailsObj,oprVsLstOfVals);
 		}
@@ -220,6 +232,22 @@ public class QueryCSMUtil
 		queryClone = queryDetailsObj.getQuery();
 		queryDetailsObj.setQuery(originalQuery);
 		return queryClone;
+	}
+
+	/**
+	 * @param mainEntityId main entity identifier
+	 * @param strToCreateObject query string
+	 * @param constraints constraints
+	 * @param oprVsLstOfVals map
+	 */
+	private static void callModifyRule(String mainEntityId,
+			StringBuffer strToCreateObject, IConstraints constraints,
+			Map<RelationalOperator, List<String>> oprVsLstOfVals)
+	{
+		for(IExpression expression : constraints)
+		{
+			modifyRule(mainEntityId, strToCreateObject, oprVsLstOfVals, expression);
+		}
 	}
 
 	/**
@@ -292,17 +320,27 @@ public class QueryCSMUtil
 		append(attrId).append(AQConstants.CONDITION_SEPERATOR).append(operator.getStringRepresentation());
 		if(operator.equals(RelationalOperator.In) || operator.equals(RelationalOperator.NotIn))
 		{
-			strToCreateObject.append(AQConstants.CONDITION_SEPERATOR);
-			for(String val : values)
-			{
-				strToCreateObject.append('&').append(val);
-			}
+			modifyQueryStringForInNotIn(strToCreateObject, values);
 		}
 		else if(!(operator.equals(RelationalOperator.IsNotNull) || operator.equals(RelationalOperator.IsNull)))
 		{
 			strToCreateObject.append(AQConstants.CONDITION_SEPERATOR).append(value);
 		}
 		strToCreateObject.append(';');
+	}
+
+	/**
+	 * @param strToCreateObject query string
+	 * @param values values
+	 */
+	private static void modifyQueryStringForInNotIn(
+			StringBuffer strToCreateObject, List<String> values)
+	{
+		strToCreateObject.append(AQConstants.CONDITION_SEPERATOR);
+		for(String val : values)
+		{
+			strToCreateObject.append('&').append(val);
+		}
 	}
 
 	/**
@@ -342,19 +380,8 @@ public class QueryCSMUtil
 		EntityInterface mainEntityObject=null;
 		if(mainEntityList != null && mainEntityList.size()>1)
 		{
-			for(EntityInterface tempEntity : mainEntityList)
-			{
-				if(tempEntity.getName().equalsIgnoreCase
-					("edu.wustl.clinportal.domain.ClinicalStudyRegistration"))
-				{
-					mainEntityObject = tempEntity;
-					break;
-				}
-			}
-			if(mainEntityObject == null)
-			{
-				mainEntityObject = mainEntityList.get(0);
-			}
+			mainEntityObject = getMainEntityObject(mainEntityList,
+					mainEntityObject);
 		}
 		else
 		{
@@ -398,6 +425,32 @@ public class QueryCSMUtil
 			queryDetailsObj.setQuery(originalQuery);
 		}
 		return queryClone;
+	}
+
+	/**
+	 * @param mainEntityList list
+	 * @param mainObject main entity object
+	 * @return mainEntityObject
+	 */
+	private static EntityInterface getMainEntityObject(
+			List<EntityInterface> mainEntityList,
+			EntityInterface mainObject)
+	{
+		EntityInterface mainEntityObject = mainObject;
+		for(EntityInterface tempEntity : mainEntityList)
+		{
+			if(tempEntity.getName().equalsIgnoreCase
+				("edu.wustl.clinportal.domain.ClinicalStudyRegistration"))
+			{
+				mainEntityObject = tempEntity;
+				break;
+			}
+		}
+		if(mainEntityObject == null)
+		{
+			mainEntityObject = mainEntityList.get(0);
+		}
+		return mainEntityObject;
 	}
 
 	/**
