@@ -411,6 +411,73 @@ public class GenericQueryGeneratorMock extends EntityManager
 		return entity;
 	}
 
+    public static ICustomFormula createCustomFormulaParticipantCPR()
+    {
+
+        try
+        {
+            IQuery query = QueryObjectFactory.createQuery();
+            IConstraints constraints = query.getConstraints();
+            EntityCache cache = EntityCacheFactory.getInstance();
+            EntityInterface participantEntity = GenericQueryGeneratorMock.createEntity("Participant");
+            participantEntity = getEntity(cache,participantEntity);
+            IQueryEntity participantConstraintEntity = QueryObjectFactory.createQueryEntity(participantEntity);
+            IExpression participant = constraints.addExpression(participantConstraintEntity);
+
+            EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
+            csrEntity = getEntity(cache,csrEntity);
+            IQueryEntity csrConstraintEntity = QueryObjectFactory.createQueryEntity(csrEntity);
+            IExpression csr = constraints
+                    .addExpression(csrConstraintEntity);
+
+            participant.addOperand(csr);
+
+            AssociationInterface partCPR = getAssociationFrom(entityManager.getAssociation(
+                    "edu.wustl.clinportal.domain.Participant", "participant"),
+                    "edu.wustl.clinportal.domain.ClinicalStudyRegistration");
+
+            constraints.getJoinGraph().putAssociation(participant, csr,
+                    QueryObjectFactory.createIntraModelAssociation(partCPR));
+
+            IExpressionAttribute birthDate = QueryObjectFactory.createExpressionAttribute(
+                    participant, findAttribute(participantEntity,
+                            "birthDate"),false);
+            IExpressionAttribute registrationDate = QueryObjectFactory.createExpressionAttribute(csr,
+                    findAttribute(csrEntity,
+                            "registrationDate"),false);
+
+            ITerm lhs = QueryObjectFactory.createTerm();
+            lhs.addOperand(registrationDate);
+            lhs.addOperand(conn(ArithmeticOperator.Minus), birthDate);
+
+            IDateOffsetLiteral offSet = QueryObjectFactory.createDateOffsetLiteral("30", TimeInterval.Minute);
+            ITerm rhs = QueryObjectFactory.createTerm();
+            rhs.addOperand(offSet);
+
+            ICustomFormula formula = QueryObjectFactory.createCustomFormula();
+            participant.addOperand(getAndConnector(), formula);
+            formula.setLhs(lhs);
+            formula.addRhs(rhs);
+            formula.setOperator(RelationalOperator.GreaterThan);
+
+            participant.setInView(true);
+            return formula;
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+			e.printStackTrace();
+		}
+        catch (DynamicExtensionsApplicationException e)
+        {
+			e.printStackTrace();
+		}
+        catch (CyclicException e)
+        {
+			e.printStackTrace();
+		}
+        return null;
+
+    }
     /**
      * <pre>
      * Participant (P)

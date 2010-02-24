@@ -1,15 +1,19 @@
 package edu.wustl.query.bizlogic;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.common.cache.AbstractEntityCache;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.query.generator.GenericQueryGeneratorMock;
+import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.querysuite.EntityCacheFactory;
 
 
@@ -18,7 +22,6 @@ public class CreateQueryObjectTestCase extends TestCase
 	static
 	{
 		CommonServiceLocator.getInstance();
-
 	}
 	public CreateQueryObjectTestCase()
 	{
@@ -50,7 +53,7 @@ public class CreateQueryObjectTestCase extends TestCase
 					attributeId = attribute.getId();
 				}
 			}
-			String strToCreateQueryObject = "@#condition#@id"+attributeId+"!*=*!Equals!*=*!1;";
+			String strToCreateQueryObject = "@#condition#@id"+attributeId+"!*=*!Between!*=*!1!*=*!10;";
 			queryBizlogic.getRuleDetailsMap(strToCreateQueryObject, attrCollection);
 		}
 		catch (Exception ex)
@@ -76,6 +79,27 @@ public class CreateQueryObjectTestCase extends TestCase
 		catch (Exception e)
 		{
 			fail("Unexpected Exception while setting input data to query!!!");
+		}
+	}
+
+	/**
+	 * Test setInputDataToTQ method.
+	 */
+	public void testSetInputDataToTQ()
+	{
+		try
+		{
+			ICustomFormula customFormula = GenericQueryGeneratorMock.createCustomFormulaParticipantCPR();
+			IQuery query = GenericQueryGeneratorMock.createTemporalQueryParticipantCPR();
+			Map<Integer, ICustomFormula> cFIndexMap = new HashMap<Integer, ICustomFormula>();
+			cFIndexMap.put(1, customFormula);
+			CreateQueryObjectBizLogic queryBizlogic = new CreateQueryObjectBizLogic();
+			String errorMessage = queryBizlogic.setInputDataToTQ(query, AQConstants.SAVE_QUERY_PAGE, "", cFIndexMap);
+			assertEquals("",errorMessage);
+		}
+		catch(Exception e)
+		{
+			fail("Unexpected Exception while setting input data to TQ!!!");
 		}
 	}
 }
