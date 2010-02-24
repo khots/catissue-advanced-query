@@ -198,13 +198,12 @@ public class QueryCsmCacheManager
 		}
 		else
 		{
-			List<Boolean> readPrivilegeList = new ArrayList<Boolean>();
 			List<Boolean> iPrivilegeList = new ArrayList<Boolean>();
 			for (int i = 0; i < cpIdsList.size(); i++)
 			{
 				List<String> cpIdList = cpIdsList.get(i);
 				updatePrivilegeList(sessionDataBean, cache,
-				readPrivilegeList,iPrivilegeList, cpIdList);
+				null,iPrivilegeList, cpIdList);
 			}
 			hasPrivilegeOnID = isAuthorizedUser(iPrivilegeList,
 					false);
@@ -816,24 +815,56 @@ public class QueryCsmCacheManager
 			List<String> cpIdList) throws SMException
 	{
 		Boolean hasPrivilegeOnIdentifiedData;
+		Boolean isAuthorisedUser;
 		String entityName;
 		Long cpId = cpIdList.get(0) != null ? Long.parseLong(cpIdList.get(0)) : -1;
 		entityName = Variables.mainProtocolObject;
 
 		if (readPrivilegeList == null)
+        {
+              hasPrivilegeOnIdentifiedData = checkIdentifiedDataAccess(sessionDataBean, cache,
+                          entityName, cpId);
+              identifiedPrivilegeList.add(hasPrivilegeOnIdentifiedData);
+        }
+        else
+        {
+              isAuthorisedUser = checkReadDenied(sessionDataBean, cache, entityName, cpId);
+              readPrivilegeList.add(isAuthorisedUser);
+
+              //If user is authorized to read data then check for identified data access.
+              if (isAuthorisedUser)
+              {
+                    hasPrivilegeOnIdentifiedData = checkIdentifiedDataAccess(sessionDataBean, cache,
+                                entityName, cpId);
+                    identifiedPrivilegeList.add(hasPrivilegeOnIdentifiedData);
+              }
+        }
+	}
+
+	/**
+	 * @param sessionDataBean sessionDataBean
+	 * @param cache cache
+	 * @param entityName entityName
+	 * @param cpId cpId
+	 * @return
+	 * @throws SMException SMException
+	 */
+	private Boolean checkReadDenied(SessionDataBean sessionDataBean, QueryCsmCache cache,
+			String entityName, Long cpId) throws SMException
+	{
+		Boolean isAuthorisedUser;
+		if (cache.isReadDenied(cpId) == null)
 		{
-			hasPrivilegeOnIdentifiedData = checkIdentifiedDataAccess(sessionDataBean, cache,
-					entityName, cpId);
-			identifiedPrivilegeList.add(hasPrivilegeOnIdentifiedData);
+			isAuthorisedUser = checkPermission(sessionDataBean, entityName, cpId,
+			Permissions.READ_DENIED);
+			cache.addNewObjectInReadPrivilegeMap(cpId, isAuthorisedUser);
 		}
 		else
 		{
-			hasPrivilegeOnIdentifiedData = checkIdentifiedDataAccess(sessionDataBean, cache,
-					entityName, cpId);
-			identifiedPrivilegeList.add(hasPrivilegeOnIdentifiedData);
+			isAuthorisedUser = cache.isReadDenied(cpId);
 		}
+		return isAuthorisedUser;
 	}
-
 	/**
 	 * To retrieve the entity name.
 	 * @param queryResultObjectData Object of QueryResultObjectData
