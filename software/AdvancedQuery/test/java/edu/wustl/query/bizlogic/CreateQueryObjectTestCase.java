@@ -43,6 +43,7 @@ public class CreateQueryObjectTestCase extends TestCase
 			}
 			EntityInterface entity = GenericQueryGeneratorMock.createEntity("Participant");
 			Long attributeId = null;
+			Long birthDateId = null;
 			entity = GenericQueryGeneratorMock.getEntity(cache, entity);
 			Collection<AttributeInterface> attrCollection = entity.getAllAttributes();
 
@@ -52,8 +53,16 @@ public class CreateQueryObjectTestCase extends TestCase
 				{
 					attributeId = attribute.getId();
 				}
+				else if(attribute.getName().equals("birthDate"))
+				{
+					birthDateId = attribute.getId();
+				}
 			}
 			String strToCreateQueryObject = "@#condition#@id"+attributeId+"!*=*!Between!*=*!1!*=*!10;";
+			queryBizlogic.getRuleDetailsMap(strToCreateQueryObject, attrCollection);
+			strToCreateQueryObject = "@#condition#@id"+attributeId+"!*=*!Between!*=*!1!*=*!missingTwoValues;";
+			queryBizlogic.getRuleDetailsMap(strToCreateQueryObject, attrCollection);
+			strToCreateQueryObject = "@#condition#@birthDate"+birthDateId+"!*=*!Equals!*=*!2-01-2010;";
 			queryBizlogic.getRuleDetailsMap(strToCreateQueryObject, attrCollection);
 		}
 		catch (Exception ex)
