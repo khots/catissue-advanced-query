@@ -457,11 +457,7 @@ public class CreateQueryObjectBizLogic
 			Map<String, String> displayNamesMap, IQuery query)
 	{
 		String errorMessage = "";
-		Map<String, String[]> newConditions = null;
-		if (queryInputString != null)
-		{
-			newConditions = createConditionsMap(queryInputString);
-		}
+		Map<String, String[]> newConditions = getNewConditions(queryInputString);
 		for (IExpression expression : constraints)
 		{
 			int noOfOprds = expression.numberOfOperands();
@@ -475,24 +471,49 @@ public class CreateQueryObjectBizLogic
 					IRule rule = (IRule) operand;
 					errorMessage = componentValues(displayNamesMap,
 						errorMessage, newConditions,expId, rule, query);
-					if (displayNamesMap == null &&
-							(Collections.list((IRule) operand)).size() == 0)
-					{
-						IExpression expression1 = rule.getContainingExpression();
-						AttributeInterface attributeObj = getIdNotNullAttribute(expression1
-								.getQueryEntity().getDynamicExtensionsEntity());
-
-						if (attributeObj != null)
-						{
-							ICondition condition =
-								createIdNotNullCondition(attributeObj);
-							rule.addCondition(condition);
-						}
-					}
+					populateRule(displayNamesMap, operand, rule);
 				}
 			}
 		}
 		return errorMessage;
+	}
+
+	/**
+	 * @param queryInputString queryInputString
+	 * @return newConditions
+	 */
+	private Map<String, String[]> getNewConditions(String queryInputString)
+	{
+		Map<String, String[]> newConditions = null;
+		if (queryInputString != null)
+		{
+			newConditions = createConditionsMap(queryInputString);
+		}
+		return newConditions;
+	}
+
+	/**
+	 * @param displayNamesMap map
+	 * @param operand operand
+	 * @param rule rule
+	 */
+	private void populateRule(Map<String, String> displayNamesMap,
+			IExpressionOperand operand, IRule rule)
+	{
+		if (displayNamesMap == null &&
+				(Collections.list((IRule) operand)).size() == 0)
+		{
+			IExpression expression1 = rule.getContainingExpression();
+			AttributeInterface attributeObj = getIdNotNullAttribute(expression1
+					.getQueryEntity().getDynamicExtensionsEntity());
+
+			if (attributeObj != null)
+			{
+				ICondition condition =
+					createIdNotNullCondition(attributeObj);
+				rule.addCondition(condition);
+			}
+		}
 	}
 
 	/**

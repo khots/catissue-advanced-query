@@ -35,6 +35,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.Rule;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.bizlogic.QueryCsmBizLogic;
@@ -50,6 +51,9 @@ import edu.wustl.security.global.Utility;
  */
 public class QueryCSMUtil
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(QueryCSMUtil.class);
+
 	/**This method will check if main objects for all the dependent objects are present in query or not.
 	 * If yes then will create map of entity as key and main entity list as value.
 	 * If not then will set error message in session.
@@ -377,16 +381,7 @@ public class QueryCSMUtil
 		IQuery queryClone;
 		List<EntityInterface> entityList = new ArrayList<EntityInterface>();
 		List<String> strToCreateQueryObjectList = new ArrayList<String>();
-		EntityInterface mainEntityObject=null;
-		if(mainEntityList != null && mainEntityList.size()>1)
-		{
-			mainEntityObject = getMainEntityObject(mainEntityList,
-					mainEntityObject);
-		}
-		else
-		{
-			mainEntityObject = mainEntityList.get(0);
-		}
+		EntityInterface mainEntityObject = getMainEntityObject(mainEntityList);
 		entityList.add(mainEntityObject);
 
 		Long identifier = mainEntityObject.getAbstractAttributeByName("id").getId();
@@ -399,21 +394,13 @@ public class QueryCSMUtil
 		queryClone = new DyExtnObjectCloner().clone(originalQuery);
 		queryDetailsObj.setQuery(queryClone);
 
-		for(int counter=0;counter<entityList.size();counter++)
-		{
-			dagPanel.createQueryObject(strToCreateQueryObjectList.get(counter),
-			entityList.get(counter).getId().toString(),AQConstants.ADD,queryDetailsObj,null);
-		}
+		createQueryObject(queryDetailsObj, dagPanel, entityList,
+				strToCreateQueryObjectList);
 		boolean alreadySavedQuery=false;
 		boolean savedQueryProcessed = false;
-		if(session.getAttribute(AQConstants.SAVED_QUERY) != null)
-		{
-			alreadySavedQuery = Boolean.valueOf((String)session.getAttribute(AQConstants.SAVED_QUERY));
-		}
-		if(session.getAttribute(AQConstants.PROCESSED_SAVED_QUERY) != null)
-		{
-			savedQueryProcessed = Boolean.valueOf((String)session.getAttribute(AQConstants.PROCESSED_SAVED_QUERY));
-		}
+		alreadySavedQuery = getAlreadySavedQuery(session, alreadySavedQuery);
+		savedQueryProcessed = getSavedQueryProcessed(session,
+				savedQueryProcessed);
 		if(alreadySavedQuery && savedQueryProcessed && !originalQuery.equals(queryDetailsObj.getQuery()) && queryClone.equals(queryDetailsObj.getQuery()))
 		{
 			queryDetailsObj.setQuery(queryClone);
@@ -425,6 +412,75 @@ public class QueryCSMUtil
 			queryDetailsObj.setQuery(originalQuery);
 		}
 		return queryClone;
+	}
+
+	/**
+	 * @param queryDetailsObj queryDetailsObj
+	 * @param dagPanel dagPanel
+	 * @param entityList entityList
+	 * @param strToCreateQueryObjectList strToCreateQueryObjectList
+	 */
+	private static void createQueryObject(QueryDetails queryDetailsObj,
+			DAGPanel dagPanel, List<EntityInterface> entityList,
+			List<String> strToCreateQueryObjectList)
+	{
+		for(int counter=0;counter<entityList.size();counter++)
+		{
+			dagPanel.createQueryObject(strToCreateQueryObjectList.get(counter),
+			entityList.get(counter).getId().toString(),AQConstants.ADD,queryDetailsObj,null);
+		}
+	}
+
+	/**
+	 * @param session session
+	 * @param queryProcessed queryProcessed
+	 * @return savedQueryProcessed
+	 */
+	private static boolean getSavedQueryProcessed(HttpSession session,
+			boolean queryProcessed)
+	{
+		boolean savedQueryProcessed = queryProcessed;
+		if(session.getAttribute(AQConstants.PROCESSED_SAVED_QUERY) != null)
+		{
+			savedQueryProcessed = Boolean.valueOf((String)session.getAttribute(AQConstants.PROCESSED_SAVED_QUERY));
+		}
+		return savedQueryProcessed;
+	}
+
+	/**
+	 * @param session session
+	 * @param isSavedQuery isSavedQuery
+	 * @return alreadySavedQuery
+	 */
+	private static boolean getAlreadySavedQuery(HttpSession session,
+			boolean isSavedQuery)
+	{
+		boolean alreadySavedQuery = isSavedQuery;
+		if(session.getAttribute(AQConstants.SAVED_QUERY) != null)
+		{
+			alreadySavedQuery = Boolean.valueOf((String)session.getAttribute(AQConstants.SAVED_QUERY));
+		}
+		return alreadySavedQuery;
+	}
+
+	/**
+	 * @param mainEntityList mainEntityList
+	 * @return mainEntityObject
+	 */
+	private static EntityInterface getMainEntityObject(
+			List<EntityInterface> mainEntityList)
+	{
+		EntityInterface mainEntityObject=null;
+		if(mainEntityList != null && mainEntityList.size()>1)
+		{
+			mainEntityObject = getMainEntityObject(mainEntityList,
+					mainEntityObject);
+		}
+		else
+		{
+			mainEntityObject = mainEntityList.get(0);
+		}
+		return mainEntityObject;
 	}
 
 	/**
@@ -471,39 +527,76 @@ public class QueryCSMUtil
 					.getDynamicExtensionsEntity();
 			mainEntityList = getAllMainEntities(deEntity, mainEntityList);
 			EntityInterface tempDeEntity = deEntity;
-			List<EntityInterface> tmpMnEntityLst;
-			while (true)
-			{
-				tmpMnEntityLst = new ArrayList<EntityInterface>();
-				EntityInterface parentEntity = tempDeEntity.getParentEntity();
-				if (parentEntity == null)
-				{
-					break;
-				}
-				else
-				{
-					tmpMnEntityLst = getAllMainEntities(parentEntity, tmpMnEntityLst);
-					for (EntityInterface tempMainEntity : tmpMnEntityLst)
-					{
-						if (!(tempMainEntity.equals(parentEntity)))
-						{
-							mainEntityList.add(tempMainEntity);
-						}
-					}
-					tempDeEntity = parentEntity;
-				}
-			}
+			populateList(mainEntityList, tempDeEntity);
 			if (mainEntityList.size() != 1)
 			{
 				mainEntityList = populateMainEntityList(mainEntityList, deEntity);
 			}
-			if (!(mainEntityList != null && mainEntityList.size() == 1 && mainEntityList.get(0)
-					.equals(deEntity)))
-			{
-				populateMainEntityMap(mainEntityMap, mainEntityList, deEntity);
-			}
+			getMainEntityMap(mainEntityMap, mainEntityList, deEntity);
 		}
 		return mainEntityMap;
+	}
+
+	/**
+	 * @param mainEntityList mainEntityList
+	 * @param tempDeEntity tempDeEntity
+	 */
+	private static void populateList(List<EntityInterface> mainEntityList,
+			EntityInterface tempDeEntity)
+	{
+		List<EntityInterface> tmpMnEntityLst;
+		while (true)
+		{
+			tmpMnEntityLst = new ArrayList<EntityInterface>();
+			EntityInterface parentEntity = tempDeEntity.getParentEntity();
+			if (parentEntity == null)
+			{
+				break;
+			}
+			else
+			{
+				addUniqueEntitiesToList(mainEntityList, tmpMnEntityLst,
+						parentEntity);
+			}
+		}
+	}
+
+	/**
+	 * @param mainEntityList mainEntityList
+	 * @param tempMainEntityList tempMainEntityList
+	 * @param parentEntity parentEntity
+	 */
+	private static void addUniqueEntitiesToList(
+			List<EntityInterface> mainEntityList,
+			List<EntityInterface> tempMainEntityList, EntityInterface parentEntity)
+	{
+		List<EntityInterface> tmpMnEntityLst = tempMainEntityList;
+		EntityInterface tempDeEntity;
+		tmpMnEntityLst = getAllMainEntities(parentEntity, tmpMnEntityLst);
+		for (EntityInterface tempMainEntity : tmpMnEntityLst)
+		{
+			if (!(tempMainEntity.equals(parentEntity)))
+			{
+				mainEntityList.add(tempMainEntity);
+			}
+		}
+		tempDeEntity = parentEntity;
+	}
+
+	/**
+	 * @param mainEntityMap mainEntityMap
+	 * @param mainEntityList mainEntityList
+	 * @param deEntity deEntity
+	 */
+	private static void getMainEntityMap(
+			Map<EntityInterface, List<EntityInterface>> mainEntityMap,
+			List<EntityInterface> mainEntityList, EntityInterface deEntity)
+	{
+		if (!(mainEntityList != null && mainEntityList.size() == 1 && mainEntityList.get(0)
+				.equals(deEntity)))
+		{
+			populateMainEntityMap(mainEntityMap, mainEntityList, deEntity);
+		}
 	}
 
 	/**
@@ -578,7 +671,7 @@ public class QueryCSMUtil
 		}
 		catch (DynamicExtensionsSystemException deException)
 		{
-			deException.printStackTrace();
+			logger.error(deException.getMessage(), deException);
 		}
 		return mainEntityList;
 	}
@@ -602,10 +695,7 @@ public class QueryCSMUtil
             Map<String,String> tagKeyValueMap = new HashMap<String, String>();
             Collection<TaggedValueInterface> taggedValueColl =
             	deEntity.getTaggedValueCollection();
-            for (TaggedValueInterface taggedValueInterface : taggedValueColl)
-            {
-                tagKeyValueMap.put(taggedValueInterface.getKey(),taggedValueInterface.getValue());
-            }
+            populateTaggedValueMap(tagKeyValueMap, taggedValueColl);
             queryResultObjectDataBean.setPrivilegeType(Utility.getInstance().getPrivilegeType(tagKeyValueMap));
             queryResultObjectDataBean.setEntity(deEntity);
 
@@ -615,20 +705,8 @@ public class QueryCSMUtil
 	            mainEntityList = queryDetailsObj.getMainEntityMap().get(
 	                    deEntity);
             }
-            if (mainEntityList == null)
-            {
-            	entityName = deEntity.getName();
-            }
-            else
-            {
-            	EntityInterface mainEntity = getMainEntity(mainEntityList, node);
-                if(mainEntity == null)
-                {
-                	mainEntity = mainEntityList.get(0);
-                }
-                queryResultObjectDataBean.setMainEntity(mainEntity);
-                entityName = mainEntity.getName();
-            }
+            entityName = getMainEntityName(node, queryResultObjectDataBean,
+					deEntity, mainEntityList);
 			queryResultObjectDataBean.setCsmEntityName(entityName);
 			setEntityName(queryResultObjectDataBean);
 			readDeniedObject = isReadDeniedObject(queryResultObjectDataBean.getCsmEntityName());
@@ -637,10 +715,53 @@ public class QueryCSMUtil
 		return queryResultObjectDataBean;
 	}
 
+	/**
+	 * @param tagKeyValueMap tagKeyValueMap
+	 * @param taggedValueColl taggedValueColl
+	 */
+	private static void populateTaggedValueMap(
+			Map<String, String> tagKeyValueMap,
+			Collection<TaggedValueInterface> taggedValueColl)
+	{
+		for (TaggedValueInterface taggedValueInterface : taggedValueColl)
+		{
+		    tagKeyValueMap.put(taggedValueInterface.getKey(),taggedValueInterface.getValue());
+		}
+	}
+
+	/**
+	 * @param node node
+	 * @param queryResultObjectDataBean queryResultObjectDataBean
+	 * @param deEntity deEntity
+	 * @param mainEntityList mainEntityList
+	 * @return entityName
+	 */
+	private static String getMainEntityName(OutputTreeDataNode node,
+			QueryResultObjectDataBean queryResultObjectDataBean,
+			EntityInterface deEntity, List<EntityInterface> mainEntityList)
+	{
+		String entityName;
+		if (mainEntityList == null)
+		{
+			entityName = deEntity.getName();
+		}
+		else
+		{
+			EntityInterface mainEntity = getMainEntity(mainEntityList, node);
+		    if(mainEntity == null)
+		    {
+		    	mainEntity = mainEntityList.get(0);
+		    }
+		    queryResultObjectDataBean.setMainEntity(mainEntity);
+		    entityName = mainEntity.getName();
+		}
+		return entityName;
+	}
+
 	/**If main entity is inherited from an entity (e.g. Fluid Specimen is inherited from Specimen)
 	 * and present in INHERITED_ENTITY_NAMES
 	 * then csmEntityName of queryResultObjectDataBean will be set to it's parent entity name.
-	 * (as Sql for getting CP id's id retrieved
+	 * (as SQL for getting CP id's id retrieved
 	 * according to parent entity name from entityCPSqlMap in Variables class).
 	 * @param queryResultObjectDataBean queryResultObjectDataBean
 	 */
@@ -845,6 +966,18 @@ public class QueryCSMUtil
 				}
 			}
 		}
+		populateBean(queryResultObjectDataBean, entityIdIndexMap);
+		return selectSql;
+	}
+
+	/**
+	 * @param queryResultObjectDataBean bean
+	 * @param entityIdIndexMap map
+	 */
+	private static void populateBean(
+			QueryResultObjectDataBean queryResultObjectDataBean,
+			Map<EntityInterface, Integer> entityIdIndexMap)
+	{
 		if (queryResultObjectDataBean != null)
 		{
 			queryResultObjectDataBean.setEntityIdIndexMap(entityIdIndexMap);
@@ -854,7 +987,6 @@ public class QueryCSMUtil
 						.get(queryResultObjectDataBean.getMainEntity()));
 			}
 		}
-		return selectSql;
 	}
 
 	/**
