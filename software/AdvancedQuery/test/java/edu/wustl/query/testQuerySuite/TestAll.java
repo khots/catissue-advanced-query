@@ -12,6 +12,7 @@ import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadataT
 import edu.wustl.query.bizlogic.CreateQueryObjectTestCase;
 import edu.wustl.query.bizlogic.DashboardBizLogicTestCase;
 import edu.wustl.query.bizlogic.QueryCsmBizLogicTestCase;
+import edu.wustl.query.bizlogic.SaveQueryBizLogicTestCase;
 import edu.wustl.query.generator.SqlGeneratorGenericTestCase;
 import edu.wustl.query.htmlprovider.GenerateHtmlDetailsTestCase;
 import edu.wustl.query.htmlprovider.GenerateHtmlTestCase;
@@ -34,6 +35,7 @@ public class TestAll
 	{
 		TestSuite suite = new TestSuite("Test suite for Query Interface Classes");
 		suite.addTestSuite(CreateQueryObjectTestCase.class);
+
 		suite.addTestSuite(SqlGeneratorGenericTestCase.class);
 		//suite.addTestSuite(MySqlQueryGenerator.class);
 		suite.addTestSuite(HtmlProviderTestCase.class);
@@ -45,6 +47,7 @@ public class TestAll
 		suite.addTestSuite(QueryCsmBizLogicTestCase.class);
 		suite.addTestSuite(SelectedColumnsMetadataTestCase.class);
 		suite.addTestSuite(QueryModuleSqlUtilTestCase.class);
+		suite.addTestSuite(SaveQueryBizLogicTestCase.class);
 		return suite;
 	}
 }
