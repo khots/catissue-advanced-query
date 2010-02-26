@@ -68,6 +68,7 @@ import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.Collections;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
@@ -92,6 +93,8 @@ import edu.wustl.security.privilege.PrivilegeManager;
 
 public class DAGPanel
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(DAGPanel.class);
 
 	/**
 	 * mQueryObject.
@@ -222,19 +225,7 @@ public class DAGPanel
 			// Get existing Query object from server
 			query = (IQuery) session.getAttribute(DAGConstant.QUERY_OBJECT);
 		}
-		if(mQueryObject == null)
-		{
-			IClientQueryBuilderInterface queryObject = new ClientQueryBuilder();
-			mQueryObject = queryObject;
-		}
-		if (query == null)
-		{
-			query = mQueryObject.getQuery();
-		}
-		else
-		{
-			mQueryObject.setQuery(query);
-		}
+		query = setQueryObject(query);
 		if(session!=null)
 		{
 			session.setAttribute(DAGConstant.QUERY_OBJECT, query);
@@ -263,17 +254,40 @@ public class DAGPanel
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		catch (MultipleRootsException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return node;
+	}
+
+	/**
+	 * @param mQuery mQuery
+	 * @return query
+	 */
+	private IQuery setQueryObject(IQuery mQuery)
+	{
+		IQuery query = mQuery;
+		if(mQueryObject == null)
+		{
+			IClientQueryBuilderInterface queryObject = new ClientQueryBuilder();
+			mQueryObject = queryObject;
+		}
+		if (query == null)
+		{
+			query = mQueryObject.getQuery();
+		}
+		else
+		{
+			mQueryObject.setQuery(query);
+		}
+		return query;
 	}
 
 	/**
@@ -325,11 +339,6 @@ public class DAGPanel
 				isPathPresent = linkInvisibleNodes( originalRootExp.getExpressionId(), secondExpId, constraints);
 			}
 		}
-		/*String tEntityName = null;
-		if(entity !=null)
-		{
-			tEntityName = entity.getName();
-		}*/
 		if(queryDetailsObj.getSessionData().isSecurityRequired())
 		{
 			if(queryString == null)
@@ -337,16 +346,7 @@ public class DAGPanel
 				queryString = "";
 			}
 			Set<IQueryEntity> queryEntities = constraints.getQueryEntities();
-			boolean isMainObjPresent = false;
-			for(IQueryEntity queryEntity : queryEntities)
-			{
-				if(queryEntity.getDynamicExtensionsEntity().getName().
-						equals(Variables.mainProtocolObject))
-				{
-					isMainObjPresent = true;
-					break;
-				}
-			}
+			boolean isMainObjPresent = isMainObjectPresent(queryEntities);
 			if((mode.equalsIgnoreCase(AQConstants.EDIT)) ||
 					(!isMainObjPresent && mode.equalsIgnoreCase(AQConstants.ADD)))
 			{
@@ -369,6 +369,25 @@ public class DAGPanel
 	}
 
 	/**
+	 * @param queryEntities queryEntities
+	 * @return isMainObjPresent
+	 */
+	private boolean isMainObjectPresent(Set<IQueryEntity> queryEntities)
+	{
+		boolean isMainObjPresent = false;
+		for(IQueryEntity queryEntity : queryEntities)
+		{
+			if(queryEntity.getDynamicExtensionsEntity().getName().
+					equals(Variables.mainProtocolObject))
+			{
+				isMainObjPresent = true;
+				break;
+			}
+		}
+		return isMainObjPresent;
+	}
+
+	/**
 	 * Adds the main entity in the query and links it to the existing node.
 	 * @param secondExpId secondExpId
 	 * @param deEntity deEntity
@@ -386,14 +405,7 @@ public class DAGPanel
 		{
 			EntityInterface tempEntity = iterator.next();
 			List<EntityInterface> mainEntityList = mainEntityMap.get(tempEntity);
-			List<EntityInterface> mainEntityList1 = new ArrayList<EntityInterface>();
-			for(EntityInterface mainEntity : mainEntityList)
-			{
-				if(!mainEntityList1.contains(mainEntity))
-				{
-					mainEntityList1.add(mainEntity);
-				}
-			}
+			List<EntityInterface> mainEntityList1 = getMainEntityList1(mainEntityList);
 			mainEntityList = mainEntityList1;
 			for(EntityInterface mainEntity : mainEntityList)
 			{
@@ -416,6 +428,24 @@ public class DAGPanel
 			}
 		}
 		return rootExpId;
+	}
+
+	/**
+	 * @param mainEntityList mainEntityList
+	 * @return mainEntityList1
+	 */
+	private List<EntityInterface> getMainEntityList1(
+			List<EntityInterface> mainEntityList)
+	{
+		List<EntityInterface> mainEntityList1 = new ArrayList<EntityInterface>();
+		for(EntityInterface mainEntity : mainEntityList)
+		{
+			if(!mainEntityList1.contains(mainEntity))
+			{
+				mainEntityList1.add(mainEntity);
+			}
+		}
+		return mainEntityList1;
 	}
 
 	/**
@@ -442,20 +472,8 @@ public class DAGPanel
 		Long entityId = null;
 		Long attributeId = null;
 		StringBuffer formattedIds = new StringBuffer();
-		Collection<EntityInterface> entityCollection = new HashSet<EntityInterface>();
-		entityCollection.add(mainProtocol);
-		MatchedClass matchedClass = cache.getEntityOnEntityParameters(entityCollection);
-		MatchedClass resultantMatchedClass = new MatchedClass();
-		for (MatchedClassEntry matchedClassEntry : matchedClass.getMatchedClassEntries())
-		{
-			resultantMatchedClass.addMatchedClassEntry(matchedClassEntry);
-		}
-		matchedClass = cache.getCategories(entityCollection);
-		for (MatchedClassEntry matchedClassEntry : matchedClass.getMatchedClassEntries())
-		{
-			resultantMatchedClass.addMatchedClassEntry(matchedClassEntry);
-		}
-		resultantMatchedClass.setEntityCollection(resultantMatchedClass.getSortedEntityCollection());
+		MatchedClass resultantMatchedClass = getResultantMatchedClass(cache,
+				mainProtocol);
 		for(EntityInterface entity : resultantMatchedClass.getEntityCollection())
 		{
 			if(entity.getName().equals(Variables.mainProtocolObject))
@@ -475,15 +493,10 @@ public class DAGPanel
 			}
 			else
 			{
-				for(Long csId : readDeniedIds)
-				{
-					formattedIds.append('&').append(String.valueOf(csId));
-				}
+				populateFormattedIds(readDeniedIds, formattedIds);
 			}
 		}
 		int mainProtocolExpId = 0;
-		EntityInterface deEntity = null;
-
 		CreateQueryObjectBizLogic queryBizLogic = new CreateQueryObjectBizLogic();
 		DAGNode node = null;
 		try
@@ -501,27 +514,81 @@ public class DAGPanel
 			node = createQueryObjectLogic(strToCreateObject, mode, node,
 					mainProtocol, queryBizLogic);
 			IConstraints constraints = query.getConstraints();
-			for(IExpression expression : constraints)
-			{
-				IQueryEntity queryEntity = expression.getQueryEntity();
-				deEntity = queryEntity.getDynamicExtensionsEntity();
-				Long deEntityId = deEntity.getId();
-				if(deEntityId.equals(entityId))
-				{
-					mainProtocolExpId = expression.getExpressionId();
-					break;
-				}
-			}
+			mainProtocolExpId = getMainExpId(entityId, mainProtocolExpId,
+					constraints);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return mainProtocolExpId;
+	}
+
+	/**
+	 * @param entityId entityId
+	 * @param mainExpId mainExpId
+	 * @param constraints constraints
+	 * @return mainProtocolExpId
+	 */
+	private int getMainExpId(Long entityId, int mainExpId,
+			IConstraints constraints)
+	{
+		int mainProtocolExpId = mainExpId;
+		EntityInterface deEntity;
+		for(IExpression expression : constraints)
+		{
+			IQueryEntity queryEntity = expression.getQueryEntity();
+			deEntity = queryEntity.getDynamicExtensionsEntity();
+			Long deEntityId = deEntity.getId();
+			if(deEntityId.equals(entityId))
+			{
+				mainProtocolExpId = expression.getExpressionId();
+				break;
+			}
+		}
+		return mainProtocolExpId;
+	}
+
+	/**
+	 * @param readDeniedIds readDeniedIds
+	 * @param formattedIds formattedIds
+	 */
+	private void populateFormattedIds(List<Long> readDeniedIds,
+			StringBuffer formattedIds)
+	{
+		for(Long csId : readDeniedIds)
+		{
+			formattedIds.append('&').append(String.valueOf(csId));
+		}
+	}
+
+	/**
+	 * @param cache cache
+	 * @param mainProtocol mainProtocol
+	 * @return resultantMatchedClass
+	 */
+	private MatchedClass getResultantMatchedClass(EntityCache cache,
+			EntityInterface mainProtocol)
+	{
+		Collection<EntityInterface> entityCollection = new HashSet<EntityInterface>();
+		entityCollection.add(mainProtocol);
+		MatchedClass matchedClass = cache.getEntityOnEntityParameters(entityCollection);
+		MatchedClass resultantMatchedClass = new MatchedClass();
+		for (MatchedClassEntry matchedClassEntry : matchedClass.getMatchedClassEntries())
+		{
+			resultantMatchedClass.addMatchedClassEntry(matchedClassEntry);
+		}
+		matchedClass = cache.getCategories(entityCollection);
+		for (MatchedClassEntry matchedClassEntry : matchedClass.getMatchedClassEntries())
+		{
+			resultantMatchedClass.addMatchedClassEntry(matchedClassEntry);
+		}
+		resultantMatchedClass.setEntityCollection(resultantMatchedClass.getSortedEntityCollection());
+		return resultantMatchedClass;
 	}
 
 	/**
@@ -603,11 +670,11 @@ public class DAGPanel
 		}
 		catch (SMException e1)
 		{
-			e1.printStackTrace();
+			logger.error(e1.getMessage(), e1);
 		}
 		catch(DAOException dao)
 		{
-			dao.printStackTrace();
+			logger.error(dao.getMessage(), dao);
 		}
 		finally
 		{
@@ -617,7 +684,7 @@ public class DAGPanel
 			}
 			catch (DAOException e)
 			{
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 		return allMainObjectIds;
@@ -932,13 +999,13 @@ public class DAGPanel
 				}
 				catch (CyclicException e)
 				{
-					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 				}
 			}
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return isPathPresent;
 	}
@@ -1164,7 +1231,7 @@ public class DAGPanel
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return map.get(ambiguityObject);
 	}
@@ -2153,26 +2220,47 @@ public class DAGPanel
 				.getAttribute("TQUIMap");
 		if (tQUIMap != null)
 		{
-			CustomFormulaUIBean customFormulaUIBean = tQUIMap.get(customNodeId);
-			ICustomFormula customFormula = customFormulaUIBean.getCf();
-			if (customFormula != null && !customFormulaUIBean.isCalculatedResult())
+			clearTQUIMap(customNodeId, query, tQUIMap);
+		}
+	}
+
+	/**
+	 * @param customNodeId customNodeId
+	 * @param query query
+	 * @param tQUIMap Map
+	 */
+	private void clearTQUIMap(String customNodeId, IQuery query,
+			Map<String, CustomFormulaUIBean> tQUIMap)
+	{
+		CustomFormulaUIBean customFormulaUIBean = tQUIMap.get(customNodeId);
+		ICustomFormula customFormula = customFormulaUIBean.getCf();
+		if (customFormula != null && !customFormulaUIBean.isCalculatedResult())
+		{
+			IConstraints constraints = query.getConstraints();
+			deleteOutputTerm(customFormulaUIBean);
+			for (IExpression expression2 : constraints)
 			{
-				IConstraints constraints = query.getConstraints();
-				deleteOutputTerm(customFormulaUIBean);
-				for (IExpression expression2 : constraints)
-				{
-					expression2.removeOperand(customFormula);
-				}
+				expression2.removeOperand(customFormula);
 			}
-			else
-			{
-				IOutputTerm termToDelete = customFormulaUIBean.getOutputTerm();
-				if (termToDelete != null)
-				{
-					query.getOutputTerms().remove(termToDelete);
-				}
-			}
-			tQUIMap.remove(customNodeId);
+		}
+		else
+		{
+			deleteOutputTerm(query, customFormulaUIBean);
+		}
+		tQUIMap.remove(customNodeId);
+	}
+
+	/**
+	 * @param query query
+	 * @param customFormulaUIBean customFormulaUIBean
+	 */
+	private void deleteOutputTerm(IQuery query,
+			CustomFormulaUIBean customFormulaUIBean)
+	{
+		IOutputTerm termToDelete = customFormulaUIBean.getOutputTerm();
+		if (termToDelete != null)
+		{
+			query.getOutputTerms().remove(termToDelete);
 		}
 	}
 
@@ -2230,7 +2318,7 @@ public class DAGPanel
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return formatedLabelList;
 	}
@@ -2252,7 +2340,7 @@ public class DAGPanel
 		}
 		catch (CyclicException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -3332,32 +3420,29 @@ public class DAGPanel
 		List<ITerm> allRhs = customFormula.getAllRhs();
 		if (!allRhs.isEmpty())
 		{
-			ITerm term = allRhs.get(0);
-			IArithmeticOperand operand = term.getOperand(0);
-			if (operand instanceof DateOffsetLiteral)
-			{
-				DateOffsetLiteral dateOffSetLit = (DateOffsetLiteral) operand;
-				cNode.setTimeValue(dateOffSetLit.getOffset());
-				cNode.setTimeInterval(dateOffSetLit.getTimeInterval().toString() + "s");
-			}
-			else if (operand instanceof DateLiteral)
-			{
-				DateLiteral dateLit = (DateLiteral) operand;
-				if (dateLit.getDate() == null)
-				{
-					cNode.setTimeValue("");
-				}
-				else
-				{
-					cNode.setTimeValue(getDateInGivenFormat(dateLit.getDate()));
-					cNode.setTimeInterval(DAGConstant.NULL_STRING);
-				}
-			}
+			populateCustomFormulaNode(cNode, allRhs);
 		}
 		for (IArithmeticOperand element : lhs)
 		{
 			setDateExpressionAttribute(srcExp, cNode, element);
 		}
+		customNodeId = setExpressionInCNode(srcExp, cNode,
+				containingExpressions, customNodeId);
+		cNode.setName(customNodeId);
+		return cNode;
+	}
+
+	/**
+	 * @param srcExp srcExp
+	 * @param cNode cNode
+	 * @param containingExpressions containingExpressions
+	 * @param customNodeId customNodeId
+	 * @return customNodeId
+	 */
+	private String setExpressionInCNode(IExpression srcExp,
+			CustomFormulaNode cNode, Set<IExpression> containingExpressions,
+			String customNodeId)
+	{
 		String fullyQualifiedEntityName = srcExp.getQueryEntity().getDynamicExtensionsEntity()
 				.getName();
 		String entityName = Utility.parseClassName(fullyQualifiedEntityName);
@@ -3377,8 +3462,37 @@ public class DAGPanel
 				cNode.setSecondNodeName(entityName);
 			}
 		}
-		cNode.setName(customNodeId);
-		return cNode;
+		return customNodeId;
+	}
+
+	/**
+	 * @param cNode cNode
+	 * @param allRhs allRhs
+	 */
+	private void populateCustomFormulaNode(CustomFormulaNode cNode,
+			List<ITerm> allRhs)
+	{
+		ITerm term = allRhs.get(0);
+		IArithmeticOperand operand = term.getOperand(0);
+		if (operand instanceof DateOffsetLiteral)
+		{
+			DateOffsetLiteral dateOffSetLit = (DateOffsetLiteral) operand;
+			cNode.setTimeValue(dateOffSetLit.getOffset());
+			cNode.setTimeInterval(dateOffSetLit.getTimeInterval().toString() + "s");
+		}
+		else if (operand instanceof DateLiteral)
+		{
+			DateLiteral dateLit = (DateLiteral) operand;
+			if (dateLit.getDate() == null)
+			{
+				cNode.setTimeValue("");
+			}
+			else
+			{
+				cNode.setTimeValue(getDateInGivenFormat(dateLit.getDate()));
+				cNode.setTimeInterval(DAGConstant.NULL_STRING);
+			}
+		}
 	}
 
 	/**

@@ -35,6 +35,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.Rule;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.bizlogic.QueryCsmBizLogic;
@@ -50,6 +51,9 @@ import edu.wustl.security.global.Utility;
  */
 public class QueryCSMUtil
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(QueryCSMUtil.class);
+
 	/**This method will check if main objects for all the dependent objects are present in query or not.
 	 * If yes then will create map of entity as key and main entity list as value.
 	 * If not then will set error message in session.
@@ -377,16 +381,7 @@ public class QueryCSMUtil
 		IQuery queryClone;
 		List<EntityInterface> entityList = new ArrayList<EntityInterface>();
 		List<String> strToCreateQueryObjectList = new ArrayList<String>();
-		EntityInterface mainEntityObject=null;
-		if(mainEntityList != null && mainEntityList.size()>1)
-		{
-			mainEntityObject = getMainEntityObject(mainEntityList,
-					mainEntityObject);
-		}
-		else
-		{
-			mainEntityObject = mainEntityList.get(0);
-		}
+		EntityInterface mainEntityObject = getMainEntityObject(mainEntityList);
 		entityList.add(mainEntityObject);
 
 		Long identifier = mainEntityObject.getAbstractAttributeByName("id").getId();
@@ -399,21 +394,9 @@ public class QueryCSMUtil
 		queryClone = new DyExtnObjectCloner().clone(originalQuery);
 		queryDetailsObj.setQuery(queryClone);
 
-		for(int counter=0;counter<entityList.size();counter++)
-		{
-			dagPanel.createQueryObject(strToCreateQueryObjectList.get(counter),
-			entityList.get(counter).getId().toString(),AQConstants.ADD,queryDetailsObj,null);
-		}
-		boolean alreadySavedQuery=false;
-		boolean savedQueryProcessed = false;
-		if(session.getAttribute(AQConstants.SAVED_QUERY) != null)
-		{
-			alreadySavedQuery = Boolean.valueOf((String)session.getAttribute(AQConstants.SAVED_QUERY));
-		}
-		if(session.getAttribute(AQConstants.PROCESSED_SAVED_QUERY) != null)
-		{
-			savedQueryProcessed = Boolean.valueOf((String)session.getAttribute(AQConstants.PROCESSED_SAVED_QUERY));
-		}
+		createQueryObject(queryDetailsObj, dagPanel, entityList,strToCreateQueryObjectList);
+		boolean alreadySavedQuery = isAlreadySavedQuery(session);
+		boolean savedQueryProcessed = isSavedQueryProcessed(session);
 		if(alreadySavedQuery && savedQueryProcessed && !originalQuery.equals(queryDetailsObj.getQuery()) && queryClone.equals(queryDetailsObj.getQuery()))
 		{
 			queryDetailsObj.setQuery(queryClone);
@@ -425,6 +408,71 @@ public class QueryCSMUtil
 			queryDetailsObj.setQuery(originalQuery);
 		}
 		return queryClone;
+	}
+
+	/**
+	 * @param session session
+	 * @return savedQueryProcessed
+	 */
+	private static boolean isSavedQueryProcessed(HttpSession session)
+	{
+		boolean savedQueryProcessed = false;
+		if(session.getAttribute(AQConstants.PROCESSED_SAVED_QUERY) != null)
+		{
+			savedQueryProcessed = Boolean.valueOf((String)session.getAttribute(AQConstants.PROCESSED_SAVED_QUERY));
+		}
+		return savedQueryProcessed;
+	}
+
+	/**
+	 * @param session session
+	 * @return alreadySavedQuery
+	 */
+	private static boolean isAlreadySavedQuery(HttpSession session)
+	{
+		boolean alreadySavedQuery=false;
+		if(session.getAttribute(AQConstants.SAVED_QUERY) != null)
+		{
+			alreadySavedQuery = Boolean.valueOf((String)session.getAttribute(AQConstants.SAVED_QUERY));
+		}
+		return alreadySavedQuery;
+	}
+
+	/**
+	 * @param queryDetailsObj queryDetailsObj
+	 * @param dagPanel dagPanel
+	 * @param entityList entityList
+	 * @param strToCreateQueryObjectList strToCreateQueryObjectList
+	 */
+	private static void createQueryObject(QueryDetails queryDetailsObj,
+			DAGPanel dagPanel, List<EntityInterface> entityList,
+			List<String> strToCreateQueryObjectList)
+	{
+		for(int counter=0;counter<entityList.size();counter++)
+		{
+			dagPanel.createQueryObject(strToCreateQueryObjectList.get(counter),
+			entityList.get(counter).getId().toString(),AQConstants.ADD,queryDetailsObj,null);
+		}
+	}
+
+	/**
+	 * @param mainEntityList mainEntityList
+	 * @return mainEntityObject
+	 */
+	private static EntityInterface getMainEntityObject(
+			List<EntityInterface> mainEntityList)
+	{
+		EntityInterface mainEntityObject=null;
+		if(mainEntityList != null && mainEntityList.size()>1)
+		{
+			mainEntityObject = getMainEntityObject(mainEntityList,
+					mainEntityObject);
+		}
+		else
+		{
+			mainEntityObject = mainEntityList.get(0);
+		}
+		return mainEntityObject;
 	}
 
 	/**
@@ -578,7 +626,7 @@ public class QueryCSMUtil
 		}
 		catch (DynamicExtensionsSystemException deException)
 		{
-			deException.printStackTrace();
+			logger.error(deException.getMessage(),deException);
 		}
 		return mainEntityList;
 	}
@@ -599,22 +647,12 @@ public class QueryCSMUtil
             EntityInterface deEntity = node.getOutputEntity()
             .getDynamicExtensionsEntity();
             String entityName;
-            Map<String,String> tagKeyValueMap = new HashMap<String, String>();
-            Collection<TaggedValueInterface> taggedValueColl =
-            	deEntity.getTaggedValueCollection();
-            for (TaggedValueInterface taggedValueInterface : taggedValueColl)
-            {
-                tagKeyValueMap.put(taggedValueInterface.getKey(),taggedValueInterface.getValue());
-            }
+            Map<String, String> tagKeyValueMap = getTaggedValueMap(deEntity);
             queryResultObjectDataBean.setPrivilegeType(Utility.getInstance().getPrivilegeType(tagKeyValueMap));
             queryResultObjectDataBean.setEntity(deEntity);
 
-            List<EntityInterface> mainEntityList = null;
-            if(queryDetailsObj.getMainEntityMap() != null)
-            {
-	            mainEntityList = queryDetailsObj.getMainEntityMap().get(
-	                    deEntity);
-            }
+            List<EntityInterface> mainEntityList = getMainEntityListFromMap(
+					queryDetailsObj, deEntity);
             if (mainEntityList == null)
             {
             	entityName = deEntity.getName();
@@ -637,10 +675,44 @@ public class QueryCSMUtil
 		return queryResultObjectDataBean;
 	}
 
+	/**
+	 * @param queryDetailsObj queryDetailsObj
+	 * @param deEntity deEntity
+	 * @return mainEntityList
+	 */
+	private static List<EntityInterface> getMainEntityListFromMap(
+			QueryDetails queryDetailsObj, EntityInterface deEntity)
+	{
+		List<EntityInterface> mainEntityList = null;
+		if(queryDetailsObj.getMainEntityMap() != null)
+		{
+		    mainEntityList = queryDetailsObj.getMainEntityMap().get(
+		            deEntity);
+		}
+		return mainEntityList;
+	}
+
+	/**
+	 * @param deEntity deEntity
+	 * @return tagKeyValueMap
+	 */
+	private static Map<String, String> getTaggedValueMap(
+			EntityInterface deEntity)
+	{
+		Map<String,String> tagKeyValueMap = new HashMap<String, String>();
+		Collection<TaggedValueInterface> taggedValueColl =
+			deEntity.getTaggedValueCollection();
+		for (TaggedValueInterface taggedValueInterface : taggedValueColl)
+		{
+		    tagKeyValueMap.put(taggedValueInterface.getKey(),taggedValueInterface.getValue());
+		}
+		return tagKeyValueMap;
+	}
+
 	/**If main entity is inherited from an entity (e.g. Fluid Specimen is inherited from Specimen)
 	 * and present in INHERITED_ENTITY_NAMES
 	 * then csmEntityName of queryResultObjectDataBean will be set to it's parent entity name.
-	 * (as Sql for getting CP id's id retrieved
+	 * (as SQL for getting CP id's id retrieved
 	 * according to parent entity name from entityCPSqlMap in Variables class).
 	 * @param queryResultObjectDataBean queryResultObjectDataBean
 	 */
@@ -804,18 +876,20 @@ public class QueryCSMUtil
 
 	/**
 	 * @param queryResultObjectDataBean queryResultObjectDataBean
-	 * @param columnIndex columnIndex
-	 * @param selectSql selectSql
+	 * @param colIndex colIndex
+	 * @param tempSql tempSql
 	 * @param defineViewNodeList defineViewNodeList
 	 * @param entityIdIndexMap entityIdIndexMap
 	 * @param queryDetailsObj queryDetailsObj
 	 * @return selectSql selectSql
 	 */
 	public static String updateEntityIdIndexMap(
-			QueryResultObjectDataBean queryResultObjectDataBean, int columnIndex, String selectSql,
+			QueryResultObjectDataBean queryResultObjectDataBean, int colIndex, String tempSql,
 			List<EntityInterface> defineViewNodeList,
 			Map<EntityInterface, Integer> entityIdIndexMap, QueryDetails queryDetailsObj)
 	{
+		String selectSql = tempSql;
+		int columnIndex = colIndex;
 		List<String> selectSqlColumnList = getListOfSelectedColumns(selectSql);
 		if (defineViewNodeList == null)
 		{
@@ -845,6 +919,18 @@ public class QueryCSMUtil
 				}
 			}
 		}
+		populateBean(queryResultObjectDataBean, entityIdIndexMap);
+		return selectSql;
+	}
+
+	/**
+	 * @param queryResultObjectDataBean queryResultObjectDataBean
+	 * @param entityIdIndexMap entityIdIndexMap
+	 */
+	private static void populateBean(
+			QueryResultObjectDataBean queryResultObjectDataBean,
+			Map<EntityInterface, Integer> entityIdIndexMap)
+	{
 		if (queryResultObjectDataBean != null)
 		{
 			queryResultObjectDataBean.setEntityIdIndexMap(entityIdIndexMap);
@@ -854,7 +940,6 @@ public class QueryCSMUtil
 						.get(queryResultObjectDataBean.getMainEntity()));
 			}
 		}
-		return selectSql;
 	}
 
 	/**
