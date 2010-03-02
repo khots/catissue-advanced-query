@@ -485,24 +485,23 @@ public class QueryModuleSearchQueryUtil
 			IConstraints constraints = query.getConstraints();
 			List<QueryOutputTreeAttributeMetadata> selAttributeMetaDataList = selectedColumnsMetadata
 					.getSelectedAttributeMetaDataList();
-			for (IExpression expression : constraints)
-			{
-				if (expression.isInView())
-				{
-					expressionIdsInQuery.add(Integer.valueOf(expression.getExpressionId()));
-				}
-			}
-			int expressionId;
-			for (QueryOutputTreeAttributeMetadata element : selAttributeMetaDataList)
-			{
-				expressionId = element.getTreeDataNode().getExpressionId();
-				if (!expressionIdsInQuery.contains(Integer.valueOf(expressionId)))
-				{
-					isQueryChanged = true;
-					break;
-				}
-			}
+			populateExpressionIds(expressionIdsInQuery, constraints);
+			isQueryChanged = isQueryChanged(expressionIdsInQuery, selAttributeMetaDataList);
 		}
+		selectedColumnsMetadata = setDefinedViewInMetadata(
+				selectedColumnsMetadata, isQueryChanged);
+		return selectedColumnsMetadata;
+	}
+
+	/**
+	 * @param selectedColumnsMetadata selectedColumnsMetadata
+	 * @param isQueryChanged isQueryChanged
+	 * @return selectedColumnsMetadata
+	 */
+	private static SelectedColumnsMetadata setDefinedViewInMetadata(
+			SelectedColumnsMetadata selectedColumnsMetadata,
+			boolean isQueryChanged)
+	{
 		if (isQueryChanged || selectedColumnsMetadata == null)
 		{
 			selectedColumnsMetadata = new SelectedColumnsMetadata();
@@ -511,8 +510,46 @@ public class QueryModuleSearchQueryUtil
 		return selectedColumnsMetadata;
 	}
 
+	/**
+	 * @param expressionIdsInQuery expressionIdsInQuery
+	 * @param constraints constraints
+	 */
+	private static void populateExpressionIds(
+			List<Integer> expressionIdsInQuery, IConstraints constraints)
+	{
+		for (IExpression expression : constraints)
+		{
+			if (expression.isInView())
+			{
+				expressionIdsInQuery.add(Integer.valueOf(expression.getExpressionId()));
+			}
+		}
+	}
+
+	/**
+	 * @param expressionIdsInQuery expressionIdsInQuery
+	 * @param selAttributeMetaDataList selAttributeMetaDataList
+	 * @return isQueryChanged
+	 */
+	private static boolean isQueryChanged(List<Integer> expressionIdsInQuery,
+			List<QueryOutputTreeAttributeMetadata> selAttributeMetaDataList)
+	{
+		boolean isQueryChanged = false;
+		int expressionId;
+		for (QueryOutputTreeAttributeMetadata element : selAttributeMetaDataList)
+		{
+			expressionId = element.getTreeDataNode().getExpressionId();
+			if (!expressionIdsInQuery.contains(Integer.valueOf(expressionId)))
+			{
+				isQueryChanged = true;
+				break;
+			}
+		}
+		return isQueryChanged;
+	}
+
 	/** It will set the results per page.
-	 * @return int
+	 * @return recordsPerPage
 	 */
 	private int setRecordsPerPage()
 	{
@@ -581,26 +618,55 @@ public class QueryModuleSearchQueryUtil
 				}
 				else if(selectedColumnsMetadata.getSelectedOutputAttributeList().isEmpty())
 				{
-					AttributeInterface attribute;
-					OutputAttribute attr;
-					for (QueryOutputTreeAttributeMetadata metadata : selectedColumnsMetadata.getSelectedAttributeMetaDataList())
-					{
-						attribute = metadata.getAttribute();
-						attr = new OutputAttribute(query.getConstraints().getExpression(currentSelectedObject
-								.getExpressionId()), attribute);
-						selectedOutputAttributeList.add(attr);
-					}
-					selectedColumnsMetadata.setSelectedOutputAttributeList(selectedOutputAttributeList);
-					selectedColumnsMetadata.setDefinedView(false);
-					isDefinedView = false;
+					isDefinedView = populateSelectedColMetadata(
+							selectedColumnsMetadata, currentSelectedObject,
+							selectedOutputAttributeList);
 				}
 				gridViewBizLogic.getSelectedColumnMetadataForSavedQuery(QueryDetailsObj
 						.getUniqueIdNodesMap().values(), selectedColumnsMetadata.getSelectedOutputAttributeList(), selectedColumnsMetadata);
-				if(isDefinedView)
-				{
-					selectedColumnsMetadata.setDefinedView(true);
-				}
+				setDefinedView(selectedColumnsMetadata, isDefinedView);
 			}
 		}
+	}
+
+	/**
+	 * @param selectedColumnsMetadata selectedColumnsMetadata
+	 * @param isDefinedView isDefinedView
+	 */
+	private void setDefinedView(
+			SelectedColumnsMetadata selectedColumnsMetadata,
+			boolean isDefinedView)
+	{
+		if(isDefinedView)
+		{
+			selectedColumnsMetadata.setDefinedView(true);
+		}
+	}
+
+	/**
+	 * @param selectedColumnsMetadata selectedColumnsMetadata
+	 * @param currentSelectedObject currentSelectedObject
+	 * @param selectedOutputAttributeList selectedOutputAttributeList
+	 * @return isDefinedView
+	 */
+	private boolean populateSelectedColMetadata(
+			SelectedColumnsMetadata selectedColumnsMetadata,
+			OutputTreeDataNode currentSelectedObject,
+			List<IOutputAttribute> selectedOutputAttributeList)
+	{
+		boolean isDefinedView;
+		AttributeInterface attribute;
+		OutputAttribute attr;
+		for (QueryOutputTreeAttributeMetadata metadata : selectedColumnsMetadata.getSelectedAttributeMetaDataList())
+		{
+			attribute = metadata.getAttribute();
+			attr = new OutputAttribute(query.getConstraints().getExpression(currentSelectedObject
+					.getExpressionId()), attribute);
+			selectedOutputAttributeList.add(attr);
+		}
+		selectedColumnsMetadata.setSelectedOutputAttributeList(selectedOutputAttributeList);
+		selectedColumnsMetadata.setDefinedView(false);
+		isDefinedView = false;
+		return isDefinedView;
 	}
 }

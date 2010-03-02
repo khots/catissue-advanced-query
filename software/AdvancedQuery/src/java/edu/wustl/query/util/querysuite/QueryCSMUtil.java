@@ -960,11 +960,6 @@ public class QueryCSMUtil
 		if (outputTreeDataNode != null)
 		{
 			List<QueryOutputTreeAttributeMetadata> attributes = outputTreeDataNode.getAttributes();
-			if(attributes.isEmpty())
-			{
-				List<AttributeInterface> attributeList =
-					outputTreeDataNode.getOutputEntity().getSelectedAttributes();
-			}
 			for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 			{
 				AttributeInterface attribute = attributeMetaData.getAttribute();
