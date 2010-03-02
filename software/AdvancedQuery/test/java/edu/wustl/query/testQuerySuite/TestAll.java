@@ -47,7 +47,7 @@ public class TestAll
 		suite.addTestSuite(QueryCsmBizLogicTestCase.class);
 		suite.addTestSuite(SelectedColumnsMetadataTestCase.class);
 		suite.addTestSuite(QueryModuleSqlUtilTestCase.class);
-//		suite.addTestSuite(SaveQueryBizLogicTestCase.class);
+		suite.addTestSuite(SaveQueryBizLogicTestCase.class);
 		return suite;
 	}
 }
