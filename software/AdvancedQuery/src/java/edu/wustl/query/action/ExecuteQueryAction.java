@@ -53,6 +53,8 @@ public class ExecuteQueryAction extends Action
 		IParameterizedQuery cloneQuery = new DyExtnObjectCloner().clone(query);
 		String conditionstr = request.getParameter("conditionList");
 		String rhsList = request.getParameter(AQConstants.STR_TO_FORM_TQ);
+
+		request.setAttribute(AQConstants.HIDE_TREE_CHECK_VALUE, request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE));
 		session.setAttribute(AQConstants.IS_SAVED_QUERY, AQConstants.TRUE);
 		Map<Integer, ICustomFormula> cFIndexMap = (Map<Integer, ICustomFormula>) session
 				.getAttribute(AQConstants.CUSTOM_FORMULA_INDEX_MAP);

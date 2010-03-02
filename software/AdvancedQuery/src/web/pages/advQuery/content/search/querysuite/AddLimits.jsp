@@ -1,9 +1,11 @@
-<%@ page import="java.util.*"%>
-<%@ page import="edu.wustl.query.util.global.AQConstants"%>
-<%@ page import="edu.wustl.cab2b.client.ui.query.ClientQueryBuilder"%>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
+<%@ page import="java.util.*"%>
+<%@ page import="edu.wustl.query.util.global.AQConstants"%>
+<%@ page import="edu.wustl.cab2b.client.ui.query.ClientQueryBuilder"%>
+<%@ page import="edu.wustl.query.actionForm.CategorySearchForm"%>
+
 
 <html>
 <head>
@@ -19,6 +21,7 @@
 <html:errors />
 <%
 	String formAction = AQConstants.SearchCategory;
+
 	String defineSearchResultsViewAction = AQConstants.DefineSearchResultsViewAction;
 	String isQuery =(String) request.getAttribute("isQuery");;
 	if(isQuery==null)
@@ -27,11 +30,18 @@
 	}
 	System.out.println("isQuery ====>"+isQuery);
 %>
+<script>
+function hideTreeChecked()
+{
+	document.getElementById('hideTree').value=document.getElementById('hiddenCheckBox').checked;
 
+}
+</script>
 <html:form method="GET" action="<%=formAction%>"
 	style="margin:0;padding:0;">
 	<html:hidden property="stringToCreateQueryObject" value="" />
 	<html:hidden property="nextOperation" value="" />
+	<html:hidden property="hideTree" styleId="hideTree"/>
 
 	<table border="0" width="100%" cellspacing="0" cellpadding="0"
 		height="450">
@@ -161,6 +171,17 @@
 										width="51" hspace="3" onclick="validateQuery('save');" /></td>
 									<td><img src="images/advQuery/b_search.gif" id="searchBtn"
 										hspace="3" onclick="validateQuery('search');" /></td>
+									<td class="savedQueryHeading">
+
+									<input type="checkBox" name="hiddenCheckBox" id="hiddenCheckBox" onclick="hideTreeChecked()"/>&nbsp; <bean:message key="query.checkBox.hideTree"/>
+									<script>
+										var hideTreeVal=document.getElementById('hideTree').value;
+										if(hideTreeVal == 'true')
+										{
+											document.getElementById('hiddenCheckBox').checked=true;
+										}
+									</script>
+									</td>
 								</tr>
 							</table>
 							</td>

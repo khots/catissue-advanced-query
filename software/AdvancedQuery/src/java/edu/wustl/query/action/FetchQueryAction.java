@@ -45,6 +45,7 @@ public class FetchQueryAction extends Action
 	{
 		String target = AQConstants.FAILURE;
 		SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
+		request.setAttribute(AQConstants.HIDE_TREE_CHECK_VALUE, request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE));
 		if (request.getAttribute("queryId") == null)
 		{
 			target = fetchQueryDetails(request, target, saveQueryForm);

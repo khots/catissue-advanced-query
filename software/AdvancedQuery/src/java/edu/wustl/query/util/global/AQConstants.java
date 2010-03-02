@@ -603,4 +603,7 @@ public class AQConstants
 	public static final String END_STYLE = "</font></li>";
 	public static final String CACHE_ERROR = "cacheError";
 	public static final String TABLESPACE = "tablespace";
+	public static final String TREE_CHECK_VALUE = "treeChkVal";
+	public static final String HIDE_TREE_CHECK_VALUE = "hideTreeChkVal";
+
 }

@@ -106,6 +106,26 @@ public class CategorySearchForm extends ActionForm
 	* String to store currentSelectedObject.
 	*/
 	private String curSelectedNode = null;
+	/**
+	 * boolean variable to store hide tree's value.
+	 */
+	private boolean hideTree;
+
+	/**
+	 * @return hideTree
+	 */
+	public boolean isHideTree()
+	{
+		return hideTree;
+	}
+
+	/**
+	 * @param hideTree hideTree
+	 */
+	public void setHideTree(boolean hideTree)
+	{
+		this.hideTree = hideTree;
+	}
 
 	/**
 	 * @return the currentPage

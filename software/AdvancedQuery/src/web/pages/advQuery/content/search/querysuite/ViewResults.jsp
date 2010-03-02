@@ -2,8 +2,9 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
-<%@ page import="edu.wustl.query.util.global.AQConstants"%>
-
+<%@ page import="edu.wustl.query.actionForm.CategorySearchForm"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page language="java" isELIgnored="false" %>
 <html>
 <head>
 <script src="jss/advQuery/queryModule.js"></script>
@@ -14,6 +15,8 @@
 	if (os != null && os.toString().toLowerCase().indexOf("mac") != -1) {
 		mac = true;
 	}
+	CategorySearchForm categorySearchForm = (CategorySearchForm)request.getAttribute("categorySearchForm");
+	//boolean hideTree = categorySearchForm.isHideTree();
 %>
 
 <body>
@@ -38,6 +41,10 @@
 				style="height: 100%; width: 100%; overflow: none">
 			<table border="0" height="100%" width="100%">
 				<tr height="100%">
+
+
+				<logic:equal name="hideTreeChkVal" value="false">
+
 					<td colspan="1" valign="top" border="0" width="22%">
 					<table border="0" height="100%" width="100%">
 						<tr height="99%">
@@ -68,6 +75,7 @@
 						</tr>
 					</table>
 					</td>
+					</logic:equal>
 					<td colspan="3" rowspan="2" valign="top" width="85%"><iframe
 						name="<%=AQConstants.GRID_DATA_VIEW_FRAME%>"
 						src="<%=AQConstants.QUERY_GRID_VIEW_ACTION%>?pageOf=pageOfQueryModule"

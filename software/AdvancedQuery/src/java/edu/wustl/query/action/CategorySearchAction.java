@@ -57,6 +57,12 @@ public class CategorySearchAction extends SecureAction
 		setQueryStatus(request);
 		CategorySearchForm searchForm = (CategorySearchForm) form;
 		String currentPage = searchForm.getCurrentPage();
+		boolean hideTreeChkVal=Boolean.FALSE;
+		if(request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE) != null && request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE) != "")
+		{
+			hideTreeChkVal=Boolean.valueOf(request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE).toString());
+		}
+		request.setAttribute(AQConstants.HIDE_TREE_CHECK_VALUE, request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE));
 		if (currentPage != null && currentPage.equalsIgnoreCase("resultsView"))
 		{
 			searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
@@ -70,6 +76,7 @@ public class CategorySearchAction extends SecureAction
 				flag = false;
 			}
 		}
+		searchForm.setHideTree(hideTreeChkVal);
 		actionForward = setActionForward(mapping, flag, target);
 		return actionForward;
 	}
