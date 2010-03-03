@@ -11,6 +11,7 @@ import edu.ustl.query.util.querysuite.QueryModuleSqlUtilTestCase;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadataTestCase;
 import edu.wustl.query.bizlogic.CreateQueryObjectTestCase;
 import edu.wustl.query.bizlogic.DashboardBizLogicTestCase;
+import edu.wustl.query.bizlogic.ExportQueryBizLogicTestCase;
 import edu.wustl.query.bizlogic.QueryCsmBizLogicTestCase;
 import edu.wustl.query.bizlogic.SaveQueryBizLogicTestCase;
 import edu.wustl.query.generator.SqlGeneratorGenericTestCase;
@@ -47,6 +48,7 @@ public class TestAll
 		suite.addTestSuite(QueryCsmBizLogicTestCase.class);
 		suite.addTestSuite(SelectedColumnsMetadataTestCase.class);
 		suite.addTestSuite(QueryModuleSqlUtilTestCase.class);
+		suite.addTestSuite(ExportQueryBizLogicTestCase.class);
 //		suite.addTestSuite(SaveQueryBizLogicTestCase.class);
 		return suite;
 	}
