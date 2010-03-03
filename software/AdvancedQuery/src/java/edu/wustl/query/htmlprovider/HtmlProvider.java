@@ -20,6 +20,7 @@ import edu.wustl.cab2b.common.util.PermissibleValueComparator;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.query.util.global.AQConstants;
 
 /**
@@ -28,6 +29,8 @@ import edu.wustl.query.util.global.AQConstants;
  */
 public class HtmlProvider
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(HtmlProvider.class);
 	/**
 	 * Object which holds data operators for attributes.
 	 */
@@ -83,7 +86,7 @@ public class HtmlProvider
 			}
 			catch (CheckedException e)
 			{
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 	}

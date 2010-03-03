@@ -37,6 +37,7 @@ import edu.wustl.common.util.PagenatedResultData;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.daofactory.IDAOFactory;
@@ -53,7 +54,8 @@ import edu.wustl.query.security.QueryCsmCacheManager;
 
 public class Utility //extends edu.wustl.common.util.Utility
 {
-
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(Utility.class);
 	/**
 	 * Date pattern.
 	 */
@@ -719,7 +721,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	                }
 	                catch (DAOException e)
 	                {
-	                    e.printStackTrace();
+	                	logger.error(e.getMessage(), e);
 	                }
 	            }
 	        }

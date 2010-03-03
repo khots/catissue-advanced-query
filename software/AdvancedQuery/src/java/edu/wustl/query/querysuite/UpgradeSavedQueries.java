@@ -68,11 +68,11 @@ public class UpgradeSavedQueries
 		}
 		catch (SMException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		catch (DAOException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -105,7 +105,7 @@ public class UpgradeSavedQueries
 			}
 			catch (DAOException e)
 			{
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 		logger.info("SAVED QUERIES UPGRADED SUCCESSFULLY....");

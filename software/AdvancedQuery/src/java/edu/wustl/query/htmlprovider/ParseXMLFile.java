@@ -23,6 +23,7 @@ import org.xml.sax.SAXException;
 import edu.wustl.cab2b.common.exception.CheckedException;
 import edu.wustl.common.util.global.TextConstants;
 import edu.wustl.common.util.global.XMLParserUtility;
+import edu.wustl.common.util.logger.LoggerConfig;
 
 /**
  * This class is used for parsing the XML file and put the parsed elements to HashMaps.
@@ -33,7 +34,8 @@ import edu.wustl.common.util.global.XMLParserUtility;
 public class ParseXMLFile
 {
 
-
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(ParseXMLFile.class);
 	/**
 	 * XML file (to be parsed) with complete path.
 	 */
@@ -75,15 +77,15 @@ public class ParseXMLFile
 		}
 		catch (ParserConfigurationException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		catch (SAXException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -132,7 +134,7 @@ public class ParseXMLFile
 	}
 
 	/**
-	 * Method to read dynamic UI component details from xml and populate UI accordingly.
+	 * Method to read dynamic UI component details from XML and populate UI accordingly.
 	 * @param node root node to parse.
 	 */
 	private void readDynamicUIComponents(Node node)

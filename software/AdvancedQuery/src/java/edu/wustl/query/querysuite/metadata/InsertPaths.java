@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import edu.wustl.common.util.global.CommonServiceLocator;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.daofactory.IDAOFactory;
@@ -30,6 +31,8 @@ import edu.wustl.dao.query.generator.ColumnValueBean;
  */
 public class InsertPaths
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(InsertPaths.class);
 
 	static private BufferedWriter writer = null;
 
@@ -45,15 +48,15 @@ public class InsertPaths
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		catch (DAOException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 

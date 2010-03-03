@@ -39,6 +39,7 @@ import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.AbstractClient;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
@@ -66,6 +67,8 @@ import edu.wustl.security.privilege.PrivilegeManager;
  */
 public class QueryCsmCacheManager
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(QueryCsmCacheManager.class);
 	/**
 	 * Object of JDBCDAO.
 	 */
@@ -280,19 +283,19 @@ public class QueryCsmCacheManager
 		}
 		catch (DAOException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		catch (FileNotFoundException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		finally
 		{
@@ -302,7 +305,7 @@ public class QueryCsmCacheManager
 			}
 			catch (DAOException e)
 			{
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 		return entityId;
@@ -882,7 +885,7 @@ public class QueryCsmCacheManager
 		}
 		catch (DAOException e)
 		{
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		HibernateMetaData hibernateMetaData = hibernateDAO.getHibernateMetaData();
 		return hibernateMetaData.getClassName(tableName);
@@ -1019,7 +1022,7 @@ public class QueryCsmCacheManager
 			catch (Exception e)
 			{
 				Logger.out.error("Error occured while getting CP ids for entity : " + entityName);
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 		return cpIdsList;
