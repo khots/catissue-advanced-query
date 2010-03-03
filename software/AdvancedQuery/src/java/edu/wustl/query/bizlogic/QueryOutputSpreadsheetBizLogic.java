@@ -82,11 +82,10 @@ public class QueryOutputSpreadsheetBizLogic
 			Map<Long, Map<AttributeInterface, String>> columnMap, String idOfClickedNode,
 			int recordsPerPage, SelectedColumnsMetadata selectedColumnMetaData,
 			boolean hasConditionOnIdentifiedField,
-			Map<Long, QueryResultObjectDataBean> queryResultMap,
+			Map<Long, QueryResultObjectDataBean> queryResultDataMap,
 			IConstraints constraints, Map<String, IOutputTerm> outputTermsColumns)
 			throws DAOException, ClassNotFoundException
 	{
-		Map<Long, QueryResultObjectDataBean> queryResultDataMap = queryResultMap;
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		this.selectedColumnMetaData = selectedColumnMetaData;
 		DefineGridViewBizLogic defineGridViewBizLogic = new DefineGridViewBizLogic();
@@ -150,8 +149,11 @@ public class QueryOutputSpreadsheetBizLogic
 			queryResultObjectDataBeanMap = new HashMap<Long, QueryResultObjectDataBean>();
 			queryResultObjectDataBeanMap.put(currentTreeNode.getId(), queryResulObjectDataBean);
 
-			getColumnsMetadataForSelectedNode(selectedColumnMetaData,
-					constraints, defineGridViewBizLogic, currentTreeNode);
+			if (!selectedColumnMetaData.isDefinedView())
+			{
+				defineGridViewBizLogic.getColumnsMetadataForSelectedNode(currentTreeNode,
+						this.selectedColumnMetaData, constraints);
+			}
 			List resultList = createSQL(spreadSheetDataMap, currentTreeNode, parentIdColumnName,
 					parentData, tableName, queryResultObjectDataBeanMap, queryDetailsObj,
 					outputTermsColumns);
@@ -165,52 +167,19 @@ public class QueryOutputSpreadsheetBizLogic
 					hasConditionOnIdentifiedField);
 			spreadSheetDataMap.put(AQConstants.QUERY_SESSION_DATA, querySessionData);
 			this.selectedColumnMetaData.setCurrentSelectedObject(currentTreeNode);
-			setResultObjectDataMap(selectedColumnMetaData, spreadSheetDataMap,
-					queryResultObjectDataBeanMap);
+			if (!selectedColumnMetaData.isDefinedView())
+			{
+				spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
+						queryResultObjectDataBeanMap);
+			}
+			else
+			{
+				spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
+						queryResultObjectDataBeanMap);
+			}
 		}
 		spreadSheetDataMap.put(AQConstants.SELECTED_COLUMN_META_DATA, this.selectedColumnMetaData);
 		return spreadSheetDataMap;
-	}
-
-	/**
-	 * @param selectedColumnMetaData selectedColumnMetaData
-	 * @param constraints constraints
-	 * @param defineGridViewBizLogic defineGridViewBizLogic
-	 * @param currentTreeNode currentTreeNode
-	 */
-	private void getColumnsMetadataForSelectedNode(
-			SelectedColumnsMetadata selectedColumnMetaData,
-			IConstraints constraints,
-			DefineGridViewBizLogic defineGridViewBizLogic,
-			OutputTreeDataNode currentTreeNode)
-	{
-		if (!selectedColumnMetaData.isDefinedView())
-		{
-			defineGridViewBizLogic.getColumnsMetadataForSelectedNode(currentTreeNode,
-					this.selectedColumnMetaData, constraints);
-		}
-	}
-
-	/**
-	 * @param selectedColumnMetaData selectedColumnMetaData
-	 * @param spreadSheetDataMap spreadSheetDataMap
-	 * @param queryResultObjectDataBeanMap queryResultObjectDataBeanMap
-	 */
-	private void setResultObjectDataMap(
-			SelectedColumnsMetadata selectedColumnMetaData,
-			Map spreadSheetDataMap,
-			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap)
-	{
-		if (!selectedColumnMetaData.isDefinedView())
-		{
-			spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
-					queryResultObjectDataBeanMap);
-		}
-		else
-		{
-			spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
-					queryResultObjectDataBeanMap);
-		}
 	}
 
 	/**
@@ -230,10 +199,9 @@ public class QueryOutputSpreadsheetBizLogic
 	public Map processSpreadsheetForDataNode(HttpSession session,
 	String actualParentNodeId, int recordsPerPage,SelectedColumnsMetadata
 	selectedColumnMetaData, boolean hasConditionOnIdentifiedField,
-	Map<Long, QueryResultObjectDataBean> queryResultMap,IConstraints constraints,
+	Map<Long, QueryResultObjectDataBean> queryResultDataMap,IConstraints constraints,
 	Map<String, IOutputTerm> outputTermsColumns)throws DAOException, ClassNotFoundException
 	{
-		Map<Long, QueryResultObjectDataBean> queryResultDataMap = queryResultMap;
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		this.selectedColumnMetaData = selectedColumnMetaData;
 		Map spreadSheetDatamap = null;
@@ -245,8 +213,11 @@ public class QueryOutputSpreadsheetBizLogic
 		String parentData = nodeIds[2];
 		String uniqueNodeId = treeNo + "_" + parentId;
 		OutputTreeDataNode parentNode = queryDetailsObj.getUniqueIdNodesMap().get(uniqueNodeId);
-		getColumnsMetadataForSelectedNode(selectedColumnMetaData, constraints,
-				defineGridViewBizLogic, parentNode);
+		if (!selectedColumnMetaData.isDefinedView())
+		{
+			defineGridViewBizLogic.getColumnsMetadataForSelectedNode(parentNode,
+					this.selectedColumnMetaData, constraints);
+		}
 		QueryResultObjectDataBean queryResulObjectDataBean = QueryCSMUtil
 				.getQueryResulObjectDataBean(parentNode, queryDetailsObj);
 		Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap = new HashMap<Long, QueryResultObjectDataBean>();
@@ -369,8 +340,11 @@ public class QueryOutputSpreadsheetBizLogic
 		String idColumnOfCurrentNode = "";
 		List<String> columnsList = new ArrayList<String>();
 		List<IOutputAttribute> selectedOutputAttributeList = new ArrayList<IOutputAttribute>();
-		QueryResultObjectDataBean queryResultObjectDataBean = getQueryResultObjectDataBean(
-				node, queryResultObjectDataBeanMap);
+		QueryResultObjectDataBean queryResultObjectDataBean = new QueryResultObjectDataBean();
+		if (!selectedColumnMetaData.isDefinedView())
+		{
+			queryResultObjectDataBean = queryResultObjectDataBeanMap.get(node.getId());
+		}
 		Vector<Integer> identifiedDataColumnIds = new Vector<Integer>();
 		Vector<Integer> objectDataColumnIds = new Vector<Integer>();
 		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAttrMap =
@@ -385,8 +359,13 @@ public class QueryOutputSpreadsheetBizLogic
 
 			String className = attribute.getEntity().getName();
 			className = edu.wustl.query.util.global.Utility.parseClassName(className);
-			setDataForDefaultView(queryResultObjectDataBean,
-					identifiedDataColumnIds, columnIndex, attribute);
+			if (!selectedColumnMetaData.isDefinedView()
+					&& (attribute.getIsIdentified() != null && attribute.getIsIdentified()))
+			{
+				identifiedDataColumnIds.add(columnIndex);
+				queryResultObjectDataBean.setIdentifiedDataColumnIds(identifiedDataColumnIds);
+				queryResultObjectDataBean.setHasAssociatedIdentifiedData(true);
+			}
 			if (attribute.getName().equals(AQConstants.IDENTIFIER))
 			{
 				idColumnOfCurrentNode = sqlColumnName;
@@ -449,29 +428,20 @@ public class QueryOutputSpreadsheetBizLogic
 				selectSql = temporalColumnUIBean.getSql();
 				columnIndex = temporalColumnUIBean.getColumnIndex();
 			}
-			selectSql = getSqlRelatedToMainEntity(queryDetailsObj, selectSql,
-					queryResultObjectDataBean, columnIndex);
+			if (queryResultObjectDataBean.getMainEntityIdentifierColumnId() == -1)
+			{
+				Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
+				selectSql = QueryCSMUtil.updateEntityIdIndexMap(queryResultObjectDataBean,
+						columnIndex, selectSql, null, entityIdIndexMap, queryDetailsObj);
+				entityIdIndexMap = queryResultObjectDataBean.getEntityIdIndexMap();
+				if (entityIdIndexMap.get(queryResultObjectDataBean.getMainEntity()) != null)
+				{
+					queryResultObjectDataBean.setMainEntityIdentifierColumnId(entityIdIndexMap
+							.get(queryResultObjectDataBean.getMainEntity()));
+				}
+			}
 		}
 		selectSql = selectSql + " from " + tableName;
-		selectSql = getSqlAsPerParentData(parentData, parentIdColumnName,
-				selectSql, idColumnOfCurrentNode);
-		selectSql = getSelectSql(selectSql, queryResultObjectDataBean,
-				identifiedDataColumnIds, objectDataColumnIds);
-		return selectSql;
-	}
-
-	/**
-	 * @param parentData parentData
-	 * @param parentIdColumnName parentIdColumnName
-	 * @param selectQuery selectQuery
-	 * @param idColumnOfCurrentNode idColumnOfCurrentNode
-	 * @return selectSql
-	 */
-	private String getSqlAsPerParentData(String parentData,
-			String parentIdColumnName, String selectQuery,
-			String idColumnOfCurrentNode)
-	{
-		String selectSql = selectQuery;
 		if (parentData == null)
 		{
 			selectSql = selectSql + " where " + idColumnOfCurrentNode + " "
@@ -483,22 +453,6 @@ public class QueryOutputSpreadsheetBizLogic
 			+ LogicalOperator.And + " " + idColumnOfCurrentNode + " "
 			+ RelationalOperator.getSQL(RelationalOperator.IsNotNull) + ")";
 		}
-		return selectSql;
-	}
-
-	/**
-	 * @param selectQuery selectQuery
-	 * @param queryResultObjectDataBean queryResultObjectDataBean
-	 * @param identifiedDataColumnIds identifiedDataColumnIds
-	 * @param objectDataColumnIds objectDataColumnIds
-	 * @return selectSql
-	 */
-	private String getSelectSql(String selectQuery,
-			QueryResultObjectDataBean queryResultObjectDataBean,
-			Vector<Integer> identifiedDataColumnIds,
-			Vector<Integer> objectDataColumnIds)
-	{
-		String selectSql = selectQuery;
 		if (!selectedColumnMetaData.isDefinedView())
 		{
 			if (!identifiedDataColumnIds.isEmpty())
@@ -512,70 +466,6 @@ public class QueryOutputSpreadsheetBizLogic
 			selectSql = AQConstants.SELECT_DISTINCT + selectSql;
 		}
 		return selectSql;
-	}
-
-	/**
-	 * @param queryDetailsObj queryDetailsObj
-	 * @param sqlQuery sqlQuery
-	 * @param queryResultObjectDataBean queryResultObjectDataBean
-	 * @param columnIndex columnIndex
-	 * @return selectSql
-	 */
-	private String getSqlRelatedToMainEntity(QueryDetails queryDetailsObj,
-			String sqlQuery,
-			QueryResultObjectDataBean queryResultObjectDataBean, int columnIndex)
-	{
-		String selectSql = sqlQuery;
-		if (queryResultObjectDataBean.getMainEntityIdentifierColumnId() == -1)
-		{
-			Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
-			selectSql = QueryCSMUtil.updateEntityIdIndexMap(queryResultObjectDataBean,
-					columnIndex, selectSql, null, entityIdIndexMap, queryDetailsObj);
-			entityIdIndexMap = queryResultObjectDataBean.getEntityIdIndexMap();
-			if (entityIdIndexMap.get(queryResultObjectDataBean.getMainEntity()) != null)
-			{
-				queryResultObjectDataBean.setMainEntityIdentifierColumnId(entityIdIndexMap
-						.get(queryResultObjectDataBean.getMainEntity()));
-			}
-		}
-		return selectSql;
-	}
-
-	/**
-	 * @param queryResultObjectDataBean queryResultObjectDataBean
-	 * @param identifiedDataColumnIds identifiedDataColumnIds
-	 * @param columnIndex columnIndex
-	 * @param attribute attribute
-	 */
-	private void setDataForDefaultView(
-			QueryResultObjectDataBean queryResultObjectDataBean,
-			Vector<Integer> identifiedDataColumnIds, int columnIndex,
-			AttributeInterface attribute)
-	{
-		if (!selectedColumnMetaData.isDefinedView()
-				&& (attribute.getIsIdentified() != null && attribute.getIsIdentified()))
-		{
-			identifiedDataColumnIds.add(columnIndex);
-			queryResultObjectDataBean.setIdentifiedDataColumnIds(identifiedDataColumnIds);
-			queryResultObjectDataBean.setHasAssociatedIdentifiedData(true);
-		}
-	}
-
-	/**
-	 * @param node node
-	 * @param queryResultObjectDataBeanMap queryResultObjectDataBeanMap
-	 * @return queryResultObjectDataBean
-	 */
-	private QueryResultObjectDataBean getQueryResultObjectDataBean(
-			OutputTreeDataNode node,
-			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap)
-	{
-		QueryResultObjectDataBean queryResultObjectDataBean = new QueryResultObjectDataBean();
-		if (!selectedColumnMetaData.isDefinedView())
-		{
-			queryResultObjectDataBean = queryResultObjectDataBeanMap.get(node.getId());
-		}
-		return queryResultObjectDataBean;
 	}
 
 	/**
