@@ -35,6 +35,7 @@ public class QueryGridViewAction extends Action
 		request.setAttribute(AQConstants.SPREADSHEET_COLUMN_LIST, columnsList);
 		session.setAttribute(AQConstants.PAGINATION_DATA_LIST, null);
 		String pageOf = request.getParameter(AQConstants.PAGEOF);
+		request.setAttribute(AQConstants.HIDE_TREE_CHECK_VALUE, request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE));
 		request.setAttribute(AQConstants.PAGEOF, pageOf);
 		return mapping.findForward(AQConstants.SUCCESS);
 	}

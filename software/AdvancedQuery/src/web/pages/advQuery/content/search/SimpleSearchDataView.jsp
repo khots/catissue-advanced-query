@@ -55,6 +55,27 @@ tr#hiddenCombo {
 <script language="javascript">
 		var colZeroDir='ascending';
 
+
+		function saveClientQueryToServerFromResultView(action)
+	{
+			var url = "LoadSaveQueryPage.do";
+
+			document.forms[0].action='LoadSaveQueryPage.do';
+			document.forms[0].target = "_parent";
+			document.forms[0].submit();
+	}
+
+	function defineSearchResultsView()
+	{
+
+		document.forms[0].action='DefineSearchResultsView.do';
+		document.forms[0].target = "_parent";
+		document.forms[0].submit();
+
+
+	}
+
+
 		function getData()
 		{	//ajax call to get update data from server
 			var request = newXMLHTTPReq();
@@ -375,6 +396,18 @@ function checkAllOnThisPageResponse()
 					<table summary="" cellpadding="0" cellspacing="0" border="0"
 						width="100%" valign="top" height="100%">
 						<tr height="100%">
+						<logic:equal name="hideTreeChkVal" value="false">
+							<td valign="top" align="right" width="5%"><img
+										src="images/advQuery/b_save_wTree.gif" id="saveResultImgId"
+										hspace="3" vspace="0"
+										onclick="saveClientQueryToServerFromResultView('save')" /></td>
+									<td align="right" width="5%" valign="top"><img
+										src="images/advQuery/b_prev_wTree.gif" id="prevResultImgId"
+										hspace="3" vspace="0"
+										onclick="defineSearchResultsView()" /></td>
+										<td width="8%"/>
+							</logic:equal>
+
 							<td width="5%" nowrap valign="top" class="black_ar"><input
 								type='checkbox' name='checkAll2' id='checkAll2'
 								onClick='checkAllOnThisPage(this)'> <span valign="top"
@@ -390,7 +423,7 @@ function checkAllOnThisPageResponse()
 										//boolean isDefaultView = (obj!=null);
 										boolean isDefaultView = true;
 							%>
-							<td width="5%" valign="top">
+							<td width="1%" valign="top">
 							<%
 								if (pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS)) {
 							%> <!--Commented out by Baljeet as it is catissuecore specific -->

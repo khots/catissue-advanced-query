@@ -127,6 +127,8 @@ public class FetchQueryAction extends Action
 		String target;
 		IParameterizedQuery parameterizedQuery = queryList.get(0);
 		request.getSession().setAttribute(AQConstants.QUERY_OBJECT, parameterizedQuery);
+		saveQueryForm.setShowTree(parameterizedQuery.getShowTree());
+		request.getSession().setAttribute(AQConstants.TREE_CHECK_VALUE, parameterizedQuery.getShowTree());
 		if (parameterizedQuery.getParameters().isEmpty())
 		{
 			target = AQConstants.EXECUTE_QUERY;

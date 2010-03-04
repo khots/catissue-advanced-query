@@ -41,7 +41,7 @@ public class ViewSearchResultsJSPAction extends Action
 		{
 			target = AQConstants.FAILURE;
 		}
-		request.getSession().setAttribute(AQConstants.TREE_CHECK_VALUE, actionForm.isHideTree());
+		request.getSession().setAttribute(AQConstants.TREE_CHECK_VALUE, actionForm.isShowTree());
 		request.setAttribute(AQConstants.HIDE_TREE_CHECK_VALUE, request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE));
 		return mapping.findForward(target);
 	}

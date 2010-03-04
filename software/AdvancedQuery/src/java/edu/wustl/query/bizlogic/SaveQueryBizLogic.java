@@ -173,6 +173,7 @@ public class SaveQueryBizLogic extends DefaultQueryBizLogic implements IQueryBiz
 	{
 		IParameterizedQuery parameterizedQuery = populateParameterizedQueryData(query);
 		parameterizedQuery.setId(query.getId());
+
 		updateSavedQueries(parameterizedQuery, sessionDataBean, sharedQueryBean);
 	}
 	/**

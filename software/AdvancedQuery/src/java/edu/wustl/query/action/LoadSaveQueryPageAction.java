@@ -55,8 +55,17 @@ public class LoadSaveQueryPageAction extends SecureAction
 		String target = AQConstants.FAILURE;
 		if (queryObject != null)
 		{
+//			request.getParameter("showTree");
 			target = setAppropriateTarget(form, request, queryObject);
 			SaveQueryForm savedQueryForm = (SaveQueryForm) form;
+			if(request.getParameter("showTree") != null)
+			{
+				savedQueryForm.setShowTree(Boolean.valueOf(request.getParameter("showTree").toString()));
+			}
+			else if(request.getSession().getAttribute("treeChkVal") != null)
+			{
+				savedQueryForm.setShowTree(Boolean.valueOf(request.getSession().getAttribute("treeChkVal").toString()));
+			}
 			ShareQueryBizLogic bizLogic = new ShareQueryBizLogic();
 
 			saveCoordinatorList(request, savedQueryForm, bizLogic);

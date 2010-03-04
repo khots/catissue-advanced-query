@@ -152,6 +152,7 @@ function checkForValidation()
 <html:form styleId='saveQueryForm'
 	action='<%=AQConstants.SAVE_QUERY_ACTION%>'>
 	<html:hidden property="currentPage" value="prevToAddLimits" />
+	<html:hidden property="showTree"/>
 	<input type="hidden" name="isQuery" value="true">
 
 	<table summary="" cellpadding="0" cellspacing="0" border="0"

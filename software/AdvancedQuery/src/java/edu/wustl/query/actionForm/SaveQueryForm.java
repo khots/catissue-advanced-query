@@ -41,10 +41,25 @@ public class SaveQueryForm extends AbstractActionForm
 	 */
 	private String title;
 
+
+	public boolean isShowTree()
+	{
+		return showTree;
+	}
+
+
+
+	public void setShowTree(boolean showTree)
+	{
+		this.showTree = showTree;
+	}
+
 	/**
 	 * The description of the saved query.
 	 */
 	private String description;
+
+	private boolean showTree=true;
 
 	/**
 	 * The query id.

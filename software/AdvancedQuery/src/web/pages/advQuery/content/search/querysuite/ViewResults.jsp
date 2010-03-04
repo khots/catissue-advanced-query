@@ -43,7 +43,7 @@
 				<tr height="100%">
 
 
-				<logic:equal name="hideTreeChkVal" value="false">
+				<logic:equal name="hideTreeChkVal" value="true">
 
 					<td colspan="1" valign="top" border="0" width="22%">
 					<table border="0" height="100%" width="100%">

@@ -109,22 +109,22 @@ public class CategorySearchForm extends ActionForm
 	/**
 	 * boolean variable to store hide tree's value.
 	 */
-	private boolean hideTree;
+	private boolean showTree=true;
 
 	/**
 	 * @return hideTree
 	 */
-	public boolean isHideTree()
+	public boolean isShowTree()
 	{
-		return hideTree;
+		return showTree;
 	}
 
 	/**
 	 * @param hideTree hideTree
 	 */
-	public void setHideTree(boolean hideTree)
+	public void setShowTree(boolean hideTree)
 	{
-		this.hideTree = hideTree;
+		this.showTree = hideTree;
 	}
 
 	/**

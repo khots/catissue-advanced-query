@@ -108,6 +108,7 @@ public class SaveQueryAction extends SecureAction
 			SessionDataBean sessionDataBean = (SessionDataBean) session.getAttribute(
 					edu.wustl.common.util.global.Constants.SESSION_DATA);
 			SaveQueryForm form = (SaveQueryForm)actionForm;
+			parameterizedQuery.setShowTree(form.isShowTree());
 			SharedQueryBean sharedQueryBean = populateBean(form);
 			boolean isEditQuery = form.isEditQuery();
 			Long queryId = parameterizedQuery.getId();

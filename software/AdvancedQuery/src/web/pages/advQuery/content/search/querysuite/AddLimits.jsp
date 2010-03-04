@@ -33,7 +33,7 @@
 <script>
 function hideTreeChecked()
 {
-	document.getElementById('hideTree').value=document.getElementById('hiddenCheckBox').checked;
+	document.getElementById('showTree').value=document.getElementById('hiddenCheckBox').checked;
 
 }
 </script>
@@ -41,7 +41,7 @@ function hideTreeChecked()
 	style="margin:0;padding:0;">
 	<html:hidden property="stringToCreateQueryObject" value="" />
 	<html:hidden property="nextOperation" value="" />
-	<html:hidden property="hideTree" styleId="hideTree"/>
+	<html:hidden property="showTree" styleId="showTree"/>
 
 	<table border="0" width="100%" cellspacing="0" cellpadding="0"
 		height="450">
@@ -165,22 +165,23 @@ function hideTreeChecked()
 						<tr valign="bottom">
 							<td width="2%" valign="bottom">&nbsp;</td>
 							<td width="50%" align="left">
-							<table border="0" cellspacing="0" cellpadding="0">
+							<table border="0" width="100%" cellspacing="0" cellpadding="0">
 								<tr>
 									<td><img src="images/advQuery/b_save.gif" id="saveBtn"
 										width="51" hspace="3" onclick="validateQuery('save');" /></td>
 									<td><img src="images/advQuery/b_search.gif" id="searchBtn"
 										hspace="3" onclick="validateQuery('search');" /></td>
-									<td class="savedQueryHeading">
-
-									<input type="checkBox" name="hiddenCheckBox" id="hiddenCheckBox" onclick="hideTreeChecked()"/>&nbsp; <bean:message key="query.checkBox.hideTree"/>
+									<td class="showTreeChkBoxHeading" align="right">
+										<input type="checkBox" name="hiddenCheckBox" id="hiddenCheckBox" onclick="hideTreeChecked()"/>&nbsp;
+										<span valign="top"><bean:message key="query.checkBox.hideTree"/></span>
 									<script>
-										var hideTreeVal=document.getElementById('hideTree').value;
+										var hideTreeVal=document.getElementById('showTree').value;
 										if(hideTreeVal == 'true')
 										{
 											document.getElementById('hiddenCheckBox').checked=true;
 										}
 									</script>
+
 									</td>
 								</tr>
 							</table>
@@ -189,6 +190,7 @@ function hideTreeChecked()
 							<td width="50%" align="right">
 							<table border="0" cellspacing="0" cellpadding="0">
 								<tr>
+
 									<td><img src="images/advQuery/b_next.gif" id="nextBtn"
 										hspace="3" onclick="saveClientQueryToServer('next');" /></td>
 								</tr>

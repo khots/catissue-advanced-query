@@ -76,7 +76,7 @@ public class CategorySearchAction extends SecureAction
 				flag = false;
 			}
 		}
-		searchForm.setHideTree(hideTreeChkVal);
+		searchForm.setShowTree(hideTreeChkVal);
 		actionForward = setActionForward(mapping, flag, target);
 		return actionForward;
 	}
