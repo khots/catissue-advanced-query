@@ -38,37 +38,6 @@ final public class QueryModuleSqlUtil
 	}
 
 	/**
-	 * Executes the query and returns the results.
-	 * @param selectSql SQL to be executed
-	 * @param sessionData sessionData
-	 * @param querySessionData
-	 * @return list of results
-	 * @throws ClassNotFoundException
-	 * @throws DAOException
-	 * @throws SMException
-	 */
-    public static List<List<String>> executeQuery(final SessionDataBean
-    		sessionData,final QuerySessionData querySessionData)
-            throws ClassNotFoundException, DAOException, SMException
-    {
-    	List<List<String>> dataList = new ArrayList<List<String>>();
-    	QueryParams queryParams = new QueryParams();
-    	queryParams.setQuery(querySessionData.getSql());
-    	queryParams.setSessionDataBean(sessionData);
-    	queryParams.setStartIndex(-1);
-    	queryParams.setSecureToExecute(querySessionData.isSecureExecute());
-    	queryParams.setHasConditionOnIdentifiedField
-    	(querySessionData.isHasConditionOnIdentifiedField());
-    	queryParams.setQueryResultObjectDataMap
-    	(querySessionData.getQueryResultObjectDataMap());
-    	queryParams.setNoOfRecords(querySessionData.getRecordsPerPage());
-
-    	AbstractQueryExecutor queryExecutor = Utility.getQueryExecutor();
-    	dataList = queryExecutor.getQueryResultList(queryParams).getResult();
-    	return dataList;
-    }
-
-	/**
 		 * Creates a new table in database. First the table is deleted if exist already.
 		 * @param tableName name of the table to be deleted before creating new one.
 		 * @param createTableSql SQL to create table
