@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.query.util.querysuite.QueryModuleError;
 import edu.wustl.query.util.querysuite.QueryModuleSqlUtil;
 import junit.framework.TestCase;
 
@@ -17,6 +18,9 @@ public class QueryModuleSqlUtilTestCase extends TestCase
 		long auditEventId = 29894;
 
 		QueryModuleSqlUtil.updateAuditQueryDetails(columnName, newColumnValue, auditEventId);
+		QueryModuleError status = QueryModuleError.EMPTY_DAG;
+		int errorCode = status.getErrorCode();
+		assertEquals("Error code", errorCode,1);
 	}
 
 	public void testGetSqlForRootNode()
