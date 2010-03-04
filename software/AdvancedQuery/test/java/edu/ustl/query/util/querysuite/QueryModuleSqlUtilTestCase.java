@@ -1,6 +1,8 @@
 package edu.ustl.query.util.querysuite;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.util.querysuite.QueryModuleSqlUtil;
@@ -15,5 +17,15 @@ public class QueryModuleSqlUtilTestCase extends TestCase
 		long auditEventId = 29894;
 
 		QueryModuleSqlUtil.updateAuditQueryDetails(columnName, newColumnValue, auditEventId);
+	}
+
+	public void testGetSqlForRootNode()
+	{
+		String tableName = "TEMP_OUTPUTTREE_16";
+		Map<String, String> columnNameIndexMap = new HashMap<String, String>();
+		columnNameIndexMap.put("index", "6");
+		columnNameIndexMap.put("columnNames", "Column0 , Column1, Column6, Column3, Column4");
+		String selectSql = QueryModuleSqlUtil.getSQLForRootNode(tableName, columnNameIndexMap);
+		assertEquals("SQL for root node",selectSql,"select distinct Column0 , Column1, Column6, Column3, Column4 from TEMP_OUTPUTTREE_16 where Column0  is not null::6");
 	}
 }
