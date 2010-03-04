@@ -15,6 +15,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.query.generator.GenericQueryGeneratorMock;
 import edu.wustl.query.util.global.AQConstants;
+import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 /**
  * @author prafull_kadam
@@ -45,6 +46,7 @@ public class SqlGeneratorGenericTestCase extends TestCase
     public void testParticipantQuery()
     {
         IQuery query = GenericQueryGeneratorMock.creatParticipantQuery();
+        boolean isRulePresentInDag = QueryModuleUtil.checkIfRulePresentInDag(query);
         try
         {
             String sql = generator.generateSQL(query);
