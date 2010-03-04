@@ -6,6 +6,7 @@ import java.util.Map;
 
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.util.querysuite.QueryModuleError;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 import edu.wustl.query.util.querysuite.QueryModuleSqlUtil;
 import junit.framework.TestCase;
 
@@ -21,6 +22,11 @@ public class QueryModuleSqlUtilTestCase extends TestCase
 		QueryModuleError status = QueryModuleError.EMPTY_DAG;
 		int errorCode = status.getErrorCode();
 		assertEquals("Error code", errorCode,1);
+
+		QueryModuleException queryModExp = new QueryModuleException("DAG is Empty", status);
+		QueryModuleError key = queryModExp.getKey();
+		assertEquals("Error code", key.getErrorCode(),1);
+		queryModExp = new QueryModuleException("DAG is Empty");
 	}
 
 	public void testGetSqlForRootNode()
