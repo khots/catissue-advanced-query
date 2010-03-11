@@ -19,10 +19,13 @@ import edu.wustl.common.querysuite.queryobject.ITerm;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
 import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.query.util.global.AQConstants;
 
 public class SingalNodeTemporalQuery
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(SingalNodeTemporalQuery.class);
 
 	private IDateOffsetAttribute dateOffsetAttr = null;
 	private IExpressionAttribute attributeIExpression = null;
@@ -512,7 +515,7 @@ public class SingalNodeTemporalQuery
 			}
 			catch (ParseException e)
 			{
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -557,7 +560,7 @@ public class SingalNodeTemporalQuery
 			}
 			catch (ParseException e)
 			{
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 	}

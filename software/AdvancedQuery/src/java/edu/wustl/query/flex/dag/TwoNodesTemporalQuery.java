@@ -19,6 +19,7 @@ import edu.wustl.common.querysuite.queryobject.INumericLiteral;
 import edu.wustl.common.querysuite.queryobject.ITerm;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.query.util.global.AQConstants;
 
 /**
@@ -26,6 +27,9 @@ import edu.wustl.query.util.global.AQConstants;
  */
 public class TwoNodesTemporalQuery
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(TwoNodesTemporalQuery.class);
+
 	/**
 	 * Date offset attribute 1.
 	 */
@@ -626,8 +630,7 @@ public class TwoNodesTemporalQuery
 		}
 		catch (ParseException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return date;
 	}
