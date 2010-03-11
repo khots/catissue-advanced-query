@@ -240,6 +240,19 @@
 		</ant>
 	</target>
 
+	<target name="aq_upgrade_db_from_1.2_to_1.3">
+			<echo message=" upgrading adv query db schema : datatype echo: ${database.type}" />
+			<!-- Deploying Advance Query db -->
+			<ant dir="." inheritAll="false" antfile="deploy.xml" target="aq_upgrade_db_from_1.2_to_1.3">
+				<property name="database.type" value="${database.type}" />
+				<property name="database.host" value="${database.host}" />
+				<property name="database.port" value="${database.port}" />
+				<property name="database.name" value="${database.name}" />
+				<property name="database.username" value="${database.username}" />
+				<property name="database.password" value="${database.password}" />
+			</ant>
+		</target>
+
 	<target name="modify_query_tiles-def">
 		<!--Replacing tokens in tiles-def -->
 		<copy file="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/AdvanceQuery.properties" todir="${deploy.temp.dir}/AdvanceQuery" overwrite="true" />
