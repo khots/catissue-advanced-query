@@ -9,6 +9,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import edu.ustl.query.util.querysuite.QueryModuleSqlUtilTestCase;
 import edu.ustl.query.util.querysuite.TemporalQueryUtilityTestCase;
+import edu.wustl.common.query.factory.AbstractQueryGeneratorFactoryTestCase;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadataTestCase;
 import edu.wustl.common.query.queryobject.locator.QueryNodeLocatorTestCase;
 import edu.wustl.common.query.queryobject.util.QueryObjectProcessorTestCase;
@@ -58,6 +59,7 @@ public class TestAll
 		suite.addTestSuite(TemporalQueryUtilityTestCase.class);
 		suite.addTestSuite(QueryObjectProcessorTestCase.class);
 		suite.addTestSuite(QueryNodeLocatorTestCase.class);
+		suite.addTestSuite(AbstractQueryGeneratorFactoryTestCase.class);
 		return suite;
 	}
 }
