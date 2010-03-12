@@ -249,7 +249,7 @@ public class DAGPanel
 			if(queryDetailsObj != null)
 			{
 				modifyQueryObject(queryString, entityName, mode, queryDetailsObj,
-						operatorValueMap,query,originalRootExp);
+						operatorValueMap,query,originalRootExp,node);
 			}
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -304,7 +304,7 @@ public class DAGPanel
 	private void modifyQueryObject(String queryString, String entityName, String mode,
 			QueryDetails queryDetailsObj,
 			Map<RelationalOperator, List<String>> operatorValueMap,
-			IQuery query, IExpression originalRootExp)
+			IQuery query, IExpression originalRootExp,DAGNode node)
 	{
 		int secondExpId = 0;
 		int rootExpId=0;
@@ -326,7 +326,7 @@ public class DAGPanel
 			queryDetailsObj.getMainEntityMap();
 		Set<EntityInterface> keySet = mainEntityMap.keySet();
 		Iterator<EntityInterface> iterator = keySet.iterator();
-		if(queryString != null)
+		if(queryString != null && node != null)
 		{
 			rootExpId = addMainEntityExpression(secondExpId, deEntity, constraints,
 					mainEntityMap, iterator);
@@ -494,6 +494,27 @@ public class DAGPanel
 			else
 			{
 				populateFormattedIds(readDeniedIds, formattedIds);
+			}
+		}
+		else
+		{
+
+			if(operatorValueMap != null && !operatorValueMap.isEmpty())
+			{
+				Set<RelationalOperator> keySet = operatorValueMap.keySet();
+				Iterator<RelationalOperator> iterator = keySet.iterator();
+				if(iterator.hasNext())
+				{
+					RelationalOperator operator = iterator.next();
+					List<String> conditionValues = operatorValueMap.get(operator);
+					strToCreateObject = AQConstants.ID_CONDITION+attributeId+
+					AQConstants.CONDITION_SEPERATOR+operator+AQConstants.CONDITION_SEPERATOR;
+					for(String condition : conditionValues)
+					{
+						strToCreateObject = strToCreateObject+AQConstants.CONDITION_SEPERATOR+condition;
+					}
+					strToCreateObject = strToCreateObject+";";
+				}
 			}
 		}
 		int mainProtocolExpId = 0;
