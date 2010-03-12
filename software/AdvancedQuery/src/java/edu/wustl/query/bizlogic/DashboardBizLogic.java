@@ -508,10 +508,10 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		allQueries.addAll(myQueryCollection);
 		allQueries.addAll(sharedQueryColl);
 		populateQueryIds(allIds, allQueries);
-		CsmUtility util = new CsmUtility();
+//		CsmUtility util = new CsmUtility();
 		try
 		{
-			Collection<IParameterizedQuery> sortedAllQueries = util.retrieveQueries(allIds, "");
+			Collection<IParameterizedQuery> sortedAllQueries = CsmUtility.retrieveQueries(allIds, "");
 			saveQueryForm.setAllQueries(sortedAllQueries);
 			List<Long> sharedQueryIds = new ArrayList<Long>();
 			if(sortedAllQueries != null)
@@ -522,7 +522,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 							query);
 				}
 			}
-			saveQueryForm.setSharedQueries(util.retrieveQueries(sharedQueryIds, ""));
+			saveQueryForm.setSharedQueries(CsmUtility.retrieveQueries(sharedQueryIds, ""));
 		}
 		catch (DAOException e)
 		{
@@ -691,11 +691,11 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	 */
 	public IParameterizedQuery getQueryById(Long queryId) throws DAOException
 	{
-		CsmUtility util = new CsmUtility();
+//		CsmUtility util = new CsmUtility();
 		IParameterizedQuery query = null;
 		List<Long> queryIds = new ArrayList<Long>();
 		queryIds.add(queryId);
-		Collection<IParameterizedQuery> queries = util.retrieveQueries(queryIds, "");
+		Collection<IParameterizedQuery> queries = CsmUtility.retrieveQueries(queryIds, "");
 		for (IParameterizedQuery parameterizedQuery : queries)
 		{
 			query = parameterizedQuery;
