@@ -30,8 +30,12 @@ import gov.nih.nci.security.exceptions.CSObjectNotFoundException;
 /**
  * CSM Utility class.
  */
-public class CsmUtility
+final public class CsmUtility
 {
+	private CsmUtility()
+	{
+		super();
+	}
 	/**
 	 * Logger.
 	 */

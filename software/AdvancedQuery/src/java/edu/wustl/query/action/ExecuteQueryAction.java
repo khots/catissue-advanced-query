@@ -44,7 +44,7 @@ public class ExecuteQueryAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ActionForward actionForward = null;
-		String target = AQConstants.FAILURE;
+
 		boolean flag = true;
 		cleanUpSession(request);
 		HttpSession session = request.getSession();
@@ -66,51 +66,75 @@ public class ExecuteQueryAction extends Action
 					AQConstants.EXECUTE_QUERY_PAGE, rhsList, cFIndexMap);
 			if (errorMessage.trim().length() > 0)
 			{
-				ActionErrors errors = new ActionErrors();
-				ActionError error = new ActionError("errors.item", errorMessage);
-				errors.add(ActionErrors.GLOBAL_ERROR, error);
-				saveErrors(request, errors);
-				target = AQConstants.INVALID_CONDITION_VALUES;
 				request.setAttribute("queryId", query.getId());
+				actionForward = getActionForward(actionMapping, request, errorMessage);
 				flag = false;
-				actionForward = actionMapping.findForward(target);
 			}
 		}
 		if(flag)
 		{
+			session.setAttribute(AQConstants.QUERY_OBJECT, query);
 			actionForward = executeQuery(actionMapping, request,
-					session, query, cloneQuery);
+					cloneQuery);
 		}
 		return actionForward;
+	}
+
+	/**
+	 * @param actionMapping
+	 * @param request
+	 * @param query
+	 * @param errorMessage
+	 * @return
+	 */
+	private ActionForward getActionForward(ActionMapping actionMapping, HttpServletRequest request,
+			 String errorMessage)
+	{
+		ActionForward actionForward;
+		String target;
+		saveActionErrors(request, errorMessage);
+		target = AQConstants.INVALID_CONDITION_VALUES;
+
+
+		actionForward = actionMapping.findForward(target);
+		return actionForward;
+	}
+
+	/**
+	 * @param request
+	 * @param errorMessage
+	 */
+	private void saveActionErrors(HttpServletRequest request, String errorMessage)
+	{
+		ActionErrors errors = new ActionErrors();
+		ActionError error = new ActionError("errors.item", errorMessage);
+		errors.add(ActionErrors.GLOBAL_ERROR, error);
+		saveErrors(request, errors);
 	}
 
 	/**
 	 * Execute the query.
 	 * @param actionMapping actionMapping
 	 * @param request request
-	 * @param session session
-	 * @param query query
 	 * @param cloneQuery cloneQuery
 	 * @return actionForward
 	 */
 	private ActionForward executeQuery(ActionMapping actionMapping,
-			HttpServletRequest request, HttpSession session,
-			IParameterizedQuery query, IParameterizedQuery cloneQuery)
+			HttpServletRequest request,
+			IParameterizedQuery cloneQuery)
 	{
-		String target = AQConstants.FAILURE;
+		String target;// = AQConstants.FAILURE;
 		ActionForward actionForward;
 		String errorMessage = QueryModuleUtil.executeQuery(request, cloneQuery);
-		session.setAttribute(AQConstants.QUERY_OBJECT, query);
+
 		if ("".equals(errorMessage))
 		{
 			target = AQConstants.SUCCESS;
 		}
 		else
 		{
-			ActionErrors errors = new ActionErrors();
-			ActionError error = new ActionError("errors.item", errorMessage);
-			errors.add(ActionErrors.GLOBAL_ERROR, error);
-			saveErrors(request, errors);
+			target = AQConstants.FAILURE;
+			saveActionErrors(request, errorMessage);
 		}
 		actionForward =  actionMapping.findForward(target);
 		return actionForward;

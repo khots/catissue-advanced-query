@@ -89,13 +89,24 @@ public class RetrieveQueryAction extends SecureAction
 		}
 		else
 		{
-			ActionErrors errors = new ActionErrors();
-			String errorMessage = ApplicationProperties.getValue("entityCache.error");
-			ActionError error = new ActionError("query.errors.item",errorMessage);
-			errors.add(ActionErrors.GLOBAL_ERROR, error);
-			saveErrors(request, errors);
-			actionForward = actionMapping.findForward(AQConstants.CACHE_ERROR);
+			actionForward = getActionForward(actionMapping, request);
 		}
+		return actionForward;
+	}
+	/**
+	 * @param actionMapping
+	 * @param request
+	 * @return
+	 */
+	private ActionForward getActionForward(ActionMapping actionMapping, HttpServletRequest request)
+	{
+		ActionForward actionForward;
+		ActionErrors errors = new ActionErrors();
+		String errorMessage = ApplicationProperties.getValue("entityCache.error");
+		ActionError error = new ActionError("query.errors.item",errorMessage);
+		errors.add(ActionErrors.GLOBAL_ERROR, error);
+		saveErrors(request, errors);
+		actionForward = actionMapping.findForward(AQConstants.CACHE_ERROR);
 		return actionForward;
 	}
 	/**

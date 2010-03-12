@@ -129,12 +129,16 @@ public class QueryOutputTreeBizLogic
      */
 	private String getTreeSize(List dataList, int count)
 	{
-		String  size = ""+dataList.size();
+		//String  size1 = ""+dataList.size();
+		StringBuffer size = new StringBuffer();
+		size.append(dataList.size());
 		if(dataList.size()==Variables.maximumTreeNodeLimit)
 		{
-			size = size + "/" +count;
+			//size = size + "/" +count;
+			size.append('/');
+			size.append(count);
 		}
-		return size;
+		return size.toString();
 	}
     /**
      * Updates the root node name and count for root records in audit tables.
