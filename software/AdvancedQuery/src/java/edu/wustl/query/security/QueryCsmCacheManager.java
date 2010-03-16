@@ -175,8 +175,13 @@ public class QueryCsmCacheManager
 		int entityId = mainEntityId;
 		if (queryResultObjectDataBean.getMainEntityIdentifierColumnId() != -1)
 		{
-			entityId = Integer.parseInt((String) aList.get
-				(queryResultObjectDataBean.getMainEntityIdentifierColumnId()));
+			String tempEntityId = (String) aList.get
+			(queryResultObjectDataBean.getMainEntityIdentifierColumnId());
+			if(tempEntityId != null && tempEntityId.length() != 0)
+			{
+				entityId = Integer.parseInt((String) aList.get
+					(queryResultObjectDataBean.getMainEntityIdentifierColumnId()));
+			}
 		}
 		return entityId;
 	}
