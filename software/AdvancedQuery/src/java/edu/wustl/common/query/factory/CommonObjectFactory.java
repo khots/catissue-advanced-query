@@ -6,7 +6,7 @@ import edu.wustl.common.util.Utility;
  *
  *
  */
-public class CommonObjectFactory
+public final class CommonObjectFactory
 {
 	/**
      * Reference of common factory.
