@@ -24,6 +24,7 @@ import gov.nih.nci.security.authorization.domainobjects.ProtectionElement;
 import gov.nih.nci.security.authorization.domainobjects.ProtectionGroup;
 import gov.nih.nci.security.authorization.domainobjects.User;
 import gov.nih.nci.security.dao.ProtectionElementSearchCriteria;
+import gov.nih.nci.security.dao.ProtectionGroupSearchCriteria;
 import gov.nih.nci.security.exceptions.CSException;
 import gov.nih.nci.security.exceptions.CSObjectNotFoundException;
 
@@ -251,5 +252,105 @@ final public class CsmUtility
 			}
 		}
 		return queries;
+	}
+
+	public static void getQueries(Collection<IParameterizedQuery> myQueryCollection,
+			Collection<IParameterizedQuery> sharedQueryColl, SessionDataBean sessionDataBean,
+			String queryNameLike) throws CSObjectNotFoundException, SMException, CSException,
+			DAOException
+	{
+		String csmUserId = sessionDataBean.getCsmUserId();
+		sessionDataBean.getUserName();
+		String userPG = getUserProtectionGroup(csmUserId);
+		Collection<Long> myQueriesIdList = getQueriesIdList(userPG);
+		Collection<Long> publicQueryIdList = getQueriesIdList(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP);
+		Collection<Long> sharedQueryIdList=getSharedQueryIdList(sessionDataBean.getUserName());
+//		myQueriesIdList=getQueriesIdList(userPG);
+
+
+		Collection<IParameterizedQuery> myQueriesList = retrieveQueries(myQueriesIdList,
+				queryNameLike);
+
+		if (myQueriesList != null)
+		{
+			myQueryCollection.addAll(myQueriesList);
+		}
+		Collection<IParameterizedQuery> sharedQueriesList = retrieveQueries(publicQueryIdList,
+				queryNameLike);
+		if (sharedQueriesList != null)
+		{
+			sharedQueryColl.addAll(sharedQueriesList);
+		}
+	}
+
+	public static Collection<Long> getSharedQueryIdList(String userName) throws SMException
+	{
+		Collection<Long> collection = new ArrayList<Long>();
+		List<ProtectionElement> peList = getQueryPEs("*");
+		if (peList != null && !peList.isEmpty())
+		{
+			PrivilegeUtility privUtil = new PrivilegeUtility();
+			for (ProtectionElement pElement : peList)
+			{
+
+				if(privUtil.getUserProvisioningManager().checkOwnership(userName, pElement.getObjectId()))
+				{
+					String[] objectId = pElement.getObjectId().split("_");
+					Long pQueryId = Long.valueOf(objectId[1]);
+					collection.add(pQueryId);
+				}
+			}
+		}
+		return collection;
+	}
+
+	public static Collection<Long> getQueriesIdList(String userPG) throws SMException, CSObjectNotFoundException
+	{
+
+		ProtectionGroup protectionGroup;
+		List<ProtectionGroup> groups = getProtectionGroupByName(userPG);
+		protectionGroup= groups.get(0);
+		Set<ProtectionElement> protectionElements = null;
+		PrivilegeUtility utility = new PrivilegeUtility();
+		UserProvisioningManager manager;
+
+			manager = utility.getUserProvisioningManager();
+			protectionElements = manager.getProtectionElements(protectionGroup.getProtectionGroupId().toString());
+
+		return getQueriesIds(protectionElements);
+	}
+
+
+
+	/**
+	 * @param userPG
+	 * @return
+	 * @throws SMException
+	 */
+	private static List<ProtectionGroup> getProtectionGroupByName(String userPG) throws SMException
+	{
+		PrivilegeUtility privUtil = new PrivilegeUtility();
+		ProtectionGroup protectionGroup = new ProtectionGroup();
+		protectionGroup.setProtectionGroupName(userPG);
+		ProtectionGroupSearchCriteria criteria = new ProtectionGroupSearchCriteria(protectionGroup);
+
+		List<ProtectionGroup> groups = privUtil.getObjects(criteria);
+		return groups;
+	}
+
+	private static Collection<Long> getQueriesIds(Set<ProtectionElement> protectionElements)
+	{
+		Collection<Long> queriesIdList = new ArrayList<Long>();
+		if (protectionElements != null && !protectionElements.isEmpty())
+		{
+			PrivilegeUtility privUtil = new PrivilegeUtility();
+			for (ProtectionElement pElement : protectionElements)
+			{
+				String[] objectId = pElement.getObjectId().split("_");
+				Long pQueryId = Long.valueOf(objectId[1]);
+				queriesIdList.add(pQueryId);
+			}
+		}
+		return queriesIdList;
 	}
 }

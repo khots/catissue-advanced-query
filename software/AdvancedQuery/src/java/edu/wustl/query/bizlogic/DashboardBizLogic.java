@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.ColumnValueBean;
@@ -20,6 +21,7 @@ import edu.wustl.dao.util.DAOUtility;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.beans.DashBoardBean;
 import edu.wustl.query.util.global.AQConstants;
+import edu.wustl.query.util.global.UserCache;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.CsmUtility;
 import edu.wustl.query.util.querysuite.DAOUtil;
@@ -41,6 +43,9 @@ import gov.nih.nci.security.exceptions.CSObjectNotFoundException;
  */
 public class DashboardBizLogic extends DefaultQueryBizLogic
 {
+
+	private static final org.apache.log4j.Logger LOGGER = LoggerConfig
+	.getConfiguredLogger(DashboardBizLogic.class);
 	/**
 	 * Sets dash board queries.
 	 * @param sessionDataBean A data bean that contains information related to user logged in.
@@ -167,12 +172,14 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 			IParameterizedQuery parameterizedQuery,
 			Map<Long, DashBoardBean> dashBoardDataMap) throws SMException, BizLogicException
 	{
+
 		DashBoardBean bean = new DashBoardBean();
 		String naStr = "N/A";
 		bean.setCountOfRootRecords(naStr);
 		bean.setExecutedOn(naStr);
 		bean.setRootEntityName(naStr);
-		User user = getQueryOwner(parameterizedQuery.getId().toString());
+		User user = getQueryOwner(parameterizedQuery.getId().toString());//UserCache.getUser(parameterizedQuery.getId().toString());
+		//getQueryOwner(parameterizedQuery.getId().toString());
 		if(user == null)
 		{
 			bean.setOwnerName(naStr);
@@ -232,7 +239,9 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		bean.setRootEntityName(rootEntityName);
 		bean.setQuery(pQuery);
 		bean.setCountOfRootRecords(cntOfRootRecs);
-		User user = getQueryOwner(pQuery.getId().toString());
+
+		User user =getQueryOwner(pQuery.getId().toString());//UserCache.getUser(pQuery.getId().toString());
+			//getQueryOwner(pQuery.getId().toString());
 		String ownerName = user.getLastName() + "," + user.getFirstName();
 		bean.setOwnerName(ownerName);
 		dashBoardMap.put(pQuery.getId(), bean);
@@ -363,7 +372,8 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		{
 			ownerId = "1";
 		}
-		return bizLogic.getUserById(ownerId);
+//		return bizLogic.getUserById(ownerId);
+		return UserCache.getUser(ownerId);
 	}
 
 	/**
@@ -431,6 +441,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		{
 			CsmUtility.checkExecuteQueryPrivilege(myQueryCollection, sharedQueryColl,
 					sessionDataBean,queryNameLike);
+
 			setQueryCollectionForm(saveQueryForm, myQueryCollection, sharedQueryColl);
 			boolean isSuperAdminUser = ifSuperAdminUser(sessionDataBean.getCsmUserId());
 			setAllQueriesForSuperAdmin(saveQueryForm, isSuperAdminUser);
@@ -717,5 +728,112 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 			columnValueBean.add(bean);
 		}
 		return columnValueBean;
+	}
+
+	/**
+	 * Will returns all queries(shared/created) of the user with given CSM user ID.
+	 * @param csmUserId CSM user id of the user
+	 * @param userName user name
+	 * @return all queries(shared/created) of the user with given CSM user ID.
+	 * @throws BizLogicException instance of BizLogicException
+	 */
+	public Collection<IParameterizedQuery> getAllQueries(String csmUserId, String userName) throws BizLogicException
+	{
+		Collection<IParameterizedQuery> queries= null;
+		try
+		{
+			if(ifSuperAdminUser(csmUserId))
+			{
+				queries=getAllQueriesForUpgrade();
+			}
+			else
+			{
+				queries=getSharedQueries(csmUserId, userName);
+				Collection<IParameterizedQuery> myQueries=getMyQueries(csmUserId);
+				if(myQueries != null)
+				{
+					queries.addAll(myQueries);
+				}
+			}
+		}
+		catch (DAOException e)
+		{
+			LOGGER.error(e.getMessage(),e);
+			throw new BizLogicException(null,e,"DAOException: while Retrieving queries for SuperAdmin");
+		}
+		return queries;
+	}
+
+	/**
+	 * Will Returns all the shared queries on which the user with given CSM user ID has access.
+	 * @param csmUserId CSM user Id
+	 * @param userName user name
+	 * @return all the shared queries on which the user with given CSM user ID has access.
+	 * @throws BizLogicException instance of BizLogicException
+	 */
+	public Collection<IParameterizedQuery> getSharedQueries(String csmUserId, String userName) throws BizLogicException
+	{
+		Collection<IParameterizedQuery> queries= null;
+		String queryNameLike="";
+		try
+		{
+			Collection<Long> publicQueryIdList = CsmUtility.getQueriesIdList(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP);
+			Collection<Long> sharedQueryIdList = CsmUtility.getSharedQueryIdList(userName);
+			Set<Long> queriesIdSet = new HashSet<Long>();
+			queriesIdSet.addAll(publicQueryIdList);
+			queriesIdSet.addAll(sharedQueryIdList);
+			queries=CsmUtility.retrieveQueries(queriesIdSet, queryNameLike);
+		}
+		catch (SMException e)
+		{
+			LOGGER.error(e.getMessage(),e);
+			throw new BizLogicException(null,e,e.getMessage());
+		}
+		catch (CSObjectNotFoundException e)
+		{
+			LOGGER.error(e.getMessage(),e);
+			throw new BizLogicException(null,e,e.getMessage());
+		}
+		catch (DAOException e)
+		{
+			LOGGER.error(e.getMessage(),e);
+			throw new BizLogicException(null,e,e.getMessage());
+		}
+
+		return queries;
+	}
+
+	/**
+	 * This will return all queries created by the user with given CSM user Id.
+	 * @param csmUserId CSM user id
+	 * @return all queries created by the user with given CSM user Id
+	 * @throws BizLogicException instance of BizLogicException
+	 */
+	public Collection<IParameterizedQuery> getMyQueries(String csmUserId) throws BizLogicException
+	{
+		Collection<IParameterizedQuery> queries= null;
+		String userPG = CsmUtility.getUserProtectionGroup(csmUserId);
+		String queryNameLike="";
+		try
+		{
+			Collection<Long> myQueriesIdList = CsmUtility.getQueriesIdList(userPG);
+			queries=CsmUtility.retrieveQueries(myQueriesIdList, queryNameLike);
+		}
+		catch (SMException e)
+		{
+			LOGGER.error(e.getMessage(),e);
+			throw new BizLogicException(null,e,e.getMessage());
+		}
+		catch (CSObjectNotFoundException e)
+		{
+			LOGGER.error(e.getMessage(),e);
+			throw new BizLogicException(null,e,e.getMessage());
+		}
+		catch (DAOException e)
+		{
+			LOGGER.error(e.getMessage(),e);
+			throw new BizLogicException(null,e,e.getMessage());
+		}
+		return queries;
 	}
 }

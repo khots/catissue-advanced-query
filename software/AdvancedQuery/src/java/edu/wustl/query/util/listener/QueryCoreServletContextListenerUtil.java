@@ -15,6 +15,7 @@ import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.query.util.global.AQConstants;
+import edu.wustl.query.util.global.UserCache;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.global.Variables;
 
@@ -52,6 +53,8 @@ public class QueryCoreServletContextListenerUtil
 	            CommonServiceLocator.getInstance().setAppHome(sce.getServletContext().getRealPath(""));
 	            setGlobalVariable();
 	            Utility.setReadDeniedAndEntitySqlMap();
+	            UserCache.init();
+
 	        }
 	        catch (Exception e)
 	        {

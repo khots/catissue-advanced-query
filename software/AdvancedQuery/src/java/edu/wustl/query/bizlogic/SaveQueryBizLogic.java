@@ -26,6 +26,7 @@ import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.beans.SharedQueryBean;
 import edu.wustl.query.util.global.AQConstants;
+import edu.wustl.query.util.global.UserCache;
 import edu.wustl.query.util.querysuite.DAOUtil;
 import edu.wustl.security.exception.SMException;
 import edu.wustl.security.manager.ISecurityManager;
@@ -97,7 +98,7 @@ public class SaveQueryBizLogic extends DefaultQueryBizLogic implements IQueryBiz
 		HashSet<ParameterizedQuery> protectionObjects = new HashSet<ParameterizedQuery>();
 		protectionObjects.add((ParameterizedQuery) query);
 		String csmUserId = sessionDataBean.getCsmUserId();
-		User user = getUserById(csmUserId);
+		User user = UserCache.getUser(csmUserId);//getUserById(csmUserId);
 		SavedQueryAuthorization savedQueryAuth = new SavedQueryAuthorization();
 		try
 		{
