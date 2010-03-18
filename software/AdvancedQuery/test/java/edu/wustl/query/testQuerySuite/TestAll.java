@@ -18,6 +18,7 @@ import edu.wustl.query.bizlogic.CommonQueryBizLogicTestCase;
 import edu.wustl.query.bizlogic.CreateQueryObjectTestCase;
 import edu.wustl.query.bizlogic.DashboardBizLogicTestCase;
 import edu.wustl.query.bizlogic.DefaultQueryBizLogicTestCase;
+import edu.wustl.query.bizlogic.DefineGridViewBizLogicTestCase;
 import edu.wustl.query.bizlogic.ExportQueryBizLogicTestCase;
 import edu.wustl.query.bizlogic.QueryCsmBizLogicTestCase;
 import edu.wustl.query.bizlogic.SaveQueryBizLogicTestCase;
@@ -66,6 +67,7 @@ public class TestAll
 		suite.addTestSuite(CommonObjectFactoryTestCase.class);
 		suite.addTestSuite(DefaultQueryBizLogicTestCase.class);
 		suite.addTestSuite(ShareQueryBizLogicTestCase.class);
+		suite.addTestSuite(DefineGridViewBizLogicTestCase.class);
 		return suite;
 	}
 }
