@@ -21,6 +21,7 @@ import edu.wustl.query.bizlogic.DefaultQueryBizLogicTestCase;
 import edu.wustl.query.bizlogic.ExportQueryBizLogicTestCase;
 import edu.wustl.query.bizlogic.QueryCsmBizLogicTestCase;
 import edu.wustl.query.bizlogic.SaveQueryBizLogicTestCase;
+import edu.wustl.query.bizlogic.ShareQueryBizLogicTestCase;
 import edu.wustl.query.generator.SqlGeneratorGenericTestCase;
 import edu.wustl.query.htmlprovider.GenerateHtmlDetailsTestCase;
 import edu.wustl.query.htmlprovider.GenerateHtmlTestCase;
@@ -64,6 +65,7 @@ public class TestAll
 		suite.addTestSuite(AbstractQueryGeneratorFactoryTestCase.class);
 		suite.addTestSuite(CommonObjectFactoryTestCase.class);
 		suite.addTestSuite(DefaultQueryBizLogicTestCase.class);
+		suite.addTestSuite(ShareQueryBizLogicTestCase.class);
 		return suite;
 	}
 }
