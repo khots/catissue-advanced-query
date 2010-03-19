@@ -92,21 +92,6 @@ public class SqlGenerator implements ISqlGenerator
 	 */
 	private static String datePattern = "";
 
-	/**
-	 * escape character.
-	 */
-	private static String escapeCharacter = "\\";
-
-	/**
-	 * escape character for oracle database.
-	 */
-	private static String escapeCharOracle = "!";
-
-	/**
-	 * escape sequence for oracle.
-	 */
-	private static String escapeSeqOracle = "escape '!'";
-
     /**
      * reference to the join graph object present in the query object.
      */

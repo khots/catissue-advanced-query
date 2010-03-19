@@ -365,14 +365,12 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	 */
 	private User getOwnerOfTheQuery(Set<ProtectionGroup> pgSet)
 			throws BizLogicException
-			{
-		SaveQueryBizLogic bizLogic = new SaveQueryBizLogic();
+	{
 		String ownerId = getOwnerPG(pgSet);
 		if(ownerId == null)
 		{
 			ownerId = "1";
 		}
-//		return bizLogic.getUserById(ownerId);
 		return UserCache.getUser(ownerId);
 	}
 

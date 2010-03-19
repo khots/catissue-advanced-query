@@ -240,10 +240,9 @@ final public class QueryModuleUtil
 		String dspNameColName = displayColumnName;
 		Set<String> keySet = columnNamePositionMap.keySet();
 		Iterator<String> iterator = keySet.iterator();
-		String position1=null,position2=null;
 		if(iterator.hasNext())
 		{
-			position1 = iterator.next();
+			String position1 = iterator.next();
 			if(iterator.hasNext())
 			{
 				dspNameColName = setDisplayColumnName(dspNameColName,

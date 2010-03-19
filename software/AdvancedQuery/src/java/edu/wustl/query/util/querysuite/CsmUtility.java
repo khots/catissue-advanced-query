@@ -264,7 +264,6 @@ final public class CsmUtility
 		String userPG = getUserProtectionGroup(csmUserId);
 		Collection<Long> myQueriesIdList = getQueriesIdList(userPG);
 		Collection<Long> publicQueryIdList = getQueriesIdList(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP);
-		Collection<Long> sharedQueryIdList=getSharedQueryIdList(sessionDataBean.getUserName());
 //		myQueriesIdList=getQueriesIdList(userPG);
 
 
@@ -334,8 +333,7 @@ final public class CsmUtility
 		protectionGroup.setProtectionGroupName(userPG);
 		ProtectionGroupSearchCriteria criteria = new ProtectionGroupSearchCriteria(protectionGroup);
 
-		List<ProtectionGroup> groups = privUtil.getObjects(criteria);
-		return groups;
+		return privUtil.getObjects(criteria);
 	}
 
 	private static Collection<Long> getQueriesIds(Set<ProtectionElement> protectionElements)
@@ -343,7 +341,6 @@ final public class CsmUtility
 		Collection<Long> queriesIdList = new ArrayList<Long>();
 		if (protectionElements != null && !protectionElements.isEmpty())
 		{
-			PrivilegeUtility privUtil = new PrivilegeUtility();
 			for (ProtectionElement pElement : protectionElements)
 			{
 				String[] objectId = pElement.getObjectId().split("_");
