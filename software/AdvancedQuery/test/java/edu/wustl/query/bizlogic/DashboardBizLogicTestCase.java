@@ -53,20 +53,20 @@ public class DashboardBizLogicTestCase extends TestCase
 	/**
 	 * To test setQueriesToDashboard method from DashboardBizLogic class.
 	 */
-	public void testSetQueriesToDashboard()
-	{
-		SessionDataBean sessionDataBean = new SessionDataBean();
-		sessionDataBean.setCsmUserId("1");
-		SaveQueryForm saveQueryForm = new SaveQueryForm();
-		try
-		{
-			new DashboardBizLogic().setQueriesToDashboard(sessionDataBean, saveQueryForm);
-		}
-		catch (BizLogicException e)
-		{
-			e.printStackTrace();
-		}
-	}
+//	public void testSetQueriesToDashboard()
+//	{
+//		SessionDataBean sessionDataBean = new SessionDataBean();
+//		sessionDataBean.setCsmUserId("1");
+//		SaveQueryForm saveQueryForm = new SaveQueryForm();
+//		try
+//		{
+//			new DashboardBizLogic().setQueriesToDashboard(sessionDataBean, saveQueryForm);
+//		}
+//		catch (BizLogicException e)
+//		{
+//			e.printStackTrace();
+//		}
+//	}
 
 	public void testGetDashboardDetails()
 	{

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import edu.emory.mathcs.backport.java.util.Collections;
-import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
@@ -22,10 +21,8 @@ import edu.wustl.security.privilege.PrivilegeUtility;
 import gov.nih.nci.security.UserProvisioningManager;
 import gov.nih.nci.security.authorization.domainobjects.ProtectionElement;
 import gov.nih.nci.security.authorization.domainobjects.ProtectionGroup;
-import gov.nih.nci.security.authorization.domainobjects.User;
 import gov.nih.nci.security.dao.ProtectionElementSearchCriteria;
 import gov.nih.nci.security.dao.ProtectionGroupSearchCriteria;
-import gov.nih.nci.security.exceptions.CSException;
 import gov.nih.nci.security.exceptions.CSObjectNotFoundException;
 
 /**
@@ -44,68 +41,6 @@ final public class CsmUtility
 	.getConfiguredLogger(CsmUtility.class);
 
 	/**
-	 * @param myQueryCollection Collection<IParameterizedQuery>= collection of my queries
-	 * @param sharedQueryColl Collection<IParameterizedQuery>= collection of shared queries
-	 * @param sessionDataBean SessionDataBean= details of logged in user
-	 * @param queryNameLike queryNameLike
-	 * @throws CSException CSException
-	 * @throws CSObjectNotFoundException CSObjectNotFoundException
-	 * @throws DAOException DAOException
-	 * @throws SMException Security Manager Exception
-	 */
-	public static void checkExecuteQueryPrivilege(
-			Collection<IParameterizedQuery> myQueryCollection,
-			Collection<IParameterizedQuery> sharedQueryColl,
-			SessionDataBean sessionDataBean,String queryNameLike)
-	throws CSException, CSObjectNotFoundException, DAOException, SMException
-	{
-		Collection<Long> myQueriesIdList = new ArrayList<Long>();
-		Collection<Long> shareQueryIdList = new ArrayList<Long>();
-
-		populateQueryIdsCollection(myQueriesIdList, shareQueryIdList,
-				sessionDataBean.getCsmUserId());
-
-		Collection<IParameterizedQuery> myQueriesList = retrieveQueries(myQueriesIdList,queryNameLike);
-
-		if (myQueriesList != null)
-		{
-			myQueryCollection.addAll(myQueriesList);
-		}
-		Collection<IParameterizedQuery> sharedQueriesList =
-			retrieveQueries(shareQueryIdList,queryNameLike);
-		if (sharedQueriesList != null)
-		{
-			sharedQueryColl.addAll(sharedQueriesList);
-		}
-	}
-	/**
-	 * @param myQueryCollection Collection<Long>= collection of my queries
-	 * @param sharedQueryColl Collection<Long>= collection of shared queries
-	 * @param csmUserId =csUser Id
-	 * @throws CSException CSException
-	 * @throws CSObjectNotFoundException CSObjectNotFoundException
-	 * @throws SMException Security Manager Exception
-	 */
-	private static void populateQueryIdsCollection(Collection<Long> myQueryCollection,
-			Collection<Long> sharedQueryColl, String csmUserId) throws CSException,
-			CSObjectNotFoundException, SMException
-	{
-		List<ProtectionElement> peList = getQueryPEs("*");
-		if (peList != null && !peList.isEmpty())
-		{
-			PrivilegeUtility privUtil = new PrivilegeUtility();
-			for (ProtectionElement pElement : peList)
-			{
-				String[] objectId = pElement.getObjectId().split("_");
-				Long pQueryId = Long.valueOf(objectId[1]);
-				Set<ProtectionGroup> pgSet = privUtil.getUserProvisioningManager()
-				.getProtectionGroups(pElement.getProtectionElementId().toString());
-				populateQueryCollection(myQueryCollection, sharedQueryColl,
-						pQueryId, pgSet, csmUserId,pElement);
-			}
-		}
-	}
-	/**
 	 * Get list of query protection elements.
 	 * @param queryId queryId
 	 * @return peList
@@ -120,76 +55,6 @@ final public class CsmUtility
 		return privilegeUtility.getObjects(searchCriteria);
 	}
 
-	/**
-	 * @param myQueryCollection Collection<Long>
-	 * @param sharedQueryCollection Collection<Long>
-	 * @param pQueryId Long
-	 * @param pgSet Set<ProtectionGroup>
-	 * @param csmUserId String
-	 * @param pElement protection element
-	 * @throws SMException Security Manager Exception
-	 * @throws CSObjectNotFoundException CSObjectNotFoundException
-	 */
-	private static void populateQueryCollection(Collection<Long> myQueryCollection,
-			Collection<Long> sharedQueryCollection, Long pQueryId,
-			Set<ProtectionGroup> pgSet, String csmUserId, ProtectionElement pElement)
-			throws SMException, CSObjectNotFoundException
-	{
-		PrivilegeUtility util = new PrivilegeUtility();
-		UserProvisioningManager upManager = util.getUserProvisioningManager();
-		Set<User> owners = upManager.getOwners(pElement.getProtectionElementId().toString());
-		String userPG = getUserProtectionGroup(csmUserId);
-		boolean ifMyQuery = false;
-		for (ProtectionGroup pGroup : pgSet)
-		{
-			if (pGroup.getProtectionGroupName().equalsIgnoreCase(userPG))
-			{
-				myQueryCollection.add(pQueryId);
-				sharedQueryCollection.remove(pQueryId);
-				ifMyQuery = true;
-			}
-			populateQueriesForPublicGroup(sharedQueryCollection, pQueryId,
-					ifMyQuery, pGroup);
-		}
-		populateSharedQueryIds(sharedQueryCollection, pQueryId, csmUserId,
-				owners);
-	}
-
-	/**
-	 * @param sharedQueryCollection collection
-	 * @param pQueryId query identifier
-	 * @param ifMyQuery ifMyQuery
-	 * @param pGroup protection group
-	 */
-	private static void populateQueriesForPublicGroup(
-			Collection<Long> sharedQueryCollection, Long pQueryId,
-			boolean ifMyQuery, ProtectionGroup pGroup)
-	{
-		if (pGroup.getProtectionGroupName().equals(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP)
-				&& !ifMyQuery)
-		{
-			sharedQueryCollection.add(pQueryId);
-		}
-	}
-
-	/**
-	 * @param sharedQueryCollection collection
-	 * @param pQueryId query identifier
-	 * @param csmUserId user identifier
-	 * @param owners owners
-	 */
-	private static void populateSharedQueryIds(
-			Collection<Long> sharedQueryCollection, Long pQueryId,
-			String csmUserId, Set<User> owners)
-	{
-		for (User user : owners)
-		{
-			if(user.getUserId().toString().equals(csmUserId))
-			{
-				sharedQueryCollection.add(pQueryId);
-			}
-		}
-	}
 	/**
 	 * @param csmUserId String
 	 * @return user protection group
@@ -254,34 +119,13 @@ final public class CsmUtility
 		return queries;
 	}
 
-	public static void getQueries(Collection<IParameterizedQuery> myQueryCollection,
-			Collection<IParameterizedQuery> sharedQueryColl, SessionDataBean sessionDataBean,
-			String queryNameLike) throws CSObjectNotFoundException, SMException, CSException,
-			DAOException
-	{
-		String csmUserId = sessionDataBean.getCsmUserId();
-		sessionDataBean.getUserName();
-		String userPG = getUserProtectionGroup(csmUserId);
-		Collection<Long> myQueriesIdList = getQueriesIdList(userPG);
-		Collection<Long> publicQueryIdList = getQueriesIdList(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP);
-//		myQueriesIdList=getQueriesIdList(userPG);
 
-
-		Collection<IParameterizedQuery> myQueriesList = retrieveQueries(myQueriesIdList,
-				queryNameLike);
-
-		if (myQueriesList != null)
-		{
-			myQueryCollection.addAll(myQueriesList);
-		}
-		Collection<IParameterizedQuery> sharedQueriesList = retrieveQueries(publicQueryIdList,
-				queryNameLike);
-		if (sharedQueriesList != null)
-		{
-			sharedQueryColl.addAll(sharedQueriesList);
-		}
-	}
-
+	/**
+	 * Returns the shared queries Id's list.
+	 * @param userName name of the user
+	 * @return shared queries Id's list.
+	 * @throws SMException instance of SMException
+	 */
 	public static Collection<Long> getSharedQueryIdList(String userName) throws SMException
 	{
 		Collection<Long> collection = new ArrayList<Long>();
@@ -303,6 +147,13 @@ final public class CsmUtility
 		return collection;
 	}
 
+	/**
+	 * Will returns the queries ID's list.
+	 * @param userPG user protection group name
+	 * @return queries ID's list
+	 * @throws SMException instance of SMException
+	 * @throws CSObjectNotFoundException instance of CSObjectNotFoundException
+	 */
 	public static Collection<Long> getQueriesIdList(String userPG) throws SMException, CSObjectNotFoundException
 	{
 
@@ -322,9 +173,10 @@ final public class CsmUtility
 
 
 	/**
-	 * @param userPG
-	 * @return
-	 * @throws SMException
+	 * Returns the List of Protection groups
+	 * @param userPG name of the user protection group
+	 * @return List of Protection groups
+	 * @throws SMException instance of SMException
 	 */
 	private static List<ProtectionGroup> getProtectionGroupByName(String userPG) throws SMException
 	{
@@ -333,9 +185,15 @@ final public class CsmUtility
 		protectionGroup.setProtectionGroupName(userPG);
 		ProtectionGroupSearchCriteria criteria = new ProtectionGroupSearchCriteria(protectionGroup);
 
-		return privUtil.getObjects(criteria);
+		List<ProtectionGroup> groups = privUtil.getObjects(criteria);
+		return groups;
 	}
 
+	/**
+	 * Returns collection of queries ID's.
+	 * @param protectionElements set of ProtectionElements
+	 * @return collection of queries ID's.
+	 */
 	private static Collection<Long> getQueriesIds(Set<ProtectionElement> protectionElements)
 	{
 		Collection<Long> queriesIdList = new ArrayList<Long>();

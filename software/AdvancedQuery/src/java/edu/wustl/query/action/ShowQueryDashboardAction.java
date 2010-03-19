@@ -1,3 +1,4 @@
+
 package edu.wustl.query.action;
 
 import java.text.MessageFormat;
@@ -29,18 +30,13 @@ import edu.wustl.query.bizlogic.DashboardBizLogic;
 import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.util.global.AQConstants;
 
-
 /**
  * The Class ShowQueryDashboardAction.
  * @author nitesh_marwaha
  *
  */
-public class ShowQueryDashboardAction  extends SecureAction
+public class ShowQueryDashboardAction extends SecureAction
 {
-
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.action.SecureAction#executeSecureAction(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
 
 	@Override
 	/**
@@ -51,28 +47,29 @@ public class ShowQueryDashboardAction  extends SecureAction
 	 * @param response response
 	 * @throws Exception Exception
 	 * @return ActionForward actionForward
+	 * @see edu.wustl.common.action.SecureAction#executeSecureAction(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		cleanUpSession(request);
 		ActionForward actionForward = null;
-		if(AbstractEntityCache.isCacheReady)
+		if (AbstractEntityCache.isCacheReady)
 		{
 			DashboardBizLogic dashboardBizLogic = new DashboardBizLogic();
 			String pageOf = (String) request.getParameter(AQConstants.PAGE_OF);
 			SaveQueryForm saveQueryForm = (SaveQueryForm) form;
 			request.setAttribute("queryOption", pageOf);
 
-			SessionDataBean sessionDataBean = (SessionDataBean) request.getSession()
-			.getAttribute(edu.wustl.common.util.global.Constants.SESSION_DATA);
-			if(pageOf ==null)
+			SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
+					edu.wustl.common.util.global.Constants.SESSION_DATA);
+			if (pageOf == null)
 			{
 				pageOf = "allQueries";
 			}
-			Collection<IParameterizedQuery> queries = getQueries(pageOf,sessionDataBean);
+			Collection<IParameterizedQuery> queries = getQueries(pageOf, sessionDataBean);
 
-			if(queries == null)
+			if (queries == null)
 			{
 				saveQueryForm.setParameterizedQueryCollection(new ArrayList<IParameterizedQuery>());
 				queries = new ArrayList<IParameterizedQuery>();
@@ -80,8 +77,8 @@ public class ShowQueryDashboardAction  extends SecureAction
 			else
 			{
 				saveQueryForm.setParameterizedQueryCollection(queries);
-				Map<Long,DashBoardBean> dashBoardDetails = dashboardBizLogic.
-				getDashBoardDetails(queries,sessionDataBean.getUserId().toString());
+				Map<Long, DashBoardBean> dashBoardDetails = dashboardBizLogic.getDashBoardDetails(
+						queries, sessionDataBean.getUserId().toString());
 				saveQueryForm.setDashBoardDetailsMap(dashBoardDetails);
 			}
 			createMessage(request, queries);
@@ -109,7 +106,7 @@ public class ShowQueryDashboardAction  extends SecureAction
 		ActionForward actionForward;
 		ActionErrors errors = new ActionErrors();
 		String errorMessage = ApplicationProperties.getValue("entityCache.error");
-		ActionError error = new ActionError("query.errors.item",errorMessage);
+		ActionError error = new ActionError("query.errors.item", errorMessage);
 		errors.add(ActionErrors.GLOBAL_ERROR, error);
 		saveErrors(request, errors);
 		actionForward = actionMapping.findForward(AQConstants.CACHE_ERROR);
@@ -125,27 +122,27 @@ public class ShowQueryDashboardAction  extends SecureAction
 	 * @return queries collection
 	 * @throws BizLogicException
 	 */
-	private Collection<IParameterizedQuery> getQueries(String pageOf, SessionDataBean sessionDataBean) throws BizLogicException
-			{
+	private Collection<IParameterizedQuery> getQueries(String pageOf,
+			SessionDataBean sessionDataBean) throws BizLogicException
+	{
 		Collection<IParameterizedQuery> queries = new ArrayList<IParameterizedQuery>();
 		String csmUserId = sessionDataBean.getCsmUserId();
 		String userName = sessionDataBean.getUserName();
 		DashboardBizLogic dashboardBizLogic = new DashboardBizLogic();
-		if("allQueries".equals(pageOf))
+		if ("allQueries".equals(pageOf))
 		{
-			queries = dashboardBizLogic.getAllQueries(csmUserId,userName);
+			queries = dashboardBizLogic.getAllQueries(csmUserId, userName);
 		}
-		else if("sharedQueries".equals(pageOf))
+		else if ("sharedQueries".equals(pageOf))
 		{
-			queries = dashboardBizLogic.getSharedQueries(csmUserId,userName);
+			queries = dashboardBizLogic.getSharedQueries(csmUserId, userName);
 		}
-		else if("myQueries".equals(pageOf))
+		else if ("myQueries".equals(pageOf))
 		{
 			queries = dashboardBizLogic.getMyQueries(csmUserId);
 		}
 		return queries;
 	}
-
 
 	/**
 	 * Creates a message to be shown on UI.
@@ -155,16 +152,19 @@ public class ShowQueryDashboardAction  extends SecureAction
 	 *
 	 * @throws BizLogicException exception object
 	 */
-	private void createMessage(HttpServletRequest request,
-		Collection<IParameterizedQuery> queries) throws BizLogicException {
+	private void createMessage(HttpServletRequest request, Collection<IParameterizedQuery> queries)
+			throws BizLogicException
+	{
 		String message = queries.size() + "";
 		ActionMessages actionMessages = new ActionMessages();
 		String action = (String) request.getParameter("actions");
 		String saveQueryMessage = "";
-		if("save".equalsIgnoreCase(action))
+		if ("save".equalsIgnoreCase(action))
 		{
-			IParameterizedQuery query = (IParameterizedQuery)request.getSession().getAttribute(AQConstants.QUERY_OBJECT);
-			saveQueryMessage = MessageFormat.format(ApplicationProperties.getValue("query.saved.success"), query.getName()+" ");
+			IParameterizedQuery query = (IParameterizedQuery) request.getSession().getAttribute(
+					AQConstants.QUERY_OBJECT);
+			saveQueryMessage = MessageFormat.format(ApplicationProperties
+					.getValue("query.saved.success"), query.getName() + " ");
 			ActionMessage actionMessage = new ActionMessage("query.saved.success", saveQueryMessage);
 			actionMessages.add(ActionMessages.GLOBAL_MESSAGE, actionMessage);
 		}

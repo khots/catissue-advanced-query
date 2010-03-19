@@ -14,7 +14,7 @@
 			<tr>
 				<logic:notEmpty scope="session" name="<%=AQConstants.SESSION_DATA%>">
 					<td width="70%" align="right" valign="top" ><a
-						href="QueryWizard.do?access=access" class="white"> 
+						href="QueryWizard.do?access=access" class="white">
 						<img
 						src="images/advQuery/uIEnhancementImages/ic_report.gif" name="Image1"
 						width="15" height="12" id="Image1" hspace="2" vspace="0"/>
@@ -23,7 +23,7 @@
 				</logic:notEmpty>
 				<logic:notEmpty scope="session" name="<%=AQConstants.SESSION_DATA%>">
 					<td width="16%" align="right" valign="top" ><a
-						href="RetrieveQueryAction.do?access=access" class="white"> 
+						href="ShowQueryDashboardAction.do?access=access" class="white">
 						<img
 						src="images/advQuery/uIEnhancementImages/ic_report.gif" name="Image1"
 						width="15" height="12" id="Image1" hspace="2" vspace="0"/>

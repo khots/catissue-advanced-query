@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.logger.LoggerConfig;
@@ -18,7 +17,6 @@ import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.dao.util.DAOUtility;
-import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.beans.DashBoardBean;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.UserCache;
@@ -33,7 +31,6 @@ import gov.nih.nci.security.authorization.domainobjects.ProtectionElement;
 import gov.nih.nci.security.authorization.domainobjects.ProtectionGroup;
 import gov.nih.nci.security.authorization.domainobjects.Role;
 import gov.nih.nci.security.authorization.domainobjects.User;
-import gov.nih.nci.security.exceptions.CSException;
 import gov.nih.nci.security.exceptions.CSObjectNotFoundException;
 
 /**
@@ -46,17 +43,6 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 
 	private static final org.apache.log4j.Logger LOGGER = LoggerConfig
 	.getConfiguredLogger(DashboardBizLogic.class);
-	/**
-	 * Sets dash board queries.
-	 * @param sessionDataBean A data bean that contains information related to user logged in.
-	 * @param saveQueryForm SaveQueryForm object.
-	 * @throws BizLogicException BizLogicException
-	 */
-	public void setQueriesToDashboard(
-			SessionDataBean sessionDataBean, SaveQueryForm saveQueryForm) throws BizLogicException
-	{
-		setDashboardQueries(sessionDataBean,saveQueryForm);
-	}
 
 	/**
 	 * This method gives the last 'executed on' , rootEntityName, and Count of root records
@@ -178,8 +164,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		bean.setCountOfRootRecords(naStr);
 		bean.setExecutedOn(naStr);
 		bean.setRootEntityName(naStr);
-		User user = getQueryOwner(parameterizedQuery.getId().toString());//UserCache.getUser(parameterizedQuery.getId().toString());
-		//getQueryOwner(parameterizedQuery.getId().toString());
+		User user = getQueryOwner(parameterizedQuery.getId().toString());
 		if(user == null)
 		{
 			bean.setOwnerName(naStr);
@@ -240,8 +225,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		bean.setQuery(pQuery);
 		bean.setCountOfRootRecords(cntOfRootRecs);
 
-		User user =getQueryOwner(pQuery.getId().toString());//UserCache.getUser(pQuery.getId().toString());
-			//getQueryOwner(pQuery.getId().toString());
+		User user =getQueryOwner(pQuery.getId().toString());
 		String ownerName = user.getLastName() + "," + user.getFirstName();
 		bean.setOwnerName(ownerName);
 		dashBoardMap.put(pQuery.getId(), bean);
@@ -424,58 +408,6 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	}
 
 	/**
-	 * Sets the queries to dash board.
-	 * @param sessionDataBean session data bean
-	 * @param saveQueryForm form
-	 * @throws BizLogicException  exception
-	 */
-	public void setDashboardQueries(SessionDataBean sessionDataBean,
-			SaveQueryForm saveQueryForm) throws BizLogicException
-	{
-		String queryNameLike="";
-		Collection<IParameterizedQuery> myQueryCollection = new ArrayList<IParameterizedQuery>();
-		Collection<IParameterizedQuery> sharedQueryColl = new ArrayList<IParameterizedQuery>();
-		try
-		{
-			CsmUtility.checkExecuteQueryPrivilege(myQueryCollection, sharedQueryColl,
-					sessionDataBean,queryNameLike);
-
-			setQueryCollectionForm(saveQueryForm, myQueryCollection, sharedQueryColl);
-			boolean isSuperAdminUser = ifSuperAdminUser(sessionDataBean.getCsmUserId());
-			setAllQueriesForSuperAdmin(saveQueryForm, isSuperAdminUser);
-		}
-		catch (CSObjectNotFoundException e)
-		{
-			throw new BizLogicException(null,e,AQConstants.DASHBOARD_ERROR);
-		}
-		catch (DAOException e)
-		{
-			throw new BizLogicException(null,e,AQConstants.DASHBOARD_ERROR);
-		}
-		catch (SMException e)
-		{
-			throw new BizLogicException(null,e,AQConstants.DASHBOARD_ERROR);
-		}
-		catch (CSException e)
-		{
-			throw new BizLogicException(null,e,AQConstants.DASHBOARD_ERROR);
-		}
-	}
-
-	/**
-	 * @param saveQueryForm form
-	 * @param isSuperAdminUser isSuperAdmin
-	 * @throws DAOException DAOException
-	 */
-	private void setAllQueriesForSuperAdmin(SaveQueryForm saveQueryForm,
-			boolean isSuperAdminUser) throws DAOException
-	{
-		if(isSuperAdminUser)
-		{
-			saveQueryForm.setAllQueries(getAllQueriesForUpgrade());
-		}
-	}
-	/**
 	 * Returns true if the passes user is super-administrator.
 	 * @param csmUserId user id
 	 * @return true/false
@@ -499,61 +431,6 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		}
 		return isSuperAdmin;
 	}
-	/**
-	 * Sets data into form.
-	 * @param saveQueryForm form bean
-	 * @param myQueryCollection myQueryCollection
-	 * @param sharedQueryColl sharedQueryCollection
-	 * @throws BizLogicException BizLogicException
-	 */
-	private void setQueryCollectionForm(SaveQueryForm saveQueryForm,
-			Collection<IParameterizedQuery> myQueryCollection,
-			Collection<IParameterizedQuery> sharedQueryColl) throws BizLogicException
-	{
-		saveQueryForm.setMyQueries(myQueryCollection);
-		Collection<Long> allIds = new ArrayList<Long>();
-
-		Collection<IParameterizedQuery> allQueries = new ArrayList<IParameterizedQuery>();
-		allQueries.addAll(myQueryCollection);
-		allQueries.addAll(sharedQueryColl);
-		populateQueryIds(allIds, allQueries);
-//		CsmUtility util = new CsmUtility();
-		try
-		{
-			Collection<IParameterizedQuery> sortedAllQueries = CsmUtility.retrieveQueries(allIds, "");
-			saveQueryForm.setAllQueries(sortedAllQueries);
-			List<Long> sharedQueryIds = new ArrayList<Long>();
-			if(sortedAllQueries != null)
-			{
-				for (IParameterizedQuery query : sortedAllQueries)
-				{
-					populateSharedQueryIds(myQueryCollection, sharedQueryIds,
-							query);
-				}
-			}
-			saveQueryForm.setSharedQueries(CsmUtility.retrieveQueries(sharedQueryIds, ""));
-		}
-		catch (DAOException e)
-		{
-			throw new BizLogicException(e);
-		}
-	}
-
-	/**
-	 * @param myQueryCollection collection of my queries
-	 * @param sharedQueryIds list of shared query identifiers
-	 * @param query query
-	 */
-	private void populateSharedQueryIds(
-			Collection<IParameterizedQuery> myQueryCollection,
-			List<Long> sharedQueryIds, IParameterizedQuery query)
-	{
-		boolean found = isQueryFound(myQueryCollection, query);
-		if(!found && !sharedQueryIds.contains(query.getId()))
-		{
-			sharedQueryIds.add(query.getId());
-		}
-	}
 
 	/**
 	 * @param myQueryCollection collection of my queries
@@ -576,42 +453,6 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		return found;
 	}
 
-	/**
-	 * @param allIds all identifiers of queries
-	 * @param allQueries collection of all queries
-	 */
-	private void populateQueryIds(Collection<Long> allIds,
-			Collection<IParameterizedQuery> allQueries)
-	{
-		if(allQueries != null)
-		{
-			for (IParameterizedQuery parameterizedQuery : allQueries)
-			{
-				allIds.add(parameterizedQuery.getId());
-			}
-		}
-	}
-	/**
-	 * Returns shared queries : All Queries - My Queries.
-	 * @param myQueries List of my queries
-	 * @return Shared Queries list
-	 * @throws DAOException DAOException
-	 */
-	public Collection<IParameterizedQuery> getSharedQueries(
-			Collection<IParameterizedQuery> myQueries) throws DAOException
-	{
-		Collection<IParameterizedQuery> allQueries = getAllQueries();
-		Set<IParameterizedQuery> sharedQueries = new HashSet<IParameterizedQuery>();
-		for (IParameterizedQuery query : allQueries)
-		{
-			boolean found = isQueryFound(myQueries, query);
-			if(!found)
-			{
-				sharedQueries.add(query);
-			}
-		}
-		return sharedQueries;
-	}
 	/**
 	 * Returns date in format specified.
 	 * @param executedOnTime string data

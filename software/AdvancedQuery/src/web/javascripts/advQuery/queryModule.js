@@ -404,24 +404,24 @@
 		{
 			if(document.getElementById(queryOptionId).value == "AllQueries")
 			{
-				document.forms['saveQueryForm'].action="RetrieveQueryAction.do?pageOf=allQueries";
+				document.forms['saveQueryForm'].action="ShowQueryDashboardAction.do?pageOf=allQueries";
 				document.forms['saveQueryForm'].submit();
 			}
 			else if (document.getElementById(queryOptionId).value == "MyQueries")
 			{
 				document.getElementById(queryOptionId).selected = true;
-				document.forms['saveQueryForm'].action="RetrieveQueryAction.do?pageOf=myQueries";
+				document.forms['saveQueryForm'].action="ShowQueryDashboardAction.do?pageOf=myQueries";
 				document.forms['saveQueryForm'].submit();
 			}
 			else if (document.getElementById(queryOptionId).value == "SharedQueries")
 			{
 				document.getElementById(queryOptionId).selected = true;
-				document.forms['saveQueryForm'].action="RetrieveQueryAction.do?pageOf=sharedQueries";
+				document.forms['saveQueryForm'].action="ShowQueryDashboardAction.do?pageOf=sharedQueries";
 				document.forms['saveQueryForm'].submit();
 			}
 			else
 			{
-				document.forms['saveQueryForm'].action="RetrieveQueryAction.do?pageOf=myQueries";
+				document.forms['saveQueryForm'].action="ShowQueryDashboardAction.do?pageOf=myQueries";
 				document.forms['saveQueryForm'].submit();
 			}
 
@@ -1553,7 +1553,7 @@ var jsReady = false;
 	}
 	function showdashboard()
 	{
-		document.forms['saveQueryForm'].action="RetrieveQueryAction.do?pageOf=myQueries";
+		document.forms['saveQueryForm'].action="ShowQueryDashboardAction.do?pageOf=myQueries";
 		document.forms['saveQueryForm'].submit();
 	}
 	function userSelected()
