@@ -351,20 +351,40 @@ public class QueryCsmCacheManager
 		Long hookEntityId = getAssociationDetails(mainEntityId, originalEntity,
 				hookEntity,queryResultObjectDataBean.getMainEntity());
   	   String sql = mainProtObjFile.getProperty(hookEntity.getName());
-  	   if(sql == null)
-  	   {
-  		 entityId = hookEntityId;
-  	   }
-  	   else
-  	   {
-  		   sql = sql + hookEntityId;
-		   List<Long> allMainObjectIds = (List<Long>)hibernateDAO.executeQuery(sql);
-		   if(!allMainObjectIds.isEmpty())
-		   {
-			   entityId = allMainObjectIds.get(0).longValue();
-		   }
-  	   }
+  	   entityId = getEntityId(hibernateDAO, entityId, hookEntityId, sql);
   	   return entityId;
+	}
+
+	/**
+	 * @param hibernateDAO hibernateDAO
+	 * @param tempEntityId tempEntityId
+	 * @param hookEntityId hookEntityId
+	 * @param tempSql tempSql
+	 * @return entityId
+	 * @throws DAOException DAOException
+	 */
+	private long getEntityId(HibernateDAO hibernateDAO, long tempEntityId,
+			Long hookEntityId, String tempSql) throws DAOException
+	{
+		String sql = tempSql;
+		long entityId = tempEntityId;
+		if(hookEntityId != null)
+		   {
+		  	   if(sql == null)
+		  	   {
+		  		 entityId = hookEntityId;
+		  	   }
+		  	   else
+		  	   {
+		  		   sql = sql + hookEntityId;
+				   List<Long> allMainObjectIds = (List<Long>)hibernateDAO.executeQuery(sql);
+				   if(!allMainObjectIds.isEmpty())
+				   {
+					   entityId = allMainObjectIds.get(0).longValue();
+				   }
+		  	   }
+		   }
+		return entityId;
 	}
 
 	/**
@@ -433,6 +453,45 @@ public class QueryCsmCacheManager
 			EntityInterface hookEntity, EntityInterface csmEntity) throws DAOException, SQLException
 	{
 		String sql;
+		Long hookEntityId = null;
+		AssociationInterface association = getAppropriateAssociation(
+				originalEntity, hookEntity, csmEntity);
+		if(association != null)
+		{
+			String tableName = association.getConstraintProperties().getName();
+			Collection<ConstraintKeyPropertiesInterface> tgrKeyColl =
+			association.getConstraintProperties().getTgtEntityConstraintKeyPropertiesCollection();
+			String columnName = null;
+			for(ConstraintKeyPropertiesInterface tgtConstraintKey : tgrKeyColl)
+			{
+				ColumnPropertiesInterface colProperties =
+					tgtConstraintKey.getTgtForiegnKeyColumnProperties();
+				columnName = colProperties.getName();
+				break;
+			}
+	  	   	sql = "SELECT "+columnName+" FROM "+tableName+" WHERE IDENTIFIER = ?";
+	  	   	LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
+	  	   	ColumnValueBean bean = new ColumnValueBean("mainEntityId",Integer.valueOf(mainEntityId));
+	  	   	columnValueBean.add(bean);
+	  	   	ResultSet resultSet = jdbcDAO.getResultSet(sql, columnValueBean,null);
+	  	   	Long foreignKey = null;
+	  	   	hookEntityId = getHookEntity(resultSet, foreignKey);
+		}
+		return hookEntityId;
+	}
+
+	/**
+	 * @param originalEntity originalEntity
+	 * @param hookEntity hookEntity
+	 * @param csmEntity csmEntity
+	 * @return association
+	 * @throws DAOException DAOException
+	 * @throws SQLException SQLException
+	 */
+	private AssociationInterface getAppropriateAssociation(
+			EntityInterface originalEntity, EntityInterface hookEntity,
+			EntityInterface csmEntity) throws DAOException, SQLException
+	{
 		AssociationInterface association = getActualAssociation(originalEntity, hookEntity);
 		if(association == null)
 		{
@@ -443,24 +502,7 @@ public class QueryCsmCacheManager
 			association = getMainContainerAssociation(originalEntity,
 					hookEntity);
 		}
-		String tableName = association.getConstraintProperties().getName();
-		Collection<ConstraintKeyPropertiesInterface> tgrKeyColl =
-		association.getConstraintProperties().getTgtEntityConstraintKeyPropertiesCollection();
-		String columnName = null;
-		for(ConstraintKeyPropertiesInterface tgtConstraintKey : tgrKeyColl)
-		{
-			ColumnPropertiesInterface colProperties =
-				tgtConstraintKey.getTgtForiegnKeyColumnProperties();
-			columnName = colProperties.getName();
-			break;
-		}
-  	   sql = "SELECT "+columnName+" FROM "+tableName+" WHERE IDENTIFIER = ?";
-  	   LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
-	   ColumnValueBean bean = new ColumnValueBean("mainEntityId",Integer.valueOf(mainEntityId));
-	   columnValueBean.add(bean);
-  	   ResultSet resultSet = jdbcDAO.getResultSet(sql, columnValueBean,null);
-  	   Long foreignKey = null;
-  	   return getHookEntity(resultSet, foreignKey);
+		return association;
 	}
 
 	/**
@@ -503,14 +545,13 @@ public class QueryCsmCacheManager
 			EntityInterface originalEntity, EntityInterface hookEntity)
 			throws DAOException, SQLException
 	{
-		AssociationInterface association;
+		AssociationInterface association = null;
 		String pathSql = "SELECT INTERMEDIATE_PATH FROM PATH WHERE FIRST_ENTITY_ID =" +
-		" (SELECT IDENTIFIER FROM DYEXTN_ABSTRACT_METADATA WHERE NAME = ?) AND LAST_ENTITY_ID =" +
-		" (SELECT IDENTIFIER FROM DYEXTN_ABSTRACT_METADATA WHERE NAME = ?)";
+		" (SELECT IDENTIFIER FROM DYEXTN_ABSTRACT_METADATA WHERE NAME = ?) AND LAST_ENTITY_ID =?";
 		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
 		ColumnValueBean bean = new ColumnValueBean("hookEntityName",hookEntity.getName());
 		columnValueBean.add(bean);
-		bean = new ColumnValueBean("originalEntityName",originalEntity.getName());
+		bean = new ColumnValueBean("originalEntityName",originalEntity.getId());
 		columnValueBean.add(bean);
 		ResultSet resultSet1 = jdbcDAO.getResultSet(pathSql, columnValueBean, null);
 		String intermediatePath = "";
@@ -519,6 +560,29 @@ public class QueryCsmCacheManager
 			intermediatePath = resultSet1.getString(1);
 			intermediatePath = intermediatePath.substring(0, intermediatePath.indexOf('_'));
 		}
+		if(intermediatePath != null && intermediatePath.length() != 0)
+		{
+			association = getHookEntityAssociation(hookEntity, intermediatePath);
+		}
+		return association;
+	}
+
+	/**
+	 * @param hookEntity hookEntity
+	 * @param intermediatePath intermediatePath
+	 * @return association
+	 * @throws DAOException DAOException
+	 * @throws SQLException SQLException
+	 */
+	private AssociationInterface getHookEntityAssociation(
+			EntityInterface hookEntity, String intermediatePath)
+			throws DAOException, SQLException
+	{
+		AssociationInterface association;
+		String pathSql;
+		LinkedList<ColumnValueBean> columnValueBean;
+		ColumnValueBean bean;
+		ResultSet resultSet1;
 		pathSql = "SELECT DE_ASSOCIATION_ID FROM INTRA_MODEL_ASSOCIATION WHERE ASSOCIATION_ID = ?";
 		columnValueBean = new LinkedList<ColumnValueBean>();
 		bean = new ColumnValueBean("intermediatePath",intermediatePath);
