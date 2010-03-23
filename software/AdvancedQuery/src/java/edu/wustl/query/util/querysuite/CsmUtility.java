@@ -156,18 +156,21 @@ final public class CsmUtility
 	 */
 	public static Collection<Long> getQueriesIdList(String userPG) throws SMException, CSObjectNotFoundException
 	{
-
+		Collection<Long> queriesIdList = new ArrayList<Long>();
 		ProtectionGroup protectionGroup;
 		List<ProtectionGroup> groups = getProtectionGroupByName(userPG);
-		protectionGroup= groups.get(0);
-		Set<ProtectionElement> protectionElements = null;
-		PrivilegeUtility utility = new PrivilegeUtility();
-		UserProvisioningManager manager;
-
+		if(!groups.isEmpty())
+		{
+			protectionGroup= groups.get(0);
+			Set<ProtectionElement> protectionElements = null;
+			PrivilegeUtility utility = new PrivilegeUtility();
+			UserProvisioningManager manager;
 			manager = utility.getUserProvisioningManager();
 			protectionElements = manager.getProtectionElements(protectionGroup.getProtectionGroupId().toString());
 
-		return getQueriesIds(protectionElements);
+			queriesIdList = getQueriesIds(protectionElements);
+		}
+		return queriesIdList;
 	}
 
 
