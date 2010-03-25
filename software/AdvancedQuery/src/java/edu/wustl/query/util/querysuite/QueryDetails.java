@@ -13,6 +13,7 @@ import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.query.util.global.AQConstants;
 
@@ -35,6 +36,7 @@ public class QueryDetails
 	private IQuery query;
 	private long auditEventId;
 	private LinkedList<ColumnValueBean> columnValueBean;
+	private String sqlForDefineView;
 
 	//private HttpSession session;
 
@@ -59,6 +61,10 @@ public class QueryDetails
 		if(session.getAttribute("AUDIT_EVENT_ID") != null)
 		{
 			auditEventId =(Long) session.getAttribute("AUDIT_EVENT_ID");
+		}
+		if(session.getAttribute(AQConstants.QUERY_SESSION_DATA) != null)
+		{
+			sqlForDefineView = ((QuerySessionData) session.getAttribute(AQConstants.QUERY_SESSION_DATA)).getSql();
 		}
 	}
 
@@ -222,6 +228,22 @@ public class QueryDetails
 	public void setColumnValueBean(LinkedList<ColumnValueBean> columnValueBean)
 	{
 		this.columnValueBean = columnValueBean;
+	}
+
+	/**
+	 * @param sqlForDefineView the sqlForDefineView to set
+	 */
+	public void setSqlForDefineView(String sqlForDefineView)
+	{
+		this.sqlForDefineView = sqlForDefineView;
+	}
+
+	/**
+	 * @return the sqlForDefineView
+	 */
+	public String getSqlForDefineView()
+	{
+		return sqlForDefineView;
 	}
 
 }

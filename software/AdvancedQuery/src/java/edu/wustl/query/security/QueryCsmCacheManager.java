@@ -175,12 +175,22 @@ public class QueryCsmCacheManager
 		int entityId = mainEntityId;
 		if (queryResultObjectDataBean.getMainEntityIdentifierColumnId() != -1)
 		{
-			String tempEntityId = (String) aList.get
-			(queryResultObjectDataBean.getMainEntityIdentifierColumnId());
-			if(tempEntityId != null && tempEntityId.length() != 0)
+			Map<EntityInterface,List<List<String>>> map = queryResultObjectDataBean.getEntityMainIdListMap();
+			List<List<String>> mainEntityIds = map.get(queryResultObjectDataBean.getEntity());
+			if(mainEntityIds == null)
 			{
-				entityId = Integer.parseInt((String) aList.get
-					(queryResultObjectDataBean.getMainEntityIdentifierColumnId()));
+				String tempEntityId = (String) aList.get
+				(queryResultObjectDataBean.getMainEntityIdentifierColumnId());
+				if(tempEntityId != null && tempEntityId.length() != 0)
+				{
+					entityId = Integer.parseInt((String) aList.get
+						(queryResultObjectDataBean.getMainEntityIdentifierColumnId()));
+				}
+			}
+			else
+			{
+				String value = mainEntityIds.get(0).get(0);
+				entityId = Integer.parseInt(value);
 			}
 		}
 		return entityId;
@@ -265,7 +275,7 @@ public class QueryCsmCacheManager
 		    {
 		       Properties mainProtObjFile = new Properties();
 		       mainProtObjFile.load(new FileInputStream(file));
-		       String sql = mainProtObjFile.getProperty(queryResultObjectDataBean.getEntity().getName());
+		       StringBuffer sql = new StringBuffer(mainProtObjFile.getProperty(queryResultObjectDataBean.getEntity().getName()));
 		       hibernateDAO = DAOUtil.getHibernateDAO(null);
 		       if(sql == null)
 		       {
@@ -274,11 +284,11 @@ public class QueryCsmCacheManager
 		       }
 		       else
 		       {
-		    	   sql = sql + mainEntityId;
+		    	   sql.append(mainEntityId);
 		    	   List<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
 		    	   ColumnValueBean bean = new ColumnValueBean("mainEntityId",Integer.valueOf(mainEntityId));
 		    	   columnValueBean.add(bean);
-		    	   List<Long> allMainObjectIds = (List<Long>)hibernateDAO.executeQuery(sql);
+		    	   List<Long> allMainObjectIds = (List<Long>)hibernateDAO.executeQuery(sql.toString());
 		    	   if(!allMainObjectIds.isEmpty())
 		    	   {
 		    		   entityId = allMainObjectIds.get(0).longValue();
@@ -366,7 +376,7 @@ public class QueryCsmCacheManager
 	private long getEntityId(HibernateDAO hibernateDAO, long tempEntityId,
 			Long hookEntityId, String tempSql) throws DAOException
 	{
-		String sql = tempSql;
+		StringBuffer sql = new StringBuffer(tempSql);
 		long entityId = tempEntityId;
 		if(hookEntityId != null)
 		   {
@@ -376,8 +386,8 @@ public class QueryCsmCacheManager
 		  	   }
 		  	   else
 		  	   {
-		  		   sql = sql + hookEntityId;
-				   List<Long> allMainObjectIds = (List<Long>)hibernateDAO.executeQuery(sql);
+		  		   sql.append(hookEntityId);
+				   List<Long> allMainObjectIds = (List<Long>)hibernateDAO.executeQuery(sql.toString());
 				   if(!allMainObjectIds.isEmpty())
 				   {
 					   entityId = allMainObjectIds.get(0).longValue();
@@ -514,8 +524,9 @@ public class QueryCsmCacheManager
 	 * @throws DAOException DAOException
 	 */
 	private Long getHookEntity(ResultSet resultSet,
-			Long foreignKey) throws SQLException, DAOException
+			Long tempForeignKey) throws SQLException, DAOException
 	{
+		Long foreignKey = tempForeignKey;
 		Long hookEntityId = null;
 		if(resultSet != null)
 		   {
@@ -1070,7 +1081,7 @@ public class QueryCsmCacheManager
 	 */
 	private List<List<String>> getCpIdsListForGivenEntityId(String entityName, long entityId)
 	{
-		String sql = Variables.entityCPSqlMap.get(entityName);
+		StringBuffer sql = new StringBuffer(Variables.entityCPSqlMap.get(entityName));
 		List<List<String>> cpIdsList = new ArrayList<List<String>>();
 		if (entityName.equals(Variables.mainProtocolObject))
 		{
@@ -1080,13 +1091,13 @@ public class QueryCsmCacheManager
 		}
 		else if (sql != null)
 		{
-			sql = sql + " ?";
+			sql.append(" ?");
 			LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
 			ColumnValueBean bean = new ColumnValueBean("entityId",Long.valueOf(entityId));
 			columnValueBean.add(bean);
 			try
 			{
-				cpIdsList = executeQuery(sql,columnValueBean);
+				cpIdsList = executeQuery(sql.toString(),columnValueBean);
 			}
 			catch (Exception e)
 			{

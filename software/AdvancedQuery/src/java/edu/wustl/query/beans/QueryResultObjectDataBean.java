@@ -59,6 +59,7 @@ public class QueryResultObjectDataBean implements QueryDataBean
 	/* this map will have the key as the index of the file type attribute and value as its metadata*/
 	private Map<Integer, ?extends Object> fileTypeAttrMap = new HashMap<Integer, Object>();
 
+	private Map<EntityInterface,List<List<String>>> entityMainIdListMap = new HashMap<EntityInterface, List<List<String>>>();
 	/*
 	 *
 	 */
@@ -302,5 +303,21 @@ public class QueryResultObjectDataBean implements QueryDataBean
 	public void setTqColumnMetadataList(List tqColumnMetadataList)
 	{
 		this.tqColumnMetadataList = tqColumnMetadataList;
+	}
+
+	/**
+	 * @param entityMainIdListMap the entityMainIdListMap to set
+	 */
+	public void setEntityMainIdListMap(Map<EntityInterface,List<List<String>>> entityMainIdListMap)
+	{
+		this.entityMainIdListMap = entityMainIdListMap;
+	}
+
+	/**
+	 * @return the entityMainIdListMap
+	 */
+	public Map<EntityInterface,List<List<String>>> getEntityMainIdListMap()
+	{
+		return entityMainIdListMap;
 	}
 }
