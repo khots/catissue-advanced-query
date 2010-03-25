@@ -188,8 +188,7 @@ final public class CsmUtility
 		protectionGroup.setProtectionGroupName(userPG);
 		ProtectionGroupSearchCriteria criteria = new ProtectionGroupSearchCriteria(protectionGroup);
 
-		List<ProtectionGroup> groups = privUtil.getObjects(criteria);
-		return groups;
+		return privUtil.getObjects(criteria);
 	}
 
 	/**

@@ -18,7 +18,7 @@ import gov.nih.nci.security.authorization.domainobjects.User;
  * @author nitesh_marwaha
  *
  */
-public class UserCache
+public final class UserCache
 {
 
 	/**
@@ -38,7 +38,7 @@ public class UserCache
 
 
 	/** Map containing all the user names. */
-    private static final Map<String, User> userMap = new HashMap<String, User>();
+    private static final Map<String, User> USER_MAP = new HashMap<String, User>();
 
     /**
      * This method inits the cache by calling methods to put the users names
@@ -60,7 +60,7 @@ public class UserCache
             {
                 for (final User user : userList)
                 {
-                	userMap.put(user.getUserId().toString(), user);
+                	USER_MAP.put(user.getUserId().toString(), user);
                 }
             }
 		}
@@ -73,7 +73,7 @@ public class UserCache
 
 	public static User getUser(String userId) throws BizLogicException
 	{
-		User user=userMap.get(userId);
+		User user=USER_MAP.get(userId);
 			if(user == null)
 			{
 				//Retrieve the user name and set to map
@@ -91,7 +91,7 @@ public class UserCache
 	{
 		SaveQueryBizLogic bizLogic = new SaveQueryBizLogic();
 		User user=bizLogic.getUserById(userId);
-		userMap.put(userId, user);
+		USER_MAP.put(userId, user);
 		return user;
 	}
 }

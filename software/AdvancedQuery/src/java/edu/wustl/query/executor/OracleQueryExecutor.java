@@ -90,7 +90,7 @@ public class OracleQueryExecutor extends AbstractQueryExecutor
 	 */
 	protected String putPageNumInSQL(String sql, int startIndex, int noOfRecords)
 	{
-		StringBuffer newSql = new StringBuffer();
+		StringBuffer newSql = new StringBuffer(80);
 		/*if (Variables.databaseName.equals(AQConstants.MYSQL_DATABASE))
 		{
 			// Add limit clause for the MYSQL case
