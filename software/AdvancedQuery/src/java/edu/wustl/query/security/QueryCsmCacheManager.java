@@ -275,7 +275,8 @@ public class QueryCsmCacheManager
 		    {
 		       Properties mainProtObjFile = new Properties();
 		       mainProtObjFile.load(new FileInputStream(file));
-		       StringBuffer sql = new StringBuffer(mainProtObjFile.getProperty(queryResultObjectDataBean.getEntity().getName()));
+		       String sqlQuery = mainProtObjFile.getProperty(queryResultObjectDataBean.getEntity().getName());
+		       StringBuffer sql=getSql(sqlQuery);
 		       hibernateDAO = DAOUtil.getHibernateDAO(null);
 		       if(sql == null)
 		       {
@@ -376,7 +377,7 @@ public class QueryCsmCacheManager
 	private long getEntityId(HibernateDAO hibernateDAO, long tempEntityId,
 			Long hookEntityId, String tempSql) throws DAOException
 	{
-		StringBuffer sql = new StringBuffer(tempSql);
+		StringBuffer sql = getSql(tempSql);
 		long entityId = tempEntityId;
 		if(hookEntityId != null)
 		   {
@@ -395,6 +396,20 @@ public class QueryCsmCacheManager
 		  	   }
 		   }
 		return entityId;
+	}
+
+	/**
+	 * @param tempSql tempSql
+	 * @return sql
+	 */
+	private StringBuffer getSql(String tempSql)
+	{
+		StringBuffer sql = null;
+		if(tempSql != null)
+		{
+			sql = new StringBuffer(tempSql);
+		}
+		return sql;
 	}
 
 	/**
@@ -1081,7 +1096,8 @@ public class QueryCsmCacheManager
 	 */
 	private List<List<String>> getCpIdsListForGivenEntityId(String entityName, long entityId)
 	{
-		StringBuffer sql = new StringBuffer(Variables.entityCPSqlMap.get(entityName));
+		String sqlQuery = Variables.entityCPSqlMap.get(entityName);
+		StringBuffer sql = getSql(sqlQuery);
 		List<List<String>> cpIdsList = new ArrayList<List<String>>();
 		if (entityName.equals(Variables.mainProtocolObject))
 		{
