@@ -29,6 +29,7 @@ import edu.wustl.query.htmlprovider.GenerateHtmlTestCase;
 import edu.wustl.query.htmlprovider.HtmlProviderTestCase;
 import edu.wustl.query.htmlprovider.ParseXMLFileTestCase;
 import edu.wustl.query.htmlprovider.SavedQueryHtmlProviderTestCase;
+import edu.wustl.query.security.QueryCsmCacheManagerTestCase;
 
 /**
  * @author prafull_kadam
@@ -68,6 +69,7 @@ public class TestAll
 		suite.addTestSuite(DefaultQueryBizLogicTestCase.class);
 		suite.addTestSuite(ShareQueryBizLogicTestCase.class);
 		suite.addTestSuite(DefineGridViewBizLogicTestCase.class);
+		suite.addTestSuite(QueryCsmCacheManagerTestCase.class);
 		return suite;
 	}
 }
