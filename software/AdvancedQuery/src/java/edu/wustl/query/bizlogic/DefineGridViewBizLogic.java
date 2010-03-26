@@ -438,8 +438,8 @@ public class DefineGridViewBizLogic
 	public String createSQLForSelectedColumn(String columnsInSql, String sql)
 	{
 		//String columnsInSql = selectedColumnNames.toString();
-		int indexOfSelectDistict = sql.indexOf(AQConstants.SELECT_DISTINCT);
-		int selectDistictLength = AQConstants.SELECT_DISTINCT.length();
+		int indexOfSelectDistict = sql.indexOf("select");
+		int selectDistictLength = "select".length();
 		int indexOfFrom = sql.indexOf(AQConstants.FROM);
 		StringBuffer newSql = new StringBuffer();
 		newSql.append(sql.substring(indexOfSelectDistict, selectDistictLength));

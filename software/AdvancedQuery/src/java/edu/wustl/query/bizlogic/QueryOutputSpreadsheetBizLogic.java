@@ -461,7 +461,7 @@ public class QueryOutputSpreadsheetBizLogic
 			}
 			queryResultObjectDataBean.setObjectColumnIds(objectDataColumnIds);
 		}
-		if (selectSql.indexOf(AQConstants.SELECT_DISTINCT) == -1)
+		if (selectSql.indexOf(AQConstants.SELECT_DISTINCT) == -1 && !selectedColumnMetaData.isDefinedView())
 		{
 			selectSql = AQConstants.SELECT_DISTINCT + selectSql;
 		}
@@ -836,7 +836,7 @@ public class QueryOutputSpreadsheetBizLogic
 				setMainEntityColumnIdentifier(tqColumnList, entityIdIndexMap,
 						iterator);
 			}
-			selectSql = AQConstants.SELECT_DISTINCT + columnsInSql;
+			selectSql = "select " + columnsInSql;
 		}
 		spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 		return selectSql;
@@ -855,16 +855,8 @@ public class QueryOutputSpreadsheetBizLogic
 		element.setTqColumnMetadataList(tqColumnList);
 		if (element.getMainEntityIdentifierColumnId() == -1)
 		{
-			if (!element.isMainEntity())
-			{
-				element.setMainEntityIdentifierColumnId(entityIdIndexMap.get(element
-						.getMainEntity()));
-			}
-			else
-			{
-				element.setMainEntityIdentifierColumnId(entityIdIndexMap.get(element
-								.getEntity()));
-			}
+			element.setMainEntityIdentifierColumnId(entityIdIndexMap.get(element
+					.getEntity()));
 		}
 	}
 
