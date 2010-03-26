@@ -110,5 +110,15 @@ public class QueryCsmCacheManagerTestCase extends TestCase
         aList.add("Aravind");
 
         cacheManager.filterRow(sessionData, queryResultObjectDataBeanMap, aList, cache);
+
+        cache.addNewObjectInReadPrivilegeMap(Long.valueOf(2), true);
+        Boolean isReadDenied = cache.isReadDenied(Long.valueOf(2));
+        assertEquals("isReadDenied",Boolean.valueOf(true),isReadDenied);
+        cache.removeObjectFromReadPrivilegeMap(Long.valueOf(2));
+
+        cache.addNewObjectInIdentifiedDataAccsessMap(Long.valueOf(2), true);
+        Boolean hasHidentifiedAccess = cache.isIdentifedDataAccess(Long.valueOf(2));
+        assertEquals("hasHidentifiedAccess",Boolean.valueOf(true),hasHidentifiedAccess);
+        cache.removeObjectFromIdentifiedDataAccsessMap(Long.valueOf(2));
 	}
 }
