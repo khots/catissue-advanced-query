@@ -302,13 +302,18 @@ public class SavedQueryAuthorization
 	public Set<User> getSharedUsers(ParameterizedQuery query)
 	throws SMException, CSObjectNotFoundException
 	{
+		Set<User> sharedUsers = new HashSet<User>();
 		PrivilegeUtility privilegeUtility = new PrivilegeUtility();
 		ProtectionElement protectionElement =
 		getProtectionElementForQuery(query, privilegeUtility);
-		UserProvisioningManager upManager =
-		privilegeUtility.getUserProvisioningManager();
-		return upManager.getOwners
-		(protectionElement.getProtectionElementId().toString());
+		if(protectionElement.getProtectionElementId() != null)
+		{
+			UserProvisioningManager upManager =
+			privilegeUtility.getUserProvisioningManager();
+			sharedUsers = upManager.getOwners
+			(protectionElement.getProtectionElementId().toString());
+		}
+		return sharedUsers;
 	}
 
 

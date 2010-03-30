@@ -50,6 +50,8 @@
 		isMyQuery = "false";
 		valueOfchkBox = "false";
 		chkDisabled = true;
+		form.setTitle("");
+		form.setDescription("");
 	}
 	else
 	{
