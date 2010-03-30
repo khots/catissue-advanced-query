@@ -1,7 +1,11 @@
+<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
+<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ page import="java.util.*"%>
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
 <html>
 <body>
+<html:hidden property="showTree" styleId="showTree"/>
 <table border="0"  style="height:100%;width:100%" cellpadding="0" cellspacing="0" valign="top">
 <tr  valign="top" >
 	
