@@ -1369,7 +1369,7 @@ public class DAGPanel
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		HttpSession session = request.getSession();
 		Map<String, CustomFormulaUIBean> tQUIMap = (Map<String, CustomFormulaUIBean>) session
-				.getAttribute(DAGConstant.TQUIMap);
+				.getAttribute(DAGConstant.TQUIMAP);
 		if (tQUIMap != null)
 		{
 			CustomFormulaUIBean uiBean = tQUIMap.get(nodeId);
@@ -1471,7 +1471,7 @@ public class DAGPanel
 		HttpSession session = request.getSession();
 		Map<String, Map<String, JoinFormulaUIBean>> jQUIMap =
 			(Map<String, Map<String, JoinFormulaUIBean>>) session
-				.getAttribute(DAGConstant.JQUIMap);
+				.getAttribute(DAGConstant.JQUIMAP);
 		if (operation.equalsIgnoreCase(AQConstants.EDIT))
 		{
 			populateJoinBeanForEdit(joinQueryNode, srcIExpression, jQUIMap);
@@ -1516,7 +1516,7 @@ public class DAGPanel
 		if (jQUIMap == null)
 		{
 			jQUIMap = new HashMap<String, Map<String, JoinFormulaUIBean>>();
-			session.setAttribute(DAGConstant.JQUIMap, jQUIMap);
+			session.setAttribute(DAGConstant.JQUIMAP, jQUIMap);
 		}
 		jQUIMap.put(joinQueryNode.getName(), jQFormulaMap);
 	}
@@ -1578,7 +1578,7 @@ public class DAGPanel
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		HttpSession session = request.getSession();
 		Map<String, CustomFormulaUIBean> tQUIMap = (Map<String, CustomFormulaUIBean>) session
-				.getAttribute(DAGConstant.TQUIMap);
+				.getAttribute(DAGConstant.TQUIMAP);
 		if (tQUIMap != null)
 		{
 			CustomFormulaUIBean uiBean = tQUIMap.get(nodeId);
@@ -1764,11 +1764,11 @@ public class DAGPanel
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		HttpSession session = request.getSession();
 		Map<String, CustomFormulaUIBean> tQUIMap = (Map<String, CustomFormulaUIBean>) session
-				.getAttribute(DAGConstant.TQUIMap);
+				.getAttribute(DAGConstant.TQUIMAP);
 		if (tQUIMap == null)
 		{
 			tQUIMap = new HashMap<String, CustomFormulaUIBean>();
-			session.setAttribute(DAGConstant.TQUIMap, tQUIMap);
+			session.setAttribute(DAGConstant.TQUIMAP, tQUIMap);
 		}
 		tQUIMap.put(identifier, customFormulaUIBean);
 	}
@@ -2295,7 +2295,7 @@ public class DAGPanel
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		HttpSession session = request.getSession();
 		Map<String, Map<String, JoinFormulaUIBean>> jQUIMap =
-		(Map<String, Map<String, JoinFormulaUIBean>>) session.getAttribute(DAGConstant.JQUIMap);
+		(Map<String, Map<String, JoinFormulaUIBean>>) session.getAttribute(DAGConstant.JQUIMAP);
 		if (jQUIMap != null)
 		{
 			Map<String, JoinFormulaUIBean> joinFormulaMap = jQUIMap.get(joinQueryNodeId);
@@ -2549,10 +2549,10 @@ public class DAGPanel
 		setRepaintAttribute(session);
 		Set<Integer> visibleExpression = populateNodeList(nodeList, constraints);
 		Map<String, CustomFormulaUIBean> tQUIMap = (Map<String, CustomFormulaUIBean>) session
-				.getAttribute(DAGConstant.TQUIMap);
+				.getAttribute(DAGConstant.TQUIMAP);
 		Map<String, Map<String, JoinFormulaUIBean>> jQUIMap =
 			(Map<String, Map<String, JoinFormulaUIBean>>) session
-				.getAttribute(DAGConstant.JQUIMap);
+				.getAttribute(DAGConstant.JQUIMAP);
 
 		if (tQUIMap == null && jQUIMap == null)
 		{
@@ -2987,8 +2987,8 @@ public class DAGPanel
 						 tQUIMap, jQUIMap, exp, customFormulas);
 			}
 		}
-		session.setAttribute(DAGConstant.TQUIMap, tQUIMap);
-		session.setAttribute(DAGConstant.JQUIMap, jQUIMap);
+		session.setAttribute(DAGConstant.TQUIMAP, tQUIMap);
+		session.setAttribute(DAGConstant.JQUIMAP, jQUIMap);
 	}
 
 	/**

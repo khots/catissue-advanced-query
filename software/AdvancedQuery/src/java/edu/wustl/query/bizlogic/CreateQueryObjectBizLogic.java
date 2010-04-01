@@ -748,6 +748,7 @@ public class CreateQueryObjectBizLogic
 				condition.getAttribute().getDataType(), attributeValues));
 				if (displayNamesMap != null && !(displayNamesMap.containsKey(componentName)))
 				{
+					logger.info("Display Map is null");
 				}
 				else
 				{

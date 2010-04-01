@@ -23,8 +23,8 @@ public class DAGConstant
 	public static final String EDIT_OPERATION = "edit";
 	public static final String REPAINT_EDIT = "rePaintEdit";
 	public static final String REPAINT_CREATE = "rePaintCreate";
-	public static final String TQUIMap = "TQUIMap";
-	public static final String JQUIMap = "JQUIMap";
+	public static final String TQUIMAP = "TQUIMap";
+	public static final String JQUIMAP = "JQUIMap";
 	public static final String ADD_LIMIT_VIEW = "AddLimit";
 	public static final String RESULT_VIEW = "Result";
 	public static final String NULL_STRING = "null";

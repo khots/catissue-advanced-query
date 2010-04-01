@@ -27,8 +27,8 @@ public class QueryAction extends Action
 		session.removeAttribute(AQConstants.IS_SAVED_QUERY);
 		session.removeAttribute(AQConstants.IS_SIMPLE_SEARCH);
 		session.removeAttribute(DAGConstant.ISREPAINT);
-		session.removeAttribute(DAGConstant.TQUIMap);
-		session.removeAttribute(DAGConstant.JQUIMap);
+		session.removeAttribute(DAGConstant.TQUIMAP);
+		session.removeAttribute(DAGConstant.JQUIMAP);
 		session.removeAttribute(AQConstants.EXPORT_DATA_LIST);
 		session.removeAttribute(AQConstants.ENTITY_IDS_MAP);
 		session.removeAttribute("savedQuery");

@@ -188,8 +188,8 @@ public class ShowQueryDashboardAction extends SecureAction
 		session.removeAttribute(AQConstants.MAIN_ENTITY_MAP);
 		session.removeAttribute(AQConstants.EXPORT_DATA_LIST);
 		session.removeAttribute(AQConstants.ENTITY_IDS_MAP);
-		session.removeAttribute(DAGConstant.TQUIMap);
-		session.removeAttribute(DAGConstant.JQUIMap);
+		session.removeAttribute(DAGConstant.TQUIMAP);
+		session.removeAttribute(DAGConstant.JQUIMAP);
 		session.setAttribute(AQConstants.SAVED_QUERY, AQConstants.FALSE);
 	}
 

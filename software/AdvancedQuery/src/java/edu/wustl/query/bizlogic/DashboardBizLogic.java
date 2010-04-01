@@ -433,27 +433,6 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	}
 
 	/**
-	 * @param myQueryCollection collection of my queries
-	 * @param query query
-	 * @return found
-	 */
-	private boolean isQueryFound(
-			Collection<IParameterizedQuery> myQueryCollection,
-			IParameterizedQuery query)
-	{
-		boolean found = false;
-		for (IParameterizedQuery myQuery : myQueryCollection)
-		{
-			if(query.getId().equals(myQuery.getId()))
-			{
-				found =true;
-				break;
-			}
-		}
-		return found;
-	}
-
-	/**
 	 * Returns date in format specified.
 	 * @param executedOnTime string data
 	 * @return formatted string date
