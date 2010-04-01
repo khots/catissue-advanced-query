@@ -110,6 +110,12 @@ public class QueryCsmCacheManagerTestCase extends TestCase
         aList.add("Aravind");
 
         cacheManager.filterRow(sessionData, queryResultObjectDataBeanMap, aList, cache);
+        cacheManager.hasPrivilegeOnIdentifiedData(sessionData, queryResultObjectDataBeanMap, aList, cache);
+
+        queryResultObjectDataBean.setEntityMainIdListMap(new HashMap<EntityInterface, List<List<String>>>());
+        queryResultObjectDataBeanMap = new HashMap<String, QueryResultObjectDataBean>();
+        queryResultObjectDataBeanMap.put("51", queryResultObjectDataBean);
+        cacheManager.filterRow(sessionData, queryResultObjectDataBeanMap, aList, cache);
 
         cache.addNewObjectInReadPrivilegeMap(Long.valueOf(2), true);
         Boolean isReadDenied = cache.isReadDenied(Long.valueOf(2));
