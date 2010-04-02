@@ -124,7 +124,7 @@ public class QueryOutputSpreadsheetBizLogic
 				spreadSheetDataMap = createSpreadsheetData(treeNo, root, queryDetailsObj, null,
 						recordsPerPage, this.selectedColumnMetaData, queryResultDataMap,
 						hasConditionOnIdentifiedField, constraints, outputTermsColumns);
-				spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
+				spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 						queryResultDataMap);
 			}
 			this.selectedColumnMetaData.setCurrentSelectedObject(root);
@@ -174,7 +174,7 @@ public class QueryOutputSpreadsheetBizLogic
 			}
 			else
 			{
-				spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
+				spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 						queryResultObjectDataBeanMap);
 			}
 		}
@@ -239,7 +239,7 @@ public class QueryOutputSpreadsheetBizLogic
 			spreadSheetDatamap = createSpreadsheetData(treeNo, parentNode, queryDetailsObj,
 			parentData, recordsPerPage, this.selectedColumnMetaData,queryResultDataMap,
 			hasConditionOnIdentifiedField, constraints,outputTermsColumns);
-			spreadSheetDatamap.put(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
+			spreadSheetDatamap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 					queryResultDataMap);
 		}
 		this.selectedColumnMetaData.setCurrentSelectedObject(parentNode);

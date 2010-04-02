@@ -105,9 +105,9 @@ public class ConfigureGridViewAction extends SecureAction
 					recordsPerPage, 0, spreadSheetDataMap, sqlForSelectedColumns,
 					queryResultObjecctDataMap, hasConditionOnIdentifiedField(session));
 			selectedCNVBList = categorySearchForm.getSelColNVBeanList();
-			session.setAttribute(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
+			session.setAttribute(AQConstants.DEFINE_VIEW_RESULT_MAP,
 					queryResultObjecctDataMap);
-			spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
+			spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 					queryResultObjecctDataMap);
 			spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
 					session.getAttribute(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP));
@@ -147,7 +147,7 @@ public class ConfigureGridViewAction extends SecureAction
 					recordsPerPage, 0, spreadSheetDataMap, sqlForSelectedColumns,
 					queryResultObjecctDataMap, hasConditionOnIdentifiedField(session));
 			selectedCNVBList = null;
-			spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
+			spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 					queryResultObjecctDataMap);
 			spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
 					queryResultObjecctDataMap);
@@ -169,7 +169,7 @@ public class ConfigureGridViewAction extends SecureAction
 	private Boolean hasConditionOnIdentifiedField(HttpSession session)
 	{
 		Boolean hasConditionOnIdentifiedField =
-			(Boolean)session.getAttribute(AQConstants.HAS_CONDITION_ON_IDENTIFIED_FIELD);
+			(Boolean)session.getAttribute(AQConstants.HAS_CONDN_ON_ID_FIELD);
 		return hasConditionOnIdentifiedField;
 	}
 
@@ -186,8 +186,8 @@ public class ConfigureGridViewAction extends SecureAction
 	{
 		Map<Long, QueryResultObjectDataBean> queryResultObjecctDataMap =
 			(Map<Long, QueryResultObjectDataBean>)session.getAttribute
-			(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP);
-		spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
+			(AQConstants.DEFINE_VIEW_RESULT_MAP);
+		spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 				queryResultObjecctDataMap);
 		if(!selectedColumnsMetadata.isDefinedView())
 		{
