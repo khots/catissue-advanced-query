@@ -34,7 +34,7 @@
 		var pageLoadTime;
 		<%
 			int timeOut = -1;
-			int advanceTime = Integer.parseInt(XMLPropertyHandler.getValue(AQConstants.SESSION_EXPIRY_WARNING_ADVANCE_TIME));
+			int advanceTime = Integer.parseInt(XMLPropertyHandler.getValue(AQConstants.AQ_SESSION_EXPIRY));
 			String tempMsg = ApplicationProperties.getValue("advQuery.app.session.advanceWarning");
 			Object[] args = new Object[] {"" + advanceTime};
 			String advanceTimeoutMesg = MessageFormat.format(tempMsg,args);
