@@ -7,6 +7,7 @@ package edu.wustl.query.testQuerySuite;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import edu.ustl.query.util.querysuite.QueryDetailsTestCase;
 import edu.ustl.query.util.querysuite.QueryModuleSqlUtilTestCase;
 import edu.ustl.query.util.querysuite.TemporalQueryUtilityTestCase;
 import edu.wustl.common.query.factory.AbstractQueryGeneratorFactoryTestCase;
@@ -30,6 +31,7 @@ import edu.wustl.query.htmlprovider.HtmlProviderTestCase;
 import edu.wustl.query.htmlprovider.ParseXMLFileTestCase;
 import edu.wustl.query.htmlprovider.SavedQueryHtmlProviderTestCase;
 import edu.wustl.query.security.QueryCsmCacheManagerTestCase;
+import edu.wustl.query.util.global.UtilityTestCase;
 
 /**
  * @author prafull_kadam
@@ -70,6 +72,8 @@ public class TestAll
 		suite.addTestSuite(ShareQueryBizLogicTestCase.class);
 		suite.addTestSuite(DefineGridViewBizLogicTestCase.class);
 		suite.addTestSuite(QueryCsmCacheManagerTestCase.class);
+		suite.addTestSuite(UtilityTestCase.class);
+		suite.addTestSuite(QueryDetailsTestCase.class);
 		return suite;
 	}
 }
