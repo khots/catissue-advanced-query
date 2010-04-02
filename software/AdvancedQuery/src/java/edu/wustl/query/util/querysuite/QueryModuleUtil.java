@@ -175,7 +175,7 @@ final public class QueryModuleUtil
 					}
 				}
 				else if (!isTagPresentEntity && isPresentInArray(attribute.getName(),
-					AQConstants.ATTRIBUTE_NAMES_FOR_TREENODE_LABEL))
+					AQConstants.ATTR_NAME_TREENODE_LBL))
 				{
 					dspNameColName = columnName;
 					index = columnName.substring
@@ -460,8 +460,8 @@ final public class QueryModuleUtil
 		session.setAttribute(AQConstants.SELECTED_COLUMN_META_DATA, selColumnsMdata);
 		session.setAttribute(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP, spreadSheetDtmap
 				.get(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP));
-		session.setAttribute(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP, spreadSheetDtmap
-				.get(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP));
+		session.setAttribute(AQConstants.DEFINE_VIEW_RESULT_MAP, spreadSheetDtmap
+				.get(AQConstants.DEFINE_VIEW_RESULT_MAP));
 		session.setAttribute(AQConstants.MAIN_ENTITY_MAP, spreadSheetDtmap
 				.get(AQConstants.MAIN_ENTITY_MAP));
 		String pageOf = request.getParameter(AQConstants.PAGEOF);

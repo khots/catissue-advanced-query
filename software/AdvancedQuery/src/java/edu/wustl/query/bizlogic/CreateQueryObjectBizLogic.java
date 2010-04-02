@@ -146,7 +146,7 @@ public class CreateQueryObjectBizLogic
 			ArrayList<ArrayList<String>> conditionValues, String[] params,
 			AttributeInterface attr, ArrayList<String> attributeValues)
 	{
-		if (AQConstants.Between
+		if (AQConstants.BETWEEN
 			.equals(params[AQConstants.INDEX_PARAM_ZERO]))
 		{
 			attributeValues = Utility.getAttributeValuesInProperOrder

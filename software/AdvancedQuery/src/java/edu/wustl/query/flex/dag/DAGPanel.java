@@ -2566,7 +2566,7 @@ public class DAGPanel
 		}
 		nodeMap.put(DAGConstant.DAG_NODE_LIST, nodeList);
 		nodeMap.put(DAGConstant.CUSTOM_FORMULA_NODE_LIST, customNodeList);
-		nodeMap.put(DAGConstant.SINGLE_NODE_CUSTOM_FORMULA_NODE_LIST, sNcustomNodeList);
+		nodeMap.put(DAGConstant.SINGLE_NODE_CF_LIST, sNcustomNodeList);
 		nodeMap.put(DAGConstant.JOIN_QUERY_NODE_LIST, joinQueryNodeList);
 		return nodeMap;
 	}

@@ -776,7 +776,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	     */
 	    public static boolean isConditionOnIdentifiedField(IQuery query)
 	    {
-	    	boolean isConditionOnIdentifiedField = false;
+	    	boolean isCondnOnIdField = false;
 	        Map<IExpression, Collection<ICondition>> allSelectedConditions = QueryUtility
 	                .getAllSelectedConditions(query);
 	        Collection<Collection<ICondition>> values = allSelectedConditions.values();
@@ -789,16 +789,16 @@ public class Utility //extends edu.wustl.common.util.Utility
 
 	                if (trueValue.equals(isConditionOnIdentifiedAttribute))
 	                {
-	                	isConditionOnIdentifiedField = true;
+	                	isCondnOnIdField = true;
 	                	break;
 	                }
 	            }
-	            if(isConditionOnIdentifiedField)
+	            if(isCondnOnIdField)
 	            {
 	            	break;
 	            }
 	        }
-	        return isConditionOnIdentifiedField;
+	        return isCondnOnIdField;
 	    }
 
 	    /**
@@ -894,7 +894,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	            selectSql = selectSql + AQConstants.WHERE + " (";
 	            StringTokenizer stringTokenizerParentID = new StringTokenizer(parentIdColumnName, ",");
 	            StringTokenizer stringTokenizerParentNodeID = new StringTokenizer(parentNodeId,
-	                    AQConstants.PRIMARY_KEY_ATTRIBUTE_SEPARATOR);
+	                    AQConstants.PRIKEY_ATTR_SEPARATOR);
 	            while (stringTokenizerParentID.hasMoreElements())
 	            {
 	                selectSql = selectSql + stringTokenizerParentID.nextElement() + " = '"

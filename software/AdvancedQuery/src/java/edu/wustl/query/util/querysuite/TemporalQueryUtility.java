@@ -33,12 +33,12 @@ public class TemporalQueryUtility
 		for (RelationalOperator operator : RelationalOperator.values())
 		{
 			String opStr = operator.getStringRepresentation();
-			if ((!opStr.equals(AQConstants.Contains))
+			if ((!opStr.equals(AQConstants.CONTAINS))
 					&& (!opStr.equals(AQConstants.STRATS_WITH))
 					&& (!opStr.equals(AQConstants.ENDS_WITH))
 					&& (!opStr.equals(AQConstants.IN_OPERATOR))
-					&& (!opStr.equals(AQConstants.Between))
-					&& (!opStr.equals(AQConstants.Not_In))
+					&& (!opStr.equals(AQConstants.BETWEEN))
+					&& (!opStr.equals(AQConstants.NOT_IN))
 					&& (!opStr.equalsIgnoreCase(AQConstants.IS_NULL))
 					&& (!opStr.equalsIgnoreCase(AQConstants.IS_NOT_NULL))
 					&& (!opStr.equalsIgnoreCase(AQConstants.NOT_BETWEEN)))

@@ -590,8 +590,8 @@ public class QueryModuleSearchQueryUtil
 				.get(AQConstants.SELECTED_COLUMN_META_DATA));
 		session.setAttribute(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP, spreadSheetDatamap
 				.get(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP));
-		session.setAttribute(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP,
-				spreadSheetDatamap.get(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP));
+		session.setAttribute(AQConstants.DEFINE_VIEW_RESULT_MAP,
+				spreadSheetDatamap.get(AQConstants.DEFINE_VIEW_RESULT_MAP));
 	}
 
 	/**

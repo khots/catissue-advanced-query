@@ -103,7 +103,7 @@ public class ShowGridAction extends SecureAction
 	{
 		Map gridDatamap;
 		Map<Long, QueryResultObjectDataBean> resultDataMap = (Map<Long, QueryResultObjectDataBean>) session
-				.getAttribute(AQConstants.DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP);
+				.getAttribute(AQConstants.DEFINE_VIEW_RESULT_MAP);
 		SelectedColumnsMetadata selectedColumnsMetadata = (SelectedColumnsMetadata) session
 				.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
 		Map<String, IOutputTerm> outputTermsColumns = (Map<String, IOutputTerm>) session
@@ -116,7 +116,7 @@ public class ShowGridAction extends SecureAction
 		QueryOutputSpreadsheetBizLogic outputSpreadsheetBizLogic = new QueryOutputSpreadsheetBizLogic();
 		IQuery query = (IQuery) session.getAttribute(AQConstants.QUERY_OBJECT);
 		boolean hasConditionOnIdentifiedField = Utility.isConditionOnIdentifiedField(query);
-		session.setAttribute(AQConstants.HAS_CONDITION_ON_IDENTIFIED_FIELD,
+		session.setAttribute(AQConstants.HAS_CONDN_ON_ID_FIELD,
 				hasConditionOnIdentifiedField);
 		if (idOfClickedNode.endsWith(AQConstants.LABEL_TREE_NODE))
 		{

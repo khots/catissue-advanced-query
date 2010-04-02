@@ -18,7 +18,7 @@ public class Variables //extends edu.wustl.common.util.global.Variables
 	/**
 	 * maximum Tree Node Limit For Child Node.
 	 */
-	public static int maximumTreeNodeLimitForChildNode;
+	public static int maxTreeNdLmtForChildNd;
 	/**
 	 * maximum Tree Node Limit.
 	 */

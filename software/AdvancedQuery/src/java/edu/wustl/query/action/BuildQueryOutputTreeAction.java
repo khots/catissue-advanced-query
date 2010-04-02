@@ -50,7 +50,7 @@ public class BuildQueryOutputTreeAction extends Action
 		HttpSession session = request.getSession();
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		boolean hasConditionOnIdentifiedField = (Boolean) session
-				.getAttribute(AQConstants.HAS_CONDITION_ON_IDENTIFIED_FIELD);
+				.getAttribute(AQConstants.HAS_CONDN_ON_ID_FIELD);
 		CategorySearchForm actionForm = (CategorySearchForm) form;
 		String outputTreeStr = "";
 		String nodeId = actionForm.getNodeId();

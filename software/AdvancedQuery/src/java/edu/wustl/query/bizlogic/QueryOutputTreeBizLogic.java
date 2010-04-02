@@ -400,7 +400,7 @@ public class QueryOutputTreeBizLogic
             //List dataList = QueryModuleUtil.executeQuery(selectSql, sessionData);
            // int size = dataList.size();
             String  size = ""+dataList.size();
-			if(dataList.size()==Variables.maximumTreeNodeLimitForChildNode)
+			if(dataList.size()==Variables.maxTreeNdLmtForChildNd)
 			{
 				int count = QueryModuleSqlUtil.getCountForQuery(selectSql,queryDetailsObj);
 				size = size + "/" +count;
@@ -686,7 +686,7 @@ public class QueryOutputTreeBizLogic
         querySessionData.setTotalNumberOfRecords(dataList.size());*/
         QueryCsmBizLogic queryCsmBizLogic = new QueryCsmBizLogic();
 		List<List<String>> dataList = queryCsmBizLogic.executeCSMQuery(selectSql, queryDetailsObj,
-				queryResultObjectDataBeanMap, root, hasConditionOnIdentifiedField, 0, Variables.maximumTreeNodeLimitForChildNode);
+				queryResultObjectDataBeanMap, root, hasConditionOnIdentifiedField, 0, Variables.maxTreeNdLmtForChildNd);
 
 		querySessionData.setTotalNumberOfRecords(dataList.size());
         return dataList;

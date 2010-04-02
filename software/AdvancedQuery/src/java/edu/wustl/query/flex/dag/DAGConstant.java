@@ -14,7 +14,7 @@ public class DAGConstant
 	public static final String EDIT_LIMIT = "Edit";
 	public static final String DAG_NODE_LIST = "dagNodeList";
 	public static final String CUSTOM_FORMULA_NODE_LIST = "customFormulaNodeList";
-	public static final String SINGLE_NODE_CUSTOM_FORMULA_NODE_LIST = "singleNodeCFList";
+	public static final String SINGLE_NODE_CF_LIST = "singleNodeCFList";
 	public static final String JOIN_QUERY_NODE_LIST = "joinQueryNodeList";
 	public static final String REPAINT_OPERATION = "rePaint";
 	public static final String ISREPAINT = "isRepaint";

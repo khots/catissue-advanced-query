@@ -39,7 +39,7 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 	/**
 	 * The Operator.
 	 */
-	private String operatorBetweenAttrAndAssociation = "";
+	private String oprBetnAttrAndAssoc = "";
 
 	/**
 	 * Node type.
@@ -267,15 +267,15 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 	 */
 	public String getOperatorBetweenAttrAndAssociation()
 	{
-		return operatorBetweenAttrAndAssociation;
+		return oprBetnAttrAndAssoc;
 	}
 
 	/**
-	 * @param operatorBetweenAttrAndAssociation Operator to set.
+	 * @param oprBetnAttrAndAssoc Operator to set.
 	 */
-	public void setOperatorBetweenAttrAndAssociation(String operatorBetweenAttrAndAssociation)
+	public void setOperatorBetweenAttrAndAssociation(String oprBetnAttrAndAssoc)
 	{
-		this.operatorBetweenAttrAndAssociation = operatorBetweenAttrAndAssociation;
+		this.oprBetnAttrAndAssoc = oprBetnAttrAndAssoc;
 	}
 
 	/**
@@ -289,7 +289,7 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 		nodeName = objectInput.readUTF();
 		toolTip = objectInput.readUTF();
 		expressionId = objectInput.readInt();
-		operatorBetweenAttrAndAssociation = objectInput.readUTF();
+		oprBetnAttrAndAssoc = objectInput.readUTF();
 		nodeType = objectInput.readUTF();
 		associationList = (List<DAGNode>) objectInput.readObject();
 		operatorList = (List<String>) objectInput.readObject();
@@ -310,7 +310,7 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 		objectOutput.writeUTF(nodeName);
 		objectOutput.writeUTF(toolTip);
 		objectOutput.writeInt(expressionId);
-		objectOutput.writeUTF(operatorBetweenAttrAndAssociation);
+		objectOutput.writeUTF(oprBetnAttrAndAssoc);
 		objectOutput.writeUTF(nodeType);
 		objectOutput.writeObject(associationList);
 		objectOutput.writeObject(operatorList);
@@ -332,7 +332,7 @@ public class DAGNode implements Externalizable, Comparable<DAGNode>
 		buff.append("\n nodeName: ").append(nodeName).append("\n toolTip: ").append(toolTip)
 				.append("\n expressionId: ").append(expressionId).append(
 						"\n operatorBetweenAttrAndAssociation:").append(
-						operatorBetweenAttrAndAssociation);
+						oprBetnAttrAndAssoc);
 		return buff.toString();
 	}
 

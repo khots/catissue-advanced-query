@@ -81,8 +81,8 @@ public class QueryCoreServletContextListenerUtil
 		int maximumTreeNodeLimit = Integer.parseInt(XMLPropertyHandler
 				.getValue(AQConstants.MAXIMUM_TREE_NODE_LIMIT));
 		Variables.maximumTreeNodeLimit = maximumTreeNodeLimit;
-		Variables.maximumTreeNodeLimitForChildNode = Integer.parseInt(XMLPropertyHandler
-				.getValue(AQConstants.MAXIMUM_TREE_NODE_LIMIT_FOR_CHILD_NODE));
+		Variables.maxTreeNdLmtForChildNd = Integer.parseInt(XMLPropertyHandler
+				.getValue(AQConstants.MAX_TREE_NODE_LIMIT_CHILD));
 		readProperties();
 		path = System.getProperty("app.propertiesFile");
 

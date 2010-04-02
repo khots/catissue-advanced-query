@@ -308,7 +308,7 @@ public class GenerateHtml
 			StringBuffer html)
 	{
 		String valueStr = "";
-		if (operator.equalsIgnoreCase(AQConstants.IN_STRING) || operator.equalsIgnoreCase(AQConstants.Not_In))
+		if (operator.equalsIgnoreCase(AQConstants.IN_STRING) || operator.equalsIgnoreCase(AQConstants.NOT_IN))
 		{
 			valueStr = values.toString();
 			valueStr = valueStr.replace("[", "");

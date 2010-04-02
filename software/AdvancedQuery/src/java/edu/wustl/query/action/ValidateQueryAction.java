@@ -38,7 +38,7 @@ public class ValidateQueryAction extends Action
 		if (dataKey != null && dataKey.equals(AQConstants.UPDATE_SESSION_DATA))
 		{
 			String message = (String) session
-					.getAttribute(AQConstants.VALIDATION_MESSAGE_FOR_ORDERING);
+					.getAttribute(AQConstants.VALIDATE_MSG_ORDERING);
 			String isListEmpty = (String) session.getAttribute(AQConstants.IS_LIST_EMPTY);
 
 			message = setBlankMessage(message, isListEmpty);

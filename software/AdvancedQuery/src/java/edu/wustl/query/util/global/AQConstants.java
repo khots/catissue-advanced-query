@@ -28,7 +28,7 @@ public class AQConstants
 	/**
 	 * VALIDATION MESSAGE FOR ORDERING.
 	 */
-	public static final String VALIDATION_MESSAGE_FOR_ORDERING = "validationMessageForOrdering";
+	public static final String VALIDATE_MSG_ORDERING = "validationMessageForOrdering";
 	/**
 	 * PAGE OF QUERY MODULE.
 	 */
@@ -56,7 +56,7 @@ public class AQConstants
 	/**
 	 * HAS CONDITION ON IDENTIFIER FIELD.
 	 */
-	public static final String HAS_CONDITION_ON_IDENTIFIED_FIELD = "hasConditionOnIdentifiedField";
+	public static final String HAS_CONDN_ON_ID_FIELD = "hasConditionOnIdentifiedField";
 	/**
 	 * NODE SEPARATOR.
 	 */
@@ -124,7 +124,7 @@ public class AQConstants
 	/**
 	 * DEFINE VIEW QUERY RESULT OBJECT DATA MAP.
 	 */
-	public static final String DEFINE_VIEW_QUERY_REASULT_OBJECT_DATA_MAP = "defineViewQueryReasultObjectDataMap";
+	public static final String DEFINE_VIEW_RESULT_MAP = "defineViewQueryReasultObjectDataMap";
 	/**
 	 * CONTAINMENT ASSOCIATION.
 	 */
@@ -209,7 +209,7 @@ public class AQConstants
 	public static final String TREENO_ZERO = "zero";
 	public static final String COLUMN_NAMES = "columnNames";
 	public static final String INDEX = "index";
-	public static final String[] ATTRIBUTE_NAMES_FOR_TREENODE_LABEL = {"firstName", "lastName",
+	public static final String[] ATTR_NAME_TREENODE_LBL = {"firstName", "lastName",
 			"title", "name", "label", "shorttitle"};
 	public static final String COLUMN_NAME = "Column";
 	public static final String ON_STRING = "on";
@@ -219,15 +219,15 @@ public class AQConstants
 	public static final String IS_NOT_NULL = "is not null";
 	public static final String IS_NULL = "is null";
 	public static final String IN_OPERATOR = "In";
-	public static final String Not_In = "Not In";
-	public static final String Equals = "Equals";
-	public static final String Not_Equals = "Not Equals";
-	public static final String Between = "Between";
-	public static final String Less_Than = "Less than";
-	public static final String Less_Than_Or_Equals = "Less than or Equal to";
-	public static final String Greater_Than = "Greater than";
-	public static final String Greater_Than_Or_Equals = "Greater than or Equal to";
-	public static final String Contains = "Contains";
+	public static final String NOT_IN = "Not In";
+	public static final String EQUALS = "Equals";
+	public static final String NOT_EQUALS = "Not Equals";
+	public static final String BETWEEN = "Between";
+	public static final String LESS_THAN = "Less than";
+	public static final String LESS_THAN_OR_EQUALS = "Less than or Equal to";
+	public static final String GREATER_THAN = "Greater than";
+	public static final String GREATER_THAN_OR_EQUALS = "Greater than or Equal to";
+	public static final String CONTAINS = "Contains";
 	public static final String STRATS_WITH = "Starts With";
 	public static final String ENDS_WITH = "Ends With";
 	public static final String NOT_BETWEEN = "Not Between";
@@ -349,9 +349,9 @@ public class AQConstants
 	public static final String DELETE_LIMITS = "<li><font color='blue'>Limit successfully deleted.</font></li>";
 
 	public static final String MAXIMUM_TREE_NODE_LIMIT = "resultView.maximumTreeNodeLimit";
-	public static final String MAXIMUM_TREE_NODE_LIMIT_FOR_CHILD_NODE = "resultView.maximumTreeNodeLimitForChildNode";
+	public static final String MAX_TREE_NODE_LIMIT_CHILD = "resultView.maximumTreeNodeLimitForChildNode";
 	//public static final String ATTRIBUTES = "Attributes";
-	public static final String SESSION_EXPIRY_WARNING_ADVANCE_TIME = "session.expiry.warning.advanceTime";
+	public static final String AQ_SESSION_EXPIRY = "session.expiry.warning.advanceTime";
 
 	public static final String SearchCategory = "SearchCategory.do";
 	public static final String DefineSearchResultsViewJSPAction = "ViewSearchResultsJSPAction.do";
@@ -389,8 +389,8 @@ public class AQConstants
 	public static final String CATISSUE_ENTITY_GROUP_NAME = "catissue";
 	public static final String CLINPORTAL_ENTITY_GROUP_NAME = "catissueSuite";
 
-	public static final String MAIN_PROTOCOL_OBJECT_FOR_CLINPORTAL = "mainprotocolobject.clinportal";
-	public static final String MAIN_PROTOCOL_OBJECT_FOR_CATISSUE = "mainprotocolobject.caTissue";
+	public static final String MAIN_PROTOCOL_OBJ_CP = "mainprotocolobject.clinportal";
+	public static final String MAIN_PROTOCOL_OBJ_CT = "mainprotocolobject.caTissue";
 
 	public static final String CLINICAL_STUDY_CLASS_NAME = "edu.wustl.catissuecore.domain.ClinicalStudy";
 
@@ -470,7 +470,7 @@ public class AQConstants
 	//AQConstants related to Export functionality
 	public static final String PRIMARY_KEY_TAG_NAME = "PRIMARY_KEY";
 	public static final String ID_COLUMN_NAME = "ID_COLUMN_NAME";
-	public static final String PRIMARY_KEY_ATTRIBUTE_SEPARATOR = "!~!~!";
+	public static final String PRIKEY_ATTR_SEPARATOR = "!~!~!";
 
 	//Taraben Khoiwala
 
