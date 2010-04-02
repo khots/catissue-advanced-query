@@ -38,6 +38,7 @@ public class EditQueryAction extends Action
 		HttpSession session = request.getSession();
 		session.setAttribute(AQConstants.IS_SAVED_QUERY,AQConstants.TRUE);
 		session.setAttribute(DAGConstant.QUERY_OBJECT,query);
+		session.setAttribute(AQConstants.TREE_CHECK_VALUE, query.getShowTree());
 		return mapping.findForward(edu.wustl.query.util.global.AQConstants.SUCCESS);
 	}
 }
