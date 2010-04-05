@@ -27,6 +27,7 @@ import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
 import edu.wustl.query.util.global.AQConstants;
+import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
@@ -66,7 +67,7 @@ public class ConfigureGridViewAction extends SecureAction
 		String recordsPerPageStr = (String) session.getAttribute(AQConstants.RESULTS_PER_PAGE);
 		int recordsPerPage = Integer.valueOf(recordsPerPageStr);
 
-//		Boolean hasConditionOnIdentifiedField = hasConditionOnIdentifiedField(session);
+		boolean hasConditionOnIdentifiedData = Utility.isConditionOnIdentifiedField(query);
 
 		DefineGridViewBizLogic defineGridViewBizLogic = new DefineGridViewBizLogic();
 		QueryOutputSpreadsheetBizLogic queryOutputSpreadsheetBizLogic =
@@ -103,7 +104,7 @@ public class ConfigureGridViewAction extends SecureAction
 			defineGridViewBizLogic.createSQLForSelectedColumn(selectedColumnNames.toString(), sql);
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
 					recordsPerPage, 0, spreadSheetDataMap, sqlForSelectedColumns,
-					queryResultObjecctDataMap, hasConditionOnIdentifiedField(session));
+					queryResultObjecctDataMap, hasConditionOnIdentifiedData);
 			selectedCNVBList = categorySearchForm.getSelColNVBeanList();
 			session.setAttribute(AQConstants.DEFINE_VIEW_RESULT_MAP,
 					queryResultObjecctDataMap);
@@ -124,7 +125,7 @@ public class ConfigureGridViewAction extends SecureAction
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
 					recordsPerPage, 0, spreadSheetDataMap, sql, queryResultObjecctDataMap,
-					hasConditionOnIdentifiedField(session));
+					hasConditionOnIdentifiedData);
 		}
 		else if (operation.equalsIgnoreCase(AQConstants.RESTORE))
 		{
@@ -145,7 +146,7 @@ public class ConfigureGridViewAction extends SecureAction
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
 					recordsPerPage, 0, spreadSheetDataMap, sqlForSelectedColumns,
-					queryResultObjecctDataMap, hasConditionOnIdentifiedField(session));
+					queryResultObjecctDataMap, hasConditionOnIdentifiedData);
 			selectedCNVBList = null;
 			spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 					queryResultObjecctDataMap);
@@ -166,12 +167,12 @@ public class ConfigureGridViewAction extends SecureAction
 	 * @param session
 	 * @return
 	 */
-	private Boolean hasConditionOnIdentifiedField(HttpSession session)
+	/*private Boolean hasConditionOnIdentifiedField(HttpSession session)
 	{
 		Boolean hasConditionOnIdentifiedField =
-			(Boolean)session.getAttribute(AQConstants.HAS_CONDN_ON_ID_FIELD);
+			(Boolean)session.getAttribute(AQConstants.HAS_CONDITION_ON_IDENTIFIED_FIELD);
 		return hasConditionOnIdentifiedField;
-	}
+	}*/
 
 	/**
 	 * @param session session
