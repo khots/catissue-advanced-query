@@ -1,14 +1,10 @@
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ page import="java.util.*"%>
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
 <html>
 <body>
-<html:hidden property="showTree" styleId="showTree"/>
 <table border="0"  style="height:100%;width:100%" cellpadding="0" cellspacing="0" valign="top">
 <tr  valign="top" >
-	
+
 	<td  valign="top" width="25%">
 		<table border="0"  height="100%" width="100%" cellpadding="1" cellspacing="0" valign="top">
 			<tr  class='validationMessageCss'  >
@@ -50,21 +46,21 @@
 												<param name="movie" value="flexclient/advQuery/dag/DAG.swf?view=Result"/>
 												<param name="quality" value="high" />
 												<param name="bgcolor" value="#869ca7" />
-												
+
 												<param name="allowScriptAccess" value="sameDomain"/>
 												<embed src="flexclient/advQuery/dag/DAG.swf?view=Result" quality="high" bgcolor="#869ca7"
 													width="100%" height="100%" name="DAG" align="middle"
 													play="true"
 													loop="false"
 													quality="high"
-												
+
 													allowScriptAccess="sameDomain"
 													type="application/x-shockwave-flash"
 													pluginspage="http://www.adobe.com/go/getflashplayer">
 												</embed>
 
 						</object>
-				
+
 					</div>
 				</td>
 			</tr>
