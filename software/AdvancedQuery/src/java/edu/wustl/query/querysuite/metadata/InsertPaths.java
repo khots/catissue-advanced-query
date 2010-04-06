@@ -287,8 +287,8 @@ public class InsertPaths
 			{
 				parententityIdList.add(resultSet.getLong(1));
 			}
+			dao.closeStatement(resultSet);
 		}
-		dao.closeStatement(resultSet);
 		return parententityIdList;
 	}
 
