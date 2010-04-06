@@ -1523,7 +1523,7 @@ var jsReady = false;
 		var handlerFunction = getReadyStateHandler(request,displayValidationMessage,true);
 		request.onreadystatechange = handlerFunction;
 		var actionURL = "buttonClicked=" + text;
-		var url = "ValidateQuery.do";
+		var url = "ValidateQuery.do?showTree="+document.forms[0].showTree.value;
 		request.open("POST",url,true);
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		request.send(actionURL);

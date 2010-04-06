@@ -64,6 +64,10 @@ public class CategorySearchAction extends SecureAction
 		{
 			hideTreeChkVal=Boolean.valueOf(request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE).toString());
 		}
+		else
+		{
+			hideTreeChkVal = searchForm.isShowTree();
+		}
 		request.setAttribute(AQConstants.HIDE_TREE_CHECK_VALUE, request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE));
 		if (isResultsViewPage(currentPage))
 		{

@@ -77,6 +77,7 @@
 
 <html:form method="GET" action="SearchCategory.do" focus="textField">
 	<html:hidden property="currentPage" value="" />
+	<html:hidden property="showTree" styleId="showTree"/>
 	<table border="0" width="100%" cellspacing="0" cellpadding="0"
 		bgcolor="#FFFFFF" height="100%" bordercolorlight="#000000"
 		id="table11">

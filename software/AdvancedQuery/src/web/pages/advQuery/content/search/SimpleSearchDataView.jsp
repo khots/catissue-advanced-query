@@ -319,6 +319,7 @@ function checkAllOnThisPageResponse()
 	</td>
 </tr>-->
 			<html:form action="QueryWizard.do" style="margin:0;padding:0;">
+				<input type="hidden" name="showTree" value="<bean:write name="showTree"/>"/>
 				<html:hidden property="checkAllPages" value="" />
 
 				<%

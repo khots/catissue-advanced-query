@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
+import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.bizlogic.ValidateQueryBizLogic;
 import edu.wustl.query.util.global.AQConstants;
 
@@ -54,6 +55,8 @@ public class ValidateQueryAction extends Action
 					query);
 			updateResponse(response, buttonClicked, validationMessage);
 		}
+		request.getSession().setAttribute("showTree", ((CategorySearchForm) form)
+				.isShowTree());
 		return null;
 	}
 
