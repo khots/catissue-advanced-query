@@ -445,14 +445,18 @@ public class FromBuilder
          */
         private String conds(EntityInterface entity)
         {
+        	String condition;
             String res = discriminator(entity);
             AttributeInterface actAttr = activityStatus(entity);
             if (actAttr == null)
             {
-                return res;
+            	condition = res;
             }
-            res += " and " + activeCond(columnName(actAttr));
-            return res;
+            else
+            {
+            	condition = res + " and " + activeCond(columnName(actAttr));
+            }
+            return condition;
         }
 
         /**
@@ -772,15 +776,16 @@ public class FromBuilder
      */
     private static AttributeInterface activityStatus(EntityInterface entity)
     {
+    	AttributeInterface activityStatus = null;
         for (AttributeInterface attribute : attributes(entity))
         {
             if (attribute.getName().equals
             (edu.wustl.query.util.global.AQConstants.ACTIVITY_STATUS))
             {
-                return attribute;
+                activityStatus = attribute;
             }
         }
-        return null;
+        return activityStatus;
     }
 
     /**

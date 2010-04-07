@@ -137,24 +137,15 @@ final public class QueryModuleUtil
 			if (AQConstants.IDENTIFIER.equals(attribute.getName()))
 			{
 				idColumnName = columnName;
-				/*if (queryResultObjectDataBean.isMainEntity())
-				{*/
-					queryResultObjectDataBean.setMainEntityIdentifierColumnId(0);
-				/*}
-				else
-				{*/
-					queryResultObjectDataBean.setEntityId(0);
-				//}
+				queryResultObjectDataBean.setMainEntityIdentifierColumnId(0);
+				queryResultObjectDataBean.setEntityId(0);
 				objectColumnIdsVector.add(0);
 				columIndex++;
 			}
 			else
 			{
-				if(isTagPresentEntity && attribute.getName().equalsIgnoreCase("birthDate")
-						|| attribute.getName().equalsIgnoreCase("deathDate"))
-				{
-						attrNameColumn.put(attribute.getName(), columnName);
-				}
+				populateAttrColumnMap(attrNameColumn, columnName, attribute,
+						isTagPresentEntity);
 				if(attributePosition != null)
 				{
 					columnNamePositionMap.put(attributePosition,columnName);
@@ -188,11 +179,67 @@ final public class QueryModuleUtil
 					queryResultObjectDataBean.setIdentifiedDataColumnIds(idvector);
 					columIndex++;
 				}
-
 			}
 		}
 		queryResultObjectDataBean.setObjectColumnIds(objectColumnIdsVector);
 
+		dspNameColName = updateDisplayColumnName(dspNameColName,
+				attrNameColumn, isTagPresentEntity, columnNamePositionMap);
+		columnNames = getColumnNames(idColumnName, dspNameColName);
+		Map<String, String> colNameIndexMap = populateColumnIndexMap(
+				queryResultObjectDataBean, columnNames, index);
+		return colNameIndexMap;
+	}
+
+	/**
+	 * @param queryResultObjectDataBean queryResultObjectDataBean
+	 * @param columnNames columnNames
+	 * @param index index
+	 * @return colNameIndexMap
+	 */
+	private static Map<String, String> populateColumnIndexMap(
+			QueryResultObjectDataBean queryResultObjectDataBean,
+			String columnNames, String index)
+	{
+		if (queryResultObjectDataBean.getIdentifiedDataColumnIds().size() != 0)
+		{
+			queryResultObjectDataBean.setHasAssociatedIdentifiedData(true);
+		}
+		Map<String, String> colNameIndexMap = new HashMap<String, String>();
+		colNameIndexMap.put(AQConstants.COLUMN_NAMES, columnNames);
+		colNameIndexMap.put(AQConstants.INDEX, index);
+		return colNameIndexMap;
+	}
+
+	/**
+	 * @param attrNameColumn attrNameColumn
+	 * @param columnName columnName
+	 * @param attribute attribute
+	 * @param isTagPresentEntity isTagPresentEntity
+	 */
+	private static void populateAttrColumnMap(
+			Map<String, String> attrNameColumn, String columnName,
+			AttributeInterface attribute, boolean isTagPresentEntity)
+	{
+		if(isTagPresentEntity && attribute.getName().equalsIgnoreCase("birthDate")
+				|| attribute.getName().equalsIgnoreCase("deathDate"))
+		{
+				attrNameColumn.put(attribute.getName(), columnName);
+		}
+	}
+
+	/**
+	 * @param displayName displayName
+	 * @param attrNameColumn attrNameColumn
+	 * @param isTagPresentEntity isTagPresentEntity
+	 * @param columnNamePositionMap columnNamePositionMap
+	 * @return dspNameColName
+	 */
+	private static String updateDisplayColumnName(String displayName,
+			Map<String, String> attrNameColumn, boolean isTagPresentEntity,
+			Map<String, String> columnNamePositionMap)
+	{
+		String dspNameColName = displayName;
 		if(isTagPresentEntity)
 		{
 			dspNameColName = getColDisplayName(dspNameColName,columnNamePositionMap);
@@ -211,6 +258,18 @@ final public class QueryModuleUtil
 				}
 			}
 		}
+		return dspNameColName;
+	}
+
+	/**
+	 * @param idColumnName idColumnName
+	 * @param dspNameColName dspNameColName
+	 * @return columnNames
+	 */
+	private static String getColumnNames(String idColumnName,
+			String dspNameColName)
+	{
+		String columnNames;
 		if (dspNameColName == null)
 		{
 			columnNames = idColumnName;
@@ -219,14 +278,7 @@ final public class QueryModuleUtil
 		{
 			columnNames = idColumnName + " , " + dspNameColName;
 		}
-		if (queryResultObjectDataBean.getIdentifiedDataColumnIds().size() != 0)
-		{
-			queryResultObjectDataBean.setHasAssociatedIdentifiedData(true);
-		}
-		Map<String, String> colNameIndexMap = new HashMap<String, String>();
-		colNameIndexMap.put(AQConstants.COLUMN_NAMES, columnNames);
-		colNameIndexMap.put(AQConstants.INDEX, index);
-		return colNameIndexMap;
+		return columnNames;
 	}
 	/**
 	 * Gets the display name for column.
