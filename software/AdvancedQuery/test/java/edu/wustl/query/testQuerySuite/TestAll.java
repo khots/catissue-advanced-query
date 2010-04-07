@@ -9,6 +9,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import edu.ustl.query.util.querysuite.QueryDetailsTestCase;
 import edu.ustl.query.util.querysuite.QueryModuleSqlUtilTestCase;
+import edu.ustl.query.util.querysuite.QueryModuleUtilTestCase;
 import edu.ustl.query.util.querysuite.TemporalQueryUtilityTestCase;
 import edu.wustl.common.query.factory.AbstractQueryGeneratorFactoryTestCase;
 import edu.wustl.common.query.factory.CommonObjectFactoryTestCase;
@@ -74,6 +75,7 @@ public class TestAll
 		suite.addTestSuite(QueryCsmCacheManagerTestCase.class);
 		suite.addTestSuite(UtilityTestCase.class);
 		suite.addTestSuite(QueryDetailsTestCase.class);
+		suite.addTestSuite(QueryModuleUtilTestCase.class);
 		return suite;
 	}
 }
