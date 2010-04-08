@@ -63,9 +63,9 @@ public class FetchAndExecuteQueryAction extends Action
 				{
 					target = AQConstants.SUCCESS;
 				}
-				else if (errorMessage.equalsIgnoreCase(AQConstants.TREE_NODE_LIMIT_EXCEEDED_RECORDS))
+				else if (errorMessage.equalsIgnoreCase(AQConstants.TREE_ND_LMT_EXCEED_REC))
 				{
-					target = AQConstants.TREE_NODE_LIMIT_EXCEEDED_RECORDS;
+					target = AQConstants.TREE_ND_LMT_EXCEED_REC;
 				}
 				else
 				{

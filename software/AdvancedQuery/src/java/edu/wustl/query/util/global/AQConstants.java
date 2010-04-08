@@ -152,7 +152,7 @@ public class AQConstants
 	/**
 	 * SELECTED COLUMN NAME VALUE BEAN LIST.
 	 */
-	public static final String SELECTED_COLUMN_NAME_VALUE_BEAN_LIST = "selectedColumnNameValueBeanList";
+	public static final String SEL_COL_NVB_LST = "selectedColumnNameValueBeanList";
 	/**
 	 * TREE DATA.
 	 */
@@ -203,7 +203,7 @@ public class AQConstants
 	public static final String IS_SAVED_QUERY = "isSavedQuery";
 	public static final String TREE_ROOTS = "treeRoots";
 	public static final String NO_OF_TREES = "noOfTrees";
-	public static final String TREE_NODE_LIMIT_EXCEEDED_RECORDS = "treeNodeLimitExceededRecords";
+	public static final String TREE_ND_LMT_EXCEED_REC = "treeNodeLimitExceededRecords";
 	public static final String VIEW_LIMITED_RECORDS = "viewLimitedRecords";
 	public static final String SAVE_GENERATED_SQL = "sql";
 	public static final String TREENO_ZERO = "zero";

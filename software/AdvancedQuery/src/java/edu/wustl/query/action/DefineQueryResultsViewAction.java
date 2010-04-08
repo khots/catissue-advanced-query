@@ -69,7 +69,7 @@ public class DefineQueryResultsViewAction extends Action
 				.getSelColNVBeanList();
 		selColMetadata.setSelColNVBeanList(selectedCNVBList);
 		session.setAttribute(AQConstants.SELECTED_COLUMN_META_DATA, selColMetadata);
-		session.setAttribute(AQConstants.SELECTED_COLUMN_NAME_VALUE_BEAN_LIST,
+		session.setAttribute(AQConstants.SEL_COL_NVB_LST,
 				selectedCNVBList);
 		session.setAttribute(AQConstants.TREE_DATA, treeDataVector);
 		return mapping.findForward(AQConstants.SUCCESS);

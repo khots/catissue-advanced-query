@@ -785,9 +785,9 @@ public class Utility //extends edu.wustl.common.util.Utility
 	        {
 	            for (ICondition condition : conditions)
 	            {
-	                Boolean isConditionOnIdentifiedAttribute = condition.getAttribute().getIsIdentified();
+	                Boolean isCondnOnIdAttr = condition.getAttribute().getIsIdentified();
 
-	                if (trueValue.equals(isConditionOnIdentifiedAttribute))
+	                if (trueValue.equals(isCondnOnIdAttr))
 	                {
 	                	isCondnOnIdField = true;
 	                	break;
