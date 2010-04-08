@@ -198,41 +198,46 @@ public class QuerySqlGenerator extends SqlGenerator
 
 		private IArithmeticOperand roundingOffset()
 		{
+			IArithmeticOperand operand;
 			TimeInterval<?> timeInterval = timeInterval();
 			if (timeInterval.equals(TimeInterval.Second))
 			{
-				return offset(0, TimeInterval.Second);
+				operand = offset(0, TimeInterval.Second);
 			}
-			if (timeInterval.equals(TimeInterval.Minute))
+			else if (timeInterval.equals(TimeInterval.Minute))
 			{
-				return offset(30, TimeInterval.Second);
+				operand = offset(30, TimeInterval.Second);
 			}
-			if (timeInterval.equals(TimeInterval.Hour))
+			else if (timeInterval.equals(TimeInterval.Hour))
 			{
-				return offset(30, TimeInterval.Minute);
+				operand = offset(30, TimeInterval.Minute);
 			}
-			if (timeInterval.equals(TimeInterval.Day))
+			else if (timeInterval.equals(TimeInterval.Day))
 			{
-				return offset(12, TimeInterval.Hour);
+				operand = offset(12, TimeInterval.Hour);
 			}
-			if (timeInterval.equals(TimeInterval.Week))
+			else if (timeInterval.equals(TimeInterval.Week))
 			{
 				// 3.5 * 24
-				return offset(84, TimeInterval.Hour);
+				operand = offset(84, TimeInterval.Hour);
 			}
-			if (timeInterval.equals(TimeInterval.Month))
+			else if (timeInterval.equals(TimeInterval.Month))
 			{
-				return offset(15, TimeInterval.Day);
+				operand = offset(15, TimeInterval.Day);
 			}
-			if (timeInterval.equals(TimeInterval.Quarter))
+			else if (timeInterval.equals(TimeInterval.Quarter))
 			{
-				return offset(45, TimeInterval.Day);
+				operand = offset(45, TimeInterval.Day);
 			}
-			if (timeInterval.equals(TimeInterval.Year))
+			else if (timeInterval.equals(TimeInterval.Year))
 			{
-				return offset(6, TimeInterval.Month);
+				operand = offset(6, TimeInterval.Month);
 			}
-			throw new RuntimeException("won't occur.");
+			else
+			{
+				throw new RuntimeException("won't occur.");
+			}
+			return operand;
 		}
 
 		private static IDateOffsetLiteral offset(int offset, TimeInterval<?> timeInterval)

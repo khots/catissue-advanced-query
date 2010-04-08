@@ -55,16 +55,16 @@ public class ValidateQueryBizLogic
 		if (!isRulePresentInDag)
 		{
 			validationMessage = ApplicationProperties.getValue("query.noLimit.error");
-			return validationMessage;
 		}
-		boolean noExpressionInView = isExpressionInView(query);
-		if (noExpressionInView)
+		else if (isExpressionInView(query))
 		{
 			validationMessage = ApplicationProperties
 					.getValue("query.defineView.noExpression.message");
-			return validationMessage;
 		}
-		validationMessage = validateQuery(request, query, validationMessage);
+		else
+		{
+			validationMessage = validateQuery(request, query, validationMessage);
+		}
 		return validationMessage;
 	}
 
