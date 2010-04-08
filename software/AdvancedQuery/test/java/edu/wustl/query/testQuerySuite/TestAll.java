@@ -7,6 +7,7 @@ package edu.wustl.query.testQuerySuite;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import edu.ustl.query.util.querysuite.QueryCSMUtilTestCase;
 import edu.ustl.query.util.querysuite.QueryDetailsTestCase;
 import edu.ustl.query.util.querysuite.QueryModuleSqlUtilTestCase;
 import edu.ustl.query.util.querysuite.QueryModuleUtilTestCase;
@@ -78,6 +79,7 @@ public class TestAll
 		suite.addTestSuite(QueryDetailsTestCase.class);
 		suite.addTestSuite(QueryModuleUtilTestCase.class);
 		suite.addTestSuite(QueryOutputTreeBizLogicTestCase.class);
+		suite.addTestSuite(QueryCSMUtilTestCase.class);
 		return suite;
 	}
 }
