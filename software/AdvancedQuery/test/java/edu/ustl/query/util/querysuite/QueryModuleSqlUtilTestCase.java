@@ -21,6 +21,10 @@ import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.XMLPropertyHandler;
+import edu.wustl.common.util.global.CommonServiceLocator;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
+import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.query.generator.GenericQueryGeneratorMock;
@@ -176,6 +180,20 @@ public class QueryModuleSqlUtilTestCase extends TestCase
 		String sql = "select distinct Column1 , Column3, Column5, Column6, Column10 from TEMP_OUTPUTTREE2441_6358 where Column10  is not null";
 		QueryModuleSqlUtil.getCountForQuery(sql, queryDetails);
 
+		try
+		{
+			String appName=CommonServiceLocator.getInstance().getAppName();
+		    IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
+            JDBCDAO jdbcDao = daoFactory.getJDBCDAO();
+			jdbcDao.openSession(sessionData);
+			jdbcDao.deleteTable(tableName);
+			jdbcDao.commit();
+			jdbcDao.closeSession();
+		}
+		catch (DAOException ex)
+		{
+			ex.printStackTrace();
+		}
 		String path = "test/java/AdvancedQuery.xml";
 		XMLPropertyHandler.init(path);
 		QueryModuleSqlUtil.executeCreateTable(tableName, createTableSql, queryDetails);
