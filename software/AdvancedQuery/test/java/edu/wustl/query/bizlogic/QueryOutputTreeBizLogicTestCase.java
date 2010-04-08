@@ -23,6 +23,10 @@ import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.IOutputEntity;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.util.global.CommonServiceLocator;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
+import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.query.generator.GenericQueryGeneratorMock;
@@ -129,7 +133,7 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
 		sessionData.setFirstName("admin");
 		sessionData.setLastName("admin");
 		sessionData.setSecurityRequired(Boolean.FALSE);
-		sessionData.setUserId(2441l);
+		sessionData.setUserId(1l);
 		sessionData.setUserName("admin@admin.com");
 
 		Map<AttributeInterface, String> attributeColumnNameMap = new HashMap<AttributeInterface, String>();
@@ -147,7 +151,7 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
 		session.setAttribute(AQConstants.SESSION_DATA, sessionData);
 		QueryDetails queryDetails = new QueryDetails(session);
 		queryDetails.setSessionData(sessionData);
-		queryDetails.setRandomNumber("_6358");
+		queryDetails.setRandomNumber("_2040");
 
 		EntityCache cache = EntityCacheFactory.getInstance();
         EntityInterface participantEntity = GenericQueryGeneratorMock.createEntity("Participant");
@@ -167,14 +171,32 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
         }
 
 		QueryOutputTreeBizLogic treeBizLogic = new QueryOutputTreeBizLogic();
-		treeBizLogic.createDefaultOutputTreeData(treeNo, outputTreeDataNode, false, queryDetails);
+		//treeBizLogic.createDefaultOutputTreeData(treeNo, outputTreeDataNode, false, queryDetails);
+
+	       try
+			{
+				String appName=CommonServiceLocator.getInstance().getAppName();
+			    IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
+	            JDBCDAO jdbcDao = daoFactory.getJDBCDAO();
+				jdbcDao.openSession(sessionData);
+				jdbcDao.deleteTable("TEMP_OUTPUTTREE1_2040");
+				jdbcDao.commit();
+				jdbcDao.closeSession();
+			}
+			catch (DAOException ex)
+			{
+				ex.printStackTrace();
+			}
+
+			String createTableSql = " select distinct Participant_1.GENDER Column0, Participant_1.MIDDLE_NAME Column1, Participant_1.FIRST_NAME Column2, Participant_1.VITAL_STATUS Column3, Participant_1.IDENTIFIER Column4, Participant_1.BIRTH_DATE Column5, Participant_1.LAST_NAME Column6, Participant_1.ETHNICITY Column7, Participant_1.SOCIAL_SECURITY_NUMBER Column8, Participant_1.ACTIVITY_STATUS Column9, Participant_1.DEATH_DATE Column10, Participant_1.GENOTYPE Column11  from (select * from CATISSUE_PARTICIPANT where ACTIVITY_STATUS != 'Disabled') Participant_1  where Participant_1.FIRST_NAME is NOT NULL";
+			treeBizLogic.createOutputTreeTable(createTableSql, queryDetails);
 
 		IQuery inheritanceQuery = GenericQueryGeneratorMock.createInheritanceQueryWithAssociation1();
         EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
         csrEntity = GenericQueryGeneratorMock.getEntity(cache, csrEntity);
         IOutputEntity csrOutputEntity = QueryObjectFactory.createOutputEntity(csrEntity);
-        csrOutputEntity.getSelectedAttributes().addAll(csrEntity.getEntityAttributesForQuery());
-        OutputTreeDataNode csrOutputTreeDataNode = new OutputTreeDataNode(csrOutputEntity, 1, 1);
+        csrOutputEntity.getSelectedAttributes().addAll(csrEntity.getAllAttributes());
+        OutputTreeDataNode csrOutputTreeDataNode = new OutputTreeDataNode(csrOutputEntity, 2, 1);
         for(AttributeInterface attribute : csrEntity.getAllAttributes())
         {
         	int i=1;
@@ -185,12 +207,9 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
 	                displayNmForCol));
 	        i++;
         }
-        outputTreeDataNode.addChild(csrOutputEntity, 2);
-        queryDetails.setQuery(inheritanceQuery);
+       // outputTreeDataNode.addChild(csrOutputEntity, 2);
+        queryDetails.setQuery(query);
         treeBizLogic.updateTreeForDataNode("UQ0_2_Label::0_2_0", outputTreeDataNode, "0", queryDetails);
-
-		String createTableSql = " select distinct Participant_1.GENDER Column0, Participant_1.MIDDLE_NAME Column1, Participant_1.FIRST_NAME Column2, Participant_1.VITAL_STATUS Column3, Participant_1.IDENTIFIER Column4, Participant_1.BIRTH_DATE Column5, Participant_1.LAST_NAME Column6, Participant_1.ETHNICITY Column7, Participant_1.SOCIAL_SECURITY_NUMBER Column8, Participant_1.ACTIVITY_STATUS Column9, Participant_1.DEATH_DATE Column10, Participant_1.GENOTYPE Column11  from (select * from CATISSUE_PARTICIPANT where ACTIVITY_STATUS != 'Disabled') Participant_1  where Participant_1.FIRST_NAME is NOT NULL";
-		treeBizLogic.createOutputTreeTable(createTableSql, queryDetails);
 	}
 
 	public void testEncryptId()
