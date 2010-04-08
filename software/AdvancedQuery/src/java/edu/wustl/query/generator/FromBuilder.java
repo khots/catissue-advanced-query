@@ -100,12 +100,12 @@ public class FromBuilder
      */
     private String alias(String string, IExpression expr)
     {
-        string = Utility.removeSpecialCharactersFromString(string);
-        if (string.length() > ALIAS_NAME_LENGTH)
+        String stringAlias = Utility.removeSpecialCharactersFromString(string);
+        if (stringAlias.length() > ALIAS_NAME_LENGTH)
         {
-            string = string.substring(0, ALIAS_NAME_LENGTH);
+        	stringAlias = stringAlias.substring(0, ALIAS_NAME_LENGTH);
         }
-        return string + "_" + expr.getExpressionId();
+        return stringAlias + "_" + expr.getExpressionId();
     }
 
     /**
@@ -218,11 +218,12 @@ public class FromBuilder
 
     /**
      * @param src source
-     * @param attribute attribute
+     * @param tempAttribute attribute
      * @return attribute
      */
-	private String getAppropriateAttribute(EntityInterface src, String attribute)
+	private String getAppropriateAttribute(EntityInterface src, String tempAttribute)
 	{
+		String attribute = tempAttribute;
 		if (attribute == null)
         {
             attribute = primaryKey(src);
@@ -574,11 +575,12 @@ public class FromBuilder
 
         /**
          * Return from clause.
-         * @param child entity
+         * @param childEntity child entity
          * @return from clause
          */
-        private String fromClause(EntityInterface child)
+        private String fromClause(EntityInterface childEntity)
         {
+        	EntityInterface child = childEntity;
             StringBuilder res = new StringBuilder();
             res.append(FROM);
             res.append(tableName(child));
@@ -593,7 +595,6 @@ public class FromBuilder
                 child = parent;
                 parent = parent.getParentEntity();
             }
-
             return res.toString();
         }
 

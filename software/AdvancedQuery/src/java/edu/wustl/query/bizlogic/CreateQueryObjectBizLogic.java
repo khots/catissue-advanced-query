@@ -300,7 +300,7 @@ public class CreateQueryObjectBizLogic
 		StringBuffer strBuf = new StringBuffer(90);
 		strBuf.append(errorMessages);
 		strBuf.append(AQConstants.FONT_COLOR).append(ApplicationProperties.getValue
-				("simpleQuery.intvalue.poisitive.required")).append("</font></li>");
+				("simpleQuery.intvalue.poisitive.required")).append(AQConstants.END_STYLE);
 		Logger.out.debug(enteredValue + " is not a positive integer");
 		return strBuf.toString();
 	}
@@ -316,7 +316,7 @@ public class CreateQueryObjectBizLogic
 		StringBuffer errorMessage = new StringBuffer(errorMessages);
 		errorMessage.append(AQConstants.FONT_COLOR).
 		append(ApplicationProperties.getValue
-				("simpleQuery.twovalues.required")).append("</font></li>");
+				("simpleQuery.twovalues.required")).append(AQConstants.END_STYLE);
 		Logger.out.debug(enteredValue + " two values required for 'Between' operator ");
 		return errorMessage.toString();
 	}
@@ -336,7 +336,7 @@ public class CreateQueryObjectBizLogic
 		{
 			errorMessage.append(AQConstants.FONT_COLOR).append
 			(ApplicationProperties.getValue("simpleQuery.time.format")).
-			append("</font></li>");
+			append(AQConstants.END_STYLE);
 		}
 		return errorMessage.toString();
 	}
@@ -356,7 +356,7 @@ public class CreateQueryObjectBizLogic
 		{
 			errorMessage.append(AQConstants.FONT_COLOR).
 			append(ApplicationProperties.getValue("simpleQuery.date.format")).
-			append("</font></li>");
+			append(AQConstants.END_STYLE);
 		}
 		return errorMessage.toString();
 	}
