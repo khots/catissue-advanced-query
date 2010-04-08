@@ -193,20 +193,4 @@ public class QueryCsmBizLogic
 		    }
 		}
 	}
-
-    /**
-	 * @param selectSql The select SQL
-	 * @param queryDetailsObj QueryDetails object
-	 * @param queryResulObjectDataMap The QueryResultObjectDataMap
-	 * @param root Object of OutputTreeDataNode
-	 * @param hasConditionOnIdentifiedField to specify if the query
-	 * has condition on identified field.
-	 * @return dataList The list of records
-	 */
-	public List executeCSMQuery(String selectSql, QueryDetails queryDetailsObj,
-			Map<Long, QueryResultObjectDataBean> queryResulObjectDataMap, OutputTreeDataNode root,
-			boolean hasConditionOnIdentifiedField)
-	{
-		return null;
-	}
 }

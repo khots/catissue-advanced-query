@@ -195,6 +195,22 @@ public class ValidateQueryBizLogic
 				.returnQueryClone(query, session, queryDetailsObj);
 		}
 		session.setAttribute(AQConstants.ID_NODES_MAP, uniqueIdNodesMap);
+		setSqlDetailsInSession(session, queryGenerator, queryClone);
+	}
+
+	/**
+	 * @param session session
+	 * @param queryGenerator queryGenerator
+	 * @param queryClone queryClone
+	 * @throws MultipleRootsException MultipleRootsException
+	 * @throws SqlException SqlException
+	 * @throws DAOException DAOException
+	 */
+	private void setSqlDetailsInSession(HttpSession session,
+			ISqlGenerator queryGenerator, IQuery queryClone)
+			throws MultipleRootsException, SqlException, DAOException
+	{
+		String selectSql;
 		if(queryClone != null)
 		{
 			selectSql = queryGenerator.generateSQL(queryClone);
