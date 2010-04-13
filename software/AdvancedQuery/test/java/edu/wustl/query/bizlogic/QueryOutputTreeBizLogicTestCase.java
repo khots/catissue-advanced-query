@@ -133,7 +133,7 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
 		sessionData.setFirstName("admin");
 		sessionData.setLastName("admin");
 		sessionData.setSecurityRequired(Boolean.FALSE);
-		sessionData.setUserId(1l);
+		sessionData.setUserId(2441l);
 		sessionData.setUserName("admin@admin.com");
 
 		Map<AttributeInterface, String> attributeColumnNameMap = new HashMap<AttributeInterface, String>();
@@ -151,7 +151,7 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
 		session.setAttribute(AQConstants.SESSION_DATA, sessionData);
 		QueryDetails queryDetails = new QueryDetails(session);
 		queryDetails.setSessionData(sessionData);
-		queryDetails.setRandomNumber("_2040");
+		queryDetails.setRandomNumber("_6358");
 
 		EntityCache cache = EntityCacheFactory.getInstance();
         EntityInterface participantEntity = GenericQueryGeneratorMock.createEntity("Participant");
@@ -159,9 +159,9 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
         IOutputEntity outputEntity = QueryObjectFactory.createOutputEntity(participantEntity);
         outputEntity.getSelectedAttributes().addAll(participantEntity.getEntityAttributesForQuery());
         OutputTreeDataNode outputTreeDataNode = new OutputTreeDataNode(outputEntity, 1, 1);
+        int i=0;
         for(AttributeInterface attribute : participantEntity.getAllAttributes())
         {
-        	int i=1;
 	        String className = edu.wustl.query.util.global.Utility.parseClassName(participantEntity.getName());
 	        String attributeLabel = edu.wustl.common.util.Utility.getDisplayLabel(attribute.getName());
 	        String displayNmForCol = className+" : "+attributeLabel;
@@ -171,7 +171,7 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
         }
 
 		QueryOutputTreeBizLogic treeBizLogic = new QueryOutputTreeBizLogic();
-		//treeBizLogic.createDefaultOutputTreeData(treeNo, outputTreeDataNode, false, queryDetails);
+		treeBizLogic.createDefaultOutputTreeData(treeNo, outputTreeDataNode, false, queryDetails);
 
 	       try
 			{
@@ -187,29 +187,31 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
 			{
 				ex.printStackTrace();
 			}
-
+			queryDetails.setRandomNumber("_2040");
+			sessionData.setUserId(1l);
+			queryDetails.setSessionData(sessionData);
 			String createTableSql = " select distinct Participant_1.GENDER Column0, Participant_1.MIDDLE_NAME Column1, Participant_1.FIRST_NAME Column2, Participant_1.VITAL_STATUS Column3, Participant_1.IDENTIFIER Column4, Participant_1.BIRTH_DATE Column5, Participant_1.LAST_NAME Column6, Participant_1.ETHNICITY Column7, Participant_1.SOCIAL_SECURITY_NUMBER Column8, Participant_1.ACTIVITY_STATUS Column9, Participant_1.DEATH_DATE Column10, Participant_1.GENOTYPE Column11  from (select * from CATISSUE_PARTICIPANT where ACTIVITY_STATUS != 'Disabled') Participant_1  where Participant_1.FIRST_NAME is NOT NULL";
 			treeBizLogic.createOutputTreeTable(createTableSql, queryDetails);
 
-		IQuery inheritanceQuery = GenericQueryGeneratorMock.createInheritanceQueryWithAssociation1();
         EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
         csrEntity = GenericQueryGeneratorMock.getEntity(cache, csrEntity);
         IOutputEntity csrOutputEntity = QueryObjectFactory.createOutputEntity(csrEntity);
         csrOutputEntity.getSelectedAttributes().addAll(csrEntity.getAllAttributes());
         OutputTreeDataNode csrOutputTreeDataNode = new OutputTreeDataNode(csrOutputEntity, 2, 1);
+    	int index=0;
         for(AttributeInterface attribute : csrEntity.getAllAttributes())
         {
-        	int i=1;
 	        String className = edu.wustl.query.util.global.Utility.parseClassName(csrEntity.getName());
 	        String attributeLabel = edu.wustl.common.util.Utility.getDisplayLabel(attribute.getName());
 	        String displayNmForCol = className+" : "+attributeLabel;
-	        csrOutputTreeDataNode.addAttribute(new QueryOutputTreeAttributeMetadata(attribute, "Column"+i, csrOutputTreeDataNode,
+	        csrOutputTreeDataNode.addAttribute(new QueryOutputTreeAttributeMetadata(attribute, "Column"+index, csrOutputTreeDataNode,
 	                displayNmForCol));
-	        i++;
+	        index++;
         }
        // outputTreeDataNode.addChild(csrOutputEntity, 2);
         queryDetails.setQuery(query);
         treeBizLogic.updateTreeForDataNode("UQ0_2_Label::0_2_0", outputTreeDataNode, "0", queryDetails);
+        //treeBizLogic.updateTreeForLabelNode("UQ0_16_0::0_17_Label", queryDetails, false);
 	}
 
 	public void testEncryptId()
