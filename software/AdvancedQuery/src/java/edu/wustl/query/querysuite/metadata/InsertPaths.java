@@ -180,9 +180,7 @@ public class InsertPaths
 		Long targetEntId = entityIdList.get(entityIdList.size() - 1);
 		data.add(srcEntId);
 		data.add(targetEntId);
-		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
-		String sql = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID= ? and LAST_ENTITY_ID= ?";
-		ResultSet resultSet = dao.getResultSet(sql, columnValueBean, null);
+		ResultSet resultSet = getIntermediatePath(dao, data);
 		boolean ifSamePathExists = false;
 		List<Long> idList = new ArrayList<Long>();
 		idList.add(srcEntId);
@@ -201,14 +199,45 @@ public class InsertPaths
 			data.add(srcEntId);
 			data.add(intermediatePath.toString());
 			data.add(targetEntId);
-			columnValueBean = populateColumnValueBean(data);
-			LinkedList<LinkedList<ColumnValueBean>> beanList = new LinkedList<LinkedList<ColumnValueBean>>();
-			beanList.add(columnValueBean);
-			sql = "INSERT INTO path values(?, ?, ?, ?)";
-			dao.executeUpdate(sql, beanList);
-			writer.write("\nInserted path between "+getEntityName(dao,idList));
-			dao.commit();
+			LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
+			executeInsertPathQuery(dao, columnValueBean, idList);
 		}
+	}
+
+	/**
+	 * @param dao DAO
+	 * @param data data
+	 * @return resultSet
+	 * @throws DAOException DAOException
+	 */
+	private static ResultSet getIntermediatePath(JDBCDAO dao,
+			LinkedList<Object> data) throws DAOException
+	{
+		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
+		String sql = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID= ? and LAST_ENTITY_ID= ?";
+		ResultSet resultSet = dao.getResultSet(sql, columnValueBean, null);
+		return resultSet;
+	}
+
+	/**
+	 * @param dao DAO
+	 * @param columnValueBean columnValueBean
+	 * @param idList idList
+	 * @throws DAOException DAOException
+	 * @throws IOException IOException
+	 * @throws SQLException SQLException
+	 */
+	private static void executeInsertPathQuery(JDBCDAO dao,
+			LinkedList<ColumnValueBean> columnValueBean, List<Long> idList)
+			throws DAOException, IOException, SQLException
+	{
+		String sql;
+		LinkedList<LinkedList<ColumnValueBean>> beanList = new LinkedList<LinkedList<ColumnValueBean>>();
+		beanList.add(columnValueBean);
+		sql = "INSERT INTO path values(?, ?, ?, ?)";
+		dao.executeUpdate(sql, beanList);
+		writer.write("\nInserted path between "+getEntityName(dao,idList));
+		dao.commit();
 	}
 
 	/**
