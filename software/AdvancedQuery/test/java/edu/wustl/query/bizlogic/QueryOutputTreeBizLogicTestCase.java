@@ -19,6 +19,7 @@ import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
+import edu.wustl.common.query.queryobject.util.QueryObjectProcessor;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.IOutputEntity;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
@@ -158,7 +159,7 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
         participantEntity = GenericQueryGeneratorMock.getEntity(cache, participantEntity);
         IOutputEntity outputEntity = QueryObjectFactory.createOutputEntity(participantEntity);
         outputEntity.getSelectedAttributes().addAll(participantEntity.getEntityAttributesForQuery());
-        OutputTreeDataNode outputTreeDataNode = new OutputTreeDataNode(outputEntity, 1, 1);
+        OutputTreeDataNode outputTreeDataNode = new OutputTreeDataNode(outputEntity, 1, 0);
         int i=0;
         for(AttributeInterface attribute : participantEntity.getAllAttributes())
         {
@@ -197,7 +198,7 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
         csrEntity = GenericQueryGeneratorMock.getEntity(cache, csrEntity);
         IOutputEntity csrOutputEntity = QueryObjectFactory.createOutputEntity(csrEntity);
         csrOutputEntity.getSelectedAttributes().addAll(csrEntity.getAllAttributes());
-        OutputTreeDataNode csrOutputTreeDataNode = new OutputTreeDataNode(csrOutputEntity, 2, 1);
+        OutputTreeDataNode csrOutputTreeDataNode = new OutputTreeDataNode(csrOutputEntity, 2, 0);
     	int index=0;
         for(AttributeInterface attribute : csrEntity.getAllAttributes())
         {
@@ -208,10 +209,24 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
 	                displayNmForCol));
 	        index++;
         }
-       // outputTreeDataNode.addChild(csrOutputEntity, 2);
         queryDetails.setQuery(query);
         treeBizLogic.updateTreeForDataNode("UQ0_2_Label::0_2_0", outputTreeDataNode, "0", queryDetails);
-        //treeBizLogic.updateTreeForLabelNode("UQ0_16_0::0_17_Label", queryDetails, false);
+
+        IQuery associationQuery = GenericQueryGeneratorMock.createInheritanceQueryWithAssociation1();
+        queryDetails.setQuery(associationQuery);
+        outputTreeDataNode.addChild(csrOutputEntity, 2);
+        rootOutputTreeNodeList.add(outputTreeDataNode);
+        rootOutputTreeNodeList.add(csrOutputTreeDataNode);
+        uniqueIdNodesMap = QueryObjectProcessor.getAllChildrenNodes(rootOutputTreeNodeList);
+        queryDetails.setUniqueIdNodesMap(uniqueIdNodesMap);
+        queryDetails.setRandomNumber("_6358");
+		sessionData.setUserId(2441l);
+		queryDetails.setSessionData(sessionData);
+        String nodeId = "UQ0_"+outputTreeDataNode.getId()+"_0::0_"+csrOutputTreeDataNode.getId()+"_Label";
+        treeBizLogic.updateTreeForLabelNode(nodeId, queryDetails, false);
+        queryDetails.setRandomNumber("_2040");
+		sessionData.setUserId(1l);
+		queryDetails.setSessionData(sessionData);
 	}
 
 	public void testEncryptId()
