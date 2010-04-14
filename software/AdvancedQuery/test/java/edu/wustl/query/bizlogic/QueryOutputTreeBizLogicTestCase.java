@@ -140,7 +140,7 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
 		Map<AttributeInterface, String> attributeColumnNameMap = new HashMap<AttributeInterface, String>();
 		Map<String, IOutputTerm> outputTermsColumns = new HashMap<String, IOutputTerm>();
 		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
-		IQuery query = GenericQueryGeneratorMock.creatParticipantQuery();
+		IQuery query = GenericQueryGeneratorMock.createParticipantFNameNotNullQuery();
 		session.setAttribute(AQConstants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
 		session.setAttribute(AQConstants.ID_NODES_MAP, uniqueIdNodesMap);
 		session.setAttribute(AQConstants.MAIN_ENTITY_MAP,mainEntityMap);

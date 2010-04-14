@@ -24,6 +24,7 @@ import edu.wustl.query.bizlogic.DefaultQueryBizLogicTestCase;
 import edu.wustl.query.bizlogic.DefineGridViewBizLogicTestCase;
 import edu.wustl.query.bizlogic.ExportQueryBizLogicTestCase;
 import edu.wustl.query.bizlogic.QueryCsmBizLogicTestCase;
+import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogicTestCase;
 import edu.wustl.query.bizlogic.QueryOutputTreeBizLogicTestCase;
 import edu.wustl.query.bizlogic.SaveQueryBizLogicTestCase;
 import edu.wustl.query.bizlogic.ShareQueryBizLogicTestCase;
@@ -80,6 +81,7 @@ public class TestAll
 		suite.addTestSuite(QueryModuleUtilTestCase.class);
 		suite.addTestSuite(QueryOutputTreeBizLogicTestCase.class);
 		suite.addTestSuite(QueryCSMUtilTestCase.class);
+		suite.addTestSuite(QueryOutputSpreadsheetBizLogicTestCase.class);
 		return suite;
 	}
 }
