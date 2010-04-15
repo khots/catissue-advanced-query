@@ -251,6 +251,33 @@ public class GenericQueryGeneratorMock extends EntityManager
         return query;
     }
 
+    public static IQuery createParticipantFNameNotNullQuery()
+    {
+    	IQuery query = null;
+        try
+        {
+            query = QueryObjectFactory.createQuery();
+            IConstraints constraints = QueryObjectFactory.createConstraints();
+            query.setConstraints(constraints);
+
+            // creating Participant Expression.
+            EntityCache cache = EntityCacheFactory.getInstance();
+            EntityInterface participantEntity = GenericQueryGeneratorMock.createEntity("Participant");
+            participantEntity = getEntity(cache, participantEntity);
+            IQueryEntity participantConstraintEntity = QueryObjectFactory.createQueryEntity(participantEntity);
+            IExpression participantExpression = constraints.addExpression(participantConstraintEntity);
+            participantExpression.addOperand(createRuleFNameNotNull(participantEntity));
+            //
+            // // creating output tree.
+            participantExpression.setInView(true);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        return query;
+    }
     /**
      * Create Rule for given Participant as : activityStatus = 'Active'
      *
@@ -266,6 +293,13 @@ public class GenericQueryGeneratorMock extends EntityManager
         return rule;
     }
 
+    public static IRule createRuleFNameNotNull(EntityInterface participantEntity)
+    {
+    	List<ICondition> conditions = new ArrayList<ICondition>();
+        conditions.add(createParticipantConditionForNotNull(participantEntity));
+        IRule rule = QueryObjectFactory.createRule(conditions);
+        return rule;
+    }
     /**
      * Create Condition for given Participant Entity: activityStatus = 'Active'.
      *
