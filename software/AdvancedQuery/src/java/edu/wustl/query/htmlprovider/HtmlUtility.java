@@ -85,7 +85,7 @@ public class HtmlUtility
 	 */
 	public static List<String> getConditionsList(AttributeInterface attributeInterface,ParseXMLFile parseFile)
 	{
-		List<String> operatorsList = new ArrayList<String>();
+		List<String> operatorsList;
 		List<String> strObj = null;
 		if (attributeInterface != null)
 		{

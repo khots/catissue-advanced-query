@@ -461,8 +461,7 @@ public class DAGPanel
 	String mode, Map<RelationalOperator,List<String>> operatorValueMap,String strToCreateObject)
 	{
 		List<Long> readDeniedIds = new ArrayList<Long>();
-		List<Long> allMainObjectIds = new ArrayList<Long>();
-		allMainObjectIds = populateAllMainProtocolObjectIds(userName, readDeniedIds);
+		List<Long> allMainObjectIds = populateAllMainProtocolObjectIds(userName, readDeniedIds);
 
 		EntityCache cache = EntityCacheFactory.getInstance();
 		EntityInterface mainProtocol = DomainObjectFactory.getInstance().createEntity();

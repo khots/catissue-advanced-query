@@ -1080,8 +1080,7 @@ public class SqlGenerator implements ISqlGenerator
 		StringBuffer value = new StringBuffer();
 		try
 		{
-		    Date date = new Date();
-		    date = Utility.parseDate(tempValue);
+		    Date date = Utility.parseDate(tempValue);
 		    if(date == null)
 		    {
 		    	String entityName = Utility.parseClassName(condition.getAttribute().getEntity().getName());
