@@ -169,12 +169,10 @@ public class HtmlProvider
 		String entityId = entity.getId().toString();
 		String eName = nameOfTheEntity.substring(nameOfTheEntity.lastIndexOf('.')+1);
 		boolean isEditLimits = isEditLimits(conditions);
-		StringBuffer generatedHTML = new StringBuffer();
-		StringBuffer generatedPreHTML = new StringBuffer();
 		String attributesStr = getAttributesString(attributeCollection);
-		generatedPreHTML = GenerateHtml.getHtmlHeader
+		StringBuffer generatedPreHTML = GenerateHtml.getHtmlHeader
 					(eName,entityId,attributesStr,isEditLimits);
-		generatedHTML = getHtmlAttributes(conditions, attributeChecked, permissibleValuesChecked,
+		StringBuffer generatedHTML = getHtmlAttributes(conditions, attributeChecked, permissibleValuesChecked,
 				attributeCollection);
 		return generatedPreHTML.toString() + "####" + generatedHTML.toString();
 	}

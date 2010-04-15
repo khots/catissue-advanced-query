@@ -273,7 +273,7 @@ public class InsertPaths
 	{
 		List<Long> parententityIdList = new ArrayList<Long>();
 		ResultSet resultSet = null;
-		LinkedList<Object> data = new LinkedList<Object>();
+		LinkedList<Object> data;
 		LinkedList<ColumnValueBean> columnValueBean;
 		for (int c = 0; c < entityIdList.size(); c++)
 		{

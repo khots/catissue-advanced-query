@@ -94,7 +94,6 @@ public class SavedQueryHtmlProvider
 	 */
 	private Map<ICustomFormula, String> getCustomFormulaColumnNameMap(IQuery queryObject,String forPage)
 	{
-		Map<ICustomFormula, String> cFColumNameMap = new HashMap<ICustomFormula, String>();
 		List<IOutputTerm> outputTerms = queryObject.getOutputTerms();
 		Set<ICustomFormula> customFormulas = null;
 		if (forPage.equalsIgnoreCase(AQConstants.SAVE_QUERY_PAGE))
@@ -107,7 +106,8 @@ public class SavedQueryHtmlProvider
 			customFormulas = (Set<ICustomFormula>) QueryUtility.
 			getAllParameterizedCustomFormulas(pQuery);
 		}
-		cFColumNameMap = createCustomFormulaColumnNameMap(outputTerms, customFormulas);
+		Map<ICustomFormula, String> cFColumNameMap =
+			createCustomFormulaColumnNameMap(outputTerms, customFormulas);
 		return cFColumNameMap;
 	}
 

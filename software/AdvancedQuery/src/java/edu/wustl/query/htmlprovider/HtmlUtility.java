@@ -28,7 +28,7 @@ public class HtmlUtility
 	 */
 	private static List<String> getEnumConditionList(String dataType,ParseXMLFile parseFile)
 	{
-		List<String> operatorsList = new ArrayList<String>();
+		List<String> operatorsList;
 		if(isNumber(dataType.toLowerCase()))
 		{
 			operatorsList = parseFile.getEnumConditionList(AQConstants.DATATYPE_NUMBER);
@@ -65,7 +65,7 @@ public class HtmlUtility
 	 */
 	private static List<String> getNonEnumConditionList(String dataType,ParseXMLFile parseFile)
 	{
-		List<String> operatorsList = new ArrayList<String>();
+		List<String> operatorsList;
 		if (isNumber(dataType.toLowerCase()))
 		{
 			operatorsList = parseFile.getNonEnumConditionList(AQConstants.DATATYPE_NUMBER);
@@ -102,7 +102,6 @@ public class HtmlUtility
 				operatorsList = HtmlUtility.getNonEnumConditionList(dataType,parseFile);
 			}
 			strObj = new ArrayList<String>(operatorsList);
-			operatorsList = new ArrayList<String>();
 			Collections.sort(strObj);
 		}
 		return strObj;

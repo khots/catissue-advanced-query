@@ -158,7 +158,6 @@ public class CategorySearchAction extends SecureAction
 	{
 		int[] searchTarget = prepareSearchTarget(searchForm);
 		int basedOn = Constants.BASED_ON_TEXT;
-		Set<EntityInterface> entityCollection = new HashSet<EntityInterface>();
 		String[] searchString = null;
 		searchString = prepareSearchString(textfieldValue);
 		String attributeChecked = searchForm.getAttributeChecked();
@@ -167,7 +166,7 @@ public class CategorySearchAction extends SecureAction
 		EntityCache cache = EntityCacheFactory.getInstance();
 		MetadataSearch advancedSearch = new MetadataSearch(cache);
 		MatchedClass matchedClass = advancedSearch.search(searchTarget, searchString, basedOn);
-		entityCollection = matchedClass.getEntityCollection();
+		Set<EntityInterface> entityCollection = matchedClass.getEntityCollection();
 		List<EntityInterface> resultList = new ArrayList<EntityInterface>(entityCollection);
 		for (int counter = 0; counter < resultList.size(); counter++)
 		{
