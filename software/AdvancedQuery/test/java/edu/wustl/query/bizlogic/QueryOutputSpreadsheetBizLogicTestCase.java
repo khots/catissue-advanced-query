@@ -133,20 +133,14 @@ public class QueryOutputSpreadsheetBizLogicTestCase extends TestCase
 		Map<AttributeInterface, String> attributeColumnNameMap = new HashMap<AttributeInterface, String>();
 		Map<String, IOutputTerm> outputTermsColumns = new HashMap<String, IOutputTerm>();
 		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
-		IQuery query = GenericQueryGeneratorMock.creatParticipantQuery();
-		session.setAttribute(AQConstants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
-		session.setAttribute(AQConstants.ID_NODES_MAP, uniqueIdNodesMap);
-		session.setAttribute(AQConstants.MAIN_ENTITY_MAP,mainEntityMap);
-		session.setAttribute(AQConstants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
-		session.setAttribute(AQConstants.OUTPUT_TERMS_COLUMNS,outputTermsColumns);
-		session.setAttribute(AQConstants.QUERY_OBJECT, query);
-		session.setAttribute(AQConstants.COLUMN_VALUE_BEAN,columnValueBean);
-		session.setAttribute("AUDIT_EVENT_ID", Long.valueOf("1"));
-		session.setAttribute(AQConstants.SESSION_DATA, sessionData);
-		QueryDetails queryDetails = new QueryDetails(session);
-		queryDetails.setSessionData(sessionData);
-		queryDetails.setRandomNumber("_6358");
-
+		IQuery query = GenericQueryGeneratorMock.createTemporalQueryParticipantCSR();
+		List<IOutputTerm> terms = query.getOutputTerms();
+		int index=15;
+		for(IOutputTerm term : terms)
+		{
+			outputTermsColumns.put("Column"+index, term);
+			index++;
+		}
 		EntityCache cache = EntityCacheFactory.getInstance();
         EntityInterface participantEntity = GenericQueryGeneratorMock.createEntity("Participant");
         participantEntity = GenericQueryGeneratorMock.getEntity(cache, participantEntity);
@@ -164,8 +158,21 @@ public class QueryOutputSpreadsheetBizLogicTestCase extends TestCase
 	                displayNmForCol);
 	        selectedAttributeMetaDataList.add(opTreeMetadata);
 	        outputTreeDataNode.addAttribute(opTreeMetadata);
+	        attributeColumnNameMap.put(attribute, "Column"+i);
 	        i++;
         }
+		session.setAttribute(AQConstants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
+		session.setAttribute(AQConstants.ID_NODES_MAP, uniqueIdNodesMap);
+		session.setAttribute(AQConstants.MAIN_ENTITY_MAP,mainEntityMap);
+		session.setAttribute(AQConstants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
+		session.setAttribute(AQConstants.OUTPUT_TERMS_COLUMNS,outputTermsColumns);
+		session.setAttribute(AQConstants.QUERY_OBJECT, query);
+		session.setAttribute(AQConstants.COLUMN_VALUE_BEAN,columnValueBean);
+		session.setAttribute("AUDIT_EVENT_ID", Long.valueOf("1"));
+		session.setAttribute(AQConstants.SESSION_DATA, sessionData);
+		QueryDetails queryDetails = new QueryDetails(session);
+		queryDetails.setSessionData(sessionData);
+		queryDetails.setRandomNumber("_6358");
 
         QueryResultObjectDataBean queryResultObjectDataBean = new QueryResultObjectDataBean();
         queryResultObjectDataBean.setEntity(participantEntity);

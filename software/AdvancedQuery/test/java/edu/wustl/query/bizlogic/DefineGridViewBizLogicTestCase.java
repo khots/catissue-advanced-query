@@ -23,4 +23,12 @@ public class DefineGridViewBizLogicTestCase extends TestCase
         String className = bizLogic.getClassName(outputTreeDataNode);
         assertEquals("Expected Class Name","edu.wustl.clinportal.domain.Participant",className);
 	}
+
+	public void testCreateSQLForSelectedColumn()
+	{
+		String columnNames = "Column2,Column4,Column5,Column6";
+		String sql = "select distinct Column0,Column1,Column2,Column3,Column4,Column5,Column6,Column7,Column8,Column9,Column10,Column11 from TEMP_OUTPUTTREE1_86034 where Column4 is NOT NULL";
+		DefineGridViewBizLogic gridViewBizLogic = new DefineGridViewBizLogic();
+		gridViewBizLogic.createSQLForSelectedColumn(columnNames, sql);
+	}
 }

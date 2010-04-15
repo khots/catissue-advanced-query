@@ -17,6 +17,7 @@ import edu.wustl.common.query.factory.CommonObjectFactoryTestCase;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadataTestCase;
 import edu.wustl.common.query.queryobject.locator.QueryNodeLocatorTestCase;
 import edu.wustl.common.query.queryobject.util.QueryObjectProcessorTestCase;
+import edu.wustl.query.bizlogic.BizLogicFactoryTestCase;
 import edu.wustl.query.bizlogic.CommonQueryBizLogicTestCase;
 import edu.wustl.query.bizlogic.CreateQueryObjectTestCase;
 import edu.wustl.query.bizlogic.DashboardBizLogicTestCase;
@@ -82,6 +83,7 @@ public class TestAll
 		suite.addTestSuite(QueryOutputTreeBizLogicTestCase.class);
 		suite.addTestSuite(QueryCSMUtilTestCase.class);
 		suite.addTestSuite(QueryOutputSpreadsheetBizLogicTestCase.class);
+		suite.addTestSuite(BizLogicFactoryTestCase.class);
 		return suite;
 	}
 }

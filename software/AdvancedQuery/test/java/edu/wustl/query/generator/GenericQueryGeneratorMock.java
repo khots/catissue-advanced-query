@@ -30,6 +30,7 @@ import edu.wustl.common.querysuite.exceptions.CyclicException;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.queryobject.ArithmeticOperator;
+import edu.wustl.common.querysuite.queryobject.IArithmeticOperand;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IConnector;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
@@ -38,6 +39,7 @@ import edu.wustl.common.querysuite.queryobject.IDateOffsetLiteral;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IExpressionAttribute;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
+import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.IRule;
@@ -46,6 +48,7 @@ import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
 import edu.wustl.common.querysuite.queryobject.impl.Expression;
+import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.querysuite.EntityCacheFactory;
 
 /**
@@ -587,6 +590,47 @@ public class GenericQueryGeneratorMock extends EntityManager
         return null;
     }
 
+    private static void addOutputTermsToQuery(IQuery query, ICustomFormula customFormula,
+			String customColumnName)
+	{
+		IOutputTerm outputTerm = QueryObjectFactory.createOutputTerm();
+		outputTerm.setTerm(customFormula.getLhs());
+		List<ITerm> allRhs = customFormula.getAllRhs();
+		String timeIntervalName = "";
+		String dateFormat = "";
+		for (ITerm rhs : allRhs)
+		{
+			if (rhs.getTermType().toString().equalsIgnoreCase("timestamp"))
+			{
+				dateFormat = AQConstants.DATE_FORMAT;
+			}
+			IArithmeticOperand operand = rhs.getOperand(0);
+			if (operand instanceof IDateOffsetLiteral)
+			{
+				IDateOffsetLiteral dateOffLit = (IDateOffsetLiteral) operand;
+				TimeInterval<?> timeInterval = dateOffLit.getTimeInterval();
+				outputTerm.setTimeInterval(timeInterval);
+				timeIntervalName = timeInterval.name();
+			}
+		}
+
+		String tqColumnName = null;
+		if (timeIntervalName.length() == 0 && dateFormat.length() == 0)
+		{
+			tqColumnName = customColumnName;
+		}
+		else if (dateFormat.length() != 0)
+		{
+			tqColumnName = customColumnName + " (" + dateFormat + ")";
+		}
+		else
+		{
+			tqColumnName = customColumnName + " (" + timeIntervalName + ")";
+		}
+		outputTerm.setName(tqColumnName);
+		query.getOutputTerms().add(outputTerm);
+	}
+
     public static AssociationInterface getAssociationFrom(Collection<AssociationInterface> associations,
             String targetEntityName)
     {
@@ -695,4 +739,71 @@ public class GenericQueryGeneratorMock extends EntityManager
         }
         return query;
     }
+
+	public static IQuery createTemporalQueryParticipantCSR()
+	{
+        try
+        {
+            IQuery query = QueryObjectFactory.createQuery();
+            IConstraints constraints = query.getConstraints();
+            EntityCache cache = EntityCacheFactory.getInstance();
+            EntityInterface participantEntity = GenericQueryGeneratorMock.createEntity("Participant");
+            participantEntity = getEntity(cache,participantEntity);
+            IQueryEntity participantConstraintEntity = QueryObjectFactory.createQueryEntity(participantEntity);
+            IExpression participant = constraints.addExpression(participantConstraintEntity);
+
+            EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
+            csrEntity = getEntity(cache,csrEntity);
+            IQueryEntity csrConstraintEntity = QueryObjectFactory.createQueryEntity(csrEntity);
+            IExpression csr = constraints
+                    .addExpression(csrConstraintEntity);
+
+            participant.addOperand(csr);
+
+            AssociationInterface partCPR = getAssociationFrom(entityManager.getAssociation(
+                    "edu.wustl.clinportal.domain.Participant", "participant"),
+                    "edu.wustl.clinportal.domain.ClinicalStudyRegistration");
+
+            constraints.getJoinGraph().putAssociation(participant, csr,
+                    QueryObjectFactory.createIntraModelAssociation(partCPR));
+
+            IExpressionAttribute birthDate = QueryObjectFactory.createExpressionAttribute(
+                    participant, findAttribute(participantEntity,
+                            "birthDate"),false);
+            IExpressionAttribute registrationDate = QueryObjectFactory.createExpressionAttribute(csr,
+                    findAttribute(csrEntity,
+                            "registrationDate"),false);
+
+            ITerm lhs = QueryObjectFactory.createTerm();
+            lhs.addOperand(registrationDate);
+            lhs.addOperand(conn(ArithmeticOperator.Minus), birthDate);
+
+            IDateOffsetLiteral offSet = QueryObjectFactory.createDateOffsetLiteral("30", TimeInterval.Minute);
+            ITerm rhs = QueryObjectFactory.createTerm();
+            rhs.addOperand(offSet);
+
+            ICustomFormula formula = QueryObjectFactory.createCustomFormula();
+            participant.addOperand(getAndConnector(), formula);
+            formula.setLhs(lhs);
+            formula.addRhs(rhs);
+            formula.setOperator(RelationalOperator.GreaterThan);
+
+            participant.setInView(true);
+            addOutputTermsToQuery(query, formula, "Age at reg");
+            return query;
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+			e.printStackTrace();
+		}
+        catch (DynamicExtensionsApplicationException e)
+        {
+			e.printStackTrace();
+		}
+        catch (CyclicException e)
+        {
+			e.printStackTrace();
+		}
+        return null;
+	}
 }
