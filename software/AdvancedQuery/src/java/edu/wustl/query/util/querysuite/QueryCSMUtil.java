@@ -982,7 +982,7 @@ public class QueryCSMUtil
 						jdbcDAO = daofactory.getJDBCDAO();
 						jdbcDAO.openSession(null);
 						String sqlForDefinedView = queryDetailsObj.getSqlForDefineView();
-						if(sqlForDefinedView != null && queryResultObjectDataBean != null && queryResultObjectDataBean.getEntity().getName().toString().equals(attribute.getEntity().getName()))
+						if(sqlForDefinedView != null && queryResultObjectDataBean != null && queryResultObjectDataBean.getEntity().getName().equals(attribute.getEntity().getName()))
 						{
 							String subString = sqlForDefinedView.substring(sqlForDefinedView.indexOf("from"), sqlForDefinedView.length());
 							String mainEntitySql = "SELECT "+sqlColumnName+" "+subString;

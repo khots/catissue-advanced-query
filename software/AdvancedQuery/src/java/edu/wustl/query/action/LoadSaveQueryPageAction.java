@@ -60,7 +60,7 @@ public class LoadSaveQueryPageAction extends SecureAction
 			SaveQueryForm savedQueryForm = (SaveQueryForm) form;
 			if(request.getParameter("showTree") != null)
 			{
-				savedQueryForm.setShowTree(Boolean.valueOf(request.getParameter("showTree").toString()));
+				savedQueryForm.setShowTree(Boolean.valueOf(request.getParameter("showTree")));
 			}
 			else if(request.getSession().getAttribute("treeChkVal") != null)
 			{
