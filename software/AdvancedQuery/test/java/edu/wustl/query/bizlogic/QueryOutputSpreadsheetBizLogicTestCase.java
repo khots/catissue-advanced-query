@@ -173,6 +173,7 @@ public class QueryOutputSpreadsheetBizLogicTestCase extends TestCase
 		QueryDetails queryDetails = new QueryDetails(session);
 		queryDetails.setSessionData(sessionData);
 		queryDetails.setRandomNumber("_6358");
+		queryDetails.setAttributeColumnNameMap(attributeColumnNameMap);
 
         QueryResultObjectDataBean queryResultObjectDataBean = new QueryResultObjectDataBean();
         queryResultObjectDataBean.setEntity(participantEntity);
