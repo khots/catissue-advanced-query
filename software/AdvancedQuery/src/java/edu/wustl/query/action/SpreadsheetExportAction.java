@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.action.SecureAction;
+import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.ExportReport;
 import edu.wustl.common.util.SendFile;
@@ -44,13 +45,7 @@ public class SpreadsheetExportAction extends SecureAction
 		QueryAdvanceSearchForm searchForm = (QueryAdvanceSearchForm) form;
 		HttpSession session = request.getSession();
 		String isChkAllAcrossAll = (String) request.getParameter(AQConstants.CHECK_ALL_ACROSS_ALL_PAGES);
-		IParameterizedQuery query = (IParameterizedQuery) session.getAttribute(AQConstants.QUERY_OBJECT);
-		List<List<String>> exportList = new ArrayList<List<String>>();
-		if(query != null)
-		{
-			ExportQueryBizLogic exportBizLogic = new ExportQueryBizLogic();
-			exportBizLogic.exportDetails(query,exportList);
-		}
+		List<List<String>> exportList = getExportList(session);
 		//Extracting map from form bean which gives the serial numbers of selected rows
 		Map map = searchForm.getValues();
 		Object[] obj = map.keySet().toArray();
@@ -90,6 +85,24 @@ public class SpreadsheetExportAction extends SecureAction
 		}
 		exportAndSend(response, session, exportList, idIndexList, entityIdsMap);
 		return null;
+	}
+
+	/**
+	 * @param session session
+	 * @return exportList
+	 * @throws MultipleRootsException MultipleRootsException
+	 */
+	private List<List<String>> getExportList(HttpSession session)
+			throws MultipleRootsException
+	{
+		IParameterizedQuery query = (IParameterizedQuery) session.getAttribute(AQConstants.QUERY_OBJECT);
+		List<List<String>> exportList = new ArrayList<List<String>>();
+		if(query != null)
+		{
+			ExportQueryBizLogic exportBizLogic = new ExportQueryBizLogic();
+			exportBizLogic.exportDetails(query,exportList);
+		}
+		return exportList;
 	}
 
 	/**
@@ -206,7 +219,7 @@ public class SpreadsheetExportAction extends SecureAction
 			List<String> idIndexList, Map<Integer, List<String>> entityIdsMap)
 			throws IOException
 	{
-		ExportReport report = null;
+		ExportReport report;
 		String appName = CommonServiceLocator.getInstance().getAppHome();
 		String path = appName + System.getProperty("file.separator");
 		String csvfileName = path + AQConstants.SEARCH_RESULT;

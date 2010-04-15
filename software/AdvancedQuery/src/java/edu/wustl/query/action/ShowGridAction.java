@@ -53,11 +53,6 @@ public class ShowGridAction extends SecureAction
 		Map<EntityInterface, List<EntityInterface>> mainEntityMap = (Map<EntityInterface, List<EntityInterface>>) session
 				.getAttribute(AQConstants.MAIN_ENTITY_MAP);
 
-		//Map<String, OutputTreeDataNode> uniqueIdNodesMap = (Map<String, OutputTreeDataNode>) session.getAttribute(AQConstants.ID_NODES_MAP);
-
-		//List<OutputTreeDataNode> rootOutputTreeNodeList = (List<OutputTreeDataNode>)session.getAttribute(AQConstants.TREE_ROOTS);
-		//SessionDataBean sessionData = getSessionData(request);
-
 		String idOfClickedNode = request.getParameter(AQConstants.TREE_NODE_ID);
 		QueryOutputTreeBizLogic treeBizLogic = new QueryOutputTreeBizLogic();
 		idOfClickedNode = treeBizLogic.decryptId(idOfClickedNode);
@@ -73,7 +68,6 @@ public class ShowGridAction extends SecureAction
 			getErrorMessageUserNotAuthorized(request);
 			forward = AQConstants.FAILURE;
 		}
-
 		else
 		{
 			gridDataMap = getspreadSheetDataMap(session, idOfClickedNode, parentNodeId);
@@ -85,7 +79,6 @@ public class ShowGridAction extends SecureAction
 
 			QueryModuleUtil.setGridData(request, gridDataMap);
 		}
-
 		return mapping.findForward(forward);
 	}
 

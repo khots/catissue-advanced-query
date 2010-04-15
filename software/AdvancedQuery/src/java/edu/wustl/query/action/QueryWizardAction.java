@@ -39,7 +39,7 @@ public class QueryWizardAction extends SecureAction
 	public ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		ActionForward actionForward = null;
+		ActionForward actionForward;
 		if(AbstractEntityCache.isCacheReady)
 		{
 			HttpSession session = request.getSession();
@@ -69,28 +69,6 @@ public class QueryWizardAction extends SecureAction
 			saveErrors(request, errors);
 			actionForward = mapping.findForward(edu.wustl.query.util.global.AQConstants.FAILURE);
 		}
-
-		//Added a Default session data bean......Need to be removed when there query will have login
-
-		/*SessionDataBean sessionBean = (SessionDataBean) session
-				.getAttribute(Constants.SESSION_DATA);
-		if (sessionBean == null)
-		{
-			// HttpSession newSession = request.getSession(true);
-			Long userId = Long.valueOf((1));
-			String ipAddress = request.getRemoteAddr();
-			SessionDataBean sessionData = new SessionDataBean();
-
-			sessionData.setUserName("admin@admin.com");
-			sessionData.setIpAddress(ipAddress);
-			sessionData.setUserId(userId);
-			sessionData.setFirstName("admin@admin.com");
-			sessionData.setLastName("admin@admin.com");
-			sessionData.setAdmin(false);
-			sessionData.setSecurityRequired(true);
-
-			session.setAttribute(Constants.SESSION_DATA, sessionData);
-		}*/
 		return actionForward;
 	}
 }
