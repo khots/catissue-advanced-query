@@ -43,6 +43,14 @@ public class QueryDetails
 	public QueryDetails(HttpSession session)
 	{
 		//this.session = session;
+		setAllVariables(session);
+	}
+
+	/**
+	 * @param session session
+	 */
+	private void setAllVariables(HttpSession session)
+	{
 		rootOutputTreeNodeList = (List<OutputTreeDataNode>) session
 				.getAttribute(AQConstants.SAVE_TREE_NODE_LIST);
 		uniqueIdNodesMap = (Map<String, OutputTreeDataNode>) session
@@ -70,7 +78,7 @@ public class QueryDetails
 
 	/**
 	 *
-	 * @return
+	 * @return attributeColumnNameMap
 	 */
 	public Map<AttributeInterface, String> getAttributeColumnNameMap()
 	{
@@ -79,7 +87,7 @@ public class QueryDetails
 
 	/**
 	 *
-	 * @param attributeColumnNameMap
+	 * @param attributeColumnNameMap attributeColumnNameMap
 	 */
 	public void setAttributeColumnNameMap(Map<AttributeInterface, String> attributeColumnNameMap)
 	{

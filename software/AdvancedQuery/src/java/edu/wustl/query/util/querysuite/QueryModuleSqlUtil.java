@@ -51,15 +51,16 @@ final public class QueryModuleSqlUtil
 		try
 		{
 			String tablespace = XMLPropertyHandler.getValue(AQConstants.TABLESPACE);
+			StringBuffer tblSpace = new StringBuffer();
 			if(tablespace.length()!=0)
 			{
-				tablespace = "TABLESPACE " + tablespace;
+				tblSpace.append("TABLESPACE ").append(tablespace);
 			}
 			jdbcDao.openSession(queryDetailsObj.getSessionData());
 			jdbcDao.deleteTable(tableName);
 			String newSql = modifySqlForCreateTable(createTableSql);
 			String newCreateTableSql = AQConstants.CREATE_TABLE +
-			tableName + " " + tablespace + " " +AQConstants.AS_CONSTANT + " "+ newSql+"1=0";
+			tableName + " " + tblSpace + " " +AQConstants.AS_CONSTANT + " "+ newSql+"1=0";
 			jdbcDao.executeUpdate(newCreateTableSql);
 			String insertSql = "INSERT INTO "+tableName + " "+createTableSql;
 			executeInsertQuery(queryDetailsObj, jdbcDao, insertSql);

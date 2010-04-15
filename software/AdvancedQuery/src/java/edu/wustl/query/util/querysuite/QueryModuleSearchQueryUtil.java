@@ -471,13 +471,14 @@ public class QueryModuleSearchQueryUtil
 	}
 
 	/**
-	 * @param query
-	 * @param selectedColumnsMetadata
-	 * @return
+	 * @param query query
+	 * @param columnsMetadata columnsMetadata
+	 * @return selectedColumnsMetadata
 	 */
 	private static SelectedColumnsMetadata getAppropriateSelectedColumnMetadata(IQuery query,
-			SelectedColumnsMetadata selectedColumnsMetadata)
+			SelectedColumnsMetadata columnsMetadata)
 	{
+		SelectedColumnsMetadata selectedColumnsMetadata = columnsMetadata;
 		boolean isQueryChanged = false;
 		if (query != null && selectedColumnsMetadata != null)
 		{
@@ -494,14 +495,15 @@ public class QueryModuleSearchQueryUtil
 	}
 
 	/**
-	 * @param selectedColumnsMetadata selectedColumnsMetadata
+	 * @param columnsMetadata columnsMetadata
 	 * @param isQueryChanged isQueryChanged
 	 * @return selectedColumnsMetadata
 	 */
 	private static SelectedColumnsMetadata setDefinedViewInMetadata(
-			SelectedColumnsMetadata selectedColumnsMetadata,
+			SelectedColumnsMetadata columnsMetadata,
 			boolean isQueryChanged)
 	{
+		SelectedColumnsMetadata selectedColumnsMetadata = columnsMetadata;
 		if (isQueryChanged || selectedColumnsMetadata == null)
 		{
 			selectedColumnsMetadata = new SelectedColumnsMetadata();
