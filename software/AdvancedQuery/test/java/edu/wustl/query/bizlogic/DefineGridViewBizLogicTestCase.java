@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -16,6 +17,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
+import edu.wustl.common.query.queryobject.impl.QueryTreeNodeData;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.query.queryobject.util.QueryObjectProcessor;
@@ -203,6 +205,10 @@ public class DefineGridViewBizLogicTestCase extends TestCase
 
         DefineGridViewBizLogic gridViewBizLogic = new DefineGridViewBizLogic();
         gridViewBizLogic.getSelectedColumnsMetadata(searchForm, queryDetails, selectedColumnsMetadata, query.getConstraints());
+        gridViewBizLogic.getSelectedColumnMetadataForSavedQuery(queryDetails.getUniqueIdNodesMap().values(), selectedColumnsMetadata.getSelectedOutputAttributeList(), selectedColumnsMetadata);
+
+        Vector<QueryTreeNodeData> treeDataVector = new Vector<QueryTreeNodeData>();
+        gridViewBizLogic.createTree(searchForm, queryDetails, treeDataVector, outputTreeDataNode, null);
 	}
 
 	public void testGetColumnsMetadataForSelectedNodes()
