@@ -211,6 +211,14 @@ public class QueryModuleUtilTestCase extends TestCase
         session.removeAttribute(AQConstants.RANDOM_NUMBER);
         String randomNumber = QueryModuleUtil.generateRandomNumber(session);
         assertNotNull(randomNumber);
+        queryResultObjectDataBean.getPrivilegeType();
+        queryResultObjectDataBean.isHasAssociatedIdentifiedData();
+        queryResultObjectDataBean.getEntityId();
+        queryResultObjectDataBean.getFileTypeAtrributeIndexMetadataMap();
+        queryResultObjectDataBean.getEntityIdIndexMap();
+        queryResultObjectDataBean.getObjectColumnIds();
+        queryResultObjectDataBean.isMainEntity();
+        queryResultObjectDataBean.isClobeType();
 	}
 
 	public void testIsPresentInArray()
