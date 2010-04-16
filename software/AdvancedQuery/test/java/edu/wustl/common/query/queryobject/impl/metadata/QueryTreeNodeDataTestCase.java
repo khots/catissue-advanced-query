@@ -37,5 +37,8 @@ public class QueryTreeNodeDataTestCase extends TestCase
 		treeNodeData.getParentObjectName();
 		treeNodeData.getParentTreeNode();
 		treeNodeData.getToolTipText();
+
+		treeNodeData.hasEqualParents(treeNodeData);
+		treeNodeData.isChildOf(treeNodeData);
 	}
 }
