@@ -795,8 +795,24 @@ public class DAGPanel
 				modifyCnditionForLessThanEquals(readDeniedIds, allMainProtocolIds, formattedIds,
 						conditionValues);
 			}
-			/*strToCreateObject = strToCreateObject + AQConstants.ID_CONDITION+attributeId+
-			AQConstants.CONDITION_SEPERATOR+"In"+AQConstants.CONDITION_SEPERATOR+formattedIds+";";*/
+			if(strToCreateObject.length() == 0)
+			{
+				if(formattedIds.length() ==0)
+				{
+					strToCreateObject = strToCreateObject + AQConstants.ID_CONDITION+attributeId+
+					AQConstants.CONDITION_SEPERATOR+"Is Null"+";";
+				}
+				else
+				{
+					strToCreateObject = strToCreateObject + AQConstants.ID_CONDITION+attributeId+
+					AQConstants.CONDITION_SEPERATOR+"In"+AQConstants.CONDITION_SEPERATOR+formattedIds+";";
+				}
+			}
+			else if(formattedIds.length() ==0)
+			{
+				strToCreateObject = AQConstants.ID_CONDITION+attributeId+
+				AQConstants.CONDITION_SEPERATOR+"Is Null"+";";
+			}
 		}
 		return strToCreateObject;
 	}
@@ -816,7 +832,7 @@ public class DAGPanel
 			List<String> conditionValues)
 	{
 		String value = conditionValues.get(0);
-		if(!readDeniedIds.contains(value))
+		if(!readDeniedIds.contains(Long.valueOf(value)))
 		{
 			formattedIds.append('&').append(value);
 		}
@@ -937,7 +953,7 @@ public class DAGPanel
 	{
 		for(String value : conditionValues)
 		{
-			if(!readDeniedIds.contains(value))
+			if(!readDeniedIds.contains(Long.valueOf(value)))
 			{
 				formattedIds.append('&').append(value);
 			}
@@ -962,7 +978,7 @@ public class DAGPanel
 		}
 		for(Long readDeniedId : readDeniedIds)
 		{
-			if(!conditionValues.contains(readDeniedId))
+			if(!conditionValues.contains(readDeniedId.toString()))
 			{
 				formattedIds.append('&').append(readDeniedId);
 			}
