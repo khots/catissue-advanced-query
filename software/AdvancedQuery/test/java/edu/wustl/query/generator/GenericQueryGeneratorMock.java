@@ -38,6 +38,7 @@ import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IDateOffsetLiteral;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IExpressionAttribute;
+import edu.wustl.common.querysuite.queryobject.IExpressionOperand;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
@@ -254,7 +255,53 @@ public class GenericQueryGeneratorMock extends EntityManager
         return query;
     }
 
-    public static IQuery createParticipantFNameNotNullQuery()
+    public static IQuery createPMIQuery()
+    {
+        IQuery query = null;
+        try
+        {
+            query = QueryObjectFactory.createQuery();
+            IConstraints constraints = QueryObjectFactory.createConstraints();
+            query.setConstraints(constraints);
+
+            // creating Participant Expression.
+            EntityCache cache = EntityCacheFactory.getInstance();
+            EntityInterface pmiEntity = GenericQueryGeneratorMock.createEntity("ParticipantMedicalIdentifier");
+            pmiEntity = getEntity(cache, pmiEntity);
+            IQueryEntity pmiConstraintEntity = QueryObjectFactory.createQueryEntity(pmiEntity);
+            IExpression pmiExpression = constraints.addExpression(pmiConstraintEntity);
+            pmiExpression.addOperand(createPMIRule(pmiEntity));
+            //
+            // // creating output tree.
+            pmiExpression.setInView(true);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        return query;
+    }
+
+    private static IExpressionOperand createPMIRule(EntityInterface pmiEntity)
+    {
+        List<ICondition> conditions = new ArrayList<ICondition>();
+        conditions.add(createPMICondition(pmiEntity));
+        IRule rule = QueryObjectFactory.createRule(conditions);
+
+        return rule;
+    }
+
+	private static ICondition createPMICondition(EntityInterface pmiEntity)
+	{
+        List<String> values = new ArrayList<String>();
+        AttributeInterface attribute = findAttribute(pmiEntity, "id");
+        ICondition condition = QueryObjectFactory.createCondition(attribute, RelationalOperator.IsNotNull, values);
+
+        return condition;
+    }
+
+	public static IQuery createParticipantFNameNotNullQuery()
     {
     	IQuery query = null;
         try
