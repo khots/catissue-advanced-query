@@ -602,12 +602,12 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 			queriesIdSet.addAll(sharedQueryIdList);
 			queries=CsmUtility.retrieveQueries(queriesIdSet, queryNameLike);
 		}
-		catch (SMException e)
+		catch (CSObjectNotFoundException e)
 		{
 			LOGGER.error(e.getMessage(),e);
 			throw new BizLogicException(null,e,e.getMessage());
 		}
-		catch (CSObjectNotFoundException e)
+		catch (SMException e)
 		{
 			LOGGER.error(e.getMessage(),e);
 			throw new BizLogicException(null,e,e.getMessage());
@@ -617,7 +617,6 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 			LOGGER.error(e.getMessage(),e);
 			throw new BizLogicException(null,e,e.getMessage());
 		}
-
 		return queries;
 	}
 
