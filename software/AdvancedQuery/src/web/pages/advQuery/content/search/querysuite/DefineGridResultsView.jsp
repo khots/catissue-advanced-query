@@ -10,6 +10,7 @@
 	import="edu.wustl.common.query.queryobject.impl.QueryTreeNodeData"%>
 <%@ page import="edu.wustl.query.actionForm.CategorySearchForm"%>
 <%@ page import="edu.wustl.common.beans.NameValueBean"%>
+<%@ page import="edu.wustl.common.util.global.ApplicationProperties"%>
 <html>
 <head>
 
@@ -35,6 +36,7 @@
 			.getCurrentSelectedNodeInTree();
 	String showSelected = "false";
 	List selectedColumnNameValueBeanList = form.getSelColNVBeanList();
+	String appName = ApplicationProperties.getValue("app.name");
 %>
 
 
@@ -50,8 +52,13 @@
 
 		<tr>
 			<td width="1px">&nbsp;</td>
-			<td valign="top" colspan="8" width="100%"><bean:message
-				key="query.defineGridResultsView.message" /></td>
+			<td valign="top" colspan="8" width="100%">
+			<%if(!appName.equalsIgnoreCase("ClinPortal"))
+			{%>
+			<bean:message
+				key="query.defineGridResultsView.message" />
+				<%}%>
+				</td>
 		</tr>
 
 
