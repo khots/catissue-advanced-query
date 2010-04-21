@@ -9,6 +9,11 @@
 <%
 	ParameterizedQuery query = (ParameterizedQuery) session
 	.getAttribute(AQConstants.QUERY_OBJECT);
+	String description = query.getDescription();
+	if(description == null)
+	{
+		description = "NA";
+	}
 %>
 <%@page
 	import="edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery"%>
@@ -60,7 +65,7 @@
 
 					 </td>
 					 <td  class="formSaveQueryTitle" align="left">
-					: <%=query.getDescription()%>
+					: <%=description%>
 					 </td>
 				</tr>
 
