@@ -23,9 +23,10 @@ import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.ColumnValueBean;
 
 /**
- * This class is called from an Ant target to insert indirect paths between clinportal entities.
+ * This class is called from an Ant target to insert indirect paths between clinportal/caTissue entities.
  * It takes a text file as an input. The file contains list of entities to be connected on each line.
- * E.g : edu.wustl.clinportal.domain.ClinicalStudy,edu.wustl.clinportal.domain.ClinicalStudyRegistration,edu.wustl.clinportal.domain.Participant
+ * E.g : edu.wustl.clinportal.domain.ClinicalStudy,edu.wustl.clinportal.domain.ClinicalStudyRegistration,
+ * edu.wustl.catissue.domain.Participant,edu.wustl.catissue.domain.CollectionProtocol
  * @author deepti_shelar
  *
  */
@@ -85,7 +86,7 @@ public class InsertPaths
 		{
 			getPathAndInsert(dao,entityList);
 		}
-		writer.write("\nCompleted inserting indirect paths between clinportal entities.");
+		writer.write("\nCompleted inserting indirect paths between the given entities.");
 		writer.flush();
 		writer.close();
 	}
