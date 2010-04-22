@@ -306,10 +306,6 @@ public class AQConstants
 	String delimiter = "_";
 
 	/**
-	 * Specify the GET_SEARCH_RESULTS field.
-	 */
-	String GET_SEARCH_RESULTS = "/ViewSearchResultsAction.do";
-	/**
 	 * Specify the ADD_TO_LIMIT_ACTION field.
 	 */
 	public static final String ENTITY_STR = "entity_str";
