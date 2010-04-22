@@ -239,24 +239,38 @@ final public class QueryModuleUtil
 			Map<String, String> attrNameColumn, boolean isTagPresentEntity,
 			Map<String, String> columnNamePositionMap)
 	{
-		String dspNameColName = displayName;
+		StringBuffer dspNameColName = getDisplayColName(displayName);
 		if(isTagPresentEntity)
 		{
-			dspNameColName = getColDisplayName(dspNameColName,columnNamePositionMap);
+			dspNameColName = new StringBuffer(getColDisplayName(displayName,columnNamePositionMap));
 			if(!attrNameColumn.isEmpty())
 			{
 				String columnNameForBirthDate = attrNameColumn.get("birthDate");
 				String columnNameForDeaththDate = attrNameColumn.get("deathDate");
 				if(dspNameColName == null)
 				{
-					dspNameColName = columnNameForBirthDate +", " + columnNameForDeaththDate;
+					dspNameColName = new StringBuffer();
+					dspNameColName.append(columnNameForBirthDate).append(", ").append(columnNameForDeaththDate);
 				}
 				else
 				{
-					dspNameColName = dspNameColName + ", " + columnNameForBirthDate +
-					", " + columnNameForDeaththDate;
+					dspNameColName.append(", ").append(columnNameForBirthDate).append(", ").append(columnNameForDeaththDate);
 				}
 			}
+		}
+		return dspNameColName.toString();
+	}
+
+	/**
+	 * @param displayName displayName
+	 * @return dspNameColName
+	 */
+	private static StringBuffer getDisplayColName(String displayName)
+	{
+		StringBuffer dspNameColName = null;
+		if(displayName != null)
+		{
+			dspNameColName = new StringBuffer(displayName);
 		}
 		return dspNameColName;
 	}
@@ -308,36 +322,38 @@ final public class QueryModuleUtil
 			Map<String, String> columnNamePositionMap,
 			Iterator<String> iterator, String position1)
 	{
-		String dspNameColName = displayColumnName;
+		StringBuffer dspNameColName = getDisplayColName(displayColumnName);
 		String position2;
 		position2 = iterator.next();
 		if(Integer.parseInt(position1)<Integer.parseInt(position2))
 		{
 			if(dspNameColName == null)
 			{
-				dspNameColName = columnNamePositionMap.get(position1)+
-				", "+columnNamePositionMap.get(position2);
+				dspNameColName = new StringBuffer();
+				dspNameColName.append(columnNamePositionMap.get(position1))
+				.append(", ").append(columnNamePositionMap.get(position2));
 			}
 			else
 			{
-				dspNameColName = dspNameColName + columnNamePositionMap.get
-				(position1)+", "+columnNamePositionMap.get(position2);
+				dspNameColName.append(columnNamePositionMap.get
+				(position1)).append(", ").append(columnNamePositionMap.get(position2));
 			}
 		}
 		else
 		{
 			if(dspNameColName == null)
 			{
-				dspNameColName = columnNamePositionMap.get(position2)+
-				", "+columnNamePositionMap.get(position1);
+				dspNameColName = new StringBuffer();
+				dspNameColName.append(columnNamePositionMap.get(position2)).append(", ")
+				.append(columnNamePositionMap.get(position1));
 			}
 			else
 			{
-				dspNameColName = dspNameColName + columnNamePositionMap.get
-				(position2)+", "+columnNamePositionMap.get(position1);
+				dspNameColName.append(columnNamePositionMap.get
+				(position2)).append(", ").append(columnNamePositionMap.get(position1));
 			}
 		}
-		return dspNameColName;
+		return dspNameColName.toString();
 	}
 
 	/**
@@ -559,7 +575,7 @@ final public class QueryModuleUtil
 	public static String executeQuery(HttpServletRequest request, IQuery parameterizedQuery)
 	{
 		boolean isRulePresentInDag = checkIfRulePresentInDag(parameterizedQuery);
-		QueryModuleError errorCode = null;
+		QueryModuleError errorCode;
 		QueryModuleSearchQueryUtil qMSearchQuery = new QueryModuleSearchQueryUtil(request,
 				parameterizedQuery);
 		if (isRulePresentInDag)
@@ -619,7 +635,7 @@ final public class QueryModuleUtil
 	 */
 	public static String generateRandomNumber(HttpSession session)
 	{
-		String randomNumber = "";
+		String randomNumber;
 		if (session.getAttribute(AQConstants.RANDOM_NUMBER) == null)
 		{
 			int number = (int) (Math.random() * 100000);

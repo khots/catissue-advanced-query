@@ -63,11 +63,12 @@ public class Utility //extends edu.wustl.common.util.Utility
 
 	/**
 	 * Returns the formatted object compatible to grid format.
-	 * @param obj object
+	 * @param object object
 	 * @return obj The formatted object
 	 */
-	public static Object toNewGridFormat(Object obj)
+	public static Object toNewGridFormat(Object object)
 	{
+		Object obj = object;
 	    obj = edu.wustl.common.util.Utility.toGridFormat(obj);
 		if (obj instanceof String)
 		{
@@ -262,7 +263,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 		 * being applied to each column of the grid, which increasing the total
 		 * width of the grid. Now the width of each column is set to 80.
 		 */
-		String columnWidth = null;
+		String columnWidth;
 		if ("ID".equals(columnName.trim()))
 		{
 			columnWidth = "0";
@@ -336,7 +337,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 
 	public static String getQueryTitle(String title)
 	{
-		String multilineTitle = "";
+		String multilineTitle;
 		if (title.length() <= AQConstants.CHARACTERS_IN_ONE_LINE)
 		{
 			multilineTitle = title;
@@ -441,31 +442,60 @@ public class Utility //extends edu.wustl.common.util.Utility
 	{
 		request.setAttribute("myData",getmyData(dataList));
 		request.setAttribute("columns", getcolumns(columnList));
-		boolean isWidthInPercent=false;
-		isWidthInPercent = setIsWidthPercent(columnList, isWidthInPercent);
+		boolean isWidthInPercent = isWidthInPercent(columnList);
 		request.setAttribute("colWidth",getcolWidth(columnList,isWidthInPercent));
 		request.setAttribute("isWidthInPercent",isWidthInPercent);
 		request.setAttribute("colTypes",getcolTypes(dataList));
 		int heightOfGrid = setHeightOfGrid(dataList);
 		request.setAttribute("heightOfGrid", heightOfGrid);
-		int col = 0;
+		int col;
 		int index=0;
-		String hiddenColNos="";
+		StringBuffer hiddenColNos=new StringBuffer();
 		if(columnList!=null)
 		{
 			for(col=0;col<columnList.size();col++)
 			{
-				if (columnList.get(col).toString().trim().equals("ID") ||
-				columnList.get(col).toString().trim().equals("Status")
-				|| columnList.get(col).toString().trim().equals("Site Name")||
-				columnList.get(col).toString().trim().equals("Report Collection Date"))
-				{
-					hiddenColNos=hiddenColNos+"hiddenColumnNumbers["+index+"] = "+col+";";
-					index++;
-				}
+				index = populateHiddenColNos(columnList, col, index,
+						hiddenColNos);
 			}
 		}
-		request.setAttribute("hiddenColumnNumbers", hiddenColNos);
+		request.setAttribute("hiddenColumnNumbers", hiddenColNos.toString());
+	}
+
+	/**
+	 * @param columnList columnList
+	 * @return isWidthInPercent
+	 */
+	private static boolean isWidthInPercent(List columnList)
+	{
+		boolean isWidthInPercent=false;
+		if( columnList.size()<AQConstants.TEN)
+		{
+			isWidthInPercent=true;
+		}
+		return isWidthInPercent;
+	}
+
+	/**
+	 * @param columnList columnList
+	 * @param col column
+	 * @param counter counter
+	 * @param hiddenColNos hiddenColNos
+	 * @return index
+	 */
+	private static int populateHiddenColNos(List columnList, int col,
+			int counter, StringBuffer hiddenColNos)
+	{
+		int index = counter;
+		if (columnList.get(col).toString().trim().equals("ID") ||
+		columnList.get(col).toString().trim().equals("Status")
+		|| columnList.get(col).toString().trim().equals("Site Name")||
+		columnList.get(col).toString().trim().equals("Report Collection Date"))
+		{
+			hiddenColNos.append("hiddenColumnNumbers["+index+"] = ").append(col).append(';');
+			index++;
+		}
+		return index;
 	}
 
 	/**
@@ -485,22 +515,6 @@ public class Utility //extends edu.wustl.common.util.Utility
 			}
 		}
 		return heightOfGrid;
-	}
-
-	/**
-	 * @param columnList column list
-	 * @param width width
-	 * @return isWidthInPercent
-	 */
-	private static boolean setIsWidthPercent(List columnList,
-			boolean width)
-	{
-		boolean isWidthInPercent = width;
-		if( columnList.size()<AQConstants.TEN)
-		{
-			isWidthInPercent=true;
-		}
-		return isWidthInPercent;
 	}
 
 	/**
