@@ -24,6 +24,7 @@ import edu.wustl.common.querysuite.queryobject.IOutputEntity;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.dao.query.generator.ColumnValueBean;
+import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.generator.GenericQueryGeneratorMock;
 import edu.wustl.query.util.global.AQConstants;
@@ -226,5 +227,11 @@ public class QueryModuleUtilTestCase extends TestCase
 		String attributeName = "firstName";
 		boolean isPresent = QueryModuleUtil.isPresentInArray(attributeName, AQConstants.ATTR_NAME_TREENODE_LBL);
 		assertEquals("Is present in array",true,isPresent);
+	}
+
+	public void testSetDefaultSelections()
+	{
+		CategorySearchForm searchForm = new CategorySearchForm();
+		searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
 	}
 }
