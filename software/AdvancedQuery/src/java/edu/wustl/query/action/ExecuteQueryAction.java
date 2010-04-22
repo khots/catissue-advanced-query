@@ -4,6 +4,8 @@
 
 package edu.wustl.query.action;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +21,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
+import edu.wustl.common.util.global.Constants;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.util.global.AQConstants;
@@ -106,6 +109,13 @@ public class ExecuteQueryAction extends Action
 	 */
 	private void saveActionErrors(HttpServletRequest request, String errorMessage)
 	{
+		List<String> xssViolationErrors =
+			(ArrayList<String>)request.getAttribute(Constants.VIOLATING_PROPERTY_NAMES);
+		if(xssViolationErrors!=null && xssViolationErrors.size() == 1
+					&& xssViolationErrors.contains("queryString"))
+		{
+			request.removeAttribute(Constants.VIOLATING_PROPERTY_NAMES);
+		}
 		ActionErrors errors = new ActionErrors();
 		ActionError error = new ActionError("errors.item", errorMessage);
 		errors.add(ActionErrors.GLOBAL_ERROR, error);
