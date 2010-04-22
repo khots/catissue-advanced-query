@@ -258,7 +258,22 @@ final public class QueryModuleUtil
 				}
 			}
 		}
-		return dspNameColName.toString();
+		String returnValue = getReturnValue(dspNameColName);
+		return returnValue;
+	}
+
+	/**
+	 * @param dspNameColName dspNameColName
+	 * @return returnValue
+	 */
+	private static String getReturnValue(StringBuffer dspNameColName)
+	{
+		String returnValue = null;
+		if(dspNameColName != null)
+		{
+			returnValue = dspNameColName.toString();
+		}
+		return returnValue;
 	}
 
 	/**
