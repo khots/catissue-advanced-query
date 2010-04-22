@@ -91,7 +91,7 @@ public class LoadSaveQueryPageAction extends SecureAction
 	{
 		List<NameValueBean> coordinators = new ArrayList<NameValueBean>();
 		long[] protocolCoordIds = savedQueryForm.getProtocolCoordinatorIds();
-		List users = new ArrayList();
+		List users;
 		users = bizLogic.getCSMUsers();
 		if (protocolCoordIds != null && protocolCoordIds.length > 0)
 		{
@@ -218,10 +218,9 @@ public class LoadSaveQueryPageAction extends SecureAction
 	{
 		boolean isDagEmpty = true;
 		IConstraints constraints = queryObject.getConstraints();
-		for (IExpression exp : constraints)
+		if(constraints.size() != 0)
 		{
 			isDagEmpty = false;
-			break;
 		}
 		return isDagEmpty;
 	}

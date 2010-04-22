@@ -57,7 +57,7 @@ public class QueryCsmBizLogic
             Map<Long, QueryResultObjectDataBean> queryResulObjectDataMap, OutputTreeDataNode root,
             boolean hasConditionOnIdentifiedField, int startIndex, int noOfRecords) throws BizLogicException
     {
-        List<List<String>> dataList = new ArrayList<List<String>>();
+        	List<List<String>> dataList;
             QueryParams queryParams = new QueryParams();
             queryParams.setQuery(selectSql);
             queryParams.setSessionDataBean(queryDetailsObj.getSessionData());

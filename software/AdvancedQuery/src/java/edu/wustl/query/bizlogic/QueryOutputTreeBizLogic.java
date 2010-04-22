@@ -212,7 +212,7 @@ public class QueryOutputTreeBizLogic
             Vector<QueryTreeNodeData> treeDataVector)
     {
         Iterator dataListIterator = dataList.iterator();
-        List rowList = new ArrayList();
+        List rowList;
         String uniqueNodeId = node.getUniqueNodeId();
         String parentNodeId = uniqueNodeId + AQConstants.UNDERSCORE + AQConstants.LABEL_TREE_NODE;
 
@@ -583,7 +583,7 @@ public class QueryOutputTreeBizLogic
     {
         Iterator dataListIterator = dataList.iterator();
         List<String> existingNodesList = new ArrayList<String>();
-        List rowList = new ArrayList();
+        List rowList;
         String outputTreeStr = "";
         while (dataListIterator.hasNext())
         {

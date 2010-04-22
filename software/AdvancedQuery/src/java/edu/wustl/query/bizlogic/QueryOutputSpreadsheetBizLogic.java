@@ -932,7 +932,7 @@ public class QueryOutputSpreadsheetBizLogic
 		Map<Integer, String> entityIdIndexMainEntityIdMap = new HashMap<Integer, String>();
 		Map<String, Object> exportMetataDataMap = new HashMap<String, Object>();
 		List<List<String>> newDataList = new ArrayList<List<String>>();
-		List<String> exportRow = new ArrayList<String>();
+		List<String> exportRow;
 		Map<Integer, List> entityIdsMap = new HashMap<Integer, List>();
 		int rowNo = 0;
 		for (List<String> row : dataList)

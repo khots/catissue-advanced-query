@@ -84,8 +84,6 @@ public class QueryCoreServletContextListenerUtil
 		Variables.maxTreeNdLmtForChildNd = Integer.parseInt(XMLPropertyHandler
 				.getValue(AQConstants.MAX_TREE_NODE_LIMIT_CHILD));
 		readProperties();
-		path = System.getProperty("app.propertiesFile");
-
 	}
 
 	/**

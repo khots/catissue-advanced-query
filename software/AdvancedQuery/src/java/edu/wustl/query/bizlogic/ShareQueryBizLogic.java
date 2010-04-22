@@ -81,7 +81,7 @@ public class ShareQueryBizLogic
 	{
 		List<NameValueBean> coordinators = new ArrayList<NameValueBean>();
 		long[] protocolCoordIds = savedQueryForm.getProtocolCoordinatorIds();
-		List users = new ArrayList();
+		List users;
 		users = getCSMUsers();
 		if (protocolCoordIds != null && protocolCoordIds.length > 0)
 		{
