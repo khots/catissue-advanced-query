@@ -7,7 +7,9 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.beans.QueryResultObjectData;
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.util.global.AbstractClient;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
@@ -111,6 +113,18 @@ public class QueryCsmCacheManagerTestCase extends TestCase
 
         cacheManager.filterRow(sessionData, queryResultObjectDataBeanMap, aList, cache);
         cacheManager.hasPrivilegeOnIdentifiedData(sessionData, queryResultObjectDataBeanMap, aList, cache);
+
+        QueryResultObjectData queryResultObjectData = new QueryResultObjectData();
+        queryResultObjectData.setAliasName("Participant");
+        queryResultObjectData.setIdentifiedDataColumnIds(identifiedDataColumnIds);
+        queryResultObjectData.setIdentifierColumnId(10);
+        queryResultObjectData.setDependentColumnIds(new ArrayList());
+        queryResultObjectData.setRelatedQueryResultObjects(new ArrayList());
+        Map queryResultObjectDataMap = new HashMap();
+        queryResultObjectDataMap.put("Participant", queryResultObjectData);
+        AbstractClient.objectTableNames.put("Participant", "CATISSUE_PARTICIPANT");
+        cacheManager.filterRowForSimpleSearch(sessionData, queryResultObjectDataMap, aList, cache);
+        cacheManager.hasPrivilegeOnIdentifiedDataForSimpleSearch(sessionData, queryResultObjectDataMap, aList, cache);
 
         queryResultObjectDataBean.setEntityMainIdListMap(new HashMap<EntityInterface, List<List<String>>>());
         queryResultObjectDataBeanMap = new HashMap<String, QueryResultObjectDataBean>();
