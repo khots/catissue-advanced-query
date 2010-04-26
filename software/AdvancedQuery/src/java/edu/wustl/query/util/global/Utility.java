@@ -731,7 +731,10 @@ public class Utility //extends edu.wustl.common.util.Utility
 	            {
 	                try
 	                {
-	                    jdbcDao.closeSession();
+	                	if(jdbcDao != null)
+	                	{
+	                		jdbcDao.closeSession();
+	                	}
 	                }
 	                catch (DAOException e)
 	                {

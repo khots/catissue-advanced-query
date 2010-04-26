@@ -468,14 +468,17 @@ public class QueryCSMUtil
 			List<EntityInterface> mainEntityList)
 	{
 		EntityInterface mainEntityObject=null;
-		if(mainEntityList != null && mainEntityList.size()>1)
+		if(mainEntityList != null)
 		{
-			mainEntityObject = getMainEntityObject(mainEntityList,
-					mainEntityObject);
-		}
-		else
-		{
-			mainEntityObject = mainEntityList.get(0);
+			if( mainEntityList.size()>1)
+			{
+				mainEntityObject = getMainEntityObject(mainEntityList,
+						mainEntityObject);
+			}
+			else
+			{
+				mainEntityObject = mainEntityList.get(0);
+			}
 		}
 		return mainEntityObject;
 	}

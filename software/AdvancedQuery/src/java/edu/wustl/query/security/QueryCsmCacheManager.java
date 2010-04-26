@@ -604,7 +604,7 @@ public class QueryCsmCacheManager
 			EntityInterface hookEntity, String intermediatePath)
 			throws DAOException, SQLException
 	{
-		AssociationInterface association;
+		AssociationInterface association=null;
 		String pathSql;
 		LinkedList<ColumnValueBean> columnValueBean;
 		ColumnValueBean bean;
@@ -620,7 +620,10 @@ public class QueryCsmCacheManager
 			associationId = resultSet1.getLong(1);
 		}
 		jdbcDAO.closeStatement(resultSet1);
-		association = hookEntity.getAssociationByIdentifier(Long.valueOf(associationId));
+		if(associationId != null)
+		{
+			association = hookEntity.getAssociationByIdentifier(Long.valueOf(associationId));
+		}
 		return association;
 	}
 

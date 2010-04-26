@@ -301,11 +301,6 @@ public class AQConstants
 
 
 	/**
-	 * delimiter.
-	 */
-	String delimiter = "_";
-
-	/**
 	 * Specify the ADD_TO_LIMIT_ACTION field.
 	 */
 	public static final String ENTITY_STR = "entity_str";
