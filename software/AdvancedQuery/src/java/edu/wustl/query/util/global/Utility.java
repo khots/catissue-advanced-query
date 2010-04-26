@@ -729,17 +729,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	            }
 	            finally
 	            {
-	                try
-	                {
-	                	if(jdbcDao != null)
-	                	{
-	                		jdbcDao.closeSession();
-	                	}
-	                }
-	                catch (DAOException e)
-	                {
-	                	logger.error(e.getMessage(), e);
-	                }
+	                closeSession(jdbcDao);
 	            }
 	        }
 	        else
@@ -748,6 +738,24 @@ public class Utility //extends edu.wustl.common.util.Utility
 	        }
 	        return cpIdsList;
 	    }
+
+	  	/**
+	  	 * @param jdbcDao jdbcDao
+	  	 */
+		private static void closeSession(JDBCDAO jdbcDao)
+		{
+			try
+			{
+				if(jdbcDao != null)
+				{
+					jdbcDao.closeSession();
+				}
+			}
+			catch (DAOException e)
+			{
+				logger.error(e.getMessage(), e);
+			}
+		}
 
 	  	/**
 	  	 * @param sessionDataBean bean
