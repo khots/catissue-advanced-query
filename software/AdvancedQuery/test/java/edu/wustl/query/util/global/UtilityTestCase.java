@@ -123,6 +123,50 @@ public class UtilityTestCase extends TestCase
 		Utility.getGridWidth(columnNames);
 	}
 
+	public void testGetColTypes()
+	{
+		List dataList = new ArrayList();
+
+		List list = new ArrayList();
+		list.add("");
+		list.add("Active");
+		list.add("Male Gender");
+		list.add("01-01-1957 00:00:00");
+		list.add("");
+		list.add("1");
+		dataList.add(list);
+
+		list = new ArrayList();
+		list.add("");
+		list.add("CLosed");
+		list.add("Female Gender");
+		list.add("01-10-1988 00:00:00");
+		list.add("");
+		list.add("2");
+		dataList.add(list);
+		Utility.getcolTypes(dataList);
+	}
+
+	public void testGetColumns()
+	{
+		List columnList = new ArrayList();
+		columnList.add("Activity Status : Participant");
+		columnList.add("Social Security Number : Participant");
+		columnList.add("Gender : Participant");
+		columnList.add("Middle Name : Participant");
+		columnList.add("First Name : Participant");
+		columnList.add("ID : Participant");
+		columnList.add("Id : Participant");
+		columnList.add("Birth Date : Participant");
+		columnList.add("Last Name : Participant");
+		String columnNames = Utility.getcolumns(columnList);
+	}
+
+	public void testSetReadDeniedSqlMap()
+	{
+		Utility.setReadDeniedAndEntitySqlMap();
+	}
+
 	public void testSetGridData()
 	{
 		List columnList = new ArrayList();
@@ -143,6 +187,14 @@ public class UtilityTestCase extends TestCase
 		list.add("");
 		list.add("1");
 		List dataList = new ArrayList();
+		dataList.add(list);
+		list = new ArrayList();
+		list.add("");
+		list.add("CLosed");
+		list.add("Female Gender");
+		list.add("01-10-1988 00:00:00");
+		list.add("");
+		list.add("2");
 		dataList.add(list);
 		HttpServletRequest request = new HttpServletRequest() {
 
