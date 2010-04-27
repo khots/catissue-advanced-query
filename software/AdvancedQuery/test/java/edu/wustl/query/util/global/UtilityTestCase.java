@@ -167,6 +167,16 @@ public class UtilityTestCase extends TestCase
 		Utility.setReadDeniedAndEntitySqlMap();
 	}
 
+	public void testGetSQLForNode()
+	{
+		String parentNodeId = "3";
+		String tableName = "TEMP_OUTPUTTREE2441_6358";
+        String parentIdColumnName = "Column8";
+        String selectSql = "select distinct Column10";
+        String idColumnOfCurrentNode = "Column10";
+        Utility.getSQLForNode(parentNodeId, tableName, parentIdColumnName, selectSql, idColumnOfCurrentNode);
+	}
+
 	public void testSetGridData()
 	{
 		List columnList = new ArrayList();
