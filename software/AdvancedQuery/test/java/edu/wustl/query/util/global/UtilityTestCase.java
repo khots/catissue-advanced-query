@@ -22,6 +22,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.QueryResultObjectData;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.query.generator.GenericQueryGeneratorMock;
 import edu.wustl.query.util.querysuite.EntityCacheFactory;
@@ -84,6 +85,22 @@ public class UtilityTestCase extends TestCase
 		row.add("");
 		row.add("1");
 		Map<Integer, QueryResultObjectData> hyperlinkColMap = new HashMap<Integer, QueryResultObjectData>();
+		List<Integer> identifiedDataColumnIds = new ArrayList<Integer>();
+        identifiedDataColumnIds.add(1);
+        identifiedDataColumnIds.add(3);
+        identifiedDataColumnIds.add(5);
+        identifiedDataColumnIds.add(6);
+        identifiedDataColumnIds.add(12);
+        identifiedDataColumnIds.add(14);
+
+		QueryResultObjectData queryResultObjectData = new QueryResultObjectData();
+        queryResultObjectData.setAliasName("Participant");
+        queryResultObjectData.setIdentifiedDataColumnIds(identifiedDataColumnIds);
+        queryResultObjectData.setIdentifierColumnId(5);
+        queryResultObjectData.setDependentColumnIds(new ArrayList());
+        queryResultObjectData.setRelatedQueryResultObjects(new ArrayList());
+        hyperlinkColMap.put(0, queryResultObjectData);
+        Variables.aliasAndPageOfMap.put("Participant", "pageOfQueryModule");
 		Utility.toNewGridFormatWithHref(row, hyperlinkColMap, 0);
 	}
 
@@ -175,6 +192,20 @@ public class UtilityTestCase extends TestCase
         String selectSql = "select distinct Column10";
         String idColumnOfCurrentNode = "Column10";
         Utility.getSQLForNode(parentNodeId, tableName, parentIdColumnName, selectSql, idColumnOfCurrentNode);
+	}
+
+	public void testGetCPIdsList()
+	{
+		String objName = "Participant";
+		Long identifier = 1l;
+		SessionDataBean sessionData = new SessionDataBean();
+		Variables.mainProtocolObject = "ClinicalStudy";
+		Variables.entityCPSqlMap.put("Participant", "SELECT CSR.CLINICAL_STUDY_ID ,PARTICIPANT.IDENTIFIER FROM CATISSUE_CLINICAL_STUDY_REG CSR,CATISSUE_PARTICIPANT PARTICIPANT WHERE CSR.PARTICIPANT_ID =  PARTICIPANT.IDENTIFIER AND PARTICIPANT.IDENTIFIER =");
+		sessionData.setCsmUserId("1");
+		sessionData.setIpAddress("10.88.199.11");
+		sessionData.setUserId(1l);
+		sessionData.setUserName("admin@admin.com");
+		Utility.getCPIdsList(objName, identifier, sessionData);
 	}
 
 	public void testSetGridData()
