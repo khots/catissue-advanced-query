@@ -34,6 +34,18 @@ import edu.wustl.security.privilege.PrivilegeType;
 
 public class QueryOutputSpreadsheetBizLogicTestCase extends TestCase
 {
+	private SessionDataBean getSessionData()
+	{
+		SessionDataBean sessionData = new SessionDataBean();
+		sessionData.setAdmin(true);
+		sessionData.setCsmUserId("1");
+		sessionData.setFirstName("admin");
+		sessionData.setLastName("admin");
+		sessionData.setSecurityRequired(Boolean.FALSE);
+		sessionData.setUserId(2441l);
+		sessionData.setUserName("admin@admin.com");
+		return sessionData;
+	}
 	public void testCreateSpreadsheetData() throws DAOException, ClassNotFoundException
 	{
 		HttpSession session = new HttpSession()
@@ -121,14 +133,7 @@ public class QueryOutputSpreadsheetBizLogicTestCase extends TestCase
 		List<OutputTreeDataNode> rootOutputTreeNodeList = new ArrayList<OutputTreeDataNode>();
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = new HashMap<String, OutputTreeDataNode>();
 		Map<EntityInterface, List<EntityInterface>> mainEntityMap= new HashMap<EntityInterface, List<EntityInterface>>();
-		SessionDataBean sessionData= new SessionDataBean();
-		sessionData.setAdmin(true);
-		sessionData.setCsmUserId("1");
-		sessionData.setFirstName("admin");
-		sessionData.setLastName("admin");
-		sessionData.setSecurityRequired(Boolean.FALSE);
-		sessionData.setUserId(2441l);
-		sessionData.setUserName("admin@admin.com");
+		SessionDataBean sessionData= getSessionData();
 
 		Map<AttributeInterface, String> attributeColumnNameMap = new HashMap<AttributeInterface, String>();
 		Map<String, IOutputTerm> outputTermsColumns = new HashMap<String, IOutputTerm>();
@@ -220,7 +225,6 @@ public class QueryOutputSpreadsheetBizLogicTestCase extends TestCase
         mainEntityList.add("1");
         mainEntityIds.add(mainEntityList);
         entityMainIdListMap.put(participantEntity, mainEntityIds);
-        queryResultObjectDataBean.setEntityMainIdListMap(entityMainIdListMap);
         Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap = new HashMap<Long, QueryResultObjectDataBean>();
         queryResultObjectDataBeanMap.put(outputTreeDataNode.getId(), queryResultObjectDataBean);
 

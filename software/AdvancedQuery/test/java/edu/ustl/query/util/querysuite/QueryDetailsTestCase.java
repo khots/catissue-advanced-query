@@ -11,6 +11,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
 
+import junit.framework.TestCase;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.beans.SessionDataBean;
@@ -21,8 +22,6 @@ import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.query.generator.GenericQueryGeneratorMock;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.querysuite.QueryDetails;
-
-import junit.framework.TestCase;
 
 public class QueryDetailsTestCase extends TestCase
 {
@@ -147,7 +146,6 @@ public class QueryDetailsTestCase extends TestCase
 		queryDetails.getRandomNumber();
 		queryDetails.getRootOutputTreeNodeList();
 		queryDetails.getSessionData();
-		queryDetails.getSqlForDefineView();
 		queryDetails.getUniqueIdNodesMap();
 
 		queryDetails.setAttributeColumnNameMap(attributeColumnNameMap);
@@ -159,7 +157,6 @@ public class QueryDetailsTestCase extends TestCase
 		queryDetails.setRandomNumber(randomNumber);
 		queryDetails.setRootOutputTreeNodeList(rootOutputTreeNodeList);
 		queryDetails.setSessionData(sessionData);
-		queryDetails.setSqlForDefineView(sqlForDefineView);
 		queryDetails.setUniqueIdNodesMap(uniqueIdNodesMap);
 	}
 }

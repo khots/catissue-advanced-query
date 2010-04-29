@@ -40,6 +40,18 @@ import junit.framework.TestCase;
 
 public class QueryOutputTreeBizLogicTestCase extends TestCase
 {
+	private SessionDataBean getSessionData()
+	{
+		SessionDataBean sessionData= new SessionDataBean();
+		sessionData.setAdmin(true);
+		sessionData.setCsmUserId("1");
+		sessionData.setFirstName("admin");
+		sessionData.setLastName("admin");
+		sessionData.setSecurityRequired(Boolean.FALSE);
+		sessionData.setUserId(2441l);
+		sessionData.setUserName("admin@admin.com");
+		return sessionData;
+	}
 	public void testCreateDefaultOutputTreeData() throws DAOException, BizLogicException, SMException, ClassNotFoundException, SQLException
 	{
 		int treeNo = 0;
@@ -128,14 +140,7 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
 		List<OutputTreeDataNode> rootOutputTreeNodeList = new ArrayList<OutputTreeDataNode>();
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = new HashMap<String, OutputTreeDataNode>();
 		Map<EntityInterface, List<EntityInterface>> mainEntityMap= new HashMap<EntityInterface, List<EntityInterface>>();
-		SessionDataBean sessionData= new SessionDataBean();
-		sessionData.setAdmin(true);
-		sessionData.setCsmUserId("1");
-		sessionData.setFirstName("admin");
-		sessionData.setLastName("admin");
-		sessionData.setSecurityRequired(Boolean.FALSE);
-		sessionData.setUserId(2441l);
-		sessionData.setUserName("admin@admin.com");
+		SessionDataBean sessionData= getSessionData();
 
 		Map<AttributeInterface, String> attributeColumnNameMap = new HashMap<AttributeInterface, String>();
 		Map<String, IOutputTerm> outputTermsColumns = new HashMap<String, IOutputTerm>();

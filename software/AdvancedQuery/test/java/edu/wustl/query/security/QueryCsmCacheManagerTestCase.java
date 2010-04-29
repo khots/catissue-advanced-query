@@ -89,7 +89,6 @@ public class QueryCsmCacheManagerTestCase extends TestCase
         mainEntityList.add("1");
         mainEntityIds.add(mainEntityList);
         entityMainIdListMap.put(participantEntity, mainEntityIds);
-        queryResultObjectDataBean.setEntityMainIdListMap(entityMainIdListMap);
 
         Map<String, QueryResultObjectDataBean> queryResultObjectDataBeanMap = new HashMap<String, QueryResultObjectDataBean>();
         queryResultObjectDataBeanMap.put("51", queryResultObjectDataBean);
@@ -126,7 +125,6 @@ public class QueryCsmCacheManagerTestCase extends TestCase
         cacheManager.filterRowForSimpleSearch(sessionData, queryResultObjectDataMap, aList, cache);
         cacheManager.hasPrivilegeOnIdentifiedDataForSimpleSearch(sessionData, queryResultObjectDataMap, aList, cache);
 
-        queryResultObjectDataBean.setEntityMainIdListMap(new HashMap<EntityInterface, List<List<String>>>());
         queryResultObjectDataBeanMap = new HashMap<String, QueryResultObjectDataBean>();
         queryResultObjectDataBeanMap.put("51", queryResultObjectDataBean);
         cacheManager.filterRow(sessionData, queryResultObjectDataBeanMap, aList, cache);

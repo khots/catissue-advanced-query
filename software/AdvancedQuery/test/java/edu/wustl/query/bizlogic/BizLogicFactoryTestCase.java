@@ -16,5 +16,7 @@ public class BizLogicFactoryTestCase extends TestCase
 
 		bizLogic = BizLogicFactory.getInstance().getBizLogic
 		(AQConstants.ADVANCE_QUERY_INTERFACE_ID);
+
+		BizLogicFactory.getInstance().setBizLogicFactory(null);
 	}
 }
