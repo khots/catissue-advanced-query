@@ -821,16 +821,10 @@ public class QueryOutputSpreadsheetBizLogic
 				columnsInSql = columnsInSql + selectSql;
 			}
 			Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
-
+			columnsInSql = QueryCSMUtil.updateEntityIdIndexMap(null, columnIndex, columnsInSql,
+					defineViewNodeList, entityIdIndexMap, queryDetailsObj);
 			Iterator<QueryResultObjectDataBean> iterator = queryResultObjectDataBeanMap.values()
 					.iterator();
-			while (iterator.hasNext())
-			{
-				columnsInSql = QueryCSMUtil.updateEntityIdIndexMap(iterator.next(), columnIndex, columnsInSql,
-						defineViewNodeList, entityIdIndexMap, queryDetailsObj);
-			}
-			iterator = queryResultObjectDataBeanMap.values()
-			.iterator();
 			while (iterator.hasNext())
 			{
 				setMainEntityColumnIdentifier(tqColumnList, entityIdIndexMap,

@@ -175,22 +175,12 @@ public class QueryCsmCacheManager
 		int entityId = mainEntityId;
 		if (queryResultObjectDataBean.getMainEntityIdentifierColumnId() != -1)
 		{
-			Map<EntityInterface,List<List<String>>> map = queryResultObjectDataBean.getEntityMainIdListMap();
-			List<List<String>> mainEntityIds = map.get(queryResultObjectDataBean.getEntity());
-			if(mainEntityIds == null)
+			String tempEntityId = (String) aList.get
+			(queryResultObjectDataBean.getMainEntityIdentifierColumnId());
+			if(tempEntityId != null && tempEntityId.length() != 0)
 			{
-				String tempEntityId = (String) aList.get
-				(queryResultObjectDataBean.getMainEntityIdentifierColumnId());
-				if(tempEntityId != null && tempEntityId.length() != 0)
-				{
-					entityId = Integer.parseInt((String) aList.get
-						(queryResultObjectDataBean.getMainEntityIdentifierColumnId()));
-				}
-			}
-			else
-			{
-				String value = mainEntityIds.get(0).get(0);
-				entityId = Integer.parseInt(value);
+				entityId = Integer.parseInt((String) aList.get
+					(queryResultObjectDataBean.getMainEntityIdentifierColumnId()));
 			}
 		}
 		return entityId;

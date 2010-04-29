@@ -35,12 +35,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.impl.Rule;
-import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.LoggerConfig;
-import edu.wustl.dao.JDBCDAO;
-import edu.wustl.dao.daofactory.DAOConfigFactory;
-import edu.wustl.dao.daofactory.IDAOFactory;
-import edu.wustl.dao.exception.DAOException;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.bizlogic.QueryCsmBizLogic;
@@ -904,7 +899,7 @@ public class QueryCSMUtil
 			OutputTreeDataNode outputTreeDataNode = getMatchingEntityNode(queryResultObjectDataBean
 					.getMainEntity(), queryDetailsObj);
 			Map sqlIndexMap = putIdColumnsInSql(columnIndex, selectSql, entityIdIndexMap,
-					selectSqlColumnList, outputTreeDataNode,queryResultObjectDataBean,queryDetailsObj);
+					selectSqlColumnList, outputTreeDataNode);
 			selectSql = (String) sqlIndexMap.get(AQConstants.SQL);
 			columnIndex = (Integer) sqlIndexMap.get(AQConstants.ID_COLUMN_ID);
 		}
@@ -921,7 +916,7 @@ public class QueryCSMUtil
 						queryDetailsObj.getUniqueIdNodesMap().get(key);
 					Map sqlIndexMap = putIdColumnsInSql
 					(columnIndex, selectSql, entityIdIndexMap,
-							selectSqlColumnList, outputTreeDataNode,queryResultObjectDataBean,queryDetailsObj);
+							selectSqlColumnList, outputTreeDataNode);
 					selectSql = (String) sqlIndexMap.get(AQConstants.SQL);
 					columnIndex = (Integer) sqlIndexMap.get(AQConstants.ID_COLUMN_ID);
 				}
@@ -962,9 +957,8 @@ public class QueryCSMUtil
 	 */
 	private static Map putIdColumnsInSql(int columnIndex, String selectSql,
 			Map<EntityInterface, Integer> entityIdIndexMap, List<String> selectSqlColumnList,
-			OutputTreeDataNode outputTreeDataNode,QueryResultObjectDataBean queryResultObjectDataBean,QueryDetails queryDetailsObj)
+			OutputTreeDataNode outputTreeDataNode)
 	{
-		Map<EntityInterface,List<List<String>>> entityMainIdListMap = new HashMap<EntityInterface, List<List<String>>>();
 		Map sqlIndexMap = new HashMap();
 		if (outputTreeDataNode != null)
 		{
@@ -976,28 +970,7 @@ public class QueryCSMUtil
 				if (attribute.getName().equals(AQConstants.IDENTIFIER))
 				{
 					int index = selectSqlColumnList.indexOf(sqlColumnName);
-					String appName=CommonServiceLocator.getInstance().getAppName();
-					IDAOFactory daofactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
-					JDBCDAO jdbcDAO;
-					List<List<String>> mainEntityIds;
-					try
-					{
-						jdbcDAO = daofactory.getJDBCDAO();
-						jdbcDAO.openSession(null);
-						String sqlForDefinedView = queryDetailsObj.getSqlForDefineView();
-						if(sqlForDefinedView != null && queryResultObjectDataBean != null && queryResultObjectDataBean.getEntity().getName().equals(attribute.getEntity().getName()))
-						{
-							String subString = sqlForDefinedView.substring(sqlForDefinedView.indexOf("from"), sqlForDefinedView.length());
-							String mainEntitySql = "SELECT "+sqlColumnName+" "+subString;
-							mainEntityIds = (List<List<String>>)jdbcDAO.executeQuery(mainEntitySql);
-							entityMainIdListMap.put(attribute.getEntity(), mainEntityIds);
-							queryResultObjectDataBean.setEntityMainIdListMap(entityMainIdListMap);
-						}
-					}
-					catch (DAOException e)
-					{
-						logger.error(e.getMessage(), e);
-					}
+
 					if (index >= 0)
 					{
 						entityIdIndexMap.put(attribute.getEntity(), index);
@@ -1005,6 +978,14 @@ public class QueryCSMUtil
 					}
 					else
 					{
+						if ("".equals(selectSql))
+						{
+							selectSql += sqlColumnName;
+						}
+						else
+						{
+							selectSql += ", " + sqlColumnName;
+						}
 						entityIdIndexMap.put(attribute.getEntity(), columnIndex);
 						columnIndex++;
 						break;
