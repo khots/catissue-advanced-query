@@ -142,7 +142,7 @@ public class SavedQueryHtmlProvider
 	{
 		StringBuffer generatedHTML = new StringBuffer(
 				"<table  cellpadding=\"3\" cellspacing=\"0\" border=\"0\" width=\"100%\">");
-		String html="";
+		String html;
 		if (forPage.equalsIgnoreCase(AQConstants.SAVE_QUERY_PAGE))
 		{
 			html="<tr ><td  valign='center' "

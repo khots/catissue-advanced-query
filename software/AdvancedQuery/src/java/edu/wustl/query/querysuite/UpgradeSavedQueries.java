@@ -52,9 +52,8 @@ public class UpgradeSavedQueries
 		logger.info("In UpgradeSavedQueries");
 		try
 		{
-			Collection<IParameterizedQuery> queries = null;
 			DashboardBizLogic dashboardBizLogic = new DashboardBizLogic();
-			queries = dashboardBizLogic.getAllQueriesForUpgrade();
+			Collection<IParameterizedQuery> queries = dashboardBizLogic.getAllQueriesForUpgrade();
 
 			if (queries.isEmpty())
 			{

@@ -96,9 +96,9 @@ public class GenerateHtml
 		String componentName = componentId + "_booleanAttribute";
 		String radioButtonTrueId = componentId + AQConstants.UNDERSCORE + AQConstants.TRUE;// "_true";
 		String radioButtonFalseId = componentId + AQConstants.UNDERSCORE + AQConstants.FALSE;// "_false"
-		String buttonId = "";
-		String name="";
-		String value="";
+		String buttonId;
+		String name;
+		String value;
 		if(isRadioButtonTrue)
 		{
 			buttonId = radioButtonTrueId;
@@ -212,10 +212,9 @@ public class GenerateHtml
 	private static void getHtmlForDate(String componentId,
 			AttributeDetails attrDetails, String cssClass, StringBuffer html)
 	{
-		String newLine = "\n";
 		if (attrDetails.getDataType().equalsIgnoreCase(AQConstants.DATE))
 		{
-			html.append(newLine).append(generateHTMLForCalendar(componentId, true, false,cssClass));
+			html.append("\n").append(generateHTMLForCalendar(componentId, true, false,cssClass));
 		}
 		else
 		{
@@ -307,7 +306,7 @@ public class GenerateHtml
 	private static void getHtmlValueNotNull(List<String> values, String operator, String textBoxId,
 			StringBuffer html)
 	{
-		String valueStr = "";
+		String valueStr;
 		if (operator.equalsIgnoreCase(AQConstants.IN_STRING) || operator.equalsIgnoreCase(AQConstants.NOT_IN))
 		{
 			valueStr = values.toString();
@@ -381,7 +380,7 @@ public class GenerateHtml
 	private static String generateHTMLForCalendar(String  componentId, boolean isFirst,
 			boolean isBetween, String cssClass)
 	{
-		StringBuffer innerStr = new StringBuffer("");
+		StringBuffer innerStr = new StringBuffer();
 		if (isFirst)
 		{
 			String textBoxId = componentId + "_textBox";
@@ -401,7 +400,7 @@ public class GenerateHtml
 					"src=\"images/advQuery/calendar.gif\"" +
 					" width=\"24\" height=\"22\" border='0'" +
 					" onclick='scwShow(" + textBoxId1 + ",event);'>";
-			String style = "";
+			String style;
 			if (isBetween)
 			{
 				style = "display:block";
@@ -459,11 +458,10 @@ public class GenerateHtml
 			boolean isEditLimits)
 	{
 		String buttonName = "addLimit";
-		String buttonId = "";
 		StringBuffer html = new StringBuffer(AQConstants.MAX_SIZE);
 		String temp = "\n<td bgcolor=\"#EAEAEA\" colspan=\"2\" " +
 				"height=\"2%\" valign=\"top\" align=\"right\" >";
-		buttonId = "TopAddLimitButton";
+		String buttonId = "TopAddLimitButton";
 		html.append(temp);
 		String buttonCaption = "Add Limit";
 		if (isEditLimits)
@@ -745,7 +743,7 @@ public class GenerateHtml
 	public static boolean getAlternateCss(StringBuffer generatedHTML, boolean isBGColor,
 			String componentId)
 	{
-		String styleSheetClass="";
+		String styleSheetClass;
 		boolean bgColor = isBGColor;
 		if (bgColor)
 		{
