@@ -959,6 +959,7 @@ public class QueryCSMUtil
 			Map<EntityInterface, Integer> entityIdIndexMap, List<String> selectSqlColumnList,
 			OutputTreeDataNode outputTreeDataNode)
 	{
+		StringBuffer sql = new StringBuffer();
 		Map sqlIndexMap = new HashMap();
 		if (outputTreeDataNode != null)
 		{
@@ -980,11 +981,11 @@ public class QueryCSMUtil
 					{
 						if ("".equals(selectSql))
 						{
-							selectSql += sqlColumnName;
+							sql.append(selectSql).append(sqlColumnName);
 						}
 						else
 						{
-							selectSql += ", " + sqlColumnName;
+							sql.append(selectSql).append(", ").append(sqlColumnName);
 						}
 						entityIdIndexMap.put(attribute.getEntity(), columnIndex);
 						columnIndex++;
@@ -993,7 +994,7 @@ public class QueryCSMUtil
 				}
 			}
 		}
-		sqlIndexMap.put(AQConstants.SQL, selectSql);
+		sqlIndexMap.put(AQConstants.SQL, sql.toString());
 		sqlIndexMap.put(AQConstants.ID_COLUMN_ID, columnIndex);
 		return sqlIndexMap;
 	}
