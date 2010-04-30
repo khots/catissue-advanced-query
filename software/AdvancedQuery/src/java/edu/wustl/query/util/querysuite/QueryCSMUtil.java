@@ -959,7 +959,7 @@ public class QueryCSMUtil
 			Map<EntityInterface, Integer> entityIdIndexMap, List<String> selectSqlColumnList,
 			OutputTreeDataNode outputTreeDataNode)
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuffer sql = new StringBuffer(selectSql);
 		Map sqlIndexMap = new HashMap();
 		if (outputTreeDataNode != null)
 		{
@@ -985,7 +985,7 @@ public class QueryCSMUtil
 						}
 						else
 						{
-							sql.append(selectSql).append(", ").append(sqlColumnName);
+							sql.append(", ").append(sqlColumnName);
 						}
 						entityIdIndexMap.put(attribute.getEntity(), columnIndex);
 						columnIndex++;
