@@ -215,44 +215,6 @@
 		</replace>
 	</target>
 
-	<target name="aq_deploy_db">
-		<echo message="datatype echo: ${database.type}" />
-		<!-- Deploying Advance Query db -->
-		<ant dir="." inheritAll="false" antfile="deploy.xml" target="deploy_db">
-			<property name="database.type" value="${database.type}" />
-			<property name="database.host" value="${database.host}" />
-			<property name="database.port" value="${database.port}" />
-			<property name="database.name" value="${database.name}" />
-			<property name="database.username" value="${database.username}" />
-			<property name="database.password" value="${database.password}" />
-		</ant>
-	</target>
-	<target name="aq_upgrade_db">
-		<echo message=" upgrading adv query db schema : datatype echo: ${database.type}" />
-		<!-- Deploying Advance Query db -->
-		<ant dir="." inheritAll="false" antfile="deploy.xml" target="upgrade_db">
-			<property name="database.type" value="${database.type}" />
-			<property name="database.host" value="${database.host}" />
-			<property name="database.port" value="${database.port}" />
-			<property name="database.name" value="${database.name}" />
-			<property name="database.username" value="${database.username}" />
-			<property name="database.password" value="${database.password}" />
-		</ant>
-	</target>
-
-	<target name="aq_upgrade_db_from_1.2_to_1.3">
-			<echo message=" upgrading adv query db schema : datatype echo: ${database.type}" />
-			<!--Deploying Advance Query db -->
-			<ant dir="." inheritAll="false" antfile="deploy.xml" target="aq_upgrade_db_from_1.2_to_1.3">
-				<property name="database.type" value="${database.type}" />
-				<property name="database.host" value="${database.host}" />
-				<property name="database.port" value="${database.port}" />
-				<property name="database.name" value="${database.name}" />
-				<property name="database.username" value="${database.username}" />
-				<property name="database.password" value="${database.password}" />
-			</ant>
-		</target>
-
 	<target name="modify_query_tiles-def">
 		<!--Replacing tokens in tiles-def -->
 		<copy file="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/AdvanceQuery.properties" todir="${deploy.temp.dir}/AdvanceQuery" overwrite="true" />
@@ -339,45 +301,6 @@
 		</java>
 	</target>
 
-	<target name="shareOldQueries">
-		<echo message="Upgrading saved queries...." />
-		<unwar src="${parent.base.dir}/${war.name}" dest="${deploy.temp.dir}/${war.dir}" />
-		<copy file="${parent.base.dir}/${properties.folder}/ApplicationSecurityConfig.xml" todir="${deploy.temp.dir}/${war.dir}/WEB-INF/classes" overwrite="true" />
-		<antcall target="replacecfgfiles" />
-		<replace dir="${deploy.temp.dir}/${war.dir}/WEB-INF/classes">
-			<include name="ApplicationSecurityConfig.xml" />
-			<replacefilter token="@@hibernate-config-file@@" value="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/QueryHibernate.cfg.xml" />
-		</replace>
-		<java classname="edu.wustl.query.querysuite.GetOldQueries" fork="true" maxmemory="1024M">
-			<classpath location="${deploy.temp.dir}/${war.dir}/WEB-INF/classes" />
-			<classpath refid="temp.classpath" />
-			<classpath>
-				<fileset dir="${lib.dir}">
-					<include name="*.jar" />
-				</fileset>
-			</classpath>
-			<arg value="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/ApplicationSecurityConfig.xml" />
-		</java>
-		<property file="queryIds.properties" />
-		<foreach list="${queryIds}" delimiter="," param="queryId" target="shareAQuery" inheritall="true" />
-		<!--<foreach list="1,10" delimiter="," param="queryId" target="shareAQuery" inheritall="true"/-->
-	</target>
-
-
-	<target name="shareAQuery">
-		<java classname="edu.wustl.query.querysuite.ShareOldQueries" fork="true" maxmemory="1024M">
-			<classpath location="${deploy.temp.dir}/${war.dir}/WEB-INF/classes" />
-			<classpath refid="temp.classpath" />
-			<classpath>
-				<fileset dir="${lib.dir}">
-					<include name="*.jar" />
-				</fileset>
-			</classpath>
-			<arg value="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/ApplicationSecurityConfig.xml" />
-		</java>
-		<delete dir="${deploy.temp.dir}" />
-	</target>
-
 	<target name="create_query_tables">
 		<echo message="In create tables" />
 		<if>
@@ -427,5 +350,42 @@
 		</if>
 	</target>
 
+	<!-- Common fresh deployment target(deploy_db) for Advanced Query-->
+	<target name="aq_deploy_db">
+			<echo message="datatype echo: ${database.type}" />
+			<!-- Creating qdvanced query tables -->
+			<antcall target="create_query_tables"/>
+		</target>
+
+		<!--Common upgrade target for Advanced Query -->
+		<target name="aq_upgrade">
+			<antcall target="aq_upgrade_db_from_1.2_to_1.3"/>
+		</target>
+
+		<target name="aq_upgrade_db">
+			<echo message=" upgrading adv query db schema : datatype echo: ${database.type}" />
+			<!-- Deploying Advance Query db -->
+			<ant dir="." inheritAll="false" antfile="deploy.xml" target="upgrade_db">
+				<property name="database.type" value="${database.type}" />
+				<property name="database.host" value="${database.host}" />
+				<property name="database.port" value="${database.port}" />
+				<property name="database.name" value="${database.name}" />
+				<property name="database.username" value="${database.username}" />
+				<property name="database.password" value="${database.password}" />
+			</ant>
+		</target>
+
+		<target name="aq_upgrade_db_from_1.2_to_1.3">
+				<echo message=" upgrading adv query db schema : datatype echo: ${database.type}" />
+				<!--Deploying Advance Query db -->
+				<ant dir="." inheritAll="false" antfile="deploy.xml" target="aq_upgrade_db_from_1.2_to_1.3">
+					<property name="database.type" value="${database.type}" />
+					<property name="database.host" value="${database.host}" />
+					<property name="database.port" value="${database.port}" />
+					<property name="database.name" value="${database.name}" />
+					<property name="database.username" value="${database.username}" />
+					<property name="database.password" value="${database.password}" />
+				</ant>
+		</target>
 	<!--Advance Query Related  End -->
 </project>
