@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.factory.AbstractQueryGeneratorFactory;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
@@ -189,6 +190,10 @@ public class ValidateQueryBizLogic
 		//This method will check if main objects for all the dependent objects are present in query or not.
 		IQuery queryClone=null;
 		isSavedQuery(session, isSavedQuery);
+		Map<EntityInterface, List<EntityInterface>> mainEntityMap =
+			QueryCSMUtil.getMainEntitiesForAllQueryNodes(queryDetailsObj);
+		queryDetailsObj.setMainEntityMap(mainEntityMap);
+
 		if(queryDetailsObj.getSessionData().isSecurityRequired())
 		{
 			queryClone = QueryCSMUtil

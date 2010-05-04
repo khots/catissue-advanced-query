@@ -510,7 +510,7 @@ public class QueryCSMUtil
 	 * @param queryDetailsObj QueryDetails object
 	 * @return mainEntityMap Map of all main entities present in query.
 	 */
-	private static Map<EntityInterface, List<EntityInterface>> getMainEntitiesForAllQueryNodes(
+	public static Map<EntityInterface, List<EntityInterface>> getMainEntitiesForAllQueryNodes(
 			QueryDetails queryDetailsObj)
 	{
 		Map<EntityInterface, List<EntityInterface>> mainEntityMap =

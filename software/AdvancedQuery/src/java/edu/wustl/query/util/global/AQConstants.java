@@ -597,4 +597,7 @@ public class AQConstants
 	public static final String TREE_CHECK_VALUE = "treeChkVal";
 	public static final String HIDE_TREE_CHECK_VALUE = "hideTreeChkVal";
 
+	public static final String FROM_CLAUSE = "from";
+	public static final String SELECT_CLAUSE = "select";
+	public static final String DISTINCT = "distinct";
 }

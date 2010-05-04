@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.action.SecureAction;
+import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.ExportReport;
@@ -25,8 +26,10 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.actionForm.QueryAdvanceSearchForm;
 import edu.wustl.query.bizlogic.ExportQueryBizLogic;
+import edu.wustl.query.bizlogic.SpreadsheetDenormalizationBizLogic;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.Utility;
+import edu.wustl.query.util.querysuite.QueryDetails;
 
 public class SpreadsheetExportAction extends SecureAction
 {
@@ -51,36 +54,60 @@ public class SpreadsheetExportAction extends SecureAction
 		Object[] obj = map.keySet().toArray();
 		List<String> columnList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
 		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll);
+		QuerySessionData querySessionData = (QuerySessionData)session.getAttribute(AQConstants.QUERY_SESSION_DATA);
+		QueryDetails queryDetails = new QueryDetails(session);
+		boolean isDefineView = false;
+		SelectedColumnsMetadata selectedColumnsMetadata =
+			(SelectedColumnsMetadata)session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
+		if(selectedColumnsMetadata != null && selectedColumnsMetadata.isDefinedView())
+		{
+			isDefineView = true;
+			SpreadsheetDenormalizationBizLogic denormalizationBizLogic = new SpreadsheetDenormalizationBizLogic();
+			dataList = denormalizationBizLogic.scanIQuery(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
+		}
 		List tmpColumnList = new ArrayList();
 		List tmpDataList = populateTemporaryList(columnList, dataList,tmpColumnList);
 		columnList = tmpColumnList;
 		dataList = tmpDataList;
 		//Mandar 06-Apr-06 Bugid:1165 : Extra ID columns end. Adding first row(column names) to exportData
-		exportList.add(columnList);
+		if(!isDefineView)
+		{
+			exportList.add(columnList);
+		}
 		List<String> idIndexList = new ArrayList<String>();
 		int columnsSize = columnList.size();
 		Map<Integer, List<String>> entityIdsMap = (Map<Integer, List<String>>) session
 		.getAttribute(AQConstants.ENTITY_IDS_MAP);
-		if (isChkAllAcrossAll != null && isChkAllAcrossAll.equalsIgnoreCase("true"))
+		if (isDefineView || (isChkAllAcrossAll != null && isChkAllAcrossAll.equalsIgnoreCase("true")))
 		{
 			for (int counter = 0; counter < dataList.size(); counter++)
 			{
 				List<String> list = dataList.get(counter);
-				List<String> subList = list.subList(0, columnsSize);
-				exportList.add(subList);
+				if(!isDefineView)
+				{
+					List<String> subList = list.subList(0, columnsSize);
+					exportList.add(subList);
+				}
+				else
+				{
+					exportList.add(list);
+				}
 				populateIndexList(idIndexList, entityIdsMap, counter);
 			}
 		}
 		else
 		{
-			for (int counter = 0; counter < obj.length; counter++)
+			for (int counter = 0; counter < dataList.size(); counter++)
 			{
 				int indexOf = obj[counter].toString().indexOf("_") + 1;
 				int index = Integer.parseInt(obj[counter].toString().substring(indexOf));
-				List<String> list = dataList.get(index);
-				List<String> subList = list.subList(0, columnsSize);
-				populateIndexList(idIndexList, entityIdsMap, index);
-				exportList.add(subList);
+				if(index<dataList.size())
+				{
+					List<String> list = dataList.get(index);
+					List<String> subList = list.subList(0, columnsSize);
+					populateIndexList(idIndexList, entityIdsMap, index);
+					exportList.add(list);
+				}
 			}
 		}
 		exportAndSend(response, session, exportList, idIndexList, entityIdsMap);
