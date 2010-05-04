@@ -105,7 +105,7 @@ final public class QueryModuleSqlUtil
 	 */
 	private static String modifySqlForCreateTable(String createTableSql)
 	{
-		String whereClause="";
+		String whereClause;
 		if(createTableSql.indexOf("where") == -1)
 		{
 			whereClause = "WHERE";
@@ -309,7 +309,7 @@ final public class QueryModuleSqlUtil
 	 * @return String value
 	 */
 	private static String getValueForDBType(String newColumnValue, int columnType) {
-		String value = "";
+		String value;
 		switch(columnType)
 		{
 		case Types.VARCHAR :

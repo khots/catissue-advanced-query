@@ -102,13 +102,12 @@ public class SavedQueryAuthorization
 	{
 		String selectedRoles = bean.getSelectedRoles();
 		PrivilegeUtility privilegeUtility = new PrivilegeUtility();
-		UserProvisioningManager upManager = privilegeUtility.getUserProvisioningManager();
 		String[] roles = selectedRoles.split(",");
 		List<Long> userIds = new ArrayList<Long>();
 		for (String role : roles)
 		{
 			String groupId = privilegeUtility.getGroupIdForRole(role);
-			Set<User> users = upManager.getUsers(groupId);
+			Set<User> users = privilegeUtility.getUserProvisioningManager().getUsers(groupId);
 			for (User user : users)
 			{
 				userIds.add(user.getUserId());
@@ -335,7 +334,6 @@ public class SavedQueryAuthorization
 		getProtectionElementForQuery(query, privilegeUtility);
 		UserProvisioningManager upManager =
 		privilegeUtility.getUserProvisioningManager();
-		String peObjId = protectionElement.getObjectId();
 		Set<ProtectionGroup> pgSet = new DashboardBizLogic().
 		getPGsforQuery(query.getId().toString());
 		for (ProtectionGroup protectionGroup : pgSet)
@@ -344,7 +342,7 @@ public class SavedQueryAuthorization
 			if(pgName.equals(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP))
 			{
 				upManager.deAssignProtectionElements
-				(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP, peObjId);
+				(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP, protectionElement.getObjectId());
 				break;
 			}
 		}

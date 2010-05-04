@@ -612,7 +612,7 @@ public class SqlGenerator implements ISqlGenerator
      */
     String getSQL(ICondition condition, IExpression expression) throws SqlException
     {
-        String sql = null;
+        String sql;
         AttributeInterface attribute = condition.getAttribute();
         setDatePatterns();
         String attributeName = fromBuilder.aliasOf(attribute, expression);
@@ -793,7 +793,7 @@ public class SqlGenerator implements ISqlGenerator
         value = replaceSpecialChars(value,operator);
         String appName = CommonServiceLocator.getInstance().getAppName();
         DAOFactory daoFactory = (DAOFactory) DAOConfigFactory.getInstance().getDAOFactory(appName);
-        String str = "";
+        String str;
         if("Oracle".equalsIgnoreCase(daoFactory.getDataBaseType()))
         {
         	str = "lower(" + attributeName + ") like lower(" + value + ")";
@@ -1524,7 +1524,7 @@ public class SqlGenerator implements ISqlGenerator
 	private static LinkedList<ColumnValueBean> populateColumnValueBean(LinkedList<Object> data)
 	{
 		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
-		ColumnValueBean bean = null;
+		ColumnValueBean bean;
 		for(Object object : data)
 		{
 			if(object != null)

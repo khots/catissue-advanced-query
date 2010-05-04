@@ -145,9 +145,8 @@ public class QueryModuleSearchQueryUtil
 		{
 			for (OutputTreeDataNode outnode : queryDetailsObj.getRootOutputTreeNodeList())
 			{
-				List<QueryTreeNodeData> treeData = null;
-				treeData = outputTreeBizLogic.createDefaultOutputTreeData(initialValue, outnode,
-						hasCondOnIdentifiedField, queryDetailsObj);
+				List<QueryTreeNodeData> treeData = outputTreeBizLogic.createDefaultOutputTreeData
+				(initialValue, outnode,hasCondOnIdentifiedField, queryDetailsObj);
 				initialValue = setTreeData(initialValue, treeData);
 			}
 		}
@@ -216,9 +215,8 @@ public class QueryModuleSearchQueryUtil
 		QueryOutputTreeBizLogic outputTreeBizLogic = new QueryOutputTreeBizLogic();
 		try
 		{
-			long auditEventId = 0;
 			String selectSql = (String) session.getAttribute(AQConstants.SAVE_GENERATED_SQL);
-			auditEventId = getAuditEventId(queryBizLogic, selectSql);
+			long auditEventId = getAuditEventId(queryBizLogic, selectSql);
 			boolean alreadySavedQuery = Boolean.valueOf((String)session.getAttribute("savedQuery"));
 			queryDetailsObj.setAuditEventId(auditEventId);
 			getNewQuery(outputTreeBizLogic, selectSql, alreadySavedQuery);
@@ -291,7 +289,7 @@ public class QueryModuleSearchQueryUtil
 		String selectSql = selectQuery;
 		if(isSavedQuery && !alreadySavedQuery)
 		{
-			String newSql=null;
+			String newSql;
 			ISqlGenerator sqlGenerator = AbstractQueryGeneratorFactory.getDefaultQueryGenerator();
 			if(queryDetailsObj.getSessionData().isSecurityRequired())
 			{

@@ -110,7 +110,7 @@ final public class QueryModuleUtil
 			List<QueryOutputTreeAttributeMetadata> attributes, QueryDetails queryDetailsObj,
 			QueryResultObjectDataBean queryResultObjectDataBean)
 	{
-		String columnNames = "";
+		String columnNames;
 		String idColumnName = null;
 		String dspNameColName = null;
 		String index = null;

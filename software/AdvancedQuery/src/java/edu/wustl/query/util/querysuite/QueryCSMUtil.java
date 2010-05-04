@@ -88,9 +88,8 @@ public class QueryCSMUtil
 		IQuery queryClone=null;
 		boolean isMainObjAdded = false;
 		EntityInterface firstEntity = null;
-		DAGPanel dagPanel = null;
 		IPathFinder pathFinder = new CommonPathFinder();
-		dagPanel = new DAGPanel(pathFinder);
+		DAGPanel dagPanel = new DAGPanel(pathFinder);
 		//iterate through the uniqueIdNodesMap and check if main entities of all the nodes are present
 		for (Object element : queryDetailsObj.getUniqueIdNodesMap().entrySet())
 		{
@@ -318,17 +317,15 @@ public class QueryCSMUtil
 	{
 		Long attrId = conditionAttr.getId();
 		RelationalOperator operator = condition.getRelationalOperator();
-		List<String> values = condition.getValues();
-		String value = condition.getValue();
 		strToCreateObject.append("@#condition#@").append(attrName).
 		append(attrId).append(AQConstants.CONDITION_SEPERATOR).append(operator.getStringRepresentation());
 		if(operator.equals(RelationalOperator.In) || operator.equals(RelationalOperator.NotIn))
 		{
-			modifyQueryStringForInNotIn(strToCreateObject, values);
+			modifyQueryStringForInNotIn(strToCreateObject, condition.getValues());
 		}
 		else if(!(operator.equals(RelationalOperator.IsNotNull) || operator.equals(RelationalOperator.IsNull)))
 		{
-			strToCreateObject.append(AQConstants.CONDITION_SEPERATOR).append(value);
+			strToCreateObject.append(AQConstants.CONDITION_SEPERATOR).append(condition.getValue());
 		}
 		strToCreateObject.append(';');
 	}
@@ -862,10 +859,9 @@ public class QueryCSMUtil
 		EntityManagerInterface entityManager = EntityManager.getInstance();
 		ArrayList<Long> allIds = (ArrayList<Long>) entityManager.getIncomingAssociationIds(entity);
 		List<AssociationInterface> list = new ArrayList<AssociationInterface>();
-		EntityCache cache = EntityCache.getInstance();
 		for (Long id : allIds)
 		{
-			AssociationInterface associationById = cache.getAssociationById(id);
+			AssociationInterface associationById = EntityCache.getInstance().getAssociationById(id);
 
 			RoleInterface targetRole = associationById.getTargetRole();
 			if (targetRole.getAssociationsType().getValue().equals(
