@@ -378,7 +378,7 @@
 		<copy file="./src/conf/properties-service.xml" todir="${zip.dir}" overwrite="true" /> -->
 
 		<!--Copying the advance query jar to Zip file -->
-		<copy file="${build.dir}/AdvanceQuery${aq.jar.version}.jar" todir="${zip.dir}" overwrite="true" />
+		<copy file="${build.dir}/AdvanceQuery.jar" todir="${zip.dir}" overwrite="true" />
 
 		<copy todir="${zip.dir}/query-properties" overwrite="true">
 			<fileset dir="${base.dir}/src/conf/query-properties">
@@ -711,8 +711,8 @@
 
 	<target name="build_jar" depends="compile">
 		<tstamp />
-		<delete file="{build.dir}/AdvanceQuery${aq.jar.version}.jar" />
-		<jar jarfile="${build.dir}/AdvanceQuery${aq.jar.version}.jar" basedir="${target.dir}">
+		<delete file="{build.dir}/AdvanceQuery.jar" />
+		<jar jarfile="${build.dir}/AdvanceQuery.jar" basedir="${target.dir}">
 
 			<manifest>
 				<section name="${aq.jar.details}">
