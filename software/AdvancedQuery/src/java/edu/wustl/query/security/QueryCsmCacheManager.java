@@ -138,7 +138,6 @@ public class QueryCsmCacheManager
 			{
 				QueryResultObjectDataBean queryResultObjectDataBean = queryResultObjectDataMap
 						.get(key);
-				String entityName = queryResultObjectDataBean.getCsmEntityName();
 				int mainEntityId = -1;
 				long finalMainEntityId = mainEntityId;
 				mainEntityId = getMainEntityIdFromBean(aList,
@@ -150,7 +149,7 @@ public class QueryCsmCacheManager
 							queryResultObjectDataBean, mainEntityId,
 							finalMainEntityId);
 					List<List<String>> cpIdsList =
-					getCpIdsListForGivenEntityId(entityName, finalMainEntityId);
+					getCpIdsListForGivenEntityId(queryResultObjectDataBean.getCsmEntityName(), finalMainEntityId);
 					//if this object is not associated to any CP
 					//then user will not have identified privilege on it.
 					hasPrivilegeOnID = checkHasPrivilegeOnId(sessionDataBean,

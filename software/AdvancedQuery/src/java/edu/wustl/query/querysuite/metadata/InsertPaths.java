@@ -79,8 +79,7 @@ public class InsertPaths
 			appName = "Query";
 		}
 		IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
-		JDBCDAO dao = null;
-		dao = daoFactory.getJDBCDAO();
+		JDBCDAO dao = daoFactory.getJDBCDAO();
 		dao.openSession(null);
 		for (List<String> entityList : pathList)
 		{
@@ -104,7 +103,7 @@ public class InsertPaths
 		File file = new File(fileName);
 
 		BufferedReader bufRdr = new BufferedReader(new FileReader(file));
-		String line = null;
+		String line;
 
 		while ((line = bufRdr.readLine()) != null)
 		{
@@ -309,7 +308,7 @@ public class InsertPaths
 		List<Long> entityIdList = new ArrayList<Long>();
 		LinkedList<Object> data;
 		LinkedList<ColumnValueBean> columnValueBean;
-		String sql = "";
+		String sql;
 		ResultSet resultSet = null;
 		for (String entityName : entityList)
 		{
@@ -509,7 +508,7 @@ public class InsertPaths
 	private static LinkedList<ColumnValueBean> populateColumnValueBean(LinkedList<Object> data)
 	{
 		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
-		ColumnValueBean bean = null;
+		ColumnValueBean bean;
 		for(Object object : data)
 		{
 			bean = new ColumnValueBean(object.toString(), object);

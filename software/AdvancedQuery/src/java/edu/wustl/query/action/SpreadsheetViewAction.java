@@ -56,8 +56,8 @@ public class SpreadsheetViewAction extends SecureAction
 		 */
 		HttpSession session = request.getSession();
 		//changes are done for check all
-		String pageOf = "";
-		String checkallpages = "";
+		String pageOf;
+		String checkallpages;
 		String checkall = (String) request.getParameter(AQConstants.CHECK_ALL_PAGES);
 		if (checkall == null || checkall.equals(""))
 		{
@@ -126,14 +126,13 @@ public class SpreadsheetViewAction extends SecureAction
 		}
 		String pagination = request.getParameter("isPaging");
 		setPaginationData(request, session, querySessionData, pagination);
-		int pageNum = AQConstants.START_PAGE;
 
 		List paginationList = null, columnList = null;
 
 		//Get the SPREADSHEET_DATA_LIST and SPREADSHEET_COLUMN_LIST from the session.
 		columnList = (List) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
 
-		pageNum = getPageNum(request, session);
+		int pageNum = getPageNum(request, session);
 
 		Integer recordsPerPage = getRecordsPerPage(request, session);
 		if (pagination != null && pagination.equalsIgnoreCase("true"))

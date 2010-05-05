@@ -53,7 +53,7 @@ public class ShowQueryDashboardAction extends SecureAction
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		cleanUpSession(request);
-		ActionForward actionForward = null;
+		ActionForward actionForward;
 		if (AbstractEntityCache.isCacheReady)
 		{
 			DashboardBizLogic dashboardBizLogic = new DashboardBizLogic();
@@ -158,7 +158,7 @@ public class ShowQueryDashboardAction extends SecureAction
 		String message = queries.size() + "";
 		ActionMessages actionMessages = new ActionMessages();
 		String action = (String) request.getParameter("actions");
-		String saveQueryMessage = "";
+		String saveQueryMessage;
 		if ("save".equalsIgnoreCase(action))
 		{
 			IParameterizedQuery query = (IParameterizedQuery) request.getSession().getAttribute(

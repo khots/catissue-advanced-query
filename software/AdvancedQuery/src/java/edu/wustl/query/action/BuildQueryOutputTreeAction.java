@@ -52,7 +52,7 @@ public class BuildQueryOutputTreeAction extends Action
 		boolean hasConditionOnIdentifiedField = (Boolean) session
 				.getAttribute(AQConstants.HAS_CONDN_ON_ID_FIELD);
 		CategorySearchForm actionForm = (CategorySearchForm) form;
-		String outputTreeStr = "";
+		String outputTreeStr;
 		String nodeId = actionForm.getNodeId();
 		QueryOutputTreeBizLogic outputTreeBizLogic = new QueryOutputTreeBizLogic();
 		String actualParentNodeId = nodeId.substring(nodeId

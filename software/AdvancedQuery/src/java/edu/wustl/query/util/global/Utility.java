@@ -529,7 +529,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 		int col;
 		if(columnList!=null)
 		{
-			String fixedColWidth = null;
+			String fixedColWidth;
 			if(isWidthInPercent)
 			{
 				fixedColWidth = String.valueOf(AQConstants.HUNDRED/columnList.size());
@@ -570,7 +570,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	public static String getmyData(List dataList)
 	{
 		StringBuffer myData = new StringBuffer("[");
-		int index=0;
+		int index;
 		if(dataList !=null && !dataList.isEmpty())
 		{
 			for (index=0;index<(dataList.size()-1);index++)
@@ -773,8 +773,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 			jdbcDao = daofactory.getJDBCDAO();
 			jdbcDao.openSession(sessionDataBean);
 
-			List<Object> list = null;
-			list = jdbcDao.executeQuery(cpQuery);
+			List<Object> list = jdbcDao.executeQuery(cpQuery);
 			if (list != null && !list.isEmpty())
 			{
 			    populateCPIdsList(cpIdsList, list);
@@ -832,7 +831,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	     */
 	    public static AbstractQueryExecutor getQueryExecutor()
 	    {
-	        AbstractQueryExecutor queryExecutor = null;
+	        AbstractQueryExecutor queryExecutor;
 
 	        String appName = CommonServiceLocator.getInstance().getAppName();
 	        IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);

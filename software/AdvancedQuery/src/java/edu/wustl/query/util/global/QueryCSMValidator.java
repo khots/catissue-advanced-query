@@ -48,8 +48,7 @@ public class QueryCSMValidator
 	private void processForDsInterval(List<String> row,
 			TemporalColumnMetadata tqMetadata, String ageString)
 	{
-		long age;
-		age = Long.parseLong(ageString);
+		long age = Long.parseLong(ageString);
 		age = getAgeAsPerBirthDate(tqMetadata, age);
 		if (!tqMetadata.getTimeInterval().name().equals(
 					YMInterval.Year.name()))
