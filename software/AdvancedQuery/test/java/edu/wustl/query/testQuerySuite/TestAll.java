@@ -30,6 +30,7 @@ import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogicTestCase;
 import edu.wustl.query.bizlogic.QueryOutputTreeBizLogicTestCase;
 import edu.wustl.query.bizlogic.SaveQueryBizLogicTestCase;
 import edu.wustl.query.bizlogic.ShareQueryBizLogicTestCase;
+import edu.wustl.query.bizlogic.SpreadsheetDenormalizationBizLogicTestCase;
 import edu.wustl.query.executor.AbstractQueryExecutorTestCase;
 import edu.wustl.query.flex.dag.CustomFormulaUIBeanTestCase;
 import edu.wustl.query.generator.SqlGeneratorGenericTestCase;
@@ -90,6 +91,7 @@ public class TestAll
 		suite.addTestSuite(QueryTreeNodeDataTestCase.class);
 		suite.addTestSuite(AbstractQueryExecutorTestCase.class);
 		suite.addTestSuite(CustomFormulaUIBeanTestCase.class);
+		suite.addTestSuite(SpreadsheetDenormalizationBizLogicTestCase.class);
 		return suite;
 	}
 }
