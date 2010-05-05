@@ -1,112 +1,52 @@
 package edu.wustl.common.query.queryobject.impl;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wustl.common.datahandler.AbstractDataHandler;
-import edu.wustl.common.datahandler.DataHandlerFactory;
-import edu.wustl.common.datahandler.DataHandlerParameter;
-import edu.wustl.common.datahandler.HandlerTypeEnum;
-import edu.wustl.common.datahandler.ParametersEnum;
-import edu.wustl.common.util.logger.LoggerConfig;
-
+/**
+ * This class is responsible for forming the data list in denormalized form to be exported to a CSV file.
+ * @author pooja_tavase
+ *
+ */
 public class DenormalizedCSVExporter
 {
-	private static org.apache.log4j.Logger logger = LoggerConfig
-	.getConfiguredLogger(DenormalizedCSVExporter.class);
 	/**
-	 * Just calls the method to write the results in the CSV file.
+	 * Just calls the method to get the final data list to be written into the CSV file.
 	 * @param fileName file name
 	 * @param size size of the data list
 	 */
-	public List<List<String>> addDataToCSV(String fileName, int size,QueryExportDataHandler dataHandler)
+	public List<List<String>> addDataToCSV(int size,QueryExportDataHandler dataHandler)
 	{
-		List<List<String>> dataList = new ArrayList<List<String>>();
-		try
+		List<List<String>> finalDataList = new ArrayList<List<String>>();
+		List<Object> resultList;
+		List<String> dataList;
+		for (int i = 0; i < size; i++)
 		{
-			dataList = writeToCSVFile(fileName, size,dataHandler);
+			resultList = getDataList(i, dataHandler);
+			dataList = new ArrayList<String>();
+			populateDataList(resultList, dataList);
+			finalDataList.add(dataList);
 		}
-		catch (IllegalArgumentException e)
-		{
-			logger.error(e.getMessage(), e);
-		}
-		catch (SecurityException e)
-		{
-			logger.error(e.getMessage(), e);
-		}
-		catch (ClassNotFoundException e)
-		{
-			logger.error(e.getMessage(), e);
-		}
-		catch (InstantiationException e)
-		{
-			logger.error(e.getMessage(), e);
-		}
-		catch (IllegalAccessException e)
-		{
-			logger.error(e.getMessage(), e);
-		}
-		catch (InvocationTargetException e)
-		{
-			logger.error(e.getMessage(), e);
-		}
-		catch (NoSuchMethodException e)
-		{
-			logger.error(e.getMessage(), e);
-		}
-		catch (IOException e)
-		{
-			logger.error(e.getMessage(), e);
-		}
-		return dataList;
+		finalDataList = writeToCSVFile(size,dataHandler);
+		return finalDataList;
 	}
 
 	/**
 	 * This method writes the query results into the CSV file specified.
 	 * @param fileName fileName
 	 * @param size size
-	 * @throws IllegalArgumentException IllegalArgumentException
-	 * @throws SecurityException SecurityException
-	 * @throws ClassNotFoundException ClassNotFoundException
-	 * @throws InstantiationException InstantiationException
-	 * @throws IllegalAccessException IllegalAccessException
-	 * @throws InvocationTargetException InvocationTargetException
-	 * @throws NoSuchMethodException NoSuchMethodException
-	 * @throws IOException IOException
 	 */
-	private List<List<String>> writeToCSVFile(String fileName, int size,QueryExportDataHandler handler)
-			throws IllegalArgumentException,SecurityException, ClassNotFoundException, InstantiationException,
-			IllegalAccessException, InvocationTargetException, NoSuchMethodException, IOException
+	private List<List<String>> writeToCSVFile(int size,QueryExportDataHandler handler)
 	{
 		List<List<String>> finalDataList = new ArrayList<List<String>>();
 		List<Object> resultList;
 		List<String> dataList;
-		/*DataHandlerParameter parameter = new DataHandlerParameter();
-		parameter.setProperty(ParametersEnum.BUFFERSIZE, null);
-		AbstractDataHandler dataHandler = null;*/
-		try
+		for (int i = 0; i < size; i++)
 		{
-			/*dataHandler = DataHandlerFactory.getDataHandler(HandlerTypeEnum.CSV, parameter,
-					fileName);
-			dataHandler.openFile();*/
-
-			//Add the header to report
-			//dataHandler.appendData(getColumnHeaderList());
-
-			for (int i = 0; i < size; i++)
-			{
-				resultList = getDataList(i, handler);
-				//dataHandler.appendData(resultList);
-				dataList = new ArrayList<String>();
-				populateDataList(resultList, dataList);
-				finalDataList.add(dataList);
-			}
-		}
-		finally
-		{
-			//dataHandler.closeFile();
+			resultList = getDataList(i, handler);
+			dataList = new ArrayList<String>();
+			populateDataList(resultList, dataList);
+			finalDataList.add(dataList);
 		}
 		return finalDataList;
 	}

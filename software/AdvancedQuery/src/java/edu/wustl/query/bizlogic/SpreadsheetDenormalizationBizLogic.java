@@ -23,7 +23,6 @@ import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
-import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
@@ -75,9 +74,8 @@ public class SpreadsheetDenormalizationBizLogic
 				dataHandler.updateRowDataList(denormalizationList.get(count),count);
 			}
 			DenormalizedCSVExporter csvExporter = new DenormalizedCSVExporter();
-			String filename = generateNewFileName(rootEntity);
 			finalDataList =
-				csvExporter.addDataToCSV(filename, denormalizationList.size(),dataHandler);
+				csvExporter.addDataToCSV(denormalizationList.size(),dataHandler);
 		}
 		catch (MultipleRootsException e)
 		{
@@ -356,49 +354,6 @@ public class SpreadsheetDenormalizationBizLogic
 	}
 
 	/**
-	 * This method populates the list for normal view.
-	 * @param selectedAttributeMetaDataList selectedAttributeMetaDataList
-	 * @param dataList dataList
-	 * @param selectSql selectSql
-	 */
-	private void populateListForNormalView(List<QueryOutputTreeAttributeMetadata>
-					selectedAttributeMetaDataList,List<List<String>> dataList, String selectSql)
-	{
-		Map<BaseAbstractAttributeInterface,Object> denormalizationMap;
-		for(List<String> list : dataList)
-		{
-			denormalizationMap = new HashMap<BaseAbstractAttributeInterface,Object>();
-			populateDenormalizationMap(selectedAttributeMetaDataList,
-					selectSql, denormalizationMap, list);
-			denormalizationList.add(denormalizationMap);
-		}
-	}
-
-	/**
-	 * This method populates the map (BaseAbstractAttributeInterface->Object), where, in this case,
-	 * Object will be actual value of the attribute.
-	 * @param selectedAttributeMetaDataList selectedAttributeMetaDataList
-	 * @param selectSql selectSql
-	 * @param denormalizationMap denormalizationMap
-	 * @param list list
-	 */
-	private void populateDenormalizationMap(
-			List<QueryOutputTreeAttributeMetadata> selectedAttributeMetaDataList,
-			String selectSql,
-			Map<BaseAbstractAttributeInterface, Object> denormalizationMap,
-			List<String> list)
-	{
-		for(QueryOutputTreeAttributeMetadata outputTreeAttributeMetadata : selectedAttributeMetaDataList)
-		{
-			String columnName = outputTreeAttributeMetadata.getColumnName();
-			BaseAbstractAttributeInterface attribute = outputTreeAttributeMetadata.getAttribute();
-			Map<String,String> columnNameMap = getColumnNameMap(selectSql,list);
-			String value = columnNameMap.get(columnName);
-			populateDenormalizationMap(denormalizationMap, attribute, value);
-		}
-	}
-
-	/**
 	 * Forms a columnNameMap (columnName-->Value)
 	 * @param selectSql selectSql
 	 * @param dataList dataList
@@ -424,25 +379,5 @@ public class SpreadsheetDenormalizationBizLogic
 			columnNameMap.put(token, dataList.get(index++));
 		}
 		return columnNameMap;
-	}
-
-	/**
-	 * This method generates theCSV file name where the data is to be exported.
-	 * @param rootEntity rootEntity
-	 * @return the file name
-	 */
-	private String generateNewFileName(EntityInterface rootEntity)
-	{
-		String randomNumber;
-		int number = (int) (Math.random() * 100000);
-		randomNumber = AQConstants.UNDERSCORE + Integer.toString(number);
-
-		StringBuffer fileName = new StringBuffer();
-		String entityName = rootEntity.getName();
-		entityName = entityName.substring(entityName.lastIndexOf('.')+1);
-		String appName = CommonServiceLocator.getInstance().getAppHome();
-		fileName.append(appName).append(System.getProperty("file.separator"));
-		fileName.append(entityName).append(randomNumber).append(".csv");
-		return fileName.toString();
 	}
 }

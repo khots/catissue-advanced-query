@@ -3,10 +3,8 @@ package edu.wustl.common.query.queryobject.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -208,29 +206,12 @@ public class QueryExportDataHandler
 	private void updateMaxRecordCount(List tempList,
 			QueryHeaderData queryDataEntity)
 	{
-		Integer dataListCount = getMaxRecordCountForQueryHeader(queryDataEntity);
+		Integer dataListCount = entityVsMaxCount.get(queryDataEntity);
 		if (dataListCount == null || tempList.size() > dataListCount)
 		{
 			dataListCount = tempList.size();
 		}
-		populateEntityVsMaxCount(queryDataEntity,dataListCount);
 		entityVsMaxCount.put(queryDataEntity, dataListCount);
-	}
-
-	private void populateEntityVsMaxCount(QueryHeaderData queryDataEntity,
-			Integer dataListCount)
-	{
-		Set<QueryHeaderData> keySet = entityVsMaxCount.keySet();
-		Iterator<QueryHeaderData> iterator = keySet.iterator();
-		while(iterator.hasNext())
-		{
-			QueryHeaderData headerData = iterator.next();
-			if(headerData.getEntity().getName().equals(queryDataEntity.getEntity().getName()))
-			{
-				entityVsMaxCount.put(headerData, dataListCount);
-				break;
-			}
-		}
 	}
 
 	/**
@@ -280,7 +261,7 @@ public class QueryExportDataHandler
 		Integer maxRecordCount = getMaxRecordCountForQueryHeader(queryHeaderData);
 
 		Collection<AbstractAttributeInterface> attributeList = getFinalAttributeList(queryHeaderData);
-		List<List<Object>> entityDataList = getEntityDataList(entityMap,queryHeaderData);
+		List<List<Object>> entityDataList = entityMap.get(queryHeaderData);
 
 		List<Object> dataList = new ArrayList<Object>();
 
@@ -331,26 +312,6 @@ public class QueryExportDataHandler
 	}
 
 	/**
-	 * Populate the list with the direct value from the map.
-	 * @param entityDataList entityDataList
-	 * @param dataList dataList
-	 * @param queryData queryData
-	 * @param attrControlNo attrControlNo
-	 */
-	private void populateListForAttributes(List<List<Object>> entityDataList,
-			List<Object> dataList, List<Object> queryData, int attrControlNo)
-	{
-		Object dataValue;
-		if (entityDataList != null && dataList.size()>=attrControlNo &&
-				queryData.size()>attrControlNo)
-		{
-			dataValue = queryData.get(attrControlNo);
-			dataList.add(dataValue);
-			attrControlNo++;
-		}
-	}
-
-	/**
 	 * Add all the associations (of parents) and then filter the list to contain only the required attributes and associations.
 	 * @param queryHeaderData queryHeaderData
 	 * @return attributeList
@@ -377,31 +338,6 @@ public class QueryExportDataHandler
 			}
 		}
 		return newAttributeList;
-	}
-
-	/**
-	 * Get entity data list.
-	 * @param entityMap entityMap
-	 * @param queryHeaderData queryHeaderData
-	 * @return entityDataList
-	 */
-	private List<List<Object>> getEntityDataList(
-			Map<QueryHeaderData, List<List<Object>>> entityMap,
-			QueryHeaderData queryHeaderData)
-	{
-		List<List<Object>> entityDataList = null;
-		Set<QueryHeaderData> keySet = entityMap.keySet();
-		Iterator<QueryHeaderData> iterator = keySet.iterator();
-		while(iterator.hasNext())
-		{
-			QueryHeaderData headerData = iterator.next();
-			if(headerData.getEntity().getName().equals(queryHeaderData.getEntity().getName()))
-			{
-				entityDataList = entityMap.get(headerData);
-				break;
-			}
-		}
-		return entityDataList;
 	}
 
 	/**
@@ -433,17 +369,10 @@ public class QueryExportDataHandler
 	private Integer getMaxRecordCountForQueryHeader(
 			QueryHeaderData queryHeaderData)
 	{
-		Integer maxCount = 0;
-		Set<QueryHeaderData> keySet = entityVsMaxCount.keySet();
-		Iterator<QueryHeaderData> iterator = keySet.iterator();
-		while(iterator.hasNext())
+		Integer maxCount = entityVsMaxCount.get(queryHeaderData);
+		if (maxCount == null)
 		{
-			QueryHeaderData headerData = iterator.next();
-			if(headerData.getEntity().getName().equals(queryHeaderData.getEntity().getName()))
-			{
-				maxCount = entityVsMaxCount.get(headerData);
-				break;
-			}
+			maxCount = 0;
 		}
 		return maxCount;
 	}
