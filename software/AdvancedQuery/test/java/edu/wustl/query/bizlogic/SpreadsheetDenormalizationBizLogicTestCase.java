@@ -160,10 +160,10 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
         IOutputEntity pmiOutputEntity = QueryObjectFactory.createOutputEntity(pmiEntity);
         pmiOutputEntity.getSelectedAttributes().addAll(pmiEntity.getEntityAttributesForQuery());
 
-        AttributeInterface lastName = participantEntity.getAttributeByName("lastName");
-        AttributeInterface pmiId = pmiEntity.getAttributeByName("id");
-        AttributeInterface mrnNo = pmiEntity.getAttributeByName("medicalRecordNumber");
-        AttributeInterface participantId = participantEntity.getAttributeByName("id");
+        AttributeInterface lastName = GenericQueryGeneratorMock.findAttribute(participantEntity,"lastName");
+        AttributeInterface pmiId = GenericQueryGeneratorMock.findAttribute(pmiEntity,"id");
+        AttributeInterface mrnNo = GenericQueryGeneratorMock.findAttribute(pmiEntity,"medicalRecordNumber");
+        AttributeInterface participantId = GenericQueryGeneratorMock.findAttribute(participantEntity,"id");
         List<AttributeInterface> attributeList = new ArrayList<AttributeInterface>();
         attributeList.add(lastName);
         attributeList.add(pmiId);
@@ -185,7 +185,7 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
         }
         SelectedColumnsMetadata selectedColumnsMetadata = new SelectedColumnsMetadata();
         selectedColumnsMetadata.setCurrentSelectedObject(outputTreeDataNode);
-        selectedColumnsMetadata.setDefinedView(false);
+        selectedColumnsMetadata.setDefinedView(true);
         selectedColumnsMetadata.setSelColNVBeanList(null);
         selectedColumnsMetadata.setSelectedAttributeMetaDataList(selectedAttributeMetaDataList);
         selectedColumnsMetadata.setSelectedOutputAttributeList(null);
@@ -231,12 +231,6 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
         Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
         entityIdIndexMap.put(participantEntity, 3);
         queryResultObjectDataBean.setEntityIdIndexMap(entityIdIndexMap);
-        Map<EntityInterface,List<List<String>>> entityMainIdListMap = new HashMap<EntityInterface, List<List<String>>>();
-        List<List<String>> mainEntityIds = new ArrayList<List<String>>();
-        List<String> mainEntityList = new ArrayList<String>();
-        mainEntityList.add("1");
-        mainEntityIds.add(mainEntityList);
-        entityMainIdListMap.put(participantEntity, mainEntityIds);
         Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap = new HashMap<Long, QueryResultObjectDataBean>();
         queryResultObjectDataBeanMap.put(outputTreeDataNode.getId(), queryResultObjectDataBean);
 
