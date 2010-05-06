@@ -917,4 +917,24 @@ public class GenericQueryGeneratorMock extends EntityManager
 		}
         return null;
 	}
+
+	public static AssociationInterface getAssociation(EntityInterface source, EntityInterface target)
+	{
+		AssociationInterface association = null;
+		try
+		{
+			association = getAssociationFrom(entityManager.getAssociation(
+			        "edu.wustl.clinportal.domain.Participant", "participant"),
+			"edu.wustl.clinportal.domain.ParticipantMedicalIdentifier");
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+		}
+		return association;
+	}
 }
