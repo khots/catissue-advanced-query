@@ -28,6 +28,15 @@ public class QueryExportDataHandlerTestCase extends TestCase
         EntityInterface participantEntity = GenericQueryGeneratorMock.createEntity("Participant");
         participantEntity = GenericQueryGeneratorMock.getEntity(cache, participantEntity);
         AttributeInterface lastName = GenericQueryGeneratorMock.findAttribute(participantEntity, "lastName");
+        AttributeInterface ethnicity = GenericQueryGeneratorMock.findAttribute(participantEntity, "ethnicity");
+        AttributeInterface firstName = GenericQueryGeneratorMock.findAttribute(participantEntity, "firstName");
+        List ethnicities = new ArrayList();
+        Map<BaseAbstractAttributeInterface,Object> tempMap =
+        	new HashMap<BaseAbstractAttributeInterface, Object>();
+        tempMap.put(ethnicity, "eth1");
+        tempMap.put(lastName, "eth1");
+        tempMap.put(firstName, "eth1");
+        ethnicities.add(tempMap);
 
         EntityInterface pmiEntity = GenericQueryGeneratorMock.createEntity("ParticipantMedicalIdentifier");
         pmiEntity = GenericQueryGeneratorMock.getEntity(cache, pmiEntity);
@@ -45,6 +54,7 @@ public class QueryExportDataHandlerTestCase extends TestCase
         innerMapList.add(innerMap);
 
         denormalizationMap.put(lastName, "abc");
+        denormalizationMap.put(ethnicity, ethnicities);
         denormalizationMap.put(association, innerMapList);
 
         QueryExportDataHandler dataHandler = new QueryExportDataHandler(participantEntity);
