@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
+import edu.wustl.common.query.queryobject.impl.QueryHeaderData;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
@@ -238,6 +239,11 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
         querySessionData.setSql("select Column0,Column1,Column2,Column3 from TEMP_OUTPUTTREE1_84116 where Column3 is NOT NULL");
 		SpreadsheetDenormalizationBizLogic bizLogic = new SpreadsheetDenormalizationBizLogic();
 		bizLogic.scanIQuery(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
+
+		QueryHeaderData headerData = new QueryHeaderData(participantEntity, "0");
+		headerData.getEntity();
+		headerData.setRecordNo("1");
+		headerData.getRecordNo();
 	}
 
 	private List<String> populateList(String string, String string2,
