@@ -4,14 +4,17 @@
 package edu.wustl.query.bizlogic;
 
 import java.util.Collection;
+import java.util.List;
 
 import junit.framework.TestCase;
-import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
+import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
+import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.util.DAOUtility;
-import edu.wustl.query.actionForm.SaveQueryForm;
+import edu.wustl.query.beans.DashBoardBean;
+import edu.wustl.query.generator.GenericQueryGeneratorMock;
 
 /**
  * @author pooja_tavase
@@ -74,6 +77,21 @@ public class DashboardBizLogicTestCase extends TestCase
 		{
 			Collection<IParameterizedQuery> queries = DAOUtility.getInstance().executeHQL(DAOUtility.GET_PARAM_QUERIES_DETAILS);
 			new DashboardBizLogic().getDashBoardDetails(queries, "1");
+
+			IQuery query = GenericQueryGeneratorMock.creatParticipantQuery();
+			IParameterizedQuery pQuery = QueryObjectFactory.createParameterizedQuery(query);
+			DashBoardBean bean = new DashBoardBean();
+			bean.setCountOfRootRecords("2");
+			bean.setExecutedOn("N/A");
+			bean.setOwnerName("admin@admin.com");
+			bean.setQuery(pQuery);
+			bean.setRootEntityName("Participant");
+
+			bean.getCountOfRootRecords();
+			bean.getExecutedOn();
+			bean.getOwnerName();
+			bean.getQuery();
+			bean.getRootEntityName();
 		}
 		catch (BizLogicException e)
 		{

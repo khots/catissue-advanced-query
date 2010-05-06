@@ -72,7 +72,7 @@ public class TestAll
 		suite.addTestSuite(SelectedColumnsMetadataTestCase.class);
 		suite.addTestSuite(QueryModuleSqlUtilTestCase.class);
 		suite.addTestSuite(ExportQueryBizLogicTestCase.class);
-//		suite.addTestSuite(SaveQueryBizLogicTestCase.class);
+		suite.addTestSuite(SaveQueryBizLogicTestCase.class);
 		suite.addTestSuite(CommonQueryBizLogicTestCase.class);
 		suite.addTestSuite(TemporalQueryUtilityTestCase.class);
 		suite.addTestSuite(QueryObjectProcessorTestCase.class);
