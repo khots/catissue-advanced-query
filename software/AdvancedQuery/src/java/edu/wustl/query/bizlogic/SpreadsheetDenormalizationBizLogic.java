@@ -177,8 +177,7 @@ public class SpreadsheetDenormalizationBizLogic
 			new HashMap<BaseAbstractAttributeInterface,Object>();
 		Map<BaseAbstractAttributeInterface,Object> innerMap;
 		Integer idColumnValue = -100;
-		Map<BaseAbstractAttributeInterface,Map<BaseAbstractAttributeInterface,Object>> associationInterfaceMap =
-			new HashMap<BaseAbstractAttributeInterface, Map<BaseAbstractAttributeInterface,Object>>();
+		Map<BaseAbstractAttributeInterface,Map<BaseAbstractAttributeInterface,Object>> associationInterfaceMap;
 		BaseAbstractAttributeInterface associationInterface;
 		for(List<String> list : dataList)
 		{
