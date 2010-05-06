@@ -216,7 +216,7 @@ public class HtmlProvider
 				String componentId = generateComponentName(attribute);
 				attributesList = attributesList + ";" + componentId;
 				isBGColor = GenerateHtml.getAlternateCss(generatedHTML, isBGColor, componentId);
-				generatedHTML.append(attrLabel).append(" ");
+				generatedHTML.append(attrLabel).append(' ');
 				GenerateHtml.getDateFormat(generatedHTML, isBold, attribute,attributeDetails.isParameterizedCondition());
 				generatedHTML.append(":&nbsp;&nbsp;&nbsp;&nbsp;</td>\n");
 				generateHTMLForConditions(generatedHTML,attribute);

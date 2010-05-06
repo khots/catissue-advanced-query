@@ -214,7 +214,7 @@ public class GenerateHtml
 	{
 		if (attrDetails.getDataType().equalsIgnoreCase(AQConstants.DATE))
 		{
-			html.append("\n").append(generateHTMLForCalendar(componentId, true, false,cssClass));
+			html.append('\n').append(generateHTMLForCalendar(componentId, true, false,cssClass));
 		}
 		else
 		{
