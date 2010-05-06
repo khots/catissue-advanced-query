@@ -28,4 +28,8 @@ public class QueryModuleException extends Exception
 		return key;
 	}
 
+	public String getMessage()
+	{
+		return message;
+	}
 }

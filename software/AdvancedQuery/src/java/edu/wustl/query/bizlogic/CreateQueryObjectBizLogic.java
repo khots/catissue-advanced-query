@@ -107,7 +107,7 @@ public class CreateQueryObjectBizLogic
 		List<AttributeInterface> attributes = new ArrayList<AttributeInterface>();
 		List<String> attributeOperators = new ArrayList<String>();
 		List<String> secondAttributeValues = new ArrayList<String>();
-		ArrayList<ArrayList<String>> conditionValues = new ArrayList<ArrayList<String>>();
+		List<List<String>> conditionValues = new ArrayList<List<String>>();
 		String[] params;
 		for (AttributeInterface attr : attrCollection)
 		{
@@ -117,7 +117,7 @@ public class CreateQueryObjectBizLogic
 				attributes.add(attr);
 				attributeOperators.add(params[AQConstants.INDEX_PARAM_ZERO]);
 				secondAttributeValues.add(params[AQConstants.INDEX_PARAM_TWO]);
-				ArrayList<String> attributeValues = getConditionValuesList(params);
+				List<String> attributeValues = getConditionValuesList(params);
 				errorMessage.append(validateAttributeValues(attr.getDataType().trim(), attributeValues));
 				if ("".equals(errorMessage.toString()))
 				{
@@ -143,8 +143,8 @@ public class CreateQueryObjectBizLogic
 	 * @param attributeValues attribute Values
 	 */
 	private void populateConditionValuesForBetween(
-			ArrayList<ArrayList<String>> conditionValues, String[] params,
-			AttributeInterface attr, ArrayList<String> attributeValues)
+			List<List<String>> conditionValues, String[] params,
+			AttributeInterface attr, List<String> attributeValues)
 	{
 		if (AQConstants.BETWEEN
 			.equals(params[AQConstants.INDEX_PARAM_ZERO]))
@@ -173,9 +173,9 @@ public class CreateQueryObjectBizLogic
 	 * @param params parameters
 	 * @return ArrayList attributeValues
 	 */
-	private ArrayList<String> getConditionValuesList(String[] params)
+	private List<String> getConditionValuesList(String[] params)
 	{
-		ArrayList<String> attributeValues = new ArrayList<String>();
+		List<String> attributeValues = new ArrayList<String>();
 		if (params[1] != null)
 		{
 			String[] values = params[1].split(AQConstants.QUERY_VALUES_DELIMITER);
@@ -731,7 +731,7 @@ public class CreateQueryObjectBizLogic
 		StringBuffer errorMessages = new StringBuffer(errorMessage);
 		ICondition condition;
 		String componentName;
-		ArrayList<ICondition> removalList = new ArrayList<ICondition>();
+		List<ICondition> removalList = new ArrayList<ICondition>();
 		List<ICondition> defaultConditions = new ArrayList<ICondition>();
 		int size = rule.size();
 		ParameterizedQuery pQuery = null;
@@ -743,7 +743,7 @@ public class CreateQueryObjectBizLogic
 			if (newConditions != null && newConditions.containsKey(componentName))
 			{
 				String[] params = newConditions.get(componentName);
-				ArrayList<String> attributeValues = getConditionValuesList(params);
+				List<String> attributeValues = getConditionValuesList(params);
 				errorMessages.append(validateAttributeValues(
 				condition.getAttribute().getDataType(), attributeValues));
 				if (displayNamesMap != null && !(displayNamesMap.containsKey(componentName)))
@@ -862,7 +862,7 @@ public class CreateQueryObjectBizLogic
 	 * @param defaultConditions default Conditions
 	 */
 	private void removeUnwantedConditions(IRule rule,
-			ArrayList<ICondition> removalList,
+			List<ICondition> removalList,
 			List<ICondition> defaultConditions)
 	{
 		for (ICondition removalEntity : removalList)

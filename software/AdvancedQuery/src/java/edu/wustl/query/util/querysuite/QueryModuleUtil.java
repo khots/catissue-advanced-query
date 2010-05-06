@@ -258,8 +258,7 @@ final public class QueryModuleUtil
 				}
 			}
 		}
-		String returnValue = getReturnValue(dspNameColName);
-		return returnValue;
+		return getReturnValue(dspNameColName);
 	}
 
 	/**

@@ -34,72 +34,85 @@ import edu.wustl.query.flex.dag.DAGPath;
 import edu.wustl.query.flex.dag.JoinQueryNode;
 import edu.wustl.query.flex.dag.SingleNodeCustomFormulaNode;
 
-public class FlexInterface {
+public class FlexInterface
+{
 
-	public FlexInterface() {
+	public FlexInterface()
+	{
 
 	}
 
-	private List<String> toStrList(List<NameValueBean> nvBeanList) {
+	private List<String> toStrList(List<NameValueBean> nvBeanList)
+	{
 		List<String> strList = new ArrayList<String>();
-		for (NameValueBean bean : nvBeanList) {
+		for (NameValueBean bean : nvBeanList)
+		{
 			strList.add(bean.getName());
 		}
 		return strList;
 	}
 
-	public List<String> getTissueSidePVList() {
+	public List<String> getTissueSidePVList()
+	{
 		List<NameValueBean> aList = CDEManager.getCDEManager()
 				.getPermissibleValueList("Tissue Side", null);
 		return toStrList(aList);
 	}
 
-	public List<String> getPathologicalStatusPVList() {
+	public List<String> getPathologicalStatusPVList()
+	{
 		List<NameValueBean> aList = CDEManager.getCDEManager()
 				.getPermissibleValueList("Pathological Status", null);
 		return toStrList(aList);
 	}
 
-	public List<String> getSpecimenClassStatusPVList() {
+	public List<String> getSpecimenClassStatusPVList()
+	{
 		Map specimenTypeMap = getSpecimenTypeMap();
 		Set specimenKeySet = specimenTypeMap.keySet();
 		List<NameValueBean> specimenClassList = new ArrayList<NameValueBean>();
 
 		Iterator itr1 = specimenKeySet.iterator();
-		while (itr1.hasNext()) {
+		while (itr1.hasNext())
+		{
 			String specimenKey = (String) itr1.next();
 			specimenClassList.add(new NameValueBean(specimenKey, specimenKey));
 		}
 		return toStrList(specimenClassList);
 	}
 
-	public List<String> getFluidSpecimenTypePVList() {
+	public List<String> getFluidSpecimenTypePVList()
+	{
 		Map specimenTypeMap = getSpecimenTypeMap();
 		List<NameValueBean> aList = (List) specimenTypeMap.get("Fluid");
 		return toStrList(aList);
 	}
 
-	public List<String> getTissueSpecimenTypePVList() {
+	public List<String> getTissueSpecimenTypePVList()
+	{
 		Map specimenTypeMap = getSpecimenTypeMap();
 		List<NameValueBean> aList = (List) specimenTypeMap.get("Tissue");
 		return toStrList(aList);
 	}
 
-	public List<String> getMolecularSpecimenTypePVList() {
+	public List<String> getMolecularSpecimenTypePVList()
+	{
 		Map specimenTypeMap = getSpecimenTypeMap();
 		List<NameValueBean> aList = (List<NameValueBean>) specimenTypeMap
 				.get("Molecular");
 		return toStrList(aList);
 	}
 
-	public List<String> getCellSpecimenTypePVList() {
+	public List<String> getCellSpecimenTypePVList()
+	{
 		Map specimenTypeMap = getSpecimenTypeMap();
 		List<NameValueBean> aList = (List<NameValueBean>) specimenTypeMap
 				.get("Cell");
 		return toStrList(aList);
 	}
 
-	private Map getSpecimenTypeMap() {
+	private Map getSpecimenTypeMap()
+	{
 		CDE specimenClassCDE = CDEManager.getCDEManager().getCDE("Specimen");
 		Set setPV = specimenClassCDE.getPermissibleValues();
 		Iterator itr = setPV.iterator();
@@ -110,7 +123,8 @@ public class FlexInterface {
 		// specimenClassList.add(new NameValueBean(Constants.SELECT_OPTION,
 		// "-1"));
 
-		while (itr.hasNext()) {
+		while (itr.hasNext())
+		{
 			List<NameValueBean> innerList = new ArrayList<NameValueBean>();
 			Object obj = itr.next();
 			PermissibleValue pValue = (PermissibleValue) obj;
@@ -121,7 +135,8 @@ public class FlexInterface {
 			Iterator itr1 = list1.iterator();
 			innerList.add(new NameValueBean(Constants.SELECT_OPTION, "-1"));
 
-			while (itr1.hasNext()) {
+			while (itr1.hasNext())
+			{
 				Object obj1 = itr1.next();
 				PermissibleValue pv1 = (PermissibleValue) obj1;
 				// Setting Specimen Type
@@ -135,20 +150,26 @@ public class FlexInterface {
 		return subTypeMap;
 	}
 
-	public List getSpecimenTypeStatusPVList() {
+	public List getSpecimenTypeStatusPVList()
+	{
 		return CDEManager.getCDEManager().getPermissibleValueList(
 				"Specimen Type", null);
 	}
 
-	public List getSCGList() {
+	public List getSCGList()
+	{
 		return null;
 	}
 
 	// --------------DAG-----------------------------
-	public void restoreQueryObject() {
-		if (dagPanel == null) {
+	public void restoreQueryObject()
+	{
+		if (dagPanel == null)
+		{
 			this.initFlexInterface();
-		} else {
+		}
+		else
+		{
 			dagPanel.restoreQueryObject();
 		}
 	}
@@ -159,7 +180,8 @@ public class FlexInterface {
 	 * @param nodesStr
 	 * @return
 	 */
-	public DAGNode addNodeToView(String nodesStr) {
+	public DAGNode addNodeToView(String nodesStr)
+	{
 		return dagPanel.addNodeToOutPutView(nodesStr);
 	}
 
@@ -168,11 +190,13 @@ public class FlexInterface {
 	 *
 	 * @return
 	 */
-	public Map<String, Object> repaintDAG() {
+	public Map<String, Object> repaintDAG()
+	{
 		return dagPanel.repaintDAG();
 	}
 
-	public int getSearchResult() {
+	public int getSearchResult()
+	{
 		return dagPanel.search();
 	}
 

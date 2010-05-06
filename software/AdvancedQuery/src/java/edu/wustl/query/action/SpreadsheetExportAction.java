@@ -97,18 +97,16 @@ public class SpreadsheetExportAction extends SecureAction
 		}
 		else
 		{
-			for (int counter = 0; counter < dataList.size(); counter++)
+			for (int counter = 0; counter < obj.length; counter++)
 			{
 				int indexOf = obj[counter].toString().indexOf("_") + 1;
 				int index = Integer.parseInt(obj[counter].toString().substring(indexOf));
-				if(index<dataList.size())
-				{
-					List<String> list = dataList.get(index);
-					List<String> subList = list.subList(0, columnsSize);
-					populateIndexList(idIndexList, entityIdsMap, index);
-					exportList.add(list);
-				}
+				List<String> list = dataList.get(index);
+				List<String> subList = list.subList(0, columnsSize);
+				populateIndexList(idIndexList, entityIdsMap, index);
+				exportList.add(subList);
 			}
+
 		}
 		exportAndSend(response, session, exportList, idIndexList, entityIdsMap);
 		return null;
