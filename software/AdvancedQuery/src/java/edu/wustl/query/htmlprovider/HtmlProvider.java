@@ -139,8 +139,7 @@ public class HtmlProvider
 	private String generateComponentName(AttributeInterface attribute)
 	{
 		StringBuffer componentId = new StringBuffer();
-		String attributeName = "";
-		attributeName = attribute.getName();
+		String attributeName = attribute.getName();
 		if(this.expressionId == -1)
 		{
 			componentId = componentId.append(attributeName).append(attribute.getId().toString());
@@ -189,7 +188,6 @@ public class HtmlProvider
 			boolean permissibleValuesChecked, Collection<AttributeInterface> attributeCollection)
 	{
 		StringBuffer generatedHTML = new StringBuffer(AQConstants.MAX_SIZE);
-		String space = " ";
 		generatedHTML
 				.append("<table valign='top' border=\"0\" width=\"100%\" " +
 						"height=\"100%\" cellspacing=\"0\" cellpadding=\"0\" " +
@@ -218,7 +216,7 @@ public class HtmlProvider
 				String componentId = generateComponentName(attribute);
 				attributesList = attributesList + ";" + componentId;
 				isBGColor = GenerateHtml.getAlternateCss(generatedHTML, isBGColor, componentId);
-				generatedHTML.append(attrLabel).append(space);
+				generatedHTML.append(attrLabel).append(" ");
 				GenerateHtml.getDateFormat(generatedHTML, isBold, attribute,attributeDetails.isParameterizedCondition());
 				generatedHTML.append(":&nbsp;&nbsp;&nbsp;&nbsp;</td>\n");
 				generateHTMLForConditions(generatedHTML,attribute);
@@ -447,7 +445,6 @@ public class HtmlProvider
 	private String getAttributesString(Collection<AttributeInterface> attributeCollection)
 	{
 		StringBuffer attributesList = new StringBuffer();
-		StringBuffer semicolon = new StringBuffer(";");
 		if (!attributeCollection.isEmpty())
 		{
 			List<AttributeInterface> attributes =
@@ -458,7 +455,7 @@ public class HtmlProvider
 				AttributeInterface attribute = (AttributeInterface) attributes.get(i);
 				//String attrName = attribute.getName();
 				String componentId = generateComponentName(attribute);
-				attributesList.append(semicolon).append(componentId);
+				attributesList.append(';').append(componentId);
 			}
 		}
 		return attributesList.toString();
@@ -757,7 +754,7 @@ public class HtmlProvider
 	{
 		StringBuffer generatedHTML = new StringBuffer(AQConstants.MAX_SIZE);
 		String attrLabel = Utility.getDisplayLabel(attributeDetails.getAttrName());
-		String html="";
+		String html;
 		boolean isChecked=false;
 		String isDisabled = "disabled='true'";
 		if(attributeDetails.isParameterizedCondition())
@@ -873,9 +870,8 @@ public class HtmlProvider
 			Map<Integer, Map<EntityInterface, List<ICondition>>> expressionMap, boolean isShowAll,
 			List<IParameter<?>> parameterList, StringBuffer generatedHTML)
 	{
-		String colon = ":";
 		StringBuffer expressionEntityString = new StringBuffer();
-		Map<EntityInterface, List<ICondition>> entityConditionMap = null;
+		Map<EntityInterface, List<ICondition>> entityConditionMap;
 		Map<EntityInterface, List<Integer>> entityExpressionIdListMap =
 					GenerateHtml.getEntityExpressionIdListMap(expressionMap);
 		Iterator<Integer> iterator = expressionMap.keySet().iterator();
@@ -894,7 +890,7 @@ public class HtmlProvider
 				List<ICondition> conditions = entityConditionMap.get(entity);
 				generatedHTML.append(getSaveQueryPageHtml(expressionId.intValue(), entity,
 				conditions, isShowAll, entityExpressionIdListMap,parameterList));
-				expressionEntityString.append(expressionId.intValue()).append(colon)
+				expressionEntityString.append(expressionId.intValue()).append(':')
 						.append(Utility.parseClassName(
 							entity.getName())).append(AQConstants.ENTITY_SEPARATOR);
 			}

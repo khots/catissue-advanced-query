@@ -197,7 +197,7 @@ public class SavedQueryHtmlProvider
 	{
         StringBuffer generateHTML = new StringBuffer(AQConstants.MAX_SIZE);
         int count = 0;
-        String html="";
+        String html;
         for (ICustomFormula customFormula : cFColumNameMap.keySet())
         {
         	String operator=customFormula.getOperator().getStringRepresentation();

@@ -514,16 +514,15 @@ public class GenerateHtml
 	public static String generateHTMLForOperators(String componentId,boolean isDate,
 			AttributeDetails attributeDetails)
 	{
-		String cssClass=CSS_PV;
 		StringBuffer html = new StringBuffer();
 		List<String> operatorsList = attributeDetails.getOperatorsList();
 		if (operatorsList != null && !operatorsList.isEmpty())
 		{
-			html.append("\n<td width='15%' class=" + cssClass + " valign='top' >");
+			html.append("\n<td width='15%' class=" + CSS_PV + " valign='top' >");
 			if (isDate)
 			{
 				html
-						.append("\n<select   class=" + cssClass
+						.append("\n<select   class=" + CSS_PV
 								+ " id=\""+componentId+"_combobox\" "
 								+"style=\"width:150px; display:block;\" name=\""
 								+ componentId + "_combobox\" "
@@ -532,13 +531,13 @@ public class GenerateHtml
 			}
 			else
 			{
-				html.append("\n<select  class=" + cssClass
+				html.append("\n<select  class=" + CSS_PV
 						+ " id=\""+componentId+"_combobox\" "
 						+ " style=\"width:150px; display:block;\" name=\"" + componentId
 						+ "_combobox\" onChange=\"operatorChanged('" + componentId
 						+ "','false')\">");
 			}
-			getHtmlForSelectedOperator(attributeDetails, cssClass, html, operatorsList);
+			getHtmlForSelectedOperator(attributeDetails, CSS_PV, html, operatorsList);
 			html.append("\n</select>");
 			html.append(END_TD_TAG);
 		}
@@ -601,7 +600,7 @@ public class GenerateHtml
 					Iterator<EntityInterface> innerMapIterator = entityMap.keySet().iterator();
 					while (innerMapIterator.hasNext())
 					{
-						List<Integer> dagIdList = null;
+						List<Integer> dagIdList;
 						EntityInterface entity = (EntityInterface)innerMapIterator.next();
 						if (!entityExpressionIdMap.containsKey(entity))
 						{

@@ -62,6 +62,15 @@ public abstract class AbstractQueryExecutor
 	protected static final String FROM_CLAUSE = "FROM";
 
 	/**
+	 * AQConstants required for db error.
+	 */
+	private static final String DB_ERROR = "db.operation.error";
+
+	/**
+	 * String to be displayed.
+	 */
+	private static final String ABSTRACT_QUERY = "AbstractQueryExecutor :";
+	/**
 	 * Holds the reference to connection object.
 	 */
 	//protected Connection connection;
@@ -166,8 +175,8 @@ public abstract class AbstractQueryExecutor
 		catch (SQLException sqlExp)
 		{
 			logger.error(sqlExp.getMessage(), sqlExp);
-			ErrorKey errorKey = ErrorKey.getErrorKey("db.operation.error");
-			throw new DAOException(errorKey,sqlExp,"AbstractQueryExecutor :");
+			ErrorKey errorKey = ErrorKey.getErrorKey(DB_ERROR);
+			throw new DAOException(errorKey,sqlExp,ABSTRACT_QUERY);
 		}
 		finally
 		{
@@ -178,8 +187,8 @@ public abstract class AbstractQueryExecutor
 			catch (DAOException ex)
 			{
 				logger.error(ex.getMessage(), ex);
-				ErrorKey errorKey = ErrorKey.getErrorKey("db.operation.error");
-				throw new DAOException(errorKey,ex,"AbstractQueryExecutor :");
+				ErrorKey errorKey = ErrorKey.getErrorKey(DB_ERROR);
+				throw new DAOException(errorKey,ex,ABSTRACT_QUERY);
 			}
 		}
 		return pagenatedResultData;
@@ -219,8 +228,8 @@ public abstract class AbstractQueryExecutor
 		catch (SQLException sqlExp)
 		{
 			logger.error(sqlExp.getMessage(), sqlExp);
-			ErrorKey errorKey = ErrorKey.getErrorKey("db.operation.error");
-			throw new DAOException(errorKey,sqlExp,"AbstractQueryExecutor :");
+			ErrorKey errorKey = ErrorKey.getErrorKey(DB_ERROR);
+			throw new DAOException(errorKey,sqlExp,ABSTRACT_QUERY);
 		}
 		finally
 		{
@@ -235,8 +244,8 @@ public abstract class AbstractQueryExecutor
 			catch (DAOException ex)
 			{
 				logger.error(ex.getMessage(), ex);
-				ErrorKey errorKey = ErrorKey.getErrorKey("db.operation.error");
-				throw new DAOException(errorKey,ex,"AbstractQueryExecutor :");
+				ErrorKey errorKey = ErrorKey.getErrorKey(DB_ERROR);
+				throw new DAOException(errorKey,ex,ABSTRACT_QUERY);
 			}
 		}
 		return pagenatedResultData;
