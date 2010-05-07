@@ -60,5 +60,6 @@ public class QueryExportDataHandlerTestCase extends TestCase
         QueryExportDataHandler dataHandler = new QueryExportDataHandler(participantEntity);
         dataHandler.updateRowDataList(denormalizationMap, 0);
         dataHandler.getDataList(0);
+        dataHandler.getRootEntity();
 	}
 }
