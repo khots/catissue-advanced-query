@@ -1,18 +1,49 @@
 package edu.wustl.common.query.authoriztion;
 
 import junit.framework.TestCase;
+import edu.wustl.common.exception.BizLogicException;
+import edu.wustl.common.querysuite.factory.QueryObjectFactory;
+import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
+import edu.wustl.common.querysuite.queryobject.IQuery;
+import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
+import edu.wustl.query.beans.SharedQueryBean;
+import edu.wustl.query.generator.GenericQueryGeneratorMock;
+import edu.wustl.security.exception.SMException;
+import gov.nih.nci.security.exceptions.CSException;
+import gov.nih.nci.security.exceptions.CSObjectNotFoundException;
+import gov.nih.nci.security.exceptions.CSTransactionException;
 
 public class SavedQueryAuthorizationTestCase extends TestCase
 {
-	/*public void testShareQuery() throws SMException, CSTransactionException, CSObjectNotFoundException, CSException
+	public void testShareQuery()
 	{
 		SavedQueryAuthorization authorization = new SavedQueryAuthorization();
 		SharedQueryBean bean = new SharedQueryBean();
 		bean.setShareTo("all");
 		IQuery query = GenericQueryGeneratorMock.creatParticipantQuery();
 		IParameterizedQuery pQuery = QueryObjectFactory.createParameterizedQuery(query);
-		authorization.shareQuery(bean, (ParameterizedQuery)pQuery);
-	}*/
+		try
+		{
+			authorization.shareQuery(bean, (ParameterizedQuery)pQuery);
+			assertFalse("It should throw exception....",true);
+		}
+		catch (SMException e)
+		{
+			assertTrue("Expected Exception!!!,",true);
+		}
+		catch (CSTransactionException e)
+		{
+			assertTrue("Expected Exception!!!,",true);
+		}
+		catch (CSObjectNotFoundException e)
+		{
+			assertTrue("Expected Exception!!!,",true);
+		}
+		catch (CSException e)
+		{
+			assertTrue("Expected Exception!!!,",true);
+		}
+	}
 
 	public void testGetUserProtectionGroup()
 	{
@@ -21,19 +52,51 @@ public class SavedQueryAuthorizationTestCase extends TestCase
 		authorization.getUserProtectionGroup(csmUserId);
 	}
 
-	/*public void testGetSharedUsers() throws SMException, CSObjectNotFoundException
+	public void testGetSharedUsers()
 	{
 		IQuery query = GenericQueryGeneratorMock.creatParticipantQuery();
 		ParameterizedQuery pQuery = (ParameterizedQuery)QueryObjectFactory.createParameterizedQuery(query);
 		SavedQueryAuthorization authorization = new SavedQueryAuthorization();
-		authorization.getSharedUsers(pQuery);
+		try
+		{
+			authorization.getSharedUsers(pQuery);
+			assertFalse("It should throw exception....",true);
+		}
+		catch (SMException e)
+		{
+			assertTrue("Expected Exception!!!,",true);
+		}
+		catch (CSObjectNotFoundException e)
+		{
+			assertTrue("Expected Exception!!!,",true);
+		}
 	}
 
-	public void testRemovePrevSharing() throws SMException, CSTransactionException, CSObjectNotFoundException, BizLogicException
+	public void testRemovePrevSharing()
 	{
 		IQuery query = GenericQueryGeneratorMock.creatParticipantQuery();
 		ParameterizedQuery pQuery = (ParameterizedQuery)QueryObjectFactory.createParameterizedQuery(query);
 		SavedQueryAuthorization authorization = new SavedQueryAuthorization();
-		authorization.removePrevSharing(pQuery, "1");
-	}*/
+		try
+		{
+			authorization.removePrevSharing(pQuery, "1");
+			assertFalse("It should throw exception....",true);
+		}
+		catch (SMException e)
+		{
+			assertTrue("Expected Exception!!!,",true);
+		}
+		catch (CSTransactionException e)
+		{
+			assertTrue("Expected Exception!!!,",true);
+		}
+		catch (CSObjectNotFoundException e)
+		{
+			assertTrue("Expected Exception!!!,",true);
+		}
+		catch (BizLogicException e)
+		{
+			assertTrue("Expected Exception!!!,",true);
+		}
+	}
 }
