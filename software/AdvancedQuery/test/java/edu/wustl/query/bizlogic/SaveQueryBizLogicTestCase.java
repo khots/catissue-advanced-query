@@ -1,5 +1,10 @@
 package edu.wustl.query.bizlogic;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
@@ -7,6 +12,8 @@ import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
+import edu.wustl.query.actionForm.SaveQueryForm;
+import edu.wustl.query.beans.DashBoardBean;
 import edu.wustl.query.beans.SharedQueryBean;
 import edu.wustl.query.generator.GenericQueryGeneratorMock;
 import gov.nih.nci.security.authorization.domainobjects.User;
@@ -70,6 +77,8 @@ public class SaveQueryBizLogicTestCase extends TestCase
 	{
 		IQuery query = GenericQueryGeneratorMock.creatParticipantQuery();
 		IParameterizedQuery pQuery = QueryObjectFactory.createParameterizedQuery(query);
+		Collection<IParameterizedQuery> allQueries = new ArrayList<IParameterizedQuery>();
+		allQueries.add(pQuery);
 		query.setId(Long.valueOf(1));
 		try
 		{
@@ -91,6 +100,50 @@ public class SaveQueryBizLogicTestCase extends TestCase
 			queryBean.getQuery();
 			queryBean.getSelectedRoles();
 			queryBean.getShareTo();
+
+			SaveQueryForm form = new SaveQueryForm();
+			form.setActivityStatus("Active");
+			form.setAllQueries(allQueries);
+			Map<Long, DashBoardBean> queryExecutedOnMap = new HashMap<Long, DashBoardBean>();
+			form.setDashBoardDetailsMap(queryExecutedOnMap );
+			form.setDescription("All participants");
+			form.setEditQuery(true);
+			form.setForwardTo("success");
+			form.setId(0);
+			form.setTitle("Participant's query");
+			form.setShowTree(true);
+			form.setShareTo("none");
+			form.setSharedQueries(allQueries);
+			form.setSelectedRoles("All");
+			form.setMyQueries(allQueries);
+			form.setOperation("Add");
+			form.setPageOf("queryModule");
+			form.setQueryString("");
+			form.setQueryId(Long.valueOf(1));
+			form.setObjectId("edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery_1578");
+
+			form.getActivityStatus();
+			form.getAllQueries();
+			form.getDashBoardDetailsMap();
+			form.getDescription();
+			form.getFormId();
+			form.getForwardTo();
+			form.getId();
+			form.getMultipartRequestHandler();
+			form.getMyQueries();
+			form.getObjectId();
+			form.getOnSubmit();
+			form.getOperation();
+			form.getPageOf();
+			form.getParameterizedQueryCollection();
+			form.getProtocolCoordinatorIds();
+			form.getRedirectTo();
+			form.getSelectedRoles();
+			form.getSharedQueries();
+			form.getShareTo();
+			form.getSubmittedFor();
+			form.getTitle();
+
 
 		}
 		catch (BizLogicException e)
