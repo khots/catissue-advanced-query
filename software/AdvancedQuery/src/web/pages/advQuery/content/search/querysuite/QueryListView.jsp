@@ -249,12 +249,17 @@ int queryCount = 0;%>
 							<%String target = "executeQuery('"+parameterizedQuery.getId()+"')";
 									  String title = parameterizedQuery.getName();
 									  String newTitle = Utility.getQueryTitle(title);
+									  String description = parameterizedQuery.getDescription();
+									  if(description == null)
+									  {
+										  description = "N/A";
+									  }
 									  if(newTitle.length()>=50)
 									  {
 										newTitle = newTitle.substring(0,50)+"...";
 									  }
 									  title = "Title : "+title+" ";
-									  title = title+" | Description : "+parameterizedQuery.getDescription();
+									  title = title+" | Description : "+description;
 									  String tooltip = Utility.getTooltip(title);
 									  String function = "Tip('"+tooltip+"', WIDTH, 300)";
 									  queryCount++;
