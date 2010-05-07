@@ -74,8 +74,6 @@ public class SaveQueryBizLogicTestCase extends TestCase
 		try
 		{
 			SharedQueryBean queryBean= new SaveQueryBizLogic().getSharingDetailsBean(query);
-			assertNotNull(queryBean);
-
 			SessionDataBean sessionDataBean = getSession();
 			long[] users = {1,2,3};
 			String roles = "Administrator";
