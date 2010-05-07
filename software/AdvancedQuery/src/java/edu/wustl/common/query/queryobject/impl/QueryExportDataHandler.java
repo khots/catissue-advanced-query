@@ -26,6 +26,8 @@ public class QueryExportDataHandler
 		new HashMap<Integer, Map<QueryHeaderData, List<List<Object>>>>();
 	private final EntityInterface rootEntity;
 	private List<EntityInterface> markedEntities = new ArrayList<EntityInterface>();
+	private Map<EntityInterface,BaseAbstractAttributeInterface> entityVsAssoc =
+		new HashMap<EntityInterface, BaseAbstractAttributeInterface>();
 
 	public QueryExportDataHandler(EntityInterface rootEntity)
 	{
@@ -37,6 +39,21 @@ public class QueryExportDataHandler
 		return rootEntity;
 	}
 
+	/**
+	 * @param entityVsAssoc the entityVsAssoc to set
+	 */
+	public void setEntityVsAssoc(Map<EntityInterface,BaseAbstractAttributeInterface> entityVsAssoc)
+	{
+		this.entityVsAssoc = entityVsAssoc;
+	}
+
+	/**
+	 * @return the entityVsAssoc
+	 */
+	public Map<EntityInterface,BaseAbstractAttributeInterface> getEntityVsAssoc()
+	{
+		return entityVsAssoc;
+	}
 	/**
 	 * This method will update the Maps needed for generating the Header
 	 * & data list.
@@ -69,7 +86,7 @@ public class QueryExportDataHandler
 		if(denormalizationMap != null)
 		{
 			EntityInterface entity = queryDataEntity.getEntity();
-			Collection<AbstractAttributeInterface> attributeList = entity.getAbstractAttributeCollection();
+			Collection<AbstractAttributeInterface> attributeList = getAbstractAttributeCollection(entity);
 			List<Object> rowDataList = new ArrayList<Object>();
 			for(BaseAbstractAttributeInterface attribute : attributeList)
 			{
@@ -101,6 +118,21 @@ public class QueryExportDataHandler
 			populateEntityvsDataList(queryDataEntity, entityVsDataList,
 					rowDataList);
 		}
+	}
+
+	private Collection<AbstractAttributeInterface> getAbstractAttributeCollection(
+			EntityInterface entity)
+	{
+		Collection<AbstractAttributeInterface> finalList = new ArrayList<AbstractAttributeInterface>();
+		Collection<AbstractAttributeInterface> attributeList =
+			entity.getAllAbstractAttributes();
+		finalList.addAll(attributeList);
+		AbstractAttributeInterface assocInterface = (AbstractAttributeInterface)entityVsAssoc.get(entity);
+		if(assocInterface != null && !finalList.contains(assocInterface))
+		{
+			finalList.add(assocInterface);
+		}
+		return finalList;
 	}
 
 	/**
@@ -156,7 +188,7 @@ public class QueryExportDataHandler
 			(Map<BaseAbstractAttributeInterface, Object>) dataValue;
 		for (Object obj : tempValueMap.values())
 		{
-			if (value == null || value.equals(""))
+			if ("".equals(value))
 			{
 				value.append(obj.toString());
 			}
@@ -320,7 +352,7 @@ public class QueryExportDataHandler
 			QueryHeaderData queryHeaderData)
 	{
 		Collection<AbstractAttributeInterface> attributeList =
-			queryHeaderData.getEntity().getAbstractAttributeCollection();
+			queryHeaderData.getEntity().getAllAbstractAttributes();
 		Collection<AbstractAttributeInterface> newAttributeList = new ArrayList<AbstractAttributeInterface>();
 		for(AbstractAttributeInterface attribute : attributeList)
 		{
@@ -336,6 +368,11 @@ public class QueryExportDataHandler
 			{
 				newAttributeList.add(attribute);
 			}
+		}
+		AbstractAttributeInterface assocInterface = (AbstractAttributeInterface)entityVsAssoc.get(queryHeaderData.getEntity());
+		if(assocInterface != null && !newAttributeList.contains(assocInterface))
+		{
+			newAttributeList.add(assocInterface);
 		}
 		return newAttributeList;
 	}

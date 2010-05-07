@@ -34,9 +34,13 @@ public class SpreadsheetDenormalizationBizLogic
 	private static org.apache.log4j.Logger logger = LoggerConfig
 	.getConfiguredLogger(SpreadsheetDenormalizationBizLogic.class);
 
-	private List<Map<BaseAbstractAttributeInterface,Object>> denormalizationList =
+	private final List<Map<BaseAbstractAttributeInterface,Object>> denormalizationList =
 		new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
 
+	private final Map<EntityInterface,BaseAbstractAttributeInterface> entityVsAssoc =
+		new HashMap<EntityInterface, BaseAbstractAttributeInterface>();
+	private final Map<EntityInterface,BaseAbstractAttributeInterface> tgtEntityVsAssoc =
+		new HashMap<EntityInterface, BaseAbstractAttributeInterface>();
 	private int mainIdColumnIndex = -1;
 
 	/**
@@ -69,6 +73,7 @@ public class SpreadsheetDenormalizationBizLogic
 			JoinGraph joinGraph = (JoinGraph)constraints.getJoinGraph();
 			EntityInterface rootEntity = getRootEntity(joinGraph);
 			QueryExportDataHandler dataHandler = new QueryExportDataHandler(rootEntity);
+			dataHandler.setEntityVsAssoc(entityVsAssoc);
 			for(int count=0;count<denormalizationList.size();count++)
 			{
 				dataHandler.updateRowDataList(denormalizationList.get(count),count);
@@ -155,7 +160,6 @@ public class SpreadsheetDenormalizationBizLogic
 		}
 		return mainEntityIdIndex;
 	}
-
 	/**
 	 * Populates the map for define view where key->BaseAbstractAttributeInterface and value->Object,
 	 * Object can be actual value of attribute or a map.
@@ -177,14 +181,15 @@ public class SpreadsheetDenormalizationBizLogic
 			new HashMap<BaseAbstractAttributeInterface,Object>();
 		Map<BaseAbstractAttributeInterface,Object> innerMap;
 		Integer idColumnValue = -100;
-		Map<BaseAbstractAttributeInterface,Map<BaseAbstractAttributeInterface,Object>> associationInterfaceMap;
+		HashMap<BaseAbstractAttributeInterface,Object> associationInterfaceMap;
 		BaseAbstractAttributeInterface associationInterface;
 		for(List<String> list : dataList)
 		{
 			associationInterfaceMap =
-				new HashMap<BaseAbstractAttributeInterface, Map<BaseAbstractAttributeInterface,Object>>();
+				new HashMap<BaseAbstractAttributeInterface, Object>();
 			denormalizationMap = populateDenormalizationList(denormalizationMap, idColumnValue, list);
 			idColumnValue = Integer.parseInt(list.get(mainIdColumnIndex));
+			Map<String,String> columnNameMap = getColumnNameMap(selectSql,list);
 			for(QueryOutputTreeAttributeMetadata outputTreeAttributeMetadata : selectedAttributeMetaDataList)
 			{
 				innerMap = new HashMap<BaseAbstractAttributeInterface, Object>();
@@ -192,7 +197,6 @@ public class SpreadsheetDenormalizationBizLogic
 				String entityName = treeDataNode.getOutputEntity().getDynamicExtensionsEntity().getName();
 				String columnName = outputTreeAttributeMetadata.getColumnName();
 				BaseAbstractAttributeInterface attribute = outputTreeAttributeMetadata.getAttribute();
-				Map<String,String> columnNameMap = getColumnNameMap(selectSql,list);
 				String value = columnNameMap.get(columnName);
 				if(rootEntity.getName().equals(entityName))
 				{
@@ -206,11 +210,13 @@ public class SpreadsheetDenormalizationBizLogic
 							getBaseAbstractAttributeInterface(constraints, joinGraph, treeDataNode);
 					if(associationInterfaceMap.get(associationInterface) == null)
 					{
-						associationInterfaceMap.put(associationInterface, innerMap);
+						mapForMultilevelHierarchy(treeDataNode, innerMap,
+								associationInterfaceMap, associationInterface);
 					}
 					else
 					{
-						Map<BaseAbstractAttributeInterface, Object> map = associationInterfaceMap.get(associationInterface);
+						Map<BaseAbstractAttributeInterface, Object> map =
+							(Map<BaseAbstractAttributeInterface, Object>)associationInterfaceMap.get(associationInterface);
 						map.put(attribute, value);
 					}
 				}
@@ -221,6 +227,89 @@ public class SpreadsheetDenormalizationBizLogic
 			}
 		}
 		denormalizationList.add(denormalizationMap);
+	}
+
+	private void mapForMultilevelHierarchy(
+			OutputTreeDataNode treeDataNode,
+			Map<BaseAbstractAttributeInterface, Object> innerMap,
+			Map<BaseAbstractAttributeInterface, Object> associationInterfaceMap,
+			BaseAbstractAttributeInterface associationInterface)
+	{
+		boolean isPresentInMap = false;
+		for(BaseAbstractAttributeInterface association : associationInterfaceMap.keySet())
+		{
+			BaseAbstractAttributeInterface existingAssoc = getAssociation(association,treeDataNode.getOutputEntity().getDynamicExtensionsEntity());
+			if(existingAssoc != null)
+			{
+				Map<BaseAbstractAttributeInterface, Object> map =
+					(Map<BaseAbstractAttributeInterface, Object>)associationInterfaceMap.get(existingAssoc);
+				populateDenormalizedMap(associationInterfaceMap, map);
+				isPresentInMap = true;
+				break;
+			}
+		}
+		if(!isPresentInMap)
+		{
+			associationInterfaceMap.put(associationInterface, innerMap);
+		}
+	}
+
+	private BaseAbstractAttributeInterface getAssociation(BaseAbstractAttributeInterface association,
+			EntityInterface currentEntity)
+	{
+		BaseAbstractAttributeInterface associationInterface = null;
+		associationInterface = searchAssociationForSrc(association,
+				currentEntity);
+		if(associationInterface == null)
+		{
+			associationInterface = searchAssociationForTgt(association,
+					currentEntity);
+		}
+		return associationInterface;
+	}
+
+	/**
+	 *
+	 * @param association association
+	 * @param currentEntity currentEntity
+	 * @return associationInterface
+	 */
+	private BaseAbstractAttributeInterface searchAssociationForTgt(
+			BaseAbstractAttributeInterface association,
+			EntityInterface currentEntity)
+	{
+		BaseAbstractAttributeInterface associationInterface = null;
+		for(EntityInterface entity : tgtEntityVsAssoc.keySet())
+		{
+			if(entity == currentEntity && association == tgtEntityVsAssoc.get(entity))
+			{
+				associationInterface = tgtEntityVsAssoc.get(entity);
+				break;
+			}
+		}
+		return associationInterface;
+	}
+
+	/**
+	 *
+	 * @param association association
+	 * @param currentEntity currentEntity
+	 * @return associationInterface
+	 */
+	private BaseAbstractAttributeInterface searchAssociationForSrc(
+			BaseAbstractAttributeInterface association,
+			EntityInterface currentEntity)
+	{
+		BaseAbstractAttributeInterface associationInterface = null;
+		for(EntityInterface entity : entityVsAssoc.keySet())
+		{
+			if(entity == currentEntity && association == entityVsAssoc.get(entity))
+			{
+				associationInterface = entityVsAssoc.get(entity);
+				break;
+			}
+		}
+		return associationInterface;
 	}
 
 	/**
@@ -265,12 +354,12 @@ public class SpreadsheetDenormalizationBizLogic
 	 */
 	private void populateDenormalizedMap(
 			Map<BaseAbstractAttributeInterface, Object> denormalizationMap,
-			Map<BaseAbstractAttributeInterface,Map<BaseAbstractAttributeInterface,Object>>associationInterfaceMap)
+			Map<BaseAbstractAttributeInterface,Object>associationInterfaceMap)
 	{
 		for(BaseAbstractAttributeInterface associationInterface : associationInterfaceMap.keySet())
 		{
 			Map<BaseAbstractAttributeInterface,Object> innerMap =
-				associationInterfaceMap.get(associationInterface);
+				(Map<BaseAbstractAttributeInterface,Object>)associationInterfaceMap.get(associationInterface);
 			List<Map<BaseAbstractAttributeInterface,Object>> innerMapList;
 			if(denormalizationMap.get(associationInterface) == null)
 			{
@@ -345,11 +434,46 @@ public class SpreadsheetDenormalizationBizLogic
 				{
 					associationInterface = (BaseAbstractAttributeInterface)
 					association.getDynamicExtensionsAssociation();
+					tgtEntityVsAssoc.put(treeDataNode.getOutputEntity().getDynamicExtensionsEntity(), associationInterface);
+					populateEntityVsAssoc(joinGraph,expression,treeDataNode.getOutputEntity().getDynamicExtensionsEntity(),associationInterface);
+					}
 					break;
-				}
 			}
 		}
 		return associationInterface;
+	}
+
+	/**
+	 *
+	 * @param joinGraph joinGraph
+	 * @param expression expression
+	 * @param dynamicExtensionsEntity
+	 * @param associationInterface
+	 */
+	private void populateEntityVsAssoc(JoinGraph joinGraph, IExpression expression, EntityInterface dynamicExtensionsEntity,
+			BaseAbstractAttributeInterface associationInterface)
+	{
+		if(!joinGraph.getParentList(expression).isEmpty())
+		{
+			IExpression exp = joinGraph.getParentList(expression).get(0);
+			exp = getExpression(joinGraph, exp);
+			BaseAbstractAttributeInterface association = entityVsAssoc.get(dynamicExtensionsEntity);
+			if(association == null)
+			{
+				entityVsAssoc.put(exp.getQueryEntity().getDynamicExtensionsEntity(), associationInterface);
+			}
+		}
+	}
+
+	private IExpression getExpression(JoinGraph joinGraph,IExpression expression)
+	{
+		IExpression finalExp = expression;
+		if(!expression.isInView())
+		{
+			IExpression parentExp = joinGraph.getParentList(expression).get(0);
+			finalExp = getExpression(joinGraph,parentExp);
+		}
+		return finalExp;
 	}
 
 	/**
@@ -375,7 +499,7 @@ public class SpreadsheetDenormalizationBizLogic
 		while(tokenizer.hasMoreTokens())
 		{
 			String token = tokenizer.nextToken();
-			columnNameMap.put(token, dataList.get(index++));
+			columnNameMap.put(token.trim(), dataList.get(index++));
 		}
 		return columnNameMap;
 	}
