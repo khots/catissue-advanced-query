@@ -51,13 +51,13 @@ public class CategorySearchAction extends SecureAction
 	public ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		ActionForward actionForward = null;
+		ActionForward actionForward;
 		boolean flag = true;
 		String target = AQConstants.SUCCESS;
 		setQueryStatus(request);
 		CategorySearchForm searchForm = (CategorySearchForm) form;
 		String currentPage = searchForm.getCurrentPage();
-		boolean hideTreeChkVal=Boolean.FALSE;
+		boolean hideTreeChkVal;
 
 		if(request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE) != null && !"".equals(request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE)))
 		{
@@ -157,8 +157,7 @@ public class CategorySearchAction extends SecureAction
 	{
 		int[] searchTarget = prepareSearchTarget(searchForm);
 		int basedOn = Constants.BASED_ON_TEXT;
-		String[] searchString = null;
-		searchString = prepareSearchString(textfieldValue);
+		String[] searchString = prepareSearchString(textfieldValue);
 		String attributeChecked = searchForm.getAttributeChecked();
 		String prmsblValsChecked = searchForm.getPermissibleValuesChecked();
 		StringBuffer entitiesString = new StringBuffer();

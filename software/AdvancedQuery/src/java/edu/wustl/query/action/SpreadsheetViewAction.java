@@ -127,7 +127,7 @@ public class SpreadsheetViewAction extends SecureAction
 		String pagination = request.getParameter("isPaging");
 		setPaginationData(request, session, querySessionData, pagination);
 
-		List paginationList = null, columnList = null;
+		List paginationList, columnList;
 
 		//Get the SPREADSHEET_DATA_LIST and SPREADSHEET_COLUMN_LIST from the session.
 		columnList = (List) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
@@ -174,7 +174,7 @@ public class SpreadsheetViewAction extends SecureAction
 	private void setPaginationData(HttpServletRequest request, HttpSession session,
 			QuerySessionData querySessionData, String pagination)
 	{
-		List list = null;
+		List list;
 		if (pagination == null || pagination.equals("false"))
 		{
 

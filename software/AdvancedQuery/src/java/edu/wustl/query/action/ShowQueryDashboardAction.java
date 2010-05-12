@@ -126,20 +126,18 @@ public class ShowQueryDashboardAction extends SecureAction
 			SessionDataBean sessionDataBean) throws BizLogicException
 	{
 		Collection<IParameterizedQuery> queries = new ArrayList<IParameterizedQuery>();
-		String csmUserId = sessionDataBean.getCsmUserId();
-		String userName = sessionDataBean.getUserName();
 		DashboardBizLogic dashboardBizLogic = new DashboardBizLogic();
 		if ("allQueries".equals(pageOf))
 		{
-			queries = dashboardBizLogic.getAllQueries(csmUserId, userName);
+			queries = dashboardBizLogic.getAllQueries(sessionDataBean.getCsmUserId(), sessionDataBean.getUserName());
 		}
 		else if ("sharedQueries".equals(pageOf))
 		{
-			queries = dashboardBizLogic.getSharedQueries(csmUserId, userName);
+			queries = dashboardBizLogic.getSharedQueries(sessionDataBean.getCsmUserId(), sessionDataBean.getUserName());
 		}
 		else if ("myQueries".equals(pageOf))
 		{
-			queries = dashboardBizLogic.getMyQueries(csmUserId);
+			queries = dashboardBizLogic.getMyQueries(sessionDataBean.getCsmUserId());
 		}
 		return queries;
 	}

@@ -164,17 +164,6 @@ public class ConfigureGridViewAction extends SecureAction
 	}
 
 	/**
-	 * @param session
-	 * @return
-	 */
-	/*private Boolean hasConditionOnIdentifiedField(HttpSession session)
-	{
-		Boolean hasConditionOnIdentifiedField =
-			(Boolean)session.getAttribute(AQConstants.HAS_CONDITION_ON_IDENTIFIED_FIELD);
-		return hasConditionOnIdentifiedField;
-	}*/
-
-	/**
 	 * @param session session
 	 * @param selectedColumnsMetadata selectedColumnsMetadata
 	 * @param spreadSheetDataMap spreadSheetDataMap

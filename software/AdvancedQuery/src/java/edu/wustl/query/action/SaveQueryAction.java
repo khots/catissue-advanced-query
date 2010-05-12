@@ -214,7 +214,7 @@ public class SaveQueryAction extends SecureAction
 			ActionForm actionForm,HttpServletRequest request)
 	{
 		SaveQueryForm saveActionForm = (SaveQueryForm) actionForm;
-		String error = "";
+		String error;
 		IParameterizedQuery pQuery = createParameterizedQuery(query);
 		boolean errorMessage = false;
 		setQueryTitle(saveActionForm, pQuery);
