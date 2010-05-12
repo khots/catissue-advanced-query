@@ -211,7 +211,7 @@ public class DAGPanel
 		Map<RelationalOperator,List<String>> operatorValueMap)
 	{
 		DAGNode node = null;
-		EntityInterface entity = null;
+		EntityInterface entity;
 		HttpServletRequest request = flex.messaging.FlexContext.getHttpRequest();
 		HttpSession session = null;
 		IQuery query;
@@ -602,11 +602,6 @@ public class DAGPanel
 		{
 			resultantMatchedClass.addMatchedClassEntry(matchedClassEntry);
 		}
-		matchedClass = cache.getCategories(entityCollection);
-		for (MatchedClassEntry matchedClassEntry : matchedClass.getMatchedClassEntries())
-		{
-			resultantMatchedClass.addMatchedClassEntry(matchedClassEntry);
-		}
 		resultantMatchedClass.setEntityCollection(resultantMatchedClass.getSortedEntityCollection());
 		return resultantMatchedClass;
 	}
@@ -645,7 +640,7 @@ public class DAGPanel
 	private String populateStrToCreateObject(String strToCreateObject, List<Long> readDeniedIds,
 			Long attributeId, StringBuffer formattedIds)
 	{
-		String tempStr="";
+		String tempStr;
 		if(readDeniedIds.isEmpty())
 		{
 			tempStr = strToCreateObject + AQConstants.ID_CONDITION+attributeId+

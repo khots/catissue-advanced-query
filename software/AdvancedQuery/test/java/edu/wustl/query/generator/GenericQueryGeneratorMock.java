@@ -478,11 +478,6 @@ public class GenericQueryGeneratorMock extends EntityManager
 		{
 			resultantMatchedClass.addMatchedClassEntry(matchedClassEntry);
 		}
-		matchedClass = cache.getCategories(entityCollection);
-		for (MatchedClassEntry matchedClassEntry : matchedClass.getMatchedClassEntries())
-		{
-			resultantMatchedClass.addMatchedClassEntry(matchedClassEntry);
-		}
 		resultantMatchedClass.setEntityCollection(resultantMatchedClass.getSortedEntityCollection());
 		for(EntityInterface tEntity : resultantMatchedClass.getEntityCollection())
 		{
@@ -681,6 +676,62 @@ public class GenericQueryGeneratorMock extends EntityManager
                     .createIntraModelAssociation(partAndPMIAssociation);
             joinGraph.putAssociation(participantExpression, pmiExpression1
                     , iPartAndPMIAssociation);
+
+            IRule pmiExpression1Rule1 = QueryObjectFactory.createRule(null);
+            pmiExpression1.addOperand(pmiExpression1Rule1);
+
+            List<String> pmiExpression1Rule1Values1 = new ArrayList<String>();
+            ICondition pmiExpression1Rule1Condition1 = QueryObjectFactory.createCondition(
+                    findAttribute(pmiEntity, "id"), RelationalOperator.IsNotNull,
+                    pmiExpression1Rule1Values1);
+            pmiExpression1Rule1.addCondition(pmiExpression1Rule1Condition1);
+
+            setAllExpressionInView(constraints);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        return query;
+    }
+
+    public static IQuery createMultipleRootQuery()
+    {
+
+        IQuery query = null;
+        try
+        {
+            query = QueryObjectFactory.createQuery();;
+            IConstraints constraints = QueryObjectFactory.createConstraints();
+            query.setConstraints(constraints);
+            IJoinGraph joinGraph = constraints.getJoinGraph();
+
+            EntityCache cache = EntityCacheFactory.getInstance();
+            EntityInterface participantEntity = GenericQueryGeneratorMock.createEntity("Participant");
+            participantEntity = getEntity(cache, participantEntity);
+
+            // creating expression for Clinical Study.
+            IQueryEntity participantConstraintEntity = QueryObjectFactory.createQueryEntity(participantEntity);
+            IExpression participantExpression = constraints.addExpression(participantConstraintEntity);
+            List<String> participantExpressionRule1Values = new ArrayList<String>();
+            participantExpressionRule1Values.add("XYZ");
+            ICondition partExpressionRule1Condition1 = QueryObjectFactory.createCondition(findAttribute(
+                    participantEntity, "lastName"), RelationalOperator.Equals, participantExpressionRule1Values);
+            IRule csExpressionRule1 = QueryObjectFactory.createRule(null);
+            csExpressionRule1.addCondition(partExpressionRule1Condition1);
+            participantExpression.addOperand(csExpressionRule1);
+
+
+            EntityInterface pmiEntity = GenericQueryGeneratorMock.createEntity("ParticipantMedicalIdentifier");
+            pmiEntity = getEntity(cache, pmiEntity);
+
+            // creating PMI Expression under first CS
+            // Expression.
+            IQueryEntity pmiConstraintEntity = QueryObjectFactory
+                    .createQueryEntity(pmiEntity);
+            IExpression pmiExpression1 = constraints
+                    .addExpression(pmiConstraintEntity);
 
             IRule pmiExpression1Rule1 = QueryObjectFactory.createRule(null);
             pmiExpression1.addOperand(pmiExpression1Rule1);

@@ -437,11 +437,6 @@ public class QueryCsmCacheManager
 		{
 			resultMatchClass.addMatchedClassEntry(matchedClassEntry);
 		}
-		matchedClass = entityCache.getCategories(entityCollection);
-		for (MatchedClassEntry matchedClassEntry : matchedClass.getMatchedClassEntries())
-		{
-			resultMatchClass.addMatchedClassEntry(matchedClassEntry);
-		}
 		resultMatchClass.setEntityCollection(resultMatchClass.getSortedEntityCollection());
 		for(EntityInterface entity : resultMatchClass.getEntityCollection())
 		{
