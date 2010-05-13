@@ -15,6 +15,8 @@ public class SavedQueryHtmlProviderTestCase extends TestCase
 		IQuery query = GenericQueryGeneratorMock.createTemporalQueryParticipantCPR();
 		Map<Integer, ICustomFormula> customFormulaIndexMap = new HashMap<Integer,
 		ICustomFormula>();
+		ICustomFormula customFormula = GenericQueryGeneratorMock.createCustomFormulaParticipantCPR();
+		customFormulaIndexMap.put(1, customFormula);
 		String html = new SavedQueryHtmlProvider().getHTMLForSavedQuery(query, false, "Save Query Page", customFormulaIndexMap);
 	}
 }
