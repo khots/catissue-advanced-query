@@ -2,11 +2,8 @@ package edu.wustl.query.flex;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -17,15 +14,10 @@ import org.owasp.stinger.rules.RuleSet;
 import edu.wustl.cab2b.client.ui.query.ClientQueryBuilder;
 import edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface;
 import edu.wustl.cab2b.client.ui.query.IPathFinder;
-import edu.wustl.common.beans.NameValueBean;
-import edu.wustl.common.cde.CDE;
-import edu.wustl.common.cde.CDEManager;
-import edu.wustl.common.cde.PermissibleValue;
 import edu.wustl.common.query.impl.CommonPathFinder;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.metadata.path.Path;
 import edu.wustl.common.querysuite.queryobject.IExpression;
-import edu.wustl.common.util.global.Constants;
 import edu.wustl.query.flex.dag.CustomFormulaNode;
 import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.flex.dag.DAGNode;
@@ -40,125 +32,6 @@ public class FlexInterface
 	public FlexInterface()
 	{
 
-	}
-
-	private List<String> toStrList(List<NameValueBean> nvBeanList)
-	{
-		List<String> strList = new ArrayList<String>();
-		for (NameValueBean bean : nvBeanList)
-		{
-			strList.add(bean.getName());
-		}
-		return strList;
-	}
-
-	public List<String> getTissueSidePVList()
-	{
-		List<NameValueBean> aList = CDEManager.getCDEManager()
-				.getPermissibleValueList("Tissue Side", null);
-		return toStrList(aList);
-	}
-
-	public List<String> getPathologicalStatusPVList()
-	{
-		List<NameValueBean> aList = CDEManager.getCDEManager()
-				.getPermissibleValueList("Pathological Status", null);
-		return toStrList(aList);
-	}
-
-	public List<String> getSpecimenClassStatusPVList()
-	{
-		Map specimenTypeMap = getSpecimenTypeMap();
-		Set specimenKeySet = specimenTypeMap.keySet();
-		List<NameValueBean> specimenClassList = new ArrayList<NameValueBean>();
-
-		Iterator itr1 = specimenKeySet.iterator();
-		while (itr1.hasNext())
-		{
-			String specimenKey = (String) itr1.next();
-			specimenClassList.add(new NameValueBean(specimenKey, specimenKey));
-		}
-		return toStrList(specimenClassList);
-	}
-
-	public List<String> getFluidSpecimenTypePVList()
-	{
-		Map specimenTypeMap = getSpecimenTypeMap();
-		List<NameValueBean> aList = (List) specimenTypeMap.get("Fluid");
-		return toStrList(aList);
-	}
-
-	public List<String> getTissueSpecimenTypePVList()
-	{
-		Map specimenTypeMap = getSpecimenTypeMap();
-		List<NameValueBean> aList = (List) specimenTypeMap.get("Tissue");
-		return toStrList(aList);
-	}
-
-	public List<String> getMolecularSpecimenTypePVList()
-	{
-		Map specimenTypeMap = getSpecimenTypeMap();
-		List<NameValueBean> aList = (List<NameValueBean>) specimenTypeMap
-				.get("Molecular");
-		return toStrList(aList);
-	}
-
-	public List<String> getCellSpecimenTypePVList()
-	{
-		Map specimenTypeMap = getSpecimenTypeMap();
-		List<NameValueBean> aList = (List<NameValueBean>) specimenTypeMap
-				.get("Cell");
-		return toStrList(aList);
-	}
-
-	private Map getSpecimenTypeMap()
-	{
-		CDE specimenClassCDE = CDEManager.getCDEManager().getCDE("Specimen");
-		Set setPV = specimenClassCDE.getPermissibleValues();
-		Iterator itr = setPV.iterator();
-
-		// List specimenClassList =
-		// CDEManager.getCDEManager().getPermissibleValueList("Specimen", null);
-		Map<String, List> subTypeMap = new HashMap<String, List>();
-		// specimenClassList.add(new NameValueBean(Constants.SELECT_OPTION,
-		// "-1"));
-
-		while (itr.hasNext())
-		{
-			List<NameValueBean> innerList = new ArrayList<NameValueBean>();
-			Object obj = itr.next();
-			PermissibleValue pValue = (PermissibleValue) obj;
-			// String tmpStr = pv.getValue();
-			// specimenClassList.add(new NameValueBean(tmpStr, tmpStr));
-
-			Set list1 = pValue.getSubPermissibleValues();
-			Iterator itr1 = list1.iterator();
-			innerList.add(new NameValueBean(Constants.SELECT_OPTION, "-1"));
-
-			while (itr1.hasNext())
-			{
-				Object obj1 = itr1.next();
-				PermissibleValue pv1 = (PermissibleValue) obj1;
-				// Setting Specimen Type
-				String tmpInnerStr = pv1.getValue();
-				innerList.add(new NameValueBean(tmpInnerStr, tmpInnerStr));
-			}
-
-			subTypeMap.put(pValue.getValue(), innerList);
-		}
-		// System.out.println("subTypeMap "+subTypeMap);
-		return subTypeMap;
-	}
-
-	public List getSpecimenTypeStatusPVList()
-	{
-		return CDEManager.getCDEManager().getPermissibleValueList(
-				"Specimen Type", null);
-	}
-
-	public List getSCGList()
-	{
-		return null;
 	}
 
 	// --------------DAG-----------------------------
