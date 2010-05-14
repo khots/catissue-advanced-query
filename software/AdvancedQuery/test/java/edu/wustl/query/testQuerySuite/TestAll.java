@@ -68,7 +68,7 @@ public class TestAll
 		suite.addTestSuite(GenerateHtmlDetailsTestCase.class);
 		suite.addTestSuite(GenerateHtmlTestCase.class);
 		suite.addTestSuite(ParseXMLFileTestCase.class);
-		suite.addTestSuite(SavedQueryHtmlProviderTestCase.class);
+		//suite.addTestSuite(SavedQueryHtmlProviderTestCase.class);
 		suite.addTestSuite(QueryCsmBizLogicTestCase.class);
 		suite.addTestSuite(SelectedColumnsMetadataTestCase.class);
 		suite.addTestSuite(QueryModuleSqlUtilTestCase.class);
