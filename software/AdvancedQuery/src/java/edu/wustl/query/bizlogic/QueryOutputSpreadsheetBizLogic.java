@@ -345,8 +345,8 @@ public class QueryOutputSpreadsheetBizLogic
 		{
 			queryResultObjectDataBean = queryResultObjectDataBeanMap.get(node.getId());
 		}
-		Vector<Integer> identifiedDataColumnIds = new Vector<Integer>();
-		Vector<Integer> objectDataColumnIds = new Vector<Integer>();
+		List<Integer> identifiedDataColumnIds = new ArrayList<Integer>();
+		List<Integer> objectDataColumnIds = new ArrayList<Integer>();
 		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAttrMap =
 			new HashMap<Integer, QueryOutputTreeAttributeMetadata>();
 		int columnIndex = 0;
@@ -1063,8 +1063,8 @@ public class QueryOutputSpreadsheetBizLogic
 		QueryResultObjectDataBean queryResultObjectDataBean = queryResultObjectDataBeanMap.get(node
 				.getId());
 		List<QueryOutputTreeAttributeMetadata> attributes = node.getAttributes();
-		Vector<Integer> identifiedDataColumnIds = new Vector<Integer>();
-		Vector<Integer> objectColumnIds = new Vector<Integer>();
+		List<Integer> identifiedDataColumnIds = new ArrayList<Integer>();
+		List<Integer> objectColumnIds = new ArrayList<Integer>();
 		List resultList = new ArrayList();
 		int columnIndex = 0;
 		int addedFileTypeAttributes = 0;

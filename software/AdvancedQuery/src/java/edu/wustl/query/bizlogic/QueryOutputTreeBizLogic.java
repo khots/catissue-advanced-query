@@ -74,7 +74,7 @@ public class QueryOutputTreeBizLogic
      * @throws SMException Security Manager Exception
      * @throws SQLException SQLException
      */
-    public Vector<QueryTreeNodeData> createDefaultOutputTreeData(int treeNo,
+    public List<QueryTreeNodeData> createDefaultOutputTreeData(int treeNo,
             OutputTreeDataNode root, boolean hasConditionOnIdentifiedField,
             QueryDetails queryDetailsObj) throws DAOException, ClassNotFoundException, BizLogicException,
             SMException, SQLException
@@ -100,7 +100,7 @@ public class QueryOutputTreeBizLogic
                 Variables.maximumTreeNodeLimit);
         int count = QueryModuleSqlUtil.getCountForQuery(selectSql,queryDetailsObj);
         updateQueryAuditDetails(root,count,queryDetailsObj.getAuditEventId());
-        Vector<QueryTreeNodeData> treeDataVector = new Vector<QueryTreeNodeData>();
+        List<QueryTreeNodeData> treeDataVector = new ArrayList<QueryTreeNodeData>();
         if (dataList != null && !dataList.isEmpty())
         {
         	String size = getTreeSize(dataList, count);
@@ -207,9 +207,9 @@ public class QueryOutputTreeBizLogic
      * with their information like attributes and actual column names in database.
      * @return treeDataVector  data structure to form tree out of it.
      */
-    private Vector<QueryTreeNodeData> addNodeToTree(int index, List dataList,
+    private List<QueryTreeNodeData> addNodeToTree(int index, List dataList,
             QueryTreeNodeData parentNode, OutputTreeDataNode node,
-            Vector<QueryTreeNodeData> treeDataVector)
+            List<QueryTreeNodeData> treeDataVector)
     {
         Iterator dataListIterator = dataList.iterator();
         List rowList;
