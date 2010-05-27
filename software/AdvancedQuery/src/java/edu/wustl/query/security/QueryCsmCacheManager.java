@@ -1238,7 +1238,7 @@ public class QueryCsmCacheManager
 	private void removeUnauthorizedFieldsData(List aList, List identifiedColumnIdentifiers,
 			List objectColumnIdentifiers, boolean removeOnlyIdentifiedData, boolean isSimpleSearch)
 	{
-		Vector objectColumnIds = new Vector();
+		List objectColumnIds = new ArrayList();
 
 		if (removeOnlyIdentifiedData)
 		{
@@ -1261,7 +1261,7 @@ public class QueryCsmCacheManager
 	 * @param objectColumnIds object column identifiers
 	 */
 	private void addHashStringToList(List aList, boolean isSimpleSearch,
-			Vector objectColumnIds)
+			List objectColumnIds)
 	{
 		for (int k = 0; k < objectColumnIds.size(); k++)
 		{
@@ -1287,7 +1287,7 @@ public class QueryCsmCacheManager
 	private void removeUnauthorizedFieldsData(List aList,boolean removeOnlyIdentifiedData,
 			QueryResultObjectDataBean queryResultObjectDataBean)
 	{
-		Vector objectColumnIds = new Vector();
+		List objectColumnIds = new ArrayList();
 		boolean isAuthorizedUser = true;
 		if (removeOnlyIdentifiedData)
 		{
