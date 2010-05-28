@@ -1,7 +1,7 @@
 
 package edu.wustl.query.action;
 
-import java.util.Vector;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +32,7 @@ public class QueryTreeViewAction extends Action
 		for (int i = 0; i < noOfTrees; i++)
 		{
 			String key = AQConstants.TREE_DATA + "_" + i;
-			Vector<QueryTreeNodeData> treeData = (Vector<QueryTreeNodeData>) session
+			List<QueryTreeNodeData> treeData = (List<QueryTreeNodeData>) session
 					.getAttribute(key);
 			request.setAttribute(key, treeData);
 			session.removeAttribute(key);

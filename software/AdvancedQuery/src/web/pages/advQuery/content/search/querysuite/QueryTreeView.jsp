@@ -15,13 +15,13 @@
 	<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXGrid.css"/>
 	<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTree.css">
 	<script  src="dhtml_comp/jss/dhtmlXCommon.js"></script>
-    <script type="text/javascript" src="jss/advQuery/ajax.js"></script> 
+    <script type="text/javascript" src="jss/advQuery/ajax.js"></script>
 <script src="jss/advQuery/queryModule.js"></script>
 
 <script type="text/javascript">
 function divHeight(treeNumber, currentNumber)
 {
-	
+
 	var treeName = "treebox" + currentNumber;
   if(navigator.appName == "Microsoft Internet Explorer")
   {
@@ -32,14 +32,14 @@ function divHeight(treeNumber, currentNumber)
       }
   else
   {
-	var divHt = ((document.body.clientHeight - 8)/ treeNumber)+'px';    
+	var divHt = ((document.body.clientHeight - 8)/ treeNumber)+'px';
 	divHt = divHt + "px";
     document.getElementById("table1").style.height=(document.body.clientHeight - 3)+'px';//"444px";
 	document.getElementById(treeName).style.height=(document.body.clientHeight - 8)+'px';;
 	}
 }
 //style="position: relative;zoom: 1;"
-</script> 
+</script>
 
 </head>
 <%
@@ -51,21 +51,21 @@ int noOfTrees = trees.intValue();
 var trees = new Array();
 function initTreeView()
 {
-	
-	
+
+
 var treeNo = 0;
 		<%String rootNodeIdOfFirstTree = "";
 			boolean isrootNodeIdOfFirstTree = false;
-		for(int i=0;i<noOfTrees;i++) 
+		for(int i=0;i<noOfTrees;i++)
 		{
-			
+
 			String divId = "treebox"+i;
 			String treeDataId = AQConstants.TREE_DATA+"_"+i;%>
 			divHeight(<%=noOfTrees%>, <%=i%>);
 			trees[treeNo]=new dhtmlXTreeObject("<%=divId%>","100%","100%",0);
 			trees[treeNo].setImagePath("dhtml_comp/imgs/");
 			trees[treeNo].setOnClickHandler(treeNodeClicked);
-			<%Vector treeData = (Vector)request.getAttribute(treeDataId);
+			<%List treeData = (List)request.getAttribute(treeDataId);
 					if(treeData != null && treeData.size() != 0)
 						{
 							Iterator itr  = treeData.iterator();
@@ -73,10 +73,10 @@ var treeNo = 0;
 							while(itr.hasNext())
 							{
 								QueryTreeNodeData data = (QueryTreeNodeData) itr.next();
-								String parentId = "0";	
+								String parentId = "0";
 								if(!data.getParentIdentifier().equals("0"))
 								{
-									parentId = data.getParentIdentifier().toString();		
+									parentId = data.getParentIdentifier().toString();
 								}
 								String nodeId = data.getIdentifier().toString();
 								if(!isrootNodeIdOfFirstTree)
@@ -94,14 +94,14 @@ var treeNo = 0;
 									nodeColapseCode += "tree.closeAllItems('" + nodeId + "');";
 								}%>
 			trees[treeNo].insertNewChild("<%=parentId%>","<%=nodeId%>","<%=data.getDisplayName()%>",0,"<%=img%>","<%=img%>","<%=img%>","");
-			trees[treeNo].setUserData("<%=nodeId%>","<%=nodeId%>","<%=data%>");	
+			trees[treeNo].setUserData("<%=nodeId%>","<%=nodeId%>","<%=data%>");
 			trees[treeNo].setItemText("<%=nodeId%>","<%=data.getDisplayName()%>","<%=data.getDisplayName()%>");
 			<%}
 			}%>
-treeNo = treeNo + 1;						
-		<%}%>	
+treeNo = treeNo + 1;
+		<%}%>
 		trees[0].selectItem("<%=rootNodeIdOfFirstTree%>",true);
-	
+
 }
 </script>
 <%
@@ -111,7 +111,7 @@ treeNo = treeNo + 1;
 	{
 	    mac = true;
 	}
-	String height = "100%";		
+	String height = "100%";
 	if(mac)
 	{
 	  height="300";
@@ -137,9 +137,9 @@ treeNo = treeNo + 1;
 				</div>
 			<% } %>
 		</td>
-	</tr>									
+	</tr>
 </table>
-		
+
 </html:form>
 </body>
-</html> 
+</html>

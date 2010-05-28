@@ -359,7 +359,7 @@ function initTreeView()
 		tree.enableCheckBoxes(1);
 	    tree.enableThreeStateCheckboxes(true);
 
-<%Vector treeData = (Vector) request.getSession().getAttribute(
+<%List treeData = (List) request.getSession().getAttribute(
 					AQConstants.TREE_DATA);
 			if (treeData != null && treeData.size() != 0) {
 
