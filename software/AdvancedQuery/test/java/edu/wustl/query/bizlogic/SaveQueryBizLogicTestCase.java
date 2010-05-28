@@ -83,23 +83,6 @@ public class SaveQueryBizLogicTestCase extends TestCase
 		try
 		{
 			SharedQueryBean queryBean= new SaveQueryBizLogic().getSharingDetailsBean(query);
-			SessionDataBean sessionDataBean = getSession();
-			long[] users = {1,2,3};
-			String roles = "Administrator";
-			queryBean.setCsmUserId(sessionDataBean.getCsmUserId());
-			User user = new User();
-			queryBean.setOwner(user);
-			queryBean.setProtocolCoordinatorIds(users);
-			queryBean.setQuery((ParameterizedQuery)pQuery);
-			queryBean.setSelectedRoles(roles);
-			queryBean.setShareTo("None");
-
-			queryBean.getCsmUserId();
-			queryBean.getOwner();
-			queryBean.getProtocolCoordinatorIds();
-			queryBean.getQuery();
-			queryBean.getSelectedRoles();
-			queryBean.getShareTo();
 
 			SaveQueryForm form = new SaveQueryForm();
 			form.setActivityStatus("Active");
@@ -150,5 +133,31 @@ public class SaveQueryBizLogicTestCase extends TestCase
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public void test()
+	{
+		SharedQueryBean queryBean = new SharedQueryBean();
+		IQuery query = GenericQueryGeneratorMock.creatParticipantQuery();
+		IParameterizedQuery pQuery = QueryObjectFactory.createParameterizedQuery(query);
+		Collection<IParameterizedQuery> allQueries = new ArrayList<IParameterizedQuery>();
+		allQueries.add(pQuery);
+		SessionDataBean sessionDataBean = getSession();
+		long[] users = {1,2,3};
+		String roles = "Administrator";
+		queryBean.setCsmUserId(sessionDataBean.getCsmUserId());
+		User user = new User();
+		queryBean.setOwner(user);
+		queryBean.setProtocolCoordinatorIds(users);
+		queryBean.setQuery((ParameterizedQuery)pQuery);
+		queryBean.setSelectedRoles(roles);
+		queryBean.setShareTo("None");
+
+		queryBean.getCsmUserId();
+		queryBean.getOwner();
+		queryBean.getProtocolCoordinatorIds();
+		queryBean.getQuery();
+		queryBean.getSelectedRoles();
+		queryBean.getShareTo();
 	}
 }
