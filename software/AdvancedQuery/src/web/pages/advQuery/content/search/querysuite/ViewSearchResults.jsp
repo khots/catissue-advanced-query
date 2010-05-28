@@ -166,7 +166,7 @@ function initGridView()
 			trees[treeNo]=new dhtmlXTreeObject(<%=divId%>,"100%","100%",0);
 			trees[treeNo].setImagePath("dhtml_comp/imgs/");
 			trees[treeNo].setOnClickHandler(treeNodeClicled);
-			<%Vector treeData = (Vector) request.getSession()
+			<%List treeData = (List) request.getSession()
 							.getAttribute(treeDataId);
 					if (treeData != null && treeData.size() != 0) {
 						Iterator itr = treeData.iterator();
