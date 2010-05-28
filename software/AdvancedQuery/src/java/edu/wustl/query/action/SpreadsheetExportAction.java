@@ -3,6 +3,7 @@ package edu.wustl.query.action;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
+import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.ExportReport;
 import edu.wustl.common.util.SendFile;
@@ -61,19 +63,27 @@ public class SpreadsheetExportAction extends SecureAction
 			(SelectedColumnsMetadata)session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
 		if(selectedColumnsMetadata != null && selectedColumnsMetadata.isDefinedView())
 		{
-			isDefineView = true;
-			SpreadsheetDenormalizationBizLogic denormalizationBizLogic = new SpreadsheetDenormalizationBizLogic();
-			dataList = denormalizationBizLogic.scanIQuery(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
+			IExpression rootExpression = queryDetails.getQuery().getConstraints().getJoinGraph().getRoot();
+			if(!queryDetails.getQuery().getConstraints().getJoinGraph().getChildrenList(rootExpression).isEmpty())
+			{
+				isDefineView = true;
+				SpreadsheetDenormalizationBizLogic denormalizationBizLogic = new SpreadsheetDenormalizationBizLogic();
+				Map<String,Object> exportDetailsMap = new HashMap<String,Object>();
+				exportDetailsMap = denormalizationBizLogic.scanIQuery(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
+				dataList = (List<List<String>>)exportDetailsMap.get("dataList");
+				columnList = (List<String>)exportDetailsMap.get("headerList");
+			}
 		}
-		List tmpColumnList = new ArrayList();
-		List tmpDataList = populateTemporaryList(columnList, dataList,tmpColumnList);
-		columnList = tmpColumnList;
-		dataList = tmpDataList;
-		//Mandar 06-Apr-06 Bugid:1165 : Extra ID columns end. Adding first row(column names) to exportData
 		if(!isDefineView)
 		{
-			exportList.add(columnList);
+			List tmpColumnList = new ArrayList();
+			List tmpDataList = populateTemporaryList(columnList, dataList,tmpColumnList);
+			columnList = tmpColumnList;
+			dataList = tmpDataList;
 		}
+		//Mandar 06-Apr-06 Bugid:1165 : Extra ID columns end. Adding first row(column names) to exportData
+		exportList.add(columnList);
+
 		List<String> idIndexList = new ArrayList<String>();
 		int columnsSize = columnList.size();
 		Map<Integer, List<String>> entityIdsMap = (Map<Integer, List<String>>) session

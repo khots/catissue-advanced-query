@@ -2,18 +2,21 @@ package edu.wustl.query.bizlogic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.emory.mathcs.backport.java.util.Collections;
+import edu.wustl.common.query.queryobject.impl.AttributeComparator;
 import edu.wustl.common.query.queryobject.impl.DenormalizedCSVExporter;
 import edu.wustl.common.query.queryobject.impl.ListComparator;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.QueryExportDataHandler;
+import edu.wustl.common.query.queryobject.impl.QueryParser;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
@@ -25,7 +28,6 @@ import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
 import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.common.util.logger.LoggerConfig;
-import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.querysuite.QueryDetails;
 
@@ -41,7 +43,11 @@ public class SpreadsheetDenormalizationBizLogic
 		new HashMap<EntityInterface, BaseAbstractAttributeInterface>();
 	private final Map<EntityInterface,BaseAbstractAttributeInterface> tgtEntityVsAssoc =
 		new HashMap<EntityInterface, BaseAbstractAttributeInterface>();
+	//private Map<EntityInterface,Map<BaseAbstractAttributeInterface,Object>> entityVsMap;
 	private int mainIdColumnIndex = -1;
+	private Map<String,String> columnNameMap;
+	private int counter = 0;
+	//private List<EntityInterface> markedEntities = new ArrayList<EntityInterface>();
 
 	/**
 	 * Scans the entire IQuery starting from root node in order to populate the map
@@ -51,22 +57,26 @@ public class SpreadsheetDenormalizationBizLogic
 	 * @param selectedColumnsMetadata selectedColumnsMetadata
 	 * @param querySessionData querySessionData
 	 */
-	public List<List<String>> scanIQuery(QueryDetails queryDetailsObj, List<List<String>> dataList,
+	public Map<String,Object> scanIQuery(QueryDetails queryDetailsObj, List<List<String>> dataList,
 			SelectedColumnsMetadata selectedColumnsMetadata, QuerySessionData querySessionData)
 	{
-		List<List<String>> finalDataList = new ArrayList<List<String>>();
+		Map<String,Object> exportDetailsMap = new HashMap<String,Object>();
 		try
 		{
 			if(selectedColumnsMetadata.isDefinedView())
 			{
-					mainIdColumnIndex = getMainIdColumnIndex(querySessionData);
-					if(mainIdColumnIndex != -1)
-					{
-						Collections.sort(dataList, new ListComparator(mainIdColumnIndex));
-					}
-					populateMapForDefineView(queryDetailsObj,
-						selectedColumnsMetadata.getSelectedAttributeMetaDataList(),dataList,
-						querySessionData.getSql());
+				QueryParser queryParser = new QueryParser();
+				List<EntityInterface> oneToManyEntities =
+					queryParser.parseQuery(queryDetailsObj.getQuery(),selectedColumnsMetadata.getSelectedAttributeMetaDataList());
+				mainIdColumnIndex = queryParser.
+				getMainIdColumnIndex(querySessionData.getQueryResultObjectDataMap(),oneToManyEntities);
+				if(mainIdColumnIndex != -1)
+				{
+					Collections.sort(dataList, new ListComparator(mainIdColumnIndex));
+				}
+				populateMapForSpreadsheet(queryDetailsObj,
+					selectedColumnsMetadata.getSelectedAttributeMetaDataList(),dataList,
+					querySessionData.getSql());
 			}
 			IQuery query = queryDetailsObj.getQuery();
 			IConstraints constraints = query.getConstraints();
@@ -74,92 +84,22 @@ public class SpreadsheetDenormalizationBizLogic
 			EntityInterface rootEntity = getRootEntity(joinGraph);
 			QueryExportDataHandler dataHandler = new QueryExportDataHandler(rootEntity);
 			dataHandler.setEntityVsAssoc(entityVsAssoc);
+			dataHandler.setTgtEntityVsAssoc(tgtEntityVsAssoc);
 			for(int count=0;count<denormalizationList.size();count++)
 			{
 				dataHandler.updateRowDataList(denormalizationList.get(count),count);
 			}
 			DenormalizedCSVExporter csvExporter = new DenormalizedCSVExporter();
-			finalDataList =
+			exportDetailsMap =
 				csvExporter.addDataToCSV(denormalizationList.size(),dataHandler);
 		}
 		catch (MultipleRootsException e)
 		{
 			logger.error(e.getMessage(), e);
 		}
-		return finalDataList;
+		return exportDetailsMap;
 	}
 
-	/**
-	 * To get the main entity identifier.
-	 * @param querySessionData querySessionData
-	 * @return mainEntityIdIndex
-	 */
-	private int getMainIdColumnIndex(QuerySessionData querySessionData)
-	{
-		Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
-		int mainEntityIdIndex = setMainEtityIndexId(querySessionData,
-				entityIdIndexMap);
-		if(mainEntityIdIndex == -1)
-		{
-			Iterator<EntityInterface> entities = entityIdIndexMap.keySet().iterator();
-			if(entities.hasNext())
-			{
-				EntityInterface entity = entities.next();
-				mainEntityIdIndex = entityIdIndexMap.get(entity);
-			}
-		}
-		return mainEntityIdIndex;
-	}
-
-	/**
-	 *
-	 * @param querySessionData querySessionData
-	 * @param entityIdIndexMap entityIdIndexMap
-	 * @return mainEntityIdIndex
-	 */
-	private int setMainEtityIndexId(QuerySessionData querySessionData,
-			Map<EntityInterface, Integer> entityIdIndexMap)
-	{
-		Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap =
-			querySessionData.getQueryResultObjectDataMap();
-		int mainEntityIdIndex = -1;
-		for (Long id : queryResultObjectDataBeanMap.keySet())
-		{
-			QueryResultObjectDataBean queryResultObjectDataBean = queryResultObjectDataBeanMap
-					.get(id);
-			mainEntityIdIndex = getMainIdFromBean(queryResultObjectDataBean);
-			if(mainEntityIdIndex == -1)
-			{
-				if(queryResultObjectDataBean.getEntity().getName().
-						equals(queryResultObjectDataBean.getCsmEntityName()))
-				{
-					entityIdIndexMap.put(queryResultObjectDataBean.getEntity(),
-							queryResultObjectDataBean.getMainEntityIdentifierColumnId());
-				}
-			}
-			else
-			{
-				break;
-			}
-		}
-		return mainEntityIdIndex;
-	}
-
-	private int getMainIdFromBean(QueryResultObjectDataBean queryResultObjectDataBean)
-	{
-		int mainEntityIdIndex = -1;
-		Map<EntityInterface, Integer> entityIdIndexMap =
-			queryResultObjectDataBean.getEntityIdIndexMap();
-		for(EntityInterface entity : entityIdIndexMap.keySet())
-		{
-			if(entity.getName().equals(queryResultObjectDataBean.getEntity().getName()))
-			{
-				mainEntityIdIndex = entityIdIndexMap.get(entity);
-				break;
-			}
-		}
-		return mainEntityIdIndex;
-	}
 	/**
 	 * Populates the map for define view where key->BaseAbstractAttributeInterface and value->Object,
 	 * Object can be actual value of attribute or a map.
@@ -168,7 +108,7 @@ public class SpreadsheetDenormalizationBizLogic
 	 * @param dataList dataList
 	 * @param selectSql selectSql
 	 */
-	private void populateMapForDefineView(QueryDetails queryDetailsObj,
+	private void populateMapForSpreadsheet(QueryDetails queryDetailsObj,
 			List<QueryOutputTreeAttributeMetadata>selectedAttributeMetaDataList,
 			List<List<String>> dataList, String selectSql) throws MultipleRootsException
 	{
@@ -176,140 +116,235 @@ public class SpreadsheetDenormalizationBizLogic
 		IConstraints constraints = query.getConstraints();
 		JoinGraph joinGraph = (JoinGraph)constraints.getJoinGraph();
 		EntityInterface rootEntity = getRootEntity(joinGraph);
-		OutputTreeDataNode treeDataNode;
 		Map<BaseAbstractAttributeInterface,Object> denormalizationMap =
 			new HashMap<BaseAbstractAttributeInterface,Object>();
-		Map<BaseAbstractAttributeInterface,Object> innerMap;
 		Integer idColumnValue = -100;
-		HashMap<BaseAbstractAttributeInterface,Object> associationInterfaceMap;
-		BaseAbstractAttributeInterface associationInterface;
 		for(List<String> list : dataList)
 		{
-			associationInterfaceMap =
-				new HashMap<BaseAbstractAttributeInterface, Object>();
+			//entityVsMap = new HashMap<EntityInterface, Map<BaseAbstractAttributeInterface,Object>>();
 			denormalizationMap = populateDenormalizationList(denormalizationMap, idColumnValue, list);
 			idColumnValue = Integer.parseInt(list.get(mainIdColumnIndex));
-			Map<String,String> columnNameMap = getColumnNameMap(selectSql,list);
-			for(QueryOutputTreeAttributeMetadata outputTreeAttributeMetadata : selectedAttributeMetaDataList)
-			{
-				innerMap = new HashMap<BaseAbstractAttributeInterface, Object>();
-				treeDataNode = outputTreeAttributeMetadata.getTreeDataNode();
-				String entityName = treeDataNode.getOutputEntity().getDynamicExtensionsEntity().getName();
-				String columnName = outputTreeAttributeMetadata.getColumnName();
-				BaseAbstractAttributeInterface attribute = outputTreeAttributeMetadata.getAttribute();
-				String value = columnNameMap.get(columnName);
-				if(rootEntity.getName().equals(entityName))
-				{
-					populateDenormalizationMap(denormalizationMap, attribute,
-							value);
-				}
-				else
-				{
-					populateInnerMap(attribute, value,innerMap);
-						associationInterface =
-							getBaseAbstractAttributeInterface(constraints, joinGraph, treeDataNode);
-					if(associationInterfaceMap.get(associationInterface) == null)
-					{
-						mapForMultilevelHierarchy(treeDataNode, innerMap,
-								associationInterfaceMap, associationInterface);
-					}
-					else
-					{
-						Map<BaseAbstractAttributeInterface, Object> map =
-							(Map<BaseAbstractAttributeInterface, Object>)associationInterfaceMap.get(associationInterface);
-						map.put(attribute, value);
-					}
-				}
-			}
-			if(associationInterfaceMap != null)
-			{
-				populateDenormalizedMap(denormalizationMap, associationInterfaceMap);
-			}
+			columnNameMap = getColumnNameMap(selectSql,list);
+			populateMap(denormalizationMap,rootEntity, selectedAttributeMetaDataList, constraints);
 		}
 		denormalizationList.add(denormalizationMap);
 	}
 
-	private void mapForMultilevelHierarchy(
-			OutputTreeDataNode treeDataNode,
-			Map<BaseAbstractAttributeInterface, Object> innerMap,
-			Map<BaseAbstractAttributeInterface, Object> associationInterfaceMap,
+	/**
+	 * @param denormalizationMap2 denormalizationMap2
+	 * @param entity entity
+	 * @param selectedAttributeMetaDataList selectedAttributeMetaDataList
+	 * @param constraints constraints
+	 * @return
+	 * @throws MultipleRootsException
+	 */
+	public Map<BaseAbstractAttributeInterface,Object> populateMap(Map<BaseAbstractAttributeInterface, Object> denormalizationMap2, EntityInterface entity,
+			List<QueryOutputTreeAttributeMetadata> selectedAttributeMetaDataList,IConstraints constraints) throws MultipleRootsException
+	{
+		counter++;
+		Map<BaseAbstractAttributeInterface,Object> denormalizationMap =
+			new HashMap<BaseAbstractAttributeInterface, Object>();
+		List<Map<BaseAbstractAttributeInterface,Object>> innerMapList = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
+		OutputTreeDataNode treeDataNode = getTreeDataNode(entity,selectedAttributeMetaDataList);
+		QueryExportDataHandler dataHandler = new QueryExportDataHandler(null);
+		List<AbstractAttributeInterface> attributeList = dataHandler.getFinalAttributeList(entity);
+		Collections.sort(attributeList, new AttributeComparator());
+		for(AbstractAttributeInterface attribute : attributeList)
+		{
+			if(attribute instanceof AssociationInterface)
+			{
+				EntityInterface associatedEntity = isAssociationPresent(attribute,treeDataNode,constraints);
+				if(associatedEntity != null)
+				{
+					Map<BaseAbstractAttributeInterface,Object> tempMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+					if(denormalizationMap2.get(attribute) != null)
+					{
+						tempMap = ((List<Map<BaseAbstractAttributeInterface,Object>>)denormalizationMap2.get(attribute)).get(0);
+					}
+					/*if(!markedEntities.contains(associatedEntity))
+					{*/
+						Map<BaseAbstractAttributeInterface,Object> innerMap =
+							populateMap(tempMap,associatedEntity,selectedAttributeMetaDataList,constraints);
+						innerMapList = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
+						innerMapList.add(innerMap);
+						denormalizationMap.put(attribute,innerMapList);
+						if(denormalizationMap2.get(attribute) == null)
+						{
+							denormalizationMap2.put(attribute, innerMapList);
+						}
+						else
+						{
+							List<Map<BaseAbstractAttributeInterface,Object>> innerList =
+								(List<Map<BaseAbstractAttributeInterface, Object>>) denormalizationMap2.get(attribute);
+							if(!tempMap.equals(innerMap) && !innerList.contains(innerMap))
+							{
+								innerList.add(innerMap);
+							}
+
+						}
+					//}
+					//populateMarkedEntities(entity);
+				}
+			}
+			else
+			{
+				populateMapForAttribute(denormalizationMap2,
+						selectedAttributeMetaDataList, denormalizationMap,
+						attribute);
+			}
+		}
+		return denormalizationMap;
+	}
+
+	/**
+	 * @param denormalizationMap2 denormalizationMap2
+	 * @param selectedAttributeMetaDataList selectedAttributeMetaDataList
+	 * @param denormalizationMap denormalizationMap
+	 * @param attribute attribute
+	 */
+	private void populateMapForAttribute(
+			Map<BaseAbstractAttributeInterface, Object> denormalizationMap2,
+			List<QueryOutputTreeAttributeMetadata> selectedAttributeMetaDataList,
+			Map<BaseAbstractAttributeInterface, Object> denormalizationMap,
+			AbstractAttributeInterface attribute)
+	{
+		String value = isPresent(attribute,selectedAttributeMetaDataList);
+		if(value != null)
+		{
+			denormalizationMap.put(attribute, value);
+			if(counter == 1)
+			{
+				denormalizationMap2.put(attribute, value);
+			}
+		}
+	}
+
+	/**
+	 * @param entity entity
+	 */
+//	private void populateMarkedEntities(EntityInterface entity)
+//	{
+//		if(!markedEntities.contains(entity))
+//		{
+//			markedEntities.add(entity);
+//		}
+//
+//	}
+
+	private OutputTreeDataNode getTreeDataNode(EntityInterface entity,
+			List<QueryOutputTreeAttributeMetadata> selectedAttributeMetaDataList)
+	{
+		OutputTreeDataNode treeDataNode = null;
+		for(QueryOutputTreeAttributeMetadata outputTreeAttributeMetadata : selectedAttributeMetaDataList)
+		{
+			if(outputTreeAttributeMetadata.getTreeDataNode().getOutputEntity().getDynamicExtensionsEntity() == entity)
+			{
+				treeDataNode = outputTreeAttributeMetadata.getTreeDataNode();
+				break;
+			}
+		}
+		return treeDataNode;
+	}
+
+	private EntityInterface isAssociationPresent(
+			AbstractAttributeInterface attribute, OutputTreeDataNode treeDataNode,
+			IConstraints constraints) throws MultipleRootsException
+	{
+		JoinGraph joinGraph = (JoinGraph)constraints.getJoinGraph();
+		int entityExpressionId;
+		EntityInterface dataNodeEntity;
+		if(treeDataNode == null)
+		{
+			entityExpressionId  = joinGraph.getRoot().getExpressionId();
+			dataNodeEntity = joinGraph.getRoot().getQueryEntity().getDynamicExtensionsEntity();
+		}
+		else
+		{
+			entityExpressionId = treeDataNode.getExpressionId();
+			dataNodeEntity = treeDataNode.getOutputEntity().getDynamicExtensionsEntity();
+		}
+		BaseAbstractAttributeInterface associationInterface = null;
+		EntityInterface entity = null;
+		for(IExpression expression: constraints)
+		{
+			if(joinGraph.containsAssociation(expression, constraints.getExpression
+					(entityExpressionId)))
+			{
+				IIntraModelAssociation association = (IIntraModelAssociation)
+				joinGraph.getAssociation(expression, constraints.getExpression
+						(entityExpressionId));
+				if(association != null)
+				{
+					associationInterface = (BaseAbstractAttributeInterface)
+					association.getDynamicExtensionsAssociation();
+					if(associationInterface.equals(attribute))
+					{
+						tgtEntityVsAssoc.put(dataNodeEntity, associationInterface);
+						entity = populateEntityVsAssoc(joinGraph,expression,dataNodeEntity,associationInterface);
+					}
+				}
+				break;
+			}
+			else if(joinGraph.containsAssociation(constraints.getExpression
+					(entityExpressionId),expression))
+			{
+				IIntraModelAssociation association = (IIntraModelAssociation)
+				joinGraph.getAssociation(constraints.getExpression
+						(entityExpressionId),expression);
+				if(association != null)
+				{
+					associationInterface = (BaseAbstractAttributeInterface)
+					association.getDynamicExtensionsAssociation();
+					if(associationInterface.equals(attribute))
+					{
+						entityVsAssoc.put(dataNodeEntity, associationInterface);
+						entity = populateTgtEntityVsAssoc(joinGraph,expression,dataNodeEntity,associationInterface);
+					}
+				}
+			}
+		}
+		return entity;
+	}
+
+	private EntityInterface populateTgtEntityVsAssoc(JoinGraph joinGraph,
+			IExpression expression, EntityInterface dynamicExtensionsEntity,
 			BaseAbstractAttributeInterface associationInterface)
 	{
-		boolean isPresentInMap = false;
-		for(BaseAbstractAttributeInterface association : associationInterfaceMap.keySet())
+		EntityInterface entity = null;
+		if(!joinGraph.getChildrenList(expression).isEmpty() && !expression.isInView())
 		{
-			BaseAbstractAttributeInterface existingAssoc = getAssociation(association,treeDataNode.getOutputEntity().getDynamicExtensionsEntity());
-			if(existingAssoc != null)
+			IExpression exp = joinGraph.getChildrenList(expression).get(0);
+			exp = getExpression(joinGraph, exp);
+			BaseAbstractAttributeInterface association = tgtEntityVsAssoc.get(dynamicExtensionsEntity);
+			if(association == null)
 			{
-				Map<BaseAbstractAttributeInterface, Object> map =
-					(Map<BaseAbstractAttributeInterface, Object>)associationInterfaceMap.get(existingAssoc);
-				populateDenormalizedMap(associationInterfaceMap, map);
-				isPresentInMap = true;
+				tgtEntityVsAssoc.put(exp.getQueryEntity().getDynamicExtensionsEntity(), associationInterface);
+			}
+			entity = exp.getQueryEntity().getDynamicExtensionsEntity();
+		}
+		else
+		{
+			tgtEntityVsAssoc.put(expression.getQueryEntity().getDynamicExtensionsEntity(), associationInterface);
+			entity = expression.getQueryEntity().getDynamicExtensionsEntity();
+		}
+		return entity;
+	}
+
+	private String isPresent(AbstractAttributeInterface attribute,
+			List<QueryOutputTreeAttributeMetadata> selectedAttributeMetaDataList)
+	{
+		String value = null;
+		for(QueryOutputTreeAttributeMetadata outputTreeAttributeMetadata : selectedAttributeMetaDataList)
+		{
+			String columnName = outputTreeAttributeMetadata.getColumnName();
+			BaseAbstractAttributeInterface presentAttribute = outputTreeAttributeMetadata.getAttribute();
+			if(presentAttribute.equals(attribute))
+			{
+				value = columnNameMap.get(columnName);
 				break;
 			}
 		}
-		if(!isPresentInMap)
-		{
-			associationInterfaceMap.put(associationInterface, innerMap);
-		}
-	}
-
-	private BaseAbstractAttributeInterface getAssociation(BaseAbstractAttributeInterface association,
-			EntityInterface currentEntity)
-	{
-		BaseAbstractAttributeInterface associationInterface = null;
-		associationInterface = searchAssociationForSrc(association,
-				currentEntity);
-		if(associationInterface == null)
-		{
-			associationInterface = searchAssociationForTgt(association,
-					currentEntity);
-		}
-		return associationInterface;
-	}
-
-	/**
-	 *
-	 * @param association association
-	 * @param currentEntity currentEntity
-	 * @return associationInterface
-	 */
-	private BaseAbstractAttributeInterface searchAssociationForTgt(
-			BaseAbstractAttributeInterface association,
-			EntityInterface currentEntity)
-	{
-		BaseAbstractAttributeInterface associationInterface = null;
-		for(EntityInterface entity : tgtEntityVsAssoc.keySet())
-		{
-			if(entity == currentEntity && association == tgtEntityVsAssoc.get(entity))
-			{
-				associationInterface = tgtEntityVsAssoc.get(entity);
-				break;
-			}
-		}
-		return associationInterface;
-	}
-
-	/**
-	 *
-	 * @param association association
-	 * @param currentEntity currentEntity
-	 * @return associationInterface
-	 */
-	private BaseAbstractAttributeInterface searchAssociationForSrc(
-			BaseAbstractAttributeInterface association,
-			EntityInterface currentEntity)
-	{
-		BaseAbstractAttributeInterface associationInterface = null;
-		for(EntityInterface entity : entityVsAssoc.keySet())
-		{
-			if(entity == currentEntity && association == entityVsAssoc.get(entity))
-			{
-				associationInterface = entityVsAssoc.get(entity);
-				break;
-			}
-		}
-		return associationInterface;
+		return value;
 	}
 
 	/**
@@ -328,6 +363,8 @@ public class SpreadsheetDenormalizationBizLogic
 		{
 			denormalizationList.add(denormalizationMap);
 			tempMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+			counter = 0;
+			//markedEntities = new ArrayList<EntityInterface>();
 		}
 		return tempMap;
 	}
@@ -347,130 +384,64 @@ public class SpreadsheetDenormalizationBizLogic
 	}
 
 	/**
-	 * If the key already exists in the map, then this method retrieves the value(which is list of map)
-	 * corresponding to the AssociationInterface and adds this value to the list.
-	 * @param denormalizationMap denormalizationMap
-	 * @param associationInterfaceMap associationInterfaceMap
-	 */
-	private void populateDenormalizedMap(
-			Map<BaseAbstractAttributeInterface, Object> denormalizationMap,
-			Map<BaseAbstractAttributeInterface,Object>associationInterfaceMap)
-	{
-		for(BaseAbstractAttributeInterface associationInterface : associationInterfaceMap.keySet())
-		{
-			Map<BaseAbstractAttributeInterface,Object> innerMap =
-				(Map<BaseAbstractAttributeInterface,Object>)associationInterfaceMap.get(associationInterface);
-			List<Map<BaseAbstractAttributeInterface,Object>> innerMapList;
-			if(denormalizationMap.get(associationInterface) == null)
-			{
-				innerMapList = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
-				innerMapList.add(innerMap);
-				denormalizationMap.put(associationInterface, innerMapList);
-			}
-			else
-			{
-				innerMapList =
-				(List<Map<BaseAbstractAttributeInterface,Object>>)denormalizationMap.get(associationInterface);
-				if(!innerMapList.contains(innerMap))
-				{
-					innerMapList.add(innerMap);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Populates the map in cases where object will be the actual value of the attribute.
-	 * @param denormalizationMap denormalizationMap
-	 * @param attribute attribute
-	 * @param value value
-	 */
-	private void populateDenormalizationMap(
-			Map<BaseAbstractAttributeInterface, Object> denormalizationMap,
-			BaseAbstractAttributeInterface attribute, String value)
-	{
-		if(value != null && denormalizationMap.get(attribute) == null)
-		{
-			denormalizationMap.put(attribute, value);
-		}
-	}
-
-	/**
-	 * Populates the inner map in case of define view.
-	 * @param attribute attribute
-	 * @param value value
-	 * @return innerMap
-	 */
-	private Map<BaseAbstractAttributeInterface, Object> populateInnerMap(
-			BaseAbstractAttributeInterface attribute, String value,
-			Map<BaseAbstractAttributeInterface, Object> innerMap)
-	{
-		populateDenormalizationMap(innerMap, attribute, value);
-		return innerMap;
-	}
-
-	/**
-	 * This method finds the association for the passed object of OutputTreeDataNode
-	 * and returns the associationInterface.
-	 * @param constraints constraints
-	 * @param joinGraph joinGraph
-	 * @param treeDataNode treeDataNode
-	 * @return associationInterface
-	 */
-	private BaseAbstractAttributeInterface getBaseAbstractAttributeInterface(
-			IConstraints constraints, JoinGraph joinGraph,
-			OutputTreeDataNode treeDataNode)
-	{
-		BaseAbstractAttributeInterface associationInterface = null;
-		for(IExpression expression: constraints)
-		{
-			if(joinGraph.containsAssociation(expression, constraints.getExpression
-					(treeDataNode.getExpressionId())))
-			{
-				IIntraModelAssociation association = (IIntraModelAssociation)
-				joinGraph.getAssociation(expression, constraints.getExpression
-						(treeDataNode.getExpressionId()));
-				if(association != null)
-				{
-					associationInterface = (BaseAbstractAttributeInterface)
-					association.getDynamicExtensionsAssociation();
-					tgtEntityVsAssoc.put(treeDataNode.getOutputEntity().getDynamicExtensionsEntity(), associationInterface);
-					populateEntityVsAssoc(joinGraph,expression,treeDataNode.getOutputEntity().getDynamicExtensionsEntity(),associationInterface);
-					}
-					break;
-			}
-		}
-		return associationInterface;
-	}
-
-	/**
 	 *
 	 * @param joinGraph joinGraph
 	 * @param expression expression
 	 * @param dynamicExtensionsEntity
 	 * @param associationInterface
 	 */
-	private void populateEntityVsAssoc(JoinGraph joinGraph, IExpression expression, EntityInterface dynamicExtensionsEntity,
+	private EntityInterface populateEntityVsAssoc(JoinGraph joinGraph, IExpression expression, EntityInterface dynamicExtensionsEntity,
 			BaseAbstractAttributeInterface associationInterface)
 	{
-		if(!joinGraph.getParentList(expression).isEmpty())
+		EntityInterface entity = null;
+		if(!joinGraph.getParentList(expression).isEmpty() && !expression.isInView())
 		{
 			IExpression exp = joinGraph.getParentList(expression).get(0);
-			exp = getExpression(joinGraph, exp);
+			exp = getParentExpression(joinGraph, exp);
 			BaseAbstractAttributeInterface association = entityVsAssoc.get(dynamicExtensionsEntity);
 			if(association == null)
 			{
 				entityVsAssoc.put(exp.getQueryEntity().getDynamicExtensionsEntity(), associationInterface);
 			}
+			entity = exp.getQueryEntity().getDynamicExtensionsEntity();
 		}
+		else
+		{
+			entityVsAssoc.put(expression.getQueryEntity().getDynamicExtensionsEntity(), associationInterface);
+			entity = expression.getQueryEntity().getDynamicExtensionsEntity();
+		}
+		return entity;
 	}
 
-	private IExpression getExpression(JoinGraph joinGraph,IExpression expression)
+	/**
+	 * Get the parent expression of the passed expression.
+	 * @param joinGraph joinGraph
+	 * @param expression expression
+	 * @return finalExp
+	 */
+	private IExpression getParentExpression(JoinGraph joinGraph, IExpression expression)
 	{
 		IExpression finalExp = expression;
 		if(!expression.isInView())
 		{
 			IExpression parentExp = joinGraph.getParentList(expression).get(0);
+			finalExp = getExpression(joinGraph,parentExp);
+		}
+		return finalExp;
+	}
+
+	/**
+	 * Get the child expression of the passed expression.
+	 * @param joinGraph joinGraph
+	 * @param expression expression
+	 * @return finalExp
+	 */
+	private IExpression getExpression(JoinGraph joinGraph,IExpression expression)
+	{
+		IExpression finalExp = expression;
+		if(!expression.isInView())
+		{
+			IExpression parentExp = joinGraph.getChildrenList(expression).get(0);
 			finalExp = getExpression(joinGraph,parentExp);
 		}
 		return finalExp;

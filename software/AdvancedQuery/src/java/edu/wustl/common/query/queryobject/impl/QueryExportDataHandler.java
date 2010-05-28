@@ -28,6 +28,9 @@ public class QueryExportDataHandler
 	private List<EntityInterface> markedEntities = new ArrayList<EntityInterface>();
 	private Map<EntityInterface,BaseAbstractAttributeInterface> entityVsAssoc =
 		new HashMap<EntityInterface, BaseAbstractAttributeInterface>();
+	private Map<EntityInterface,BaseAbstractAttributeInterface> tgtEntityVsAssoc =
+		new HashMap<EntityInterface, BaseAbstractAttributeInterface>();
+	private final List<AttributeInterface> selectedAttributes = new ArrayList<AttributeInterface>();
 
 	public QueryExportDataHandler(EntityInterface rootEntity)
 	{
@@ -54,6 +57,21 @@ public class QueryExportDataHandler
 	{
 		return entityVsAssoc;
 	}
+
+	public void setTgtEntityVsAssoc(
+			Map<EntityInterface, BaseAbstractAttributeInterface> tgtEntityVsAssoc)
+	{
+		this.tgtEntityVsAssoc = tgtEntityVsAssoc;
+	}
+
+	/**
+	 * @return the tgtEntityVsAssoc
+	 */
+	public Map<EntityInterface, BaseAbstractAttributeInterface> getTgtEntityVsAssoc()
+	{
+		return tgtEntityVsAssoc;
+	}
+
 	/**
 	 * This method will update the Maps needed for generating the Header
 	 * & data list.
@@ -85,38 +103,69 @@ public class QueryExportDataHandler
 	{
 		if(denormalizationMap != null)
 		{
-			EntityInterface entity = queryDataEntity.getEntity();
-			Collection<AbstractAttributeInterface> attributeList = getAbstractAttributeCollection(entity);
-			List<Object> rowDataList = new ArrayList<Object>();
-			for(BaseAbstractAttributeInterface attribute : attributeList)
-			{
-				if(denormalizationMap.get(attribute) != null)
-				{
-					if (attribute instanceof AttributeInterface
-							&& !(denormalizationMap.get(attribute) instanceof List))
-					{
-						rowDataList.add(getValueForAttributeFromMap(attribute, denormalizationMap));
+			processDiffAttributes(denormalizationMap, queryDataEntity,
+					entityVsDataList, dataCnt);
+		}
+	}
 
-					}
-					else if (attribute instanceof AttributeInterface
-							&& (denormalizationMap.get(attribute) instanceof List))
-					{
-						/**
-						 * For multi-select case (e.g. In case of permissible values)
-						 */
-						String value = processMultiselectAttribute(attribute, denormalizationMap);
-						rowDataList.add(value);
-					}
-					else if (attribute instanceof AssociationInterface)
-					{
-						String recordNo = queryDataEntity.getParentRecordNo() + "_" + dataCnt;
-						processAssociationAttribute(attribute, denormalizationMap, entityVsDataList,
-								recordNo);
-					}
+	/**
+	 * This method gets all the attributes of entities one by one and
+	 * accordingly populates the denormalization map.
+	 * @param denormalizationMap denormalizationMap
+	 * @param queryDataEntity queryDataEntity
+	 * @param entityVsDataList entityVsDataList
+	 * @param dataCnt dataCnt
+	 */
+	private void processDiffAttributes(
+			Map<BaseAbstractAttributeInterface, Object> denormalizationMap,
+			QueryHeaderData queryDataEntity,
+			Map<QueryHeaderData, List<List<Object>>> entityVsDataList,
+			int dataCnt)
+	{
+		EntityInterface entity = queryDataEntity.getEntity();
+		Collection<AbstractAttributeInterface> attributeList = getAbstractAttributeCollection(entity);
+		List<Object> rowDataList = new ArrayList<Object>();
+		for(BaseAbstractAttributeInterface attribute : attributeList)
+		{
+			if(denormalizationMap.get(attribute) != null)
+			{
+				if (attribute instanceof AttributeInterface
+						&& !(denormalizationMap.get(attribute) instanceof List))
+				{
+					rowDataList.add(getValueForAttributeFromMap(attribute, denormalizationMap));
+					populateSelectedAttributes(attribute);
+				}
+				else if (attribute instanceof AttributeInterface
+						&& (denormalizationMap.get(attribute) instanceof List))
+				{
+					/**
+					 * For multi-select case (e.g. In case of permissible values)
+					 */
+					String value = processMultiselectAttribute(attribute, denormalizationMap);
+					rowDataList.add(value);
+				}
+				else if (attribute instanceof AssociationInterface)
+				{
+					String recordNo = queryDataEntity.getParentRecordNo() + "_" + dataCnt;
+					processAssociationAttribute(attribute, denormalizationMap, entityVsDataList,
+							recordNo);
 				}
 			}
-			populateEntityvsDataList(queryDataEntity, entityVsDataList,
-					rowDataList);
+		}
+		populateEntityvsDataList(queryDataEntity, entityVsDataList,
+				rowDataList);
+	}
+
+	/**
+	 * Add the attribute in the list if not present.
+	 * @param attribute attribute
+	 */
+	private void populateSelectedAttributes(
+			BaseAbstractAttributeInterface attribute)
+	{
+		if(!selectedAttributes.contains(attribute))
+		{
+			selectedAttributes.add((AttributeInterface)attribute);
 		}
 	}
 
@@ -216,7 +265,11 @@ public class QueryExportDataHandler
 	{
 		List tempList = (List) denormalizationMap.get(attribute);
 		AssociationInterface association = (AssociationInterface)attribute;
-		EntityInterface entity = association.getTargetEntity();
+		EntityInterface entity = getTargetEntity(association);
+		if(entity == null)
+		{
+			entity = association.getTargetEntity();
+		}
 		QueryHeaderData queryDataEntity = new QueryHeaderData(entity, parentRecordNo);
 		updateMaxRecordCount(tempList, queryDataEntity);
 		if (!tempList.isEmpty())
@@ -228,6 +281,20 @@ public class QueryExportDataHandler
 				generateQueryDatamap(obj, queryDataEntity, entityVsDataList, recordNo);
 			}
 		}
+	}
+
+	private EntityInterface getTargetEntity(AssociationInterface association)
+	{
+		EntityInterface entity = null;
+		for(EntityInterface tgtEntity : tgtEntityVsAssoc.keySet())
+		{
+			if(tgtEntityVsAssoc.get(tgtEntity).equals(association))
+			{
+				entity = tgtEntity;
+				break;
+			}
+		}
+		return entity;
 	}
 
 	/**
@@ -266,6 +333,101 @@ public class QueryExportDataHandler
 	}
 
 	/**
+	 * This method returns the header list to be displayed in the CSV file.
+	 * @return headerList
+	 */
+	public List<String> getHeaderList()
+	{
+		markedEntities = new ArrayList<EntityInterface>();
+		List<String> headerList;
+		QueryHeaderData headerData = new QueryHeaderData(rootEntity, "");
+		headerList = getHeaderForSpreadsheetDataCSV(headerData);
+		return headerList;
+	}
+
+	/**
+	 * This method generates the headers to be displayed in the CSV file.
+	 * @param headerData headerData
+	 * @return
+	 */
+	private List<String> getHeaderForSpreadsheetDataCSV(
+			QueryHeaderData queryHeaderData)
+	{
+		List<String> headerList = new ArrayList<String>();
+
+		populateMarkedEntities(queryHeaderData);
+		Integer maxRecordCount = getMaxRecordCountForQueryHeader(queryHeaderData);
+
+		Collection<AbstractAttributeInterface> attributeList =
+			getFinalAttributeList(queryHeaderData.getEntity());
+
+		for (int cntr = 0; cntr < maxRecordCount; cntr++)
+		{
+			for (AbstractAttributeInterface attribute : attributeList)
+			{
+				if (attribute instanceof AssociationInterface)
+				{
+					populateHeaderListForAssoc(queryHeaderData, headerList,
+							cntr, attribute);
+				}
+				else
+				{
+					populateHeaderListForAttribute(headerList, cntr, attribute);
+				}
+			}
+		}
+		return headerList;
+	}
+
+	/**
+	 * Populate header list for attributes.
+	 * @param headerList headerList
+	 * @param cntr counter
+	 * @param attribute attribute
+	 */
+	private void populateHeaderListForAttribute(List<String> headerList,
+			int cntr, AbstractAttributeInterface attribute)
+	{
+		if(selectedAttributes.contains(attribute))
+		{
+			StringBuffer headerDisplay = new StringBuffer();
+			String entityName = attribute.getEntity().getName();
+			entityName = entityName.substring(entityName.lastIndexOf('.')+1, entityName.length());
+			headerDisplay.append(entityName).append(':').append(attribute.getName());
+			if(cntr>0)
+			{
+				headerDisplay.append('_').append(cntr);
+			}
+			headerList.add(headerDisplay.toString());
+		}
+	}
+
+	/**
+	 * Populate the header list.
+	 * @param queryHeaderData queryHeaderData
+	 * @param headerList headerList
+	 * @param cntr counter
+	 * @param attribute attribute
+	 */
+	private void populateHeaderListForAssoc(QueryHeaderData queryHeaderData,
+			List<String> headerList, int cntr,
+			AbstractAttributeInterface attribute)
+	{
+		EntityInterface entity = getTargetEntity((AssociationInterface)attribute);
+		if(entity == null)
+		{
+			entity = ((AssociationInterface)attribute).getTargetEntity();
+		}
+		String parentRecordId = queryHeaderData.getParentRecordNo() + "_" + cntr;
+		QueryHeaderData headerData = new QueryHeaderData(entity,
+				parentRecordId);
+		if(!markedEntities.contains(entity))
+		{
+			headerList.addAll(getHeaderForSpreadsheetDataCSV(headerData));
+		}
+	}
+
+	/**
 	 * Responsible for populating the data list.
 	 * @param counter counter
 	 * @return the data list
@@ -291,8 +453,7 @@ public class QueryExportDataHandler
 	{
 		populateMarkedEntities(queryHeaderData);
 		Integer maxRecordCount = getMaxRecordCountForQueryHeader(queryHeaderData);
-
-		Collection<AbstractAttributeInterface> attributeList = getFinalAttributeList(queryHeaderData);
+		Collection<AbstractAttributeInterface> attributeList = getFinalAttributeList(queryHeaderData.getEntity());
 		List<List<Object>> entityDataList = entityMap.get(queryHeaderData);
 
 		List<Object> dataList = new ArrayList<Object>();
@@ -301,11 +462,16 @@ public class QueryExportDataHandler
 		{
 			List<Object> queryData = getRecordListForRecordId(entityDataList, cntr);
 			int attrControlNo = 0;
+			int counter = 0;
 			for (AbstractAttributeInterface attribute : attributeList)
 			{
 				if (attribute instanceof AssociationInterface)
 				{
-					EntityInterface entity = ((AssociationInterface)attribute).getTargetEntity();
+					EntityInterface entity = getTargetEntity((AssociationInterface)attribute);
+					if(entity == null)
+					{
+						entity = ((AssociationInterface)attribute).getTargetEntity();
+					}
 					String parentRecordId = queryHeaderData.getParentRecordNo() + "_" + cntr;
 					QueryHeaderData headerData = new QueryHeaderData(entity,
 							parentRecordId);
@@ -316,14 +482,25 @@ public class QueryExportDataHandler
 				}
 				else
 				{
-					Object dataValue;
-					if (entityDataList != null && dataList.size()>=attrControlNo &&
-							queryData.size()>attrControlNo)
+					Object dataValue = null;
+					if (entityDataList != null && entityDataList.size()>cntr)
 					{
-						dataValue = queryData.get(attrControlNo);
-						dataList.add(dataValue);
-						attrControlNo++;
+						if(queryData.size()>attrControlNo && selectedAttributes.contains(attribute))
+						{
+							dataValue = queryData.get(attrControlNo);
+							counter++;
+						}
+						else if(selectedAttributes.contains(attribute))
+						{
+							dataValue = queryData.get(counter);
+							counter++;
+						}
 					}
+					if(selectedAttributes.contains(attribute))
+					{
+						dataList.add(dataValue);
+					}
+					attrControlNo++;
 				}
 			}
 		}
@@ -331,7 +508,8 @@ public class QueryExportDataHandler
 	}
 
 	/**
-	 * Populate marked entities. This list contains the list of entities for whom the processing is already done
+	 * Populate marked entities. This list contains the list of entities
+	 * for whom the processing is already done
 	 * in order to avoid recursion.
 	 * @param queryHeaderData queryHeaderData
 	 */
@@ -344,37 +522,51 @@ public class QueryExportDataHandler
 	}
 
 	/**
-	 * Add all the associations (of parents) and then filter the list to contain only the required attributes and associations.
+	 * Add all the associations (of parents) and then
+	 * filter the list to contain only the required attributes and associations.
 	 * @param queryHeaderData queryHeaderData
 	 * @return attributeList
 	 */
-	private Collection<AbstractAttributeInterface> getFinalAttributeList(
-			QueryHeaderData queryHeaderData)
+	public List<AbstractAttributeInterface> getFinalAttributeList(
+			EntityInterface entity)
 	{
-		Collection<AbstractAttributeInterface> attributeList =
-			queryHeaderData.getEntity().getAllAbstractAttributes();
-		Collection<AbstractAttributeInterface> newAttributeList = new ArrayList<AbstractAttributeInterface>();
+		List<AbstractAttributeInterface> attributeList =
+			(List<AbstractAttributeInterface>) entity.getAllAbstractAttributes();
+		List<AbstractAttributeInterface> newAttributeList = new ArrayList<AbstractAttributeInterface>();
 		for(AbstractAttributeInterface attribute : attributeList)
 		{
-			if(attribute instanceof AssociationInterface)
-			{
-				if(!((AssociationInterface)attribute).getTargetEntity().getName().
-						equals(queryHeaderData.getEntity().getName()))
-				{
-					newAttributeList.add(attribute);
-				}
-			}
-			else
-			{
-				newAttributeList.add(attribute);
-			}
+			populateNewAttributeList(entity, newAttributeList, attribute);
 		}
-		AbstractAttributeInterface assocInterface = (AbstractAttributeInterface)entityVsAssoc.get(queryHeaderData.getEntity());
+		AbstractAttributeInterface assocInterface = (AbstractAttributeInterface)entityVsAssoc.get(entity);
 		if(assocInterface != null && !newAttributeList.contains(assocInterface))
 		{
 			newAttributeList.add(assocInterface);
 		}
 		return newAttributeList;
+	}
+
+	/**
+	 * Populate new attribute list.
+	 * @param entity entity
+	 * @param newAttributeList newAttributeList
+	 * @param attribute attribute
+	 */
+	private void populateNewAttributeList(EntityInterface entity,
+			List<AbstractAttributeInterface> newAttributeList,
+			AbstractAttributeInterface attribute)
+	{
+		if(attribute instanceof AssociationInterface)
+		{
+			if(!((AssociationInterface)attribute).getTargetEntity().getName().
+					equals(entity.getName()))
+			{
+				newAttributeList.add(attribute);
+			}
+		}
+		else
+		{
+			newAttributeList.add(attribute);
+		}
 	}
 
 	/**

@@ -1,7 +1,11 @@
 package edu.wustl.common.query.queryobject.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import edu.wustl.common.util.logger.LoggerConfig;
 
 /**
  * This class is responsible for forming the data list in denormalized form to be exported to a CSV file.
@@ -10,13 +14,16 @@ import java.util.List;
  */
 public class DenormalizedCSVExporter
 {
+	private static org.apache.log4j.Logger logger = LoggerConfig
+	.getConfiguredLogger(DenormalizedCSVExporter.class);
 	/**
 	 * Just calls the method to get the final data list to be written into the CSV file.
 	 * @param fileName file name
 	 * @param size size of the data list
 	 */
-	public List<List<String>> addDataToCSV(int size,QueryExportDataHandler dataHandler)
+	public Map<String,Object> addDataToCSV(int size,QueryExportDataHandler dataHandler)
 	{
+		Map<String,Object> exportDetailsMap = new HashMap<String,Object>();
 		List<List<String>> finalDataList = new ArrayList<List<String>>();
 		List<Object> resultList;
 		List<String> dataList;
@@ -28,7 +35,10 @@ public class DenormalizedCSVExporter
 			finalDataList.add(dataList);
 		}
 		finalDataList = writeToCSVFile(size,dataHandler);
-		return finalDataList;
+		List<String> headerList = dataHandler.getHeaderList();
+		exportDetailsMap.put("dataList", finalDataList);
+		exportDetailsMap.put("headerList", headerList);
+		return exportDetailsMap;
 	}
 
 	/**
@@ -41,6 +51,14 @@ public class DenormalizedCSVExporter
 		List<List<String>> finalDataList = new ArrayList<List<String>>();
 		List<Object> resultList;
 		List<String> dataList;
+
+		//Add the header to report
+		List<String> headerList = handler.getHeaderList();
+		List<Object> finalHeaders = new ArrayList<Object>();
+		for(String header : headerList)
+		{
+			finalHeaders.add(header);
+		}
 		for (int i = 0; i < size; i++)
 		{
 			resultList = getDataList(i, handler);
