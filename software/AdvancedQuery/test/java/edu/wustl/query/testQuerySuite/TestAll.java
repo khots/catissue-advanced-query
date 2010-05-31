@@ -7,6 +7,7 @@ package edu.wustl.query.testQuerySuite;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import edu.ustl.query.util.querysuite.CsmUtilityTestCase;
 import edu.ustl.query.util.querysuite.QueryCSMUtilTestCase;
 import edu.ustl.query.util.querysuite.QueryDetailsTestCase;
 import edu.ustl.query.util.querysuite.QueryModuleSqlUtilTestCase;
@@ -68,7 +69,7 @@ public class TestAll
 		suite.addTestSuite(GenerateHtmlDetailsTestCase.class);
 		suite.addTestSuite(GenerateHtmlTestCase.class);
 		suite.addTestSuite(ParseXMLFileTestCase.class);
-		//suite.addTestSuite(SavedQueryHtmlProviderTestCase.class);
+		suite.addTestSuite(SavedQueryHtmlProviderTestCase.class);
 		suite.addTestSuite(QueryCsmBizLogicTestCase.class);
 		suite.addTestSuite(SelectedColumnsMetadataTestCase.class);
 		suite.addTestSuite(QueryModuleSqlUtilTestCase.class);
@@ -94,10 +95,11 @@ public class TestAll
 		suite.addTestSuite(QueryTreeNodeDataTestCase.class);
 		suite.addTestSuite(AbstractQueryExecutorTestCase.class);
 		suite.addTestSuite(CustomFormulaUIBeanTestCase.class);
-		suite.addTestSuite(SpreadsheetDenormalizationBizLogicTestCase.class);
+		//suite.addTestSuite(SpreadsheetDenormalizationBizLogicTestCase.class);
 		suite.addTestSuite(ListComparatorTestCase.class);
 		suite.addTestSuite(QueryExportDataHandlerTestCase.class);
 		suite.addTestSuite(SavedQueryAuthorizationTestCase.class);
+		suite.addTestSuite(CsmUtilityTestCase.class);
 		return suite;
 	}
 }
