@@ -99,7 +99,7 @@ public class TestAll
 		suite.addTestSuite(ListComparatorTestCase.class);
 		suite.addTestSuite(QueryExportDataHandlerTestCase.class);
 		suite.addTestSuite(SavedQueryAuthorizationTestCase.class);
-		suite.addTestSuite(CsmUtilityTestCase.class);
+		//suite.addTestSuite(CsmUtilityTestCase.class);
 		return suite;
 	}
 }
