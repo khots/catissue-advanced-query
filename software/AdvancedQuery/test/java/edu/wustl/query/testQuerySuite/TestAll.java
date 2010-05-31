@@ -7,7 +7,6 @@ package edu.wustl.query.testQuerySuite;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import edu.ustl.query.util.querysuite.CsmUtilityTestCase;
 import edu.ustl.query.util.querysuite.QueryCSMUtilTestCase;
 import edu.ustl.query.util.querysuite.QueryDetailsTestCase;
 import edu.ustl.query.util.querysuite.QueryModuleSqlUtilTestCase;
