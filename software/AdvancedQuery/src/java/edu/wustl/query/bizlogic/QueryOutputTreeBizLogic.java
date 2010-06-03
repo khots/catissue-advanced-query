@@ -154,7 +154,7 @@ public class QueryOutputTreeBizLogic
 		QueryModuleSqlUtil.updateAuditQueryDetails(AQConstants.ROOT_ENTITY_NAME,
 				rootEntityName, auditEventId);
 		QueryModuleSqlUtil.updateAuditQueryDetails(AQConstants.COUNT_OF_ROOT_RECORDS,
-				""+cntOfRootRecs, auditEventId);
+				Integer.toString(cntOfRootRecs), auditEventId);
 	}
 
 	/**
@@ -398,7 +398,7 @@ public class QueryOutputTreeBizLogic
             List<List<String>> dataList = getTreeDataList(queryDetailsObj, selectSql, null, false,node);
             //List dataList = QueryModuleUtil.executeQuery(selectSql, sessionData);
            // int size = dataList.size();
-            String  size = ""+dataList.size();
+            String  size = Integer.toString(dataList.size());
 			if(dataList.size()==Variables.maxTreeNdLmtForChildNd)
 			{
 				int count = QueryModuleSqlUtil.getCountForQuery(selectSql,queryDetailsObj);
