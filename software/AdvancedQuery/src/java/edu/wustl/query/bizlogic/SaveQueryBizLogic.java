@@ -244,10 +244,14 @@ public class SaveQueryBizLogic extends DefaultQueryBizLogic implements IQueryBiz
 		Set<ProtectionGroup> pgSet = bizLogic.getPGsforQuery(queryObject.getId().toString());
 		populateBean(pgSet,bean);
 		String shareTo = bean.getShareTo();
-		boolean isSharedToAll = false;
+		boolean isSharedToAll;
 		if(shareTo != null && shareTo.equals(AQConstants.ALL))
 		{
 			isSharedToAll = true;
+		}
+		else
+		{
+			isSharedToAll = false;
 		}
 		long[] sharedUsers = null;
 		if(!isSharedToAll)

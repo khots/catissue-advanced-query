@@ -87,7 +87,6 @@ public class QueryOutputSpreadsheetBizLogic
 	{
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		this.selectedColumnMetaData = selectedColumnMetaData;
-		DefineGridViewBizLogic defineGridViewBizLogic = new DefineGridViewBizLogic();
 		Map spreadSheetDataMap = new HashMap();
 		String tableName = AQConstants.TEMP_OUPUT_TREE_TABLE_NAME
 		+ queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
@@ -95,7 +94,6 @@ public class QueryOutputSpreadsheetBizLogic
 		String parentNode = nodeIds[0];//data
 		String[] spiltParentNodeId = parentNode.split(AQConstants.UNDERSCORE);
 		String treeNo = spiltParentNodeId[0];
-		String parentNodeId = spiltParentNodeId[1];
 		Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap;
 		if (parentNode.contains("NULL"))
 		{
@@ -104,17 +102,7 @@ public class QueryOutputSpreadsheetBizLogic
 			.getQueryResulObjectDataBean(root, queryDetailsObj);
 			queryResultObjectDataBeanMap = new HashMap<Long, QueryResultObjectDataBean>();
 			queryResultObjectDataBeanMap.put(root.getId(), queryResulObjectDataBean);
-			if (!selectedColumnMetaData.isDefinedView())
-			{
-				spreadSheetDataMap = createSpreadsheetData(treeNo, root,
-						queryDetailsObj, null,
-						recordsPerPage, this.selectedColumnMetaData,
-						queryResultObjectDataBeanMap,
-						hasConditionOnIdentifiedField, constraints, outputTermsColumns);
-				spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
-						queryResultObjectDataBeanMap);
-			}
-			else
+			if (selectedColumnMetaData.isDefinedView())
 			{
 				if (queryResultDataMap == null)
 				{
@@ -126,12 +114,22 @@ public class QueryOutputSpreadsheetBizLogic
 				spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 						queryResultDataMap);
 			}
+			else
+			{
+				spreadSheetDataMap = createSpreadsheetData(treeNo, root,
+						queryDetailsObj, null,
+						recordsPerPage, this.selectedColumnMetaData,
+						queryResultObjectDataBeanMap,
+						hasConditionOnIdentifiedField, constraints, outputTermsColumns);
+				spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
+						queryResultObjectDataBeanMap);
+			}
 			this.selectedColumnMetaData.setCurrentSelectedObject(root);
 		}
 		else
 		{
 			String parentData = spiltParentNodeId[2];
-			String uniqueParentNodeId = treeNo + "_" + parentNodeId;
+			String uniqueParentNodeId = treeNo + "_" + spiltParentNodeId[1];
 			OutputTreeDataNode parentTreeNode = queryDetailsObj.getUniqueIdNodesMap().get(
 					uniqueParentNodeId);
 
@@ -150,7 +148,7 @@ public class QueryOutputSpreadsheetBizLogic
 
 			if (!selectedColumnMetaData.isDefinedView())
 			{
-				defineGridViewBizLogic.getColumnsMetadataForSelectedNode(currentTreeNode,
+				new DefineGridViewBizLogic().getColumnsMetadataForSelectedNode(currentTreeNode,
 						this.selectedColumnMetaData, constraints);
 			}
 			List resultList = createSQL(spreadSheetDataMap, currentTreeNode, parentIdColumnName,
@@ -166,14 +164,14 @@ public class QueryOutputSpreadsheetBizLogic
 					hasConditionOnIdentifiedField);
 			spreadSheetDataMap.put(AQConstants.QUERY_SESSION_DATA, querySessionData);
 			this.selectedColumnMetaData.setCurrentSelectedObject(currentTreeNode);
-			if (!selectedColumnMetaData.isDefinedView())
+			if (selectedColumnMetaData.isDefinedView())
 			{
-				spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
+				spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 						queryResultObjectDataBeanMap);
 			}
 			else
 			{
-				spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
+				spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
 						queryResultObjectDataBeanMap);
 			}
 		}
@@ -204,7 +202,6 @@ public class QueryOutputSpreadsheetBizLogic
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		this.selectedColumnMetaData = selectedColumnMetaData;
 		Map spreadSheetDatamap = null;
-		DefineGridViewBizLogic defineGridViewBizLogic = new DefineGridViewBizLogic();
 		String[] nodeIds;
 		nodeIds = actualParentNodeId.split(AQConstants.UNDERSCORE);
 		String treeNo = nodeIds[0];
@@ -214,22 +211,14 @@ public class QueryOutputSpreadsheetBizLogic
 		OutputTreeDataNode parentNode = queryDetailsObj.getUniqueIdNodesMap().get(uniqueNodeId);
 		if (!selectedColumnMetaData.isDefinedView())
 		{
-			defineGridViewBizLogic.getColumnsMetadataForSelectedNode(parentNode,
+			new DefineGridViewBizLogic().getColumnsMetadataForSelectedNode(parentNode,
 					this.selectedColumnMetaData, constraints);
 		}
 		QueryResultObjectDataBean queryResulObjectDataBean = QueryCSMUtil
 				.getQueryResulObjectDataBean(parentNode, queryDetailsObj);
 		Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap = new HashMap<Long, QueryResultObjectDataBean>();
 		queryResultObjectDataBeanMap.put(parentNode.getId(), queryResulObjectDataBean);
-		if (!selectedColumnMetaData.isDefinedView())
-		{
-			spreadSheetDatamap = createSpreadsheetData(treeNo, parentNode, queryDetailsObj,
-			parentData, recordsPerPage, this.selectedColumnMetaData,queryResultObjectDataBeanMap,
-			hasConditionOnIdentifiedField, constraints,outputTermsColumns);
-			spreadSheetDatamap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
-					queryResultObjectDataBeanMap);
-		}
-		else
+		if (selectedColumnMetaData.isDefinedView())
 		{
 			if (queryResultDataMap == null)
 			{
@@ -241,6 +230,13 @@ public class QueryOutputSpreadsheetBizLogic
 			spreadSheetDatamap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 					queryResultDataMap);
 		}
+		else
+		{
+			spreadSheetDatamap = createSpreadsheetData(treeNo, parentNode, queryDetailsObj,
+				parentData, recordsPerPage, this.selectedColumnMetaData,queryResultObjectDataBeanMap,
+				hasConditionOnIdentifiedField, constraints,outputTermsColumns);
+				spreadSheetDatamap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
+						queryResultObjectDataBeanMap);}
 		this.selectedColumnMetaData.setCurrentSelectedObject(parentNode);
 		spreadSheetDatamap.put(AQConstants.SELECTED_COLUMN_META_DATA, this.selectedColumnMetaData);
 		return spreadSheetDatamap;
@@ -397,18 +393,18 @@ public class QueryOutputSpreadsheetBizLogic
 			queryResultObjectDataBean
 					.setFileTypeAtrributeIndexMetadataMap(fileTypeAttrMap);
 		}
-		if (!selectedColumnMetaData.isDefinedView())
-		{
-			selectSql = selectSql.substring(0, selectSql.lastIndexOf(','));
-			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, columnsList);
-			selectedColumnMetaData.setSelectedAttributeMetaDataList(attributes);
-		}
-		else
+		if (selectedColumnMetaData.isDefinedView())
 		{
 			queryResultObjectDataBeanMap.clear();
 			selectSql = getSQLForSelectedColumns(spreadSheetDataMap, queryResultObjectDataBeanMap,
 					queryDetailsObj, outputTermsColumns, parentData);
 			columnsList = (List<String>) spreadSheetDataMap.get(AQConstants.SPREADSHEET_COLUMN_LIST);
+		}
+		else
+		{
+			selectSql = selectSql.substring(0, selectSql.lastIndexOf(','));
+			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, columnsList);
+			selectedColumnMetaData.setSelectedAttributeMetaDataList(attributes);
 		}
 		if (parentData != null && parentData.equals(AQConstants.HASHED_NODE_ID) && false)
 		{
@@ -521,7 +517,6 @@ public class QueryOutputSpreadsheetBizLogic
 		{
 			String columnName = (String) iterator1.next();
 			IOutputTerm outputTerm = outputTermsColumns.get(columnName);
-			String displayColumnName = outputTerm.getName();
 			ITerm term = outputTerm.getTerm();
 			TimeInterval<?> timeInterval = outputTerm.getTimeInterval();
 			Set<IExpression> expressionsInTerm = QueryUtility.getExpressionsInTerm(term);
@@ -529,7 +524,7 @@ public class QueryOutputSpreadsheetBizLogic
 			if(node == null || (expressionsInTerm.size() == 1 && isContainingExpressionInTQ(node,
 					expressionsInTerm)))
 			{
-				modifyTemporalColumnBean(temporalColumnUIBean,displayColumnName,columnName);
+				modifyTemporalColumnBean(temporalColumnUIBean,outputTerm.getName(),columnName);
 				setTQColumnMetadata(temporalColumnUIBean.getColumnIndex(),
 						tQColumnMetataDataList, term,timeInterval);
 			}
@@ -540,7 +535,7 @@ public class QueryOutputSpreadsheetBizLogic
 						node,expressionsInTerm);
 				if(isValidCardinality)
 				{
-					modifyTemporalColumnBean(temporalColumnUIBean,displayColumnName,columnName);
+					modifyTemporalColumnBean(temporalColumnUIBean,outputTerm.getName(),columnName);
 					setTQColumnMetadata(temporalColumnUIBean.getColumnIndex(),
 							tQColumnMetataDataList, term,timeInterval);
 				}
@@ -607,7 +602,7 @@ public class QueryOutputSpreadsheetBizLogic
 				getAttributeColumnNameMap());
 		String clickedExpIdColumn = getIdColumnName(clickedExpression,queryDetailsObj.
 				getAttributeColumnNameMap());
-		String sqlTofindOutCardinality ="";
+		String sqlTofindOutCardinality;
 		if(parentData == null)
 		{
 			sqlTofindOutCardinality = "select count(*) from (select "+clickedExpIdColumn + ", " +
@@ -797,7 +792,6 @@ public class QueryOutputSpreadsheetBizLogic
 		}
 		this.selectedColumnMetaData.setSelColNVBeanList(selectedColumnNameValue);
 		int lastindexOfComma = sqlColumnNames.lastIndexOf(",");
-		String sql = sqlColumnNames.toString();
 		List tqColumnList = new ArrayList();
 		if (!outputTermsColumns.isEmpty())
 		{
@@ -813,7 +807,7 @@ public class QueryOutputSpreadsheetBizLogic
 			String columnsInSql = "";
 			if (lastindexOfComma != -1)
 			{
-				columnsInSql = sql.substring(0, lastindexOfComma);
+				columnsInSql = sqlColumnNames.toString().substring(0, lastindexOfComma);
 			}
 			if (!"".equals(selectSql))
 			{
@@ -941,7 +935,7 @@ public class QueryOutputSpreadsheetBizLogic
 				String mainEntityId = row.get(mainEntityIdIndex);
 				entityIdIndexMainEntityIdMap.put(fileTypeIndex, mainEntityId);
 			}
-			int fileTypeIndex = 0;
+			int fileTypeIndex;
 			for (Iterator<Integer> fileTypeIterator = fileTypeIndxMap.keySet()
 					.iterator(); fileTypeIterator.hasNext();)
 			{
@@ -1018,11 +1012,7 @@ public class QueryOutputSpreadsheetBizLogic
 	{
 		int index = columnNameIterator.next();
 		String displayName = fileTypeIndexColumnNameMap.get(index);
-		if (!spreadsheetColumnsList.contains(displayName))
-		{
-			spreadsheetColumnsList.add(index, displayName);
-		}
-		else
+		if (spreadsheetColumnsList.contains(displayName))
 		{
 			int indexOfColumn = spreadsheetColumnsList.lastIndexOf(displayName);
 			if (index == spreadsheetColumnsList.size())
@@ -1037,6 +1027,10 @@ public class QueryOutputSpreadsheetBizLogic
 					spreadsheetColumnsList.add(index, displayName);
 				}
 			}
+		}
+		else
+		{
+			spreadsheetColumnsList.add(index, displayName);
 		}
 	}
 
@@ -1085,8 +1079,15 @@ public class QueryOutputSpreadsheetBizLogic
 				identifiedDataColumnIds.add(columnIndex);
 				queryResultObjectDataBean.setIdentifiedDataColumnIds(identifiedDataColumnIds);
 			}
-			if (!attribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase(
+			if (attribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase(
 					AQConstants.FILE_TYPE))
+			{
+				queryResultObjectDataBean.setClobeType(true);
+				int fileTypeIndex = columnIndex + addedFileTypeAttributes;
+				fileTypeAttrMap.put(fileTypeIndex, attributeMetaData);
+				addedFileTypeAttributes++;
+			}
+			else
 			{
 				objectColumnIds.add(columnIndex);
 				selectSql = selectSql + sqlColumnName + ",";
@@ -1095,20 +1096,20 @@ public class QueryOutputSpreadsheetBizLogic
 				columnsList.add(attributeMetaData.getDisplayName());
 				columnIndex++;
 			}
-			else
-			{
-				queryResultObjectDataBean.setClobeType(true);
-				int fileTypeIndex = columnIndex + addedFileTypeAttributes;
-				fileTypeAttrMap.put(fileTypeIndex, attributeMetaData);
-				addedFileTypeAttributes++;
-			}
 		}
 		if (queryResultObjectDataBean.isClobeType())
 		{
 			queryResultObjectDataBean
 					.setFileTypeAtrributeIndexMetadataMap(fileTypeAttrMap);
 		}
-		if (!selectedColumnMetaData.isDefinedView())
+		if (selectedColumnMetaData.isDefinedView())
+		{
+			queryResultObjectDataBeanMap = new HashMap<Long, QueryResultObjectDataBean>();
+			selectSql = getSQLForSelectedColumns(spreadSheetDataMap, queryResultObjectDataBeanMap,
+					queryDetailsObj, outputTermsColumns, parentData);
+			columnsList = (List<String>) spreadSheetDataMap.get(AQConstants.SPREADSHEET_COLUMN_LIST);
+		}
+		else
 		{
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, columnsList);
 			selectSql = selectSql.substring(0, selectSql.lastIndexOf(','));
@@ -1124,13 +1125,6 @@ public class QueryOutputSpreadsheetBizLogic
 			}
 			selectedColumnMetaData.setSelectedAttributeMetaDataList(attributes);
 		}
-		else
-		{
-			queryResultObjectDataBeanMap = new HashMap<Long, QueryResultObjectDataBean>();
-			selectSql = getSQLForSelectedColumns(spreadSheetDataMap, queryResultObjectDataBeanMap,
-					queryDetailsObj, outputTermsColumns, parentData);
-			columnsList = (List<String>) spreadSheetDataMap.get(AQConstants.SPREADSHEET_COLUMN_LIST);
-		}
 		if (!selectedColumnMetaData.isDefinedView()
 				&& queryResultObjectDataBean.getMainEntityIdentifierColumnId() == -1)
 		{
@@ -1138,16 +1132,16 @@ public class QueryOutputSpreadsheetBizLogic
 					queryResultObjectDataBean, columnIndex);
 		}
 		selectSql = selectSql + " from " + tableName;
-		if (parentData != null)
+		if (parentData == null)
+		{
+			selectSql = selectSql + " where " + idColumnOfCurrentNode + " "
+			+ RelationalOperator.getSQL(RelationalOperator.IsNotNull);
+		}
+		else
 		{
 			selectSql = selectSql + " where (" + parentIdColumnName + " = '" + parentData + "' "
 					+ LogicalOperator.And + " " + idColumnOfCurrentNode + " "
 					+ RelationalOperator.getSQL(RelationalOperator.IsNotNull) + ")";
-		}
-		else
-		{
-			selectSql = selectSql + " where " + idColumnOfCurrentNode + " "
-					+ RelationalOperator.getSQL(RelationalOperator.IsNotNull);
 		}
 		if (!identifiedDataColumnIds.isEmpty())
 		{
@@ -1175,14 +1169,14 @@ public class QueryOutputSpreadsheetBizLogic
 		selectSql = QueryCSMUtil.updateEntityIdIndexMap(queryResultObjectDataBean, columnIndex,
 				selectSql, null, entityIdIndexMap, queryDetailsObj);
 		entityIdIndexMap = queryResultObjectDataBean.getEntityIdIndexMap();
-		if (entityIdIndexMap.get(queryResultObjectDataBean.getMainEntity()) != null)
+		if (entityIdIndexMap.get(queryResultObjectDataBean.getMainEntity()) == null)
 		{
-			queryResultObjectDataBean.setMainEntityIdentifierColumnId(entityIdIndexMap
-					.get(queryResultObjectDataBean.getMainEntity()));
+			queryResultObjectDataBean.setMainEntityIdentifierColumnId(-1);
 		}
 		else
 		{
-			queryResultObjectDataBean.setMainEntityIdentifierColumnId(-1);
+			queryResultObjectDataBean.setMainEntityIdentifierColumnId(entityIdIndexMap
+					.get(queryResultObjectDataBean.getMainEntity()));
 		}
 		return selectSql;
 	}
@@ -1195,7 +1189,7 @@ public class QueryOutputSpreadsheetBizLogic
 	 */
 	public boolean isLeafNode(Map<String, OutputTreeDataNode> idNodesMap, String actualParentNodeId)
 	{
-		boolean isLeafNode = false;
+		boolean isLeafNode;
 		String[] nodeIds;
 		nodeIds = actualParentNodeId.split(AQConstants.UNDERSCORE);
 		String treeNo = nodeIds[0];
@@ -1205,6 +1199,10 @@ public class QueryOutputSpreadsheetBizLogic
 		if (parentNode.getChildren().isEmpty())
 		{
 			isLeafNode = true;
+		}
+		else
+		{
+			isLeafNode = false;
 		}
 		return isLeafNode;
 	}
