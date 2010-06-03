@@ -153,7 +153,7 @@ public class ShowQueryDashboardAction extends SecureAction
 	private void createMessage(HttpServletRequest request, Collection<IParameterizedQuery> queries)
 			throws BizLogicException
 	{
-		String message = queries.size() + "";
+		String message = Integer.toString(queries.size());
 		ActionMessages actionMessages = new ActionMessages();
 		String action = (String) request.getParameter("actions");
 		String saveQueryMessage;

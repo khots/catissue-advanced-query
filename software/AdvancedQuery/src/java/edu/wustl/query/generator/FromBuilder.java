@@ -84,7 +84,7 @@ public class FromBuilder
      * @param expr expression
      * @return The Alias Name for the given Entity.
      */
-    String aliasOf(IExpression expr)
+    private String aliasOf(IExpression expr)
     {
         String entName = entity(expr).getName();
         String className = entName.substring
@@ -194,9 +194,7 @@ public class FromBuilder
     private String joinCond(IExpression leftExpr, IExpression rightExpr)
     {
         AssociationInterface assoc = getAssociation(leftExpr, rightExpr);
-        EntityInterface src = assoc.getEntity();
-        EntityInterface tgt = assoc.getTargetEntity();
-
+        String returnValue;
         ConstraintPropertiesInterface assocProps = assoc.getConstraintProperties();
         String leftAttr= assocProps.getSrcEntityConstraintKeyProperties() == null ?
         		null :assocProps.getSrcEntityConstraintKeyProperties().
@@ -207,13 +205,17 @@ public class FromBuilder
         if (leftAttr != null && rightAttr != null)
         {
             // tricky choice of PK.
-            return equate(middleTabAlias(assoc, rightExpr), assocProps.
+        	returnValue = equate(middleTabAlias(assoc, rightExpr), assocProps.
             getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().getName(),
             aliasOf(rightExpr),primaryKey(entity(rightExpr)));
         }
-        leftAttr = getAppropriateAttribute(src, leftAttr);
-        rightAttr = getAppropriateAttribute(tgt, rightAttr);
-        return equate(aliasOf(leftExpr), leftAttr, aliasOf(rightExpr), rightAttr);
+        else
+        {
+	        leftAttr = getAppropriateAttribute(assoc.getEntity(), leftAttr);
+	        rightAttr = getAppropriateAttribute(assoc.getTargetEntity(), rightAttr);
+	        returnValue = equate(aliasOf(leftExpr), leftAttr, aliasOf(rightExpr), rightAttr);
+        }
+        return returnValue;
     }
 
     /**
@@ -296,17 +298,25 @@ public class FromBuilder
     {
         SrcStringProvider srcStringProvider = getStringProvider(expr);
         String src = srcStringProvider.srcString(expr) + " " + aliasOf(expr);
+        String returnValue;
         if (expr == root)
         {
-            return src;
+        	returnValue = src;
         }
-        // many-many ??
-        String res = processForManyToMany(expr);
-        if ("".equals(res))
+        else
         {
-            return src;
+	        // many-many ??
+	        String res = processForManyToMany(expr);
+	        if ("".equals(res))
+	        {
+	        	returnValue = src;
+	        }
+	        else
+	        {
+	        	returnValue = res + LEFT_JOIN + src;
+	        }
         }
-        return res + LEFT_JOIN + src;
+        return returnValue;
     }
 
     /**
@@ -405,14 +415,19 @@ public class FromBuilder
     	 */
         public String srcString(IExpression expression)
         {
+        	String returnValue;
             EntityInterface entity = entity(expression);
             AttributeInterface actAttr = activityStatus(entity);
             if (actAttr == null)
             {
-                return tableName(entity);
+            	returnValue = tableName(entity);
             }
-            return "(" + SELECT + "*" + FROM + tableName(entity)
-            + WHERE + activeCond(columnName(actAttr)) + ")";
+            else
+            {
+            	returnValue = "(" + SELECT + "*" + FROM + tableName(entity)
+            	+ WHERE + activeCond(columnName(actAttr)) + ")";
+            }
+            return returnValue;
         }
     }
 
@@ -808,10 +823,11 @@ public class FromBuilder
      */
     private static String removeLastOccur(String src, String toRemove)
     {
+    	String returnSrc = src;
         if (src.endsWith(toRemove))
         {
-            src = src.substring(0, src.length() - toRemove.length());
+        	returnSrc = src.substring(0, src.length() - toRemove.length());
         }
-        return src;
+        return returnSrc;
     }
 }

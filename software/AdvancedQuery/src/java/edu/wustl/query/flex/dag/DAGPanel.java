@@ -3775,7 +3775,7 @@ public class DAGPanel
 						int noOfLhsOperands = lhs.numberOfOperands();
 						for (int j = 0; j < noOfLhsOperands; j++)
 						{
-							String expIdFromLhs = "";
+							StringBuffer expIdFromLhs = new StringBuffer();
 							String arithmeticLhsOp = lhs.getOperand(j).toString();
 							int index = arithmeticLhsOp.indexOf(':');
 							String subString = arithmeticLhsOp.substring
@@ -3788,10 +3788,10 @@ public class DAGPanel
 								}
 								if (subString.charAt(l) != ':' && subString.charAt(l) != ' ')
 								{
-									expIdFromLhs=expIdFromLhs+subString.charAt(l);
+									expIdFromLhs.append(subString.charAt(l));
 								}
 							}
-							int expIdIntValue = Integer.parseInt(expIdFromLhs);
+							int expIdIntValue = Integer.parseInt(expIdFromLhs.toString());
 							if (expIdIntValue == expId)
 							{
 								hasCustomFormula = true;
@@ -3807,7 +3807,7 @@ public class DAGPanel
 								int noOfRhsOperands = rhs.numberOfOperands();
 								for (int k = 0; k < noOfRhsOperands; k++)
 								{
-									String expIdFromLhs = "";
+									StringBuffer expIdFromLhs = new StringBuffer();
 
 									String arithmeticRhsOp = rhs.getOperand(k).toString();
 									int index = arithmeticRhsOp.indexOf(':');
@@ -3822,10 +3822,10 @@ public class DAGPanel
 										if (subString.charAt(l) != ':'
 												&& subString.charAt(l) != ' ')
 										{
-											expIdFromLhs = expIdFromLhs + subString.charAt(l);
+											expIdFromLhs.append(subString.charAt(l));
 										}
 									}
-									int expIdIntValue = Integer.parseInt(expIdFromLhs);
+									int expIdIntValue = Integer.parseInt(expIdFromLhs.toString());
 									if (expIdIntValue == expId)
 									{
 										hasCustomFormula = true;
