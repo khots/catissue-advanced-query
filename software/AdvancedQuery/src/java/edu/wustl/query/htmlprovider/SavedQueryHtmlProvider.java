@@ -271,18 +271,18 @@ public class SavedQueryHtmlProvider
 	private boolean getHtmlTimestamp(StringBuffer generateHTML, String componentId,
 			 TermType termType, ITerm term)
 	{
-		boolean isTimeStamp = false;
+		boolean isTimeStamp;
 		if(termType.equals(TermType.Timestamp))
 		{
 			DateLiteral operand = (DateLiteral)term.getOperand(0);
 			String textBoxId = componentId + "_textBox";
 			String calendarId = componentId + "_calendar";
 			generateHTML.append("<td valign=\"top\">");
-			SimpleDateFormat format =
-		        new SimpleDateFormat(AQConstants.DATE_FORMAT);
 			String date = "";
 			if(operand.getDate()!=null)
 			{
+				SimpleDateFormat format =
+			        new SimpleDateFormat(AQConstants.DATE_FORMAT);
 				date = format.format(operand.getDate());
 			}
 			String html ="<input style=\"width:150px; display:block;\" value='"
@@ -298,6 +298,10 @@ public class SavedQueryHtmlProvider
 			generateHTML.append(innerStr);
 			generateHTML.append("</td>");
 			isTimeStamp = true;
+		}
+		else
+		{
+			isTimeStamp = false;
 		}
 		return isTimeStamp;
 	}

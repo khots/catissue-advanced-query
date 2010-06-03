@@ -101,7 +101,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 		JDBCDAO jdbcDao = daofactory.getJDBCDAO();
 
 		jdbcDao.openSession(null);
-		List list = null;
+		List list;
 		if(columnValueBean == null)
 		{
 			list = jdbcDao.executeQuery(sql);
@@ -286,7 +286,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 */
 	public static String getColumnWidthP(List columnNames)
 	{
-		StringBuffer colWidth = new StringBuffer("");
+		StringBuffer colWidth = new StringBuffer();
 
 		int size = (columnNames.size()-1);
 		float temp = 99.5f;
@@ -296,18 +296,18 @@ public class Utility //extends edu.wustl.common.util.Utility
 			{
 				if(col == 0)
 				{
-					colWidth = colWidth.append("3");
+					colWidth.append("3");
 				}
 				else
 				{
-					colWidth = colWidth.append(String.valueOf(temp / (size)));
+					colWidth.append(String.valueOf(temp / (size)));
 				}
 			}
 			else
 			{
-				colWidth = colWidth.append(String.valueOf(temp / (size)));
+				colWidth.append(String.valueOf(temp / (size)));
 			}
-			colWidth = colWidth.append(",");
+			colWidth.append(',');
 		}
 		if(colWidth.lastIndexOf(",")== colWidth.length()-1)
 		{
@@ -468,10 +468,14 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 */
 	private static boolean isWidthInPercent(List columnList)
 	{
-		boolean isWidthInPercent=false;
+		boolean isWidthInPercent;
 		if( columnList.size()<AQConstants.TEN)
 		{
 			isWidthInPercent=true;
+		}
+		else
+		{
+			isWidthInPercent=false;
 		}
 		return isWidthInPercent;
 	}
@@ -504,8 +508,12 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 */
 	private static int setHeightOfGrid(List dataList)
 	{
-		int heightOfGrid = AQConstants.HUNDRED;
-		if(dataList!=null)
+		int heightOfGrid;
+		if(dataList==null)
+		{
+			heightOfGrid = AQConstants.HUNDRED;
+		}
+		else
 		{
 			int noOfRows = dataList.size();
 			heightOfGrid = (noOfRows + AQConstants.TWO) * AQConstants.TWENTY;
@@ -954,11 +962,15 @@ public class Utility //extends edu.wustl.common.util.Utility
 		ResourceBundle appResources = ResourceBundle.getBundle("ApplicationResources");
 		String isFeatureUsed = appResources.getString(feature);
 
-		boolean hasUsage = false;
+		boolean hasUsage;
 
 		if (isFeatureUsed == null || "".equals(isFeatureUsed) || !"false".equals(isFeatureUsed))
 		{
 			hasUsage = true;
+		}
+		else
+		{
+			hasUsage = false;
 		}
 		return hasUsage;
 	}

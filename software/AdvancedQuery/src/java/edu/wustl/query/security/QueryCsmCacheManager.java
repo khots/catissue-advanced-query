@@ -128,7 +128,6 @@ public class QueryCsmCacheManager
 			Map<String, QueryResultObjectDataBean> queryResultObjectDataMap, List aList,
 			QueryCsmCache cache) throws SMException
 	{
-		Boolean isAuthorisedUser = true;
 		Boolean hasPrivilegeOnID = true;
 		if (queryResultObjectDataMap != null)
 		{
@@ -154,7 +153,7 @@ public class QueryCsmCacheManager
 					hasPrivilegeOnID = checkHasPrivilegeOnId(sessionDataBean,
 							cache, cpIdsList);
 				}
-				removeUnauthorizedData(aList, isAuthorisedUser,
+				removeUnauthorizedData(aList, true,
 						hasPrivilegeOnID,queryResultObjectDataBean);
 			}
 		}
@@ -901,7 +900,7 @@ public class QueryCsmCacheManager
 		Boolean hasPrivilegeOnIdentifiedData;
 		Boolean isAuthorisedUser;
 		String entityName;
-		Long cpId = cpIdList.get(0) != null ? Long.parseLong(cpIdList.get(0)) : -1;
+		Long cpId = cpIdList.get(0) == null ? -1 : Long.parseLong(cpIdList.get(0));
 		entityName = Variables.mainProtocolObject;
 
 		if (readPrivilegeList == null)
@@ -1178,9 +1177,13 @@ public class QueryCsmCacheManager
 	 */
 	private boolean checkPermissionOnGlobalParticipant(SessionDataBean sessionDataBean)
 	{
-		boolean isAuthorisedUser = false;
+		boolean isAuthorisedUser;
 		validator = getValidatorInstance();
-		if (validator != null)
+		if (validator == null)
+		{
+			isAuthorisedUser = false;
+		}
+		else
 		{
 			isAuthorisedUser = validator.hasPrivilegeToViewGlobalParticipant(sessionDataBean);
 		}
@@ -1327,7 +1330,7 @@ public class QueryCsmCacheManager
 			SessionDataBean sessionDataBean,QueryCsmCache cache) throws SMException
 	{
 		Boolean isAuthorisedUser = true;
-		Boolean hasPrivilegeOnIdentifiedData = true;
+		Boolean hasPrivilegeOnIdentifiedData;
 		Map<String,Boolean> accessprivilegeMap = new HashMap<String, Boolean>();
 		List<List<String>> cpIdsList = getCpIdsListForGivenEntityId(objName, identifier.intValue());
 

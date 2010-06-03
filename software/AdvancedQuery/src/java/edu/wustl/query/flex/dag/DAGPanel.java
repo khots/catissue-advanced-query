@@ -518,7 +518,6 @@ public class DAGPanel
 		}
 		int mainProtocolExpId = 0;
 		CreateQueryObjectBizLogic queryBizLogic = new CreateQueryObjectBizLogic();
-		DAGNode node = null;
 		try
 		{
 			if(operatorValueMap == null || ((operatorValueMap != null)
@@ -531,7 +530,7 @@ public class DAGPanel
 			{
 				getMnProtocolExpForEdit(query, entityId);
 			}
-			node = createQueryObjectLogic(strToCreateObject, mode,
+			createQueryObjectLogic(strToCreateObject, mode,
 					mainProtocol, queryBizLogic);
 			IConstraints constraints = query.getConstraints();
 			mainProtocolExpId = getMainExpId(entityId, mainProtocolExpId,

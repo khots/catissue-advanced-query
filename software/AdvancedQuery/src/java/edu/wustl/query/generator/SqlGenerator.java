@@ -610,7 +610,7 @@ public class SqlGenerator implements ISqlGenerator
      * @return The SQL Representation of the Condition.
      * @throws SqlException When there is error in the passed IQuery object.
      */
-    String getSQL(ICondition condition, IExpression expression) throws SqlException
+    public String getSQL(ICondition condition, IExpression expression) throws SqlException
     {
         String sql;
         AttributeInterface attribute = condition.getAttribute();

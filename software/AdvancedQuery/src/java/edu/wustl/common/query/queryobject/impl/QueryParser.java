@@ -34,11 +34,10 @@ public class QueryParser
 	public List<EntityInterface> parseQuery(IQuery query, List<QueryOutputTreeAttributeMetadata> list)
 	{
 		IConstraints constraints = query.getConstraints();
-		JoinGraph joinGraph = (JoinGraph)constraints.getJoinGraph();
 		List<EntityInterface> oneToManyEntities = new ArrayList<EntityInterface>();
 		for(IExpression expression: constraints)
 		{
-			populateOneToManyEntities(list, joinGraph, oneToManyEntities,
+			populateOneToManyEntities(list, (JoinGraph)constraints.getJoinGraph(), oneToManyEntities,
 					expression);
 		}
 		return oneToManyEntities;
@@ -104,7 +103,7 @@ public class QueryParser
 	{
 		boolean isOneToMany = false;
 		Integer maxCardinalityValue = -1;
-		AssociationInterface associationInterface = null;
+		AssociationInterface associationInterface;
 		for(IExpression child : childrenList)
 		{
 			IIntraModelAssociation association =
@@ -145,7 +144,7 @@ public class QueryParser
 	private Integer getMaxCardinalityValue(
 			AssociationInterface associationInterface)
 	{
-		Integer maxCardinalityValue=-1;
+		Integer maxCardinalityValue;
 		Cardinality maxCardinality = associationInterface.getSourceRole().getMaximumCardinality();
 		if(maxCardinality == null)
 		{
