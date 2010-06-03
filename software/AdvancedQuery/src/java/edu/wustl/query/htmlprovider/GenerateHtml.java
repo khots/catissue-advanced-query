@@ -94,20 +94,18 @@ public class GenerateHtml
 	{
 		StringBuffer html= new StringBuffer(AQConstants.MAX_SIZE);
 		String componentName = componentId + "_booleanAttribute";
-		String radioButtonTrueId = componentId + AQConstants.UNDERSCORE + AQConstants.TRUE;// "_true";
-		String radioButtonFalseId = componentId + AQConstants.UNDERSCORE + AQConstants.FALSE;// "_false"
 		String buttonId;
 		String name;
 		String value;
 		if(isRadioButtonTrue)
 		{
-			buttonId = radioButtonTrueId;
+			buttonId = componentId + AQConstants.UNDERSCORE + AQConstants.TRUE;
 			name = "True";
 			value=AQConstants.TRUE;
 		}
 		else
 		{
-			buttonId = radioButtonFalseId;
+			buttonId = componentId + AQConstants.UNDERSCORE + AQConstants.FALSE;
 			name="False";
 			value=AQConstants.FALSE;
 		}
@@ -380,7 +378,7 @@ public class GenerateHtml
 	private static String generateHTMLForCalendar(String  componentId, boolean isFirst,
 			boolean isBetween, String cssClass)
 	{
-		StringBuffer innerStr = new StringBuffer();
+		StringBuffer innerStr = new StringBuffer(90);
 		if (isFirst)
 		{
 			String textBoxId = componentId + "_textBox";
@@ -388,7 +386,7 @@ public class GenerateHtml
 			String imgStr = "\n<img id=\"calendarImg\" " +
 					"src=\"images/advQuery/calendar.gif\" width=\"24\" height=\"22\"" +
 					" border=\"0\" onclick='scwShow("+ textBoxId + ",event);'>";
-			innerStr = innerStr.append("\n<td width='3%' class='"+ cssClass
+			innerStr.append("\n<td width='3%' class='"+ cssClass
 					    + "' valign='top' id=\"" + calendarId + "\">"
 						+ "\n" + imgStr);
 		}
@@ -409,12 +407,12 @@ public class GenerateHtml
 			{
 				style = "display:none";
 			}
-			innerStr = innerStr.append("\n<td width='3%' class='"+ cssClass
+			innerStr.append("\n<td width='3%' class='"+ cssClass
 						+ "' valign='top' id=\"" + calendarId1 + "\" style=\"" + style
 						+ "\">"
 						+ "\n" + imgStr) ;
 		}
-		innerStr = innerStr.append(END_TD_TAG);
+		innerStr.append(END_TD_TAG);
 		return innerStr.toString();
 	}
 
@@ -463,10 +461,14 @@ public class GenerateHtml
 				"height=\"2%\" valign=\"top\" align=\"right\" >";
 		String buttonId = "TopAddLimitButton";
 		html.append(temp);
-		String buttonCaption = "Add Limit";
+		String buttonCaption;
 		if (isEditLimits)
 		{
 			buttonCaption = "Edit Limit";
+		}
+		else
+		{
+			buttonCaption = "Add Limit";
 		}
 		html.append("\n<input id=\"" + buttonId + "\" type=\"button\" name=\"" + buttonName
 				+ "\" onClick=\"produceQuery('" + buttonId
@@ -654,10 +656,14 @@ public class GenerateHtml
 			List<String>operatorList,boolean isSecondTime)
 	{
 		StringBuffer generateHTML = new StringBuffer();
-		String comboboxId = "_combobox";
+		String comboboxId;
 		if(isSecondTime)
 		{
 			comboboxId = "_combobox1";
+		}
+		else
+		{
+			comboboxId = "_combobox";
 		}
 		String comboboxName = componentId+comboboxId;
 		if (operatorList != null && !operatorList.isEmpty())
