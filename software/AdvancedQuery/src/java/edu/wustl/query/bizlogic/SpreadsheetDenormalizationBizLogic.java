@@ -336,11 +336,10 @@ public class SpreadsheetDenormalizationBizLogic
 		String value = null;
 		for(QueryOutputTreeAttributeMetadata outputTreeAttributeMetadata : selectedAttributeMetaDataList)
 		{
-			String columnName = outputTreeAttributeMetadata.getColumnName();
 			BaseAbstractAttributeInterface presentAttribute = outputTreeAttributeMetadata.getAttribute();
 			if(presentAttribute.equals(attribute))
 			{
-				value = columnNameMap.get(columnName);
+				value = columnNameMap.get(outputTreeAttributeMetadata.getColumnName());
 				break;
 			}
 		}
