@@ -244,7 +244,7 @@ public class DAGPanel
 			{
 				CreateQueryObjectBizLogic queryBizLogic = new CreateQueryObjectBizLogic();
 				node = createQueryObjectLogic(queryString, mode,
-						node, entity, queryBizLogic);
+						 entity, queryBizLogic);
 			}
 			if(queryDetailsObj != null)
 			{
@@ -531,7 +531,7 @@ public class DAGPanel
 			{
 				getMnProtocolExpForEdit(query, entityId);
 			}
-			node = createQueryObjectLogic(strToCreateObject, mode, node,
+			node = createQueryObjectLogic(strToCreateObject, mode,
 					mainProtocol, queryBizLogic);
 			IConstraints constraints = query.getConstraints();
 			mainProtocolExpId = getMainExpId(entityId, mainProtocolExpId,
@@ -1072,9 +1072,10 @@ public class DAGPanel
 	 * @throws DynamicExtensionsApplicationException DynamicExtensionsApplicationException
 	 */
 	private DAGNode createQueryObjectLogic(String strToCreateQueryObject, String mode,
-			DAGNode node, EntityInterface entity, CreateQueryObjectBizLogic queryBizLogic)
+			 EntityInterface entity, CreateQueryObjectBizLogic queryBizLogic)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		DAGNode node = null;
 		Map ruleDetailsMap;
 		if (!strToCreateQueryObject.equalsIgnoreCase(""))
 		{

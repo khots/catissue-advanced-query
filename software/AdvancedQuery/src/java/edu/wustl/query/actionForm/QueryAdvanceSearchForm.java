@@ -98,7 +98,7 @@ public class QueryAdvanceSearchForm extends ActionForm
     /**
      * Item node id.
      */
-    String itemNodeId = "";
+    private String itemNodeId = "";
 
     //Variables necessary for Configuration of Advance Search Results.
 

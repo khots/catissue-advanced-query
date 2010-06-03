@@ -4,11 +4,11 @@ import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 
 public class DashBoardBean
 {
-	IParameterizedQuery query;
-	String executedOn;
-	String rootEntityName;
-	String countOfRootRecords;
-	String ownerName;
+	private IParameterizedQuery query;
+	private String executedOn;
+	private String rootEntityName;
+	private String countOfRootRecords;
+	private String ownerName;
 
 	/**
 	 * @return the ownerName

@@ -1142,7 +1142,7 @@ public class SqlGenerator implements ISqlGenerator
      * This method will be used by Query Mock to set the join Graph externally.
      * @param joinGraph the reference to joinGraph.
      */
-    void setJoinGraph(JoinGraph joinGraph)
+    public void setJoinGraph(JoinGraph joinGraph)
     {
         this.joinGraph = joinGraph;
     }

@@ -63,7 +63,7 @@ public class QuerySqlGenerator extends SqlGenerator
 			queryType = QueryType.fromTermType(rhs.getTermType());
 		}
 
-		NormalizedFormula normalizedForm()
+		private NormalizedFormula normalizedForm()
 		{
 			NormalizedFormula res = new NormalizedFormula();
 			res.relOper = relOper;

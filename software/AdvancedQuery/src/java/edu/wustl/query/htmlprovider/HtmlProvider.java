@@ -142,11 +142,11 @@ public class HtmlProvider
 		String attributeName = attribute.getName();
 		if(this.expressionId == -1)
 		{
-			componentId = componentId.append(attributeName).append(attribute.getId().toString());
+			componentId.append(attributeName).append(attribute.getId().toString());
 		}
 		else
 		{
-			componentId = componentId.append(attributeName).append(this.expressionId);
+			componentId.append(attributeName).append(this.expressionId);
 		}
 		return componentId.toString();
 	}
@@ -192,7 +192,6 @@ public class HtmlProvider
 				.append("<table valign='top' border=\"0\" width=\"100%\" " +
 						"height=\"100%\" cellspacing=\"0\" cellpadding=\"0\" " +
 						"class='rowBGWhiteColor'>");
-		boolean isBGColor = false;
 		GenerateHtml.getTags(generatedHTML);
 		if (!attributeCollection.isEmpty())
 		{
@@ -215,7 +214,7 @@ public class HtmlProvider
 				}
 				String componentId = generateComponentName(attribute);
 				attributesList = attributesList + ";" + componentId;
-				isBGColor = GenerateHtml.getAlternateCss(generatedHTML, isBGColor, componentId);
+				GenerateHtml.getAlternateCss(generatedHTML, false, componentId);
 				generatedHTML.append(attrLabel).append(' ');
 				GenerateHtml.getDateFormat(generatedHTML, isBold, attribute,attributeDetails.isParameterizedCondition());
 				generatedHTML.append(":&nbsp;&nbsp;&nbsp;&nbsp;</td>\n");
@@ -388,10 +387,9 @@ public class HtmlProvider
 		StringBuffer html = new StringBuffer(AQConstants.MAX_SIZE);
 		//String attributeName = attribute.getName();
 		//String componentId = generateComponentName(attribute);
-		String format ="\n<td width='70%' valign='centre' colspan='4' >";
 		if (permissibleValues != null && !permissibleValues.isEmpty())
 		{
-            html.append(format);
+            html.append("\n<td width='70%' valign='centre' colspan='4' >");
 
             // Bug #3700. Non restricting the list width & increasing the
             // height
@@ -649,8 +647,6 @@ public class HtmlProvider
 			Collection<AttributeInterface> collection, boolean isEditLimits)
 	{
 		StringBuffer generatedPreHTML = new StringBuffer();
-		String nameOfTheEntity = entity.getName();
-		Collection<AttributeInterface> attributeCollection = entity.getEntityAttributesForQuery();
 		if (forPage.equalsIgnoreCase(AQConstants.SAVE_QUERY_PAGE)
 				|| forPage.equalsIgnoreCase(AQConstants.EXECUTE_QUERY_PAGE))
 		{
@@ -663,7 +659,7 @@ public class HtmlProvider
 			GenerateHtml.getTags(generatedHTML);
 			generatedHTML.append("</table>");
 			generatedPreHTML = GenerateHtml.generatePreHtml(
-				getAttributesString(attributeCollection), nameOfTheEntity,isEditLimits);
+				getAttributesString(entity.getEntityAttributesForQuery()), entity.getName(),isEditLimits);
 		}
 		return generatedPreHTML;
 	}

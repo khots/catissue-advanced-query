@@ -577,7 +577,7 @@ public class QueryOutputTreeBizLogic
      * String for one node is separated by '~' for its id, display name, object name , parentId, parent Object name.
      * Such string elements for child nodes are separated by "|".
      **/
-    String buildOutputTreeString(int index, List dataList, OutputTreeDataNode currentNode,
+    private String buildOutputTreeString(int index, List dataList, OutputTreeDataNode currentNode,
             String parentNodeId, OutputTreeDataNode parentNode, QueryDetails queryDetailsObj)
     {
         Iterator dataListIterator = dataList.iterator();

@@ -146,15 +146,16 @@ public class CreateQueryObjectBizLogic
 			List<List<String>> conditionValues, String[] params,
 			AttributeInterface attr, List<String> attributeValues)
 	{
+		List<String> values = attributeValues;
 		if (AQConstants.BETWEEN
 			.equals(params[AQConstants.INDEX_PARAM_ZERO]))
 		{
-			attributeValues = Utility.getAttributeValuesInProperOrder
+			values = Utility.getAttributeValuesInProperOrder
 			(attr.getDataType(), attributeValues
 			.get(AQConstants.ARGUMENT_ZERO), attributeValues
 			.get(1));
 		}
-		conditionValues.add(attributeValues);
+		conditionValues.add(values);
 	}
 
 	/**
@@ -799,7 +800,6 @@ public class CreateQueryObjectBizLogic
 	{
 		if (displayNamesMap != null && displayNamesMap.containsKey(componentName))
 		{
-
 			IParameter<ICondition> parameter = QueryObjectFactory.createParameter(condition,
 					displayNamesMap.get(componentName));
 			pQuery.getParameters().add(parameter);
@@ -883,8 +883,7 @@ public class CreateQueryObjectBizLogic
 	private String generateComponentName(int expressionId, AttributeInterface attribute)
 	{
 		StringBuffer componentId = new StringBuffer();
-		String attributeName = "";
-		attributeName = attribute.getName();
+		String attributeName = attribute.getName();
 		if(expressionId == -1)
 		{
 			componentId = componentId.append(attributeName).append(attribute.getId().toString());

@@ -374,8 +374,7 @@ public class InsertPaths
 					String sql1 = "select INTERMEDIATE_PATH from PATH where FIRST_ENTITY_ID=?" +
 							" and LAST_ENTITY_ID=?";
 					rs1 = dao.getResultSet(sql1, columnValueBean, null);
-					boolean found = false;
-					found = isFound(intraModelId, rs1, found);
+					boolean found = isFound(intraModelId, rs1, false);
 					dao.closeStatement(rs1);
 					if (!found)
 					{
@@ -481,7 +480,7 @@ public class InsertPaths
 		for (Long id : idList)
 		{
 			data.add(id);
-			buffer.append(',').append('?');
+			buffer.append(",?");
 		}
 		buffer.append(')');
 		if(buffer.charAt(1) == ',')
