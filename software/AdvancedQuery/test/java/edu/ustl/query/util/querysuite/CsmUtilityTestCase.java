@@ -26,17 +26,17 @@ public class CsmUtilityTestCase extends TestCase
 		CsmUtility.getUserProtectionGroup(csmUserId);
 	}
 
-	public void testGetParameterizedQueryCollection()
-	{
-		try
-		{
-			CsmUtility.getParameterizedQueryCollection();
-		}
-		catch (DAOException e)
-		{
-			e.printStackTrace();
-		}
-	}
+//	public void testGetParameterizedQueryCollection()
+//	{
+//		try
+//		{
+//			CsmUtility.getParameterizedQueryCollection();
+//		}
+//		catch (DAOException e)
+//		{
+//			e.printStackTrace();
+//		}
+//	}
 
 	public void testGetSharedQueryIdList()
 	{
