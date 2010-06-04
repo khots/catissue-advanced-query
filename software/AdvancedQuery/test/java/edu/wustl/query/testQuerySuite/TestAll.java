@@ -7,6 +7,7 @@ package edu.wustl.query.testQuerySuite;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import edu.ustl.query.util.querysuite.CsmUtilityTestCase;
 import edu.ustl.query.util.querysuite.QueryCSMUtilTestCase;
 import edu.ustl.query.util.querysuite.QueryDetailsTestCase;
 import edu.ustl.query.util.querysuite.QueryModuleSqlUtilTestCase;
@@ -98,7 +99,7 @@ public class TestAll
 		suite.addTestSuite(ListComparatorTestCase.class);
 		suite.addTestSuite(QueryExportDataHandlerTestCase.class);
 		suite.addTestSuite(SavedQueryAuthorizationTestCase.class);
-		//suite.addTestSuite(CsmUtilityTestCase.class);
+		suite.addTestSuite(CsmUtilityTestCase.class);
 		return suite;
 	}
 }
