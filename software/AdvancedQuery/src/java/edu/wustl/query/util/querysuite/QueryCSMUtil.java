@@ -28,6 +28,7 @@ import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.query.impl.CommonPathFinder;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
+import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
@@ -86,43 +87,52 @@ public class QueryCSMUtil
 	private static IQuery getQueryClone(QueryDetails queryDetailsObj,HttpSession session)
 	{
 		IQuery queryClone=null;
-		boolean isMainObjAdded = false;
-		EntityInterface firstEntity = null;
-		IPathFinder pathFinder = new CommonPathFinder();
-		DAGPanel dagPanel = new DAGPanel(pathFinder);
-		//iterate through the uniqueIdNodesMap and check if main entities of all the nodes are present
-		for (Object element : queryDetailsObj.getUniqueIdNodesMap().entrySet())
-		{
-			Map.Entry<String, OutputTreeDataNode> idmapValue =
-				(Map.Entry<String, OutputTreeDataNode>) element;
-			OutputTreeDataNode node = idmapValue.getValue(); // get the node
-			//get the entity
-			EntityInterface mapEntity = node.getOutputEntity().getDynamicExtensionsEntity();
-			// get the main entities list for the entity
-			List<EntityInterface> finalMnEntityLst = queryDetailsObj.getMainEntityMap()
-					.get(mapEntity);
-			List<EntityInterface> mainEntityList = new ArrayList<EntityInterface>();
-			FlexInterface flexInterface = new FlexInterface();
-			flexInterface.initFlexInterface();
-			mainEntityList = setMainEntityList(finalMnEntityLst, mainEntityList);
-			if (mainEntityList == null)//mainEntityList is null if the entity itself is main entity;
+		try
 			{
-				if(!isMainObjAdded)
+			boolean isMainObjAdded = false;
+			EntityInterface firstEntity = null;
+			IPathFinder pathFinder = new CommonPathFinder();
+			DAGPanel dagPanel = new DAGPanel(pathFinder);
+			//iterate through the uniqueIdNodesMap and check if main entities of all the nodes are present
+			for (Object element : queryDetailsObj.getUniqueIdNodesMap().entrySet())
+			{
+				Map.Entry<String, OutputTreeDataNode> idmapValue =
+					(Map.Entry<String, OutputTreeDataNode>) element;
+				OutputTreeDataNode node = idmapValue.getValue(); // get the node
+				//get the entity
+				EntityInterface mapEntity = node.getOutputEntity().getDynamicExtensionsEntity();
+				// get the main entities list for the entity
+				List<EntityInterface> finalMnEntityLst = queryDetailsObj.getMainEntityMap()
+						.get(mapEntity);
+				List<EntityInterface> mainEntityList = new ArrayList<EntityInterface>();
+				FlexInterface flexInterface = new FlexInterface();
+				flexInterface.initFlexInterface();
+				mainEntityList = setMainEntityList(finalMnEntityLst, mainEntityList);
+				if (mainEntityList == null)//mainEntityList is null if the entity itself is main entity;
 				{
-					firstEntity=mapEntity;
-					isMainObjAdded=true;
+					if(!isMainObjAdded)
+					{
+						firstEntity=mapEntity;
+						isMainObjAdded=true;
+					}
+				}
+				else
+				{
+					queryClone = addMainEntityToQuery(queryDetailsObj, dagPanel, node,
+							mainEntityList,session);
 				}
 			}
-			else
+			firstEntity = queryDetailsObj.getQuery().getConstraints().getJoinGraph().getRoot().
+			getQueryEntity().getDynamicExtensionsEntity();
+			if(isMainObjAdded)
 			{
-				queryClone = addMainEntityToQuery(queryDetailsObj, dagPanel, node,
-						mainEntityList,session);
+				queryClone = addMainProtocolObjInQuery(queryDetailsObj, firstEntity,
+						dagPanel);
 			}
 		}
-		if(isMainObjAdded)
+		catch(MultipleRootsException e)
 		{
-			queryClone = addMainProtocolObjInQuery(queryDetailsObj, firstEntity,
-					dagPanel);
+			logger.error(e.getMessage(), e);
 		}
 		return queryClone;
 	}
