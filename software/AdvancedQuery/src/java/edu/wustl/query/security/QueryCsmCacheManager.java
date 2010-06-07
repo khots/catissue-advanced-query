@@ -252,6 +252,7 @@ public class QueryCsmCacheManager
 	{
 		long entityId = finalMainEntityId;
 		HibernateDAO hibernateDAO = null;
+		FileInputStream inputStream = null;
 		try
 		{
 			String appName = CommonServiceLocator.getInstance().getAppHome();
@@ -260,8 +261,9 @@ public class QueryCsmCacheManager
 		    		+"mainProtocolObjectQueries.properties");
 		    if(file.exists())
 		    {
+		       inputStream = new FileInputStream(file);
 		       Properties mainProtObjFile = new Properties();
-		       mainProtObjFile.load(new FileInputStream(file));
+		       mainProtObjFile.load(inputStream);
 		       String sqlQuery = mainProtObjFile.getProperty(queryResultObjectDataBean.getEntity().getName());
 		       StringBuffer sql=getSql(sqlQuery);
 		       hibernateDAO = DAOUtil.getHibernateDAO(null);
@@ -305,8 +307,16 @@ public class QueryCsmCacheManager
 			try
 			{
 				DAOUtil.closeHibernateDAO(hibernateDAO);
+				if(inputStream != null)
+				{
+					inputStream.close();
+				}
 			}
 			catch (DAOException e)
+			{
+				logger.error(e.getMessage(), e);
+			}
+			catch (IOException e)
 			{
 				logger.error(e.getMessage(), e);
 			}
