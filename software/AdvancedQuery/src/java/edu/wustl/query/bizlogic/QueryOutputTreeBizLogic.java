@@ -218,7 +218,6 @@ public class QueryOutputTreeBizLogic
         while (dataListIterator.hasNext())
         {
             rowList = (List) dataListIterator.next();
-            QueryTreeNodeData treeNode = null;
             String data = (String) rowList.get(0);
             String currentNodeId = uniqueNodeId + AQConstants.UNDERSCORE + data;
             if (data.contains("#"))
@@ -227,7 +226,7 @@ public class QueryOutputTreeBizLogic
             }
             String nodeIdToSet = parentNodeId + AQConstants.NODE_SEPARATOR + currentNodeId;
             nodeIdToSet = encryptId(nodeIdToSet);
-            treeNode = new QueryTreeNodeData();
+            QueryTreeNodeData treeNode = new QueryTreeNodeData();
             treeNode.setIdentifier(nodeIdToSet);
             EntityInterface dynExtEntity = node.getOutputEntity().getDynamicExtensionsEntity();
             String fullyQualifiedEntityName = dynExtEntity.getName();
@@ -398,11 +397,11 @@ public class QueryOutputTreeBizLogic
             List<List<String>> dataList = getTreeDataList(queryDetailsObj, selectSql, null, false,node);
             //List dataList = QueryModuleUtil.executeQuery(selectSql, sessionData);
            // int size = dataList.size();
-            String  size = Integer.toString(dataList.size());
+            StringBuffer  size = new StringBuffer(Integer.toString(dataList.size()));
 			if(dataList.size()==Variables.maxTreeNdLmtForChildNd)
 			{
 				int count = QueryModuleSqlUtil.getCountForQuery(selectSql,queryDetailsObj);
-				size = size + "/" +count;
+				size.append('/').append(count);
 			}
             if (!dataList.isEmpty())
             {
@@ -440,7 +439,7 @@ public class QueryOutputTreeBizLogic
         String selectSql = AQConstants.SELECT_DISTINCT;
         String idColumnOfCurrentNode = "";
         List<QueryOutputTreeAttributeMetadata> attributes = childNode.getAttributes();
-        String sqlColumnName = "";
+        String sqlColumnName;
         for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
         {
             AttributeInterface attribute = attributeMetaData.getAttribute();
