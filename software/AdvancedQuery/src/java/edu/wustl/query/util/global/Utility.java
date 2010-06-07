@@ -257,12 +257,12 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 * Populates the row.
 	 * @param rowList rowList
 	 * @param row row
-	 * @param j j
+	 * @param index j
 	 */
 	private static void populateInternalRow(List<String> rowList,
-			List<String> row, int j)
+			List<String> row, int index)
 	{
-		String data = row.get(j);
+		String data = row.get(index);
 		if(data != null && (data.contains("&#39") || data.contains("&#34")))
 		{
 			data = DynamicExtensionsUtility.getUnEscapedStringValue(data);
