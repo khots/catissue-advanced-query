@@ -88,9 +88,8 @@ public class QueryCSMUtil
 	{
 		IQuery queryClone=null;
 		try
-			{
+		{
 			boolean isMainObjAdded = false;
-			EntityInterface firstEntity = null;
 			IPathFinder pathFinder = new CommonPathFinder();
 			DAGPanel dagPanel = new DAGPanel(pathFinder);
 			//iterate through the uniqueIdNodesMap and check if main entities of all the nodes are present
@@ -112,7 +111,6 @@ public class QueryCSMUtil
 				{
 					if(!isMainObjAdded)
 					{
-						firstEntity=mapEntity;
 						isMainObjAdded=true;
 					}
 				}
@@ -122,17 +120,35 @@ public class QueryCSMUtil
 							mainEntityList,session);
 				}
 			}
-			firstEntity = queryDetailsObj.getQuery().getConstraints().getJoinGraph().getRoot().
-			getQueryEntity().getDynamicExtensionsEntity();
-			if(isMainObjAdded)
-			{
-				queryClone = addMainProtocolObjInQuery(queryDetailsObj, firstEntity,
-						dagPanel);
-			}
+			queryClone = modifyQuery(queryDetailsObj, queryClone,
+					isMainObjAdded, dagPanel);
 		}
 		catch(MultipleRootsException e)
 		{
 			logger.error(e.getMessage(), e);
+		}
+		return queryClone;
+	}
+
+	/**
+	 * @param queryDetailsObj queryDetailsObj
+	 * @param query query
+	 * @param isMainObjAdded isMainObjAdded
+	 * @param dagPanel dagPanel
+	 * @return queryClone
+	 * @throws MultipleRootsException MultipleRootsException
+	 */
+	private static IQuery modifyQuery(QueryDetails queryDetailsObj,
+			IQuery query, boolean isMainObjAdded, DAGPanel dagPanel)
+			throws MultipleRootsException
+	{
+		IQuery queryClone = query;
+		EntityInterface firstEntity = queryDetailsObj.getQuery().getConstraints().
+		getJoinGraph().getRoot().getQueryEntity().getDynamicExtensionsEntity();
+		if(isMainObjAdded)
+		{
+			queryClone = addMainProtocolObjInQuery(queryDetailsObj, firstEntity,
+					dagPanel);
 		}
 		return queryClone;
 	}
