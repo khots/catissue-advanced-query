@@ -25,6 +25,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.QueryResultObjectData;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.querysuite.queryobject.ICondition;
@@ -230,6 +231,44 @@ public class Utility //extends edu.wustl.common.util.Utility
 		return obj;
 	}
 
+	/**
+	 * Replaces the escape characters with the original special characters (i.e. single/double quotes)
+	 * @param dataList dataList
+	 * @return newList
+	 */
+	public static List<List<String>> getFormattedOutput(List<List<String>> dataList)
+	{
+		List<List<String>> newList = new ArrayList<List<String>>();
+		List<String> rowList;
+		for(int i=0;i<dataList.size();i++)
+		{
+			rowList = new ArrayList<String>();
+			List<String> row = dataList.get(i);
+			for(int j=0;j<row.size();j++)
+			{
+				populateInternalRow(rowList, row, j);
+			}
+			newList.add(rowList);
+		}
+		return newList;
+	}
+
+	/**
+	 * Populates the row.
+	 * @param rowList rowList
+	 * @param row row
+	 * @param j j
+	 */
+	private static void populateInternalRow(List<String> rowList,
+			List<String> row, int j)
+	{
+		String data = row.get(j);
+		if(data != null && (data.contains("&#39") || data.contains("&#34")))
+		{
+			data = DynamicExtensionsUtility.getUnEscapedStringValue(data);
+		}
+		rowList.add(data);
+	}
 	/**
 	 * This method creates a comma separated string of numbers representing
 	 * column width.

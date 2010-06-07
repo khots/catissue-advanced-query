@@ -219,6 +219,7 @@ public class SpreadsheetExportAction extends SecureAction
 		{
 			dataList = dataList1;
 		}
+		dataList = Utility.getFormattedOutput(dataList);
 		return dataList;
 	}
 
