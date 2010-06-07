@@ -63,13 +63,22 @@ public class SpreadsheetExportAction extends SecureAction
 			(SelectedColumnsMetadata)session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
 		if(selectedColumnsMetadata != null && selectedColumnsMetadata.isDefinedView())
 		{
+			List<List<String>> finalDataList = new ArrayList<List<String>>();
+			for (int counter = 0; counter < obj.length; counter++)
+			{
+				int indexOf = obj[counter].toString().indexOf("_") + 1;
+				int index = Integer.parseInt(obj[counter].toString().substring(indexOf));
+				List<String> list = dataList.get(index);
+				finalDataList.add(list);
+			}
+			dataList = finalDataList;
 			IExpression rootExpression = queryDetails.getQuery().getConstraints().getJoinGraph().getRoot();
 			if(!queryDetails.getQuery().getConstraints().getJoinGraph().getChildrenList(rootExpression).isEmpty())
 			{
 				isDefineView = true;
 				SpreadsheetDenormalizationBizLogic denormalizationBizLogic = new SpreadsheetDenormalizationBizLogic();
-				Map<String,Object> exportDetailsMap = new HashMap<String,Object>();
-				exportDetailsMap = denormalizationBizLogic.scanIQuery(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
+				Map<String,Object> exportDetailsMap = denormalizationBizLogic.scanIQuery
+				(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
 				dataList = (List<List<String>>)exportDetailsMap.get("dataList");
 				columnList = (List<String>)exportDetailsMap.get("headerList");
 			}
