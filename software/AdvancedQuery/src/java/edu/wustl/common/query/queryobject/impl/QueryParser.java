@@ -24,6 +24,9 @@ import edu.wustl.query.beans.QueryResultObjectDataBean;
  */
 public class QueryParser
 {
+	private List<EntityInterface> manyToOneEntities = new ArrayList<EntityInterface>();
+	private List<EntityInterface> oneToManyEntities = new ArrayList<EntityInterface>();
+
 	/**
 	 * Parses the query in order to populate the list of entities required
 	 * to find out the main entity id index.
@@ -31,16 +34,17 @@ public class QueryParser
 	 * @param list list
 	 * @return oneToManyEntities
 	 */
-	public List<EntityInterface> parseQuery(IQuery query, List<QueryOutputTreeAttributeMetadata> list)
+	public void parseQuery(IQuery query, List<QueryOutputTreeAttributeMetadata> list)
 	{
 		IConstraints constraints = query.getConstraints();
-		List<EntityInterface> oneToManyEntities = new ArrayList<EntityInterface>();
 		for(IExpression expression: constraints)
 		{
-			populateOneToManyEntities(list, (JoinGraph)constraints.getJoinGraph(), oneToManyEntities,
-					expression);
+			if(expression.isInView())
+			{
+				populateOneToManyEntities(list, (JoinGraph)constraints.getJoinGraph(),
+						expression);
+			}
 		}
-		return oneToManyEntities;
 	}
 
 	/**
@@ -52,20 +56,36 @@ public class QueryParser
 	 */
 	private void populateOneToManyEntities(
 			List<QueryOutputTreeAttributeMetadata> list, JoinGraph joinGraph,
-			List<EntityInterface> oneToManyEntities, IExpression expression)
+			IExpression expression)
 	{
-		boolean isOneToMany;
 		List<IExpression> childrenList = joinGraph.getChildrenList(expression);
-		if(!childrenList.isEmpty())
+		if(childrenList.isEmpty())
 		{
-			//childrenList = joinGraph.getParentList(expression);
+			childrenList = joinGraph.getParentList(expression);
+		}
+		int maxCardinalityValue = checkIfOneToMany(expression,childrenList,joinGraph);
+		List<EntityInterface> entities = getSelectedEntitiesForDefineView(list);
+		if(entities.contains(expression.getQueryEntity().getDynamicExtensionsEntity()))
+		{
+			populateAppropriateList(expression, maxCardinalityValue);
+		}
+	}
 
-			isOneToMany = checkIfOneToMany(expression,childrenList,joinGraph);
-			List<EntityInterface> entities = getSelectedEntitiesForDefineView(list);
-			if(isOneToMany && entities.contains(expression.getQueryEntity().getDynamicExtensionsEntity()))
-			{
-				oneToManyEntities.add(expression.getQueryEntity().getDynamicExtensionsEntity());
-			}
+	/**
+	 * Populate the oneToMany/manyToOne list appropriately.
+	 * @param expression expression
+	 * @param maxCardinalityValue maxCardinalityValue
+	 */
+	private void populateAppropriateList(IExpression expression,
+			int maxCardinalityValue)
+	{
+		if(maxCardinalityValue == 1)
+		{
+			oneToManyEntities.add(expression.getQueryEntity().getDynamicExtensionsEntity());
+		}
+		else if(maxCardinalityValue == 2)
+		{
+			manyToOneEntities.add(expression.getQueryEntity().getDynamicExtensionsEntity());
 		}
 	}
 
@@ -98,10 +118,9 @@ public class QueryParser
 	 * @return <CODE>true</CODE> the association is of type 'one to many',
 	 * <CODE>false</CODE> otherwise
 	 */
-	private boolean checkIfOneToMany(IExpression expression,
+	private int checkIfOneToMany(IExpression expression,
 			List<IExpression> childrenList, JoinGraph joinGraph)
 	{
-		boolean isOneToMany = false;
 		Integer maxCardinalityValue = -1;
 		AssociationInterface associationInterface;
 		for(IExpression child : childrenList)
@@ -113,12 +132,10 @@ public class QueryParser
 				association = (IIntraModelAssociation)joinGraph.getAssociation(child,expression);
 				associationInterface =(AssociationInterface)
 				association.getDynamicExtensionsAssociation();
-				if(associationInterface.getTargetRole().getAssociationsType().name().equals("CONTAINTMENT"))
-				{
-					maxCardinalityValue = 0;
-				}
+				maxCardinalityValue = getMaxCardinalityForChildToExp(
+						maxCardinalityValue, associationInterface);
 			}
-			if(association != null)
+			else
 			{
 				associationInterface =(AssociationInterface)
 				association.getDynamicExtensionsAssociation();
@@ -128,12 +145,36 @@ public class QueryParser
 				}
 				if(maxCardinalityValue == 1)
 				{
-					isOneToMany = true;
 					break;
 				}
 			}
 		}
-		return isOneToMany;
+		return maxCardinalityValue;
+	}
+
+	/**
+	 * Gets the max cardinality value (0/2).
+	 * @param maxCardinality maxCardinality
+	 * @param associationInterface associationInterface
+	 * @return maxCardinalityValue
+	 */
+	private Integer getMaxCardinalityForChildToExp(Integer maxCardinality,
+			AssociationInterface associationInterface)
+	{
+		Integer maxCardinalityValue = maxCardinality;
+		if(associationInterface.getTargetRole().getAssociationsType().name().equals("CONTAINTMENT"))
+		{
+			maxCardinalityValue = 0;
+		}
+		else
+		{
+			if(associationInterface.getTargetRole().getMaximumCardinality() == null
+					|| associationInterface.getTargetRole().getMaximumCardinality().getValue() == 2)
+			{
+				maxCardinalityValue = 2;
+			}
+		}
+		return maxCardinalityValue;
 	}
 
 	/**
@@ -163,12 +204,20 @@ public class QueryParser
 	 * @param querySessionData querySessionData
 	 * @return mainEntityIdIndex
 	 */
-	public int getMainIdColumnIndex(Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap,
-			List<EntityInterface> oneToManyEntities)
+	public int getMainIdColumnIndex(Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap)
 	{
 		Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
-		int mainEntityIdIndex = setMainEtityIndexId(queryResultObjectDataBeanMap,
-				entityIdIndexMap,oneToManyEntities);
+		int mainEntityIdIndex;
+		if(manyToOneEntities.isEmpty())
+		{
+			mainEntityIdIndex = setMainEtityIndexId(queryResultObjectDataBeanMap,
+					entityIdIndexMap,oneToManyEntities);
+		}
+		else
+		{
+			mainEntityIdIndex = setMainEtityIndexId(queryResultObjectDataBeanMap,
+					entityIdIndexMap,manyToOneEntities);
+		}
 		if(mainEntityIdIndex == -1)
 		{
 			Iterator<EntityInterface> entities = entityIdIndexMap.keySet().iterator();

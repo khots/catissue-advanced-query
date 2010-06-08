@@ -66,10 +66,9 @@ public class SpreadsheetDenormalizationBizLogic
 			if(selectedColumnsMetadata.isDefinedView())
 			{
 				QueryParser queryParser = new QueryParser();
-				List<EntityInterface> oneToManyEntities =
-					queryParser.parseQuery(queryDetailsObj.getQuery(),selectedColumnsMetadata.getSelectedAttributeMetaDataList());
+				queryParser.parseQuery(queryDetailsObj.getQuery(),selectedColumnsMetadata.getSelectedAttributeMetaDataList());
 				mainIdColumnIndex = queryParser.
-				getMainIdColumnIndex(querySessionData.getQueryResultObjectDataMap(),oneToManyEntities);
+				getMainIdColumnIndex(querySessionData.getQueryResultObjectDataMap());
 				if(mainIdColumnIndex != -1)
 				{
 					Collections.sort(dataList, new ListComparator(mainIdColumnIndex));
