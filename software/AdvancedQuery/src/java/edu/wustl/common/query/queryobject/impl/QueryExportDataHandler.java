@@ -485,12 +485,7 @@ public class QueryExportDataHandler
 					Object dataValue = null;
 					if (entityDataList != null && entityDataList.size()>cntr)
 					{
-						if(queryData.size()>attrControlNo && selectedAttributes.contains(attribute))
-						{
-							dataValue = queryData.get(attrControlNo);
-							counter++;
-						}
-						else if(selectedAttributes.contains(attribute))
+						if(selectedAttributes.contains(attribute))
 						{
 							dataValue = queryData.get(counter);
 							counter++;
