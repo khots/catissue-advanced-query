@@ -208,6 +208,29 @@ public class UtilityTestCase extends TestCase
 		Utility.getCPIdsList(objName, identifier, sessionData);
 	}
 
+	public void testGetFormattedString()
+	{
+		List dataList = new ArrayList();
+
+		List list = new ArrayList();
+		list.add("");
+		list.add("Active");
+		list.add("Male Gender");
+		list.add("01-01-1957 00:00:00");
+		list.add("");
+		list.add("1");
+		dataList.add(list);
+
+		list = new ArrayList();
+		list.add("");
+		list.add("CLosed");
+		list.add("Female Gender");
+		list.add("01-10-1988 00:00:00");
+		list.add("");
+		list.add("2");
+		dataList.add(list);
+		Utility.getFormattedOutput(dataList);
+	}
 	public void testSetGridData()
 	{
 		List columnList = new ArrayList();
