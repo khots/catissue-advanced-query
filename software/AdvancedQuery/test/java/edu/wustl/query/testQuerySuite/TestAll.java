@@ -44,6 +44,7 @@ import edu.wustl.query.htmlprovider.HtmlProviderTestCase;
 import edu.wustl.query.htmlprovider.ParseXMLFileTestCase;
 import edu.wustl.query.htmlprovider.SavedQueryHtmlProviderTestCase;
 import edu.wustl.query.security.QueryCsmCacheManagerTestCase;
+import edu.wustl.query.util.global.UserCacheTestCase;
 import edu.wustl.query.util.global.UtilityTestCase;
 
 /**
@@ -100,6 +101,7 @@ public class TestAll
 		suite.addTestSuite(QueryExportDataHandlerTestCase.class);
 		suite.addTestSuite(SavedQueryAuthorizationTestCase.class);
 		suite.addTestSuite(CsmUtilityTestCase.class);
+		suite.addTestSuite(UserCacheTestCase.class);
 		return suite;
 	}
 }
