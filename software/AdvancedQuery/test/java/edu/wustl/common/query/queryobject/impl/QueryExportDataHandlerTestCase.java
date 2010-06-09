@@ -61,5 +61,7 @@ public class QueryExportDataHandlerTestCase extends TestCase
         dataHandler.updateRowDataList(denormalizationMap, 0);
         dataHandler.getDataList(0);
         dataHandler.getRootEntity();
+        DenormalizedCSVExporter csvExporter = new DenormalizedCSVExporter();
+        csvExporter.addDataToCSV(1, dataHandler);
 	}
 }
