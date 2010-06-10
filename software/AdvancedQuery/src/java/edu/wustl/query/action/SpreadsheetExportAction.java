@@ -101,14 +101,14 @@ public class SpreadsheetExportAction extends SecureAction
 			for (int counter = 0; counter < dataList.size(); counter++)
 			{
 				List<String> list = dataList.get(counter);
-				if(!isDefineView)
+				if(isDefineView)
 				{
-					List<String> subList = list.subList(0, columnsSize);
-					exportList.add(subList);
+					exportList.add(list);
 				}
 				else
 				{
-					exportList.add(list);
+					List<String> subList = list.subList(0, columnsSize);
+					exportList.add(subList);
 				}
 				populateIndexList(idIndexList, entityIdsMap, counter);
 			}

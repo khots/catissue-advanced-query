@@ -335,7 +335,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 			{
 				if(col == 0)
 				{
-					colWidth.append("3");
+					colWidth.append('3');
 				}
 				else
 				{

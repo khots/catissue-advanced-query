@@ -486,9 +486,6 @@ public class QueryOutputTreeBizLogic
                 + queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
         String selectSql = "";
         int index = -1;
-
-
-
         String labelNode = nodeId.substring(nodeId.lastIndexOf(AQConstants.NODE_SEPARATOR) + 2,
                 nodeId.length());
         String[] splitIds = labelNode.split(AQConstants.UNDERSCORE);
@@ -543,11 +540,9 @@ public class QueryOutputTreeBizLogic
         }
         if (parentNodeId.contains(AQConstants.NULL_ID))
         {
-
             selectSql = QueryModuleSqlUtil.getSQLForRootNode(tableName, QueryModuleUtil
                     .getColumnNamesForSelectpart(currentNode.getAttributes(), queryDetailsObj,
                             queryResultObjectDataBeanMap.get(currentNode.getId())));
-
             String indexStr = selectSql.substring(selectSql.indexOf(AQConstants.NODE_SEPARATOR) + 2,
                     selectSql.length());
             if (!indexStr.equalsIgnoreCase(AQConstants.NULL))

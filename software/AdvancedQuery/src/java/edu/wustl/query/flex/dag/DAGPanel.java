@@ -483,21 +483,8 @@ public class DAGPanel
 				break;
 			}
 		}
-		if(!readDeniedIds.isEmpty())
+		if(readDeniedIds.isEmpty())
 		{
-			if(operatorValueMap != null && !operatorValueMap.isEmpty())
-			{
-					strToCreateObject = modifyQueryForIdCondition(operatorValueMap,
-				strToCreateObject, readDeniedIds,allMainObjectIds, formattedIds,attributeId);
-			}
-			else
-			{
-				populateFormattedIds(readDeniedIds, formattedIds);
-			}
-		}
-		else
-		{
-
 			if(operatorValueMap != null && !operatorValueMap.isEmpty())
 			{
 				Set<RelationalOperator> keySet = operatorValueMap.keySet();
@@ -514,6 +501,18 @@ public class DAGPanel
 					}
 					strToCreateObject = strToCreateObject+";";
 				}
+			}
+		}
+		else
+		{
+			if(operatorValueMap != null && !operatorValueMap.isEmpty())
+			{
+					strToCreateObject = modifyQueryForIdCondition(operatorValueMap,
+				strToCreateObject, readDeniedIds,allMainObjectIds, formattedIds,attributeId);
+			}
+			else
+			{
+				populateFormattedIds(readDeniedIds, formattedIds);
 			}
 		}
 		int mainProtocolExpId = 0;

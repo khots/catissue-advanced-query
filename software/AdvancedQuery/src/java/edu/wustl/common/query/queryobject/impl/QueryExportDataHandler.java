@@ -483,13 +483,11 @@ public class QueryExportDataHandler
 				else
 				{
 					Object dataValue = null;
-					if (entityDataList != null && entityDataList.size()>cntr)
+					if (entityDataList != null && entityDataList.size()>cntr &&
+							selectedAttributes.contains(attribute))
 					{
-						if(selectedAttributes.contains(attribute))
-						{
-							dataValue = queryData.get(counter);
-							counter++;
-						}
+						dataValue = queryData.get(counter);
+						counter++;
 					}
 					if(selectedAttributes.contains(attribute))
 					{
