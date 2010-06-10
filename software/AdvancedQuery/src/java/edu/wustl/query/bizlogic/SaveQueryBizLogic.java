@@ -253,7 +253,7 @@ public class SaveQueryBizLogic extends DefaultQueryBizLogic implements IQueryBiz
 		{
 			isSharedToAll = false;
 		}
-		long[] sharedUsers = null;
+		long[] sharedUsers;
 		if(!isSharedToAll)
 		{
 			sharedUsers = getSharedUsers((ParameterizedQuery)queryObject);
