@@ -155,7 +155,7 @@ public class QueryNodeLocator
 	 */
 	private void addToVisibleMap(Integer expId, int level)
 	{
-		List<Integer> list = null;
+		List<Integer> list;
 		if (level <= visibleExpListLevelWise.size() - 1)
 		{
 			list = visibleExpListLevelWise.get(level);
