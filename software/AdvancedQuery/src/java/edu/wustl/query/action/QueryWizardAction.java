@@ -57,6 +57,7 @@ public class QueryWizardAction extends SecureAction
 			session.removeAttribute("savedQuery");
 			session.removeAttribute("savedQueryProcessed");
 			session.removeAttribute(AQConstants.TREE_CHECK_VALUE);
+			session.removeAttribute(AQConstants.DENORMALIZED_LIST);
 			searchForm = QueryModuleUtil.setDefaultSelections(searchForm);
 			actionForward = mapping.findForward(edu.wustl.query.util.global.AQConstants.SUCCESS);
 		}

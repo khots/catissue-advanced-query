@@ -27,7 +27,6 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.actionForm.QueryAdvanceSearchForm;
 import edu.wustl.query.bizlogic.ExportQueryBizLogic;
-import edu.wustl.query.bizlogic.SpreadsheetDenormalizationBizLogic;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryDetails;
@@ -55,7 +54,6 @@ public class SpreadsheetExportAction extends SecureAction
 		Object[] obj = map.keySet().toArray();
 		List<String> columnList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
 		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll);
-		QuerySessionData querySessionData = (QuerySessionData)session.getAttribute(AQConstants.QUERY_SESSION_DATA);
 		QueryDetails queryDetails = new QueryDetails(session);
 		boolean isDefineView = false;
 		SelectedColumnsMetadata selectedColumnsMetadata =
@@ -75,11 +73,7 @@ public class SpreadsheetExportAction extends SecureAction
 			if(!queryDetails.getQuery().getConstraints().getJoinGraph().getChildrenList(rootExpression).isEmpty())
 			{
 				isDefineView = true;
-				SpreadsheetDenormalizationBizLogic denormalizationBizLogic = new SpreadsheetDenormalizationBizLogic();
-				Map<String,Object> exportDetailsMap = denormalizationBizLogic.scanIQuery
-				(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
-				dataList = (List<List<String>>)exportDetailsMap.get("dataList");
-				columnList = (List<String>)exportDetailsMap.get("headerList");
+				dataList = (List<List<String>>) session.getAttribute(AQConstants.DENORMALIZED_LIST);
 			}
 		}
 		if(!isDefineView)

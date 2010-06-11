@@ -314,12 +314,12 @@ public class SpreadsheetDenormalizationBizLogic
 		{
 			IExpression exp = joinGraph.getChildrenList(expression).get(0);
 			exp = getExpression(joinGraph, exp);
-			BaseAbstractAttributeInterface association = tgtEntityVsAssoc.get(dynamicExtensionsEntity);
-			if(association == null)
+			if(exp.isInView())
 			{
-				tgtEntityVsAssoc.put(exp.getQueryEntity().getDynamicExtensionsEntity(), associationInterface);
+				populateTgtVsAssocMap(dynamicExtensionsEntity,
+						associationInterface, exp);
+				entity = exp.getQueryEntity().getDynamicExtensionsEntity();
 			}
-			entity = exp.getQueryEntity().getDynamicExtensionsEntity();
 		}
 		else
 		{
@@ -327,6 +327,22 @@ public class SpreadsheetDenormalizationBizLogic
 			entity = expression.getQueryEntity().getDynamicExtensionsEntity();
 		}
 		return entity;
+	}
+
+	/**
+	 * Put the appropriate association in tgtEntityVsAssoc map.
+	 * @param dynamicExtensionsEntity dynamicExtensionsEntity
+	 * @param associationInterface associationInterface
+	 * @param exp expression
+	 */
+	private void populateTgtVsAssocMap(EntityInterface dynamicExtensionsEntity,
+			BaseAbstractAttributeInterface associationInterface, IExpression exp)
+	{
+		BaseAbstractAttributeInterface association = tgtEntityVsAssoc.get(dynamicExtensionsEntity);
+		if(association == null)
+		{
+			tgtEntityVsAssoc.put(exp.getQueryEntity().getDynamicExtensionsEntity(), associationInterface);
+		}
 	}
 
 	private String isPresent(AbstractAttributeInterface attribute,
@@ -396,12 +412,12 @@ public class SpreadsheetDenormalizationBizLogic
 		{
 			IExpression exp = joinGraph.getParentList(expression).get(0);
 			exp = getParentExpression(joinGraph, exp);
-			BaseAbstractAttributeInterface association = entityVsAssoc.get(dynamicExtensionsEntity);
-			if(association == null)
+			if(exp.isInView())
 			{
-				entityVsAssoc.put(exp.getQueryEntity().getDynamicExtensionsEntity(), associationInterface);
+				populateEntityvsAssocMap(dynamicExtensionsEntity,
+						associationInterface, exp);
+				entity = exp.getQueryEntity().getDynamicExtensionsEntity();
 			}
-			entity = exp.getQueryEntity().getDynamicExtensionsEntity();
 		}
 		else
 		{
@@ -409,6 +425,23 @@ public class SpreadsheetDenormalizationBizLogic
 			entity = expression.getQueryEntity().getDynamicExtensionsEntity();
 		}
 		return entity;
+	}
+
+	/**
+	 * Put the appropriate association in entityVsAssoc map.
+	 * @param dynamicExtensionsEntity dynamicExtensionsEntity
+	 * @param associationInterface associationInterface
+	 * @param exp expression
+	 */
+	private void populateEntityvsAssocMap(
+			EntityInterface dynamicExtensionsEntity,
+			BaseAbstractAttributeInterface associationInterface, IExpression exp)
+	{
+		BaseAbstractAttributeInterface association = entityVsAssoc.get(dynamicExtensionsEntity);
+		if(association == null)
+		{
+			entityVsAssoc.put(exp.getQueryEntity().getDynamicExtensionsEntity(), associationInterface);
+		}
 	}
 
 	/**
@@ -439,8 +472,11 @@ public class SpreadsheetDenormalizationBizLogic
 		IExpression finalExp = expression;
 		if(!expression.isInView())
 		{
-			IExpression parentExp = joinGraph.getChildrenList(expression).get(0);
-			finalExp = getExpression(joinGraph,parentExp);
+			if(!joinGraph.getChildrenList(expression).isEmpty())
+			{
+				IExpression parentExp = joinGraph.getChildrenList(expression).get(0);
+				finalExp = getExpression(joinGraph,parentExp);
+			}
 		}
 		return finalExp;
 	}

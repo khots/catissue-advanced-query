@@ -11,6 +11,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.query.util.global.Utility;
 
 /**
  * This class is responsible for exporting the query results
@@ -391,9 +392,7 @@ public class QueryExportDataHandler
 		if(selectedAttributes.contains(attribute))
 		{
 			StringBuffer headerDisplay = new StringBuffer();
-			String entityName = attribute.getEntity().getName();
-			entityName = entityName.substring(entityName.lastIndexOf('.')+1, entityName.length());
-			headerDisplay.append(entityName).append(':').append(attribute.getName());
+			headerDisplay.append(Utility.getDisplayNameForColumn((AttributeInterface)attribute));
 			if(cntr>0)
 			{
 				headerDisplay.append('_').append(cntr);
@@ -491,6 +490,10 @@ public class QueryExportDataHandler
 					}
 					if(selectedAttributes.contains(attribute))
 					{
+						if(dataValue == null)
+						{
+							dataValue = "";
+						}
 						dataList.add(dataValue);
 					}
 					attrControlNo++;

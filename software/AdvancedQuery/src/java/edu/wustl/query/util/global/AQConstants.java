@@ -600,4 +600,5 @@ public class AQConstants
 	public static final String FROM_CLAUSE = "from";
 	public static final String SELECT_CLAUSE = "select";
 	public static final String DISTINCT = "distinct";
+	public static final String DENORMALIZED_LIST = "DENORMALIZED_LIST";
 }

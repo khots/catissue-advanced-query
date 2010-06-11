@@ -313,7 +313,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 		}
 		else
 		{
-			columnWidth = "80";
+			columnWidth = "100";
 		}
 		return columnWidth;
 	}

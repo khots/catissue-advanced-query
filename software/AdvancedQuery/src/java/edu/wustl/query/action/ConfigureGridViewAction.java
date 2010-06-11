@@ -104,7 +104,7 @@ public class ConfigureGridViewAction extends SecureAction
 			defineGridViewBizLogic.createSQLForSelectedColumn(selectedColumnNames.toString(), sql);
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
 					recordsPerPage, 0, spreadSheetDataMap, sqlForSelectedColumns,
-					queryResultObjecctDataMap, hasConditionOnIdentifiedData);
+					queryResultObjecctDataMap, hasConditionOnIdentifiedData,selectedColumnsMetadata);
 			selectedCNVBList = categorySearchForm.getSelColNVBeanList();
 			session.setAttribute(AQConstants.DEFINE_VIEW_RESULT_MAP,
 					queryResultObjecctDataMap);
@@ -125,7 +125,7 @@ public class ConfigureGridViewAction extends SecureAction
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
 					recordsPerPage, 0, spreadSheetDataMap, sql, queryResultObjecctDataMap,
-					hasConditionOnIdentifiedData);
+					hasConditionOnIdentifiedData,selectedColumnsMetadata);
 		}
 		else if (operation.equalsIgnoreCase(AQConstants.RESTORE))
 		{
@@ -146,19 +146,26 @@ public class ConfigureGridViewAction extends SecureAction
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
 					recordsPerPage, 0, spreadSheetDataMap, sqlForSelectedColumns,
-					queryResultObjecctDataMap, hasConditionOnIdentifiedData);
+					queryResultObjecctDataMap, hasConditionOnIdentifiedData,selectedColumnsMetadata);
 			selectedCNVBList = null;
 			spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 					queryResultObjecctDataMap);
 			spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
 					queryResultObjecctDataMap);
 		}
-		spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
+		if(spreadSheetDataMap.get(AQConstants.SPREADSHEET_COLUMN_LIST) == null)
+		{
+			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
+		}
 		selectedColumnsMetadata.setSelColNVBeanList(selectedCNVBList);
 		selectedColumnsMetadata.setCurrentSelectedObject(currentSelectedObject);
 		spreadSheetDataMap.put(AQConstants.QUERY_SESSION_DATA, querySessionData);
 		spreadSheetDataMap.put(AQConstants.SELECTED_COLUMN_META_DATA,selectedColumnsMetadata);
 		spreadSheetDataMap.put(AQConstants.MAIN_ENTITY_MAP, queryDetailsObj.getMainEntityMap());
+		if(selectedColumnsMetadata.isDefinedView())
+		{
+			session.setAttribute(AQConstants.DENORMALIZED_LIST, spreadSheetDataMap.get(AQConstants.SPREADSHEET_DATA_LIST));
+		}
 		QueryModuleUtil.setGridData(request, spreadSheetDataMap);
 		return mapping.findForward(AQConstants.SUCCESS);
 	}

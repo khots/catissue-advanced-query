@@ -161,13 +161,14 @@ public class QueryOutputSpreadsheetBizLogic
 			QuerySessionData querySessionData;
 			querySessionData = getQuerySessionData(queryDetailsObj, recordsPerPage, startIndex,
 					spreadSheetDataMap, selectSql, queryResultObjectDataBeanMap,
-					hasConditionOnIdentifiedField);
+					hasConditionOnIdentifiedField,null);
 			spreadSheetDataMap.put(AQConstants.QUERY_SESSION_DATA, querySessionData);
 			this.selectedColumnMetaData.setCurrentSelectedObject(currentTreeNode);
 			if (selectedColumnMetaData.isDefinedView())
 			{
 				spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 						queryResultObjectDataBeanMap);
+				session.setAttribute(AQConstants.DENORMALIZED_LIST, spreadSheetDataMap.get(AQConstants.SPREADSHEET_DATA_LIST));
 			}
 			else
 			{
@@ -304,7 +305,7 @@ public class QueryOutputSpreadsheetBizLogic
 		int startIndex = 0;
 		QuerySessionData querySessionData = getQuerySessionData(queryDetailsObj, recordsPerPage,
 				startIndex, spreadSheetDataMap, selectSql, queryResultObjectDataBeanMap,
-				hasConditionOnIdentifiedField);
+				hasConditionOnIdentifiedField,null);
 		spreadSheetDataMap.put(AQConstants.QUERY_SESSION_DATA, querySessionData);
 		spreadSheetDataMap
 				.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP, queryResultObjectDataBeanMap);
@@ -855,6 +856,7 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @param selectSql selectSql
 	 * @param queryResultObjectDataBeanMap queryResultObjectDataBeanMap
 	 * @param hasConditionOnIdentifiedField hasConditionOnIdentifiedField
+	 * @param selectedColumnsMetadata  selectedColumnsMetadata
 	 * @return querySessionData
 	 * @throws ClassNotFoundException
 	 * @throws DAOException
@@ -862,7 +864,7 @@ public class QueryOutputSpreadsheetBizLogic
 	public QuerySessionData getQuerySessionData(QueryDetails queryDetailsObj, int recordsPerPage,
 			int startIndex, Map spreadSheetDataMap, String selectSql,
 			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap,
-			boolean hasConditionOnIdentifiedField) throws ClassNotFoundException, DAOException
+			boolean hasConditionOnIdentifiedField, SelectedColumnsMetadata selectedColumnsMetadata) throws ClassNotFoundException, DAOException
 	{
 		QuerySessionData querySessionData = new QuerySessionData();
 		querySessionData.setSql(selectSql);
@@ -874,6 +876,25 @@ public class QueryOutputSpreadsheetBizLogic
 		PagenatedResultData pagenatedResultData = qBizLogic.execute(queryDetailsObj
 				.getSessionData(), querySessionData, startIndex);
 		List<List<String>> dataList = pagenatedResultData.getResult();
+		SelectedColumnsMetadata selectedColMetadata;
+		if(selectedColumnsMetadata == null)
+		{
+			selectedColMetadata = selectedColumnMetaData;
+		}
+		else
+		{
+			selectedColMetadata = selectedColumnsMetadata;
+		}
+		if(selectedColMetadata.isDefinedView())
+		{
+			SpreadsheetDenormalizationBizLogic  denormalizationBizLogic =
+				new SpreadsheetDenormalizationBizLogic();
+			Map<String,Object> exportDetailsMap = denormalizationBizLogic.scanIQuery
+			(queryDetailsObj, dataList, selectedColMetadata, querySessionData);
+			dataList = (List<List<String>>)exportDetailsMap.get("dataList");
+			List<String>colList = (List<String>)exportDetailsMap.get("headerList");
+			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, colList);
+		}
 		for (Long id : queryResultObjectDataBeanMap.keySet())
 		{
 			QueryResultObjectDataBean queryResultObjectDataBean = queryResultObjectDataBeanMap
@@ -892,7 +913,7 @@ public class QueryOutputSpreadsheetBizLogic
 				break;
 			}
 		}
-		spreadSheetDataMap.put(AQConstants.SPREADSHEET_DATA_LIST, pagenatedResultData.getResult());
+		spreadSheetDataMap.put(AQConstants.SPREADSHEET_DATA_LIST, dataList);
 		/**
 		 * Name: Prafull
 		 * Description: Query performance issue. Instead of saving complete query results in session,
@@ -902,7 +923,14 @@ public class QueryOutputSpreadsheetBizLogic
 		 * saving required query data in Session so that can be used later on while navigation through
 		 * result pages using pagination.
 		 */
-		querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
+		if(pagenatedResultData.getTotalRecords()>100)
+		{
+			querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
+		}
+		else
+		{
+			querySessionData.setTotalNumberOfRecords(dataList.size());
+		}
 		return querySessionData;
 	}
 
