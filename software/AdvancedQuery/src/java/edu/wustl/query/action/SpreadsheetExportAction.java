@@ -61,6 +61,13 @@ public class SpreadsheetExportAction extends SecureAction
 		if(selectedColumnsMetadata != null && selectedColumnsMetadata.isDefinedView())
 		{
 			List<List<String>> finalDataList = new ArrayList<List<String>>();
+
+			IExpression rootExpression = queryDetails.getQuery().getConstraints().getJoinGraph().getRoot();
+			if(!queryDetails.getQuery().getConstraints().getJoinGraph().getChildrenList(rootExpression).isEmpty())
+			{
+				isDefineView = true;
+				dataList = (List<List<String>>) session.getAttribute(AQConstants.DENORMALIZED_LIST);
+			}
 			for (int counter = 0; counter < obj.length; counter++)
 			{
 				int indexOf = obj[counter].toString().indexOf("_") + 1;
@@ -69,12 +76,6 @@ public class SpreadsheetExportAction extends SecureAction
 				finalDataList.add(list);
 			}
 			dataList = finalDataList;
-			IExpression rootExpression = queryDetails.getQuery().getConstraints().getJoinGraph().getRoot();
-			if(!queryDetails.getQuery().getConstraints().getJoinGraph().getChildrenList(rootExpression).isEmpty())
-			{
-				isDefineView = true;
-				dataList = (List<List<String>>) session.getAttribute(AQConstants.DENORMALIZED_LIST);
-			}
 		}
 		if(!isDefineView)
 		{
