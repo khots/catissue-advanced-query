@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.wustl.common.util.logger.LoggerConfig;
-
 /**
  * This class is responsible for forming the data list in denormalized form to be exported to a CSV file.
  * @author pooja_tavase
