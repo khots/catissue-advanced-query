@@ -16,6 +16,7 @@ import edu.ustl.query.util.querysuite.TemporalQueryUtilityTestCase;
 import edu.wustl.common.query.authoriztion.SavedQueryAuthorizationTestCase;
 import edu.wustl.common.query.factory.AbstractQueryGeneratorFactoryTestCase;
 import edu.wustl.common.query.factory.CommonObjectFactoryTestCase;
+import edu.wustl.common.query.queryobject.impl.AttributeComparatorTestCase;
 import edu.wustl.common.query.queryobject.impl.ListComparatorTestCase;
 import edu.wustl.common.query.queryobject.impl.QueryExportDataHandlerTestCase;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryTreeNodeDataTestCase;
@@ -102,6 +103,7 @@ public class TestAll
 		suite.addTestSuite(SavedQueryAuthorizationTestCase.class);
 		suite.addTestSuite(CsmUtilityTestCase.class);
 		suite.addTestSuite(UserCacheTestCase.class);
+		suite.addTestSuite(AttributeComparatorTestCase.class);
 		return suite;
 	}
 }
