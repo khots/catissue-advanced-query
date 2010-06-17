@@ -14,8 +14,6 @@ import edu.wustl.common.util.logger.LoggerConfig;
  */
 public class DenormalizedCSVExporter
 {
-	private static org.apache.log4j.Logger logger = LoggerConfig
-	.getConfiguredLogger(DenormalizedCSVExporter.class);
 	/**
 	 * Just calls the method to get the final data list to be written into the CSV file.
 	 * @param fileName file name
