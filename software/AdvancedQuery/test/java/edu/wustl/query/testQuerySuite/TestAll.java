@@ -12,6 +12,7 @@ import edu.ustl.query.util.querysuite.QueryCSMUtilTestCase;
 import edu.ustl.query.util.querysuite.QueryDetailsTestCase;
 import edu.ustl.query.util.querysuite.QueryModuleSqlUtilTestCase;
 import edu.ustl.query.util.querysuite.QueryModuleUtilTestCase;
+import edu.ustl.query.util.querysuite.TemporalColumnMetadataTestCase;
 import edu.ustl.query.util.querysuite.TemporalQueryUtilityTestCase;
 import edu.wustl.common.query.authoriztion.SavedQueryAuthorizationTestCase;
 import edu.wustl.common.query.factory.AbstractQueryGeneratorFactoryTestCase;
@@ -36,9 +37,11 @@ import edu.wustl.query.bizlogic.QueryOutputTreeBizLogicTestCase;
 import edu.wustl.query.bizlogic.SaveQueryBizLogicTestCase;
 import edu.wustl.query.bizlogic.ShareQueryBizLogicTestCase;
 import edu.wustl.query.bizlogic.SpreadsheetDenormalizationBizLogicTestCase;
+import edu.wustl.query.bizlogic.ValidateQueryBizLogicTestCase;
 import edu.wustl.query.executor.AbstractQueryExecutorTestCase;
 import edu.wustl.query.flex.dag.CustomFormulaUIBeanTestCase;
 import edu.wustl.query.generator.SqlGeneratorGenericTestCase;
+import edu.wustl.query.generator.SqlKeyWordsTestCase;
 import edu.wustl.query.htmlprovider.GenerateHtmlDetailsTestCase;
 import edu.wustl.query.htmlprovider.GenerateHtmlTestCase;
 import edu.wustl.query.htmlprovider.HtmlProviderTestCase;
@@ -104,6 +107,9 @@ public class TestAll
 		suite.addTestSuite(CsmUtilityTestCase.class);
 		suite.addTestSuite(UserCacheTestCase.class);
 		suite.addTestSuite(AttributeComparatorTestCase.class);
+		suite.addTestSuite(ValidateQueryBizLogicTestCase.class);
+		suite.addTestSuite(SqlKeyWordsTestCase.class);
+		suite.addTestSuite(TemporalColumnMetadataTestCase.class);
 		return suite;
 	}
 }
