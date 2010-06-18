@@ -161,10 +161,6 @@ public class SqlGenerator implements ISqlGenerator
      * Required to populate column value bean.
      */
     private LinkedList<Object> data = new LinkedList<Object>();
-    /**
-     * Default Constructor to instantiate SQL generator object.
-     */
-    public SqlGenerator() {}
 
     /**
      * Generates SQL for the given Query Object.

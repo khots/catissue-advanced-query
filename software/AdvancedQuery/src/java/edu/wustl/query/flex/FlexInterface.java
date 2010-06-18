@@ -28,12 +28,6 @@ import edu.wustl.query.flex.dag.SingleNodeCustomFormulaNode;
 
 public class FlexInterface
 {
-
-	public FlexInterface()
-	{
-
-	}
-
 	// --------------DAG-----------------------------
 	public void restoreQueryObject()
 	{

@@ -28,15 +28,6 @@ import edu.wustl.security.exception.SMException;
  */
 public class OracleQueryExecutor extends AbstractQueryExecutor
 {
-
-	/**
-	 * Default constructor.
-	 */
-	public OracleQueryExecutor()
-	{
-
-	}
-
 	/**
 	 * This method will
 	 * - modify the SQL, by adding the rownum conditions, to get the required number of records starting from startIndex.

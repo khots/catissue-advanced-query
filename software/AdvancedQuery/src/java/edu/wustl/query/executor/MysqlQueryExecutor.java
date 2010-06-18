@@ -29,14 +29,6 @@ import edu.wustl.security.exception.SMException;
  */
 public class MysqlQueryExecutor extends AbstractQueryExecutor
 {
-
-	/**
-	 * Default constructor.
-	 */
-	public MysqlQueryExecutor()
-	{
-	}
-
 	/**
 	 * This method will
 	 * - create statement object by executing SQL query, create scrollable resultset

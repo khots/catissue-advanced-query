@@ -68,14 +68,6 @@ public class QueryTreeNodeData implements QueryTreeNode, Serializable
 	private String toolTipText;
 
 	/**
-	 * Initializes an empty node.
-	 */
-	public QueryTreeNodeData()
-	{
-
-	}
-
-	/**
 	 * Sets the id of the data this node represents.
 	 * @param identifier the id.
 	 * @see #getId()
