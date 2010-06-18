@@ -147,11 +147,6 @@ public class SqlGenerator implements ISqlGenerator
     private boolean hasCLOBTypeCol = false;
 
     /**
-     * JDBCDAO object.
-     */
-    private JDBCDAO dao = null;
-
-    /**
      * column value bean for SQL injection.
      */
     private LinkedList<ColumnValueBean> columnValueBean =
@@ -162,6 +157,7 @@ public class SqlGenerator implements ISqlGenerator
      */
     private LinkedList<Object> data = new LinkedList<Object>();
 
+    private static final String LOWER = "lower(";
     /**
      * Generates SQL for the given Query Object.
      * @param query The Reference to Query Object.
@@ -182,7 +178,7 @@ public class SqlGenerator implements ISqlGenerator
         Logger.out.debug("Started SqlGenerator.generateSQL().....");
         String appName=CommonServiceLocator.getInstance().getAppName();
         IDAOFactory daofactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
-        dao = daofactory.getJDBCDAO();
+        JDBCDAO dao = daofactory.getJDBCDAO();
         strTodateFunction = dao.getStrTodateFunction();
         datePattern = dao.getDatePattern();
         String sql = buildQuery(query);
@@ -461,7 +457,7 @@ public class SqlGenerator implements ISqlGenerator
 			throws SqlException
 	{
 		String operandSQL = "";
-		boolean emptyExppression = false;
+		boolean emptyExppression;
 		if (operand instanceof IRule)
 		{
 		    // Processing Rule.
@@ -686,7 +682,7 @@ public class SqlGenerator implements ISqlGenerator
         checkComparisonOperatorForString(condition, dataType, operator);
 
         checkComparisonOperatorForBoolean(condition, dataType, operator);
-        String conditionStr = "";
+        String conditionStr;
         attributeName = modifyStringForDateForComparisonOperator(attributeName,
 				dataType);
         value = modifyValueforDataType(value, dataType,condition);
@@ -695,7 +691,7 @@ public class SqlGenerator implements ISqlGenerator
         if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.Oracle)
         		&& dataType instanceof StringTypeInformationInterface)
         {
-        	conditionStr = "lower(" + attributeName + ") "+RelationalOperator.getSQL(operator)+
+        	conditionStr = LOWER + attributeName + ") "+RelationalOperator.getSQL(operator)+
         	" lower(" + value + ")";
         }
         return conditionStr;
@@ -792,7 +788,7 @@ public class SqlGenerator implements ISqlGenerator
         String str;
         if("Oracle".equalsIgnoreCase(daoFactory.getDataBaseType()))
         {
-        	str = "lower(" + attributeName + ") like lower(" + value + ")";
+        	str = LOWER + attributeName + ") like lower(" + value + ")";
         }
         else
         {
@@ -858,7 +854,7 @@ public class SqlGenerator implements ISqlGenerator
         if(getDatabaseSQLSettings().getDatabaseType().equals(DatabaseType.Oracle)
         		&& dataType instanceof StringTypeInformationInterface)
         {
-        	buffer = new StringBuffer("lower(" + attributeName + ") "+
+        	buffer = new StringBuffer(LOWER + attributeName + ") "+
         	RelationalOperator.getSQL(condition.getRelationalOperator()) +" ("+ valueStr);
         }
         return buffer.toString();
@@ -880,12 +876,12 @@ public class SqlGenerator implements ISqlGenerator
             String value = modifyValueforDataType(valueList.get(i), dataType,null);
             if (i == valueList.size() - 1)
             {
-            	valueStr.append("lower(").append(value).append("))");
+            	valueStr.append(LOWER).append(value).append("))");
                 buffer.append(value).append(')');
             }
             else
             {
-            	valueStr.append("lower(").append(value).append("),");
+            	valueStr.append(LOWER).append(value).append("),");
                 buffer.append(value).append(',');
             }
         }
@@ -923,7 +919,6 @@ public class SqlGenerator implements ISqlGenerator
      */
     private String processBetweenOperator(ICondition condition, String attributeName) throws SqlException
     {
-        StringBuffer buffer = new StringBuffer();
         List<String> values = condition.getValues();
         if (values.size() != AQConstants.TWO)
         {
@@ -935,7 +930,7 @@ public class SqlGenerator implements ISqlGenerator
 
         String firstValue = modifyValueforDataType(values.get(0), dataType, condition);
         String secondValue = modifyValueforDataType(values.get(1), dataType, condition);
-
+        StringBuffer buffer = new StringBuffer();
         buffer.append('(').append(attributeName);
         buffer.append(RelationalOperator.getSQL(RelationalOperator.GreaterThanOrEquals))
         .append(firstValue);
@@ -1073,7 +1068,7 @@ public class SqlGenerator implements ISqlGenerator
      */
 	private String modifyValueForDate(String tempValue,ICondition condition) throws SqlException
 	{
-		StringBuffer value = new StringBuffer();
+		StringBuffer value;
 		try
 		{
 		    Date date = Utility.parseDate(tempValue);
@@ -1085,6 +1080,7 @@ public class SqlGenerator implements ISqlGenerator
 		    }
 		    Calendar calendar = Calendar.getInstance();
 		    calendar.setTime(date);
+		    value = new StringBuffer();
 		    value.append((calendar.get(Calendar.MONTH) + 1)).append('-')
 		    .append(calendar.get(Calendar.DAY_OF_MONTH)).append('-')
 		    .append(calendar.get(Calendar.YEAR));

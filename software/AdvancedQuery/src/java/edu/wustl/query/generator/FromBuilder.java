@@ -387,17 +387,22 @@ public class FromBuilder
      */
     private SrcStringProvider srcStringProvider(InheritanceStrategy strategy)
     {
+    	SrcStringProvider stringProvider;
         switch (strategy)
         {
             case TABLE_PER_CONCRETE_CLASS :
-                return new TblPerConcreteClass();
+            	stringProvider = new TblPerConcreteClass();
+            	break;
             case TABLE_PER_HEIRARCHY :
-                return new TblPerHier();
+            	stringProvider = new TblPerHier();
+            	break;
             case TABLE_PER_SUB_CLASS :
-                return new TblPerSubClass();
+            	stringProvider = new TblPerSubClass();
+            	break;
             default :
                 throw new RuntimeException("Unknown inheritance strategy.");
         }
+        return stringProvider;
     }
 
     /**
@@ -669,13 +674,14 @@ public class FromBuilder
      */
     private static EntityInterface root(EntityInterface entity)
     {
+    	EntityInterface root = entity;
         // old code also checked inheritance strategy here; not needed if
         // strategies are not mixed.
         while (entity.getParentEntity() != null)
         {
-            entity = entity.getParentEntity();
+            root = entity.getParentEntity();
         }
-        return entity;
+        return root;
     }
 
     /**
