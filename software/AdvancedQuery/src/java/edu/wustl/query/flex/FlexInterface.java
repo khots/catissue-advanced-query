@@ -396,7 +396,7 @@ public class FlexInterface
 	 */
 	public void initFlexInterface()
 	{
-		queryObject = new ClientQueryBuilder();
+		IClientQueryBuilderInterface queryObject = new ClientQueryBuilder();
 		IPathFinder pathFinder = new CommonPathFinder();
 		if(pathFinder != null)
 		{
@@ -405,7 +405,6 @@ public class FlexInterface
 		}
 	}
 
-	private IClientQueryBuilderInterface queryObject = null;
 	private DAGPanel dagPanel = null;
 	// private HttpSession session = null;
 

@@ -123,13 +123,6 @@ public class TwoNodesTemporalQuery
 	 * Numeric literal.
 	 */
 	private INumericLiteral intLiteral = null;
-	/**
-	 * Formatter.
-	 */
-	private SimpleDateFormat formatter;
-
-	//private String timeIntervalValue = null;
-	//private String timeValue = null;
 
 	public TimeInterval getQAttrInterval2()
 	{
@@ -625,7 +618,7 @@ public class TwoNodesTemporalQuery
 			{
 				pattern = "MM/dd/yyyy";
 			}
-			formatter = new SimpleDateFormat(pattern);
+			SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 			date = formatter.parse(timeValue);
 		}
 		catch (ParseException e)
