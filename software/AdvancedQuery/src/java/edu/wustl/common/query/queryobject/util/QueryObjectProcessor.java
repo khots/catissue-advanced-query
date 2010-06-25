@@ -17,13 +17,6 @@ import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 public class QueryObjectProcessor
 {
 	/**
-	 * Default constructor, made it protected to keep its implementation as singleton class.
-	 *
-	 */
-	protected QueryObjectProcessor()
-	{
-	}
-	/**
 	 * To get map of all Children nodes along with their id's under given output tree node.
 	 * @param root The root node of the output tree.
 	 * @return map of all Children nodes along with their id's under given output tree node.

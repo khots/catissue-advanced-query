@@ -26,7 +26,7 @@ public class OutputTreeDataNode implements Serializable
 	/**
 	 * The auto generated identifier.
 	 */
-	private long identifier;
+	private final long identifier;
 
 	/**
 	 * This increments each time to generate unique identifier.
@@ -41,22 +41,22 @@ public class OutputTreeDataNode implements Serializable
 	/**
 	 * List of OutputTreeDataNode objects.
 	 */
-	private List<OutputTreeDataNode> children = new ArrayList<OutputTreeDataNode>();
+	private final List<OutputTreeDataNode> children = new ArrayList<OutputTreeDataNode>();
 
 	/**
 	 * Object of OutputEntity.
 	 */
-	private IOutputEntity outputEntity;
+	private final IOutputEntity outputEntity;
 
 	/**
 	 * The tree number.
 	 */
-	private int treeNo;
+	private final int treeNo;
 
 	/**
 	 * Expression id.
 	 */
-	private int expressionId;
+	private final int expressionId;
 
 	/**
 	 * List of QueryOutputTreeAttributeMetadata objects.
@@ -77,13 +77,7 @@ public class OutputTreeDataNode implements Serializable
 		identifier = lastId++;
 		this.treeNo = treeNo;
 	}
-	/**
-	 * Adding default constructor.
-	 */
-	public OutputTreeDataNode()
-	{
 
-	}
 	/**
 	 * To get the auto generated id for the class instance.
 	 * @return The long value representing auto generated id for the class instance.
@@ -202,7 +196,7 @@ public class OutputTreeDataNode implements Serializable
 	public String toString()
 	{
 		return "[" + identifier + ":" + outputEntity.toString() + "("
-				+ (parentNode == null ? "-" : parentNode.getId() + "") + ")" + "]";
+				+ (parentNode == null ? "-" : Long.toString(parentNode.getId())) + ")" + "]";
 	}
 
 	/**

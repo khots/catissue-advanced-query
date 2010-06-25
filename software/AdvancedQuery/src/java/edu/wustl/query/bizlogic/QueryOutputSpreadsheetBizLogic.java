@@ -410,56 +410,59 @@ public class QueryOutputSpreadsheetBizLogic
 		if (parentData != null && parentData.equals(AQConstants.HASHED_NODE_ID) && false)
 		{
 			addHashedRow(spreadSheetDataMap);
-			return "";
-		}
-		if (!selectedColumnMetaData.isDefinedView())
-		{
-			if (!outputTermsColumns.isEmpty())
-			{
-				TemporalColumnUIBean temporalColumnUIBean = new TemporalColumnUIBean(node,
-						selectSql, columnsList, outputTermsColumns, columnIndex, constraints);
-				List tqColumnMetadataList = modifySqlForTemporalColumns(temporalColumnUIBean,
-						queryDetailsObj, parentData);
-				queryResultObjectDataBean.setTqColumnMetadataList(tqColumnMetadataList);
-				selectSql = temporalColumnUIBean.getSql();
-				columnIndex = temporalColumnUIBean.getColumnIndex();
-			}
-			if (queryResultObjectDataBean.getMainEntityIdentifierColumnId() == -1)
-			{
-				Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
-				selectSql = QueryCSMUtil.updateEntityIdIndexMap(queryResultObjectDataBean,
-						columnIndex, selectSql, null, entityIdIndexMap, queryDetailsObj);
-				entityIdIndexMap = queryResultObjectDataBean.getEntityIdIndexMap();
-				if (entityIdIndexMap.get(queryResultObjectDataBean.getMainEntity()) != null)
-				{
-					queryResultObjectDataBean.setMainEntityIdentifierColumnId(entityIdIndexMap
-							.get(queryResultObjectDataBean.getMainEntity()));
-				}
-			}
-		}
-		selectSql = selectSql + " from " + tableName;
-		if (parentData == null)
-		{
-			selectSql = selectSql + " where " + idColumnOfCurrentNode + " "
-			+ RelationalOperator.getSQL(RelationalOperator.IsNotNull);
+			selectSql = "";
 		}
 		else
 		{
-			selectSql = selectSql + " where (" + parentIdColumnName + " = '" + parentData + "' "
-			+ LogicalOperator.And + " " + idColumnOfCurrentNode + " "
-			+ RelationalOperator.getSQL(RelationalOperator.IsNotNull) + ")";
-		}
-		if (!selectedColumnMetaData.isDefinedView())
-		{
-			if (!identifiedDataColumnIds.isEmpty())
+			if (!selectedColumnMetaData.isDefinedView())
 			{
-				queryResultObjectDataBean.setHasAssociatedIdentifiedData(true);
+				if (!outputTermsColumns.isEmpty())
+				{
+					TemporalColumnUIBean temporalColumnUIBean = new TemporalColumnUIBean(node,
+							selectSql, columnsList, outputTermsColumns, columnIndex, constraints);
+					List tqColumnMetadataList = modifySqlForTemporalColumns(temporalColumnUIBean,
+							queryDetailsObj, parentData);
+					queryResultObjectDataBean.setTqColumnMetadataList(tqColumnMetadataList);
+					selectSql = temporalColumnUIBean.getSql();
+					columnIndex = temporalColumnUIBean.getColumnIndex();
+				}
+				if (queryResultObjectDataBean.getMainEntityIdentifierColumnId() == -1)
+				{
+					Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
+					selectSql = QueryCSMUtil.updateEntityIdIndexMap(queryResultObjectDataBean,
+							columnIndex, selectSql, null, entityIdIndexMap, queryDetailsObj);
+					entityIdIndexMap = queryResultObjectDataBean.getEntityIdIndexMap();
+					if (entityIdIndexMap.get(queryResultObjectDataBean.getMainEntity()) != null)
+					{
+						queryResultObjectDataBean.setMainEntityIdentifierColumnId(entityIdIndexMap
+								.get(queryResultObjectDataBean.getMainEntity()));
+					}
+				}
 			}
-			queryResultObjectDataBean.setObjectColumnIds(objectDataColumnIds);
-		}
-		if (selectSql.indexOf(AQConstants.SELECT_DISTINCT) == -1 && !selectedColumnMetaData.isDefinedView())
-		{
-			selectSql = AQConstants.SELECT_DISTINCT + selectSql;
+			selectSql = selectSql + " from " + tableName;
+			if (parentData == null)
+			{
+				selectSql = selectSql + " where " + idColumnOfCurrentNode + " "
+				+ RelationalOperator.getSQL(RelationalOperator.IsNotNull);
+			}
+			else
+			{
+				selectSql = selectSql + " where (" + parentIdColumnName + " = '" + parentData + "' "
+				+ LogicalOperator.And + " " + idColumnOfCurrentNode + " "
+				+ RelationalOperator.getSQL(RelationalOperator.IsNotNull) + ")";
+			}
+			if (!selectedColumnMetaData.isDefinedView())
+			{
+				if (!identifiedDataColumnIds.isEmpty())
+				{
+					queryResultObjectDataBean.setHasAssociatedIdentifiedData(true);
+				}
+				queryResultObjectDataBean.setObjectColumnIds(objectDataColumnIds);
+			}
+			if (selectSql.indexOf(AQConstants.SELECT_DISTINCT) == -1 && !selectedColumnMetaData.isDefinedView())
+			{
+				selectSql = AQConstants.SELECT_DISTINCT + selectSql;
+			}
 		}
 		return selectSql;
 	}
