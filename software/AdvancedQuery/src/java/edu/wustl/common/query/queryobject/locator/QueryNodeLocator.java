@@ -34,17 +34,17 @@ public class QueryNodeLocator
 	/**
 	 * The Max X coordinate.
 	 */
-	private int maxX;
+	private final int maxX;
 
 	/**
 	 * The query constraints.
 	 */
-	private IConstraints constraints;
+	private final IConstraints constraints;
 
 	/**
 	 * Object of IJoinGraph.
 	 */
-	private IJoinGraph graph;
+	private final IJoinGraph graph;
 
 	/**
 	 * The position map.

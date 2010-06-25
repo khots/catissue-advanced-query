@@ -12,7 +12,7 @@ public class Position
 	/**
 	 * The x & y coordinates.
 	 */
-	private int xCoordinate, yCoordinate;
+	private final int xCoordinate, yCoordinate;
 
 	/**
 	 * Default constructor.

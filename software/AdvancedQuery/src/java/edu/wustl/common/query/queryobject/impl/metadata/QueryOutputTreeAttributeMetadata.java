@@ -20,21 +20,21 @@ public class QueryOutputTreeAttributeMetadata
 	/**
 	 * Reference to the attribute for which the meta data is to be stored.
 	 */
-	private AttributeInterface attribute;
+	private final AttributeInterface attribute;
 	/**
 	 * The name of the column in the temporary table for the given attribute.
 	 */
-	private String columnName;
+	private final String columnName;
 
 	/**
 	 * The name to be displayed.
 	 */
-	private String displayName;
+	private final String displayName;
 
 	/**
 	 * tree data node.
 	 */
-	private OutputTreeDataNode treeDataNode;
+	private final OutputTreeDataNode treeDataNode;
 
 	/**
 	 * Constructor to instantiate this object.
