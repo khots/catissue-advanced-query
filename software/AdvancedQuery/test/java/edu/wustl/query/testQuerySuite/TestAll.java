@@ -19,6 +19,7 @@ import edu.wustl.common.query.factory.AbstractQueryGeneratorFactoryTestCase;
 import edu.wustl.common.query.factory.CommonObjectFactoryTestCase;
 import edu.wustl.common.query.queryobject.impl.AttributeComparatorTestCase;
 import edu.wustl.common.query.queryobject.impl.ListComparatorTestCase;
+import edu.wustl.common.query.queryobject.impl.OutputTreeDataNodeTestCase;
 import edu.wustl.common.query.queryobject.impl.QueryExportDataHandlerTestCase;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryTreeNodeDataTestCase;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadataTestCase;
@@ -112,7 +113,7 @@ public class TestAll
 		suite.addTestSuite(SqlKeyWordsTestCase.class);
 		suite.addTestSuite(TemporalColumnMetadataTestCase.class);
 		suite.addTestSuite(PositionTestCase.class);
-
+		suite.addTestSuite(OutputTreeDataNodeTestCase.class);
 		return suite;
 	}
 }
