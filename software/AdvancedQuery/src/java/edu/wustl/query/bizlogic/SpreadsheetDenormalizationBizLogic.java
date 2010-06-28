@@ -8,12 +8,14 @@ import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.emory.mathcs.backport.java.util.Collections;
 import edu.wustl.common.query.queryobject.impl.AttributeComparator;
 import edu.wustl.common.query.queryobject.impl.DenormalizedCSVExporter;
 import edu.wustl.common.query.queryobject.impl.ListComparator;
+import edu.wustl.common.query.queryobject.impl.OutputAttributeColumn;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.QueryExportDataHandler;
 import edu.wustl.common.query.queryobject.impl.QueryParser;
@@ -152,7 +154,7 @@ public class SpreadsheetDenormalizationBizLogic
 		{
 			if(attribute instanceof AssociationInterface)
 			{
-				EntityInterface associatedEntity = isAssociationPresent(attribute,treeDataNode,constraints);
+				EntityInterface associatedEntity = isAssociationPresent(attribute,treeDataNode,constraints,entity);
 				if(associatedEntity != null)
 				{
 					Map<BaseAbstractAttributeInterface,Object> tempMap = new HashMap<BaseAbstractAttributeInterface, Object>();
@@ -160,29 +162,20 @@ public class SpreadsheetDenormalizationBizLogic
 					{
 						tempMap = ((List<Map<BaseAbstractAttributeInterface,Object>>)denormalizationMap2.get(attribute)).get(0);
 					}
-					/*if(!markedEntities.contains(associatedEntity))
-					{*/
-						Map<BaseAbstractAttributeInterface,Object> innerMap =
-							populateMap(tempMap,associatedEntity,selectedAttributeMetaDataList,constraints);
-						innerMapList = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
-						innerMapList.add(innerMap);
+					Map<BaseAbstractAttributeInterface,Object> innerMap =
+						populateMap(tempMap,associatedEntity,selectedAttributeMetaDataList,constraints);
+					innerMapList = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
+					innerMapList.add(innerMap);
+					if(denormalizationMap2.get(attribute) == null)
+					{
 						denormalizationMap.put(attribute,innerMapList);
-						if(denormalizationMap2.get(attribute) == null)
-						{
-							denormalizationMap2.put(attribute, innerMapList);
-						}
-						else
-						{
-							List<Map<BaseAbstractAttributeInterface,Object>> innerList =
-								(List<Map<BaseAbstractAttributeInterface, Object>>) denormalizationMap2.get(attribute);
-							if(!tempMap.equals(innerMap) && !innerList.contains(innerMap))
-							{
-								innerList.add(innerMap);
-							}
-
-						}
-					//}
-					//populateMarkedEntities(entity);
+						denormalizationMap2.put(attribute, innerMapList);
+					}
+					else
+					{
+						populateInnerList(denormalizationMap2, attribute,
+								tempMap, innerMap);
+					}
 				}
 			}
 			else
@@ -193,6 +186,88 @@ public class SpreadsheetDenormalizationBizLogic
 			}
 		}
 		return denormalizationMap;
+	}
+
+	/**
+	 * Populate the inner list.
+	 * @param denormalizationMap2 denormalizationMap2
+	 * @param attribute attribute
+	 * @param tempMap tempMap
+	 * @param innerMap innerMap
+	 */
+	private void populateInnerList(
+			Map<BaseAbstractAttributeInterface, Object> denormalizationMap2,
+			AbstractAttributeInterface attribute,
+			Map<BaseAbstractAttributeInterface, Object> tempMap,
+			Map<BaseAbstractAttributeInterface, Object> innerMap)
+	{
+		List<Map<BaseAbstractAttributeInterface,Object>> innerList =
+			(List<Map<BaseAbstractAttributeInterface, Object>>) denormalizationMap2.get(attribute);
+		if(!tempMap.equals(innerMap) && !innerList.contains(innerMap))
+		{
+			boolean isPresent = checkIfPresent(innerMap, innerList);
+			if(!isPresent)
+			{
+				innerList.add(innerMap);
+			}
+		}
+	}
+
+	/**
+	 * Checks if the attribute is already present in the map.
+	 * @param innerMap innerMap
+	 * @param innerList innerList
+	 * @return isPresent
+	 */
+	private boolean checkIfPresent(
+			Map<BaseAbstractAttributeInterface, Object> innerMap,
+			List<Map<BaseAbstractAttributeInterface, Object>> innerList)
+	{
+		boolean isPresent = false;
+		for(Map<BaseAbstractAttributeInterface,Object> inMap : innerList)
+		{
+			for(BaseAbstractAttributeInterface key : inMap.keySet())
+			{
+				isPresent = isPresent(innerMap,inMap, key);
+				if(isPresent)
+				{
+					break;
+				}
+			}
+			if(isPresent)
+			{
+				break;
+			}
+		}
+		return isPresent;
+	}
+
+	/**
+	 * Checks if the attribute is already present in the map.
+	 * @param innerMap innerMap
+	 * @param inMap inMap
+	 * @param key key
+	 * @return isPresent
+	 */
+	private boolean isPresent(
+			Map<BaseAbstractAttributeInterface, Object> innerMap,
+			Map<BaseAbstractAttributeInterface, Object> inMap,
+			BaseAbstractAttributeInterface key)
+	{
+		boolean isPresent = false;
+		if(key instanceof AttributeInterface)
+		{
+			for(BaseAbstractAttributeInterface inKey :innerMap.keySet())
+			{
+				if(inKey == key && inKey.getName().equals("id") &&
+						inMap.get(key).equals(innerMap.get(inKey)))
+				{
+					isPresent = true;
+					break;
+				}
+			}
+		}
+		return isPresent;
 	}
 
 	/**
@@ -207,7 +282,7 @@ public class SpreadsheetDenormalizationBizLogic
 			Map<BaseAbstractAttributeInterface, Object> denormalizationMap,
 			AbstractAttributeInterface attribute)
 	{
-		String value = isPresent(attribute,selectedAttributeMetaDataList);
+		OutputAttributeColumn value = isPresent(attribute,selectedAttributeMetaDataList);
 		if(value != null)
 		{
 			denormalizationMap.put(attribute, value);
@@ -217,18 +292,6 @@ public class SpreadsheetDenormalizationBizLogic
 			}
 		}
 	}
-
-	/**
-	 * @param entity entity
-	 */
-//	private void populateMarkedEntities(EntityInterface entity)
-//	{
-//		if(!markedEntities.contains(entity))
-//		{
-//			markedEntities.add(entity);
-//		}
-//
-//	}
 
 	private OutputTreeDataNode getTreeDataNode(EntityInterface entity,
 			List<QueryOutputTreeAttributeMetadata> selectedAttributeMetaDataList)
@@ -245,24 +308,32 @@ public class SpreadsheetDenormalizationBizLogic
 		return treeDataNode;
 	}
 
+	/**
+	 * Checks if the association between the given expressions is present in the graph.
+	 * @param attribute attribute
+	 * @param treeDataNode treeDataNode
+	 * @param constraints constraints
+	 * @return entity
+	 * @throws MultipleRootsException MultipleRootsException
+	 */
 	private EntityInterface isAssociationPresent(
 			AbstractAttributeInterface attribute, OutputTreeDataNode treeDataNode,
-			IConstraints constraints) throws MultipleRootsException
+			IConstraints constraints,EntityInterface currentEntity) throws MultipleRootsException
 	{
 		JoinGraph joinGraph = (JoinGraph)constraints.getJoinGraph();
 		int entityExpressionId;
 		EntityInterface dataNodeEntity;
 		if(treeDataNode == null)
 		{
-			entityExpressionId  = joinGraph.getRoot().getExpressionId();
-			dataNodeEntity = joinGraph.getRoot().getQueryEntity().getDynamicExtensionsEntity();
+			entityExpressionId  = getEntityExpId(constraints,currentEntity);
+			dataNodeEntity = currentEntity;
 		}
 		else
 		{
 			entityExpressionId = treeDataNode.getExpressionId();
 			dataNodeEntity = treeDataNode.getOutputEntity().getDynamicExtensionsEntity();
 		}
-		BaseAbstractAttributeInterface associationInterface = null;
+		BaseAbstractAttributeInterface associationInterface;
 		EntityInterface entity = null;
 		for(IExpression expression: constraints)
 		{
@@ -280,9 +351,10 @@ public class SpreadsheetDenormalizationBizLogic
 					{
 						tgtEntityVsAssoc.put(dataNodeEntity, associationInterface);
 						entity = populateEntityVsAssoc(joinGraph,expression,dataNodeEntity,associationInterface);
+						break;
 					}
 				}
-				break;
+
 			}
 			else if(joinGraph.containsAssociation(constraints.getExpression
 					(entityExpressionId),expression))
@@ -305,6 +377,36 @@ public class SpreadsheetDenormalizationBizLogic
 		return entity;
 	}
 
+	/**
+	 * Get the expression id of the given entity.
+	 * @param constraints constraints
+	 * @param currentEntity currentEntity
+	 * @return expressionId
+	 */
+	private int getEntityExpId(IConstraints constraints,
+			EntityInterface currentEntity)
+	{
+		int expressionId = 0;
+		for(IExpression expression : constraints)
+		{
+			if(expression.getQueryEntity().getDynamicExtensionsEntity().equals(currentEntity))
+			{
+				expressionId = expression.getExpressionId();
+				break;
+			}
+		}
+		return expressionId;
+	}
+
+	/**
+	 * Populate tgtEntityVsAssoc map, where key-> the target entity of the passed association
+	 * which is present in the DAG and value->Association.
+	 * @param joinGraph joinGraph
+	 * @param expression expression
+	 * @param dynamicExtensionsEntity dynamicExtensionsEntity
+	 * @param associationInterface associationInterface
+	 * @return entity
+	 */
 	private EntityInterface populateTgtEntityVsAssoc(JoinGraph joinGraph,
 			IExpression expression, EntityInterface dynamicExtensionsEntity,
 			BaseAbstractAttributeInterface associationInterface)
@@ -338,27 +440,37 @@ public class SpreadsheetDenormalizationBizLogic
 	private void populateTgtVsAssocMap(EntityInterface dynamicExtensionsEntity,
 			BaseAbstractAttributeInterface associationInterface, IExpression exp)
 	{
-		BaseAbstractAttributeInterface association = tgtEntityVsAssoc.get(dynamicExtensionsEntity);
+		BaseAbstractAttributeInterface association = tgtEntityVsAssoc.get(exp.getQueryEntity().getDynamicExtensionsEntity());
 		if(association == null)
 		{
 			tgtEntityVsAssoc.put(exp.getQueryEntity().getDynamicExtensionsEntity(), associationInterface);
 		}
 	}
 
-	private String isPresent(AbstractAttributeInterface attribute,
+	/**
+	 * Return the corresponding value for the attribute passed, from the columnNameMap.
+	 * @param attribute attribute
+	 * @param selectedAttributeMetaDataList selectedAttributeMetaDataList
+	 * @return opAttrCol
+	 */
+	private OutputAttributeColumn isPresent(AbstractAttributeInterface attribute,
 			List<QueryOutputTreeAttributeMetadata> selectedAttributeMetaDataList)
 	{
+		OutputAttributeColumn opAttrCol = null;
 		String value = null;
+		int columnIndex = -1;
 		for(QueryOutputTreeAttributeMetadata outputTreeAttributeMetadata : selectedAttributeMetaDataList)
 		{
+			columnIndex++;
 			BaseAbstractAttributeInterface presentAttribute = outputTreeAttributeMetadata.getAttribute();
 			if(presentAttribute.equals(attribute))
 			{
 				value = columnNameMap.get(outputTreeAttributeMetadata.getColumnName());
+				opAttrCol = new OutputAttributeColumn(value, columnIndex, (AttributeInterface)attribute, null);
 				break;
 			}
 		}
-		return value;
+		return opAttrCol;
 	}
 
 	/**
@@ -398,7 +510,8 @@ public class SpreadsheetDenormalizationBizLogic
 	}
 
 	/**
-	 *
+	 * Populates entityVsAssoc map where key->the source entity of the given association and
+	 * value->Association.
 	 * @param joinGraph joinGraph
 	 * @param expression expression
 	 * @param dynamicExtensionsEntity
@@ -470,13 +583,10 @@ public class SpreadsheetDenormalizationBizLogic
 	private IExpression getExpression(JoinGraph joinGraph,IExpression expression)
 	{
 		IExpression finalExp = expression;
-		if(!expression.isInView())
+		if(!expression.isInView() && !joinGraph.getChildrenList(expression).isEmpty())
 		{
-			if(!joinGraph.getChildrenList(expression).isEmpty())
-			{
-				IExpression parentExp = joinGraph.getChildrenList(expression).get(0);
-				finalExp = getExpression(joinGraph,parentExp);
-			}
+			IExpression parentExp = joinGraph.getChildrenList(expression).get(0);
+			finalExp = getExpression(joinGraph,parentExp);
 		}
 		return finalExp;
 	}
@@ -504,7 +614,13 @@ public class SpreadsheetDenormalizationBizLogic
 		while(tokenizer.hasMoreTokens())
 		{
 			String token = tokenizer.nextToken();
-			columnNameMap.put(token.trim(), dataList.get(index++));
+			String data = dataList.get(index);
+			if(data.length() == 0)
+			{
+				data = " ";
+			}
+			columnNameMap.put(token.trim(), data);
+			index++;
 		}
 		return columnNameMap;
 	}

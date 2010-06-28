@@ -485,7 +485,7 @@ public class QueryModuleSearchQueryUtil
 			List<QueryOutputTreeAttributeMetadata> selAttributeMetaDataList = selectedColumnsMetadata
 					.getSelectedAttributeMetaDataList();
 			populateExpressionIds(expressionIdsInQuery, constraints);
-			isQueryChanged = isQueryChanged(expressionIdsInQuery, selAttributeMetaDataList);
+			isQueryChanged = isQueryChanged(expressionIdsInQuery, selAttributeMetaDataList,selectedColumnsMetadata);
 		}
 		selectedColumnsMetadata = setDefinedViewInMetadata(
 				selectedColumnsMetadata, isQueryChanged);
@@ -529,20 +529,28 @@ public class QueryModuleSearchQueryUtil
 	/**
 	 * @param expressionIdsInQuery expressionIdsInQuery
 	 * @param selAttributeMetaDataList selAttributeMetaDataList
+	 * @param selectedColumnsMetadata
 	 * @return isQueryChanged
 	 */
 	private static boolean isQueryChanged(List<Integer> expressionIdsInQuery,
-			List<QueryOutputTreeAttributeMetadata> selAttributeMetaDataList)
+			List<QueryOutputTreeAttributeMetadata> selAttributeMetaDataList, SelectedColumnsMetadata selectedColumnsMetadata)
 	{
 		boolean isQueryChanged = false;
 		int expressionId;
-		for (QueryOutputTreeAttributeMetadata element : selAttributeMetaDataList)
+		if(expressionIdsInQuery.size() != selectedColumnsMetadata.getNoOfExpr())
 		{
-			expressionId = element.getTreeDataNode().getExpressionId();
-			if (!expressionIdsInQuery.contains(Integer.valueOf(expressionId)))
+			isQueryChanged = true;
+		}
+		else
+		{
+			for (QueryOutputTreeAttributeMetadata element : selAttributeMetaDataList)
 			{
-				isQueryChanged = true;
-				break;
+				expressionId = element.getTreeDataNode().getExpressionId();
+				if (!expressionIdsInQuery.contains(Integer.valueOf(expressionId)))
+				{
+					isQueryChanged = true;
+					break;
+				}
 			}
 		}
 		return isQueryChanged;
@@ -609,6 +617,7 @@ public class QueryModuleSearchQueryUtil
 		List<IOutputAttribute> selAttributeList;
 		boolean isDefinedView = true;
 		List<IOutputAttribute> selectedOutputAttributeList = new ArrayList<IOutputAttribute>();
+		selectedColumnsMetadata.setNoOfExpr(query.getConstraints().size());
 		if (query instanceof ParameterizedQuery)
 		{
 			ParameterizedQuery savedQuery = (ParameterizedQuery) query;

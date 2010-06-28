@@ -31,7 +31,10 @@ public class QueryExportDataHandler
 		new HashMap<EntityInterface, BaseAbstractAttributeInterface>();
 	private Map<EntityInterface,BaseAbstractAttributeInterface> tgtEntityVsAssoc =
 		new HashMap<EntityInterface, BaseAbstractAttributeInterface>();
-	private final List<AttributeInterface> selectedAttributes = new ArrayList<AttributeInterface>();
+	private final Map<Integer,List<OutputAttributeColumn>> selectedAttributes =
+		new HashMap<Integer,List<OutputAttributeColumn>>();
+	private final List<OutputAttributeColumn> selectedAttributeList = new ArrayList<OutputAttributeColumn>();
+	private int index;
 
 	public QueryExportDataHandler(EntityInterface rootEntity)
 	{
@@ -81,6 +84,7 @@ public class QueryExportDataHandler
 	 */
 	public void updateRowDataList(Map<BaseAbstractAttributeInterface,Object> denormalizationMap, int mapIndex)
 	{
+		this.index = mapIndex;
 		QueryHeaderData queryDataEntity = new QueryHeaderData(rootEntity, "");
 		Map<QueryHeaderData, List<List<Object>>> entityVsDataList =
 			new HashMap<QueryHeaderData, List<List<Object>>>();
@@ -133,8 +137,9 @@ public class QueryExportDataHandler
 				if (attribute instanceof AttributeInterface
 						&& !(denormalizationMap.get(attribute) instanceof List))
 				{
-					rowDataList.add(getValueForAttributeFromMap(attribute, denormalizationMap));
-					populateSelectedAttributes(attribute);
+					Object recordValue = getValueForAttributeFromMap(attribute, denormalizationMap);
+					rowDataList.add(recordValue);
+					populateSelectedAttributes(recordValue);
 				}
 				else if (attribute instanceof AttributeInterface
 						&& (denormalizationMap.get(attribute) instanceof List))
@@ -160,13 +165,36 @@ public class QueryExportDataHandler
 	/**
 	 * Add the attribute in the list if not present.
 	 * @param attribute attribute
+	 * @param recordValue
 	 */
-	private void populateSelectedAttributes(
-			BaseAbstractAttributeInterface attribute)
+	private void populateSelectedAttributes(Object recordValue)
 	{
-		if(!selectedAttributes.contains(attribute))
+		List<OutputAttributeColumn> selectedList = selectedAttributes.get(index);
+		boolean flag = false;
+		if(selectedList == null)
 		{
-			selectedAttributes.add((AttributeInterface)attribute);
+			selectedList = new ArrayList<OutputAttributeColumn>();
+			selectedList.add((OutputAttributeColumn) recordValue);
+			selectedAttributes.put(index, selectedList);
+		}
+		else
+		{
+			for(OutputAttributeColumn opAttrColumn : selectedList)
+			{
+				if(opAttrColumn.getAttribute().equals(((OutputAttributeColumn)recordValue).getAttribute()))
+				{
+					flag = true;
+					break;
+				}
+			}
+			if(flag == false)
+			{
+				selectedList.add((OutputAttributeColumn) recordValue);
+			}
+		}
+		if(!selectedAttributeList.contains(recordValue))
+		{
+			selectedAttributeList.add((OutputAttributeColumn) recordValue);
 		}
 	}
 
@@ -196,10 +224,10 @@ public class QueryExportDataHandler
 			BaseAbstractAttributeInterface attribute,
 			Map<BaseAbstractAttributeInterface, Object> denormalizationMap)
 	{
-		Object recordValue = null;
+		OutputAttributeColumn recordValue = null;
 		if (denormalizationMap.get(attribute) != null)
 		{
-			recordValue = denormalizationMap.get(attribute).toString();
+			recordValue = (OutputAttributeColumn)denormalizationMap.get(attribute);
 		}
 		return recordValue;
 	}
@@ -337,10 +365,10 @@ public class QueryExportDataHandler
 	 * This method returns the header list to be displayed in the CSV file.
 	 * @return headerList
 	 */
-	public List<String> getHeaderList()
+	public List<Object> getHeaderList()
 	{
 		markedEntities = new ArrayList<EntityInterface>();
-		List<String> headerList;
+		List<Object> headerList;
 		QueryHeaderData headerData = new QueryHeaderData(rootEntity, "");
 		headerList = getHeaderForSpreadsheetDataCSV(headerData);
 		return headerList;
@@ -351,10 +379,10 @@ public class QueryExportDataHandler
 	 * @param headerData headerData
 	 * @return
 	 */
-	private List<String> getHeaderForSpreadsheetDataCSV(
+	private List<Object> getHeaderForSpreadsheetDataCSV(
 			QueryHeaderData queryHeaderData)
 	{
-		List<String> headerList = new ArrayList<String>();
+		List<Object> headerList = new ArrayList<Object>();
 
 		populateMarkedEntities(queryHeaderData);
 		Integer maxRecordCount = getMaxRecordCountForQueryHeader(queryHeaderData);
@@ -386,10 +414,11 @@ public class QueryExportDataHandler
 	 * @param cntr counter
 	 * @param attribute attribute
 	 */
-	private void populateHeaderListForAttribute(List<String> headerList,
+	private void populateHeaderListForAttribute(List<Object> headerList,
 			int cntr, AbstractAttributeInterface attribute)
 	{
-		if(selectedAttributes.contains(attribute))
+		OutputAttributeColumn opAttrCol = getOpAttributeColumnForHeader(attribute);
+		if(opAttrCol != null)
 		{
 			StringBuffer headerDisplay = new StringBuffer();
 			headerDisplay.append(Utility.getDisplayNameForColumn((AttributeInterface)attribute));
@@ -397,10 +426,33 @@ public class QueryExportDataHandler
 			{
 				headerDisplay.append('_').append(cntr);
 			}
-			headerList.add(headerDisplay.toString());
+			if(opAttrCol.getHeader() == null)
+			{
+				opAttrCol.setHeader(headerDisplay.toString());
+				headerList.add(opAttrCol);
+			}
+			else
+			{
+				StringBuffer originalHeader = new StringBuffer(opAttrCol.getHeader());
+				originalHeader.append("|").append(headerDisplay.toString());
+				opAttrCol.setHeader(originalHeader.toString());
+			}
 		}
 	}
 
+	private OutputAttributeColumn getOpAttributeColumnForHeader(AbstractAttributeInterface attribute)
+	{
+		OutputAttributeColumn opAttrCol = null;
+		for(OutputAttributeColumn opAttrColumn : selectedAttributeList)
+		{
+			if(opAttrColumn.getAttribute().equals(attribute))
+			{
+				opAttrCol = opAttrColumn;
+				break;
+			}
+		}
+		return opAttrCol;
+	}
 	/**
 	 * Populate the header list.
 	 * @param queryHeaderData queryHeaderData
@@ -409,7 +461,7 @@ public class QueryExportDataHandler
 	 * @param attribute attribute
 	 */
 	private void populateHeaderListForAssoc(QueryHeaderData queryHeaderData,
-			List<String> headerList, int cntr,
+			List<Object> headerList, int cntr,
 			AbstractAttributeInterface attribute)
 	{
 		EntityInterface entity = getTargetEntity((AssociationInterface)attribute);
@@ -433,6 +485,7 @@ public class QueryExportDataHandler
 	 */
 	public List<Object> getDataList(Integer counter)
 	{
+		this.index = counter;
 		markedEntities = new ArrayList<EntityInterface>();
 		Map<QueryHeaderData, List<List<Object>>> entityMap = recordIdVsentityVsDataList
 				.get(counter);
@@ -467,10 +520,10 @@ public class QueryExportDataHandler
 				if (attribute instanceof AssociationInterface)
 				{
 					EntityInterface entity = getTargetEntity((AssociationInterface)attribute);
-					if(entity == null)
+					if(entity != null)
 					{
-						entity = ((AssociationInterface)attribute).getTargetEntity();
-					}
+						//entity = ((AssociationInterface)attribute).getTargetEntity();
+
 					String parentRecordId = queryHeaderData.getParentRecordNo() + "_" + cntr;
 					QueryHeaderData headerData = new QueryHeaderData(entity,
 							parentRecordId);
@@ -478,23 +531,31 @@ public class QueryExportDataHandler
 					{
 						dataList.addAll(getDataListForSpreadsheetDataCSV(headerData, entityMap));
 					}
+					}
 				}
 				else
 				{
 					Object dataValue = null;
 					if (entityDataList != null && entityDataList.size()>cntr &&
-							selectedAttributes.contains(attribute))
+							getOpAttributeColumnForHeader(attribute) != null)
 					{
 						dataValue = queryData.get(counter);
 						counter++;
 					}
-					if(selectedAttributes.contains(attribute))
+					OutputAttributeColumn opAttrCol = getOpAttributeColumnForData(attribute);
+					if(opAttrCol != null)
 					{
 						if(dataValue == null)
 						{
-							dataValue = "";
+							dataValue = opAttrCol;
+							StringBuffer value = new StringBuffer(((OutputAttributeColumn)dataValue).getValue());
+							value.append("|").append(" ");
+							((OutputAttributeColumn)dataValue).setValue(value.toString());
 						}
-						dataList.add(dataValue);
+						if(!dataList.contains(dataValue))
+						{
+							dataList.add(dataValue);
+						}
 					}
 					attrControlNo++;
 				}
@@ -503,6 +564,21 @@ public class QueryExportDataHandler
 		return dataList;
 	}
 
+	private OutputAttributeColumn getOpAttributeColumnForData(AbstractAttributeInterface attribute)
+	{
+		OutputAttributeColumn opAttrCol = null;
+		List<OutputAttributeColumn> selectedList = selectedAttributes.get(index);
+
+		for(OutputAttributeColumn opAttrColumn : selectedList)
+		{
+			if(opAttrColumn.getAttribute().equals(attribute))
+			{
+				opAttrCol = opAttrColumn;
+				break;
+			}
+		}
+		return opAttrCol;
+	}
 	/**
 	 * Populate marked entities. This list contains the list of entities
 	 * for whom the processing is already done

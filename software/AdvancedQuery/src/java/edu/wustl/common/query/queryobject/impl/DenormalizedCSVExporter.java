@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * This class is responsible for forming the data list in denormalized form to be exported to a CSV file.
@@ -22,18 +25,41 @@ public class DenormalizedCSVExporter
 		Map<String,Object> exportDetailsMap = new HashMap<String,Object>();
 		List<List<String>> finalDataList = new ArrayList<List<String>>();
 		List<Object> resultList;
-		List<String> dataList;
+		List<OutputAttributeColumn> dataList;
+		List<String> newDataList;
 		for (int i = 0; i < size; i++)
 		{
 			resultList = getDataList(i, dataHandler);
-			dataList = new ArrayList<String>();
+			dataList = new ArrayList<OutputAttributeColumn>();
+			newDataList = new ArrayList<String>();
 			populateDataList(resultList, dataList);
-			finalDataList.add(dataList);
+			Collections.sort(dataList, new AttributeOrderComparator());
+			for(OutputAttributeColumn opAttrCol : dataList)
+			{
+				String value = opAttrCol.getValue();
+				StringTokenizer token = new StringTokenizer(value, "|");
+				while(token.hasMoreTokens())
+				{
+					newDataList.add(token.nextToken());
+				}
+			}
+			finalDataList.add(newDataList);
 		}
-		finalDataList = writeToCSVFile(size,dataHandler);
-		List<String> headerList = dataHandler.getHeaderList();
+		//finalDataList = writeToCSVFile(size,dataHandler);
+		List<Object> headerList = dataHandler.getHeaderList();
+		List<String> finalHeaderList = new ArrayList<String>();
+		Collections.sort(headerList, new AttributeOrderComparator());
+		for(Object opAttrCol : headerList)
+		{
+			String header = ((OutputAttributeColumn)opAttrCol).getHeader();
+			StringTokenizer token = new StringTokenizer(header, "|");
+			while(token.hasMoreTokens())
+			{
+				finalHeaderList.add(token.nextToken());
+			}
+		}
 		exportDetailsMap.put("dataList", finalDataList);
-		exportDetailsMap.put("headerList", headerList);
+		exportDetailsMap.put("headerList", finalHeaderList);
 		return exportDetailsMap;
 	}
 
@@ -42,43 +68,44 @@ public class DenormalizedCSVExporter
 	 * @param fileName fileName
 	 * @param size size
 	 */
-	private List<List<String>> writeToCSVFile(int size,QueryExportDataHandler handler)
-	{
-		List<List<String>> finalDataList = new ArrayList<List<String>>();
-		List<Object> resultList;
-		List<String> dataList;
-
-		//Add the header to report
-		List<String> headerList = handler.getHeaderList();
-		List<Object> finalHeaders = new ArrayList<Object>();
-		for(String header : headerList)
-		{
-			finalHeaders.add(header);
-		}
-		for (int i = 0; i < size; i++)
-		{
-			resultList = getDataList(i, handler);
-			dataList = new ArrayList<String>();
-			populateDataList(resultList, dataList);
-			finalDataList.add(dataList);
-		}
-		return finalDataList;
-	}
+//	private List<List<OutputAttributeColumn>> writeToCSVFile(int size,QueryExportDataHandler handler)
+//	{
+//		List<List<OutputAttributeColumn>> finalDataList = new ArrayList<List<OutputAttributeColumn>>();
+//		List<Object> resultList;
+//		List<OutputAttributeColumn> dataList;
+//
+//		//Add the header to report
+//		List<Object> headerList = handler.getHeaderList();
+//		List<Object> finalHeaders = new ArrayList<Object>();
+//		for(Object header : headerList)
+//		{
+//			finalHeaders.add(header);
+//		}
+//		for (int i = 0; i < size; i++)
+//		{
+//			resultList = getDataList(i, handler);
+//			dataList = new ArrayList<OutputAttributeColumn>();
+//			populateDataList(resultList, dataList);
+//			Collections.sort(dataList, new AttributeOrderComparator());
+//			finalDataList.add(dataList);
+//		}
+//		return finalDataList;
+//	}
 
 	/**
 	 * Convert the elements of the result list from object to String and add them in the dataList.
 	 * @param resultList resultList
 	 * @param dataList dataList
 	 */
-	private void populateDataList(List<Object> resultList, List<String> dataList)
+	private void populateDataList(List<Object> resultList, List<OutputAttributeColumn> dataList)
 	{
-		String data;
+		OutputAttributeColumn data;
 		for(Object object : resultList)
 		{
 			data = null;
 			if(object != null)
 			{
-				data = object.toString();
+				data = (OutputAttributeColumn) object;
 			}
 			dataList.add(data);
 		}

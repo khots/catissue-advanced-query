@@ -39,6 +39,7 @@ public class SelectedColumnsMetadata
 	 */
 	private List<IOutputAttribute> selectedOutputAttributeList;
 
+	private int noOfExpr;
 	/**
 	 * Check if it's define view.
 	 * @return ifDefinedView
@@ -143,5 +144,21 @@ public class SelectedColumnsMetadata
 	public void setSelectedOutputAttributeList(List<IOutputAttribute> selectedOutputAttributeList)
 	{
 		this.selectedOutputAttributeList = selectedOutputAttributeList;
+	}
+
+	/**
+	 * @param noOfExpr the noOfExpr to set.
+	 */
+	public void setNoOfExpr(int noOfExpr)
+	{
+		this.noOfExpr = noOfExpr;
+	}
+
+	/**
+	 * @return the noOfExpr.
+	 */
+	public int getNoOfExpr()
+	{
+		return noOfExpr;
 	}
 }

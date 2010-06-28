@@ -79,7 +79,7 @@ public class QueryParser
 	private void populateAppropriateList(IExpression expression,
 			int maxCardinalityValue)
 	{
-		if(maxCardinalityValue == 1)
+		if(maxCardinalityValue == 1 || maxCardinalityValue == 0)
 		{
 			oneToManyEntities.add(expression.getQueryEntity().getDynamicExtensionsEntity());
 		}
@@ -162,14 +162,14 @@ public class QueryParser
 			AssociationInterface associationInterface)
 	{
 		Integer maxCardinalityValue = maxCardinality;
-		if(associationInterface.getTargetRole().getAssociationsType().name().equals("CONTAINTMENT"))
+		if(associationInterface.getSourceRole().getAssociationsType().name().equals("CONTAINTMENT"))
 		{
 			maxCardinalityValue = 0;
 		}
 		else
 		{
-			if(associationInterface.getTargetRole().getMaximumCardinality() == null
-					|| associationInterface.getTargetRole().getMaximumCardinality().getValue() == 2)
+			if(associationInterface.getSourceRole().getMaximumCardinality() == null
+					|| associationInterface.getSourceRole().getMaximumCardinality().getValue() == 2)
 			{
 				maxCardinalityValue = 2;
 			}
@@ -186,14 +186,21 @@ public class QueryParser
 			AssociationInterface associationInterface)
 	{
 		Integer maxCardinalityValue;
-		Cardinality maxCardinality = associationInterface.getSourceRole().getMaximumCardinality();
-		if(maxCardinality == null)
+		if(associationInterface.getTargetRole().getAssociationsType().name().equals("CONTAINTMENT"))
 		{
-			maxCardinalityValue = 1;
+			maxCardinalityValue = 0;
 		}
 		else
 		{
-			maxCardinalityValue = maxCardinality.getValue();
+		Cardinality maxCardinality = associationInterface.getSourceRole().getMaximumCardinality();
+			if(maxCardinality == null)
+			{
+				maxCardinalityValue = 1;
+			}
+			else
+			{
+				maxCardinalityValue = maxCardinality.getValue();
+			}
 		}
 		return maxCardinalityValue;
 	}
