@@ -176,6 +176,9 @@ public class QueryOutputSpreadsheetBizLogic
 						queryResultObjectDataBeanMap);
 			}
 		}
+		List<Integer> expressionIdsInQuery = new ArrayList<Integer>();
+		populateExpressionIds(expressionIdsInQuery, queryDetailsObj.getQuery().getConstraints());
+		this.selectedColumnMetaData.setNoOfExpr(expressionIdsInQuery.size());
 		spreadSheetDataMap.put(AQConstants.SELECTED_COLUMN_META_DATA, this.selectedColumnMetaData);
 		return spreadSheetDataMap;
 	}
@@ -239,6 +242,9 @@ public class QueryOutputSpreadsheetBizLogic
 				spreadSheetDatamap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
 						queryResultObjectDataBeanMap);}
 		this.selectedColumnMetaData.setCurrentSelectedObject(parentNode);
+		List<Integer> expressionIdsInQuery = new ArrayList<Integer>();
+		populateExpressionIds(expressionIdsInQuery, queryDetailsObj.getQuery().getConstraints());
+		this.selectedColumnMetaData.setNoOfExpr(expressionIdsInQuery.size());
 		spreadSheetDatamap.put(AQConstants.SELECTED_COLUMN_META_DATA, this.selectedColumnMetaData);
 		return spreadSheetDatamap;
 	}
@@ -271,8 +277,27 @@ public class QueryOutputSpreadsheetBizLogic
 		Map spreadSheetDataMap = updateSpreadsheetData(queryDetailsObj, parentData, node,
 				recordsPerPage, queryResultObjectDataBeanMap, hasConditionOnIdentifiedField,
 				constraints, outputTermsColumns);
+		List<Integer> expressionIdsInQuery = new ArrayList<Integer>();
+		populateExpressionIds(expressionIdsInQuery, queryDetailsObj.getQuery().getConstraints());
+		this.selectedColumnMetaData.setNoOfExpr(expressionIdsInQuery.size());
 		spreadSheetDataMap.put(AQConstants.SELECTED_COLUMN_META_DATA, this.selectedColumnMetaData);
 		return spreadSheetDataMap;
+	}
+
+	/**
+	 * @param expressionIdsInQuery expressionIdsInQuery
+	 * @param constraints constraints
+	 */
+	private static void populateExpressionIds(
+			List<Integer> expressionIdsInQuery, IConstraints constraints)
+	{
+		for (IExpression expression : constraints)
+		{
+			if (expression.isInView())
+			{
+				expressionIdsInQuery.add(Integer.valueOf(expression.getExpressionId()));
+			}
+		}
 	}
 
 	/**

@@ -617,7 +617,9 @@ public class QueryModuleSearchQueryUtil
 		List<IOutputAttribute> selAttributeList;
 		boolean isDefinedView = true;
 		List<IOutputAttribute> selectedOutputAttributeList = new ArrayList<IOutputAttribute>();
-		selectedColumnsMetadata.setNoOfExpr(query.getConstraints().size());
+		List<Integer> expressionIdsInQuery = new ArrayList<Integer>();
+		populateExpressionIds(expressionIdsInQuery, query.getConstraints());
+		selectedColumnsMetadata.setNoOfExpr(expressionIdsInQuery.size());
 		if (query instanceof ParameterizedQuery)
 		{
 			ParameterizedQuery savedQuery = (ParameterizedQuery) query;
