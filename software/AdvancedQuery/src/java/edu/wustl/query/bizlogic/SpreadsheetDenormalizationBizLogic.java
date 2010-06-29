@@ -569,7 +569,7 @@ public class SpreadsheetDenormalizationBizLogic
 		if(!expression.isInView())
 		{
 			IExpression parentExp = joinGraph.getParentList(expression).get(0);
-			finalExp = getExpression(joinGraph,parentExp);
+			finalExp = getParentExpression(joinGraph,parentExp);
 		}
 		return finalExp;
 	}

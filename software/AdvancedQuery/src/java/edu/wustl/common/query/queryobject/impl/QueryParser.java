@@ -26,6 +26,8 @@ public class QueryParser
 {
 	private List<EntityInterface> manyToOneEntities = new ArrayList<EntityInterface>();
 	private List<EntityInterface> oneToManyEntities = new ArrayList<EntityInterface>();
+	private List<EntityInterface> containmentEntities = new ArrayList<EntityInterface>();
+	private List<EntityInterface> containmentAssocList = new ArrayList<EntityInterface>();
 
 	/**
 	 * Parses the query in order to populate the list of entities required
@@ -45,6 +47,7 @@ public class QueryParser
 						expression);
 			}
 		}
+		containmentEntities.removeAll(containmentAssocList);
 	}
 
 	/**
@@ -79,7 +82,11 @@ public class QueryParser
 	private void populateAppropriateList(IExpression expression,
 			int maxCardinalityValue)
 	{
-		if(maxCardinalityValue == 1 || maxCardinalityValue == 0)
+		if(maxCardinalityValue == 0)
+		{
+			containmentEntities.add(expression.getQueryEntity().getDynamicExtensionsEntity());
+		}
+		else if(maxCardinalityValue == 1)
 		{
 			oneToManyEntities.add(expression.getQueryEntity().getDynamicExtensionsEntity());
 		}
@@ -134,6 +141,11 @@ public class QueryParser
 				association.getDynamicExtensionsAssociation();
 				maxCardinalityValue = getMaxCardinalityForChildToExp(
 						maxCardinalityValue, associationInterface);
+				if(maxCardinalityValue == 0)
+				{
+					IExpression finalExp = getParentExpression(joinGraph,child);
+					populateContainmentAssoc(finalExp);
+				}
 			}
 			else
 			{
@@ -143,7 +155,12 @@ public class QueryParser
 				{
 					maxCardinalityValue = getMaxCardinalityValue(associationInterface);
 				}
-				if(maxCardinalityValue == 1)
+				if(maxCardinalityValue == 0)
+				{
+					IExpression finalExp = getChildExpression(joinGraph,child);
+					populateContainmentAssoc(finalExp);
+				}
+				else if(maxCardinalityValue == 1)
 				{
 					break;
 				}
@@ -152,6 +169,52 @@ public class QueryParser
 		return maxCardinalityValue;
 	}
 
+	/**
+	 * Populate the containmentAssocList.
+	 * @param finalExp finalExp
+	 */
+	private void populateContainmentAssoc(IExpression finalExp)
+	{
+		if(!containmentAssocList.contains(finalExp.getQueryEntity().getDynamicExtensionsEntity()))
+		{
+			containmentAssocList.add(finalExp.getQueryEntity().getDynamicExtensionsEntity());
+		}
+	}
+
+	/**
+	 * Get the final child expression(added in the DAG) of the passed expression.
+	 * @param joinGraph joinGraph
+	 * @param expression expression
+	 * @return finalExp
+	 */
+	private IExpression getChildExpression(JoinGraph joinGraph,
+			IExpression expression)
+	{
+		IExpression finalExp = expression;
+		if(!expression.isInView() && !joinGraph.getChildrenList(expression).isEmpty())
+		{
+			IExpression childExp = joinGraph.getChildrenList(expression).get(0);
+			finalExp = getChildExpression(joinGraph,childExp);
+		}
+		return finalExp;
+	}
+
+	/**
+	 * Get the parent expression of the passed expression.
+	 * @param joinGraph joinGraph
+	 * @param expression expression
+	 * @return finalExp
+	 */
+	private IExpression getParentExpression(JoinGraph joinGraph, IExpression expression)
+	{
+		IExpression finalExp = expression;
+		if(!expression.isInView())
+		{
+			IExpression parentExp = joinGraph.getParentList(expression).get(0);
+			finalExp = getParentExpression(joinGraph,parentExp);
+		}
+		return finalExp;
+	}
 	/**
 	 * Gets the max cardinality value (0/2).
 	 * @param maxCardinality maxCardinality
@@ -217,8 +280,16 @@ public class QueryParser
 		int mainEntityIdIndex;
 		if(manyToOneEntities.isEmpty())
 		{
-			mainEntityIdIndex = setMainEtityIndexId(queryResultObjectDataBeanMap,
-					entityIdIndexMap,oneToManyEntities);
+			if(oneToManyEntities.isEmpty())
+			{
+				mainEntityIdIndex = setMainEtityIndexId(queryResultObjectDataBeanMap,
+						entityIdIndexMap,containmentEntities);
+			}
+			else
+			{
+				mainEntityIdIndex = setMainEtityIndexId(queryResultObjectDataBeanMap,
+						entityIdIndexMap,oneToManyEntities);
+			}
 		}
 		else
 		{
