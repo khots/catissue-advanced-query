@@ -98,6 +98,10 @@ public class QueryOutputTreeBizLogic
                 queryResultObjectDataBeanMap, root, hasConditionOnIdentifiedField,0,
                 Variables.maximumTreeNodeLimit);
         int count = QueryModuleSqlUtil.getCountForQuery(selectSql,queryDetailsObj);
+        if(dataList.size() == 0)
+        {
+        	count = 0;
+        }
         updateQueryAuditDetails(root,count,queryDetailsObj.getAuditEventId());
         List<QueryTreeNodeData> treeDataVector = new ArrayList<QueryTreeNodeData>();
         if (dataList != null && !dataList.isEmpty())
