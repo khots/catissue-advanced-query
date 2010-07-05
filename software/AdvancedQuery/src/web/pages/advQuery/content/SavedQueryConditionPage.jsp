@@ -2,6 +2,7 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/nlevelcombo.tld" prefix="ncombo"%>
+<%@ taglib uri="/WEB-INF/multiSelectUsingCombo.tld" prefix="mCombo" %>
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld"
 	prefix="dynamicExtensions"%>
 
@@ -14,6 +15,7 @@
 	page language="java" contentType="text/html"
 	import="edu.wustl.query.util.global.AQConstants,edu.wustl.query.actionForm.SaveQueryForm"%>
 <%@ page import="edu.wustl.common.beans.NameValueBean"%>
+<%@ page import="java.util.*"%>
 
 <script>var imgsrc="/images/de/";</script>
 <script language="JavaScript" type="text/javascript"
@@ -23,13 +25,13 @@
 <script language="JavaScript" type="text/javascript"
 	src="javascripts/de/combobox.js"></script>
 <script language="JavaScript" type="text/javascript"
-	src="javascripts/de/ext-base.js"></script>
+	src="/jss/ext-base.js"></script>
 <script language="JavaScript" type="text/javascript"
-	src="javascripts/de/ext-all.js"></script>
+	src="/jss/ext-all.js"></script>
 <script language="JavaScript" type="text/javascript"
 	src="javascripts/de/combos.js"></script>
 <script language="JavaScript" type="text/javascript"
-	src="javascripts/de/ajax.js"></script>
+	src="/jss/ajax.js"></script>
 
 <%
 	SaveQueryForm form = (SaveQueryForm) request
@@ -42,7 +44,7 @@
 	String querySharedTo = form.getShareTo();
 	if(querySharedTo.equalsIgnoreCase("users"))
 	{
-		multiSelectDisplay="display: block";
+		multiSelectDisplay="display:block";
 	}
 	boolean chkDisabled = false;
 	if (isMyQuery == null)
@@ -241,9 +243,11 @@ function checkForValidation()
 				key="shareTo.users.message" /></label></td>
 		</tr>
 		<tr>
+		<tr height="15"></tr>
 			<td></td>
-			<td id="multiSelectId" class="black_ar_new" style="<%=multiSelectDisplay%>">
-			<dynamicExtensions:multiSelectUsingCombo /></td>
+			<td id="multiSelectId" nowrap="" colspan="1" class="black_ar_new" style="<%=multiSelectDisplay%>">
+			<mCombo:multiSelectUsingCombo identifier="coord" styleClass="black_ar_new"  size="20" addButtonOnClick="moveOptions('coord','protocolCoordinatorIds', 'add')" removeButtonOnClick="moveOptions('protocolCoordinatorIds','coord', 'edit')" selectIdentifier="protocolCoordinatorIds" collection="<%=(List)request.getAttribute("selectedCoordinators")%>"/>
+			</td>
 		</tr>
 		<tr>
 			<td class="small_txt_grey" colspan="3"><html:checkbox
