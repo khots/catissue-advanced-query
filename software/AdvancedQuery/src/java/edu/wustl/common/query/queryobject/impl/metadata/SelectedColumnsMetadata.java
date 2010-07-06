@@ -40,6 +40,8 @@ public class SelectedColumnsMetadata
 	private List<IOutputAttribute> selectedOutputAttributeList;
 
 	private int noOfExpr;
+
+	private int actualTotalRecords;
 	/**
 	 * Check if it's define view.
 	 * @return ifDefinedView
@@ -160,5 +162,21 @@ public class SelectedColumnsMetadata
 	public int getNoOfExpr()
 	{
 		return noOfExpr;
+	}
+
+	/**
+	 * @param actualTotalRecords the actualTotalRecords to set
+	 */
+	public void setActualTotalRecords(int actualTotalRecords)
+	{
+		this.actualTotalRecords = actualTotalRecords;
+	}
+
+	/**
+	 * @return the actualTotalRecords
+	 */
+	public int getActualTotalRecords()
+	{
+		return actualTotalRecords;
 	}
 }
