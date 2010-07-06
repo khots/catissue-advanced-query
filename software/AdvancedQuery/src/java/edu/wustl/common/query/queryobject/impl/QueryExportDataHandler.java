@@ -552,7 +552,7 @@ public class QueryExportDataHandler
 							value.append("|").append(" ");
 							((OutputAttributeColumn)dataValue).setValue(value.toString());
 						}
-						if(!dataList.contains(dataValue))
+						else
 						{
 							dataList.add(dataValue);
 						}
