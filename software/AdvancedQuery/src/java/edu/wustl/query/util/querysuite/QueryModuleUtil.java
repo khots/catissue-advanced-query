@@ -624,8 +624,8 @@ final public class QueryModuleUtil
 						+ "</font></li>";
 				break;
 			case NO_RESULT_PRESENT :
-				errorMessage = ((IParameterizedQuery)parameterizedQuery).getName() + " : "+
-				ApplicationProperties.getValue("query.zero.records.present") ;
+				errorMessage = "<li><font color='green' family='arial,helvetica,verdana,sans-serif'>"+((IParameterizedQuery)parameterizedQuery).getName() + " : "+
+				ApplicationProperties.getValue("query.zero.records.present") + "</font></li>";
 				break;
 			case SQL_EXCEPTION :
 			case DAO_EXCEPTION :
