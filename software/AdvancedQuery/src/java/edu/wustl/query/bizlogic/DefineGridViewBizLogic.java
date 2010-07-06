@@ -440,11 +440,17 @@ public class DefineGridViewBizLogic
 		int indexOfSelectDistict = sql.indexOf("select");
 		int selectDistictLength = "select".length();
 		int indexOfFrom = sql.indexOf(AQConstants.FROM);
+		int indexOfWhere = sql.indexOf(AQConstants.WHERE);
+		int indexOfIs = sql.indexOf(" is ");
 		StringBuffer newSql = new StringBuffer();
 		newSql.append(sql.substring(indexOfSelectDistict, selectDistictLength));
 		newSql.append(' ');
 		newSql.append(columnsInSql);
 		newSql.append(sql.substring(indexOfFrom));
+		if(newSql.indexOf("ORDER BY") == -1)
+		{
+			newSql.append(" ORDER BY").append(sql.substring(indexOfWhere+6, indexOfIs));
+		}
 		return newSql.toString();
 	}
 
