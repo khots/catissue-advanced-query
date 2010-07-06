@@ -4,36 +4,33 @@
     "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
-	
+
     <session-factory>
-     
+
     	<property name="show_sql">false</property>
-   		<property name="dialect">@@DIALECT@@</property>	
-       
+   		<property name="dialect">@@DIALECT@@</property>
+
         <property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
-		
+
     	<property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
 		<property name="hibernate.jdbc.batch_size">0</property>
 		<property name="connection.driver_class">@@DRIVER@@</property>
-	
+
 	 	<property name="connection.url">@@URL@@</property>
 	    <property name="connection.username">@@DATABASE_USERNAME@@</property>
-	    <property name="connection.password">@@DATABASE_PASSWORD@@</property> 
+	    <property name="connection.password">@@DATABASE_PASSWORD@@</property>
   <!--
      	<property name="show_sql">false</property>
-    	<property name="dialect">org.hibernate.dialect.MySQLDialect</property>	
+    	<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
     	<property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
         <property name="hibernate.cache.provider_class">net.sf.hibernate.cache.EhCacheProvider</property>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
 	    <property name="connection.url">jdbc:mysql://localhost:3306/suite</property>
 	    <property name="connection.username">virender</property>
-	    <property name="connection.password">virender</property>   
-	    <property name="hibernate.jdbc.batch_size">0</property>   
+	    <property name="connection.password">virender</property>
+	    <property name="hibernate.jdbc.batch_size">0</property>
   -->
 		<!--List of classes required for Query module-->
-		<mapping resource="edu/wustl/common/hbm/AbstractCategorialAttribute.hbm.xml"/>
-		<mapping resource="edu/wustl/common/hbm/AbstractCategorialClass.hbm.xml"/>
-		<mapping resource="edu/wustl/common/hbm/AbstractCategory.hbm.xml"/>
 		<mapping resource="edu/wustl/common/hbm/BaseExpression.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/Condition.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/Connector.hbm.xml" />
@@ -53,7 +50,7 @@
 		<mapping resource="edu/wustl/common/hbm/OutputTerm.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/PersistentGraph.hbm.xml" />
 		<mapping resource="edu/wustl/common/hbm/Parameter.hbm.xml" />
-		
+
     </session-factory>
-    
+
 </hibernate-configuration>
