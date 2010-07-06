@@ -27,6 +27,7 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.actionForm.QueryAdvanceSearchForm;
 import edu.wustl.query.bizlogic.ExportQueryBizLogic;
+import edu.wustl.query.bizlogic.SpreadsheetDenormalizationBizLogic;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryDetails;
@@ -53,29 +54,42 @@ public class SpreadsheetExportAction extends SecureAction
 		Map map = searchForm.getValues();
 		Object[] obj = map.keySet().toArray();
 		List<String> columnList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
-		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll);
-		QueryDetails queryDetails = new QueryDetails(session);
-		boolean isDefineView = false;
 		SelectedColumnsMetadata selectedColumnsMetadata =
 			(SelectedColumnsMetadata)session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
+		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll,selectedColumnsMetadata.getActualTotalRecords());
+		QueryDetails queryDetails = new QueryDetails(session);
+		boolean isDefineView = false;
 		if(selectedColumnsMetadata != null && selectedColumnsMetadata.isDefinedView())
 		{
 			List<List<String>> finalDataList = new ArrayList<List<String>>();
-
+			System.out.println("Hiiiiiiiiiiii");
 			IExpression rootExpression = queryDetails.getQuery().getConstraints().getJoinGraph().getRoot();
 			if(!queryDetails.getQuery().getConstraints().getJoinGraph().getChildrenList(rootExpression).isEmpty())
 			{
 				isDefineView = true;
-				dataList = (List<List<String>>) session.getAttribute(AQConstants.DENORMALIZED_LIST);
+				if(isChkAllAcrossAll != null && isChkAllAcrossAll.equalsIgnoreCase("true"))
+				{
+					QuerySessionData querySessionData = (QuerySessionData)session.getAttribute(AQConstants.QUERY_SESSION_DATA);
+					querySessionData.setRecordsPerPage((Integer) session.getAttribute(AQConstants.TOTAL_RESULTS));
+					SpreadsheetDenormalizationBizLogic  denormalizationBizLogic =
+						new SpreadsheetDenormalizationBizLogic();
+					Map<String,Object> exportDetailsMap = denormalizationBizLogic.scanIQuery
+					(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
+					dataList = (List<List<String>>)exportDetailsMap.get("dataList");
+				}
+				else
+				{
+					dataList = (List<List<String>>) session.getAttribute(AQConstants.DENORMALIZED_LIST);
+					for (int counter = 0; counter < obj.length; counter++)
+					{
+						int indexOf = obj[counter].toString().indexOf("_") + 1;
+						int index = Integer.parseInt(obj[counter].toString().substring(indexOf));
+						List<String> list = dataList.get(index);
+						finalDataList.add(list);
+					}
+					dataList = finalDataList;
+				}
 			}
-			for (int counter = 0; counter < obj.length; counter++)
-			{
-				int indexOf = obj[counter].toString().indexOf("_") + 1;
-				int index = Integer.parseInt(obj[counter].toString().substring(indexOf));
-				List<String> list = dataList.get(index);
-				finalDataList.add(list);
-			}
-			dataList = finalDataList;
 		}
 		if(!isDefineView)
 		{
@@ -192,25 +206,35 @@ public class SpreadsheetExportAction extends SecureAction
 	 * @param request request
 	 * @param session session
 	 * @param isChkAllAcrossAll if all check boxes are checked
+	 * @param actualNoOfRec
 	 * @return dataList
 	 * @throws DAOException DAOException
 	 */
 	private List<List<String>> getDataList(HttpServletRequest request,
-			HttpSession session, String isChkAllAcrossAll) throws DAOException {
+			HttpSession session, String isChkAllAcrossAll, int actualNoOfRec) throws DAOException
+	{
 		String pageNo = (String) request.getParameter(AQConstants.PAGE_NUMBER);
 		String recordsPerPageStr = (String) session.getAttribute(AQConstants.RESULTS_PER_PAGE);
 		if (pageNo != null)
 		{
 			request.setAttribute(AQConstants.PAGE_NUMBER, pageNo);
 		}
-		int recordsPerPage = Integer.valueOf(recordsPerPageStr);
 		int pageNum = Integer.valueOf(pageNo);
+		int recordsPerPage;
 		if (isChkAllAcrossAll != null
 				&& isChkAllAcrossAll.equalsIgnoreCase("true"))
 		{
 			Integer totalRecords = (Integer) session.getAttribute(AQConstants.TOTAL_RESULTS);
 			recordsPerPage = totalRecords;
 			pageNum = 1;
+		}
+		if(actualNoOfRec == 0)
+		{
+			recordsPerPage= Integer.valueOf(recordsPerPageStr);
+		}
+		else
+		{
+			recordsPerPage = actualNoOfRec;
 		}
 		QuerySessionData querySessionData = (QuerySessionData) session
 				.getAttribute(edu.wustl.common.util.global.Constants.QUERY_SESSION_DATA);

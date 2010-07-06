@@ -1,6 +1,8 @@
 
 package edu.wustl.query.bizlogic;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,8 +36,12 @@ import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.PagenatedResultData;
 import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.common.util.logger.LoggerConfig;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
+import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.util.global.AQConstants;
@@ -468,13 +474,13 @@ public class QueryOutputSpreadsheetBizLogic
 			if (parentData == null)
 			{
 				selectSql = selectSql + " where " + idColumnOfCurrentNode + " "
-				+ RelationalOperator.getSQL(RelationalOperator.IsNotNull);
+				+ RelationalOperator.getSQL(RelationalOperator.IsNotNull)+" ORDER BY "+idColumnOfCurrentNode;
 			}
 			else
 			{
 				selectSql = selectSql + " where (" + parentIdColumnName + " = '" + parentData + "' "
 				+ LogicalOperator.And + " " + idColumnOfCurrentNode + " "
-				+ RelationalOperator.getSQL(RelationalOperator.IsNotNull) + ")";
+				+ RelationalOperator.getSQL(RelationalOperator.IsNotNull) + ") ORDER BY "+idColumnOfCurrentNode;
 			}
 			if (!selectedColumnMetaData.isDefinedView())
 			{
@@ -894,17 +900,8 @@ public class QueryOutputSpreadsheetBizLogic
 			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap,
 			boolean hasConditionOnIdentifiedField, SelectedColumnsMetadata selectedColumnsMetadata) throws ClassNotFoundException, DAOException
 	{
-		QuerySessionData querySessionData = new QuerySessionData();
-		querySessionData.setSql(selectSql);
-		querySessionData.setQueryResultObjectDataMap(queryResultObjectDataBeanMap);
-		querySessionData.setSecureExecute(queryDetailsObj.getSessionData().isSecurityRequired());
-		querySessionData.setHasConditionOnIdentifiedField(hasConditionOnIdentifiedField);
-		querySessionData.setRecordsPerPage(recordsPerPage);
-		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
-		PagenatedResultData pagenatedResultData = qBizLogic.execute(queryDetailsObj
-				.getSessionData(), querySessionData, startIndex);
-		List<List<String>> dataList = pagenatedResultData.getResult();
 		SelectedColumnsMetadata selectedColMetadata;
+		int totalRecords = 0;
 		if(selectedColumnsMetadata == null)
 		{
 			selectedColMetadata = selectedColumnMetaData;
@@ -915,6 +912,23 @@ public class QueryOutputSpreadsheetBizLogic
 		}
 		if(selectedColMetadata.isDefinedView())
 		{
+			recordsPerPage = getRecordsPerPage(queryDetailsObj, selectSql);
+			totalRecords = getTotalNoOfRecords(queryDetailsObj,selectSql);
+
+		}
+		QuerySessionData querySessionData = new QuerySessionData();
+		querySessionData.setSql(selectSql);
+		querySessionData.setQueryResultObjectDataMap(queryResultObjectDataBeanMap);
+		querySessionData.setSecureExecute(queryDetailsObj.getSessionData().isSecurityRequired());
+		querySessionData.setHasConditionOnIdentifiedField(hasConditionOnIdentifiedField);
+		querySessionData.setRecordsPerPage(recordsPerPage);
+		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
+		PagenatedResultData pagenatedResultData = qBizLogic.execute(queryDetailsObj
+				.getSessionData(), querySessionData, startIndex);
+		List<List<String>> dataList = pagenatedResultData.getResult();
+
+		if(selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1)
+		{
 			SpreadsheetDenormalizationBizLogic  denormalizationBizLogic =
 				new SpreadsheetDenormalizationBizLogic();
 			Map<String,Object> exportDetailsMap = denormalizationBizLogic.scanIQuery
@@ -922,6 +936,7 @@ public class QueryOutputSpreadsheetBizLogic
 			dataList = (List<List<String>>)exportDetailsMap.get("dataList");
 			List<String>colList = (List<String>)exportDetailsMap.get("headerList");
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, colList);
+			selectedColMetadata.setActualTotalRecords(pagenatedResultData.getTotalRecords());
 		}
 		for (Long id : queryResultObjectDataBeanMap.keySet())
 		{
@@ -951,15 +966,86 @@ public class QueryOutputSpreadsheetBizLogic
 		 * saving required query data in Session so that can be used later on while navigation through
 		 * result pages using pagination.
 		 */
-		if(pagenatedResultData.getTotalRecords()>100)
+
+		if(selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1)
 		{
-			querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
+			querySessionData.setTotalNumberOfRecords(totalRecords);
 		}
 		else
 		{
-			querySessionData.setTotalNumberOfRecords(dataList.size());
+			querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
 		}
 		return querySessionData;
+	}
+
+	private int getTotalNoOfRecords(QueryDetails queryDetailsObj,
+			String selectSql) throws DAOException
+	{
+		int totalNoOfRecords = 0;
+		try
+		{
+			StringBuffer sql = new StringBuffer("SELECT ");
+			String column = selectSql.substring(selectSql.lastIndexOf(" ")+1,selectSql.length());
+			String tableName = AQConstants.TEMP_OUPUT_TREE_TABLE_NAME
+			+ queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
+			sql.append("count(distinct ").append(column).append(") FROM ").append(tableName);
+			String appName=CommonServiceLocator.getInstance().getAppName();
+			IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
+			JDBCDAO jdbcDao = daoFactory.getJDBCDAO();
+			jdbcDao.openSession(null);
+			ResultSet resultSet = jdbcDao.getQueryResultSet(sql.toString());
+			if(resultSet.next())
+			{
+				totalNoOfRecords = resultSet.getInt(1);
+			}
+		}
+		catch(SQLException e)
+		{
+			logger.error(e.getMessage(), e);
+		}
+		return totalNoOfRecords;
+	}
+
+	/**
+	 * Get number of records to be displayed per page in case of defined view.
+	 * @param queryDetailsObj queryDetailsObj
+	 * @param selectSql selectSql
+	 * @return recordCount
+	 * @throws DAOException DAOException
+	 */
+	private int getRecordsPerPage(QueryDetails queryDetailsObj, String selectSql)
+	throws DAOException
+	{
+		int recordCount=0;
+		try
+		{
+			StringBuffer sql = new StringBuffer("SELECT ");
+			String column = selectSql.substring(selectSql.lastIndexOf(" ")+1,selectSql.length());
+			String tableName = AQConstants.TEMP_OUPUT_TREE_TABLE_NAME
+			+ queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
+			sql.append(column).append(",count(").append(column).append(") FROM ").append(tableName)
+			.append(" GROUP BY ").append(column).append(" ORDER BY ").append(column);
+			String appName=CommonServiceLocator.getInstance().getAppName();
+			IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
+			JDBCDAO jdbcDao = daoFactory.getJDBCDAO();
+			jdbcDao.openSession(null);
+			ResultSet resultSet = jdbcDao.getQueryResultSet(sql.toString());
+			int count=0;
+			while(resultSet.next())
+			{
+				if(count>=100)
+				{
+					break;
+				}
+				recordCount+=resultSet.getInt(2);
+				count++;
+			}
+		}
+		catch(SQLException e)
+		{
+			logger.error(e.getMessage(), e);
+		}
+		return recordCount;
 	}
 
 	/**
@@ -1191,13 +1277,13 @@ public class QueryOutputSpreadsheetBizLogic
 		if (parentData == null)
 		{
 			selectSql = selectSql + " where " + idColumnOfCurrentNode + " "
-			+ RelationalOperator.getSQL(RelationalOperator.IsNotNull);
+			+ RelationalOperator.getSQL(RelationalOperator.IsNotNull)+" ORDER BY "+idColumnOfCurrentNode;
 		}
 		else
 		{
 			selectSql = selectSql + " where (" + parentIdColumnName + " = '" + parentData + "' "
 					+ LogicalOperator.And + " " + idColumnOfCurrentNode + " "
-					+ RelationalOperator.getSQL(RelationalOperator.IsNotNull) + ")";
+					+ RelationalOperator.getSQL(RelationalOperator.IsNotNull) + ") ORDER BY "+idColumnOfCurrentNode;
 		}
 		if (!identifiedDataColumnIds.isEmpty())
 		{
