@@ -62,7 +62,6 @@ public class SpreadsheetExportAction extends SecureAction
 		if(selectedColumnsMetadata != null && selectedColumnsMetadata.isDefinedView())
 		{
 			List<List<String>> finalDataList = new ArrayList<List<String>>();
-			System.out.println("Hiiiiiiiiiiii");
 			IExpression rootExpression = queryDetails.getQuery().getConstraints().getJoinGraph().getRoot();
 			if(!queryDetails.getQuery().getConstraints().getJoinGraph().getChildrenList(rootExpression).isEmpty())
 			{
