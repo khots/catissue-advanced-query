@@ -33,9 +33,9 @@ public class QueryExportDataHandlerTestCase extends TestCase
         List ethnicities = new ArrayList();
         Map<BaseAbstractAttributeInterface,Object> tempMap =
         	new HashMap<BaseAbstractAttributeInterface, Object>();
-        tempMap.put(ethnicity, "eth1");
-        tempMap.put(lastName, "eth1");
-        tempMap.put(firstName, "eth1");
+        tempMap.put(ethnicity, new OutputAttributeColumn("eth1", 0, ethnicity, null));
+        tempMap.put(lastName, new OutputAttributeColumn("eth1", 1, lastName, null));
+        tempMap.put(firstName, new OutputAttributeColumn("eth1", 2, firstName, null));
         ethnicities.add(tempMap);
 
         EntityInterface pmiEntity = GenericQueryGeneratorMock.createEntity("ParticipantMedicalIdentifier");
@@ -44,16 +44,16 @@ public class QueryExportDataHandlerTestCase extends TestCase
         AttributeInterface id = GenericQueryGeneratorMock.findAttribute(pmiEntity, "id");
 
         AssociationInterface association = GenericQueryGeneratorMock.getAssociation(participantEntity, pmiEntity);
-        innerMap.put(id, "1");
-        innerMap.put(mrnNo, "mrn1");
+        innerMap.put(id, new OutputAttributeColumn("1", 0, id, null));
+        innerMap.put(mrnNo, new OutputAttributeColumn("mrn1", 1, mrnNo, null));
         innerMapList.add(innerMap);
 
         innerMap =new HashMap<BaseAbstractAttributeInterface, Object>();
-        innerMap.put(id, "2");
-        innerMap.put(mrnNo, "mrn2");
+        innerMap.put(id, new OutputAttributeColumn("2", 0, id, null));
+        innerMap.put(mrnNo, new OutputAttributeColumn("mrn2", 1, mrnNo, null));
         innerMapList.add(innerMap);
 
-        denormalizationMap.put(lastName, "abc");
+        denormalizationMap.put(lastName, new OutputAttributeColumn("abc", 1, lastName, null));
         denormalizationMap.put(ethnicity, ethnicities);
         denormalizationMap.put(association, innerMapList);
 
