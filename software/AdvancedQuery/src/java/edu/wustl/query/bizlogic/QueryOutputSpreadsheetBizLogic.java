@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpSession;
@@ -19,6 +20,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
+import edu.wustl.common.query.queryobject.impl.QueryParser;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.queryobject.IArithmeticOperand;
@@ -910,15 +912,24 @@ public class QueryOutputSpreadsheetBizLogic
 		{
 			selectedColMetadata = selectedColumnsMetadata;
 		}
-		if(selectedColMetadata.isDefinedView())
+		/*if(selectedColMetadata.isDefinedView())
 		{
 			recordsPerPage = getRecordsPerPage(queryDetailsObj, selectSql);
 			totalRecords = getTotalNoOfRecords(queryDetailsObj,selectSql);
-
-		}
+		}*/
 		QuerySessionData querySessionData = new QuerySessionData();
 		querySessionData.setSql(selectSql);
 		querySessionData.setQueryResultObjectDataMap(queryResultObjectDataBeanMap);
+		if(selectedColMetadata.isDefinedView())
+		{
+			QueryParser queryParser = new QueryParser();
+			queryParser.parseQuery(queryDetailsObj.getQuery(),selectedColMetadata.getSelectedAttributeMetaDataList());
+			int mainIdColumnIndex = queryParser.
+			getMainIdColumnIndex(querySessionData.getQueryResultObjectDataMap());
+			String column = getColumnName(selectSql, mainIdColumnIndex);
+			recordsPerPage = getRecordsPerPage(queryDetailsObj, column);
+			totalRecords = getTotalNoOfRecords(queryDetailsObj,column);
+		}
 		querySessionData.setSecureExecute(queryDetailsObj.getSessionData().isSecurityRequired());
 		querySessionData.setHasConditionOnIdentifiedField(hasConditionOnIdentifiedField);
 		querySessionData.setRecordsPerPage(recordsPerPage);
@@ -978,14 +989,44 @@ public class QueryOutputSpreadsheetBizLogic
 		return querySessionData;
 	}
 
+	/**
+	 * Gets the column name to determine the number of rows to be displayed per page and
+	 * total number of records.
+	 * @param selectSql selectSql
+	 * @param mainIdColumnIndex mainIdColumnIndex
+	 * @return column
+	 */
+	private String getColumnName(String selectSql, int mainIdColumnIndex)
+	{
+		List<String> columnList = new ArrayList<String>();
+		String substring = selectSql.substring(selectSql.indexOf("select")+6, selectSql.indexOf("from"));
+		StringTokenizer st = new StringTokenizer(substring,",");
+		while(st.hasMoreTokens())
+		{
+			columnList.add(st.nextToken());
+		}
+		String column = selectSql.substring(selectSql.lastIndexOf(" ")+1,selectSql.length());
+		if(mainIdColumnIndex != -1)
+		{
+			column = columnList.get(mainIdColumnIndex);
+		}
+		return column;
+	}
+
+	/**
+	 * Get the total number of records.
+	 * @param queryDetailsObj queryDetailsObj
+	 * @param column column
+	 * @return totalNoOfRecords
+	 * @throws DAOException
+	 */
 	private int getTotalNoOfRecords(QueryDetails queryDetailsObj,
-			String selectSql) throws DAOException
+			String column) throws DAOException
 	{
 		int totalNoOfRecords = 0;
 		try
 		{
 			StringBuffer sql = new StringBuffer("SELECT ");
-			String column = selectSql.substring(selectSql.lastIndexOf(" ")+1,selectSql.length());
 			String tableName = AQConstants.TEMP_OUPUT_TREE_TABLE_NAME
 			+ queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
 			sql.append("count(distinct ").append(column).append(") FROM ").append(tableName);
@@ -1013,14 +1054,13 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @return recordCount
 	 * @throws DAOException DAOException
 	 */
-	private int getRecordsPerPage(QueryDetails queryDetailsObj, String selectSql)
+	private int getRecordsPerPage(QueryDetails queryDetailsObj, String column)
 	throws DAOException
 	{
 		int recordCount=0;
 		try
 		{
 			StringBuffer sql = new StringBuffer("SELECT ");
-			String column = selectSql.substring(selectSql.lastIndexOf(" ")+1,selectSql.length());
 			String tableName = AQConstants.TEMP_OUPUT_TREE_TABLE_NAME
 			+ queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
 			sql.append(column).append(",count(").append(column).append(") FROM ").append(tableName)
