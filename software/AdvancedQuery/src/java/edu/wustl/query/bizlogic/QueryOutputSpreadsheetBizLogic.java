@@ -907,16 +907,15 @@ public class QueryOutputSpreadsheetBizLogic
 		if(selectedColumnsMetadata == null)
 		{
 			selectedColMetadata = selectedColumnMetaData;
+			if(selectedColMetadata.isDefinedView())
+			{
+				updateSelectedColumnsMetadataForSavedQuery(selectedColMetadata);
+			}
 		}
 		else
 		{
 			selectedColMetadata = selectedColumnsMetadata;
 		}
-		/*if(selectedColMetadata.isDefinedView())
-		{
-			recordsPerPage = getRecordsPerPage(queryDetailsObj, selectSql);
-			totalRecords = getTotalNoOfRecords(queryDetailsObj,selectSql);
-		}*/
 		QuerySessionData querySessionData = new QuerySessionData();
 		querySessionData.setSql(selectSql);
 		querySessionData.setQueryResultObjectDataMap(queryResultObjectDataBeanMap);
@@ -987,6 +986,34 @@ public class QueryOutputSpreadsheetBizLogic
 			querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
 		}
 		return querySessionData;
+	}
+
+	/**
+	 * To set the order of attributes to be displayed on spreadsheet
+	 * as that of define view in case of save query.
+	 * @param selectedColMetadata selectedColMetadata
+	 */
+	private void updateSelectedColumnsMetadataForSavedQuery(
+			SelectedColumnsMetadata selectedColMetadata)
+	{
+		List<QueryOutputTreeAttributeMetadata> attributeMetadataList =
+			new ArrayList<QueryOutputTreeAttributeMetadata>();
+		List<IOutputAttribute> outputAttributeList =
+			selectedColMetadata.getSelectedOutputAttributeList();
+		for(IOutputAttribute outputAttribute : outputAttributeList)
+		{
+			for(QueryOutputTreeAttributeMetadata attributeMetadata :
+				selectedColMetadata.getSelectedAttributeMetaDataList())
+			{
+				if(outputAttribute.getAttribute().equals(attributeMetadata.getAttribute()) &&
+						outputAttribute.getExpression().getExpressionId() == attributeMetadata.getTreeDataNode().getExpressionId())
+				{
+					attributeMetadataList.add(attributeMetadata);
+					break;
+				}
+			}
+		}
+		selectedColMetadata.setSelectedAttributeMetaDataList(attributeMetadataList);
 	}
 
 	/**
