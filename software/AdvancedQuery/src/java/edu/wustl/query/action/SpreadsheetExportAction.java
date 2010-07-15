@@ -223,17 +223,20 @@ public class SpreadsheetExportAction extends SecureAction
 		if (isChkAllAcrossAll != null
 				&& isChkAllAcrossAll.equalsIgnoreCase("true"))
 		{
-			Integer totalRecords = (Integer) session.getAttribute(AQConstants.TOTAL_RESULTS);
-			recordsPerPage = totalRecords;
-			pageNum = 1;
-		}
-		if(actualNoOfRec == 0)
-		{
-			recordsPerPage= Integer.valueOf(recordsPerPageStr);
+			if(actualNoOfRec == 0)
+			{
+				Integer totalRecords = (Integer) session.getAttribute(AQConstants.TOTAL_RESULTS);
+				recordsPerPage = totalRecords;
+				pageNum = 1;
+			}
+			else
+			{
+				recordsPerPage = actualNoOfRec;
+			}
 		}
 		else
 		{
-			recordsPerPage = actualNoOfRec;
+			recordsPerPage= Integer.valueOf(recordsPerPageStr);
 		}
 		QuerySessionData querySessionData = (QuerySessionData) session
 				.getAttribute(edu.wustl.common.util.global.Constants.QUERY_SESSION_DATA);
