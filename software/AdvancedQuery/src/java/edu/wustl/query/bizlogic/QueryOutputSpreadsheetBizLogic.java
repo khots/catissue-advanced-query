@@ -903,6 +903,7 @@ public class QueryOutputSpreadsheetBizLogic
 			boolean hasConditionOnIdentifiedField, SelectedColumnsMetadata selectedColumnsMetadata) throws ClassNotFoundException, DAOException
 	{
 		SelectedColumnsMetadata selectedColMetadata;
+		int recPerPageForDV = 0;
 		int totalRecords = 0;
 		if(selectedColumnsMetadata == null)
 		{
@@ -926,27 +927,35 @@ public class QueryOutputSpreadsheetBizLogic
 			int mainIdColumnIndex = queryParser.
 			getMainIdColumnIndex(querySessionData.getQueryResultObjectDataMap());
 			String column = getColumnName(selectSql, mainIdColumnIndex);
-			recordsPerPage = getRecordsPerPage(queryDetailsObj, column);
+			recPerPageForDV = getRecordsPerPage(queryDetailsObj, column,recordsPerPage);
 			totalRecords = getTotalNoOfRecords(queryDetailsObj,column);
+			querySessionData.setRecordsPerPage(recPerPageForDV);
+		}
+		else
+		{
+			querySessionData.setRecordsPerPage(recordsPerPage);
 		}
 		querySessionData.setSecureExecute(queryDetailsObj.getSessionData().isSecurityRequired());
 		querySessionData.setHasConditionOnIdentifiedField(hasConditionOnIdentifiedField);
-		querySessionData.setRecordsPerPage(recordsPerPage);
 		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
 		PagenatedResultData pagenatedResultData = qBizLogic.execute(queryDetailsObj
 				.getSessionData(), querySessionData, startIndex);
 		List<List<String>> dataList = pagenatedResultData.getResult();
+		Map<String,Object> exportDetailsMap = new HashMap<String, Object>();
 
 		if(selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1)
 		{
 			SpreadsheetDenormalizationBizLogic  denormalizationBizLogic =
 				new SpreadsheetDenormalizationBizLogic();
-			Map<String,Object> exportDetailsMap = denormalizationBizLogic.scanIQuery
+			exportDetailsMap = denormalizationBizLogic.scanIQuery
 			(queryDetailsObj, dataList, selectedColMetadata, querySessionData);
-			dataList = (List<List<String>>)exportDetailsMap.get("dataList");
-			List<String>colList = (List<String>)exportDetailsMap.get("headerList");
-			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, colList);
-			selectedColMetadata.setActualTotalRecords(pagenatedResultData.getTotalRecords());
+			if(!exportDetailsMap.isEmpty())
+			{
+				dataList = (List<List<String>>)exportDetailsMap.get("dataList");
+				List<String>colList = (List<String>)exportDetailsMap.get("headerList");
+				spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, colList);
+				selectedColMetadata.setActualTotalRecords(pagenatedResultData.getTotalRecords());
+			}
 		}
 		for (Long id : queryResultObjectDataBeanMap.keySet())
 		{
@@ -977,12 +986,14 @@ public class QueryOutputSpreadsheetBizLogic
 		 * result pages using pagination.
 		 */
 
-		if(selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1)
+		if(selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1
+				&& !exportDetailsMap.isEmpty())
 		{
 			querySessionData.setTotalNumberOfRecords(totalRecords);
 		}
 		else
 		{
+			querySessionData.setRecordsPerPage(recordsPerPage);
 			querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
 		}
 		return querySessionData;
@@ -1077,11 +1088,12 @@ public class QueryOutputSpreadsheetBizLogic
 	/**
 	 * Get number of records to be displayed per page in case of defined view.
 	 * @param queryDetailsObj queryDetailsObj
+	 * @param recordsPerPage recordsPerPage
 	 * @param selectSql selectSql
 	 * @return recordCount
 	 * @throws DAOException DAOException
 	 */
-	private int getRecordsPerPage(QueryDetails queryDetailsObj, String column)
+	private int getRecordsPerPage(QueryDetails queryDetailsObj, String column, int recordsPerPage)
 	throws DAOException
 	{
 		int recordCount=0;
@@ -1100,7 +1112,7 @@ public class QueryOutputSpreadsheetBizLogic
 			int count=0;
 			while(resultSet.next())
 			{
-				if(count>=100)
+				if(count>=recordsPerPage)
 				{
 					break;
 				}

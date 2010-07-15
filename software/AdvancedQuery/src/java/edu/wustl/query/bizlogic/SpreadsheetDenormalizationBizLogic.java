@@ -65,34 +65,32 @@ public class SpreadsheetDenormalizationBizLogic
 		Map<String,Object> exportDetailsMap = new HashMap<String,Object>();
 		try
 		{
-			if(selectedColumnsMetadata.isDefinedView())
+			QueryParser queryParser = new QueryParser();
+			queryParser.parseQuery(queryDetailsObj.getQuery(),selectedColumnsMetadata.getSelectedAttributeMetaDataList());
+			mainIdColumnIndex = queryParser.
+			getMainIdColumnIndex(querySessionData.getQueryResultObjectDataMap());
+			if(mainIdColumnIndex != -1)
 			{
-				QueryParser queryParser = new QueryParser();
-				queryParser.parseQuery(queryDetailsObj.getQuery(),selectedColumnsMetadata.getSelectedAttributeMetaDataList());
-				mainIdColumnIndex = queryParser.
-				getMainIdColumnIndex(querySessionData.getQueryResultObjectDataMap());
-				if(mainIdColumnIndex != -1)
-				{
-					Collections.sort(dataList, new ListComparator(mainIdColumnIndex));
-				}
+				Collections.sort(dataList, new ListComparator(mainIdColumnIndex));
+
 				populateMapForSpreadsheet(queryDetailsObj,
 					selectedColumnsMetadata.getSelectedAttributeMetaDataList(),dataList,
 					querySessionData.getSql());
+				IQuery query = queryDetailsObj.getQuery();
+				IConstraints constraints = query.getConstraints();
+				JoinGraph joinGraph = (JoinGraph)constraints.getJoinGraph();
+				EntityInterface rootEntity = getRootEntity(joinGraph);
+				QueryExportDataHandler dataHandler = new QueryExportDataHandler(rootEntity);
+				dataHandler.setEntityVsAssoc(entityVsAssoc);
+				dataHandler.setTgtEntityVsAssoc(tgtEntityVsAssoc);
+				for(int count=0;count<denormalizationList.size();count++)
+				{
+					dataHandler.updateRowDataList(denormalizationList.get(count),count);
+				}
+				DenormalizedCSVExporter csvExporter = new DenormalizedCSVExporter();
+				exportDetailsMap =
+					csvExporter.addDataToCSV(denormalizationList.size(),dataHandler);
 			}
-			IQuery query = queryDetailsObj.getQuery();
-			IConstraints constraints = query.getConstraints();
-			JoinGraph joinGraph = (JoinGraph)constraints.getJoinGraph();
-			EntityInterface rootEntity = getRootEntity(joinGraph);
-			QueryExportDataHandler dataHandler = new QueryExportDataHandler(rootEntity);
-			dataHandler.setEntityVsAssoc(entityVsAssoc);
-			dataHandler.setTgtEntityVsAssoc(tgtEntityVsAssoc);
-			for(int count=0;count<denormalizationList.size();count++)
-			{
-				dataHandler.updateRowDataList(denormalizationList.get(count),count);
-			}
-			DenormalizedCSVExporter csvExporter = new DenormalizedCSVExporter();
-			exportDetailsMap =
-				csvExporter.addDataToCSV(denormalizationList.size(),dataHandler);
 		}
 		catch (MultipleRootsException e)
 		{
