@@ -1,5 +1,7 @@
 package edu.wustl.query.bizlogic;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +30,13 @@ import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IQueryEntity;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.common.util.logger.LoggerConfig;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
+import edu.wustl.dao.daofactory.IDAOFactory;
+import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.querysuite.QueryDetails;
 
@@ -71,6 +78,9 @@ public class SpreadsheetDenormalizationBizLogic
 			getMainIdColumnIndex(querySessionData.getQueryResultObjectDataMap());
 			if(mainIdColumnIndex != -1)
 			{
+				String column = new QueryOutputSpreadsheetBizLogic().getColumnName(querySessionData.getSql(), mainIdColumnIndex);
+				int totalRecords = getTotalNoOfRecords(queryDetailsObj,column);
+				querySessionData.setTotalNumberOfRecords(totalRecords);
 				Collections.sort(dataList, new ListComparator(mainIdColumnIndex));
 
 				populateMapForSpreadsheet(queryDetailsObj,
@@ -93,6 +103,10 @@ public class SpreadsheetDenormalizationBizLogic
 			}
 		}
 		catch (MultipleRootsException e)
+		{
+			logger.error(e.getMessage(), e);
+		}
+		catch (DAOException e)
 		{
 			logger.error(e.getMessage(), e);
 		}
@@ -162,17 +176,20 @@ public class SpreadsheetDenormalizationBizLogic
 					}
 					Map<BaseAbstractAttributeInterface,Object> innerMap =
 						populateMap(tempMap,associatedEntity,selectedAttributeMetaDataList,constraints);
-					innerMapList = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
-					innerMapList.add(innerMap);
-					if(denormalizationMap2.get(attribute) == null)
+					if(!innerMap.isEmpty())
 					{
-						denormalizationMap.put(attribute,innerMapList);
-						denormalizationMap2.put(attribute, innerMapList);
-					}
-					else
-					{
-						populateInnerList(denormalizationMap2, attribute,
-								tempMap, innerMap);
+						innerMapList = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
+						innerMapList.add(innerMap);
+						if(denormalizationMap2.get(attribute) == null)
+						{
+							denormalizationMap.put(attribute,innerMapList);
+							denormalizationMap2.put(attribute, innerMapList);
+						}
+						else
+						{
+							populateInnerList(denormalizationMap2, attribute,
+									tempMap, innerMap);
+						}
 					}
 				}
 			}
@@ -621,5 +638,54 @@ public class SpreadsheetDenormalizationBizLogic
 			index++;
 		}
 		return columnNameMap;
+	}
+
+	/**
+	 * Get the total number of records.
+	 * @param queryDetailsObj queryDetailsObj
+	 * @param column column
+	 * @return totalNoOfRecords
+	 * @throws DAOException
+	 */
+	private int getTotalNoOfRecords(QueryDetails queryDetailsObj,
+			String column) throws DAOException
+	{
+		int totalNoOfRecords = 0;
+		ResultSet resultSet = null;
+		try
+		{
+			StringBuffer sql = new StringBuffer(80);
+			String tableName = AQConstants.TEMP_OUPUT_TREE_TABLE_NAME
+			+ queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
+			sql.append("SELECT count(distinct ").append(column).append(") FROM ").append(tableName);
+			String appName=CommonServiceLocator.getInstance().getAppName();
+			IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
+			JDBCDAO jdbcDao = daoFactory.getJDBCDAO();
+			jdbcDao.openSession(null);
+			resultSet = jdbcDao.getQueryResultSet(sql.toString());
+			if(resultSet.next())
+			{
+				totalNoOfRecords = resultSet.getInt(1);
+			}
+		}
+		catch(SQLException e)
+		{
+			logger.error(e.getMessage(), e);
+		}
+		finally
+		{
+			if(resultSet != null)
+			{
+				try
+				{
+					resultSet.close();
+				}
+				catch (SQLException e)
+				{
+					logger.error(e.getMessage(), e);
+				}
+			}
+		}
+		return totalNoOfRecords;
 	}
 }

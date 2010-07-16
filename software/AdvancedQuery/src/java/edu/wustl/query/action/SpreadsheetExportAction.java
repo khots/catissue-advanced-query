@@ -236,7 +236,15 @@ public class SpreadsheetExportAction extends SecureAction
 		}
 		else
 		{
-			recordsPerPage= Integer.valueOf(recordsPerPageStr);
+			if(actualNoOfRec ==0)
+			{
+				recordsPerPage= Integer.valueOf(recordsPerPageStr);
+			}
+			else
+			{
+				QuerySessionData querySessionData = (QuerySessionData)session.getAttribute(AQConstants.QUERY_SESSION_DATA);
+				recordsPerPage = querySessionData.getRecordsPerPage();
+			}
 		}
 		QuerySessionData querySessionData = (QuerySessionData) session
 				.getAttribute(edu.wustl.common.util.global.Constants.QUERY_SESSION_DATA);
