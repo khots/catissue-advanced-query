@@ -75,6 +75,7 @@ public class SpreadsheetExportAction extends SecureAction
 					Map<String,Object> exportDetailsMap = denormalizationBizLogic.scanIQuery
 					(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
 					dataList = (List<List<String>>)exportDetailsMap.get("dataList");
+					columnList = (List<String>)exportDetailsMap.get("headerList");
 				}
 				else
 				{
