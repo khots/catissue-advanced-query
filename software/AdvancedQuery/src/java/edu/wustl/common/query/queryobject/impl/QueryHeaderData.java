@@ -1,6 +1,7 @@
 package edu.wustl.common.query.queryobject.impl;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.common.querysuite.queryobject.IExpression;
 
 /**
  * @author pooja_tavase
@@ -10,11 +11,13 @@ public class QueryHeaderData
 {
 	private EntityInterface entity;
 	private String recordNo;
+	private IExpression expression;
 
-	public QueryHeaderData(EntityInterface entity,String recordNo)
+	public QueryHeaderData(EntityInterface entity,String recordNo,IExpression expression)
 	{
 		this.entity = entity;
 		this.recordNo = recordNo;
+		this.expression = expression;
 	}
 
 	/**
@@ -55,6 +58,22 @@ public class QueryHeaderData
 	public String getParentRecordNo()
 	{
 		return recordNo;
+	}
+
+	/**
+	 * @param expression the expression to set
+	 */
+	public void setExpression(IExpression expression)
+	{
+		this.expression = expression;
+	}
+
+	/**
+	 * @return the expression
+	 */
+	public IExpression getExpression()
+	{
+		return expression;
 	}
 
 	@Override

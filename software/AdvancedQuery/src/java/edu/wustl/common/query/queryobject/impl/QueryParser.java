@@ -24,10 +24,10 @@ import edu.wustl.query.beans.QueryResultObjectDataBean;
  */
 public class QueryParser
 {
-	private List<EntityInterface> manyToOneEntities = new ArrayList<EntityInterface>();
-	private List<EntityInterface> oneToManyEntities = new ArrayList<EntityInterface>();
-	private List<EntityInterface> containmentEntities = new ArrayList<EntityInterface>();
-	private List<EntityInterface> containmentAssocList = new ArrayList<EntityInterface>();
+	private final List<EntityInterface> manyToOneEntities = new ArrayList<EntityInterface>();
+	private final List<EntityInterface> oneToManyEntities = new ArrayList<EntityInterface>();
+	private final List<EntityInterface> containmentEntities = new ArrayList<EntityInterface>();
+	private final List<EntityInterface> containmentAssocList = new ArrayList<EntityInterface>();
 
 	/**
 	 * Parses the query in order to populate the list of entities required
@@ -48,6 +48,7 @@ public class QueryParser
 			}
 		}
 		containmentEntities.removeAll(containmentAssocList);
+		manyToOneEntities.retainAll(list);
 	}
 
 	/**
@@ -72,6 +73,7 @@ public class QueryParser
 		{
 			populateAppropriateList(expression, maxCardinalityValue);
 		}
+
 	}
 
 	/**
@@ -151,17 +153,18 @@ public class QueryParser
 			{
 				associationInterface =(AssociationInterface)
 				association.getDynamicExtensionsAssociation();
+				IExpression finalExp = getChildExpression(joinGraph,child);
 				if(maxCardinalityValue == -1)
 				{
 					maxCardinalityValue = getMaxCardinalityValue(associationInterface);
 				}
 				if(maxCardinalityValue == 0)
 				{
-					IExpression finalExp = getChildExpression(joinGraph,child);
 					populateContainmentAssoc(finalExp);
 				}
 				else if(maxCardinalityValue == 1)
 				{
+					manyToOneEntities.add(finalExp.getQueryEntity().getDynamicExtensionsEntity());
 					break;
 				}
 			}

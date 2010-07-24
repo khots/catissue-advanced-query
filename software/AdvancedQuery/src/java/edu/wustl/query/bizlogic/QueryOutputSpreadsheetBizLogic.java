@@ -23,6 +23,8 @@ import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.QueryParser;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
+import edu.wustl.common.querysuite.metadata.associations.IAssociation;
+import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.queryobject.IArithmeticOperand;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IDateLiteral;
@@ -30,10 +32,12 @@ import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IExpressionAttribute;
 import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IOutputTerm;
+import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.ITerm;
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
+import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
 import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.PagenatedResultData;
@@ -902,31 +906,27 @@ public class QueryOutputSpreadsheetBizLogic
 			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap,
 			boolean hasConditionOnIdentifiedField, SelectedColumnsMetadata selectedColumnsMetadata) throws ClassNotFoundException, DAOException
 	{
-		SelectedColumnsMetadata selectedColMetadata;
-		if(selectedColumnsMetadata == null)
-		{
-			selectedColMetadata = selectedColumnMetaData;
-			if(selectedColMetadata.isDefinedView())
-			{
-				updateSelectedColumnsMetadataForSavedQuery(selectedColMetadata);
-			}
-		}
-		else
-		{
-			selectedColMetadata = selectedColumnsMetadata;
-		}
+		SelectedColumnsMetadata selectedColMetadata = handleDefineViewCase(selectedColumnsMetadata);
+		int mainIdColumnIndex = -1;
 		QuerySessionData querySessionData = new QuerySessionData();
 		querySessionData.setSql(selectSql);
 		querySessionData.setQueryResultObjectDataMap(queryResultObjectDataBeanMap);
 		if(selectedColMetadata.isDefinedView())
 		{
-			QueryParser queryParser = new QueryParser();
-			queryParser.parseQuery(queryDetailsObj.getQuery(),selectedColMetadata.getSelectedAttributeMetaDataList());
-			int mainIdColumnIndex = queryParser.
-			getMainIdColumnIndex(querySessionData.getQueryResultObjectDataMap());
-			String column = getColumnName(selectSql, mainIdColumnIndex);
-			int recPerPageForDV = getRecordsPerPage(queryDetailsObj, column,recordsPerPage);
-			querySessionData.setRecordsPerPage(recPerPageForDV);
+			if(isContainmentPresent(queryDetailsObj.getQuery()))
+			{
+				QueryParser queryParser = new QueryParser();
+				queryParser.parseQuery(queryDetailsObj.getQuery(),selectedColMetadata.getSelectedAttributeMetaDataList());
+				mainIdColumnIndex = queryParser.
+				getMainIdColumnIndex(querySessionData.getQueryResultObjectDataMap());
+				String column = getColumnName(selectSql, mainIdColumnIndex);
+				int recPerPageForDV = getRecordsPerPage(queryDetailsObj, column,recordsPerPage);
+				querySessionData.setRecordsPerPage(recPerPageForDV);
+			}
+			else
+			{
+				querySessionData.setRecordsPerPage(recordsPerPage);
+			}
 		}
 		else
 		{
@@ -938,13 +938,11 @@ public class QueryOutputSpreadsheetBizLogic
 		PagenatedResultData pagenatedResultData = qBizLogic.execute(queryDetailsObj
 				.getSessionData(), querySessionData, startIndex);
 		List<List<String>> dataList = pagenatedResultData.getResult();
-		Map<String,Object> exportDetailsMap = new HashMap<String, Object>();
-
-		if(selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1)
+		if(mainIdColumnIndex != -1 && selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1)
 		{
 			SpreadsheetDenormalizationBizLogic  denormalizationBizLogic =
 				new SpreadsheetDenormalizationBizLogic();
-			exportDetailsMap = denormalizationBizLogic.scanIQuery
+			Map<String,Object> exportDetailsMap = denormalizationBizLogic.scanIQuery
 			(queryDetailsObj, dataList, selectedColMetadata, querySessionData);
 			if(!exportDetailsMap.isEmpty())
 			{
@@ -983,11 +981,63 @@ public class QueryOutputSpreadsheetBizLogic
 		 * result pages using pagination.
 		 */
 
-		if(!selectedColMetadata.isDefinedView())
+		if(!selectedColMetadata.isDefinedView() || mainIdColumnIndex == -1)
 		{
 			querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
 		}
 		return querySessionData;
+	}
+
+	/**
+	 * Populates the appropriate SelectedColumnsMetadata object and
+	 * maintains the order of attributes in case of saved query.
+	 * @param selectedColumnsMetadata selectedColumnsMetadata
+	 * @return selectedColMetadata
+	 */
+	private SelectedColumnsMetadata handleDefineViewCase(
+			SelectedColumnsMetadata selectedColumnsMetadata)
+	{
+		SelectedColumnsMetadata selectedColMetadata;
+		if(selectedColumnsMetadata == null)
+		{
+			selectedColMetadata = selectedColumnMetaData;
+			if(selectedColMetadata.isDefinedView())
+			{
+				updateSelectedColumnsMetadataForSavedQuery(selectedColMetadata);
+			}
+		}
+		else
+		{
+			selectedColMetadata = selectedColumnsMetadata;
+		}
+		return selectedColMetadata;
+	}
+
+	private boolean isContainmentPresent(IQuery query)
+	{
+		boolean isContPresent = false;
+		IConstraints constraints = query.getConstraints();
+		JoinGraph joinGraph = (JoinGraph) constraints.getJoinGraph();
+		for(IExpression expression : constraints)
+		{
+			List<IExpression> children = joinGraph.getChildrenList(expression);
+			for(IExpression child : children)
+			{
+				IIntraModelAssociation association = (IIntraModelAssociation)
+				joinGraph.getAssociation(expression, child);
+				if(association.getDynamicExtensionsAssociation().getTargetRole().getAssociationsType()
+						.name().equalsIgnoreCase("CONTAINTMENT"))
+				{
+					isContPresent = true;
+					break;
+				}
+			}
+			if(isContPresent)
+			{
+				break;
+			}
+		}
+		return isContPresent;
 	}
 
 	/**

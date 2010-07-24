@@ -11,6 +11,10 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
+import edu.wustl.common.querysuite.queryobject.IConstraints;
+import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
 import edu.wustl.query.util.global.Utility;
 
 /**
@@ -26,22 +30,33 @@ public class QueryExportDataHandler
 	private final Map<Integer, Map<QueryHeaderData, List<List<Object>>>> recordIdVsentityVsDataList =
 		new HashMap<Integer, Map<QueryHeaderData, List<List<Object>>>>();
 	private final EntityInterface rootEntity;
-	private List<EntityInterface> markedEntities = new ArrayList<EntityInterface>();
-	private Map<EntityInterface,BaseAbstractAttributeInterface> entityVsAssoc =
-		new HashMap<EntityInterface, BaseAbstractAttributeInterface>();
-	private Map<EntityInterface,BaseAbstractAttributeInterface> tgtEntityVsAssoc =
-		new HashMap<EntityInterface, BaseAbstractAttributeInterface>();
+	private final IExpression rootExp;
+	private final IConstraints constraints;
+	private List<IExpression> markedExp = new ArrayList<IExpression>();
+	private Map<IExpression,BaseAbstractAttributeInterface> expVsAssoc =
+		new HashMap<IExpression, BaseAbstractAttributeInterface>();
+	private Map<IExpression,BaseAbstractAttributeInterface> tgtExpVsAssoc =
+		new HashMap<IExpression, BaseAbstractAttributeInterface>();
 	private final Map<Integer,List<OutputAttributeColumn>> selectedAttributes =
 		new HashMap<Integer,List<OutputAttributeColumn>>();
 	private final List<OutputAttributeColumn> selectedAttributeList = new ArrayList<OutputAttributeColumn>();
 	private int index;
 
-	public QueryExportDataHandler(EntityInterface rootEntity)
+	public QueryExportDataHandler(IExpression rootExp, IConstraints constraints)
 	{
-		this.rootEntity = rootEntity;
+		this.rootExp = rootExp;
+		if(rootExp == null)
+		{
+			this.rootEntity = null;
+		}
+		else
+		{
+			this.rootEntity = rootExp.getQueryEntity().getDynamicExtensionsEntity();
+		}
+		this.constraints = constraints;
 	}
 
-	public EntityInterface getRootEntity()
+	public EntityInterface getRootExp()
 	{
 		return rootEntity;
 	}
@@ -49,31 +64,31 @@ public class QueryExportDataHandler
 	/**
 	 * @param entityVsAssoc the entityVsAssoc to set
 	 */
-	public void setEntityVsAssoc(Map<EntityInterface,BaseAbstractAttributeInterface> entityVsAssoc)
+	public void setExpVsAssoc(Map<IExpression,BaseAbstractAttributeInterface> expVsAssoc)
 	{
-		this.entityVsAssoc = entityVsAssoc;
+		this.expVsAssoc = expVsAssoc;
 	}
 
 	/**
 	 * @return the entityVsAssoc
 	 */
-	public Map<EntityInterface,BaseAbstractAttributeInterface> getEntityVsAssoc()
+	public Map<IExpression,BaseAbstractAttributeInterface> getExpVsAssoc()
 	{
-		return entityVsAssoc;
+		return expVsAssoc;
 	}
 
-	public void setTgtEntityVsAssoc(
-			Map<EntityInterface, BaseAbstractAttributeInterface> tgtEntityVsAssoc)
+	public void setTgtExpVsAssoc(
+			Map<IExpression, BaseAbstractAttributeInterface> tgtExpVsAssoc)
 	{
-		this.tgtEntityVsAssoc = tgtEntityVsAssoc;
+		this.tgtExpVsAssoc = tgtExpVsAssoc;
 	}
 
 	/**
 	 * @return the tgtEntityVsAssoc
 	 */
-	public Map<EntityInterface, BaseAbstractAttributeInterface> getTgtEntityVsAssoc()
+	public Map<IExpression, BaseAbstractAttributeInterface> getTgtExpVsAssoc()
 	{
-		return tgtEntityVsAssoc;
+		return tgtExpVsAssoc;
 	}
 
 	/**
@@ -85,7 +100,7 @@ public class QueryExportDataHandler
 	public void updateRowDataList(Map<BaseAbstractAttributeInterface,Object> denormalizationMap, int mapIndex)
 	{
 		this.index = mapIndex;
-		QueryHeaderData queryDataEntity = new QueryHeaderData(rootEntity, "");
+		QueryHeaderData queryDataEntity = new QueryHeaderData(rootEntity, "",rootExp);
 		Map<QueryHeaderData, List<List<Object>>> entityVsDataList =
 			new HashMap<QueryHeaderData, List<List<Object>>>();
 		generateQueryDatamap(denormalizationMap, queryDataEntity, entityVsDataList, 0);
@@ -117,18 +132,18 @@ public class QueryExportDataHandler
 	 * This method gets all the attributes of entities one by one and
 	 * accordingly populates the denormalization map.
 	 * @param denormalizationMap denormalizationMap
-	 * @param queryDataEntity queryDataEntity
+	 * @param queryHeaderData queryDataEntity
 	 * @param entityVsDataList entityVsDataList
 	 * @param dataCnt dataCnt
 	 */
 	private void processDiffAttributes(
 			Map<BaseAbstractAttributeInterface, Object> denormalizationMap,
-			QueryHeaderData queryDataEntity,
+			QueryHeaderData queryHeaderData,
 			Map<QueryHeaderData, List<List<Object>>> entityVsDataList,
 			int dataCnt)
 	{
-		EntityInterface entity = queryDataEntity.getEntity();
-		Collection<AbstractAttributeInterface> attributeList = getAbstractAttributeCollection(entity);
+		Collection<AbstractAttributeInterface> attributeList =
+			getAbstractAttributeCollection(queryHeaderData.getExpression());
 		List<Object> rowDataList = new ArrayList<Object>();
 		for(BaseAbstractAttributeInterface attribute : attributeList)
 		{
@@ -152,13 +167,13 @@ public class QueryExportDataHandler
 				}
 				else if (attribute instanceof AssociationInterface)
 				{
-					String recordNo = queryDataEntity.getParentRecordNo() + "_" + dataCnt;
+					String recordNo = queryHeaderData.getParentRecordNo() + "_" + dataCnt;
 					processAssociationAttribute(attribute, denormalizationMap, entityVsDataList,
 							recordNo);
 				}
 			}
 		}
-		populateEntityvsDataList(queryDataEntity, entityVsDataList,
+		populateEntityvsDataList(queryHeaderData, entityVsDataList,
 				rowDataList);
 	}
 
@@ -170,7 +185,6 @@ public class QueryExportDataHandler
 	private void populateSelectedAttributes(Object recordValue)
 	{
 		List<OutputAttributeColumn> selectedList = selectedAttributes.get(index);
-		boolean flag = false;
 		if(selectedList == null)
 		{
 			selectedList = new ArrayList<OutputAttributeColumn>();
@@ -179,18 +193,7 @@ public class QueryExportDataHandler
 		}
 		else
 		{
-			for(OutputAttributeColumn opAttrColumn : selectedList)
-			{
-				if(opAttrColumn.getAttribute().equals(((OutputAttributeColumn)recordValue).getAttribute()))
-				{
-					flag = true;
-					break;
-				}
-			}
-			if(flag == false)
-			{
-				selectedList.add((OutputAttributeColumn) recordValue);
-			}
+			populateSelectedList(recordValue, selectedList);
 		}
 		if(!selectedAttributeList.contains(recordValue))
 		{
@@ -198,19 +201,81 @@ public class QueryExportDataHandler
 		}
 	}
 
+	/**
+	 * Adds the OutputAttributeColumn's object in selectedList if not present.
+	 * @param recordValue recordValue
+	 * @param selectedList selectedList
+	 */
+	private void populateSelectedList(Object recordValue,
+			List<OutputAttributeColumn> selectedList)
+	{
+		boolean flag = false;
+		for(OutputAttributeColumn opAttrColumn : selectedList)
+		{
+			if(opAttrColumn.getAttribute().equals(((OutputAttributeColumn)recordValue).getAttribute()))
+			{
+				flag = true;
+				break;
+			}
+		}
+		if(!flag)
+		{
+			selectedList.add((OutputAttributeColumn) recordValue);
+		}
+	}
+
+	/**
+	 * Gets the list of associations & attributes for the passed entity.
+	 * @param expression entity
+	 * @return finalList finalList
+	 */
 	private Collection<AbstractAttributeInterface> getAbstractAttributeCollection(
-			EntityInterface entity)
+			IExpression expression)
 	{
 		Collection<AbstractAttributeInterface> finalList = new ArrayList<AbstractAttributeInterface>();
-		Collection<AbstractAttributeInterface> attributeList =
-			entity.getAllAbstractAttributes();
+		Collection<AttributeInterface> attributeList =
+			expression.getQueryEntity().getDynamicExtensionsEntity().getAllAttributes();
+		Collection<AbstractAttributeInterface> associationList = getActualAssociations(expression);
 		finalList.addAll(attributeList);
-		AbstractAttributeInterface assocInterface = (AbstractAttributeInterface)entityVsAssoc.get(entity);
-		if(assocInterface != null && !finalList.contains(assocInterface))
+		finalList.addAll(associationList);
+		for(IExpression exp : expVsAssoc.keySet())
 		{
-			finalList.add(assocInterface);
+			if(exp.equals(expression))
+			{
+				AbstractAttributeInterface assocInterface = (AbstractAttributeInterface)expVsAssoc.get(exp);
+				if(assocInterface != null && !finalList.contains(assocInterface))
+				{
+					finalList.add(assocInterface);
+				}
+			}
 		}
 		return finalList;
+	}
+
+	/**
+	 * Gets only those associations that are present in the formed query.
+	 * @param expression expression
+	 * @return finalList
+	 */
+	private List<AbstractAttributeInterface> getActualAssociations(
+			IExpression expression)
+	{
+		List<AbstractAttributeInterface> assocList = new ArrayList<AbstractAttributeInterface>();
+		JoinGraph joinGraph = (JoinGraph)constraints.getJoinGraph();
+		IIntraModelAssociation association;
+		for(IExpression exp : constraints)
+		{
+			if(joinGraph.containsAssociation(expression, exp))
+			{
+				association =
+					(IIntraModelAssociation)joinGraph.getAssociation(expression, exp);
+				if(!assocList.contains(association.getDynamicExtensionsAssociation()))
+				{
+					assocList.add(association.getDynamicExtensionsAssociation());
+				}
+			}
+		}
+		return assocList;
 	}
 
 	/**
@@ -294,36 +359,73 @@ public class QueryExportDataHandler
 	{
 		List tempList = (List) denormalizationMap.get(attribute);
 		AssociationInterface association = (AssociationInterface)attribute;
-		EntityInterface entity = getTargetEntity(association);
-		if(entity == null)
+		List<IExpression> expList = getTargetExpressions(association);
+//		if(entityList.isEmpty())
+//		{
+//			entityList.add(association.getTargetEntity());
+//		}
+		for(IExpression expression : expList)
 		{
-			entity = association.getTargetEntity();
-		}
-		QueryHeaderData queryDataEntity = new QueryHeaderData(entity, parentRecordNo);
-		updateMaxRecordCount(tempList, queryDataEntity);
-		if (!tempList.isEmpty())
-		{
-			for (int recordNo = 0; recordNo < tempList.size(); recordNo++)
+			QueryHeaderData queryDataEntity = new QueryHeaderData(expression.getQueryEntity().getDynamicExtensionsEntity(),
+					parentRecordNo,expression);
+			List newTempList = updateTempList(tempList,expression);
+			updateMaxRecordCount(newTempList, queryDataEntity);
+			if (!newTempList.isEmpty())
 			{
-				Map<BaseAbstractAttributeInterface, Object> obj =
-					(Map<BaseAbstractAttributeInterface, Object>) tempList.get(recordNo);
-				generateQueryDatamap(obj, queryDataEntity, entityVsDataList, recordNo);
+				for (int recordNo = 0; recordNo < newTempList.size(); recordNo++)
+				{
+					Map<BaseAbstractAttributeInterface, Object> obj =
+						(Map<BaseAbstractAttributeInterface, Object>) newTempList.get(recordNo);
+					generateQueryDatamap(obj, queryDataEntity, entityVsDataList, recordNo);
+				}
 			}
 		}
 	}
 
-	private EntityInterface getTargetEntity(AssociationInterface association)
+	/**
+	 * Returns a list which contains data related only to the entity passed
+	 * (This is possible when the query contains an association twice & so there is list of data
+	 * for more than one entity corresponding to same association).
+	 * @param tempList tempList
+	 * @param expression entity
+	 * @return newList
+	 */
+	private List updateTempList(List tempList, IExpression expression)
 	{
-		EntityInterface entity = null;
-		for(EntityInterface tgtEntity : tgtEntityVsAssoc.keySet())
+		List newList = new ArrayList();
+		Map<BaseAbstractAttributeInterface, Object> newMap;
+		Collection<AbstractAttributeInterface> attributeList = getAbstractAttributeCollection(expression);
+		for(int cnt=0;cnt<tempList.size();cnt++)
 		{
-			if(tgtEntityVsAssoc.get(tgtEntity).equals(association))
+			newMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+			Map<BaseAbstractAttributeInterface, Object> obj =
+				(Map<BaseAbstractAttributeInterface, Object>) tempList.get(cnt);
+			for(BaseAbstractAttributeInterface attribute : obj.keySet())
 			{
-				entity = tgtEntity;
-				break;
+				if(attributeList.contains(attribute))
+				{
+					newMap.put(attribute, obj.get(attribute));
+				}
+			}
+			if(!newMap.isEmpty())
+			{
+				newList.add(newMap);
 			}
 		}
-		return entity;
+		return newList;
+	}
+
+	private List<IExpression> getTargetExpressions(AssociationInterface association)
+	{
+		List<IExpression> expList = new ArrayList<IExpression>();
+		for(IExpression tgtExp : tgtExpVsAssoc.keySet())
+		{
+			if(tgtExpVsAssoc.get(tgtExp).equals(association))
+			{
+				expList.add(tgtExp);
+			}
+		}
+		return expList;
 	}
 
 	/**
@@ -367,9 +469,9 @@ public class QueryExportDataHandler
 	 */
 	public List<Object> getHeaderList()
 	{
-		markedEntities = new ArrayList<EntityInterface>();
+		markedExp = new ArrayList<IExpression>();
 		List<Object> headerList;
-		QueryHeaderData headerData = new QueryHeaderData(rootEntity, "");
+		QueryHeaderData headerData = new QueryHeaderData(rootEntity, "",rootExp);
 		headerList = getHeaderForSpreadsheetDataCSV(headerData);
 		return headerList;
 	}
@@ -384,8 +486,11 @@ public class QueryExportDataHandler
 	{
 		List<Object> headerList = new ArrayList<Object>();
 
-		populateMarkedEntities(queryHeaderData);
 		Integer maxRecordCount = getMaxRecordCountForQueryHeader(queryHeaderData);
+		if(maxRecordCount > 0)
+		{
+			populateMarkedExpressions(queryHeaderData);
+		}
 
 		Collection<AbstractAttributeInterface> attributeList =
 			getFinalAttributeList(queryHeaderData.getEntity());
@@ -434,7 +539,7 @@ public class QueryExportDataHandler
 			else
 			{
 				StringBuffer originalHeader = new StringBuffer(opAttrCol.getHeader());
-				originalHeader.append("|").append(headerDisplay.toString());
+				originalHeader.append('|').append(headerDisplay.toString());
 				opAttrCol.setHeader(originalHeader.toString());
 			}
 		}
@@ -464,17 +569,20 @@ public class QueryExportDataHandler
 			List<Object> headerList, int cntr,
 			AbstractAttributeInterface attribute)
 	{
-		EntityInterface entity = getTargetEntity((AssociationInterface)attribute);
-		if(entity == null)
+		List<IExpression> expList = getTargetExpressions((AssociationInterface)attribute);
+//		if(expList.isEmpty())
+//		{
+//			entityList.add(((AssociationInterface)attribute).getTargetEntity());
+//		}
+		for(IExpression expression : expList)
 		{
-			entity = ((AssociationInterface)attribute).getTargetEntity();
-		}
-		String parentRecordId = queryHeaderData.getParentRecordNo() + "_" + cntr;
-		QueryHeaderData headerData = new QueryHeaderData(entity,
-				parentRecordId);
-		if(!markedEntities.contains(entity))
-		{
-			headerList.addAll(getHeaderForSpreadsheetDataCSV(headerData));
+			String parentRecordId = queryHeaderData.getParentRecordNo() + "_" + cntr;
+			QueryHeaderData headerData = new QueryHeaderData(expression.getQueryEntity().getDynamicExtensionsEntity(),
+					parentRecordId,expression);
+			if(!markedExp.contains(expression))
+			{
+				headerList.addAll(getHeaderForSpreadsheetDataCSV(headerData));
+			}
 		}
 	}
 
@@ -486,10 +594,10 @@ public class QueryExportDataHandler
 	public List<Object> getDataList(Integer counter)
 	{
 		this.index = counter;
-		markedEntities = new ArrayList<EntityInterface>();
+		markedExp = new ArrayList<IExpression>();
 		Map<QueryHeaderData, List<List<Object>>> entityMap = recordIdVsentityVsDataList
 				.get(counter);
-		QueryHeaderData queryHeaderData = new QueryHeaderData(rootEntity, "");
+		QueryHeaderData queryHeaderData = new QueryHeaderData(rootEntity, "",rootExp);
 		return getDataListForSpreadsheetDataCSV(queryHeaderData, entityMap);
 	}
 
@@ -503,7 +611,7 @@ public class QueryExportDataHandler
 			QueryHeaderData queryHeaderData,
 			Map<QueryHeaderData, List<List<Object>>> entityMap)
 	{
-		populateMarkedEntities(queryHeaderData);
+		populateMarkedExpressions(queryHeaderData);
 		Integer maxRecordCount = getMaxRecordCountForQueryHeader(queryHeaderData);
 		Collection<AbstractAttributeInterface> attributeList = getFinalAttributeList(queryHeaderData.getEntity());
 		List<List<Object>> entityDataList = entityMap.get(queryHeaderData);
@@ -513,24 +621,25 @@ public class QueryExportDataHandler
 		for (int cntr = 0; cntr < maxRecordCount; cntr++)
 		{
 			List<Object> queryData = getRecordListForRecordId(entityDataList, cntr);
-			int attrControlNo = 0;
 			int counter = 0;
 			for (AbstractAttributeInterface attribute : attributeList)
 			{
 				if (attribute instanceof AssociationInterface)
 				{
-					EntityInterface entity = getTargetEntity((AssociationInterface)attribute);
-					if(entity != null)
-					{
-						//entity = ((AssociationInterface)attribute).getTargetEntity();
+					List<IExpression> expList = getTargetExpressions((AssociationInterface)attribute);
 
-					String parentRecordId = queryHeaderData.getParentRecordNo() + "_" + cntr;
-					QueryHeaderData headerData = new QueryHeaderData(entity,
-							parentRecordId);
-					if(!markedEntities.contains(entity))
+					if(!expList.isEmpty())
 					{
-						dataList.addAll(getDataListForSpreadsheetDataCSV(headerData, entityMap));
-					}
+						for(IExpression expression : expList)
+						{
+							String parentRecordId = queryHeaderData.getParentRecordNo() + "_" + cntr;
+							QueryHeaderData headerData = new QueryHeaderData(expression.getQueryEntity().getDynamicExtensionsEntity(),
+									parentRecordId,expression);
+							if(!markedExp.contains(expression))
+							{
+								dataList.addAll(getDataListForSpreadsheetDataCSV(headerData, entityMap));
+							}
+						}
 					}
 				}
 				else
@@ -549,7 +658,7 @@ public class QueryExportDataHandler
 						{
 							dataValue = opAttrCol;
 							StringBuffer value = new StringBuffer(((OutputAttributeColumn)dataValue).getValue());
-							value.append("|").append(" ");
+							value.append("| ");
 							((OutputAttributeColumn)dataValue).setValue(value.toString());
 						}
 						else
@@ -557,7 +666,6 @@ public class QueryExportDataHandler
 							dataList.add(dataValue);
 						}
 					}
-					attrControlNo++;
 				}
 			}
 		}
@@ -585,11 +693,11 @@ public class QueryExportDataHandler
 	 * in order to avoid recursion.
 	 * @param queryHeaderData queryHeaderData
 	 */
-	private void populateMarkedEntities(QueryHeaderData queryHeaderData)
+	private void populateMarkedExpressions(QueryHeaderData queryHeaderData)
 	{
-		if(!markedEntities.contains(queryHeaderData.getEntity()))
+		if(!markedExp.contains(queryHeaderData.getExpression()))
 		{
-			markedEntities.add(queryHeaderData.getEntity());
+			markedExp.add(queryHeaderData.getExpression());
 		}
 	}
 
@@ -609,10 +717,16 @@ public class QueryExportDataHandler
 		{
 			populateNewAttributeList(entity, newAttributeList, attribute);
 		}
-		AbstractAttributeInterface assocInterface = (AbstractAttributeInterface)entityVsAssoc.get(entity);
-		if(assocInterface != null && !newAttributeList.contains(assocInterface))
+		for(IExpression exp : expVsAssoc.keySet())
 		{
-			newAttributeList.add(assocInterface);
+			if(exp.getQueryEntity().getDynamicExtensionsEntity().equals(entity))
+			{
+				AbstractAttributeInterface assocInterface = (AbstractAttributeInterface)expVsAssoc.get(exp);
+				if(assocInterface != null && !newAttributeList.contains(assocInterface))
+				{
+					newAttributeList.add(assocInterface);
+				}
+			}
 		}
 		return newAttributeList;
 	}

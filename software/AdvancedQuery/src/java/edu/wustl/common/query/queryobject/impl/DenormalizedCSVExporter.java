@@ -45,7 +45,6 @@ public class DenormalizedCSVExporter
 			}
 			finalDataList.add(newDataList);
 		}
-		//finalDataList = writeToCSVFile(size,dataHandler);
 		List<Object> headerList = dataHandler.getHeaderList();
 		List<String> finalHeaderList = new ArrayList<String>();
 		Collections.sort(headerList, new AttributeOrderComparator());
@@ -62,35 +61,6 @@ public class DenormalizedCSVExporter
 		exportDetailsMap.put("headerList", finalHeaderList);
 		return exportDetailsMap;
 	}
-
-	/**
-	 * This method writes the query results into the CSV file specified.
-	 * @param fileName fileName
-	 * @param size size
-	 */
-//	private List<List<OutputAttributeColumn>> writeToCSVFile(int size,QueryExportDataHandler handler)
-//	{
-//		List<List<OutputAttributeColumn>> finalDataList = new ArrayList<List<OutputAttributeColumn>>();
-//		List<Object> resultList;
-//		List<OutputAttributeColumn> dataList;
-//
-//		//Add the header to report
-//		List<Object> headerList = handler.getHeaderList();
-//		List<Object> finalHeaders = new ArrayList<Object>();
-//		for(Object header : headerList)
-//		{
-//			finalHeaders.add(header);
-//		}
-//		for (int i = 0; i < size; i++)
-//		{
-//			resultList = getDataList(i, handler);
-//			dataList = new ArrayList<OutputAttributeColumn>();
-//			populateDataList(resultList, dataList);
-//			Collections.sort(dataList, new AttributeOrderComparator());
-//			finalDataList.add(dataList);
-//		}
-//		return finalDataList;
-//	}
 
 	/**
 	 * Convert the elements of the result list from object to String and add them in the dataList.
