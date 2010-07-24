@@ -10,6 +10,8 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.querysuite.queryobject.IExpression;
+import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.query.generator.GenericQueryGeneratorMock;
 import edu.wustl.query.util.querysuite.EntityCacheFactory;
 import junit.framework.TestCase;
@@ -56,11 +58,12 @@ public class QueryExportDataHandlerTestCase extends TestCase
         denormalizationMap.put(lastName, new OutputAttributeColumn("abc", 1, lastName, null));
         denormalizationMap.put(ethnicity, ethnicities);
         denormalizationMap.put(association, innerMapList);
-
-        QueryExportDataHandler dataHandler = new QueryExportDataHandler(participantEntity);
+        IQuery query = GenericQueryGeneratorMock.createParticipantPMIQuery();
+        IExpression partExp = GenericQueryGeneratorMock.createExpression(participantEntity);
+        QueryExportDataHandler dataHandler = new QueryExportDataHandler(partExp,query.getConstraints());
         dataHandler.updateRowDataList(denormalizationMap, 0);
         dataHandler.getDataList(0);
-        dataHandler.getRootEntity();
+        dataHandler.getRootExp();
         DenormalizedCSVExporter csvExporter = new DenormalizedCSVExporter();
         csvExporter.addDataToCSV(1, dataHandler);
 	}

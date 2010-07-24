@@ -19,6 +19,7 @@ import edu.wustl.common.query.queryobject.impl.QueryHeaderData;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
+import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputEntity;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.global.QuerySessionData;
@@ -122,7 +123,7 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
 				return null;
 			}
 		};
-		IQuery query = GenericQueryGeneratorMock.createParticipantPMIQuery();
+		IQuery query = GenericQueryGeneratorMock.createInheritanceQueryWithAssociation1();
 		QueryDetails queryDetails = new QueryDetails(session);
 		queryDetails.setQuery(query);
 
@@ -156,14 +157,14 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
         participantOutputEntity.getSelectedAttributes().addAll(participantEntity.getEntityAttributesForQuery());
         OutputTreeDataNode outputTreeDataNode = new OutputTreeDataNode(participantOutputEntity, 1, 0);
 
-        EntityInterface pmiEntity = GenericQueryGeneratorMock.createEntity("ParticipantMedicalIdentifier");
+        EntityInterface pmiEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
         pmiEntity = GenericQueryGeneratorMock.getEntity(cache, pmiEntity);
         IOutputEntity pmiOutputEntity = QueryObjectFactory.createOutputEntity(pmiEntity);
         pmiOutputEntity.getSelectedAttributes().addAll(pmiEntity.getEntityAttributesForQuery());
 
         AttributeInterface lastName = GenericQueryGeneratorMock.findAttribute(participantEntity,"lastName");
         AttributeInterface pmiId = GenericQueryGeneratorMock.findAttribute(pmiEntity,"id");
-        AttributeInterface mrnNo = GenericQueryGeneratorMock.findAttribute(pmiEntity,"medicalRecordNumber");
+        AttributeInterface mrnNo = GenericQueryGeneratorMock.findAttribute(pmiEntity,"registrationDate");
         AttributeInterface participantId = GenericQueryGeneratorMock.findAttribute(participantEntity,"id");
         List<AttributeInterface> attributeList = new ArrayList<AttributeInterface>();
         attributeList.add(lastName);
@@ -239,8 +240,8 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
         querySessionData.setSql("select Column0,Column1,Column2,Column3 from TEMP_OUTPUTTREE1_84116 where Column3 is NOT NULL");
 		SpreadsheetDenormalizationBizLogic bizLogic = new SpreadsheetDenormalizationBizLogic();
 		bizLogic.scanIQuery(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
-
-		QueryHeaderData headerData = new QueryHeaderData(participantEntity, "0");
+		IExpression partExp = GenericQueryGeneratorMock.createExpression(participantEntity);
+		QueryHeaderData headerData = new QueryHeaderData(participantEntity, "0",partExp);
 		headerData.getEntity();
 		headerData.setRecordNo("1");
 		headerData.getRecordNo();
