@@ -104,7 +104,7 @@ public class DAGPanel
 	/**
 	 * mPathFinder.
 	 */
-	private IPathFinder mPathFinder;
+	private final IPathFinder mPathFinder;
 
 	/**
 	 * expression.
@@ -114,7 +114,7 @@ public class DAGPanel
 	/**
 	 * mPathMap.
 	 */
-	private HashMap<String, IPath> mPathMap = new HashMap<String, IPath>();
+	private final HashMap<String, IPath> mPathMap = new HashMap<String, IPath>();
 
 	/**
 	 * positionMap.

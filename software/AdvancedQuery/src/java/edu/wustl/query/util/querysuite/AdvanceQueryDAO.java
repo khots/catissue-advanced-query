@@ -19,7 +19,7 @@ public final class AdvanceQueryDAO
 	/**
 	 * Application Name used for getting DAO.
 	 */
-	private String appName;
+	private final String appName;
 
 	/**
 	 *No argument constructor.

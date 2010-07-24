@@ -26,17 +26,17 @@ public class QuerySqlGenerator extends SqlGenerator
 	private static class CaTissueFormula
 	{
 
-		private IArithmeticOperand lhsOpnd1;
+		private final IArithmeticOperand lhsOpnd1;
 
 		private ArithmeticOperator lhsOper;
 
-		private IArithmeticOperand lhsOpnd2;
+		private final IArithmeticOperand lhsOpnd2;
 
 		private RelationalOperator relOper;
 
-		private IArithmeticOperand rhs;
+		private final IArithmeticOperand rhs;
 
-		private QueryType queryType;
+		private final QueryType queryType;
 
 		private enum QueryType
 		{

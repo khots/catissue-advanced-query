@@ -4,7 +4,7 @@ package edu.wustl.query.util.querysuite;
 public class QueryModuleException extends Exception
 {
 
-	private String message;
+	private final String message;
 	private QueryModuleError key;
 
 	public QueryModuleException(String message)

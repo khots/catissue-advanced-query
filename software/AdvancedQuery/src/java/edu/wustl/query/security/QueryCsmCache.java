@@ -20,13 +20,13 @@ public class QueryCsmCache
 	 * A map that stores collection protocol id v/s a boolean value that a user is authorized
 	 * to read data related to that CP.
 	 */
-	private Map<Long, Boolean> readPrivilegeMap;
+	private final Map<Long, Boolean> readPrivilegeMap;
 
 	/**
 	 * A map that stores collection protocol id v/s a boolean value that a user
 	 * is authorized to see Identified data related to that CP.
 	 */
-	private Map<Long, Boolean> identifiedDataAccsessMap;
+	private final Map<Long, Boolean> identifiedDataAccsessMap;
 
 	/**
 	 * Constructor.

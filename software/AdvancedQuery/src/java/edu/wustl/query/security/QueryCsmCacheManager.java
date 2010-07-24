@@ -71,7 +71,7 @@ public class QueryCsmCacheManager
 	/**
 	 * Object of JDBCDAO.
 	 */
-	private JDBCDAO jdbcDAO;
+	private final JDBCDAO jdbcDAO;
 
 	/**
 	 * IValidator instance.

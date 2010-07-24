@@ -19,12 +19,12 @@ import edu.wustl.common.util.logger.Logger;
 public class DAGResolveAmbiguity
 {
 
-	private Vector<AmbiguityObject> m_ambiguityObjects;
+	private final Vector<AmbiguityObject> m_ambiguityObjects;
 
-	private Map<AmbiguityObject, List<IPath>> m_ambiguityObjectToPathsMap =
+	private final Map<AmbiguityObject, List<IPath>> m_ambiguityObjectToPathsMap =
 		new HashMap<AmbiguityObject, List<IPath>>();
 
-	private IPathFinder m_pathFinder;
+	private final IPathFinder m_pathFinder;
 
 	/**
 	 * Constructor.

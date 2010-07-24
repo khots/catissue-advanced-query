@@ -48,7 +48,7 @@ public class HtmlProvider
 	/**
 	 *
 	 */
-	private GenerateHTMLDetails generateHTMLDetails;
+	private final GenerateHTMLDetails generateHTMLDetails;
 
 	/**
 	 * attribute details for each attribute.

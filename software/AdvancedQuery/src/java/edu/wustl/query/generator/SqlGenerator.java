@@ -138,7 +138,7 @@ public class SqlGenerator implements ISqlGenerator
     /**
      * Attribute to column name mapping.
      */
-    private Map<AttributeInterface, String> attrColNameMap =
+    private final Map<AttributeInterface, String> attrColNameMap =
     	new HashMap<AttributeInterface, String>();
 
     /**

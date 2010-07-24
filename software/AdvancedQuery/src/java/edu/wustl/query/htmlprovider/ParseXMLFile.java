@@ -47,20 +47,20 @@ public class ParseXMLFile
 	/**
 	 * non enum data type to condition map.
 	 */
-	private Map<String, ArrayList<String>> nedtCondMap = new HashMap<String, ArrayList<String>>();
+	private final Map<String, ArrayList<String>> nedtCondMap = new HashMap<String, ArrayList<String>>();
 	/**
 	 * non enum data type to component map.
 	 */
-	private Map<String, String> nedtCompMap = new HashMap<String, String>();
+	private final Map<String, String> nedtCompMap = new HashMap<String, String>();
 
 	/**
 	 * enum data type to condition map.
 	 */
-	private Map<String, ArrayList<String>> edtCondMap = new HashMap<String, ArrayList<String>>();
+	private final Map<String, ArrayList<String>> edtCondMap = new HashMap<String, ArrayList<String>>();
 	/**
 	 * enum data type to component map.
 	 */
-	private Map<String, String> edtompMap = new HashMap<String, String>();
+	private final Map<String, String> edtompMap = new HashMap<String, String>();
 
 	/**
 	 * Constructor for parsing the XML file.

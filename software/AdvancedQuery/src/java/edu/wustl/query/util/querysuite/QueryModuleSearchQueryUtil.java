@@ -45,12 +45,12 @@ import edu.wustl.security.exception.SMException;
  */
 public class QueryModuleSearchQueryUtil
 {
-	private HttpServletRequest request;
-	private HttpSession session;
+	private final HttpServletRequest request;
+	private final HttpSession session;
 	private IQuery query;
-	private boolean isSavedQuery;
+	private final boolean isSavedQuery;
 
-	private QueryDetails queryDetailsObj;
+	private final QueryDetails queryDetailsObj;
 
 	/**
 	 * @param request
