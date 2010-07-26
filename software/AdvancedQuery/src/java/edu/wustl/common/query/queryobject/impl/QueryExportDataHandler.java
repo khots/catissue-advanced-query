@@ -479,7 +479,7 @@ public class QueryExportDataHandler
 	/**
 	 * This method generates the headers to be displayed in the CSV file.
 	 * @param headerData headerData
-	 * @return
+	 * @return headerList
 	 */
 	private List<Object> getHeaderForSpreadsheetDataCSV(
 			QueryHeaderData queryHeaderData)
@@ -570,10 +570,6 @@ public class QueryExportDataHandler
 			AbstractAttributeInterface attribute)
 	{
 		List<IExpression> expList = getTargetExpressions((AssociationInterface)attribute);
-//		if(expList.isEmpty())
-//		{
-//			entityList.add(((AssociationInterface)attribute).getTargetEntity());
-//		}
 		for(IExpression expression : expList)
 		{
 			String parentRecordId = queryHeaderData.getParentRecordNo() + "_" + cntr;
@@ -651,27 +647,45 @@ public class QueryExportDataHandler
 						dataValue = queryData.get(counter);
 						counter++;
 					}
-					OutputAttributeColumn opAttrCol = getOpAttributeColumnForData(attribute);
-					if(opAttrCol != null)
-					{
-						if(dataValue == null)
-						{
-							dataValue = opAttrCol;
-							StringBuffer value = new StringBuffer(((OutputAttributeColumn)dataValue).getValue());
-							value.append("| ");
-							((OutputAttributeColumn)dataValue).setValue(value.toString());
-						}
-						else
-						{
-							dataList.add(dataValue);
-						}
-					}
+					populateDataList(dataList, attribute, dataValue);
 				}
 			}
 		}
 		return dataList;
 	}
 
+	/**
+	 * Add the values to be displayed in the spreadsheet in the data list
+	 * @param dataList dataList
+	 * @param attribute attribute
+	 * @param data data
+	 */
+	private void populateDataList(List<Object> dataList,
+			AbstractAttributeInterface attribute, Object data)
+	{
+		Object dataValue = data;
+		OutputAttributeColumn opAttrCol = getOpAttributeColumnForData(attribute);
+		if(opAttrCol != null)
+		{
+			if(dataValue == null)
+			{
+				dataValue = opAttrCol;
+				StringBuffer value = new StringBuffer(((OutputAttributeColumn)dataValue).getValue());
+				value.append("| ");
+				((OutputAttributeColumn)dataValue).setValue(value.toString());
+			}
+			else
+			{
+				dataList.add(dataValue);
+			}
+		}
+	}
+
+	/**
+	 * Get the OutputAttributeColumn's object corresponding to the attribute passed.
+	 * @param attribute attribute
+	 * @return opAttrCol opAttrCol
+	 */
 	private OutputAttributeColumn getOpAttributeColumnForData(AbstractAttributeInterface attribute)
 	{
 		OutputAttributeColumn opAttrCol = null;
@@ -719,16 +733,28 @@ public class QueryExportDataHandler
 		}
 		for(IExpression exp : expVsAssoc.keySet())
 		{
-			if(exp.getQueryEntity().getDynamicExtensionsEntity().equals(entity))
-			{
-				AbstractAttributeInterface assocInterface = (AbstractAttributeInterface)expVsAssoc.get(exp);
-				if(assocInterface != null && !newAttributeList.contains(assocInterface))
-				{
-					newAttributeList.add(assocInterface);
-				}
-			}
+			populateNewAttrList(entity, newAttributeList, exp);
 		}
 		return newAttributeList;
+	}
+
+	/**
+	 * Populate the final attribute list by adding all the associations (of parents) and then
+	 * filter the list to contain only the required attributes and associations.
+	 * @param entity entity
+	 * @param newAttributeList  newAttributeList
+	 * @param exp expression
+	 */
+	private void populateNewAttrList(EntityInterface entity,
+			List<AbstractAttributeInterface> newAttributeList, IExpression exp) {
+		if(exp.getQueryEntity().getDynamicExtensionsEntity().equals(entity))
+		{
+			AbstractAttributeInterface assocInterface = (AbstractAttributeInterface)expVsAssoc.get(exp);
+			if(assocInterface != null && !newAttributeList.contains(assocInterface))
+			{
+				newAttributeList.add(assocInterface);
+			}
+		}
 	}
 
 	/**

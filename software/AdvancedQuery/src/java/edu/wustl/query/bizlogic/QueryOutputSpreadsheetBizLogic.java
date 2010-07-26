@@ -216,7 +216,7 @@ public class QueryOutputSpreadsheetBizLogic
 	{
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		this.selectedColumnMetaData = selectedColumnMetaData;
-		Map spreadSheetDatamap = null;
+		Map spreadSheetDatamap;
 		String[] nodeIds;
 		nodeIds = actualParentNodeId.split(AQConstants.UNDERSCORE);
 		String treeNo = nodeIds[0];
