@@ -216,7 +216,7 @@ public class SqlGenerator implements ISqlGenerator
         fromBuilder = new FromBuilder(joinGraph);
         // String fromPart = fromBuilder.getFromPartSQL(rootExpression, null,
         // new HashSet<IExpression>());
-        String fromPart = fromBuilder.fromClause();
+        String fromPart = fromBuilder.getFromClause();
         String wherePart = getCompleteWherePart(rootExpression);
         String selectPart = getSelectPart();
 

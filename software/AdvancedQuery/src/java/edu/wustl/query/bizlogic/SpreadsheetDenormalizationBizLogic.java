@@ -51,7 +51,39 @@ public class SpreadsheetDenormalizationBizLogic
 		new HashMap<IExpression, BaseAbstractAttributeInterface>();
 	private int mainIdColumnIndex = -1;
 	private Map<String,String> columnNameMap;
+	/**
+	 * @return the columnNameMap
+	 */
+	public Map<String, String> getColumnNameMap()
+	{
+		return columnNameMap;
+	}
+
+	/**
+	 * @param columnNameMap the columnNameMap to set
+	 */
+	public void setColumnNameMap(Map<String, String> columnNameMap)
+	{
+		this.columnNameMap = columnNameMap;
+	}
+
 	private int counter = 0;
+
+	/**
+	 * @return the mainIdColumnIndex
+	 */
+	public int getMainIdColumnIndex()
+	{
+		return mainIdColumnIndex;
+	}
+
+	/**
+	 * @param mainIdColumnIndex the mainIdColumnIndex to set
+	 */
+	public void setMainIdColumnIndex(int mainIdColumnIndex)
+	{
+		this.mainIdColumnIndex = mainIdColumnIndex;
+	}
 
 	/**
 	 * Scans the entire IQuery starting from root node in order to populate the map

@@ -44,6 +44,22 @@ public class DefineGridViewBizLogic
 	private List<NameValueBean> selectedColList;
 
 	/**
+	 * @return the selectedColList
+	 */
+	public List<NameValueBean> getSelectedColList()
+	{
+		return selectedColList;
+	}
+
+	/**
+	 * @param selectedColList the selectedColList to set
+	 */
+	public void setSelectedColList(List<NameValueBean> selectedColList)
+	{
+		this.selectedColList = selectedColList;
+	}
+
+	/**
 	 * returns class name when passed a OutputTreeDataNode.
 	 * @param node OutputTreeDataNode
 	 * @return String className

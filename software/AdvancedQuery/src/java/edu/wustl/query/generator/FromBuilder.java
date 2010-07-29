@@ -123,7 +123,7 @@ public class FromBuilder
      * Returns the generated from clause.
      * @return from clause
      */
-    protected String fromClause()
+    protected String getFromClause()
     {
         return fromClause;
     }
@@ -455,7 +455,7 @@ public class FromBuilder
         {
             EntityInterface entity = entity(expression);
 
-            String table = tableName(root(entity));
+            String table = tableName(getRoot(entity));
             return "(" + SELECT + "*" + FROM + table +
             WHERE + conds(entity) + ")";
         }
@@ -672,7 +672,7 @@ public class FromBuilder
      * @param entity entity
      * @return parent entity
      */
-    private static EntityInterface root(EntityInterface entity)
+    private static EntityInterface getRoot(EntityInterface entity)
     {
     	EntityInterface root = entity;
         // old code also checked inheritance strategy here; not needed if

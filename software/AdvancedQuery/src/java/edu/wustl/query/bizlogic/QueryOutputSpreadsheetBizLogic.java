@@ -73,6 +73,23 @@ public class QueryOutputSpreadsheetBizLogic
 	private SelectedColumnsMetadata selectedColumnMetaData;
 
 	/**
+	 * @return the selectedColumnMetaData
+	 */
+	public SelectedColumnsMetadata getSelectedColumnMetaData()
+	{
+		return selectedColumnMetaData;
+	}
+
+	/**
+	 * @param selectedColumnMetaData the selectedColumnMetaData to set
+	 */
+	public void setSelectedColumnMetaData(
+			SelectedColumnsMetadata selectedColumnMetaData)
+	{
+		this.selectedColumnMetaData = selectedColumnMetaData;
+	}
+
+	/**
 	 * Processes spreadsheet data for label node which user has clicked.
 	 * @param idNodesMap Map<Long, OutputTreeDataNode> map of identifiers and
 	 * nodes present in tree.

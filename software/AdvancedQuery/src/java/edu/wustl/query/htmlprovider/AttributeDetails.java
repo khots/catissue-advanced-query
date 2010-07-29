@@ -41,7 +41,7 @@ public class AttributeDetails
 	/**
 	 * If operator isBetween.
 	 */
-	private boolean isBetween;
+	private boolean between;
 
 	/**
 	 *	Values for selected operator.
@@ -61,7 +61,7 @@ public class AttributeDetails
 	/**
 	 * Is Parameterized Condition.
 	 */
-	private boolean isParameterizedCondition;
+	private boolean parameterizedCondition;
 
 	/**
 	 * Parameter for parameterized query.
@@ -152,7 +152,7 @@ public class AttributeDetails
 	 */
 	public boolean isBetween()
 	{
-		return isBetween;
+		return between;
 	}
 
 	/**
@@ -160,7 +160,7 @@ public class AttributeDetails
 	 */
 	public void setBetween(boolean isBetween)
 	{
-		this.isBetween = isBetween;
+		this.between = isBetween;
 	}
 
 	/**
@@ -216,7 +216,7 @@ public class AttributeDetails
 	 */
 	public boolean isParameterizedCondition()
 	{
-		return isParameterizedCondition;
+		return parameterizedCondition;
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class AttributeDetails
 	 */
 	public void setParameterizedCondition(boolean isParameterizedCondition)
 	{
-		this.isParameterizedCondition = isParameterizedCondition;
+		this.parameterizedCondition = isParameterizedCondition;
 	}
 
 	/**

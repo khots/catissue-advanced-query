@@ -569,7 +569,7 @@ public class HtmlProvider
 		// String attributesList = "";
 		//boolean isParameterizedCondition = false;
 		boolean isBGColor = false;
-		boolean isEditLimits = isEditLimits(conditions);
+
 		if (!attributeCollection.isEmpty())
 		{
 			// get the list of dag ids for the corresponding entity
@@ -596,7 +596,7 @@ public class HtmlProvider
 						entity, dagNodeId, attribute));
 
 			}
-
+			boolean isEditLimits = isEditLimits(conditions);
 			generatedPreHTML.append(getHtml(entity, generatedHTML,collection,isEditLimits));
 		}
 		if (forPage.equalsIgnoreCase(AQConstants.ADD_EDIT_PAGE))
@@ -892,5 +892,53 @@ public class HtmlProvider
 			}
 		}
 		return expressionEntityString;
+	}
+
+	/**
+	 * @return the attributesList
+	 */
+	public String getAttributesList()
+	{
+		return attributesList;
+	}
+
+	/**
+	 * @param attributesList the attributesList to set
+	 */
+	public void setAttributesList(String attributesList)
+	{
+		this.attributesList = attributesList;
+	}
+
+	/**
+	 * @return the attributeDetails
+	 */
+	public AttributeDetails getAttributeDetails()
+	{
+		return attributeDetails;
+	}
+
+	/**
+	 * @param attributeDetails the attributeDetails to set
+	 */
+	public void setAttributeDetails(AttributeDetails attributeDetails)
+	{
+		this.attributeDetails = attributeDetails;
+	}
+
+	/**
+	 * @return the forPage
+	 */
+	public String getForPage()
+	{
+		return forPage;
+	}
+
+	/**
+	 * @param forPage the forPage to set
+	 */
+	public void setForPage(String forPage)
+	{
+		this.forPage = forPage;
 	}
 }
