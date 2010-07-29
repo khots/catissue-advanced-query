@@ -102,7 +102,7 @@ public class TestAll
 		suite.addTestSuite(QueryTreeNodeDataTestCase.class);
 		suite.addTestSuite(AbstractQueryExecutorTestCase.class);
 		suite.addTestSuite(CustomFormulaUIBeanTestCase.class);
-		//suite.addTestSuite(SpreadsheetDenormalizationBizLogicTestCase.class);
+		suite.addTestSuite(SpreadsheetDenormalizationBizLogicTestCase.class);
 		suite.addTestSuite(ListComparatorTestCase.class);
 		suite.addTestSuite(QueryExportDataHandlerTestCase.class);
 		suite.addTestSuite(SavedQueryAuthorizationTestCase.class);

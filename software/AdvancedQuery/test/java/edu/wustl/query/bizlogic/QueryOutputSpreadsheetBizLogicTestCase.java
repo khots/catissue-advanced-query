@@ -240,5 +240,14 @@ public class QueryOutputSpreadsheetBizLogicTestCase extends TestCase
 
         QueryOutputSpreadsheetBizLogic spreadsheetBizLogic = new QueryOutputSpreadsheetBizLogic();
         spreadsheetBizLogic.createSpreadsheetData(treeNo, outputTreeDataNode, queryDetails, null, recordPerPage, selectedColumnsMetadata, queryResultObjectDataBeanMap, false, query.getConstraints(), outputTermsColumns);
+
+        spreadsheetBizLogic.getRecordsPerPage(queryDetails, "Column1", 100);
+	}
+
+	public void testGetColumnName()
+	{
+		String sql = "Select Column1,Column2,Column3,Column4 from catissue_participant";
+		int mainIdColumnIndex = 1;
+		new QueryOutputSpreadsheetBizLogic().getColumnName(sql, mainIdColumnIndex);
 	}
 }

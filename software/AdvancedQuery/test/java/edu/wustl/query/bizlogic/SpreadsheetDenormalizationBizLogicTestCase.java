@@ -5,12 +5,14 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.SessionDataBean;
@@ -18,6 +20,7 @@ import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.QueryHeaderData;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
+import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IOutputEntity;
@@ -25,6 +28,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.generator.GenericQueryGeneratorMock;
+import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.querysuite.EntityCacheFactory;
 import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.security.privilege.PrivilegeType;
@@ -33,7 +37,7 @@ import junit.framework.TestCase;
 
 public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
 {
-	public void testScanIQuery()
+	public void testScanIQuery() throws MultipleRootsException
 	{
 		HttpSession session = new HttpSession()
 		{
@@ -239,12 +243,53 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
         querySessionData.setQueryResultObjectDataMap(queryResultObjectDataBeanMap);
         querySessionData.setSql("select Column0,Column1,Column2,Column3 from TEMP_OUTPUTTREE1_84116 where Column3 is NOT NULL");
 		SpreadsheetDenormalizationBizLogic bizLogic = new SpreadsheetDenormalizationBizLogic();
-		bizLogic.scanIQuery(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
+		//bizLogic.scanIQuery(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
+		bizLogic.setMainIdColumnIndex(1);
 		IExpression partExp = GenericQueryGeneratorMock.createExpression(participantEntity);
+		Map<BaseAbstractAttributeInterface,Object> denormalizationMap =
+			new HashMap<BaseAbstractAttributeInterface,Object>();
+		Map<String,String> columnNameMap = getColumnNameMap(querySessionData.getSql(), dataList.get(0));
+		bizLogic.setColumnNameMap(columnNameMap);
+		bizLogic.populateMap(denormalizationMap, partExp, selectedAttributeMetaDataList, query.getConstraints());
+
 		QueryHeaderData headerData = new QueryHeaderData(participantEntity, "0",partExp);
+		headerData.setEntity(participantEntity);
 		headerData.getEntity();
+
 		headerData.setRecordNo("1");
 		headerData.getRecordNo();
+
+		headerData.setExpression(partExp);
+		headerData.getExpression();
+	}
+
+	private Map<String, String> getColumnNameMap(String selectSql,
+			List<String> dataList)
+	{
+		String modifiedSql;
+		if(selectSql.contains(AQConstants.DISTINCT))
+		{
+			modifiedSql = selectSql.substring(selectSql.indexOf(AQConstants.DISTINCT)+9, selectSql.indexOf(AQConstants.FROM_CLAUSE)-1);
+		}
+		else
+		{
+			modifiedSql = selectSql.substring(selectSql.indexOf(AQConstants.SELECT_CLAUSE)+7, selectSql.indexOf(AQConstants.FROM_CLAUSE)-1);
+		}
+		StringTokenizer tokenizer = new StringTokenizer(modifiedSql, ",");
+		Map<String,String> columnNameMap = new HashMap<String, String>();
+		int index = 0;
+		while(tokenizer.hasMoreTokens())
+		{
+			String token = tokenizer.nextToken();
+			String data = dataList.get(index);
+			if(data.length() == 0)
+			{
+				data = " ";
+			}
+			columnNameMap.put(token.trim(), data);
+			index++;
+		}
+		return columnNameMap;
 	}
 
 	private List<String> populateList(String string, String string2,
