@@ -293,7 +293,7 @@ public class DAGPanel
 	/**
 	 * Modify query object by adding main entity if its not present
 	 * and also adding main protocol object and link it if its not present in the query.
-	 * @param queryString strToCreateQueryObject
+	 * @param queryObject strToCreateQueryObject
 	 * @param entityName entityName
 	 * @param mode mode
 	 * @param queryDetailsObj queryDetailsObj
@@ -301,11 +301,12 @@ public class DAGPanel
 	 * @param query query
 	 * @param originalRootExp originalRootExp
 	 */
-	private void modifyQueryObject(String queryString, String entityName, String mode,
+	private void modifyQueryObject(String queryObject, String entityName, String mode,
 			QueryDetails queryDetailsObj,
 			Map<RelationalOperator, List<String>> operatorValueMap,
 			IQuery query, IExpression originalRootExp,DAGNode node)
 	{
+		String queryString = queryObject;
 		int secondExpId = 0;
 		int rootExpId=0;
 		boolean isPathPresent = true;
@@ -390,16 +391,17 @@ public class DAGPanel
 	/**
 	 * Adds the main entity in the query and links it to the existing node.
 	 * @param secondExpId secondExpId
-	 * @param deEntity deEntity
+	 * @param tEntity deEntity
 	 * @param constraints constraints
 	 * @param mainEntityMap mainEntityMap
 	 * @param iterator iterator
 	 * @return rootExpId rootExpId
 	 */
-	private int addMainEntityExpression(int secondExpId, EntityInterface deEntity,
+	private int addMainEntityExpression(int secondExpId, EntityInterface tEntity,
 			IConstraints constraints, Map<EntityInterface, List<EntityInterface>> mainEntityMap,
 			Iterator<EntityInterface> iterator)
 	{
+		EntityInterface deEntity = tEntity;
 		int rootExpId = 0;
 		while(iterator.hasNext())
 		{
@@ -812,7 +814,7 @@ public class DAGPanel
 
 	/**
 	 * Modify the id condition when operator = Equals or Not Equals.
-	 * @param strToCreateObject strToCreateObject
+	 * @param queryObject strToCreateObject
 	 * @param readDeniedIds readDeniedIds
 	 * @param formattedIds formattedIds
 	 * @param attributeId attributeId
@@ -820,10 +822,11 @@ public class DAGPanel
 	 * @param conditionValues conditionValues
 	 * @return strToCreateObject strToCreateObject
 	 */
-	private String modifyConditionForEqNotEq(String strToCreateObject, List<Long> readDeniedIds,
+	private String modifyConditionForEqNotEq(String queryObject, List<Long> readDeniedIds,
 			StringBuffer formattedIds, Long attributeId, RelationalOperator operator,
 			List<String> conditionValues)
 	{
+		String strToCreateObject = queryObject;
 		String value = conditionValues.get(0);
 		if(!readDeniedIds.contains(Long.valueOf(value)))
 		{
@@ -1516,12 +1519,13 @@ public class DAGPanel
 	/**
 	 * @param joinQueryNode joinQueryNode
 	 * @param session session
-	 * @param jQUIMap map
+	 * @param joinQueryMap map
 	 */
 	private void populateJoinFormulaMap(JoinQueryNode joinQueryNode,
 			HttpSession session,
-			Map<String, Map<String, JoinFormulaUIBean>> jQUIMap)
+			Map<String, Map<String, JoinFormulaUIBean>> joinQueryMap)
 	{
+		Map<String, Map<String, JoinFormulaUIBean>> jQUIMap = joinQueryMap;
 		if (jQUIMap == null)
 		{
 			jQUIMap = new HashMap<String, Map<String, JoinFormulaUIBean>>();
@@ -1998,13 +2002,14 @@ public class DAGPanel
 	}
 
 	/**
-	 * @param isValid isValid
+	 * @param ifValid ifValid
 	 * @param attribute attribute
 	 * @return <CODE>true</CODE> attribute and its data type is valid,
 	 * <CODE>false</CODE> otherwise
 	 */
-	private boolean checkSrcNodeDateAttribute(boolean isValid, AttributeInterface attribute)
+	private boolean checkSrcNodeDateAttribute(boolean ifValid, AttributeInterface attribute)
 	{
+		boolean isValid = ifValid;
 		if (((attribute.getDataType().equals(AQConstants.DATE_TYPE)
 				|| attribute.getDataType().equals(AQConstants.INTEGER_TYPE)
 				|| attribute.getDataType().equals(AQConstants.DOUBLE_TYPE)
@@ -2970,22 +2975,24 @@ public class DAGPanel
 	 * @param query query
 	 * @param constraints constraints
 	 * @param visibleExpression visibleExpression
-	 * @param tQUIMap tQUIMap
-	 * @param jQUIMap jQUIMap
+	 * @param temporalMap temporalMap
+	 * @param joinQueryMap joinQueryMap
 	 */
 	private void repaintFromSavedQuery(List<CustomFormulaNode> customNodeList,
 			List<SingleNodeCustomFormulaNode> sNcustomNodeList,
 			List<JoinQueryNode> joinQueryNodeList, HttpSession session, IQuery query,
 			IConstraints constraints, Set<Integer> visibleExpression,
-			Map<String, CustomFormulaUIBean> tQUIMap,
-			Map<String, Map<String, JoinFormulaUIBean>> jQUIMap)
+			Map<String, CustomFormulaUIBean> temporalMap,
+			Map<String, Map<String, JoinFormulaUIBean>> joinQueryMap)
 	{
+		Map<String, CustomFormulaUIBean> tQUIMap = temporalMap;
+		Map<String, Map<String, JoinFormulaUIBean>> jQUIMap = joinQueryMap;
 		//Then this is the case of saved Query, so populate the map with Saved Query
-		if (tQUIMap == null && jQUIMap == null)
-		{
+		/*if (tQUIMap == null && jQUIMap == null)
+		{*/
 			tQUIMap = new HashMap<String, CustomFormulaUIBean>();
 			jQUIMap = new HashMap<String, Map<String, JoinFormulaUIBean>>();
-		}
+		//}
 		for (Integer expressionId : visibleExpression)
 		{
 			IExpression exp = constraints.getExpression(expressionId.intValue());
@@ -3774,22 +3781,7 @@ public class DAGPanel
 						int noOfLhsOperands = lhs.numberOfOperands();
 						for (int j = 0; j < noOfLhsOperands; j++)
 						{
-							StringBuffer expIdFromLhs = new StringBuffer();
-							String arithmeticLhsOp = lhs.getOperand(j).toString();
-							int index = arithmeticLhsOp.indexOf(':');
-							String subString = arithmeticLhsOp.substring
-							(index, arithmeticLhsOp.length() - 1);
-							for (int l = 0; l < subString.length(); l++)
-							{
-								if (subString.charAt(l) == ',')
-								{
-									break;
-								}
-								if (subString.charAt(l) != ':' && subString.charAt(l) != ' ')
-								{
-									expIdFromLhs.append(subString.charAt(l));
-								}
-							}
+							StringBuffer expIdFromLhs = processForTerms(lhs, j);
 							int expIdIntValue = Integer.parseInt(expIdFromLhs.toString());
 							if (expIdIntValue == expId)
 							{
@@ -3806,24 +3798,8 @@ public class DAGPanel
 								int noOfRhsOperands = rhs.numberOfOperands();
 								for (int k = 0; k < noOfRhsOperands; k++)
 								{
-									StringBuffer expIdFromLhs = new StringBuffer();
-
-									String arithmeticRhsOp = rhs.getOperand(k).toString();
-									int index = arithmeticRhsOp.indexOf(':');
-									String subString = arithmeticRhsOp.substring(index,
-											arithmeticRhsOp.length() - 1);
-									for (int l = 0; l < subString.length(); l++)
-									{
-										if (subString.charAt(l) == ',')
-										{
-											break;
-										}
-										if (subString.charAt(l) != ':'
-												&& subString.charAt(l) != ' ')
-										{
-											expIdFromLhs.append(subString.charAt(l));
-										}
-									}
+									StringBuffer expIdFromLhs = processForTerms(
+											rhs, k);
 									int expIdIntValue = Integer.parseInt(expIdFromLhs.toString());
 									if (expIdIntValue == expId)
 									{
@@ -3849,6 +3825,32 @@ public class DAGPanel
 				exp.removeOperand(custFormula);
 			}
 		}
+	}
+
+	/**
+	 * @param term term
+	 * @param cnt counter
+	 * @return expIdFromLhs
+	 */
+	private StringBuffer processForTerms(ITerm term, int cnt)
+	{
+		StringBuffer expIdFromTerm = new StringBuffer();
+		String arithmeticTermOp = term.getOperand(cnt).toString();
+		int index = arithmeticTermOp.indexOf(':');
+		String subString = arithmeticTermOp.substring
+		(index, arithmeticTermOp.length() - 1);
+		for (int l = 0; l < subString.length(); l++)
+		{
+			if (subString.charAt(l) == ',')
+			{
+				break;
+			}
+			if (subString.charAt(l) != ':' && subString.charAt(l) != ' ')
+			{
+				expIdFromTerm.append(subString.charAt(l));
+			}
+		}
+		return expIdFromTerm;
 	}
 
 	/**

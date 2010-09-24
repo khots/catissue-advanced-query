@@ -30,8 +30,9 @@ import edu.wustl.dao.query.generator.ColumnValueBean;
  * @author deepti_shelar
  *
  */
-public class InsertPaths
+public final class InsertPaths
 {
+	private InsertPaths(){}
 	private static org.apache.log4j.Logger logger = LoggerConfig
 	.getConfiguredLogger(InsertPaths.class);
 

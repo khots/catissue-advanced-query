@@ -126,12 +126,12 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 *            second attribute value
 	 * @return List containing value1 and value2 in sorted order
 	 */
-	public static ArrayList<String> getAttributeValuesInProperOrder
+	public static List<String> getAttributeValuesInProperOrder
 					(String dataType, String value1,String value2)
 	{
 		String attributeValue1 = value1;
 		String attributeValue2 = value2;
-		ArrayList<String> attributeValues = new ArrayList<String>();
+		List<String> attributeValues = new ArrayList<String>();
 		if (dataType.equalsIgnoreCase(EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE))
 		{
 			SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
@@ -328,7 +328,6 @@ public class Utility //extends edu.wustl.common.util.Utility
 		StringBuffer colWidth = new StringBuffer();
 
 		int size = (columnNames.size()-1);
-		float temp = 99.5f;
 		for (int col = 0; col <= size; col++)
 		{
 			if(columnNames.get(0).equals(" "))
@@ -339,12 +338,12 @@ public class Utility //extends edu.wustl.common.util.Utility
 				}
 				else
 				{
-					colWidth.append(String.valueOf(temp / (size)));
+					colWidth.append(String.valueOf(99.5f / (size)));
 				}
 			}
 			else
 			{
-				colWidth.append(String.valueOf(temp / (size)));
+				colWidth.append(String.valueOf(99.5f / (size)));
 			}
 			colWidth.append(',');
 		}
@@ -692,12 +691,14 @@ public class Utility //extends edu.wustl.common.util.Utility
         File file = new File(appName+ System.getProperty("file.separator")+"WEB-INF"+
         		System.getProperty("file.separator")+"classes"+System.getProperty("file.separator")
         		+edu.wustl.security.global.Constants.CSM_PROPERTY_FILE);
+        FileInputStream inputStream = null;
         if(file.exists())
         {
            Properties csmPropertyFile = new Properties();
            try
            {
-                csmPropertyFile.load(new FileInputStream(file));
+        	    inputStream = new FileInputStream(file);
+                csmPropertyFile.load(inputStream);
                 mainPrtclClassNm = csmPropertyFile.getProperty
                 (edu.wustl.security.global.Constants.MAIN_PROTOCOL_OBJECT);
                 validatorClassNm = csmPropertyFile.getProperty
@@ -717,6 +718,10 @@ public class Utility //extends edu.wustl.common.util.Utility
                 Logger.out.debug("Exception occured while reading csm.properties");
                 Logger.out.info(e.getMessage(), e);
             }
+            finally
+            {
+            	closeFile(inputStream);
+            }
            edu.wustl.query.util.global.Variables.mainProtocolObject = mainPrtclClassNm;
            edu.wustl.query.util.global.Variables.queryReadDeniedObjectList.addAll(readDeniedObjList);
            edu.wustl.query.util.global.Variables.entityCPSqlMap.putAll(entityCSSqlMap);
@@ -724,6 +729,25 @@ public class Utility //extends edu.wustl.common.util.Utility
            edu.wustl.query.util.global.Variables.mainProtocolQuery = mainProtocolQuery;
         }
     }
+
+    /**
+     * Close the Input Stream.
+     * @param inputStream inputStream
+     */
+	private static void closeFile(FileInputStream inputStream)
+	{
+		if(inputStream != null)
+		{
+			try
+			{
+				inputStream.close();
+			}
+			catch (IOException e)
+			{
+				logger.error(e.getMessage(), e);
+			}
+		}
+	}
 
     /**
      * @param readDeniedObjList list of read denied objects
@@ -851,14 +875,13 @@ public class Utility //extends edu.wustl.common.util.Utility
 	        Map<IExpression, Collection<ICondition>> allSelectedConditions = QueryUtility
 	                .getAllSelectedConditions(query);
 	        Collection<Collection<ICondition>> values = allSelectedConditions.values();
-	        Boolean trueValue = Boolean.TRUE;
 	        for (Collection<ICondition> conditions : values)
 	        {
 	            for (ICondition condition : conditions)
 	            {
 	                Boolean isCondnOnIdAttr = condition.getAttribute().getIsIdentified();
 
-	                if (trueValue.equals(isCondnOnIdAttr))
+	                if (Boolean.TRUE.equals(isCondnOnIdAttr))
 	                {
 	                	isCondnOnIdField = true;
 	                	break;

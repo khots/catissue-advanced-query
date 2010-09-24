@@ -1084,7 +1084,6 @@ public class SqlGenerator implements ISqlGenerator
 		    value.append((calendar.get(Calendar.MONTH) + 1)).append('-')
 		    .append(calendar.get(Calendar.DAY_OF_MONTH)).append('-')
 		    .append(calendar.get(Calendar.YEAR));
-		    String strToDateFunction = setStrToDateFunction();
 		    setDatePattern();
 		    String appName = CommonServiceLocator.getInstance().getAppName();
 		    data.add(value.toString());
@@ -1095,6 +1094,7 @@ public class SqlGenerator implements ISqlGenerator
 		   	}
 		    else
 		    {
+		    	String strToDateFunction = setStrToDateFunction();
 		    	value = new StringBuffer(strToDateFunction + "(?,'" + datePattern + "')");
 		    }
 		}

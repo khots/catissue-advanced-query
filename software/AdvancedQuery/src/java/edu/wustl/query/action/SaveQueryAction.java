@@ -231,7 +231,7 @@ public class SaveQueryAction extends SecureAction
 				displayNameMap, pQuery);
 		error = bizLogic.setInputDataToTQ(pQuery, AQConstants.SAVE_QUERY_PAGE, cfRHSList,
 				customFormulaIndexMap);
-		if (error != null && error.trim().length() > 0)
+		if (error != null && error.length() > 0)
 		{
 			setActionError(request, error);
 			errorMessage = true;

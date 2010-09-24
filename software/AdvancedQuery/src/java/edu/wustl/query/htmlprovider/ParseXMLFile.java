@@ -68,6 +68,15 @@ public class ParseXMLFile
 	 */
 	protected ParseXMLFile(InputStream path)
 	{
+		parseXMLFile(path);
+	}
+
+	/**
+	 * Read the XML file by parsing it.
+	 * @param path path
+	 */
+	private void parseXMLFile(InputStream path)
+	{
 		Document doc;
 		try
 		{

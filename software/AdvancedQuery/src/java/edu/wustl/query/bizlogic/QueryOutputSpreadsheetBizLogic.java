@@ -98,7 +98,7 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @param idOfClickedNode idOfClickedNode
 	 * @param recordsPerPage number of recordsPerPage
 	 * @param selectedColumnMetaData meta data for selected columns
-	 * @param queryResultDataMap queryResultObjectDataMap
+	 * @param beanMap queryResultObjectDataMap
 	 * @param constraints constraints
 	 * @param outputTermsColumns outputTermsColumns
 	 * @return Map for data
@@ -109,10 +109,11 @@ public class QueryOutputSpreadsheetBizLogic
 			Map<Long, Map<AttributeInterface, String>> columnMap, String idOfClickedNode,
 			int recordsPerPage, SelectedColumnsMetadata selectedColumnMetaData,
 			boolean hasConditionOnIdentifiedField,
-			Map<Long, QueryResultObjectDataBean> queryResultDataMap,
+			Map<Long, QueryResultObjectDataBean> beanMap,
 			IConstraints constraints, Map<String, IOutputTerm> outputTermsColumns)
 			throws DAOException, ClassNotFoundException
 	{
+		Map<Long, QueryResultObjectDataBean> queryResultDataMap = beanMap;
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		this.selectedColumnMetaData = selectedColumnMetaData;
 		Map spreadSheetDataMap = new HashMap();
@@ -218,7 +219,7 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @param recordsPerPage recordsPerPage
 	 * @param selectedColumnMetaData selectedColumnMetaData
 	 * @param hasConditionOnIdentifiedField hasConditionOnIdentifiedField
-	 * @param queryResultDataMap queryResultObjectDataMap
+	 * @param beanMap queryResultObjectDataMap
 	 * @param constraints constraints
 	 * @param outputTermsColumns outputTermsColumns
 	 * @return Map of spreadsheet data
@@ -228,9 +229,10 @@ public class QueryOutputSpreadsheetBizLogic
 	public Map processSpreadsheetForDataNode(HttpSession session,
 	String actualParentNodeId, int recordsPerPage,SelectedColumnsMetadata
 	selectedColumnMetaData, boolean hasConditionOnIdentifiedField,
-	Map<Long, QueryResultObjectDataBean> queryResultDataMap,IConstraints constraints,
+	Map<Long, QueryResultObjectDataBean> beanMap,IConstraints constraints,
 	Map<String, IOutputTerm> outputTermsColumns)throws DAOException, ClassNotFoundException
 	{
+		Map<Long, QueryResultObjectDataBean> queryResultDataMap = beanMap;
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		this.selectedColumnMetaData = selectedColumnMetaData;
 		Map spreadSheetDatamap;
@@ -1292,9 +1294,10 @@ public class QueryOutputSpreadsheetBizLogic
 	 */
 	private List createSQL(Map spreadSheetDataMap, OutputTreeDataNode node,
 			String parentIdColumnName, String parentData, String tableName,
-			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap,
+			Map<Long, QueryResultObjectDataBean> beanMap,
 			QueryDetails queryDetailsObj, Map<String, IOutputTerm> outputTermsColumns)
 	{
+		Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap = beanMap;
 		String selectSql = AQConstants.SELECT_DISTINCT;
 		List<String> columnsList = new ArrayList<String>();
 		String idColumnOfCurrentNode = "";
@@ -1407,9 +1410,10 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @return selectSql
 	 */
 	private String populateQueryForDefaultView(QueryDetails queryDetailsObj,
-			String selectSql,
+			String sql,
 			QueryResultObjectDataBean queryResultObjectDataBean, int columnIndex)
 	{
+		String selectSql = sql;
 		Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
 		selectSql = QueryCSMUtil.updateEntityIdIndexMap(queryResultObjectDataBean, columnIndex,
 				selectSql, null, entityIdIndexMap, queryDetailsObj);

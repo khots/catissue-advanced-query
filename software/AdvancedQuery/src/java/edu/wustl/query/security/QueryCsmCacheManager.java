@@ -79,6 +79,22 @@ public class QueryCsmCacheManager
 	private IValidator validator;
 
 	/**
+	 * @return the validator
+	 */
+	public IValidator getValidator()
+	{
+		return validator;
+	}
+
+	/**
+	 * @param validator the validator to set
+	 */
+	public void setValidator(IValidator validator)
+	{
+		this.validator = validator;
+	}
+
+	/**
 	 * Parameterized constructor.
 	 * @param jdbcDAO Instance of JDBCDAO
 	 */
@@ -578,6 +594,7 @@ public class QueryCsmCacheManager
 			intermediatePath = resultSet1.getString(1);
 			intermediatePath = intermediatePath.substring(0, intermediatePath.indexOf('_'));
 		}
+		jdbcDAO.closeStatement(resultSet1);
 		if(intermediatePath != null && intermediatePath.length() != 0)
 		{
 			association = getHookEntityAssociation(hookEntity, intermediatePath);

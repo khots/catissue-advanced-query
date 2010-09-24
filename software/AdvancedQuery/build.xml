@@ -783,7 +783,9 @@
 							don't instrument the test classes.
 						-->
 				<include name="**/*.class" />
-
+				<exclude name="**/action/*.class"/>
+				<exclude name="**/actionForm/*.class"/>
+				<exclude name="**/upgrade/*.class" />
 			</fileset>
 		</cobertura-instrument>
 	</target>
@@ -894,6 +896,8 @@
 		<cobertura-report destdir="${coverage.dir}/reports/AQCodeCoverageHtml">
 			<fileset dir="${src.dir}">
 				<include name="**/*.java" />
+				<exclude name="**/*Action.java" />
+				<exclude name="**/UpgradeSavedQueries.class" />
 			</fileset>
 		</cobertura-report>
 	</target>

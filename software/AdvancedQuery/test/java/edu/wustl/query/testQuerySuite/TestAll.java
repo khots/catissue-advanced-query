@@ -21,6 +21,7 @@ import edu.wustl.common.query.queryobject.impl.AttributeComparatorTestCase;
 import edu.wustl.common.query.queryobject.impl.ListComparatorTestCase;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNodeTestCase;
 import edu.wustl.common.query.queryobject.impl.QueryExportDataHandlerTestCase;
+import edu.wustl.common.query.queryobject.impl.QueryParserTestCase;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryTreeNodeDataTestCase;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadataTestCase;
 import edu.wustl.common.query.queryobject.locator.PositionTestCase;
@@ -41,7 +42,15 @@ import edu.wustl.query.bizlogic.ShareQueryBizLogicTestCase;
 import edu.wustl.query.bizlogic.SpreadsheetDenormalizationBizLogicTestCase;
 import edu.wustl.query.bizlogic.ValidateQueryBizLogicTestCase;
 import edu.wustl.query.executor.AbstractQueryExecutorTestCase;
+import edu.wustl.query.flex.dag.CustomFormulaNodeTestCase;
 import edu.wustl.query.flex.dag.CustomFormulaUIBeanTestCase;
+import edu.wustl.query.flex.dag.DAGPath;
+import edu.wustl.query.flex.dag.DAGPathTestCase;
+import edu.wustl.query.flex.dag.JoinFormulaNodeTestCase;
+import edu.wustl.query.flex.dag.JoinFormulaUIBeanTestCase;
+import edu.wustl.query.flex.dag.JoinQueryNodeTestCase;
+import edu.wustl.query.flex.dag.SingalNodeTemporalQueryTestCase;
+import edu.wustl.query.flex.dag.TwoNodesTemporalQueryTestCase;
 import edu.wustl.query.generator.SqlGeneratorGenericTestCase;
 import edu.wustl.query.generator.SqlKeyWordsTestCase;
 import edu.wustl.query.htmlprovider.GenerateHtmlDetailsTestCase;
@@ -102,7 +111,7 @@ public class TestAll
 		suite.addTestSuite(QueryTreeNodeDataTestCase.class);
 		suite.addTestSuite(AbstractQueryExecutorTestCase.class);
 		suite.addTestSuite(CustomFormulaUIBeanTestCase.class);
-		//suite.addTestSuite(SpreadsheetDenormalizationBizLogicTestCase.class);
+		suite.addTestSuite(SpreadsheetDenormalizationBizLogicTestCase.class);
 		suite.addTestSuite(ListComparatorTestCase.class);
 		suite.addTestSuite(QueryExportDataHandlerTestCase.class);
 		suite.addTestSuite(SavedQueryAuthorizationTestCase.class);
@@ -114,6 +123,14 @@ public class TestAll
 		suite.addTestSuite(TemporalColumnMetadataTestCase.class);
 		suite.addTestSuite(PositionTestCase.class);
 		suite.addTestSuite(OutputTreeDataNodeTestCase.class);
+		suite.addTestSuite(SingalNodeTemporalQueryTestCase.class);
+		suite.addTestSuite(TwoNodesTemporalQueryTestCase.class);
+		suite.addTestSuite(JoinFormulaUIBeanTestCase.class);
+		suite.addTestSuite(JoinFormulaNodeTestCase.class);
+		suite.addTestSuite(JoinQueryNodeTestCase.class);
+		suite.addTestSuite(DAGPathTestCase.class);
+		suite.addTestSuite(CustomFormulaNodeTestCase.class);
+		suite.addTestSuite(QueryParserTestCase.class);
 		return suite;
 	}
 }

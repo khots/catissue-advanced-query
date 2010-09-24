@@ -95,11 +95,11 @@ public class Variables //extends edu.wustl.common.util.global.Variables
 	private static void populateColTypes(StringBuffer colType, Iterator itr)
 	{
 		Object obj = itr.next();
-		if (obj != null && obj instanceof Number)
+		if (obj instanceof Number)
 		{
 			colType.append("int,");
 		}
-		else if (obj != null && obj instanceof Date)
+		else if (obj instanceof Date)
 		{
 			colType.append("date,");
 		}

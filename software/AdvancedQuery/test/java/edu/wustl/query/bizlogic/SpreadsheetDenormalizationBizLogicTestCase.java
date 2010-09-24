@@ -127,7 +127,7 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
 				return null;
 			}
 		};
-		IQuery query = GenericQueryGeneratorMock.createInheritanceQueryWithAssociation1();
+		IQuery query = GenericQueryGeneratorMock.creatParticipantQuery();
 		QueryDetails queryDetails = new QueryDetails(session);
 		queryDetails.setQuery(query);
 
@@ -161,19 +161,19 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
         participantOutputEntity.getSelectedAttributes().addAll(participantEntity.getEntityAttributesForQuery());
         OutputTreeDataNode outputTreeDataNode = new OutputTreeDataNode(participantOutputEntity, 1, 0);
 
-        EntityInterface pmiEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
-        pmiEntity = GenericQueryGeneratorMock.getEntity(cache, pmiEntity);
-        IOutputEntity pmiOutputEntity = QueryObjectFactory.createOutputEntity(pmiEntity);
-        pmiOutputEntity.getSelectedAttributes().addAll(pmiEntity.getEntityAttributesForQuery());
+        EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
+        csrEntity = GenericQueryGeneratorMock.getEntity(cache, csrEntity);
+        IOutputEntity csrOutputEntity = QueryObjectFactory.createOutputEntity(csrEntity);
+        csrOutputEntity.getSelectedAttributes().addAll(csrEntity.getEntityAttributesForQuery());
 
         AttributeInterface lastName = GenericQueryGeneratorMock.findAttribute(participantEntity,"lastName");
-        AttributeInterface pmiId = GenericQueryGeneratorMock.findAttribute(pmiEntity,"id");
-        AttributeInterface mrnNo = GenericQueryGeneratorMock.findAttribute(pmiEntity,"registrationDate");
+        AttributeInterface csrId = GenericQueryGeneratorMock.findAttribute(csrEntity,"id");
+        AttributeInterface regDate = GenericQueryGeneratorMock.findAttribute(csrEntity,"registrationDate");
         AttributeInterface participantId = GenericQueryGeneratorMock.findAttribute(participantEntity,"id");
         List<AttributeInterface> attributeList = new ArrayList<AttributeInterface>();
         attributeList.add(lastName);
-        attributeList.add(pmiId);
-        attributeList.add(mrnNo);
+        attributeList.add(csrId);
+        attributeList.add(regDate);
         attributeList.add(participantId);
 
         int i=0;
@@ -243,14 +243,14 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
         querySessionData.setQueryResultObjectDataMap(queryResultObjectDataBeanMap);
         querySessionData.setSql("select Column0,Column1,Column2,Column3 from TEMP_OUTPUTTREE1_84116 where Column3 is NOT NULL");
 		SpreadsheetDenormalizationBizLogic bizLogic = new SpreadsheetDenormalizationBizLogic();
-		//bizLogic.scanIQuery(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
+		bizLogic.scanIQuery(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
 		bizLogic.setMainIdColumnIndex(1);
 		IExpression partExp = GenericQueryGeneratorMock.createExpression(participantEntity);
 		Map<BaseAbstractAttributeInterface,Object> denormalizationMap =
 			new HashMap<BaseAbstractAttributeInterface,Object>();
 		Map<String,String> columnNameMap = getColumnNameMap(querySessionData.getSql(), dataList.get(0));
 		bizLogic.setColumnNameMap(columnNameMap);
-		bizLogic.populateMap(denormalizationMap, partExp, selectedAttributeMetaDataList, query.getConstraints());
+		//bizLogic.populateMap(denormalizationMap, partExp, selectedAttributeMetaDataList, query.getConstraints());
 
 		QueryHeaderData headerData = new QueryHeaderData(participantEntity, "0",partExp);
 		headerData.setEntity(participantEntity);

@@ -59,9 +59,8 @@ public class SpreadsheetExportAction extends SecureAction
 		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll,selectedColumnsMetadata.getActualTotalRecords());
 		QueryDetails queryDetails = new QueryDetails(session);
 		boolean isDefineView = false;
-		if(selectedColumnsMetadata != null && selectedColumnsMetadata.isDefinedView())
+		if(selectedColumnsMetadata.isDefinedView())
 		{
-			List<List<String>> finalDataList = new ArrayList<List<String>>();
 			IExpression rootExpression = queryDetails.getQuery().getConstraints().getJoinGraph().getRoot();
 			if(!queryDetails.getQuery().getConstraints().getJoinGraph().getChildrenList(rootExpression).isEmpty())
 			{
@@ -79,6 +78,7 @@ public class SpreadsheetExportAction extends SecureAction
 				}
 				else
 				{
+					List<List<String>> finalDataList = new ArrayList<List<String>>();
 					dataList = (List<List<String>>) session.getAttribute(AQConstants.DENORMALIZED_LIST);
 					for (int counter = 0; counter < obj.length; counter++)
 					{
@@ -214,7 +214,6 @@ public class SpreadsheetExportAction extends SecureAction
 			HttpSession session, String isChkAllAcrossAll, int actualNoOfRec) throws DAOException
 	{
 		String pageNo = (String) request.getParameter(AQConstants.PAGE_NUMBER);
-		String recordsPerPageStr = (String) session.getAttribute(AQConstants.RESULTS_PER_PAGE);
 		if (pageNo != null)
 		{
 			request.setAttribute(AQConstants.PAGE_NUMBER, pageNo);
@@ -239,6 +238,7 @@ public class SpreadsheetExportAction extends SecureAction
 		{
 			if(actualNoOfRec ==0)
 			{
+				String recordsPerPageStr = (String) session.getAttribute(AQConstants.RESULTS_PER_PAGE);
 				recordsPerPage= Integer.valueOf(recordsPerPageStr);
 			}
 			else

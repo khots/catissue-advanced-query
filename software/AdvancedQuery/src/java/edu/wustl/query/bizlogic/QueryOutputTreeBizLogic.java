@@ -97,32 +97,65 @@ public class QueryOutputTreeBizLogic
         List dataList = queryCsmBizLogic.executeCSMQuery(selectSql, queryDetailsObj,
                 queryResultObjectDataBeanMap, root, hasConditionOnIdentifiedField,0,
                 Variables.maximumTreeNodeLimit);
-        int count = QueryModuleSqlUtil.getCountForQuery(selectSql,queryDetailsObj);
-        if(dataList.size() == 0)
-        {
-        	count = 0;
-        }
+        int count = getCount(queryDetailsObj, selectSql, dataList);
         updateQueryAuditDetails(root,count,queryDetailsObj.getAuditEventId());
         List<QueryTreeNodeData> treeDataVector = new ArrayList<QueryTreeNodeData>();
-        if (dataList != null && !dataList.isEmpty())
+        if (!dataList.isEmpty())
         {
         	String size = getTreeSize(dataList, count);
-            QueryTreeNodeData treeNode = new QueryTreeNodeData();
-            String name = root.getOutputEntity().getDynamicExtensionsEntity().getName();
-            name = edu.wustl.query.util.global.Utility.parseClassName(name);
-            String displayName = /*Utility.getDisplayLabel*/(name) + " (" + size + ")";
-            String nodeId = createNodeId(treeNo, root);
-            displayName = AQConstants.TREE_NODE_FONT + displayName + AQConstants.TREE_NODE_FONT_CLOSE;
-            treeNode.setIdentifier(nodeId);
-            treeNode.setObjectName(name);
-            treeNode.setDisplayName(displayName);
-            treeNode.setParentIdentifier(AQConstants.ZERO_ID);
-            treeNode.setParentObjectName("");
+            QueryTreeNodeData treeNode = populateTreeNode(treeNo, root, size);
             treeDataVector.add(treeNode);
             treeDataVector = addNodeToTree(index, dataList, treeNode, root, treeDataVector);
         }
         return treeDataVector;
     }
+
+    /**
+     * Populate the tree node object.
+     * @param treeNo treeNo
+     * @param root root
+     * @param size size
+     * @return treeNode
+     */
+	private QueryTreeNodeData populateTreeNode(int treeNo,
+			OutputTreeDataNode root, String size)
+	{
+		QueryTreeNodeData treeNode = new QueryTreeNodeData();
+		String name = root.getOutputEntity().getDynamicExtensionsEntity().getName();
+		name = edu.wustl.query.util.global.Utility.parseClassName(name);
+		//String displayName = /*Utility.getDisplayLabel*/(name) + " (" + size + ")";
+		String nodeId = createNodeId(treeNo, root);
+		StringBuffer displayName = new StringBuffer();
+		displayName.append(AQConstants.TREE_NODE_FONT).append(name).append(" (").append(size).
+		append(')').append(AQConstants.TREE_NODE_FONT_CLOSE);
+		treeNode.setIdentifier(nodeId);
+		treeNode.setObjectName(name);
+		treeNode.setDisplayName(displayName.toString());
+		treeNode.setParentIdentifier(AQConstants.ZERO_ID);
+		treeNode.setParentObjectName("");
+		return treeNode;
+	}
+
+    /**
+     * @param queryDetailsObj queryDetailsObj
+     * @param selectSql selectSql
+     * @param dataList dataList
+     * @return count
+     * @throws DAOException DAOException
+     * @throws ClassNotFoundException ClassNotFoundException
+     * @throws SMException SMException
+     */
+	private int getCount(QueryDetails queryDetailsObj, String selectSql,
+			List dataList) throws DAOException, ClassNotFoundException,
+			SMException
+	{
+		int count = QueryModuleSqlUtil.getCountForQuery(selectSql,queryDetailsObj);
+        if(dataList.isEmpty())
+        {
+        	count = 0;
+        }
+		return count;
+	}
 
     /**
      * Gets the tree size.
@@ -291,11 +324,12 @@ public class QueryOutputTreeBizLogic
     /**
      * Calculate the age to be displayed in the tree view.
      * @param rowList The list containing the results
-     * @param displayName String to be displayed in the tree view.
+     * @param dispName String to be displayed in the tree view.
      * @return displayName String to be displayed in the tree view along with the age.
      */
-	private String calculateAge(List rowList, String displayName)
+	private String calculateAge(List rowList, String dispName)
 	{
+		String displayName = dispName;
 		String birthDate = (String)rowList.get(rowList.size()-AQConstants.TWO);
 		String deathDate = (String)rowList.get(rowList.size()-1);
 		if(displayName.contains("#"))
@@ -415,9 +449,10 @@ public class QueryOutputTreeBizLogic
                         + AQConstants.LABEL_TREE_NODE;
                 String nodeId = AQConstants.UNIQUE_ID_SEPARATOR + parId + AQConstants.NODE_SEPARATOR
                         + childNodeId;
-                String displayName = /*Utility.getDisplayLabel*/(name) + " (" + size + ")";
-                displayName = AQConstants.TREE_NODE_FONT + displayName
-                        + AQConstants.TREE_NODE_FONT_CLOSE;
+                //String displayName = /*Utility.getDisplayLabel*/(name) + " (" + size + ")";
+                StringBuffer displayName = new StringBuffer();
+                displayName.append(AQConstants.TREE_NODE_FONT).append(name).append(" (").append(size).
+                append(')').append(AQConstants.TREE_NODE_FONT_CLOSE);
                 String objectName = name;
                 String fullName = node.getOutputEntity().getDynamicExtensionsEntity().getName();
                 String parentObjectName = edu.wustl.query.util.global.Utility.parseClassName(fullName);
@@ -443,19 +478,17 @@ public class QueryOutputTreeBizLogic
         String selectSql = AQConstants.SELECT_DISTINCT;
         String idColumnOfCurrentNode = "";
         List<QueryOutputTreeAttributeMetadata> attributes = childNode.getAttributes();
-        String sqlColumnName;
         for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
         {
             AttributeInterface attribute = attributeMetaData.getAttribute();
-            sqlColumnName = attributeMetaData.getColumnName();
             if (attribute.getName().equalsIgnoreCase(AQConstants.IDENTIFIER))
             {
-                idColumnOfCurrentNode = sqlColumnName;
+                idColumnOfCurrentNode = attributeMetaData.getColumnName();
             }
             if (!attribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase(
                     AQConstants.FILE_TYPE))
             {
-                selectSql = selectSql + sqlColumnName + ",";
+                selectSql = selectSql + attributeMetaData.getColumnName() + ",";
             }
         }
         selectSql = selectSql.substring(0, selectSql.lastIndexOf(','));

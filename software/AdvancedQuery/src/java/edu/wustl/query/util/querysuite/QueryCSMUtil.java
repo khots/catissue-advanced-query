@@ -228,14 +228,11 @@ public class QueryCSMUtil
 		IQuery queryClone = new DyExtnObjectCloner().clone(queryDetailsObj.getQuery());
 		queryDetailsObj.setQuery(queryClone);
 		String mainEntityId = "";
-		StringBuffer strToCreateObject = new StringBuffer();
 		boolean isMainObjPresent = false;
 		IQuery originalQuery = queryDetailsObj.getQuery();
 		IConstraints constraints = originalQuery.getConstraints();
 		Set<IQueryEntity> queryEntities = constraints.getQueryEntities();
 		EntityInterface mainEntity = null;
-		Map<RelationalOperator,List<String>> oprVsLstOfVals =
-			new HashMap<RelationalOperator, List<String>>();
 		for(IQueryEntity queryEntity : queryEntities)
 		{
 			if(queryEntity.getDynamicExtensionsEntity().getName().equals(Variables.mainProtocolObject))
@@ -248,6 +245,9 @@ public class QueryCSMUtil
 		}
 		if(isMainObjPresent && queryDetailsObj.getSessionData().isSecurityRequired())
 		{
+			StringBuffer strToCreateObject = new StringBuffer();
+			Map<RelationalOperator,List<String>> oprVsLstOfVals =
+				new HashMap<RelationalOperator, List<String>>();
 			callModifyRule(mainEntityId, strToCreateObject, constraints,
 					oprVsLstOfVals);
 			dagPanel.createQueryObject(strToCreateObject.toString(),
@@ -544,40 +544,62 @@ public class QueryCSMUtil
 			EntityInterface deEntity = queryNode.getOutputEntity()
 					.getDynamicExtensionsEntity();
 			mainEntityList = getAllMainEntities(deEntity, mainEntityList);
-			EntityInterface tempDeEntity = deEntity;
-			List<EntityInterface> tmpMnEntityLst;
-			while (true)
-			{
-				tmpMnEntityLst = new ArrayList<EntityInterface>();
-				EntityInterface parentEntity = tempDeEntity.getParentEntity();
-				if (parentEntity == null)
-				{
-					break;
-				}
-				else
-				{
-					tmpMnEntityLst = getAllMainEntities(parentEntity, tmpMnEntityLst);
-					for (EntityInterface tempMainEntity : tmpMnEntityLst)
-					{
-						if (!(tempMainEntity.equals(parentEntity)))
-						{
-							mainEntityList.add(tempMainEntity);
-						}
-					}
-					tempDeEntity = parentEntity;
-				}
-			}
+			populateMainEntitiesForANode(mainEntityList, deEntity);
 			if (mainEntityList.size() != 1)
 			{
 				mainEntityList = populateMainEntityList(mainEntityList, deEntity);
 			}
-			if (!(mainEntityList != null && mainEntityList.size() == 1 && mainEntityList.get(0)
-					.equals(deEntity)))
-			{
-				populateMainEntityMap(mainEntityMap, mainEntityList, deEntity);
-			}
+			populateMap(mainEntityMap, mainEntityList, deEntity);
 		}
 		return mainEntityMap;
+	}
+
+	/**
+	 * @param mainEntityMap mainEntityMap
+	 * @param mainEntityList mainEntityList
+	 * @param deEntity deEntity
+	 */
+	private static void populateMap(
+			Map<EntityInterface, List<EntityInterface>> mainEntityMap,
+			List<EntityInterface> mainEntityList, EntityInterface deEntity)
+	{
+		if (!(mainEntityList != null && mainEntityList.size() == 1 && mainEntityList.get(0)
+				.equals(deEntity)))
+		{
+			populateMainEntityMap(mainEntityMap, mainEntityList, deEntity);
+		}
+	}
+
+	/**
+	 * @param mainEntityList mainEntityList
+	 * @param deEntity deEntity
+	 */
+	private static void populateMainEntitiesForANode(
+			List<EntityInterface> mainEntityList, EntityInterface deEntity)
+	{
+		EntityInterface tempDeEntity = deEntity;
+		List<EntityInterface> tmpMnEntityLst;
+		while (true)
+		{
+			tmpMnEntityLst = new ArrayList<EntityInterface>();
+			EntityInterface parentEntity = tempDeEntity.getParentEntity();
+			if (parentEntity == null)
+			{
+				break;
+			}
+			else
+			{
+				tmpMnEntityLst = getAllMainEntities(parentEntity, tmpMnEntityLst);
+				for (EntityInterface tempMainEntity : tmpMnEntityLst)
+				{
+					if (!(tempMainEntity.equals(parentEntity)))
+					{
+						mainEntityList.add(tempMainEntity);
+					}
+				}
+				tempDeEntity = parentEntity;
+			}
+		}
 	}
 
 	/**
@@ -633,8 +655,9 @@ public class QueryCSMUtil
 	 * @return mainEntityList List of main entities
 	 */
 	public static List<EntityInterface> getAllMainEntities(EntityInterface entity,
-			List<EntityInterface> mainEntityList)
+			List<EntityInterface> mainEntities)
 	{
+		List<EntityInterface> mainEntityList = mainEntities;
 		try
 		{
 			List<AssociationInterface> associationList = getIncomingContainmentAssociations(entity);
@@ -667,7 +690,6 @@ public class QueryCSMUtil
 			QueryDetails queryDetailsObj)
 	{
 		QueryResultObjectDataBean queryResultObjectDataBean = new QueryResultObjectDataBean();
-		boolean readDeniedObject = false;
 		if (node != null)
 		{
             EntityInterface deEntity = node.getOutputEntity()
@@ -695,7 +717,7 @@ public class QueryCSMUtil
             }
 			queryResultObjectDataBean.setCsmEntityName(entityName);
 			setEntityName(queryResultObjectDataBean);
-			readDeniedObject = isReadDeniedObject(queryResultObjectDataBean.getCsmEntityName());
+			boolean readDeniedObject = isReadDeniedObject(queryResultObjectDataBean.getCsmEntityName());
 			queryResultObjectDataBean.setReadDeniedObject(readDeniedObject);
 		}
 		return queryResultObjectDataBean;
@@ -830,16 +852,29 @@ public class QueryCSMUtil
 		{
 			if (node.getParent() != null)
 			{
-				entity = getMainEntityFromParentHierarchy(mainEntityList, node.getParent());
-				if(entity == null && node.getChildren().size() !=0)
-				{
-					entity = getMainEntityFromChildHierarchy(mainEntityList,node);
-				}
+				entity = getFinalMainEntity(mainEntityList, node);
 			}
 			else if (node.getChildren().size() != 0)
 			{
 				entity = getMainEntityFromChildHierarchy(mainEntityList,node);
 			}
+		}
+		return entity;
+	}
+
+	/**
+	 * @param mainEntityList mainEntityList
+	 * @param node node
+	 * @return entity
+	 */
+	private static EntityInterface getFinalMainEntity(
+			List<EntityInterface> mainEntityList, OutputTreeDataNode node)
+	{
+		EntityInterface entity;
+		entity = getMainEntityFromParentHierarchy(mainEntityList, node.getParent());
+		if(entity == null && node.getChildren().size() !=0)
+		{
+			entity = getMainEntityFromChildHierarchy(mainEntityList,node);
 		}
 		return entity;
 	}
@@ -930,10 +965,9 @@ public class QueryCSMUtil
 			Set<String> keySet = queryDetailsObj.getUniqueIdNodesMap().keySet();
 			for (Object nextObject : keySet)
 			{
-				String key = "";
 				if (nextObject instanceof String)
 				{
-					key = (String) nextObject;
+					String key = (String) nextObject;
 					OutputTreeDataNode outputTreeDataNode =
 						queryDetailsObj.getUniqueIdNodesMap().get(key);
 					Map sqlIndexMap = putIdColumnsInSql
@@ -977,10 +1011,11 @@ public class QueryCSMUtil
 	 * @param outputTreeDataNode outputTreeDataNode
 	 * @return The modified SQL string.
 	 */
-	private static Map putIdColumnsInSql(int columnIndex, String selectSql,
+	private static Map putIdColumnsInSql(int colIndex, String selectSql,
 			Map<EntityInterface, Integer> entityIdIndexMap, List<String> selectSqlColumnList,
 			OutputTreeDataNode outputTreeDataNode)
 	{
+		int columnIndex = colIndex;
 		StringBuffer sql = new StringBuffer(selectSql);
 		Map sqlIndexMap = new HashMap();
 		if (outputTreeDataNode != null)
@@ -1001,14 +1036,7 @@ public class QueryCSMUtil
 					}
 					else
 					{
-						if ("".equals(selectSql))
-						{
-							sql.append(selectSql).append(sqlColumnName);
-						}
-						else
-						{
-							sql.append(", ").append(sqlColumnName);
-						}
+						appendColNameToSql(selectSql, sql, sqlColumnName);
 						entityIdIndexMap.put(attribute.getEntity(), columnIndex);
 						columnIndex++;
 						break;
@@ -1019,6 +1047,24 @@ public class QueryCSMUtil
 		sqlIndexMap.put(AQConstants.SQL, sql.toString());
 		sqlIndexMap.put(AQConstants.ID_COLUMN_ID, columnIndex);
 		return sqlIndexMap;
+	}
+
+	/**
+	 * @param selectSql selectSql
+	 * @param sql sql
+	 * @param sqlColumnName sqlColumnName
+	 */
+	private static void appendColNameToSql(String selectSql, StringBuffer sql,
+			String sqlColumnName)
+	{
+		if ("".equals(selectSql))
+		{
+			sql.append(selectSql).append(sqlColumnName);
+		}
+		else
+		{
+			sql.append(", ").append(sqlColumnName);
+		}
 	}
 
 	/**

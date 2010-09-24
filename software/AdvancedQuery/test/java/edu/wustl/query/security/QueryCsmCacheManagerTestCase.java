@@ -17,6 +17,7 @@ import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.generator.GenericQueryGeneratorMock;
+import edu.wustl.query.util.global.Variables;
 import edu.wustl.query.util.querysuite.EntityCacheFactory;
 import edu.wustl.security.exception.SMException;
 import edu.wustl.security.privilege.PrivilegeType;
@@ -138,5 +139,14 @@ public class QueryCsmCacheManagerTestCase extends TestCase
         Boolean hasHidentifiedAccess = cache.isIdentifedDataAccess(Long.valueOf(2));
         assertEquals("hasHidentifiedAccess",Boolean.valueOf(true),hasHidentifiedAccess);
         cache.removeObjectFromIdentifiedDataAccsessMap(Long.valueOf(2));
+
+        Variables.entityCPSqlMap.put(participantEntity.getName(), "Participant");
+        cacheManager.getQueryStringForCP(participantEntity.getName(), 91);
+
+        cacheManager.getValidator();
+        Variables.mainProtocolObject = "ClinicalStudy";
+        cacheManager.getAccessPrivilegeMap("ClinicalStudy", Long.valueOf(1), sessionData, cache);
+        cacheManager.getAccessPrivilegeMap("Participant", Long.valueOf(1), sessionData, cache);
+
 	}
 }
