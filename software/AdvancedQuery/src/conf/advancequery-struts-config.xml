@@ -428,6 +428,15 @@ PUBLIC
 			scope="request">
 		</action>
 
+		
+		<action path="/SAASPgmExportAction"
+			type="edu.wustl.query.action.SAASPgmExportAction"
+			name="queryAdvanceSearchForm"
+			validate="false"
+			scope="request">
+		</action>		
+		
+
 		<action path="/ShareQueryAjax"
 			type="edu.wustl.query.action.ShareQueryAjaxAction"
 			name="clinicalStudyForm"

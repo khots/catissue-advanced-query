@@ -161,6 +161,29 @@ tr#hiddenCombo {
 				alert("Please select at least one checkbox");
 			}
 		}
+
+		function onSAASPgmExport()
+		{
+			var isChecked = updateHiddenFields();
+			var pageNum = "<%=pageNum%>";
+			var chkBox = document.getElementById('checkAll');
+			var isCheckAllAcrossAllChecked = chkBox.checked;
+		    if(isChecked == "true")
+		    {
+				var action = "SAASPgmExportAction.do?pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked ;
+				document.forms[0].operation.value="export";
+				document.forms[0].action = action;
+				document.forms[0].target = "_blank";
+				document.forms[0].submit();
+			}
+			else
+			{
+				alert("Please select at least one checkbox");
+			}
+		
+		}
+		
+		
 		//function that is called on click of Define View button for the configuration of search results
 		function onSimpleConfigure()
 		{
@@ -451,8 +474,10 @@ function checkAllOnThisPageResponse()
  %>
 							</td>
 							<td width="5%" nowrap align="right" valign="top"><img
-								src="images/advQuery/b_exp.gif" id="exportImgId" width="57"
+								src="images/advQuery/b_exp.gif" id="exportImgId" width="80"
 								hspace="3" onclick="onExport()" />&nbsp;</td>
+							<td width="5%" nowrap align="right" valign="top"><img
+								src="images/advQuery/b_exp_sas.gif" width="80"  hspace="3" onclick="onSAASPgmExport()"/>&nbsp;</td>
 							<td width="5%" nowrap align="right" valign="top"><img
 								src="images/advQuery/b_def_view.gif" id="defineViewId"
 								width="88" hspace="3" onclick="<%=configAction%>" />&nbsp;</td>

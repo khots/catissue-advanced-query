@@ -46,11 +46,39 @@ public class SpreadsheetExportAction extends SecureAction
 	public ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		QueryAdvanceSearchForm searchForm = (QueryAdvanceSearchForm) form;
+		
 		HttpSession session = request.getSession();
-		String isChkAllAcrossAll = (String) request.getParameter(AQConstants.CHECK_ALL_ACROSS_ALL_PAGES);
+		
 		List<List<String>> exportList = getExportList(session);
 		//Extracting map from form bean which gives the serial numbers of selected rows
+		List<String> idIndexList = new ArrayList<String>();
+		Map<Integer, List<String>> entityIdsMap = (Map<Integer, List<String>>) session
+		.getAttribute(AQConstants.ENTITY_IDS_MAP);
+		
+		
+		generateSpreadsheetData(form,request, session, exportList, idIndexList,
+				entityIdsMap);
+		exportAndSend(request, response, session, exportList, idIndexList, entityIdsMap);
+		return null;
+	}
+
+	/**
+	 * @param form
+	 * @param request
+	 * @param session
+	 * @param exportList
+	 * @param idIndexList
+	 * @param entityIdsMap
+	 * @throws DAOException
+	 * @throws MultipleRootsException
+	 */
+	protected void generateSpreadsheetData(ActionForm form, HttpServletRequest request,
+			HttpSession session, List<List<String>> exportList,
+			List<String> idIndexList, Map<Integer, List<String>> entityIdsMap)
+			throws DAOException, MultipleRootsException {
+		QueryAdvanceSearchForm searchForm = (QueryAdvanceSearchForm) form;
+		String isChkAllAcrossAll = (String) request.getParameter(AQConstants.CHECK_ALL_ACROSS_ALL_PAGES);
+		
 		Map map = searchForm.getValues();
 		Object[] obj = map.keySet().toArray();
 		List<String> columnList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
@@ -100,11 +128,10 @@ public class SpreadsheetExportAction extends SecureAction
 		}
 		//Mandar 06-Apr-06 Bugid:1165 : Extra ID columns end. Adding first row(column names) to exportData
 		exportList.add(columnList);
-
-		List<String> idIndexList = new ArrayList<String>();
+		session.setAttribute("COLUMNS_LIST", columnList);
+		
 		int columnsSize = columnList.size();
-		Map<Integer, List<String>> entityIdsMap = (Map<Integer, List<String>>) session
-		.getAttribute(AQConstants.ENTITY_IDS_MAP);
+		
 		if (isDefineView || (isChkAllAcrossAll != null && isChkAllAcrossAll.equalsIgnoreCase("true")))
 		{
 			for (int counter = 0; counter < dataList.size(); counter++)
@@ -135,8 +162,6 @@ public class SpreadsheetExportAction extends SecureAction
 			}
 
 		}
-		exportAndSend(response, session, exportList, idIndexList, entityIdsMap);
-		return null;
 	}
 
 	/**
@@ -144,7 +169,7 @@ public class SpreadsheetExportAction extends SecureAction
 	 * @return exportList
 	 * @throws MultipleRootsException MultipleRootsException
 	 */
-	private List<List<String>> getExportList(HttpSession session)
+	protected List<List<String>> getExportList(HttpSession session)
 			throws MultipleRootsException
 	{
 		IParameterizedQuery query = (IParameterizedQuery) session.getAttribute(AQConstants.QUERY_OBJECT);
@@ -288,7 +313,7 @@ public class SpreadsheetExportAction extends SecureAction
 	 * @param entityIdsMap entityIdsMap
 	 * @throws IOException IOException
 	 */
-	private void exportAndSend(HttpServletResponse response,
+	private void exportAndSend(HttpServletRequest request,HttpServletResponse response,
 			HttpSession session, List<List<String>> exportList,
 			List<String> idIndexList, Map<Integer, List<String>> entityIdsMap)
 			throws IOException
