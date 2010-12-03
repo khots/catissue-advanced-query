@@ -98,7 +98,7 @@ public class OutputAttributeColumn
 		if (obj instanceof OutputAttributeColumn)
 		{
 			OutputAttributeColumn entityObject = (OutputAttributeColumn) obj;
-			if (value.equals(entityObject.getValue()) && columnIndex == entityObject.getColumnIndex()
+			if (value!= null && value.equals(entityObject.getValue()) && columnIndex == entityObject.getColumnIndex()
 					&& attribute.equals(entityObject.getAttribute()))
 			{
 				isEqual = true;

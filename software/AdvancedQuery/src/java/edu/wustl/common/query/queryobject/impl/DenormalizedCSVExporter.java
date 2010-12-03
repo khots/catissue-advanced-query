@@ -37,10 +37,13 @@ public class DenormalizedCSVExporter
 			for(OutputAttributeColumn opAttrCol : dataList)
 			{
 				String value = opAttrCol.getValue();
-				StringTokenizer token = new StringTokenizer(value, "|");
-				while(token.hasMoreTokens())
+				if(value != null)
 				{
-					newDataList.add(token.nextToken());
+					StringTokenizer token = new StringTokenizer(value, "|");
+					while(token.hasMoreTokens())
+					{
+						newDataList.add(token.nextToken());
+					}
 				}
 			}
 			finalDataList.add(newDataList);
