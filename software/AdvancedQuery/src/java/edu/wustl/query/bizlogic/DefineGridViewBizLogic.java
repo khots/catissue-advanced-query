@@ -370,7 +370,7 @@ public class DefineGridViewBizLogic
 					queryResulObjectDataBean.setEntityId(columnIndex);
 				//}
 			}
-			if (AQConstants.FILE.equals(element.getAttribute().getDataType()))
+			if (AQConstants.FILE.equalsIgnoreCase(element.getAttribute().getDataType()))
 			{
 				queryResulObjectDataBean.setClobeType(true);
 				Map beanMetadataMap = queryResulObjectDataBean

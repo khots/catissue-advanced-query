@@ -46,16 +46,16 @@ public class SpreadsheetExportAction extends SecureAction
 	public ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		
+
 		HttpSession session = request.getSession();
-		
+
 		List<List<String>> exportList = getExportList(session);
 		//Extracting map from form bean which gives the serial numbers of selected rows
 		List<String> idIndexList = new ArrayList<String>();
 		Map<Integer, List<String>> entityIdsMap = (Map<Integer, List<String>>) session
 		.getAttribute(AQConstants.ENTITY_IDS_MAP);
-		
-		
+
+
 		generateSpreadsheetData(form,request, session, exportList, idIndexList,
 				entityIdsMap);
 		exportAndSend(request, response, session, exportList, idIndexList, entityIdsMap);
@@ -78,13 +78,13 @@ public class SpreadsheetExportAction extends SecureAction
 			throws DAOException, MultipleRootsException {
 		QueryAdvanceSearchForm searchForm = (QueryAdvanceSearchForm) form;
 		String isChkAllAcrossAll = (String) request.getParameter(AQConstants.CHECK_ALL_ACROSS_ALL_PAGES);
-		
+
 		Map map = searchForm.getValues();
 		Object[] obj = map.keySet().toArray();
 		List<String> columnList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
 		SelectedColumnsMetadata selectedColumnsMetadata =
 			(SelectedColumnsMetadata)session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
-		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll,selectedColumnsMetadata.getActualTotalRecords());
+		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll,selectedColumnsMetadata);
 		QueryDetails queryDetails = new QueryDetails(session);
 		boolean isDefineView = false;
 		if(selectedColumnsMetadata.isDefinedView())
@@ -129,9 +129,9 @@ public class SpreadsheetExportAction extends SecureAction
 		//Mandar 06-Apr-06 Bugid:1165 : Extra ID columns end. Adding first row(column names) to exportData
 		exportList.add(columnList);
 		session.setAttribute("COLUMNS_LIST", columnList);
-		
+
 		int columnsSize = columnList.size();
-		
+
 		if (isDefineView || (isChkAllAcrossAll != null && isChkAllAcrossAll.equalsIgnoreCase("true")))
 		{
 			for (int counter = 0; counter < dataList.size(); counter++)
@@ -236,8 +236,9 @@ public class SpreadsheetExportAction extends SecureAction
 	 * @throws DAOException DAOException
 	 */
 	private List<List<String>> getDataList(HttpServletRequest request,
-			HttpSession session, String isChkAllAcrossAll, int actualNoOfRec) throws DAOException
+			HttpSession session, String isChkAllAcrossAll, SelectedColumnsMetadata selectedMetadata) throws DAOException
 	{
+		int actualNoOfRec = selectedMetadata.getActualTotalRecords();
 		String pageNo = (String) request.getParameter(AQConstants.PAGE_NUMBER);
 		if (pageNo != null)
 		{
@@ -275,7 +276,7 @@ public class SpreadsheetExportAction extends SecureAction
 		QuerySessionData querySessionData = (QuerySessionData) session
 				.getAttribute(edu.wustl.common.util.global.Constants.QUERY_SESSION_DATA);
 		List dataList1 = Utility.getPaginationDataList(request, getSessionData(request),
-				recordsPerPage, pageNum, querySessionData);
+				recordsPerPage, pageNum, querySessionData, selectedMetadata.isDefinedView());
 		List<List<String>> dataList = (List<List<String>>) session
 				.getAttribute(AQConstants.EXPORT_DATA_LIST);
 		if (dataList == null)

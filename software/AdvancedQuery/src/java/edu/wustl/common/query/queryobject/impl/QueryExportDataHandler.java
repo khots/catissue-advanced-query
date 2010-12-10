@@ -670,9 +670,12 @@ public class QueryExportDataHandler
 			if(dataValue == null)
 			{
 				dataValue = opAttrCol;
-				StringBuffer value = new StringBuffer(((OutputAttributeColumn)dataValue).getValue());
-				value.append("| ");
-				((OutputAttributeColumn)dataValue).setValue(value.toString());
+				if(((OutputAttributeColumn)dataValue).getValue()!=null)
+				{
+					StringBuffer value = new StringBuffer(((OutputAttributeColumn)dataValue).getValue());
+					value.append("| ");
+					((OutputAttributeColumn)dataValue).setValue(value.toString());
+				}			
 			}
 			else
 			{

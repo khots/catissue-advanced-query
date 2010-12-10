@@ -411,7 +411,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 */
 	public static List getPaginationDataList(HttpServletRequest request,
 			SessionDataBean sessionData, int recordsPerPage, int pageNum,
-			QuerySessionData querySessionData) throws DAOException
+			QuerySessionData querySessionData, boolean isDefineView) throws DAOException
 	{
 		List paginationDataList;
 		querySessionData.setRecordsPerPage(recordsPerPage);
@@ -429,7 +429,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 			if (queryResultObjectDataBeanMap != null)
 			{
 				populateSessionData(request, paginationDataList,
-						queryResultObjectDataBeanMap);
+						queryResultObjectDataBeanMap, isDefineView);
 			}
 		}
 		return paginationDataList;
@@ -442,7 +442,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 */
 	private static void populateSessionData(HttpServletRequest request,
 			List paginationDataList,
-			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap)
+			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap, boolean isDefineView)
 	{
 		for (Iterator<Long> beanMapIterator = queryResultObjectDataBeanMap.keySet()
 				.iterator(); beanMapIterator.hasNext();)
@@ -458,7 +458,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 					new QueryOutputSpreadsheetBizLogic();
 				Map<Integer, Integer> fileTypMnEntMap =
 					queryBizLogic.updateSpreadSheetColumnList(columnsList,
-								queryResultObjectDataBeanMap);
+								queryResultObjectDataBeanMap, isDefineView);
 				Map exportMetataDataMap = QueryOutputSpreadsheetBizLogic.
 				updateDataList(paginationDataList, fileTypMnEntMap);
 				request.getSession().setAttribute(AQConstants.ENTITY_IDS_MAP,

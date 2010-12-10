@@ -979,7 +979,7 @@ public class QueryOutputSpreadsheetBizLogic
 				List<String> columnList = (List<String>) spreadSheetDataMap
 						.get(AQConstants.SPREADSHEET_COLUMN_LIST);
 				Map<Integer, Integer> fileTypeIndxMap = updateSpreadSheetColumnList(
-						columnList, queryResultObjectDataBeanMap);
+						columnList, queryResultObjectDataBeanMap,selectedColMetadata.isDefinedView());
 				Map exportMetataDataMap = updateDataList(dataList, fileTypeIndxMap);
 				spreadSheetDataMap.put(AQConstants.ENTITY_IDS_MAP, exportMetataDataMap
 						.get(AQConstants.ENTITY_IDS_MAP));
@@ -1191,8 +1191,8 @@ public class QueryOutputSpreadsheetBizLogic
 				String newColumn = "<img src='images/ic_view_up_file.gif' onclick='javascript:viewSPR(\""
 						+ mainEntityId + "\")' alt='click here' style='cursor:pointer;'>";
 				String fileName = AQConstants.EXPORT_FILE_NAME_START + mainEntityId + ".txt";
-				row.add(fileTypeIndex, newColumn);
-				exportRow.add(fileTypeIndex, fileName);
+				row.set(fileTypeIndex, newColumn);
+				exportRow.set(fileTypeIndex, fileName);
 				entityIdsList.add(mainEntityId);
 			}
 			newDataList.add(exportRow);
@@ -1210,7 +1210,7 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @return fileTypeIndexMainEntityIndexMap
 	 */
 	public Map<Integer, Integer> updateSpreadSheetColumnList(List<String> spreadsheetColumnsList,
-			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap)
+			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap, boolean isDefineView)
 	{
 		Map<Integer, String> fileTypeIndexColumnNameMap = new TreeMap<Integer, String>();
 		Map<Integer, Integer> fileTypeIndxMap = new TreeMap<Integer, Integer>();
@@ -1238,11 +1238,14 @@ public class QueryOutputSpreadsheetBizLogic
 				}
 			}
 		}
-		for (Iterator<Integer> columnNameIterator = fileTypeIndexColumnNameMap.keySet().iterator();
-		columnNameIterator.hasNext();)
+		if(!isDefineView)
 		{
-			populateSpreadsheetColumnList(spreadsheetColumnsList,
-					fileTypeIndexColumnNameMap, columnNameIterator);
+			for (Iterator<Integer> columnNameIterator = fileTypeIndexColumnNameMap.keySet().iterator();
+			columnNameIterator.hasNext();)
+			{
+				populateSpreadsheetColumnList(spreadsheetColumnsList,
+						fileTypeIndexColumnNameMap, columnNameIterator);
+			}
 		}
 		return fileTypeIndxMap;
 	}

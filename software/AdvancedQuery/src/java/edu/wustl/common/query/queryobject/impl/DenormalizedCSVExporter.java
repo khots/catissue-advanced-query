@@ -45,6 +45,10 @@ public class DenormalizedCSVExporter
 						newDataList.add(token.nextToken());
 					}
 				}
+				else
+				{
+					newDataList.add(null);
+				}
 			}
 			finalDataList.add(newDataList);
 		}

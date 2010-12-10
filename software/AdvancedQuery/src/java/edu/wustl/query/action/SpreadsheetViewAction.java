@@ -18,6 +18,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.action.SecureAction;
+import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
@@ -137,8 +138,18 @@ public class SpreadsheetViewAction extends SecureAction
 		Integer recordsPerPage = getRecordsPerPage(request, session);
 		if (pagination != null && pagination.equalsIgnoreCase("true"))
 		{
+			SelectedColumnsMetadata selectedColumnsMetadata =(SelectedColumnsMetadata)session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
+			boolean isDefineView;
+			if(selectedColumnsMetadata == null)
+			{
+				isDefineView = false;
+			}
+			else
+			{
+				isDefineView = selectedColumnsMetadata.isDefinedView();
+			}
 			paginationList = Utility.getPaginationDataList(request, getSessionData(request),
-					recordsPerPage, pageNum, querySessionData);
+					recordsPerPage, pageNum, querySessionData,isDefineView);
 			request.setAttribute(AQConstants.PAGINATION_DATA_LIST, paginationList);
 			Utility.setGridData(paginationList, columnList, request);
 		}
