@@ -280,6 +280,7 @@
 			<include name="ApplicationResources.properties" />
 			<replacefilter token="@@app.name@@" value="${app.name}" />
 			<replacefilter token="@@useFeature.addToList@@" value="${useFeature.addToList}" />
+			<replacefilter token="@@useFeature.exportTermsAndConditions@@" value="${useFeature.exportTermsAndConditions}" />
 		</replace>
 		<echo message="${app.name}" />
 	</target>

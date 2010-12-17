@@ -521,6 +521,8 @@ public class AQConstants
 
     public static final String FEATURE_ADD_TO_LIST = "useFeature.addToList";
 
+    public static final String FEATURE_EXPORT_TERMS_AND_CONDITIONS = "useFeature.exportTermsAndConditions";
+
     public static final String SELECT_OPTION = "-- Select --";
 
     public static final String AM_CONSTANT = "AM";

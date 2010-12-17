@@ -8,10 +8,13 @@
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
 <%@ page import="edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.Variables"%>
+<%@ page import="edu.wustl.common.util.global.ApplicationProperties"%>
 <%@ page language="java" isELIgnored="false"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <script src="jss/advQuery/script.js"></script>
 <script type="text/javascript" src="jss/advQuery/ajax.js"></script>
+<script language="JavaScript" type="text/javascript" src="jss/dhtmlwindow.js"></script>
+
 <style>
 .active-column-0 {
 	width: 30px
@@ -54,7 +57,8 @@ tr#hiddenCombo {
 
 <script language="javascript">
 		var colZeroDir='ascending';
-
+var popupWindow;
+var buttonClicked;
 
 		function saveClientQueryToServerFromResultView(action)
 	{
@@ -141,7 +145,34 @@ tr#hiddenCombo {
 				alert("Please select at least one checkbox");
 			}
 		}
-
+    function displayTermsAndConditions(button)
+	{
+		buttonClicked = button;
+		if(navigator.appName == "Microsoft Internet Explorer")
+		{
+            popupWindow=dhtmlmodal.open('Export Data', 'iframe', "pages/content/search/TermsAndConditions.jsp",'Export Data', 'width=670px,height=430px,center=1,resize=0,scrolling=0');
+		}
+		else
+		{
+	    	popupWindow=dhtmlmodal.open('Export Data', 'iframe', "pages/content/search/TermsAndConditions.jsp",'Export Data', 'width=670px,height=450px,center=1,resize=0,scrolling=0');
+		}
+	}
+	function onAgreeClicked()
+	{
+		popupWindow.hide();
+		if(buttonClicked.id == 'exportImgId')
+		{
+			onExport();
+		}
+		else
+		{
+			onSAASPgmExport();
+		}
+	}
+	function onCancelClicked()
+	{
+		popupWindow.hide();
+	}
 		function onExport()
 		{
 			var isChecked = updateHiddenFields();
@@ -180,10 +211,10 @@ tr#hiddenCombo {
 			{
 				alert("Please select at least one checkbox");
 			}
-		
+
 		}
-		
-		
+
+
 		//function that is called on click of Define View button for the configuration of search results
 		function onSimpleConfigure()
 		{
@@ -473,11 +504,23 @@ function checkAllOnThisPageResponse()
  	}
  %>
 							</td>
+							<%if(Utility.checkFeatureUsage(AQConstants.FEATURE_EXPORT_TERMS_AND_CONDITIONS)
+									&& (pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS) || pageOf
+											.equals(AQConstants.PAGEOF_QUERY_MODULE)))
+							{%>
 							<td width="5%" nowrap align="right" valign="top"><img
+								src="images/advQuery/b_exp.gif" id="exportImgId" width="80"
+								hspace="3" onclick="displayTermsAndConditions(this)" />&nbsp;</td>
+							<td width="5%" nowrap align="right" valign="top"><img
+								src="images/advQuery/b_exp_sas.gif" width="80"  hspace="3" onclick="displayTermsAndConditions(this)"/>&nbsp;</td>
+								<%} else { %>
+								<td width="5%" nowrap align="right" valign="top"><img
 								src="images/advQuery/b_exp.gif" id="exportImgId" width="80"
 								hspace="3" onclick="onExport()" />&nbsp;</td>
 							<td width="5%" nowrap align="right" valign="top"><img
 								src="images/advQuery/b_exp_sas.gif" width="80"  hspace="3" onclick="onSAASPgmExport()"/>&nbsp;</td>
+								<%} %>
+
 							<td width="5%" nowrap align="right" valign="top"><img
 								src="images/advQuery/b_def_view.gif" id="defineViewId"
 								width="88" hspace="3" onclick="<%=configAction%>" />&nbsp;</td>
