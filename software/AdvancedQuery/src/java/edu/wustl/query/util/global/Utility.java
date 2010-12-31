@@ -460,7 +460,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 					queryBizLogic.updateSpreadSheetColumnList(columnsList,
 								queryResultObjectDataBeanMap, isDefineView);
 				Map exportMetataDataMap = QueryOutputSpreadsheetBizLogic.
-				updateDataList(paginationDataList, fileTypMnEntMap);
+				updateDataList(paginationDataList, null, fileTypMnEntMap);
 				request.getSession().setAttribute(AQConstants.ENTITY_IDS_MAP,
 					exportMetataDataMap.get(AQConstants.ENTITY_IDS_MAP));
 				request.getSession().setAttribute(AQConstants.EXPORT_DATA_LIST,

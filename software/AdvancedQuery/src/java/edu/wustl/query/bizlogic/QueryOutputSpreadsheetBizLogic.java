@@ -956,6 +956,7 @@ public class QueryOutputSpreadsheetBizLogic
 		PagenatedResultData pagenatedResultData = qBizLogic.execute(queryDetailsObj
 				.getSessionData(), querySessionData, startIndex);
 		List<List<String>> dataList = pagenatedResultData.getResult();
+		List<List<String>> listForFileType = dataList;
 		if(mainIdColumnIndex != -1 && selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1)
 		{
 			SpreadsheetDenormalizationBizLogic  denormalizationBizLogic =
@@ -980,7 +981,7 @@ public class QueryOutputSpreadsheetBizLogic
 						.get(AQConstants.SPREADSHEET_COLUMN_LIST);
 				Map<Integer, Integer> fileTypeIndxMap = updateSpreadSheetColumnList(
 						columnList, queryResultObjectDataBeanMap,selectedColMetadata.isDefinedView());
-				Map exportMetataDataMap = updateDataList(dataList, fileTypeIndxMap);
+				Map exportMetataDataMap = updateDataList(dataList,listForFileType, fileTypeIndxMap);
 				spreadSheetDataMap.put(AQConstants.ENTITY_IDS_MAP, exportMetataDataMap
 						.get(AQConstants.ENTITY_IDS_MAP));
 				spreadSheetDataMap.put(AQConstants.EXPORT_DATA_LIST, exportMetataDataMap
@@ -1160,7 +1161,7 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @param fileTypeIndxMap fileTypeIndexMainEntityIndexMap
 	 * @return exportMetataDataMap
 	 */
-	public static Map updateDataList(List<List<String>> dataList,
+	public static Map updateDataList(List<List<String>> dataList,List<List<String>> listForFileType,
 			Map<Integer, Integer> fileTypeIndxMap)
 	{
 		Map<Integer, String> entityIdIndexMainEntityIdMap = new HashMap<Integer, String>();
@@ -1179,7 +1180,15 @@ public class QueryOutputSpreadsheetBizLogic
 			{
 				int fileTypeIndex = fileTypeIterator.next();
 				int mainEntityIdIndex = fileTypeIndxMap.get(fileTypeIndex);
-				String mainEntityId = row.get(mainEntityIdIndex);
+				String mainEntityId;
+				if(listForFileType == null)
+				{
+					mainEntityId = row.get(mainEntityIdIndex);
+				}
+				else
+				{
+					mainEntityId = listForFileType.get(rowNo).get(mainEntityIdIndex);
+				}
 				entityIdIndexMainEntityIdMap.put(fileTypeIndex, mainEntityId);
 			}
 			int fileTypeIndex;
@@ -1191,8 +1200,16 @@ public class QueryOutputSpreadsheetBizLogic
 				String newColumn = "<img src='images/ic_view_up_file.gif' onclick='javascript:viewSPR(\""
 						+ mainEntityId + "\")' alt='click here' style='cursor:pointer;'>";
 				String fileName = AQConstants.EXPORT_FILE_NAME_START + mainEntityId + ".txt";
-				row.set(fileTypeIndex, newColumn);
-				exportRow.set(fileTypeIndex, fileName);
+				if(listForFileType == null)
+				{
+					row.add(fileTypeIndex, newColumn);
+					exportRow.add(fileTypeIndex, fileName);
+				}
+				else
+				{
+					row.set(fileTypeIndex, newColumn);
+					exportRow.set(fileTypeIndex, fileName);
+				}
 				entityIdsList.add(mainEntityId);
 			}
 			newDataList.add(exportRow);
