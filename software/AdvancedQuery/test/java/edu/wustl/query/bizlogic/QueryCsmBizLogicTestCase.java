@@ -13,7 +13,7 @@ public class QueryCsmBizLogicTestCase extends TestCase
 		EntityCache cache = EntityCacheFactory.getInstance();
         EntityInterface participantEntity = GenericQueryGeneratorMock.createEntity("Participant");
         participantEntity = GenericQueryGeneratorMock.getEntity(cache, participantEntity);
-        EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
+        EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("CollectionProtocolRegistration");
         csrEntity = GenericQueryGeneratorMock.getEntity(cache, csrEntity);
         QueryCsmBizLogic.getMainEntityList(participantEntity, csrEntity);
 	}

@@ -416,7 +416,7 @@ public class GenericQueryGeneratorMock extends EntityManager
             query.setConstraints(constraints);
 
             EntityCache cache = EntityCacheFactory.getInstance();
-            EntityInterface clinicalStudyEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudy");
+            EntityInterface clinicalStudyEntity = GenericQueryGeneratorMock.createEntity("CollectionProtocol");
             clinicalStudyEntity = getEntity(cache, clinicalStudyEntity);
 
             // creating expression for Clinical Study.
@@ -481,7 +481,7 @@ public class GenericQueryGeneratorMock extends EntityManager
 		resultantMatchedClass.setEntityCollection(resultantMatchedClass.getSortedEntityCollection());
 		for(EntityInterface tEntity : resultantMatchedClass.getEntityCollection())
 		{
-			if(tEntity.getName().equals("edu.wustl.clinportal.domain."+entity.getName()))
+			if(tEntity.getName().equals("edu.wustl.catissuecore.domain."+entity.getName()))
 			{
 				entity = tEntity;
 				break;
@@ -503,7 +503,7 @@ public class GenericQueryGeneratorMock extends EntityManager
             IQueryEntity participantConstraintEntity = QueryObjectFactory.createQueryEntity(participantEntity);
             IExpression participant = constraints.addExpression(participantConstraintEntity);
 
-            EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
+            EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("CollectionProtocolRegistration");
             csrEntity = getEntity(cache,csrEntity);
             IQueryEntity csrConstraintEntity = QueryObjectFactory.createQueryEntity(csrEntity);
             IExpression csr = constraints
@@ -512,8 +512,8 @@ public class GenericQueryGeneratorMock extends EntityManager
             participant.addOperand(csr);
 
             AssociationInterface partCPR = getAssociationFrom(entityManager.getAssociation(
-                    "edu.wustl.clinportal.domain.Participant", "participant"),
-                    "edu.wustl.clinportal.domain.ClinicalStudyRegistration");
+                    "edu.wustl.catissuecore.domain.Participant", "participant"),
+                    "edu.wustl.catissuecore.domain.CollectionProtocolRegistration");
 
             constraints.getJoinGraph().putAssociation(participant, csr,
                     QueryObjectFactory.createIntraModelAssociation(partCPR));
@@ -578,7 +578,7 @@ public class GenericQueryGeneratorMock extends EntityManager
             IQueryEntity participantConstraintEntity = QueryObjectFactory.createQueryEntity(participantEntity);
             IExpression participant = constraints.addExpression(participantConstraintEntity);
 
-            EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
+            EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("CollectionProtocolRegistration");
             csrEntity = getEntity(cache,csrEntity);
             IQueryEntity csrConstraintEntity = QueryObjectFactory.createQueryEntity(csrEntity);
             IExpression csr = constraints
@@ -587,8 +587,8 @@ public class GenericQueryGeneratorMock extends EntityManager
             participant.addOperand(csr);
 
             AssociationInterface partCPR = getAssociationFrom(entityManager.getAssociation(
-                    "edu.wustl.clinportal.domain.Participant", "participant"),
-                    "edu.wustl.clinportal.domain.ClinicalStudyRegistration");
+                    "edu.wustl.catissuecore.domain.Participant", "participant"),
+                    "edu.wustl.catissuecore.domain.CollectionProtocolRegistration");
 
             constraints.getJoinGraph().putAssociation(participant, csr,
                     QueryObjectFactory.createIntraModelAssociation(partCPR));
@@ -670,8 +670,8 @@ public class GenericQueryGeneratorMock extends EntityManager
 
             participantExpression.addOperand(getAndConnector(), pmiExpression1);
             AssociationInterface partAndPMIAssociation = getAssociationFrom(entityManager
-                    .getAssociation("edu.wustl.clinportal.domain.Participant", ""),
-                    "edu.wustl.clinportal.domain.ParticipantMedicalIdentifier");
+                    .getAssociation("edu.wustl.catissuecore.domain.Participant", ""),
+                    "edu.wustl.caticcuecore.domain.ParticipantMedicalIdentifier");
             IIntraModelAssociation iPartAndPMIAssociation = QueryObjectFactory
                     .createIntraModelAssociation(partAndPMIAssociation);
             joinGraph.putAssociation(participantExpression, pmiExpression1
@@ -863,7 +863,7 @@ public class GenericQueryGeneratorMock extends EntityManager
             participantExpression.addOperand(csExpressionRule1);
 
 
-            EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
+            EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("CollectionProtocolRegistration");
             csrEntity = getEntity(cache, csrEntity);
 
             // creating CSR Expression under first CS
@@ -875,8 +875,8 @@ public class GenericQueryGeneratorMock extends EntityManager
 
             participantExpression.addOperand(getAndConnector(), csrExpression1);
             AssociationInterface cSAndCSRAssociation = getAssociationFrom(entityManager
-                    .getAssociation("edu.wustl.clinportal.domain.Participant", ""),
-                    "edu.wustl.clinportal.domain.ClinicalStudyRegistration");
+                    .getAssociation("edu.wustl.catissuecore.domain.Participant", ""),
+                    "edu.wustl.catissuecore.domain.CollectionProtocolRegistration");
             IIntraModelAssociation iCSAndCSRAssociation = QueryObjectFactory
                     .createIntraModelAssociation(cSAndCSRAssociation);
             joinGraph.putAssociation(participantExpression, csrExpression1
@@ -914,7 +914,7 @@ public class GenericQueryGeneratorMock extends EntityManager
             IQueryEntity participantConstraintEntity = QueryObjectFactory.createQueryEntity(participantEntity);
             IExpression participant = constraints.addExpression(participantConstraintEntity);
 
-            EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
+            EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("CollectionProtocolRegistration");
             csrEntity = getEntity(cache,csrEntity);
             IQueryEntity csrConstraintEntity = QueryObjectFactory.createQueryEntity(csrEntity);
             IExpression csr = constraints
@@ -923,8 +923,8 @@ public class GenericQueryGeneratorMock extends EntityManager
             participant.addOperand(csr);
 
             AssociationInterface partCPR = getAssociationFrom(entityManager.getAssociation(
-                    "edu.wustl.clinportal.domain.Participant", "participant"),
-                    "edu.wustl.clinportal.domain.ClinicalStudyRegistration");
+                    "edu.wustl.catissuecore.domain.Participant", "participant"),
+                    "edu.wustl.catissuecore.domain.CollectionProtocolRegistration");
 
             constraints.getJoinGraph().putAssociation(participant, csr,
                     QueryObjectFactory.createIntraModelAssociation(partCPR));
@@ -975,8 +975,8 @@ public class GenericQueryGeneratorMock extends EntityManager
 		try
 		{
 			association = getAssociationFrom(entityManager.getAssociation(
-			        "edu.wustl.clinportal.domain.Participant", "participant"),
-			"edu.wustl.clinportal.domain.ParticipantMedicalIdentifier");
+			        "edu.wustl.catissuecore.domain.Participant", "participant"),
+			"edu.wustl.catissuecore.domain.ParticipantMedicalIdentifier");
 		}
 		catch (DynamicExtensionsSystemException e)
 		{

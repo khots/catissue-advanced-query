@@ -161,7 +161,7 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
         participantOutputEntity.getSelectedAttributes().addAll(participantEntity.getEntityAttributesForQuery());
         OutputTreeDataNode outputTreeDataNode = new OutputTreeDataNode(participantOutputEntity, 1, 0);
 
-        EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
+        EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("CollectionProtocolRegistration");
         csrEntity = GenericQueryGeneratorMock.getEntity(cache, csrEntity);
         IOutputEntity csrOutputEntity = QueryObjectFactory.createOutputEntity(csrEntity);
         csrOutputEntity.getSelectedAttributes().addAll(csrEntity.getEntityAttributesForQuery());

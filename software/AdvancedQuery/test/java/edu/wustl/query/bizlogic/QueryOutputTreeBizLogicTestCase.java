@@ -199,18 +199,18 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
 			String createTableSql = " select distinct Participant_1.GENDER Column0, Participant_1.MIDDLE_NAME Column1, Participant_1.FIRST_NAME Column2, Participant_1.VITAL_STATUS Column3, Participant_1.IDENTIFIER Column4, Participant_1.BIRTH_DATE Column5, Participant_1.LAST_NAME Column6, Participant_1.ETHNICITY Column7, Participant_1.SOCIAL_SECURITY_NUMBER Column8, Participant_1.ACTIVITY_STATUS Column9, Participant_1.DEATH_DATE Column10, Participant_1.GENOTYPE Column11  from (select * from CATISSUE_PARTICIPANT where ACTIVITY_STATUS != 'Disabled') Participant_1  where Participant_1.FIRST_NAME is NOT NULL";
 			treeBizLogic.createOutputTreeTable(createTableSql, queryDetails);
 
-        EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("ClinicalStudyRegistration");
-        csrEntity = GenericQueryGeneratorMock.getEntity(cache, csrEntity);
-        IOutputEntity csrOutputEntity = QueryObjectFactory.createOutputEntity(csrEntity);
-        csrOutputEntity.getSelectedAttributes().addAll(csrEntity.getAllAttributes());
-        OutputTreeDataNode csrOutputTreeDataNode = new OutputTreeDataNode(csrOutputEntity, 2, 0);
+        EntityInterface cprEntity = GenericQueryGeneratorMock.createEntity("CollectionProtocolRegistration");
+        cprEntity = GenericQueryGeneratorMock.getEntity(cache, cprEntity);
+        IOutputEntity cprOutputEntity = QueryObjectFactory.createOutputEntity(cprEntity);
+        cprOutputEntity.getSelectedAttributes().addAll(cprEntity.getAllAttributes());
+        OutputTreeDataNode cprOutputTreeDataNode = new OutputTreeDataNode(cprOutputEntity, 2, 0);
     	int index=0;
-        for(AttributeInterface attribute : csrEntity.getAllAttributes())
+        for(AttributeInterface attribute : cprEntity.getAllAttributes())
         {
-	        String className = edu.wustl.query.util.global.Utility.parseClassName(csrEntity.getName());
+	        String className = edu.wustl.query.util.global.Utility.parseClassName(cprEntity.getName());
 	        String attributeLabel = edu.wustl.common.util.Utility.getDisplayLabel(attribute.getName());
 	        String displayNmForCol = className+" : "+attributeLabel;
-	        csrOutputTreeDataNode.addAttribute(new QueryOutputTreeAttributeMetadata(attribute, "Column"+index, csrOutputTreeDataNode,
+	        cprOutputTreeDataNode.addAttribute(new QueryOutputTreeAttributeMetadata(attribute, "Column"+index, cprOutputTreeDataNode,
 	                displayNmForCol));
 	        index++;
         }
@@ -219,15 +219,15 @@ public class QueryOutputTreeBizLogicTestCase extends TestCase
 
         IQuery associationQuery = GenericQueryGeneratorMock.createInheritanceQueryWithAssociation1();
         queryDetails.setQuery(associationQuery);
-        outputTreeDataNode.addChild(csrOutputEntity, 2);
+        outputTreeDataNode.addChild(cprOutputEntity, 2);
         rootOutputTreeNodeList.add(outputTreeDataNode);
-        rootOutputTreeNodeList.add(csrOutputTreeDataNode);
+        rootOutputTreeNodeList.add(cprOutputTreeDataNode);
         uniqueIdNodesMap = QueryObjectProcessor.getAllChildrenNodes(rootOutputTreeNodeList);
         queryDetails.setUniqueIdNodesMap(uniqueIdNodesMap);
         queryDetails.setRandomNumber("_6358");
 		sessionData.setUserId(2441l);
 		queryDetails.setSessionData(sessionData);
-        String nodeId = "UQ0_"+outputTreeDataNode.getId()+"_0::0_"+csrOutputTreeDataNode.getId()+"_Label";
+        String nodeId = "UQ0_"+outputTreeDataNode.getId()+"_0::0_"+cprOutputTreeDataNode.getId()+"_Label";
         treeBizLogic.updateTreeForLabelNode(nodeId, queryDetails, false);
         queryDetails.setRandomNumber("_2040");
 		sessionData.setUserId(1l);

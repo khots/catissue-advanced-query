@@ -52,7 +52,7 @@ public class SqlGeneratorGenericTestCase extends TestCase
             String sql = generator.generateSQL(query);
             assertEqualSql(
                     "Incorrect SQL formed for From clause of the Expression !!!",
-                    "select distinct Participant_1.MIDDLE_NAME Column0, Participant_1.LAST_NAME Column1, Participant_1.EMPI_ID_STATUS Column2, Participant_1.VITAL_STATUS Column3, Participant_1.SOCIAL_SECURITY_NUMBER Column4, Participant_1.GENOTYPE Column5, Participant_1.EMPI_ID Column6, Participant_1.LNAME_METAPHONE Column7, Participant_1.ACTIVITY_STATUS Column8, Participant_1.BIRTH_DATE Column9, Participant_1.DEATH_DATE Column10, Participant_1.ETHNICITY Column11, Participant_1.FIRST_NAME Column12, Participant_1.GENDER Column13, Participant_1.IDENTIFIER Column14  from (select * from CATISSUE_PARTICIPANT where ACTIVITY_STATUS != 'Disabled') Participant_1  where lower(Participant_1.ACTIVITY_STATUS) = lower(?)",
+                    "select distinct Participant_1.GENOTYPE Column0, Participant_1.DEATH_DATE Column1, Participant_1.ACTIVITY_STATUS Column2, Participant_1.SOCIAL_SECURITY_NUMBER Column3, Participant_1.GENDER Column4, Participant_1.MIDDLE_NAME Column5, Participant_1.FIRST_NAME Column6, Participant_1.VITAL_STATUS Column7, Participant_1.IDENTIFIER Column8, Participant_1.BIRTH_DATE Column9, Participant_1.LAST_NAME Column10, Participant_1.ETHNICITY Column11  from (select * from CATISSUE_PARTICIPANT where ACTIVITY_STATUS != 'Disabled') Participant_1  where lower(Participant_1.ACTIVITY_STATUS) = lower(?)",
                     sql);
         }
         catch (Exception e)
@@ -79,7 +79,7 @@ public class SqlGeneratorGenericTestCase extends TestCase
             sql = generator.generateSQL(query);
             assertEqualSql(
                     "Incorrect SQL formed for Query !!!",
-                    "select distinct ClinicalStudy_1.IDENTIFIER Column0, ClinicalStudy_1.UNSIGNED_CONSENT_DOC_URL Column1, ClinicalStudy_1.IS_EMPI_ENABLE Column2, ClinicalStudy_1.TITLE Column3, ClinicalStudy_1.START_DATE Column4, ClinicalStudy_1.SHORT_TITLE Column5, ClinicalStudy_1.IRB_IDENTIFIER Column6, ClinicalStudy_1.ENROLLMENT Column7, ClinicalStudy_1.END_DATE Column8, ClinicalStudy_1.DESCRIPTION_URL Column9, ClinicalStudy_1.ACTIVITY_STATUS Column10  from (select CATISSUE_SPECIMEN_PROTOCOL.IDENTIFIER, CATISSUE_CLINICAL_STUDY.UNSIGNED_CONSENT_DOC_URL, CATISSUE_SPECIMEN_PROTOCOL.IS_EMPI_ENABLE, CATISSUE_SPECIMEN_PROTOCOL.TITLE, CATISSUE_SPECIMEN_PROTOCOL.START_DATE, CATISSUE_SPECIMEN_PROTOCOL.SHORT_TITLE, CATISSUE_SPECIMEN_PROTOCOL.IRB_IDENTIFIER, CATISSUE_SPECIMEN_PROTOCOL.ENROLLMENT, CATISSUE_SPECIMEN_PROTOCOL.END_DATE, CATISSUE_SPECIMEN_PROTOCOL.DESCRIPTION_URL, CATISSUE_SPECIMEN_PROTOCOL.ACTIVITY_STATUS from CATISSUE_CLINICAL_STUDY inner join CATISSUE_SPECIMEN_PROTOCOL on CATISSUE_CLINICAL_STUDY.IDENTIFIER=CATISSUE_SPECIMEN_PROTOCOL.IDENTIFIER where CATISSUE_SPECIMEN_PROTOCOL.ACTIVITY_STATUS != 'Disabled') ClinicalStudy_1  where lower(ClinicalStudy_1.UNSIGNED_CONSENT_DOC_URL) = lower(?) And lower(ClinicalStudy_1.ACTIVITY_STATUS) = lower(?)",
+                    "select distinct CollectionProtocol_1.UNSIGNED_CONSENT_DOC_URL Column0, CollectionProtocol_1.ACTIVITY_STATUS Column1, CollectionProtocol_1.ALIQUOT_IN_SAME_CONTAINER Column2, CollectionProtocol_1.IRB_IDENTIFIER Column3, CollectionProtocol_1.ENROLLMENT Column4, CollectionProtocol_1.SHORT_TITLE Column5, CollectionProtocol_1.DESCRIPTION_URL Column6, CollectionProtocol_1.END_DATE Column7, CollectionProtocol_1.IDENTIFIER Column8, CollectionProtocol_1.TITLE Column9, CollectionProtocol_1.START_DATE Column10, CollectionProtocol_1.CP_TYPE Column11, CollectionProtocol_1.SEQUENCE_NUMBER Column12, CollectionProtocol_1.STUDY_CALENDAR_EVENT_POINT Column13  from (select CATISSUE_COLLECTION_PROTOCOL.UNSIGNED_CONSENT_DOC_URL, CATISSUE_SPECIMEN_PROTOCOL.ACTIVITY_STATUS, CATISSUE_COLLECTION_PROTOCOL.ALIQUOT_IN_SAME_CONTAINER, CATISSUE_SPECIMEN_PROTOCOL.IRB_IDENTIFIER, CATISSUE_SPECIMEN_PROTOCOL.ENROLLMENT, CATISSUE_SPECIMEN_PROTOCOL.SHORT_TITLE, CATISSUE_SPECIMEN_PROTOCOL.DESCRIPTION_URL, CATISSUE_SPECIMEN_PROTOCOL.END_DATE, CATISSUE_SPECIMEN_PROTOCOL.IDENTIFIER, CATISSUE_SPECIMEN_PROTOCOL.TITLE, CATISSUE_SPECIMEN_PROTOCOL.START_DATE, CATISSUE_COLLECTION_PROTOCOL.CP_TYPE, CATISSUE_COLLECTION_PROTOCOL.SEQUENCE_NUMBER, CATISSUE_COLLECTION_PROTOCOL.STUDY_CALENDAR_EVENT_POINT from CATISSUE_COLLECTION_PROTOCOL inner join CATISSUE_SPECIMEN_PROTOCOL on CATISSUE_COLLECTION_PROTOCOL.IDENTIFIER=CATISSUE_SPECIMEN_PROTOCOL.IDENTIFIER where CATISSUE_SPECIMEN_PROTOCOL.ACTIVITY_STATUS != 'Disabled') CollectionProtocol_1  where lower(CollectionProtocol_1.UNSIGNED_CONSENT_DOC_URL) = lower(?) And lower(CollectionProtocol_1.ACTIVITY_STATUS) = lower(?)",
                     sql);
 
         }
@@ -98,25 +98,7 @@ public class SqlGeneratorGenericTestCase extends TestCase
             sql = generator.generateSQL(query);
             assertEqualSql(
                     "Incorrect SQL formed for Query !!!",
-                    "select distinct Participant_1.MIDDLE_NAME Column0, Participant_1.LAST_NAME Column1," +
-                    " Participant_1.EMPI_ID_STATUS Column2, Participant_1.VITAL_STATUS Column3," +
-                    " Participant_1.SOCIAL_SECURITY_NUMBER Column4, Participant_1.GENOTYPE Column5," +
-                    " Participant_1.EMPI_ID Column6, Participant_1.LNAME_METAPHONE Column7," +
-                    " Participant_1.ACTIVITY_STATUS Column8, Participant_1.BIRTH_DATE Column9," +
-                    " Participant_1.DEATH_DATE Column10, Participant_1.ETHNICITY Column11," +
-                    " Participant_1.FIRST_NAME Column12, Participant_1.GENDER Column13," +
-                    " Participant_1.IDENTIFIER Column14  from (select * from CATISSUE_PARTICIPANT where" +
-                    " ACTIVITY_STATUS != 'Disabled') Participant_1 left join (select * from" +
-                    " CATISSUE_CLINICAL_STUDY_REG where ACTIVITY_STATUS != 'Disabled')" +
-                    " ClinicalStudyRegistration_2 on (Participant_1.IDENTIFIER=" +
-                    "ClinicalStudyRegistration_2.PARTICIPANT_ID)  where" +
-                    " (extract(day from cast(ClinicalStudyRegistration_2.REGISTRATION_DATE as timestamp)" +
-                    " - cast(Participant_1.BIRTH_DATE as timestamp))*86400 +" +
-                    " extract(hour from cast(ClinicalStudyRegistration_2.REGISTRATION_DATE as timestamp)" +
-                    " - cast(Participant_1.BIRTH_DATE as timestamp))*3600 +" +
-                    " extract(minute from cast(ClinicalStudyRegistration_2.REGISTRATION_DATE as timestamp)" +
-                    " - cast(Participant_1.BIRTH_DATE as timestamp))*60 +" +
-                    " extract(second from cast(ClinicalStudyRegistration_2.REGISTRATION_DATE as timestamp)" +
+                    "select distinct Participant_1.GENOTYPE Column0, Participant_1.DEATH_DATE Column1, Participant_1.ACTIVITY_STATUS Column2, Participant_1.SOCIAL_SECURITY_NUMBER Column3, Participant_1.GENDER Column4, Participant_1.MIDDLE_NAME Column5, Participant_1.FIRST_NAME Column6, Participant_1.VITAL_STATUS Column7, Participant_1.IDENTIFIER Column8, Participant_1.BIRTH_DATE Column9, Participant_1.LAST_NAME Column10, Participant_1.ETHNICITY Column11  from (select * from CATISSUE_PARTICIPANT where ACTIVITY_STATUS != 'Disabled') Participant_1 left join (select * from CATISSUE_COLL_PROT_REG where ACTIVITY_STATUS != 'Disabled') CollectionProtocolRegistr_2 on (Participant_1.IDENTIFIER=CollectionProtocolRegistr_2.PARTICIPANT_ID)  where (extract(day from cast(CollectionProtocolRegistr_2.REGISTRATION_DATE as timestamp) - cast(Participant_1.BIRTH_DATE as timestamp))*86400 + extract(hour from cast(CollectionProtocolRegistr_2.REGISTRATION_DATE as timestamp) - cast(Participant_1.BIRTH_DATE as timestamp))*3600 + extract(minute from cast(CollectionProtocolRegistr_2.REGISTRATION_DATE as timestamp) - cast(Participant_1.BIRTH_DATE as timestamp))*60 + extract(second from cast(CollectionProtocolRegistr_2.REGISTRATION_DATE as timestamp)" +
                     " - cast(Participant_1.BIRTH_DATE as timestamp)) > (30)*60)",
                     sql);
 

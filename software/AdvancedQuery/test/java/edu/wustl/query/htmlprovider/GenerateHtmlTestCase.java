@@ -50,8 +50,8 @@ public class GenerateHtmlTestCase extends TestCase
 		GenerateHtml.getHtmlHeader("Participant", "91", attributeCollection, false);
 		GenerateHtml.getHtmlHeader("Participant", "91", attributeCollection, true);
 
-		GenerateHtml.generatePreHtml(attributeCollection, "edu.wustl.clinportal.domain.Participant", false);
-		GenerateHtml.generatePreHtml(attributeCollection, "edu.wustl.clinportal.domain.Participant", true);
+		GenerateHtml.generatePreHtml(attributeCollection, "edu.wustl.catissuecore.domain.Participant", false);
+		GenerateHtml.generatePreHtml(attributeCollection, "edu.wustl.catissuecore.domain.Participant", true);
 	}
 
 	public void testGetHtmlAddEditPage()
