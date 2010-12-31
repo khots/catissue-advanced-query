@@ -12,6 +12,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
 
+import junit.framework.TestCase;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
@@ -31,7 +32,6 @@ import edu.wustl.query.generator.GenericQueryGeneratorMock;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.querysuite.EntityCacheFactory;
 import edu.wustl.query.util.querysuite.QueryDetails;
-import junit.framework.TestCase;
 
 public class DefineGridViewBizLogicTestCase extends TestCase
 {
@@ -45,7 +45,7 @@ public class DefineGridViewBizLogicTestCase extends TestCase
         outputEntity.getSelectedAttributes().addAll(participantEntity.getEntityAttributesForQuery());
         OutputTreeDataNode outputTreeDataNode = new OutputTreeDataNode(outputEntity, 1, 1);
         String className = bizLogic.getClassName(outputTreeDataNode);
-        assertEquals("Expected Class Name","edu.wustl.clinportal.domain.Participant",className);
+        assertEquals("Expected Class Name","edu.wustl.catissuecore.domain.Participant",className);
 	}
 
 	public void testCreateSQLForSelectedColumn()
