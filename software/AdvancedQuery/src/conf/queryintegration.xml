@@ -6,9 +6,9 @@
 	<property name="suite.struts.config.file" value="struts-config.xml" />
 	<property name="suite.hibernate.config.file" value="hibernate.cfg.xml" />
 	<property name="suite.tiles.def.file" value="tiles-defs.xml" />
-	<property name="oracle.sql.dir" value="SQL/Oracle" />
-	<property name="mysql.sql.dir" value="SQL/MySql" />
-	<property name="msSqlServer.sql.dir" value="SQL/MsSqlServer" />
+	<property name="oracle.sql.dir" value="${base.dir}/db/db-install/Oracle" />
+	<property name="mysql.sql.dir" value="${base.dir}/db/db-install/MySql" />
+	<property name="msSqlServer.sql.dir" value="${base.dir}/db/db-install/MsSqlServer" />
 
 	<!--Advance Query Related  Start-->
 	<!--
@@ -308,7 +308,7 @@
 			<equals arg1="mysql" arg2="${database.type}" />
 			<then>
 				<sql driver="${database.driver}" url="${database.url}" userid="${database.username}" password="${database.password}" onerror="continue">
-					<transaction src="${mysql.sql.dir}/query/query_schema_script.sql" />
+					<transaction src="${mysql.sql.dir}/query_schema_script.sql" />
 					<transaction>commit;</transaction>
 					<classpath>
 						<fileset dir="${lib.dir}">
@@ -321,7 +321,7 @@
 				<equals arg1="oracle" arg2="${database.type}" />
 				<then>
 					<sql driver="${database.driver}" url="${database.url}" userid="${database.username}" password="${database.password}" onerror="continue" rdbms="${rdbms}">
-						<transaction src="${oracle.sql.dir}/query/query_schema_script.sql" />
+						<transaction src="${oracle.sql.dir}/query_schema_script.sql" />
 						<transaction>commit;</transaction>
 						<classpath>
 							<fileset dir="${lib.dir}">
@@ -335,7 +335,7 @@
 				<equals arg1="mssqlserver" arg2="${database.type}" />
 				<then>
 					<sql driver="${database.driver}" url="${database.url}" userid="${database.username}" password="${database.password}" onerror="continue" rdbms="${rdbms}">
-						<transaction src="${msSqlServer.sql.dir}/query/query_schema_script.sql" />
+						<transaction src="${msSqlServer.sql.dir}/query_schema_script.sql" />
 						<transaction>commit;</transaction>
 						<classpath>
 							<fileset dir="${lib.dir}">
