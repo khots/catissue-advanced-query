@@ -87,7 +87,7 @@ public class SpreadsheetExportAction extends SecureAction
 		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll,selectedColumnsMetadata);
 		QueryDetails queryDetails = new QueryDetails(session);
 		boolean isDefineView = false;
-		if(selectedColumnsMetadata.isDefinedView())
+		if(selectedColumnsMetadata != null && selectedColumnsMetadata.isDefinedView())
 		{
 			IExpression rootExpression = queryDetails.getQuery().getConstraints().getJoinGraph().getRoot();
 			if(!queryDetails.getQuery().getConstraints().getJoinGraph().getChildrenList(rootExpression).isEmpty())
@@ -238,7 +238,13 @@ public class SpreadsheetExportAction extends SecureAction
 	private List<List<String>> getDataList(HttpServletRequest request,
 			HttpSession session, String isChkAllAcrossAll, SelectedColumnsMetadata selectedMetadata) throws DAOException
 	{
-		int actualNoOfRec = selectedMetadata.getActualTotalRecords();
+		int actualNoOfRec = 0;
+		boolean isDefinedView = false;
+		if(selectedMetadata != null)
+		{
+			actualNoOfRec = selectedMetadata.getActualTotalRecords();
+			isDefinedView = selectedMetadata.isDefinedView();
+		}
 		String pageNo = (String) request.getParameter(AQConstants.PAGE_NUMBER);
 		if (pageNo != null)
 		{
@@ -276,7 +282,7 @@ public class SpreadsheetExportAction extends SecureAction
 		QuerySessionData querySessionData = (QuerySessionData) session
 				.getAttribute(edu.wustl.common.util.global.Constants.QUERY_SESSION_DATA);
 		List dataList1 = Utility.getPaginationDataList(request, getSessionData(request),
-				recordsPerPage, pageNum, querySessionData, selectedMetadata.isDefinedView());
+				recordsPerPage, pageNum, querySessionData, isDefinedView);
 		List<List<String>> dataList = (List<List<String>>) session
 				.getAttribute(AQConstants.EXPORT_DATA_LIST);
 		if (dataList == null)
