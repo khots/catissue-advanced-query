@@ -2,6 +2,7 @@
 <project name="Query Integration">
 
 	<!--define require dir and Properties -->
+	<property name="base.dir" value="." />
 	<property file="advanceQuery.properties" />
 	<property name="suite.struts.config.file" value="struts-config.xml" />
 	<property name="suite.hibernate.config.file" value="hibernate.cfg.xml" />
