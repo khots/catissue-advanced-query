@@ -56,6 +56,7 @@ final public class CsmUtility
 	}
 
 	/**
+	 * Gets the user protection group.
 	 * @param csmUserId String
 	 * @return user protection group
 	 */
