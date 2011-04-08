@@ -1,8 +1,13 @@
 package edu.wustl.common.query.queryobject.impl;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.wustl.common.querysuite.queryobject.IExpression;
 
-
+/**
+ * This class contains the details of the value to be displayed on the UI in results view after defining view.
+ * @author pooja_tavase
+ *
+ */
 public class OutputAttributeColumn
 {
 	private String value;
@@ -13,11 +18,14 @@ public class OutputAttributeColumn
 
 	private String header;
 
-	public OutputAttributeColumn(String value, int columnIndex, AttributeInterface attribute, String header)
+	private IExpression expression;
+
+	public OutputAttributeColumn(String value, int columnIndex, AttributeInterface attribute, IExpression expression, String header)
 	{
 		this.value = value;
 		this.columnIndex = columnIndex;
 		this.attribute = attribute;
+		this.expression = expression;
 		this.header = header;
 	}
 
@@ -83,6 +91,22 @@ public class OutputAttributeColumn
 	public String getHeader()
 	{
 		return header;
+	}
+
+	/**
+	 * @return the expression
+	 */
+	public IExpression getExpression()
+	{
+		return expression;
+	}
+
+	/**
+	 * @param expression the expression to set
+	 */
+	public void setExpression(IExpression expression)
+	{
+		this.expression = expression;
 	}
 
 	@Override

@@ -20,9 +20,9 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
-import edu.wustl.common.query.queryobject.impl.QueryParser;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
+import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.queryobject.IArithmeticOperand;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
@@ -925,30 +925,21 @@ public class QueryOutputSpreadsheetBizLogic
 			boolean hasConditionOnIdentifiedField, SelectedColumnsMetadata selectedColumnsMetadata) throws ClassNotFoundException, DAOException
 	{
 		SelectedColumnsMetadata selectedColMetadata = handleDefineViewCase(selectedColumnsMetadata);
-		int mainIdColumnIndex = -1;
 		QuerySessionData querySessionData = new QuerySessionData();
 		querySessionData.setSql(selectSql);
 		querySessionData.setQueryResultObjectDataMap(queryResultObjectDataBeanMap);
+		querySessionData.setRecordsPerPage(recordsPerPage);
 		if(selectedColMetadata.isDefinedView())
 		{
+			StringBuffer modifiedSql = modifySqlForDefineView(selectSql,queryDetailsObj);
+			querySessionData.setSql(modifiedSql.toString());
+			int rootIdIndex = getRootIdIndex(queryDetailsObj, getListOfSelectedColumns(modifiedSql.toString()));
 			if(isContainmentPresent(queryDetailsObj.getQuery()))
 			{
-				QueryParser queryParser = new QueryParser();
-				queryParser.parseQuery(queryDetailsObj.getQuery(),selectedColMetadata.getSelectedAttributeMetaDataList());
-				mainIdColumnIndex = queryParser.
-				getMainIdColumnIndex(querySessionData.getQueryResultObjectDataMap());
-				String column = getColumnName(selectSql, mainIdColumnIndex);
+				String column = getColumnName(modifiedSql.toString(), rootIdIndex);
 				int recPerPageForDV = getRecordsPerPage(queryDetailsObj, column,recordsPerPage);
 				querySessionData.setRecordsPerPage(recPerPageForDV);
 			}
-			else
-			{
-				querySessionData.setRecordsPerPage(recordsPerPage);
-			}
-		}
-		else
-		{
-			querySessionData.setRecordsPerPage(recordsPerPage);
 		}
 		querySessionData.setSecureExecute(queryDetailsObj.getSessionData().isSecurityRequired());
 		querySessionData.setHasConditionOnIdentifiedField(hasConditionOnIdentifiedField);
@@ -957,7 +948,7 @@ public class QueryOutputSpreadsheetBizLogic
 				.getSessionData(), querySessionData, startIndex);
 		List<List<String>> dataList = pagenatedResultData.getResult();
 		List<List<String>> listForFileType = dataList;
-		if(mainIdColumnIndex != -1 && selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1)
+		if(selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1)
 		{
 			SpreadsheetDenormalizationBizLogic  denormalizationBizLogic =
 				new SpreadsheetDenormalizationBizLogic();
@@ -969,6 +960,16 @@ public class QueryOutputSpreadsheetBizLogic
 				List<String>colList = (List<String>)exportDetailsMap.get("headerList");
 				spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, colList);
 				selectedColMetadata.setActualTotalRecords(pagenatedResultData.getTotalRecords());
+				if(dataList.size() >recordsPerPage)
+				{
+					querySessionData.setRecordsPerPage(recordsPerPage);
+					querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
+				}
+				else
+				{
+					querySessionData.setRecordsPerPage(dataList.size());
+					querySessionData.setTotalNumberOfRecords(dataList.size());
+				}
 			}
 		}
 		for (Long id : queryResultObjectDataBeanMap.keySet())
@@ -1000,13 +1001,92 @@ public class QueryOutputSpreadsheetBizLogic
 		 * result pages using pagination.
 		 */
 
-		if(!selectedColMetadata.isDefinedView() || mainIdColumnIndex == -1)
+		if(!selectedColMetadata.isDefinedView() || queryDetailsObj.getQuery().getConstraints().size() == 1)
 		{
 			querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
 		}
 		return querySessionData;
 	}
 
+	private int getRootIdIndex(QueryDetails queryDetailsObj,
+			List<String> listOfSelectedColumns)
+	{
+		int rootIdIndex = -1;
+		try
+		{
+			IExpression rootExp = queryDetailsObj.getQuery().getConstraints().getRootExpression();
+			Iterator<OutputTreeDataNode> iterator = queryDetailsObj.getUniqueIdNodesMap().values()
+			.iterator();
+			while (iterator.hasNext())
+			{
+				OutputTreeDataNode outputTreeDataNode = iterator.next();
+				if(outputTreeDataNode.getExpressionId() == rootExp.getExpressionId())
+				{
+					List<QueryOutputTreeAttributeMetadata> attributes = outputTreeDataNode.getAttributes();
+					for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
+					{
+						AttributeInterface attribute = attributeMetaData.getAttribute();
+						if (attribute.getName().equals(AQConstants.IDENTIFIER))
+						{
+							String sqlColumnName = attributeMetaData.getColumnName().trim();
+							rootIdIndex = listOfSelectedColumns.indexOf(sqlColumnName);
+							break;
+						}
+					}
+				}
+			}
+		}
+		catch(MultipleRootsException e)
+		{
+			logger.error(e.getMessage(),e);
+		}
+		return rootIdIndex;
+	}
+
+	private StringBuffer modifySqlForDefineView(String selectSql,
+			QueryDetails queryDetailsObj)
+	{
+		StringBuffer sql = new StringBuffer(selectSql);
+		List<String> selectSqlColumnList = getListOfSelectedColumns(selectSql);
+			Iterator<OutputTreeDataNode> iterator = queryDetailsObj.getUniqueIdNodesMap().values()
+			.iterator();
+			while (iterator.hasNext())
+			{
+				OutputTreeDataNode outputTreeDataNode = iterator.next();
+				/*if(outputTreeDataNode.getExpressionId() == rootExp.getExpressionId())
+				{*/
+					List<QueryOutputTreeAttributeMetadata> attributes = outputTreeDataNode.getAttributes();
+					for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
+					{
+						AttributeInterface attribute = attributeMetaData.getAttribute();
+						String sqlColumnName = attributeMetaData.getColumnName().trim();
+						if (attribute.getName().equals(AQConstants.IDENTIFIER))
+						{
+							int index = selectSqlColumnList.indexOf(sqlColumnName);
+
+							if (index < 0)
+							{
+								QueryCSMUtil.appendColNameToSql(selectSql, sql, sqlColumnName);
+								break;
+							}
+						}
+					}
+				//}
+			}
+		return sql;
+	}
+
+	private List<String> getListOfSelectedColumns(String selectSql)
+	{
+		List<String> columnList = new ArrayList<String>();
+		String substring = selectSql.substring(selectSql.indexOf("select")+6, selectSql.indexOf("from"));
+		StringTokenizer tokenizer = new StringTokenizer(substring,",");
+		while(tokenizer.hasMoreTokens())
+		{
+			columnList.add(tokenizer.nextToken().trim());
+		}
+		return columnList;
+	}
 	/**
 	 * Populates the appropriate SelectedColumnsMetadata object and
 	 * maintains the order of attributes in case of saved query.

@@ -5,16 +5,16 @@ import java.util.List;
 
 public class ListComparator implements Comparator<List<String>>
 {
-	private final int mainEntityIndex;
-	public ListComparator(int mainEntityIndex)
+	private final transient int mainEntityIndex;
+	public ListComparator(final int mainEntityIndex)
 	{
 		this.mainEntityIndex = mainEntityIndex;
 	}
-	public int compare(List<String> list1, List<String> list2)
+	public int compare(final List<String> list1, final List<String> list2)
 	{
 		int returnValue;
-		Integer index1 = Integer.parseInt(list1.get(mainEntityIndex));
-		Integer index2 = Integer.parseInt(list2.get(mainEntityIndex));
+		final Integer index1 = Integer.parseInt(list1.get(mainEntityIndex));
+		final Integer index2 = Integer.parseInt(list2.get(mainEntityIndex));
 		if(index1>index2)
 		{
 			returnValue = 1;

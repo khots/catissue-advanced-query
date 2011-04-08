@@ -1054,7 +1054,7 @@ public class QueryCSMUtil
 	 * @param sql sql
 	 * @param sqlColumnName sqlColumnName
 	 */
-	private static void appendColNameToSql(String selectSql, StringBuffer sql,
+	public static void appendColNameToSql(String selectSql, StringBuffer sql,
 			String sqlColumnName)
 	{
 		if ("".equals(selectSql))

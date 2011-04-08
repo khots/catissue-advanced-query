@@ -10,13 +10,11 @@ import edu.wustl.common.querysuite.queryobject.IExpression;
 public class QueryHeaderData
 {
 	private EntityInterface entity;
-	private String recordNo;
 	private IExpression expression;
 
-	public QueryHeaderData(EntityInterface entity,String recordNo,IExpression expression)
+	public QueryHeaderData(EntityInterface entity,IExpression expression)
 	{
 		this.entity = entity;
-		this.recordNo = recordNo;
 		this.expression = expression;
 	}
 
@@ -34,30 +32,6 @@ public class QueryHeaderData
 	public void setEntity(EntityInterface entity)
 	{
 		this.entity = entity;
-	}
-
-	/**
-	 * @return the recordNo
-	 */
-	public String getRecordNo()
-	{
-		return recordNo;
-	}
-
-	/**
-	 * @param recordNo the recordNo to set
-	 */
-	public void setRecordNo(String recordNo)
-	{
-		this.recordNo = recordNo;
-	}
-
-	/**
-	 * @return the recordNo
-	 */
-	public String getParentRecordNo()
-	{
-		return recordNo;
 	}
 
 	/**
@@ -89,8 +63,8 @@ public class QueryHeaderData
 		if (obj instanceof QueryHeaderData)
 		{
 			QueryHeaderData entityObject = (QueryHeaderData) obj;
-			if (entity.equals(entityObject.getEntity()) && recordNo != null
-					&& recordNo.equals(entityObject.getParentRecordNo()))
+			if (entity.equals(entityObject.getEntity()) &&
+					expression.equals(entityObject.getExpression()))
 			{
 				isEqual = true;
 			}

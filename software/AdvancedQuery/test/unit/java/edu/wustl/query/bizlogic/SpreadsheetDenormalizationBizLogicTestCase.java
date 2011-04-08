@@ -127,18 +127,18 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
 				return null;
 			}
 		};
-		IQuery query = GenericQueryGeneratorMock.creatParticipantQuery();
+		IQuery query = GenericQueryGeneratorMock.createParticipantPMIQuery();
 		QueryDetails queryDetails = new QueryDetails(session);
 		queryDetails.setQuery(query);
 
 		List<List<String>> dataList = new ArrayList<List<String>>();
 
-		List<String> list = populateList("zzzzzzzzzzzz","755358","mrn2","730138");
+		List<String> list = populateList("730138","zzzzzzzzzzzz","755358","mrn2");
 		dataList.add(list);
-		list = populateList("abcdefg","755418","abc_mrn1","730158");
+		list = populateList("730158","abcdefg","755418","abc_mrn1");
 		dataList.add(list);
 
-		list = populateList("abcdefg","755378","abc_mrn2","730158");
+		list = populateList("730158","abcdefg","755378","abc_mrn2");
 		dataList.add(list);
 
 		QuerySessionData querySessionData = new QuerySessionData();
@@ -159,38 +159,59 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
         participantEntity = GenericQueryGeneratorMock.getEntity(cache, participantEntity);
         IOutputEntity participantOutputEntity = QueryObjectFactory.createOutputEntity(participantEntity);
         participantOutputEntity.getSelectedAttributes().addAll(participantEntity.getEntityAttributesForQuery());
-        OutputTreeDataNode outputTreeDataNode = new OutputTreeDataNode(participantOutputEntity, 1, 0);
+        OutputTreeDataNode partOutputTreeDataNode = new OutputTreeDataNode(participantOutputEntity, 1, 0);
 
-        EntityInterface csrEntity = GenericQueryGeneratorMock.createEntity("CollectionProtocolRegistration");
-        csrEntity = GenericQueryGeneratorMock.getEntity(cache, csrEntity);
-        IOutputEntity csrOutputEntity = QueryObjectFactory.createOutputEntity(csrEntity);
-        csrOutputEntity.getSelectedAttributes().addAll(csrEntity.getEntityAttributesForQuery());
+        EntityInterface pmiEntity = GenericQueryGeneratorMock.createEntity("ParticipantMedicalIdentifier");
+        pmiEntity = GenericQueryGeneratorMock.getEntity(cache, pmiEntity);
+        IOutputEntity pmiOutputEntity = QueryObjectFactory.createOutputEntity(pmiEntity);
+        pmiOutputEntity.getSelectedAttributes().addAll(pmiEntity.getEntityAttributesForQuery());
+        OutputTreeDataNode pmiOutputTreeDataNode = new OutputTreeDataNode(pmiOutputEntity, 2, 0);
 
         AttributeInterface lastName = GenericQueryGeneratorMock.findAttribute(participantEntity,"lastName");
-        AttributeInterface csrId = GenericQueryGeneratorMock.findAttribute(csrEntity,"id");
-        AttributeInterface regDate = GenericQueryGeneratorMock.findAttribute(csrEntity,"registrationDate");
+        AttributeInterface pmiId = GenericQueryGeneratorMock.findAttribute(pmiEntity,"id");
+        AttributeInterface mrnNo = GenericQueryGeneratorMock.findAttribute(pmiEntity,"medicalRecordNumber");
         AttributeInterface participantId = GenericQueryGeneratorMock.findAttribute(participantEntity,"id");
-        List<AttributeInterface> attributeList = new ArrayList<AttributeInterface>();
-        attributeList.add(lastName);
-        attributeList.add(csrId);
-        attributeList.add(regDate);
-        attributeList.add(participantId);
+        List<AttributeInterface> partAttributeList = new ArrayList<AttributeInterface>();
+        List<AttributeInterface> pmiAttributeList = new ArrayList<AttributeInterface>();
+        partAttributeList.add(participantId);
+        partAttributeList.add(lastName);
+        pmiAttributeList.add(pmiId);
+        pmiAttributeList.add(mrnNo);
+
 
         int i=0;
-        for(AttributeInterface attribute : attributeList)
+        for(AttributeInterface attribute : partAttributeList)
         {
 		    String className = edu.wustl.query.util.global.Utility.parseClassName(attribute.getEntity().getName());
 		    String attributeLabel = edu.wustl.common.util.Utility.getDisplayLabel(attribute.getName());
 		    String displayNmForCol = className+" : "+attributeLabel;
-		    QueryOutputTreeAttributeMetadata opTreeMetadata = new QueryOutputTreeAttributeMetadata(attribute, "Column"+i, outputTreeDataNode,
+		    QueryOutputTreeAttributeMetadata opTreeMetadata = new QueryOutputTreeAttributeMetadata(attribute, "Column"+i, partOutputTreeDataNode,
 		               displayNmForCol);
 		    selectedAttributeMetaDataList.add(opTreeMetadata);
-		    outputTreeDataNode.addAttribute(opTreeMetadata);
+		    partOutputTreeDataNode.addAttribute(opTreeMetadata);
 		    attributeColumnNameMap.put(attribute, "Column"+i);
 		    i++;
         }
+        for(AttributeInterface attribute : pmiAttributeList)
+        {
+		    String className = edu.wustl.query.util.global.Utility.parseClassName(attribute.getEntity().getName());
+		    String attributeLabel = edu.wustl.common.util.Utility.getDisplayLabel(attribute.getName());
+		    String displayNmForCol = className+" : "+attributeLabel;
+		    QueryOutputTreeAttributeMetadata opTreeMetadata = new QueryOutputTreeAttributeMetadata(attribute, "Column"+i, pmiOutputTreeDataNode,
+		               displayNmForCol);
+		    selectedAttributeMetaDataList.add(opTreeMetadata);
+		    pmiOutputTreeDataNode.addAttribute(opTreeMetadata);
+		    attributeColumnNameMap.put(attribute, "Column"+i);
+		    i++;
+        }
+
+        Map<String, OutputTreeDataNode> uniqueIdNodesMap = new HashMap<String, OutputTreeDataNode>();
+        uniqueIdNodesMap.put("0_1", partOutputTreeDataNode);
+        uniqueIdNodesMap.put("0_2", pmiOutputTreeDataNode);
+        queryDetails.setUniqueIdNodesMap(uniqueIdNodesMap);
+
         SelectedColumnsMetadata selectedColumnsMetadata = new SelectedColumnsMetadata();
-        selectedColumnsMetadata.setCurrentSelectedObject(outputTreeDataNode);
+        selectedColumnsMetadata.setCurrentSelectedObject(partOutputTreeDataNode);
         selectedColumnsMetadata.setDefinedView(true);
         selectedColumnsMetadata.setSelColNVBeanList(null);
         selectedColumnsMetadata.setSelectedAttributeMetaDataList(selectedAttributeMetaDataList);
@@ -238,26 +259,23 @@ public class SpreadsheetDenormalizationBizLogicTestCase extends TestCase
         entityIdIndexMap.put(participantEntity, 3);
         queryResultObjectDataBean.setEntityIdIndexMap(entityIdIndexMap);
         Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap = new HashMap<Long, QueryResultObjectDataBean>();
-        queryResultObjectDataBeanMap.put(outputTreeDataNode.getId(), queryResultObjectDataBean);
+        queryResultObjectDataBeanMap.put(partOutputTreeDataNode.getId(), queryResultObjectDataBean);
 
         querySessionData.setQueryResultObjectDataMap(queryResultObjectDataBeanMap);
-        querySessionData.setSql("select Column0,Column1,Column2,Column3 from TEMP_OUTPUTTREE1_84116 where Column3 is NOT NULL");
+        querySessionData.setSql("select Column0,Column1,Column2,Column3 from TEMP_OUTPUTTREE1_84116 where Column0 is NOT NULL");
 		SpreadsheetDenormalizationBizLogic bizLogic = new SpreadsheetDenormalizationBizLogic();
-		bizLogic.scanIQuery(queryDetails, dataList, selectedColumnsMetadata, querySessionData);
-		bizLogic.setMainIdColumnIndex(1);
+		bizLogic.scanIQuery(queryDetails, new ArrayList<List<String>>(), selectedColumnsMetadata, querySessionData);
+		//bizLogic.setMainIdColumnIndex(1);
 		IExpression partExp = GenericQueryGeneratorMock.createExpression(participantEntity);
 		Map<BaseAbstractAttributeInterface,Object> denormalizationMap =
 			new HashMap<BaseAbstractAttributeInterface,Object>();
 		Map<String,String> columnNameMap = getColumnNameMap(querySessionData.getSql(), dataList.get(0));
-		bizLogic.setColumnNameMap(columnNameMap);
+		//bizLogic.setColumnNameMap(columnNameMap);
 		//bizLogic.populateMap(denormalizationMap, partExp, selectedAttributeMetaDataList, query.getConstraints());
 
-		QueryHeaderData headerData = new QueryHeaderData(participantEntity, "0",partExp);
+		QueryHeaderData headerData = new QueryHeaderData(participantEntity, partExp);
 		headerData.setEntity(participantEntity);
 		headerData.getEntity();
-
-		headerData.setRecordNo("1");
-		headerData.getRecordNo();
 
 		headerData.setExpression(partExp);
 		headerData.getExpression();
