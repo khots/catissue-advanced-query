@@ -705,7 +705,6 @@ public class GenericQueryGeneratorMock extends EntityManager
             query = QueryObjectFactory.createQuery();;
             IConstraints constraints = QueryObjectFactory.createConstraints();
             query.setConstraints(constraints);
-            IJoinGraph joinGraph = constraints.getJoinGraph();
 
             EntityCache cache = EntityCacheFactory.getInstance();
             EntityInterface participantEntity = GenericQueryGeneratorMock.createEntity("Participant");

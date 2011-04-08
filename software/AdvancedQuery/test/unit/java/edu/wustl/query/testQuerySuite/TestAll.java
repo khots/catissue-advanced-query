@@ -17,11 +17,12 @@ import edu.ustl.query.util.querysuite.TemporalQueryUtilityTestCase;
 import edu.wustl.common.query.authoriztion.SavedQueryAuthorizationTestCase;
 import edu.wustl.common.query.factory.AbstractQueryGeneratorFactoryTestCase;
 import edu.wustl.common.query.factory.CommonObjectFactoryTestCase;
+import edu.wustl.common.query.queryobject.impl.AssociationDataHandlerTestCase;
 import edu.wustl.common.query.queryobject.impl.AttributeComparatorTestCase;
+import edu.wustl.common.query.queryobject.impl.DenormalizedCSVExporterTestCase;
 import edu.wustl.common.query.queryobject.impl.ListComparatorTestCase;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNodeTestCase;
 import edu.wustl.common.query.queryobject.impl.QueryExportDataHandlerTestCase;
-import edu.wustl.common.query.queryobject.impl.QueryParserTestCase;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryTreeNodeDataTestCase;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadataTestCase;
 import edu.wustl.common.query.queryobject.locator.PositionTestCase;
@@ -130,7 +131,8 @@ public class TestAll
 		suite.addTestSuite(JoinQueryNodeTestCase.class);
 		suite.addTestSuite(DAGPathTestCase.class);
 		suite.addTestSuite(CustomFormulaNodeTestCase.class);
-		suite.addTestSuite(QueryParserTestCase.class);
+		suite.addTestSuite(DenormalizedCSVExporterTestCase.class);
+		suite.addTestSuite(AssociationDataHandlerTestCase.class);
 		return suite;
 	}
 }

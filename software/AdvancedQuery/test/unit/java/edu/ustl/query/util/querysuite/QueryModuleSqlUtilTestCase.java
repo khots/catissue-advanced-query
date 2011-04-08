@@ -194,7 +194,7 @@ public class QueryModuleSqlUtilTestCase extends TestCase
 		{
 			ex.printStackTrace();
 		}
-		String path = "test/java/AdvancedQuery.xml";
+		String path = "test/unit/java/AdvancedQuery.xml";
 		XMLPropertyHandler.init(path);
 		QueryModuleSqlUtil.executeCreateTable(tableName, createTableSql, queryDetails);
 	}
