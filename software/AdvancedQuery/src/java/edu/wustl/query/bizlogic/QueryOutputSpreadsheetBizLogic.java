@@ -929,12 +929,14 @@ public class QueryOutputSpreadsheetBizLogic
 		querySessionData.setSql(selectSql);
 		querySessionData.setQueryResultObjectDataMap(queryResultObjectDataBeanMap);
 		querySessionData.setRecordsPerPage(recordsPerPage);
+		boolean isContPresent = false;
 		if(selectedColMetadata.isDefinedView())
 		{
 			StringBuffer modifiedSql = modifySqlForDefineView(selectSql,queryDetailsObj);
 			querySessionData.setSql(modifiedSql.toString());
 			int rootIdIndex = getRootIdIndex(queryDetailsObj, getListOfSelectedColumns(modifiedSql.toString()));
-			if(isContainmentPresent(queryDetailsObj.getQuery()))
+			isContPresent = isContainmentPresent(queryDetailsObj.getQuery());
+			if(isContPresent)
 			{
 				String column = getColumnName(modifiedSql.toString(), rootIdIndex);
 				int recPerPageForDV = getRecordsPerPage(queryDetailsObj, column,recordsPerPage);
@@ -948,7 +950,8 @@ public class QueryOutputSpreadsheetBizLogic
 				.getSessionData(), querySessionData, startIndex);
 		List<List<String>> dataList = pagenatedResultData.getResult();
 		List<List<String>> listForFileType = dataList;
-		if(selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1)
+		querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
+		if(selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1 && isContPresent)
 		{
 			SpreadsheetDenormalizationBizLogic  denormalizationBizLogic =
 				new SpreadsheetDenormalizationBizLogic();
