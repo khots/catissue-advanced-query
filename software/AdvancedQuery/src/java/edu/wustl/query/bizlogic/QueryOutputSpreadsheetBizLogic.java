@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
@@ -1122,16 +1123,19 @@ public class QueryOutputSpreadsheetBizLogic
 		JoinGraph joinGraph = (JoinGraph) constraints.getJoinGraph();
 		for(IExpression expression : constraints)
 		{
-			List<IExpression> children = joinGraph.getChildrenList(expression);
-			for(IExpression child : children)
+			if(expression.isInView())
 			{
-				IIntraModelAssociation association = (IIntraModelAssociation)
-				joinGraph.getAssociation(expression, child);
-				if(association.getDynamicExtensionsAssociation().getTargetRole().getAssociationsType()
-						.name().equalsIgnoreCase("CONTAINTMENT"))
+				List<IExpression> children = joinGraph.getChildrenList(expression);
+				for(IExpression child : children)
 				{
-					isContPresent = true;
-					break;
+					IIntraModelAssociation association = (IIntraModelAssociation)
+					joinGraph.getAssociation(expression, child);
+					if(association.getDynamicExtensionsAssociation().getAssociationType()
+							== AssociationType.CONTAINTMENT)
+					{
+						isContPresent = true;
+						break;
+					}
 				}
 			}
 			if(isContPresent)
