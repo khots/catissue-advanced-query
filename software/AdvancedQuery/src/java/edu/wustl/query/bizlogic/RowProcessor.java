@@ -124,9 +124,9 @@ public class RowProcessor
 			throws MultipleRootsException
 	{
 		Integer idIndex = idIndex(rootExp);
-		if(idIndex < list.size())
+		if(idIndex < list.size() && idIndex != -1)
 		{
-			Long idValue = Long.valueOf(list.get(idIndex));
+			String idValue = list.get(idIndex);
 			Map<OutputAssociationColumn,Object> recMap = recMap(rootExp, idValue);
 			List<AbstractAttributeInterface> attributeList = attrList(rootExp);
 			for(AbstractAttributeInterface attribute : attributeList)
@@ -148,7 +148,7 @@ public class RowProcessor
 						Integer childIdIndex = idIndex(associatedExp);
 						if(childIdIndex < list.size())
 						{
-							Long childId = Long.valueOf(list.get(idIndex(associatedExp)));
+							String childId = list.get(idIndex(associatedExp));
 							if(!childList.contains(expMap.get(associatedExp).getMap(childId)))
 							{
 								childList.add(expMap.get(associatedExp).getMap(childId));
@@ -243,7 +243,7 @@ public class RowProcessor
 	 * @param idValue identifier
 	 * @return record map
 	 */
-	private Map<OutputAssociationColumn,Object> recMap(IExpression rootExp, Long idValue)
+	private Map<OutputAssociationColumn,Object> recMap(IExpression rootExp, String idValue)
 	{
 		ExpressionRecords exprRecs =  expMap.get(rootExp);
 		expMap.put(rootExp, exprRecs);

@@ -13,10 +13,10 @@ import edu.wustl.common.query.queryobject.impl.OutputAssociationColumn;
  */
 public class ExpressionRecords
 {
-	private Map<Long, Map<OutputAssociationColumn, Object>> expRecs =
-		new HashMap<Long, Map<OutputAssociationColumn, Object>>();
+	private Map<String, Map<OutputAssociationColumn, Object>> expRecs =
+		new HashMap<String, Map<OutputAssociationColumn, Object>>();
 
-	public void addRecords(Long id,
+	public void addRecords(String id,
 			Map<OutputAssociationColumn, Object> map)
 	{
 		expRecs.put(id, map);
@@ -29,7 +29,7 @@ public class ExpressionRecords
 	/**
 	 * @return the expRecs
 	 */
-	public Map<Long, Map<OutputAssociationColumn, Object>> getExpRecs()
+	public Map<String, Map<OutputAssociationColumn, Object>> getExpRecs()
 	{
 		return expRecs;
 	}
@@ -39,7 +39,7 @@ public class ExpressionRecords
 	 *            the expRecs to set
 	 */
 	public void setExpRecs(
-			Map<Long, Map<OutputAssociationColumn, Object>> expRecs)
+			Map<String, Map<OutputAssociationColumn, Object>> expRecs)
 	{
 		this.expRecs = expRecs;
 	}
@@ -47,7 +47,7 @@ public class ExpressionRecords
 	/**
 	 * @return the map
 	 */
-	public Map<OutputAssociationColumn, Object> getMap(Long id)
+	public Map<OutputAssociationColumn, Object> getMap(String id)
 	{
 		Map<OutputAssociationColumn, Object> res = expRecs.get(id);
 		if (res == null)
