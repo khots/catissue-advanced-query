@@ -24,7 +24,6 @@ public class AssociationDataHandler
 	public Table<TreeCell> updateRowDataList(final List<Map<OutputAssociationColumn,Object>> denormalizedLst, final IExpression rootExp, QueryExportDataHandler dataHandler)
 	{
 		final QueryHeaderData queryDataEntity = new QueryHeaderData(rootExp.getQueryEntity().getDynamicExtensionsEntity(), rootExp);
-		dataHandler.entityVsMaxCount.put(queryDataEntity, 1);
 		final List<RecordProcessorNode<TreeCell>> nodes =
 			generateQueryDatamap(denormalizedLst, queryDataEntity, null, dataHandler);
 		final RowAppenderProcNode<TreeCell> root = new RowAppenderProcNode<TreeCell>();
@@ -94,14 +93,6 @@ public class AssociationDataHandler
 					expression);
 		final List<Map<OutputAssociationColumn, Object>> newChildList =
 			(List<Map<OutputAssociationColumn, Object>>)dataHandler.updateTempList(childRecs,expression);
-		if(association.getAssociationType() == AssociationType.CONTAINTMENT)
-		{
-			dataHandler.updateMaxRecordCount(newChildList, queryHeaderData);
-		}
-		else
-		{
-			dataHandler.entityVsMaxCount.put(queryHeaderData, 1);
-		}
 		if (!newChildList.isEmpty())
 		{
 			childNode.addChildren(generateQueryDatamap(newChildList, queryHeaderData, cell, dataHandler));
@@ -117,6 +108,8 @@ public class AssociationDataHandler
      */
     public List<List<Object>> getEntityDataList(final Table<TreeCell> table, QueryExportDataHandler dataHandler)
 	{
+    	Map<QueryHeaderData, Integer>entityVsMaxCnt = getEntityVsMxCnt(table);
+    	dataHandler.entityVsMaxCount = entityVsMaxCnt;
     	final List<List<Object>> entityDataList = new ArrayList<List<Object>>();
     	Map<QueryHeaderData,List<TreeCell>> treeCellMap;
     	List<Object> rowDataList;
@@ -142,20 +135,66 @@ public class AssociationDataHandler
             		}
             	}
             }
-            rowDataList = populateRowData(treeCellMap, dataHandler);
+            rowDataList = populateRowData(treeCellMap, entityVsMaxCnt);
             entityDataList.add(rowDataList);
         }
         return entityDataList;
     }
 
     /**
+     * Populate entity v/s max count by traversing the entire table.
+     * @param table table
+     * @return entityVsMaxCnt
+     */
+    private Map<QueryHeaderData, Integer> getEntityVsMxCnt(Table<TreeCell> table)
+    {
+    	Map<QueryHeaderData, Integer>tempMap;
+    	Map<QueryHeaderData, Integer>entityVsMaxCnt = new HashMap<QueryHeaderData, Integer>();
+    	for (int i = 0; i < table.numRows(); i++)
+        {
+    		tempMap = new HashMap<QueryHeaderData, Integer>();
+            for (int j = 0; j < table.numColumns(); j++)
+            {
+            	TreeCell cell = table.get(i,j);
+            	if(cell != TreeCell.EMPTY_CELL)
+            	{
+	            	if(tempMap.get(cell.getQueryHeaderData()) == null)
+	            	{
+	            		tempMap.put(cell.getQueryHeaderData(), 1);
+	            	}
+	            	else
+	            	{
+	            		Integer cnt = tempMap.get(cell.getQueryHeaderData());
+	            		tempMap.put(cell.getQueryHeaderData(), cnt+1);
+	            	}
+            	}
+            }
+            if(entityVsMaxCnt.isEmpty())
+            {
+            	entityVsMaxCnt = tempMap;
+            }
+            else
+            {
+            	for(QueryHeaderData queryData : tempMap.keySet())
+            	{
+            		if(tempMap.get(queryData)>entityVsMaxCnt.get(queryData))
+            		{
+            			entityVsMaxCnt.put(queryData, tempMap.get(queryData));
+            		}
+            	}
+            }
+        }
+		return entityVsMaxCnt;
+	}
+
+	/**
      * Populate each row of the table with data from the map.
      * @param treeCellMap treeCellMap
      * @param dataHandler dataHandler
      * @return rowDataList
      */
     private List<Object> populateRowData(Map<QueryHeaderData,List<TreeCell>> treeCellMap,
-    		QueryExportDataHandler dataHandler)
+    		Map<QueryHeaderData, Integer>entityVsMaxCnt)
     {
     	List<Object> rowDataList = new ArrayList<Object>();
     	Map<OutputAssociationColumn, Object> record;
@@ -163,7 +202,7 @@ public class AssociationDataHandler
     	{
     		List<TreeCell> cellList = treeCellMap.get(queryHeaderData);
     		int listSize = cellList.size();
-    		int maxRecordCnt = dataHandler.entityVsMaxCount.get(queryHeaderData);
+    		int maxRecordCnt = entityVsMaxCnt.get(queryHeaderData);
     		for(TreeCell cell : cellList)
     		{
     			record = cell.getRec();

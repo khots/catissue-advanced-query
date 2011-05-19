@@ -24,7 +24,7 @@ import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
  */
 public class QueryExportDataHandler
 {
-	protected final Map<QueryHeaderData, Integer> entityVsMaxCount =
+	protected Map<QueryHeaderData, Integer> entityVsMaxCount =
 		new HashMap<QueryHeaderData, Integer>();
 	private final EntityInterface rootEntity;
 	private final IConstraints constraints;
@@ -166,26 +166,6 @@ public class QueryExportDataHandler
 			}
 		}
 		return newList;
-	}
-
-	/**
-	 * Update the map of entity v/s maximum count.
-	 * @param tempList tempList
-	 * @param queryDataEntity queryDataEntity
-	 */
-	public void updateMaxRecordCount(List tempList,
-			QueryHeaderData queryDataEntity)
-	{
-		Integer dataListCount = entityVsMaxCount.get(queryDataEntity);
-		if (dataListCount == null || tempList.size() > dataListCount)
-		{
-			dataListCount = tempList.size();
-		}
-		if(entityVsMaxCount.get(queryDataEntity) != null)
-		{
-			entityVsMaxCount.remove(dataListCount);
-		}
-		entityVsMaxCount.put(queryDataEntity, dataListCount);
 	}
 
 	/**
