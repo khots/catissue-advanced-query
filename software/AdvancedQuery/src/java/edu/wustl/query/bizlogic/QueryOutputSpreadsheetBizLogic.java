@@ -935,14 +935,7 @@ public class QueryOutputSpreadsheetBizLogic
 		{
 			StringBuffer modifiedSql = modifySqlForDefineView(selectSql,queryDetailsObj);
 			querySessionData.setSql(modifiedSql.toString());
-			int rootIdIndex = getRootIdIndex(queryDetailsObj, getListOfSelectedColumns(modifiedSql.toString()));
 			isContPresent = isContainmentPresent(queryDetailsObj.getQuery());
-			if(isContPresent)
-			{
-				String column = getColumnName(modifiedSql.toString(), rootIdIndex);
-				int recPerPageForDV = getRecordsPerPage(queryDetailsObj, column,recordsPerPage);
-				querySessionData.setRecordsPerPage(recPerPageForDV);
-			}
 		}
 		querySessionData.setSecureExecute(queryDetailsObj.getSessionData().isSecurityRequired());
 		querySessionData.setHasConditionOnIdentifiedField(hasConditionOnIdentifiedField);
@@ -964,16 +957,6 @@ public class QueryOutputSpreadsheetBizLogic
 				List<String>colList = (List<String>)exportDetailsMap.get("headerList");
 				spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, colList);
 				selectedColMetadata.setActualTotalRecords(pagenatedResultData.getTotalRecords());
-				if(dataList.size() >recordsPerPage)
-				{
-					querySessionData.setRecordsPerPage(recordsPerPage);
-					querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
-				}
-				else
-				{
-					querySessionData.setRecordsPerPage(dataList.size());
-					querySessionData.setTotalNumberOfRecords(dataList.size());
-				}
 			}
 		}
 		for (Long id : queryResultObjectDataBeanMap.keySet())
@@ -1005,46 +988,7 @@ public class QueryOutputSpreadsheetBizLogic
 		 * result pages using pagination.
 		 */
 
-		if(!selectedColMetadata.isDefinedView() || queryDetailsObj.getQuery().getConstraints().size() == 1)
-		{
-			querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
-		}
 		return querySessionData;
-	}
-
-	private int getRootIdIndex(QueryDetails queryDetailsObj,
-			List<String> listOfSelectedColumns)
-	{
-		int rootIdIndex = -1;
-		try
-		{
-			IExpression rootExp = queryDetailsObj.getQuery().getConstraints().getRootExpression();
-			Iterator<OutputTreeDataNode> iterator = queryDetailsObj.getUniqueIdNodesMap().values()
-			.iterator();
-			while (iterator.hasNext())
-			{
-				OutputTreeDataNode outputTreeDataNode = iterator.next();
-				if(outputTreeDataNode.getExpressionId() == rootExp.getExpressionId())
-				{
-					List<QueryOutputTreeAttributeMetadata> attributes = outputTreeDataNode.getAttributes();
-					for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
-					{
-						AttributeInterface attribute = attributeMetaData.getAttribute();
-						if (attribute.getName().equals(AQConstants.IDENTIFIER))
-						{
-							String sqlColumnName = attributeMetaData.getColumnName().trim();
-							rootIdIndex = listOfSelectedColumns.indexOf(sqlColumnName);
-							break;
-						}
-					}
-				}
-			}
-		}
-		catch(MultipleRootsException e)
-		{
-			logger.error(e.getMessage(),e);
-		}
-		return rootIdIndex;
 	}
 
 	private StringBuffer modifySqlForDefineView(String selectSql,
