@@ -603,4 +603,6 @@ public class AQConstants
 	public static final String SELECT_CLAUSE = "select";
 	public static final String DISTINCT = "distinct";
 	public static final String DENORMALIZED_LIST = "DENORMALIZED_LIST";
+
+	public static final String EDIT_XMI_ERROR = "editXmi.error";
 }
