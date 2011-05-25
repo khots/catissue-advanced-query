@@ -46,15 +46,16 @@ public class SpreadsheetExportAction extends SecureAction
 	public ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-
 		HttpSession session = request.getSession();
-
-		List<List<String>> exportList = getExportList(session);
+		List<List<String>> exportList = new ArrayList<List<String>>();
+		if(session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA) != null)
+		{
+			exportList = getExportList(session);
+		}
 		//Extracting map from form bean which gives the serial numbers of selected rows
 		List<String> idIndexList = new ArrayList<String>();
 		Map<Integer, List<String>> entityIdsMap = (Map<Integer, List<String>>) session
 		.getAttribute(AQConstants.ENTITY_IDS_MAP);
-
 
 		generateSpreadsheetData(form,request, session, exportList, idIndexList,
 				entityIdsMap);
