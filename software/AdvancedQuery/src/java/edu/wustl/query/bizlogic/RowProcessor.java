@@ -134,27 +134,29 @@ public class RowProcessor
 				if(attribute instanceof AssociationInterface)
 				{
 					List<IExpression> associatedExpList = getAssociatedExpressions(attribute,rootExp,queryDetailsObj.getQuery().getConstraints());
+
 					for(IExpression associatedExp : associatedExpList)
 					{
-						OutputAssociationColumn opAssocCol = new OutputAssociationColumn(attribute, rootExp, associatedExp);
-						populateIdRecordMap(associatedExp, list);
+							OutputAssociationColumn opAssocCol = new OutputAssociationColumn(attribute, rootExp, associatedExp);
+							populateIdRecordMap(associatedExp, list);
 
-						List<Map<OutputAssociationColumn,Object>> childList = (List<Map<OutputAssociationColumn, Object>>) recMap.get(opAssocCol);
-						if (childList == null)
-						{
-							childList = new ArrayList<Map<OutputAssociationColumn,Object>>();
-							recMap.put(opAssocCol, childList);
-						}
-						Integer childIdIndex = idIndex(associatedExp);
-						if(childIdIndex < list.size())
-						{
-							String childId = list.get(idIndex(associatedExp));
-							if(!childList.contains(expMap.get(associatedExp).getMap(childId)))
+							List<Map<OutputAssociationColumn,Object>> childList = (List<Map<OutputAssociationColumn, Object>>) recMap.get(opAssocCol);
+							if (childList == null)
 							{
-								childList.add(expMap.get(associatedExp).getMap(childId));
+								childList = new ArrayList<Map<OutputAssociationColumn,Object>>();
+								recMap.put(opAssocCol, childList);
 							}
-						}
-					}
+							Integer childIdIndex = idIndex(associatedExp);
+							if(childIdIndex < list.size())
+							{
+								String childId = list.get(idIndex(associatedExp));
+								if(!childList.contains(expMap.get(associatedExp).getMap(childId)))
+								{
+									childList.add(expMap.get(associatedExp).getMap(childId));
+								}
+							}
+					   }
+
 				}
 				else if(attribute instanceof AttributeInterface)
 				{
@@ -293,7 +295,7 @@ public class RowProcessor
 						tgtExpVsAssoc.put(entityExpression, assocInterface);
 						finalExp = populateEntityVsAssoc(joinGraph,expression,entityExpression,
 								assocInterface);
-						finalExpList.add(finalExp);
+						//finalExpList.add(finalExp);
 					}
 				}
 			}
@@ -376,6 +378,7 @@ public class RowProcessor
 		OutputAttributeColumn opAttrCol = null;
 		String value;
 		int columnIndex = -1;
+
 		for(QueryOutputTreeAttributeMetadata outputTreeAttributeMetadata : selectAttrMetaDataLst)
 		{
 			columnIndex++;
