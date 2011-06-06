@@ -1,7 +1,9 @@
+
 package edu.wustl.query.bizlogic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,15 +32,15 @@ import edu.wustl.query.util.querysuite.QueryDetails;
 
 public class RowProcessor
 {
+
 	private Map<IExpression, ExpressionRecords> expMap;
+	private ExprInfoCache exprInfoCache;
 	private SelectedColumnsMetadata selectColMetadata;
 	private QueryDetails queryDetailsObj;
-	private String sql;
-	private final Map<IExpression,BaseAbstractAttributeInterface> expVsAssoc =
-		new HashMap<IExpression, BaseAbstractAttributeInterface>();
-	private final Map<IExpression,BaseAbstractAttributeInterface> tgtExpVsAssoc =
-		new HashMap<IExpression, BaseAbstractAttributeInterface>();
-	private Map<String,String> columnNameMap;
+	private List<String> selectSqlColLst;
+	private final Map<IExpression, BaseAbstractAttributeInterface> expVsAssoc = new HashMap<IExpression, BaseAbstractAttributeInterface>();
+	private final Map<IExpression, BaseAbstractAttributeInterface> tgtExpVsAssoc = new HashMap<IExpression, BaseAbstractAttributeInterface>();
+	private Map<String, String> columnNameMap;
 
 	/**
 	 * @return the columnNameMap
@@ -72,38 +74,60 @@ public class RowProcessor
 		return tgtExpVsAssoc;
 	}
 
-	private void init(String sql,
-			SelectedColumnsMetadata selectColMetadata, QueryDetails queryDetailsObj)
+	private void init(String sql, SelectedColumnsMetadata selectColMetadata,
+			QueryDetails queryDetailsObj)
 	{
 		this.selectColMetadata = selectColMetadata;
 		this.queryDetailsObj = queryDetailsObj;
-		expMap = new HashMap<IExpression, ExpressionRecords>();
-		this.sql = sql;
+		expMap = new IdentityHashMap<IExpression, ExpressionRecords>();
+		exprInfoCache = new ExprInfoCache();
+
+		// changed as part of bug 20478
+		initColumnList(sql);
 	}
 
-	public List<Map<OutputAssociationColumn,Object>> populateData(List<List<String>> dataList,
-			String sql,
-			SelectedColumnsMetadata selectColMetadata, QueryDetails queryDetailsObj) throws MultipleRootsException
+	/**
+	 * Populates the list containing the list of column names from the define view.
+	 * @param selectSql SQL query
+	 * @return selectSqlColumnList
+	 */
+	private void initColumnList(String selectSql)
+	{
+		List<String> selectSqlColLst = new ArrayList<String>();
+		String substring = selectSql.substring(selectSql.indexOf("select") + 6, selectSql
+				.indexOf("from"));
+		StringTokenizer tokenizer = new StringTokenizer(substring, ",");
+		while (tokenizer.hasMoreTokens())
+		{
+			selectSqlColLst.add(tokenizer.nextToken().trim());
+		}
+		this.selectSqlColLst = Collections.unmodifiableList(selectSqlColLst);
+	}
+
+	public List<Map<OutputAssociationColumn, Object>> populateData(List<List<String>> dataList,
+			String sql, SelectedColumnsMetadata selectColMetadata, QueryDetails queryDetailsObj)
+			throws MultipleRootsException
 	{
 		init(sql, selectColMetadata, queryDetailsObj);
 
 		initializeExpMap(queryDetailsObj.getQuery().getConstraints());
 		IExpression rootExp = queryDetailsObj.getQuery().getConstraints().getRootExpression();
 
-		for(List<String>list : dataList)
+		for (List<String> list : dataList)
 		{
-			setColumnNameMap(getColumnNameMap(sql,list));
+			setColumnNameMap(getColumnNameMap(sql, list));
 			populateIdRecordMap(rootExp, list);
 		}
 
-		return new ArrayList<Map<OutputAssociationColumn,Object>>(expMap.get(rootExp).getExpRecs().values());
+		return new ArrayList<Map<OutputAssociationColumn, Object>>(expMap.get(rootExp).getExpRecs()
+				.values());
 	}
 
 	private void initializeExpMap(IConstraints constraints)
 	{
-		for(IExpression expression : constraints)
+		for (IExpression expression : constraints)
 		{
-			if(expression.isInView())
+			if (expression.isInView())
 			{
 				expMap.put(expression, new ExpressionRecords());
 			}
@@ -118,53 +142,57 @@ public class RowProcessor
 	 * @param list list of records
 	 * @throws MultipleRootsException MultipleRootsException
 	 */
-	private void populateIdRecordMap(
-			IExpression rootExp,
-			List<String> list)
+	private void populateIdRecordMap(IExpression rootExp, List<String> list)
 			throws MultipleRootsException
 	{
-		Integer idIndex = idIndex(rootExp);
-		if(idIndex < list.size() && idIndex != -1)
+		Integer idIndex = exprInfoCache.idIndex(rootExp);
+		if (idIndex < list.size() && idIndex != -1)
 		{
 			String idValue = list.get(idIndex);
-			Map<OutputAssociationColumn,Object> recMap = recMap(rootExp, idValue);
-			List<AbstractAttributeInterface> attributeList = attrList(rootExp);
-			for(AbstractAttributeInterface attribute : attributeList)
+			Map<OutputAssociationColumn, Object> recMap = recMap(rootExp, idValue);
+			List<AbstractAttributeInterface> attributeList = exprInfoCache.attrList(rootExp);
+			for (AbstractAttributeInterface attribute : attributeList)
 			{
-				if(attribute instanceof AssociationInterface)
+				if (attribute instanceof AssociationInterface)
 				{
-					List<IExpression> associatedExpList = getAssociatedExpressions(attribute,rootExp,queryDetailsObj.getQuery().getConstraints());
+					List<IExpression> associatedExpList = exprInfoCache.getAssociatedExpressions(
+							attribute, rootExp);
 
-					for(IExpression associatedExp : associatedExpList)
+					for (IExpression associatedExp : associatedExpList)
 					{
-							OutputAssociationColumn opAssocCol = new OutputAssociationColumn(attribute, rootExp, associatedExp);
-							populateIdRecordMap(associatedExp, list);
+						OutputAssociationColumn opAssocCol = new OutputAssociationColumn(attribute,
+								rootExp, associatedExp);
+						populateIdRecordMap(associatedExp, list);
 
-							List<Map<OutputAssociationColumn,Object>> childList = (List<Map<OutputAssociationColumn, Object>>) recMap.get(opAssocCol);
-							if (childList == null)
+						List<Map<OutputAssociationColumn, Object>> childList = (List<Map<OutputAssociationColumn, Object>>) recMap
+								.get(opAssocCol);
+						if (childList == null)
+						{
+							childList = new ArrayList<Map<OutputAssociationColumn, Object>>();
+							recMap.put(opAssocCol, childList);
+						}
+						Integer childIdIndex = exprInfoCache.idIndex(associatedExp);
+						if (childIdIndex < list.size())
+						{
+							String childId = list.get(exprInfoCache.idIndex(associatedExp));
+							if (!childList.contains(expMap.get(associatedExp).getMap(childId)))
 							{
-								childList = new ArrayList<Map<OutputAssociationColumn,Object>>();
-								recMap.put(opAssocCol, childList);
+								childList.add(expMap.get(associatedExp).getMap(childId));
 							}
-							Integer childIdIndex = idIndex(associatedExp);
-							if(childIdIndex < list.size())
-							{
-								String childId = list.get(idIndex(associatedExp));
-								if(!childList.contains(expMap.get(associatedExp).getMap(childId)))
-								{
-									childList.add(expMap.get(associatedExp).getMap(childId));
-								}
-							}
-					   }
+						}
+					}
 
 				}
-				else if(attribute instanceof AttributeInterface)
+				else if (attribute instanceof AttributeInterface)
 				{
 					// isPresent should take AttributeInterface as input
-					OutputAttributeColumn val = getValueForAttribute((AttributeInterface)attribute, selectColMetadata.getSelectedAttributeMetaDataList(), rootExp);
+					OutputAttributeColumn val = getValueForAttribute(
+							(AttributeInterface) attribute, selectColMetadata
+									.getSelectedAttributeMetaDataList(), rootExp);
 					if (val != null)
 					{
-						OutputAssociationColumn opAssocCol = new OutputAssociationColumn(attribute, rootExp, null);
+						OutputAssociationColumn opAssocCol = new OutputAssociationColumn(attribute,
+								rootExp, null);
 						recMap.put(opAssocCol, val);
 					}
 				}
@@ -172,71 +200,206 @@ public class RowProcessor
 		}
 	}
 
-	/**
-	 * Returns the index of the identifier of the passed expression.
-	 * @param rootExp expression
-	 * @return rootIndex Index of identifier of the passed expression.
-	 */
-	private Integer idIndex(
-			IExpression rootExp)
+	// caching results of idIndex, attrList, getAssociatedExpressions
+	// changed as part of bug 20478
+	private class ExprInfoCache
 	{
-		Integer rootIndex = -1;
-		Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
-		List<String> selectSqlColLst = getColumnList(sql);
-		Iterator<OutputTreeDataNode> iterator = queryDetailsObj.getUniqueIdNodesMap().values()
-		.iterator();
-		while (iterator.hasNext())
-		{
-			OutputTreeDataNode opTreeDataNode = iterator.next();
-			if(opTreeDataNode.getExpressionId() == rootExp.getExpressionId())
-			{
-				List<QueryOutputTreeAttributeMetadata> attributes = opTreeDataNode.getAttributes();
-				for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
-				{
-					AttributeInterface attribute = attributeMetaData.getAttribute();
-					String sqlColumnName = attributeMetaData.getColumnName().trim();
-					if (attribute.getName().equals(AQConstants.IDENTIFIER))
-					{
-						int index = selectSqlColLst.indexOf(sqlColumnName);
 
-						if (index >= 0)
+		private Map<IExpression, Integer> expToIdIndex = new HashMap<IExpression, Integer>();
+		private Map<IExpression, List<AbstractAttributeInterface>> expToAttrs = new HashMap<IExpression, List<AbstractAttributeInterface>>();
+
+		private class Key
+		{
+
+			// TODO should be AssocationInterface??
+			private AbstractAttributeInterface attr;
+			private IExpression expr;
+
+			/**
+			 * @param associationInterface
+			 * @param expr
+			 */
+			public Key(AbstractAttributeInterface attr, IExpression expr)
+			{
+				this.attr = attr;
+				this.expr = expr;
+			}
+
+			/* (non-Javadoc)
+			 * @see java.lang.Object#hashCode()
+			 */
+			@Override
+			public int hashCode()
+			{
+				final int prime = 31;
+				int result = 1;
+				result = prime * result + getOuterType().hashCode();
+				result = prime * result + ((attr == null) ? 0 : System.identityHashCode(attr));
+				result = prime * result + ((expr == null) ? 0 : System.identityHashCode(expr));
+				return result;
+			}
+
+			@Override
+			public boolean equals(Object obj)
+			{
+				if (this == obj)
+					return true;
+				if (obj == null)
+					return false;
+				if (getClass() != obj.getClass())
+					return false;
+				Key other = (Key) obj;
+				// TODO check no cloning etc... (also change hashCode if this is changed)
+				return attr == other.attr && expr == other.expr;
+			}
+
+			private ExprInfoCache getOuterType()
+			{
+				return ExprInfoCache.this;
+			}
+
+		}
+
+		private Map<Key, List<IExpression>> keyToExpr = new HashMap<Key, List<IExpression>>();
+
+		/**
+		 * Returns the index of the identifier of the passed expression.
+		 * @param rootExp expression
+		 * @return rootIndex Index of identifier of the passed expression.
+		 */
+		private Integer idIndex(IExpression rootExp)
+		{
+			if (expToIdIndex.containsKey(rootExp))
+			{
+				return expToIdIndex.get(rootExp);
+			}
+
+			Integer rootIndex = -1;
+			Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
+			//			List<String> selectSqlColLst = getColumnList(sql);
+			Iterator<OutputTreeDataNode> iterator = queryDetailsObj.getUniqueIdNodesMap().values()
+					.iterator();
+			while (iterator.hasNext())
+			{
+				OutputTreeDataNode opTreeDataNode = iterator.next();
+				if (opTreeDataNode.getExpressionId() == rootExp.getExpressionId())
+				{
+					List<QueryOutputTreeAttributeMetadata> attributes = opTreeDataNode
+							.getAttributes();
+					for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
+					{
+						AttributeInterface attribute = attributeMetaData.getAttribute();
+						String sqlColumnName = attributeMetaData.getColumnName().trim();
+						if (attribute.getName().equals(AQConstants.IDENTIFIER))
 						{
-							if(rootExp.getQueryEntity().getDynamicExtensionsEntity() == attribute.getEntity())
+							int index = selectSqlColLst.indexOf(sqlColumnName);
+
+							if (index >= 0)
 							{
-								rootIndex = index;
+								if (rootExp.getQueryEntity().getDynamicExtensionsEntity() == attribute
+										.getEntity())
+								{
+									rootIndex = index;
+								}
+								entityIdIndexMap.put(attribute.getEntity(), index);
+								break;
 							}
-							entityIdIndexMap.put(attribute.getEntity(), index);
-							break;
-						}
-						else
-						{
-							entityIdIndexMap.put(attribute.getEntity(), selectSqlColLst.size());
-							rootIndex = selectSqlColLst.size();
-							selectSqlColLst.add(sqlColumnName);
-							break;
+							else
+							{
+								entityIdIndexMap.put(attribute.getEntity(), selectSqlColLst.size());
+								rootIndex = selectSqlColLst.size();
+								selectSqlColLst.add(sqlColumnName);
+								break;
+							}
 						}
 					}
 				}
 			}
+			expToIdIndex.put(rootExp, rootIndex);
+			return rootIndex;
 		}
-		return rootIndex;
-	}
 
-	/**
-	 * Populates the list containing the list of column names from the define view.
-	 * @param selectSql SQL query
-	 * @return selectSqlColumnList
-	 */
-	private List<String> getColumnList(String selectSql)
-	{
-		List<String> selectSqlColLst = new ArrayList<String>();
-		String substring = selectSql.substring(selectSql.indexOf("select")+6, selectSql.indexOf("from"));
-		StringTokenizer tokenizer = new StringTokenizer(substring,",");
-		while(tokenizer.hasMoreTokens())
+		/**
+		 * Retrieves the attribute list(attributes + associations) for the passed expression.
+		 * @param rootExp expression
+		 * @return attributeList
+		 */
+		private List<AbstractAttributeInterface> attrList(IExpression rootExp)
 		{
-			selectSqlColLst.add(tokenizer.nextToken().trim());
+			if (expToAttrs.containsKey(rootExp))
+			{
+				return expToAttrs.get(rootExp);
+			}
+			QueryExportDataHandler dataHandler = new QueryExportDataHandler(null, null);
+			List<AbstractAttributeInterface> attributeList = dataHandler
+					.getFinalAttributeList(rootExp.getQueryEntity().getDynamicExtensionsEntity());
+			Collections.sort(attributeList, new AttributeComparator());
+
+			expToAttrs.put(rootExp, attributeList);
+			return attributeList;
 		}
-		return selectSqlColLst;
+
+		/**
+		 * Checks if the association between the given expressions is present in the graph.
+		 * @param attribute attribute
+		 * @param treeDataNode treeDataNode
+		 * @param constraints constraints
+		 * @return entity
+		 * @throws MultipleRootsException MultipleRootsException
+		 */
+		private List<IExpression> getAssociatedExpressions(AbstractAttributeInterface attribute,
+				IExpression entityExpression) throws MultipleRootsException
+		{
+			Key k = new Key(attribute, entityExpression);
+			if (keyToExpr.containsKey(k))
+			{
+				return keyToExpr.get(k);
+			}
+			IConstraints constraints = queryDetailsObj.getQuery().getConstraints();
+			List<IExpression> finalExpList = new ArrayList<IExpression>();
+			JoinGraph joinGraph = (JoinGraph) constraints.getJoinGraph();
+			BaseAbstractAttributeInterface assocInterface;
+			IExpression finalExp;
+			for (IExpression expression : constraints)
+			{
+				if (joinGraph.containsAssociation(expression, entityExpression))
+				{
+					IIntraModelAssociation association = (IIntraModelAssociation) joinGraph
+							.getAssociation(expression, entityExpression);
+					if (association != null)
+					{
+						assocInterface = (BaseAbstractAttributeInterface) association
+								.getDynamicExtensionsAssociation();
+						if (assocInterface.equals(attribute))
+						{
+							tgtExpVsAssoc.put(entityExpression, assocInterface);
+							finalExp = populateEntityVsAssoc(joinGraph, expression,
+									entityExpression, assocInterface);
+							//finalExpList.add(finalExp);
+						}
+					}
+				}
+				else if (joinGraph.containsAssociation(entityExpression, expression))
+				{
+					IIntraModelAssociation association = (IIntraModelAssociation) joinGraph
+							.getAssociation(entityExpression, expression);
+					if (association != null)
+					{
+						assocInterface = (BaseAbstractAttributeInterface) association
+								.getDynamicExtensionsAssociation();
+						if (assocInterface.equals(attribute))
+						{
+							expVsAssoc.put(entityExpression, assocInterface);
+							finalExp = populateTgtEntityVsAssoc(joinGraph, expression,
+									assocInterface);
+							finalExpList.add(finalExp);
+						}
+					}
+				}
+			}
+			keyToExpr.put(k, finalExpList);
+			return finalExpList;
+		}
 	}
 
 	/**
@@ -245,78 +408,11 @@ public class RowProcessor
 	 * @param idValue identifier
 	 * @return record map
 	 */
-	private Map<OutputAssociationColumn,Object> recMap(IExpression rootExp, String idValue)
+	private Map<OutputAssociationColumn, Object> recMap(IExpression rootExp, String idValue)
 	{
-		ExpressionRecords exprRecs =  expMap.get(rootExp);
+		ExpressionRecords exprRecs = expMap.get(rootExp);
 		expMap.put(rootExp, exprRecs);
 		return exprRecs.getMap(idValue);
-	}
-
-	/**
-	 * Retrieves the attribute list(attributes + associations) for the passed expression.
-	 * @param rootExp expression
-	 * @return attributeList
-	 */
-	private List<AbstractAttributeInterface> attrList(IExpression rootExp) {
-		QueryExportDataHandler dataHandler = new QueryExportDataHandler(null,null);
-		List<AbstractAttributeInterface> attributeList = dataHandler.getFinalAttributeList(rootExp.getQueryEntity().getDynamicExtensionsEntity());
-		Collections.sort(attributeList, new AttributeComparator());
-		return attributeList;
-	}
-
-	/**
-	 * Checks if the association between the given expressions is present in the graph.
-	 * @param attribute attribute
-	 * @param treeDataNode treeDataNode
-	 * @param constraints constraints
-	 * @return entity
-	 * @throws MultipleRootsException MultipleRootsException
-	 */
-	public List<IExpression> getAssociatedExpressions(
-			AbstractAttributeInterface attribute, IExpression entityExpression,
-			IConstraints constraints) throws MultipleRootsException
-	{
-		List<IExpression> finalExpList = new ArrayList<IExpression>();
-		JoinGraph joinGraph = (JoinGraph)constraints.getJoinGraph();
-		BaseAbstractAttributeInterface assocInterface;
-		IExpression finalExp;
-		for(IExpression expression: constraints)
-		{
-			if(joinGraph.containsAssociation(expression, entityExpression))
-			{
-				IIntraModelAssociation association = (IIntraModelAssociation)
-				joinGraph.getAssociation(expression, entityExpression);
-				if(association != null)
-				{
-					assocInterface = (BaseAbstractAttributeInterface)
-					association.getDynamicExtensionsAssociation();
-					if(assocInterface.equals(attribute))
-					{
-						tgtExpVsAssoc.put(entityExpression, assocInterface);
-						finalExp = populateEntityVsAssoc(joinGraph,expression,entityExpression,
-								assocInterface);
-						//finalExpList.add(finalExp);
-					}
-				}
-			}
-			else if(joinGraph.containsAssociation(entityExpression,expression))
-			{
-				IIntraModelAssociation association = (IIntraModelAssociation)
-				joinGraph.getAssociation(entityExpression,expression);
-				if(association != null)
-				{
-					assocInterface = (BaseAbstractAttributeInterface)
-					association.getDynamicExtensionsAssociation();
-					if(assocInterface.equals(attribute))
-					{
-						expVsAssoc.put(entityExpression, assocInterface);
-						finalExp = populateTgtEntityVsAssoc(joinGraph,expression,assocInterface);
-						finalExpList.add(finalExp);
-					}
-				}
-			}
-		}
-		return finalExpList;
 	}
 
 	/**
@@ -328,16 +424,15 @@ public class RowProcessor
 	 * @param assocInterface associationInterface
 	 * @return entity
 	 */
-	private IExpression populateTgtEntityVsAssoc(JoinGraph joinGraph,
-			IExpression expression,
+	private IExpression populateTgtEntityVsAssoc(JoinGraph joinGraph, IExpression expression,
 			BaseAbstractAttributeInterface assocInterface)
 	{
 		IExpression finalExp = null;
-		if(!joinGraph.getChildrenList(expression).isEmpty() && !expression.isInView())
+		if (!joinGraph.getChildrenList(expression).isEmpty() && !expression.isInView())
 		{
 			IExpression exp = joinGraph.getChildrenList(expression).get(0);
 			exp = getExpression(joinGraph, exp);
-			if(exp.isInView())
+			if (exp.isInView())
 			{
 				populateTgtVsAssocMap(assocInterface, exp);
 				finalExp = exp;
@@ -357,10 +452,11 @@ public class RowProcessor
 	 * @param assocInterface associationInterface
 	 * @param exp expression
 	 */
-	private void populateTgtVsAssocMap(BaseAbstractAttributeInterface assocInterface, IExpression exp)
+	private void populateTgtVsAssocMap(BaseAbstractAttributeInterface assocInterface,
+			IExpression exp)
 	{
 		BaseAbstractAttributeInterface association = tgtExpVsAssoc.get(exp);
-		if(association == null)
+		if (association == null)
 		{
 			tgtExpVsAssoc.put(exp, assocInterface);
 		}
@@ -379,14 +475,18 @@ public class RowProcessor
 		String value;
 		int columnIndex = -1;
 
-		for(QueryOutputTreeAttributeMetadata outputTreeAttributeMetadata : selectAttrMetaDataLst)
+		for (QueryOutputTreeAttributeMetadata outputTreeAttributeMetadata : selectAttrMetaDataLst)
 		{
 			columnIndex++;
-			BaseAbstractAttributeInterface presentAttribute = outputTreeAttributeMetadata.getAttribute();
-			if(presentAttribute.equals(attribute) && outputTreeAttributeMetadata.getTreeDataNode().getExpressionId() == expression.getExpressionId())
+			BaseAbstractAttributeInterface presentAttribute = outputTreeAttributeMetadata
+					.getAttribute();
+			if (presentAttribute.equals(attribute)
+					&& outputTreeAttributeMetadata.getTreeDataNode().getExpressionId() == expression
+							.getExpressionId())
 			{
 				value = columnNameMap.get(outputTreeAttributeMetadata.getColumnName());
-				opAttrCol = new OutputAttributeColumn(value, columnIndex, attribute, expression, null);
+				opAttrCol = new OutputAttributeColumn(value, columnIndex, attribute, expression,
+						null);
 				break;
 			}
 		}
@@ -401,18 +501,17 @@ public class RowProcessor
 	 * @param entityExp
 	 * @param assocInterface
 	 */
-	private IExpression populateEntityVsAssoc(JoinGraph joinGraph, IExpression expression, IExpression entityExp,
-			BaseAbstractAttributeInterface assocInterface)
+	private IExpression populateEntityVsAssoc(JoinGraph joinGraph, IExpression expression,
+			IExpression entityExp, BaseAbstractAttributeInterface assocInterface)
 	{
 		IExpression finalExp = null;
-		if(!joinGraph.getParentList(expression).isEmpty() && !expression.isInView())
+		if (!joinGraph.getParentList(expression).isEmpty() && !expression.isInView())
 		{
 			IExpression exp = joinGraph.getParentList(expression).get(0);
 			exp = getParentExpression(joinGraph, exp);
-			if(exp.isInView())
+			if (exp.isInView())
 			{
-				populateEntityvsAssocMap(entityExp,
-						assocInterface, exp);
+				populateEntityvsAssocMap(entityExp, assocInterface, exp);
 				finalExp = exp;
 			}
 		}
@@ -430,12 +529,11 @@ public class RowProcessor
 	 * @param assocInterface associationInterface
 	 * @param exp expression
 	 */
-	private void populateEntityvsAssocMap(
-			IExpression entityExp,
+	private void populateEntityvsAssocMap(IExpression entityExp,
 			BaseAbstractAttributeInterface assocInterface, IExpression exp)
 	{
 		BaseAbstractAttributeInterface association = expVsAssoc.get(entityExp);
-		if(association == null)
+		if (association == null)
 		{
 			expVsAssoc.put(exp, assocInterface);
 		}
@@ -450,10 +548,10 @@ public class RowProcessor
 	private IExpression getParentExpression(JoinGraph joinGraph, IExpression expression)
 	{
 		IExpression finalExp = expression;
-		if(!expression.isInView())
+		if (!expression.isInView())
 		{
 			IExpression parentExp = joinGraph.getParentList(expression).get(0);
-			finalExp = getParentExpression(joinGraph,parentExp);
+			finalExp = getParentExpression(joinGraph, parentExp);
 		}
 		return finalExp;
 	}
@@ -464,13 +562,13 @@ public class RowProcessor
 	 * @param expression expression
 	 * @return finalExp
 	 */
-	private IExpression getExpression(JoinGraph joinGraph,IExpression expression)
+	private IExpression getExpression(JoinGraph joinGraph, IExpression expression)
 	{
 		IExpression finalExp = expression;
-		if(!expression.isInView() && !joinGraph.getChildrenList(expression).isEmpty())
+		if (!expression.isInView() && !joinGraph.getChildrenList(expression).isEmpty())
 		{
 			IExpression parentExp = joinGraph.getChildrenList(expression).get(0);
-			finalExp = getExpression(joinGraph,parentExp);
+			finalExp = getExpression(joinGraph, parentExp);
 		}
 		return finalExp;
 	}
@@ -484,22 +582,24 @@ public class RowProcessor
 	public Map<String, String> getColumnNameMap(String selectSql, List<String> dataList)
 	{
 		String modifiedSql;
-		if(selectSql.contains(AQConstants.DISTINCT))
+		if (selectSql.contains(AQConstants.DISTINCT))
 		{
-			modifiedSql = selectSql.substring(selectSql.indexOf(AQConstants.DISTINCT)+9, selectSql.indexOf(AQConstants.FROM_CLAUSE)-1);
+			modifiedSql = selectSql.substring(selectSql.indexOf(AQConstants.DISTINCT) + 9,
+					selectSql.indexOf(AQConstants.FROM_CLAUSE) - 1);
 		}
 		else
 		{
-			modifiedSql = selectSql.substring(selectSql.indexOf(AQConstants.SELECT_CLAUSE)+7, selectSql.indexOf(AQConstants.FROM_CLAUSE)-1);
+			modifiedSql = selectSql.substring(selectSql.indexOf(AQConstants.SELECT_CLAUSE) + 7,
+					selectSql.indexOf(AQConstants.FROM_CLAUSE) - 1);
 		}
 		StringTokenizer tokenizer = new StringTokenizer(modifiedSql, ",");
-		Map<String,String> columnNameMap = new HashMap<String, String>();
+		Map<String, String> columnNameMap = new HashMap<String, String>();
 		int index = 0;
-		while(tokenizer.hasMoreTokens())
+		while (tokenizer.hasMoreTokens())
 		{
 			String token = tokenizer.nextToken();
 			String data = dataList.get(index);
-			if(data.length() == 0)
+			if (data.length() == 0)
 			{
 				data = " ";
 			}
