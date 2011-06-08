@@ -164,6 +164,7 @@ public class ConfigureGridViewAction extends SecureAction
 		spreadSheetDataMap.put(AQConstants.MAIN_ENTITY_MAP, queryDetailsObj.getMainEntityMap());
 		if(selectedColumnsMetadata.isDefinedView())
 		{
+			request.setAttribute(AQConstants.PAGINATION_DATA_LIST, spreadSheetDataMap.get(AQConstants.SPREADSHEET_DATA_LIST));
 			session.setAttribute(AQConstants.DENORMALIZED_LIST, spreadSheetDataMap.get(AQConstants.SPREADSHEET_DATA_LIST));
 		}
 		QueryModuleUtil.setGridData(request, spreadSheetDataMap);

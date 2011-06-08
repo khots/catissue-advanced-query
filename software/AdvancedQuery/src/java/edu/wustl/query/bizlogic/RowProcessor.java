@@ -127,7 +127,7 @@ public class RowProcessor
 	{
 		for (IExpression expression : constraints)
 		{
-			if (expression.isInView())
+			if (expression.isVisible())
 			{
 				expMap.put(expression, new ExpressionRecords());
 			}
@@ -428,11 +428,11 @@ public class RowProcessor
 			BaseAbstractAttributeInterface assocInterface)
 	{
 		IExpression finalExp = null;
-		if (!joinGraph.getChildrenList(expression).isEmpty() && !expression.isInView())
+		if (!joinGraph.getChildrenList(expression).isEmpty() && !expression.isVisible())
 		{
 			IExpression exp = joinGraph.getChildrenList(expression).get(0);
 			exp = getExpression(joinGraph, exp);
-			if (exp.isInView())
+			if (exp.isVisible())
 			{
 				populateTgtVsAssocMap(assocInterface, exp);
 				finalExp = exp;
@@ -505,11 +505,11 @@ public class RowProcessor
 			IExpression entityExp, BaseAbstractAttributeInterface assocInterface)
 	{
 		IExpression finalExp = null;
-		if (!joinGraph.getParentList(expression).isEmpty() && !expression.isInView())
+		if (!joinGraph.getParentList(expression).isEmpty() && !expression.isVisible())
 		{
 			IExpression exp = joinGraph.getParentList(expression).get(0);
 			exp = getParentExpression(joinGraph, exp);
-			if (exp.isInView())
+			if (exp.isVisible())
 			{
 				populateEntityvsAssocMap(entityExp, assocInterface, exp);
 				finalExp = exp;
@@ -548,7 +548,7 @@ public class RowProcessor
 	private IExpression getParentExpression(JoinGraph joinGraph, IExpression expression)
 	{
 		IExpression finalExp = expression;
-		if (!expression.isInView())
+		if (!expression.isVisible())
 		{
 			IExpression parentExp = joinGraph.getParentList(expression).get(0);
 			finalExp = getParentExpression(joinGraph, parentExp);
@@ -565,7 +565,7 @@ public class RowProcessor
 	private IExpression getExpression(JoinGraph joinGraph, IExpression expression)
 	{
 		IExpression finalExp = expression;
-		if (!expression.isInView() && !joinGraph.getChildrenList(expression).isEmpty())
+		if (!expression.isVisible() && !joinGraph.getChildrenList(expression).isEmpty())
 		{
 			IExpression parentExp = joinGraph.getChildrenList(expression).get(0);
 			finalExp = getExpression(joinGraph, parentExp);

@@ -48,11 +48,15 @@ final public class QueryModuleUtil
 	}
 
 	/**
-	* Takes data from the map and generates out put data accordingly so that spreadsheet will be updated.
-	* @param spreadSheetDtmap map which holds data for columns and records.
-	* @return this string consists of two strings separated by '&', first part is for column names
-	* to be displayed in spreadsheet and the second part is data in the spreadsheet.
-	*/
+	 * Takes data from the map and generates out put data accordingly so that
+	 * spreadsheet will be updated.
+	 *
+	 * @param spreadSheetDtmap
+	 *            map which holds data for columns and records.
+	 * @return this string consists of two strings separated by '&', first part
+	 *         is for column names to be displayed in spreadsheet and the second
+	 *         part is data in the spreadsheet.
+	 */
 	public static String prepareOutputSpreadsheetDataString(final Map spreadSheetDtmap)
 	{
 		List<List<String>> dataList = (List<List<String>>) spreadSheetDtmap
@@ -65,8 +69,10 @@ final public class QueryModuleUtil
 	}
 
 	/**
-	 * @param dataList dataList
-	 * @param dataStr dataStr
+	 * @param dataList
+	 *            dataList
+	 * @param dataStr
+	 *            dataStr
 	 */
 	private static void getGridDetails(List<List<String>> dataList, StringBuffer dataStr)
 	{
@@ -86,8 +92,11 @@ final public class QueryModuleUtil
 		}
 	}
 
-	/**This will get the column's data as String format.
-	 * @param spreadSheetDtmap spreadSheetDtmap
+	/**
+	 * This will get the column's data as String format.
+	 *
+	 * @param spreadSheetDtmap
+	 *            spreadSheetDtmap
 	 * @return String
 	 */
 	private static String getColumnsAsString(final Map spreadSheetDtmap)
@@ -101,9 +110,13 @@ final public class QueryModuleUtil
 
 	/**
 	 * Forms select part of the query.
-	 * @param attributes attributes
-	 * @param queryDetailsObj queryDetailsObj
-	 * @param queryResultObjectDataBean queryResultObjectDataBean
+	 *
+	 * @param attributes
+	 *            attributes
+	 * @param queryDetailsObj
+	 *            queryDetailsObj
+	 * @param queryResultObjectDataBean
+	 *            queryResultObjectDataBean
 	 * @return String having all column names for select part.
 	 */
 	public static Map<String, String> getColumnNamesForSelectpart(
@@ -114,7 +127,7 @@ final public class QueryModuleUtil
 		String idColumnName = null;
 		String dspNameColName = null;
 		String index = null;
-		Map<String,String> attrNameColumn = new HashMap<String, String>();
+		Map<String, String> attrNameColumn = new HashMap<String, String>();
 		String columnName;
 		int columIndex = 0;
 		AttributeInterface attribute;
@@ -122,7 +135,7 @@ final public class QueryModuleUtil
 		List<Integer> idvector = new ArrayList<Integer>();
 		boolean isTagPresentEntity = isTagPresent(attributes.get(0).getAttribute().getEntity());
 		boolean incrementColIndex = true;
-		Map<String,String> columnNamePositionMap = new HashMap<String, String>();
+		Map<String, String> columnNamePositionMap = new HashMap<String, String>();
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
 			attribute = attributeMetaData.getAttribute();
@@ -144,13 +157,12 @@ final public class QueryModuleUtil
 			}
 			else
 			{
-				populateAttrColumnMap(attrNameColumn, columnName, attribute,
-						isTagPresentEntity);
-				if(attributePosition != null)
+				populateAttrColumnMap(attrNameColumn, columnName, attribute, isTagPresentEntity);
+				if (attributePosition != null)
 				{
-					columnNamePositionMap.put(attributePosition,columnName);
-					index = columnName.substring
-					(AQConstants.COLUMN_NAME.length(), columnName.length());
+					columnNamePositionMap.put(attributePosition, columnName);
+					index = columnName.substring(AQConstants.COLUMN_NAME.length(), columnName
+							.length());
 					if (attribute.getIsIdentified() != null)
 					{
 						idvector.add(1);
@@ -159,18 +171,18 @@ final public class QueryModuleUtil
 					objectColumnIdsVector.add(1);
 					objectColumnIdsVector.add(AQConstants.TWO);
 					queryResultObjectDataBean.setIdentifiedDataColumnIds(idvector);
-					if(incrementColIndex)
+					if (incrementColIndex)
 					{
 						columIndex++;
 						incrementColIndex = false;
 					}
 				}
-				else if (!isTagPresentEntity && isPresentInArray(attribute.getName(),
-					AQConstants.ATTR_NAME_TREENODE_LBL))
+				else if (!isTagPresentEntity
+						&& isPresentInArray(attribute.getName(), AQConstants.ATTR_NAME_TREENODE_LBL))
 				{
 					dspNameColName = columnName;
-					index = columnName.substring
-					(AQConstants.COLUMN_NAME.length(), columnName.length());
+					index = columnName.substring(AQConstants.COLUMN_NAME.length(), columnName
+							.length());
 					if (attribute.getIsIdentified() != null)
 					{
 						idvector.add(1);
@@ -183,23 +195,25 @@ final public class QueryModuleUtil
 		}
 		queryResultObjectDataBean.setObjectColumnIds(objectColumnIdsVector);
 
-		dspNameColName = updateDisplayColumnName(dspNameColName,
-				attrNameColumn, isTagPresentEntity, columnNamePositionMap);
+		dspNameColName = updateDisplayColumnName(dspNameColName, attrNameColumn,
+				isTagPresentEntity, columnNamePositionMap);
 		columnNames = getColumnNames(idColumnName, dspNameColName);
-		Map<String, String> colNameIndexMap = populateColumnIndexMap(
-				queryResultObjectDataBean, columnNames, index);
+		Map<String, String> colNameIndexMap = populateColumnIndexMap(queryResultObjectDataBean,
+				columnNames, index);
 		return colNameIndexMap;
 	}
 
 	/**
-	 * @param queryResultObjectDataBean queryResultObjectDataBean
-	 * @param columnNames columnNames
-	 * @param index index
+	 * @param queryResultObjectDataBean
+	 *            queryResultObjectDataBean
+	 * @param columnNames
+	 *            columnNames
+	 * @param index
+	 *            index
 	 * @return colNameIndexMap
 	 */
 	private static Map<String, String> populateColumnIndexMap(
-			QueryResultObjectDataBean queryResultObjectDataBean,
-			String columnNames, String index)
+			QueryResultObjectDataBean queryResultObjectDataBean, String columnNames, String index)
 	{
 		if (queryResultObjectDataBean.getIdentifiedDataColumnIds().size() != 0)
 		{
@@ -212,27 +226,34 @@ final public class QueryModuleUtil
 	}
 
 	/**
-	 * @param attrNameColumn attrNameColumn
-	 * @param columnName columnName
-	 * @param attribute attribute
-	 * @param isTagPresentEntity isTagPresentEntity
+	 * @param attrNameColumn
+	 *            attrNameColumn
+	 * @param columnName
+	 *            columnName
+	 * @param attribute
+	 *            attribute
+	 * @param isTagPresentEntity
+	 *            isTagPresentEntity
 	 */
-	private static void populateAttrColumnMap(
-			Map<String, String> attrNameColumn, String columnName,
-			AttributeInterface attribute, boolean isTagPresentEntity)
+	private static void populateAttrColumnMap(Map<String, String> attrNameColumn,
+			String columnName, AttributeInterface attribute, boolean isTagPresentEntity)
 	{
-		if(isTagPresentEntity && attribute.getName().equalsIgnoreCase("birthDate")
+		if (isTagPresentEntity && attribute.getName().equalsIgnoreCase("birthDate")
 				|| attribute.getName().equalsIgnoreCase("deathDate"))
 		{
-				attrNameColumn.put(attribute.getName(), columnName);
+			attrNameColumn.put(attribute.getName(), columnName);
 		}
 	}
 
 	/**
-	 * @param displayName displayName
-	 * @param attrNameColumn attrNameColumn
-	 * @param isTagPresentEntity isTagPresentEntity
-	 * @param columnNamePositionMap columnNamePositionMap
+	 * @param displayName
+	 *            displayName
+	 * @param attrNameColumn
+	 *            attrNameColumn
+	 * @param isTagPresentEntity
+	 *            isTagPresentEntity
+	 * @param columnNamePositionMap
+	 *            columnNamePositionMap
 	 * @return dspNameColName
 	 */
 	private static String updateDisplayColumnName(String displayName,
@@ -240,21 +261,23 @@ final public class QueryModuleUtil
 			Map<String, String> columnNamePositionMap)
 	{
 		StringBuffer dspNameColName = getDisplayColName(displayName);
-		if(isTagPresentEntity)
+		if (isTagPresentEntity)
 		{
-			dspNameColName = new StringBuffer(getColDisplayName(displayName,columnNamePositionMap));
-			if(!attrNameColumn.isEmpty())
+			dspNameColName = new StringBuffer(getColDisplayName(displayName, columnNamePositionMap));
+			if (!attrNameColumn.isEmpty())
 			{
 				String columnNameForBirthDate = attrNameColumn.get("birthDate");
 				String columnNameForDeaththDate = attrNameColumn.get("deathDate");
-				if(dspNameColName == null)
+				if (dspNameColName == null)
 				{
 					dspNameColName = new StringBuffer();
-					dspNameColName.append(columnNameForBirthDate).append(", ").append(columnNameForDeaththDate);
+					dspNameColName.append(columnNameForBirthDate).append(", ").append(
+							columnNameForDeaththDate);
 				}
 				else
 				{
-					dspNameColName.append(", ").append(columnNameForBirthDate).append(", ").append(columnNameForDeaththDate);
+					dspNameColName.append(", ").append(columnNameForBirthDate).append(", ").append(
+							columnNameForDeaththDate);
 				}
 			}
 		}
@@ -262,13 +285,14 @@ final public class QueryModuleUtil
 	}
 
 	/**
-	 * @param dspNameColName dspNameColName
+	 * @param dspNameColName
+	 *            dspNameColName
 	 * @return returnValue
 	 */
 	private static String getReturnValue(StringBuffer dspNameColName)
 	{
 		String returnValue = null;
-		if(dspNameColName != null)
+		if (dspNameColName != null)
 		{
 			returnValue = dspNameColName.toString();
 		}
@@ -276,13 +300,14 @@ final public class QueryModuleUtil
 	}
 
 	/**
-	 * @param displayName displayName
+	 * @param displayName
+	 *            displayName
 	 * @return dspNameColName
 	 */
 	private static StringBuffer getDisplayColName(String displayName)
 	{
 		StringBuffer dspNameColName = null;
-		if(displayName != null)
+		if (displayName != null)
 		{
 			dspNameColName = new StringBuffer(displayName);
 		}
@@ -290,12 +315,13 @@ final public class QueryModuleUtil
 	}
 
 	/**
-	 * @param idColumnName idColumnName
-	 * @param dspNameColName dspNameColName
+	 * @param idColumnName
+	 *            idColumnName
+	 * @param dspNameColName
+	 *            dspNameColName
 	 * @return columnNames
 	 */
-	private static String getColumnNames(String idColumnName,
-			String dspNameColName)
+	private static String getColumnNames(String idColumnName, String dspNameColName)
 	{
 		String columnNames;
 		if (dspNameColName == null)
@@ -308,10 +334,14 @@ final public class QueryModuleUtil
 		}
 		return columnNames;
 	}
+
 	/**
 	 * Gets the display name for column.
-	 * @param dspNameColName name
-	 * @param columnNamePositionMap map
+	 *
+	 * @param dspNameColName
+	 *            name
+	 * @param columnNamePositionMap
+	 *            map
 	 * @return string display name
 	 */
 	private static String getColDisplayName(String displayColumnName,
@@ -320,51 +350,50 @@ final public class QueryModuleUtil
 		String dspNameColName = displayColumnName;
 		Set<String> keySet = columnNamePositionMap.keySet();
 		Iterator<String> iterator = keySet.iterator();
-		if(iterator.hasNext())
+		if (iterator.hasNext())
 		{
 			String position1 = iterator.next();
-			if(iterator.hasNext())
+			if (iterator.hasNext())
 			{
-				dspNameColName = setDisplayColumnName(dspNameColName,
-						columnNamePositionMap, iterator, position1);
+				dspNameColName = setDisplayColumnName(dspNameColName, columnNamePositionMap,
+						iterator, position1);
 			}
 		}
 		return dspNameColName;
 	}
 
 	private static String setDisplayColumnName(String displayColumnName,
-			Map<String, String> columnNamePositionMap,
-			Iterator<String> iterator, String position1)
+			Map<String, String> columnNamePositionMap, Iterator<String> iterator, String position1)
 	{
 		StringBuffer dspNameColName = getDisplayColName(displayColumnName);
 		String position2;
 		position2 = iterator.next();
-		if(Integer.parseInt(position1)<Integer.parseInt(position2))
+		if (Integer.parseInt(position1) < Integer.parseInt(position2))
 		{
-			if(dspNameColName == null)
+			if (dspNameColName == null)
 			{
 				dspNameColName = new StringBuffer();
-				dspNameColName.append(columnNamePositionMap.get(position1))
-				.append(", ").append(columnNamePositionMap.get(position2));
+				dspNameColName.append(columnNamePositionMap.get(position1)).append(", ").append(
+						columnNamePositionMap.get(position2));
 			}
 			else
 			{
-				dspNameColName.append(columnNamePositionMap.get
-				(position1)).append(", ").append(columnNamePositionMap.get(position2));
+				dspNameColName.append(columnNamePositionMap.get(position1)).append(", ").append(
+						columnNamePositionMap.get(position2));
 			}
 		}
 		else
 		{
-			if(dspNameColName == null)
+			if (dspNameColName == null)
 			{
 				dspNameColName = new StringBuffer();
-				dspNameColName.append(columnNamePositionMap.get(position2)).append(", ")
-				.append(columnNamePositionMap.get(position1));
+				dspNameColName.append(columnNamePositionMap.get(position2)).append(", ").append(
+						columnNamePositionMap.get(position1));
 			}
 			else
 			{
-				dspNameColName.append(columnNamePositionMap.get
-				(position2)).append(", ").append(columnNamePositionMap.get(position1));
+				dspNameColName.append(columnNamePositionMap.get(position2)).append(", ").append(
+						columnNamePositionMap.get(position1));
 			}
 		}
 		return dspNameColName.toString();
@@ -372,18 +401,19 @@ final public class QueryModuleUtil
 
 	/**
 	 * Check if the tag is present.
-	 * @param metadaInterface metadaInterface
-	 * @return <CODE>true</CODE> if tag is present,
-	 * <CODE>false</CODE> otherwise
+	 *
+	 * @param metadaInterface
+	 *            metadaInterface
+	 * @return <CODE>true</CODE> if tag is present, <CODE>false</CODE> otherwise
 	 */
 	private static boolean isTagPresent(AbstractMetadataInterface metadaInterface)
 	{
 		boolean isTagPresent = false;
-		Collection<TaggedValueInterface> taggedValueCollection =
-			metadaInterface.getTaggedValueCollection();
-		for(TaggedValueInterface tagValue : taggedValueCollection)
+		Collection<TaggedValueInterface> taggedValueCollection = metadaInterface
+				.getTaggedValueCollection();
+		for (TaggedValueInterface tagValue : taggedValueCollection)
 		{
-			if(tagValue.getKey().equals("resultview"))
+			if (tagValue.getKey().equals("resultview"))
 			{
 				isTagPresent = true;
 				break;
@@ -394,18 +424,19 @@ final public class QueryModuleUtil
 
 	/**
 	 * Checks if tag is present on attribute.
-	 * @param metadaInterface metadaInterface
-	 * @return <CODE>true</CODE> if tag is present,
-	 * <CODE>false</CODE> otherwise
+	 *
+	 * @param metadaInterface
+	 *            metadaInterface
+	 * @return <CODE>true</CODE> if tag is present, <CODE>false</CODE> otherwise
 	 */
 	private static String isTagPresentOnAttribute(AbstractMetadataInterface metadaInterface)
 	{
 		String isTagPresent = null;
-		Collection<TaggedValueInterface> taggedValueCollection =
-			metadaInterface.getTaggedValueCollection();
-		for(TaggedValueInterface tagValue : taggedValueCollection)
+		Collection<TaggedValueInterface> taggedValueCollection = metadaInterface
+				.getTaggedValueCollection();
+		for (TaggedValueInterface tagValue : taggedValueCollection)
 		{
-			if(tagValue.getKey().equals("resultview"))
+			if (tagValue.getKey().equals("resultview"))
 			{
 				isTagPresent = tagValue.getValue();
 				break;
@@ -415,10 +446,15 @@ final public class QueryModuleUtil
 	}
 
 	/**
-	 * Returns true if the attribute name can be used to form label for tree node.
-	 * @param objectName objectName
-	 * @param stringArray stringArray
-	 * @return true if the attribute name can be used to form label for tree node otherwise returns false
+	 * Returns true if the attribute name can be used to form label for tree
+	 * node.
+	 *
+	 * @param objectName
+	 *            objectName
+	 * @param stringArray
+	 *            stringArray
+	 * @return true if the attribute name can be used to form label for tree
+	 *         node otherwise returns false
 	 */
 	public static boolean isPresentInArray(String objectName, String[] stringArray)
 	{
@@ -436,9 +472,11 @@ final public class QueryModuleUtil
 	}
 
 	/**
-	 * This is used to set the default selections for the UI components when
-	 * the screen is loaded for the first time.
-	 * @param actionForm form bean
+	 * This is used to set the default selections for the UI components when the
+	 * screen is loaded for the first time.
+	 *
+	 * @param actionForm
+	 *            form bean
 	 * @return CategorySearchForm form bean
 	 */
 	public static CategorySearchForm setDefaultSelections(CategorySearchForm actionForm)
@@ -459,7 +497,7 @@ final public class QueryModuleUtil
 		{
 			actionForm.setIncludeDescriptionChecked(AQConstants.OFF);
 		}
-		//TODO check if null and then set the value of selected.
+		// TODO check if null and then set the value of selected.
 		// Bug #5131: Commenting until the Concept Code search is fixed
 		// actionForm.setSelected(Constants.TEXT_RADIOBUTTON);
 		actionForm.setTextField("");
@@ -469,27 +507,72 @@ final public class QueryModuleUtil
 
 	/**
 	 * When passes treeNumber , this method returns the root node of that tree.
-	 * @param queryDetailsObj queryDetailsObj
-	 * @param treeNo number of tree
+	 *
+	 * @param queryDetailsObj
+	 *            queryDetailsObj
+	 * @param treeNo
+	 *            number of tree
 	 * @return root node of the tree
 	 */
 	public static OutputTreeDataNode getRootNodeOfTree(QueryDetails queryDetailsObj, String treeNo)
 	{
-		OutputTreeDataNode getRootNodeOfTree = null;
-		//List<OutputTreeDataNode> rootOpTreeNodeLst =queryDetailsObj.getRootOutputTreeNodeList();
-		for (OutputTreeDataNode node : queryDetailsObj.getRootOutputTreeNodeList())
+		OutputTreeDataNode rootNodeOfTree = null;
+		// List<OutputTreeDataNode> rootOpTreeNodeLst
+		// =queryDetailsObj.getRootOutputTreeNodeList();
+
+		// TODO ONLY ONE NODE IN THIS LIST
+		// for (OutputTreeDataNode rootNode :
+		// queryDetailsObj.getRootOutputTreeNodeList())
+		// {
+		OutputTreeDataNode rootNode = queryDetailsObj.getRootOutputTreeNodeList().get(0);
+		// TODO rootNode.isInView is equivalent to rootNode.getTreeNo >=0; fix
+		// this.
+		if (rootNode.isInView())
 		{
-			if (node.getTreeNo() == Integer.valueOf(treeNo))
+			// if (rootNode.getTreeNo() == Integer.valueOf(treeNo))
+			// {
+			rootNodeOfTree = rootNode;
+			// }
+		}
+		else
+		{
+			List<OutputTreeDataNode> inViewChildList = QueryModuleUtil.getInViewChildren(rootNode);
+			for (OutputTreeDataNode childNode : inViewChildList)
 			{
-				getRootNodeOfTree = node;
+				if (childNode.getTreeNo() == Integer.valueOf(treeNo))
+				{
+					rootNodeOfTree = childNode;
+					break;
+				}
 			}
 		}
-		return getRootNodeOfTree;
+		return rootNodeOfTree;
+	}
+
+	public static List<OutputTreeDataNode> getInViewChildren(OutputTreeDataNode parentNode)
+	{
+		List<OutputTreeDataNode> childList = new ArrayList<OutputTreeDataNode>();
+
+		for (OutputTreeDataNode node : parentNode.getChildren())
+		{
+			if (node.isInView())
+			{
+				childList.add(node);
+			}
+			else
+			{
+				childList.addAll(getInViewChildren(node));
+			}
+		}
+
+		return childList;
 	}
 
 	/**
 	 * Returns column name of nodes id when passed a node to it.
-	 * @param node {@link OutputTreeDataNode}
+	 *
+	 * @param node
+	 *            {@link OutputTreeDataNode}
 	 * @return String id Columns name
 	 */
 	public static String getParentIdColumnName(OutputTreeDataNode node)
@@ -513,24 +596,28 @@ final public class QueryModuleUtil
 
 	/**
 	 * Sets required data for grid.
-	 * @param request HTTPRequest
-	 * @param spreadSheetDtmap Map to store spreadsheet data
+	 *
+	 * @param request
+	 *            HTTPRequest
+	 * @param spreadSheetDtmap
+	 *            Map to store spreadsheet data
 	 */
 	public static void setGridData(HttpServletRequest request, Map spreadSheetDtmap)
 	{
 		int pageNum = AQConstants.START_PAGE;
 		SelectedColumnsMetadata selColumnsMdata = (SelectedColumnsMetadata) spreadSheetDtmap
 				.get(AQConstants.SELECTED_COLUMN_META_DATA);
-		//OutputTreeDataNode object = selectedColumnsMetadata.getCurrentSelectedObject();
+		// OutputTreeDataNode object =
+		// selectedColumnsMetadata.getCurrentSelectedObject();
 		HttpSession session = request.getSession();
-		//session.setAttribute(Constants.CURRENT_SELECTED_OBJECT,object);
+		// session.setAttribute(Constants.CURRENT_SELECTED_OBJECT,object);
 		request.setAttribute(AQConstants.PAGE_NUMBER, Integer.toString(pageNum));
 		QuerySessionData querySessionData = (QuerySessionData) spreadSheetDtmap
 				.get(AQConstants.QUERY_SESSION_DATA);
 		int totalNoOfRecords = querySessionData.getTotalNumberOfRecords();
 		List<List<String>> dataList = (List<List<String>>) spreadSheetDtmap
 				.get(AQConstants.SPREADSHEET_DATA_LIST);
-		//request.setAttribute(Constants.SPREADSHEET_DATA_LIST,dataList);
+		// request.setAttribute(Constants.SPREADSHEET_DATA_LIST,dataList);
 		request.setAttribute(AQConstants.PAGINATION_DATA_LIST, dataList);
 		List columnsList = (List) spreadSheetDtmap.get(AQConstants.SPREADSHEET_COLUMN_LIST);
 		if (columnsList != null)
@@ -556,9 +643,11 @@ final public class QueryModuleUtil
 
 	/**
 	 * Checks if rule is present in DAG.
-	 * @param query query
-	 * @return <CODE>true</CODE> if rule is present,
-	 * <CODE>false</CODE> otherwise
+	 *
+	 * @param query
+	 *            query
+	 * @return <CODE>true</CODE> if rule is present, <CODE>false</CODE>
+	 *         otherwise
 	 */
 	public static boolean checkIfRulePresentInDag(IQuery query)
 	{
@@ -579,11 +668,13 @@ final public class QueryModuleUtil
 		return isRulePresentInDag;
 	}
 
-
 	/**
 	 * Method to call searchQuery and to set appropriate error message.
-	 * @param request object of HttpServletRequest
-	 * @param parameterizedQuery object of IParameterizedQuery
+	 *
+	 * @param request
+	 *            object of HttpServletRequest
+	 * @param parameterizedQuery
+	 *            object of IParameterizedQuery
 	 * @return errorMessage String value for errorMessage
 	 */
 	public static String executeQuery(HttpServletRequest request, IQuery parameterizedQuery)
@@ -602,36 +693,42 @@ final public class QueryModuleUtil
 		}
 		return getErrorMessage(parameterizedQuery, errorCode);
 	}
+
 	/**
-	 * This method returns the appropriate error message depending upon the error code.
-	 * @param parameterizedQuery query
-	 * @param errorCode code
+	 * This method returns the appropriate error message depending upon the
+	 * error code.
+	 *
+	 * @param parameterizedQuery
+	 *            query
+	 * @param errorCode
+	 *            code
 	 * @return String error message
 	 */
-	private static String getErrorMessage(IQuery parameterizedQuery,
-			QueryModuleError errorCode)
+	private static String getErrorMessage(IQuery parameterizedQuery, QueryModuleError errorCode)
 	{
 		String errorMessage;
 		switch (errorCode)
 		{
 			case EMPTY_DAG :
 				errorMessage = "<li><font color='blue' family='arial,helvetica,verdana,sans-serif'>"
-				+ ApplicationProperties.getValue("query.empty.dag") + "</font></li>";
+						+ ApplicationProperties.getValue("query.empty.dag") + "</font></li>";
 				break;
 			case MULTIPLE_ROOT :
 				errorMessage = "<li><font color='red'> "
-				+ ApplicationProperties.getValue("errors.executeQuery.multipleRoots")
+						+ ApplicationProperties.getValue("errors.executeQuery.multipleRoots")
 						+ "</font></li>";
 				break;
 			case NO_RESULT_PRESENT :
-				errorMessage = "<li><font color='green' family='arial,helvetica,verdana,sans-serif'>"+((IParameterizedQuery)parameterizedQuery).getName() + " : "+
-				ApplicationProperties.getValue("query.zero.records.present") + "</font></li>";
+				errorMessage = "<li><font color='green' family='arial,helvetica,verdana,sans-serif'>"
+						+ ((IParameterizedQuery) parameterizedQuery).getName()
+						+ " : "
+						+ ApplicationProperties.getValue("query.zero.records.present")
+						+ "</font></li>";
 				break;
 			case SQL_EXCEPTION :
 			case DAO_EXCEPTION :
 			case CLASS_NOT_FOUND :
-				errorMessage = ApplicationProperties.getValue
-				("errors.executeQuery.genericmessage");
+				errorMessage = ApplicationProperties.getValue("errors.executeQuery.genericmessage");
 				break;
 			case RESULTS_MORE_THAN_LIMIT :
 				errorMessage = AQConstants.TREE_ND_LMT_EXCEED_REC;
@@ -643,8 +740,10 @@ final public class QueryModuleUtil
 	}
 
 	/**
-	 *  It will generate random number.
-	 * @param session session
+	 * It will generate random number.
+	 *
+	 * @param session
+	 *            session
 	 * @return String
 	 */
 	public static String generateRandomNumber(HttpSession session)

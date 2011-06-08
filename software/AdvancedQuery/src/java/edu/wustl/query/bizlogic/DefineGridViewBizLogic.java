@@ -105,8 +105,11 @@ public class DefineGridViewBizLogic
 				{
 					String nodeId = identifier.toString();
 					node = queryDetailsObj.getUniqueIdNodesMap().get(nodeId);
-					addClassAndAttributeNodes(treeDataVector, node, categorySearchForm,
-							currentSelectedObj);
+					if(node.isInView())
+					{
+					  addClassAndAttributeNodes(treeDataVector, node, categorySearchForm,
+  					currentSelectedObj);
+					}
 				}
 			}
 		}

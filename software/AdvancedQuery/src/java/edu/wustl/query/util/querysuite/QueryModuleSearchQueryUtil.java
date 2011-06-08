@@ -141,14 +141,16 @@ public class QueryModuleSearchQueryUtil
 	{
 		int initialValue = 0;
 		QueryModuleException queryModExp;
+		List<OutputTreeDataNode> inViewRootList = getRootOutputNodeList(queryDetailsObj.getRootOutputTreeNodeList());
 		try
 		{
-			for (OutputTreeDataNode outnode : queryDetailsObj.getRootOutputTreeNodeList())
-			{
-				List<QueryTreeNodeData> treeData = outputTreeBizLogic.createDefaultOutputTreeData
-				(initialValue, outnode,hasCondOnIdentifiedField, queryDetailsObj);
+			 for(OutputTreeDataNode rootOutputnode:inViewRootList)
+			 {
+			   List<QueryTreeNodeData> treeData = outputTreeBizLogic.createDefaultOutputTreeData
+				(initialValue, rootOutputnode,hasCondOnIdentifiedField, queryDetailsObj);
 				initialValue = setTreeData(initialValue, treeData);
-			}
+			 }
+
 		}
 		catch (DAOException e)
 		{
@@ -175,11 +177,32 @@ public class QueryModuleSearchQueryUtil
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
 			throw queryModExp;
 		}
-		session.setAttribute(AQConstants.TREE_ROOTS, queryDetailsObj.getRootOutputTreeNodeList());
-		Long noOfTrees = Long.valueOf(queryDetailsObj.getRootOutputTreeNodeList().size());
+		session.setAttribute(AQConstants.TREE_ROOTS, inViewRootList);
+		Long noOfTrees = Long.valueOf(inViewRootList.size());
 		session.setAttribute(AQConstants.NO_OF_TREES, noOfTrees);
-		OutputTreeDataNode node = queryDetailsObj.getRootOutputTreeNodeList().get(0);
-		processRecords(queryDetailsObj, node, hasCondOnIdentifiedField);
+		//OutputTreeDataNode node = queryDetailsObj.getRootOutputTreeNodeList().get(0).getChildren().get(0);
+		processRecords(queryDetailsObj, inViewRootList.get(0), hasCondOnIdentifiedField);
+	}
+
+	/**
+	 * @param rootOutputTreeNodeList
+	 * @return
+	 */
+	private List<OutputTreeDataNode> getRootOutputNodeList(List<OutputTreeDataNode> rootOutputTreeNodeList)
+	{
+		 List<OutputTreeDataNode> childList = new ArrayList<OutputTreeDataNode>();
+		 OutputTreeDataNode parentNode = rootOutputTreeNodeList.get(0);
+         if(parentNode.isInView())
+        {
+    	   childList.add(parentNode);
+        }
+         else
+         {
+	        childList.addAll(QueryModuleUtil.getInViewChildren(parentNode));
+         }
+
+         return childList;
+
 	}
 
 	/**
@@ -519,7 +542,7 @@ public class QueryModuleSearchQueryUtil
 	{
 		for (IExpression expression : constraints)
 		{
-			if (expression.isInView())
+			if (expression.isVisible())
 			{
 				expressionIdsInQuery.add(Integer.valueOf(expression.getExpressionId()));
 			}

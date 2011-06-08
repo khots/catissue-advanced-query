@@ -51,13 +51,17 @@ public class OutputTreeDataNode implements Serializable
 	/**
 	 * The tree number.
 	 */
-	private final int treeNo;
+	private int treeNo;
 
 	/**
 	 * Expression id.
 	 */
 	private final int expressionId;
 
+	/**
+	 * Is in view.
+	 */
+	private final boolean isInView;
 	/**
 	 * List of QueryOutputTreeAttributeMetadata objects.
 	 */
@@ -70,14 +74,22 @@ public class OutputTreeDataNode implements Serializable
 	 * @param expressionId The expression id corresponding to this Output tree.
 	 * @param treeNo The integer representing tree no.
 	 */
-	public OutputTreeDataNode(IOutputEntity outputEntity, int expressionId, int treeNo)
+	public OutputTreeDataNode(IOutputEntity outputEntity, int expressionId, int treeNo, boolean isInView)
 	{
 		this.outputEntity = outputEntity;
 		this.expressionId = expressionId;
 		identifier = lastId++;
 		this.treeNo = treeNo;
+		this.isInView = isInView;
 	}
 
+	/**
+	 * @return the isInView
+	 */
+	public boolean isInView()
+	{
+		return isInView;
+	}
 	/**
 	 * To get the auto generated id for the class instance.
 	 * @return The long value representing auto generated id for the class instance.
@@ -94,9 +106,9 @@ public class OutputTreeDataNode implements Serializable
 	 * @param expressionId The expression id corresponding to this Output tree.
 	 * @return The reference to the child node.
 	 */
-	public OutputTreeDataNode addChild(IOutputEntity outputEntity, int expressionId)
+	public OutputTreeDataNode addChild(IOutputEntity outputEntity, int expressionId, boolean isInView)
 	{
-		OutputTreeDataNode child = new OutputTreeDataNode(outputEntity, expressionId, treeNo);
+		OutputTreeDataNode child = new OutputTreeDataNode(outputEntity, expressionId, treeNo, isInView);
 		child.parentNode = this;
 		children.add(child);
 
@@ -141,6 +153,16 @@ public class OutputTreeDataNode implements Serializable
 	public int getTreeNo()
 	{
 		return treeNo;
+	}
+
+	/**
+	 * Sets the tree no.
+	 *
+	 * @param treeNo the new tree no
+	 */
+	public void setTreeNo(int treeNo)
+	{
+		this.treeNo = treeNo;
 	}
 
 	/**

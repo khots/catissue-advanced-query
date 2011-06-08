@@ -425,12 +425,12 @@ public class QueryOutputTreeBizLogic
         String tableName = AQConstants.TEMP_OUPUT_TREE_TABLE_NAME
                 + queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
         String parentIdColumnName = QueryModuleUtil.getParentIdColumnName(node);
-        List<OutputTreeDataNode> children = node.getChildren();
-        String outputTreeStr = "";
-        for (OutputTreeDataNode childNode : children)
+         String outputTreeStr = "";
+        List<OutputTreeDataNode> inViewChildList =QueryModuleUtil.getInViewChildren(node);
+        for (OutputTreeDataNode labelNode : inViewChildList)
         {
-            String selectSql = getSql(parentNodeId, tableName, parentIdColumnName, childNode);
-            String name = childNode.getOutputEntity().getDynamicExtensionsEntity().getName();
+        	String selectSql = getSql(parentNodeId, tableName, parentIdColumnName, labelNode);
+            String name = labelNode.getOutputEntity().getDynamicExtensionsEntity().getName();
             name = edu.wustl.query.util.global.Utility.parseClassName(name);
             List<List<String>> dataList = getTreeDataList(queryDetailsObj, selectSql, null, false,node);
             //List dataList = QueryModuleUtil.executeQuery(selectSql, sessionData);
@@ -445,7 +445,7 @@ public class QueryOutputTreeBizLogic
             {
                 String parId = identifier.substring(identifier.lastIndexOf(AQConstants.NODE_SEPARATOR) + 2, identifier
                         .length());
-                String childNodeId = childNode.getUniqueNodeId() + AQConstants.UNDERSCORE
+                String childNodeId = labelNode.getUniqueNodeId() + AQConstants.UNDERSCORE
                         + AQConstants.LABEL_TREE_NODE;
                 String nodeId = AQConstants.UNIQUE_ID_SEPARATOR + parId + AQConstants.NODE_SEPARATOR
                         + childNodeId;
@@ -459,7 +459,8 @@ public class QueryOutputTreeBizLogic
                 outputTreeStr = outputTreeStr + "|" + nodeId + "~" + displayName + "~" + objectName
                         + "~" + identifier + "~" + parentObjectName;
             }
-        }
+
+         }
         return outputTreeStr;
     }
 

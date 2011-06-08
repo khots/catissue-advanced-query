@@ -324,7 +324,7 @@ public class QueryOutputSpreadsheetBizLogic
 	{
 		for (IExpression expression : constraints)
 		{
-			if (expression.isInView())
+			if (expression.isVisible())
 			{
 				expressionIdsInQuery.add(Integer.valueOf(expression.getExpressionId()));
 			}
@@ -1067,7 +1067,7 @@ public class QueryOutputSpreadsheetBizLogic
 		JoinGraph joinGraph = (JoinGraph) constraints.getJoinGraph();
 		for(IExpression expression : constraints)
 		{
-			if(expression.isInView())
+			if(expression.isVisible())
 			{
 				List<IExpression> children = joinGraph.getChildrenList(expression);
 				for(IExpression child : children)
