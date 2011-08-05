@@ -16,6 +16,7 @@ import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.util.global.AQConstants;
 
@@ -25,6 +26,7 @@ import edu.wustl.query.util.global.AQConstants;
  */
 public class DeleteQueryAction extends Action
 {
+	private static final Logger LOGGER = Logger.getCommonLogger(SaveQueryAction.class);
 	/**
 	 * This method deletes the query from database.
 	 * @param actionMapping mapping
@@ -64,7 +66,7 @@ public class DeleteQueryAction extends Action
 			}
 			catch (BizLogicException daoException)
 			{
-				setActionError(request, daoException.getMessage());
+				handleErrors(request, daoException);
 			}
 		}
 		return actionMapping.findForward(target);
@@ -87,8 +89,20 @@ public class DeleteQueryAction extends Action
 		bizLogic.delete(query, AQConstants.HIBERNATE_DAO);
 		String target = AQConstants.SUCCESS;
 		String message = queryName;
-		setActionError(request,message);
+		setActionError(request,"query.deletedSuccessfully.message",message);
 		return target;
+	}
+	/**
+	 * @param request request
+	 * @param bizLogicException Exception
+	 */
+	private void handleErrors(HttpServletRequest request,
+			BizLogicException bizLogicException)
+	{
+		LOGGER.info("In Handle error");
+			LOGGER.error("Error occured during deleting the query",bizLogicException);
+			final String errorMsg = "Unable to delete the query, please contact Administrator.";
+			setActionError(request,"query.errors.item", errorMsg);
 	}
 
 	/**
@@ -96,10 +110,10 @@ public class DeleteQueryAction extends Action
 	 * @param request
 	 * @param errorMessage
 	 */
-	private void setActionError(HttpServletRequest request, String errorMessage)
+	private void setActionError(HttpServletRequest request,String messageKey, String errorMessage)
 	{
 		ActionErrors errors = new ActionErrors();
-		ActionError error = new ActionError("query.deletedSuccessfully.message", errorMessage);
+		ActionError error = new ActionError(messageKey, errorMessage);
 		errors.add(ActionErrors.GLOBAL_ERROR, error);
 		saveErrors(request, errors);
 	}

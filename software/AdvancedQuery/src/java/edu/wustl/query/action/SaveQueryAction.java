@@ -21,6 +21,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.wustl.cab2b.common.cache.AbstractEntityCache;
 import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
@@ -32,6 +33,7 @@ import edu.wustl.common.querysuite.queryobject.IOutputAttribute;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.actionForm.SaveQueryForm;
@@ -49,6 +51,9 @@ import gov.nih.nci.security.exceptions.CSException;
  */
 public class SaveQueryAction extends SecureAction
 {
+
+
+	private static final Logger LOGGER = Logger.getCommonLogger(SaveQueryAction.class);
 	/**
 	 * This method saves/edits the query.
 	 * @param actionMapping Object of ActionMapping
@@ -77,11 +82,15 @@ public class SaveQueryAction extends SecureAction
 			{
 				pQuery.getParameters().removeAll(pQuery.getParameters());
 			}
+			LOGGER.info("before populateParameterixedQuery");
 			IParameterizedQuery parameterizedQuery = populateParameterizedQueryData(query,
 					actionForm, request);
 			if (parameterizedQuery != null)
 			{
+				Logger.getCommonLogger(AbstractEntityCache.class).info("abc");
+				LOGGER.info("before saving the Query");
 				target = saveQuery(request, parameterizedQuery, actionForm);
+				LOGGER.info("after saving the Query");
 			}
 		}
 		return actionMapping.findForward(target);
@@ -114,7 +123,9 @@ public class SaveQueryAction extends SecureAction
 			Long queryId = parameterizedQuery.getId();
 			if (isEditQuery)
 			{
+				LOGGER.info("before update the Query");
 				bizLogic.updateQuery(parameterizedQuery, sessionDataBean,sharedQueryBean);
+				LOGGER.info("after update the Query");
 			}
 			else
 			{
@@ -125,8 +136,10 @@ public class SaveQueryAction extends SecureAction
 				queryId = queryClone.getId();
 			}
 			long auditEventId = (Long)session.getAttribute(AQConstants.AUDIT_EVENT_ID);
+			LOGGER.info("before updating audit Query");
 			QueryModuleSqlUtil.updateAuditQueryDetails
 			(AQConstants.QUERY_ID, queryId.toString(), auditEventId);
+			LOGGER.info("after updating audit Query");
 			target = AQConstants.SUCCESS;
 			ActionErrors errors = new ActionErrors();
 			ActionError error = new ActionError("query.saved.success", parameterizedQuery.getName());
@@ -149,17 +162,21 @@ public class SaveQueryAction extends SecureAction
 	private void handleErrors(HttpServletRequest request,
 			BizLogicException bizLogicException)
 	{
+		LOGGER.info("In Handle error");
 		Throwable cause = bizLogicException.getWrapException().getCause();
 		if(cause.getCause() == null)
 		{
+			LOGGER.error("Error occured cause is null",bizLogicException);
 			final String errorMsg = "Error occurred during saving this query.";
 			setActionError(request, errorMsg);
 		}
 		else
 		{
 			String localizedMessage = cause.getCause().getLocalizedMessage();
+			LOGGER.info("Error occured cause is present");
 			if(localizedMessage != null)
 			{
+				LOGGER.error("Localised message available",bizLogicException);
 				if(localizedMessage.indexOf("cannot insert NULL into") == -1)
 				{
 					final String errorMsg = "Please specify a different name" +
@@ -172,6 +189,7 @@ public class SaveQueryAction extends SecureAction
 					setActionError(request, errorMsg);
 				}
 			}
+
 		}
 	}
 
