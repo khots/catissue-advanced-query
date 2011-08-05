@@ -82,8 +82,7 @@
 			<td>
 			<div
 				style="width:100%;  max-height:300px; min-height:50px; overflow-y:auto;">
-			<%=request.getAttribute(AQConstants.HTML_CONTENTS)%> <html:hidden
-				property="queryString" /></div>
+			<%=request.getAttribute(AQConstants.HTML_CONTENTS)%></div>
 
 
 			</td>
