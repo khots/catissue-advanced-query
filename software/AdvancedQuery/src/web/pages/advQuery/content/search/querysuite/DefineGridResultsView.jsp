@@ -17,17 +17,23 @@
 <meta http-equiv="Content-Language" content="en-us">
 <meta http-equiv="Content-Type"
 	content="text/html; charset=windows-1252">
-</head>
-<link rel="stylesheet" type="text/css"
+	<script src="dhtmlx_suite/js/dhtmlxcommon.js"></script>
+	
+	<script language="JavaScript" type="text/javascript" src="dhtmlx_suite/js/dhtmlxtree.js"></script>
+	<link rel="stylesheet" type="text/css"
+	href="dhtmlx_suite/css/dhtmlxtree.css" />
+	
+	
+	<link rel="stylesheet" type="text/css"
 	href="css/advQuery/styleSheet.css" />
-<link rel="STYLESHEET" type="text/css"
-	href="dhtml_comp/css/dhtmlXTree.css">
-<script language="JavaScript" type="text/javascript"
-	src="dhtml_comp/js/dhtmXTreeCommon.js"></script>
-<script language="JavaScript" type="text/javascript"
-	src="dhtml_comp/js/dhtmlXTree.js"></script>
-<script src="dhtml_comp/jss/dhtmlXCommon.js"></script>
-<script src="jss/advQuery/script.js"></script>
+	<script src="jss/advQuery/script.js"></script>
+	
+	
+</head>
+<body>
+	
+
+
 <%
 	String callAction = AQConstants.CONFIGURE_GRID_VIEW_ACTION;
 	CategorySearchForm form = (CategorySearchForm) request
@@ -353,9 +359,9 @@
 	var tree;
 function initTreeView()
 {
-		tree=new dhtmlXTreeObject("treeBox","100%","100%",0);
-		tree.setImagePath("dhtml_comp/imgs/");
-		tree.setOnClickHandler();
+	tree = new dhtmlXTreeObject("treeBox", "100%", "100%", 0);
+		tree.setImagePath("dhtmlx_suite/imgs/");
+		//tree.setOnClickHandler();
 		tree.enableCheckBoxes(1);
 	    tree.enableThreeStateCheckboxes(true);
 
@@ -416,3 +422,5 @@ function shiftRight()
 	alert(list);
 }
 </script>
+</body>
+</html>

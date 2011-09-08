@@ -8,13 +8,13 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="css/advQuery/styleSheet.css" />
 	<title>DHTML Tree samples. dhtmlXTree - Action handlers</title>
-	<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTree.css">
-	<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmXTreeCommon.js"></script>
-	<script language="JavaScript" type="text/javascript" src="dhtml_comp/js/dhtmlXTree.js"></script>
+	<link rel="STYLESHEET" type="text/css" href="dhtmlx_suite/css/dhtmlxtree.css">
+	<script language="JavaScript" type="text/javascript" src="dhtmlx_suite/js/dhtmxcommon.js"></script>
+	<script language="JavaScript" type="text/javascript" src="dhtmlx_suite/js/dhtmlxtree.js"></script>
 	<script language="JavaScript" type="text/javascript" src="jss/advQuery/javaScript.js"></script>
-	<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXGrid.css"/>
-	<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTree.css">
-	<script  src="dhtml_comp/jss/dhtmlXCommon.js"></script>
+	<link rel="STYLESHEET" type="text/css" href="dhtmlx_suite/css/dhtmlxgrid.css"/>
+	<link rel="STYLESHEET" type="text/css" href="dhtmlx_suite/css/dhtmlxtree.css">
+	<script  src="dhtmlx_suite/js/dhtmlxcommon.js"></script>
     <script type="text/javascript" src="jss/advQuery/ajax.js"></script>
 <script src="jss/advQuery/queryModule.js"></script>
 
@@ -63,7 +63,7 @@ var treeNo = 0;
 			String treeDataId = AQConstants.TREE_DATA+"_"+i;%>
 			divHeight(<%=noOfTrees%>, <%=i%>);
 			trees[treeNo]=new dhtmlXTreeObject("<%=divId%>","100%","100%",0);
-			trees[treeNo].setImagePath("dhtml_comp/imgs/");
+			trees[treeNo].setImagePath("dhtmlx_suite/imgs/");
 			trees[treeNo].setOnClickHandler(treeNodeClicked);
 			<%List treeData = (List)request.getAttribute(treeDataId);
 					if(treeData != null && treeData.size() != 0)

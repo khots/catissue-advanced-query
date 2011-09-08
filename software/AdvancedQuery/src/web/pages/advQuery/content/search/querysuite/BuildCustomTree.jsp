@@ -7,8 +7,8 @@
 <meta http-equiv="Content-Language" content="en-us">
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 
-<script language="JavaScript" type="text/javascript" src="dhtml_comp/jss/dhtmXTreeCommon.js"></script>
-<script language="JavaScript" type="text/javascript" src="dhtml_comp/jss/dhtmlXTree.js"></script>
+<script language="JavaScript" type="text/javascript" src="dhtmlx_suite/js/dhtmxcommon.js"></script>
+<script language="JavaScript" type="text/javascript" src="dhtmlx_suite/js/dhtmlxtree.js"></script>
 <script src="jss/advQuery/queryModule.js"></script>
 <script type="text/javascript" src="jss/advQuery/ajax.js"></script> 
 <script>

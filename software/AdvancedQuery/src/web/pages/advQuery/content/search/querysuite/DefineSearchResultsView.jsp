@@ -7,13 +7,13 @@
 
 <html>
 <head>
-<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTree.css">
+<link rel="STYLESHEET" type="text/css" href="dhtmlx_suite/css/dhtmlXTree.css">
 <meta http-equiv="Content-Language" content="en-us">
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <script src="jss/advQuery/queryModule.js"></script>
 <script type="text/javascript" src="jss/advQuery/wz_tooltip.js"></script>
-<script language="JavaScript" type="text/javascript" src="dhtml_comp/jss/dhtmXTreeCommon.js"></script>
-<script language="JavaScript" type="text/javascript" src="dhtml_comp/jss/dhtmlXTree.js"></script>
+<script language="JavaScript" type="text/javascript" src="dhtmlx_suite/js/dhtmxcommon.js"></script>
+<script language="JavaScript" type="text/javascript" src="dhtmlx_suite/js/dhtmlxtree.js"></script>
 
 </head>
 <body  onunload='closeWaitPage()' onresize='ViewResultResize()'>

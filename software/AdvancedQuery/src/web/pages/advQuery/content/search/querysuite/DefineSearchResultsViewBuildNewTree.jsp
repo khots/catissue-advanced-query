@@ -5,10 +5,10 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 
-<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTree.css">
+<link rel="STYLESHEET" type="text/css" href="dhtmlx_suite/css/dhtmlxtree.css">
 <script src="jss/advQuery/queryModule.js"></script>
-<script language="JavaScript" type="javascript" src="dhtml_comp/jss/dhtmXTreeCommon.js"></script>
-<script language="JavaScript" type="javascript" src="dhtml_comp/jss/dhtmlXTree.js"></script>
+<script language="JavaScript" type="javascript" src="dhtmlx_suite/js/dhtmxcommon.js"></script>
+<script language="JavaScript" type="javascript" src="dhtmlx_suite/js/dhtmlxtree.js"></script>
 <script>
 
 
@@ -16,7 +16,7 @@ function showTree(selectedCategories, flag)
 {
 	 var selLength = selectedCategories.length;     
 	 var updatedList = new Array();
-	 tree.setImagePath("dhtml_comp/imgs/");
+	 tree.setImagePath("dhtmlx_suite/imgs/");
 	 var i, j=0;				
 	 
 	 if(flag)

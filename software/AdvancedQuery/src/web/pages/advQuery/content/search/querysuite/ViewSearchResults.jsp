@@ -17,17 +17,13 @@
 	content="text/html; charset=windows-1252">
 </head>
 <link rel="STYLESHEET" type="text/css"
-	href="dhtml_comp/css/dhtmlXGrid.css" />
+	href="dhtmlx_suite/css/dhtmlxgrid.css" />
 <link rel="STYLESHEET" type="text/css"
-	href="dhtml_comp/css/dhtmlXTree.css">
-<script src="dhtml_comp/jss/dhtmlXCommon.js"></script>
-<script src="dhtml_comp/jss/dhtmlXGrid.js"></script>
-<script src="dhtml_comp/jss/dhtmlXGrid.js"></script>
-<script src="dhtml_comp/jss/dhtmlXGridCell.js"></script>
-<script language="JavaScript" type="text/javascript"
-	src="dhtml_comp/jss/dhtmXTreeCommon.js"></script>
-<script language="JavaScript" type="text/javascript"
-	src="dhtml_comp/jss/dhtmlXTree.js"></script>
+	href="dhtmlx_suite/css/dhtmlxtree.css">
+<script src="dhtmlx_suite/js/dhtmlxcommon.js"></script>
+<script src="dhtmlx_suite/js/dhtmlxgrid.js"></script>
+<script src="dhtmlx_suite/js/dhtmlxgridcell.js"></script>
+<script  type="text/javascript"src="dhtmlx_suite/js/dhtmlxtree.js"></script>
 <script type="text/javascript" src="jss/advQuery/ajax.js"></script>
 <script src="jss/advQuery/queryModule.js"></script>
 
@@ -123,7 +119,7 @@ function initGridView()
 	<%if (columnList != null && columnList.size() != 0
 					&& dataList != null && dataList.size() != 0) {%>
 		mygrid = new dhtmlXGridObject('gridbox');
-	mygrid.setImagePath("dhtml_comp/imgs/");
+	mygrid.setImagePath("dhtmlx_suite/imgs/");
 	mygrid.setHeader(columns);
 	//mygrid.setEditable("FALSE");
 	mygrid.enableAutoHeigth(false);
@@ -164,7 +160,7 @@ function initGridView()
 					String treeDataId = "treeData_" + i;%>
 
 			trees[treeNo]=new dhtmlXTreeObject(<%=divId%>,"100%","100%",0);
-			trees[treeNo].setImagePath("dhtml_comp/imgs/");
+			trees[treeNo].setImagePath("dhtmlx_suite/imgs/");
 			trees[treeNo].setOnClickHandler(treeNodeClicled);
 			<%List treeData = (List) request.getSession()
 							.getAttribute(treeDataId);
