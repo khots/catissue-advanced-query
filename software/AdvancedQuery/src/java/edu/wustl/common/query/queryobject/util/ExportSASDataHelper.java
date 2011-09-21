@@ -31,10 +31,11 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
  * @author gaurav_mehta
- * 
+ *
  */
 public final class ExportSASDataHelper {
 
@@ -47,12 +48,12 @@ public final class ExportSASDataHelper {
 
 	/**
 	 * Creates the zip.
-	 * 
+	 *
 	 * @param sasFileZipEntryName
 	 * @param formDataFileZipEntryName
-	 * 
+	 *
 	 * @return the string
-	 * 
+	 *
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
@@ -99,10 +100,10 @@ public final class ExportSASDataHelper {
 
 	/**
 	 * Gets the new zip entry.
-	 * 
+	 *
 	 * @param name
 	 *            the name
-	 * 
+	 *
 	 * @return the new zip entry
 	 */
 	private static ZipEntry getNewZipEntry(String name) {
@@ -111,12 +112,12 @@ public final class ExportSASDataHelper {
 
 	/**
 	 * Gets the new file input stream.
-	 * 
+	 *
 	 * @param file
 	 *            the file
-	 * 
+	 *
 	 * @return the new file input stream
-	 * 
+	 *
 	 * @throws FileNotFoundException
 	 *             the file not found exception
 	 */
@@ -127,7 +128,7 @@ public final class ExportSASDataHelper {
 
 	/**
 	 * Append import file info.
-	 * 
+	 *
 	 * @param saasPgm
 	 *            the saas pgm
 	 */
@@ -148,10 +149,10 @@ public final class ExportSASDataHelper {
 
 	/**
 	 * Generate file.
-	 * 
+	 *
 	 * @param saasPgm
 	 *            the saas pgm
-	 * 
+	 *
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
@@ -194,10 +195,10 @@ public final class ExportSASDataHelper {
 
 	/**
 	 * Trim sub form name.
-	 * 
+	 *
 	 * @param subFormName
 	 *            the sub form name
-	 * 
+	 *
 	 * @return the string
 	 */
 	public static String trimSubFormName(String subFormName) {
@@ -211,7 +212,7 @@ public final class ExportSASDataHelper {
 
 	/**
 	 * Generate format for date attribute.
-	 * 
+	 *
 	 * @param informat
 	 *            the informat
 	 * @param format
@@ -235,7 +236,7 @@ public final class ExportSASDataHelper {
 
 	/**
 	 * Generate format for string attribute.
-	 * 
+	 *
 	 * @param informat
 	 *            the informat
 	 * @param format
@@ -267,7 +268,7 @@ public final class ExportSASDataHelper {
 
 	/**
 	 * Process permissible values.
-	 * 
+	 *
 	 * @param numberToStringFormat
 	 *            the number to string format
 	 * @param stringToNumberFormat
@@ -285,12 +286,17 @@ public final class ExportSASDataHelper {
 		numberToStringFormat.append(newLine);
 		numberToStringFormat.append(numberToStringFormatCounter);
 		numberToStringFormat.append("  = ");
+		Object pvValue = permissibleValue.getValueAsObject();
+		if(pvValue!=null)
+		{
+			pvValue = DynamicExtensionsUtility.getUnEscapedStringValue(pvValue.toString());
+		}
 		numberToStringFormat.append(new StringBuilder().append(" \"").append(
-				permissibleValue.getValueAsObject()).append(" \"").toString());
+				pvValue).append(" \"").toString());
 		numberToStringFormat.append(newLine);
 		stringToNumberFormat.append(newLine);
 		stringToNumberFormat.append(new StringBuilder().append("\"").append(
-				permissibleValue.getValueAsObject()).append("\"").toString());
+				pvValue).append("\"").toString());
 		stringToNumberFormat.append("  = ");
 		stringToNumberFormat.append(numberToStringFormatCounter);
 		stringToNumberFormat.append(newLine);
@@ -313,7 +319,7 @@ public final class ExportSASDataHelper {
 
 	/**
 	 * Define formats.
-	 * 
+	 *
 	 * @param numberToStringFormat
 	 *            the number to string format
 	 * @param stringToNumberFormat
@@ -362,7 +368,7 @@ public final class ExportSASDataHelper {
 
 	/**
 	 * Generate format.
-	 * 
+	 *
 	 * @param informat
 	 *            the informat
 	 * @param format
@@ -535,7 +541,7 @@ public final class ExportSASDataHelper {
 
 		return zipEntry.getName();
 	}
-	
+
 	/**
 	 * @param attributeCollection
 	 */

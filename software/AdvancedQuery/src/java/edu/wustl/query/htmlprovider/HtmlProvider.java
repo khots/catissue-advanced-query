@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.cab2b.common.exception.CheckedException;
 import edu.wustl.cab2b.common.util.AttributeInterfaceComparator;
 import edu.wustl.cab2b.common.util.PermissibleValueComparator;
@@ -140,13 +141,13 @@ public class HtmlProvider
 	{
 		StringBuffer componentId = new StringBuffer();
 		String attributeName = attribute.getName();
-		if(this.expressionId == -1)
+		if(expressionId == -1)
 		{
 			componentId.append(attributeName).append(attribute.getId().toString());
 		}
 		else
 		{
-			componentId.append(attributeName).append(this.expressionId);
+			componentId.append(attributeName).append(expressionId);
 		}
 		return componentId.toString();
 	}
@@ -161,8 +162,8 @@ public class HtmlProvider
 	 */
 	public String generateHTML(EntityInterface entity, List<ICondition> conditions)
 	{
-		boolean attributeChecked = this.generateHTMLDetails.isAttributeChecked();
-		boolean permissibleValuesChecked = this.generateHTMLDetails.isPermissibleValuesChecked();
+		boolean attributeChecked = generateHTMLDetails.isAttributeChecked();
+		boolean permissibleValuesChecked = generateHTMLDetails.isPermissibleValuesChecked();
 		Collection<AttributeInterface> attributeCollection = entity.getEntityAttributesForQuery();
 		String nameOfTheEntity = entity.getName();
 		String entityId = entity.getId().toString();
@@ -202,7 +203,7 @@ public class HtmlProvider
 			Collections.sort(attributes, new AttributeInterfaceComparator());
 			for (int i = 0; i < attributes.size(); i++)
 			{
-				AttributeInterface attribute = (AttributeInterface) attributes.get(i);
+				AttributeInterface attribute = attributes.get(i);
 				getAttributeDetails(attribute,conditions,null);
 				attrLabel = new StringBuffer
 					(Utility.getDisplayLabel(attributeDetails.getAttrName()));
@@ -235,7 +236,7 @@ public class HtmlProvider
 	private void getAttributeDetails(AttributeInterface attribute,
 			List<ICondition> conditions,List<IParameter<?>> parameterList)
 	{
-		this.attributeDetails = new AttributeDetails();
+		attributeDetails = new AttributeDetails();
 		attributeDetails.setAttrName(attribute.getName());
 		attributeDetails.setOperatorsList(HtmlUtility.getConditionsList(attribute,parseFile));
 		if(!attributeDetails.getOperatorsList().isEmpty())
@@ -403,7 +404,7 @@ public class HtmlProvider
 			Collections.sort(values, new PermissibleValueComparator());
 			for (int i = 0; i < values.size(); i++)
 			{
-				PermissibleValueInterface perValue = (PermissibleValueInterface) values.get(i);
+				PermissibleValueInterface perValue = values.get(i);
 				getHtmlEnumValues(editLimitPermissibleValues, html, perValue);
 			}
 			html.append("\n</select>\n</td>");
@@ -422,7 +423,7 @@ public class HtmlProvider
 	{
 		String value = perValue.getValueAsObject().toString();
 		if (editLimitPermissibleValues != null
-				&& editLimitPermissibleValues.contains(value)
+				&& editLimitPermissibleValues.contains(DynamicExtensionsUtility.getUnEscapedStringValue(value))
 				|| isAttributeBold())
 		{
 			html.append("\n<option class=\"PermissibleValuesQuery\" title=\"" + value
@@ -450,7 +451,7 @@ public class HtmlProvider
 			Collections.sort(attributes, new AttributeInterfaceComparator());
 			for (int i = 0; i < attributes.size(); i++)
 			{
-				AttributeInterface attribute = (AttributeInterface) attributes.get(i);
+				AttributeInterface attribute = attributes.get(i);
 				//String attrName = attribute.getName();
 				String componentId = generateComponentName(attribute);
 				attributesList.append(';').append(componentId);
@@ -520,7 +521,7 @@ public class HtmlProvider
 				&& !attributeDetails.getAttributeNameConditionMap().
 				containsKey(attributeDetails.getAttrName())))
 		{
-			generateHTMLForConditionNull(generatedHTML, attribute,this.attributeDetails);
+			generateHTMLForConditionNull(generatedHTML, attribute,attributeDetails);
 		}
 	}
 
@@ -544,7 +545,7 @@ public class HtmlProvider
 				return;
 			}
 
-			generateHTMLForConditionNull(generatedHTML,attribute,this.attributeDetails);
+			generateHTMLForConditionNull(generatedHTML,attribute,attributeDetails);
 		}
 	}
 	/**
@@ -650,7 +651,7 @@ public class HtmlProvider
 		if (forPage.equalsIgnoreCase(AQConstants.SAVE_QUERY_PAGE)
 				|| forPage.equalsIgnoreCase(AQConstants.EXECUTE_QUERY_PAGE))
 		{
-			generatedHTML.append(" <input type='hidden'  id='" + this.expressionId + ":"
+			generatedHTML.append(" <input type='hidden'  id='" + expressionId + ":"
 					+ Utility.parseClassName(entity.getName()) + "_attributeList'" + "value="
 					+ getAttributesString(collection) + " />  ");
 		}
@@ -674,7 +675,7 @@ public class HtmlProvider
 	private String getDagNodeId(int expressionID, EntityInterface entity,
 			Map<EntityInterface, List<Integer>> entityList)
 	{
-		List<Integer> entityDagId = (List<Integer>)entityList.get(entity);
+		List<Integer> entityDagId = entityList.get(entity);
 		String dagNodeId = "";	// Converting the dagId to string
 		if (entityDagId.size() > 1)
 		{
@@ -873,7 +874,7 @@ public class HtmlProvider
 		Iterator<Integer> iterator = expressionMap.keySet().iterator();
 		while (iterator.hasNext())
 		{
-			Integer expressionId = (Integer) iterator.next();
+			Integer expressionId = iterator.next();
 			entityConditionMap = expressionMap.get(expressionId);
 			if (entityConditionMap.isEmpty())
 			{
@@ -882,7 +883,7 @@ public class HtmlProvider
 			Iterator<EntityInterface> it2 = entityConditionMap.keySet().iterator();
 			while (it2.hasNext())
 			{
-				EntityInterface entity = (EntityInterface) it2.next();
+				EntityInterface entity = it2.next();
 				List<ICondition> conditions = entityConditionMap.get(entity);
 				generatedHTML.append(getSaveQueryPageHtml(expressionId.intValue(), entity,
 				conditions, isShowAll, entityExpressionIdListMap,parameterList));

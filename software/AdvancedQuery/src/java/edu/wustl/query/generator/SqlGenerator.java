@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanTypeInformationInterface;
@@ -26,7 +28,9 @@ import edu.common.dynamicextensions.domaininterface.FileTypeInformationInterface
 import edu.common.dynamicextensions.domaininterface.FloatTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.LongTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
@@ -215,7 +219,7 @@ public class SqlGenerator implements ISqlGenerator
 		IQuery queryClone = cloneQuery(query);
 		constraints = queryClone.getConstraints();
 
-		this.joinGraph = (JoinGraph) constraints.getJoinGraph();
+		joinGraph = (JoinGraph) constraints.getJoinGraph();
 		IExpression rootExpression = constraints.getRootExpression();
 
 		// Identifying empty Expressions.
@@ -1092,7 +1096,18 @@ public class SqlGenerator implements ISqlGenerator
 	private String modifyValueforDataType(String value, AttributeTypeInformationInterface dataType,
 			ICondition condition) throws SqlException
 	{
-		String tempValue = value;
+		String tempValue;
+		Collection<PermissibleValueInterface> pvColl = ((UserDefinedDE)dataType.getDataElement()).getPermissibleValueCollection();
+
+		if(pvColl.isEmpty())
+		{
+			tempValue = value;
+		}
+		else
+		{
+			//encode value as in case of special character DE saves encoded value in DB.
+			tempValue = DynamicExtensionsUtility.getEscapedStringValue(value);
+		}
 		if (dataType instanceof StringTypeInformationInterface)// for data type
 		// String it will be enclosed in single quote.
 		{
