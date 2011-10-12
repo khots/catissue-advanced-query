@@ -1,28 +1,30 @@
 <?xml version ="1.0"?>
 <!--Ant Script for create Build for Query -->
-<project name="Query Build" default="compile" basedir="../">
+<project name="Query Build" default="compile" basedir="./">
+
+    <property name="base.dir" value="${basedir}/../" />
 
     <import file="ivy-targets.xml" />
-	<import file="${basedir}/conf/build-properties.xml" />
+	<import file="${base.dir}/conf/build-properties.xml" />
 
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
-			<pathelement location="../lib/server/ant-contrib.jar" />
+			<pathelement location="${base.dir}/lib/server/ant-contrib.jar" />
 		</classpath>
 	</taskdef>
 
 	<!--define require dir and Properties -->
-	<property file="${basedir}/conf/advanceQuery.properties" />
-	<property name="dist.dir" value="${basedir}/dist" />
-	<property name="src.dir" value="${basedir}/src/main/java" />
-	<property name="test.dir" value="${basedir}/src/test/java" />
-    <property name="test.src.dir" value="${basedir}/src/main/java/edu/wustl/quey/bizlogic/test" />
+	<property file="${base.dir}/conf/advanceQuery.properties" />
+	<property name="dist.dir" value="${base.dir}/dist" />
+	<property name="src.dir" value="${base.dir}/src/main/java" />
+	<property name="test.dir" value="${base.dir}/src/test/java" />
+    <property name="test.src.dir" value="${base.dir}/src/main/java/edu/wustl/quey/bizlogic/test" />
     <property name="test.class.dir" value="${dist.dir}/WEB-INF/classes/edu/wustl/quey/bizlogic/test" />
 
-	<property name="target.dir" value="${basedir}/target" />
-	<property name="lib.dir" value="${basedir}/lib/client" />
+	<property name="target.dir" value="${base.dir}/target" />
+	<property name="lib.dir" value="${base.dir}/lib/client" />
 	<property name="hbm.dir" value="${src.dir}/edu/wustl/query/hbm" />
-	<property name="extra_lib.dir" value="${basedir}/lib/server" />
+	<property name="extra_lib.dir" value="${base.dir}/lib/server" />
 	<property name="generateforce" value="true" />
 	<property name="junit.jar" value="${lib.dir}/junit-3.8.1.jar" />
 	<property name="cobertura.dir" value="${target.dir}/reports/coverage" />
@@ -30,16 +32,16 @@
 
 	<!-- csm related properties -->
 	<property name="temp.dir" value="${target.dir}/tempQuey" />
-	<property name="project.src.domain" value="${basedir}/src/main/java/edu/wustl/query/domain/" />
+	<property name="project.src.domain" value="${base.dir}/src/main/java/edu/wustl/query/domain/" />
 	<property name="mysql.dialect.string" value="org.hibernate.dialect.MySQLDialect" />
 	<property name="datasource" value="java:/query" />
 
 	<property name="junit.dir" value="${target.dir}/junit" />
 	<property name="junit.report.dir" value="${target.dir}/junit" />
-	<property name="cobertura.location" value="${basedir}/cobertura" />
-	<property name="test.instrumented.dir" value="${basedir}/cobertura/instrument" />
-	<property name="cobertura.lib" value="coberturaLib" />
-	<property name="coverage.dir" value="${basedir}/cobertura" />
+	<property name="cobertura.location" value="${base.dir}/cobertura" />
+	<property name="test.instrumented.dir" value="${base.dir}/cobertura/instrument" />
+	<property name="cobertura.lib" value="${base.dir}/coberturaLib" />
+	<property name="coverage.dir" value="${base.dir}/cobertura" />
 	<property name="test.classes.dir" value="${dist.dir}/test/classes" />
 
 	<path id="cobertura.classpath">
@@ -59,8 +61,8 @@
 
 	<!-- flex related properties -->
 	<property name="FLEX_HOME" value="C:/Flex SDK 2" />
-	<property name="FLEX_APP_ROOT" value="${basedir}/src/main/resources/flexclient" />
-	<property name="flex.dir" value="${basedir}/src/main/resources/flex" />
+	<property name="FLEX_APP_ROOT" value="${base.dir}/src/main/resources/flexclient" />
+	<property name="flex.dir" value="${base.dir}/src/main/resources/flex" />
 	<!-- flex related properties finish -->
 	<path id="app.classpath">
 		<fileset dir="${lib.dir}">
@@ -84,9 +86,9 @@
 	<path id="junit.classpath">
 		<pathelement location="${junit.jar}" />
 		<pathelement location="${target.dir}" />
-		<pathelement location="${basedir}/cobertura/cobertura.jar" />
-		<pathelement location="${basedir}/cobertura/lib/jakarta-oro-2.0.8.jar" />
-		<pathelement location="${basedir}/cobertura/lib/asm-2.2.1.jar" />
+		<pathelement location="${base.dir}/cobertura/cobertura.jar" />
+		<pathelement location="${base.dir}/cobertura/lib/jakarta-oro-2.0.8.jar" />
+		<pathelement location="${base.dir}/cobertura/lib/asm-2.2.1.jar" />
 
 		<path refid="app.classpath" />
 	</path>
@@ -116,7 +118,7 @@
 	</target>
 
 	<!-- Compile all files, generated and hand-written -->
-	<target name="compile" depends="init">
+	<target name="compile" depends="init, resolve">
         <mkdir dir="${target.dir}/WEB-INF/classes" />
 		<javac destdir="${target.dir}/WEB-INF/classes" includes="**/*.*" includeAntRuntime="false" debug="true">
 			<src path="${src.dir}" />
@@ -144,8 +146,8 @@
 	<target name="create_war">
 		<delete file="${dist.dir}/query.war" />
 
-		<delete file="${basedir}/MANIFEST.MF" />
-		<manifest file="${basedir}/MANIFEST.MF">
+		<delete file="${base.dir}/MANIFEST.MF" />
+		<manifest file="${base.dir}/MANIFEST.MF">
 			<attribute name="Built-By" value="${user.name}" />
 			<attribute name="Version" value="${application.name} ${application.version}" />
 			<attribute name="CSM-Version" value="${csm.version}" />
@@ -153,14 +155,14 @@
 			<attribute name="Build-on" value="${TODAY}" />
 		</manifest>
 
-		<replace dir="${target.dir}/WEB-INF/classes" propertyfile="${basedir}/conf/queryInstall.properties">
-			<include name="${basedir}/conf/log4j.properties" />
+		<replace dir="${target.dir}/WEB-INF/classes" propertyfile="${base.dir}/conf/queryInstall.properties">
+			<include name="${base.dir}/conf/log4j.properties" />
 			<replacefilter token="@@jbosshome@@" value="${jboss.server.url}" />
 		</replace>
 
 		<!-- Copy these two config files from other directory which contains the tekenized files -->
 		<copy todir="${target.dir}/WEB-INF/classes" overwrite="true">
-			<fileset dir="${basedir}/src/main/resources/tokenizedFiles">
+			<fileset dir="${base.dir}/src/main/resources/tokenizedFiles">
 				<include name="QueryHibernate.cfg.xml" />
 				<include name="DynamicExtensionsHibernate.cfg.xml" />
 			</fileset>
@@ -179,13 +181,13 @@
 
 <!--
 		<antcall target="copydeletedjars">
-			<param name="deleteFromDir" value="${basedir}/lib/client" />
+			<param name="deleteFromDir" value="${base.dir}/lib/client" />
 		</antcall>
 -->
 
-		<war destfile="${dist.dir}/query.war" webxml="${basedir}/conf/web.xml" manifest="${basedir}/MANIFEST.MF">
+		<war destfile="${dist.dir}/query.war" webxml="${base.dir}/conf/web.xml" manifest="${base.dir}/MANIFEST.MF">
 
-            <fileset dir="${basedir}/src/main/web">
+            <fileset dir="${base.dir}/src/main/web">
                 <include name="stylesheets/**" />
                 <include name="images/**" />
                 <include name="javascripts/**" />
@@ -197,7 +199,7 @@
                 <include name="WEB-INF/**" />
 			</fileset>
 
-			<fileset dir="${basedir}/src/main/resources">
+			<fileset dir="${base.dir}/src/main/resources">
 				<include name="flexclient/**" />
 				<include name="runtime/**" />
 				<include name="ApplicationVersionInfo.txt" />
@@ -375,18 +377,18 @@
 
 		<!--<copy file="./build/query.war" todir="${zip.dir}" overwrite="true" /> -->
 		<!--<copy file="./build/dynamicExtensions.war" todir="${zip.dir}" overwrite="true" />-->
-		<copy file="${basedir}/conf/query-ds.xml" todir="${zip.dir}" overwrite="true" />
+		<copy file="${base.dir}/conf/query-ds.xml" todir="${zip.dir}" overwrite="true" />
 		<!--<copy file="./src/conf/log4j.properties" todir="${zip.dir}" overwrite="true" /> -->
-		<copy file="${basedir}/conf/queryInstall.properties" todir="${zip.dir}" overwrite="true" />
-		<copy file="${basedir}/conf/queryMainTiles.properties" todir="${zip.dir}" overwrite="true" />
-		<copy file="${basedir}/conf/queryHibernateCfg.properties" todir="${zip.dir}" overwrite="true" />
+		<copy file="${base.dir}/conf/queryInstall.properties" todir="${zip.dir}" overwrite="true" />
+		<copy file="${base.dir}/conf/queryMainTiles.properties" todir="${zip.dir}" overwrite="true" />
+		<copy file="${base.dir}/conf/queryHibernateCfg.properties" todir="${zip.dir}" overwrite="true" />
 		<copy file="${target.dir}/WEB-INF/query.properties" todir="${zip.dir}" overwrite="true" />
 		<copy file="${target.dir}/WEB-INF/queryDbutil.properties" todir="${zip.dir}" overwrite="true" />
-		<copy file="${basedir}/conf/build-properties.xml" todir="${zip.dir}" overwrite="true" />
-		<copy file="${basedir}/MANIFEST.MF" todir="${zip.dir}" overwrite="true" />
-		<copy file="${basedir}/build/deploy.xml" todir="${zip.dir}" overwrite="true" />
-		<copy file="${basedir}/conf/queryintegration.xml" todir="${zip.dir}" overwrite="true" />
-		<copy file="${basedir}/conf/advanceQuery.properties" todir="${zip.dir}" overwrite="true" />
+		<copy file="${base.dir}/conf/build-properties.xml" todir="${zip.dir}" overwrite="true" />
+		<copy file="${base.dir}/MANIFEST.MF" todir="${zip.dir}" overwrite="true" />
+		<copy file="${base.dir}/build/deploy.xml" todir="${zip.dir}" overwrite="true" />
+		<copy file="${base.dir}/conf/queryintegration.xml" todir="${zip.dir}" overwrite="true" />
+		<copy file="${base.dir}/conf/advanceQuery.properties" todir="${zip.dir}" overwrite="true" />
 		<!--copy file="log4j.xml" todir="${zip.dir}" overwrite="true" /> -->
 		<!--<copy file="login-config.xml" todir="${zip.dir}" overwrite="true" />
 		<copy file="./src/conf/properties-service.xml" todir="${zip.dir}" overwrite="true" /> -->
@@ -395,7 +397,7 @@
 		<copy file="${dist.dir}/AdvanceQuery.jar" todir="${zip.dir}" overwrite="true" />
 
 		<copy todir="${zip.dir}/query-properties" overwrite="true">
-			<fileset dir="${basedir}/conf/query-properties">
+			<fileset dir="${base.dir}/conf/query-properties">
 				<exclude name="Accessibility.txt" />
 				<exclude name="ContactUs.txt" />
 				<exclude name="Disclaimer.txt" />
@@ -409,14 +411,14 @@
 
 		<!-- Copy these two config files from tokenizedFiles directory which contains the tekenized files -->
 		<copy todir="${target.dir}/WEB-INF/classes" overwrite="true">
-			<fileset dir="${basedir}/src/main/resources/tokenizedFiles">
+			<fileset dir="${base.dir}/src/main/resources/tokenizedFiles">
 				<include name="QueryHibernate.cfg.xml" />
 				<include name="DynamicExtensionsHibernate.cfg.xml" />
 			</fileset>
 		</copy>
 
 		<copy todir="${zip.dir}" overwrite="true">
-			<fileset dir="${basedir}/conf">
+			<fileset dir="${base.dir}/conf">
 				<include name="advancequery-struts-config.xml" />
 				<include name="AdvanceQuery-tiles-defs.xml" />
 			</fileset>
@@ -434,23 +436,23 @@
 
 		<!---Copying css folder -->
 		<copy todir="${zip.dir}/css" overwrite="true">
-			<fileset dir="${basedir}/src/main/web/stylesheets" />
+			<fileset dir="${base.dir}/src/main/web/stylesheets" />
 		</copy>
 
 		<!--Copying jss folder -->
 		<copy todir="${zip.dir}/jss" overwrite="true">
-			<fileset dir="${basedir}/src/main/web/javascripts" />
+			<fileset dir="${base.dir}/src/main/web/javascripts" />
 		</copy>
 
 		<!--Coying Images -->
 		<copy todir="${zip.dir}/images" overwrite="true">
-			<!--<fileset dir = "${basedir}/src/web/images/advQuery/dagViewImages">
+			<!--<fileset dir = "${base.dir}/src/web/images/advQuery/dagViewImages">
 				<include name="**/*.*" />
 			</fileset>
-			<fileset dir = "${basedir}/src/web/images/advQuery/uIEnhancementImages">
+			<fileset dir = "${base.dir}/src/web/images/advQuery/uIEnhancementImages">
 				<exclude name="**/*" />
 			</fileset> -->
-			<fileset dir="${basedir}/src/main/web/images">
+			<fileset dir="${base.dir}/src/main/web/images">
 				<exclude name="**/advQuery/a.gif" />
 				<exclude name="**/advQuery/appLogo.gif" />
 				<exclude name="**/advQuery/Arm_blk.gif" />
@@ -502,7 +504,7 @@
 		<!--Copying pages -->
 		<copy todir="${zip.dir}/pages" overwrite="true">
 
-			<fileset dir="${basedir}/src/main/web/pages">
+			<fileset dir="${base.dir}/src/main/web/pages">
 				<exclude name="QueryApplicationHeader.jsp" />
 				<exclude name="QueryApplicationHeaderLogin.jsp" />
 				<exclude name="QueryIndex.jsp" />
@@ -521,7 +523,7 @@
 
 		<!--Copying the flex related files from WEB-INF/flex -->
 		<copy todir="${zip.dir}/flex">
-			<fileset dir="${basedir}/src/main/resources/flex">
+			<fileset dir="${base.dir}/src/main/resources/flex">
 				<include name="cache.dep" />
 				<include name="**/*.xml" />
 				<include name="**/*.properties" />
@@ -530,16 +532,16 @@
 
 		<!-- Copying flex components-->
 		<copy todir="${zip.dir}/flexclient" overwrite="true">
-			<fileset dir="${basedir}/src/main/resources/flexclient" />
+			<fileset dir="${base.dir}/src/main/resources/flexclient" />
 		</copy>
 
 		<!--Added By Baljeet for meta data loading -->
 		<!--copy todir ="${zip.dir}/csv" overwrite="true">
-			<fileset dir="${basedir}/src/conf/csv" />
+			<fileset dir="${base.dir}/src/conf/csv" />
 		</copy>
 
 		<copy todir ="${zip.dir}/xmi" overwrite="true">
-			<fileset dir="${basedir}/xmi" />
+			<fileset dir="${base.dir}/xmi" />
         </copy -->
 
 		<!--Baljeet's changes ends here -->
@@ -555,16 +557,16 @@
 		</copy>
 
 		<copy todir="${zip.dir}/SQL" overwrite="true">
-			<fileset dir="${basedir}/db" />
+			<fileset dir="${base.dir}/db" />
 		</copy>
 
 		<!-- DE conf files -->
 		<copy todir="${zip.dir}/DE_conf" overwrite="true">
-			<fileset dir="${basedir}/conf/DE_conf" />
+			<fileset dir="${base.dir}/conf/DE_conf" />
 		</copy>
 
 		<!-- DE conf files end -->
-		<zip destfile="${zip.file}" basedir="${zip.dir}" />
+		<zip destfile="${zip.file}" base.dir="${zip.dir}" />
 		<delete dir="${zip.dir}" />
 	</target>
 
@@ -655,15 +657,15 @@
 		  <property name="reportgenerator.input.junitfile" value="D:/Nightly_Build/XmlReport/TESTS-TestSuites.xml" />
 		  <property name="reportgenerator.output.file" value="D:/Nightly_Build/script/mail_setting.properties" />
 	-->
-	<property name="reportgenerator.input.junit_mysql_fresh_file" value="${basedir}/XmlReport/JUnitReports/mysql_fresh_report.xml" />
-	<property name="reportgenerator.input.junit_mysql_upgrade_file" value="${basedir}/XmlReport/JUnitReports/mysql_upgrade_report.xml" />
-	<property name="reportgenerator.input.junit_oracle_fresh_file" value="${basedir}/XmlReport/JUnitReports/oracle_fresh_report.xml" />
-	<property name="reportgenerator.input.junit_oracle_upgrade_file" value="${basedir}/XmlReport/JUnitReports/oracle_upgrade_report.xml" />
+	<property name="reportgenerator.input.junit_mysql_fresh_file" value="${base.dir}/XmlReport/JUnitReports/mysql_fresh_report.xml" />
+	<property name="reportgenerator.input.junit_mysql_upgrade_file" value="${base.dir}/XmlReport/JUnitReports/mysql_upgrade_report.xml" />
+	<property name="reportgenerator.input.junit_oracle_fresh_file" value="${base.dir}/XmlReport/JUnitReports/oracle_fresh_report.xml" />
+	<property name="reportgenerator.input.junit_oracle_upgrade_file" value="${base.dir}/XmlReport/JUnitReports/oracle_upgrade_report.xml" />
 
-	<property name="reportgenerator.input.jmeter_mysql_fresh_file" value="${basedir}/XmlReport/JMeterReports/Mysql_Fresh_CaTissueJMeterTests.jtl" />
-	<property name="reportgenerator.input.jmeter_mysql_upgrade_file" value="${basedir}/XmlReport/JMeterReports/Mysql_Upgrade_CaTissueJMeterTests.jtl" />
-	<property name="reportgenerator.input.jmeter_oracle_fresh_file" value="${basedir}/XmlReport/JMeterReports/Oracle_Fresh_CaTissueJMeterTests.jtl" />
-	<property name="reportgenerator.input.jmeter_oracle_upgrade_file" value="${basedir}/XmlReport/JMeterReports/Oracle_Upgrade_CaTissueJMeterTests.jtl" />
+	<property name="reportgenerator.input.jmeter_mysql_fresh_file" value="${base.dir}/XmlReport/JMeterReports/Mysql_Fresh_CaTissueJMeterTests.jtl" />
+	<property name="reportgenerator.input.jmeter_mysql_upgrade_file" value="${base.dir}/XmlReport/JMeterReports/Mysql_Upgrade_CaTissueJMeterTests.jtl" />
+	<property name="reportgenerator.input.jmeter_oracle_fresh_file" value="${base.dir}/XmlReport/JMeterReports/Oracle_Fresh_CaTissueJMeterTests.jtl" />
+	<property name="reportgenerator.input.jmeter_oracle_upgrade_file" value="${base.dir}/XmlReport/JMeterReports/Oracle_Upgrade_CaTissueJMeterTests.jtl" />
 
 	<target name="GenerateNightlyBuildReport" depends="compile">
 		<java classname="NightlyBuildReportGenerator" fork="true">
@@ -697,7 +699,7 @@
 	-->
 
 	<target name="build_DomainObject_jar" depends="compile" description="To create jar which contains domain object along with its hbm file. This is required for Query Metedata loading.">
-		<jar taskname="buildJar" jarfile="${basedir}/queryDomain.jar">
+		<jar taskname="buildJar" jarfile="${base.dir}/queryDomain.jar">
 			<fileset dir="${target.dir}/WEB-INF/classes">
 				<include name="**/*.hbm.xml" />
 				<include name="**/edu/wustl/query/domain/**" />
@@ -708,7 +710,7 @@
 	</target>
 
 	<!-- flex related targets -->
-	<taskdef resource="flexTasks.tasks" classpath="${basedir}/lib/server/flexTasks.jar" />
+	<taskdef resource="flexTasks.tasks" classpath="${base.dir}/lib/server/flexTasks.jar" />
 
 	<target name="compile_dag_flex">
 		<mxmlc file="${FLEX_APP_ROOT}/advQuery/dag/Dag.mxml" keep-generated-actionscript="true">
@@ -725,7 +727,7 @@
 	<target name="build_jar" depends="compile">
 		<tstamp />
 		<delete file="{dist.dir}/AdvancedQuery.jar" />
-		<jar jarfile="${dist.dir}/AdvancedQuery.jar" basedir="${target.dir}/WEB-INF/classes">
+		<jar jarfile="${dist.dir}/AdvancedQuery.jar" base.dir="${target.dir}/WEB-INF/classes">
 			<manifest>
 				<section name="${aq.jar.details}">
 					<attribute name="Version" value="${aq.jar.version}" />
@@ -803,7 +805,7 @@
 	<target name="runJunitTestCases">
 		<mkdir dir="${junit.report.dir}" />
 		<echo message="Running junit test cases...." />
-		<copy file="${basedir}/conf/query-properties/ApplicationSecurityConfig.xml" todir="${target.dir}/WEB-INF/classes" overwrite="true" />
+		<copy file="${base.dir}/conf/query-properties/ApplicationSecurityConfig.xml" todir="${target.dir}/WEB-INF/classes" overwrite="true" />
 		<antcall target="replacecfgfiles" />
 		<replace dir="${target.dir}/WEB-INF/classes">
 			<include name="ApplicationSecurityConfig.xml" />
@@ -852,8 +854,8 @@
 	</target>
 
 	<target name="replacecfgfiles">
-		<copy file="${basedir}/conf/DE_conf/DynamicExtensionsHibernate.cfg.xml" todir="${target.dir}/WEB-INF/classes" overwrite="true" />
-		<copy file="${basedir}/conf/DE_conf/QueryHibernate.cfg.xml" todir="${target.dir}/WEB-INF/classes" overwrite="true" />
+		<copy file="${base.dir}/conf/DE_conf/DynamicExtensionsHibernate.cfg.xml" todir="${target.dir}/WEB-INF/classes" overwrite="true" />
+		<copy file="${base.dir}/conf/DE_conf/QueryHibernate.cfg.xml" todir="${target.dir}/WEB-INF/classes" overwrite="true" />
 		<if>
 			<equals arg1="mysql" arg2="${database.type}" />
 			<then>

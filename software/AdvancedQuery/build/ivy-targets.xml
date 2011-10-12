@@ -1,6 +1,7 @@
 
 <project xmlns:ivy="antlib:org.apache.ivy.ant">
 
+    <property name="base.dir" value="${basedir}/../" />
     <property name="ivy.install.version" value="2.0.0-beta1"/>
     <property name="ivy.install.version" value="2.0.0-beta1"/>
     <property name="ivy.jar.dir" value="${user.home}/.ivy"/>
@@ -25,7 +26,7 @@
 	</target>
 
     <target name="resolve" depends="init-ivy" description="--> retrieve dependencies with ivy">
-        <ivy:retrieve pattern="${basedir}/lib/[artifact]-[revision].[ext]"/>
+        <ivy:retrieve pattern="${base.dir}/lib/[artifact]-[revision].[ext]" />
     </target>
 
     <target name="download-ivy" unless="skip.download">
