@@ -1,12 +1,13 @@
 <?xml version ="1.0"?>
 <!--Ant Script for create Build for Query -->
-<project name="Query Build" default="compile" basedir="./">
+<project name="Query Build" default="compile" basedir="../">
 
+    <import file="ivy-targets.xml" />
 	<import file="${basedir}/conf/build-properties.xml" />
 
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
-			<pathelement location="./lib/server/ant-contrib.jar" />
+			<pathelement location="../lib/server/ant-contrib.jar" />
 		</classpath>
 	</taskdef>
 
@@ -95,8 +96,6 @@
 
         <delete dir="${target.dir}" />
 		<mkdir dir="${target.dir}" />
-		<delete dir="${dist.dir}" />
-		<mkdir dir="${dist.dir}" />
 
         <mkdir dir="${temp.dir}" />
 
@@ -366,8 +365,8 @@
 	</target>
 
 	<target name="create_zip" depends="build_jar">
-		<property name="zip.dir" value="${dist.dir}/AdvanceQuery_Installable" />
-		<property name="zip.file" value="${dist.dir}/AdvanceQuery_Installable.zip" />
+		<property name="zip.dir" value="${dist.dir}/AdvancedQuery_Installable" />
+		<property name="zip.file" value="${dist.dir}/AdvancedQuery_Installable.zip" />
 
 		<delete file="${zip.file}" />
 		<delete dir="${zip.dir}" />
@@ -384,8 +383,8 @@
 		<copy file="${target.dir}/WEB-INF/query.properties" todir="${zip.dir}" overwrite="true" />
 		<copy file="${target.dir}/WEB-INF/queryDbutil.properties" todir="${zip.dir}" overwrite="true" />
 		<copy file="${basedir}/conf/build-properties.xml" todir="${zip.dir}" overwrite="true" />
-		<copy file="MANIFEST.MF" todir="${zip.dir}" overwrite="true" />
-		<copy file="deploy.xml" todir="${zip.dir}" overwrite="true" />
+		<copy file="${basedir}/MANIFEST.MF" todir="${zip.dir}" overwrite="true" />
+		<copy file="${basedir}/build/deploy.xml" todir="${zip.dir}" overwrite="true" />
 		<copy file="${basedir}/conf/queryintegration.xml" todir="${zip.dir}" overwrite="true" />
 		<copy file="${basedir}/conf/advanceQuery.properties" todir="${zip.dir}" overwrite="true" />
 		<!--copy file="log4j.xml" todir="${zip.dir}" overwrite="true" /> -->
@@ -725,8 +724,8 @@
 
 	<target name="build_jar" depends="compile">
 		<tstamp />
-		<delete file="{dist.dir}/AdvanceQuery.jar" />
-		<jar jarfile="${dist.dir}/AdvanceQuery.jar" basedir="${target.dir}/WEB-INF/classes">
+		<delete file="{dist.dir}/AdvancedQuery.jar" />
+		<jar jarfile="${dist.dir}/AdvancedQuery.jar" basedir="${target.dir}/WEB-INF/classes">
 			<manifest>
 				<section name="${aq.jar.details}">
 					<attribute name="Version" value="${aq.jar.version}" />
