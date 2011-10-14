@@ -260,9 +260,9 @@ function setStyleAndClassForAutoCompleteboxes()
 				class="actionButton" onClick="showdashboard()" /> <%
  	} else {
  %> <input type="button" name="save" id="saveBtn" value="Save"
-				class="actionButton" onClick="checkForValidation()"
+				class="black_ar" onClick="checkForValidation()"
 				<%=isSaveButtonDisable%> /> <input type="button" name="cancel"
-				id="cancelBtn" value="Cancel" class="actionButton"
+				id="cancelBtn" value="Cancel" class="black_ar"
 				onClick="cancelFromSaveQuery();" /> <%
  	}
  %>
