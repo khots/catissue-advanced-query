@@ -20,9 +20,8 @@
     <property name="test.class.dir" value="${dist.dir}/WEB-INF/classes/edu/wustl/quey/bizlogic/test" />
 
 	<property name="target.dir" value="${basedir}/target" />
-	<property name="lib.dir" value="${basedir}/lib/client" />
+	<property name="lib.dir" value="${basedir}/lib" />
 	<property name="hbm.dir" value="${src.dir}/edu/wustl/query/hbm" />
-	<property name="extra_lib.dir" value="${basedir}/lib/server" />
 	<property name="generateforce" value="true" />
 	<property name="junit.jar" value="${lib.dir}/junit-3.8.1.jar" />
 	<property name="cobertura.dir" value="${target.dir}/reports/coverage" />
@@ -70,15 +69,15 @@
 
 	<path id="xdoclet.classpath">
 		<path refid="app.classpath" />
-		<pathelement location="${extra_lib.dir}/commons-net-1.2.2.jar" />
-		<pathelement location="${extra_lib.dir}/hibernate-tools.jar" />
-		<pathelement location="${extra_lib.dir}/servlet-api.jar" />
-		<pathelement location="${extra_lib.dir}/xdoclet-1.2.jar" />
-		<pathelement location="${extra_lib.dir}/xdoclet-hibernate-module-1.2.jar" />
-		<pathelement location="${extra_lib.dir}/xdoclet-xdoclet-module-1.2.jar" />
-		<pathelement location="${extra_lib.dir}/xerces.jar" />
-		<pathelement location="${extra_lib.dir}/xjavadoc-1.0.2.jar" />
-		<pathelement location="${extra_lib.dir}/xsdlib.jar" />
+		<pathelement location="${lib.dir}/commons-net-1.2.2.jar" />
+		<pathelement location="${lib.dir}/hibernate-tools.jar" />
+		<pathelement location="${lib.dir}/servlet-api.jar" />
+		<pathelement location="${lib.dir}/xdoclet-1.2.jar" />
+		<pathelement location="${lib.dir}/xdoclet-hibernate-module-1.2.jar" />
+		<pathelement location="${lib.dir}/xdoclet-xdoclet-module-1.2.jar" />
+		<pathelement location="${lib.dir}/xerces.jar" />
+		<pathelement location="${lib.dir}/xjavadoc-1.0.2.jar" />
+		<pathelement location="${lib.dir}/xsdlib.jar" />
 	</path>
 
 	<path id="junit.classpath">
@@ -626,7 +625,7 @@
 
 	<mkdir dir="${Jmeter-Tests}/${jtl}" />
 
-	<taskdef name="jmeter" classpath="${lib.dir}/ant-jmeter.jar" classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" />
+	<taskdef name="jmeter" classpath="${lib.dir}/ant-jmeter-1.0.jar" classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" />
 
 	<target name="JMeterTests" depends="runJmeterTests,JmeterReport" />
 	<target name="runJmeterTests">
