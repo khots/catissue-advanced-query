@@ -625,10 +625,11 @@
 
 	<mkdir dir="${Jmeter-Tests}/${jtl}" />
 
-	<taskdef name="jmeter" classpath="${lib.dir}/ant-jmeter-1.0.jar" classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" />
-
 	<target name="JMeterTests" depends="runJmeterTests,JmeterReport" />
 	<target name="runJmeterTests">
+
+        <taskdef name="jmeter" classpath="${lib.dir}/ant-jmeter-1.0.jar" classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" />
+
 		<delete file="${Jmeter-Tests}/Mysql_CaTissueJMeterTests.html" />
 		<delete file="${Jmeter-Tests}/Oracle_CaTissueJMeterTests.html" />
 		<delete file="${Jmeter-Tests}/${testplan}.html" />
