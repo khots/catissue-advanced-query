@@ -1,6 +1,6 @@
 <?xml version ="1.0"?>
 <!--Ant Script for create Build for Query -->
-<project name="Query Build" default="compile">
+<project name="Query Build" default="dist">
 
     <import file="ivy-targets.xml" />
 	<import file="${basedir}/conf/build-properties.xml" />
