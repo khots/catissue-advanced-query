@@ -5,11 +5,21 @@
     <import file="ivy-targets.xml" />
 	<import file="${basedir}/conf/build-properties.xml" />
 
-	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
-		<classpath>
-			<pathelement location="${basedir}/lib/server/ant-contrib.jar" />
-		</classpath>
-	</taskdef>
+    <target name="postResolve" depends="resolve">
+        <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+            <classpath><fileset dir="${basedir}/lib/"><include name="ant-contrib*.jar" /></fileset></classpath>
+        </taskdef>
+        <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+        <taskdef name="hibernatedoclet" classname="xdoclet.modules.hibernate.HibernateDocletTask">
+            <classpath refid="xdoclet.classpath" />
+        </taskdef>
+        <taskdef name="jmeter" classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask">
+            <classpath><fileset dir="${basedir}/lib/"><include name="ant-jmeter*.jar" /></fileset></classpath>
+        </taskdef>
+        <taskdef resource="flexTasks.tasks">
+            <classpath><fileset dir="${basedir}/lib/"><include name="flexTasks*.jar" /></fileset></classpath>
+        </taskdef>
+    </target>
 
 	<!--define require dir and Properties -->
 	<property file="${basedir}/conf/advanceQuery.properties" />
@@ -48,7 +58,6 @@
 		</fileset>
 	</path>
 
-	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
 	<loadfile property="dist.revision" srcFile="./.svn/entries">
 		<filterchain>
@@ -318,9 +327,6 @@
 	-->
 	<target name="generate_hbm" description="Generates Hibernate class descriptor files.">
 		<!-- Define the hibernatedoclet task -->
-		<taskdef name="hibernatedoclet" classname="xdoclet.modules.hibernate.HibernateDocletTask">
-			<classpath refid="xdoclet.classpath" />
-		</taskdef>
 
 		<!-- Execute the hibernatedoclet task -->
 		<hibernatedoclet destdir="${src.dir}" excludedtags="@version,@author,@todo" force="${generateforce}" mergedir="${src.dir}" verbose="false">
@@ -628,7 +634,6 @@
 	<target name="JMeterTests" depends="runJmeterTests,JmeterReport" />
 	<target name="runJmeterTests">
 
-        <taskdef name="jmeter" classpath="${lib.dir}/ant-jmeter-1.0.jar" classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" />
 
 		<delete file="${Jmeter-Tests}/Mysql_CaTissueJMeterTests.html" />
 		<delete file="${Jmeter-Tests}/Oracle_CaTissueJMeterTests.html" />
@@ -708,7 +713,6 @@
 	</target>
 
 	<!-- flex related targets -->
-	<taskdef resource="flexTasks.tasks" classpath="${basedir}/lib/server/flexTasks.jar" />
 
 	<target name="compile_dag_flex">
 		<mxmlc file="${FLEX_APP_ROOT}/advQuery/dag/Dag.mxml" keep-generated-actionscript="true">
