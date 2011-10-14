@@ -115,12 +115,9 @@
 	</target>
 
 	<target name="clean" description="clean up">
-		<delete includeemptydirs="true">
-			<fileset dir="${target.dir}">
-				<include name="**/*" />
-				<exclude name="CVS" />
-			</fileset>
-		</delete>
+        <delete dir="${target.dir}" />
+        <delete dir="${lib.dir}" />
+        <delete dir="${basedir}/cobertura" />
 	</target>
 
 	<!-- Compile all files, generated and hand-written -->
