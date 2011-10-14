@@ -99,7 +99,7 @@
 		<path refid="app.classpath" />
 	</path>
 
-	<target name="init" description="initialize">
+	<target name="init" description="initialize" depends="postResolve">
 		<tstamp />
 
         <delete dir="${target.dir}" />
@@ -124,7 +124,7 @@
 	</target>
 
 	<!-- Compile all files, generated and hand-written -->
-	<target name="compile" depends="init, resolve">
+	<target name="compile" depends="init">
         <mkdir dir="${target.dir}/WEB-INF/classes" />
 		<javac destdir="${target.dir}/WEB-INF/classes" includes="**/*.*" includeAntRuntime="false" debug="true">
 			<src path="${src.dir}" />
