@@ -112,6 +112,16 @@
 
         <delete dir="${test.instrumented.dir}" />
 		<mkdir dir="${test.instrumented.dir}" />
+
+        <delete file="${basedir}/MANIFEST.MF" />
+        <manifest file="${basedir}/MANIFEST.MF">
+            <attribute name="Built-By" value="${user.name}" />
+            <attribute name="Version" value="${application.name} ${application.version}" />
+            <attribute name="CSM-Version" value="${csm.version}" />
+            <attribute name="caCore-Version" value="${cacore.version}" />
+            <attribute name="Build-on" value="${TODAY}" />
+        </manifest>
+
 	</target>
 
 	<target name="clean" description="clean up">
@@ -148,15 +158,6 @@
 
 	<target name="create_war">
 		<delete file="${dist.dir}/query.war" />
-
-		<delete file="${basedir}/MANIFEST.MF" />
-		<manifest file="${basedir}/MANIFEST.MF">
-			<attribute name="Built-By" value="${user.name}" />
-			<attribute name="Version" value="${application.name} ${application.version}" />
-			<attribute name="CSM-Version" value="${csm.version}" />
-			<attribute name="caCore-Version" value="${cacore.version}" />
-			<attribute name="Build-on" value="${TODAY}" />
-		</manifest>
 
 		<replace dir="${target.dir}/WEB-INF/classes" propertyfile="${basedir}/conf/queryInstall.properties">
 			<include name="${basedir}/conf/log4j.properties" />
