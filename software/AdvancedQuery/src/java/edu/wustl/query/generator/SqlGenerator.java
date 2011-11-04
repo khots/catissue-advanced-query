@@ -1096,18 +1096,17 @@ public class SqlGenerator implements ISqlGenerator
 	private String modifyValueforDataType(String value, AttributeTypeInformationInterface dataType,
 			ICondition condition) throws SqlException
 	{
-		String tempValue;
-		Collection<PermissibleValueInterface> pvColl = ((UserDefinedDE)dataType.getDataElement()).getPermissibleValueCollection();
-
-		if(pvColl.isEmpty())
-		{
-			tempValue = value;
-		}
-		else
-		{
-			//encode value as in case of special character DE saves encoded value in DB.
-			tempValue = DynamicExtensionsUtility.getEscapedStringValue(value);
-		}
+		String tempValue = value;
+        Collection<PermissibleValueInterface> pvColl = null;
+        if(dataType.getDataElement()!=null)
+        {
+            pvColl = ((UserDefinedDE)dataType.getDataElement()).getPermissibleValueCollection();   
+        }   
+        if(pvColl!=null&&!pvColl.isEmpty())
+        {
+            //encode value as in case of special character DE saves encoded value in DB.
+            tempValue = DynamicExtensionsUtility.getEscapedStringValue(value);
+        }
 		if (dataType instanceof StringTypeInformationInterface)// for data type
 		// String it will be enclosed in single quote.
 		{
