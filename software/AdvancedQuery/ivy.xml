@@ -1,5 +1,10 @@
 <ivy-module version="2.0">
-    <info organisation="gov.nih.nci.catissue" module="advanced-query"/>
+	<info organisation="gov.nih.nci.catissue" module="advanced-query" revision="${aq.jar.version}" status="integration" />
+	<publications>
+		<artifact name="AdvancedQuery" ext="jar" type="jar" />
+		<artifact name="query" ext="war" type="war" />
+	</publications>
+	
     <dependencies>
 <!--
     ToDo Move dependencies to cbiit + maven
