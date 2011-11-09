@@ -3,6 +3,7 @@
 	<publications>
 		<artifact name="AdvancedQuery" ext="jar" type="jar" />
 		<artifact name="query" ext="war" type="war" />
+		<artifact name="advancedquery" type="pom" ext="pom" />
 	</publications>
 	
     <dependencies>
