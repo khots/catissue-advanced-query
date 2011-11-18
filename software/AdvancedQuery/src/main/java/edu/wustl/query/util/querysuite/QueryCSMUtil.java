@@ -281,7 +281,7 @@ public class QueryCSMUtil
 						conditionAttr, attrName);
 			}
 		}
-		rule.removeCondition(idCondition);
+		//rule.removeCondition(idCondition);
 	}
 
 	/**

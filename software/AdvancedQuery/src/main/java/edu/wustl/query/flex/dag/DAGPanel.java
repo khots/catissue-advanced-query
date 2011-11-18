@@ -369,7 +369,7 @@ public class DAGPanel
 				int mainProtocolExpId = addMainProtocolObjectInQuery
 				(query,queryDetailsObj.getSessionData().getUserName(),mode,
 						operatorValueMap,queryString);
-				if(mode.equalsIgnoreCase(AQConstants.ADD))
+				if((mainProtocolExpId != -1) && mode.equalsIgnoreCase(AQConstants.ADD))
 				{
 					IExpression mainProtocol =
 						constraints.getExpression(mainProtocolExpId);
@@ -494,7 +494,9 @@ public class DAGPanel
 		}
 		else
 		{
-			if(operatorValueMap != null && !operatorValueMap.isEmpty())
+			
+			return -1;
+			/*if(operatorValueMap != null && !operatorValueMap.isEmpty())
 			{
 				Set<RelationalOperator> keySet = operatorValueMap.keySet();
 				Iterator<RelationalOperator> iterator = keySet.iterator();
@@ -510,7 +512,7 @@ public class DAGPanel
 					}
 					strToCreateObject = strToCreateObject+";";
 				}
-			}
+			}*/
 		}
 		int mainProtocolExpId = 0;
 		EntityInterface deEntity = null;
