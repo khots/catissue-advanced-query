@@ -2,6 +2,7 @@
 	<info organisation="gov.nih.nci.catissue" module="advanced-query" revision="${aq.jar.version}" status="integration" />
 	<publications>
 		<artifact name="AdvancedQuery" ext="jar" type="jar" />
+		<artifact name="AdvancedQuery_Installable" ext="zip" type="zip" />
 		<artifact name="query" ext="war" type="war" />
 		<artifact name="advancedquery" type="pom" ext="pom" />
 	</publications>
