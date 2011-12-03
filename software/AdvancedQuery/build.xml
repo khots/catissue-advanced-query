@@ -368,8 +368,8 @@
 	</target>
 
 	<target name="create_zip" depends="build_jar">
-		<property name="zip.dir" value="${dist.dir}/AdvancedQuery_Installable" />
-		<property name="zip.file" value="${dist.dir}/AdvancedQuery_Installable.zip" />
+		<property name="zip.dir" value="${dist.dir}/${aq.jar.name}_Installable" />
+		<property name="zip.file" value="${dist.dir}/${aq.jar.name}_Installable.zip" />
 
 		<delete file="${zip.file}" />
 		<delete dir="${zip.dir}" />
@@ -395,7 +395,7 @@
 		<copy file="./src/conf/properties-service.xml" todir="${zip.dir}" overwrite="true" /> -->
 
 		<!--Copying the advance query jar to Zip file -->
-		<copy file="${dist.dir}/AdvancedQuery.jar" todir="${zip.dir}" overwrite="true" />
+		<copy file="${dist.dir}/${aq.jar.name}.jar" todir="${zip.dir}" overwrite="true" />
 
 		<copy todir="${zip.dir}/query-properties" overwrite="true">
 			<fileset dir="${basedir}/conf/query-properties">
@@ -726,8 +726,8 @@
 
 	<target name="build_jar" depends="compile">
 		<tstamp />
-		<!--<delete file="${dist.dir}/AdvancedQuery.jar" failonerror="false"/>-->
-		<jar jarfile="${dist.dir}/AdvancedQuery.jar" basedir="${target.dir}/WEB-INF/classes">
+		<!--<delete file="${dist.dir}/${aq.jar.name}.jar" failonerror="false"/>-->
+		<jar jarfile="${dist.dir}/${aq.jar.name}.jar" basedir="${target.dir}/WEB-INF/classes">
 			<manifest>
 				<section name="${aq.jar.details}">
 					<attribute name="Version" value="${aq.jar.version}" />
