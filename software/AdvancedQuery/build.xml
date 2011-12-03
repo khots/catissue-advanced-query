@@ -736,6 +736,9 @@
 					<attribute name="SVN-URL" value="${dist.revision}" />
 				</section>
 			</manifest>
+            <fileset dir="${target.dir}/WEB-INF">
+                <include name="*.*" />
+            </fileset>
 		</jar>
 	</target>
 
