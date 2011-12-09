@@ -384,6 +384,8 @@
 		<copy file="${basedir}/conf/queryMainTiles.properties" todir="${zip.dir}" overwrite="true" />
 		<copy file="${basedir}/conf/queryHibernateCfg.properties" todir="${zip.dir}" overwrite="true" />
 		<copy file="${target.dir}/WEB-INF/query.properties" todir="${zip.dir}" overwrite="true" />
+		<copy file="${target.dir}/WEB-INF/ApplicationResources.properties" todir="${zip.dir}" overwrite="true" />
+		<copy file="${target.dir}/WEB-INF/dbutil.properties" todir="${zip.dir}" overwrite="true" />
 		<copy file="${target.dir}/WEB-INF/queryDbutil.properties" todir="${zip.dir}" overwrite="true" />
 		<copy file="${basedir}/conf/build-properties.xml" todir="${zip.dir}" overwrite="true" />
 		<copy file="${basedir}/MANIFEST.MF" todir="${zip.dir}" overwrite="true" />
@@ -429,9 +431,6 @@
 			<fileset dir="${target.dir}/WEB-INF/classes/">
 				<include name="QueryHibernate.cfg.xml" />
 				<include name="DynamicExtensionsHibernate.cfg.xml" />
-				<include name="dbutil.properties" />
-				<!--<include name = "dynamicUI.xml"/> -->
-				<include name="ApplicationResources.properties" />
 			</fileset>
 		</copy>
 
