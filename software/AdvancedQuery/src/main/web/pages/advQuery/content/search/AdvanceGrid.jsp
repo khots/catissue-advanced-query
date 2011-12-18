@@ -1,13 +1,14 @@
 <!-- dataList and columnList are to be set in the main JSP file -->
-<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXGrid.css"/>
+<link rel="STYLESHEET" type="text/css" href="newDhtmlx/dhtmlxgrid.css"/>
 <link rel="stylesheet" type="text/css" href="css/advQuery/catissue_suite.css" />
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
 <%@ page import="edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.Variables"%>
 
-<script  src="dhtml_comp/js/dhtmlXCommon.js"></script>
-<script  src="dhtml_comp/js/dhtmlXGrid.js"></script>
-<script  src="dhtml_comp/js/dhtmlXGridCell.js"></script>
+<script language="JavaScript"  type="text/javascript" src="newDhtmlx/dhtmlxcommon.js"></script>
+<script  language="JavaScript" type="text/javascript" src="newDhtmlx/dhtmlxgrid.js"></script>
+<script   language="JavaScript" type="text/javascript" src="newDhtmlx/dhtmlxgridcell.js"></script>
+<script  language="JavaScript" type="text/javascript"  src="newDhtmlx/ext/dhtmlxgrid_srnd.js"></script>
 <script language="JavaScript" type="text/javascript" src="jss/advQuery/javaScript.js"></script>
 
 <%@ page import="java.util.HashMap,java.util.Map,edu.wustl.common.beans.QueryResultObjectData,java.util.List"%>
@@ -29,7 +30,7 @@ function checkAllAcrossAllPages(element)
 	var state=element.checked;
 	isCheckAllPagesChecked = state;
 	rowCount = mygrid.getRowsNum();
-	for(i=1;i<=rowCount;i++)
+	for(i=1;i<rowCount;i++)
 	{
 		var cl = mygrid.cells(i,0);
 		if(cl.isCheckbox())
@@ -53,7 +54,7 @@ function checkAllOnThisPage(element)
 	mygrid.setEditable(true);
 	var state=element.checked;
 	rowCount = mygrid.getRowsNum();
-	for(i=1;i<=rowCount;i++)
+	for(i=1;i<rowCount;i++)
 	{
 		var cl = mygrid.cells(i,0);
 		if(cl.isCheckbox())
@@ -87,14 +88,17 @@ function setEditableChkbox(checkAllPages)
 	//function to update hidden fields as per check box selections.
 	function updateHiddenFields()
 	{
+		
 		var isChecked = "false";
 		var checkedRows = mygrid.getCheckedRows(0);
+
 		if(checkedRows.length > 0)
 		{
         	isChecked = "true";
 			var cb = checkedRows.split(",");
 			rowCount = mygrid.getRowsNum();
-			for(i=1;i<=rowCount;i++)
+			
+			for(i=1;i<rowCount;i++)
 			{
 				var cl = mygrid.cells(i,0);
 				if(cl.isChecked())
@@ -115,6 +119,7 @@ function setEditableChkbox(checkAllPages)
 		{
 			isChecked = "false";
 		}
+		
 		return isChecked;
 	}
 	// ------------------------------  FUNCTION SECTION END
@@ -219,7 +224,7 @@ function setEditableChkbox(checkAllPages)
 
 <script>
 	mygrid = new dhtmlXGridObject('gridbox');
-	mygrid.setImagePath("dhtml_comp/imgs/");
+	mygrid.setImagePath("newDhtmlx/imgs/");
 
 	if(useFunction == "participant")
 	{
@@ -249,7 +254,7 @@ function setEditableChkbox(checkAllPages)
 
 	if(navigator.userAgent.toString().toLowerCase().indexOf("firefox")!= -1)
     {
-       <% if(columnList.size()<=10)
+       <% if(columnList.size()<=11)
 		  { %>
 			var colWidthP = "<%=edu.wustl.query.util.global.Utility.getColumnWidthP(columnList)%>";
 			mygrid.setInitWidthsP(colWidthP);
@@ -272,6 +277,7 @@ function setEditableChkbox(checkAllPages)
 	mygrid.enableMultiselect(true);
 	//mygrid.chNoState = "0";
 	//mygrid.setColAlign("left,left")
+
 	mygrid.setColSorting(colTypes);
 	//mygrid.enableMultiselect(true)
 	mygrid.setSkin("light");
@@ -307,7 +313,7 @@ function setEditableChkbox(checkAllPages)
 			data = "0<%=AQConstants.DHTMLXGRID_DELIMETER%>"+myData[row];
 		}
 
-		mygrid.addRow(row+1,data,row+1);
+		mygrid.addRow(row+1,data,row);
 	}
 
 	for(var row=0;row<myData.length;row++)
