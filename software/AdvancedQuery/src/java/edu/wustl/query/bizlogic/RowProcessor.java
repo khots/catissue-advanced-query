@@ -152,8 +152,7 @@ public class RowProcessor
 			//this is when idVlaue may not be present when any Entity is added only in view instead of actual query.
 
 			Map<OutputAssociationColumn, Object> recMap = recMap(rootExp, idValue);
-			if(idValue!=null && !"".equals(idValue))
-			{
+
 			List<AbstractAttributeInterface> attributeList = exprInfoCache.attrList(rootExp);
 			for (AbstractAttributeInterface attribute : attributeList)
 			{
@@ -201,7 +200,7 @@ public class RowProcessor
 					}
 				}
 			}
-			}
+
 		}
 	}
 

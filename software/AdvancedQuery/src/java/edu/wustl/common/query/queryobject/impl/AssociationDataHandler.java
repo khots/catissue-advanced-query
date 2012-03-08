@@ -1,7 +1,6 @@
 package edu.wustl.common.query.queryobject.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -11,13 +10,9 @@ import java.util.TreeMap;
 
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.wustl.common.query.queryobject.impl.RecordProcessor.TreeCell;
-import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
-import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.queryobject.IExpression;
-import edu.wustl.query.bizlogic.RowProcessor;
 import edu.wustl.query.util.global.Utility;
 
 public class AssociationDataHandler
@@ -116,7 +111,7 @@ public class AssociationDataHandler
 	 * @param selectedColumnsMetadata
      * @return entityDataList
      */
-    public List<List<OutputAttributeColumn>> getEntityDataList(final Table<TreeCell> table, QueryExportDataHandler dataHandler, SelectedColumnsMetadata selectedColumnsMetadata)
+    public List<List<OutputAttributeColumn>> getEntityDataList(final Table<TreeCell> table, QueryExportDataHandler dataHandler)
 	{
     	Map<QueryHeaderData, Integer>entityVsMaxCnt = getEntityVsMxCnt(table);
     	dataHandler.entityVsMaxCount = entityVsMaxCnt;
@@ -145,7 +140,7 @@ public class AssociationDataHandler
             		}
             	}
             }
-            rowDataList = populateRowData(treeCellMap, entityVsMaxCnt,selectedColumnsMetadata);// this method adds all denormalised output attribtues in the RowDataList without sorting according to the defined View.
+            rowDataList = populateRowData(treeCellMap, entityVsMaxCnt);// this method adds all denormalised output attribtues in the RowDataList without sorting according to the defined View.
             entityDataList.add(rowDataList);
         }
         return entityDataList;
@@ -206,7 +201,7 @@ public class AssociationDataHandler
      * @return rowDataList
      */
     private List<OutputAttributeColumn> populateRowData(Map<QueryHeaderData,List<TreeCell>> treeCellMap,
-    		 Map<QueryHeaderData, Integer>entityVsMaxCnt, SelectedColumnsMetadata selectedColumnsMetadata)
+    		 Map<QueryHeaderData, Integer>entityVsMaxCnt)
     {
     	//first iterate on each query header & sort the the output attributes in each Record of the queryHeader, as well as find out the lowest index,
     	//of each header.
@@ -244,7 +239,7 @@ public class AssociationDataHandler
 
     		while(listSize<maxRecordCnt)
     		{
-    			Map<OutputAssociationColumn, Object> record = getEmptyRecordMap(queryHeaderData.getExpression(), cellList.get(0), selectedColumnsMetadata);
+    			Map<OutputAssociationColumn, Object> record =  cellList.get(0).getRec();
     			List<OutputAttributeColumn> rowDataList = new ArrayList<OutputAttributeColumn>();
     			for (OutputAssociationColumn key : record.keySet())
             	{
@@ -281,53 +276,7 @@ public class AssociationDataHandler
     }
 
 
-    private Map<OutputAssociationColumn, Object> getEmptyRecordMap(IExpression expression, TreeCell treeCell,SelectedColumnsMetadata selectedColumnsMetadata)
-    {
-    	Map<OutputAssociationColumn, Object> record =treeCell.getRec();
-    	if(treeCell.getRec().isEmpty())
-    	{
-    		QueryExportDataHandler dataHandler = new QueryExportDataHandler(null, null);
-    		Collection<AttributeInterface> attributeList = expression.getQueryEntity().getDynamicExtensionsEntity().getAttributeCollection();
-			RowProcessor rowProcessor = new RowProcessor();
-			for(AttributeInterface attribute : attributeList)
-			{
 
-					// isPresent should take AttributeInterface as input
-					/*OutputAttributeColumn val = rowProcessor.getValueForAttribute(
-							 attribute, selectedColumnsMetadata
-									.getSelectedAttributeMetaDataList(), expression);*/
-
-				OutputAttributeColumn opAttrCol = null;
-				String value;
-				int columnIndex = -1;
-
-				for (QueryOutputTreeAttributeMetadata outputTreeAttributeMetadata : selectedColumnsMetadata.getSelectedAttributeMetaDataList())
-				{
-					columnIndex++;
-					BaseAbstractAttributeInterface presentAttribute = outputTreeAttributeMetadata
-							.getAttribute();
-					if (presentAttribute.equals(attribute)
-							&& outputTreeAttributeMetadata.getTreeDataNode().getExpressionId() == expression
-									.getExpressionId())
-					{
-						value = " ";
-						opAttrCol = new OutputAttributeColumn(value, columnIndex, attribute, expression,
-								null);
-						break;
-					}
-				}
-
-				if (opAttrCol != null)
-				{
-						OutputAssociationColumn opAssocCol = new OutputAssociationColumn(attribute,
-								expression, null);
-						record.put(opAssocCol, opAttrCol);
-				}
-
-			}
-    	}
-    	return record;
-    }
 
 	private void setHeaderDisplayName(int index, final OutputAttributeColumn opAttributeColumn)
 	{

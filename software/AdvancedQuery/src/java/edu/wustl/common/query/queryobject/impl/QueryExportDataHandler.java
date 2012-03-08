@@ -160,7 +160,10 @@ public class QueryExportDataHandler
 					newMap.put(attribute, obj.get(attribute));
 				}
 			}
-			newList.add(newMap);
+			if(!newMap.isEmpty())
+			{
+				newList.add(newMap);
+			}
 		}
 		return newList;
 	}
