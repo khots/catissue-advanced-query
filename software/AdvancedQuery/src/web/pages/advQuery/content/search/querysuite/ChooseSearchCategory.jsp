@@ -57,22 +57,16 @@
 
 </script>
 </head>
+<%! boolean mac = false; %>
 <%
-	boolean mac = false;
 	Object os = request.getHeader("user-agent");
 	if (os != null && os.toString().toLowerCase().indexOf("mac") != -1) {
 		mac = true;
-	}
-	if (mac) {
-%>
-<body onkeypress="checkKey(event)">
-<%
-	} else {
-%>
-<body onkeyup="checkKey(event)">
-<%
-	}
-%>
+	}%>
+	
+
+<body>
+
 <html:errors />
 
 <html:form method="GET" action="SearchCategory.do" focus="textField">
@@ -88,8 +82,17 @@
 
 				<tr bordercolorlight="#000000">
 					<td height="1%">&nbsp;</td>
-					<td width="75%" valign="top"><html:text property="textField"
-						styleId="searchTextBoxId" onkeydown="setFocusOnSearchButton(event)" /></td>
+					<td width="75%" valign="top">
+						<%if (mac) {%>
+						<html:text property="textField"
+							styleId="searchTextBoxId" onkeydown="setFocusOnSearchButton(event)" onkeypress="checkKey(event)"/>
+							<%
+							} else {
+						%>
+						<html:text property="textField"
+							styleId="searchTextBoxId" onkeydown="setFocusOnSearchButton(event)" onkeyup="checkKey(event)"/>
+						<%} %>
+					</td>
 					<td width="25%" valign="top"><input type="button"
 						value="      Go       " name="searchButton" id="searchButton"
 						onclick="retriveSearchedEntities('<%=SearchCategory%>','<%=formName%>','<%=currentPage%>');" />

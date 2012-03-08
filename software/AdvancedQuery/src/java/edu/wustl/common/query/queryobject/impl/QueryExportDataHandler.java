@@ -37,11 +37,11 @@ public class QueryExportDataHandler
 	{
 		if(rootExp == null)
 		{
-			this.rootEntity = null;
+			rootEntity = null;
 		}
 		else
 		{
-			this.rootEntity = rootExp.getQueryEntity().getDynamicExtensionsEntity();
+			rootEntity = rootExp.getQueryEntity().getDynamicExtensionsEntity();
 		}
 		this.constraints = constraints;
 	}
@@ -160,10 +160,7 @@ public class QueryExportDataHandler
 					newMap.put(attribute, obj.get(attribute));
 				}
 			}
-			if(!newMap.isEmpty())
-			{
-				newList.add(newMap);
-			}
+			newList.add(newMap);
 		}
 		return newList;
 	}

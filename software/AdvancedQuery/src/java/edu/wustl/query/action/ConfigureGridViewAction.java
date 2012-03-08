@@ -59,6 +59,7 @@ public class ConfigureGridViewAction extends SecureAction
 			(Map<String, IOutputTerm>)session.getAttribute(AQConstants.OUTPUT_TERMS_COLUMNS);
 		IQuery query = (IQuery)session.getAttribute(AQConstants.QUERY_OBJECT);
 		QueryDetails queryDetailsObj = new QueryDetails(session);
+		query.setIsNormalizedResultQuery(categorySearchForm.getNormalizedQuery());
 		SelectedColumnsMetadata selectedColumnsMetadata =
 			(SelectedColumnsMetadata)session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
 		OutputTreeDataNode currentSelectedObject = selectedColumnsMetadata.getCurrentSelectedObject();
@@ -81,7 +82,7 @@ public class ConfigureGridViewAction extends SecureAction
 		List<String> definedColumnsList = new ArrayList<String>();
 		List<NameValueBean> selectedCNVBList =
 			categorySearchForm.getSelColNVBeanList();
-		String operation = (String) request.getParameter(AQConstants.OPERATION);
+		String operation = request.getParameter(AQConstants.OPERATION);
 		if (operation==null)
 		{
 			operation = AQConstants.FINISH;

@@ -8,9 +8,10 @@ import java.util.Map;
 import edu.wustl.common.query.queryobject.impl.AssociationDataHandler;
 import edu.wustl.common.query.queryobject.impl.DenormalizedCSVExporter;
 import edu.wustl.common.query.queryobject.impl.OutputAssociationColumn;
+import edu.wustl.common.query.queryobject.impl.OutputAttributeColumn;
 import edu.wustl.common.query.queryobject.impl.QueryExportDataHandler;
-import edu.wustl.common.query.queryobject.impl.Table;
 import edu.wustl.common.query.queryobject.impl.RecordProcessor.TreeCell;
+import edu.wustl.common.query.queryobject.impl.Table;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
@@ -46,6 +47,7 @@ public class SpreadsheetDenormalizationBizLogic
 			IExpression rootExp = joinGraph.getRoot();
 
 			QueryExportDataHandler dataHandler = new QueryExportDataHandler(rootExp,constraints);
+			//de normalization starts
 			RowProcessor rowProcessor = new RowProcessor();
 			List<Map<OutputAssociationColumn,Object>> denormalizationList =
 				rowProcessor.populateData(dataList, querySessionData.getSql(), selectedColumnsMetadata,
@@ -61,10 +63,10 @@ public class SpreadsheetDenormalizationBizLogic
 			AssociationDataHandler assocDataHandler = new AssociationDataHandler();
 			Table<TreeCell> res = assocDataHandler.updateRowDataList
 			(denormalizationList, rootExp, dataHandler);
-			List<List<Object>> entityDataList = assocDataHandler.getEntityDataList(res, dataHandler);
+			List<List<OutputAttributeColumn>> entityDataList = assocDataHandler.getEntityDataList(res, dataHandler,selectedColumnsMetadata);
 			List<List<String>> finalDataList = new ArrayList<List<String>>();
 			List<String> newDataList;
-			for(List<Object> list: entityDataList)
+			for(List<OutputAttributeColumn> list: entityDataList)
 			{
 				newDataList = csvExporter.getFinalDataList(list,dataHandler);
 				finalDataList.add(newDataList);

@@ -51,6 +51,7 @@ import edu.wustl.query.executor.AbstractQueryExecutor;
 import edu.wustl.query.executor.MysqlQueryExecutor;
 import edu.wustl.query.executor.OracleQueryExecutor;
 import edu.wustl.query.security.QueryCsmCacheManager;
+import edu.wustl.query.util.querysuite.QueryDetails;
 
 
 public class Utility //extends edu.wustl.common.util.Utility
@@ -417,8 +418,14 @@ public class Utility //extends edu.wustl.common.util.Utility
 		querySessionData.setRecordsPerPage(recordsPerPage);
 		int startIndex = recordsPerPage * (pageNum - 1);
 		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
+		QueryDetails queryDetails = new QueryDetails(request.getSession());
+		int index = startIndex;
+		if(!queryDetails.getQuery().getIsNormalizedResultQuery())
+		{
+			index = -1;
+		}
 		PagenatedResultData pagenatedResult = qBizLogic.execute(sessionData, querySessionData,
-				startIndex);
+				index);
 		paginationDataList = pagenatedResult.getResult();
 		String isSimpleSearch = (String) request.getSession().getAttribute(
 				AQConstants.IS_SIMPLE_SEARCH);

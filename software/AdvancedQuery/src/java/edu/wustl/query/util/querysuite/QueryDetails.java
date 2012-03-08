@@ -29,7 +29,7 @@ public class QueryDetails
 	private Map<EntityInterface, List<EntityInterface>> mainEntityMap;
 	private SessionDataBean sessionData;
 	private String randomNumber;
-
+	private boolean isDenormalizationNeeded;
 	private Map<AttributeInterface, String> attributeColumnNameMap;
 	private Map<String, IOutputTerm> outputTermsColumns;
 	private IQuery query;
@@ -56,7 +56,7 @@ public class QueryDetails
 		mainEntityMap = (Map<EntityInterface, List<EntityInterface>>) session
 				.getAttribute(AQConstants.MAIN_ENTITY_MAP);
 		sessionData = (SessionDataBean) session.getAttribute(AQConstants.SESSION_DATA);
-		this.randomNumber = QueryModuleUtil.generateRandomNumber(session);
+		randomNumber = QueryModuleUtil.generateRandomNumber(session);
 		attributeColumnNameMap = (Map<AttributeInterface, String>) session
 				.getAttribute(AQConstants.ATTRIBUTE_COLUMN_NAME_MAP);
 		outputTermsColumns = (Map<String, IOutputTerm>) session
@@ -64,6 +64,7 @@ public class QueryDetails
 		query = (IQuery) session.getAttribute(AQConstants.QUERY_OBJECT);
 		columnValueBean = (LinkedList<ColumnValueBean>)
 		session.getAttribute(AQConstants.COLUMN_VALUE_BEAN);
+		//isDenormalizationNeeded = (Boolean)session.getAttribute(AQConstants.IS_DENORMALIZATION_NEEDED);
 		if(session.getAttribute("AUDIT_EVENT_ID") != null)
 		{
 			auditEventId =(Long) session.getAttribute("AUDIT_EVENT_ID");

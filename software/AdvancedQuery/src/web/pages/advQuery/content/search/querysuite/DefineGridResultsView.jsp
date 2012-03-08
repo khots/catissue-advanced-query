@@ -23,6 +23,8 @@
 	<link rel="stylesheet" type="text/css"
 	href="dhtmlx_suite/css/dhtmlxtree.css" />
 	
+	<link rel="stylesheet" type="text/css"
+	href="css/advQuery/catissue_suite.css" />
 	
 	<link rel="stylesheet" type="text/css"
 	href="css/advQuery/styleSheet.css" />
@@ -48,6 +50,7 @@
 
 <html:form method="GET" action="<%=callAction%>">
 	<html:hidden property="operation" value="" />
+	
 	<body onload="initTreeView()">
 	<table border="0" width="400" cellspacing="0" cellpadding="0"
 		bgcolor="#FFFFFF" height="90%" bordercolorlight="#000000">
@@ -112,6 +115,18 @@
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
+			<td align="left" height="2%" colspan="6">
+						<html:checkbox
+						property="normalizedQuery" value="true" styleId="normalizedQuery" />
+						<span valign="top"
+								class="black_ar"><bean:message key="query.normalized.view" /></span>
+						
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
 			<td colspan="6" align="left" valign="top">
 			<table border="0" cellpadding="0" cellspacing="0" width="100%">
 				<tr height="1px">
@@ -144,7 +159,7 @@
 
 <SCRIPT LANGUAGE="JavaScript">
 
-    function addOption(theSel, theText, theValue)
+	function addOption(theSel, theText, theValue)
     {
 	    var newOpt = new Option(theText, theValue);
 	    var selLength = theSel.length;
@@ -350,6 +365,9 @@
 			selectOptions(document.forms[0].selectedColumnNames);
 		}
 		document.forms[0].operation.value = operation;
+		
+		
+		document.forms[0].normalizedQuery.value = document.forms[0].normalizedQuery.checked
 		document.forms[0].action =  "ConfigureGridView.do";
 		document.forms[0].submit();
 	}

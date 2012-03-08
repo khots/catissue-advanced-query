@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.query.util.global.Utility;
 
@@ -64,18 +63,18 @@ public class DenormalizedCSVExporter
 				if(opAttributeColumn.getHeader() == null)
 				{
 					opAttributeColumn.setHeader(headerDisplay.toString());
-					headerList.add(opAttributeColumn);
 				}
-				else
+				headerList.add(opAttributeColumn);
+				/*else
 				{
 					StringBuffer originalHeader = new StringBuffer(opAttributeColumn.getHeader());
 					originalHeader.append('|').append(headerDisplay.toString());
 					opAttributeColumn.setHeader(originalHeader.toString());
-				}
+				}*/
 				cntr++;
 		}
 		List<String> finalHeaderList = new ArrayList<String>();
-		Collections.sort(headerList, new AttributeOrderComparator());
+		//Collections.sort(headerList, new AttributeOrderComparator());
 		for(Object opAttrCol : headerList)
 		{
 			String header = ((OutputAttributeColumn)opAttrCol).getHeader();
@@ -94,14 +93,15 @@ public class DenormalizedCSVExporter
 	 * @param dataHandler dataHandler
 	 * @return newDataList
 	 */
-	public List<String> getFinalDataList(List<Object> resultList, QueryExportDataHandler dataHandler)
+	public List<String> getFinalDataList(List<OutputAttributeColumn> resultList, QueryExportDataHandler dataHandler)
 	{
 		List<OutputAttributeColumn> dataList;
 		List<String> newDataList;
 		dataList = new ArrayList<OutputAttributeColumn>();
 		newDataList = new ArrayList<String>();
 		populateDataList(resultList, dataList);
-		Collections.sort(dataList, new AttributeOrderComparator());
+		//Collections.sort(dataList, new AttributeOrderComparator()); // here all the group of entity attributes gets scattered & all columns for same attributes get close to each other
+		// as the columnIndex will be same for all the new columns for the same attribute.
 		if(headerList.isEmpty())
 		{
 			getHeaderList(dataHandler, dataList);
@@ -137,7 +137,7 @@ public class DenormalizedCSVExporter
 	 * @param resultList resultList
 	 * @param dataList dataList
 	 */
-	private void populateDataList(List<Object> resultList, List<OutputAttributeColumn> dataList)
+	private void populateDataList(List<OutputAttributeColumn> resultList, List<OutputAttributeColumn> dataList)
 	{
 		OutputAttributeColumn data;
 		for(Object object : resultList)

@@ -655,7 +655,9 @@ Application
 		}
 		for(var i:int=0;i<nodeList.length;i++)
 		{
-			var sourceNode:DAGNode = nodeList.getItemAt(i) as DAGNode;	
+			
+			var sourceNode:DAGNode = nodeList.getItemAt(i) as DAGNode;
+			//Alert.show("in repaintHandler" + sourceNode.nodeName+ " target  "+ sourceNode.expressionId);	
 			var associationList:ArrayCollection = sourceNode.associationList;
 			var dagPathList:ArrayCollection = sourceNode.dagpathList;
 			var operatorList:ArrayCollection = sourceNode.operatorList;
@@ -664,28 +666,34 @@ Application
 			 {	
 			    var targetNode:DAGNode = associationList.getItemAt(j) as DAGNode;	
 				var path:DAGPath = dagPathList.getItemAt(j) as DAGPath;
-
+				//Alert.show("in Association List " + targetNode.nodeName+ " target  "+ targetNode.expressionId);	
+				//Alert.show("Operator list " + operatorList + " operatorList lenght   "+ operatorList.length);	
 				if(operatorList!=null && operatorList.length!=0)
 				{
+					//Alert.show("get operator" + j );
 				    var operator:String = operatorList.getItemAt(j) as String;
 					var operatorSelectedIndex:int=0;
 				    if(operator=="OR")
 				    {
 				     	path.operatorIndex=1;
 				    }
+					//Alert.show("after get operator" + j );
 				}
 				try
                 {
+                	//Alert.show("is query " + isQuery );
 					if(isQuery == "true")
 					{
 						sourceNode.enable=true;
 						if(sourceNode.nodeType!=DAGConstants.VIEW_ONLY_NODE)
 						{
+							//Alert.show("link nodes " + sourceNode.expressionId.toString()+ " target "+ targetNode.expressionId.toString() );
 							linkNodes(sourceNode.expressionId.toString(),targetNode.expressionId.toString(),path);
 					    }
 					}
 					else
 					 {
+					 	//Alert.show("link nodes " + sourceNode.expressionId.toString()+ " target "+ targetNode.expressionId.toString() );
 						sourceNode.enable=false;
 						linkNodes(sourceNode.expressionId.toString(),targetNode.expressionId.toString(),path);
 					 }
@@ -697,6 +705,7 @@ Application
 			 	
 			 }
 		}
+		//Alert.show("After for loop");
 		currentExp.text = getExprssionString();
 		
 		//repainting the Two Nodes TQ Custom Node

@@ -680,7 +680,7 @@ public class DAGPanel
 			String sql = Variables.mainProtocolQuery;
 			if(sql != null)
 			{
-				allMainObjectIds = (List<Long>)hibernateDAO.executeQuery(sql);
+				allMainObjectIds = hibernateDAO.executeQuery(sql);
 			}
 		}
 		catch (SMException e1)
@@ -2620,7 +2620,14 @@ public class DAGPanel
 			setNodeType(exp, dagNode, position);
 			nodeform(expressionId, dagNode, constraints, new ArrayList<IIntraModelAssociation>());
 			int numOperands = exp.numberOfOperands();
-			int numOperator = numOperands - 1;
+			int numOperator = 0;
+			for (int i = 0; i < numOperands; i++)
+			{
+				if(!(exp.getOperand(i) instanceof Rule))
+				{
+					numOperator++;
+				}
+			}
 			for (int i = 0; i < numOperator; i++)
 			{
 				String operator = exp.getConnector(i, i + 1).getOperator().toString();

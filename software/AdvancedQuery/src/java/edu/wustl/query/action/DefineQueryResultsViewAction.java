@@ -46,6 +46,7 @@ public class DefineQueryResultsViewAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		CategorySearchForm searchForm = (CategorySearchForm) form;
+
 		HttpSession session = request.getSession();
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		SelectedColumnsMetadata selColMetadata = (SelectedColumnsMetadata) session
@@ -67,6 +68,7 @@ public class DefineQueryResultsViewAction extends Action
 				curSelObj, prevSelColNVBList);
 		List<NameValueBean> selectedCNVBList = searchForm
 				.getSelColNVBeanList();
+		searchForm.setNormalizedQuery(queryDetailsObj.getQuery().getIsNormalizedResultQuery());
 		selColMetadata.setSelColNVBeanList(selectedCNVBList);
 		session.setAttribute(AQConstants.SELECTED_COLUMN_META_DATA, selColMetadata);
 		session.setAttribute(AQConstants.SEL_COL_NVB_LST,

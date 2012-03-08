@@ -149,7 +149,11 @@ public class RowProcessor
 		if (idIndex < list.size() && idIndex != -1)
 		{
 			String idValue = list.get(idIndex);
+			//this is when idVlaue may not be present when any Entity is added only in view instead of actual query.
+
 			Map<OutputAssociationColumn, Object> recMap = recMap(rootExp, idValue);
+			if(idValue!=null && !"".equals(idValue))
+			{
 			List<AbstractAttributeInterface> attributeList = exprInfoCache.attrList(rootExp);
 			for (AbstractAttributeInterface attribute : attributeList)
 			{
@@ -197,6 +201,7 @@ public class RowProcessor
 					}
 				}
 			}
+			}
 		}
 	}
 
@@ -243,11 +248,17 @@ public class RowProcessor
 			public boolean equals(Object obj)
 			{
 				if (this == obj)
+				{
 					return true;
+				}
 				if (obj == null)
+				{
 					return false;
+				}
 				if (getClass() != obj.getClass())
+				{
 					return false;
+				}
 				Key other = (Key) obj;
 				// TODO check no cloning etc... (also change hashCode if this is changed)
 				return attr == other.attr && expr == other.expr;
@@ -368,7 +379,7 @@ public class RowProcessor
 							.getAssociation(expression, entityExpression);
 					if (association != null)
 					{
-						assocInterface = (BaseAbstractAttributeInterface) association
+						assocInterface = association
 								.getDynamicExtensionsAssociation();
 						if (assocInterface.equals(attribute))
 						{
@@ -385,7 +396,7 @@ public class RowProcessor
 							.getAssociation(entityExpression, expression);
 					if (association != null)
 					{
-						assocInterface = (BaseAbstractAttributeInterface) association
+						assocInterface = association
 								.getDynamicExtensionsAssociation();
 						if (assocInterface.equals(attribute))
 						{

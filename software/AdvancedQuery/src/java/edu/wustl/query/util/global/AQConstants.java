@@ -605,4 +605,5 @@ public class AQConstants
 	public static final String DENORMALIZED_LIST = "DENORMALIZED_LIST";
 
 	public static final String EDIT_XMI_ERROR = "editXmi.error";
+	public static final String IS_DENORMALIZATION_NEEDED = "denormalizedQuery";
 }

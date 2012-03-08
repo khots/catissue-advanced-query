@@ -23,7 +23,6 @@ import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
-import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.queryobject.IArithmeticOperand;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
@@ -304,14 +303,14 @@ public class QueryOutputSpreadsheetBizLogic
 			Map<String, IOutputTerm> outputTermsColumns) throws DAOException,
 			ClassNotFoundException
 	{
-		this.selectedColumnMetaData = selectedColumnsMetadata;
+		selectedColumnMetaData = selectedColumnsMetadata;
 		Map spreadSheetDataMap = updateSpreadsheetData(queryDetailsObj, parentData, node,
 				recordsPerPage, queryResultObjectDataBeanMap, hasConditionOnIdentifiedField,
 				constraints, outputTermsColumns);
 		List<Integer> expressionIdsInQuery = new ArrayList<Integer>();
 		populateExpressionIds(expressionIdsInQuery, queryDetailsObj.getQuery().getConstraints());
-		this.selectedColumnMetaData.setNoOfExpr(expressionIdsInQuery.size());
-		spreadSheetDataMap.put(AQConstants.SELECTED_COLUMN_META_DATA, this.selectedColumnMetaData);
+		selectedColumnMetaData.setNoOfExpr(expressionIdsInQuery.size());
+		spreadSheetDataMap.put(AQConstants.SELECTED_COLUMN_META_DATA, selectedColumnMetaData);
 		return spreadSheetDataMap;
 	}
 
@@ -575,7 +574,7 @@ public class QueryOutputSpreadsheetBizLogic
 		List tQColumnMetataDataList = new ArrayList();
 		while (iterator1.hasNext())
 		{
-			String columnName = (String) iterator1.next();
+			String columnName = iterator1.next();
 			IOutputTerm outputTerm = outputTermsColumns.get(columnName);
 			ITerm term = outputTerm.getTerm();
 			TimeInterval<?> timeInterval = outputTerm.getTimeInterval();
@@ -850,7 +849,7 @@ public class QueryOutputSpreadsheetBizLogic
 				}
 			}
 		}
-		this.selectedColumnMetaData.setSelColNVBeanList(selectedColumnNameValue);
+		selectedColumnMetaData.setSelColNVBeanList(selectedColumnNameValue);
 		int lastindexOfComma = sqlColumnNames.lastIndexOf(",");
 		List tqColumnList = new ArrayList();
 		if (!outputTermsColumns.isEmpty())
@@ -940,12 +939,19 @@ public class QueryOutputSpreadsheetBizLogic
 		querySessionData.setSecureExecute(queryDetailsObj.getSessionData().isSecurityRequired());
 		querySessionData.setHasConditionOnIdentifiedField(hasConditionOnIdentifiedField);
 		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
+		int index = startIndex;
+		if(!queryDetailsObj.getQuery().getIsNormalizedResultQuery())
+		{
+			index = -1;
+		}
 		PagenatedResultData pagenatedResultData = qBizLogic.execute(queryDetailsObj
-				.getSessionData(), querySessionData, startIndex);
+				.getSessionData(), querySessionData, index);
 		List<List<String>> dataList = pagenatedResultData.getResult();
 		List<List<String>> listForFileType = dataList;
 		querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
-		if(selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1 && isContPresent)
+		// if denormalization is on then execute below block else do not execute this block.
+
+		if(selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1 && isContPresent && !queryDetailsObj.getQuery().getIsNormalizedResultQuery())
 		{
 			SpreadsheetDenormalizationBizLogic  denormalizationBizLogic =
 				new SpreadsheetDenormalizationBizLogic();
@@ -956,9 +962,20 @@ public class QueryOutputSpreadsheetBizLogic
 				dataList = (List<List<String>>)exportDetailsMap.get("dataList");
 				List<String>colList = (List<String>)exportDetailsMap.get("headerList");
 				spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, colList);
+				final int totalRecords = dataList.size();
+				if(startIndex!=-1)
+				{
+					final int recordsToDisplay = startIndex+querySessionData.getRecordsPerPage() <totalRecords ?startIndex+querySessionData.getRecordsPerPage(): totalRecords;
+					dataList = dataList.subList(startIndex,recordsToDisplay);
+
+				}
+				pagenatedResultData = new PagenatedResultData(dataList, totalRecords);
+				querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
 				selectedColMetadata.setActualTotalRecords(pagenatedResultData.getTotalRecords());
 			}
 		}
+
+
 		for (Long id : queryResultObjectDataBeanMap.keySet())
 		{
 			QueryResultObjectDataBean queryResultObjectDataBean = queryResultObjectDataBeanMap

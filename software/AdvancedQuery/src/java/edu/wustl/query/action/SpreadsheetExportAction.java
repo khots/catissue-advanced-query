@@ -78,17 +78,18 @@ public class SpreadsheetExportAction extends SecureAction
 			List<String> idIndexList, Map<Integer, List<String>> entityIdsMap)
 			throws DAOException, MultipleRootsException {
 		QueryAdvanceSearchForm searchForm = (QueryAdvanceSearchForm) form;
-		String isChkAllAcrossAll = (String) request.getParameter(AQConstants.CHECK_ALL_ACROSS_ALL_PAGES);
+		String isChkAllAcrossAll = request.getParameter(AQConstants.CHECK_ALL_ACROSS_ALL_PAGES);
 
 		Map map = searchForm.getValues();
 		Object[] obj = map.keySet().toArray();
 		List<String> columnList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
 		SelectedColumnsMetadata selectedColumnsMetadata =
 			(SelectedColumnsMetadata)session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
-		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll,selectedColumnsMetadata);
 		QueryDetails queryDetails = new QueryDetails(session);
+		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll,selectedColumnsMetadata);
+
 		boolean isDefineView = false;
-		if(selectedColumnsMetadata != null && selectedColumnsMetadata.isDefinedView())
+		if(!queryDetails.getQuery().getIsNormalizedResultQuery() && selectedColumnsMetadata != null && selectedColumnsMetadata.isDefinedView())
 		{
 			IExpression rootExpression = queryDetails.getQuery().getConstraints().getJoinGraph().getRoot();
 			if(!queryDetails.getQuery().getConstraints().getJoinGraph().getChildrenList(rootExpression).isEmpty())
@@ -217,7 +218,7 @@ public class SpreadsheetExportAction extends SecureAction
 		List tmpDataList = new ArrayList();
 		for (int dataListCnt = 0; dataListCnt < dataList.size(); dataListCnt++)
 		{
-			List tmpList = (List) dataList.get(dataListCnt);
+			List tmpList = dataList.get(dataListCnt);
 			List tmpNewList = new ArrayList();
 			for (int cnt = 0; cnt < (tmpList.size() - idColCount); cnt++)
 			{
@@ -246,7 +247,7 @@ public class SpreadsheetExportAction extends SecureAction
 			actualNoOfRec = selectedMetadata.getActualTotalRecords();
 			isDefinedView = selectedMetadata.isDefinedView();
 		}
-		String pageNo = (String) request.getParameter(AQConstants.PAGE_NUMBER);
+		String pageNo = request.getParameter(AQConstants.PAGE_NUMBER);
 		if (pageNo != null)
 		{
 			request.setAttribute(AQConstants.PAGE_NUMBER, pageNo);
@@ -303,7 +304,7 @@ public class SpreadsheetExportAction extends SecureAction
 		int idColCount = 0;
 		for (int cnt = 0; cnt < columnList.size(); cnt++)
 		{
-			String columnName = (String) columnList.get(cnt);
+			String columnName = columnList.get(cnt);
 			Logger.out.debug(columnName + " : " + columnName.length());
 			if (columnName.trim().equalsIgnoreCase("ID"))
 			{

@@ -18,6 +18,7 @@ import edu.wustl.common.beans.NameValueBean;
 public class CategorySearchForm extends ActionForm
 {
 
+	private boolean normalizedQuery = false;
 	/**
 	 * serial version id.
 	 */
@@ -124,7 +125,7 @@ public class CategorySearchForm extends ActionForm
 	 */
 	public void setShowTree(boolean hideTree)
 	{
-		this.showTree = hideTree;
+		showTree = hideTree;
 	}
 
 	/**
@@ -446,5 +447,15 @@ public class CategorySearchForm extends ActionForm
 	public void setOptions(String options)
 	{
 		this.options = options;
+	}
+
+	public void setNormalizedQuery(boolean normalizedQuery)
+	{
+		this.normalizedQuery = normalizedQuery;
+	}
+
+	public boolean getNormalizedQuery()
+	{
+		return normalizedQuery;
 	}
 }
