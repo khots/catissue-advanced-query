@@ -452,7 +452,11 @@ PUBLIC
              <forward name="pageOfQueryModule" path=".query.queryResultsSpreadsheetViewDef" />
         </action> -->
 
-
+ 		<action path="/ShowParamQueryAttributes"
+        	type="edu.wustl.query.action.ShowParamQueryAttributesAction"
+            validate="false"
+			scope="request" >
+        </action>
 
 	</action-mappings>
 

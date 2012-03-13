@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
@@ -459,6 +460,12 @@ public class CreateQueryObjectBizLogic
 	{
 		String errorMessage = "";
 		Map<String, String[]> newConditions = getNewConditions(queryInputString);
+		if (displayNamesMap == null)
+		{
+			errorMessage = updateQueryForExecution(query, newConditions);
+		}
+		else
+		{
 		for (IExpression expression : constraints)
 		{
 			int noOfOprds = expression.numberOfOperands();
@@ -476,7 +483,112 @@ public class CreateQueryObjectBizLogic
 				}
 			}
 		}
+		}
 		return errorMessage;
+	}
+
+	/**
+	 * This Method updates Parameterized Query for new conditions.
+	 *
+	 * @param query
+	 *            query IQuery
+	 * @param newConditions
+	 *            new conditions array
+	 * @return errorMessage
+	 */
+	private String updateQueryForExecution(final IQuery query,
+			final Map<String, String[]> newConditions)
+	{
+		// List<IParameter<?>> parameterRemovalList = new
+		// ArrayList<IParameter<?>>();
+		final StringBuilder errorMessage = new StringBuilder("");
+		for (final IParameter<?> parameter : ((ParameterizedQuery) query).getParameters())
+		{
+			if (parameter.getParameterizedObject() instanceof ICondition)
+			{
+				final ICondition condition = (ICondition) parameter.getParameterizedObject();
+				IExpression expression = QueryUtility.getExpression(
+						(IParameter<ICondition>) parameter, query);
+				final String conditionValue = condition.getValue();
+				final String componentName = getComponentName(expression, condition);
+				final String dataType = condition.getAttribute().getDataType();
+				if (newConditions != null && newConditions.containsKey(componentName))
+				{
+					final String[] params = newConditions.get(componentName);
+					List<String> values = getConditionValuesList(params);
+					// Validating the values entered the for a particular
+					// attribute condition
+					final String operator = params[AQConstants.INDEX_PARAM_ZERO];
+					errorMessage.append(validateAttributeValues(dataType, values));
+					if (errorMessage.toString().equals(""))
+					{
+						// it will check wether the condition values are in
+						// proper order or not
+						// if not will update the values in proper order.
+						values = getconditionValuesInProperOrder(dataType, operator, values);
+						condition.setValues(values);
+						condition.setRelationalOperator(RelationalOperator
+								.getOperatorForStringRepresentation(operator));
+					}
+					else
+					{
+						break;
+					}
+
+				}
+				else if (!(conditionValue != null && conditionValue.equalsIgnoreCase("")))
+				{// the conditions was not empty
+					// make it empty
+					Utility.updateConditionToEmptyCondition(condition);
+				}
+			}
+		}
+		return errorMessage.toString();
+	}
+
+	/**
+	 * If operator is Between then it will return the two values entered in
+	 * proper order i.e in ascending order on the basis of data type.
+	 *
+	 * @param dataType
+	 *            data Type of values.
+	 * @param operator
+	 *            relational operator
+	 * @param conditionValues
+	 *            list which contains values entered for value.
+	 * @return List
+	 */
+	private List<String> getconditionValuesInProperOrder(final String dataType,
+			final String operator, final List<String> conditionValues)
+	{
+		List<String> values;
+		if (AQConstants.BETWEEN.equals(operator))
+		{
+			values = Utility.getAttributeValuesInProperOrder(dataType, conditionValues.get(0),
+					conditionValues.get(1));
+		}
+		else
+		{
+			values = new ArrayList<String>(conditionValues);
+		}
+		return values;
+	}
+
+	/**
+	 * It will form the Component name on the basis of Expression & attribute.
+	 *
+	 * @param expression
+	 *            expression
+	 * @param condition
+	 *            condition
+	 * @return componentName
+	 */
+	private String getComponentName(final IExpression expression, final ICondition condition)
+	{
+		final StringBuffer componentName = new StringBuffer("");
+		componentName.append(expression.getExpressionId()).append(AQConstants.UNDERSCORE).append(
+				condition.getAttribute().getId());
+		return componentName.toString();
 	}
 
 	/**
@@ -731,47 +843,153 @@ public class CreateQueryObjectBizLogic
 	{
 		StringBuffer errorMessages = new StringBuffer(errorMessage);
 		ICondition condition;
-		String componentName;
+	//	String componentName;
 		List<ICondition> removalList = new ArrayList<ICondition>();
 		List<ICondition> defaultConditions = new ArrayList<ICondition>();
 		int size = rule.size();
 		ParameterizedQuery pQuery = null;
 		pQuery = setPQuery(query, pQuery);
-		for (int j = 0; j < size; j++)
+
+		if (displayNamesMap != null)
 		{
-			condition = rule.getCondition(j);
-			componentName = generateComponentName(expId, condition.getAttribute());
-			if (newConditions != null && newConditions.containsKey(componentName))
+			for (final String key : displayNamesMap.keySet())
 			{
-				String[] params = newConditions.get(componentName);
-				List<String> attributeValues = getConditionValuesList(params);
-				errorMessages.append(validateAttributeValues(
-				condition.getAttribute().getDataType(), attributeValues));
-				if (displayNamesMap != null && !(displayNamesMap.containsKey(componentName)))
+				String exprId = key.split(AQConstants.UNDERSCORE)[0];
+				if (rule.getContainingExpression().getExpressionId() == Long.parseLong(exprId))
 				{
-					logger.info("Display Map is null");
-				}
-				else
-				{
-					condition.setValues(attributeValues);
-					condition.setRelationalOperator(RelationalOperator
-					.getOperatorForStringRepresentation(params[AQConstants.INDEX_PARAM_ZERO]));
+					condition = getConditionForExpression(newConditions, key, rule, pQuery,
+							errorMessages);
+					if (condition != null)
+					{
+						if (errorMessage.length() > 0)
+						{
+							break;
+						}
+						// Create parameter
+						String componentName = generateComponentName(expId, condition
+								.getAttribute());
+						final IParameter<ICondition> parameter = QueryObjectFactory
+								.createParameter(condition, displayNamesMap.get(componentName));
+						pQuery.getParameters().add(parameter);
+					}
 				}
 			}
-			if ((!newConditions.containsKey(componentName)) && (displayNamesMap == null))
-			{
-				removalList.add(condition);
-				if (query instanceof ParameterizedQuery)
-				{
-					pQuery = addDefaultConditions(query, condition,
-							defaultConditions);
-				}
-			}
-			populateParameters(displayNamesMap, condition, componentName,pQuery);
 		}
-		removeUnwantedConditions(rule, removalList, defaultConditions);
+
+
+
 		return errorMessages.toString();
 	}
+
+	/**
+	 * Method to get/create condition for the given expression.
+	 *
+	 * @param newConditions
+	 *            new conditions array
+	 * @param key
+	 *            key for new conditions
+	 * @param rule
+	 *            IRule object
+	 * @param pQuery
+	 *            parameterized query
+	 * @param errorMessage
+	 *            error message
+	 * @return condition
+	 */
+	private ICondition getConditionForExpression(final Map<String, String[]> newConditions,
+			final String key, final IRule rule, final ParameterizedQuery pQuery,
+			final StringBuffer errorMessage)
+	{
+
+		ICondition condition = null;
+		final String[] values = newConditions.get(key);
+		final List<String> attributeValues = getConditionValuesList(values);
+		final RelationalOperator relOperator = RelationalOperator
+				.getOperatorForStringRepresentation(values[AQConstants.INDEX_PARAM_ZERO]);
+		final int exprId = rule.getContainingExpression().getExpressionId();
+		boolean isParameter = false;
+		for (final ICondition tempCondition : rule)
+		{
+			final String componentName = generateComponentName(exprId,tempCondition.getAttribute());
+			if (newConditions.containsKey(componentName) && key.equals(componentName))
+			{
+				condition = tempCondition;
+				errorMessage.append(validateAttributeValues(condition.getAttribute().getDataType(),
+						attributeValues));
+				if (!errorMessage.toString().equals(""))
+				{
+					break;
+				}
+				condition.setValues(attributeValues);
+				condition.setRelationalOperator(relOperator);
+				final List<IParameter<?>> parameterList = pQuery.getParameters();
+				if (parameterList != null)
+				{
+					for (final IParameter<?> parameter : parameterList)
+					{
+						if (parameter.getParameterizedObject() instanceof ICondition
+								&& ((ICondition) parameter.getParameterizedObject()).getId() != null)
+						{
+							final ICondition paramCondition = (ICondition) parameter
+									.getParameterizedObject();
+							if (paramCondition.getId().equals(condition.getId()))
+							{
+								condition = null;
+								isParameter = true;
+								break;
+							}
+						}
+					}
+				}
+				break;
+			}
+		}
+		if (condition == null && !isParameter && errorMessage.toString().equals(""))
+		{
+			condition = createCondition(key, rule, errorMessage, attributeValues,
+					relOperator);
+		}
+		return condition;
+	}
+
+	/**
+	 * Method to create condition object.
+	 * @param key condition map key
+	 * @param rule IRule for expression
+	 * @param errorMessage error message
+	 * @param attributeValues attribute values
+	 * @param relOperator relational operator
+	 * @return conditon object
+	 */
+	private ICondition createCondition(final String key, final IRule rule,
+			final StringBuffer errorMessage, final List<String> attributeValues,
+			final RelationalOperator relOperator)
+	{
+		ICondition condition = null;
+		final int exprId = rule.getContainingExpression().getExpressionId();
+		String expressionId = key.split(AQConstants.UNDERSCORE)[0];
+				if (exprId == Integer.parseInt(expressionId))
+		{
+			long attributeId = Long.parseLong(key.split(AQConstants.UNDERSCORE)[1]);
+			/*
+			 * EntityCache entityCache = EntityCache.getInstance();
+			 * AttributeInterface attribute =
+			 * entityCache.getAttributeById(attributeId);
+			 */
+			final AttributeInterface attribute =EntityCache.getInstance().getAttributeById(attributeId);
+			errorMessage.append(validateAttributeValues(attribute.getDataType(),
+					attributeValues));
+			if (errorMessage.toString().equals(""))
+			{
+				condition = QueryObjectFactory.createCondition(attribute, relOperator,
+						attributeValues);
+				rule.addCondition(condition);
+			}
+		}
+		return condition;
+	}
+
+
 
 	/**
 	 * @param query query
@@ -788,91 +1006,6 @@ public class CreateQueryObjectBizLogic
 		return tempQuery;
 	}
 
-	/**
-	 * @param displayNamesMap display Names Map
-	 * @param condition condition
-	 * @param componentName component Name
-	 * @param pQuery pQuery
-	 */
-	private void populateParameters(Map<String, String> displayNamesMap,
-			ICondition condition, String componentName,
-			ParameterizedQuery pQuery)
-	{
-		if (displayNamesMap != null && displayNamesMap.containsKey(componentName))
-		{
-			IParameter<ICondition> parameter = QueryObjectFactory.createParameter(condition,
-					displayNamesMap.get(componentName));
-			pQuery.getParameters().add(parameter);
-		}
-	}
-
-	/**
-	 * @param query query
-	 * @param condition condition
-	 * @param defaultConditions default Conditions
-	 * @return pQuery
-	 */
-	private ParameterizedQuery addDefaultConditions(IQuery query,
-			ICondition condition, List<ICondition> defaultConditions)
-	{
-		ParameterizedQuery pQuery;
-		pQuery = (ParameterizedQuery) query;
-		List<IParameter<?>> parameterList = pQuery.getParameters();
-		boolean isparameter = false;
-		if (parameterList != null)
-		{
-			isparameter = isParameter(condition, parameterList,
-					isparameter);
-		}
-		if (!isparameter)
-		{
-			defaultConditions.add(condition);
-		}
-		return pQuery;
-	}
-
-	/**
-	 * @param condition condition
-	 * @param parameterList parameter List
-	 * @param isParameter is parameter
-	 * @return ifParameter
-	 */
-	private boolean isParameter(ICondition condition,
-			List<IParameter<?>> parameterList, boolean isParameter)
-	{
-		boolean ifParameter = isParameter;
-		for (IParameter<?> parameter : parameterList)
-		{
-			if (parameter.getParameterizedObject() instanceof ICondition)
-			{
-				ICondition paramCondition = (ICondition) parameter
-						.getParameterizedObject();
-				if (paramCondition.getId().equals(condition.getId()))
-				{
-					ifParameter = true;
-				}
-			}
-		}
-		return ifParameter;
-	}
-
-	/**
-	 * @param rule rule
-	 * @param removalList removal List
-	 * @param defaultConditions default Conditions
-	 */
-	private void removeUnwantedConditions(IRule rule,
-			List<ICondition> removalList,
-			List<ICondition> defaultConditions)
-	{
-		for (ICondition removalEntity : removalList)
-		{
-			if (!defaultConditions.contains(removalEntity))
-			{
-				rule.removeCondition(removalEntity);
-			}
-		}
-	}
 
 	/**
 	 * This Method generates component name as attributeName_attributeId.
@@ -883,15 +1016,10 @@ public class CreateQueryObjectBizLogic
 	private String generateComponentName(int expressionId, AttributeInterface attribute)
 	{
 		StringBuffer componentId = new StringBuffer();
-		String attributeName = attribute.getName();
-		if(expressionId == -1)
-		{
-			componentId = componentId.append(attributeName).append(attribute.getId().toString());
-		}
-		else
-		{
-			componentId = componentId.append(attributeName).append(expressionId);
-		}
+		//String attributeName = attribute.getName();
+		componentId.append(expressionId).append(AQConstants.UNDERSCORE).append(
+				attribute.getId().toString());
+		//componentId.append(attributeName);
 		return componentId.toString();
 	}
 }

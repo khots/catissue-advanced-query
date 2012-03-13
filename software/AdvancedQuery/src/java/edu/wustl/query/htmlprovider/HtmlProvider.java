@@ -140,17 +140,22 @@ public class HtmlProvider
 	private String generateComponentName(AttributeInterface attribute)
 	{
 		StringBuffer componentId = new StringBuffer();
-		String attributeName = attribute.getName();
-		if(expressionId == -1)
+		String attributeName = "";
+		if (getExpressionId() > -1)
 		{
-			componentId.append(attributeName).append(attribute.getId().toString());
+			componentId = componentId.append(getExpressionId() + "_");
 		}
 		else
 		{
-			componentId.append(attributeName).append(expressionId);
+			attributeName = attribute.getName();
 		}
+		componentId = componentId.append(attributeName).append(
+				attribute.getId().toString());
+
 		return componentId.toString();
 	}
+
+
 
 	/**
 	 * This method generates the HTML for Add Limits and Edit Limits section.

@@ -20,6 +20,19 @@ public class QueryModuleException extends Exception
 		this.message = message;
 	}
 
+	/**Parameterized constructor.
+	 * @param message error message
+	 * @param exception Exception object
+	 * @param errorKey QueryModuleError
+	 */
+	public QueryModuleException(String message,  Exception exception,  QueryModuleError errorKey)
+	{
+		super(message, exception);
+		key = errorKey;
+		this.message = message;
+	}
+
+
 	/**
 	 * @return the key
 	 */

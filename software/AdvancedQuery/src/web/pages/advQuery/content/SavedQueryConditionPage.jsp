@@ -124,12 +124,12 @@ function checkForValidation()
 		}
 		else
 		{
-			produceSavedQuery();
+			produceSavedQuery("save");
 		}
 	}
 	else
 	{
-		produceSavedQuery();
+		produceSavedQuery("save");
 	}
 }
 </script>
@@ -151,7 +151,7 @@ function checkForValidation()
 
 </head>
 
-<body>
+<body >
 <html:errors />
 <html:form styleId='saveQueryForm'
 	action='<%=AQConstants.SAVE_QUERY_ACTION%>'>
@@ -187,6 +187,19 @@ function checkForValidation()
 						property="description" styleId="description">
 					</html:textarea></td>
 				</tr>
+				<tr><td colspan='4' style="padding-bottom:5px;">
+									<table cellpadding="0" cellspacing="0" width="100%" >
+									<tr>
+									<td id="checkbox2" align="right"  >
+									<input type="checkbox"  id='showAll'  onclick="javaScript:showAttributes(this);" value="${entity.id}">
+										<label style="font-size: 0.7em; font-family: verdana;">
+									   <b>Show all Attributes</b>
+									   </label></td>
+									</tr>
+								</table>
+								</td>
+				</tr>
+							
 				<tr>
 					<td colspan="4" height="2">&nbsp;</td>
 				</tr>
@@ -197,12 +210,17 @@ function checkForValidation()
 			</table>
 			</td>
 		</tr>
-		<tr>
-			<td colspan="4">
-			<div id="resultTable"><%=request.getAttribute(AQConstants.HTML_CONTENTS)%>
-			</div>
-			</td>
-		</tr>
+		<tr valign='top'>
+
+								<td valign='top'  colspan='4' height="150px">
+								<div  valign='top' id="parameterlist" style=" min-height:50px;overflow-x:auto;">
+								   <%=request.getAttribute(AQConstants.HTML_CONTENTS)%>
+			    				 </div>
+								</td>
+							</tr>
+							
+							
+	
 		<tr>
 			<td colspan="4" height="20" />
 		</tr>

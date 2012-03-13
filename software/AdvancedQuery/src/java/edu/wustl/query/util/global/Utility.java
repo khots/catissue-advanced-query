@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.wustl.cab2b.common.exception.CheckedException;
 import edu.wustl.common.beans.QueryResultObjectData;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.querysuite.queryobject.ICondition;
@@ -50,6 +52,8 @@ import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
 import edu.wustl.query.executor.AbstractQueryExecutor;
 import edu.wustl.query.executor.MysqlQueryExecutor;
 import edu.wustl.query.executor.OracleQueryExecutor;
+import edu.wustl.query.htmlprovider.HtmlUtility;
+import edu.wustl.query.htmlprovider.ParseXMLFile;
 import edu.wustl.query.security.QueryCsmCacheManager;
 import edu.wustl.query.util.querysuite.QueryDetails;
 
@@ -1043,4 +1047,64 @@ public class Utility //extends edu.wustl.common.util.Utility
 		}
 		return hasUsage;
 	}
+
+	  /**
+     * It will update the given condition to the empty condition.
+     *
+     * @param condition
+     *            condition to be updated.
+     */
+    public static void updateConditionToEmptyCondition(
+            final ICondition condition)
+    {
+        try
+        {
+            final String operator = getDefaultOperatorForAttribute(condition
+                    .getAttribute());
+            condition.setRelationalOperator(RelationalOperator
+                    .getOperatorForStringRepresentation(operator));
+            condition.getValues().clear();
+            if (condition.getRelationalOperator().getStringRepresentation()
+                    .equalsIgnoreCase(AQConstants.BETWEEN))
+            {
+                condition.addValue("");
+                condition.addValue("");
+            }
+            else
+            {
+                condition.addValue("");
+            }
+        }
+        catch (final CheckedException e)
+        {
+        	logger.error(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * This method will return the Default operator which should be used to form
+     * the Empty conditions.
+     *
+     * @param attribute
+     *            for which the operator is needed.
+     *
+     * @return the operator.
+     *
+     * @throws CheckedException
+     *             exception.
+     */
+    private static String getDefaultOperatorForAttribute(
+            final AttributeInterface attribute)
+            throws CheckedException
+    {
+        String operator;
+        InputStream inputStream = Utility.class.getClassLoader().getResourceAsStream(
+                AQConstants.DYNAMIC_UI_XML);
+        final ParseXMLFile parseFile = ParseXMLFile
+                    .getInstance(inputStream);
+            operator = HtmlUtility.getConditionsList(attribute, parseFile).get(
+                    0);
+
+        return operator;
+    }
 }

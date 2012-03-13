@@ -1056,7 +1056,7 @@
 		document.forms['categorySearchForm'].submit();
 	}
 
-	function produceSavedQuery()
+	function produceSavedQuery(event)
 	{
 		var totalentities = document.getElementById("totalentities").value;
 		var totalCFCount = document.getElementById("totalCF").value;
@@ -1096,9 +1096,18 @@
 
 		selectPresentCoordinators();
 		/*********For new shared query UI********/
+		 if(event=="showAll")
+		  {
+		    submitShowAll();
+		  }
+		  else if(event=="save")
+			   {
+			   // Save query
+		        document.getElementById('saveQueryForm').submit();
+			   }
 
-        // Save query
-        document.getElementById('saveQueryForm').submit();
+		 
+     
 	}
 
 	function ExecuteSavedQuery()
@@ -1584,3 +1593,51 @@ var jsReady = false;
 			myWindow.close();
 		}
 	}*/
+	
+	
+	function showAttributes(element)
+	{
+		var isChecked=element.checked;
+		// Get the queryString for parameterized attributes
+	
+
+        produceSavedQuery("showAll");
+
+	}
+	
+
+	function submitShowAll()
+	{
+
+	        var isChecked =  document.getElementById('showAll').checked;
+			var conditionListId = "conditionList";
+	       
+			var request = newXMLHTTPReq();
+			var actionURL="queryString="+document.getElementById('queryString').value
+			+"&conditionList="+encodeURIComponent(document.getElementById(conditionListId).value);
+			var handlerFunction = getReadyStateHandler(request,showAttributesHandler,true);
+			request.onreadystatechange = handlerFunction;
+			var url = "ShowParamQueryAttributes.do?isChecked="+isChecked;
+			request.open("POST",url,true);
+			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			request.send(actionURL);
+	}
+
+	function showAttributesHandler(response)
+	{
+		//alert(response);
+		/*
+		 * var htmlArray = response.split('####'); var strmsg =""+htmlArray[0];
+		 * if(strmsg == "errorMessage") { var isChecked =
+		 * document.getElementById('showAll').checked;
+		 * document.getElementById('showAll').checked = !isChecked;
+		 * document.getElementById("Error_msg").innerHTML = htmlArray[1];
+		 * self.scrollTo(0,0); } else {
+		 */
+		  var parameterListDiv = document.getElementById("parameterlist");
+		  parameterListDiv.innerHTML = response;
+		  hideCursor();
+		  // htmlArray[1];
+		// }
+	}
+	

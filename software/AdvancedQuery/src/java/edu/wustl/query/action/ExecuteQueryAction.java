@@ -64,7 +64,7 @@ public class ExecuteQueryAction extends Action
 		{
 			CreateQueryObjectBizLogic bizLogic = new CreateQueryObjectBizLogic();
 			String errorMessage = bizLogic.setInputDataToQuery(conditionstr, cloneQuery
-					.getConstraints(), null, query);
+					.getConstraints(), null, cloneQuery);
 			errorMessage = bizLogic.setInputDataToTQ(cloneQuery,
 					AQConstants.EXECUTE_QUERY_PAGE, rhsList, cFIndexMap);
 			if (errorMessage.trim().length() > 0)
