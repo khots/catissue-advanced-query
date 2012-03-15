@@ -24,6 +24,7 @@ import edu.wustl.common.querysuite.queryobject.IDateLiteral;
 import edu.wustl.common.querysuite.queryobject.IDateOffsetLiteral;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IExpressionOperand;
+import edu.wustl.common.querysuite.queryobject.IOperand;
 import edu.wustl.common.querysuite.queryobject.IParameter;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.IRule;
@@ -501,6 +502,7 @@ public class CreateQueryObjectBizLogic
 	{
 		// List<IParameter<?>> parameterRemovalList = new
 		// ArrayList<IParameter<?>>();
+
 		final StringBuilder errorMessage = new StringBuilder("");
 		for (final IParameter<?> parameter : ((ParameterizedQuery) query).getParameters())
 		{
@@ -510,6 +512,7 @@ public class CreateQueryObjectBizLogic
 				IExpression expression = QueryUtility.getExpression(
 						(IParameter<ICondition>) parameter, query);
 				final String conditionValue = condition.getValue();
+
 				final String componentName = getComponentName(expression, condition);
 				final String dataType = condition.getAttribute().getDataType();
 				if (newConditions != null && newConditions.containsKey(componentName))
@@ -522,7 +525,7 @@ public class CreateQueryObjectBizLogic
 					errorMessage.append(validateAttributeValues(dataType, values));
 					if (errorMessage.toString().equals(""))
 					{
-						// it will check wether the condition values are in
+						// it will check whether the condition values are in
 						// proper order or not
 						// if not will update the values in proper order.
 						values = getconditionValuesInProperOrder(dataType, operator, values);
@@ -536,14 +539,69 @@ public class CreateQueryObjectBizLogic
 					}
 
 				}
-				else if (!(conditionValue != null && conditionValue.equalsIgnoreCase("")))
-				{// the conditions was not empty
-					// make it empty
-					Utility.updateConditionToEmptyCondition(condition);
+				if ((!newConditions.containsKey(componentName)) && !isDafultCondition(query,condition) )
+				{
+					for(IOperand operand : expression)
+					{
+						if(operand instanceof IRule)
+						{
+							IRule rule = (IRule) operand;
+							rule.removeCondition(condition);
+						}
+					}
+
 				}
 			}
 		}
+
 		return errorMessage.toString();
+	}
+
+	/**
+	 * @param query query
+	 * @param condition condition
+	 * @param defaultConditions default Conditions
+	 * @return pQuery
+	 */
+	private boolean isDafultCondition(IQuery query,
+			ICondition condition)
+	{
+		ParameterizedQuery pQuery;
+		pQuery = (ParameterizedQuery) query;
+		boolean isDefaultCondition = false;;
+		List<IParameter<?>> parameterList = pQuery.getParameters();
+
+		if (parameterList != null && !isParameter(condition, parameterList))
+		{
+			isDefaultCondition = true;
+		}
+
+		return isDefaultCondition;
+	}
+
+	/**
+	 * @param condition condition
+	 * @param parameterList parameter List
+	 * @param isParameter is parameter
+	 * @return ifParameter
+	 */
+	private boolean isParameter(ICondition condition,
+			List<IParameter<?>> parameterList )
+	{
+		boolean ifParameter = false;
+		for (IParameter<?> parameter : parameterList)
+		{
+			if (parameter.getParameterizedObject() instanceof ICondition)
+			{
+				ICondition paramCondition = (ICondition) parameter
+						.getParameterizedObject();
+				if (paramCondition.getId().equals(condition.getId()))
+				{
+					ifParameter = true;
+				}
+			}
+		}
+		return ifParameter;
 	}
 
 	/**

@@ -29,6 +29,7 @@ import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.QuerySessionData;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.bizlogic.CommonQueryBizLogic;
@@ -45,6 +46,12 @@ import edu.wustl.security.exception.SMException;
  */
 public class QueryModuleSearchQueryUtil
 {
+	/**
+	 * Logger.
+	 */
+	private static final org.apache.log4j.Logger LOGGER = LoggerConfig
+			.getConfiguredLogger(QueryModuleSearchQueryUtil.class);
+
 	private final HttpServletRequest request;
 	private final HttpSession session;
 	private IQuery query;
@@ -59,7 +66,7 @@ public class QueryModuleSearchQueryUtil
 	public QueryModuleSearchQueryUtil(HttpServletRequest request, IQuery query)
 	{
 		this.request = request;
-		this.session = request.getSession();
+		session = request.getSession();
 		this.query = query;
 
 		isSavedQuery = Boolean.valueOf((String) session.getAttribute(AQConstants.IS_SAVED_QUERY));
@@ -92,6 +99,7 @@ public class QueryModuleSearchQueryUtil
 		catch (QueryModuleException e)
 		{
 			status = e.getKey();
+			LOGGER.error(e);
 		}
 		return status;
 	}
