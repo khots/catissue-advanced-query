@@ -1100,8 +1100,8 @@ public class SqlGenerator implements ISqlGenerator
         Collection<PermissibleValueInterface> pvColl = null;
         if(dataType.getDataElement()!=null)
         {
-            pvColl = ((UserDefinedDE)dataType.getDataElement()).getPermissibleValueCollection();   
-        }   
+            pvColl = ((UserDefinedDE)dataType.getDataElement()).getPermissibleValueCollection();
+        }
         if(pvColl!=null&&!pvColl.isEmpty())
         {
             //encode value as in case of special character DE saves encoded value in DB.

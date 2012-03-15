@@ -939,13 +939,9 @@ public class QueryOutputSpreadsheetBizLogic
 		querySessionData.setSecureExecute(queryDetailsObj.getSessionData().isSecurityRequired());
 		querySessionData.setHasConditionOnIdentifiedField(hasConditionOnIdentifiedField);
 		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
-		int index = startIndex;
-		if(!queryDetailsObj.getQuery().getIsNormalizedResultQuery())
-		{
-			index = -1;
-		}
+
 		PagenatedResultData pagenatedResultData = qBizLogic.execute(queryDetailsObj
-				.getSessionData(), querySessionData, index);
+				.getSessionData(), querySessionData, startIndex);
 		List<List<String>> dataList = pagenatedResultData.getResult();
 		List<List<String>> listForFileType = dataList;
 		querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
@@ -962,15 +958,7 @@ public class QueryOutputSpreadsheetBizLogic
 				dataList = (List<List<String>>)exportDetailsMap.get("dataList");
 				List<String>colList = (List<String>)exportDetailsMap.get("headerList");
 				spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, colList);
-				final int totalRecords = dataList.size();
-				if(startIndex!=-1)
-				{
-					final int recordsToDisplay = startIndex+querySessionData.getRecordsPerPage() <totalRecords ?startIndex+querySessionData.getRecordsPerPage(): totalRecords;
-					dataList = dataList.subList(startIndex,recordsToDisplay);
 
-				}
-				pagenatedResultData = new PagenatedResultData(dataList, totalRecords);
-				querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
 				selectedColMetadata.setActualTotalRecords(pagenatedResultData.getTotalRecords());
 			}
 		}
