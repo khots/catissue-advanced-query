@@ -38,7 +38,7 @@
 
 <body onunload='closeWaitPage()'>
 <html:errors />
-<html:form styleId='saveQueryForm'
+<html:form styleId='saveQueryForm' 
 	action='<%=AQConstants.EXECUTE_QUERY_ACTION%>'>
 		<table width='100%' cellpadding='0' cellspacing='0' border='0' align='center' >
 		<tr valign="center" class="bgImage">
@@ -91,8 +91,8 @@
 			<td height="20">&nbsp;</td>
 		</tr>
 		<tr>
-			<td align="left" > <input type="hidden" name="queryString"
-				value="" /> <input type="button" name="execute" value="Execute" class="actionButton"
+			<td align="left" >  
+			 <html:hidden property="queryId" /> <input type="button" name="execute" value="Execute" class="actionButton"
 				onClick="ExecuteSavedQuery()" /> <input type="button" name="cancel" class="actionButton"
 				value="Cancel" onClick="GotoRetriveAction();" /></td>
 		</tr>

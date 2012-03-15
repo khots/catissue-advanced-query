@@ -65,11 +65,11 @@ public class ExecuteQueryAction extends Action
 			CreateQueryObjectBizLogic bizLogic = new CreateQueryObjectBizLogic();
 			String errorMessage = bizLogic.setInputDataToQuery(conditionstr, cloneQuery
 					.getConstraints(), null, cloneQuery);
-			errorMessage = bizLogic.setInputDataToTQ(cloneQuery,
+			errorMessage += bizLogic.setInputDataToTQ(cloneQuery,
 					AQConstants.EXECUTE_QUERY_PAGE, rhsList, cFIndexMap);
 			if (errorMessage.trim().length() > 0)
 			{
-				request.setAttribute("queryId", query.getId());
+				//request.setAttribute("queryId", query.getId());
 				actionForward = getActionForward(actionMapping, request, errorMessage);
 				flag = false;
 			}
