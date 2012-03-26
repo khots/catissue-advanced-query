@@ -33,7 +33,7 @@ tr#hiddenCombo {
 			.getAttribute(AQConstants.TOTAL_RESULTS)).intValue();
 	int numResultsPerPage = Integer.parseInt((String) session
 			.getAttribute(AQConstants.RESULTS_PER_PAGE));
-	String pageName = "SpreadsheetView.do";
+	String pageName = "AQSpreadsheetView.do";
 	String checkAllPages = (String) session
 			.getAttribute("checkAllPages");
 	QueryAdvanceSearchForm form = (QueryAdvanceSearchForm) session

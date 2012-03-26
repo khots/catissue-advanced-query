@@ -539,16 +539,34 @@ public class CreateQueryObjectBizLogic
 					}
 
 				}
-				if ((!newConditions.containsKey(componentName)) && !isDafultCondition(query,condition) )
+				else if((!newConditions.containsKey(componentName)) && !isDafultCondition(query,condition) )
 				{
-					for(IOperand operand : expression)
-					{
-						if(operand instanceof IRule)
-						{
-							IRule rule = (IRule) operand;
-							rule.removeCondition(condition);
-						}
-					}
+					errorMessage.append(removeEmptyConditions(query, newConditions, condition, expression, componentName));
+				}
+			}
+
+		}
+
+		return errorMessage.toString();
+	}
+
+	private String removeEmptyConditions(final IQuery query,
+			final Map<String, String[]> newConditions, final ICondition condition,
+			IExpression expression, final String componentName)
+	{
+		StringBuffer errorMessage = new StringBuffer("");
+
+		for (IOperand operand : expression)
+		{
+			if (operand instanceof IRule)
+			{
+				IRule rule = (IRule) operand;
+				rule.removeCondition(condition);
+				if (rule.size() == 0)
+				{
+					errorMessage.append(AQConstants.FONT_COLOR)
+							.append(ApplicationProperties.getValue("simpleQuery.emptyrule"))
+							.append(AQConstants.END_STYLE);
 
 				}
 			}

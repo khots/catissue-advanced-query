@@ -62,7 +62,7 @@ public class SpreadsheetDenormalizationBizLogic
 			 */
 			AssociationDataHandler assocDataHandler = new AssociationDataHandler();
 			Table<TreeCell> res = assocDataHandler.updateRowDataList
-			(denormalizationList, rootExp, dataHandler);
+			(denormalizationList, rootExp, dataHandler,selectedColumnsMetadata);
 			List<List<OutputAttributeColumn>> entityDataList = assocDataHandler.getEntityDataList(res, dataHandler,selectedColumnsMetadata);
 			List<List<String>> finalDataList = new ArrayList<List<String>>();
 			List<String> newDataList;

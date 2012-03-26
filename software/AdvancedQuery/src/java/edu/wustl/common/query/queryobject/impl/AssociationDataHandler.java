@@ -1,7 +1,6 @@
 package edu.wustl.common.query.queryobject.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -11,13 +10,10 @@ import java.util.TreeMap;
 
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.wustl.common.query.queryobject.impl.RecordProcessor.TreeCell;
-import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.queryobject.IExpression;
-import edu.wustl.query.bizlogic.RowProcessor;
 import edu.wustl.query.util.global.Utility;
 
 public class AssociationDataHandler
@@ -28,13 +24,14 @@ public class AssociationDataHandler
 	 * @param denormalizedLst denormalizationMap
 	 * @param rootExp rootExp
 	 * @param dataHandler dataHandler
+	 * @param selectedColumnsMetadata
 	 * @param mapIndex mapIndex
 	 */
-	public Table<TreeCell> updateRowDataList(final List<Map<OutputAssociationColumn,Object>> denormalizedLst, final IExpression rootExp, QueryExportDataHandler dataHandler)
+	public Table<TreeCell> updateRowDataList(final List<Map<OutputAssociationColumn,Object>> denormalizedLst, final IExpression rootExp, QueryExportDataHandler dataHandler, SelectedColumnsMetadata selectedColumnsMetadata)
 	{
 		final QueryHeaderData queryDataEntity = new QueryHeaderData(rootExp.getQueryEntity().getDynamicExtensionsEntity(), rootExp);
 		final List<RecordProcessorNode<TreeCell>> nodes =
-			generateQueryDatamap(denormalizedLst, queryDataEntity, null, dataHandler);
+			generateQueryDatamap(denormalizedLst, queryDataEntity, null, dataHandler,selectedColumnsMetadata);
 		final RowAppenderProcNode<TreeCell> root = new RowAppenderProcNode<TreeCell>();
         root.addChildren(nodes);
         return root.getTable(TreeCell.EMPTY_CELL);
@@ -46,12 +43,13 @@ public class AssociationDataHandler
 	 * @param denormalizedList denormalizedList
 	 * @param queryDataEntity queryDataCont
 	 * @param dataHandler dataHandler
+	 * @param selectedColumnsMetadata
 	 * @param entityVsDataList entityVsDataList
 	 * @param dataCnt dataCnt
 	 */
 	private List<RecordProcessorNode<TreeCell>> generateQueryDatamap(
 			final List<Map<OutputAssociationColumn, Object>> denormalizedList,
-			final QueryHeaderData queryDataEntity, final TreeCell parent, QueryExportDataHandler dataHandler)
+			final QueryHeaderData queryDataEntity, final TreeCell parent, QueryExportDataHandler dataHandler, SelectedColumnsMetadata selectedColumnsMetadata)
 	{
         final List<RecordProcessorNode<TreeCell>> res = new ArrayList<RecordProcessorNode<TreeCell>>();
         for (Map<OutputAssociationColumn, Object> rec : denormalizedList)
@@ -65,7 +63,7 @@ public class AssociationDataHandler
             {
                 if (entry.getKey().getAbstractAttr() instanceof AssociationInterface)
                 {
-                    processAssociations(cell, recordProcNode, entry, dataHandler);
+                    processAssociations(cell, recordProcNode, entry, dataHandler,selectedColumnsMetadata);
                 }
             }
         }
@@ -79,10 +77,11 @@ public class AssociationDataHandler
 	 * @param recordProcNode recordProcNode
 	 * @param entry entry
 	 * @param dataHandler dataHandler
+	 * @param selectedColumnsMetadata
 	 */
 	private void processAssociations(final TreeCell cell,
 			final RecordProcessorNode<TreeCell> recordProcNode,
-			final Map.Entry<OutputAssociationColumn, Object> entry, QueryExportDataHandler dataHandler)
+			final Map.Entry<OutputAssociationColumn, Object> entry, QueryExportDataHandler dataHandler, SelectedColumnsMetadata selectedColumnsMetadata)
 	{
 		final AssociationInterface association = (AssociationInterface) entry.getKey().getAbstractAttr();
 		AbstractTableProcessorNode<TreeCell> childNode;
@@ -101,10 +100,10 @@ public class AssociationDataHandler
 		final QueryHeaderData queryHeaderData = new QueryHeaderData(expression.getQueryEntity().getDynamicExtensionsEntity(),
 					expression);
 		final List<Map<OutputAssociationColumn, Object>> newChildList =
-			dataHandler.updateTempList(childRecs,expression);
+			dataHandler.updateTempList(childRecs,expression,selectedColumnsMetadata);
 		if (!newChildList.isEmpty())
 		{
-			childNode.addChildren(generateQueryDatamap(newChildList, queryHeaderData, cell, dataHandler));
+			childNode.addChildren(generateQueryDatamap(newChildList, queryHeaderData, cell, dataHandler,selectedColumnsMetadata));
 		}
 	}
 
@@ -166,6 +165,7 @@ public class AssociationDataHandler
             for (int j = 0; j < table.numColumns(); j++)
             {
             	TreeCell cell = table.get(i,j);
+            	// this check is needed cause if the cell is only in view then this check is needed other wise it shows one set column of extra for null records.
             	if(cell != TreeCell.EMPTY_CELL && !(cell.getRec().isEmpty() && !cell.getQueryHeaderData().getExpression().containsRule()))
             	{
 	            	if(tempMap.get(cell.getQueryHeaderData()) == null)
@@ -187,7 +187,8 @@ public class AssociationDataHandler
             {
             	for(QueryHeaderData queryData : tempMap.keySet())
             	{
-            		if(tempMap.get(queryData)>entityVsMaxCnt.get(queryData))
+                	// this check is needed cause if the cell is only in view, & first record does not contains any data for that entity then second record should update the count.
+            		if(entityVsMaxCnt.get(queryData)==null || tempMap.get(queryData)>entityVsMaxCnt.get(queryData))
             		{
             			entityVsMaxCnt.put(queryData, tempMap.get(queryData));
             		}
@@ -218,7 +219,11 @@ public class AssociationDataHandler
     	{
     		List<TreeCell> cellList = treeCellMap.get(queryHeaderData);
     		int listSize = cellList.size();
-    		int maxRecordCnt = entityVsMaxCnt.get(queryHeaderData);
+    		Integer maxRecordCnt = entityVsMaxCnt.get(queryHeaderData);
+    		if(maxRecordCnt==null)
+    		{
+    			maxRecordCnt = 1;
+    		}
     		int index = 0;
     		for(TreeCell cell : cellList)
     		{
@@ -247,7 +252,7 @@ public class AssociationDataHandler
 
     		while(index<maxRecordCnt)
     		{
-    			Map<OutputAssociationColumn, Object> record = getEmptyRecordMap(queryHeaderData.getExpression(), cellList.get(0), selectedColumnsMetadata);
+    			Map<OutputAssociationColumn, Object> record = cellList.get(0).getRec();
     			List<OutputAttributeColumn> rowDataList = new ArrayList<OutputAttributeColumn>();
     			for (OutputAssociationColumn key : record.keySet())
             	{
@@ -283,53 +288,7 @@ public class AssociationDataHandler
     }
 
 
-    private Map<OutputAssociationColumn, Object> getEmptyRecordMap(IExpression expression, TreeCell treeCell,SelectedColumnsMetadata selectedColumnsMetadata)
-    {
-    	Map<OutputAssociationColumn, Object> record =treeCell.getRec();
-    	if(treeCell.getRec().isEmpty())
-    	{
-    		QueryExportDataHandler dataHandler = new QueryExportDataHandler(null, null);
-    		Collection<AttributeInterface> attributeList = expression.getQueryEntity().getDynamicExtensionsEntity().getAttributeCollection();
-			RowProcessor rowProcessor = new RowProcessor();
-			for(AttributeInterface attribute : attributeList)
-			{
 
-					// isPresent should take AttributeInterface as input
-					/*OutputAttributeColumn val = rowProcessor.getValueForAttribute(
-							 attribute, selectedColumnsMetadata
-									.getSelectedAttributeMetaDataList(), expression);*/
-
-				OutputAttributeColumn opAttrCol = null;
-				String value;
-				int columnIndex = -1;
-
-				for (QueryOutputTreeAttributeMetadata outputTreeAttributeMetadata : selectedColumnsMetadata.getSelectedAttributeMetaDataList())
-				{
-					columnIndex++;
-					BaseAbstractAttributeInterface presentAttribute = outputTreeAttributeMetadata
-							.getAttribute();
-					if (presentAttribute.equals(attribute)
-							&& outputTreeAttributeMetadata.getTreeDataNode().getExpressionId() == expression
-									.getExpressionId())
-					{
-						value = " ";
-						opAttrCol = new OutputAttributeColumn(value, columnIndex, attribute, expression,
-								null);
-						break;
-					}
-				}
-
-				if (opAttrCol != null)
-				{
-						OutputAssociationColumn opAssocCol = new OutputAssociationColumn(attribute,
-								expression, null);
-						record.put(opAssocCol, opAttrCol);
-				}
-
-			}
-    	}
-    	return record;
-    }
 
 	private void setHeaderDisplayName(int index, final OutputAttributeColumn opAttributeColumn)
 	{

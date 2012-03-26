@@ -82,7 +82,7 @@ public class SaveQueryAction extends SecureAction
 			{
 				pQuery.getParameters().removeAll(pQuery.getParameters());
 			}
-			LOGGER.info("before populateParameterixedQuery");
+			LOGGER.info("before populateParameterizedQuery");
 			IParameterizedQuery parameterizedQuery = populateParameterizedQueryData(query,
 					actionForm, request);
 			if (parameterizedQuery != null)

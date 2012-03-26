@@ -11,6 +11,8 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
+import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.IExpression;
@@ -141,9 +143,10 @@ public class QueryExportDataHandler
 	 * for more than one entity corresponding to same association).
 	 * @param tempList tempList
 	 * @param expression entity
+	 * @param selectedColumnsMetadata
 	 * @return newList
 	 */
-	public List updateTempList(List tempList, IExpression expression)
+	public List updateTempList(List tempList, IExpression expression, SelectedColumnsMetadata selectedColumnsMetadata)
 	{
 		List newList = new ArrayList();
 		Map<OutputAssociationColumn, Object> newMap;
@@ -160,14 +163,64 @@ public class QueryExportDataHandler
 					newMap.put(attribute, obj.get(attribute));
 				}
 			}
+			// this is needed id node is added in view mode & there is no record for it to display then empty record needs to be added in tree.
+			if(obj.isEmpty())
+			{
+				newMap = getEmptyRecordMap(expression,selectedColumnsMetadata);
+			}
 			if(!newMap.isEmpty())
 			{
 				newList.add(newMap);
 			}
 		}
+
+
 		return newList;
 	}
 
+	private Map<OutputAssociationColumn, Object> getEmptyRecordMap(IExpression expression,
+			SelectedColumnsMetadata selectedColumnsMetadata)
+	{
+		Map<OutputAssociationColumn, Object> record = new HashMap<OutputAssociationColumn, Object>();
+
+		Collection<AttributeInterface> attributeList = expression.getQueryEntity()
+				.getDynamicExtensionsEntity().getAttributeCollection();
+
+		for (AttributeInterface attribute : attributeList)
+		{
+
+			OutputAttributeColumn opAttrCol = null;
+			String value;
+			int columnIndex = -1;
+
+			for (QueryOutputTreeAttributeMetadata outputTreeAttributeMetadata : selectedColumnsMetadata
+					.getSelectedAttributeMetaDataList())
+			{
+				columnIndex++;
+				BaseAbstractAttributeInterface presentAttribute = outputTreeAttributeMetadata
+						.getAttribute();
+				if (presentAttribute.equals(attribute)
+						&& outputTreeAttributeMetadata.getTreeDataNode().getExpressionId() == expression
+								.getExpressionId())
+				{
+					value = " ";
+					opAttrCol = new OutputAttributeColumn(value, columnIndex, attribute,
+							expression, null);
+					break;
+				}
+			}
+
+			if (opAttrCol != null)
+			{
+				OutputAssociationColumn opAssocCol = new OutputAssociationColumn(attribute,
+						expression, null);
+				record.put(opAssocCol, opAttrCol);
+			}
+
+		}
+
+		return record;
+	}
 	/**
 	 * Add all the associations (of parents) and then
 	 * filter the list to contain only the required attributes and associations.

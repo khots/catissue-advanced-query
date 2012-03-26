@@ -99,7 +99,7 @@ public class QueryModuleSearchQueryUtil
 		catch (QueryModuleException e)
 		{
 			status = e.getKey();
-			LOGGER.error(e);
+			LOGGER.error(e.getMessage(),e);
 		}
 		return status;
 	}

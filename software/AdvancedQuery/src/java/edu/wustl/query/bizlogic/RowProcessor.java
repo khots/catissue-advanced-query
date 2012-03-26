@@ -149,9 +149,10 @@ public class RowProcessor
 		if (idIndex < list.size() && idIndex != -1)
 		{
 			String idValue = list.get(idIndex);
-			//this is when idVlaue may not be present when any Entity is added only in view instead of actual query.
+
 
 			Map<OutputAssociationColumn, Object> recMap = recMap(rootExp, idValue);
+			// this is needed id node is added in view mode & there is no record for it to display then empty record needs to be added in tree after creating complete list.
 			if(idValue!=null && !"".equals(idValue))
 			{
 			List<AbstractAttributeInterface> attributeList = exprInfoCache.attrList(rootExp);
