@@ -285,7 +285,8 @@
 		<copy todir="${dist.dir}/lib" overwrite="true">
 			<fileset file="${lib.dir}/ant-contrib.jar" />
 			<fileset file="${lib.dir}/mysql-connector-java-5.0.8-bin.jar" />
-			<fileset file="${lib.dir}/oracleDriver.jar" />
+			<fileset file="${lib.dir}/ojdbc14.jar" />
+			<fileset file="${lib.dir}/liquibase.jar" />
 			<!--<fileset file="${lib.dir}/dom4j-1.6.jar" />
 			<fileset file="${lib.dir}/lib/j2ee.jar" /> -->
 			<fileset file="${lib.dir}/log4j-1.2.9.jar" />

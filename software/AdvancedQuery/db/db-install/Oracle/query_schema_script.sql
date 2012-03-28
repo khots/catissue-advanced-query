@@ -47,7 +47,7 @@ create table COMMONS_GRAPH (IDENTIFIER number(19,0) not null, primary key (IDENT
 create table COMMONS_GRAPH_EDGE (IDENTIFIER number(19,0) not null, SOURCE_VERTEX_CLASS varchar2(255 char), SOURCE_VERTEX_ID number(19,0), TARGET_VERTEX_CLASS varchar2(255 char), TARGET_VERTEX_ID number(19,0), EDGE_CLASS varchar2(255 char), EDGE_ID number(19,0), primary key (IDENTIFIER));
 create table COMMONS_GRAPH_TO_EDGES (GRAPH_ID number(19,0) not null, EDGE_ID number(19,0) not null unique, primary key (GRAPH_ID, EDGE_ID));
 create table COMMONS_GRAPH_TO_VERTICES (GRAPH_ID number(19,0) not null, VERTEX_CLASS varchar2(255 char), VERTEX_ID number(19,0));
-create table QUERY (IDENTIFIER number(19,0) not null, CONSTRAINTS_ID number(19,0) unique, primary key (IDENTIFIER));
+create table QUERY (IDENTIFIER number(19,0) not null, CONSTRAINTS_ID number(19,0) unique,IS_NORMALIZED_VIEW number(1,0) default 0, primary key (IDENTIFIER));
 create table QUERY_ARITHMETIC_OPERAND (IDENTIFIER number(19,0) not null, LITERAL varchar2(255 char), TERM_TYPE varchar2(255 char), DATE_LITERAL date, TIME_INTERVAL varchar2(255 char), DE_ATTRIBUTE_ID number(19,0), EXPRESSION_ID number(19,0), primary key (IDENTIFIER));
 create table QUERY_BASEEXPR_TO_CONNECTORS (BASE_EXPRESSION_ID number(19,0) not null, CONNECTOR_ID number(19,0) not null, POSITION number(10,0) not null, primary key (BASE_EXPRESSION_ID, POSITION));
 create table QUERY_BASE_EXPRESSION (IDENTIFIER number(19,0) not null, EXPR_TYPE varchar2(255 char) not null, primary key (IDENTIFIER));

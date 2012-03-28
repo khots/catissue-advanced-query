@@ -23,6 +23,54 @@
 	<property name="oracle.driver.string" value="oracle.jdbc.driver.OracleDriver" />
 	<property name="mysql.driver.string" value="org.gjt.mm.mysql.Driver" />
 
+	
+
+	<path id="liquibaseClasspath">
+		<fileset dir="${lib.dir}" includes="*.jar" />
+	</path>
+	
+	<taskdef resource="liquibasetasks.properties">
+		<classpath>
+			<pathelement location="${lib.dir}/liquibase.jar" />
+		</classpath>
+	</taskdef>
+
+	
+		<target name="aq_upgrade_db_from_1.3_to_1.4">
+			<if>
+				<equals arg1="mysql" arg2="${database.type}" />
+				<then>
+					
+					<antcall target="aq_upgrade_from_1.3_to_1.4" >
+						<param name="driver.string" value="${mysql.driver.string}"/>
+						<param name="db.url" value="jdbc:mysql://${database.host}:${database.port}/${database.name}"/>	
+					</antcall>
+
+				</then>
+				<elseif>
+					<equals arg1="oracle" arg2="${database.type}" />
+					<then>
+						<antcall target="aq_upgrade_from_1.3_to_1.4" >
+							<param name="driver.string" value="${oracle.driver.string}"/>
+							<param name="db.url" value="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}"/>
+						</antcall>
+					</then>
+				</elseif>
+
+				<else>
+					<echo message="DATABASE INITIALIZATION FAILED PLEASE CHECK DATABASE.TYPE PROPERTY" level="error" />
+				</else>
+			</if>
+
+		</target>
+	
+
+	<target name="aq_upgrade_from_1.3_to_1.4">
+		<echo message="Upgrading DataBase changes from Advanced Query 1.3 to 1.4" />
+		<updateDatabase changeLogFile="${dbupgrade.sql.dir}/liquibase_xml/query_Suite1.3_to_Suite1.4.xml" driver="${driver.string}" url="${db.url}" username="${database.username}" password="${database.password}" dropFirst="false" classpathref="liquibaseClasspath" />
+	</target>
+			
+			
 		<target name="aq_upgrade_db_from_1.2_to_1.3">
 			<if>
 				<equals arg1="mysql" arg2="${database.type}" />
