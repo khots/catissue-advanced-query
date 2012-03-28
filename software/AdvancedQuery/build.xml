@@ -98,9 +98,10 @@
 	</target>
 	<target name="create_zip" depends="build_jar">
 		<delete file="${temp.dir}/MANIFEST.MF" />
-		<manifest file="${temp.dir}/MANIFEST.MF">
+		<mkdir dir="${temp.dir}/META-INF" />
+		<manifest file="${temp.dir}/META-INF/MANIFEST.MF">
 			<attribute name="Built-By" value="${user.name}" />
-			<attribute name="Version" value="${application.name} ${application.version}" />
+			<attribute name="Version" value="${application.name} ${aq.jar.version}" />
 			<attribute name="CSM-Version" value="${csm.version}" />
 			<attribute name="caCore-Version" value="${cacore.version}" />
 			<attribute name="Build-on" value="${TODAY}" />
@@ -119,7 +120,7 @@
 		<copy file="${classes.dir}/query.properties" todir="${dist.dir}" overwrite="true" />
 		<copy file="${classes.dir}/queryDbutil.properties" todir="${dist.dir}" overwrite="true" />
 		<copy file="./src/conf/build-properties.xml" todir="${dist.dir}" overwrite="true" />
-		<copy file="${temp.dir}/MANIFEST.MF" todir="${dist.dir}" overwrite="true" />
+		<copy file="${temp.dir}/META-INF/MANIFEST.MF" todir="${dist.dir}" overwrite="true" />
 		<copy file="./src/conf/deploy.xml" todir="${dist.dir}" overwrite="true" />
 		<copy file="./src/conf/queryintegration.xml" todir="${dist.dir}" overwrite="true" />
 		<copy file="./src/conf/advanceQuery.properties" todir="${dist.dir}" overwrite="true" />
@@ -142,7 +143,9 @@
 				<exclude name="ApplicationSecurityConfig.xml" />
 			</fileset>
 		</copy>
-
+		<copy todir="${dist.dir}/META-INF" overwrite="true">
+					<fileset dir="${temp.dir}/META-INF" />
+		</copy>
 		<!-- Copy these two config files from tokenizedFiles directory which contains the tekenized files -->
 		<!--
 		<copy todir="${src.classes.dir}/WEB-INF/classes" overwrite="true">
