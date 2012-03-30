@@ -315,7 +315,7 @@
            	 					//validation - same datatype necessary to query
            	 					//Alert.show("first node datatype "+firstNodeList.getItemAt(1).toString());
            	 					//Alert.show("2nd node datatype "+secondNodeList.getItemAt(1).toString()); 
-           	 					if("String" == firstNodeList.getItemAt(1).toString() || "String" == secondNodeList.getItemAt(1).toString())
+           	 					if((firstNodeList.getItemAt(1).toString() == secondNodeList.getItemAt(1).toString()) || ("String" == firstNodeList.getItemAt(1).toString() || "String" == secondNodeList.getItemAt(1).toString()))
            	 					{
            	 						//Alert.show("condition added");
 									//JoinFormulaNode instantiated which is set in JoinQueryNode object in List
