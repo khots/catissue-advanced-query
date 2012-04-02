@@ -457,9 +457,9 @@ public class TwoNodesTemporalQuery
 		//If Both attributes have type
 		if(isJoinQuery)
 		{
-			if (firstAttributeType.equals(String.class.getSimpleName()) || secondAttributeType.equals(String.class.getSimpleName()))
+			if (firstAttributeType.equals(secondAttributeType) || firstAttributeType.equals(String.class.getSimpleName()) || secondAttributeType.equals(String.class.getSimpleName()))
 			{
-				// add joining condition by casting the attribute which is of other data type tp string using to_char().
+				// add joining condition by casting the attribute which is of other data type to string using to_char().
 				createExpressionsForSameType(isJoinQuery);
 			}
 		}
@@ -522,7 +522,7 @@ public class TwoNodesTemporalQuery
 	private void createExpressionsForSameType(boolean isJoinQuery)
 	{
 		boolean isDate = false;
-		if(isJoinQuery && AQConstants.DATE_TYPE.equals(firstAttributeType))
+		if(isJoinQuery && AQConstants.DATE_TYPE.equals(firstAttributeType) && AQConstants.DATE_TYPE.equals(secondAttributeType))
 		{
 			isDate = true;
 		}
