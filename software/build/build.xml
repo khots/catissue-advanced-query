@@ -808,7 +808,7 @@ $HeadURL: http://gforge.nci.nih.gov/svnroot/automation/branches/automation-1.7.4
 		<copy  file="${dist.dir}/AdvanceQuery_Installable.zip" todir="${local.repo.dir}"/>
 		<mkdir dir="${user.home}/tmp"/>
 		<ivy-module-add2repo
-			ivy-repo.base.url="https://ncisvn.nci.nih.gov/svn/cbiit-ivy-repo/trunk"
+			ivy-repo.base.url="https://ncisvn.nci.nih.gov/svn/deprecated-cbiit-ivy-repo/trunk"
 			ivy-repo.base.dir="${user.home}/tmp/ivy-repo"
 			ivy.add.org="gov.nih.nci.advancedquery"
 			ivy.add.module="AdvanceQuery"
