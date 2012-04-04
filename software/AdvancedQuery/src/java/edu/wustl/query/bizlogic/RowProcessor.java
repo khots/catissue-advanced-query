@@ -177,7 +177,7 @@ public class RowProcessor
 							recMap.put(opAssocCol, childList);
 						}
 						Integer childIdIndex = exprInfoCache.idIndex(associatedExp);
-						if (childIdIndex < list.size())
+						if (childIdIndex < list.size() && childIdIndex != -1)
 						{
 							String childId = list.get(exprInfoCache.idIndex(associatedExp));
 							if (!childList.contains(expMap.get(associatedExp).getMap(childId)))
