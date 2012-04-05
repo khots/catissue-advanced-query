@@ -60,7 +60,7 @@ final public class QueryModuleSqlUtil {
 				tablespace = "TABLESPACE " + tablespace;
 			}
 			jdbcDao.openSession(queryDetailsObj.getSessionData());
-
+			final String tempInnerViewName = AQConstants.TEMP_INNER_VIEW +queryDetailsObj.getSessionData().getUserId()+AQConstants.UNDERSCORE;
 			String createViewQuery = createTableSql;
 				while (createViewQuery.contains("(select")) {//check for inner select query
 					int startIndex = createViewQuery.indexOf("(select");
@@ -72,7 +72,8 @@ final public class QueryModuleSqlUtil {
 					//substring for creating inner view from inner select query
 
 					String innerViewQuery = createViewQuery.substring(startIndex, lastIndex + 1);
-					String innerViewName = ("VIEW" + (new Random().nextInt(1000)));//inner view name
+
+					String innerViewName = (tempInnerViewName + (new Random().nextInt(1000)));//inner view name
 					String innerView = "CREATE OR REPLACE VIEW "+ innerViewName + " " + tablespace + " " + " AS "+ innerViewQuery;
 					//inner view create query
 

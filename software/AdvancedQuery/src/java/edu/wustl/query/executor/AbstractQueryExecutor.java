@@ -49,7 +49,7 @@ public abstract class AbstractQueryExecutor
 	/**
 	 * logger Logger - Generic logger.
 	 */
-	private static org.apache.log4j.Logger logger = Logger.getLogger(SecurityManager.class);
+	protected static org.apache.log4j.Logger logger = Logger.getLogger(SecurityManager.class);
 
 	/**
 	 * AQConstants required for forming/changing SQL.
@@ -152,7 +152,7 @@ public abstract class AbstractQueryExecutor
 		this.queryResultObjectDataMap = queryResultObjectDataMap;
 		this.startIndex = startIndex;
 		this.noOfRecords = noOfRecords;
-		this.getSublistOfResult = startIndex != -1; // this will be used, when its
+		getSublistOfResult = startIndex != -1; // this will be used, when its
 		//required to get sublist of the result set.
 		/**
 		 * setting noOfRecords = Integer.MAX_VALUE, if All records are expected from result.
@@ -202,18 +202,18 @@ public abstract class AbstractQueryExecutor
 	 */
 	public PagenatedResultData getQueryResultList(QueryParams queryParams) throws DAOException, SMException
 	{
-		this.query = queryParams.getQuery();
-		this.sessionDataBean = queryParams.getSessionDataBean();
-		this.isSecureExecute = queryParams.isSecureToExecute();
-		this.hasConditionOnIdentifiedField = queryParams.isHasConditionOnIdentifiedField();
-		this.queryResultObjectDataMap = queryParams.getQueryResultObjectDataMap();
-		this.startIndex = queryParams.getStartIndex();
-		this.noOfRecords = queryParams.getNoOfRecords();
-		this.getSublistOfResult = startIndex != -1; // this will be used, when it required to get sublist of the result set.
+		query = queryParams.getQuery();
+		sessionDataBean = queryParams.getSessionDataBean();
+		isSecureExecute = queryParams.isSecureToExecute();
+		hasConditionOnIdentifiedField = queryParams.isHasConditionOnIdentifiedField();
+		queryResultObjectDataMap = queryParams.getQueryResultObjectDataMap();
+		startIndex = queryParams.getStartIndex();
+		noOfRecords = queryParams.getNoOfRecords();
+		getSublistOfResult = startIndex != -1; // this will be used, when it required to get sublist of the result set.
 		  //setting noOfRecords = Integer.MAX_VALUE, if All records are expected from result. see getListFromResultSet method
 		if (!getSublistOfResult)
 		{
-			this.noOfRecords = Integer.MAX_VALUE;
+			noOfRecords = Integer.MAX_VALUE;
 		}
 		String appName = CommonServiceLocator.getInstance().getAppName();
 		JDBCDAO jdbcDAO = null;
@@ -476,4 +476,7 @@ public abstract class AbstractQueryExecutor
 	{
 		return "Select count(*) from (" + originalQuery + ") alias";
 	}
+
+	public abstract void deleteQueryTempViews(String tempViewName);
+
 }

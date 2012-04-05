@@ -14,6 +14,7 @@ import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.LoggerConfig;
+import edu.wustl.query.executor.AbstractQueryExecutor;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.UserCache;
 import edu.wustl.query.util.global.Utility;
@@ -54,6 +55,10 @@ public class QueryCoreServletContextListenerUtil
 	            setGlobalVariable();
 	            Utility.setReadDeniedAndEntitySqlMap();
 	            UserCache.init();
+
+	    		final AbstractQueryExecutor queryExecutor = Utility.getQueryExecutor();
+	    		queryExecutor.deleteQueryTempViews(AQConstants.TEMP_OUPUT_TREE_TABLE_NAME);
+	    		queryExecutor.deleteQueryTempViews(AQConstants.TEMP_INNER_VIEW);
 
 	        }
 	        catch (Exception e)

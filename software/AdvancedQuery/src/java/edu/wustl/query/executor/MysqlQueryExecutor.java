@@ -11,11 +11,14 @@
 package edu.wustl.query.executor;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.wustl.common.util.PagenatedResultData;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.ColumnValueBean;
+import edu.wustl.query.util.querysuite.DAOUtil;
 import edu.wustl.security.exception.SMException;
 
 /**
@@ -64,6 +67,35 @@ public class MysqlQueryExecutor extends AbstractQueryExecutor
 		}
 		return new PagenatedResultData(list, totalRecords);
 	}
+
+	@Override
+	public void deleteQueryTempViews(String tempViewName)
+	{
+		// TODO Auto-generated method stub
+		String getViewNamesQuery = " show full tables like '"+tempViewName+"%'";
+		StringBuffer deleteViewQuery = new StringBuffer(" drop view if exists ");
+		try
+		{
+			JDBCDAO jdbcDAO = DAOUtil.getJDBCDAO(null);
+			final List<List<String>> resultList = jdbcDAO.executeQuery(getViewNamesQuery, new ArrayList<ColumnValueBean>());
+			for(List<String> record : resultList)
+			{
+				if("VIEW".equalsIgnoreCase(record.get(1)))
+				{
+					jdbcDAO.executeUpdate(deleteViewQuery.append(record.get(0)).toString());
+					//delete this view
+				}
+			}
+			jdbcDAO.closeSession();
+
+		}
+		catch (DAOException ex) {
+			logger.debug("Could not delete the Query Module Search temporary table:"+ ex.getMessage(), ex);
+		}
+
+
+	}
+
 
 
 }

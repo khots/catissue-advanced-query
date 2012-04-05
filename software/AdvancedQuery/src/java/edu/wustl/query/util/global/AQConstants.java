@@ -259,9 +259,10 @@ public class AQConstants
 	public static final String BUTTON_CLICKED = "buttonClicked";
 	public static final String UPDATE_SESSION_DATA = "updateSessionData";
 	public static final String EVENT_PARAMETERS_LIST = "eventParametersList";
-	public static final String VIEW = "view";
+	public static final String TEMP_INNER_VIEW = "TEMP_INNERVIEW";
 	public static final String APPLET_SERVER_URL_PARAM_NAME = "serverURL";
 	public static final String TEMP_OUPUT_TREE_TABLE_NAME = "TEMP_OUTPUTTREE";
+	public static final String TEMP_OUPUT_VIEW = "VIEW";
 	public static final String CREATE_TABLE = "Create table ";
 	public static final String AS_CONSTANT = "as";
 	public static final String TREE_NODE_FONT = "<font color='#FF9BFF' face='Verdana'><i>";
