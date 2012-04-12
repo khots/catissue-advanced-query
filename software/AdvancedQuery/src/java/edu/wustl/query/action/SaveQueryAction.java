@@ -232,7 +232,7 @@ public class SaveQueryAction extends SecureAction
 			ActionForm actionForm,HttpServletRequest request)
 	{
 		SaveQueryForm saveActionForm = (SaveQueryForm) actionForm;
-		String error;
+		StringBuffer  error = new StringBuffer();
 		IParameterizedQuery pQuery = createParameterizedQuery(query);
 		boolean errorMessage = false;
 		setQueryTitle(saveActionForm, pQuery);
@@ -245,13 +245,13 @@ public class SaveQueryAction extends SecureAction
 				.getAttribute(AQConstants.CUSTOM_FORMULA_INDEX_MAP);
 		session.removeAttribute(AQConstants.CUSTOM_FORMULA_INDEX_MAP);
 		Map<String, String> displayNameMap = getDisplayNamesForConditions(saveActionForm, request);
-		error = bizLogic.setInputDataToQuery(conditionList, pQuery.getConstraints(),
-				displayNameMap, pQuery);
-		error = bizLogic.setInputDataToTQ(pQuery, AQConstants.SAVE_QUERY_PAGE, cfRHSList,
-				customFormulaIndexMap);
-		if (error != null && error.length() > 0)
+		error.append(bizLogic.setInputDataToQuery(conditionList, pQuery.getConstraints(),
+				displayNameMap, pQuery));
+		error.append(bizLogic.setInputDataToTQ(pQuery, AQConstants.SAVE_QUERY_PAGE, cfRHSList,
+				customFormulaIndexMap));
+		if (!"".equals(error))
 		{
-			setActionError(request, error);
+			setActionError(request, error.toString());
 			errorMessage = true;
 			pQuery = null;
 		}

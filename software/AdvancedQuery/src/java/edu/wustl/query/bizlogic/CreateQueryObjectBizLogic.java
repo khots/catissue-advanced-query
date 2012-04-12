@@ -217,31 +217,31 @@ public class CreateQueryObjectBizLogic
 			{
 				errorMessages = getErrorMessageForBetweenOperator(errorMessages, enteredValue);
 			}
-			else if ((AQConstants.BIG_INT.equalsIgnoreCase(dataType)
+			else if (enteredValue.length() > 0 && ((AQConstants.BIG_INT.equalsIgnoreCase(dataType)
 					|| AQConstants.INTEGER.equalsIgnoreCase(dataType))
-					|| AQConstants.LONG.equalsIgnoreCase(dataType))
+					|| AQConstants.LONG.equalsIgnoreCase(dataType)))
 			{
 				errorMessages = validateBigIntLongIntegerValues(validator,
 						errorMessages, enteredValue);
 
 			}// integer
-			else if ((AQConstants.DOUBLE.equalsIgnoreCase(dataType))
+			else if (enteredValue.length() > 0 && (AQConstants.DOUBLE.equalsIgnoreCase(dataType))
 					&& !validator.isDouble(enteredValue, false))
 			{
 				errorMessages = errorMessages
 						+ ApplicationProperties.getValue("simpleQuery.decvalue.required");
 			} // double
-			else if (AQConstants.TINY_INT.equalsIgnoreCase(dataType))
+			else if (enteredValue.length() > 0 && AQConstants.TINY_INT.equalsIgnoreCase(dataType))
 			{
 				errorMessages = validateTinyInt(errorMessages, enteredValue);
 			}
-			else if (AQConstants.FIELD_TYPE_TIMESTAMP_TIME.equalsIgnoreCase(dataType))
+			else if (enteredValue.length() > 0 && AQConstants.FIELD_TYPE_TIMESTAMP_TIME.equalsIgnoreCase(dataType))
 			{
 				errorMessages =
 				getErrorMessageForTimeFormat(validator, errorMessages, enteredValue);
 			}
-			else if (AQConstants.FIELD_TYPE_DATE.equalsIgnoreCase(dataType)
-					|| AQConstants.FIELD_TYPE_TIMESTAMP_DATE.equalsIgnoreCase(dataType))
+			else if (enteredValue.length() > 0 && (AQConstants.FIELD_TYPE_DATE.equalsIgnoreCase(dataType)
+					|| AQConstants.FIELD_TYPE_TIMESTAMP_DATE.equalsIgnoreCase(dataType)))
 			{
 				errorMessages =
 				getErrorMessageForDateFormat(validator, errorMessages, enteredValue);
