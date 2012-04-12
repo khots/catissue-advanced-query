@@ -249,7 +249,7 @@ public class SaveQueryAction extends SecureAction
 				displayNameMap, pQuery));
 		error.append(bizLogic.setInputDataToTQ(pQuery, AQConstants.SAVE_QUERY_PAGE, cfRHSList,
 				customFormulaIndexMap));
-		if (!"".equals(error))
+		if (!"".equals(error.toString()))
 		{
 			setActionError(request, error.toString());
 			errorMessage = true;
