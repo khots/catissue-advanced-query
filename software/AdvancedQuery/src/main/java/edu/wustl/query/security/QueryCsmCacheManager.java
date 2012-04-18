@@ -278,7 +278,7 @@ public class QueryCsmCacheManager
 		    	   List<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
 		    	   ColumnValueBean bean = new ColumnValueBean("mainEntityId",Integer.valueOf(mainEntityId));
 		    	   columnValueBean.add(bean);
-		    	   List<Long> allMainObjectIds = (List<Long>)hibernateDAO.executeQuery(sql);
+		    	   List<Long> allMainObjectIds = hibernateDAO.executeQuery(sql);
 		    	   if(!allMainObjectIds.isEmpty() && allMainObjectIds.get(0) != null)
 		    	   {
 		    		   entityId = allMainObjectIds.get(0).longValue();
@@ -342,10 +342,10 @@ public class QueryCsmCacheManager
 		EntityInterface originalEntity = queryResultObjectDataBean.getEntity();
 		EntityCache entityCache = EntityCacheFactory.getInstance();
 		List<String> entityNames = getHookEntities(mainProtObjFile);
-		EntityInterface hookEntity = null;
+		EntityInterface associatedHookEntity = null;
 		for(String hookEntityName : entityNames)
 		{
-			hookEntity = DomainObjectFactory.getInstance().createEntity();
+			EntityInterface hookEntity = DomainObjectFactory.getInstance().createEntity();
 			hookEntity.setName(hookEntityName.
 					substring(hookEntityName.lastIndexOf('.')+1, hookEntityName.length()));
 			hookEntity.setDescription(null);
@@ -353,25 +353,29 @@ public class QueryCsmCacheManager
 			AssociationMetadataInterface association = hookEntity.getAssociation(originalEntity);
 			if(association != null)
 			{
+				associatedHookEntity = hookEntity;
 				break;
 			}
 		}
-		Long hookEntityId = getAssociationDetails(mainEntityId, originalEntity,
-				hookEntity,queryResultObjectDataBean.getMainEntity());
-  	   String sql = mainProtObjFile.getProperty(hookEntity.getName());
-  	   if(sql == null)
-  	   {
-  		 entityId = hookEntityId;
-  	   }
-  	   else
-  	   {
-  		   sql = sql + hookEntityId;
-		   List<Long> allMainObjectIds = (List<Long>)hibernateDAO.executeQuery(sql);
-		   if(!allMainObjectIds.isEmpty())
-		   {
-			   entityId = allMainObjectIds.get(0).longValue();
-		   }
-  	   }
+		if(associatedHookEntity!=null)
+		{
+			Long hookEntityId = getAssociationDetails(mainEntityId, originalEntity,
+					associatedHookEntity,queryResultObjectDataBean.getMainEntity());
+	  	   String sql = mainProtObjFile.getProperty(associatedHookEntity.getName());
+	  	   if(sql == null)
+	  	   {
+	  		 entityId = hookEntityId;
+	  	   }
+	  	   else
+	  	   {
+	  		   sql = sql + hookEntityId;
+			   List<Long> allMainObjectIds = hibernateDAO.executeQuery(sql);
+			   if(!allMainObjectIds.isEmpty())
+			   {
+				   entityId = allMainObjectIds.get(0).longValue();
+			   }
+	  	   }
+		}
   	   return entityId;
 	}
 
@@ -508,13 +512,13 @@ public class QueryCsmCacheManager
 			throws DAOException, SQLException
 	{
 		AssociationInterface association;
-		String pathSql = "SELECT INTERMEDIATE_PATH FROM PATH WHERE FIRST_ENTITY_ID =" +
-		" (SELECT IDENTIFIER FROM DYEXTN_ABSTRACT_METADATA WHERE NAME = ?) AND LAST_ENTITY_ID =" +
-		" (SELECT IDENTIFIER FROM DYEXTN_ABSTRACT_METADATA WHERE NAME = ?)";
+		String pathSql = "SELECT INTERMEDIATE_PATH FROM PATH WHERE FIRST_ENTITY_ID = ? " +
+		" AND LAST_ENTITY_ID = ? ";
+
 		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
-		ColumnValueBean bean = new ColumnValueBean("hookEntityName",hookEntity.getName());
+		ColumnValueBean bean = new ColumnValueBean("FIRST_ENTITY_ID",hookEntity.getId());
 		columnValueBean.add(bean);
-		bean = new ColumnValueBean("originalEntityName",originalEntity.getName());
+		bean = new ColumnValueBean("LAST_ENTITY_ID",originalEntity.getId());
 		columnValueBean.add(bean);
 		ResultSet resultSet1 = jdbcDAO.getResultSet(pathSql, columnValueBean, null);
 		String intermediatePath = "";
@@ -1270,7 +1274,7 @@ public class QueryCsmCacheManager
 
 			for (int i = 0; i < cpIdsList.size(); i++)
 			{
-				List<String> cpIdList = (List<String>) cpIdsList.get(i);
+				List<String> cpIdList = cpIdsList.get(i);
 				updatePrivilegeList(sessionDataBean, cache, readPrivilegeList,
 						identifiedPrivilegeList, cpIdList);
 			}
