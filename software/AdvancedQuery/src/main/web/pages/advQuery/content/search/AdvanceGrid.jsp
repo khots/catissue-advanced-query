@@ -98,7 +98,7 @@ function setEditableChkbox(checkAllPages)
 			var cb = checkedRows.split(",");
 			rowCount = mygrid.getRowsNum();
 			
-			for(i=1;i<rowCount;i++)
+			for(i=1;i<=rowCount;i++)
 			{
 				var cl = mygrid.cells(i,0);
 				if(cl.isChecked())
