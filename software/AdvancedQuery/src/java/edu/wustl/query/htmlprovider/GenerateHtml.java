@@ -385,7 +385,7 @@ public class GenerateHtml
 			String calendarId = componentId + "_calendar";
 			String imgStr = "\n<img id=\"calendarImg\" " +
 					"src=\"images/advQuery/calendar.gif\" width=\"24\" height=\"22\"" +
-					" border=\"0\" onclick='scwShow("+ textBoxId + ",event);'>";
+					" border=\"0\" onclick='scwShow(document.getElementById(\""+ textBoxId + "\"),event);'>";
 			innerStr.append("\n<td width='3%' class='"+ cssClass
 					    + "' valign='top' id=\"" + calendarId + "\">"
 						+ "\n" + imgStr);
@@ -397,7 +397,7 @@ public class GenerateHtml
 			String imgStr = "\n<img id=\"calendarImg\" " +
 					"src=\"images/advQuery/calendar.gif\"" +
 					" width=\"24\" height=\"22\" border='0'" +
-					" onclick='scwShow(" + textBoxId1 + ",event);'>";
+					" onclick='scwShow(document.getElementById(\""+ textBoxId1 + "\"),event);'>";
 			String style;
 			if (isBetween)
 			{
@@ -595,7 +595,7 @@ public class GenerateHtml
 			Iterator<Integer> outerMapIterator = expressionMap.keySet().iterator();
 			while (outerMapIterator.hasNext())
 			{
-				Integer expressionId = (Integer) outerMapIterator.next();
+				Integer expressionId = outerMapIterator.next();
 				Map<EntityInterface, List<ICondition>> entityMap = expressionMap.get(expressionId);
 				if (!entityMap.isEmpty())
 				{
@@ -603,7 +603,7 @@ public class GenerateHtml
 					while (innerMapIterator.hasNext())
 					{
 						List<Integer> dagIdList;
-						EntityInterface entity = (EntityInterface)innerMapIterator.next();
+						EntityInterface entity = innerMapIterator.next();
 						if (!entityExpressionIdMap.containsKey(entity))
 						{
 							//if the entity is not present in the map
@@ -615,7 +615,7 @@ public class GenerateHtml
 						}
 						//if the entity is present in the map
 						//add the DAG id to the existing list
-						dagIdList = (List<Integer>)entityExpressionIdMap.get(entity);
+						dagIdList = entityExpressionIdMap.get(entity);
 						dagIdList.add(expressionId);
 						entityExpressionIdMap.put(entity, dagIdList);
 					}
