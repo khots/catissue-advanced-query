@@ -145,7 +145,9 @@ public class QueryCsmCacheManager
 			Map<String, QueryResultObjectDataBean> queryResultObjectDataMap, List aList,
 			QueryCsmCache cache) throws SMException
 	{
-		Boolean hasPrivilegeOnID = true;
+		 Map<String, Boolean> privMap = new HashMap<String, Boolean>();
+		 privMap.put(Permissions.PHI, false);
+		 privMap.put(Permissions.QUERY, false);
 		if (queryResultObjectDataMap != null)
 		{
 			Set keySet = queryResultObjectDataMap.keySet();
@@ -167,11 +169,11 @@ public class QueryCsmCacheManager
 					getCpIdsListForGivenEntityId(queryResultObjectDataBean.getCsmEntityName(), finalMainEntityId);
 					//if this object is not associated to any CP
 					//then user will not have identified privilege on it.
-					hasPrivilegeOnID = checkHasPrivilegeOnId(sessionDataBean,
+					privMap = checkHasPrivilegeOnId(sessionDataBean,
 							cache, cpIdsList);
 				}
-				removeUnauthorizedData(aList, true,
-						hasPrivilegeOnID,queryResultObjectDataBean);
+				removeUnauthorizedData(aList, privMap.get(Permissions.QUERY),
+						privMap.get(Permissions.PHI),queryResultObjectDataBean);
 			}
 		}
 	}
@@ -208,29 +210,45 @@ public class QueryCsmCacheManager
 	 * <CODE>false</CODE> otherwise
 	 * @throws SMException Security Manager Exception
 	 */
-	private Boolean checkHasPrivilegeOnId(SessionDataBean sessionDataBean,
+	private Map<String, Boolean> checkHasPrivilegeOnId(SessionDataBean sessionDataBean,
 			QueryCsmCache cache, List<List<String>> cpIdsList)
 			throws SMException
 	{
-		Boolean hasPrivilegeOnID;
+		Boolean hasPrivilegeOnID = false;
+		Boolean hasQueryPriv = false;
+		Map<String, Boolean> privMap = new HashMap<String, Boolean>();
 		if (cpIdsList.isEmpty())
 		{
 			hasPrivilegeOnID =
 				checkPermissionOnGlobalParticipant(sessionDataBean);
+			privMap.put(Permissions.QUERY, true);
+			privMap.put(Permissions.PHI, hasPrivilegeOnID);
 		}
 		else
 		{
 			List<Boolean> iPrivilegeList = new ArrayList<Boolean>();
+			List<Boolean> queryPrivList = new ArrayList<Boolean>();
 			for (int i = 0; i < cpIdsList.size(); i++)
 			{
 				List<String> cpIdList = cpIdsList.get(i);
 				updatePrivilegeList(sessionDataBean, cache,
-				null,iPrivilegeList, cpIdList);
+						queryPrivList,iPrivilegeList, cpIdList);
 			}
+			
+			hasQueryPriv = isAuthorizedUser(queryPrivList,
+					false);
+			if(hasQueryPriv)
+			{
+			
 			hasPrivilegeOnID = isAuthorizedUser(iPrivilegeList,
 					false);
+			
+			}
+			privMap.put(Permissions.PHI, hasPrivilegeOnID);
+			privMap.put(Permissions.QUERY, hasQueryPriv);
 		}
-		return hasPrivilegeOnID;
+		
+		return privMap;
 	}
 
 	/**
@@ -954,6 +972,7 @@ public class QueryCsmCacheManager
         }
         else
         {
+        	// check for allow query if not then set in read denied map.
               isAuthorisedUser = checkReadDenied(sessionDataBean, cache, entityName, cpId);
               readPrivilegeList.add(isAuthorisedUser);
 
@@ -982,7 +1001,8 @@ public class QueryCsmCacheManager
 		if (cache.isReadDenied(cpId) == null)
 		{
 			isAuthorisedUser = checkPermission(sessionDataBean, entityName, cpId,
-			Permissions.READ_DENIED);
+			Permissions.QUERY);
+			if(!isAuthorisedUser) //if query is not allowed
 			cache.addNewObjectInReadPrivilegeMap(cpId, isAuthorisedUser);
 		}
 		else
@@ -1199,10 +1219,10 @@ public class QueryCsmCacheManager
 		Boolean isAuthorisedUser = privilegeCache.hasPrivilege(entityName + "_" + entityId,
 				permission);
 
-		if (Permissions.READ_DENIED.equals(permission))
-		{
-			isAuthorisedUser = !isAuthorisedUser;
-		}
+//		if (Permissions.QUERY.equals(permission))
+//		{
+//			isAuthorisedUser = !isAuthorisedUser;
+//		}
 
 		if (!isAuthorisedUser && validator != null)
 		{
