@@ -7,6 +7,7 @@ package edu.wustl.query.action;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +30,9 @@ import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.beans.DashBoardBean;
+
 import edu.wustl.query.bizlogic.DashboardBizLogic;
+
 import edu.wustl.query.flex.dag.DAGConstant;
 import edu.wustl.query.util.global.AQConstants;
 
@@ -40,6 +43,7 @@ import edu.wustl.query.util.global.AQConstants;
  */
 public class RetrieveQueryAction extends SecureAction
 {
+
 	/**
 	 * This method is used to fetch and execute query.
 	 * @param actionMapping mapping
@@ -54,23 +58,26 @@ public class RetrieveQueryAction extends SecureAction
 	{
 		cleanUpSession(request);
 		ActionForward actionForward = null;
-		if(AbstractEntityCache.isCacheReady)
+
+		if (AbstractEntityCache.isCacheReady)
 		{
 			DashboardBizLogic dashboardBizLogic = new DashboardBizLogic();
 			String pageOf = (String) request.getParameter(AQConstants.PAGE_OF);
 			SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
-			request.setAttribute("queryOption", pageOf);
 
-			SessionDataBean sessionDataBean = (SessionDataBean) request.getSession()
-			.getAttribute(edu.wustl.common.util.global.Constants.SESSION_DATA);
-			if(pageOf ==null)
+			SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
+					edu.wustl.common.util.global.Constants.SESSION_DATA);
+			if (pageOf == null)
 			{
-				pageOf = "allQueries";
+				pageOf = "myQueries";
 			}
+
+			request.setAttribute("queryOption", pageOf);
 			dashboardBizLogic.setDashboardQueries(sessionDataBean, saveQueryForm);
-			Collection<IParameterizedQuery> queries = getQueries(pageOf,
-					saveQueryForm);
-			if(queries == null)
+			Collection<IParameterizedQuery> queries = getQueries(pageOf, saveQueryForm);
+			HttpSession session = request.getSession();
+
+			if (queries == null)
 			{
 				saveQueryForm.setParameterizedQueryCollection(new ArrayList<IParameterizedQuery>());
 				queries = new ArrayList<IParameterizedQuery>();
@@ -78,66 +85,84 @@ public class RetrieveQueryAction extends SecureAction
 			else
 			{
 				saveQueryForm.setParameterizedQueryCollection(queries);
-				Map<Long,DashBoardBean> dashBoardDetails = dashboardBizLogic.
-				getDashBoardDetails(queries,sessionDataBean.getUserId().toString());
+				Map<Long, DashBoardBean> dashBoardDetails = dashboardBizLogic.getDashBoardDetails(
+						queries, sessionDataBean.getUserId().toString());
 				saveQueryForm.setDashBoardDetailsMap(dashBoardDetails);
 			}
+
 			createMessage(request, queries);
 			actionForward = actionMapping.findForward(AQConstants.SUCCESS);
-			request.setAttribute(AQConstants.POPUP_MESSAGE, ApplicationProperties
-					.getValue("query.confirmBox.message"));
+			request.setAttribute(AQConstants.POPUP_MESSAGE,
+					ApplicationProperties.getValue("query.confirmBox.message"));
+			request.setAttribute(AQConstants.POPUP_HEADER,
+					ApplicationProperties.getValue("queryfolder.app.popuptitle"));
+			request.setAttribute(AQConstants.POPUP_DELETE_QUERY_MESSAGE,
+					ApplicationProperties.getValue("queryfolder.confirmBox.querydelete.message"));
+			request.setAttribute(AQConstants.POPUP_ASSIGN_MESSAGE,
+					ApplicationProperties.getValue("queryfolder.alertBox.message"));
+			request.setAttribute(AQConstants.POPUP_ASSIGN_QMESSAGE,
+					ApplicationProperties.getValue("queryfolder.alertBox.query.message"));
+			request.setAttribute(AQConstants.POPUP_TEXT,
+					ApplicationProperties.getValue("queryfolder.app.newfolder.text"));
+			request.setAttribute(AQConstants.POPUP_DELETE_QUERY_FOLDER_MESSAGE,
+					ApplicationProperties.getValue("queryfolder.confirmBox.folderdelete.message"));
 		}
 		else
 		{
 			ActionErrors errors = new ActionErrors();
 			String errorMessage = ApplicationProperties.getValue("entityCache.error");
-			ActionError error = new ActionError("query.errors.item",errorMessage);
+			ActionError error = new ActionError("query.errors.item", errorMessage);
 			errors.add(ActionErrors.GLOBAL_ERROR, error);
 			saveErrors(request, errors);
 			actionForward = actionMapping.findForward(AQConstants.CACHE_ERROR);
 		}
 		return actionForward;
 	}
+
 	/**
 	 * Gets the appropriate list of queries as per the request
 	 * @param pageOf page of
 	 * @param saveQueryForm action form
 	 * @return queries collection
 	 */
-	private Collection<IParameterizedQuery> getQueries(String pageOf,
-			SaveQueryForm saveQueryForm)
+
+	private Collection<IParameterizedQuery> getQueries(String pageOf, SaveQueryForm saveQueryForm)
 	{
 		Collection<IParameterizedQuery> queries = new ArrayList<IParameterizedQuery>();
-		if("allQueries".equals(pageOf))
+		if ("allQueries".equals(pageOf))
 		{
 			queries = saveQueryForm.getAllQueries();
 		}
-		else if("sharedQueries".equals(pageOf))
+		else if ("sharedQueries".equals(pageOf))
 		{
 			queries = saveQueryForm.getSharedQueries();
 		}
-		else if("myQueries".equals(pageOf))
+		else if ("myQueries".equals(pageOf))
 		{
 			queries = saveQueryForm.getMyQueries();
 		}
 		return queries;
 	}
+
 	/**
 	 * Creates a message to be shown on UI.
 	 * @param request request
 	 * @param queries queries
 	 * @throws BizLogicException exception object
 	 */
-	private void createMessage(HttpServletRequest request,
-		Collection<IParameterizedQuery> queries) throws BizLogicException {
+	private void createMessage(HttpServletRequest request, Collection<IParameterizedQuery> queries)
+			throws BizLogicException
+	{
 		String message = queries.size() + "";
 		ActionMessages actionMessages = new ActionMessages();
 		String action = (String) request.getParameter("actions");
 		String saveQueryMessage = "";
-		if("save".equalsIgnoreCase(action))
+		if ("save".equalsIgnoreCase(action))
 		{
-			IParameterizedQuery query = (IParameterizedQuery)request.getSession().getAttribute(AQConstants.QUERY_OBJECT);
-			saveQueryMessage = MessageFormat.format(ApplicationProperties.getValue("query.saved.success"), query.getName()+" ");
+			IParameterizedQuery query = (IParameterizedQuery) request.getSession().getAttribute(
+					AQConstants.QUERY_OBJECT);
+			saveQueryMessage = MessageFormat.format(
+					ApplicationProperties.getValue("query.saved.success"), query.getName() + " ");
 			ActionMessage actionMessage = new ActionMessage("query.saved.success", saveQueryMessage);
 			actionMessages.add(ActionMessages.GLOBAL_MESSAGE, actionMessage);
 		}
@@ -145,6 +170,7 @@ public class RetrieveQueryAction extends SecureAction
 		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, actionMessage);
 		saveMessages(request, actionMessages);
 	}
+
 	/**
 	 * Cleans up data from session.
 	 * @param request request
