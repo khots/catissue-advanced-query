@@ -150,12 +150,6 @@
 				<include name="**/*.hbm.xml" />
 				<include name="**/*.ser" />
 			</fileset>
-			 
-		</copy>
-		<copy todir="${target.dir}/WEB-INF/classes">
-					<fileset dir="${src.dir}">
-						<include name="**/*.vm" />
-					 </fileset>
 		</copy>
 	</target>
 

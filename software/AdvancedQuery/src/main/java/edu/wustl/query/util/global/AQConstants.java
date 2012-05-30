@@ -601,22 +601,4 @@ public class AQConstants
 
 	public static final String CACHE_ERROR = "cacheError";
 	public static final String TABLESPACE = "tablespace";
-	
-	
-	public static final String TAGCHECKBOX_STRING = "chkBoxString";
-	public static final String QUERYCHECKBOX_STRING = "queryChkBoxString";
-	public static final String NEWTAGNAME_STRING = "tagName";
-	public static final String OBJ_TYPE_QUERY ="Query" ;
-	public static final String TAGID_STRING ="tagId";
-	public static final String ASSIGNID_STRING ="assignId";
-	public static final String TAGLIST_STRING ="tagList";
-	public static final String CHILDCOUNT="childCount";
-	public static final String POPUP_HEADER="popupHeader";
-	public static final String POPUP_DELETE_QUERY_MESSAGE="queryDeleteMessage";
-	public static final String POPUP_DELETE_QUERY_FOLDER_MESSAGE="queryFolderDeleteMessage";
-	public static final String POPUP_ASSIGN_MESSAGE="assignConditonCheckMessage";
-	public static final String POPUP_ASSIGN_QMESSAGE="assignQueryConditonCheckMessage";
-	public static final String POPUP_TEXT="New Folder";
- 
-
 }
