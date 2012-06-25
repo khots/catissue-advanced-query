@@ -28,6 +28,7 @@ import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.Utility;
+import edu.wustl.query.util.querysuite.QueryCSMUtil;
 import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
@@ -57,6 +58,7 @@ public class ConfigureGridViewAction extends SecureAction
 		HttpSession session = request.getSession();
 		Map<String, IOutputTerm> outputTermsColumns =
 			(Map<String, IOutputTerm>)session.getAttribute(AQConstants.OUTPUT_TERMS_COLUMNS);
+		Map<String, String> specimenMap = new HashMap<String, String>();
 		IQuery query = (IQuery)session.getAttribute(AQConstants.QUERY_OBJECT);
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		query.setIsNormalizedResultQuery(categorySearchForm.getNormalizedQuery());
@@ -97,8 +99,8 @@ public class ConfigureGridViewAction extends SecureAction
 			StringBuffer selectedColumnNames = new StringBuffer();
 			String nodeData = getClickedNodeData(sql);
 			definedColumnsList = defineGridViewBizLogic.getSelectedColumnList(categorySearchForm,
-				selectedColumnsMetadata.getSelectedAttributeMetaDataList(), selectedColumnNames,
-				queryResultObjecctDataMap, queryDetailsObj, outputTermsColumns,nodeData);
+					selectedColumnsMetadata.getSelectedAttributeMetaDataList(), selectedColumnNames,
+					queryResultObjecctDataMap, queryDetailsObj, outputTermsColumns,nodeData,specimenMap);
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 			// gets the message and sets it in the session.
 			String sqlForSelectedColumns =
@@ -141,7 +143,7 @@ public class ConfigureGridViewAction extends SecureAction
 			String nodeData = getClickedNodeData(sql);
 			definedColumnsList = defineGridViewBizLogic.getSelectedColumnList(categorySearchForm,
 			selectedColumnsMetadata.getSelectedAttributeMetaDataList(),selectedColumnNames,
-			queryResultObjecctDataMap, queryDetailsObj,outputTermsColumns,nodeData);
+			queryResultObjecctDataMap, queryDetailsObj,outputTermsColumns,nodeData,specimenMap);
 			String sqlForSelectedColumns = defineGridViewBizLogic.createSQLForSelectedColumn
 			(selectedColumnNames.toString(), sql);
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
@@ -158,6 +160,7 @@ public class ConfigureGridViewAction extends SecureAction
 		{
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 		}
+		QueryCSMUtil.setRequestAttr(request, specimenMap);
 		selectedColumnsMetadata.setSelColNVBeanList(selectedCNVBList);
 		selectedColumnsMetadata.setCurrentSelectedObject(currentSelectedObject);
 		spreadSheetDataMap.put(AQConstants.QUERY_SESSION_DATA, querySessionData);

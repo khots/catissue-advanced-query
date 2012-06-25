@@ -455,7 +455,7 @@ public class QueryModuleSearchQueryUtil
 			Map<String, List<String>> spreadSheetDatamap = outputSpreadsheetBizLogic
 					.createSpreadsheetData(AQConstants.TREENO_ZERO, node, QueryDetailsObj, null,
 							recordsPerPage, selectedColumnsMetadata, queryResultObjDataBeanMap,
-							hasCondOnIdentifiedField, query.getConstraints(), outputTermsColumns);
+							hasCondOnIdentifiedField, query.getConstraints(), outputTermsColumns,null);
 			setQuerySessionData(selectedColumnsMetadata, spreadSheetDatamap);
 		}
 		catch (DAOException e)

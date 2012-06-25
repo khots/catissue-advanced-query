@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -946,7 +947,7 @@ public class QueryCSMUtil
 	public static String updateEntityIdIndexMap(
 			QueryResultObjectDataBean queryResultObjectDataBean, int colIndex, String tempSql,
 			List<EntityInterface> defineViewNodeList,
-			Map<EntityInterface, Integer> entityIdIndexMap, QueryDetails queryDetailsObj)
+			Map<EntityInterface, Integer> entityIdIndexMap, QueryDetails queryDetailsObj, Map<String, String> specimenMap)
 	{
 		String selectSql = tempSql;
 		int columnIndex = colIndex;
@@ -956,7 +957,7 @@ public class QueryCSMUtil
 			OutputTreeDataNode outputTreeDataNode = getMatchingEntityNode(queryResultObjectDataBean
 					.getMainEntity(), queryDetailsObj);
 			Map sqlIndexMap = putIdColumnsInSql(columnIndex, selectSql, entityIdIndexMap,
-					selectSqlColumnList, outputTreeDataNode);
+					selectSqlColumnList, outputTreeDataNode,specimenMap);
 			selectSql = (String) sqlIndexMap.get(AQConstants.SQL);
 			columnIndex = (Integer) sqlIndexMap.get(AQConstants.ID_COLUMN_ID);
 		}
@@ -972,7 +973,7 @@ public class QueryCSMUtil
 						queryDetailsObj.getUniqueIdNodesMap().get(key);
 					Map sqlIndexMap = putIdColumnsInSql
 					(columnIndex, selectSql, entityIdIndexMap,
-							selectSqlColumnList, outputTreeDataNode);
+							selectSqlColumnList, outputTreeDataNode,specimenMap);
 					selectSql = (String) sqlIndexMap.get(AQConstants.SQL);
 					columnIndex = (Integer) sqlIndexMap.get(AQConstants.ID_COLUMN_ID);
 				}
@@ -1013,7 +1014,7 @@ public class QueryCSMUtil
 	 */
 	private static Map putIdColumnsInSql(int colIndex, String selectSql,
 			Map<EntityInterface, Integer> entityIdIndexMap, List<String> selectSqlColumnList,
-			OutputTreeDataNode outputTreeDataNode)
+			OutputTreeDataNode outputTreeDataNode, Map<String, String> specimenMap)
 	{
 		int columnIndex = colIndex;
 		StringBuffer sql = new StringBuffer(selectSql);
@@ -1039,6 +1040,11 @@ public class QueryCSMUtil
 						appendColNameToSql(selectSql, sql, sqlColumnName);
 						entityIdIndexMap.put(attribute.getEntity(), columnIndex);
 						columnIndex++;
+						if(specimenMap != null && outputTreeDataNode.getOutputEntity().getDynamicExtensionsEntity().getName().equals("edu.wustl.catissuecore.domain.Specimen"))
+						{
+							specimenMap.put("specimenKey", "edu.wustl.catissuecore.domain.Specimen");
+							specimenMap.put("columnIndex", String.valueOf(columnIndex));
+						}
 						break;
 					}
 				}
@@ -1104,5 +1110,25 @@ public class QueryCSMUtil
 			}
 		}
 		return outputTreeDataNode;
+	}
+	
+	public static void setRequestAttr(HttpServletRequest request,
+			Map<String, String> specimenMap) {
+		Iterator<String> itr = specimenMap.keySet().iterator();
+		while(itr.hasNext())
+		{
+			String key = itr.next();
+			if(key.equals("specimenKey"))
+			{
+				request.getSession().removeAttribute("entityName");
+				request.setAttribute("isSpecPresent", Boolean.TRUE);
+			}
+			else
+				request.setAttribute("isSpecPresent", Boolean.FALSE);
+			if(key.equals("columnIndex"))
+			{
+				request.setAttribute("specIdColumnIndex", specimenMap.get(key));
+			}
+		}
 	}
 }

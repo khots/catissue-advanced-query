@@ -328,7 +328,7 @@ public class DefineGridViewBizLogic
 			StringBuffer selectedColumnNames,
 			Map<Long, QueryResultObjectDataBean> queryResultObjecctDataMap,
 			QueryDetails queryDetailsObj, Map<String, IOutputTerm> outputTermsColumns,
-			String nodeData)
+			String nodeData,Map<String, String> specimenMap)
 	{
 		queryResultObjecctDataMap.clear();
 		List<String> definedColumnsList = new ArrayList<String>();
@@ -423,7 +423,7 @@ public class DefineGridViewBizLogic
 				Map<EntityInterface, Integer> entityIdIndexMap =
 					new HashMap<EntityInterface, Integer>();
 				sql = QueryCSMUtil.updateEntityIdIndexMap(queryResulObjectDataBean, columnIndex,
-						sql, defineViewNodeList, entityIdIndexMap, queryDetailsObj);
+						sql, defineViewNodeList, entityIdIndexMap, queryDetailsObj,specimenMap);
 				selectedColumnNames.replace(AQConstants.ARGUMENT_ZERO, selectedColumnNames
 						.length(), sql);
 				if (queryResulObjectDataBean.isMainEntity())

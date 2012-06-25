@@ -1,6 +1,7 @@
 
 package edu.wustl.query.action;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
 import edu.wustl.query.bizlogic.QueryOutputTreeBizLogic;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.Utility;
+import edu.wustl.query.util.querysuite.QueryCSMUtil;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 /**
@@ -52,7 +54,7 @@ public class ShowGridAction extends SecureAction
 		HttpSession session = request.getSession();
 		Map<EntityInterface, List<EntityInterface>> mainEntityMap = (Map<EntityInterface, List<EntityInterface>>) session
 				.getAttribute(AQConstants.MAIN_ENTITY_MAP);
-
+		Map<String,String> specimenMap = new HashMap<String, String>();
 		String idOfClickedNode = request.getParameter(AQConstants.TREE_NODE_ID);
 		QueryOutputTreeBizLogic treeBizLogic = new QueryOutputTreeBizLogic();
 		idOfClickedNode = treeBizLogic.decryptId(idOfClickedNode);
@@ -70,7 +72,7 @@ public class ShowGridAction extends SecureAction
 		}
 		else
 		{
-			gridDataMap = getspreadSheetDataMap(session, idOfClickedNode, parentNodeId);
+			gridDataMap = getspreadSheetDataMap(session, idOfClickedNode, parentNodeId,specimenMap);
 			gridDataMap.put(AQConstants.MAIN_ENTITY_MAP, mainEntityMap);
 			request.getSession().setAttribute(AQConstants.ENTITY_IDS_MAP,
 					gridDataMap.get(AQConstants.ENTITY_IDS_MAP));
@@ -79,6 +81,7 @@ public class ShowGridAction extends SecureAction
 
 			QueryModuleUtil.setGridData(request, gridDataMap);
 		}
+		QueryCSMUtil.setRequestAttr(request, specimenMap);
 		return mapping.findForward(forward);
 	}
 
@@ -92,7 +95,7 @@ public class ShowGridAction extends SecureAction
 	 * @throws ClassNotFoundException
 	 */
 	private Map getspreadSheetDataMap(HttpSession session, String idOfClickedNode,
-			String parentNodeId) throws DAOException, ClassNotFoundException
+			String parentNodeId, Map<String, String> specimenMap) throws DAOException, ClassNotFoundException
 	{
 		Map gridDatamap;
 		Map<Long, QueryResultObjectDataBean> resultDataMap = (Map<Long, QueryResultObjectDataBean>) session
@@ -123,7 +126,7 @@ public class ShowGridAction extends SecureAction
 			gridDatamap = outputSpreadsheetBizLogic.processSpreadsheetForDataNode(
 					session, parentNodeId, recordsPerPage, selectedColumnsMetadata,
 					hasConditionOnIdentifiedField, resultDataMap,
-					query.getConstraints(), outputTermsColumns);
+					query.getConstraints(), outputTermsColumns,specimenMap);
 		}
 		return gridDatamap;
 	}
