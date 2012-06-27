@@ -254,7 +254,7 @@ function addToSpecimenList()
 	{
 		specIds=specIds+mygrid.cellById(n[i],idColumn).getValue()+",";
 	}
-	alert('specimen Ids :'+specIds);
+	//alert('specimen Ids :'+specIds);
 	return specIds;
 }
 	</script>

@@ -14,7 +14,7 @@
 
 <%@ page import="java.util.HashMap,java.util.Map,edu.wustl.common.beans.QueryResultObjectData,java.util.List"%>
 
-<script type="text/javascript" src="jss/query-tag-poppup.js"></script>
+<script type="text/javascript" src="jss/tag-popup.js"></script>
 <link rel="STYLESHEET" type="text/css"
 	href="dhtmlx_suite/dhtml_pop/css/dhtmlXTree.css">
 <script src="dhtmlx_suite/dhtml_pop/js/dhtmlXCommon.js"></script>
@@ -50,7 +50,7 @@ function checkAllAcrossAllPages(element)
 	var state=element.checked;
 	isCheckAllPagesChecked = state;
 	rowCount = mygrid.getRowsNum();
-	for(i=1;i<rowCount;i++)
+	for(i=1;i<=rowCount;i++)
 	{
 		var cl = mygrid.cells(i,0);
 		if(cl.isCheckbox())
@@ -74,7 +74,7 @@ function checkAllOnThisPage(element)
 	mygrid.setEditable(true);
 	var state=element.checked;
 	rowCount = mygrid.getRowsNum();
-	for(i=1;i<rowCount;i++)
+	for(i=1;i<=rowCount;i++)
 	{
 		var cl = mygrid.cells(i,0);
 		if(cl.isCheckbox())
@@ -120,8 +120,7 @@ function setEditableChkbox(checkAllPages)
 			
 			for(i=1;i<rowCount;i++)
 			{
-				var cl = mygrid.cells(i,0);
-				if(cl.isChecked())
+				if(mygrid.cells(i,0).isChecked())
 				{
 					var cbvalue = document.getElementById(""+(i-1));
 					cbvalue.value="1";
@@ -306,7 +305,7 @@ function setEditableChkbox(checkAllPages)
 	//mygrid.setEditable("FALSE");
 	mygrid.enableAutoHeigth(false);
 	//mygrid.setInitWidths(colWidth);
-	alert(colDataTypes);
+	//alert(colDataTypes);
 	mygrid.setColTypes(colDataTypes);
 
 
@@ -371,7 +370,7 @@ function setEditableChkbox(checkAllPages)
 			data = "0<%=AQConstants.DHTMLXGRID_DELIMETER%>"+myData[row];
 		}
 
-		mygrid.addRow(row+1,data,row);
+		mygrid.addRow(row+1,data,row+1);
 	}
 
 	for(var row=0;row<myData.length;row++)
