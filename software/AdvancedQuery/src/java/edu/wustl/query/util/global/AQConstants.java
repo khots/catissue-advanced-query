@@ -607,4 +607,17 @@ public class AQConstants
 
 	public static final String EDIT_XMI_ERROR = "editXmi.error";
 	public static final String IS_DENORMALIZATION_NEEDED = "denormalizedQuery";
+
+	public static final String NEWTAGNAME_STRING = "tagName";
+	public static final String TAGID_STRING = "tagId";
+	public static final String TAGLIST_STRING = "tagList";
+	public static final String CHILDCOUNT = "childCount";
+	public static final String POPUP_HEADER = "popupHeader";
+	public static final String POPUP_DELETE_QUERY_MESSAGE = "queryDeleteMessage";
+	public static final String POPUP_DELETE_QUERY_FOLDER_MESSAGE = "queryFolderDeleteMessage";
+	public static final String POPUP_ASSIGN_MESSAGE = "assignConditonCheckMessage";
+	public static final String POPUP_ASSIGN_QMESSAGE = "assignQueryConditonCheckMessage";
+	public static final String POPUP_TEXT = "New Folder";
+	public static final String ENTITY_QUERYTAG = "QueryTag";
+	public static final String ENTITY_QUERYTAGITEM = "QueryTagItem";
 }
