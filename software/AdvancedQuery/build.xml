@@ -95,6 +95,11 @@
 				<include name="**/*.ser" />
 			</fileset>
 		</copy>
+		<copy todir="${classes.dir}">
+				<fileset dir="${src.dir}">
+					<include name="**/*.vm" />
+				 </fileset>
+		</copy>
 	</target>
 	<target name="create_zip" depends="build_jar">
 		<delete file="${temp.dir}/MANIFEST.MF" />
@@ -181,7 +186,11 @@
 		<copy todir="${dist.dir}/jss" overwrite="true">
 			<fileset dir="${base.dir}/src/web/javascripts" />
 		</copy>
-
+		<!--Copying dhtml folder -->
+		<copy todir="${dist.dir}/dhtml" overwrite="true">
+			<fileset dir="${base.dir}/src/web/dhtml" />
+		</copy>
+					 
 		<!--Coying Images -->
 		<copy todir="${dist.dir}/images" overwrite="true">
 		<!--
