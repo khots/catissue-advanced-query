@@ -2,11 +2,11 @@
 Copyright Scand LLC http://www.scbr.com
 To use this component please contact info@scbr.com to obtain license
 
-*/ 
+*/
 
- 
+
 function dhtmlXGridCellObject(obj){
- 
+
  this.destructor=function(){
  this.cell.obj=null;
  this.cell=null;
@@ -15,7 +15,7 @@ function dhtmlXGridCellObject(obj){
  return null;
 }
  this.cell = obj;
- 
+
  this.getValue = function(){
  if((this.cell.firstChild)&&(this.cell.firstChild.tagName=="TEXTAREA"))
  return this.cell.firstChild.value;
@@ -23,13 +23,13 @@ function dhtmlXGridCellObject(obj){
  return this.cell.innerHTML._dhx_trim();
 }
 
- 
+
  this.getMathValue = function(){
  if(this.cell._val)
  return this.cell._val;
  else return this.getValue();
 }
- 
+
  this.getFont = function(){
  arOut = new Array(3);
  if(this.cell.style.fontFamily)
@@ -44,21 +44,21 @@ function dhtmlXGridCellObject(obj){
  arOut[2] = "";
  return arOut.join("-")
 }
- 
+
  this.getTextColor = function(){
  if(this.cell.style.color)
  return this.cell.style.color
  else
  return "#000000";
 }
- 
+
  this.getBgColor = function(){
  if(this.cell.bgColor)
  return this.cell.bgColor
  else
  return "#FFFFFF";
 }
- 
+
  this.getHorAlign = function(){
  if(this.cell.style.textAlign)
  return this.cell.style.textAlign;
@@ -67,12 +67,12 @@ function dhtmlXGridCellObject(obj){
  else
  return "left";
 }
- 
+
  this.getWidth = function(){
  return this.cell.scrollWidth;
 }
 
- 
+
  this.setFont = function(val){
  fntAr = val.split("-");
  this.cell.style.fontFamily = fntAr[0];
@@ -88,17 +88,17 @@ function dhtmlXGridCellObject(obj){
 }
 
 }
- 
+
  this.setTextColor = function(val){
  this.cell.style.color = val;
 }
- 
+
  this.setBgColor = function(val){
  if(val=="")
  val = null;
  this.cell.bgColor = val;
 }
- 
+
  this.setHorAlign = function(val){
  if(val.length==1){
  if(val=='c')
@@ -110,14 +110,14 @@ function dhtmlXGridCellObject(obj){
 }else
  this.cell.style.textAlign = val
 }
- 
+
  this.wasChanged = function(){
  if(this.cell.wasChanged)
  return true;
  else
  return false;
 }
- 
+
  this.isCheckbox = function(){
  var ch = this.cell.firstChild;
  if(ch && ch.tagName=='INPUT'){
@@ -129,19 +129,19 @@ function dhtmlXGridCellObject(obj){
 }else
  return false;
 }
- 
+
  this.isChecked = function(){
  if(this.isCheckbox()){
  return this.cell.firstChild.checked;
 }
 }
- 
+
  this.isDisabled = function(){
  if(this.isCheckbox()){
  return this.cell.firstChild.disabled;
 }
 }
- 
+
  this.setChecked = function(fl){
  if(this.isCheckbox()){
  if(fl!='true' && fl!=1)
@@ -149,7 +149,7 @@ function dhtmlXGridCellObject(obj){
  this.cell.firstChild.checked = fl;
 }
 }
- 
+
  this.setDisabled = function(fl){
  if(this.isCheckbox()){
  if(fl!='true' && fl!=1)
@@ -160,7 +160,7 @@ function dhtmlXGridCellObject(obj){
 }
 }
 
- 
+
 dhtmlXGridCellObject.prototype.setValue = function(val){
  if((typeof(val)!="number")&& val.toString()._dhx_trim()==""){
  val="&nbsp;"
@@ -171,39 +171,39 @@ dhtmlXGridCellObject.prototype.setValue = function(val){
 
 dhtmlXGridCellObject.prototype.setCValue = function(val,val2){
  this.cell.innerHTML = val;
- 
- 
+
+
  if(this.grid._onCCH)
  this.grid._onCCH(this.cell.parentNode.idd,this.cell._cellIndex,val2||val);
- 
- 
+
+
 }
 
 
- 
+
 dhtmlXGridCellObject.prototype.setLabel = function(val){
  this.cell.innerHTML = val;
 }
 
- 
+
 dhtmlXGridCellObject.prototype.getMath = function(val){
  if(this._val)return this.val;
  else
  return this.getValue();
 }
 
- 
+
 function eXcell(){
  this.obj = null;
- 
+
  this.val = null;
- 
+
  this.changeState = function(){return false}
- 
+
  this.edit = function(){this.val = this.getValue()}
- 
+
  this.detach = function(){return false}
- 
+
  this.getPosition = function(oNode){
  var oCurrentNode=oNode;
  var iLeft=0;
@@ -218,7 +218,7 @@ function eXcell(){
 }
 eXcell.prototype = new dhtmlXGridCellObject;
 
- 
+
 function eXcell_ed(cell){
  try{
  this.cell = cell;
@@ -255,9 +255,9 @@ function eXcell_ed(cell){
 
 }
 eXcell_ed.prototype = new eXcell;
- 
- 
- 
+
+
+
 function eXcell_edn(cell){
  try{
  this.cell = cell;
@@ -279,7 +279,7 @@ function eXcell_edn(cell){
  this.obj.focus()
 }
  this.getValue = function(){
- 
+
  if((this.cell.firstChild)&&(this.cell.firstChild.tagName=="TEXTAREA"))
  return this.cell.firstChild.value;
  else
@@ -299,10 +299,10 @@ eXcell_edn.prototype.setValue = function(val){
  this.setCValue(this.grid._aplNF(val,this.cell._cellIndex));
 }
 
- 
- 
 
- 
+
+
+
 function eXcell_ch(cell){
  try{
  this.cell = cell;
@@ -318,7 +318,7 @@ function eXcell_ch(cell){
 }
 
  this.changeState = function(){
- 
+
  if((!this.grid.isEditable)||(this.cell.parentNode._locked))return;
  if(this.grid.onEditCell(0,this.cell.parentNode.idd,this.cell._cellIndex)!=false){
  this.val = this.getValue()
@@ -326,7 +326,7 @@ function eXcell_ch(cell){
  this.setValue("0")
  else
  this.setValue("1")
- 
+
  this.grid.onEditCell(1,this.cell.parentNode.idd,this.cell._cellIndex)
  this.grid.onCheckbox(this.cell.parentNode.idd,this.cell._cellIndex,(this.val!='1'))
 }else{
@@ -360,7 +360,7 @@ function eXcell_ch(cell){
 eXcell_ch.prototype = new eXcell;
 eXcell_ch.prototype.setValue = function(val){
  this.cell.style.verticalAlign = "middle";
- 
+
  if(val){
  val=val.toString()._dhx_trim();
  if((val=="false")||(val=="0"))val="";
@@ -376,7 +376,7 @@ eXcell_ch.prototype.setValue = function(val){
  this.setCValue("<img src='"+this.grid.imgURL+"item_chk"+val+".gif' onclick='this.parentNode.obj.changeState()'>",this.cell.chstate);
 }
 
- 
+
 function eXcell_ra(cell){
  this.base = eXcell_ch;
  this.base(cell)
@@ -397,7 +397,7 @@ function eXcell_ra(cell){
  this.setValue("0")
  else
  this.setValue("1")
- 
+
  this.grid.onEditCell(1,this.cell.parentNode.idd,this.cell._cellIndex)
  if(typeof(this.grid.onCheckbox)=='function')
  this.grid.onCheckbox(this.cell.parentNode.idd,this.cell._cellIndex,(this.val!='1'))
@@ -431,7 +431,7 @@ eXcell_ra.prototype.setValue = function(val){
  var obj = this;
  this.setCValue("<img src='"+this.grid.imgURL+"radio_chk"+val+".gif' onclick='this.parentNode.obj.changeState()'>",this.cell.chstate);
 }
- 
+
 function eXcell_txt(cell){
  try{
  this.cell = cell;
@@ -493,7 +493,7 @@ function eXcell_txt(cell){
 }
  else this.cell._clearCell=false;
  this.setValue(a_val);
- 
+
  document.body.removeChild(this.obj);
 
  return this.val!=this.getValue();
@@ -521,7 +521,7 @@ eXcell_txt.prototype.setValue = function(val){
 }
 
 
- 
+
 function eXcell_co(cell){
  try{
  this.cell = cell;
@@ -543,7 +543,7 @@ function eXcell_co(cell){
  if(z)z.selected=true;
 
  this.obj.value=this.list.value;
- 
+
  return true;
 }
 
@@ -570,7 +570,7 @@ function eXcell_co(cell){
  this.list.onclick = function(e){
  var ev = e||window.event;
  var cell = ev.target||ev.srcElement
- 
+
  if(cell.tagName=="OPTION")cell=cell.parentNode;
  cell.editor_obj.setValue(cell.value);
  cell.editor_obj.editable=false;
@@ -651,7 +651,7 @@ eXcell_co.prototype.setValue = function(val){
 
  this.cell.combo_value = val;
 }
- 
+
 function eXcell_coro(cell){
  this.base = eXcell_co;
  this.base(cell)
@@ -659,7 +659,7 @@ function eXcell_coro(cell){
 }
 eXcell_coro.prototype = new eXcell_co;
 
- 
+
 function eXcell_cp(cell){
  try{
  this.cell = cell;
@@ -731,7 +731,7 @@ function eXcell_cp(cell){
  this.detach = function(){
  if(this.obj.offsetParent!=null)
  document.body.removeChild(this.obj);
- 
+
  return this.val!=this.getValue();
 }
 }
@@ -741,8 +741,8 @@ eXcell_cp.prototype.setValue = function(val){
 }
 
 
- 
- 
+
+
 function eXcell_img(cell){
  try{
  this.cell = cell;
@@ -770,7 +770,7 @@ eXcell_img.prototype.setValue = function(val){
  var ar = val.split("^");
  val = ar[0]
  title = ar[1];
- 
+
  if(ar.length>2){
  this.cell.lnk = ar[2]
  if(ar[3])
@@ -785,7 +785,7 @@ eXcell_img.prototype.setValue = function(val){
  this.cell.tit = title;
 }
 
- 
+
 function eXcell_price(cell){
  this.base = eXcell_ed;
  this.base(cell)
@@ -812,7 +812,7 @@ eXcell_price.prototype.setValue = function(val){
 
 }
 
- 
+
 function eXcell_dyn(cell){
  this.base = eXcell_ed;
  this.base(cell)
@@ -841,7 +841,7 @@ eXcell_dyn.prototype.setValue = function(val){
 }
 
 
- 
+
 function eXcell_ro(cell){
  this.cell = cell;
  this.grid = this.cell.parentNode.grid;
@@ -850,11 +850,11 @@ function eXcell_ro(cell){
 eXcell_ro.prototype = new eXcell;
 
 
- 
+
 function dhtmlXGridComboObject(){
  this.keys = new dhtmlxArray();
  this.values = new dhtmlxArray();
- 
+
  this.put = function(key,value){
  for(var i=0;i<this.keys.length;i++){
  if(this.keys[i]==key){
@@ -865,7 +865,7 @@ function dhtmlXGridComboObject(){
  this.values[this.values.length] = value;
  this.keys[this.keys.length] = key;
 }
- 
+
  this.get = function(key){
  for(var i=0;i<this.keys.length;i++){
  if(this.keys[i]==key){
@@ -874,13 +874,13 @@ function dhtmlXGridComboObject(){
 }
  return null;
 }
- 
+
  this.clear = function(){
- 
+
  this.keys = new dhtmlxArray();
  this.values = new dhtmlxArray();
 }
- 
+
  this.remove = function(key){
  for(var i=0;i<this.keys.length;i++){
  if(this.keys[i]==key){
@@ -890,7 +890,7 @@ function dhtmlXGridComboObject(){
 }
 }
 }
- 
+
  this.size = function(){
  var j=0;
  for(var i=0;i<this.keys.length;i++){
@@ -899,7 +899,7 @@ function dhtmlXGridComboObject(){
 }
  return j;
 }
- 
+
  this.getKeys = function(){
  var keyAr = new Array(0);
  for(var i=0;i<this.keys.length;i++){
@@ -909,7 +909,7 @@ function dhtmlXGridComboObject(){
  return keyAr;
 }
 
- 
+
  this.save = function(){
  this._save=new Array();
  for(var i=0;i<this.keys.length;i++)
@@ -917,7 +917,7 @@ function dhtmlXGridComboObject(){
 }
 
 
- 
+
  this.restore = function(){
  if(this._save){
  this.keys[i]=new Array();

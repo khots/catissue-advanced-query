@@ -2,7 +2,7 @@
 Copyright Scand LLC http://www.scbr.com
 To use this component please contact info@scbr.com to obtain license
 
-*/ 
+*/
 
 var globalActiveDHTMLGridObject;
 String.prototype._dhx_trim = function(){
@@ -46,7 +46,7 @@ _dhtmlxArray.prototype._dhx_swapItems = function(ind1,ind2){
  this[ind2] = tmp;
 }
 
- 
+
 function dhtmlXGridObject(id){
  if(_isIE)try{document.execCommand("BackgroundImageCache",false,true);}catch(e){}
  if(id){
@@ -78,20 +78,20 @@ function dhtmlXGridObject(id){
  this.defVal=new Array(0);
  this.rowsAr = new Array(0);
  this.rowsCol = new dhtmlxArray(0);
- 
+
  this._maskArr=new Array(0);
  this.selectedRows = new dhtmlxArray(0);
  this.rowsBuffer = new Array(new dhtmlxArray(0),new dhtmlxArray(0));
  this.loadedKidsHash = null;
  this.UserData = new Array(0)
 
- 
+
 
  this.styleSheet = document.styleSheets;
  this.entBox.className = "gridbox";
  this.entBox.style.width = this.entBox.getAttribute("width")||(window.getComputedStyle?window.getComputedStyle(this.entBox,null)["width"]:(this.entBox.currentStyle?this.entBox.currentStyle["width"]:0))|| "100%";
  this.entBox.style.height = this.entBox.getAttribute("height")||(window.getComputedStyle?window.getComputedStyle(this.entBox,null)["height"]:(this.entBox.currentStyle?this.entBox.currentStyle["height"]:0))|| "100%";
- 
+
  this.entBox.style.cursor = 'default';
  this.entBox.onselectstart = function(){return false};
  this.obj = document.createElement("TABLE");
@@ -173,13 +173,13 @@ function dhtmlXGridObject(id){
 
 
  this.entBox.appendChild(this.entCnt);
- 
+
  this.entBox.grid = this;
  this.objBox.grid = this;
  this.hdrBox.grid = this;
  this.obj.grid = this;
  this.hdr.grid = this;
- 
+
  this.cellWidthPX = new Array(0);
  this.cellWidthPC = new Array(0);
  this.cellWidthType = this.entBox.cellwidthtype || "px";
@@ -210,14 +210,14 @@ function dhtmlXGridObject(id){
  this.recordsNoMore = this.entBox.infinitloading || true;;
  this.useImagesInHeader = false;
  this.pagingOn = false;
- 
+
  this.rowsBufferOutSize = 0;
- 
+
  this.onCheckbox=this.onEnter=this.onRowSelect=this.onEditCell = function(){return true;};
  dhtmlxEvent(window,"unload",function(){try{self.destructor();}catch(e){}});
 
- 
- 
+
+
  this.loadXML = function(url,afterCall){
  if(this._dload){this._dload=url;this._askRealRows();return true;};
  if(this._xmlaR)this.setXMLAutoLoading(url);
@@ -232,12 +232,12 @@ function dhtmlXGridObject(id){
 
  if(afterCall)this.xmlLoader.waitCall=afterCall;
  this.xmlLoader.loadXML(url+""+s+"rowsLoaded="+this.getRowsNum()+"&lastid="+this.getRowId(this.getRowsNum()-1)+"&sn="+Date.parse(new Date()));
- 
- 
- 
+
+
+
 }
 
- 
+
  this.setSkin = function(name){
  this.entBox.className = "gridbox gridbox_"+name;
  switch(name){
@@ -246,18 +246,18 @@ function dhtmlXGridObject(id){
 }
 }
 
- 
- 
- 
+
+
+
  this.loadXMLString = function(str,afterCall){
  if(this.onXLS)this.onXLS(this);
 
  if(afterCall)this.xmlLoader.waitCall=afterCall;
  this.xmlLoader.loadXMLString(str);
 }
- 
- 
- 
+
+
+
  this.doLoadDetails = function(obj){
  var root = self.xmlLoader.getXMLTopNode(self._tttag)
  if(root.tagName!="DIV")
@@ -266,7 +266,7 @@ function dhtmlXGridObject(id){
 }else{
  self.parseXML(self.xmlLoader.xmlDoc)
 }
- 
+
  if(self.pagingOn)
  self.createPagingBlock()
 }
@@ -274,21 +274,21 @@ function dhtmlXGridObject(id){
  if(_isIE)this.preventIECashing(true);
  this.dragger=new dhtmlDragAndDropObject();
 
- 
- 
+
+
  this._doOnScroll = function(e,mode){
  if(this._onSCRL)this._onSCRL(this.objBox.scrollLeft,this.objBox.scrollTop);
  this.doOnScroll(e,mode);
 }
- 
+
  this.doOnScroll = function(e,mode){
  this.hdrBox.scrollLeft = this.objBox.scrollLeft;
  if(this.ftr)
  this.ftr.parentNode.scrollLeft = this.objBox.scrollLeft;
  this.setSortImgPos(null,true);
  if(mode)return;
- 
- 
+
+
  if(!this.pagingOn && this.objBox.scrollTop+this.hdrSizeA+this.objBox.offsetHeight>this.objBox.scrollHeight){
  if(this._xml_ready &&(this.objBox._oldScrollTop!=this.objBox.scrollTop)&& this.addRowsFromBuffer()){
  this.objBox.scrollTop = this.objBox.scrollHeight -(this.hdrSizeA+1+this.objBox.offsetHeight)
@@ -302,22 +302,22 @@ function dhtmlXGridObject(id){
 }
 
 }
- 
+
  this.attachToObject = function(obj){
  obj.appendChild(this.entBox)
 
 }
- 
+
  this.init = function(fl){
 
  this.editStop()
- 
+
  this.lastClicked = null;
  this.resized = null;
  this.fldSorted = null;
  this.gridWidth = 0;
  this.gridHeight = 0;
- 
+
  this.cellWidthPX = new Array(0);
  this.cellWidthPC = new Array(0);
  if(this.hdr.rows.length>0){
@@ -361,9 +361,9 @@ function dhtmlXGridObject(id){
  if(col_ex==0)hdrRow._childIndexes=null;
  this._cCount=this.hdrLabels.length;
 
- if(_isIE)window.setTimeout(function(){self.setSizes();},1);
+ if(_isIE)window.setTimeout(function(){self.setSizes();},1000);
 
- 
+
  if(!this.obj.firstChild)
  this.obj.appendChild(document.createElement("TBODY"));
 
@@ -385,27 +385,27 @@ function dhtmlXGridObject(id){
  if(this.multiLine != true)
  this.obj.className+=" row20px";
 
- 
- 
- 
+
+
+
  this.sortImg.style.position = "absolute";
  this.sortImg.style.display = "none";
  this.sortImg.src = this.imgURL+"sort_desc.gif";
  this.sortImg.defLeft = 0;
- 
- 
- this.entCnt.rows[0].style.display = '' 
+
+
+ this.entCnt.rows[0].style.display = ''
  if(this.noHeader){
  this.entCnt.rows[0].style.display = 'none';
 }else{
  this.noHeader = false
 }
 
- 
- 
+
+
  if(this._ivizcol)this.setColHidden();
- 
- 
+
+
 
 
  this.setSizes();
@@ -421,7 +421,7 @@ function dhtmlXGridObject(id){
  if(this._initDrF)this._initD();
 
 };
- 
+
  this.setSizes = function(fl){
  if((!this.noHeader)&&((!this.hdr.rows[0])||(!this.hdrBox.offsetWidth)))return;
  if(fl && this.gridWidth==this.entBox.offsetWidth && this.gridHeight==this.entBox.offsetHeight){
@@ -490,15 +490,15 @@ function dhtmlXGridObject(id){
 
  this.objBuf.style.width = summ+"px";
  this.objBuf.childNodes[0].style.width = summ+"px";
- 
- 
+
+
  this.doOnScroll(0,1);
 
- 
- 
+
+
 
  this.hdr.style.border="0px solid gray";
- 
+
  var zheight=this.hdr.offsetHeight+(this._borderFix?this._borderFix:0);
 
  if(this._ahgr)
@@ -522,7 +522,7 @@ function dhtmlXGridObject(id){
  if(!this.noHeader)
  aRow.style.top =(zheight-this.hdrBox.offsetHeight+(_isFF?0:(1-wcor)))+"px";
 
- 
+
  aRow.style.height =(((gridHeight - zheight-1)<0 && _isIE)?20:(gridHeight - zheight-1))-(this.ftr?this.ftr.offsetHeight:0)+"px";
  if(this.ftr)this.entCnt.style.height=this.entBox.offsetHeight-this.ftr.offsetHeight+"px";
 
@@ -531,7 +531,7 @@ function dhtmlXGridObject(id){
 
 };
 
- 
+
  this.chngCellWidth = function(){
  if((_isOpera)&&(this.ftr))
  this.ftr.width=this.objBox.scrollWidth+"px";
@@ -543,11 +543,11 @@ function dhtmlXGridObject(id){
  this.ftr.rows[0].cells[i].style.width = this.cellWidthPX[i]+"px";
 }
 }
- 
+
  this.setDelimiter = function(delim){
  this.delim = delim;
 }
- 
+
  this.setInitWidthsP = function(wp){
  this.cellWidthType = "%";
  this.initCellWidth = wp.split(this.delim.replace(/px/gi,""));
@@ -573,7 +573,7 @@ function dhtmlXGridObject(id){
 });
 
 }
- 
+
  this.setInitWidths = function(wp){
  this.cellWidthType = "px";
  this.initCellWidth = wp.split(this.delim);
@@ -585,22 +585,22 @@ function dhtmlXGridObject(id){
 
 }
 
- 
+
  this.enableMultiline = function(state){
  this.multiLine = convertStringToBoolean(state);
 }
 
- 
+
  this.enableMultiselect = function(state){
  this.selMultiRows = convertStringToBoolean(state);
 }
 
- 
+
  this.setImagePath = function(path){
  this.imgURL = path;
 }
 
- 
+
  this.changeCursorState = function(ev){
  var el = ev.target||ev.srcElement;
  if(el.tagName!="TD")
@@ -612,7 +612,7 @@ function dhtmlXGridObject(id){
  el.style.cursor = "default";
  if(_isOpera)this.hdrBox.scrollLeft = this.objBox.scrollLeft;
 }
- 
+
  this.startColResize = function(ev){
  this.resized = null;
  var el = ev.target||ev.srcElement;
@@ -627,7 +627,7 @@ function dhtmlXGridObject(id){
  document.body.onmouseup = new Function("","document.getElementById('"+this.entBox.id+"').grid.stopColResize()");
 }
 }
- 
+
  this.stopColResize = function(){
  this.entBox.onmousemove = "";
  document.body.onmouseup = "";
@@ -635,7 +635,7 @@ function dhtmlXGridObject(id){
  this.doOnScroll(0,1)
  if(this.onRSE)this.onRSE(this);
 }
- 
+
  this.doColResize = function(ev,el,startW,x,tabW){
  el.style.cursor = "E-resize";
  this.resized = el;
@@ -656,7 +656,7 @@ function dhtmlXGridObject(id){
  this.objBuf.childNodes[0].style.width = "";
 }
 
- 
+
  this._setColumnSizeR=function(ind,fcolW){
  if(fcolW>(this._drsclmW?(this._drsclmW[ind]||10):10)){
  this.obj.firstChild.firstChild.childNodes[ind].style.width = fcolW+"px";
@@ -674,7 +674,7 @@ function dhtmlXGridObject(id){
 }
 }
 }
- 
+
  this.setSortImgState=function(state,ind,direction){
  if(!convertStringToBoolean(state)){
  this.sortImg.style.display = "none";
@@ -690,7 +690,7 @@ function dhtmlXGridObject(id){
  this.setSortImgPos(ind);
 }
 
- 
+
  this.setSortImgPos = function(ind,mode){
  if(!ind)
  var el = this.fldSorted;
@@ -708,19 +708,19 @@ function dhtmlXGridObject(id){
 }
 }
 
- 
+
  this.setActive = function(fl){
  if(arguments.length==0)
  var fl = true;
  if(fl==true){
- 
+
  globalActiveDHTMLGridObject = this;
  this.isActive = true;
 }else{
  this.isActive = false;
 }
 };
- 
+
  this._doClick = function(ev){
  var selMethod = 0;
  var el = this.getFirstParentOfType(_isIE?ev.srcElement:ev.target,"TD");
@@ -738,7 +738,7 @@ function dhtmlXGridObject(id){
 };
 
 
- 
+
  this._doContClick=function(ev){
  var el = this.getFirstParentOfType(_isIE?ev.srcElement:ev.target,"TD");
  if((!el)||(el.parentNode.idd===undefined))return true;
@@ -759,7 +759,7 @@ function dhtmlXGridObject(id){
  return true;
 }
 
- 
+
  this.doClick = function(el,fl,selMethod){
 
  var psid=this.row?this.row.idd:0;
@@ -837,19 +837,19 @@ function dhtmlXGridObject(id){
  this.isActive = true;
  this.moveToVisible(this.cell)
 }
- 
+
  this.selectCell = function(r,cInd,fl,preserve,edit){
  if(!fl)
  fl = false;
  if(typeof(r)!="object")
  r = this.rowsCol[r]
- 
- 
+
+
  if(r._childIndexes)
  var c = r.childNodes[r._childIndexes[cInd]];
  else
- 
- 
+
+
  var c = r.childNodes[cInd];
  if(preserve)
  this.doClick(c,fl,3)
@@ -857,7 +857,7 @@ function dhtmlXGridObject(id){
  this.doClick(c,fl)
  if(edit)this.editCell();
 }
- 
+
  this.moveToVisible = function(cell_obj,onlyVScroll){
  try{
  var distance = cell_obj.offsetLeft+cell_obj.offsetWidth+20;
@@ -881,19 +881,19 @@ function dhtmlXGridObject(id){
 }catch(er){
 }
 }
- 
+
  this.editCell = function(){
  this.editStop();
  if((this.isEditable!=true)||(!this.cell))
  return false;
  var c = this.cell;
- 
+
  if(c.parentNode._locked)return false;
- 
+
 
  this.editor = this.cells4(c);
 
- 
+
  if(this.editor!=null){
  if(this.editor.isDisabled()){this.editor=null;return false;}
  c.className+=" editable";
@@ -907,7 +907,7 @@ function dhtmlXGridObject(id){
 }
 }
 }
- 
+
  this.editStop = function(){
  if(_isOpera)
  if(this._Opera_stop){
@@ -928,7 +928,7 @@ function dhtmlXGridObject(id){
  if(!z)g.setValue(g.val);
 }
 }
- 
+
  this.doKey = function(ev){
  if(!ev)return true;
  if((ev.target||ev.srcElement).value!==window.undefined){
@@ -939,7 +939,7 @@ function dhtmlXGridObject(id){
  if((globalActiveDHTMLGridObject)&&(this!=globalActiveDHTMLGridObject))
  return globalActiveDHTMLGridObject.doKey(ev);
  if(this.isActive==false){
- 
+
  return true;
 }
 
@@ -947,7 +947,7 @@ function dhtmlXGridObject(id){
  if((this.onKPR)&&(!this.onKPR(ev.keyCode,ev.ctrlKey,ev.shiftKey)))return false;
  try{
  var type = this.cellType[this.cell._cellIndex]
- 
+
  if(ev.keyCode==13 &&(ev.ctrlKey || ev.shiftKey)){
  var rowInd = this.rowsCol._dhx_find(this.row)
  if(window.event.ctrlKey && rowInd!=this.rowsCol.length-1){
@@ -966,17 +966,17 @@ function dhtmlXGridObject(id){
  this.onEnter(this.row.idd,this.cell._cellIndex);
  _isIE?ev.returnValue=false:ev.preventDefault();
 }
- 
+
  if(ev.keyCode==9 && !ev.shiftKey){
  this.editStop();
  var aind=this.cell._cellIndex;
  var arow=this.row;
- 
- 
+
+
  if(arow._childIndexes)
  while(arow._childIndexes[aind+1]==arow._childIndexes[aind])aind++;
- 
- 
+
+
  aind++;
 
  if(aind>=this.obj.rows[0].childNodes.length){
@@ -993,21 +993,21 @@ function dhtmlXGridObject(id){
  this.editStop();
  var aind=this.cell._cellIndex-1;
  var arow=this.row;
- 
- 
+
+
  if(arow._childIndexes)
  while((aind>=0)&&(arow._childIndexes[aind]==arow._childIndexes[aind+1]))aind--;
- 
- 
+
+
  if(aind<0)
 {
  aind=this.obj.rows[0].childNodes.length-1;
- 
- 
+
+
  if(arow._childIndexes)
  while(((arow._childIndexes[aind]!="0")&&(!arow._childIndexes[aind]))&&(aind>=0))aind--;
- 
- 
+
+
  arow=this.rowsCol[this.rowsCol._dhx_find(this.row)-1];
  if(!arow){aind=0;
  return true;}
@@ -1016,7 +1016,7 @@ function dhtmlXGridObject(id){
  this.editCell()
  _isIE?ev.returnValue=false:ev.preventDefault();
 }
- 
+
  if(ev.keyCode==40 || ev.keyCode==38){
 
  if(this.editor && this.editor.combo){
@@ -1027,15 +1027,15 @@ function dhtmlXGridObject(id){
  else{
  var rowInd = this.row.rowIndex;
  if(ev.keyCode==38 && rowInd!=1){
- 
- 
+
+
  this.selectCell(this.obj._rows(rowInd-2),this.cell._cellIndex,true);
 }else if(this.pagingOn && ev.keyCode==38 && rowInd==1 && this.currentPage!=1){
  this.changePage(this.currentPage-1)
  this.selectCell(this.obj.rows[this.obj.rows.length-1],this.cell._cellIndex,true);
 }else if(ev.keyCode==40 && rowInd!=this.rowsCol.length && rowInd!=this.obj.rows.length-1){
- 
- 
+
+
  this.selectCell(this.obj._rows(rowInd),this.cell._cellIndex,true);
 }else if(this.pagingOn && ev.keyCode==40 &&(this.row!=this.rowsCol[this.rowsCol.length-1] || this.rowsBuffer[0].length>0 || !this.recordsNoMore)){
  this.changePage(this.currentPage+1)
@@ -1045,25 +1045,25 @@ function dhtmlXGridObject(id){
  _isIE?ev.returnValue=false:ev.preventDefault();
 
 }
- 
+
  if((ev.keyCode==113)&&(this._f2kE)){
  this.editCell();
  return false;
 }
- 
+
  if(ev.keyCode==32){
  var c = this.cell
  var ed = cells4(c);
- 
+
  if(ed.changeState()!=false)
  _isIE?ev.returnValue=false:ev.preventDefault();
 }
- 
+
  if(ev.keyCode==27 && this.oe!=false){
  this.editStop();
  _isIE?ev.returnValue=false:ev.preventDefault();
 }
- 
+
  if(ev.keyCode==33 || ev.keyCode==34){
  if(this.pagingOn){
  if(ev.keyCode==33){
@@ -1074,10 +1074,10 @@ function dhtmlXGridObject(id){
 }
  this.selectCell(this.getRowIndex(this.row.idd)+this.rowsBufferOutSize*(ev.keyCode!=33?1:-1),this.cell._cellIndex,true);
 
- 
+
  _isIE?ev.returnValue=false:ev.preventDefault();
 }
- 
+
  if(!this.editor)
 {
  if(ev.keyCode==37 && this.cellType._dhx_find("tree")!=-1){
@@ -1094,7 +1094,7 @@ function dhtmlXGridObject(id){
 
 
 }
- 
+
  this.getRow = function(cell){
  if(!cell)
  cell = window.event.srcElement;
@@ -1105,16 +1105,16 @@ function dhtmlXGridObject(id){
  eval(this.onLink+"('"+this.getRowId(r.rowIndex)+"',"+cell._cellIndex+")");
  this.selectCell(r,cell._cellIndex,true)
 }
- 
+
  this.selectRow = function(r,fl,preserve){
  if(typeof(r)!='object')
  r = this.rowsCol[r]
  this.selectCell(r,0,fl,preserve)
 };
- 
+
  this.sortRows = function(col,type,order){
  while(this.addRowsFromBuffer(true));
- 
+
  if(this.cellType._dhx_find("tree")!=-1){
  return this.sortTreeRows(col,type,order)
 }
@@ -1127,26 +1127,26 @@ function dhtmlXGridObject(id){
  this._sortRows(col,type,order,arrTS);
 }
 
- 
+
  this._sortRows = function(col,type,order,arrTS){
  var sort="sort";
  if(this._sst)sort="stablesort";
 
 
- 
- 
+
+
  if(type=='cus'){
  this.rowsCol[sort](function(a,b){
  return self._customSorts[col](arrTS[a.idd],arrTS[b.idd],order,a.idd,b.idd);
 });
 }else
- 
- 
+
+
  if(type=='str'){
  this.rowsCol[sort](function(a,b){
 // Name : Prafull_kadam
 // Bug ID: 3624
-// Patch ID: 3624_1 
+// Patch ID: 3624_1
 // Description: Added code for case insensitive comparision & handle hyperlinks String sorting.
  var astr = arrTS[a.idd];
  var bstr = arrTS[b.idd];
@@ -1192,15 +1192,15 @@ function dhtmlXGridObject(id){
  for(var i=0;i<this.rowsCol.length;i++){
  if(this.rowsCol[i]!=this.obj._rows(i))
  tb.insertBefore(this.rowsCol[i],this.obj._rows(i))
- 
+
 }
 }
- 
+
  if(this.onGridReconstructed)this.onGridReconstructed();
 }
 
 
- 
+
  this.setXMLAutoLoading = function(filePath,bufferSize){
  if(arguments.length==0)return(this._xmlaR=true);
  this.recordsNoMore = false;
@@ -1208,7 +1208,7 @@ function dhtmlXGridObject(id){
  this.rowsBufferOutSize = bufferSize||this.rowsBufferOutSize==0?40:this.rowsBufferOutSize;
 }
 
- 
+
  this.enableBuffering = function(bufferSize){
  this.rowsBufferOutSize = bufferSize||this.rowsBufferOutSize==0?40:this.rowsBufferOutSize;;
 }
@@ -1216,7 +1216,7 @@ function dhtmlXGridObject(id){
 
 
 
- 
+
  this.addRowsFromBuffer = function(stopBeforeServerCall){
  if(this.rowsBuffer[0].length==0){
  if(!this.recordsNoMore && !stopBeforeServerCall){
@@ -1230,9 +1230,9 @@ function dhtmlXGridObject(id){
  var cnt = Math.min(this.rowsBufferOutSize,this.rowsBuffer[0].length)
 
 
- 
+
  for(var i=0;i<cnt;i++){
- 
+
 
  if(this.rowsBuffer[1][0].tagName == "TR"){
  this._insertRowAt(this.rowsBuffer[1][0],-1,this.pagingOn);
@@ -1246,7 +1246,7 @@ function dhtmlXGridObject(id){
 
  return this.rowsBuffer[0].length!=0;
 }
- 
+
  this.createRowFromXMLTag = function(rowNode){
  if(rowNode.tagName=="TR")
  return rowNode;
@@ -1260,12 +1260,12 @@ function dhtmlXGridObject(id){
  return r;
 }
 
- 
+
  this.setMultiselect = function(fl){
  this.selMultiRows = convertStringToBoolean(fl);
 }
 
- 
+
  this.wasDblClicked = function(ev){
  var el = this.getFirstParentOfType(_isIE?ev.srcElement:ev.target,"TD");
  if(el){
@@ -1274,7 +1274,7 @@ function dhtmlXGridObject(id){
 }
 }
 
- 
+
  this._onHeaderClick = function(e){
  var that=this.grid;
  var el = that.getFirstParentOfType(_isIE?event.srcElement:e.target,"TD");
@@ -1284,9 +1284,9 @@ function dhtmlXGridObject(id){
  that.sortField(el._cellIndexS)
 }
 
- 
+
  this.deleteSelectedItem = function(){
- var num = this.selectedRows.length 
+ var num = this.selectedRows.length
  if(num==0)
  return;
  var tmpAr = this.selectedRows;
@@ -1301,7 +1301,7 @@ function dhtmlXGridObject(id){
  var ind = i;
 }
 }
- 
+
 }
  if(ind){
  try{
@@ -1315,32 +1315,32 @@ function dhtmlXGridObject(id){
 }
 }
 
- 
+
  this.getSelectedId = function(){
  var selAr = new Array(0);
  for(var i=0;i<this.selectedRows.length;i++){
  selAr[selAr.length]=this.selectedRows[i].idd
 }
 
- 
+
  if(selAr.length==0)
  return null;
  else
  return selAr.join(this.delim);
 }
- 
+
  this.getSelectedCellIndex = function(){
  if(this.cell!=null)
  return this.cell._cellIndex;
  else
  return -1;
 }
- 
+
  this.getColWidth = function(ind){
  return parseInt(this.cellWidthPX[ind])+((_isFF)?2:0);
 }
 
- 
+
  this.setColWidth = function(ind,value){
  if(this.cellWidthType=='px')
  this.cellWidthPX[ind]=parseInt(value);
@@ -1350,7 +1350,7 @@ function dhtmlXGridObject(id){
 }
 
 
- 
+
  this.getRowById = function(id){
  var row = this.rowsAr[id]
  if(row)
@@ -1377,7 +1377,7 @@ function dhtmlXGridObject(id){
  return this._seekAndDeploy(id);
  return null;
 }
- 
+
  this.getRowByIndex = function(ind){
  if(this.rowsCol.length<=ind){
  if((this.rowsCol.length+this.rowsBuffer[0].length)<=ind)
@@ -1392,7 +1392,7 @@ function dhtmlXGridObject(id){
 }
 }
 
- 
+
  this.getRowIndex = function(row_id){
  var ind = this.rowsCol._dhx_find(this.getRowById(row_id));
  if(ind!=-1)
@@ -1404,18 +1404,18 @@ function dhtmlXGridObject(id){
  return -1;
 }
 }
- 
+
  this.getRowId = function(ind){
  var z=this.rowsCol[parseInt(ind)];
  if(z)return z.idd;
  return(this.rowsBuffer[0][this._dload?ind:(ind-this.rowsCol.length-1)]||null);
 }
- 
+
  this.setRowId = function(ind,row_id){
  var r = this.rowsCol[ind]
  this.changeRowId(r.idd,row_id)
 }
- 
+
  this.changeRowId = function(oldRowId,newRowId){
  var row = this.rowsAr[oldRowId]
  row.idd = newRowId;
@@ -1444,7 +1444,7 @@ function dhtmlXGridObject(id){
  this.rowsAr[oldRowId] = null;
  this.rowsAr[newRowId] = row;
 }
- 
+
  this.setColumnIds = function(ids){
  if(ids)
  this.columnIds = ids.split(",")
@@ -1456,39 +1456,39 @@ function dhtmlXGridObject(id){
 }
 }
 }
- 
+
  this.getColIndexById = function(id){
  for(var i=0;i<this.hdr.rows[0].cells.length;i++){
  if(this.hdr.rows[0].cells[i].column_id==id)
  return i;
 }
 }
- 
+
  this.getColumnId = function(cin){
  return this.hdr.rows[0].cells[cin].column_id
 }
 
- 
+
  this.getHeaderCol = function(cin){
  var z=this.hdr.rows[1]
  return z.cells[z._childIndexes?z._childIndexes[parseInt(cin)]:cin].innerHTML;
 }
 
- 
+
  this.setRowTextBold = function(row_id){
  this.getRowById(row_id).style.fontWeight = "bold";
 }
- 
+
  this.setRowTextStyle = function(row_id,styleString){
  var r = this.getRowById(row_id)
  for(var i=0;i<r.childNodes.length;i++){
  var pfix="";
 
- 
- 
+
+
  if((this._hrrar)&&(this._hrrar[i]))pfix="display:none;";
- 
- 
+
+
  if(_isIE)
  r.childNodes[i].style.cssText = pfix+"width:"+r.childNodes[i].style.width+";"+styleString;
  else
@@ -1496,24 +1496,24 @@ function dhtmlXGridObject(id){
 }
 
 }
- 
+
  this.setRowColor = function(row_id,color){
  var r = this.getRowById(row_id)
  for(var i=0;i<r.childNodes.length;i++)
  r.childNodes[i].bgColor=color;
 }
- 
+
  this.setCellTextStyle = function(row_id,ind,styleString){
  var r = this.getRowById(row_id)
  if(!r)return;
  if(ind<r.childNodes.length)
 {
  var pfix="";
- 
- 
+
+
  if((this._hrrar)&&(this._hrrar[i]))pfix="display:none;";
- 
- 
+
+
  if(_isIE)
  r.childNodes[ind].style.cssText = pfix+"width:"+r.childNodes[ind].style.width+";"+styleString;
  else
@@ -1522,11 +1522,11 @@ function dhtmlXGridObject(id){
 
 }
 
- 
+
  this.setRowTextNormal = function(row_id){
  this.getRowById(row_id).style.fontWeight = "normal";
 }
- 
+
  this.isItemExists = function(row_id){
  if(this.getRowById(row_id)!=null)
  return true
@@ -1534,18 +1534,18 @@ function dhtmlXGridObject(id){
  return false
 }
 
- 
+
  this.getRowsNum = function(){
  if(this._dload)
  return this.limit;
  return this.rowsCol.length+this.rowsBuffer[0].length;
 }
- 
+
  this.getColumnCount = function(){
  return this.hdr.rows[0].cells.length;
 }
 
- 
+
  this.moveRowUp = function(row_id){
  var r = this.getRowById(row_id)
  var rInd = this.rowsCol._dhx_find(r)
@@ -1561,7 +1561,7 @@ function dhtmlXGridObject(id){
  this.setSizes();
 }
 }
- 
+
  this.moveRowDown = function(row_id){
  var r = this.getRowById(row_id)
  var rInd = this.rowsCol._dhx_find(r)
@@ -1577,7 +1577,7 @@ function dhtmlXGridObject(id){
  this.setSizes();
 }
 }
- 
+
  this.cells = function(row_id,col){
  if(arguments.length==0)
  return this.cells4(this.cell);
@@ -1587,26 +1587,26 @@ function dhtmlXGridObject(id){
  var cell=(c._childIndexes?c.childNodes[c._childIndexes[col]]:c.childNodes[col]);
  return this.cells4(cell);
 }
- 
+
  this.cells2 = function(row_index,col){
  var c = this.rowsCol[parseInt(row_index)];
  var cell=(c._childIndexes?c.childNodes[c._childIndexes[col]]:c.childNodes[col]);
  return this.cells4(cell);
 }
 
- 
+
  this.cells3 = function(row,col){
  var cell=(row._childIndexes?row.childNodes[row._childIndexes[col]]:row.childNodes[col]);
  return this.cells4(cell);
 }
- 
+
  this.cells4 = function(cell){
  if(!cell._cellType)
  return eval("new eXcell_"+this.cellType[cell._cellIndex]+"(cell)");
  else
  return eval("new eXcell_"+cell._cellType+"(cell)");
 }
- 
+
  this.getCombo = function(col_ind){
  if(this.cellType[col_ind].indexOf('co')==0){
  if(!this.combos[col_ind]){
@@ -1618,7 +1618,7 @@ function dhtmlXGridObject(id){
  return null;
 }
 }
- 
+
  this.setUserData = function(row_id,name,value){
  try{
  if(row_id=="")
@@ -1630,7 +1630,7 @@ function dhtmlXGridObject(id){
  alert("UserData Error:"+er.description)
 }
 }
- 
+
  this.getUserData = function(row_id,name){
  if(row_id=="")
  row_id = "gridglobaluserdata";
@@ -1638,7 +1638,7 @@ function dhtmlXGridObject(id){
  return(z?z.get(name):"");
 }
 
- 
+
  this.setEditable = function(fl){
  if(fl!='true' && fl!=1 && fl!=true)
  ifl = true;
@@ -1656,7 +1656,7 @@ function dhtmlXGridObject(id){
 }
  this.isEditable = !ifl;
 }
- 
+
  this.setSelectedRow = function(row_id,multiFL,show,call){
  if(!call)
  call = false;
@@ -1665,14 +1665,14 @@ function dhtmlXGridObject(id){
  this.moveToVisible(this.getRowById(row_id).cells[0],true)
 }
 }
- 
+
  this.clearSelection = function(){
  this.editStop()
  for(var i=0;i<this.selectedRows.length;i++){
  this.selectedRows[i].className=this.selectedRows[i].className.replace(/rowselected/g,"");
 }
 
- 
+
  this.selectedRows = new dhtmlxArray(0)
  this.row = null;
  if(this.cell!=null){
@@ -1680,7 +1680,7 @@ function dhtmlXGridObject(id){
  this.cell = null;
 }
 }
- 
+
  this.copyRowContent = function(from_row_id,to_row_id){
  var frRow = this.getRowById(from_row_id)
 
@@ -1691,7 +1691,7 @@ function dhtmlXGridObject(id){
  else
  this._copyTreeGridRowContent(frRow,from_row_id,to_row_id);
 
- 
+
  if(!isIE())
  this.getRowById(from_row_id).cells[0].height = frRow.cells[0].offsetHeight
 }
@@ -1699,7 +1699,7 @@ function dhtmlXGridObject(id){
 
 
 
- 
+
  this.setHeaderCol = function(col,label){
  var z=this.hdr.rows[1];
  var col=(z._childIndexes?z._childIndexes[col]:col);
@@ -1717,7 +1717,7 @@ function dhtmlXGridObject(id){
 }else{
  z.cells[col].style.textAlign = "left";
  z.cells[col].innerHTML = "<img src='"+this.imgURL+""+label+"' onerror='this.src = \""+this.imgURL+"imageloaderror.gif\"'>";
- 
+
  var a = new Image();
  a.src = this.imgURL+""+label.replace(/(\.[a-z]+)/,".desc$1");
  this.preloadImagesAr[this.preloadImagesAr.length] = a;
@@ -1726,7 +1726,7 @@ function dhtmlXGridObject(id){
  this.preloadImagesAr[this.preloadImagesAr.length] = b;
 }
 }
- 
+
  this.clearAll = function(header){
  this.limit=this._limitC=0;
  this.editStop();
@@ -1738,12 +1738,12 @@ function dhtmlXGridObject(id){
 }
 
  var len = this.rowsCol.length;
- 
+
  if(this.loadedKidsHash!=null){
  this.loadedKidsHash.clear();
  this.loadedKidsHash.put("hashOfParents",new Hashtable());
 }
- 
+
  len = this.obj._rowslength();
 
  for(var i=len-1;i>=0;i--){
@@ -1758,7 +1758,7 @@ function dhtmlXGridObject(id){
 }
 }
 
- 
+
  this.row = null;
  this.cell = null;
  this._hrrar=null;
@@ -1770,7 +1770,7 @@ function dhtmlXGridObject(id){
 
  if(this.pagingOn){
  this.changePage(1);
- 
+
 }
 
  if((this._hideShowColumn)&&(this.hdr.rows[0]))
@@ -1782,11 +1782,11 @@ function dhtmlXGridObject(id){
  this.enableStableSorting(true);
 
  this.setSizes();
- 
+
 }
 
 
- 
+
  this.sortField = function(ind,repeatFl){
  if(this.getRowsNum()==0)
  return false;
@@ -1802,7 +1802,7 @@ function dhtmlXGridObject(id){
 }
  if((this.onCLMS)&&(!this.onCLMS(ind,this,sortType)))return;
 
- 
+
  if(this.useImagesInHeader){
  var cel=this.hdr.rows[1].cells[el._cellIndex].firstChild;
  if(this.fldSorted!=null){
@@ -1811,7 +1811,7 @@ function dhtmlXGridObject(id){
 }
  cel.src = cel.src.replace(/(\.[a-z]+)/,"."+sortType+"$1")
 }
- 
+
  this.sortRows(el._cellIndex,this.fldSort[el._cellIndex],sortType)
  this.fldSorted = el;
  var c=this.hdr.rows[1];
@@ -1820,23 +1820,23 @@ function dhtmlXGridObject(id){
 }
 }
 
- 
- 
- 
+
+
+
  this.setCustomSorting = function(func,col){
  if(!this._customSorts)this._customSorts=new Array();
  this._customSorts[col]=func;
  this.fldSort[col]="cus";
 }
- 
- 
 
- 
+
+
+
  this.enableHeaderImages = function(fl){
  this.useImagesInHeader = fl;
 }
 
- 
+
  this.setHeader = function(hdrStr,splitSign){
  var arLab = hdrStr.split(this.delim);
  var arWdth = new Array(0);
@@ -1851,7 +1851,7 @@ function dhtmlXGridObject(id){
  arVAlg[arVAlg.length] = "";
  arSrt[arSrt.length] = "na";
 }
- 
+
  this.splitSign = splitSign||"#cspan";
  this.hdrLabels = arLab;
  this.cellWidth = arWdth;
@@ -1862,17 +1862,17 @@ function dhtmlXGridObject(id){
 }
 
 
- 
+
  this.getColType = function(cell_index){
  return this.cellType[cell_index];
 }
 
- 
+
  this.getColTypeById = function(col_id){
  return this.cellType[this.getColIndexById(col_id)];
 }
 
- 
+
  this.setColTypes = function(typeStr){
  this.cellType = dhtmlxArray(typeStr.split(this.delim));
  this._strangeParams=new Array();
@@ -1888,11 +1888,11 @@ function dhtmlXGridObject(id){
 }
 }
 }
- 
+
  this.setColSorting = function(sortStr){
  this.fldSort = sortStr.split(this.delim)
- 
- 
+
+
  for(var i=0;i<this.fldSort.length;i++)
  if(((this.fldSort[i]).length>4)&&(typeof(window[this.fldSort[i]])=="function"))
 {
@@ -1900,34 +1900,34 @@ function dhtmlXGridObject(id){
  this._customSorts[i]=window[this.fldSort[i]];
  this.fldSort[i]="cus";
 }
- 
- 
+
+
 }
- 
+
  this.setColAlign = function(alStr){
  this.cellAlign = alStr.split(this.delim)
 }
- 
+
  this.setColVAlign = function(alStr){
  this.cellVAlign = alStr.split(this.delim)
 }
 
- 
+
  this.setMultiLine = function(fl){
  if(fl==true)
  this.multiLine = -1;
 }
- 
+
  this.setNoHeader = function(fl){
  if(fl==true)
  this.noHeader = true;
 }
- 
+
  this.showRow = function(rowID){
  this.moveToVisible(this.getRowById(rowID).cells[0],true)
 }
 
- 
+
  this.setStyle = function(ss_header,ss_grid,ss_selCell,ss_selRow){
  this.ssModifier = [ss_header,ss_grid,ss_selCell,ss_selCell,ss_selRow];
  var prefs=["#"+this.entBox.id+" table.hdr td","#"+this.entBox.id+" table.obj td","#"+this.entBox.id+" table.obj tr.rowselected td.cellselected","#"+this.entBox.id+" table.obj td.cellselected","#"+this.entBox.id+" table.obj tr.rowselected td"];
@@ -1938,12 +1938,12 @@ function dhtmlXGridObject(id){
  else
  this.styleSheet[0].insertRule(prefs[i]+"{"+this.ssModifier[i]+"}",0);
 }
- 
+
  this.setColumnColor = function(clr){
  this.columnColor = clr.split(this.delim)
 }
 
- 
+
  this.enableAlterCss = function(cssE,cssU){
  if(cssE||cssU)
  this.setOnGridReconstructedHandler(function(){
@@ -1955,7 +1955,7 @@ function dhtmlXGridObject(id){
  this._cssUnEven = cssU;
 }
 
- 
+
  this._fixAlterCss = function(ind){
  ind=ind||0;
  var j=ind;
@@ -1980,14 +1980,14 @@ function dhtmlXGridObject(id){
 }
 
 
- 
+
  this.doDynScroll = function(fl){
  if(!this.dynScroll || this.dynScroll=='false')
  return false;
- 
- 
+
+
  this.setDynScrollPageSize();
- 
+
 
  var tmpAr = new Array(0)
  if(fl && fl=='up'){
@@ -2014,7 +2014,7 @@ function dhtmlXGridObject(id){
 
 
 }
- 
+
  this.setDynScrollPageSize = function(){
  if(this.dynScroll && this.dynScroll!='false'){
  var rowsH = 0;
@@ -2033,8 +2033,8 @@ function dhtmlXGridObject(id){
 }
 }
 
- 
- 
+
+
 this.clearChangedState = function(){
  for(var i=0;i<this.rowsCol.length;i++){
  var row=this.rowsCol[i];
@@ -2044,7 +2044,7 @@ this.clearChangedState = function(){
 }
 };
 
- 
+
 this.getChangedRows = function(){
  var res=new Array();
  for(var i=0;i<this.rowsCol.length;i++){
@@ -2061,12 +2061,12 @@ this.getChangedRows = function(){
 
 
 
- 
+
 
 this._sUDa = false;
 this._sAll = false;
 
- 
+
 this.setSerializationLevel = function(userData,fullXML,config,changedAttr,onlyChanged){
  this._sUDa = userData;
  this._sAll = fullXML;
@@ -2077,7 +2077,7 @@ this.setSerializationLevel = function(userData,fullXML,config,changedAttr,onlyCh
 
 
 
- 
+
 this.setSerializableColumns=function(list){
  if(!list){
  this._srClmn=null;
@@ -2088,11 +2088,11 @@ this.setSerializableColumns=function(list){
  this._srClmn[i]=convertStringToBoolean(this._srClmn[i]);
 }
 
- 
+
 this._serialise = function(rCol,inner,closed){
  this.editStop()
  var out="";
- 
+
  var i=0;
  var j=0;
  var leni=(this._dload)?this.rowsBuffer[0].length:rCol.length;
@@ -2122,7 +2122,7 @@ this._serialise = function(rCol,inner,closed){
  return [out,j+i];
 }
 
- 
+
 this._manualXMLSerialize = function(r){
  var out = "<row id='"+r.getAttribute("id")+"'>";
  var i=0;
@@ -2138,7 +2138,7 @@ this._manualXMLSerialize = function(r){
 }
 
 
- 
+
 this._serializeRow = function(r){
  var out = "";
  if((!r)||(r._sRow)||(r._rLoad)){
@@ -2152,11 +2152,11 @@ this._serializeRow = function(r){
 
  var selStr = "";
 
- 
+
  if(this._sAll && this.selectedRows._dhx_find(r)!=-1)
  selStr = " selected='1'";
  out+= "<row id='"+r.idd+"'"+selStr+" "+((r.expand=="")?"open='1'":"")+">";
- 
+
  if(this._sUDa && this.UserData[r.idd]){
  keysAr = this.UserData[r.idd].getKeys()
  for(var ii=0;ii<keysAr.length;ii++){
@@ -2165,7 +2165,7 @@ this._serializeRow = function(r){
 }
 
 
- 
+
  var changeFl=false;
  for(var jj=0;jj<r.childNodes.length;jj++){
  if((!this._srClmn)||(this._srClmn[jj]))
@@ -2178,10 +2178,10 @@ this._serializeRow = function(r){
  zxVal=zx[this._agetm]();
  else zxVal="";
 
- 
+
  if((this._ecspn)&&(cvx.colSpan)&&cvx.colSpan>1)
  out+=" colspan=\""+cvx.colSpan+"\" ";
- 
+
 
  if(this._chAttr){
  if(zx.wasChanged()){
@@ -2196,20 +2196,20 @@ this._serializeRow = function(r){
  out+=(cvx._aimage?(" image='"+cvx._aimage+"'"):"")+">"+((zxVal===null)?"":zxVal)+"</cell>";
  else
  out+=">"+((zxVal===null)?"":zxVal)+"</cell>";
- 
+
  if((this._ecspn)&&(cvx.colSpan)){
  cvx=cvx.colSpan-1;
  for(var u=0;u<cvx;u++)
  out+= "<cell/>";
 }
- 
+
 }
 }
  if((this._onlChAttr)&&(!changeFl))return "";
  return out;
 }
 
- 
+
 this._serialiseConfig=function(){
  var out="<head>";
  for(var i=0;i<this.hdr.rows[0].cells.length;i++){
@@ -2223,7 +2223,7 @@ this._serialiseConfig=function(){
 }
  return out+="</head>";
 }
- 
+
 this.serialize = function(){
  if(_isFF)
  this.xmlSerializer = new XMLSerializer();
@@ -2247,7 +2247,7 @@ this.serialize = function(){
 
 
  if(!this._dload){
- 
+
  for(var i=0;i<this.rowsBuffer[1].length;i++){
  if(this.rowsBuffer[1][i].tagName=="TR"){
 
@@ -2268,10 +2268,10 @@ this.serialize = function(){
  out+='</rows>';
  return out;
 }
- 
- 
 
- 
+
+
+
 this.dhx_attachEvent=function(original,catcher){
  if((!this[original])||(!this[original].dhx_addEvent)){
  var z=new this.dhx_eventCatcher(this);
@@ -2280,7 +2280,7 @@ this.dhx_attachEvent=function(original,catcher){
 }
  this[original].dhx_addEvent(catcher);
 }
- 
+
 this.dhx_eventCatcher=function(obj){
  var dhx_catch=new Array();
  var m_obj=obj;
@@ -2301,114 +2301,114 @@ this.dhx_eventCatcher=function(obj){
  return z;
 }
 
- 
- 
- 
+
+
+
  this.setOnRowSelectHandler = function(func,anyClick){
  this.dhx_attachEvent("onRowSelect",func);
  this._chRRS=(!convertStringToBoolean(anyClick));
 }
 
 
- 
+
  this.setOnScrollHandler = function(func){
  this.dhx_attachEvent("_onSCRL",func);
 }
 
- 
+
  this.setOnEditCellHandler = function(func){
  this.dhx_attachEvent("onEditCell",func);
 }
- 
+
  this.setOnCheckHandler = function(func){
  this.dhx_attachEvent("onCheckbox",func);
 }
 
- 
+
  this.setOnEnterPressedHandler = function(func){
  this.dhx_attachEvent("onEnter",func);
 }
 
- 
+
  this.setOnBeforeRowDeletedHandler = function(func){
  this.dhx_attachEvent("onBeforeRowDeleted",func);
 }
- 
+
  this.setOnRowAddedHandler = function(func){
  this.dhx_attachEvent("onRowAdded",func);
 }
 
- 
+
  this.setOnGridReconstructedHandler = function(func){
  this.dhx_attachEvent("onGridReconstructed",func);
 }
- 
 
- 
- 
- 
+
+
+
+
  dhtmlXGridObject.prototype.setOnBeforeSelect=function(func){
  this.dhx_attachEvent("onBFS",func);
 };
- 
+
  dhtmlXGridObject.prototype.setOnKeyPressed=function(func){
  this.dhx_attachEvent("onKPR",func);
 };
- 
+
  dhtmlXGridObject.prototype.setOnRowCreated=function(func){
  this.dhx_attachEvent("onRowCr",func);
 };
 
- 
+
  dhtmlXGridObject.prototype.setOnLoadingEnd=function(func){
  this.dhx_attachEvent("onXLE",func);
 };
 
- 
+
  dhtmlXGridObject.prototype.setOnCellChanged=function(func){
  this.dhx_attachEvent("_onCCH",func);
 };
- 
+
  dhtmlXGridObject.prototype.setOnLoadingStart=function(func){
  this.dhx_attachEvent("onXLS",func);
 };
- 
+
  dhtmlXGridObject.prototype.setOnResizeEnd=function(func){
  this.dhx_attachEvent("onRSE",func);
 };
- 
+
  dhtmlXGridObject.prototype.setOnResize=function(func){
  this.dhx_attachEvent("onRSI",func);
 };
 
 
- 
+
  dhtmlXGridObject.prototype.setOnColumnSort=function(func){
  this.dhx_attachEvent("onCLMS",func);
 };
 
- 
+
  this.setOnSelectStateChanged = function(func){
  this.dhx_attachEvent("onSSC",func);
 }
 
- 
+
  this.setOnRowDblClickedHandler = function(func){
  this.dhx_attachEvent("onRowDblClicked",func);
 }
 
- 
+
  this.setOnHeaderClickHandler = function(func){
  this.dhx_attachEvent("onHeaderClick",func);
 }
 
 
 
- 
- 
 
 
- 
+
+
+
  this.getPosition = function(oNode,pNode){
 
  if(!pNode)
@@ -2437,7 +2437,7 @@ this.dhx_eventCatcher=function(obj){
 }
  return new Array(iLeft,iTop);
 }
- 
+
  this.getFirstParentOfType = function(obj,tag){
  while(obj.tagName!=tag && obj.tagName!="BODY"){
  obj = obj.parentNode;
@@ -2445,13 +2445,13 @@ this.dhx_eventCatcher=function(obj){
  return obj;
 }
 
- 
- 
+
+
  this.setColumnCount = function(cnt){alert('setColumnCount method deprecated')}
- 
+
  this.showContent = function(){alert('showContent method deprecated')}
 
- 
+
  this.objBox.onscroll = new Function("","this.grid._doOnScroll()")
  if((!_isOpera)||(_OperaRv>8.5))
 {
@@ -2465,7 +2465,7 @@ this.dhx_eventCatcher=function(obj){
  this.hdr.onclick = this._onHeaderClick;
  this.hdr.ondblclick = this._onHeaderDblClick;
 
- 
+
  if(!document.body._dhtmlxgrid_onkeydown){
  dhtmlxEvent(document,"keydown",new Function("e","if(globalActiveDHTMLGridObject)return globalActiveDHTMLGridObject.doKey(e||window.event);return true;"));
  document.body._dhtmlxgrid_onkeydown=true;
@@ -2473,22 +2473,22 @@ this.dhx_eventCatcher=function(obj){
 
  dhtmlxEvent(document.body,"click",function(){if(self.editStop)self.editStop();return true;});
 
- 
- 
+
+
  this.entBox.onbeforeactivate = new Function("","this.grid.setActive();event.cancelBubble=true;");
  this.entBox.onbeforedeactivate = new Function("","this.grid.isActive=-1;event.cancelBubble=true;");
- 
+
  this.doOnRowAdded = function(row){};
  return this;
 }
 
 
- 
+
  dhtmlXGridObject.prototype.isTreeGrid= function(){
  return(this.cellType._dhx_find("tree")!=-1);
 }
 
- 
+
  dhtmlXGridObject.prototype.addRow = function(new_id,text,ind){
  var r = this._addRow(new_id,text,ind);
  if(this.onRowAdded)
@@ -2503,7 +2503,7 @@ this.dhx_eventCatcher=function(obj){
 }
 
 
- 
+
  dhtmlXGridObject.prototype._prepareRow=function(new_id){
  var r=document.createElement("TR");
  r.idd = new_id;
@@ -2511,29 +2511,29 @@ this.dhx_eventCatcher=function(obj){
 
  for(var i=0;i<this.hdr.rows[0].cells.length;i++){
  var c = document.createElement("TD");
- 
+
  if(this._enbCid)c.id="c_"+r.idd+"_"+i;
- 
+
  c._cellIndex = i;
  if(this.dragAndDropOff)this.dragger.addDraggableItem(c,this);
  c.align = this.cellAlign[i];
  c.style.verticalAlign = this.cellVAlign[i];
- 
+
  c.bgColor = this.columnColor[i] || "";
 
- 
- 
+
+
  if((this._hrrar)&&(this._hrrar[i]))
  c.style.display="none";
- 
- 
+
+
 
 
  r.appendChild(c);
 }
  return r;
 }
- 
+
  dhtmlXGridObject.prototype._fillRow=function(r,text){
  if(!this._parsing_)this.editStop();
 
@@ -2553,7 +2553,7 @@ this.dhx_eventCatcher=function(obj){
  else
  this.editor = this.cells4(r.childNodes[i]);
 
- 
+
  this.editor.setValue(val)
  this.editor = this.editor.destructor();
 }else{
@@ -2571,12 +2571,12 @@ this.dhx_eventCatcher=function(obj){
  return r;
 }
 
- 
+
  dhtmlXGridObject.prototype._insertRowAt=function(r,ind,skip){
  if(ind<0)ind=this.rowsCol.length;
 
  if((arguments.length<2)||(ind===window.undefined))
- ind = this.rowsCol.length 
+ ind = this.rowsCol.length
  else{
  if(ind>this.rowsCol.length)
  ind = this.rowsCol.length;
@@ -2606,10 +2606,10 @@ this.dhx_eventCatcher=function(obj){
  this._fixAlterCss(ind+1);
 }
 
- 
+
  this.doOnRowAdded(r);
 
- 
+
  if((this.math_req)&&(!this._parsing_)){
  for(var i=0;i<this.hdr.rows[0].cells.length;i++)
  this._checkSCL(r.childNodes[i]);
@@ -2619,7 +2619,7 @@ this.dhx_eventCatcher=function(obj){
  return r;
 }
 
- 
+
  dhtmlXGridObject.prototype._addRow = function(new_id,text,ind){
  var row = this._fillRow(this._prepareRow(new_id),text);
  if(ind>this.rowsCol.length && ind<(this.rowsCol.length+this.rowsBuffer[0].length)){
@@ -2631,12 +2631,12 @@ this.dhx_eventCatcher=function(obj){
  return this._insertRowAt(row,ind);
 }
 
- 
+
 dhtmlXGridObject.prototype.setRowHidden=function(id,state){
  var f=convertStringToBoolean(state);
- 
- 
- 
+
+
+
  var row= this.getRowById(id)
  if(!row)
  return;
@@ -2664,9 +2664,9 @@ dhtmlXGridObject.prototype.setRowHidden=function(id,state){
 
 }
 
- 
- 
- 
+
+
+
  dhtmlXGridObject.prototype.setColumnHidden=function(ind,state){
  if((this.fldSorted)&&(this.fldSorted.cellIndex==ind)&&(state))
  this.sortImg.style.display = "none";
@@ -2691,14 +2691,14 @@ dhtmlXGridObject.prototype.setRowHidden=function(id,state){
 
 
 
- 
+
 dhtmlXGridObject.prototype.isColumnHidden=function(ind){
  if((this._hrrar)&&(this._hrrar[ind]))return true;
  return false;
 }
 
 
- 
+
 dhtmlXGridObject.prototype.setColHidden=function(list){
  if(list)this._ivizcol=list.split(",");
  if(this.hdr.rows.length)
@@ -2706,13 +2706,13 @@ dhtmlXGridObject.prototype.setColHidden=function(list){
  this.setColumnHidden(i,this._ivizcol[i]);
 }
 
- 
+
 dhtmlXGridObject.prototype._fixHiddenRowsAll=function(ind,state){
  var z=this.obj.rows.length;
  for(var i=0;i<z;i++)
  this.obj.rows[i].cells[ind].style.display=state;
 }
- 
+
 dhtmlXGridObject.prototype._hideShowColumn=function(ind,state){
  var hind=ind;
  if((this.hdr.rows[1]._childIndexes)&&(this.hdr.rows[1]._childIndexes[ind]!=ind))
@@ -2757,24 +2757,24 @@ dhtmlXGridObject.prototype._hideShowColumn=function(ind,state){
 
  if((!_isIE)&&(!_isFF))
 {
- 
+
  this.obj.border=1;
  this.obj.border=0;
 }
 
 }
 
- 
 
- 
- 
+
+
+
  dhtmlXGridObject.prototype.enableCollSpan=function(mode){
  this._ecspn=convertStringToBoolean(mode);
 }
- 
 
- 
- 
+
+
+
 dhtmlXGridObject.prototype.enableRowsHover = function(mode,cssClass){
  this._hvrCss=cssClass;
  if(convertStringToBoolean(mode)){
@@ -2801,7 +2801,7 @@ dhtmlXGridObject.prototype.enableRowsHover = function(mode,cssClass){
 }
 };
 
- 
+
 dhtmlXGridObject.prototype.enableEditEvents = function(click,dblclick,f2Key){
  this._sclE = convertStringToBoolean(click);
  this._dclE = convertStringToBoolean(dblclick);
@@ -2809,7 +2809,7 @@ dhtmlXGridObject.prototype.enableEditEvents = function(click,dblclick,f2Key){
 }
 
 
- 
+
 dhtmlXGridObject.prototype.enableLightMouseNavigation = function(mode){
  if(convertStringToBoolean(mode)){
  if(!this._elmn){
@@ -2839,7 +2839,7 @@ dhtmlXGridObject.prototype.enableLightMouseNavigation = function(mode){
 }
 
 
- 
+
 dhtmlXGridObject.prototype._unsetRowHover = function(e,c){
  if(c)that=this;else that=this.grid;
 
@@ -2850,7 +2850,7 @@ dhtmlXGridObject.prototype._unsetRowHover = function(e,c){
 }
 }
 
- 
+
 dhtmlXGridObject.prototype._setRowHover = function(e){
  var c = this.grid.getFirstParentOfType(e?e.target:event.srcElement,'TD');
  if(c){
@@ -2863,9 +2863,9 @@ dhtmlXGridObject.prototype._setRowHover = function(e){
  this._honmousemove(e);
 }
 
- 
+
 dhtmlXGridObject.prototype._autoMoveSelect = function(e){
- 
+
  if(!this.grid.editor)
 {
  var c = this.grid.getFirstParentOfType(e?e.target:event.srcElement,'TD');
@@ -2875,9 +2875,9 @@ dhtmlXGridObject.prototype._autoMoveSelect = function(e){
  this._onmousemove(e);
 }
 
- 
- 
- 
+
+
+
 dhtmlXGridObject.prototype.enableDistributedParsing = function(mode,count,time){
  count=count||10;
  time=time||250;
@@ -2889,7 +2889,7 @@ dhtmlXGridObject.prototype.enableDistributedParsing = function(mode,count,time){
 }
 
 
- 
+
 function _contextCall(obj,name,rowsCol,startIndex,tree,pId,i,n){
  window.setTimeout(function(){
  var res=obj[name](rowsCol,startIndex,tree,pId,i);
@@ -2898,9 +2898,9 @@ function _contextCall(obj,name,rowsCol,startIndex,tree,pId,i,n){
 },n);
  return this;
 }
- 
- 
- 
+
+
+
 dhtmlXGridObject.prototype.destructor=function(){
  var a;
  this.xmlLoader=this.xmlLoader.destructor();
@@ -2927,7 +2927,7 @@ dhtmlXGridObject.prototype.destructor=function(){
 
  if(this==globalActiveDHTMLGridObject)
  globalActiveDHTMLGridObject=null;
- 
+
  return null;
 }
 
@@ -2935,7 +2935,7 @@ dhtmlXGridObject.prototype.destructor=function(){
 
 
 
- 
+
  dhtmlXGridObject.prototype.getSortingState=function(){
  var z=new Array();
  if(this.fldSorted){
@@ -2945,7 +2945,7 @@ dhtmlXGridObject.prototype.destructor=function(){
  return z;
 };
 
- 
+
  dhtmlXGridObject.prototype.enableAutoHeigth=function(mode,maxHeight){
  this._ahgr=convertStringToBoolean(mode);
  this._ahgrM=maxHeight||null;
@@ -2957,7 +2957,7 @@ dhtmlXGridObject.prototype.destructor=function(){
 }
 };
 
- 
+
  dhtmlXGridObject.prototype.enableStableSorting=function(mode){
  this._sst=convertStringToBoolean(mode);
  this.rowsCol.stablesort=function(cmp){
@@ -2971,34 +2971,34 @@ dhtmlXGridObject.prototype.destructor=function(){
 }
 };
 
- 
+
  dhtmlXGridObject.prototype.enableKeyboardSupport=function(mode){
  this._htkebl=!convertStringToBoolean(mode);
 };
 
 
- 
+
  dhtmlXGridObject.prototype.enableContextMenu=function(menu){
  this._ctmndx=menu;
 };
- 
+
  dhtmlXGridObject.prototype.setOnBeforeContextMenu=function(func){
  this.dhx_attachEvent("onBCM",func);
 };
 
- 
+
 dhtmlXGridObject.prototype.setOnRightClick=function(func){
  this.dhx_attachEvent("onRCL",func);
 };
 
 
 
- 
+
  dhtmlXGridObject.prototype.setScrollbarWidthCorrection=function(width){
  this._scrFix=parseInt(width);
 };
 
- 
+
  dhtmlXGridObject.prototype.enableTooltips=function(list){
  this._enbTts=list.split(",");
  for(var i=0;i<this._enbTts.length;i++)
@@ -3006,14 +3006,14 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
 };
 
 
- 
+
  dhtmlXGridObject.prototype.enableResizing=function(list){
  this._drsclmn=list.split(",");
  for(var i=0;i<this._drsclmn.length;i++)
  this._drsclmn[i]=convertStringToBoolean(this._drsclmn[i]);
 };
 
- 
+
  dhtmlXGridObject.prototype.setColumnMinWidth=function(width,ind){
  if(arguments.length==2){
  if(!this._drsclmW)this._drsclmW=new Array();
@@ -3024,17 +3024,17 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
 };
 
 
- 
- 
+
+
  dhtmlXGridObject.prototype.enableCellIds=function(mode){
  this._enbCid=convertStringToBoolean(mode);
 };
- 
 
 
 
- 
- 
+
+
+
  dhtmlXGridObject.prototype.lockRow=function(rowId,mode){
  var z=this.getRowById(rowId);
  if(z){
@@ -3043,9 +3043,9 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
  this.editStop();
 }
 };
- 
 
- 
+
+
  dhtmlXGridObject.prototype._getRowArray=function(row){
  var text=new Array();
  for(var ii=0;ii<row.childNodes.length;ii++)
@@ -3053,14 +3053,14 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
  return text;
 }
 
- 
- 
- 
+
+
+
  dhtmlXGridObject.prototype.setDateFormat=function(mask){
  this._dtmask=mask;
 }
 
- 
+
  dhtmlXGridObject.prototype.setNumberFormat=function(mask,cInd,p_sep,d_sep){
  var nmask=mask.replace(/[^0\,\.]*/g,"");
  var pfix=nmask.indexOf(".");
@@ -3074,7 +3074,7 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
  var postf=mask.split(nmask)[1];
  this._maskArr[cInd]=[pfix,dfix,pref,postf,p_sep,d_sep];
 }
- 
+
  dhtmlXGridObject.prototype._aplNFb=function(data,ind){
  var a=this._maskArr[ind];
  if(!a)return data;
@@ -3085,7 +3085,7 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
  return ndata;
 }
 
- 
+
  dhtmlXGridObject.prototype._aplNF=function(data,ind){
  var a=this._maskArr[ind];
  if(!a)return data;
@@ -3097,12 +3097,12 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
  if(a[1]>0)for(var j=(a[0]>0?0:1)+a[0]+a[1];j<data.length;j+=a[1])data[j]+=a[5];
  return c+data.reverse().join("")+a[3];
 }
- 
 
 
- 
 
- 
+
+
+
  dhtmlXGridObject.prototype._launchCommands = function(arr){
  for(var i=0;i<arr.length;i++){
  var args=new Array();
@@ -3114,7 +3114,7 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
 }
 
 
- 
+
  dhtmlXGridObject.prototype._parseHead = function(hheadCol){
  var headCol = this.xmlLoader.doXPath("//rows/head/column",hheadCol[0]);
  var asettings = this.xmlLoader.doXPath("//rows/head/settings",hheadCol[0]);
@@ -3185,10 +3185,10 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
 }
  this._launchCommands(this.xmlLoader.doXPath("//rows/head/afterInit/call",hheadCol[0]));
 }
- 
 
- 
- 
+
+
+
  dhtmlXGridObject.prototype.parseXML = function(xml,startIndex){
  this._xml_ready=true;
  var pid=null;
@@ -3219,14 +3219,14 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
 
  var ar = new Array();
  var idAr = new Array();
- 
- 
- 
+
+
+
  var hheadCol = this.xmlLoader.doXPath("//rows/head",xmlDoc);
  if(hheadCol.length)
  this._parseHead(hheadCol);
- 
- 
+
+
 
 
  var tree=this.cellType._dhx_find("tree");
@@ -3248,7 +3248,7 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
  startIndex=this.getRowIndex(pid)+1;
 }
 
- 
+
  var gudCol = this.xmlLoader.doXPath("//rows/userdata",xmlDoc);
  if(gudCol.length>0){
  this.UserData["gridglobaluserdata"] = new Hashtable();
@@ -3257,7 +3257,7 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
 }
 }
 
- 
+
  if(tree==-1)tree=this.cellType._dhx_find("3d");
  if(this._innerParse(rowsCol,startIndex,tree,pid)==-1)return;
  if(zpid)this.expandKids(zpid);
@@ -3284,12 +3284,12 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
  if(this.onXLE)
  this.onXLE(this,rowsCol.length);
 }
- 
+
  dhtmlXGridObject.prototype._postRowProcessing=function(r,xml){
  var rId = xml.getAttribute("id")
  var xstyle = xml.getAttribute("style");
 
- 
+
  var udCol = this.xmlLoader.doXPath("./userdata",xml);
  if(udCol.length>0){
  this.UserData[rId] = new Hashtable();
@@ -3298,24 +3298,24 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
 }
 }
 
- 
+
  var css1=xml.getAttribute("class");
  if(css1)r.className+=" "+css1;
- 
 
- 
+
+
  if(xml.getAttribute("locked"))
 {
  r._locked=true;
 }
- 
 
 
- 
+
+
  if(xml.getAttribute("selected")==true){
  this.setSelectedRow(rId,this.selMultiRows,false,xml.getAttribute("call")==true)
 }
- 
+
  if(xml.getAttribute("expand")=="1"){
  r.expand = "";
 }
@@ -3324,7 +3324,7 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
 
  if(this.onRowCr)this.onRowCr(r.idd,r,xml);
 }
- 
+
  dhtmlXGridObject.prototype._fillRowFromXML=function(r,xml,tree,pId){
  var cellsCol = this.xmlLoader.doXPath("./cell",xml);
  var strAr = new Array(0);
@@ -3332,13 +3332,13 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
  for(var j=0;j<cellsCol.length;j++){
  var cellVal=cellsCol[j];
  var exc=cellVal.getAttribute("type");
- 
- 
+
+
  if(cellVal.getAttribute("xmlcontent"))
  cellVal=cellsCol[j];
  else
- 
- 
+
+
  if(cellVal.firstChild)
  cellVal=cellVal.firstChild.data;
  else cellVal="";
@@ -3352,14 +3352,14 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
 
 }
  if(this._c_order)strAr=this._swapColumns(strAr);
- 
+
  for(var j=0;j<cellsCol.length;j++){
  css1=cellsCol[j].getAttribute("class");
  if(css1)r.childNodes[j].className+=" "+css1;
 }
  this._fillRow(r,strAr);
- 
- 
+
+
  if(this._ecspn)
 {
  r._childIndexes=new Array();
@@ -3383,8 +3383,8 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
  r._childIndexes=null;
 
 }
- 
- 
+
+
  if((r.parentNode)&&(r.parentNode.tagName))
  this._postRowProcessing(r,xml);
 
@@ -3392,20 +3392,20 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
 }
 
 
- 
+
  dhtmlXGridObject.prototype._innerParse=function(rowsCol,startIndex,tree,pId,i){
  i=i||0;var imax=i+this._ads_count;
  var r=null;
  var rowsCol2;
  for(var i;i<rowsCol.length;i++){
- 
- 
+
+
  if(this._ads_count && i==imax){
  new _contextCall(this,"_innerParse",rowsCol,startIndex,tree,pId,i,this._ads_time);
  return -1;
 }
- 
- 
+
+
  if((pId)||(i<this.rowsBufferOutSize || this.rowsBufferOutSize==0)){
 
  this._parsing_=true;
@@ -3441,7 +3441,7 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
 
 }
 
- 
+
  if(this.pagingOn && this.rowsBuffer[0].length>0){
  this.changePage(this.currentPage)
 }
@@ -3453,7 +3453,7 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
 }
 
 
- 
+
  dhtmlXGridObject.prototype.getCheckedRows=function(col_ind){
  var d=new Array();
  for(var i=0;i<this.rowsCol.length;i++){
@@ -3462,7 +3462,7 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
 }
  return d.join(",");
 }
- 
+
  dhtmlXGridObject.prototype._drawTooltip=function(e){
  var c = this.grid.getFirstParentOfType(e?e.target:event.srcElement,'TD');
  if((this.grid.editor)&&(this.grid.editor.cell==c))return true;
@@ -3481,13 +3481,13 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
  return true;
 };
 
- 
+
  dhtmlXGridObject.prototype.enableCellWidthCorrection=function(size){
  if(_isFF)this._wcorr=parseInt(size);
 }
 
 
- 
+
 dhtmlXGridObject.prototype.getAllItemIds = function(separator){
  var ar = new Array(0)
  for(i=0;i<this.rowsCol.length;i++){
@@ -3499,9 +3499,9 @@ dhtmlXGridObject.prototype.getAllItemIds = function(separator){
  return ar.join(separator||",")
 }
 
- 
+
 dhtmlXGridObject.prototype.deleteRow = function(row_id,node){
- 
+
  if(!node)
  node = this.getRowById(row_id)
  if(!this.rowsAr[row_id])
@@ -3544,10 +3544,10 @@ dhtmlXGridObject.prototype.deleteRow = function(row_id,node){
  return true;
 }
 
- 
- 
 
- 
+
+
+
 dhtmlXGridObject.prototype.setColspan = function(row_id,col_ind,colspan){
  if(!this._ecspn)return;
 
@@ -3597,21 +3597,21 @@ dhtmlXGridObject.prototype.setColspan = function(row_id,col_ind,colspan){
 }
 }
 
- 
- 
 
- 
+
+
+
 dhtmlXGridObject.prototype.preventIECashing=function(mode){
  this.no_cashe = convertStringToBoolean(mode);
  this.xmlLoader.rSeed=this.no_cashe;
 }
 
 
- 
+
 dhtmlXGridObject.prototype.enableColumnAutoSize = function(mode){
  this._eCAS=convertStringToBoolean(mode);
 }
- 
+
 dhtmlXGridObject.prototype._onHeaderDblClick = function(e){
  var that=this.grid;
  var el = that.getFirstParentOfType(_isIE?event.srcElement:e.target,"TD");
@@ -3620,7 +3620,7 @@ dhtmlXGridObject.prototype._onHeaderDblClick = function(e){
  that.adjustColumnSize(el._cellIndexS)
 }
 
- 
+
 dhtmlXGridObject.prototype.adjustColumnSize = function(cInd){
  var a=this.hdr.rows[1].childNodes[cInd].childNodes[0];
  this._setColumnSizeR(cInd,20);
@@ -3643,7 +3643,7 @@ dhtmlXGridObject.prototype.adjustColumnSize = function(cInd){
 
 
 
- 
+
 dhtmlXGridObject.prototype.attachHeader = function(values,style,_type){
  if(typeof(values)=="string")values=values.split(this.delim);
  _type=_type||"_aHead";
@@ -3662,7 +3662,7 @@ dhtmlXGridObject.prototype.attachHeader = function(values,style,_type){
 
 dhtmlXGridObject.prototype._createHRow = function(data,parent){
  if(!parent){
- 
+
  this.entBox.style.position = "relative";
  var z=document.createElement("DIV");
  z.className="ftr";
@@ -3739,13 +3739,13 @@ dhtmlXGridObject.prototype.changeCellType=function(r,ind,type){
  var z=this.cells3(r,ind);
  z.setValue(v);
 }
- 
+
 dhtmlXGridObject.prototype.setRowExcellType = function(rowId,type){
  var z=this.rowsAr[rowId];
  for(var i=0;i<z.childNodes.length;i++)
  this.changeCellType(z,i,type);
 }
- 
+
 dhtmlXGridObject.prototype.setColumnExcellType = function(cellIndex,type){
  for(var i=0;i<this.rowsCol.length;i++)
  this.changeCellType(this.rowsCol[i],cellIndex,type);
