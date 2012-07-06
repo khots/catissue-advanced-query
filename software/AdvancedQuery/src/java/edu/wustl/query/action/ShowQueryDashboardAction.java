@@ -65,8 +65,11 @@ public class ShowQueryDashboardAction extends SecureAction
 					edu.wustl.common.util.global.Constants.SESSION_DATA);
 			if (pageOf == null)
 			{
-				pageOf = "allQueries";
+				pageOf = "myQueries";
 			}
+			
+			
+			request.setAttribute("queryOption", pageOf);
 			Collection<IParameterizedQuery> queries = getQueries(pageOf, sessionDataBean);
 
 			if (queries == null)
@@ -85,6 +88,19 @@ public class ShowQueryDashboardAction extends SecureAction
 			actionForward = mapping.findForward(AQConstants.SUCCESS);
 			request.setAttribute(AQConstants.POPUP_MESSAGE, ApplicationProperties
 					.getValue("query.confirmBox.message"));
+			request.setAttribute(AQConstants.POPUP_HEADER,
+					ApplicationProperties.getValue("queryfolder.app.popuptitle"));
+			request.setAttribute(AQConstants.POPUP_DELETE_QUERY_MESSAGE,
+					ApplicationProperties.getValue("queryfolder.confirmBox.querydelete.message"));
+			request.setAttribute(AQConstants.POPUP_ASSIGN_MESSAGE,
+					ApplicationProperties.getValue("queryfolder.alertBox.message"));
+			request.setAttribute(AQConstants.POPUP_ASSIGN_QMESSAGE,
+					ApplicationProperties.getValue("queryfolder.alertBox.query.message"));
+			request.setAttribute(AQConstants.POPUP_TEXT,
+					ApplicationProperties.getValue("queryfolder.app.newfolder.text"));
+			request.setAttribute(AQConstants.POPUP_DELETE_QUERY_FOLDER_MESSAGE,
+					ApplicationProperties.getValue("queryfolder.confirmBox.folderdelete.message"));
+		
 		}
 		else
 		{
