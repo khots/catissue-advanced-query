@@ -308,6 +308,7 @@ div.gridbox_light .xhdr{
 }
 div.gridbox_light table.hdr{
 	background-image:url(imgs/skin_light_header.png);
+	background-color:lightgrey;
 }
 
 div.gridbox_light table.hdr td {
