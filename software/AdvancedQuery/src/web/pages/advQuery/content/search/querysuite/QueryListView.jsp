@@ -27,17 +27,17 @@
 	href="css/advQuery/styleSheet.css" />
 <link rel="stylesheet" type="text/css" href="css/advQuery/tag-popup.css" />
 <link rel="STYLESHEET" type="text/css"
-	href="deploytempCatissuecore/AdvanceQuery/dhtml/css/dhtmlXTree.css">
-<script src="deploytempCatissuecore/AdvanceQuery/dhtml/js/dhtmlXCommon.js"></script>
+	href="dhtmlx_suite/dhtml_pop/css/dhtmlXTree.css">
+<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXCommon.js"></script>
 <link rel="STYLESHEET" type="text/css"
-	href="deploytempCatissuecore/AdvanceQuery/dhtml/css/dhtmlXGrid.css" />
+	href="dhtmlx_suite/dhtml_pop/css/dhtmlXGrid.css" />
 <link rel="STYLESHEET" type="text/css"
-	href="deploytempCatissuecore/AdvanceQuery/dhtml/css/dhtmlxgrid_dhx_skyblue.css" />
-<script src="deploytempCatissuecore/AdvanceQuery/dhtml/js/dhtmlx.js"></script>
-<script src="deploytempCatissuecore/AdvanceQuery/dhtml/js/dhtmlXTree.js"></script>
-<script src="deploytempCatissuecore/AdvanceQuery/dhtml/js/dhtmlXTreeCommon.js"></script>
-<script src="deploytempCatissuecore/AdvanceQuery/dhtml/js/dhtmlXGridCell.js"></script>
-<script src="deploytempCatissuecore/AdvanceQuery/dhtml/js/dhtmlXTreeGrid.js"></script>
+	href="dhtmlx_suite/dhtml_pop/css/dhtmlxgrid_dhx_skyblue.css" />
+<script src="dhtmlx_suite/dhtml_pop/js/dhtmlx.js"></script>
+<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTree.js"></script>
+<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTreeCommon.js"></script>
+<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXGridCell.js"></script>
+<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTreeGrid.js"></script>
 <script>
 function QueryWizard()
 {
