@@ -86,29 +86,7 @@ public class QueryTagBizLogic implements ITagBizlogic
 		return tagList;
 	}
 
-	/**
-	 * Assign the Query to existing folder or new folder.
-	 * @param entityName from hbm file.
-	 * @param label for new Tag.
-	 * @param userId.
-	 * @param objId.
-	 * @throws DAOException,BizLogicException.
-	 */
-	@Override
-	public void assignTag(String entityName, String label, long userId, long objId)
-			throws DAOException, BizLogicException
-	{
-		ParameterizedQuery query = new ParameterizedQuery();
-		TagItem<ParameterizedQuery> tagItem = new TagItem<ParameterizedQuery>();
-		query.setId(objId);
-		tagItem.setObj(query);
-		long tagId = createNewTag(entityName, label, userId);
-		tagItem.setTagId(tagId);
-		TagDAO<ParameterizedQuery> tagDao = new TagDAO<ParameterizedQuery>(entityName);
-		tagDao.insertTagItem(tagItem);
-	}
-
-	/**
+ 	/**
 	 * Get Tag object.
 	 * @param entityName from hbm file.
 	 * @param  tagId.
@@ -137,42 +115,7 @@ public class QueryTagBizLogic implements ITagBizlogic
 		return tagItem;
 	}
 
-	/*
-		/**
-		 * Get the ParameterizedQuery object.
-		 * @param objId to get ParameterizedQuery.
-		 * @return ParameterizedQuery object 
-		 * @throws DAOException,BizLogicException.
-		 *//*
-		public ParameterizedQuery getQueryById(long objId) throws DAOException, BizLogicException
-		{
-		ParameterizedQuery parameterizedQuery = null;
-		HibernateDAO hibernateDao = null;
-		try
-		{
-			hibernateDao = DAOUtil.getHibernateDAO(null);
-			parameterizedQuery = (ParameterizedQuery) hibernateDao.retrieveById(
-					ParameterizedQuery.class.getName(), objId);
-		}
-		catch (Exception e)
-		{
-
-		}
-		finally
-		{
-			try
-			{
-				DAOUtil.closeHibernateDAO(hibernateDao);
-			}
-			catch (DAOException e)
-			{
-				throw new BizLogicException(e);
-			}
-
-		}
-		return parameterizedQuery;
-		}
-		*/
+	 
 	/**
 	 * Delete the Tag from database.
 	 * @param entityName from hbm file.
