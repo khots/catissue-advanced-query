@@ -539,7 +539,7 @@ function addToSpecimenList()
 function ajaxCall()
 {
 	var specimenIDS = addToSpecimenList();
-	ajaxAssignTagFunctionCall('AssignTagAction.do','popupAssignMessage','popupAssignConditionMessage',specimenIDS);
+	ajaxAssignTagFunctionCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&objChkBoxString='+specimenIDS,'popupAssignMessage','popupAssignConditionMessage',specimenIDS);
 	
 }
 			var popupmygrid;
@@ -566,7 +566,7 @@ function doInItTreeGrid()
 }
 function doInitParseTree()
 {
-	popupmygrid.loadXML("TreeTagAction.do");
+	popupmygrid.loadXML("TreeTagAction.do?entityTag=SpecimenListTag");
 
 }
 
