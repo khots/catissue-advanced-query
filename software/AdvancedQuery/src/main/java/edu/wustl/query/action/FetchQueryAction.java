@@ -20,6 +20,7 @@ import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
+import edu.wustl.common.util.global.Constants;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.bizlogic.BizLogicFactory;
 import edu.wustl.query.htmlprovider.SavedQueryHtmlProvider;
@@ -43,19 +44,32 @@ public class FetchQueryAction extends Action
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		String target = AQConstants.FAILURE;
-		SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
-		if (request.getAttribute("queryId") == null)
+		ActionForward actionfwd;
+		if ( !isTokenValid(request) ) 
 		{
-			target = fetchQueryDetails(request, target, saveQueryForm);
-		}
+			actionfwd = actionMapping.findForward(Constants.FAILURE);
+			ActionErrors actionErrors = new ActionErrors();
+			ActionError actionError = new ActionError("errors.item","Invalid request for add/edit operaton");
+			actionErrors.add(ActionErrors.GLOBAL_ERROR, actionError);
+			saveErrors(request, actionErrors);
+	    }
 		else
 		{
-			String htmlContent = saveQueryForm.getQueryString();
-			request.setAttribute(AQConstants.HTML_CONTENTS, htmlContent);
-			target = AQConstants.SUCCESS;
+			String target = AQConstants.FAILURE;
+			SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
+			if (request.getAttribute("queryId") == null)
+			{
+				target = fetchQueryDetails(request, target, saveQueryForm);
+			}
+			else
+			{
+				String htmlContent = saveQueryForm.getQueryString();
+				request.setAttribute(AQConstants.HTML_CONTENTS, htmlContent);
+				target = AQConstants.SUCCESS;
+			}
+			actionfwd=actionMapping.findForward(target);
 		}
-		return actionMapping.findForward(target);
+		return actionfwd;
 	}
 
 	/**
