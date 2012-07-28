@@ -86,6 +86,7 @@ public final class InsertPaths
 		{
 			getPathAndInsert(dao,entityList);
 		}
+		dao.closeSession();
 		writer.write("\nCompleted inserting indirect paths between the given entities.");
 		writer.flush();
 		writer.close();
@@ -338,8 +339,8 @@ public final class InsertPaths
 				entityIdList = null;
 				break;
 			}
+			dao.closeStatement(resultSet);
 		}
-		dao.closeStatement(resultSet);
 		return entityIdList;
 	}
 

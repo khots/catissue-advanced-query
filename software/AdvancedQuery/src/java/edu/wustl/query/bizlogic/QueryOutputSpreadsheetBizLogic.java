@@ -1162,6 +1162,7 @@ public class QueryOutputSpreadsheetBizLogic
 	throws DAOException
 	{
 		int recordCount=0;
+		JDBCDAO jdbcDao =null;
 		try
 		{
 			StringBuffer sql = new StringBuffer(80);
@@ -1172,7 +1173,7 @@ public class QueryOutputSpreadsheetBizLogic
 			.append(" GROUP BY ").append(column).append(" ORDER BY ").append(column);
 			String appName=CommonServiceLocator.getInstance().getAppName();
 			IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
-			JDBCDAO jdbcDao = daoFactory.getJDBCDAO();
+			jdbcDao = daoFactory.getJDBCDAO();
 			jdbcDao.openSession(null);
 			ResultSet resultSet = jdbcDao.getQueryResultSet(sql.toString());
 			int count=0;
@@ -1189,6 +1190,10 @@ public class QueryOutputSpreadsheetBizLogic
 		catch(SQLException e)
 		{
 			logger.error(e.getMessage(), e);
+		}
+		finally
+		{
+			jdbcDao.closeSession();
 		}
 		return recordCount;
 	}
