@@ -354,7 +354,7 @@ public class DAGPanel
 				int mainProtocolExpId = addMainProtocolObjectInQuery
 				(query,queryDetailsObj.getSessionData().getUserName(),mode,
 						operatorValueMap,queryString);
-				if(mode.equalsIgnoreCase(AQConstants.ADD))
+				if((mainProtocolExpId != -1) && mode.equalsIgnoreCase(AQConstants.ADD))
 				{
 					IExpression mainProtocol =
 						constraints.getExpression(mainProtocolExpId);
@@ -463,7 +463,8 @@ public class DAGPanel
 	String mode, Map<RelationalOperator,List<String>> operatorValueMap,String strToCreateObject)
 	{
 		List<Long> readDeniedIds = new ArrayList<Long>();
-		List<Long> allMainObjectIds = populateAllMainProtocolObjectIds(userName, readDeniedIds);
+		List<Long> allMainObjectIds = new ArrayList<Long>();
+		allMainObjectIds = populateAllMainProtocolObjectIds(userName, readDeniedIds);
 
 		EntityCache cache = EntityCacheFactory.getInstance();
 		EntityInterface mainProtocol = DomainObjectFactory.getInstance().createEntity();
@@ -473,8 +474,15 @@ public class DAGPanel
 		Long entityId = null;
 		Long attributeId = null;
 		StringBuffer formattedIds = new StringBuffer();
-		MatchedClass resultantMatchedClass = getResultantMatchedClass(cache,
-				mainProtocol);
+		Collection<EntityInterface> entityCollection = new HashSet<EntityInterface>();
+		entityCollection.add(mainProtocol);
+		MatchedClass matchedClass = cache.getEntityOnEntityParameters(entityCollection);
+		MatchedClass resultantMatchedClass = new MatchedClass();
+		for (MatchedClassEntry matchedClassEntry : matchedClass.getMatchedClassEntries())
+		{
+			resultantMatchedClass.addMatchedClassEntry(matchedClassEntry);
+		}
+		resultantMatchedClass.setEntityCollection(resultantMatchedClass.getSortedEntityCollection());
 		for(EntityInterface entity : resultantMatchedClass.getEntityCollection())
 		{
 			if(entity.getName().equals(Variables.mainProtocolObject))
@@ -485,9 +493,26 @@ public class DAGPanel
 				break;
 			}
 		}
-		if(readDeniedIds.isEmpty())
+		if(!readDeniedIds.isEmpty())
 		{
 			if(operatorValueMap != null && !operatorValueMap.isEmpty())
+			{
+					strToCreateObject = modifyQueryForIdCondition(operatorValueMap,
+				strToCreateObject, readDeniedIds,allMainObjectIds, formattedIds,attributeId);
+			}
+			else
+			{
+				for(Long csId : readDeniedIds)
+				{
+					formattedIds.append('&').append(String.valueOf(csId));
+				}
+			}
+		}
+		else
+		{
+			
+			return -1;
+			/*if(operatorValueMap != null && !operatorValueMap.isEmpty())
 			{
 				Set<RelationalOperator> keySet = operatorValueMap.keySet();
 				Iterator<RelationalOperator> iterator = keySet.iterator();
@@ -503,22 +528,13 @@ public class DAGPanel
 					}
 					strToCreateObject = strToCreateObject+";";
 				}
-			}
-		}
-		else
-		{
-			if(operatorValueMap != null && !operatorValueMap.isEmpty())
-			{
-					strToCreateObject = modifyQueryForIdCondition(operatorValueMap,
-				strToCreateObject, readDeniedIds,allMainObjectIds, formattedIds,attributeId);
-			}
-			else
-			{
-				populateFormattedIds(readDeniedIds, formattedIds);
-			}
+			}*/
 		}
 		int mainProtocolExpId = 0;
+		EntityInterface deEntity = null;
+
 		CreateQueryObjectBizLogic queryBizLogic = new CreateQueryObjectBizLogic();
+		DAGNode node = null;
 		try
 		{
 			if(operatorValueMap == null || ((operatorValueMap != null)
@@ -531,19 +547,28 @@ public class DAGPanel
 			{
 				getMnProtocolExpForEdit(query, entityId);
 			}
-			createQueryObjectLogic(strToCreateObject, mode,
+			node = createQueryObjectLogic(strToCreateObject, mode, node,
 					mainProtocol, queryBizLogic);
 			IConstraints constraints = query.getConstraints();
-			mainProtocolExpId = getMainExpId(entityId, mainProtocolExpId,
-					constraints);
+			for(IExpression expression : constraints)
+			{
+				IQueryEntity queryEntity = expression.getQueryEntity();
+				deEntity = queryEntity.getDynamicExtensionsEntity();
+				Long deEntityId = deEntity.getId();
+				if(deEntityId.equals(entityId))
+				{
+					mainProtocolExpId = expression.getExpressionId();
+					break;
+				}
+			}
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}
 		return mainProtocolExpId;
 	}

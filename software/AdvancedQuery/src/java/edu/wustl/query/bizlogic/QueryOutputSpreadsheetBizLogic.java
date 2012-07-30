@@ -904,8 +904,18 @@ public class QueryOutputSpreadsheetBizLogic
 		element.setTqColumnMetadataList(tqColumnList);
 		if (element.getMainEntityIdentifierColumnId() == -1)
 		{
-			element.setMainEntityIdentifierColumnId(entityIdIndexMap.get(element
-					.getEntity()));
+			if (!element.isMainEntity() && entityIdIndexMap.get(element
+					.getMainEntity())!=null)
+			{
+					element.setMainEntityIdentifierColumnId(entityIdIndexMap.get(element
+						.getMainEntity()));
+			}
+			else
+			{
+				element.setMainEntityIdentifierColumnId(entityIdIndexMap.get(element
+								.getEntity()));
+			}
+
 		}
 	}
 

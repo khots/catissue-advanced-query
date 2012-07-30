@@ -314,6 +314,7 @@ public class QueryCsmCacheManager
 		    	   List<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
 		    	   ColumnValueBean bean = new ColumnValueBean("mainEntityId",Integer.valueOf(mainEntityId));
 		    	   columnValueBean.add(bean);
+
 		    	   List<Long> allMainObjectIds = hibernateDAO.executeQuery(sql.toString());
 		    	   if(!allMainObjectIds.isEmpty())
 		    	   {
@@ -378,10 +379,10 @@ public class QueryCsmCacheManager
 		EntityInterface originalEntity = queryResultObjectDataBean.getEntity();
 		EntityCache entityCache = EntityCacheFactory.getInstance();
 		List<String> entityNames = getHookEntities(mainProtObjFile);
-		EntityInterface hookEntity = null;
+		EntityInterface associatedHookEntity = null;
 		for(String hookEntityName : entityNames)
 		{
-			hookEntity = DomainObjectFactory.getInstance().createEntity();
+			EntityInterface hookEntity = DomainObjectFactory.getInstance().createEntity();
 			hookEntity.setName(hookEntityName.
 					substring(hookEntityName.lastIndexOf('.')+1, hookEntityName.length()));
 			hookEntity.setDescription(null);
@@ -389,9 +390,11 @@ public class QueryCsmCacheManager
 			AssociationMetadataInterface association = hookEntity.getAssociation(originalEntity);
 			if(association != null)
 			{
+				associatedHookEntity = hookEntity;
 				break;
 			}
 		}
+<<<<<<< .working
 		Long hookEntityId = getAssociationDetails(mainEntityId, originalEntity,
 				hookEntity,queryResultObjectDataBean.getMainEntity());
   	   String sql = mainProtObjFile.getProperty(hookEntity.getName()+ AQConstants.UNDERSCORE+queryResultObjectDataBean.getMainEntity().getName());
@@ -429,6 +432,28 @@ public class QueryCsmCacheManager
 		  	   }
 		   }
 		return entityId;
+=======
+		if(associatedHookEntity!=null)
+		{
+			Long hookEntityId = getAssociationDetails(mainEntityId, originalEntity,
+					associatedHookEntity,queryResultObjectDataBean.getMainEntity());
+	  	   String sql = mainProtObjFile.getProperty(associatedHookEntity.getName());
+	  	   if(sql == null)
+	  	   {
+	  		 entityId = hookEntityId;
+	  	   }
+	  	   else
+	  	   {
+	  		   sql = sql + hookEntityId;
+			   List<Long> allMainObjectIds = hibernateDAO.executeQuery(sql);
+			   if(!allMainObjectIds.isEmpty())
+			   {
+				   entityId = allMainObjectIds.get(0).longValue();
+			   }
+	  	   }
+		}
+  	   return entityId;
+>>>>>>> .merge-right.r10818
 	}
 
 	/**
@@ -606,12 +631,22 @@ public class QueryCsmCacheManager
 			throws DAOException, SQLException
 	{
 		List<AssociationInterface> association = new ArrayList<AssociationInterface>();
+<<<<<<< .working
 		String pathSql = "SELECT INTERMEDIATE_PATH FROM PATH WHERE FIRST_ENTITY_ID =" +
 		" (SELECT IDENTIFIER FROM DYEXTN_ABSTRACT_METADATA WHERE NAME = ?) AND LAST_ENTITY_ID =?";
+=======
+		String pathSql = "SELECT INTERMEDIATE_PATH FROM PATH WHERE FIRST_ENTITY_ID = ? " +
+		" AND LAST_ENTITY_ID = ? ";
+
+>>>>>>> .merge-right.r10818
 		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
-		ColumnValueBean bean = new ColumnValueBean("hookEntityName",hookEntity.getName());
+		ColumnValueBean bean = new ColumnValueBean("FIRST_ENTITY_ID",hookEntity.getId());
 		columnValueBean.add(bean);
+<<<<<<< .working
 		bean = new ColumnValueBean("originalEntityName",originalEntity.getId());
+=======
+		bean = new ColumnValueBean("LAST_ENTITY_ID",originalEntity.getId());
+>>>>>>> .merge-right.r10818
 		columnValueBean.add(bean);
 		ResultSet resultSet1 = jdbcDAO.getResultSet(pathSql, columnValueBean, null);
 		String intermediatePath = "";
