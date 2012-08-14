@@ -56,6 +56,7 @@ public class RetrieveQueryAction extends SecureAction
 		ActionForward actionForward = null;
 		if(AbstractEntityCache.isCacheReady)
 		{
+			saveToken(request);
 			DashboardBizLogic dashboardBizLogic = new DashboardBizLogic();
 			String pageOf = (String) request.getParameter(AQConstants.PAGE_OF);
 			SaveQueryForm saveQueryForm = (SaveQueryForm) actionForm;
