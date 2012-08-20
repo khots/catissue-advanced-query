@@ -22,7 +22,7 @@
 <script language="JavaScript" type="text/javascript"
 	src="jss/advQuery/queryModule.js"></script>
 <script type="text/javascript" src="jss/advQuery/wz_tooltip.js"></script>
-<script type="text/javascript" src="jss/advQuery/tag-popup.js"></script>
+<script type="text/javascript" src="jss/tag-popup.js"></script>
 <link rel="stylesheet" type="text/css"
 	href="css/advQuery/styleSheet.css" />
 <link rel="stylesheet" type="text/css" href="css/advQuery/tag-popup.css" />

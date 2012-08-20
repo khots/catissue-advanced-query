@@ -437,7 +437,7 @@ function addToSpecimenList()
 														if(isSpecPresent || session.getAttribute("entityName").equals("edu.wustl.catissuecore.domain.Specimen")){
 							%> 
 								<%
- 						String	organizeTarget = "ajaxTreeGridInitCall('popupDeleteMessage','popupFolderDeleteMessage')";
+ 						String	organizeTarget = "ajaxTreeGridInitCall('Are you sure you want to delete this specimen from the list?','List contains specimens, Are you sure to delete the selected list?','SpecimenListTag','SpecimenListTagItem')";
  %>
 						<input type="button" value="Add To Specimen List"
 							onclick="<%=organizeTarget%> " class="blue_ar_c">
@@ -532,6 +532,7 @@ function addToSpecimenList()
  
 						<input type="button" value="ASSIGN" onclick="ajaxCall()"
 							class="btn3">
+							<input type="checkbox" name="objCheckbox"  id="objCheckbox" style="display:none" value="team" checked/>
 					</p>
 				</div>
 			</div>
@@ -539,11 +540,34 @@ function addToSpecimenList()
 function ajaxCall()
 {
 	var specimenIDS = addToSpecimenList();
-	ajaxAssignTagFunctionCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&objChkBoxString='+specimenIDS,'popupAssignMessage','popupAssignConditionMessage',specimenIDS);
+	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&objChkBoxString='+specimenIDS,'Select at least one existing list or create a new list.','No query has been selected to assign.',specimenIDS);
 	
 }
+function doInitGrid()
+{
+	grid = new dhtmlXGridObject('mygrid_container');
+	grid.setImagePath("deploytempCatissuecore/AdvanceQuery/dhtml/imgs/");
+ 	grid.setHeader("My Specimen Lists");
+ 	grid.setInitWidths("175");
+ 	grid.setColAlign("left");
+ 	grid.setSkin("dhx_skyblue");
+ 	grid.setEditable(false);
+   	grid.attachEvent("onRowSelect", doOnRowSelected);
+ 	grid.init();
+ 	grid .load ("TagGridInItAction.do");
+}
+function doOnRowSelected(rId)
+{
+	submitTagName(rId);	 
+}	
+function giveCall(url,msg,msg1,id)
+{
+	
+	document.getElementById('objCheckbox').value=id;
+	ajaxAssignTagFunctionCall(url,msg,msg1);
+}
 			var popupmygrid;
-function doInItTreeGrid()
+function doInItTreeGrid1()
 {
 	popupmygrid = new dhtmlXGridObject('treegridbox');
 	popupmygrid.selMultiRows = true;
@@ -560,7 +584,7 @@ function doInItTreeGrid()
 	popupmygrid.setSkin("dhx_skyblue");
 	doInitParseTree();
 }
- function doOnTreeGridRowSelected(rId)
+ function doOnTreeGridRowSelectedaaa(rId)
 {
 	ajaxTreeGridRowSelectCall(rId); 
 }
