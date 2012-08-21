@@ -546,7 +546,7 @@ function ajaxCall()
 function doInitGrid()
 {
 	grid = new dhtmlXGridObject('mygrid_container');
-	grid.setImagePath("deploytempCatissuecore/AdvanceQuery/dhtml/imgs/");
+	grid.setImagePath("dhtmlx_suite/dhtml_pop/imgs/");
  	grid.setHeader("My Specimen Lists");
  	grid.setInitWidths("175");
  	grid.setColAlign("left");
