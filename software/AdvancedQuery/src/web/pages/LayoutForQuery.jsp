@@ -184,6 +184,12 @@
 		showHourGlass();
 		this._submit();
 	}
+	
+	function getHelpURL()
+		{
+			var URL;
+			
+		}
 
 		if (window.ActiveXObject) // code for IE
 		{
@@ -204,4 +210,5 @@
 			HTMLFormElement.prototype._submit = HTMLFormElement.prototype.submit;
 			HTMLFormElement.prototype.submit = newsubmit;
 		}
+		
 	</script>
