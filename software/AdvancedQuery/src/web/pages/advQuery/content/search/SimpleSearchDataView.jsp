@@ -461,7 +461,7 @@ function addToSpecimenList()
  %>
 							</td>
 							<td width="5%" nowrap align="right" valign="top"><img
-								src="images/advQuery/b_exp.gif" id="exportImgId" width="57"
+								src="images/advQuery/b_exp.gif" id="exportImgId" width="80"
 								hspace="3" onclick="onExport()" />&nbsp;</td>
 							<td width="5%" nowrap align="right" valign="top"><img
 								src="images/advQuery/b_def_view.gif" id="defineViewId"
