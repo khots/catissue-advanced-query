@@ -6,6 +6,7 @@
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
 <%@ page import="edu.wustl.common.util.global.ApplicationProperties"%>
 <%@ page import="edu.wustl.common.util.XMLPropertyHandler"%>
+<%@ page import="edu.wustl.catissuecore.util.HelpXMLPropertyHandler"%>
 <%@ page import="java.text.MessageFormat"%>
 
 <link rel="STYLESHEET" type="text/css" href="css/advQuery/dhtmlxtabbar.css" />
@@ -25,6 +26,26 @@
 <tiles:importAttribute />
 <head>
 <title><tiles:getAsString name="title" ignore="true" /></title>
+<%
+	String URLKey=(String)request.getAttribute("helpURLKey");
+	String pageOf=(String)request.getAttribute("pageOf");
+	String view=(String)request.getAttribute("view");
+	String helpURL=null;
+	
+	if(null==URLKey)
+	{
+		helpURL=HelpXMLPropertyHandler.getValue("helpHomePage");
+	}
+	else
+	{
+		helpURL=HelpXMLPropertyHandler.getValue(URLKey);
+		if(helpURL==null)
+		{
+			helpURL=HelpXMLPropertyHandler.getValue("helpHomePage");
+		}
+	}
+	
+	%>
 
 <!--Jitendra -->
 <script language="JavaScript">
@@ -188,6 +209,22 @@
 	function getHelpURL()
 		{
 			var URL;
+			<%
+			if(null!=helpURL) 
+			{
+				if(null==pageOf && null!=view && "cpBasedView".equals(view))
+				{%>
+					URL=document.getElementById('cpFrameNew').contentWindow.updateHelpURL();
+				<%}
+				else if(!"".equals(helpURL))
+				{%>
+					URL="<%=helpURL%>";
+				<%}
+			}%>
+			if(URL!="")
+			{
+				window.open(URL,'_blank');
+			}		
 			
 		}
 
