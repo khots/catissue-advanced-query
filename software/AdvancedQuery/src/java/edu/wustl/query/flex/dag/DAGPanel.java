@@ -72,6 +72,18 @@ import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
+import edu.wustl.query.flex.dag.CustomFormulaNode;
+import edu.wustl.query.flex.dag.CustomFormulaUIBean;
+import edu.wustl.query.flex.dag.DAGConstant;
+import edu.wustl.query.flex.dag.DAGNode;
+import edu.wustl.query.flex.dag.DAGPath;
+import edu.wustl.query.flex.dag.DAGResolveAmbiguity;
+import edu.wustl.query.flex.dag.JoinFormulaNode;
+import edu.wustl.query.flex.dag.JoinFormulaUIBean;
+import edu.wustl.query.flex.dag.JoinQueryNode;
+import edu.wustl.query.flex.dag.SingalNodeTemporalQuery;
+import edu.wustl.query.flex.dag.SingleNodeCustomFormulaNode;
+import edu.wustl.query.flex.dag.TwoNodesTemporalQuery;
 import edu.wustl.query.htmlprovider.HtmlProvider;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.Variables;
@@ -547,7 +559,7 @@ public class DAGPanel
 			{
 				getMnProtocolExpForEdit(query, entityId);
 			}
-			node = createQueryObjectLogic(strToCreateObject, mode, node,
+			node = createQueryObjectLogic(strToCreateObject, mode,
 					mainProtocol, queryBizLogic);
 			IConstraints constraints = query.getConstraints();
 			for(IExpression expression : constraints)
