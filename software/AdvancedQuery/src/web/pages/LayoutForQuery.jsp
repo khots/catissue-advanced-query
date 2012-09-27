@@ -39,7 +39,7 @@
 	else
 	{
 		helpURL=HelpXMLPropertyHandler.getValue(URLKey);
-		if(helpURL==null)
+		if(helpURL==null || "".equals(helpURL))
 		{
 			helpURL=HelpXMLPropertyHandler.getValue("helpHomePage");
 		}
