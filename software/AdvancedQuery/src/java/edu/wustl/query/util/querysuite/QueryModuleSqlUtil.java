@@ -1,3 +1,4 @@
+
 package edu.wustl.query.util.querysuite;
 
 import java.sql.ResultSet;
@@ -9,6 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.naming.NamingException;
+import javax.transaction.InvalidTransactionException;
+import javax.transaction.SystemException;
+import javax.transaction.Transaction;
+
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.util.QueryParams;
 import edu.wustl.common.util.XMLPropertyHandler;
@@ -19,6 +25,7 @@ import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.ColumnValueBean;
+import edu.wustl.dao.util.DAOUtility;
 import edu.wustl.query.executor.AbstractQueryExecutor;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.Utility;
@@ -30,8 +37,11 @@ import edu.wustl.security.exception.SMException;
  * @author santhoshkumar_c
  *
  */
-final public class QueryModuleSqlUtil {
-	private QueryModuleSqlUtil() {
+final public class QueryModuleSqlUtil
+{
+
+	private QueryModuleSqlUtil()
+	{
 	}
 
 	/**
@@ -45,52 +55,71 @@ final public class QueryModuleSqlUtil {
 	 *            session data.
 	 * @throws DAOException
 	 *             DAOException
+	 * @throws SystemException 
+	 * @throws NamingException 
+	 * @throws IllegalStateException 
+	 * @throws InvalidTransactionException 
 	 */
-	public static void executeCreateTable(final String tableName,
-			final String createTableSql, QueryDetails queryDetailsObj)
-			throws DAOException {
+	public static void executeCreateTable(final String tableName, final String createTableSql,
+			QueryDetails queryDetailsObj) throws DAOException, NamingException, SystemException,
+			InvalidTransactionException, IllegalStateException
+	{
 		String appName = CommonServiceLocator.getInstance().getAppName();
-		IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(
-				appName);
+		IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
 		JDBCDAO jdbcDao = daoFactory.getJDBCDAO();
-		try {
-			String tablespace = XMLPropertyHandler
-					.getValue(AQConstants.TABLESPACE);
-			if (tablespace.length() != 0) {
+		try
+		{
+			String tablespace = XMLPropertyHandler.getValue(AQConstants.TABLESPACE);
+			if (tablespace.length() != 0)
+			{
 				tablespace = "TABLESPACE " + tablespace;
 			}
 			jdbcDao.openSession(queryDetailsObj.getSessionData());
-			final String tempInnerViewName = AQConstants.TEMP_INNER_VIEW +queryDetailsObj.getSessionData().getUserId()+AQConstants.UNDERSCORE;
+			final String tempInnerViewName = AQConstants.TEMP_INNER_VIEW
+					+ queryDetailsObj.getSessionData().getUserId() + AQConstants.UNDERSCORE;
 			String createViewQuery = createTableSql;
-				while (createViewQuery.contains("(select")) {//check for inner select query
-					int startIndex = createViewQuery.indexOf("(select");
-					int lastIndex = createViewQuery.indexOf(")");
 
-					while (lastIndex < startIndex) {//indices for inner select query
-						lastIndex = createViewQuery.indexOf(")", lastIndex + 1);
-					}
-					//substring for creating inner view from inner select query
+			DAOUtility daoUtil = DAOUtility.getInstance();
+			Transaction transaction = daoUtil.suspendTransaction();
 
-					String innerViewQuery = createViewQuery.substring(startIndex, lastIndex + 1);
+			while (createViewQuery.contains("(select"))
+			{//check for inner select query
+				int startIndex = createViewQuery.indexOf("(select");
+				int lastIndex = createViewQuery.indexOf(")");
 
-					String innerViewName = (tempInnerViewName + (new Random().nextInt(1000)));//inner view name
-					String innerView = "CREATE OR REPLACE VIEW "+ innerViewName + " " + tablespace + " " + " AS "+ innerViewQuery;
-					//inner view create query
-
-					jdbcDao.executeUpdate(innerView);//creating inner view
-
-					/**
-					 * Replacing the inner select query substring with the created inner view
-					 */
-					createViewQuery = createViewQuery.replace(innerViewQuery,innerViewName);
+				while (lastIndex < startIndex)
+				{//indices for inner select query
+					lastIndex = createViewQuery.indexOf(")", lastIndex + 1);
 				}
+				//substring for creating inner view from inner select query
+
+				String innerViewQuery = createViewQuery.substring(startIndex, lastIndex + 1);
+
+				String innerViewName = (tempInnerViewName + (new Random().nextInt(1000)));//inner view name
+				String innerView = "CREATE OR REPLACE VIEW " + innerViewName + " " + tablespace
+						+ " " + " AS " + innerViewQuery;//inner view create query
+
+				jdbcDao.executeUpdate(innerView);//creating inner view
+
+				/**
+				 * Replacing the inner select query substring with the created inner view
+				 */
+				createViewQuery = createViewQuery.replace(innerViewQuery, innerViewName);
+			}
+			daoUtil.resumeTransaction(transaction);
+
 			//creating a final view with inner views
-			String advViewQuery = "CREATE OR REPLACE VIEW " + tableName + " "+ tablespace + " " + " AS " + createViewQuery;
+			String advViewQuery = "CREATE OR REPLACE VIEW " + tableName + " " + tablespace + " "
+					+ " AS " + createViewQuery;
 			executeInsertQuery(queryDetailsObj, jdbcDao, advViewQuery);
-		} catch (DAOException e) {
+		}
+		catch (DAOException e)
+		{
 			Logger.out.error(e);
 			throw e;
-		} finally {
+		}
+		finally
+		{
 			jdbcDao.closeSession();
 		}
 	}
@@ -105,16 +134,18 @@ final public class QueryModuleSqlUtil {
 	 * @throws DAOException
 	 *             DAOException
 	 */
-	private static void executeInsertQuery(QueryDetails queryDetailsObj,
-			JDBCDAO jdbcDao, String insertSql) throws DAOException {
-		int cnt =0;
+	private static void executeInsertQuery(QueryDetails queryDetailsObj, JDBCDAO jdbcDao,
+			String insertSql) throws DAOException
+	{
+		int cnt = 0;
 		String value;
 		/**
 		 * removing binding variables by putting variables name in where clause
 		 */
-		while (insertSql.contains("?")) {
-			value = "'"+queryDetailsObj.getColumnValueBean().get(cnt++).getColumnName()+"'";
-			insertSql=insertSql.replaceFirst("\\?", value);//modifying sql for inserting variables in where clause
+		while (insertSql.contains("?"))
+		{
+			value = "'" + queryDetailsObj.getColumnValueBean().get(cnt++).getColumnName() + "'";
+			insertSql = insertSql.replaceFirst("\\?", value);//modifying sql for inserting variables in where clause
 		}
 		jdbcDao.executeUpdate(insertSql);
 		jdbcDao.commit();
@@ -125,15 +156,18 @@ final public class QueryModuleSqlUtil {
 	 *            query
 	 * @return newSql
 	 */
-	private static String modifySqlForCreateTable(String createTableSql) {
+	private static String modifySqlForCreateTable(String createTableSql)
+	{
 		String whereClause = "";
-		if (createTableSql.indexOf("where") == -1) {
+		if (createTableSql.indexOf("where") == -1)
+		{
 			whereClause = "WHERE";
-		} else {
+		}
+		else
+		{
 			whereClause = "where";
 		}
-		String newSql = createTableSql.substring(0, createTableSql
-				.lastIndexOf(whereClause) + 6);
+		String newSql = createTableSql.substring(0, createTableSql.lastIndexOf(whereClause) + 6);
 		return newSql;
 	}
 
@@ -143,21 +177,23 @@ final public class QueryModuleSqlUtil {
 	 * @return
 	 */
 	public static String getSQLForRootNode(final String tableName,
-			Map<String, String> columnNameIndexMap) {
+			Map<String, String> columnNameIndexMap)
+	{
 		String columnNames = columnNameIndexMap.get(AQConstants.COLUMN_NAMES);
 		String indexStr = columnNameIndexMap.get(AQConstants.INDEX);
 		int index = -1;
-		if (indexStr != null && !AQConstants.NULL.equals(indexStr)) {
+		if (indexStr != null && !AQConstants.NULL.equals(indexStr))
+		{
 			index = Integer.valueOf(indexStr);
 		}
 		String idColumnName = columnNames;
-		if (columnNames.indexOf(',') != -1) {
+		if (columnNames.indexOf(',') != -1)
+		{
 			idColumnName = columnNames.substring(0, columnNames.indexOf(','));
 		}
 		StringBuffer selectSql = new StringBuffer(80);
-		selectSql.append("select distinct ").append(columnNames).append(
-				" from ").append(tableName).append(" where ").append(
-				idColumnName).append(" is not null");
+		selectSql.append("select distinct ").append(columnNames).append(" from ").append(tableName)
+				.append(" where ").append(idColumnName).append(" is not null");
 		selectSql = selectSql.append(AQConstants.NODE_SEPARATOR).append(index);
 		return selectSql.toString();
 	}
@@ -174,16 +210,16 @@ final public class QueryModuleSqlUtil {
 	 * @throws ClassNotFoundException
 	 * @throws SMException
 	 */
-	public static int getCountForQuery(final String sql,
-			QueryDetails queryDetailsObj) throws DAOException,
-			ClassNotFoundException, SMException {
+	public static int getCountForQuery(final String sql, QueryDetails queryDetailsObj)
+			throws DAOException, ClassNotFoundException, SMException
+	{
 		int count = 0;
 		List<List<String>> dataList = null;
 		String appName = CommonServiceLocator.getInstance().getAppName();
-		IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(
-				appName);
+		IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
 		JDBCDAO jdbcDao = daoFactory.getJDBCDAO();
-		try {
+		try
+		{
 			String countSql = "Select count(*) from (" + sql + ") alias";
 
 			QueryParams queryParams = new QueryParams();
@@ -197,13 +233,15 @@ final public class QueryModuleSqlUtil {
 			queryParams.setNoOfRecords(200);
 			jdbcDao.openSession(queryDetailsObj.getSessionData());
 			AbstractQueryExecutor queryExecutor = Utility.getQueryExecutor();
-			dataList = queryExecutor.getQueryResultList(queryParams)
-					.getResult();
+			dataList = queryExecutor.getQueryResultList(queryParams).getResult();
 			jdbcDao.commit();
-		} finally {
+		}
+		finally
+		{
 			jdbcDao.closeSession();
 		}
-		if (dataList != null) {
+		if (dataList != null)
+		{
 			List<String> countList = dataList.get(0);
 			count = Integer.valueOf(countList.get(0));
 		}
@@ -219,32 +257,36 @@ final public class QueryModuleSqlUtil {
 	 * @throws SQLException
 	 * @throws SQLException
 	 */
-	public static void updateAuditQueryDetails(String columnName,
-			String newColumnValue, long auditEventId) throws DAOException,
-			SQLException {
+	public static void updateAuditQueryDetails(String columnName, String newColumnValue,
+			long auditEventId) throws DAOException, SQLException
+	{
 		String tableName = "catissue_audit_event_query_log";
 		String appName = CommonServiceLocator.getInstance().getAppName();
-		IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(
-				appName);
+		IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
 		JDBCDAO jdbcDao = daoFactory.getJDBCDAO();
 		jdbcDao.openSession(null);
-		ResultSet resultSet = jdbcDao.getQueryResultSet("select * from "
-				+ tableName + " where 1=0");
+		ResultSet resultSet = jdbcDao
+				.getQueryResultSet("select * from " + tableName + " where 1=0");
 		ResultSetMetaData metaData;
-		try {
+		try
+		{
 			metaData = resultSet.getMetaData();
-			LinkedList<LinkedList<ColumnValueBean>> beanList = populateBeanList(
-					columnName, newColumnValue, auditEventId, metaData);
+			LinkedList<LinkedList<ColumnValueBean>> beanList = populateBeanList(columnName,
+					newColumnValue, auditEventId, metaData);
 			executeUpdateQuery(columnName, tableName, jdbcDao, beanList);
-		} catch (DAOException e) {
-			Logger.out.error("Error while updating query auditing details :\n"
-					+ e);
+		}
+		catch (DAOException e)
+		{
+			Logger.out.error("Error while updating query auditing details :\n" + e);
 			throw e;
-		} catch (SQLException e1) {
-			Logger.out.error("Error while updating query auditing details :\n"
-					+ e1);
+		}
+		catch (SQLException e1)
+		{
+			Logger.out.error("Error while updating query auditing details :\n" + e1);
 			throw e1;
-		} finally {
+		}
+		finally
+		{
 			jdbcDao.closeSession();
 			resultSet.close();
 		}
@@ -262,12 +304,12 @@ final public class QueryModuleSqlUtil {
 	 * @throws DAOException
 	 *             DAOException
 	 */
-	private static void executeUpdateQuery(String columnName, String tableName,
-			JDBCDAO jdbcDao, LinkedList<LinkedList<ColumnValueBean>> beanList)
-			throws DAOException {
-		String updateSql = AQConstants.UPDATE + " " + tableName + " "
-				+ AQConstants.SET + " " + columnName + " = ?" + " "
-				+ AQConstants.WHERE + " " + AQConstants.AUDIT_EVENT_ID + "= ?";
+	private static void executeUpdateQuery(String columnName, String tableName, JDBCDAO jdbcDao,
+			LinkedList<LinkedList<ColumnValueBean>> beanList) throws DAOException
+	{
+		String updateSql = AQConstants.UPDATE + " " + tableName + " " + AQConstants.SET + " "
+				+ columnName + " = ?" + " " + AQConstants.WHERE + " " + AQConstants.AUDIT_EVENT_ID
+				+ "= ?";
 		jdbcDao.executeUpdate(updateSql, beanList);
 		jdbcDao.commit();
 	}
@@ -285,9 +327,10 @@ final public class QueryModuleSqlUtil {
 	 * @throws SQLException
 	 *             SQLException
 	 */
-	private static LinkedList<LinkedList<ColumnValueBean>> populateBeanList(
-			String columnName, String newColumnValue, long auditEventId,
-			ResultSetMetaData metaData) throws SQLException {
+	private static LinkedList<LinkedList<ColumnValueBean>> populateBeanList(String columnName,
+			String newColumnValue, long auditEventId, ResultSetMetaData metaData)
+			throws SQLException
+	{
 		int columnType = getColumnType(columnName, metaData);
 		String value = getValueForDBType(newColumnValue, columnType);
 		LinkedList<ColumnValueBean> columnValueBean = new LinkedList<ColumnValueBean>();
@@ -309,13 +352,16 @@ final public class QueryModuleSqlUtil {
 	 * @throws SQLException
 	 *             SQLException
 	 */
-	private static int getColumnType(String columnName,
-			ResultSetMetaData metaData) throws SQLException {
+	private static int getColumnType(String columnName, ResultSetMetaData metaData)
+			throws SQLException
+	{
 		int columnType = 0;
 		int columnCount = metaData.getColumnCount();
-		for (int counter = 1; counter <= columnCount; counter++) {
+		for (int counter = 1; counter <= columnCount; counter++)
+		{
 			String columnNameInTable = metaData.getColumnName(counter);
-			if (columnNameInTable.equalsIgnoreCase(columnName)) {
+			if (columnNameInTable.equalsIgnoreCase(columnName))
+			{
 				columnType = metaData.getColumnType(counter);
 				break;
 			}
@@ -332,20 +378,21 @@ final public class QueryModuleSqlUtil {
 	 *            type of the column.
 	 * @return String value
 	 */
-	private static String getValueForDBType(String newColumnValue,
-			int columnType) {
+	private static String getValueForDBType(String newColumnValue, int columnType)
+	{
 		String value = "";
-		switch (columnType) {
-		case Types.VARCHAR:
-			value = newColumnValue;
-			break;
-		case Types.BIGINT:
-		case Types.BIT:
-		case Types.TINYINT:
-		case Types.NUMERIC:
-		default:
-			value = newColumnValue;
-			break;
+		switch (columnType)
+		{
+			case Types.VARCHAR :
+				value = newColumnValue;
+				break;
+			case Types.BIGINT :
+			case Types.BIT :
+			case Types.TINYINT :
+			case Types.NUMERIC :
+			default :
+				value = newColumnValue;
+				break;
 		}
 		return value;
 	}
