@@ -7,8 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.InvalidTransactionException;
+import javax.transaction.SystemException;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.wustl.common.exception.BizLogicException;
@@ -46,6 +49,7 @@ import edu.wustl.security.exception.SMException;
  */
 public class QueryModuleSearchQueryUtil
 {
+
 	/**
 	 * Logger.
 	 */
@@ -86,7 +90,8 @@ public class QueryModuleSearchQueryUtil
 		try
 		{
 			session.setAttribute(AQConstants.QUERY_OBJECT, query);
-			boolean alreadySavedQuery = Boolean.valueOf((String)session.getAttribute(AQConstants.SAVED_QUERY));
+			boolean alreadySavedQuery = Boolean.valueOf((String) session
+					.getAttribute(AQConstants.SAVED_QUERY));
 			if (isSavedQuery && !alreadySavedQuery)
 			{
 				newQuery = processSaveQuery();
@@ -99,7 +104,7 @@ public class QueryModuleSearchQueryUtil
 		catch (QueryModuleException e)
 		{
 			status = e.getKey();
-			LOGGER.error(e.getMessage(),e);
+			LOGGER.error(e.getMessage(), e);
 		}
 		return status;
 	}
@@ -110,18 +115,18 @@ public class QueryModuleSearchQueryUtil
 	 */
 	private void modifyQuery(IQuery newQuery) throws QueryModuleException
 	{
-		IQuery originalQuery=null;
-		if(newQuery != null)
+		IQuery originalQuery = null;
+		if (newQuery != null)
 		{
 			originalQuery = queryDetailsObj.getQuery();
 			queryDetailsObj.setQuery(newQuery);
 		}
 		QueryOutputTreeBizLogic outputTreeBizLogic = auditQuery();
 		boolean hasCondOnIdentifiedField;
-		if(newQuery == null)
+		if (newQuery == null)
 		{
 			hasCondOnIdentifiedField = edu.wustl.query.util.global.Utility
-			.isConditionOnIdentifiedField(query);
+					.isConditionOnIdentifiedField(query);
 		}
 		else
 		{
@@ -130,7 +135,7 @@ public class QueryModuleSearchQueryUtil
 					.isConditionOnIdentifiedField(newQuery);
 		}
 		setDataInSession(outputTreeBizLogic, hasCondOnIdentifiedField);
-		if(originalQuery != null)
+		if (originalQuery != null)
 		{
 			query = originalQuery;
 			session.setAttribute(AQConstants.QUERY_OBJECT, originalQuery);
@@ -149,15 +154,16 @@ public class QueryModuleSearchQueryUtil
 	{
 		int initialValue = 0;
 		QueryModuleException queryModExp;
-		List<OutputTreeDataNode> inViewRootList = getRootOutputNodeList(queryDetailsObj.getRootOutputTreeNodeList());
+		List<OutputTreeDataNode> inViewRootList = getRootOutputNodeList(queryDetailsObj
+				.getRootOutputTreeNodeList());
 		try
 		{
-			 for(OutputTreeDataNode rootOutputnode:inViewRootList)
-			 {
-			   List<QueryTreeNodeData> treeData = outputTreeBizLogic.createDefaultOutputTreeData
-				(initialValue, rootOutputnode,hasCondOnIdentifiedField, queryDetailsObj);
+			for (OutputTreeDataNode rootOutputnode : inViewRootList)
+			{
+				List<QueryTreeNodeData> treeData = outputTreeBizLogic.createDefaultOutputTreeData(
+						initialValue, rootOutputnode, hasCondOnIdentifiedField, queryDetailsObj);
 				initialValue = setTreeData(initialValue, treeData);
-			 }
+			}
 
 		}
 		catch (DAOException e)
@@ -196,20 +202,21 @@ public class QueryModuleSearchQueryUtil
 	 * @param rootOutputTreeNodeList
 	 * @return
 	 */
-	private List<OutputTreeDataNode> getRootOutputNodeList(List<OutputTreeDataNode> rootOutputTreeNodeList)
+	private List<OutputTreeDataNode> getRootOutputNodeList(
+			List<OutputTreeDataNode> rootOutputTreeNodeList)
 	{
-		 List<OutputTreeDataNode> childList = new ArrayList<OutputTreeDataNode>();
-		 OutputTreeDataNode parentNode = rootOutputTreeNodeList.get(0);
-         if(parentNode.isInView())
-        {
-    	   childList.add(parentNode);
-        }
-         else
-         {
-	        childList.addAll(QueryModuleUtil.getInViewChildren(parentNode));
-         }
+		List<OutputTreeDataNode> childList = new ArrayList<OutputTreeDataNode>();
+		OutputTreeDataNode parentNode = rootOutputTreeNodeList.get(0);
+		if (parentNode.isInView())
+		{
+			childList.add(parentNode);
+		}
+		else
+		{
+			childList.addAll(QueryModuleUtil.getInViewChildren(parentNode));
+		}
 
-         return childList;
+		return childList;
 
 	}
 
@@ -230,7 +237,8 @@ public class QueryModuleSearchQueryUtil
 			throw new QueryModuleException("Query Returns Zero Results",
 					QueryModuleError.NO_RESULT_PRESENT);
 		}
-		session.setAttribute(AQConstants.TREE_DATA + AQConstants.UNDERSCORE + initialValue, treeData);
+		session.setAttribute(AQConstants.TREE_DATA + AQConstants.UNDERSCORE + initialValue,
+				treeData);
 		initialValue += 1;
 		return initialValue;
 	}
@@ -241,14 +249,15 @@ public class QueryModuleSearchQueryUtil
 	 */
 	private QueryOutputTreeBizLogic auditQuery() throws QueryModuleException
 	{
-	    CommonQueryBizLogic queryBizLogic = new CommonQueryBizLogic();
+		CommonQueryBizLogic queryBizLogic = new CommonQueryBizLogic();
 		QueryModuleException queryModExp;
 		QueryOutputTreeBizLogic outputTreeBizLogic = new QueryOutputTreeBizLogic();
 		try
 		{
 			String selectSql = (String) session.getAttribute(AQConstants.SAVE_GENERATED_SQL);
 			long auditEventId = getAuditEventId(queryBizLogic, selectSql);
-			boolean alreadySavedQuery = Boolean.valueOf((String)session.getAttribute("savedQuery"));
+			boolean alreadySavedQuery = Boolean
+					.valueOf((String) session.getAttribute("savedQuery"));
 			queryDetailsObj.setAuditEventId(auditEventId);
 			getNewQuery(outputTreeBizLogic, selectSql, alreadySavedQuery);
 		}
@@ -277,6 +286,21 @@ public class QueryModuleSearchQueryUtil
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
 			throw queryModExp;
 		}
+		catch (InvalidTransactionException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
+		}
+		catch (NamingException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
+		}
+		catch (SystemException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
+		}
 		return outputTreeBizLogic;
 	}
 
@@ -287,18 +311,20 @@ public class QueryModuleSearchQueryUtil
 	 * @throws DAOException DAOException
 	 * @throws SQLException SQLException
 	 */
-	private long getAuditEventId(CommonQueryBizLogic queryBizLogic,
-			String selectSql) throws DAOException, SQLException {
+	private long getAuditEventId(CommonQueryBizLogic queryBizLogic, String selectSql)
+			throws DAOException, SQLException
+	{
 		long auditEventId;
-		if(session.getAttribute(AQConstants.AUDIT_EVENT_ID)== null)
+		if (session.getAttribute(AQConstants.AUDIT_EVENT_ID) == null)
 		{
 			auditEventId = queryBizLogic.insertQuery(selectSql, queryDetailsObj.getSessionData());
-			QueryModuleSqlUtil.updateAuditQueryDetails(AQConstants.QUERY_ID, query.getId().toString(), auditEventId);
-			session.setAttribute(AQConstants.AUDIT_EVENT_ID,auditEventId);
+			QueryModuleSqlUtil.updateAuditQueryDetails(AQConstants.QUERY_ID, query.getId()
+					.toString(), auditEventId);
+			session.setAttribute(AQConstants.AUDIT_EVENT_ID, auditEventId);
 		}
 		else
 		{
-			auditEventId = (Long)session.getAttribute(AQConstants.AUDIT_EVENT_ID);
+			auditEventId = (Long) session.getAttribute(AQConstants.AUDIT_EVENT_ID);
 		}
 		return auditEventId;
 	}
@@ -311,18 +337,22 @@ public class QueryModuleSearchQueryUtil
 	 * @throws SqlException SqlException
 	 * @throws DAOException DAOException
 	 * @throws SQLException SQLException
+	 * @throws SystemException 
+	 * @throws NamingException 
+	 * @throws IllegalStateException 
+	 * @throws InvalidTransactionException 
 	 */
-	private void getNewQuery(QueryOutputTreeBizLogic outputTreeBizLogic,
-			String selectQuery, boolean alreadySavedQuery)
-			throws MultipleRootsException, SqlException, DAOException,
-			SQLException
+	private void getNewQuery(QueryOutputTreeBizLogic outputTreeBizLogic, String selectQuery,
+			boolean alreadySavedQuery) throws MultipleRootsException, SqlException, DAOException,
+			SQLException, InvalidTransactionException, IllegalStateException, NamingException,
+			SystemException
 	{
 		String selectSql = selectQuery;
-		if(isSavedQuery && !alreadySavedQuery)
+		if (isSavedQuery && !alreadySavedQuery)
 		{
 			String newSql;
 			ISqlGenerator sqlGenerator = AbstractQueryGeneratorFactory.getDefaultQueryGenerator();
-			if(queryDetailsObj.getSessionData().isSecurityRequired())
+			if (queryDetailsObj.getSessionData().isSecurityRequired())
 			{
 				newSql = sqlGenerator.generateSQL(queryDetailsObj.getQuery());
 				queryDetailsObj.setColumnValueBean(sqlGenerator.getColumnValueBean());
@@ -348,18 +378,17 @@ public class QueryModuleSearchQueryUtil
 		queryDetailsObj.setRootOutputTreeNodeList(rootOutputTreeNodeList);
 		queryDetailsObj.setColumnValueBean(sqlGenerator.getColumnValueBean());
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
-		.getAllChildrenNodes(rootOutputTreeNodeList);
+				.getAllChildrenNodes(rootOutputTreeNodeList);
 		queryDetailsObj.setUniqueIdNodesMap(uniqueIdNodesMap);
 		session.setAttribute(AQConstants.ID_NODES_MAP, uniqueIdNodesMap);
-		IQuery newQuery=null;
-		boolean alreadySavedQuery=false;
+		IQuery newQuery = null;
+		boolean alreadySavedQuery = false;
 		alreadySavedQuery = setSessionAttrForSavedQuery(alreadySavedQuery);
-		if(queryDetailsObj.getSessionData().isSecurityRequired() && !alreadySavedQuery)
+		if (queryDetailsObj.getSessionData().isSecurityRequired() && !alreadySavedQuery)
 		{
-			newQuery = QueryCSMUtil
-				.returnQueryClone(query, request.getSession(), queryDetailsObj);
+			newQuery = QueryCSMUtil.returnQueryClone(query, request.getSession(), queryDetailsObj);
 		}
-		if(alreadySavedQuery)
+		if (alreadySavedQuery)
 		{
 			session.setAttribute(AQConstants.SAVED_QUERY, AQConstants.FALSE);
 			session.setAttribute(AQConstants.PROCESSED_SAVED_QUERY, AQConstants.FALSE);
@@ -374,30 +403,31 @@ public class QueryModuleSearchQueryUtil
 	private boolean setSessionAttrForSavedQuery(boolean savedQuery)
 	{
 		boolean alreadySavedQuery = savedQuery;
-		if(session.getAttribute(AQConstants.SAVED_QUERY) != null)
+		if (session.getAttribute(AQConstants.SAVED_QUERY) != null)
 		{
-			alreadySavedQuery = Boolean.valueOf((String)session.getAttribute(AQConstants.SAVED_QUERY));
-			if(alreadySavedQuery)
+			alreadySavedQuery = Boolean.valueOf((String) session
+					.getAttribute(AQConstants.SAVED_QUERY));
+			if (alreadySavedQuery)
 			{
 				session.setAttribute(AQConstants.PROCESSED_SAVED_QUERY, AQConstants.TRUE);
 			}
 		}
 		return alreadySavedQuery;
 	}
+
 	/**
 	 * Calls sqlGenerator which validates IQuery object and throws appropriate exceptions
 	 * @param sqlGenerator sqlGenerator object
 	 * @throws QueryModuleException Exception e
 	 */
-	private void validateQuery(ISqlGenerator sqlGenerator)
-			throws QueryModuleException
+	private void validateQuery(ISqlGenerator sqlGenerator) throws QueryModuleException
 	{
 		QueryModuleException queryModExp;
 		try
 		{
 			session.setAttribute(AQConstants.SAVE_GENERATED_SQL, sqlGenerator.generateSQL(query));
 			Map<AttributeInterface, String> attributeColumnNameMap = sqlGenerator
-			.getAttributeColumnNameMap();
+					.getAttributeColumnNameMap();
 			session.setAttribute(AQConstants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
 			session.setAttribute(AQConstants.OUTPUT_TERMS_COLUMNS, sqlGenerator
 					.getOutputTermsColumns());
@@ -455,7 +485,8 @@ public class QueryModuleSearchQueryUtil
 			Map<String, List<String>> spreadSheetDatamap = outputSpreadsheetBizLogic
 					.createSpreadsheetData(AQConstants.TREENO_ZERO, node, QueryDetailsObj, null,
 							recordsPerPage, selectedColumnsMetadata, queryResultObjDataBeanMap,
-							hasCondOnIdentifiedField, query.getConstraints(), outputTermsColumns,null);
+							hasCondOnIdentifiedField, query.getConstraints(), outputTermsColumns,
+							null);
 			setQuerySessionData(selectedColumnsMetadata, spreadSheetDatamap);
 		}
 		catch (DAOException e)
@@ -474,9 +505,8 @@ public class QueryModuleSearchQueryUtil
 	 * @param sqlGenerator sqlGenerator
 	 * @return outputTermsColumns
 	 */
-	private Map<String, IOutputTerm> populateOutputTerms(
-			ISqlGenerator sqlGenerator)
-			{
+	private Map<String, IOutputTerm> populateOutputTerms(ISqlGenerator sqlGenerator)
+	{
 		Map<String, IOutputTerm> outputTermsColumns = sqlGenerator.getOutputTermsColumns();
 		if (outputTermsColumns == null)
 		{
@@ -516,10 +546,10 @@ public class QueryModuleSearchQueryUtil
 			List<QueryOutputTreeAttributeMetadata> selAttributeMetaDataList = selectedColumnsMetadata
 					.getSelectedAttributeMetaDataList();
 			populateExpressionIds(expressionIdsInQuery, constraints);
-			isQueryChanged = isQueryChanged(expressionIdsInQuery, selAttributeMetaDataList,selectedColumnsMetadata);
+			isQueryChanged = isQueryChanged(expressionIdsInQuery, selAttributeMetaDataList,
+					selectedColumnsMetadata);
 		}
-		selectedColumnsMetadata = setDefinedViewInMetadata(
-				selectedColumnsMetadata, isQueryChanged);
+		selectedColumnsMetadata = setDefinedViewInMetadata(selectedColumnsMetadata, isQueryChanged);
 		return selectedColumnsMetadata;
 	}
 
@@ -529,8 +559,7 @@ public class QueryModuleSearchQueryUtil
 	 * @return selectedColumnsMetadata
 	 */
 	private static SelectedColumnsMetadata setDefinedViewInMetadata(
-			SelectedColumnsMetadata columnsMetadata,
-			boolean isQueryChanged)
+			SelectedColumnsMetadata columnsMetadata, boolean isQueryChanged)
 	{
 		SelectedColumnsMetadata selectedColumnsMetadata = columnsMetadata;
 		if (isQueryChanged || selectedColumnsMetadata == null)
@@ -545,8 +574,8 @@ public class QueryModuleSearchQueryUtil
 	 * @param expressionIdsInQuery expressionIdsInQuery
 	 * @param constraints constraints
 	 */
-	private static void populateExpressionIds(
-			List<Integer> expressionIdsInQuery, IConstraints constraints)
+	private static void populateExpressionIds(List<Integer> expressionIdsInQuery,
+			IConstraints constraints)
 	{
 		for (IExpression expression : constraints)
 		{
@@ -564,11 +593,12 @@ public class QueryModuleSearchQueryUtil
 	 * @return isQueryChanged
 	 */
 	private static boolean isQueryChanged(List<Integer> expressionIdsInQuery,
-			List<QueryOutputTreeAttributeMetadata> selAttributeMetaDataList, SelectedColumnsMetadata selectedColumnsMetadata)
+			List<QueryOutputTreeAttributeMetadata> selAttributeMetaDataList,
+			SelectedColumnsMetadata selectedColumnsMetadata)
 	{
 		boolean isQueryChanged = false;
 		int expressionId;
-		if(expressionIdsInQuery.size() != selectedColumnsMetadata.getNoOfExpr())
+		if (expressionIdsInQuery.size() != selectedColumnsMetadata.getNoOfExpr())
 		{
 			isQueryChanged = true;
 		}
@@ -593,7 +623,8 @@ public class QueryModuleSearchQueryUtil
 	private int setRecordsPerPage()
 	{
 		int recordsPerPage;
-		String recordsPerPgSessionValue = (String) session.getAttribute(AQConstants.RESULTS_PER_PAGE);
+		String recordsPerPgSessionValue = (String) session
+				.getAttribute(AQConstants.RESULTS_PER_PAGE);
 		if (recordsPerPgSessionValue == null)
 		{
 			recordsPerPgSessionValue = XMLPropertyHandler
@@ -629,11 +660,12 @@ public class QueryModuleSearchQueryUtil
 				.get(AQConstants.SELECTED_COLUMN_META_DATA));
 		session.setAttribute(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP, spreadSheetDatamap
 				.get(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP));
-		session.setAttribute(AQConstants.DEFINE_VIEW_RESULT_MAP,
-				spreadSheetDatamap.get(AQConstants.DEFINE_VIEW_RESULT_MAP));
-		if(selectedColumnsMetadata.isDefinedView())
+		session.setAttribute(AQConstants.DEFINE_VIEW_RESULT_MAP, spreadSheetDatamap
+				.get(AQConstants.DEFINE_VIEW_RESULT_MAP));
+		if (selectedColumnsMetadata.isDefinedView())
 		{
-			session.setAttribute(AQConstants.DENORMALIZED_LIST, spreadSheetDatamap.get(AQConstants.SPREADSHEET_DATA_LIST));
+			session.setAttribute(AQConstants.DENORMALIZED_LIST, spreadSheetDatamap
+					.get(AQConstants.SPREADSHEET_DATA_LIST));
 		}
 	}
 
@@ -644,7 +676,8 @@ public class QueryModuleSearchQueryUtil
 	public void getSelectedColumnsMetadata(QueryDetails QueryDetailsObj,
 			SelectedColumnsMetadata selectedColumnsMetadata)
 	{
-		OutputTreeDataNode currentSelectedObject = selectedColumnsMetadata.getCurrentSelectedObject();
+		OutputTreeDataNode currentSelectedObject = selectedColumnsMetadata
+				.getCurrentSelectedObject();
 		List<IOutputAttribute> selAttributeList;
 		boolean isDefinedView = true;
 		List<IOutputAttribute> selectedOutputAttributeList = new ArrayList<IOutputAttribute>();
@@ -658,18 +691,18 @@ public class QueryModuleSearchQueryUtil
 			if (!selAttributeList.isEmpty())
 			{
 				DefineGridViewBizLogic gridViewBizLogic = new DefineGridViewBizLogic();
-				if(selectedColumnsMetadata.getSelectedOutputAttributeList() == null)
+				if (selectedColumnsMetadata.getSelectedOutputAttributeList() == null)
 				{
 					selectedColumnsMetadata.setSelectedOutputAttributeList(selAttributeList);
 				}
-				else if(selectedColumnsMetadata.getSelectedOutputAttributeList().isEmpty())
+				else if (selectedColumnsMetadata.getSelectedOutputAttributeList().isEmpty())
 				{
-					isDefinedView = populateSelectedColMetadata(
-							selectedColumnsMetadata, currentSelectedObject,
-							selectedOutputAttributeList);
+					isDefinedView = populateSelectedColMetadata(selectedColumnsMetadata,
+							currentSelectedObject, selectedOutputAttributeList);
 				}
 				gridViewBizLogic.getSelectedColumnMetadataForSavedQuery(QueryDetailsObj
-						.getUniqueIdNodesMap().values(), selectedColumnsMetadata.getSelectedOutputAttributeList(), selectedColumnsMetadata);
+						.getUniqueIdNodesMap().values(), selectedColumnsMetadata
+						.getSelectedOutputAttributeList(), selectedColumnsMetadata);
 				setDefinedView(selectedColumnsMetadata, isDefinedView);
 			}
 		}
@@ -679,11 +712,10 @@ public class QueryModuleSearchQueryUtil
 	 * @param selectedColumnsMetadata selectedColumnsMetadata
 	 * @param isDefinedView isDefinedView
 	 */
-	private void setDefinedView(
-			SelectedColumnsMetadata selectedColumnsMetadata,
+	private void setDefinedView(SelectedColumnsMetadata selectedColumnsMetadata,
 			boolean isDefinedView)
 	{
-		if(isDefinedView)
+		if (isDefinedView)
 		{
 			selectedColumnsMetadata.setDefinedView(true);
 		}
@@ -695,19 +727,19 @@ public class QueryModuleSearchQueryUtil
 	 * @param selectedOutputAttributeList selectedOutputAttributeList
 	 * @return isDefinedView
 	 */
-	private boolean populateSelectedColMetadata(
-			SelectedColumnsMetadata selectedColumnsMetadata,
+	private boolean populateSelectedColMetadata(SelectedColumnsMetadata selectedColumnsMetadata,
 			OutputTreeDataNode currentSelectedObject,
 			List<IOutputAttribute> selectedOutputAttributeList)
 	{
 		boolean isDefinedView;
 		AttributeInterface attribute;
 		OutputAttribute attr;
-		for (QueryOutputTreeAttributeMetadata metadata : selectedColumnsMetadata.getSelectedAttributeMetaDataList())
+		for (QueryOutputTreeAttributeMetadata metadata : selectedColumnsMetadata
+				.getSelectedAttributeMetaDataList())
 		{
 			attribute = metadata.getAttribute();
-			attr = new OutputAttribute(query.getConstraints().getExpression(currentSelectedObject
-					.getExpressionId()), attribute);
+			attr = new OutputAttribute(query.getConstraints().getExpression(
+					currentSelectedObject.getExpressionId()), attribute);
 			selectedOutputAttributeList.add(attr);
 		}
 		selectedColumnsMetadata.setSelectedOutputAttributeList(selectedOutputAttributeList);
