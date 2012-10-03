@@ -13,6 +13,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.NamingException;
+import javax.transaction.InvalidTransactionException;
+import javax.transaction.SystemException;
+
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.exception.BizLogicException;
@@ -43,15 +47,21 @@ public class QueryOutputTreeBizLogic
 {
 	private static org.apache.log4j.Logger logger = LoggerConfig
 	.getConfiguredLogger(QueryOutputTreeBizLogic.class);
+
 	/**
 	 * Creates a temporary table to store query results.
 	 * @param selectSql the query
 	 * @param queryDetailsObj QueryDetails object
 	 * @throws DAOException DAOException
 	 * @throws SQLException SQLException
+	 * @throws SystemException 
+	 * @throws NamingException 
+	 * @throws IllegalStateException 
+	 * @throws InvalidTransactionException 
 	 */
     public void createOutputTreeTable(String selectSql, QueryDetails queryDetailsObj)
-    throws DAOException, SQLException
+			throws DAOException, SQLException, InvalidTransactionException, IllegalStateException,
+			NamingException, SystemException
     {
         String tableName = AQConstants.TEMP_OUPUT_TREE_TABLE_NAME
         + queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
