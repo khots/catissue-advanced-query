@@ -98,20 +98,20 @@ final public class QueryModuleSqlUtil
 				String innerViewName = (tempInnerViewName + (new Random().nextInt(1000)));//inner view name
 				String innerView = "CREATE OR REPLACE VIEW " + innerViewName + " " + tablespace
 						+ " " + " AS " + innerViewQuery;//inner view create query
-
-				jdbcDao.executeUpdate(innerView);//creating inner view
+						
+				daoUtil.executeDDL(appName, innerView);
 
 				/**
 				 * Replacing the inner select query substring with the created inner view
 				 */
 				createViewQuery = createViewQuery.replace(innerViewQuery, innerViewName);
 			}
-			daoUtil.resumeTransaction(transaction);
 
 			//creating a final view with inner views
 			String advViewQuery = "CREATE OR REPLACE VIEW " + tableName + " " + tablespace + " "
 					+ " AS " + createViewQuery;
-			executeInsertQuery(queryDetailsObj, jdbcDao, advViewQuery);
+			executeInsertQuery(queryDetailsObj, appName, advViewQuery);
+			daoUtil.resumeTransaction(transaction);
 		}
 		catch (DAOException e)
 		{
@@ -134,7 +134,7 @@ final public class QueryModuleSqlUtil
 	 * @throws DAOException
 	 *             DAOException
 	 */
-	private static void executeInsertQuery(QueryDetails queryDetailsObj, JDBCDAO jdbcDao,
+	private static void executeInsertQuery(QueryDetails queryDetailsObj, String appName,
 			String insertSql) throws DAOException
 	{
 		int cnt = 0;
@@ -147,8 +147,8 @@ final public class QueryModuleSqlUtil
 			value = "'" + queryDetailsObj.getColumnValueBean().get(cnt++).getColumnName() + "'";
 			insertSql = insertSql.replaceFirst("\\?", value);//modifying sql for inserting variables in where clause
 		}
-		jdbcDao.executeUpdate(insertSql);
-		jdbcDao.commit();
+		
+		DAOUtility.getInstance().executeDDL(appName, insertSql);
 	}
 
 	/**
