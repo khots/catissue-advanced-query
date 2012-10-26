@@ -14,8 +14,7 @@ body {
 	left: 0;
 	width: 181px;
 	background-color: #ffffff;
-	BORDER-right: #d8d8d8 1px solid;
-	 
+	BORDER-right: #d8d8d8 1px solid;	 
 	margin-left: 7px; 
 	height: 100%;
 }
@@ -47,6 +46,24 @@ input.btn {
 	cursor: pointer;
 	margin-left: 2px;
 }
+input.activebtn {
+	width: 176px;
+	height: 27px;
+	background-color: transparent;
+	font-size: 13px;
+	text-align: left;
+	padding-left: 10px;
+	cursor: pointer;
+	font-family: Arial, Helvetica, sans-serif;
+	background: #ffe5ae;
+	color : black;
+	BORDER-right: #ffc341 1px solid;
+	BORDER-left: #ffc341 1px solid;
+	BORDER-bottom: #ffc341 1px solid;
+	BORDER-TOP: #ffc341 1px solid;
+	padding-bottom: 3px;
+	padding-top: 3px;
+}
 input.btn2 {
 	display: inline-block;
 	width: 155px;
@@ -57,12 +74,11 @@ input.btn2 {
 	padding-top: 3px;
 	background: #B80000;
 	cursor: pointer;
-	 
 	-webkit-border-radius: 7px; /*safari and Chrome*/
 	-moz-border-radius: 7px; /*Mozilla*/
 	-o-box-border-radius: 7px; /*Opera*/
 	-ms-box-border-radius: 10px; /*Ms IE*/
-	border-radius: 5px; /*W3C*/
+	border-radius: 7px; /*W3C*/
 }
 input.btn3 {
 	display: inline-block;
@@ -83,17 +99,41 @@ input.btn3 {
 }
 
 .btn1:hover {
-	display: inline-block;
-	width: 175px;
+	width: 176px;
 	height: 27px;
+	background-color: transparent;
+	font-size: 13px;
+	text-align: left;
+	padding-left: 10px;
+	cursor: pointer;
+	font-family: Arial, Helvetica, sans-serif;
 	background: #d5e8ff;
+	color : black;
+	BORDER-right: #A4BED4 1px solid;
+	BORDER-left: #A4BED4 1px solid;
+	BORDER-bottom: #A4BED4 1px solid;
+	BORDER-TOP: #A4BED4 1px solid;
+	padding-bottom: 3px;
+	padding-top: 3px;
 }
 
 .btn1:active {
-	display: inline-block;
-	width: 175px;
+	width: 176px;
 	height: 27px;
-	background: #d5e8ff;
+	background-color: transparent;
+	font-size: 13px;
+	text-align: left;
+	padding-left: 10px;
+	cursor: pointer;
+	font-family: Arial, Helvetica, sans-serif;
+	background: #ffe5ae;
+	color : black;
+	BORDER-right: #ffc341 1px solid;
+	BORDER-left: #ffc341 1px solid;
+	BORDER-bottom: #ffc341 1px solid;
+	BORDER-TOP: #ffc341 1px solid;
+	padding-bottom: 3px;
+	padding-top: 3px;
 }
 
 input.btn1 {
@@ -106,6 +146,7 @@ input.btn1 {
 	cursor: pointer;
 	font-family: Arial, Helvetica, sans-serif;
 	background: #eaeaea;
+	color : black;
 	BORDER-right: #A4BED4 1px solid;
 	BORDER-left: #A4BED4 1px solid;
 	BORDER-bottom: #A4BED4 1px solid;

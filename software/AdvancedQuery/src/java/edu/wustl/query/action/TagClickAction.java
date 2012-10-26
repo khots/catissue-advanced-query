@@ -36,7 +36,7 @@ public class TagClickAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm actionForm,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		String target = new String(AQConstants.SUCCESS);
+		String target = new String(AQConstants.SUCCESS);  
 		String tagId = (String) request.getParameter(AQConstants.TAGID_STRING);
 		List<IParameterizedQuery> queries = getQueriesByTag(tagId);
 		
@@ -55,7 +55,8 @@ public class TagClickAction extends Action
 				ApplicationProperties.getValue("queryfolder.app.newfolder.text"));
 		request.setAttribute(AQConstants.POPUP_DELETE_QUERY_FOLDER_MESSAGE,
 				ApplicationProperties.getValue("queryfolder.confirmBox.folderdelete.message"));
-
+		//needed for highlight active buttons (AllQueries, My Queries etc) on save query page.     
+		request.setAttribute(AQConstants.QUERY_OPTION,AQConstants.TAG_CLICK_PAGE);
 		return (mapping.findForward(target));
 	}
 

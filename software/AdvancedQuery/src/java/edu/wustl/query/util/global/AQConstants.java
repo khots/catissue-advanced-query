@@ -620,4 +620,6 @@ public class AQConstants
 	public static final String POPUP_TEXT = "New Folder";
 	public static final String ENTITY_QUERYTAG = "QueryTag";
 	public static final String ENTITY_QUERYTAGITEM = "QueryTagItem";
+	public static final String QUERY_OPTION = "queryOption";
+	public static final String TAG_CLICK_PAGE = "tagClick";
 }

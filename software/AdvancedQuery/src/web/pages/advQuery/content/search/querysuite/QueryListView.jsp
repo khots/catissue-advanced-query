@@ -45,9 +45,8 @@ function QueryWizard()
 	document.forms[0].action='QueryWizard.do?random='+rand_no;
 	document.forms[0].submit();
 }
-  	window.onload = function() {        
+window.onload = function() {        
    	doInitGrid();	
-	
     }  
 function f()
 {
@@ -62,11 +61,13 @@ function doInitGrid()
  	grid.setHeader("My Folders");
  	grid.setInitWidths("175");
  	grid.setColAlign("left");
- 	grid.setSkin("dhx_skyblue");
+ 	grid.setSkin("dhx_skyblue"); // (xp, mt, gray, light, clear, modern)
+ 	grid.enableRowsHover(true, "activebtn");
  	grid.setEditable(false);
    	grid.attachEvent("onRowSelect", doOnRowSelected);
  	grid.init();
- 	grid .load ("TagGridInItAction.do");
+ 	grid.load ("TagGridInItAction.do");
+  
 }
 function doOnRowSelected(rId)
 {
@@ -97,8 +98,7 @@ function doOnRowSelected(rId)
 		Object formObj = request.getAttribute("saveQueryForm");
 		boolean isWhite = false;
 		String displayStyle = "display:block";
-
-		SaveQueryForm saveQueryForm = (SaveQueryForm) formObj;
+       	SaveQueryForm saveQueryForm = (SaveQueryForm) formObj;
 
 		Collection<IParameterizedQuery> iParameterizedQueryCollection = saveQueryForm
 				.getParameterizedQueryCollection();
@@ -118,6 +118,7 @@ function doOnRowSelected(rId)
 				.getDashBoardDetailsMap();
 		int queryCount = 0;
 	%>
+ 
 
 	<html:messages id="messageKey" message="true">
 		<%
@@ -154,8 +155,8 @@ function doOnRowSelected(rId)
  						String	organizeTarget = "ajaxTreeGridInitCall('"+popupDeleteMessage+"','"+popupFolderDeleteMessage+"','"+entityTag+"','"+entityTagItem+"')";
  %>
 						<input type="button" value="ORGANIZE"
-							onclick="<%=organizeTarget%> " class="btn"> <input
-							type="button" value="CREATE NEW QUERY" onclick="QueryWizard()"
+							onclick="<%=organizeTarget%> " title ="Organize"  class="btn"> <input
+							type="button" value="CREATE NEW QUERY" title ="Create New Query" onclick="QueryWizard()"
 							class="btn2">
 				</td>
 
@@ -168,29 +169,56 @@ function doOnRowSelected(rId)
 		<div id="left">
 			<table class="tags" width="100%" cellspacing="0" cellpadding="0"
 				border="0">
-
+<%
+	String myQueryClass;
+	String allQueryClass;
+	String sharedQueryClass;
+	if (queryOption == "myQueries" || queryOption.equals("myQueries"))
+	{
+		myQueryClass ="activebtn";
+		allQueryClass="btn1";
+		sharedQueryClass="btn1";
+	}
+	else if (queryOption == "allQueries"|| queryOption.equals("allQueries"))
+	{
+		myQueryClass = "btn1";
+		allQueryClass="activebtn";
+		sharedQueryClass="btn1";
+	}
+	else if (queryOption == "sharedQueries" || queryOption.equals("sharedQueries"))
+	{
+		myQueryClass ="btn1" ;
+		allQueryClass="btn1";
+		sharedQueryClass="activebtn";
+	}else
+	{
+		myQueryClass = "btn1";
+		allQueryClass="btn1";
+		sharedQueryClass="btn1";
+	}	
+		%>
 				<tbody>
 					<tr>
 						<td><div style="height: 30px; width: 166px;" id="toolbarObj1">
-								<input type="button" value="My Queries"
+								<input type="button" value="My Queries" title ="My Queries"
 									onclick="submitTheForm('ShowQueryDashboardAction.do?pageOf=myQueries',this);"
-									class="btn1">
+									class=<%=myQueryClass%>>
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td><div style="height: 30px; width: 166px;" id="toolbarObj2">
-								<input type="button" value="All Queries"
+								<input type="button" value="All Queries"  title="All Queries"
 									onclick="submitTheForm('ShowQueryDashboardAction.do?pageOf=allQueries',this);"
-									class="btn1">
+									class=<%=allQueryClass%>>
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td><div style="height: 30px; width: 166px;" id="toolbarObj3">
-								<input type="button" value="Shared Queries"
+								<input type="button" value="Shared Queries" title="Shared Queries"
 									onclick="submitTheForm('ShowQueryDashboardAction.do?pageOf=sharedQueries',this);"
-									class="btn1">
+									class=<%=sharedQueryClass%>>
 							</div>
 						</td>
 					</tr>
@@ -210,7 +238,7 @@ function doOnRowSelected(rId)
 				<div id="popUpDiv" style="display: none; top: 100px; left: 210.5px;">
 
 					<a onclick="popup('popUpDiv')"><img style="float: right;"
-						height='23' width='24' src='images/advQuery/close_button.gif'
+						height='23' width='24' title="Close" src='images/advQuery/close_button.gif'
 						border='0'> </a>
 					<table class=" manage tags" width="100%" cellspacing="0"
 						cellpadding="5" border="0">
@@ -243,7 +271,7 @@ function doOnRowSelected(rId)
 						<%
  String	assignTarget = "ajaxAssignTagFunctionCall('AssignTagAction.do','"+popupAssignMessage+"','"+popupAssignConditionMessage+"')";
  %>
-						<input type="button" value="ASSIGN" onclick="<%=assignTarget%> "
+						<input type="button" value="ASSIGN" title="Assign" onclick="<%=assignTarget%> "
 							onkeydown="<%=assignTarget%> " class="btn3">
 					</p>
 				</div>
