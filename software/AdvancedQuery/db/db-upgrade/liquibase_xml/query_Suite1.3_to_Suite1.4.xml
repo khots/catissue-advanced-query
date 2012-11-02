@@ -14,20 +14,21 @@
 	<property name="int.type" value="bigint(20)" dbms="mysql" />
 	<property name="int.type" value="number(19,0)" dbms="oracle" />
 
+	<property name="tinyint.type" value="tinyint(1)" dbms="mysql" />
+	<property name="tinyint.type" value="number(1,0)" dbms="oracle" />
 
-
-	<!--1 CREATE TABLE -->
-
+ 
 	<changeSet id="1" author="advancedQuery">
-
-
-		<!-- ALTER TABLE CATISSUE_CLINICAL_STUDY -->
-		<addColumn tableName="QUERY">
-				<column name="IS_NORMALIZED_VIEW" type="${boolean.type}" defaultValueBoolean="false" />
+		<!-- ALTER TABLE QUERY -->
+	 	<addColumn tableName="QUERY">
+			<column name="IS_NORMALIZED_VIEW" type="${boolean.type}" defaultValueBoolean="false" />
 		</addColumn>
-		
 	</changeSet>
 
-
-
+	<changeSet id="2" author="advancedQuery">
+		<!-- ALTER TABLE QUERY_PARAMAETERIZED_QUERY -->
+		<addColumn tableName="QUERY_PARAMETERIZED_QUERY">
+			<column name="TREE_VIEW" type="${tinyint.type}" defaultValue="1" />
+		</addColumn>		
+	</changeSet>
 </databaseChangeLog>         
