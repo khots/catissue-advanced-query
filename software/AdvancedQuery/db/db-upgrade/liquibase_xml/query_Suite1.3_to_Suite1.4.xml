@@ -28,7 +28,7 @@
 	<changeSet id="2" author="advancedQuery">
 		<!-- ALTER TABLE QUERY_PARAMAETERIZED_QUERY -->
 		<addColumn tableName="QUERY_PARAMETERIZED_QUERY">
-			<column name="TREE_VIEW" type="${tinyint.type}" defaultValue="1" />
+			<column name="SHOW_TREE" type="${tinyint.type}" defaultValue="1" />
 		</addColumn>		
 	</changeSet>
 </databaseChangeLog>         
