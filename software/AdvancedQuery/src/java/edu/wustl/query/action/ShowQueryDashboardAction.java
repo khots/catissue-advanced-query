@@ -53,6 +53,7 @@ public class ShowQueryDashboardAction extends SecureAction
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		cleanUpSession(request);
+		saveToken(request);
 		ActionForward actionForward;
 		if (AbstractEntityCache.isCacheReady)
 		{

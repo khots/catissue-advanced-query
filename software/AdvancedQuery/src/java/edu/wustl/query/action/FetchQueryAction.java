@@ -45,12 +45,10 @@ public class FetchQueryAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String target = AQConstants.FAILURE;
-		ActionForward actionfwd;
 		if ( !isTokenValid(request) ) 
 		{
-			actionfwd = actionMapping.findForward(Constants.FAILURE);
 			ActionErrors actionErrors = new ActionErrors();
-			ActionError actionError = new ActionError("errors.item","Invalid request for add/edit operaton");
+			ActionError actionError = new ActionError("errors.item","Invalid request for add/edit operation");
 			actionErrors.add(ActionErrors.GLOBAL_ERROR, actionError);
 			saveErrors(request, actionErrors);
 		}
