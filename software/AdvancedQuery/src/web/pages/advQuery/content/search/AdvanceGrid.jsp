@@ -5,15 +5,7 @@
 <%@ page import="edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.Variables"%>
 
-
-
-<script  src="dhtmlx_suite/dhtml_pop/js/dhtmlXGrid.js"></script>
-
-
-<script language="JavaScript" type="text/javascript" src="jss/advQuery/javaScript.js"></script>
-
 <%@ page import="java.util.HashMap,java.util.Map,edu.wustl.common.beans.QueryResultObjectData,java.util.List"%>
-
 <script type="text/javascript" src="jss/tag-popup.js"></script>
 <link rel="STYLESHEET" type="text/css"
 	href="dhtmlx_suite/dhtml_pop/css/dhtmlXTree.css">
@@ -26,10 +18,32 @@
 <script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTree.js"></script>
 <script src="dhtmlx_suite/dhtml_pop/js/dhtmXTreeCommon.js"></script>
 <script src="dhtmlx_suite/dhtml_pop/js/dhtmlXGridCell.js"></script>
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTreeGrid.js"></script>
-
-
 <link rel="stylesheet" type="text/css" href="css/tag-popup.css" />
+<link rel="stylesheet" type="text/css" href="dhtmlx_suite/css/dhtmlxwindows.css">
+<link rel="stylesheet" type="text/css" href="dhtmlx_suite/skins/dhtmlxwindows_dhx_skyblue.css">
+<script src="dhtmlx_suite/js/dhtmlxcommon.js"></script>
+<script src="dhtmlx_suite/js/dhtmlxcontainer.js"></script>
+<script src="dhtmlx_suite/js/dhtmlxwindows.js"></script>
+<link rel="stylesheet" type="text/css"	href="dhtmlx_suite/css/dhtmlxtree.css">
+<link rel="STYLESHEET" type="text/css"	href="dhtmlx_suite/css/dhtmlxgrid.css">
+<link rel="STYLESHEET" type="text/css" href="css/dhtmlDropDown.css">
+<link rel="STYLESHEET" type="text/css"	href="dhtmlx_suite/css/dhtmlxcombo.css">
+<link rel="STYLESHEET" type="text/css"	href="dhtmlx_suite/ext/dhtmlxgrid_pgn_bricks.css">
+<link rel="STYLESHEET" type="text/css"	href="dhtmlx_suite/skins/dhtmlxtoolbar_dhx_blue.css">
+<script language="JavaScript" type="text/javascript" src="jss/dhtmlDropDown.js"></script>
+<script src="dhtmlx_suite/js/dhtmlxcombo.js"></script>
+<script src="dhtmlx_suite/js/dhtmlxtree.js"></script>
+<script src="dhtmlx_suite/ext/dhtmlxtree_li.js"></script>
+<script language="JavaScript" type="text/javascript"	src="jss/javaScript.js"></script>
+<script language="JavaScript" type="text/javascript"	src="jss/caTissueSuite.js"></script>
+<script type="text/javascript" src="dhtmlx_suite/js/dhtmlxgrid.js"></script>
+<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTreeGrid.js"></script>
+<script type="text/javascript" src="dhtmlx_suite/js/dhtmlxgridcell.js"></script>
+<script type="text/javascript" src="dhtmlx_suite/js/connector.js"></script>
+<script type="text/javascript" src="dhtmlx_suite/ext/dhtmlxgrid_filter.js"></script>
+<script type="text/javascript" src="dhtmlx_suite/ext/dhtmlxgrid_pgn.js"></script>
+<script type="text/javascript" src="dhtmlx_suite/js/dhtmlxtoolbar.js"></script>
+
 
 <script>
 <%String checkAllPagesSession = (String)session.getAttribute("checkAllPages");
