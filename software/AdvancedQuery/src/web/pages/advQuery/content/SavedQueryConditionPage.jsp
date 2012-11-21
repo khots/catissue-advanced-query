@@ -151,7 +151,7 @@ function checkForValidation()
 
 </head>
 
-<body >
+<body onload="hideMultiselect()">
 <html:errors />
 <html:form styleId='saveQueryForm'
 	action='<%=AQConstants.SAVE_QUERY_ACTION%>'>
@@ -263,7 +263,7 @@ function checkForValidation()
 		<tr>
 		<tr height="15"></tr>
 			<td></td>
-			<td id="multiSelectId" nowrap="" colspan="1" class="black_ar_new" style="<%=multiSelectDisplay%>">
+			<td id="multiSelectId" nowrap="" colspan="1" class="black_ar_new" style="display:block">
 			<mCombo:multiSelectUsingCombo identifier="coord" styleClass="black_ar_new"  size="20" addButtonOnClick="moveOptions('coord','protocolCoordinatorIds', 'add')" removeButtonOnClick="moveOptions('protocolCoordinatorIds','coord', 'edit')" selectIdentifier="protocolCoordinatorIds" collection="<%=(List)request.getAttribute("selectedCoordinators")%>"/>
 			</td>
 		</tr>
