@@ -466,13 +466,24 @@ public class TwoNodesTemporalQuery
 		else
 		{
 			//If The attribute type is of type Date
-			if (firstAttributeType.equals(AQConstants.DATE_TYPE))
+			//If Both attributes have type
+			if ((firstAttributeType.equals(AQConstants.DATE_TYPE) && secondAttributeType.equals(AQConstants.DATE_TYPE)))
 			{
-				processForDateTypeAttribute();
+				iExpression1 = QueryObjectFactory.createExpressionAttribute(srcIExpression,
+						srcAttributeById, false);
+				iExpression2 = QueryObjectFactory.createExpressionAttribute(destIExpression,
+						destAttributeById, false);
 			}
 			else
 			{
-				setDateOffsetAttribute();
+				if (firstAttributeType.equals(AQConstants.DATE_TYPE))
+				{
+					processForDateTypeAttribute();
+				}
+				else
+				{
+					setDateOffsetAttribute();
+				}
 			}
 		}
 	}
