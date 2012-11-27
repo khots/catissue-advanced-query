@@ -89,7 +89,7 @@ public class SpreadsheetExportAction extends SecureAction
 		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll,selectedColumnsMetadata);
 
 		boolean isDefineView = false;
-		if(!queryDetails.getQuery().getIsNormalizedResultQuery() && selectedColumnsMetadata != null && selectedColumnsMetadata.isDefinedView())
+		if(queryDetails.getQuery()!=null && !queryDetails.getQuery().getIsNormalizedResultQuery() && selectedColumnsMetadata != null && selectedColumnsMetadata.isDefinedView())
 		{
 			IExpression rootExpression = queryDetails.getQuery().getConstraints().getJoinGraph().getRoot();
 			if(!queryDetails.getQuery().getConstraints().getJoinGraph().getChildrenList(rootExpression).isEmpty())
