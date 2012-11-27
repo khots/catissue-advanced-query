@@ -59,7 +59,7 @@ function doInitGrid()
 	grid = new dhtmlXGridObject('mygrid_container');
 	grid.setImagePath("dhtmlx_suite/dhtml_pop/imgs/");
  	grid.setHeader("My Folders");
- 	grid.setInitWidths("175");
+ 	grid.setInitWidths("177");
  	grid.setColAlign("left");
  	grid.setSkin("dhx_skyblue"); // (xp, mt, gray, light, clear, modern)
  	grid.enableRowsHover(true, "activebtn");
@@ -223,8 +223,7 @@ function doOnRowSelected(rId)
 						</td>
 					</tr>
 					<tr>
-						<td><div id="mygrid_container"
-								style="width: 174px; height: 350px;"></div></td>
+						<td><div id="mygrid_container"></div></td>
 					</tr>
 				</tbody>
 			</table>

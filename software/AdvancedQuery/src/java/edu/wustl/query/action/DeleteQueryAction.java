@@ -48,7 +48,6 @@ public class DeleteQueryAction extends Action
 		Long queryId = Long.parseLong(queryIdStr);
 		if (queryId != null && !queryIdStr.equalsIgnoreCase(queryDelInLastReq))
 		{
-			session.setAttribute(AQConstants.QUERY_ALREADY_DELETED, queryIdStr);
 			IBizLogic bizLogic = BizLogicFactory.getInstance().getBizLogic
 			(AQConstants.QUERY_INTERFACE_BIZLOGIC_ID);
 			try
