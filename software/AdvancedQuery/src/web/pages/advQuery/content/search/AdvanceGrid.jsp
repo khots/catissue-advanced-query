@@ -216,7 +216,8 @@ function setEditableChkbox(checkAllPages)
 	function getIDColumnsForSpecimen()
 	{
 	var hiddenColumnNumbers = "";
-		<%if(isSpecPresent)
+	
+		<%if(isSpecPresent && !isFromCatissue)
 		{
 			
 			%>
@@ -230,7 +231,7 @@ function setEditableChkbox(checkAllPages)
 
 			for(col=0;col<columnList.size();col++)
 			{
-				if (columnList.get(col).toString().trim().equals("Id : Specimen"))
+				if (columnList.get(col).toString().trim().equals("Specimen : Id"))
 				{
 				%>
 					hiddenColumnNumbers = <%=col%>;
@@ -308,7 +309,7 @@ function setEditableChkbox(checkAllPages)
 	}
 <%
 	
-	if(isSpecPresent)
+	if(isSpecPresent && !isFromCatissue)
 	{
 	%>
 	columns = columns+',';
@@ -436,7 +437,7 @@ function setEditableChkbox(checkAllPages)
 	}
 	<%
 	
-	if(isSpecPresent)
+	if(isSpecPresent && !isFromCatissue)
 	{
 		
 		

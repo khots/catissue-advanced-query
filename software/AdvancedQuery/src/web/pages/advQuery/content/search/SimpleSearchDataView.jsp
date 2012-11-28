@@ -26,17 +26,30 @@ tr#hiddenCombo {
 	Object obj =  request.getAttribute("isSpecPresent");
 	int specIdColumnIndex = 0;
 	Boolean isSpecPresent = Boolean.FALSE;
+	Boolean specimenFlag = Boolean.FALSE;
+	Object fromCatissue = request.getAttribute("fromCatissue");
+	Boolean isFromCatissue = Boolean.FALSE;
+	if(fromCatissue != null && Boolean.valueOf(fromCatissue.toString()))
+	{
+		isFromCatissue = Boolean.valueOf(fromCatissue.toString());
+	}
 	if(obj != null && Boolean.valueOf(obj.toString()))
 	{
 		isSpecPresent = Boolean.valueOf(obj.toString());
+		specimenFlag = Boolean.valueOf(obj.toString());
 		specIdColumnIndex = Integer.valueOf((request.getAttribute("specIdColumnIndex").toString()));
 	}
+	else if(session.getAttribute("entityName") != null && session.getAttribute("entityName").equals("edu.wustl.catissuecore.domain.Specimen"))
+	{
+		specimenFlag = Boolean.TRUE;
+	}
+	
 	int pageNum = Integer.parseInt((String) request
 			.getAttribute(AQConstants.PAGE_NUMBER));
 
 	int totalResults = ((Integer) session
 			.getAttribute(AQConstants.TOTAL_RESULTS)).intValue();
-	System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&& pageOf : "+session.getAttribute("entityName"));
+	
 	int numResultsPerPage = Integer.parseInt((String) session
 			.getAttribute(AQConstants.RESULTS_PER_PAGE));
 	String pageName = "SpreadsheetView.do";
@@ -63,6 +76,7 @@ tr#hiddenCombo {
 
 
 <script language="javascript">
+var isSpecPresent = "<%=specimenFlag%>"+"&specIdColumnIndex=<%=specIdColumnIndex%>";
 		var colZeroDir='ascending';
 
 		function getData()
@@ -243,6 +257,7 @@ function checkAllOnThisPageResponse()
 function addToSpecimenList()
 {
 	var checkedRows = mygrid.getCheckedRows(0);
+	
 	//alert(checkedRows);
 	var idColumn = getIDColumnsForSpecimen();
 	//alert(idColumn);
@@ -250,6 +265,7 @@ function addToSpecimenList()
 	//alert(mygrid.cellById(1,idColumn).getValue());
 	var n=checkedRows.split(",");
 	var specIds = "";
+	
 	for(var i=0;i<n.length;i++)
 	{
 		specIds=specIds+mygrid.cellById(n[i],idColumn).getValue()+",";
@@ -435,12 +451,23 @@ function addToSpecimenList()
 												&& (pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS) || pageOf
 														.equals(AQConstants.PAGEOF_QUERY_MODULE))) {
 														if(isSpecPresent || session.getAttribute("entityName").equals("edu.wustl.catissuecore.domain.Specimen")){
+														
 							%> 
 								<%
  						String	organizeTarget = "ajaxTreeGridInitCall('Are you sure you want to delete this specimen from the list?','List contains specimens, Are you sure to delete the selected list?','SpecimenListTag','SpecimenListTagItem')";
- %>
+ %><script>
+ function jstClick()
+ {
+  var checkedRows = mygrid.getCheckedRows(0);
+  if(checkedRows != "")
+ ajaxTreeGridInitCall('Are you sure you want to delete this specimen from the list?','List contains specimens, Are you sure to delete the selected list?','SpecimenListTag','SpecimenListTagItem');
+ else
+ alert("Please select atleast one specimen");
+ 
+ }
+ </script>
 						<input type="button" value="Add To Specimen List"
-							onclick="<%=organizeTarget%> " class="blue_ar_c">
+							onclick="jstClick()" class="blue_ar_c">
 							<%}
  	} else {
  %> &nbsp; <%
@@ -540,7 +567,8 @@ function addToSpecimenList()
 function ajaxCall()
 {
 	var specimenIDS = addToSpecimenList();
-	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&objChkBoxString='+specimenIDS,'Select at least one existing list or create a new list.','No query has been selected to assign.',specimenIDS);
+	
+	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&objChkBoxString='+specimenIDS,'Select at least one existing list or create a new list.','No list has been selected to assign.',specimenIDS);
 	
 }
 function doInitGrid()
@@ -563,7 +591,9 @@ function doOnRowSelected(rId)
 function giveCall(url,msg,msg1,id)
 {
 	
+	document.getElementById('objCheckbox').checked=true;
 	document.getElementById('objCheckbox').value=id;
+	
 	ajaxAssignTagFunctionCall(url,msg,msg1);
 }
 			var popupmygrid;
