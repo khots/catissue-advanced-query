@@ -75,18 +75,19 @@ public class TagClickAction extends Action
 	private List<IParameterizedQuery> getQueriesByTag(String tagIdStr)
 			throws DAOException, BizLogicException
 	{
-		List<IParameterizedQuery> queries = new ArrayList<IParameterizedQuery>();
 		long tagId = Long.parseLong(tagIdStr);
 		QueryTagBizLogic queryTagBizLogic= new QueryTagBizLogic();
 		 
-		Set<TagItem> tagItemList = 
-			queryTagBizLogic.getTagItemByTagId(AQConstants.ENTITY_QUERYTAG, tagId);
+		List<List<String>> result = queryTagBizLogic.getQueries(tagId);
 		
-		for (TagItem  tagItem : tagItemList)
-		{  
-			if (tagItem.getObj() != null) {
-				queries.add((IParameterizedQuery)tagItem.getObj());
-			}
+		List<IParameterizedQuery> queries = new ArrayList<IParameterizedQuery>(); 
+		for (List<String> row : result) 
+		{
+			ParameterizedQuery queryObj = new ParameterizedQuery();
+			queryObj.setId(Long.parseLong(row.get(1)));
+			queryObj.setName(row.get(2));
+			queryObj.setDescription(row.get(3));
+			queries.add((IParameterizedQuery)queryObj);
 		}
 		
 		return queries;

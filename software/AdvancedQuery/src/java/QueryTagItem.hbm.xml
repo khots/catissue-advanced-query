@@ -10,10 +10,9 @@
 		</id>
 		<many-to-one entity-name="QueryTag" name="tag">
 			<column name="TAG_ID" not-null="true" />
-		</many-to-one>
-
-		<many-to-one name="obj" class="edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery"	 cascade="none">
-		   	<column name="OBJ_ID" not-null="true" />
-		</many-to-one>
+		</many-to-one>   	
+		
+		<property name="objId" type="java.lang.Long" column="OBJ_ID"/>
+		
 	</class>
 </hibernate-mapping>

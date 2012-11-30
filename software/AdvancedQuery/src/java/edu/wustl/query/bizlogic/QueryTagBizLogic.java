@@ -7,18 +7,14 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.exception.BizLogicException;
-import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.tags.bizlogic.ITagBizlogic;
 import edu.wustl.common.tags.dao.TagDAO;
 import edu.wustl.common.tags.domain.Tag;
 import edu.wustl.common.tags.domain.TagItem;
-import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.util.global.AQConstants;
-import edu.wustl.query.util.querysuite.DAOUtil;
 
 public class QueryTagBizLogic implements ITagBizlogic
 {
@@ -58,13 +54,9 @@ public class QueryTagBizLogic implements ITagBizlogic
 		Tag tag = new Tag();
 		tag.setIdentifier(tagId);
 		TagItem<ParameterizedQuery> tagItem = new TagItem<ParameterizedQuery>();
-
-		//ParameterizedQuery query = getQueryById(objId);
-		ParameterizedQuery query = new ParameterizedQuery();
-		query.setId(objId);
-
+  
 		tagItem.setTag(tag);
-		tagItem.setObj(query);
+		tagItem.setObjId(objId);
 
 		TagDAO<ParameterizedQuery> tagDao = new TagDAO<ParameterizedQuery>(entityName);
 		tagDao.insertTagItem(tagItem);
@@ -125,11 +117,11 @@ public class QueryTagBizLogic implements ITagBizlogic
 
 	public void deleteTag(String entityName, long tagId) throws DAOException, BizLogicException
 	{
-		TagDAO tagDao = new TagDAO(entityName);
-		Tag tag = tagDao.getTagById(tagId);
+		TagDAO tagDao = new TagDAO(entityName); 
+		Tag tag = tagDao.getTagById(tagId); 
 		tagDao.deleteTag(tag);
-	}
 
+	}
 	/**
 	 * Delete the Tag Item from database.
 	 * @param entityName from hbm file.
@@ -144,6 +136,18 @@ public class QueryTagBizLogic implements ITagBizlogic
 		TagDAO tagDAO = new TagDAO(entityName);
 		TagItem tagItem = tagDAO.getTagItemById(itemId);
 		tagDAO.deleteTagItem(tagItem);
+	}
+	
+	/**
+	 * Get queries from database.
+	 * @param Set<TagItem> tagItemList.
+	 * @throws DAOException.
+	 */
+	public List<List<String>> getQueries(long tagId) throws DAOException, BizLogicException
+	{
+		CommonQueryBizLogic commonQueryBizLogic = new CommonQueryBizLogic();
+		List<List<String>> result = commonQueryBizLogic.getQueries(tagId);
+		return result;
 	}
 
 	/**
@@ -160,18 +164,14 @@ public class QueryTagBizLogic implements ITagBizlogic
 		JSONObject arrayObj = new JSONObject();
 		try
 		{
-			Set<TagItem> tagItemList = getTagItemByTagId(entityName, tagId);
 			JSONArray treeData = new JSONArray();
-
 			int childCount = 0;
-			for (TagItem tagItem : tagItemList)
+			List<List<String>> result = getQueries(tagId); 
+			for (List<String> row : result)
 			{
-				long objId = ((IParameterizedQuery) tagItem.getObj()).getId();
-				String objName = ((IParameterizedQuery) tagItem.getObj()).getName();
-
-				JSONObject obj = new JSONObject();
-				obj.put(AQConstants.IDENTIFIER, tagItem.getIdentifier());
-				obj.put(AQConstants.NAME, objName);
+ 				JSONObject obj = new JSONObject();
+				obj.put(AQConstants.IDENTIFIER, Long.parseLong(row.get(0)));
+				obj.put(AQConstants.NAME, row.get(2));
 				childCount++;
 				treeData.put(obj);
 			}

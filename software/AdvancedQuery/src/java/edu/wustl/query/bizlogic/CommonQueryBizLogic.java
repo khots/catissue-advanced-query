@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +34,14 @@ import edu.wustl.security.exception.SMException;
  */
 public class CommonQueryBizLogic
 {
+	public final String GET_QUERY_DETAILS = "SELECT " 
+			+ "qti.identifier, qpq.identifier, qpq.query_name, qpq.description "
+			+ "FROM " 
+			+ "query_tag_items qti, query_parameterized_query qpq "
+			+ "WHERE " 
+			+ "qpq.identifier = qti.obj_id AND "
+			+ "qti.tag_id = ?";				 
+						         
 	/**
 	 * Method to execute the given SQL to get the query result.
 	 * @param sessionDataBean reference to SessionDataBean object
@@ -368,4 +377,36 @@ public class CommonQueryBizLogic
 		}
 		return columnValueBean;
 	}
+	
+	/**
+	 * Get Queries.
+	 * @param list if Query Ids.
+	 
+	 * @throws DAOException generic DAOException.
+	 * @return auditEventId Audit event id
+	 */
+	public List<List<String>> getQueries (Long tagId) throws DAOException
+	{
+		String appName=CommonServiceLocator.getInstance().getAppName();
+		IDAOFactory daofactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
+		JDBCDAO jdbcDAO = daofactory.getJDBCDAO(); 
+		jdbcDAO.openSession(null);
+		
+		try
+		{
+			List<ColumnValueBean> queryParam = new ArrayList<ColumnValueBean>();
+			queryParam.add(new ColumnValueBean(tagId));	 
+			List<List<String>> result = jdbcDAO.executeQuery(GET_QUERY_DETAILS, null, queryParam);
+			jdbcDAO.commit();
+			return result;
+		}
+		catch (DAOException e)
+		{
+			throw e;
+		}
+		finally
+		{
+			jdbcDAO.closeSession();
+		}		
+	}	 
 }
