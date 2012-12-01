@@ -231,7 +231,8 @@ function setEditableChkbox(checkAllPages)
 
 			for(col=0;col<columnList.size();col++)
 			{
-				if (columnList.get(col).toString().trim().equals("Specimen : Id"))
+				if (columnList.get(col).toString().trim().equals("Specimen : Id") ||
+				columnList.get(col).toString().trim().equals("Id : Specimen"))
 				{
 				%>
 					hiddenColumnNumbers = <%=col%>;
