@@ -222,6 +222,7 @@ function setEditableChkbox(checkAllPages)
 			
 			%>
 			hiddenColumnNumbers = <%=specIdColumnIndex%>
+			//alert("hiddenColumnNumbers :"+hiddenColumnNumbers);
 		<%}
 		else
 		{%>
@@ -231,15 +232,18 @@ function setEditableChkbox(checkAllPages)
 
 			for(col=0;col<columnList.size();col++)
 			{
+				//System.out.println(columnList.get(col));
 				if (columnList.get(col).toString().trim().equals("Specimen : Id") ||
 				columnList.get(col).toString().trim().equals("Id : Specimen"))
 				{
+					//System.out.println(columnList.get(col));
 				%>
 					hiddenColumnNumbers = <%=col%>;
 					
 				<%}
 			}
 			}%>
+			//alert(hiddenColumnNumbers);
 		return hiddenColumnNumbers;
 	}
 

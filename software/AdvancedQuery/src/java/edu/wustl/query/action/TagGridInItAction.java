@@ -14,6 +14,8 @@ import org.apache.struts.action.ActionMapping;
 /*import edu.wustl.common.tagFolder.beans.Tag;
 import edu.wustl.common.tagFolder.bizlogic.TagBizLogic;*/
 import edu.wustl.common.tags.domain.Tag;
+import edu.wustl.common.util.global.Constants;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.velocity.VelocityManager;
 import edu.wustl.query.bizlogic.QueryTagBizLogic;
 import edu.wustl.query.util.global.AQConstants;
@@ -25,7 +27,9 @@ public class TagGridInItAction extends Action
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		QueryTagBizLogic queryBizLogic = new QueryTagBizLogic();
-		List<Tag> tagList = queryBizLogic.getTagList(AQConstants.ENTITY_QUERYTAG);
+		SessionDataBean sessionBean = (SessionDataBean)request.getSession().getAttribute(Constants.SESSION_DATA);
+		Long userId = sessionBean.getUserId();
+		List<Tag> tagList = queryBizLogic.getTagList(AQConstants.ENTITY_QUERYTAG,userId);
 		String responseString = VelocityManager.getInstance().evaluate(tagList,
 				"privilegeGridTemplate.vm");
 		response.getWriter().write(responseString);

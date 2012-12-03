@@ -74,6 +74,7 @@ public class DefineQueryResultsViewAction extends Action
 		session.setAttribute(AQConstants.SEL_COL_NVB_LST,
 				selectedCNVBList);
 		session.setAttribute(AQConstants.TREE_DATA, treeDataVector);
+		request.setAttribute("isSpecPresent", request.getParameter("isSpecPresent"));
 		return mapping.findForward(AQConstants.SUCCESS);
 	}
 }

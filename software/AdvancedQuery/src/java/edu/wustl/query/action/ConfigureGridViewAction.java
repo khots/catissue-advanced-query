@@ -65,6 +65,9 @@ public class ConfigureGridViewAction extends SecureAction
 		SelectedColumnsMetadata selectedColumnsMetadata =
 			(SelectedColumnsMetadata)session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
 		OutputTreeDataNode currentSelectedObject = selectedColumnsMetadata.getCurrentSelectedObject();
+		if("edu.wustl.catissuecore.domain.Specimen".equals(currentSelectedObject.getOutputEntity().getDynamicExtensionsEntity().getName()))
+			request.setAttribute("isSpecPresent", Boolean.TRUE);
+		
 		QuerySessionData querySessionData =
 			(QuerySessionData) session.getAttribute(AQConstants.QUERY_SESSION_DATA);
 		String recordsPerPageStr = (String) session.getAttribute(AQConstants.RESULTS_PER_PAGE);
@@ -76,6 +79,7 @@ public class ConfigureGridViewAction extends SecureAction
 		QueryOutputSpreadsheetBizLogic queryOutputSpreadsheetBizLogic =
 			new QueryOutputSpreadsheetBizLogic();
 
+		
 		String sql = querySessionData.getSql();
 		session.removeAttribute(AQConstants.EXPORT_DATA_LIST);
 		session.removeAttribute(AQConstants.ENTITY_IDS_MAP);
@@ -101,6 +105,14 @@ public class ConfigureGridViewAction extends SecureAction
 			definedColumnsList = defineGridViewBizLogic.getSelectedColumnList(categorySearchForm,
 					selectedColumnsMetadata.getSelectedAttributeMetaDataList(), selectedColumnNames,
 					queryResultObjecctDataMap, queryDetailsObj, outputTermsColumns,nodeData,specimenMap);
+			if(definedColumnsList.contains("Specimen : Id"))
+					{
+						request.setAttribute("specIdColumnIndex", definedColumnsList.indexOf("Specimen : Id")+1);
+					}
+			else if(definedColumnsList.contains("Id : Specimen"))
+			{
+				request.setAttribute("specIdColumnIndex", definedColumnsList.indexOf("Id : Specimen")+1);
+			}
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 			// gets the message and sets it in the session.
 			String sqlForSelectedColumns =

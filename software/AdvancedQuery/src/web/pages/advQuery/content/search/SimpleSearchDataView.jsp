@@ -24,6 +24,7 @@ tr#hiddenCombo {
 <head>
 <%
 	Object obj =  request.getAttribute("isSpecPresent");
+	//System.out.println("obj :"+obj);
 	int specIdColumnIndex = 0;
 	Boolean isSpecPresent = Boolean.FALSE;
 	Boolean specimenFlag = Boolean.FALSE;
@@ -182,7 +183,8 @@ var isSpecPresent = "<%=specimenFlag%>"+"&specIdColumnIndex=<%=specIdColumnIndex
 		}
 		function onQueryResultsConfigure()
 		{
-			 action="DefineQueryResultsView.do?pageOf=pageOfQueryModule";
+		//alert("<%=isSpecPresent%>  isSpecPresent");
+			 action="DefineQueryResultsView.do?pageOf=pageOfQueryModule&isSpecPresent=<%=isSpecPresent%>";
 			 document.forms[0].action = action;
 			 document.forms[0].target = "<%=AQConstants.GRID_DATA_VIEW_FRAME%>";
 			 document.forms[0].submit();
@@ -446,11 +448,13 @@ function addToSpecimenList()
 							</td>
 							<td width="10%" align="right" valign="top">&nbsp;
 							<%
+							//System.out.println("session.getAttribute(entityName) : "+session.getAttribute("entityName"));
+							//System.out.println("isSpecPresent :"+isSpecPresent);
 								if (Utility
 												.checkFeatureUsage(AQConstants.FEATURE_ADD_TO_LIST)
 												&& (pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS) || pageOf
 														.equals(AQConstants.PAGEOF_QUERY_MODULE))) {
-														if(isSpecPresent || session.getAttribute("entityName").equals("edu.wustl.catissuecore.domain.Specimen")){
+														if(isSpecPresent || ("edu.wustl.catissuecore.domain.Specimen").equals(session.getAttribute("entityName"))){
 														
 							%> 
 								<%
@@ -564,11 +568,42 @@ function addToSpecimenList()
 				</div>
 			</div>
 			<script>
+			function onResponseSet(response) 
+	{
+	//alert(response);
+	var specimenIDS = response;
+	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&objChkBoxString='+specimenIDS,'Select at least one existing list or create a new list.','No list has been selected to assign.',specimenIDS);
+		//document.forms[0].action="ViewSpecimenList.do?operation=view";
+		//document.forms[0].submit();
+	}
 function ajaxCall()
 {
 	var specimenIDS = addToSpecimenList();
+	//alert(isCheckAllPagesChecked);
+	if(isCheckAllPagesChecked)
+	{
+	var chkBox = document.getElementById('checkAll');
+			var isCheckAllAcrossAllChecked = chkBox.checked;
+	var pageNum = "<%=pageNum%>";
+		request = newXMLHTTPReq();			
+					var actionURL;
+					var handlerFunction = getReadyStateHandler(request,onResponseSet,true);	
+					request.onreadystatechange = handlerFunction;	
+					var specId =  getIDColumnsForSpecimen();
+					specId = specId;
+					actionURL = "specIndex="+specId+"&operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
+					var url = "CatissueCommonAjaxAction.do?type=getSpecimenIds&"+actionURL;
+					//alert(url);
+					<!-- Open connection to servlet -->
+					request.open("POST",url,true);	
+					request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
+					request.send("");
+	}
+	else
+	{
 	
-	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&objChkBoxString='+specimenIDS,'Select at least one existing list or create a new list.','No list has been selected to assign.',specimenIDS);
+	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&isCheckAllAcrossAllChecked='+isCheckAllPagesChecked+'objChkBoxString='+specimenIDS,'Select at least one existing list or create a new list.','No list has been selected to assign.',specimenIDS);
+	}
 	
 }
 function doInitGrid()
