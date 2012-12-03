@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.exception.BizLogicException;
+import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.logger.Logger;
@@ -85,7 +86,13 @@ public class DeleteQueryAction extends Action
 		(AQConstants.QUERY_INTERFACE_BIZLOGIC_ID);
 		IParameterizedQuery query = (ParameterizedQuery) object;
 		String queryName = query.getName();
+		try{
 		bizLogic.delete(query, AQConstants.HIBERNATE_DAO);
+		}catch(BizLogicException e)
+		{
+			ErrorKey errorKey = ErrorKey.getErrorKey("delete.query.message");
+			throw new BizLogicException(errorKey, null, "");
+		}
 		String target = AQConstants.SUCCESS;
 		String message = queryName;
 		setActionError(request,"query.deletedSuccessfully.message",message);
@@ -98,9 +105,9 @@ public class DeleteQueryAction extends Action
 	private void handleErrors(HttpServletRequest request,
 			BizLogicException bizLogicException)
 	{
-		LOGGER.info("In Handle error");
+		LOGGER.info("In Handle error"); 
 			LOGGER.error("Error occured during deleting the query",bizLogicException);
-			final String errorMsg = "Unable to delete the query, please contact Administrator.";
+			final String errorMsg = bizLogicException.getErrorKey().getErrorMessage();
 			setActionError(request,"query.errors.item", errorMsg);
 	}
 
