@@ -125,7 +125,7 @@ PUBLIC
 			validate="true"
 			input="/LoadSaveQueryPage.do"
 			scope="request">
-			<forward name="success" path="/ShowQueryDashboardAction.do?actions=save&amp;pageOf=allQueries"/>
+			<forward name="success" path="/ShowQueryDashboardAction.do?actions=save&amp;pageOf=myQueries"/>
 			<forward name="failure" path="/LoadSaveQueryPage.do?access=access"/>
 		</action>
 		<action path="/RetrieveQueryAction"
