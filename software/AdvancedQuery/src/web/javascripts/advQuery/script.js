@@ -126,8 +126,8 @@ function send(pageNum,numResultsPerPage,prevPage,pageName)
 
 function changeRecordPerPage(pageNum,element,pageName) 
 {
-//alert(isSpecPresent);
-	document.forms[0].action = pageName+'?pageNum=1&numResultsPerPage='+element.value+'&isSpecPresent='+isSpecPresent;
+
+	document.forms[0].action = pageName+'?pageNum=1&numResultsPerPage='+element.value;
 	document.forms[0].submit();
 }
 

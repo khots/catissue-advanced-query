@@ -119,7 +119,7 @@ public class ShowGridAction extends SecureAction
 			gridDatamap = outputSpreadsheetBizLogic.processSpreadsheetForLabelNode(
 					session, columnMap, idOfClickedNode, recordsPerPage,
 					selectedColumnsMetadata, hasConditionOnIdentifiedField,
-					resultDataMap, query.getConstraints(), outputTermsColumns);
+					resultDataMap, query.getConstraints(), outputTermsColumns,specimenMap);
 		}
 		else
 		{

@@ -1040,10 +1040,14 @@ public class QueryCSMUtil
 						appendColNameToSql(selectSql, sql, sqlColumnName);
 						entityIdIndexMap.put(attribute.getEntity(), columnIndex);
 						columnIndex++;
-						if(specimenMap != null && outputTreeDataNode.getOutputEntity().getDynamicExtensionsEntity().getName().equals("edu.wustl.catissuecore.domain.Specimen"))
+						if(outputTreeDataNode.getOutputEntity().getDynamicExtensionsEntity().getName().equals("edu.wustl.catissuecore.domain.Specimen"))
 						{
+							if(specimenMap == null)
+							{
+								specimenMap = new HashMap<String, String>();
+							}
 							specimenMap.put("specimenKey", "edu.wustl.catissuecore.domain.Specimen");
-							specimenMap.put("columnIndex", String.valueOf(columnIndex));
+							specimenMap.put("columnIndex", String.valueOf(columnIndex-1));
 						}
 						break;
 					}

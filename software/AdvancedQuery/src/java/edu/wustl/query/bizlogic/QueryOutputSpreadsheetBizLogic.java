@@ -43,6 +43,7 @@ import edu.wustl.common.util.PagenatedResultData;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.QuerySessionData;
+import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
@@ -101,6 +102,7 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @param beanMap queryResultObjectDataMap
 	 * @param constraints constraints
 	 * @param outputTermsColumns outputTermsColumns
+	 * @param specimenMap 
 	 * @return Map for data
 	 * @throws DAOException DAOException
 	 * @throws ClassNotFoundException ClassNotFoundException
@@ -110,7 +112,7 @@ public class QueryOutputSpreadsheetBizLogic
 			int recordsPerPage, SelectedColumnsMetadata selectedColumnMetaData,
 			boolean hasConditionOnIdentifiedField,
 			Map<Long, QueryResultObjectDataBean> beanMap,
-			IConstraints constraints, Map<String, IOutputTerm> outputTermsColumns)
+			IConstraints constraints, Map<String, IOutputTerm> outputTermsColumns, Map<String, String> specimenMap)
 			throws DAOException, ClassNotFoundException
 	{
 		Map<Long, QueryResultObjectDataBean> queryResultDataMap = beanMap;
@@ -129,7 +131,23 @@ public class QueryOutputSpreadsheetBizLogic
 			OutputTreeDataNode root = QueryModuleUtil.getRootNodeOfTree(queryDetailsObj, treeNo);
 			QueryResultObjectDataBean queryResulObjectDataBean = QueryCSMUtil
 			.getQueryResulObjectDataBean(root, queryDetailsObj);
-			session.setAttribute("entityName", queryResulObjectDataBean.getCsmEntityName());
+			List<OutputTreeDataNode> childList = root.getChildren();
+			boolean isSpecimen = Boolean.FALSE;
+			String entityName = "";
+			for (OutputTreeDataNode outputTreeDataNode : childList) 
+			{
+				entityName = outputTreeDataNode.getOutputEntity().getDynamicExtensionsEntity().getName();
+				if(!Validator.isEmpty(entityName) && "edu.wustl.catissuecore.domain.Specimen".equals(entityName))
+				{
+					isSpecimen = Boolean.TRUE;
+					break;
+				}
+			}
+			if(isSpecimen)
+				session.setAttribute("entityName", entityName);
+			else
+				session.setAttribute("entityName", queryResulObjectDataBean.getCsmEntityName());
+			
 			queryResultObjectDataBeanMap = new HashMap<Long, QueryResultObjectDataBean>();
 			queryResultObjectDataBeanMap.put(root.getId(), queryResulObjectDataBean);
 			if (selectedColumnMetaData.isDefinedView())
@@ -140,7 +158,7 @@ public class QueryOutputSpreadsheetBizLogic
 				}
 				spreadSheetDataMap = createSpreadsheetData(treeNo, root, queryDetailsObj, null,
 						recordsPerPage, this.selectedColumnMetaData, queryResultDataMap,
-						hasConditionOnIdentifiedField, constraints, outputTermsColumns,null);
+						hasConditionOnIdentifiedField, constraints, outputTermsColumns,specimenMap);
 				spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 						queryResultDataMap);
 			}
@@ -150,7 +168,7 @@ public class QueryOutputSpreadsheetBizLogic
 						queryDetailsObj, null,
 						recordsPerPage, this.selectedColumnMetaData,
 						queryResultObjectDataBeanMap,
-						hasConditionOnIdentifiedField, constraints, outputTermsColumns,null);
+						hasConditionOnIdentifiedField, constraints, outputTermsColumns,specimenMap);
 				spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
 						queryResultObjectDataBeanMap);
 			}
@@ -184,7 +202,7 @@ public class QueryOutputSpreadsheetBizLogic
 			}
 			List resultList = createSQL(spreadSheetDataMap, currentTreeNode, parentIdColumnName,
 					parentData, tableName, queryResultObjectDataBeanMap, queryDetailsObj,
-					outputTermsColumns);
+					outputTermsColumns,specimenMap);
 
 			String selectSql = (String) resultList.get(0);
 			queryResultObjectDataBeanMap = (Map<Long, QueryResultObjectDataBean>) resultList.get(1);
@@ -1343,12 +1361,13 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @param queryResultObjectDataBeanMap queryResultObjectDataBeanMap
 	 * @param queryDetailsObj queryDetailsObj
 	 * @param outputTermsColumns outputTermsColumns
+	 * @param specimenMap 
 	 * @return resultList
 	 */
 	private List createSQL(Map spreadSheetDataMap, OutputTreeDataNode node,
 			String parentIdColumnName, String parentData, String tableName,
 			Map<Long, QueryResultObjectDataBean> beanMap,
-			QueryDetails queryDetailsObj, Map<String, IOutputTerm> outputTermsColumns)
+			QueryDetails queryDetailsObj, Map<String, IOutputTerm> outputTermsColumns, Map<String, String> specimenMap)
 	{
 		Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap = beanMap;
 		String selectSql = AQConstants.SELECT_DISTINCT;
@@ -1430,7 +1449,7 @@ public class QueryOutputSpreadsheetBizLogic
 				&& queryResultObjectDataBean.getMainEntityIdentifierColumnId() == -1)
 		{
 			selectSql = populateQueryForDefaultView(queryDetailsObj, selectSql,
-					queryResultObjectDataBean, columnIndex);
+					queryResultObjectDataBean, columnIndex,specimenMap);
 		}
 		selectSql = selectSql + " from " + tableName;
 		if (parentData == null)
@@ -1460,16 +1479,17 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @param selectSql select query
 	 * @param queryResultObjectDataBean queryResultObjectDataBean
 	 * @param columnIndex columnIndex
+	 * @param specimenMap 
 	 * @return selectSql
 	 */
 	private String populateQueryForDefaultView(QueryDetails queryDetailsObj,
 			String sql,
-			QueryResultObjectDataBean queryResultObjectDataBean, int columnIndex)
+			QueryResultObjectDataBean queryResultObjectDataBean, int columnIndex, Map<String, String> specimenMap)
 	{
 		String selectSql = sql;
 		Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
 		selectSql = QueryCSMUtil.updateEntityIdIndexMap(queryResultObjectDataBean, columnIndex,
-				selectSql, null, entityIdIndexMap, queryDetailsObj,null);
+				selectSql, null, entityIdIndexMap, queryDetailsObj,specimenMap);
 		entityIdIndexMap = queryResultObjectDataBean.getEntityIdIndexMap();
 		if (entityIdIndexMap.get(queryResultObjectDataBean.getMainEntity()) == null)
 		{

@@ -108,10 +108,12 @@ public class ConfigureGridViewAction extends SecureAction
 			if(definedColumnsList.contains("Specimen : Id"))
 					{
 						request.setAttribute("specIdColumnIndex", definedColumnsList.indexOf("Specimen : Id")+1);
+						request.setAttribute("isDefineView", Boolean.TRUE);
 					}
 			else if(definedColumnsList.contains("Id : Specimen"))
 			{
 				request.setAttribute("specIdColumnIndex", definedColumnsList.indexOf("Id : Specimen")+1);
+				request.setAttribute("isDefineView", Boolean.TRUE);
 			}
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 			// gets the message and sets it in the session.

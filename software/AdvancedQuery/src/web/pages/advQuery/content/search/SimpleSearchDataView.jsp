@@ -23,27 +23,16 @@ tr#hiddenCombo {
 </style>
 <head>
 <%
-	Object obj =  request.getAttribute("isSpecPresent");
-	//System.out.println("obj :"+obj);
+	
 	int specIdColumnIndex = 0;
-	Boolean isSpecPresent = Boolean.FALSE;
-	Boolean specimenFlag = Boolean.FALSE;
-	Object fromCatissue = request.getAttribute("fromCatissue");
-	Boolean isFromCatissue = Boolean.FALSE;
-	if(fromCatissue != null && Boolean.valueOf(fromCatissue.toString()))
-	{
-		isFromCatissue = Boolean.valueOf(fromCatissue.toString());
-	}
-	if(obj != null && Boolean.valueOf(obj.toString()))
-	{
-		isSpecPresent = Boolean.valueOf(obj.toString());
-		specimenFlag = Boolean.valueOf(obj.toString());
-		specIdColumnIndex = Integer.valueOf((request.getAttribute("specIdColumnIndex").toString()));
-	}
-	else if(session.getAttribute("entityName") != null && session.getAttribute("entityName").equals("edu.wustl.catissuecore.domain.Specimen"))
-	{
-		specimenFlag = Boolean.TRUE;
-	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	int pageNum = Integer.parseInt((String) request
 			.getAttribute(AQConstants.PAGE_NUMBER));
@@ -77,7 +66,7 @@ tr#hiddenCombo {
 
 
 <script language="javascript">
-var isSpecPresent = "<%=specimenFlag%>"+"&specIdColumnIndex=<%=specIdColumnIndex%>";
+
 		var colZeroDir='ascending';
 
 		function getData()
@@ -183,8 +172,8 @@ var isSpecPresent = "<%=specimenFlag%>"+"&specIdColumnIndex=<%=specIdColumnIndex
 		}
 		function onQueryResultsConfigure()
 		{
-		//alert("<%=isSpecPresent%>  isSpecPresent");
-			 action="DefineQueryResultsView.do?pageOf=pageOfQueryModule&isSpecPresent=<%=isSpecPresent%>";
+		
+			 action="DefineQueryResultsView.do?pageOf=pageOfQueryModule";
 			 document.forms[0].action = action;
 			 document.forms[0].target = "<%=AQConstants.GRID_DATA_VIEW_FRAME%>";
 			 document.forms[0].submit();
@@ -447,36 +436,31 @@ function addToSpecimenList()
  %>
 							</td>
 							<td width="10%" align="right" valign="top">&nbsp;
-							<%
-							//System.out.println("session.getAttribute(entityName) : "+session.getAttribute("entityName"));
-							//System.out.println("isSpecPresent :"+isSpecPresent);
-								if (Utility
-												.checkFeatureUsage(AQConstants.FEATURE_ADD_TO_LIST)
-												&& (pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS) || pageOf
-														.equals(AQConstants.PAGEOF_QUERY_MODULE))) {
-														if(isSpecPresent || ("edu.wustl.catissuecore.domain.Specimen").equals(session.getAttribute("entityName"))){
-														
-							%> 
+							 
 								<%
  						String	organizeTarget = "ajaxTreeGridInitCall('Are you sure you want to delete this specimen from the list?','List contains specimens, Are you sure to delete the selected list?','SpecimenListTag','SpecimenListTagItem')";
- %><script>
+ %>
+ <script>
  function jstClick()
  {
-  var checkedRows = mygrid.getCheckedRows(0);
-  if(checkedRows != "")
- ajaxTreeGridInitCall('Are you sure you want to delete this specimen from the list?','List contains specimens, Are you sure to delete the selected list?','SpecimenListTag','SpecimenListTagItem');
- else
- alert("Please select atleast one specimen");
- 
+	var idSpecimenPresent=isIDColumnsForSpecimen();
+	if(idSpecimenPresent == null || idSpecimenPresent == '')
+	{
+		alert('Specimen:Id missing in the grid! Please redefine the view and include Specimen:Id to use the Specimen List feature');
+	}
+	else
+	{
+		  var checkedRows = mygrid.getCheckedRows(0);
+		  if(checkedRows != "")
+		 ajaxTreeGridInitCall('Are you sure you want to delete this specimen from the list?','List contains specimens, Are you sure to delete the selected list?','SpecimenListTag','SpecimenListTagItem');
+		 else
+		 alert("Please select atleast one specimen");
+	}
  }
  </script>
 						<input type="button" value="Add To Specimen List"
 							onclick="jstClick()" class="blue_ar_c">
-							<%}
- 	} else {
- %> &nbsp; <%
- 	}
- %>
+
 							</td>
 							<td width="5%" nowrap align="right" valign="top">
 							<%

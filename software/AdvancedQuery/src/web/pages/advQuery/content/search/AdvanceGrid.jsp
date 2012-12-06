@@ -213,26 +213,14 @@ function setEditableChkbox(checkAllPages)
 			//alert(hiddenColumnNumbers);
 		return hiddenColumnNumbers;
 	}
-	function getIDColumnsForSpecimen()
+	function isIDColumnsForSpecimen()
 	{
-	var hiddenColumnNumbers = "";
-	
-		<%if(isSpecPresent && !isFromCatissue)
-		{
-			
-			%>
-			hiddenColumnNumbers = <%=specIdColumnIndex%>
-			//alert("hiddenColumnNumbers :"+hiddenColumnNumbers);
-		<%}
-		else
-		{%>
-		
-		var i=0;
+		var hiddenColumnNumbers = "";
 		<%
 
 			for(col=0;col<columnList.size();col++)
 			{
-				//System.out.println(columnList.get(col));
+				
 				if (columnList.get(col).toString().trim().equals("Specimen : Id") ||
 				columnList.get(col).toString().trim().equals("Id : Specimen"))
 				{
@@ -242,8 +230,33 @@ function setEditableChkbox(checkAllPages)
 					
 				<%}
 			}
-			}%>
+			%>
 			//alert(hiddenColumnNumbers);
+		return hiddenColumnNumbers;
+	}
+	function getIDColumnsForSpecimen()
+	{
+	var hiddenColumnNumbers = "";
+	
+		
+		
+		var i=0;
+		<%
+
+			for(col=0;col<columnList.size();col++)
+			{
+				
+				if (columnList.get(col).toString().trim().equals("Specimen : Id") ||
+				columnList.get(col).toString().trim().equals("Id : Specimen"))
+				{
+					//System.out.println(columnList.get(col));
+				%>
+					hiddenColumnNumbers = <%=col%>;
+					
+				<%}
+			}
+			%>
+			
 		return hiddenColumnNumbers;
 	}
 
@@ -312,14 +325,9 @@ function setEditableChkbox(checkAllPages)
 		document.write("<hr>colWidth : "+colWidth+"<hr>");
 		*/
 	}
-<%
+
 	
-	if(isSpecPresent && !isFromCatissue)
-	{
-	%>
-	columns = columns+',';
-	//alert('<%=request.getAttribute("specimenKey")%>');
-	<%}%>
+	
 	//alert('<%=request.getAttribute("specimenKey")%>');
 	mygrid.setHeader(columns);
 	//mygrid.setEditable("FALSE");
@@ -440,15 +448,9 @@ function setEditableChkbox(checkAllPages)
 		mygrid.setHeaderCol(hideCols[i],"");
 		mygrid.setColumnHidden(hideCols[i],true);
 	}
-	<%
 	
-	if(isSpecPresent && !isFromCatissue)
-	{
-		
-		
-	%>
-mygrid.setColumnHidden('<%=specIdColumnIndex%>',true);
-<%}%>
+	
+	
 	//fix for grid display on IE for first time.
 	mygrid.setSizes();
 </script>
