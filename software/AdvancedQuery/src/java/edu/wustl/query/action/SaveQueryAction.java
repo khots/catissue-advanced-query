@@ -35,6 +35,7 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.newdao.ActionStatus;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.beans.SharedQueryBean;
@@ -90,6 +91,7 @@ public class SaveQueryAction extends SecureAction
 				Logger.getCommonLogger(AbstractEntityCache.class).info("abc");
 				LOGGER.info("before saving the Query");
 				target = saveQuery(request, parameterizedQuery, actionForm);
+				request.setAttribute(ActionStatus.ACTIONSTAUS, ActionStatus.SUCCESSFUL);
 				LOGGER.info("after saving the Query");
 			}
 		}
