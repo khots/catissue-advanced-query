@@ -8,10 +8,13 @@
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
 <%@ page import="edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.Variables"%>
+<%@ page import="edu.wustl.common.util.global.ApplicationProperties"%>
 <%@ page language="java" isELIgnored="false"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <script src="jss/advQuery/script.js"></script>
 <script type="text/javascript" src="jss/advQuery/ajax.js"></script>
+<script language="JavaScript" type="text/javascript" src="jss/dhtmlwindow.js"></script>
+
 <style>
 .active-column-0 {
 	width: 30px
@@ -23,23 +26,14 @@ tr#hiddenCombo {
 </style>
 <head>
 <%
-	Object obj =  request.getAttribute("isSpecPresent");
-	int specIdColumnIndex = 0;
-	Boolean isSpecPresent = Boolean.FALSE;
-	if(obj != null && Boolean.valueOf(obj.toString()))
-	{
-		isSpecPresent = Boolean.valueOf(obj.toString());
-		specIdColumnIndex = Integer.valueOf((request.getAttribute("specIdColumnIndex").toString()));
-	}
 	int pageNum = Integer.parseInt((String) request
 			.getAttribute(AQConstants.PAGE_NUMBER));
 
 	int totalResults = ((Integer) session
 			.getAttribute(AQConstants.TOTAL_RESULTS)).intValue();
-	System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&& pageOf : "+session.getAttribute("entityName"));
 	int numResultsPerPage = Integer.parseInt((String) session
 			.getAttribute(AQConstants.RESULTS_PER_PAGE));
-	String pageName = "SpreadsheetView.do";
+	String pageName = "AQSpreadsheetView.do";
 	String checkAllPages = (String) session
 			.getAttribute("checkAllPages");
 	QueryAdvanceSearchForm form = (QueryAdvanceSearchForm) session
@@ -55,7 +49,6 @@ tr#hiddenCombo {
 			.getAttribute(AQConstants.PAGINATION_DATA_LIST);
 
 	String pageOf = (String) request.getAttribute(AQConstants.PAGEOF);
-	
 	String title = pageOf + ".searchResultTitle";
 	boolean isSpecimenData = false;
 	int IDCount = 0;
@@ -64,6 +57,28 @@ tr#hiddenCombo {
 
 <script language="javascript">
 		var colZeroDir='ascending';
+var popupWindow;
+var buttonClicked;
+
+		function saveClientQueryToServerFromResultView(action)
+	{
+			var url = "LoadSaveQueryPage.do";
+
+			document.forms[0].action='LoadSaveQueryPage.do';
+			document.forms[0].target = "_parent";
+			document.forms[0].submit();
+	}
+
+	function defineSearchResultsView()
+	{
+
+		document.forms[0].action='DefineSearchResultsView.do';
+		document.forms[0].target = "_parent";
+		document.forms[0].submit();
+
+
+	}
+
 
 		function getData()
 		{	//ajax call to get update data from server
@@ -130,7 +145,34 @@ tr#hiddenCombo {
 				alert("Please select at least one checkbox");
 			}
 		}
-
+    function displayTermsAndConditions(button)
+	{
+		buttonClicked = button;
+		if(navigator.appName == "Microsoft Internet Explorer")
+		{
+            popupWindow=dhtmlmodal.open('Export Data', 'iframe', "pages/content/search/TermsAndConditions.jsp",'Export Data', 'width=670px,height=430px,center=1,resize=0,scrolling=0');
+		}
+		else
+		{
+	    	popupWindow=dhtmlmodal.open('Export Data', 'iframe', "pages/content/search/TermsAndConditions.jsp",'Export Data', 'width=670px,height=450px,center=1,resize=0,scrolling=0');
+		}
+	}
+	function onAgreeClicked()
+	{
+		popupWindow.hide();
+		if(buttonClicked.id == 'exportImgId')
+		{
+			onExport();
+		}
+		else
+		{
+			onSAASPgmExport();
+		}
+	}
+	function onCancelClicked()
+	{
+		popupWindow.hide();
+	}
 		function onExport()
 		{
 			var isChecked = updateHiddenFields();
@@ -150,6 +192,29 @@ tr#hiddenCombo {
 				alert("Please select at least one checkbox");
 			}
 		}
+
+		function onSAASPgmExport()
+		{
+			var isChecked = updateHiddenFields();
+			var pageNum = "<%=pageNum%>";
+			var chkBox = document.getElementById('checkAll');
+			var isCheckAllAcrossAllChecked = chkBox.checked;
+		    if(isChecked == "true")
+		    {
+				var action = "SAASPgmExportAction.do?pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked ;
+				document.forms[0].operation.value="export";
+				document.forms[0].action = action;
+				document.forms[0].target = "_blank";
+				document.forms[0].submit();
+			}
+			else
+			{
+				alert("Please select at least one checkbox");
+			}
+
+		}
+
+
 		//function that is called on click of Define View button for the configuration of search results
 		function onSimpleConfigure()
 		{
@@ -240,23 +305,7 @@ function checkAllOnThisPageResponse()
 }
 
 //document.forms[0].checkAllPages.value = true;
-function addToSpecimenList()
-{
-	var checkedRows = mygrid.getCheckedRows(0);
-	//alert(checkedRows);
-	var idColumn = getIDColumnsForSpecimen();
-	//alert(idColumn);
-	//alert(idColumn);
-	//alert(mygrid.cellById(1,idColumn).getValue());
-	var n=checkedRows.split(",");
-	var specIds = "";
-	for(var i=0;i<n.length;i++)
-	{
-		specIds=specIds+mygrid.cellById(n[i],idColumn).getValue()+",";
-	}
-	//alert('specimen Ids :'+specIds);
-	return specIds;
-}
+
 	</script>
 <%
 	String configAction = new String();
@@ -324,6 +373,7 @@ function addToSpecimenList()
 	</td>
 </tr>-->
 			<html:form action="QueryWizard.do" style="margin:0;padding:0;">
+				<input type="hidden" name="showTree" value="<logic:present name="showTree"><bean:write name="showTree"/></logic:present>"/>
 				<html:hidden property="checkAllPages" value="" />
 
 				<%
@@ -401,6 +451,18 @@ function addToSpecimenList()
 					<table summary="" cellpadding="0" cellspacing="0" border="0"
 						width="100%" valign="top" height="100%">
 						<tr height="100%">
+						<logic:equal name="hideTreeChkVal" value="false">
+							<td valign="top" align="right" width="5%"><img
+										src="images/advQuery/b_save_wTree.gif" id="saveResultImgId"
+										hspace="3" vspace="0"
+										onclick="saveClientQueryToServerFromResultView('save')" /></td>
+									<td align="right" width="5%" valign="top"><img
+										src="images/advQuery/b_prev_wTree.gif" id="prevResultImgId"
+										hspace="3" vspace="0"
+										onclick="defineSearchResultsView()" /></td>
+										<td width="8%"/>
+							</logic:equal>
+
 							<td width="5%" nowrap valign="top" class="black_ar"><input
 								type='checkbox' name='checkAll2' id='checkAll2'
 								onClick='checkAllOnThisPage(this)'> <span valign="top"
@@ -416,7 +478,7 @@ function addToSpecimenList()
 										//boolean isDefaultView = (obj!=null);
 										boolean isDefaultView = true;
 							%>
-							<td width="5%" valign="top">
+							<td width="1%" valign="top">
 							<%
 								if (pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS)) {
 							%> <!--Commented out by Baljeet as it is catissuecore specific -->
@@ -428,25 +490,7 @@ function addToSpecimenList()
  	}
  %>
 							</td>
-							<td width="10%" align="right" valign="top">&nbsp;
-							<%
-								if (Utility
-												.checkFeatureUsage(AQConstants.FEATURE_ADD_TO_LIST)
-												&& (pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS) || pageOf
-														.equals(AQConstants.PAGEOF_QUERY_MODULE))) {
-														if(isSpecPresent || session.getAttribute("entityName").equals("edu.wustl.catissuecore.domain.Specimen")){
-							%> 
-								<%
- 						String	organizeTarget = "ajaxTreeGridInitCall('popupDeleteMessage','popupFolderDeleteMessage')";
- %>
-						<input type="button" value="Add To Specimen List"
-							onclick="<%=organizeTarget%> " class="blue_ar_c">
-							<%}
- 	} else {
- %> &nbsp; <%
- 	}
- %>
-							</td>
+							<td width="10%" align="right" valign="top">&nbsp;</td>
 							<td width="5%" nowrap align="right" valign="top">
 							<%
 								if (Utility
@@ -460,18 +504,30 @@ function addToSpecimenList()
  	}
  %>
 							</td>
+							<%if(Utility.checkFeatureUsage(AQConstants.FEATURE_EXPORT_TERMS_AND_CONDITIONS)
+									&& (pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS) || pageOf
+											.equals(AQConstants.PAGEOF_QUERY_MODULE)))
+							{%>
 							<td width="5%" nowrap align="right" valign="top"><img
-								src="images/advQuery/b_exp.gif" id="exportImgId" width="57"
+								src="images/advQuery/b_exp.gif" id="exportImgId" width="80"
+								hspace="3" onclick="displayTermsAndConditions(this)" />&nbsp;</td>
+							<td width="5%" nowrap align="right" valign="top"><img
+								src="images/advQuery/b_exp_sas.gif" width="80"  hspace="3" onclick="displayTermsAndConditions(this)"/>&nbsp;</td>
+								<%} else { %>
+								<td width="5%" nowrap align="right" valign="top"><img
+								src="images/advQuery/b_exp.gif" id="exportImgId" width="80"
 								hspace="3" onclick="onExport()" />&nbsp;</td>
+							<td width="5%" nowrap align="right" valign="top"><img
+								src="images/advQuery/b_exp_sas.gif" width="80"  hspace="3" onclick="onSAASPgmExport()"/>&nbsp;</td>
+								<%} %>
+
 							<td width="5%" nowrap align="right" valign="top"><img
 								src="images/advQuery/b_def_view.gif" id="defineViewId"
 								width="88" hspace="3" onclick="<%=configAction%>" />&nbsp;</td>
 							<td width="5%" nowrap align="right" valign="top"><img
 								src="images/advQuery/b_red_query.gif" id="redefineQueryId"
 								width="107" hspace="3" onclick="<%=redefineQueryAction%>" />&nbsp;
-								
 							</td>
-							
 						</tr>
 					</table>
 
@@ -490,84 +546,3 @@ function addToSpecimenList()
 		</td>
 	</tr>
 </table>
-
-
-
-<!---------------------------------------------------->
-<div id="blanket" style="display: none;"></div>
-<div id="popUpDiv" style="display: none; top: 100px; left: 210.5px;">
-
-					<a onclick="popup('popUpDiv')"><img style="float: right;"
-						height='23' width='24' src='images/close_button.gif'
-						border='0'> </a>
-					<table class=" manage tags" width="100%" cellspacing="0"
-						cellpadding="5" border="0">
-
-						<tbody>
-							<tr valign="center" height="35" bgcolor="#d5e8ff">
-								<td width="28%" align="left"
-									style="font-size: .82em; font-family: verdana;">
-									<p>
-										&nbsp&nbsp&nbsp&nbsp<b> Specimen Lists</b>
-									</p>
-								</td>
-							</tr>
-					</table>
-
-
-					<div id="treegridbox"
-						style="width: 530px; height: 237px; background-color: white;"></div>
-
-
-
-
-					<p>
-						&nbsp&nbsp&nbsp<label width="28%" align="left"
-							style="font-size: .82em; font-family: verdana;"><b> List Name
-								: </b> </label> <input type="text" id="newTagName" name="newTagName"
-							size="20" onclick="this.value='';" maxlength="50" /><br>
-					</p>
-					<p>
-						
- 
-						<input type="button" value="ASSIGN" onclick="ajaxCall()"
-							class="btn3">
-					</p>
-				</div>
-			</div>
-			<script>
-function ajaxCall()
-{
-	var specimenIDS = addToSpecimenList();
-	ajaxAssignTagFunctionCall('AssignTagAction.do','popupAssignMessage','popupAssignConditionMessage',specimenIDS);
-	
-}
-			var popupmygrid;
-function doInItTreeGrid()
-{
-	popupmygrid = new dhtmlXGridObject('treegridbox');
-	popupmygrid.selMultiRows = true;
-	popupmygrid.imgURL = "dhtmlx_suite/dhtml_pop/imgs/";
-	popupmygrid.setHeader(",<div style='text-align:center;'>My Specimen Lists</div>,");
-	//popupmygrid.setNoHeader(true);
-	popupmygrid.setInitWidths("25,*,40");
-	popupmygrid.setColAlign("left,left,left");
-	popupmygrid.setColTypes("txt,tree,txt");
-	popupmygrid.setColSorting("str,str,str");
-	popupmygrid.attachEvent("onRowSelect", doOnTreeGridRowSelected);
-	popupmygrid.setEditable(false);
-	popupmygrid.init();
-	popupmygrid.setSkin("dhx_skyblue");
-	doInitParseTree();
-}
- function doOnTreeGridRowSelected(rId)
-{
-	ajaxTreeGridRowSelectCall(rId); 
-}
-function doInitParseTree()
-{
-	popupmygrid.loadXML("TreeTagAction.do");
-
-}
-
-			</script>

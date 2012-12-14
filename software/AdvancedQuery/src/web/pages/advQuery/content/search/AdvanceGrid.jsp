@@ -1,40 +1,20 @@
 <!-- dataList and columnList are to be set in the main JSP file -->
-
+<link rel="STYLESHEET" type="text/css" href="dhtmlx_suite/css/dhtmlxgrid.css"/>
 <link rel="stylesheet" type="text/css" href="css/advQuery/catissue_suite.css" />
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
 <%@ page import="edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.Variables"%>
 
-
-
-<script  src="dhtmlx_suite/dhtml_pop/js/dhtmlXGrid.js"></script>
-
-
+<script  src="dhtmlx_suite/js/dhtmlxcommon.js"></script>
+<script  src="dhtmlx_suite/js/dhtmlxgrid.js"></script>
+<script  src="dhtmlx_suite/js/dhtmlxgridcell.js"></script>
 <script language="JavaScript" type="text/javascript" src="jss/advQuery/javaScript.js"></script>
 
 <%@ page import="java.util.HashMap,java.util.Map,edu.wustl.common.beans.QueryResultObjectData,java.util.List"%>
-
-<script type="text/javascript" src="jss/tag-popup.js"></script>
-<link rel="STYLESHEET" type="text/css"
-	href="dhtmlx_suite/dhtml_pop/css/dhtmlXTree.css">
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXCommon.js"></script>
-<link rel="STYLESHEET" type="text/css"
-	href="dhtmlx_suite/dhtml_pop/css/dhtmlXGrid.css" />
-<link rel="STYLESHEET" type="text/css"
-	href="dhtmlx_suite/dhtml_pop/css/dhtmlxgrid_dhx_skyblue.css" />
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmlx.js"></script>
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTree.js"></script>
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmXTreeCommon.js"></script>
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXGridCell.js"></script>
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTreeGrid.js"></script>
-
-
-<link rel="stylesheet" type="text/css" href="css/tag-popup.css" />
-
 <script>
+
 <%String checkAllPagesSession = (String)session.getAttribute("checkAllPages");
 String gridDivHeight="280";
-
 if(request.getAttribute(AQConstants.PAGEOF)!=null)
 {
 	if(pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS) || pageOf.equals(AQConstants.PAGEOF_QUERY_MODULE) || pageOf.equals(AQConstants.PAGE_OF_PARTICIPANT_CP_QUERY))
@@ -108,16 +88,14 @@ function setEditableChkbox(checkAllPages)
 	//function to update hidden fields as per check box selections.
 	function updateHiddenFields()
 	{
-		
 		var isChecked = "false";
+		
 		var checkedRows = mygrid.getCheckedRows(0);
-
 		if(checkedRows.length > 0)
 		{
         	isChecked = "true";
 			var cb = checkedRows.split(",");
 			rowCount = mygrid.getRowsNum();
-			
 			for(i=1;i<rowCount;i++)
 			{
 				if(mygrid.cells(i,0).isChecked())
@@ -138,7 +116,6 @@ function setEditableChkbox(checkAllPages)
 		{
 			isChecked = "false";
 		}
-		
 		return isChecked;
 	}
 	// ------------------------------  FUNCTION SECTION END
@@ -190,39 +167,10 @@ function setEditableChkbox(checkAllPages)
 			for(col=0;col<columnList.size();col++)
 			{
 				if (columnList.get(col).toString().trim().equals("ID"))
-				{
-				%>
+				{%>
 					hiddenColumnNumbers[i] = <%=col%>;
 					i++;
 				<%}
-			}%>
-			//alert(hiddenColumnNumbers);
-		return hiddenColumnNumbers;
-	}
-	function getIDColumnsForSpecimen()
-	{
-	var hiddenColumnNumbers = "";
-		<%if(isSpecPresent)
-		{
-			
-			%>
-			hiddenColumnNumbers = <%=specIdColumnIndex%>
-		<%}
-		else
-		{%>
-		
-		var i=0;
-		<%
-
-			for(col=0;col<columnList.size();col++)
-			{
-				if (columnList.get(col).toString().trim().equals("Id : Specimen"))
-				{
-				%>
-					hiddenColumnNumbers = <%=col%>;
-					
-				<%}
-			}
 			}%>
 		return hiddenColumnNumbers;
 	}
@@ -272,17 +220,18 @@ function setEditableChkbox(checkAllPages)
 
 <script>
 	mygrid = new dhtmlXGridObject('gridbox');
-	mygrid.setImagePath("newDhtmlx/imgs/");
+	mygrid.setImagePath("dhtmlx_suite/imgs/");
 
 	if(useFunction == "participant")
 	{
-		//alert("test");
+	//	alert("onCheck event-----------------------------------------");
 		mygrid.entBox.style.width="650px";
 		colDataTypes=colDataTypes.replace(/ch/,"ra");
 		colDataTypes=colDataTypes.replace(/int/,"ro");
 		columns=","+columns+",";
 		colWidth = colWidth+",100,0";
-		mygrid.setOnCheckHandler(onParticipantClick);
+		//mygrid.setOnCheckHandler(onParticipantClick);
+		mygrid.attachEvent("onCheck",onParticipantClick);
 		//mygrid.setOnRowDblClickedHandler(useFunction);
 
 		/*
@@ -292,26 +241,17 @@ function setEditableChkbox(checkAllPages)
 		document.write("<hr>colWidth : "+colWidth+"<hr>");
 		*/
 	}
-<%
-	
-	if(isSpecPresent)
-	{
-	%>
-	columns = columns+',';
-	//alert('<%=request.getAttribute("specimenKey")%>');
-	<%}%>
-	//alert('<%=request.getAttribute("specimenKey")%>');
+
 	mygrid.setHeader(columns);
 	//mygrid.setEditable("FALSE");
 	mygrid.enableAutoHeigth(false);
 	//mygrid.setInitWidths(colWidth);
-	//alert(colDataTypes);
 	mygrid.setColTypes(colDataTypes);
 
 
 	if(navigator.userAgent.toString().toLowerCase().indexOf("firefox")!= -1)
     {
-       <% if(columnList.size()<=11)
+       <% if(columnList.size()<=10)
 		  { %>
 			var colWidthP = "<%=edu.wustl.query.util.global.Utility.getColumnWidthP(columnList)%>";
 			mygrid.setInitWidthsP(colWidthP);
@@ -334,7 +274,6 @@ function setEditableChkbox(checkAllPages)
 	mygrid.enableMultiselect(true);
 	//mygrid.chNoState = "0";
 	//mygrid.setColAlign("left,left")
-
 	mygrid.setColSorting(colTypes);
 	//mygrid.enableMultiselect(true)
 	mygrid.setSkin("light");
@@ -380,7 +319,6 @@ function setEditableChkbox(checkAllPages)
 		{
 			var data = myData[row];
 			var specId = data.split("<%=AQConstants.DHTMLXGRID_DELIMETER%>");
-			//alert(specId);
 			chkName = "value1(CHK_" + specId[0] + ")";
 		}
 		else
@@ -414,24 +352,16 @@ function setEditableChkbox(checkAllPages)
         */
 	// Mandar : 30-Jan-07 :To hide ID columns
 	var hideCols = getIDColumns();
-	
 	for(i=0;i<hideCols.length;i++)
 	{
 		mygrid.setHeaderCol(hideCols[i],"");
 		mygrid.setColumnHidden(hideCols[i],true);
 	}
-	<%
-	
-	if(isSpecPresent)
-	{
-		
-		
-	%>
-mygrid.setColumnHidden('<%=specIdColumnIndex%>',true);
-<%}%>
+
 	//fix for grid display on IE for first time.
 	mygrid.setSizes();
 </script>
+
 <%
 	columnList.remove(0);
 %>
