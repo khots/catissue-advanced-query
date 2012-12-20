@@ -51,7 +51,7 @@ public class SavedQueryAuthorization
 			ParameterizedQuery query = (ParameterizedQuery) protectionObjects.iterator().next();
 			PrivilegeManager privilegeManager = PrivilegeManager.getInstance();
 			privilegeManager.insertAuthorizationData(getAuthorizationData(query, user,null),
-			protectionObjects, null, query.getObjectId());
+			protectionObjects,  getDynamicGroups(user.getUserId().toString()), query.getObjectId());
 			bean.setQuery(query);
 			shareQuery(bean, query);
 		}
