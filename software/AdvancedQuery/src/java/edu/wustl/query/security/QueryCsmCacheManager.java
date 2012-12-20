@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -381,7 +382,7 @@ public class QueryCsmCacheManager
 		EntityInterface hookEntity = null;
 		for(String hookEntityName : entityNames)
 		{
-			hookEntity = DomainObjectFactory.getInstance().createEntity();
+			hookEntity = new Entity();//DomainObjectFactory.getInstance().createEntity();
 			hookEntity.setName(hookEntityName.
 					substring(hookEntityName.lastIndexOf('.')+1, hookEntityName.length()));
 			hookEntity.setDescription(null);
