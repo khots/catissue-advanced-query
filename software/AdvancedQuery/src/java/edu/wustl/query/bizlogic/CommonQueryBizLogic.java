@@ -40,7 +40,8 @@ public class CommonQueryBizLogic
 			+ "query_tag_items qti, query_parameterized_query qpq "
 			+ "WHERE " 
 			+ "qpq.identifier = qti.obj_id AND "
-			+ "qti.tag_id = ?";				 
+			+ "qti.tag_id = ? ORDER BY "
+			+ "qti.identifier DESC";				 
 						         
 	/**
 	 * Method to execute the given SQL to get the query result.
