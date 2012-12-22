@@ -37,7 +37,7 @@
 <script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTree.js"></script>
 <script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTreeCommon.js"></script>
 <script src="dhtmlx_suite/dhtml_pop/js/dhtmlXGridCell.js"></script>
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTreeGrid.js"></script>
+<script src="dhtmlx_suite/dhtml_pop/js/spec_dhtmlXTreeGrid.js"></script>
 <script>
 function QueryWizard()
 {

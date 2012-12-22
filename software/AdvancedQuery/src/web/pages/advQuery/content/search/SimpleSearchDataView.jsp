@@ -556,7 +556,7 @@ function addToSpecimenList()
 	{
 	//alert(response);
 	var specimenIDS = response;
-	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&objChkBoxString='+specimenIDS,'Select at least one existing list or create a new list.','No list has been selected to assign.',specimenIDS);
+	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem','Select at least one existing list or create a new list.','No list has been selected to assign.',specimenIDS);
 		//document.forms[0].action="ViewSpecimenList.do?operation=view";
 		//document.forms[0].submit();
 	}
@@ -585,8 +585,9 @@ function ajaxCall()
 	}
 	else
 	{
-	
-	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&isCheckAllAcrossAllChecked='+isCheckAllPagesChecked+'objChkBoxString='+specimenIDS,'Select at least one existing list or create a new list.','No list has been selected to assign.',specimenIDS);
+	//alert(specimenIDS);
+	//alert(specimenIDS.length());
+	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&isCheckAllAcrossAllChecked='+isCheckAllPagesChecked,'Select at least one existing list or create a new list.','No list has been selected to assign.',specimenIDS);
 	}
 	
 }
@@ -612,7 +613,7 @@ function giveCall(url,msg,msg1,id)
 	
 	document.getElementById('objCheckbox').checked=true;
 	document.getElementById('objCheckbox').value=id;
-	
+	//alert(url);
 	ajaxAssignTagFunctionCall(url,msg,msg1);
 }
 			var popupmygrid;
