@@ -65,8 +65,8 @@ public class ShowQueryDashboardAction extends SecureAction
 					edu.wustl.common.util.global.Constants.SESSION_DATA);
 			if (pageOf == null)
 			{
-				//pageOf = "allQueries";
-				pageOf="myQueries";
+				pageOf = "allQueries";
+//				pageOf="myQueries";
 				
 			}
 			Collection<IParameterizedQuery> queries = getQueries(pageOf, sessionDataBean);
