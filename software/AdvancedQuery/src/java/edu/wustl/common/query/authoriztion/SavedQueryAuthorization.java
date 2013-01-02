@@ -53,6 +53,10 @@ public class SavedQueryAuthorization
 			privilegeManager.insertAuthorizationData(getAuthorizationData(query, user,null),
 					protectionObjects, null, query
 							.getObjectId());
+
+			String[] userId = {user.getUserId().toString()};
+			setOwnersForQuery(query, userId);
+			//			upManager.assignOwners(protectionElement.getProtectionElementId().toString(), userIds);
 			bean.setQuery(query);
 			shareQuery(bean, query);
 		}

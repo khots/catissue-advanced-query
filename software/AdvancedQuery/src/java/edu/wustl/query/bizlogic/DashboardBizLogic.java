@@ -567,7 +567,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 			else
 			{
 				queries=getSharedQueries(csmUserId, userName);
-				Collection<IParameterizedQuery> myQueries=getMyQueries(csmUserId);
+				Collection<IParameterizedQuery> myQueries = getMyQueries(csmUserId, userName);
 				if(myQueries != null)
 				{
 					queries.addAll(myQueries);
@@ -626,7 +626,8 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	 * @return all queries created by the user with given CSM user Id
 	 * @throws BizLogicException instance of BizLogicException
 	 */
-	public Collection<IParameterizedQuery> getMyQueries(String csmUserId) throws BizLogicException
+	public Collection<IParameterizedQuery> getMyQueries(String csmUserId, String userName)
+			throws BizLogicException
 	{
 		Collection<IParameterizedQuery> queries= null;
 		String userPG = CsmUtility.getUserProtectionGroup(csmUserId);
@@ -634,6 +635,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		try
 		{
 			Collection<Long> myQueriesIdList = CsmUtility.getQueriesIdList(userPG);
+			myQueriesIdList.addAll(CsmUtility.getSharedQueryIdList(userName));
 			queries=CsmUtility.retrieveQueries(myQueriesIdList, queryNameLike);
 		}
 		catch (SMException e)

@@ -139,7 +139,7 @@ public class ShowQueryDashboardAction extends SecureAction
 		}
 		else if ("myQueries".equals(pageOf))
 		{
-			queries = dashboardBizLogic.getMyQueries(sessionDataBean.getCsmUserId());
+			queries = dashboardBizLogic.getMyQueries(sessionDataBean.getCsmUserId(),sessionDataBean.getUserName());
 		}
 		return queries;
 	}
