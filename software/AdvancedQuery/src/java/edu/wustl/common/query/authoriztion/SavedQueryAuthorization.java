@@ -54,8 +54,9 @@ public class SavedQueryAuthorization
 					protectionObjects, null, query
 							.getObjectId());
 
-			String[] userId = {user.getUserId().toString()};
-			setOwnersForQuery(query, userId);
+			new DashboardBizLogic().setQueryOwner(user.getUserId(), query);
+			//			String[] userId = {user.getUserId().toString()};
+			//			setOwnersForQuery(query, userId);
 			//			upManager.assignOwners(protectionElement.getProtectionElementId().toString(), userIds);
 			bean.setQuery(query);
 			shareQuery(bean, query);
@@ -66,6 +67,7 @@ public class SavedQueryAuthorization
 			throw new DAOException(errorKey, e, e.getMessage());
 		}
 	}
+
 
 	/**
 	 * Shares query : Populates security tables for protection group and PEs.

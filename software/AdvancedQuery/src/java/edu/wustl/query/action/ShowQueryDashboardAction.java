@@ -65,8 +65,8 @@ public class ShowQueryDashboardAction extends SecureAction
 					edu.wustl.common.util.global.Constants.SESSION_DATA);
 			if (pageOf == null)
 			{
-				pageOf = "allQueries";
-//				pageOf="myQueries";
+				//				pageOf = "allQueries";
+				pageOf = "myQueries";
 				
 			}
 			Collection<IParameterizedQuery> queries = getQueries(pageOf, sessionDataBean);
@@ -123,9 +123,10 @@ public class ShowQueryDashboardAction extends SecureAction
 	 *
 	 * @return queries collection
 	 * @throws BizLogicException
+	 * @throws ClassNotFoundException 
 	 */
 	private Collection<IParameterizedQuery> getQueries(String pageOf,
-			SessionDataBean sessionDataBean) throws BizLogicException
+			SessionDataBean sessionDataBean) throws BizLogicException, ClassNotFoundException
 	{
 		Collection<IParameterizedQuery> queries = new ArrayList<IParameterizedQuery>();
 		DashboardBizLogic dashboardBizLogic = new DashboardBizLogic();
