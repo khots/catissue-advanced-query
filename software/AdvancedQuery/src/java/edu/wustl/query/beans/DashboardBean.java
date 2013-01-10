@@ -2,7 +2,7 @@ package edu.wustl.query.beans;
 
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 
-public class DashBoardBean
+public class DashboardBean
 {
 	private IParameterizedQuery query;
 	private String executedOn;

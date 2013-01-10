@@ -473,13 +473,10 @@ PUBLIC
 			name="saveQueryForm" input=".query.queryViewPageDef" />
 		<action path="/TreeGridInItAction"
 			type="edu.wustl.common.tags.action.TreeGridInItAction" validate="false"
+			scope="session" /> 
+		<action path="/QueryGridInitAction"
+			type="edu.wustl.query.action.QueryGridInitAction" validate="false"
 			scope="session" />
-		<action path="/TagClickAction" type="edu.wustl.query.action.TagClickAction"
-			validate="false" name="saveQueryForm" scope="request">
-			<forward name="success" path=".query.queryViewPageDef" />
-			<forward name="failure" path=".query.errorPageDef" />
-			<forward name="cacheError" path=".query.cacheErrorPageDef" /> 
-		</action>  
 	</action-mappings>
 
 	<controller processorClass="edu.wustl.common.struts.ApplicationRequestProcessor" />

@@ -2,11 +2,9 @@ package edu.wustl.query.bizlogic;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -17,10 +15,9 @@ import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.dao.util.DAOUtility;
-import edu.wustl.query.beans.DashBoardBean;
+import edu.wustl.query.dto.QueryDTO;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.UserCache;
-import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.CsmUtility;
 import edu.wustl.query.util.querysuite.DAOUtil;
 import edu.wustl.security.exception.SMException;
@@ -43,266 +40,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 
 	private static final org.apache.log4j.Logger LOGGER = LoggerConfig
 	.getConfiguredLogger(DashboardBizLogic.class);
-
-	/**
-	 * This method gives the last 'executed on' , rootEntityName, and Count of root records
-	 * for each saved query to be shown on dash-board.
-	 * @param queryCollection saved query collection
-	 * @param userId user id
-	 * @return map of query id and its related data
-	 * @throws BizLogicException BizLogicException
-	 */
-	public Map<Long, DashBoardBean> getDashBoardDetails(
-			Collection<IParameterizedQuery> queryCollection,String userId) throws BizLogicException
-	{
-		Map <Long, DashBoardBean> dashBoardDataMap = new HashMap<Long, DashBoardBean>();
-		for (IParameterizedQuery parameterizedQuery : queryCollection)
-		{
-			LinkedList<ColumnValueBean> columnValueBean = getColumnValueBean(
-					userId, parameterizedQuery);
-			String sql = dashBoardDetailsQuery();
-			try
-			{
-				getDataList(dashBoardDataMap, parameterizedQuery,
-						columnValueBean, sql);
-			}
-			catch (DAOException e)
-			{
-				throw new BizLogicException(null,e,"Error while getting audit details" +
-						" for query dashboard");
-			}
-			catch (ClassNotFoundException e)
-			{
-				throw new BizLogicException(null,e,"Error while getting audit details" +
-						" for query dashboard");
-			}
-			catch (SMException e)
-			{
-				throw new BizLogicException(null,e,"Error while getting audit details" +
-						" for query dashboard");
-			}
-		}
-		return dashBoardDataMap;
-	}
-
-	/**
-	 * @return query
-	 */
-	private String dashBoardDetailsQuery()
-	{
-		String sql = "select distinct mainAuditTable.identifier, mainAuditTable.EVENT_TIMESTAMP," +
-				" queryAudit.TEMP_TABLE_NAME from" +
-				" catissue_audit_event mainAuditTable, catissue_audit_event_query_log" +
-				" queryAudit"
-				+" where queryAudit.AUDIT_EVENT_ID = mainAuditTable.IDENTIFIER and" +
-				" mainAuditTable.user_id=?"+
-				" and queryAudit.query_id=?"+
-				" order by mainAuditTable.EVENT_TIMESTAMP desc";
-		return sql;
-	}
-
-	/**
-	 * @param dashBoardDataMap Map
-	 * @param parameterizedQuery query
-	 * @param columnValueBean bean
-	 * @param sql SQL
-	 * @return dataList
-	 * @throws DAOException DAOException
-	 * @throws ClassNotFoundException ClassNotFoundException
-	 * @throws SMExceptionSecurity Manager Exception
-	 * @throws BizLogicException BizLogicException
-	 */
-	private void getDataList(
-			Map<Long, DashBoardBean> dashBoardDataMap,
-			IParameterizedQuery parameterizedQuery,
-			LinkedList<ColumnValueBean> columnValueBean, String sql)
-			throws DAOException, ClassNotFoundException, SMException,
-			BizLogicException
-	{
-		List<List<String>> dataList;
-		dataList = Utility.executeSQL(sql,columnValueBean);
-		if(dataList.isEmpty())
-		{
-			populateBeanWithNA(parameterizedQuery,dashBoardDataMap);
-		}
-		else
-		{
-			populateDashBoardData(dashBoardDataMap, parameterizedQuery, dataList);
-		}
-	}
-
-	/**
-	 * @param userId user identifier
-	 * @param parameterizedQuery query
-	 * @return bean
-	 */
-	private LinkedList<ColumnValueBean> getColumnValueBean(String userId,
-			IParameterizedQuery parameterizedQuery)
-	{
-		LinkedList<Object> data;
-		data = new LinkedList<Object>();
-		Long queryId = parameterizedQuery.getId();
-		data.add(userId);
-		data.add(queryId);
-		return populateColumnValueBean(data);
-	}
-
-	/**
-	 * Populates bean for not applicable values wherever necessary.
-	 * @param parameterizedQuery query
-	 * @param dashBoardDataMap map of dash board details
-	 * @throws SMException exception
-	 * @throws BizLogicException exception
-	 */
-	private void populateBeanWithNA(
-			IParameterizedQuery parameterizedQuery,
-			Map<Long, DashBoardBean> dashBoardDataMap) throws SMException, BizLogicException
-	{
-
-		DashBoardBean bean = new DashBoardBean();
-		String naStr = "N/A";
-		bean.setCountOfRootRecords(naStr);
-		bean.setExecutedOn(naStr);
-		bean.setRootEntityName(naStr);
-		User user = getQueryOwner(parameterizedQuery.getId().toString());
-		if(user == null)
-		{
-			bean.setOwnerName(naStr);
-		}
-		else
-		{
-			String ownerName = user.getLastName() + "," + user.getFirstName();
-			bean.setOwnerName(ownerName);
-		}
-		dashBoardDataMap.put(parameterizedQuery.getId(), bean);
-	}
-
-	/**
-	 * Populates the dash board map with data, ExecutedOndate, CountOfRootRecords and RootEntityName.
-	 * @param dashBoardMap key->QueryId, value->dashBoardBean
-	 * @param pQuery Query
-	 * @param dataList Data List of event time stamp and audit event id
-	 * @throws BizLogicException BizLogicException
-	 */
-	private void populateDashBoardData(Map<Long, DashBoardBean> dashBoardMap,
-			IParameterizedQuery pQuery,
-			List<List<String>> dataList) throws BizLogicException
-	{
-		DashBoardBean bean = new DashBoardBean();
-		List<String> row = dataList.get(0);
-		String auditEventId = row.get(0);
-		String tempTableName = row.get(AQConstants.TWO);
-		String rootEntityName = "N/A";
-		String cntOfRootRecs = "N/A";
-		LinkedList<Object> data = new LinkedList<Object>();
-		data.add(auditEventId);
-		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
-		String sql = "select ROOT_ENTITY_NAME,COUNT_OF_ROOT_RECORDS from " +
-				"catissue_audit_event_query_log where AUDIT_EVENT_ID =?";
-		try
-		{
-			List<List<String>> rootDatalist = Utility.executeSQL(sql,columnValueBean);
-			if(!rootDatalist.isEmpty())
-			{
-				List<String> record = (List<String>)rootDatalist.get(0);
-				rootEntityName = setRootEntityName(rootEntityName, record);
-				cntOfRootRecs = setRootRecordCount(cntOfRootRecs, record);
-			}
-		}
-		catch (DAOException e)
-		{
-			throw new BizLogicException(null,e,"error occurred while executing sql " +
-					"for fetching data for query dashboard");
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new BizLogicException(null,e,"error occurred while executing sql " +
-			"for fetching data for query dashboard");
-		}
-		String executedOnTime = setExecutedOnTime(row, tempTableName);
-		bean.setExecutedOn(executedOnTime);
-		bean.setRootEntityName(rootEntityName);
-		bean.setQuery(pQuery);
-		bean.setCountOfRootRecords(cntOfRootRecs);
-
-		User user =getQueryOwner(pQuery.getId().toString());
-		String ownerName = user.getLastName() + "," + user.getFirstName();
-		bean.setOwnerName(ownerName);
-		dashBoardMap.put(pQuery.getId(), bean);
-	}
-
-	/**
-	 * @param cntOfRootRecs count
-	 * @param record record
-	 * @return count
-	 */
-	private String setRootRecordCount(String cntOfRootRecs, List<String> record)
-	{
-		String count = cntOfRootRecs;
-		if(record.get(1).length() != 0)
-		{
-			count = record.get(1);
-		}
-		return count;
-	}
-
-	/**
-	 * @param rootEntityName root Entity name
-	 * @param record record
-	 * @return rootEntity
-	 */
-	private String setRootEntityName(String rootEntityName, List<String> record)
-	{
-		String rootEntity = rootEntityName;
-		if(record.get(0).length() != 0)
-		{
-			rootEntity = setRootEntityName(record);
-		}
-		return rootEntity;
-	}
-
-	/**
-	 * Set executed on time.
-	 * @param row row
-	 * @param tempTableName tempTableName
-	 * @return executedOnTime
-	 */
-	private String setExecutedOnTime(List<String> row, String tempTableName)
-	{
-		String executedOnTime = row.get(1);
-		if(tempTableName != null && tempTableName.equals(""))
-		{
-			executedOnTime = "(N/A)";
-		}
-		else
-		{
-			executedOnTime = getFormattedDate(executedOnTime);
-		}
-		return executedOnTime;
-	}
-
-	/**
-	 * Sets the root entity name.
-	 * @param record record
-	 * @return rootEntityName
-	 */
-	private String setRootEntityName(List<String> record)
-	{
-		String rootEntityName;
-		rootEntityName = record.get(0);
-		rootEntityName = rootEntityName.substring
-		(rootEntityName.lastIndexOf('.')+1);
-		rootEntityName = edu.wustl.common.util.Utility.
-		getDisplayLabel(rootEntityName);
-		return rootEntityName;
-	}
-
-	/**
-	 * Returns the owner of the query.
-	 * @param queryId id
-	 * @return User object
-	 * @throws BizLogicException exception
-	 */
+ 
 	public User getQueryOwner(String queryId) throws BizLogicException
 	{
 		Set<ProtectionGroup> pgSet = getPGsforQuery(queryId);
@@ -387,10 +125,10 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	 * @return list of all queries
 	 * @throws DAOException DAOException
 	 */
-	public Collection<IParameterizedQuery> getAllQueries() throws DAOException
+	public Collection<IParameterizedQuery> getAllQueries() 
+	throws DAOException
 	{
 		HibernateDAO hibernateDAO = null;
-
 		hibernateDAO = DAOUtil.getHibernateDAO(null);
 		return hibernateDAO.executeQuery("from " + IParameterizedQuery.class.getName());
 	}
@@ -555,30 +293,27 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	 * @return all queries(shared/created) of the user with given CSM user ID.
 	 * @throws BizLogicException instance of BizLogicException
 	 */
-	public Collection<IParameterizedQuery> getAllQueries(String csmUserId, String userName) throws BizLogicException
+	public Collection<QueryDTO> getAllQueries(String csmUserId, String userName) 
+	throws BizLogicException
 	{
-		Collection<IParameterizedQuery> queries= null;
-		try
-		{
-			if(ifSuperAdminUser(csmUserId))
-			{
-				queries=getAllQueriesForUpgrade();
+		List<QueryDTO> queries = new ArrayList<QueryDTO>();
+		try {
+			QueryDAO queryDAO = new QueryDAO();
+			if(ifSuperAdminUser(csmUserId)) {
+				queries= queryDAO.getAllQueries();	 
 			}
-			else
-			{
-				queries=getSharedQueries(csmUserId, userName);
-				Collection<IParameterizedQuery> myQueries=getMyQueries(csmUserId);
-				if(myQueries != null)
-				{
+			else {
+				queries = getSharedQueries(userName);
+				Collection<QueryDTO> myQueries = getMyQueries(csmUserId);
+				if(myQueries != null) {
 					queries.addAll(myQueries);
 				}
 			}
-		}
-		catch (DAOException e)
-		{
+		} catch (DAOException e) {
 			LOGGER.error(e.getMessage(),e);
 			throw new BizLogicException(null,e,"DAOException: while Retrieving queries for SuperAdmin");
 		}
+
 		return queries;
 	}
 
@@ -588,32 +323,24 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	 * @param userName user name
 	 * @return all the shared queries on which the user with given CSM user ID has access.
 	 * @throws BizLogicException instance of BizLogicException
+	 * @throws DAOException 
 	 */
-	public Collection<IParameterizedQuery> getSharedQueries(String csmUserId, String userName) throws BizLogicException
+	public List<QueryDTO> getSharedQueries(String userName) throws BizLogicException, DAOException
 	{
-		Collection<IParameterizedQuery> queries= null;
-		String queryNameLike="";
-		try
-		{
+		List<QueryDTO> queries = new ArrayList<QueryDTO>();
+		try {
 			Collection<Long> publicQueryIdList = CsmUtility.getQueriesIdList(AQConstants.PUBLIC_QUERY_PROTECTION_GROUP);
 			Collection<Long> sharedQueryIdList = CsmUtility.getSharedQueryIdList(userName);
 			Set<Long> queriesIdSet = new HashSet<Long>();
 			queriesIdSet.addAll(publicQueryIdList);
 			queriesIdSet.addAll(sharedQueryIdList);
-			queries=CsmUtility.retrieveQueries(queriesIdSet, queryNameLike);
-		}
-		catch (CSObjectNotFoundException e)
-		{
+
+			QueryDAO queryDAO = new QueryDAO();
+			queries = queryDAO.getQueriesById(queriesIdSet);
+		} catch (CSObjectNotFoundException e) {
 			LOGGER.error(e.getMessage(),e);
 			throw new BizLogicException(null,e,e.getMessage());
-		}
-		catch (SMException e)
-		{
-			LOGGER.error(e.getMessage(),e);
-			throw new BizLogicException(null,e,e.getMessage());
-		}
-		catch (DAOException e)
-		{
+		} catch (SMException e) {
 			LOGGER.error(e.getMessage(),e);
 			throw new BizLogicException(null,e,e.getMessage());
 		}
@@ -625,29 +352,20 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	 * @param csmUserId CSM user id
 	 * @return all queries created by the user with given CSM user Id
 	 * @throws BizLogicException instance of BizLogicException
+	 * @throws DAOException 
 	 */
-	public Collection<IParameterizedQuery> getMyQueries(String csmUserId) throws BizLogicException
+	public Collection<QueryDTO> getMyQueries(String csmUserId) throws BizLogicException, DAOException
 	{
-		Collection<IParameterizedQuery> queries= null;
+		Collection<QueryDTO> queries = new ArrayList<QueryDTO>();
 		String userPG = CsmUtility.getUserProtectionGroup(csmUserId);
-		String queryNameLike="";
-		try
-		{
+		try {
 			Collection<Long> myQueriesIdList = CsmUtility.getQueriesIdList(userPG);
-			queries=CsmUtility.retrieveQueries(myQueriesIdList, queryNameLike);
-		}
-		catch (SMException e)
-		{
+			QueryDAO queryDAO = new QueryDAO();
+			queries = queryDAO.getQueriesById(myQueriesIdList);
+		} catch (SMException e) {
 			LOGGER.error(e.getMessage(),e);
 			throw new BizLogicException(null,e,e.getMessage());
-		}
-		catch (CSObjectNotFoundException e)
-		{
-			LOGGER.error(e.getMessage(),e);
-			throw new BizLogicException(null,e,e.getMessage());
-		}
-		catch (DAOException e)
-		{
+		} catch (CSObjectNotFoundException e) {
 			LOGGER.error(e.getMessage(),e);
 			throw new BizLogicException(null,e,e.getMessage());
 		}

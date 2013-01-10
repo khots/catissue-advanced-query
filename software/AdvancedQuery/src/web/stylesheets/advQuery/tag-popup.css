@@ -6,7 +6,7 @@ body {
 }
 
 #wrapper {
-	height:30.7em;
+	height:100%;
 }
 #left { -moz-position:relative;
 	float: left;
@@ -14,13 +14,11 @@ body {
 	left: 0;
 	width: 181px;
 	background-color: #ffffff;
-	BORDER-right: #d8d8d8 1px solid;	 
 	margin-left: 7px; 
 	height: 100%;
 }
 #mygrid_container{
-	width:96%; 
-	height: 25em;
+	 
 }
 #right {
 	-webkit-position:relative;
@@ -31,8 +29,6 @@ body {
 	width:auto;
 	background-color: #ffffff;
 	overflow :auto;
-	BORDER-bottom: #d8d8d8 1px solid;
-	BORDER-top: #d8d8d8 1px solid;
 }
 input.btn {
 	display: inline-block;

@@ -11,13 +11,12 @@
 <%@ page
 	import="org.apache.struts.action.ActionMessages,edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
-<%@ page import="edu.wustl.common.tags.domain.Tag"%>
 <%@ page import="edu.wustl.query.actionForm.SaveQueryForm"%>
 <%@ page
 	import="edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface,edu.wustl.cab2b.client.ui.query.ClientQueryBuilder,edu.wustl.query.flex.dag.DAGConstant,edu.wustl.common.querysuite.queryobject.IQuery,edu.wustl.common.querysuite.queryobject.impl.Query,edu.wustl.common.querysuite.queryobject.IParameterizedQuery"%>
 <%@ page
 	import="java.util.*,java.text.DateFormat,java.text.SimpleDateFormat"%>
-<%@ page import="edu.wustl.query.beans.DashBoardBean"%>
+<%@ page import="edu.wustl.query.beans.DashboardBean"%>
 <head>
 <script language="JavaScript" type="text/javascript"
 	src="jss/advQuery/queryModule.js"></script>
@@ -27,26 +26,31 @@
 	href="css/advQuery/styleSheet.css" />
 <link rel="stylesheet" type="text/css" href="css/advQuery/tag-popup.css" />
 <link rel="STYLESHEET" type="text/css"
-	href="dhtmlx_suite/dhtml_pop/css/dhtmlXTree.css">
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXCommon.js"></script>
+	href="dhtmlx_suite/css/dhtmlxgrid.css">
 <link rel="STYLESHEET" type="text/css"
-	href="dhtmlx_suite/dhtml_pop/css/dhtmlXGrid.css" />
+	href="dhtmlx_suite/css/dhtmlxtree.css">
+<script src="dhtmlx_suite/js/dhtmlxcommon.js"></script>
 <link rel="STYLESHEET" type="text/css"
 	href="dhtmlx_suite/dhtml_pop/css/dhtmlxgrid_dhx_skyblue.css" />
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmlx.js"></script>
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTree.js"></script>
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTreeCommon.js"></script>
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXGridCell.js"></script>
-<script src="dhtmlx_suite/dhtml_pop/js/spec_dhtmlXTreeGrid.js"></script>
+<script src="dhtmlx_suite/js/dhtmlxgrid.js"></script>
+<script src="dhtmlx_suite/js/dhtmlxtree.js"></script>
+<script src="dhtmlx_suite/ext/dhtmlxgrid_filter.js"></script>
+<link rel="STYLESHEET" type="text/css"
+	href=" dhtmlx_suite/ext/dhtmlxgrid_pgn_bricks.css"/>
+<script src="dhtmlx_suite/ext/dhtmlxgrid_pgn.js"></script>
+<script src="dhtmlx_suite/js/dhtmlxgridcell.js"></script>
+<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTreeGrid.js"></script>  
 <script>
+ 
 function QueryWizard()
 {
 	var rand_no = Math.random();
 	document.forms[0].action='QueryWizard.do?random='+rand_no;
 	document.forms[0].submit();
 }
-window.onload = function() {        
-   	doInitGrid();	
+window.onload = function() {  
+	ajaxQueryGridInitCall("QueryGridInitAction.do")
+   	doInitGrid();
     }  
 function f()
 {
@@ -59,7 +63,7 @@ function doInitGrid()
 	grid = new dhtmlXGridObject('mygrid_container');
 	grid.setImagePath("dhtmlx_suite/dhtml_pop/imgs/");
  	grid.setHeader("My Folders");
- 	grid.setInitWidths("177");
+ 	grid.setInitWidthsP("100");
  	grid.setColAlign("left");
  	grid.setSkin("dhx_skyblue"); // (xp, mt, gray, light, clear, modern)
  	grid.enableRowsHover(true, "activebtn");
@@ -69,9 +73,55 @@ function doInitGrid()
  	grid.load ("TagGridInItAction.do");
   
 }
+
 function doOnRowSelected(rId)
 {
-	submitTagName(rId);	 
+	ajaxQueryGridInitCall("QueryGridInitAction.do?tagId="+rId);
+	document.getElementById('myQueries').className='btn1';
+	document.getElementById('allQueries').className='btn1';
+	document.getElementById('sharedQueries').className='btn1';
+}
+ 
+var xmlHttpobj = false;
+function ajaxQueryGridInitCall(url) {
+	
+ if (window.XMLHttpRequest)
+ { 
+  	xmlHttpobj=new XMLHttpRequest();
+ }
+ else
+ { 
+  	xmlHttpobj=new ActiveXObject("Microsoft.XMLHTTP");
+ }
+	  
+	xmlHttpobj.onreadystatechange = showGrid;
+	xmlHttpobj.open("POST", url,false);
+	xmlHttpobj.send(null);
+}
+var responseString;
+var queryGrid;
+function showGrid() {
+	if (xmlHttpobj.readyState == 4) 
+	{
+		 responseString =xmlHttpobj.responseText;
+		 queryGrid = new dhtmlXGridObject('mygrid_right_container');
+		 queryGrid.setImagePath("dhtmlx_suite/dhtml_pop/imgs/");
+		 queryGrid.setHeader(",<b>Query Id,<b>Title,<b>Results,<b>ExecutedOn,<b>Owner,<b>Actions ");
+		 queryGrid.attachHeader("#rspan,#numeric_filter,#text_filter,#text_filter,#rspan,#select_filter,#rspan"); 
+		 queryGrid.setInitWidthsP("3,10,22,20,17,15,*");
+		 queryGrid.setColAlign("center,center,left,left,left,left,left");
+		 queryGrid.setColTypes("txt,txt,txt,txt,txt,txt,txt");
+		 queryGrid.setColSorting("str,int,str,str,str,str");
+		 queryGrid.setSkin("dhx_skyblue"); // (xp, mt, gray, light, clear, modern)
+		 queryGrid.enableRowsHover(true, "activebtn");
+		 queryGrid.setEditable(false);
+		 queryGrid.enableTooltips("false,false,false,false,false,false,false");
+		 queryGrid.clearAll(true);
+		 queryGrid.init();
+		 queryGrid.enablePaging(true,20,10,"pagingArea",true);
+		 queryGrid.setPagingSkin("bricks");
+		 queryGrid.loadXMLString(responseString); 
+	}
 }
 
 </script>
@@ -95,28 +145,6 @@ function doOnRowSelected(rId)
 		String popupText = (String) request
 				.getAttribute(AQConstants.POPUP_TEXT);
 		String queryOption = (String) request.getAttribute("queryOption");
-		Object formObj = request.getAttribute("saveQueryForm");
-		boolean isWhite = false;
-		String displayStyle = "display:block";
-       	SaveQueryForm saveQueryForm = (SaveQueryForm) formObj;
-
-		Collection<IParameterizedQuery> iParameterizedQueryCollection = saveQueryForm
-				.getParameterizedQueryCollection();
-		HttpSession newSession = request.getSession();
-		if (iParameterizedQueryCollection != null) {
-			newSession.setAttribute("parameterizedQueryCollection",
-					iParameterizedQueryCollection);
-		} else {
-			newSession.setAttribute("parameterizedQueryCollection", null);
-		}
-		if (iParameterizedQueryCollection.size() == 0) {
-			displayStyle = "display:none";
-		} else {
-			displayStyle = "display:block";
-		}
-		Map<Long, DashBoardBean> executedOnMap = saveQueryForm
-				.getDashBoardDetailsMap();
-		int queryCount = 0;
 	%>
  
 
@@ -169,61 +197,34 @@ function doOnRowSelected(rId)
 		<div id="left">
 			<table class="tags" width="100%" cellspacing="0" cellpadding="0"
 				border="0">
-<%
-	String myQueryClass;
-	String allQueryClass;
-	String sharedQueryClass;
-	if (queryOption == "myQueries" || queryOption.equals("myQueries"))
-	{
-		myQueryClass ="activebtn";
-		allQueryClass="btn1";
-		sharedQueryClass="btn1";
-	}
-	else if (queryOption == "allQueries"|| queryOption.equals("allQueries"))
-	{
-		myQueryClass = "btn1";
-		allQueryClass="activebtn";
-		sharedQueryClass="btn1";
-	}
-	else if (queryOption == "sharedQueries" || queryOption.equals("sharedQueries"))
-	{
-		myQueryClass ="btn1" ;
-		allQueryClass="btn1";
-		sharedQueryClass="activebtn";
-	}else
-	{
-		myQueryClass = "btn1";
-		allQueryClass="btn1";
-		sharedQueryClass="btn1";
-	}	
-		%>
+ 
 				<tbody>
 					<tr>
 						<td><div style="height: 30px; width: 166px;" id="toolbarObj1">
-								<input type="button" value="My Queries" title ="My Queries"
-									onclick="submitTheForm('ShowQueryDashboardAction.do?pageOf=myQueries',this);"
-									class=<%=myQueryClass%>>
+									<input type="button" value="My Queries" id="myQueries" title ="My Queries"
+										onclick="submitTheForm('QueryGridInitAction.do?pageOf=myQueries',this.id);"
+										class="activebtn">
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td><div style="height: 30px; width: 166px;" id="toolbarObj2">
-								<input type="button" value="All Queries"  title="All Queries"
-									onclick="submitTheForm('ShowQueryDashboardAction.do?pageOf=allQueries',this);"
-									class=<%=allQueryClass%>>
+									<input type="button" value="All Queries" id="allQueries" title="All Queries"
+										onclick="submitTheForm('QueryGridInitAction.do?pageOf=allQueries',this.id);"
+										class="btn1">
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td><div style="height: 30px; width: 166px;" id="toolbarObj3">
-								<input type="button" value="Shared Queries" title="Shared Queries"
-									onclick="submitTheForm('ShowQueryDashboardAction.do?pageOf=sharedQueries',this);"
-									class=<%=sharedQueryClass%>>
+									<input type="button" value="Shared Queries" id="sharedQueries" title="Shared Queries"
+										onclick="submitTheForm('QueryGridInitAction.do?pageOf=sharedQueries',this.id);"
+										class="btn1">
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td><div id="mygrid_container"></div></td>
+						<td height=100%><div id="mygrid_container" height="26em" width="97%"></div></td>
 					</tr>
 				</tbody>
 			</table>
@@ -257,9 +258,6 @@ function doOnRowSelected(rId)
 					<div id="treegridbox"
 						style="width: 530px; height: 237px; background-color: white;"></div>
 
-
-
-
 					<p>
 						&nbsp&nbsp&nbsp<label width="28%" align="left"
 							style="font-size: .82em; font-family: verdana;"><b> <%=popupText%>
@@ -279,149 +277,12 @@ function doOnRowSelected(rId)
 
 			<div id="right">
 				<table width="100%" cellpadding='0' cellspacing='0' border='0'>
-
-					<tr style="height: 100%;">
-						<td>
-							<!--style="width:100%; height:100%; overflow:auto; border:1px solid #FF0000; "-->
-							<div id="searchDiv">
-								<table cellpadding='2' cellspacing='0' border='0' width='100%'
-									class='savedqueries'>
-									<%
-										if (displayStyle.equals("display:block")) {
-									%>
-									<tr valign="center" height='30' bgcolor="#d5e8ff">
-										<%
-											} else {
-										%>
-									
-									<tr valign="center" height='30' bgcolor="#d5e8ff"
-										style="<%=displayStyle%>">
-										<%
-											}
-										%>
-										<td width='2%' align="left"
-											style="font-size: 1.2em; font-family: verdana;"><b><bean:message
-													key="sr.no" /> </b></td>
-										<td width='31%' align="left" class="savedQueryHeading"
-											style="font-size: 1.2em; font-family: verdana;"><b>
-												<bean:message key="query.title" /> </b></td>
-										<td width='16%' align="left" class="savedQueryHeading"
-											style="font-size: 1.2em; font-family: verdana;"><b><bean:message
-													key="query.results" /> </b></td>
-										<td class="savedQueryHeading" width="10%" align='left'
-											style="font-size: 1.2em; font-family: verdana;"><b><bean:message
-													key="query.executedOn" /> </b></td>
-										<td class="savedQueryHeading" align='left'
-											style="font-size: 1.2em; font-family: verdana;"><b><bean:message
-													key="query.owner" /> </b></td>
-										<td align='left' width="13%" class="savedQueryHeading"
-											style="font-size: 1.2em; font-family: verdana;"><b><bean:message
-													key="query.actions" /> </b></td>
-									</tr>
-									<c:set var="parameterizedQueryCollection"
-										value="${saveQueryForm.parameterizedQueryCollection}" />
-									<jsp:useBean id="parameterizedQueryCollection"
-										type="java.util.Collection" />
-
-									<c:forEach items="${parameterizedQueryCollection}"
-										var="parameterizedQuery" varStatus="queries">
-										<jsp:useBean id="parameterizedQuery"
-											type="edu.wustl.common.querysuite.queryobject.IParameterizedQuery" />
-
-										<%
-											String cssClass = new String();
-													if (isWhite == false) {
-														cssClass = "white";
-														isWhite = true;
-													} else {
-														cssClass = "bgImageForColumns";
-														isWhite = false;
-													}
-										%>
-										<div id="tableDiv">
-											<tr class="<%=cssClass%>">
-												<%
-													String target = "executeQuery('"
-																	+ parameterizedQuery.getId() + "')";
-															String title = parameterizedQuery.getName();
-															String newTitle = Utility.getQueryTitle(title);
-															if (newTitle.length() >= 50) {
-																newTitle = newTitle.substring(0, 50) + "...";
-															}
-															title = "Title : " + title + " ";
-															title = title + " | Description : "
-																	+ parameterizedQuery.getDescription();
-															String tooltip = Utility.getTooltip(title);
-															String function = "Tip('" + tooltip + "', WIDTH, 300)";
-															queryCount++;
-												%>
-
-												<td valign="top" align="left" height='20' width='2%'
-													style="padding-left: 0.7em; padding-top: 5px; font-size: 1.1em; font-family: verdana;"><span
-													class="savedQueryHeading"> <!--img src="images/savedQuery.bmp"/-->
-														<%=queryCount%> </span></td>
-												<%
-													DashBoardBean dashBoardBean = executedOnMap
-																	.get(parameterizedQuery.getId());
-															String rootEntityName = dashBoardBean.getRootEntityName();
-															String noOfRecords = dashBoardBean.getCountOfRootRecords();
-															String executedOn = dashBoardBean.getExecutedOn();
-															String ownerName = dashBoardBean.getOwnerName();
-												%>
-												<td valign="center" height='20' width="31%" align="left"><input
-													type="checkbox" name="objCheckbox"
-													value="<%=String.valueOf(parameterizedQuery.getId())%>" />
-
-													<html:link
-														style="padding-left: 0.2em; * padding-left: 5px; font-size: 1em; font-family: verdana;"
-														href='#' onclick='<%=target%>' onmouseover="<%=function%>"><%=newTitle%></html:link>
-												</td>
-												<td width="16%" align="left"
-													style="padding-left: 0.2em; * padding-left: 5px; font-size: 1em; font-family: verdana;">
-													<%=rootEntityName%> (<%=noOfRecords%>)</td>
-												<td valign="center" height='20' width="10%" align="left"
-													style="padding-left: 0.2em; * padding-left: 2px; font-size: 1em; font-family: verdana;"
-													nowrap="true"><%=executedOn%></td>
-												<td valign="center" height='20' width="10%" align="left"
-													style="padding-left: 0.2em; * padding-left: 5px; font-size: 1em; font-family: verdana;">
-													<%=ownerName%></td>
-
-												<td valign="center" height='20' align="left"
-													style="font-size: 1em; font-family: verdana;">
-													<%
-														target = "editQuery('" + parameterizedQuery.getId() + "')";
-													%> &nbsp <A onclick="<%=target%>"
-													onmouseover="Tip('Edit', WIDTH,36)" border="0"> <IMG
-														src="images/advQuery/application_edit.png"
-														id="editBtn_<%=parameterizedQuery.getId()%>" border="0">
-														&nbsp;&nbsp; <%
- 	target = "executeQuery('" + parameterizedQuery.getId()
- 					+ "')";
- %> <A onclick="<%=target%>" onmouseover="Tip('Execute', WIDTH,44)"
-														border="0"> <IMG
-															src="images/advQuery/execute-button-1.PNG"
-															id="executeBtn_<%=parameterizedQuery.getId()%>"
-															border="0"> </A>&nbsp;&nbsp; <%
- 	target = "deleteQueryPopup('" + parameterizedQuery.getId()
- 					+ "','" + popupMessage + "')";
- 			if (queryOption != null && queryOption.equals("myQueries")) {
- %> <A onclick="<%=target%>" border="0"> <IMG
-															src="images/advQuery/cancel.png"
-															id="deleteBtn_<%=parameterizedQuery.getId()%>" border="0">
-													</A> <%
- 	}
- %>
-												
-												</td>
-
-											</tr>
-									</c:forEach>
-									</div>
-								</table>
-
-
-							</div>
-					</tr>
+						<tr>
+							<td>
+								<div id="mygrid_right_container" height="31em" width="100%"></div>
+								<div id="pagingArea"></div>
+							</td>
+						</tr>
 				</table>
 			</div>
 
@@ -429,7 +290,6 @@ function doOnRowSelected(rId)
 </td>
 </tr> 
 </table>
-
-		<html:hidden styleId="queryId" property="queryId" />
-	</html:form>
+<html:hidden styleId="queryId" property="queryId" />
+</html:form>
 </body>

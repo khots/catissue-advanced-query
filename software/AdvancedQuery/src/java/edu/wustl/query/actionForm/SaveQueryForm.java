@@ -17,7 +17,7 @@ import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.global.Validator;
-import edu.wustl.query.beans.DashBoardBean;
+import edu.wustl.query.beans.DashboardBean;
 
 /**
  * @author chetan_patil
@@ -74,7 +74,7 @@ public class SaveQueryForm extends AbstractActionForm
 	/**
 	 * The dashBoardDetailsMap.
 	 */
-	private Map<Long,DashBoardBean> dashBoardDetailsMap;
+	private Map<Long,DashboardBean> dashBoardDetailsMap;
 
 	/**
 	 * To specify whom is the query shared to.
@@ -306,7 +306,7 @@ public class SaveQueryForm extends AbstractActionForm
      *
      * @param queryExecutedOnMap dashBoardDetailsMap to set.
      */
-	public void setDashBoardDetailsMap(Map<Long, DashBoardBean> queryExecutedOnMap)
+	public void setDashBoardDetailsMap(Map<Long, DashboardBean> queryExecutedOnMap)
 	{
 		this.dashBoardDetailsMap = queryExecutedOnMap;
 	}
@@ -315,7 +315,7 @@ public class SaveQueryForm extends AbstractActionForm
 	 *
 	 * @return dashBoardDetailsMap the dashBoardDetailsMap.
 	 */
-	public Map<Long,DashBoardBean> getDashBoardDetailsMap()
+	public Map<Long,DashboardBean> getDashBoardDetailsMap()
 	{
 		return dashBoardDetailsMap;
 	}
