@@ -25,12 +25,14 @@ import edu.wustl.common.querysuite.queryobject.ICustomFormula;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.beans.SharedQueryBean;
 import edu.wustl.query.bizlogic.SaveQueryBizLogic;
 import edu.wustl.query.bizlogic.ShareQueryBizLogic;
 import edu.wustl.query.htmlprovider.SavedQueryHtmlProvider;
 import edu.wustl.query.util.global.AQConstants;
+
 /**
  * Loads data for save query page.
  * @author deepti_shelar
@@ -38,6 +40,7 @@ import edu.wustl.query.util.global.AQConstants;
  */
 public class LoadSaveQueryPageAction extends SecureAction
 {
+
 	/**
 	 * This action loads all the conditions from the query.
 	 * @param mapping mapping
@@ -54,21 +57,23 @@ public class LoadSaveQueryPageAction extends SecureAction
 		String target = AQConstants.FAILURE;
 		if (queryObject != null)
 		{
-//			request.getParameter("showTree");
+			//			request.getParameter("showTree");
 			target = setAppropriateTarget(form, request, queryObject);
 			SaveQueryForm savedQueryForm = (SaveQueryForm) form;
-			if(request.getParameter("showTree") != null)
+			if (request.getParameter("showTree") != null)
 			{
 				savedQueryForm.setShowTree(Boolean.valueOf(request.getParameter("showTree")));
 			}
-			else if(request.getSession().getAttribute("treeChkVal") != null)
+			else if (request.getSession().getAttribute("treeChkVal") != null)
 			{
-				savedQueryForm.setShowTree(Boolean.valueOf(request.getSession().getAttribute("treeChkVal").toString()));
+				savedQueryForm.setShowTree(Boolean.valueOf(request.getSession().getAttribute(
+						"treeChkVal").toString()));
 			}
 			ShareQueryBizLogic bizLogic = new ShareQueryBizLogic();
 
 			saveCoordinatorList(request, savedQueryForm, bizLogic);
-			String errorMessage = (String) request.getSession().getAttribute("errorMessageForEditQuery");
+			String errorMessage = (String) request.getSession().getAttribute(
+					"errorMessageForEditQuery");
 			if (errorMessage != null)
 			{
 				setActionError(request, errorMessage);
@@ -84,9 +89,8 @@ public class LoadSaveQueryPageAction extends SecureAction
 	 * @param bizLogic bizLogic
 	 * @throws BizLogicException BizLogicException
 	 */
-	private void saveCoordinatorList(HttpServletRequest request,
-			SaveQueryForm savedQueryForm, ShareQueryBizLogic bizLogic)
-			throws BizLogicException
+	private void saveCoordinatorList(HttpServletRequest request, SaveQueryForm savedQueryForm,
+			ShareQueryBizLogic bizLogic) throws BizLogicException
 	{
 		List<NameValueBean> coordinators = new ArrayList<NameValueBean>();
 		long[] protocolCoordIds = savedQueryForm.getProtocolCoordinatorIds();
@@ -110,8 +114,8 @@ public class LoadSaveQueryPageAction extends SecureAction
 	 * @param users users
 	 * @param prtCordIds protocol Coordinator identifiers
 	 */
-	private void populateCoordinatorList(List<NameValueBean> coordinators,
-			List users, List<Long> prtCordIds)
+	private void populateCoordinatorList(List<NameValueBean> coordinators, List users,
+			List<Long> prtCordIds)
 	{
 		for (Object object : users)
 		{
@@ -129,10 +133,11 @@ public class LoadSaveQueryPageAction extends SecureAction
 	 * @param queryObject queryObject
 	 * @return target
 	 * @throws BizLogicException Exception
+	 * @throws ClassNotFoundException 
+	 * @throws DAOException 
 	 */
-	private String setAppropriateTarget(ActionForm form,
-			HttpServletRequest request, IQuery queryObject)
-			throws BizLogicException
+	private String setAppropriateTarget(ActionForm form, HttpServletRequest request,
+			IQuery queryObject) throws BizLogicException, DAOException, ClassNotFoundException
 	{
 		String target;
 		boolean isDagEmpty;
@@ -157,20 +162,21 @@ public class LoadSaveQueryPageAction extends SecureAction
 	 * @param queryObject queryObject
 	 * @return target
 	 * @throws BizLogicException Exception
+	 * @throws ClassNotFoundException 
+	 * @throws DAOException 
 	 */
-	private String getSavedQueryDetails(ActionForm form,
-			HttpServletRequest request, IQuery queryObject)
-			throws BizLogicException
+	private String getSavedQueryDetails(ActionForm form, HttpServletRequest request,
+			IQuery queryObject) throws BizLogicException, DAOException, ClassNotFoundException
 	{
 		String target;
 		boolean isShowAll = request.getParameter(AQConstants.SHOW_ALL) == null ? false : true;
 		Map<Integer, ICustomFormula> cFIndexMap = new HashMap<Integer, ICustomFormula>();
 		String htmlContents = new SavedQueryHtmlProvider().getHTMLForSavedQuery(queryObject,
 				isShowAll, AQConstants.SAVE_QUERY_PAGE, cFIndexMap);
-		request.getSession().setAttribute(AQConstants.CUSTOM_FORMULA_INDEX_MAP,
-				cFIndexMap);
+		request.getSession().setAttribute(AQConstants.CUSTOM_FORMULA_INDEX_MAP, cFIndexMap);
 		request.setAttribute(AQConstants.HTML_CONTENTS, htmlContents);
-		String showAllLink = isShowAll ? AQConstants.SHOW_SELECTED_ATTRIBUTE
+		String showAllLink = isShowAll
+				? AQConstants.SHOW_SELECTED_ATTRIBUTE
 				: AQConstants.SHOW_ALL_ATTRIBUTE;
 		request.setAttribute(AQConstants.SHOW_ALL_LINK, showAllLink);
 		if (!isShowAll)
@@ -187,27 +193,30 @@ public class LoadSaveQueryPageAction extends SecureAction
 	 * @param request request
 	 * @param queryObject request
 	 * @throws BizLogicException Exception
+	 * @throws ClassNotFoundException 
+	 * @throws DAOException 
 	 */
-	private void populateForm(ActionForm form, HttpServletRequest request,
-			IQuery queryObject) throws BizLogicException
+	private void populateForm(ActionForm form, HttpServletRequest request, IQuery queryObject)
+			throws BizLogicException, DAOException, ClassNotFoundException
 	{
 		if (queryObject.getId() != null && queryObject instanceof ParameterizedQuery)
 		{
 			SaveQueryForm savedQueryForm = (SaveQueryForm) form;
 			savedQueryForm.setDescription(((ParameterizedQuery) queryObject).getDescription());
 			savedQueryForm.setTitle(((ParameterizedQuery) queryObject).getName());
-			SessionDataBean sessionDataBean = (SessionDataBean) request.getSession()
-			.getAttribute(edu.wustl.common.util.global.Constants.SESSION_DATA);
+			SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
+					edu.wustl.common.util.global.Constants.SESSION_DATA);
 			SaveQueryBizLogic bizLogic = new SaveQueryBizLogic();
 			String csmUserId = sessionDataBean.getCsmUserId();
 			SharedQueryBean bean = bizLogic.getSharingDetailsBean(queryObject);
-			if(csmUserId.equalsIgnoreCase(bean.getCsmUserId()))
+			if (csmUserId.equalsIgnoreCase(bean.getCsmUserId()))
 			{
 				request.setAttribute(AQConstants.IS_MY_QUERY, "true");
 			}
-			populateSharingDetails(bean,savedQueryForm);
+			populateSharingDetails(bean, savedQueryForm);
 		}
 	}
+
 	/**
 	 * checks if the DAG contains any expression
 	 * @param queryObject query
@@ -217,12 +226,13 @@ public class LoadSaveQueryPageAction extends SecureAction
 	{
 		boolean isDagEmpty = true;
 		IConstraints constraints = queryObject.getConstraints();
-		if(constraints.size() != 0)
+		if (constraints.size() != 0)
 		{
 			isDagEmpty = false;
 		}
 		return isDagEmpty;
 	}
+
 	/**
 	 * populates the form from the data of the bean.
 	 * @param bean share query bean

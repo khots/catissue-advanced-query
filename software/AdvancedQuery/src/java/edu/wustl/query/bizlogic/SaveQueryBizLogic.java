@@ -4,6 +4,7 @@
 
 package edu.wustl.query.bizlogic;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,7 +24,9 @@ import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.HibernateDAO;
+import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.query.beans.SharedQueryBean;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.UserCache;
@@ -230,19 +233,30 @@ public class SaveQueryBizLogic extends DefaultQueryBizLogic implements IQueryBiz
 		}
 		return originalQuery;
 	}
+
 	/**
 	 * Sets the bean values
 	 * @param queryObject query
 	 * @param userId logged in user
 	 * @return Shared Query bean
 	 * @throws BizLogicException exception
+	 * @throws ClassNotFoundException 
+	 * @throws DAOException 
 	 */
-	public SharedQueryBean getSharingDetailsBean(IQuery queryObject) throws BizLogicException
+	public SharedQueryBean getSharingDetailsBean(IQuery queryObject) throws BizLogicException,
+			DAOException, ClassNotFoundException
 	{
 		SharedQueryBean bean = new SharedQueryBean();
 		DashboardBizLogic bizLogic = new DashboardBizLogic();
 		Set<ProtectionGroup> pgSet = bizLogic.getPGsforQuery(queryObject.getId().toString());
-		populateBean(pgSet,bean);
+		if(!pgSet.isEmpty())
+		{
+			populateBean(pgSet, bean);
+		}
+		else
+		{
+			bean.setCsmUserId(getQueryOwnerIdByQueryId(queryObject.getId()));
+		}
 		String shareTo = bean.getShareTo();
 		boolean isSharedToAll;
 		if(shareTo != null && shareTo.equals(AQConstants.ALL))
@@ -330,4 +344,34 @@ public class SaveQueryBizLogic extends DefaultQueryBizLogic implements IQueryBiz
 			}
 		}
 	}
+
+	private String getQueryOwnerIdByQueryId(Long queryId) throws DAOException,
+			ClassNotFoundException
+	{
+		String sql = "select qpq.owner from query_parameterized_query qpq where qpq.identifier = ?";
+
+		System.out.println("jdbcDao before");
+		JDBCDAO jdbcDAO = DAOUtil.getJDBCDAO(null);
+		System.out.println("jdbcDao after");
+
+		List<ColumnValueBean> values = new ArrayList<ColumnValueBean>();
+		values.add(new ColumnValueBean(queryId, 0));
+		System.out.println("before execute");
+		final List<List<String>> resultList = jdbcDAO.executeQuery(sql, values);
+		//		
+		//		LinkedList<Object> data = new LinkedList<Object>();
+		//		data.add(queryId);
+		//		LinkedList<ColumnValueBean> columnValueBean = populateColumnValueBean(data);
+		//		System.out.println("before execute");
+		//		final List<List<String>> resultList = Utility.executeSQL(sql, columnValueBean);
+		//		System.out.println("after execute");
+		String userId = "";
+		if (!resultList.isEmpty())
+			userId = resultList.get(0).get(0);
+		//
+		jdbcDAO.closeSession();
+		return userId;
+
+	}
+
 }

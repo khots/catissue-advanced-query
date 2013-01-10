@@ -98,25 +98,30 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	private Map<Long, String> getAllQueryIds(Collection<IParameterizedQuery> queryCollection)
 			throws DAOException, ClassNotFoundException
 	{
-		List<Long> queryIds = new ArrayList<Long>();
-		for (IParameterizedQuery parameterizedQuery : queryCollection)
-		{
-			queryIds.add(parameterizedQuery.getId());
-		}
-		String queryId = queryIds.toString().replace("[", "(");
-		queryId = queryId.replace("]", ")");
-
-		String sql = "select qpq.identifier, cu.last_name ||', '|| cu.first_name from query_parameterized_query qpq,"
-				+ " catissue_user cu where cu.csm_user_id in (select pq.owner from query_parameterized_query pq where pq.identifier in "
-				+ queryId + " and pq.owner is not null) and cu.csm_user_id = qpq.owner";
-
-		List<List<String>> dataList = Utility.executeSQL(sql, new LinkedList<ColumnValueBean>());
 		Map<Long, String> data = new HashMap<Long, String>();
-		for (List<String> result : dataList)
+		if (!queryCollection.isEmpty())
 		{
-			Long pQueryId = Long.valueOf(result.get(0));
-			String userId = result.get(1);
-			data.put(pQueryId, userId);
+			List<Long> queryIds = new ArrayList<Long>();
+			for (IParameterizedQuery parameterizedQuery : queryCollection)
+			{
+				queryIds.add(parameterizedQuery.getId());
+			}
+			String queryId = queryIds.toString().replace("[", "(");
+			queryId = queryId.replace("]", ")");
+
+			String sql = "select qpq.identifier, cu.last_name ||', '|| cu.first_name from query_parameterized_query qpq,"
+					+ " catissue_user cu where cu.csm_user_id in (select pq.owner from query_parameterized_query pq where pq.identifier in "
+					+ queryId + " and pq.owner is not null) and cu.csm_user_id = qpq.owner";
+
+			List<List<String>> dataList = Utility
+					.executeSQL(sql, new LinkedList<ColumnValueBean>());
+
+			for (List<String> result : dataList)
+			{
+				Long pQueryId = Long.valueOf(result.get(0));
+				String userId = result.get(1);
+				data.put(pQueryId, userId);
+			}
 		}
 		return data;
 	}
