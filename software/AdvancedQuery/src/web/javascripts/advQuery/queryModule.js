@@ -1439,9 +1439,9 @@ var jsReady = false;
 	}
 
 	/*This function is called form QueryListView.jsp. Pops up for confirmation while deleting the query*/
-	function deleteQueryPopup(queryId, popupMessage)
+	function deleteQueryPopup(queryId)
 	{
-		var r=confirm(popupMessage);
+		var r=confirm("Are you sure you want to delete the query?");
 		if (r==true)
 		{
 			deleteQuery(queryId);

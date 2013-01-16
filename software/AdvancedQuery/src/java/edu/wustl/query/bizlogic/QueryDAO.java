@@ -84,9 +84,13 @@ public class QueryDAO {
 			    parameters.add(new ColumnValueBean(queryId, DBTypes.LONG));
 			}
 			 
-			List<List<String>> result = jdbcDAO.executeQuery(query, null, parameters);
-			jdbcDAO.commit();
+			List<List<String>> result = new ArrayList<List<String>>();
 			 
+			if(queryIds != null && !queryIds.isEmpty()){		
+				result= jdbcDAO.executeQuery(query, null, parameters);
+			}
+			
+			jdbcDAO.commit(); 
 			return createQueryDTOs(result);
 		} catch (DAOException e) {	
 			throw new BizLogicException(null,e,"DAOException: while Retrieving queries");

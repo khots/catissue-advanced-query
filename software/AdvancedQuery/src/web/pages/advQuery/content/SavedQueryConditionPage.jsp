@@ -151,7 +151,7 @@ function checkForValidation()
 
 </head>
 
-<body onload="hideMultiselect()">
+<body onload="userSelected()">
 <html:errors />
 <html:form styleId='saveQueryForm'
 	action='<%=AQConstants.SAVE_QUERY_ACTION%>'>

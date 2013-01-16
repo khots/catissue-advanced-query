@@ -39,7 +39,7 @@
 	href=" dhtmlx_suite/ext/dhtmlxgrid_pgn_bricks.css"/>
 <script src="dhtmlx_suite/ext/dhtmlxgrid_pgn.js"></script>
 <script src="dhtmlx_suite/js/dhtmlxgridcell.js"></script>
-<script src="dhtmlx_suite/dhtml_pop/js/dhtmlXTreeGrid.js"></script>  
+<script src="dhtmlx_suite/dhtml_pop/js/spec_dhtmlXTreeGrid.js"></script>  
 <script>
  
 function QueryWizard()
