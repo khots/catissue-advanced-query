@@ -79,7 +79,7 @@ public class SaveQueryForm extends AbstractActionForm
 	/**
 	 * To specify whom is the query shared to.
 	 */
-	private String shareTo="users";
+	private String shareTo="none";
 
 	/**
 	 * The selected roles.

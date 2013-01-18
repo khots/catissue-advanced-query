@@ -111,6 +111,9 @@ Ext.onReady(function(){
 			});
 </script>
 <script>
+window.onload = function() {  
+	hideMultiselect();
+}  
 function checkForValidation()
 {
 	var tdId = "multiSelectId";
@@ -151,7 +154,7 @@ function checkForValidation()
 
 </head>
 
-<body onload="userSelected()">
+<body onload="hideMultiselect()">
 <html:errors />
 <html:form styleId='saveQueryForm'
 	action='<%=AQConstants.SAVE_QUERY_ACTION%>'>
