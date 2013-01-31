@@ -187,4 +187,16 @@ public class QueryTagBizLogic implements ITagBizlogic
 
 	}
 
+	public void createNewTag(String arg0, String arg1, long arg2, Set<Long> arg3)
+			throws DAOException, BizLogicException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void shareTags(String arg0, Set<Long> arg1, Set<Long> arg2)
+			throws DAOException, BizLogicException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
