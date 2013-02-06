@@ -24,6 +24,7 @@ import edu.wustl.common.querysuite.queryobject.impl.DateOffsetLiteral;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.querysuite.TemporalQueryUtility;
 /**
@@ -282,7 +283,7 @@ public class SavedQueryHtmlProvider
 			if(operand.getDate()!=null)
 			{
 				SimpleDateFormat format =
-			        new SimpleDateFormat(AQConstants.DATE_FORMAT);
+			        new SimpleDateFormat(CommonServiceLocator.getInstance().getDatePattern());
 				date = format.format(operand.getDate());
 			}
 			String html ="<input style=\"width:150px; display:block;\" value='"

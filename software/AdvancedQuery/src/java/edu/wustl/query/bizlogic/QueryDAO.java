@@ -1,13 +1,19 @@
 package edu.wustl.query.bizlogic;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
 
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.global.CommonServiceLocator;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.daofactory.IDAOFactory;
@@ -20,6 +26,9 @@ import gov.nih.nci.security.authorization.domainobjects.User;
 public class QueryDAO {
 	
 	public Session session = null;
+	
+	private static final org.apache.log4j.Logger LOGGER = LoggerConfig
+			.getConfiguredLogger(QueryDAO.class);
 	
 	protected final static String GET_ALL_QUERIES = 
 		  " SELECT" 
@@ -56,15 +65,18 @@ public class QueryDAO {
 		String appName=CommonServiceLocator.getInstance().getAppName();
 		IDAOFactory daofactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
 		JDBCDAO jdbcDAO = daofactory.getJDBCDAO(); 
-
+		ResultSet rs = null;
 		try {
 			jdbcDAO.openSession(null);
-			List<List<String>> result = jdbcDAO.executeQuery(GET_ALL_QUERIES, null,null);
-			jdbcDAO.commit();	 
-			return createQueryDTOs(result);
+			rs = jdbcDAO.getResultSet(GET_ALL_QUERIES, null,null);
+			return createQueryDTOs(rs);
 		} catch (DAOException e) {
 			throw new BizLogicException(null,e,"DAOException: while Retrieving queries");
 		} finally {
+			if (rs != null) {
+				jdbcDAO.closeStatement(rs);
+			}
+			jdbcDAO.commit();	 
 			jdbcDAO.closeSession();
 		}
 	}
@@ -74,7 +86,7 @@ public class QueryDAO {
 		String appName=CommonServiceLocator.getInstance().getAppName();
 		IDAOFactory daofactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
 		JDBCDAO jdbcDAO = daofactory.getJDBCDAO(); 
-		
+		ResultSet rs = null;
 		try {
 			jdbcDAO.openSession(null);
 			String query = String.format(GET_QUERIES_BY_ID, getParamPlaceHolders(queryIds.size()));	 
@@ -83,35 +95,41 @@ public class QueryDAO {
 			for (Long queryId : queryIds) {
 			    parameters.add(new ColumnValueBean(queryId, DBTypes.LONG));
 			}
-			 
-			List<List<String>> result = new ArrayList<List<String>>();
-			 
+			
 			if(queryIds != null && !queryIds.isEmpty()){		
-				result= jdbcDAO.executeQuery(query, null, parameters);
+				rs = jdbcDAO.getResultSet(query, parameters, null);
 			}
 			
-			jdbcDAO.commit(); 
-			return createQueryDTOs(result);
+			 
+			return createQueryDTOs(rs);
 		} catch (DAOException e) {	
 			throw new BizLogicException(null,e,"DAOException: while Retrieving queries");
 		} finally {
+			if (rs != null) {
+				jdbcDAO.closeStatement(rs);
+			}
+			jdbcDAO.commit();
 			jdbcDAO.closeSession();
 		}
 	}
 	
-	private List<QueryDTO> createQueryDTOs(List<List<String>> result) 
+	private List<QueryDTO> createQueryDTOs(ResultSet rs) 
 	throws BizLogicException {
-		List<QueryDTO> queries = new ArrayList<QueryDTO>(); 
-		for (List<String> rows : result) {
-			QueryDTO queryDTO = new QueryDTO();
-			queryDTO.setQueryId(Long.parseLong(rows.get(0)));
-			queryDTO.setQueryName(rows.get(1));
-			queryDTO.setQueryDescription(rows.get(2));	
-			queryDTO.setExecutedOn(getExecutedOnTime(rows.get(3)));
-			queryDTO.setRootEntityName(getRootEntityName(rows.get(4)));
-			queryDTO.setCountOfRootRecords(getRootRecordCount(rows.get(5)));
-			queryDTO.setOwnerName(getOwnerName(rows.get(0)));
-			queries.add(queryDTO);
+		List<QueryDTO> queries = new ArrayList<QueryDTO>();
+		try {
+			while (rs.next()) {
+				QueryDTO queryDTO = new QueryDTO();
+				queryDTO.setQueryId(rs.getLong(1));
+				queryDTO.setQueryName(rs.getString(2));
+				queryDTO.setQueryDescription(rs.getString(3));	
+				queryDTO.setExecutedOn(getExecutedOnTime(rs.getTimestamp(4)));
+				queryDTO.setRootEntityName(getRootEntityName(rs.getString(5)));
+				queryDTO.setCountOfRootRecords(getRootRecordCount(rs.getString(6)));
+				queryDTO.setOwnerName(getOwnerName(rs.getString(1)));
+				queries.add(queryDTO);
+			}
+		} catch (SQLException e) {
+			LOGGER.error("Error while creating QueryDTOs");
 		}
 		return queries;	
 	}
@@ -132,10 +150,12 @@ public class QueryDAO {
 		return rootEnName;
 	}
 	
-	private String getExecutedOnTime(String executedOnTime) {
+	private String getExecutedOnTime(Timestamp executedOnTime) {
 		String executionTime = "N/A";
-		if (executedOnTime != null && !executedOnTime.isEmpty()){
-			executionTime = DashboardBizLogic.getFormattedDate(executedOnTime);
+		if (executedOnTime != null){
+			Date date = new Date(executedOnTime.getTime());
+			executionTime = new SimpleDateFormat(CommonServiceLocator.getInstance()
+							.getTimeStampPattern()).format(date);
 		}
 		return executionTime;
 	}

@@ -398,8 +398,7 @@ public abstract class AbstractQueryExecutor
 		        {
 		            break;
 		        }
-		        SimpleDateFormat formatter = new SimpleDateFormat(AQConstants.DATE_PATTERN_MM_DD_YYYY + " "
-		                + AQConstants.TIME_PATTERN_HH_MM_SS);
+		        SimpleDateFormat formatter = new SimpleDateFormat(CommonServiceLocator.getInstance().getTimeStampPattern());
 		        retObj = formatter.format((java.util.Date) retObj);
 		        break;
 		    default :

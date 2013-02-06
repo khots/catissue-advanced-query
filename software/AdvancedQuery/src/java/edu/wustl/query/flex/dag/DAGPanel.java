@@ -67,6 +67,7 @@ import edu.wustl.common.querysuite.queryobject.impl.Rule;
 import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.Collections;
 import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.HibernateDAO;
@@ -3636,7 +3637,7 @@ public class DAGPanel
 	{
 		String strDate = "";
 
-		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat formatter = new SimpleDateFormat(CommonServiceLocator.getInstance().getDatePattern());
 
 		strDate = formatter.format(date);
 

@@ -171,27 +171,6 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	}
 
 	/**
-	 * Returns date in format specified.
-	 * @param executedOnTime string data
-	 * @return formatted string date
-	 */
-	public static String getFormattedDate(String executedOnTime)
-	{
-		String tempExecutedOnTime = executedOnTime;
-		tempExecutedOnTime = executedOnTime.replace('-', '/');
-		StringTokenizer tokenizer = new StringTokenizer(tempExecutedOnTime," ");
-		String time = "";
-		if(tokenizer.hasMoreTokens())
-		{
-			time = getAppropriateTime(tokenizer);
-		}
-		tempExecutedOnTime = tempExecutedOnTime.substring(0, tempExecutedOnTime.indexOf(' '));
-		StringBuffer tempString = new StringBuffer(tempExecutedOnTime);
-		tempString.append(' ').append(time);
-		return tempString.toString();
-	}
-
-	/**
 	 * @param tokenizer StringTokenizer
 	 * @return time
 	 */

@@ -11,6 +11,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.query.util.global.AQConstants;
 
 /**
@@ -799,7 +800,7 @@ public class GenerateHtml
 	{
 		if (attribute.getDataType().equalsIgnoreCase(AQConstants.DATE) && isParameterized)
 		{
-			StringBuffer dateFormat = new StringBuffer(AQConstants.DATE_FORMAT);
+			StringBuffer dateFormat = new StringBuffer(CommonServiceLocator.getInstance().getDatePattern());
 			if(isBold)
 			{
 				dateFormat.append("<b>").append(dateFormat).append("</b>");
