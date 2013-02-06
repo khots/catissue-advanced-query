@@ -4,6 +4,7 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c"%>
+<%@ taglib uri="/WEB-INF/multiSelectUsingCombo.tld" prefix="mCombo" %>
 <%-- Imports --%>
 <%@
 	page language="java" contentType="text/html"
@@ -12,12 +13,14 @@
 	import="org.apache.struts.action.ActionMessages,edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
 <%@ page import="edu.wustl.query.actionForm.SaveQueryForm"%>
+ 
 <%@ page
 	import="edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface,edu.wustl.cab2b.client.ui.query.ClientQueryBuilder,edu.wustl.query.flex.dag.DAGConstant,edu.wustl.common.querysuite.queryobject.IQuery,edu.wustl.common.querysuite.queryobject.impl.Query,edu.wustl.common.querysuite.queryobject.IParameterizedQuery"%>
 <%@ page
 	import="java.util.*,java.text.DateFormat,java.text.SimpleDateFormat"%>
 <%@ page import="edu.wustl.query.beans.DashboardBean"%>
 <head>
+<!-- dhtmlx Grid/tree Grid -->
 <script language="JavaScript" type="text/javascript"
 	src="jss/advQuery/queryModule.js"></script>
 <script type="text/javascript" src="jss/advQuery/wz_tooltip.js"></script>
@@ -40,8 +43,20 @@
 <script src="dhtmlx_suite/ext/dhtmlxgrid_pgn.js"></script>
 <script src="dhtmlx_suite/js/dhtmlxgridcell.js"></script>
 <script src="dhtmlx_suite/dhtml_pop/js/spec_dhtmlXTreeGrid.js"></script>  
-<script>
+
+<!-- Combo box -->
+<script>var imgsrc="/images/de/";</script>
+<script language="JavaScript" type="text/javascript"
+	src="javascripts/de/prototype.js"></script>
+<script language="JavaScript" type="text/javascript"
+	src="javascripts/de/scr.js"></script>
  
+<link rel="stylesheet" type="text/css"
+	href="css/clinicalstudyext-all.css" />
+<script language="JavaScript" type="text/javascript"
+	src="javascripts/de/ajax.js"></script>
+<script type='text/JavaScript' src='jss/advQuery/scwcalendar.js'></script>
+<script>
 function QueryWizard()
 {
 	var rand_no = Math.random();
@@ -51,7 +66,8 @@ function QueryWizard()
 window.onload = function() {  
 	ajaxQueryGridInitCall("QueryGridInitAction.do")
    	doInitGrid();
-    }  
+	document.getElementById('protocolCoordinatorIds').style.marginLeft= "20px";
+}  
 function f()
 {
 	searchDivTag=document.getElementById('searchDiv');
@@ -70,8 +86,7 @@ function doInitGrid()
  	grid.setEditable(false);
    	grid.attachEvent("onRowSelect", doOnRowSelected);
  	grid.init();
- 	grid.load ("TagGridInItAction.do");
-  
+ 	grid.load ("TagGridInItAction.do"); 
 }
 
 function doOnRowSelected(rId)
@@ -123,8 +138,25 @@ function showGrid() {
 		 queryGrid.loadXMLString(responseString); 
 	}
 }
+function showHideCombo(){
+ 
+	if(document.getElementById("multiSelectId").style.display =="block"){		 
+		var tdId = "multiSelectId";
+		document.getElementById("assignButton").style.display="block"
+		document.getElementById("shareButton").style.display="none"
+		document.getElementById(tdId).style.display="none";
+	}else{
+		var tdId = "multiSelectId";
+		document.getElementById("assignButton").style.display="none"
+		document.getElementById("shareButton").style.display="block"
+		document.getElementById(tdId).style.display="block";
+	}
+}
 
 </script>
+
+ 
+ 
 <body onunload="doInitOnLoad();" onresize='f()'>
 	<%
 		boolean mac = false;
@@ -132,6 +164,8 @@ function showGrid() {
 		if (os != null && os.toString().toLowerCase().indexOf("mac") != -1) {
 			mac = true;
 		}
+		String selectText = "--Select--";
+		String queryId = "5";
 		String message = null;
 		String entityTag="QueryTag";
 		String entityTagItem="QueryTagItem";
@@ -146,9 +180,50 @@ function showGrid() {
 				.getAttribute(AQConstants.POPUP_TEXT);
 		String queryOption = (String) request.getAttribute("queryOption");
 	%>
- 
 
-	<html:messages id="messageKey" message="true">
+<script>
+
+function checkForValidation()
+{
+	var tdId = "multiSelectId";
+	var displayStyle = 	document.getElementById(tdId).style.display;
+	if(displayStyle == "block")
+	{
+		var coords = document.getElementById('protocolCoordinatorIds');
+		if(coords.options.length == 0)
+		{
+			alert("Please select atleast one user from the dropdown");
+		}
+		else
+		{
+			ajaxShareTagFunctionCall("ShareTagAction.do") 
+		}
+	}
+}
+Ext.onReady(function(){
+	var myUrl= 'ShareQueryAjax.do?';
+	var ds = new Ext.data.Store({proxy: new Ext.data.HttpProxy({url: myUrl}),
+	reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, [{name: 'id', mapping: 'id'},{name: 'excerpt', mapping: 'field'}])});
+	var combo = new Ext.form.ComboBox({store: ds,hiddenName: 'CB_coord',displayField:'excerpt',valueField: 'id',typeAhead: 'false',pageSize:15,forceSelection: 'true',queryParam : 'query',mode: 'remote',triggerAction: 'all',minChars : 3,queryDelay:500,lazyInit:true,emptyText:'--Select--',valueNotFoundText:'',selectOnFocus:'true',applyTo: 'coord'});
+
+	combo.on("expand", function() {
+	if(Ext.isIE || Ext.isIE7)
+	{
+		combo.list.setStyle("width", "250");
+		combo.innerList.setStyle("width", "250");
+	}else{
+		combo.list.setStyle("width", "250");
+		combo.innerList.setStyle("width", "250");
+	}
+	}, {single: true});
+	ds.on('load',function(){
+		if (this.getAt(0) != null && this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) 
+		{combo.typeAheadDelay=50;
+		} else {combo.typeAheadDelay=60000}
+		});});
+</script>
+ 
+ <html:messages id="messageKey" message="true">
 		<%
 			message = messageKey;
 		%>
@@ -171,8 +246,6 @@ function showGrid() {
 					src="images/advQuery/dot.gif" width="1" height="25" /></td>
 			</tr>
 			<tr>
-
-
 				<td class="savedQueryHeading">
 					<p>
 						<html:errors />
@@ -181,7 +254,7 @@ function showGrid() {
 					<div>
 						<%
  						String	organizeTarget = "ajaxTreeGridInitCall('"+popupDeleteMessage+"','"+popupFolderDeleteMessage+"','"+entityTag+"','"+entityTagItem+"')";
- %>
+ 						%>
 						<input type="button" value="ORGANIZE"
 							onclick="<%=organizeTarget%> " title ="Organize"  class="btn"> <input
 							type="button" value="CREATE NEW QUERY" title ="Create New Query" onclick="QueryWizard()"
@@ -224,7 +297,7 @@ function showGrid() {
 						</td>
 					</tr>
 					<tr>
-						<td height=100%><div id="mygrid_container" height="26em" width="97%"></div></td>
+						<td height=100%><div id="mygrid_container" height="26.5em" width="97%"></div></td>
 					</tr>
 				</tbody>
 			</table>
@@ -236,41 +309,65 @@ function showGrid() {
 				<!--POPUP-->
 				<div id="blanket" style="display: none;"></div>
 				<div id="popUpDiv" style="display: none; top: 100px; left: 210.5px;">
-
 					<a onclick="popup('popUpDiv')"><img style="float: right;"
 						height='23' width='24' title="Close" src='images/advQuery/close_button.gif'
 						border='0'> </a>
+					 
 					<table class=" manage tags" width="100%" cellspacing="0"
-						cellpadding="5" border="0">
-
-						<tbody>
+						cellpadding="2" border="0">
 							<tr valign="center" height="35" bgcolor="#d5e8ff">
-								<td width="28%" align="left"
+								<td width="27%" align="left"
 									style="font-size: .82em; font-family: verdana;">
 									<p>
 										&nbsp&nbsp&nbsp&nbsp<b> <%=popupHeader%></b>
 									</p>
 								</td>
 							</tr>
-					</table>
-
-
-					<div id="treegridbox"
-						style="width: 530px; height: 237px; background-color: white;"></div>
-
-					<p>
-						&nbsp&nbsp&nbsp<label width="28%" align="left"
-							style="font-size: .82em; font-family: verdana;"><b> <%=popupText%>
-								: </b> </label> <input type="text" id="newTagName" name="newTagName"
-							size="20" onclick="this.value='';" maxlength="50" /><br>
-					</p>
-					<p>
-						<%
+							<tr>
+								<td align="left">
+									<div id="treegridbox"
+											style="width: 530px; height: 170px; background-color: white;"></div>
+								</td>
+							</tr>
+							<tr>
+								<td  align="left">
+									<p>
+											&nbsp&nbsp&nbsp<label width="28%" align="left"
+											style="font-size: .82em; font-family: verdana;"><b> <%=popupText%>
+											: </b> </label> <input type="text" id="newTagName" name="newTagName"
+											size="17" onclick="this.value='';" maxlength="50" />
+										
+											<label id="shareCheckboxId" style="font-size: 0.7em; font-family: verdana;"><b><input type="checkbox"
+											property="shareTo" name='shareCheckbox' id="shareToCheckbox" value="users"
+											onclick="showHideCombo()"/> Share Folder</b> </label>&nbsp;<label id ="shareLabelId"
+											style="font-size: 0.5em;font-family: verdana;">(This folder will be visible to the users you choose)</label>
+									</p>
+								</td>
+							</tr>
+							<tr>
+								<td id="multiSelectId" nowrap=""  class="black_ar_new" style="display:none;margin-left:20px" align="left">
+									<p> 
+											&nbsp&nbsp&nbsp<mCombo:multiSelectUsingCombo identifier="coord" styleClass="black_ar_new"  size="20" addButtonOnClick="moveOptions('coord','protocolCoordinatorIds', 'add')" removeButtonOnClick="moveOptions('protocolCoordinatorIds','coord', 'edit')" selectIdentifier="protocolCoordinatorIds" collection="<%=(List)request.getAttribute("selectedCoordinators")%>"/>
+									</p>
+								</td>
+							</tr>
+							<tr>
+								<td>	
+									<p> 			
+									<%
  String	assignTarget = "ajaxAssignTagFunctionCall('AssignTagAction.do','"+popupAssignMessage+"','"+popupAssignConditionMessage+"')";
- %>
-						<input type="button" value="ASSIGN" title="Assign" onclick="<%=assignTarget%> "
+ 									%>
+ 										&nbsp&nbsp&nbsp
+										<input type="button" id="assignButton" value="ASSIGN" title="Assign" onclick="<%=assignTarget%> "
 							onkeydown="<%=assignTarget%> " class="btn3">
-					</p>
+				 
+ 										&nbsp&nbsp&nbsp
+										<input type="button"  id="shareButton" value="SHARE FOLDER" title="Share Folder (Folder will be visible to the users you choose)" onclick="checkForValidation()"
+												onkeydown="checkForValidation()" style="width:120px; display:none" class="btn3">
+									</p>
+								</td>
+							</tr>
+					</table>
 				</div>
 			</div>
  

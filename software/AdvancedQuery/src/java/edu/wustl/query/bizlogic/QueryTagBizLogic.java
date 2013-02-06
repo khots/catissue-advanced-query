@@ -7,6 +7,7 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.tags.bizlogic.ITagBizlogic;
@@ -28,7 +29,6 @@ public class QueryTagBizLogic implements ITagBizlogic
 	 * @throws DAOException,BizLogicException.
 	 */
 
-
 	public long createNewTag(String entityName, String label, long userId) throws DAOException,
 			BizLogicException
 	{
@@ -39,7 +39,7 @@ public class QueryTagBizLogic implements ITagBizlogic
 		tagDao.insertTag(tag);
 		return tag.getIdentifier();
 	}
-
+ 
 	/**
 	 * Assign the Query to existing folder.
 	 * @param entityName from hbm file.
@@ -72,7 +72,7 @@ public class QueryTagBizLogic implements ITagBizlogic
 	public List<Tag> getTagList(String entityName,long userId) throws DAOException, BizLogicException
 	{
 		List<Tag> tagList = null;
-		TagDAO tagDao = null;
+		TagDAO tagDao = null;	 
 		tagDao = new TagDAO(entityName,userId);
 		tagList = tagDao.getTags();
 		return tagList;
@@ -187,16 +187,27 @@ public class QueryTagBizLogic implements ITagBizlogic
 
 	}
 
-	public void createNewTag(String arg0, String arg1, long arg2, Set<Long> arg3)
-			throws DAOException, BizLogicException {
-		// TODO Auto-generated method stub
-		
+	public void createNewTag(String entityName, String newTagName, long ownerId, Set<Long> selectedUsers)
+			throws DAOException, BizLogicException 
+	{
+		Tag tag = new Tag();
+		tag.setLabel(newTagName);
+		tag.setUserId(ownerId);
+		tag.setSharedUserIds(selectedUsers);
+		TagDAO tagDao = new TagDAO(entityName,ownerId);
+		tagDao.insertTag(tag);
 	}
 
-	public void shareTags(String arg0, Set<Long> arg1, Set<Long> arg2)
-			throws DAOException, BizLogicException {
-		// TODO Auto-generated method stub
-		
+	public void shareTags(String entityName, Set<Long> tagIdSet, Set<Long> selectedUsers)
+			throws DAOException, BizLogicException 
+	{
+		for(Long tagId : tagIdSet) 
+		{
+			TagDAO tagDao = new TagDAO(entityName,tagId);
+			Tag tag = getTagById(entityName, tagId);
+			tag.getSharedUserIds().addAll(selectedUsers);
+			tagDao.updateTag(tag);
+		} 
 	}
 
 }

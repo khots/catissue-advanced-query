@@ -477,6 +477,9 @@ PUBLIC
 		<action path="/QueryGridInitAction"
 			type="edu.wustl.query.action.QueryGridInitAction" validate="false"
 			scope="session" />
+		<action path="/ShareTagAction"
+			type="edu.wustl.common.tags.action.ShareTagAction" validate="false"
+			scope="session" />
 	</action-mappings>
 
 	<controller processorClass="edu.wustl.common.struts.ApplicationRequestProcessor" />
