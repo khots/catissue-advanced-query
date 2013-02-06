@@ -16,6 +16,7 @@ import edu.wustl.common.querysuite.queryobject.IExpressionOperand;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IRule;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.query.util.global.AQConstants;
 
 /**
@@ -45,7 +46,7 @@ public class ExportQueryBizLogic
 		{
 			queryTitle.append(' ').append(query.getName());
 		}
-		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+		DateFormat dateFormat = new SimpleDateFormat(CommonServiceLocator.getInstance().getTimeStampPattern());
 		Date date = new Date();
 		StringBuffer exportDate = new StringBuffer("Export Date : ");
 		exportDate.append(dateFormat.format(date));
