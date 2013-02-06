@@ -6,7 +6,7 @@
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c"%>
 <%@ taglib uri="/WEB-INF/multiSelectUsingCombo.tld" prefix="mCombo" %>
 <%-- Imports --%>
-<%@
+<%@ 
 	page language="java" contentType="text/html"
 	import="edu.wustl.query.util.global.AQConstants,org.apache.struts.Globals"%>
 <%@ page
@@ -196,7 +196,7 @@ function checkForValidation()
 		}
 		else
 		{
-			ajaxShareTagFunctionCall("ShareTagAction.do") 
+			ajaxShareTagFunctionCall("ShareTagAction.do","Select at least one existing folder or create a new folder.") 
 		}
 	}
 }
