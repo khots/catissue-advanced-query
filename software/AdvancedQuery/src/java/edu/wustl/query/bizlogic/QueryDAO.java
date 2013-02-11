@@ -117,16 +117,18 @@ public class QueryDAO {
 	throws BizLogicException {
 		List<QueryDTO> queries = new ArrayList<QueryDTO>();
 		try {
-			while (rs.next()) {
-				QueryDTO queryDTO = new QueryDTO();
-				queryDTO.setQueryId(rs.getLong(1));
-				queryDTO.setQueryName(rs.getString(2));
-				queryDTO.setQueryDescription(rs.getString(3));	
-				queryDTO.setExecutedOn(getExecutedOnTime(rs.getTimestamp(4)));
-				queryDTO.setRootEntityName(getRootEntityName(rs.getString(5)));
-				queryDTO.setCountOfRootRecords(getRootRecordCount(rs.getString(6)));
-				queryDTO.setOwnerName(getOwnerName(rs.getString(1)));
-				queries.add(queryDTO);
+			if(rs != null){
+				while (rs.next()) {
+					QueryDTO queryDTO = new QueryDTO();
+					queryDTO.setQueryId(rs.getLong(1));
+					queryDTO.setQueryName(rs.getString(2));
+					queryDTO.setQueryDescription(rs.getString(3));	
+					queryDTO.setExecutedOn(getExecutedOnTime(rs.getTimestamp(4)));
+					queryDTO.setRootEntityName(getRootEntityName(rs.getString(5)));
+					queryDTO.setCountOfRootRecords(getRootRecordCount(rs.getString(6)));
+					queryDTO.setOwnerName(getOwnerName(rs.getString(1)));
+					queries.add(queryDTO);
+				}
 			}
 		} catch (SQLException e) {
 			LOGGER.error("Error while creating QueryDTOs");
