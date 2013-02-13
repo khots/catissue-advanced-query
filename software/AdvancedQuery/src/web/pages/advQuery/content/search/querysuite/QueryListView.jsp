@@ -66,7 +66,7 @@ function QueryWizard()
 window.onload = function() {  
 	ajaxQueryGridInitCall("QueryGridInitAction.do")
    	doInitGrid();
-	document.getElementById('protocolCoordinatorIds').style.marginLeft= "20px";
+	document.getElementById('protocolCoordinatorIds').style.marginLeft= "15px";
 }  
 function f()
 {
@@ -82,7 +82,7 @@ function doInitGrid()
  	grid.setInitWidthsP("100");
  	grid.setColAlign("left");
  	grid.setSkin("dhx_skyblue"); // (xp, mt, gray, light, clear, modern)
- 	grid.enableRowsHover(true, "activebtn");
+ 	grid.enableRowsHover(true,'grid_hover')
  	grid.setEditable(false);
    	grid.attachEvent("onRowSelect", doOnRowSelected);
  	grid.init();
@@ -121,14 +121,14 @@ function showGrid() {
 		 responseString =xmlHttpobj.responseText;
 		 queryGrid = new dhtmlXGridObject('mygrid_right_container');
 		 queryGrid.setImagePath("dhtmlx_suite/dhtml_pop/imgs/");
-		 queryGrid.setHeader(",<b>Query Id,<b>Title,<b>Results,<b>ExecutedOn,<b>Owner,<b>Actions ");
+		 queryGrid.setHeader(",<b>ID,<b>Title,<b>Results,<b>Executed On,<b>Owner,<b>Actions ");
 		 queryGrid.attachHeader("#rspan,#numeric_filter,#text_filter,#text_filter,#rspan,#select_filter,#rspan"); 
-		 queryGrid.setInitWidthsP("3,10,22,20,17,15,*");
-		 queryGrid.setColAlign("center,center,left,left,left,left,left");
+		 queryGrid.setInitWidthsP("3,5,*,20,11,12,10");
+		 queryGrid.setColAlign("center,center,left,left,center,center,left");
 		 queryGrid.setColTypes("txt,txt,txt,txt,txt,txt,txt");
 		 queryGrid.setColSorting("str,int,str,str,str,str");
 		 queryGrid.setSkin("dhx_skyblue"); // (xp, mt, gray, light, clear, modern)
-		 queryGrid.enableRowsHover(true, "activebtn");
+		 queryGrid.enableRowsHover(true,'grid_hover')
 		 queryGrid.setEditable(false);
 		 queryGrid.enableTooltips("false,false,false,false,false,false,false");
 		 queryGrid.clearAll(true);
@@ -138,21 +138,17 @@ function showGrid() {
 		 queryGrid.loadXMLString(responseString); 
 	}
 }
-function showHideCombo(){
- 
-	if(document.getElementById("multiSelectId").style.display =="block"){		 
-		var tdId = "multiSelectId";
-		document.getElementById("assignButton").style.display="block"
-		document.getElementById("shareButton").style.display="none"
-		document.getElementById(tdId).style.display="none";
-	}else{
-		var tdId = "multiSelectId";
-		document.getElementById("assignButton").style.display="none"
-		document.getElementById("shareButton").style.display="block"
-		document.getElementById(tdId).style.display="block";
-	}
-}
 
+function getHeader(isQueryChecked)
+{
+	if(isQueryChecked == true){		 
+		document.getElementById("poupHeader").textContent ="Add Queries to folder";
+		document.getElementById("poupHeader").innerText ="Add Queries to folder";
+	}else{
+		document.getElementById("poupHeader").textContent ="Share folder with users";
+		document.getElementById("poupHeader").innerText ="Share folder with users";
+	} 
+}
 </script>
 
  
@@ -246,8 +242,7 @@ Ext.onReady(function(){
 					src="images/advQuery/dot.gif" width="1" height="25" /></td>
 			</tr>
 			<tr>
-				<td class="savedQueryHeading">
-					<p>
+				<td style="margin-left:10px;" class="savedQueryHeading">
 						<html:errors />
 				</td>
 				<td>
@@ -260,7 +255,9 @@ Ext.onReady(function(){
 							type="button" value="CREATE NEW QUERY" title ="Create New Query" onclick="QueryWizard()"
 							class="btn2">
 				</td>
-
+			</tr>
+			<td height="7px;"> </td>
+			<tr>
 			</tr>
 		</table>
 <table width='100%' height='100%' cellpadding='0' cellspacing='0' border='0'
@@ -309,17 +306,16 @@ Ext.onReady(function(){
 				<!--POPUP-->
 				<div id="blanket" style="display: none;"></div>
 				<div id="popUpDiv" style="display: none; top: 100px; left: 210.5px;">
-					<a onclick="popup('popUpDiv')"><img style="float: right;"
+					<a onclick="popup('popUpDiv')"><img style="float: right; cursor:pointer;"
 						height='23' width='24' title="Close" src='images/advQuery/close_button.gif'
 						border='0'> </a>
 					 
 					<table class=" manage tags" width="100%" cellspacing="0"
-						cellpadding="2" border="0">
+						cellpadding="0" border="0">
 							<tr valign="center" height="35" bgcolor="#d5e8ff">
-								<td width="27%" align="left"
-									style="font-size: .82em; font-family: verdana;">
+								<td width="27%" align="left">
 									<p>
-										&nbsp&nbsp&nbsp&nbsp<b> <%=popupHeader%></b>
+										&nbsp&nbsp&nbsp&nbsp<div id="poupHeader" style="font-size: 1em; margin-left:35px; font-weight:bold; font-family: verdana;"><b> <%=popupHeader%></b></div>
 									</p>
 								</td>
 							</tr>
@@ -332,27 +328,29 @@ Ext.onReady(function(){
 							<tr>
 								<td  align="left">
 									<p>
-											&nbsp&nbsp&nbsp<label width="28%" align="left"
-											style="font-size: .82em; font-family: verdana;"><b> <%=popupText%>
+											<label id="newTagLabel" width="28%" align="left"
+											style="margin-left :20px; font-size: .82em; font-family: verdana;"><b> <%=popupText%>
 											: </b> </label> <input type="text" id="newTagName" name="newTagName"
 											size="17" onclick="this.value='';" maxlength="50" />
-										
-											<label id="shareCheckboxId" style="font-size: 0.7em; font-family: verdana;"><b><input type="checkbox"
-											property="shareTo" name='shareCheckbox' id="shareToCheckbox" value="users"
-											onclick="showHideCombo()"/> Share Folder</b> </label>&nbsp;<label id ="shareLabelId"
-											style="font-size: 0.5em;font-family: verdana;">(This folder will be visible to the users you choose)</label>
+										 	<label id="shareLabel" width="28%" align="left"
+											style="margin-left :20px; font-size: .82em; font-family: verdana;"><b> Share to users :
+					 						</b> </label>
 									</p>
 								</td>
 							</tr>
 							<tr>
-								<td id="multiSelectId" nowrap=""  class="black_ar_new" style="display:none;margin-left:20px" align="left">
-									<p> 
+								<td  align="left">
+									<div id="multiSelectId" class="black_ar_new" style="display:none; margin-left:35px">
 											&nbsp&nbsp&nbsp<mCombo:multiSelectUsingCombo identifier="coord" styleClass="black_ar_new"  size="20" addButtonOnClick="moveOptions('coord','protocolCoordinatorIds', 'add')" removeButtonOnClick="moveOptions('protocolCoordinatorIds','coord', 'edit')" selectIdentifier="protocolCoordinatorIds" collection="<%=(List)request.getAttribute("selectedCoordinators")%>"/>
-									</p>
+								 
+									</div>
 								</td>
 							</tr>
 							<tr>
-								<td>	
+								<td height="10px;"> </td>
+							</tr>
+							<tr>
+								<td>	 
 									<p> 			
 									<%
  String	assignTarget = "ajaxAssignTagFunctionCall('AssignTagAction.do','"+popupAssignMessage+"','"+popupAssignConditionMessage+"')";
@@ -361,7 +359,7 @@ Ext.onReady(function(){
 										<input type="button" id="assignButton" value="ASSIGN" title="Assign" onclick="<%=assignTarget%> "
 							onkeydown="<%=assignTarget%> " class="btn3">
 				 
- 										&nbsp&nbsp&nbsp
+ 										&nbsp&nbsp
 										<input type="button"  id="shareButton" value="SHARE FOLDER" title="Share Folder (Folder will be visible to the users you choose)" onclick="checkForValidation()"
 												onkeydown="checkForValidation()" style="width:120px; display:none" class="btn3">
 									</p>

@@ -32,30 +32,37 @@ body {
 }
 input.btn {
 	display: inline-block;
-	width: 88px;
-	height: 27px;
+	width: 95px;
+	height: 20px;
 	float: right;
 	color: #ffffff;
-	padding-bottom: 3px;
-	padding-top: 3px;
+	padding-bottom:1px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight:bold;
+	padding-top: 1px;
 	background: #B80000;
-	-webkit-border-radius: 7px;
-	-moz-border-radius: 7px;
-	-o-box-border-radius: 7px;
-	-ms-box-border-radius: 10px;
-	border-radius: 7px;
+	BORDER-right: #000000 0px solid;
+	BORDER-left: #000000 0px solid;
+	BORDER-bottom: #000000 0px solid;
+	BORDER-TOP: #000000 0px solid;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-o-box-border-radius: 3px;
+	-ms-box-border-radius: 5px;
+	border-radius: 3px;
 	cursor: pointer;
-	margin-left: 2px;
+	margin-left: 4px;
 }
 input.activebtn {
 	width: 176px;
 	height: 27px;
 	background-color: transparent;
-	font-size: 13px;
+	font-size: 11px;
 	text-align: left;
 	padding-left: 10px;
 	cursor: pointer;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: verdana;
 	background: #ffe5ae;
 	color : black;
 	BORDER-right: #ffc341 1px solid;
@@ -68,33 +75,47 @@ input.activebtn {
 input.btn2 {
 	display: inline-block;
 	width: 155px;
-	height: 27px;
+	height: 20px;
 	float: right;
 	color: #ffffff;
-	padding-bottom: 3px;
-	padding-top: 3px;
-	background: #B80000;
+	padding-bottom:1px;
+	padding-top: 1px;
+	font-size: 11px;
+	font-weight:bold;
 	cursor: pointer;
-	-webkit-border-radius: 7px; /*safari and Chrome*/
-	-moz-border-radius: 7px; /*Mozilla*/
-	-o-box-border-radius: 7px; /*Opera*/
-	-ms-box-border-radius: 10px; /*Ms IE*/
-	border-radius: 7px; /*W3C*/
+	background: #B80000;
+	font-family: Arial, Helvetica, sans-serif;
+	BORDER-right: #ffffff 0px solid;
+	BORDER-left: #ffffff 0px solid;
+	BORDER-bottom: #ffffff 0px solid;
+	BORDER-TOP: #ffffff 0px solid;
+	-webkit-border-radius: 3px; /*safari and Chrome*/
+	-moz-border-radius: 3px; /*Mozilla*/
+	-o-box-border-radius: 3px; /*Opera*/
+	-ms-box-border-radius: 5px; /*Ms IE*/
+	border-radius: 3px; /*W3C*/
 }
 input.btn3 {
 	display: inline-block;
 	width: 88px;
-	height: 27px;
+	height: 20px;
 	float: left;
 	color: #ffffff;
-	padding-bottom: 3px;
-	padding-top: 3px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight:bold;
+	padding-bottom: 1px;
+	padding-top: 1px;
 	background: #B80000;
-	-webkit-border-radius: 7px;
-	-moz-border-radius: 7px;
-	-o-box-border-radius: 7px;
-	-ms-box-border-radius: 7px;
-	border-radius: 7px;
+	BORDER-right: #ffffff 0px solid;
+	BORDER-left: #ffffff 0px solid;
+	BORDER-bottom: #ffffff 0px solid;
+	BORDER-TOP: #ffffff 0px solid;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-o-box-border-radius: 3px;
+	-ms-box-border-radius: 3px;
+	border-radius: 3px;
 	cursor: pointer;
 	margin-left: 20px;
 }
@@ -103,11 +124,11 @@ input.btn3 {
 	width: 176px;
 	height: 27px;
 	background-color: transparent;
-	font-size: 13px;
+	font-size: 11px;
 	text-align: left;
 	padding-left: 10px;
 	cursor: pointer;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family:verdana;
 	background: #d5e8ff;
 	color : black;
 	BORDER-right: #A4BED4 1px solid;
@@ -122,11 +143,11 @@ input.btn3 {
 	width: 176px;
 	height: 27px;
 	background-color: transparent;
-	font-size: 13px;
+	font-size: 11px;
 	text-align: left;
 	padding-left: 10px;
 	cursor: pointer;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: verdana;
 	background: #ffe5ae;
 	color : black;
 	BORDER-right: #ffc341 1px solid;
@@ -141,11 +162,11 @@ input.btn1 {
 	width: 176px;
 	height: 27px;
 	background-color: transparent;
-	font-size: 13px;
+	font-size: 11px;
 	text-align: left;
 	padding-left: 10px;
 	cursor: pointer;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: verdana;
 	background: #eaeaea;
 	color : black;
 	BORDER-right: #A4BED4 1px solid;
@@ -211,4 +232,4 @@ img {border:1px}
 	z-index: 9002;
 }
 
-#popUpDiv a {position:relative;   top:20px; left:20px}
+#popUpDiv a {position:relative; left:21px}

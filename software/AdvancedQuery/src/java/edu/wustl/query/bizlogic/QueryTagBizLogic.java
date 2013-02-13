@@ -7,7 +7,6 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.tags.bizlogic.ITagBizlogic;
@@ -19,7 +18,6 @@ import edu.wustl.query.util.global.AQConstants;
 
 public class QueryTagBizLogic implements ITagBizlogic
 {
-
 	/**
 	 * Insert New Tag to the database.
 	 * @param entityName from hbm file.
@@ -185,17 +183,6 @@ public class QueryTagBizLogic implements ITagBizlogic
 		}
 		return arrayObj;
 
-	}
-
-	public void createNewTag(String entityName, String newTagName, long ownerId, Set<Long> selectedUsers)
-			throws DAOException, BizLogicException 
-	{
-		Tag tag = new Tag();
-		tag.setLabel(newTagName);
-		tag.setUserId(ownerId);
-		tag.setSharedUserIds(selectedUsers);
-		TagDAO tagDao = new TagDAO(entityName,ownerId);
-		tagDao.insertTag(tag);
 	}
 
 	public void shareTags(String entityName, Set<Long> tagIdSet, Set<Long> selectedUsers)

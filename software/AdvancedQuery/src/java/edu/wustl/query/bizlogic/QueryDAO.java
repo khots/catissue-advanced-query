@@ -154,10 +154,9 @@ public class QueryDAO {
 	
 	private String getExecutedOnTime(Timestamp executedOnTime) {
 		String executionTime = "N/A";
-		if (executedOnTime != null){
-			Date date = new Date(executedOnTime.getTime());
+		if (executedOnTime != null){ 
 			executionTime = new SimpleDateFormat(CommonServiceLocator.getInstance()
-							.getTimeStampPattern()).format(date);
+							.getDatePattern()).format(executedOnTime);
 		}
 		return executionTime;
 	}
