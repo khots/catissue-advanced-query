@@ -22,6 +22,7 @@ import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttribute
 import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.exception.DAOException;
@@ -344,7 +345,7 @@ public class QueryOutputTreeBizLogic
 			}
 			else
 			{
-				DateFormat dFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+				DateFormat dFormat = new SimpleDateFormat(CommonServiceLocator.getInstance().getTimeStampPattern());
 				Date birthDt = null;
 				Date currentDate=null;
 				Date deathDt = null;
