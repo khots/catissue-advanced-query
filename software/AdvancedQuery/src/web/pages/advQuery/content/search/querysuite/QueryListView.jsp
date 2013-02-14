@@ -67,6 +67,8 @@ window.onload = function() {
 	ajaxQueryGridInitCall("QueryGridInitAction.do")
    	doInitGrid();
 	document.getElementById('protocolCoordinatorIds').style.marginLeft= "15px";
+	document.getElementById('addButton_coord').style.marginLeft= "21px";
+	document.getElementById('removeButton_coord').style.marginLeft= "21px";
 }  
 function f()
 {
