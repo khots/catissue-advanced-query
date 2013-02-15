@@ -141,7 +141,7 @@ function showGrid() {
 	}
 }
 
-function getHeader(isQueryChecked)
+function setHeader(isQueryChecked)
 {
 	if(isQueryChecked == true){		 
 		document.getElementById("poupHeader").textContent ="Add Queries to folder";
