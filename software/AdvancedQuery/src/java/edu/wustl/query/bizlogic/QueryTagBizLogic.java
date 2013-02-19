@@ -1,6 +1,8 @@
 
 package edu.wustl.query.bizlogic;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,11 +15,14 @@ import edu.wustl.common.tags.bizlogic.ITagBizlogic;
 import edu.wustl.common.tags.dao.TagDAO;
 import edu.wustl.common.tags.domain.Tag;
 import edu.wustl.common.tags.domain.TagItem;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.util.global.AQConstants;
 
 public class QueryTagBizLogic implements ITagBizlogic
-{
+{	
+	
+	private static final Logger LOGGER = Logger.getCommonLogger(QueryTagBizLogic.class);
 	/**
 	 * Insert New Tag to the database.
 	 * @param entityName from hbm file.
@@ -26,16 +31,31 @@ public class QueryTagBizLogic implements ITagBizlogic
 	 * @return tag identifier.
 	 * @throws DAOException,BizLogicException.
 	 */
-
-	public long createNewTag(String entityName, String label, long userId) throws DAOException,
+	public long createNewTag(String label, Long userId) throws DAOException,
 			BizLogicException
 	{
-		Tag tag = new Tag();
-		tag.setLabel(label);
-		tag.setUserId(userId);
-		TagDAO tagDao = new TagDAO(entityName,userId);
-		tagDao.insertTag(tag);
-		return tag.getIdentifier();
+		TagDAO tagDao = null;
+		try
+		{
+			Tag tag = new Tag();
+			tag.setLabel(label);
+			tag.setUserId(userId);
+			tagDao = new TagDAO(AQConstants.ENTITY_QUERYTAG);
+			tagDao.insertTag(tag);
+			tagDao.commit();
+			return tag.getIdentifier();
+		}
+		catch (DAOException e)
+		{
+			throw new BizLogicException(e);
+		}
+		finally
+		{
+			if(tagDao != null)
+			{	
+				tagDao.closeSession();
+			}
+		}	
 	}
  
 	/**
@@ -46,18 +66,35 @@ public class QueryTagBizLogic implements ITagBizlogic
 	 * @throws DAOException,BizLogicException.
 	 */
 	
-	public void assignTag(String entityName, long tagId, long objId) throws DAOException,
+	public void assignTag(Long tagId, Long objId) throws DAOException,
 			BizLogicException
 	{
-		Tag tag = new Tag();
-		tag.setIdentifier(tagId);
-		TagItem<ParameterizedQuery> tagItem = new TagItem<ParameterizedQuery>();
+		TagDAO<ParameterizedQuery> tagDao = null;
+		try
+		{
+			Tag tag = new Tag();
+			tag.setIdentifier(tagId);
+			TagItem<ParameterizedQuery> tagItem = new TagItem<ParameterizedQuery>();
   
-		tagItem.setTag(tag);
-		tagItem.setObjId(objId);
+			tagItem.setTag(tag);
+			tagItem.setObjId(objId);
 
-		TagDAO<ParameterizedQuery> tagDao = new TagDAO<ParameterizedQuery>(entityName,tagId);
-		tagDao.insertTagItem(tagItem);
+			tagDao = new TagDAO<ParameterizedQuery>(AQConstants.ENTITY_QUERYTAGITEM);
+			tagDao.insertTagItem(tagItem);
+		
+			tagDao.commit();
+		}
+		catch (DAOException e)
+		{
+			throw new BizLogicException(e);
+		}
+		finally
+		{
+			if(tagDao != null)
+			{	
+				tagDao.closeSession();
+			}
+		}	
 	}
 
 	/**
@@ -67,13 +104,27 @@ public class QueryTagBizLogic implements ITagBizlogic
 	 * @throws DAOException,BizLogicException.
 	 */
 
-	public List<Tag> getTagList(String entityName,long userId) throws DAOException, BizLogicException
+	public List<Tag> getTagList(Long userId) throws DAOException, BizLogicException
 	{
+		TagDAO tagDao = null;
 		List<Tag> tagList = null;
-		TagDAO tagDao = null;	 
-		tagDao = new TagDAO(entityName,userId);
-		tagList = tagDao.getTags();
-		return tagList;
+		try
+		{
+			tagDao = new TagDAO(AQConstants.ENTITY_QUERYTAG);
+			tagList = tagDao.getTags(userId); 
+			return tagList;
+		}
+		catch (DAOException e)
+		{
+			throw new BizLogicException(e);
+		}
+		finally
+		{
+			if(tagDao != null)
+			{	
+				tagDao.closeSession();
+			}
+		}	
 	}
 
  	/**
@@ -84,11 +135,26 @@ public class QueryTagBizLogic implements ITagBizlogic
 	 * @throws DAOException,BizLogicException.
 	 */
 
-	public Tag getTagById(String entityName, long tagId) throws DAOException, BizLogicException
+	public Tag getTagById(Long tagId) throws DAOException, BizLogicException
 	{
-		TagDAO tagDao = new TagDAO(entityName,tagId);
-		Tag tag = tagDao.getTagById(tagId);
-		return tag;
+		TagDAO tagDao = null;
+		try
+		{
+			tagDao = new TagDAO(AQConstants.ENTITY_QUERYTAG);
+			Tag tag = tagDao.getTagById(tagId);
+			return tag;
+		}
+		catch (DAOException e)
+		{
+			throw new BizLogicException(e);
+		}
+		finally
+		{
+			if(tagDao != null)
+			{	
+				tagDao.closeSession();
+			}
+		}	
 	}
 
 	/**
@@ -96,12 +162,27 @@ public class QueryTagBizLogic implements ITagBizlogic
 	 * @param entityName from hbm file.
 	 * @param tagId.
 	 * @return Set<TagItem>.
-	 * @throws DAOException,BizLogicException.
 	 */
-	public Set<TagItem> getTagItemByTagId(String entityName, long tagId) throws BizLogicException
+	public Set<TagItem> getTagItemByTagId(Long tagId) throws BizLogicException
 	{
-		TagDAO tagDao = new TagDAO(entityName,tagId);
-		Set<TagItem> tagItem = tagDao.getTagItemBytagId(tagId);
+		TagDAO tagDao = null;
+		Set<TagItem> tagItem = new HashSet<TagItem>();
+		try
+		{
+			tagDao = new TagDAO(AQConstants.ENTITY_QUERYTAG);
+			tagItem = tagDao.getTagItemBytagId(tagId);
+		}
+		catch (BizLogicException e)
+		{
+			LOGGER.error("Error occured while getting queries", e);
+		}
+		finally
+		{
+			if(tagDao != null)
+			{	
+				tagDao.closeSession();
+			}
+		}	
 		return tagItem;
 	}
 
@@ -113,12 +194,32 @@ public class QueryTagBizLogic implements ITagBizlogic
 	 * @throws DAOException,BizLogicException.
 	 */
 
-	public void deleteTag(String entityName, long tagId) throws DAOException, BizLogicException
+	public void deleteTag(Long tagId, Long userId) throws DAOException, BizLogicException
 	{
-		TagDAO tagDao = new TagDAO(entityName,tagId); 
-		Tag tag = tagDao.getTagById(tagId); 
-		tagDao.deleteTag(tag);
-
+		TagDAO tagDao = null;
+		try
+		{
+			tagDao = new TagDAO(AQConstants.ENTITY_QUERYTAG); 
+			Tag tag = tagDao.getTagById(tagId);
+			if(tag.getUserId() == userId){
+				tagDao.deleteTag(tag);
+			} else {
+				tag.getSharedUserIds().remove(userId);
+				tagDao.updateTag(tag);
+			}
+			tagDao.commit();
+		}
+		catch (DAOException e)
+		{
+			throw new BizLogicException(e);
+		}
+		finally
+		{
+			if(tagDao != null)
+			{	
+				tagDao.closeSession();
+			}
+		}	
 	}
 	/**
 	 * Delete the Tag Item from database.
@@ -126,14 +227,33 @@ public class QueryTagBizLogic implements ITagBizlogic
 	 * @param objId to retrieve TagItem Object and delete it from database.
 	 * @throws DAOException,BizLogicException.
 	 */
-
-
-	public void deleteTagItem(String entityName, long itemId) throws DAOException,
+	public void deleteTagItem(Long tagItemId, Long userId) throws DAOException,
 			BizLogicException
 	{
-		TagDAO tagDAO = new TagDAO(entityName,itemId);
-		TagItem tagItem = tagDAO.getTagItemById(itemId);
-		tagDAO.deleteTagItem(tagItem);
+		TagDAO tagDAO = null;
+		try
+		{
+			tagDAO = new TagDAO(AQConstants.ENTITY_QUERYTAGITEM);
+			TagItem tagItem = tagDAO.getTagItemById(tagItemId);
+			Tag tag = tagItem.getTag(); 
+			if(tag.getUserId() == userId){
+				tagDAO.deleteTagItem(tagItem);
+			} else {
+				LOGGER.error("User does not have authority to delete this item");
+			}
+			tagDAO.commit();
+		}
+		catch (DAOException e)
+		{
+			throw new BizLogicException(e);
+		}
+		finally
+		{
+			if(tagDAO != null)
+			{	
+				tagDAO.closeSession();
+			}
+		}	
 	}
 	
 	/**
@@ -155,7 +275,7 @@ public class QueryTagBizLogic implements ITagBizlogic
 	 * @return Json Object.
 	 * @throws DAOException,BizLogicException.
 	 */
-	public JSONObject getJSONObj(String entityName, long tagId) throws DAOException,
+	public JSONObject getJSONObj(Long tagId) throws DAOException,
 			BizLogicException
 	{
 
@@ -184,17 +304,70 @@ public class QueryTagBizLogic implements ITagBizlogic
 		return arrayObj;
 
 	}
-
-	public void shareTags(String entityName, Set<Long> tagIdSet, Set<Long> selectedUsers)
+	/**
+	 * share Tags to users.
+	 * @param Set<Long> selectedUsers.
+	 * @param Set<Long> tagIdSet.
+	 * @throws DAOException.
+	 */
+	public void shareTags(Set<Long> tagIdSet, Set<Long> selectedUsers)
 			throws DAOException, BizLogicException 
 	{
 		for(Long tagId : tagIdSet) 
 		{
-			TagDAO tagDao = new TagDAO(entityName,tagId);
-			Tag tag = getTagById(entityName, tagId);
-			tag.getSharedUserIds().addAll(selectedUsers);
-			tagDao.updateTag(tag);
+			TagDAO tagDao = null;
+			try
+			{
+				tagDao = new TagDAO(AQConstants.ENTITY_QUERYTAG);
+				Tag tag = tagDao.getTagById(tagId);
+				tag.getSharedUserIds().addAll(selectedUsers);
+				tagDao.updateTag(tag);
+				tagDao.commit();
+			}
+			catch (DAOException e)
+			{
+				throw new BizLogicException(e);
+			}
+			finally
+			{
+				if(tagDao != null)
+				{	
+					tagDao.closeSession();
+				}
+			}	
 		} 
 	}
-
+	
+	/**
+	 * Get queries from from TagId.
+	 * @param Long tagId;
+	 * @throws DAOException.
+	 */
+	public List<Long> getQueryIds(long tagId) throws BizLogicException
+	{
+		TagDAO tagDao = null;
+		List<Long> queryIds = new ArrayList<Long>();
+		try
+		{
+			tagDao = new TagDAO(AQConstants.ENTITY_QUERYTAG);
+			Set<TagItem> tagItemSet = tagDao.getTagItemBytagId(tagId);
+			queryIds = new ArrayList<Long>();
+		
+			for (TagItem tagItem : tagItemSet) {
+				queryIds.add(tagItem.getObjId());
+			}
+		}
+		catch (BizLogicException e)
+		{
+			LOGGER.error("Error occured while getting queries", e);
+		}
+		finally
+		{
+			if(tagDao != null)
+			{	
+				tagDao.closeSession();
+			}
+		}	
+		return queryIds;
+	}
 }

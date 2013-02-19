@@ -29,7 +29,7 @@ public class TagGridInItAction extends Action
 		QueryTagBizLogic queryBizLogic = new QueryTagBizLogic();
 		SessionDataBean sessionBean = (SessionDataBean)request.getSession().getAttribute(Constants.SESSION_DATA);
 		Long userId = sessionBean.getUserId();
-		List<Tag> tagList = queryBizLogic.getTagList(AQConstants.ENTITY_QUERYTAG,userId);
+		List<Tag> tagList = queryBizLogic.getTagList(userId);
 		String responseString = VelocityManager.getInstance().evaluate(tagList,
 				"privilegeGridTemplate.vm");
 		response.getWriter().write(responseString);

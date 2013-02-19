@@ -89,15 +89,7 @@ public class QueryGridInitAction extends Action {
 	{
 		long tagId = Long.parseLong(tagIdStr);
 		QueryTagBizLogic queryTagBizLogic= new QueryTagBizLogic();
-		Tag tag = queryTagBizLogic.getTagById("QueryTag", tagId);
-		
-		Set<TagItem> tagItemSet = tag.getTagItem();	 
-		List<Long> queryIds = new ArrayList<Long>();
-		
-		for (TagItem tagItem : tagItemSet) {
-			queryIds.add(tagItem.getObjId());
-		}
-		
+		List<Long> queryIds = queryTagBizLogic.getQueryIds(tagId);
 		List<QueryDTO> queryDTOList = new ArrayList<QueryDTO>();
 		if (!queryIds.isEmpty()) {
 			QueryDAO queryDAO = new QueryDAO();	
