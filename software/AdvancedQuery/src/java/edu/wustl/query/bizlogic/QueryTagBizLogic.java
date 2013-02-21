@@ -370,4 +370,41 @@ public class QueryTagBizLogic implements ITagBizlogic
 		}	
 		return queryIds;
 	}
+
+	/**
+	 * delete TagItems from object Ids.
+	 * @param List<Long> objIds.
+	 * @param Long tagId.
+	 * @param Long userId.
+	 * @throws DAOException.
+	 */
+	public void deleteTagItemsFromObjIds(List<Long> specimenIds, Long tagId, Long userId)
+			throws DAOException, BizLogicException 
+	{
+		TagDAO tagDAO = null;
+		try
+		{
+			Tag tag = getTagById(tagId);
+			tagDAO = new TagDAO(AQConstants.ENTITY_QUERYTAGITEM);	
+			if(tag.getUserId() == userId){
+				tagDAO.deleteTagItemsFromObjIds(specimenIds, tagId);
+			} else {
+				throw new Exception("User does not have authority to delete this item(s)");
+			}
+			tagDAO.commit();
+		}
+		catch (DAOException e)
+		{
+			throw new BizLogicException(e);
+		} catch (Exception e) {
+			LOGGER.error("User does not have authority to delete this item(s)",e);
+		}
+		finally
+		{
+			if(tagDAO != null)
+			{	
+				tagDAO.closeSession();
+			}
+		}	
+	}
 }
