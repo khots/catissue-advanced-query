@@ -353,8 +353,10 @@ public class QueryTagBizLogic implements ITagBizlogic
 			for(Long sUserId:selectedUsers){
 				selectedUserSet.add (UserCache.getUser(sUserId.toString()));		
 			}
-			TagUtil.sendSharedTagEmailNotification(user, tags, 
-							selectedUserSet, AQConstants.SHARE_QUERY_FOLDER_EMAIL_TEMPL);
+			if (! tags.isEmpty()){
+				TagUtil.sendSharedTagEmailNotification(user, tags, 
+						selectedUserSet, AQConstants.SHARE_QUERY_FOLDER_EMAIL_TEMPL);
+			}
 		} catch (Exception e) {
 			LOGGER.error("Error while sending email for query folder",e);
 		} 
