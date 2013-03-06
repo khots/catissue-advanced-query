@@ -20,6 +20,8 @@ import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.util.global.AQConstants;
+import edu.wustl.query.util.global.UserCache;
+import gov.nih.nci.security.authorization.domainobjects.User;
 
 public class QueryTagBizLogic implements ITagBizlogic
 {	
@@ -346,8 +348,13 @@ public class QueryTagBizLogic implements ITagBizlogic
 			}	
 		} 
 		try {
-			TagUtil.sendSharedTagEmailNotification(userId, tags, 
-							selectedUsers, AQConstants.SHARE_QUERY_FOLDER_EMAIL_TEMPL);
+			Set<User> selectedUserSet = new HashSet<User>();
+			User user = UserCache.getUser(userId.toString());
+			for(Long sUserId:selectedUsers){
+				selectedUserSet.add (UserCache.getUser(sUserId.toString()));		
+			}
+			TagUtil.sendSharedTagEmailNotification(user, tags, 
+							selectedUserSet, AQConstants.SHARE_QUERY_FOLDER_EMAIL_TEMPL);
 		} catch (Exception e) {
 			LOGGER.error("Error while sending email for query folder",e);
 		} 
