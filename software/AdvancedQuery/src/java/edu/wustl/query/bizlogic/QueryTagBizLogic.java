@@ -15,6 +15,8 @@ import edu.wustl.common.tags.bizlogic.ITagBizlogic;
 import edu.wustl.common.tags.dao.TagDAO;
 import edu.wustl.common.tags.domain.Tag;
 import edu.wustl.common.tags.domain.TagItem;
+import edu.wustl.common.tags.util.TagUtil;
+import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.util.global.AQConstants;
@@ -296,7 +298,6 @@ public class QueryTagBizLogic implements ITagBizlogic
 
 			arrayObj.put(AQConstants.TREE_DATA, treeData);
 			arrayObj.put(AQConstants.CHILDCOUNT, childCount);
-
 		}
 		catch (Exception e)
 		{
@@ -310,9 +311,10 @@ public class QueryTagBizLogic implements ITagBizlogic
 	 * @param Set<Long> tagIdSet.
 	 * @throws DAOException.
 	 */
-	public void shareTags(Set<Long> tagIdSet, Set<Long> selectedUsers)
+	public void shareTags(Long userId, Set<Long> tagIdSet, Set<Long> selectedUsers)
 			throws DAOException, BizLogicException 
 	{
+		List<Tag> tags = new ArrayList<Tag>();
 		for(Long tagId : tagIdSet) 
 		{
 			TagDAO tagDao = null;
@@ -320,14 +322,21 @@ public class QueryTagBizLogic implements ITagBizlogic
 			{
 				tagDao = new TagDAO(AQConstants.ENTITY_QUERYTAG);
 				Tag tag = tagDao.getTagById(tagId);
-				tag.getSharedUserIds().addAll(selectedUsers);
-				tagDao.updateTag(tag);
+				if(tag.getUserId() == userId)
+				{
+					if(selectedUsers.contains(tag.getUserId())){
+						selectedUsers.remove(tag.getUserId());
+					}
+					tag.getSharedUserIds().addAll(selectedUsers);
+					tagDao.updateTag(tag);
+					tags.add(tag);
+				}
 				tagDao.commit();
 			}
 			catch (DAOException e)
 			{
 				throw new BizLogicException(e);
-			}
+			} 
 			finally
 			{
 				if(tagDao != null)
@@ -336,8 +345,14 @@ public class QueryTagBizLogic implements ITagBizlogic
 				}
 			}	
 		} 
+		try {
+			TagUtil.sendSharedTagEmailNotification(userId, tags, 
+							selectedUsers, AQConstants.SHARE_QUERY_FOLDER_EMAIL_TEMPL);
+		} catch (Exception e) {
+			LOGGER.error("Error while sending email for query folder",e);
+		} 
 	}
-	
+ 
 	/**
 	 * Get queries from from TagId.
 	 * @param Long tagId;

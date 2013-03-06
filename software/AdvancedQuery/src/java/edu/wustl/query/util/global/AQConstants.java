@@ -622,4 +622,7 @@ public class AQConstants
 	public static final String ENTITY_QUERYTAGITEM = "QueryTagItem";
 	public static final String QUERY_OPTION = "queryOption";
 	public static final String TAG_CLICK_PAGE = "tagClick";
+ 
+	public static final String SHARE_QUERY_FOLDER_EMAIL_TEMPL = "query.shareQueryFolderTemplate";
+	public static final String SHARE_QUERY_EMAIL_TEMPL = "query.shareQueryTemplate";
 }

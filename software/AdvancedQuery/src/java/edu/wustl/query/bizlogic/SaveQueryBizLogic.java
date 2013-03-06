@@ -4,8 +4,10 @@
 
 package edu.wustl.query.bizlogic;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import edu.wustl.cab2b.common.queryengine.ICab2bQuery;
@@ -21,6 +23,7 @@ import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.querysuite.queryobject.IQuery;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
+import edu.wustl.common.util.EmailClient;
 import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
@@ -104,6 +107,9 @@ public class SaveQueryBizLogic extends DefaultQueryBizLogic implements IQueryBiz
 		{
 			savedQueryAuth.insertAuthData(protectionObjects, bean,
 					user);
+			if(bean.getProtocolCoordinatorIds() != null){
+				sendSharedQueryEmailNotification(user, bean.getProtocolCoordinatorIds(), query); 
+			}
 		}
 		catch (DAOException e)
 		{
@@ -111,7 +117,26 @@ public class SaveQueryBizLogic extends DefaultQueryBizLogic implements IQueryBiz
 					"and will be visible to you only";
 			logger.error(e.getMessage()+ "_ "+message, e);
 			throw new BizLogicException(null,e,"SMException : error while sharing this query, however this query is saved " +
-					"and will be visible to you only");		}
+					"and will be visible to you only");		
+		}  
+	}
+
+	private void sendSharedQueryEmailNotification(User currentUser, long[] protocolCoordinatorIds, 
+			IParameterizedQuery query) throws BizLogicException  
+	{
+		 Map<String,Object> contextMap = new HashMap<String,Object>();
+		 contextMap.put("user", currentUser);
+		 contextMap.put("sharedQuery", query);
+			 
+		 for (Long sUserId : protocolCoordinatorIds)
+		 {
+			 User sharedUser = UserCache.getUser(sUserId.toString()); 
+			 contextMap.put("sharedUser", sharedUser);
+			 EmailClient.getInstance().sendEmail( 
+					 AQConstants.SHARE_QUERY_EMAIL_TEMPL,
+					 new String[]{ sharedUser.getEmailId() },
+					 contextMap);
+		 }
 	}
 	/**
 	 * Returns the user object by id
