@@ -1,13 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
 <%@ page import="org.apache.struts.action.Action"%>
 <%@ page import="org.apache.struts.action.ActionError"%>
 <%@ page import="edu.wustl.common.util.global.ApplicationProperties"%>
 <%@ page import="org.apache.struts.action.ActionErrors"%>
 <%@ page language="java" isELIgnored="false"%>
+<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <link href="css/advQuery/catissue_suite.css" rel="stylesheet" type="text/css" />
-<html>
+
 <c:if test="${requestScope['org.apache.struts.action.ERROR'] != null }">
 	<table border="0" cellspacing="0" cellpadding="3">
 		<tr>
@@ -34,4 +35,4 @@
 		</tr>
 	</table>
 </html:messages>
-</html>
+

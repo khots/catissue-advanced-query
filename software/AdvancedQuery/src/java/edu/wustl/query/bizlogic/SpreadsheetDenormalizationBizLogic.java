@@ -72,16 +72,7 @@ public class SpreadsheetDenormalizationBizLogic
 				finalDataList.add(newDataList);
 			}
 			List<String> finalHeaderList = csvExporter.getHeaderList();
-			exportDetailsMap.put("headerList", finalHeaderList);
-			/*if(finalDataList.size() >querySessionData.getRecordsPerPage())
-			{
-				querySessionData.setRecordsPerPage(100);
-			}
-			else
-			{
-				querySessionData.setRecordsPerPage(finalDataList.size());
-				querySessionData.setTotalNumberOfRecords(finalDataList.size());
-			}*/
+			exportDetailsMap.put("headerList", finalHeaderList);			
 			exportDetailsMap.put("dataList", finalDataList);
 		}
 		catch (MultipleRootsException e)

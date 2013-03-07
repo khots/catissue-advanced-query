@@ -693,8 +693,7 @@ public class QueryCSMUtil
 		QueryResultObjectDataBean queryResultObjectDataBean = new QueryResultObjectDataBean();
 		if (node != null)
 		{
-            EntityInterface deEntity = node.getOutputEntity()
-            .getDynamicExtensionsEntity();
+            EntityInterface deEntity = node.getOutputEntity().getDynamicExtensionsEntity();
             String entityName;
             Map<String, String> tagKeyValueMap = getTaggedValueMap(deEntity);
             queryResultObjectDataBean.setPrivilegeType(Utility.getInstance().getPrivilegeType(tagKeyValueMap));

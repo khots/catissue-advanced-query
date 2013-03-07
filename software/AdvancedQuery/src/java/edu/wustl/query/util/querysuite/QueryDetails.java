@@ -35,6 +35,7 @@ public class QueryDetails
 	private IQuery query;
 	private long auditEventId;
 	private LinkedList<ColumnValueBean> columnValueBean;
+	private String saveGenratedQuery;
 
 	//private HttpSession session;
 
@@ -62,8 +63,8 @@ public class QueryDetails
 		outputTermsColumns = (Map<String, IOutputTerm>) session
 				.getAttribute(AQConstants.OUTPUT_TERMS_COLUMNS);
 		query = (IQuery) session.getAttribute(AQConstants.QUERY_OBJECT);
-		columnValueBean = (LinkedList<ColumnValueBean>)
-		session.getAttribute(AQConstants.COLUMN_VALUE_BEAN);
+		columnValueBean = (LinkedList<ColumnValueBean>)session.getAttribute(AQConstants.COLUMN_VALUE_BEAN);
+		saveGenratedQuery = (String)session.getAttribute(AQConstants.SAVE_GENERATED_SQL);
 		//isDenormalizationNeeded = (Boolean)session.getAttribute(AQConstants.IS_DENORMALIZATION_NEEDED);
 		if(session.getAttribute("AUDIT_EVENT_ID") != null)
 		{
@@ -232,4 +233,13 @@ public class QueryDetails
 	{
 		this.columnValueBean = columnValueBean;
 	}
+	
+	public String getSaveGeneratedQuery() {
+		return saveGenratedQuery;
+	}
+	
+	public void setSaveGeneratedQuery(String saveGenratedQuery) {
+		this.saveGenratedQuery = saveGenratedQuery;
+	}
+	
 }

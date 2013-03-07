@@ -175,6 +175,7 @@ public class ValidateQueryBizLogic
 		session.setAttribute(AQConstants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
 		Map<String, IOutputTerm> outputTermsColumns = queryGenerator.getOutputTermsColumns();
 		QueryDetails queryDetailsObj = new QueryDetails(session);
+		queryDetailsObj.setSaveGeneratedQuery(selectSql);		
 		session.setAttribute(AQConstants.OUTPUT_TERMS_COLUMNS, outputTermsColumns);
 		session.setAttribute(AQConstants.SAVE_GENERATED_SQL, selectSql);
 		List<OutputTreeDataNode> rootOutputTreeNodeList = queryGenerator

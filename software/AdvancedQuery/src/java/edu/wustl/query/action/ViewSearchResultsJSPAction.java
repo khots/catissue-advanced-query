@@ -1,8 +1,11 @@
 
 package edu.wustl.query.action;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -41,6 +44,15 @@ public class ViewSearchResultsJSPAction extends Action
 		{
 			target = AQConstants.FAILURE;
 		}
+		
+		HttpSession session = request.getSession();
+		request.setAttribute(AQConstants.PAGE_NUMBER, Integer.toString(1));
+		List dataList = (List) session.getAttribute(AQConstants.PAGINATION_DATA_LIST);
+		request.setAttribute(AQConstants.PAGINATION_DATA_LIST, dataList);
+		List<String> columnsList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
+		request.setAttribute(AQConstants.SPREADSHEET_COLUMN_LIST, columnsList);
+		session.setAttribute(AQConstants.PAGINATION_DATA_LIST, null);
+		request.setAttribute(AQConstants.PAGEOF, "pageOfQueryModule");
 		request.getSession().setAttribute(AQConstants.TREE_CHECK_VALUE, actionForm.isShowTree());
 		request.setAttribute(AQConstants.HIDE_TREE_CHECK_VALUE, request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE));
 		return mapping.findForward(target);

@@ -594,7 +594,7 @@ public class RowProcessor
 	public Map<String, String> getColumnNameMap(String selectSql, List<String> dataList)
 	{
 		String modifiedSql;
-		if (selectSql.contains(AQConstants.DISTINCT))
+		if (selectSql.indexOf(AQConstants.DISTINCT) == 0)
 		{
 			modifiedSql = selectSql.substring(selectSql.indexOf(AQConstants.DISTINCT) + 9,
 					selectSql.indexOf(AQConstants.FROM_CLAUSE) - 1);

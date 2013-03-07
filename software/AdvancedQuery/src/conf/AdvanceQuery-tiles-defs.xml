@@ -734,11 +734,6 @@
 		<put name="content" value="/pages/advQuery/content/manageAdministrativeData/ConflictView.jsp" />
 	</definition>
 
-
-	<definition name=".query.simpleSearchResultsDef" extends=".query.searchHomeDef">
-		<put name="content" value="/pages/advQuery/content/search/SimpleSearchDataView.jsp" />
-	</definition>
-
 	<definition name=".query.simpleSearchDepartmentDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/advQuery/content/manageAdministrativeData/Department.jsp" />
 	</definition>
@@ -779,9 +774,10 @@
 		<put name="content" value="/pages/advQuery/content/manageBioSpecimen/NewSpecimen.jsp" />
 	</definition>
 
-	<definition name=".query.queryResultsSpreadsheetViewDef" extends=".query.queryDataViewDef">
+	<definition name=".query.queryResultsSpreadsheetViewDef" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/advQuery/content/search/SimpleSearchDataView.jsp"/>
 	</definition>
+	
 	<definition name=".query.queryCollectionProtocolRegistrationDef" extends=".query.queryDataViewDef">
 		<put name="content" value="/pages/advQuery/content/manageBioSpecimen/CollectionProtocolRegistration.jsp" />
 	</definition>
@@ -1192,9 +1188,7 @@
 
 
 	 <!-- Definition code : Deepti Shelar : For pagination : 20/07/2007 -->
-	<definition name=".query.queryTreeViewDef" path="/pages/advQuery/content/search/querysuite/QueryTreeView.jsp">
-	</definition>
-	<definition name=".query.defineQueryResultsView" extends=".query.queryDataViewDef">
+	<definition name=".query.defineQueryResultsView" extends=".query.searchHomeDef">
 		<put name="content" value="/pages/advQuery/content/search/querysuite/DefineGridResultsView.jsp" />
 	</definition>
 

@@ -555,14 +555,8 @@ final public class QueryModuleUtil
 
 		for (OutputTreeDataNode node : parentNode.getChildren())
 		{
-			if (node.isInView())
-			{
-				childList.add(node);
-			}
-			else
-			{
-				childList.addAll(getInViewChildren(node));
-			}
+			childList.add(node);
+			childList.addAll(getInViewChildren(node));
 		}
 
 		return childList;

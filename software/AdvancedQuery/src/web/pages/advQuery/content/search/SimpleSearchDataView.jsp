@@ -2,7 +2,7 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/PagenationTag.tld" prefix="custom"%>
-<%@ page import="java.util.List"%>
+<%@ page import="java.util.List, java.util.ArrayList"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="edu.wustl.query.actionForm.QueryAdvanceSearchForm"%>
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
@@ -10,264 +10,87 @@
 <%@ page import="edu.wustl.query.util.global.Variables"%>
 <%@ page language="java" isELIgnored="false"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<head>
+
+<style>
+	.active-column-0 {
+		width: 30px
+	}
+	
+	tr#hiddenCombo {
+		display: none;
+	}
+	
+	.nav_button {
+		border: 1px solid #A4BED4;
+		border-radius: 6px;
+		padding: 5px 0;
+		width: 130px;
+		font-size: 11px;
+		background-image: -ms-linear-gradient(top, #F2F2F2 20%, #CCCCCC 90%);
+		background-image: -moz-linear-gradient(top, #F2F2F2 20%, #CCCCCC 90%);
+		background-image: -o-linear-gradient(top, #F2F2F2 20%, #CCCCCC 90%);
+		background-image: url('images/list2_add.gif'), -webkit-gradient(linear, left top, left bottom, color-stop(0.2, #F2F2F2), color-stop(0.9, #CCCCCC));
+		background-image: -webkit-linear-gradient(top, #F2F2F2 20%, #CCCCCC 90%);
+		background-image: linear-gradient(to bottom, #F2F2F2 20%, #CCCCCC 90%);
+		//background-repeat: no-repeat;
+		//background-position: 10, 10;
+	}
+</style>
+
+<script src="jss/advQuery/queryModule.js"></script>
 <script src="jss/advQuery/script.js"></script>
 <script type="text/javascript" src="jss/advQuery/ajax.js"></script>
-<style>
-.active-column-0 {
-	width: 30px
-}
 
-tr#hiddenCombo {
-	display: none;
-}
-</style>
-<head>
-<%
-	
-	int specIdColumnIndex = 0;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	int pageNum = Integer.parseInt((String) request
-			.getAttribute(AQConstants.PAGE_NUMBER));
-
-	int totalResults = ((Integer) session
-			.getAttribute(AQConstants.TOTAL_RESULTS)).intValue();
-	
-	int numResultsPerPage = Integer.parseInt((String) session
-			.getAttribute(AQConstants.RESULTS_PER_PAGE));
-	String pageName = "SpreadsheetView.do";
-	String checkAllPages = (String) session
-			.getAttribute("checkAllPages");
-	QueryAdvanceSearchForm form = (QueryAdvanceSearchForm) session
-			.getAttribute("advanceSearchForm");
-	List columnList = (List) session
-			.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
-	if (columnList == null)
-		columnList = (List) request
-				.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
-
-	columnList.add(0, " ");
-	List dataList = (List) request
-			.getAttribute(AQConstants.PAGINATION_DATA_LIST);
-
+<%	
+	int specIdColumnIndex = 0;	
+	String checkAllPages = (String) session.getAttribute("checkAllPages");
+	QueryAdvanceSearchForm form = (QueryAdvanceSearchForm) session.getAttribute("advanceSearchForm");
+	int totalResult = ((Integer)session.getAttribute(AQConstants.TOTAL_RESULTS)).intValue();
+	List dataList = (List) request.getAttribute(AQConstants.PAGINATION_DATA_LIST);
 	String pageOf = (String) request.getAttribute(AQConstants.PAGEOF);
-	
 	String title = pageOf + ".searchResultTitle";
 	boolean isSpecimenData = false;
 	int IDCount = 0;
+	
+	List columnList = new ArrayList((List)session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST));
+	columnList.add(0, " ");
+	
+	String idColumnsList = "";
+	String idColumnsForSpecimenList = "";
+	for(int col = 0; col < columnList.size(); col++)
+	{
+		if (columnList.get(col).toString().trim().equals("ID")) {
+			if(idColumnsList == "") { 
+				idColumnsList += col;
+			} else {
+				idColumnsList += "," + col;
+			}
+		}
+		
+		if (columnList.get(col).toString().trim().equals("Specimen : Id")) {
+			if(idColumnsForSpecimenList == "") { 
+				idColumnsForSpecimenList += col;
+			} else {
+				idColumnsForSpecimenList += "," + col;
+			}
+		}		
+	}
 %>
 
-
-<script language="javascript">
-
-		var colZeroDir='ascending';
-
-		function getData()
-		{	//ajax call to get update data from server
-			var request = newXMLHTTPReq();
-			var handlerFunction = getReadyStateHandler(request,displayValidationMessage,true);
-			request.onreadystatechange = handlerFunction;
-			var actionURL = "updateSessionData=updateSessionData";
-			var url = "ValidateQuery.do";
-			request.open("POST",url,true);
-			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-			request.send(actionURL);
-		}
-
-		function displayValidationMessage(message)
-		{
-			//var message contains space " " if the message is not to be shown.
-			if (message != null && message == " ") 		// do not show popup
-			{
-				onAddToCart();
-			}
-			else
-			{
-				var isChecked = updateHiddenFields(); // if atleast one check box is checked.
-				if (isChecked == "true")
-				{
-					var r=confirm(message);
-					if (r==true)
-					{
-						onAddToCart();
-					}
-				}
-				else
-				{
-					alert("Please select at least one checkbox");
-				}
-			}
-		}
-
-		function onAddToCart()
-		{
-			var isChecked = updateHiddenFields();
-			var chkBox = document.getElementById('checkAll');
-			var isCheckAllAcrossAllChecked = chkBox.checked;
-
-		    if(isChecked == "true")
-		    {
-			     var pageNum = "<%=pageNum%>";
-				 var action;
-                 var isQueryModule = "<%=pageOf.equals(AQConstants.PAGEOF_QUERY_MODULE)%>";
-                 <%if (pageOf.equals(AQConstants.PAGEOF_QUERY_MODULE)) {%>
-
-				  action = "AddDeleteCart.do?operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
-				   document.forms[0].target = "gridFrame";
-				<%} else {%>
-			     action = "ShoppingCart.do?operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked ;
-				 document.forms[0].target = "myframe1";
-				<%}%>
-				document.forms[0].operation.value="add";
-				document.forms[0].action = action;
-				document.forms[0].submit();
-			}
-			else
-			{
-				alert("Please select at least one checkbox");
-			}
-		}
-
-		function onExport()
-		{
-			var isChecked = updateHiddenFields();
-			var pageNum = "<%=pageNum%>";
-			var chkBox = document.getElementById('checkAll');
-			var isCheckAllAcrossAllChecked = chkBox.checked;
-		    if(isChecked == "true")
-		    {
-				var action = "SpreadsheetExport.do?pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked ;
-				document.forms[0].operation.value="export";
-				document.forms[0].action = action;
-				document.forms[0].target = "_blank";
-				document.forms[0].submit();
-			}
-			else
-			{
-				alert("Please select at least one checkbox");
-			}
-		}
-		//function that is called on click of Define View button for the configuration of search results
-		function onSimpleConfigure()
-		{
-				action="ConfigureSimpleQuery.do?pageOf=pageOfSimpleQueryInterface";
-				document.forms[0].action = action;
-				document.forms[0].target = "_parent";
-				document.forms[0].submit();
-		}
-
-		function onAdvanceConfigure()
-		{
-				action="ConfigureAdvanceSearchView.do?pageOf=pageOfQueryResults";
-				document.forms[0].action = action;
-				document.forms[0].target = "myframe1";
-				document.forms[0].submit();
-		}
-		function onQueryResultsConfigure()
-		{
-		
-			 action="DefineQueryResultsView.do?pageOf=pageOfQueryModule";
-			 document.forms[0].action = action;
-			 document.forms[0].target = "<%=AQConstants.GRID_DATA_VIEW_FRAME%>";
-			 document.forms[0].submit();
-		}
-		function onRedefineSimpleQuery()
-		{
-			action="SimpleQueryInterface.do?pageOf=pageOfSimpleQueryInterface&operation=redefine";
-			document.forms[0].action = action;
-			document.forms[0].target = "_parent";
-			document.forms[0].submit();
-		}
-		function onRedefineAdvanceQuery()
-		{
-			action="AdvanceQueryInterface.do?pageOf=pageOfAdvanceQueryInterface&operation=redefine";
-			document.forms[0].action = action;
-			document.forms[0].target = "_parent";
-			document.forms[0].submit();
-		}
-		function onRedefineDAGQuery()
-		{
-			waitCursor();
-			document.forms[0].action='SearchCategory.do?currentPage=resultsView';
-			document.forms[0].target = "_parent";
-			document.forms[0].submit();
-			hideCursor();
-		}
-		var selected;
-
-		function addCheckBoxValuesToArray(checkBoxName)
-		{
-			var theForm = document.forms[0];
-		    selected=new Array();
-
-		    for(var i=0,j=0;i<theForm.elements.length;i++)
-		    {
-		 	  	if(theForm[i].type == 'checkbox' && theForm[i].checked==true)
-			        selected[j++]=theForm[i].value;
-			}
-		}
-
-        //Commented out By Baljeet...
-
-		function callAction(action)
-		{
-			document.forms[0].action = action;
-			document.forms[0].submit();
-		}
-		function setCheckBoxState()
-		{
-		   if(document.getElementById('checkAll'))
-		   {
-			var chkBox = document.getElementById('checkAll');
-			var isCheckAllAcrossAllChecked = chkBox.checked;
-		<%if (checkAllPages != null && checkAllPages.equals("true")) {%>
-			chkBox.checked = true;
-				rowCount = mygrid.getRowsNum();
-				for(i=1;i<=rowCount;i++)
-				{
-					var cl = mygrid.cells(i,0);
-					if(cl.isCheckbox())
-					cl.setChecked(true);
-				}
-		<%}%>
-		}
-		}
-//this function is called after executing ajax call from checkAllOnThisPage function.
-function checkAllOnThisPageResponse()
-{
-}
-
-//document.forms[0].checkAllPages.value = true;
-function addToSpecimenList()
-{
-	var checkedRows = mygrid.getCheckedRows(0);
+<script type="text/javascript">
+	var isQueryModule = "<%=pageOf.equals(AQConstants.PAGEOF_QUERY_MODULE)%>";
+	var checkAllPages = <%=(checkAllPages != null && checkAllPages.equals("true"))%>
+	var QueryResultsConfigureTarget = "<%=AQConstants.GRID_DATA_VIEW_FRAME%>";
 	
-	//alert(checkedRows);
-	var idColumn = getIDColumnsForSpecimen();
-	//alert(idColumn);
-	//alert(idColumn);
-	//alert(mygrid.cellById(1,idColumn).getValue());
-	var n=checkedRows.split(",");
-	var specIds = "";
-	
-	for(var i=0;i<n.length;i++)
-	{
-		specIds=specIds+mygrid.cellById(n[i],idColumn).getValue()+",";
-	}
-	//alert('specimen Ids :'+specIds);
-	return specIds;
-}
-	</script>
+</script>
+<script type="text/javascript" src="jss/advQuery/simpleSearchDataView.js"></script>
+
 <%
 	String configAction = new String();
 	String redefineQueryAction = new String();
+	
 	if (pageOf.equals(AQConstants.PAGEOF_SIMPLE_QUERY_INTERFACE)) {
 		configAction = "onSimpleConfigure()";
 		redefineQueryAction = "onRedefineSimpleQuery()";
@@ -280,6 +103,7 @@ function addToSpecimenList()
 	}
 	boolean mac = false;
 	Object os = request.getHeader("user-agent");
+	
 	if (os != null && os.toString().toLowerCase().indexOf("mac") != -1) {
 		mac = true;
 	}
@@ -289,359 +113,167 @@ function addToSpecimenList()
 		height = "500";
 	}
 %>
-<!-- Mandar : 434 : for tooltip -->
-<script language="JavaScript" type="text/javascript"
-	src="jss/advQuery/javaScript.js"></script>
+	
+	<script language="JavaScript" type="text/javascript" src="jss/advQuery/javaScript.js"></script>
 </head>
-<body onload="setCheckBoxState()">
+<body onload="setCheckBoxState();">
 
-<!-------new--->
-<!--Prafull:Added errors tag inside the table-->
-<table width="100%" border="0" cellpadding="0" cellspacing="0" class=""
-	height="100%">
-	<tr height="95%">
-		<td class=""><logic:equal name="pageOf"
-			value="<%=AQConstants.PAGEOF_SIMPLE_QUERY_INTERFACE%>">
+<table cellpadding='0' cellspacing='0' border='0' align='center'
+		style="width: 100%; height: 100%;">
+	<tr height="1%">
+		<td width="33%" align="center" class="bgWizardImage">
+			<img src="images/advQuery/1_inactive.gif" /> <!-- width="118" height="25" /-->
+		</td>
+		<td width="33%" align="center" class="bgWizardImage">
+			<img src="images/advQuery/2_inactive.gif" /> <!-- width="199" height="38" /-->
+		</td>
+		<td width="33%" align="center" class="bgWizardImage">
+			<img src="images/advQuery/3_active.gif" /> <!--  width="139" height="38" /-->
+		</td>
+	</tr>	
+</table>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" height="100%">
+	<logic:equal name="pageOf" value="<%=AQConstants.PAGEOF_SIMPLE_QUERY_INTERFACE%>">
+		<tr height="95%"><td>
 			<table border="0" cellpadding="0" cellspacing="0">
 				<tr>
 					<td class=""><span class=""> Simple Query </span></td>
-					<td><img
-						src="images/advQuery/uIEnhancementImages/table_title_corner2.gif"
-						alt="Page Title - Search Results" width="31" height="24"
-						hspace="0" vspace="0" /></td>
+					<td>
+						<img src="images/advQuery/uIEnhancementImages/table_title_corner2.gif"
+							alt="Page Title - Search Results" width="31" height="24"
+							hspace="0" vspace="0" /></td>
 				</tr>
-			</table>
-		</logic:equal></td>
-	</tr>
+			</table></td>
+		</tr>
+	</logic:equal>
 	<tr>
-		<td class="">
-
-		<table width="100%" border="0" cellpadding="0" cellspacing="0"
-			class="" height="100%">
-
-			<tr height="1%">
-				<td align="left"><%@ include
-					file="/pages/advQuery/content/common/ActionErrors.jsp"%></td>
-			</tr>
-			<!------new--->
-			<!--<table summary="" cellpadding="0" cellspacing="0" border="0" width="99%" height="100%" style="overflow:auto;">
-<tr>
-	<td >
-
-	</td>
-</tr>-->
-			<html:form action="QueryWizard.do" style="margin:0;padding:0;">
-				<html:hidden property="checkAllPages" value="" />
-
+		<td >
+		<html:form action="QueryWizard.do" style="margin:0;padding:0;">
+			<html:hidden property="checkAllPages" value="" />
+				
+			<table width="100%" border="0" cellpadding="0" cellspacing="0" height="100%">
+				<tr height="1%">
+					<td id="errorStatus"><%@ include file="/pages/advQuery/content/common/ActionErrors.jsp"%></td>
+				</tr>
 				<%
-					if (dataList == null
-								&& pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS)) {
+					if (dataList == null && pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS)) {
 				%>
-				<bean:message key="advanceQuery.noRecordsFound" />
+					<tr><td><bean:message key="advanceQuery.noRecordsFound" /></td></tr>					
 				<%
 					} else if (dataList != null && dataList.size() != 0) {
-				%>
-				<!--
-			Patch ID: Bug#3090_28
-			Description: The width of <td> are adjusted to fit into the iframe.
-			These changes were made to remove the extra white space on the data view/spreadsheet view page.
-		-->
-				<%--<tr height="3%">
-			 <td  class="formTitle" width="100%">
-				<bean:message key="<%=title%>"/>
-			 </td>
-		</tr>--%>
-
-				<tr>
-					<td class="black_ar"><custom:test name=""
-						pageNum="<%=pageNum%>" totalResults="<%=totalResults%>"
-						numResultsPerPage="<%=numResultsPerPage%>"
-						pageName="<%=pageName%>" showPageSizeCombo="<%=true%>"
-						recordPerPageList="<%=AQConstants.RESULT_PERPAGE_OPTIONS%>" /> <html:hidden
-						property="<%=AQConstants.PAGEOF%>" value="<%=pageOf%>" /> <html:hidden
-						property="isPaging" value="true" /></td>
-				</tr>
-				<%
-					if (pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS)) {
-								String[] selectedColumns = form
-										.getSelectedColumnNames();
+												
+						if (pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS)) {
+								String[] selectedColumns = form.getSelectedColumnNames();
 				%>
 
-				<tr id="hiddenCombo" rowspan="2" height="2%">
-					<td class="black_new"><!-- Mandar : 434 : for tooltip --> <html:select
-						property="selectedColumnNames" styleClass="selectedColumnNames"
-						size="1" styleId="selectedColumnNames" multiple="true"
-						onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)">
+				<tr id="hiddenCombo" rowspan="2" >
+					<td class="black_new"><!-- Mandar : 434 : for tooltip --> 
+						<html:select property="selectedColumnNames" styleClass="selectedColumnNames"
+							size="1" styleId="selectedColumnNames" multiple="true"
+							onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)">
 						<%
 							for (int j = 0; j < selectedColumns.length; j++) {
 						%>
-						<html:option value="<%=selectedColumns[j]%>"><%=selectedColumns[j]%></html:option>
+							<html:option value="<%=selectedColumns[j]%>"><%=selectedColumns[j]%></html:option>
 						<%
 							}
 						%>
 					</html:select></td>
 				</tr>
 				<%
-					}
+						}
 				%>
 
-				<tr valign="top" width="100%" height="2%">
-					<td width="100%" valign="top"><!--  **************  Code for New Grid  *********************** -->
-					<script>
-					/*
-						to be used when you want to specify another javascript function for row selection.
-						useDefaultRowClickHandler =1 | any value other than 1 indicates you want to use another row click handler.
-						useFunction = "";  Function to be used.
-					*/
-					var useDefaultRowClickHandler =1;
-					var useFunction = "search";
-				</script> <%@ include file="/pages/advQuery/content/search/AdvanceGrid.jsp"%>
-
-					<!--  **************  Code for New Grid  *********************** -->
+				<tr width="100%">
+					<td width="100">									
+						<%@ include file="/pages/advQuery/content/search/AdvanceGrid.jsp"%>
 					</td>
 				</tr>
 
-				<tr width="100%" valign="top" height="95%">
-
-					<td width="90%">
-
-					<table summary="" cellpadding="0" cellspacing="0" border="0"
-						width="100%" valign="top" height="100%">
-						<tr height="100%">
-							<td width="5%" nowrap valign="top" class="black_ar"><input
-								type='checkbox' name='checkAll2' id='checkAll2'
-								onClick='checkAllOnThisPage(this)'> <span valign="top"
-								class="black_ar"><bean:message
-								key="buttons.checkAllOnThisPage" /></span> <input type='checkbox'
-								name='checkAll' id='checkAll'
-								onClick='checkAllAcrossAllPages(this)'> <span
-								valign="top" class="black_ar"><bean:message
-								key="buttons.checkAll" /></span></td>
+				<tr width="100%">
+					<td>
+					<table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
+						<tr>			
 							<%
-								//Commented out By Baljeet....
-										//Object obj = session.getAttribute(Constants.SPECIMENT_VIEW_ATTRIBUTE);
-										//boolean isDefaultView = (obj!=null);
-										boolean isDefaultView = true;
+								if(!idColumnsForSpecimenList.equals("")) {
 							%>
-							<td width="5%" valign="top">
-							<%
-								if (pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS)) {
-							%> <!--Commented out by Baljeet as it is catissuecore specific -->
-							<!--<input type='checkbox' <%if (isDefaultView) {%>checked='checked' <%}%>name='checkDefaultSpecimenView' id='checkDefaultSpecimenView' onClick='setDefaultView(this)'>
-						<span class="black_ar"><bean:message key="buttons.defaultSpecimenView" /></span>&nbsp; -->
-							<%
-								} else {
-							%> &nbsp; <%
- 	}
- %>
-							</td>
-							<td width="10%" align="right" valign="top">&nbsp;
-							 
-								<%
- 						String	organizeTarget = "ajaxTreeGridInitCall('Are you sure you want to delete this specimen from the list?','List contains specimens, Are you sure to delete the selected list?','SpecimenListTag','SpecimenListTagItem')";
- %>
- <script>
- function jstClick()
- {
-	var idSpecimenPresent=isIDColumnsForSpecimen();
-	if(idSpecimenPresent == null || idSpecimenPresent == '')
-	{
-		alert('Specimen:Id missing in the grid! Please redefine the view and include Specimen:Id to use the Specimen List feature');
-	}
-	else
-	{
-		  var checkedRows = mygrid.getCheckedRows(0);
-		  if(checkedRows != "")
-		 ajaxTreeGridInitCall('Are you sure you want to delete this specimen from the list?','List contains specimens, Are you sure to delete the selected list?','SpecimenListTag','SpecimenListTagItem');
-		 else
-		 alert("Please select atleast one specimen");
-	}
- }
- </script>
-						<input type="button" value="Add To Specimen List"
-							onclick="jstClick()" class="blue_ar_c">
-
-							</td>
-							<td width="5%" nowrap align="right" valign="top">
-							<%
-								if (Utility
-												.checkFeatureUsage(AQConstants.FEATURE_ADD_TO_LIST)
-												&& (pageOf.equals(AQConstants.PAGEOF_QUERY_RESULTS) || pageOf
-														.equals(AQConstants.PAGEOF_QUERY_MODULE))) {
-							%> <img src="images/advQuery/b_add_list.gif" id="addToListImgId"
-								width="100" hspace="3" onclick="getData()" />&nbsp; <%
- 	} else {
- %> &nbsp; <%
- 	}
- %>
-							</td>
-							<td width="5%" nowrap align="right" valign="top"><img
-								src="images/advQuery/b_exp.gif" id="exportImgId" width="80"
-								hspace="3" onclick="onExport()" />&nbsp;</td>
-							<td width="5%" nowrap align="right" valign="top"><img
-								src="images/advQuery/b_def_view.gif" id="defineViewId"
-								width="88" hspace="3" onclick="<%=configAction%>" />&nbsp;</td>
-							<td width="5%" nowrap align="right" valign="top"><img
-								src="images/advQuery/b_red_query.gif" id="redefineQueryId"
-								width="107" hspace="3" onclick="<%=redefineQueryAction%>" />&nbsp;
-								
+							<td width="12%">									
+								<button type="button" class="nav_button" style="width: 145px" onclick="addToSpecimenList()">
+										<img src="images/advQuery/list2_add.gif" style="margin-right: 5px"/>
+										Add To Specimen List</button>
 							</td>
 							
+							<%
+								} else {								
+							%> 	
+								<td width="10%">									
+									<button type="button" class="nav_button" id="addToListImgId" onclick="getData()">
+										<img src="images/advQuery/list2_add.gif" style="margin-right: 5px"/>
+										Add To My List</button>
+								</td>
+							<% 	} %> 							 
+							
+							<td width="10%">
+								<button type="button" class="nav_button" id="exportImgId" onclick="onExport()">
+									<img src="images/advQuery/excel.gif" style="margin-right: 5px"/>
+									Export CSV</button></td>								
+							<td>&nbsp;</td>
+							<td width="10%">
+								<input type="button" value="Define View" id="defineViewId"
+									onclick="<%=configAction%>" class="nav_button"></td>
+							<td width="10%">
+								<input type="button" value="Redefine Query" id="redefineQueryId"
+									onclick="<%=redefineQueryAction%>" class="nav_button"></td>
+							<td width="10%">
+								<input type="button" value="Save" id="saveResultImgId"
+									onclick="saveClientQueryToServer('save')" class="nav_button"></td>							
 						</tr>
 					</table>
-
 					</td>
 				</tr>
 				<%
 					}
 				%>
-
 				<tr>
-					<td><html:hidden property="operation" value="" /></td>
+					<td>
+						<html:hidden property="operation" value="" />
+						<input type="hidden" name="isQuery" value="true">
+					</td>
 				</tr>
-				<input type="hidden" name="isQuery" value="true">
-			</html:form>
-		</table>
-		</td>
-	</tr>
+			</table>			
+		</html:form>
+	</td></tr>
 </table>
-
-
+		
 
 <!---------------------------------------------------->
 <div id="blanket" style="display: none;"></div>
 <div id="popUpDiv" style="display: none; top: 100px; left: 210.5px;">
+	<a onclick="popup('popUpDiv')">
+		<img style="float: right;" height='23' width='24' src='images/close_button.gif'
+		border='0'> </a>
+	<table class=" manage tags" width="100%" cellspacing="0"
+		cellpadding="5" border="0">
+		<tbody>
+			<tr valign="center" height="35" bgcolor="#d5e8ff">
+				<td width="28%" align="left"
+					style="font-size: .82em; font-family: verdana;">
+					<p>&nbsp&nbsp&nbsp&nbsp<b> Specimen Lists</b></p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
-					<a onclick="popup('popUpDiv')"><img style="float: right;"
-						height='23' width='24' src='images/close_button.gif'
-						border='0'> </a>
-					<table class=" manage tags" width="100%" cellspacing="0"
-						cellpadding="5" border="0">
-
-						<tbody>
-							<tr valign="center" height="35" bgcolor="#d5e8ff">
-								<td width="28%" align="left"
-									style="font-size: .82em; font-family: verdana;">
-									<p>
-										&nbsp&nbsp&nbsp&nbsp<b> Specimen Lists</b>
-									</p>
-								</td>
-							</tr>
-					</table>
-
-
-					<div id="treegridbox"
-						style="width: 530px; height: 237px; background-color: white;"></div>
-
-
-
-
-					<p>
-						&nbsp&nbsp&nbsp<label width="28%" align="left"
-							style="font-size: .82em; font-family: verdana;"><b> List Name
-								: </b> </label> <input type="text" id="newTagName" name="newTagName"
-							size="20" onclick="this.value='';" maxlength="50" /><br>
-					</p>
-					<p>
-						
- 
-						<input type="button" value="ASSIGN" onclick="ajaxCall()"
-							class="btn3">
-							<input type="checkbox" name="objCheckbox"  id="objCheckbox" style="display:none" value="team" checked/>
-					</p>
-				</div>
-			</div>
-			<script>
-			function onResponseSet(response) 
-	{
-	//alert(response);
-	var specimenIDS = response;
-	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem','Select at least one existing list or create a new list.','No list has been selected to assign.',specimenIDS);
-		//document.forms[0].action="ViewSpecimenList.do?operation=view";
-		//document.forms[0].submit();
-	}
-function ajaxCall()
-{
-	var specimenIDS = addToSpecimenList();
-	//alert(isCheckAllPagesChecked);
-	if(isCheckAllPagesChecked)
-	{
-	var chkBox = document.getElementById('checkAll');
-			var isCheckAllAcrossAllChecked = chkBox.checked;
-	var pageNum = "<%=pageNum%>";
-		request = newXMLHTTPReq();			
-					var actionURL;
-					var handlerFunction = getReadyStateHandler(request,onResponseSet,true);	
-					request.onreadystatechange = handlerFunction;	
-					var specId =  getIDColumnsForSpecimen();
-					specId = specId;
-					actionURL = "specIndex="+specId+"&operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
-					var url = "CatissueCommonAjaxAction.do?type=getSpecimenIds&"+actionURL;
-					//alert(url);
-					<!-- Open connection to servlet -->
-					request.open("POST",url,true);	
-					request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
-					request.send("");
-	}
-	else
-	{
-	//alert(specimenIDS);
-	//alert(specimenIDS.length());
-	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&isCheckAllAcrossAllChecked='+isCheckAllPagesChecked,'Select at least one existing list or create a new list.','No list has been selected to assign.',specimenIDS);
-	}
+	<div id="treegridbox" style="width: 530px; height: 237px; background-color: white;"></div>
 	
-}
-function doInitGrid()
-{
-	grid = new dhtmlXGridObject('mygrid_container');
-	grid.setImagePath("dhtmlx_suite/dhtml_pop/imgs/");
- 	grid.setHeader("My Specimen Lists");
- 	grid.setInitWidths("175");
- 	grid.setColAlign("left");
- 	grid.setSkin("dhx_skyblue");
- 	grid.setEditable(false);
-   	grid.attachEvent("onRowSelect", doOnRowSelected);
- 	grid.init();
- 	grid .load ("TagGridInItAction.do");
-}
-function doOnRowSelected(rId)
-{
-	submitTagName(rId);	 
-}	
-function giveCall(url,msg,msg1,id)
-{
-	
-	document.getElementById('objCheckbox').checked=true;
-	document.getElementById('objCheckbox').value=id;
-	//alert(url);
-	ajaxAssignTagFunctionCall(url,msg,msg1);
-}
-			var popupmygrid;
-function doInItTreeGrid1()
-{
-	popupmygrid = new dhtmlXGridObject('treegridbox');
-	popupmygrid.selMultiRows = true;
-	popupmygrid.imgURL = "dhtmlx_suite/dhtml_pop/imgs/";
-	popupmygrid.setHeader(",<div style='text-align:center;'>My Specimen Lists</div>,");
-	//popupmygrid.setNoHeader(true);
-	popupmygrid.setInitWidths("25,*,40");
-	popupmygrid.setColAlign("left,left,left");
-	popupmygrid.setColTypes("txt,tree,txt");
-	popupmygrid.setColSorting("str,str,str");
-	popupmygrid.attachEvent("onRowSelect", doOnTreeGridRowSelected);
-	popupmygrid.setEditable(false);
-	popupmygrid.init();
-	popupmygrid.setSkin("dhx_skyblue");
-	doInitParseTree();
-}
- function doOnTreeGridRowSelectedaaa(rId)
-{
-	ajaxTreeGridRowSelectCall(rId); 
-}
-function doInitParseTree()
-{
-	popupmygrid.loadXML("TreeTagAction.do?entityTag=SpecimenListTag");
-
-}
-
-			</script>
+	<p>	&nbsp&nbsp&nbsp	
+		<label width="28%" align="left" style="font-size: .82em; font-family: verdana;" >
+			<b> List Name : </b> </label> 
+		<input  type="text"  id="newTagName"  name="newTagName" 
+			size="20" onclick="this.value='';"  maxlength="50"  /> <br />
+	</p>
+	<p>
+		<input type="button" value="ASSIGN" onclick="assignToSpecimenList()" class="btn3">
+		<input type="checkbox" name="objCheckbox"  id="objCheckbox" style="display:none" value="team" checked/>
+	</p>
+</div>

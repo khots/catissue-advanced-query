@@ -45,21 +45,26 @@ public class MysqlQueryExecutor extends AbstractQueryExecutor
 	 */
 	protected PagenatedResultData createStatemtentAndExecuteQuery(JDBCDAO jdbcDAO) throws SQLException, SMException, DAOException
 	{
-
-		resultSet = jdbcDAO.getQueryResultSet(query);
-
-		if (getSublistOfResult && startIndex > 0)
+		String sqlToBeExecuted = query;
+		
+		if (getSublistOfResult)
 		{
-			resultSet.absolute(startIndex);
+			sqlToBeExecuted = new StringBuilder(query).append(" Limit ")
+						.append(startIndex).append(" , ").append(noOfRecords).toString();
 		}
+		
+		resultSet = jdbcDAO.getQueryResultSet(sqlToBeExecuted);		
 		List list = getListFromResultSet(jdbcDAO); // get the result set.
 
 		// find the total number of records.
 		int totalRecords;
 		if (getSublistOfResult)
 		{
-			resultSet.last();
-			totalRecords = resultSet.getRow();
+			sqlToBeExecuted = getCountQuery(query);
+			resultSet.close();
+			resultSet = jdbcDAO.getQueryResultSet(sqlToBeExecuted);
+			resultSet.next();
+			totalRecords = resultSet.getInt(1);
 		}
 		else
 		{

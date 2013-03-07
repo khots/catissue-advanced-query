@@ -1,3 +1,4 @@
+
 /**
  *
  */
@@ -77,8 +78,7 @@ public class ExecuteQueryAction extends Action
 		if(flag)
 		{
 			session.setAttribute(AQConstants.QUERY_OBJECT, query);
-			actionForward = executeQuery(actionMapping, request,
-					cloneQuery);
+			actionForward = executeQuery(actionMapping, request, cloneQuery);
 		}
 		return actionForward;
 	}
@@ -145,7 +145,16 @@ public class ExecuteQueryAction extends Action
 		{
 			target = AQConstants.FAILURE;
 			saveActionErrors(request, errorMessage);
-		}
+		}		
+		
+		HttpSession session = request.getSession();
+		request.setAttribute(AQConstants.PAGE_NUMBER, Integer.toString(1));
+		List dataList = (List) session.getAttribute(AQConstants.PAGINATION_DATA_LIST);
+		request.setAttribute(AQConstants.PAGINATION_DATA_LIST, dataList);		
+		List<String> columnsList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
+		request.setAttribute(AQConstants.SPREADSHEET_COLUMN_LIST, columnsList);
+		session.setAttribute(AQConstants.PAGINATION_DATA_LIST, null);		
+		request.setAttribute(AQConstants.PAGEOF, "pageOfQueryModule");
 		actionForward =  actionMapping.findForward(target);
 		return actionForward;
 	}

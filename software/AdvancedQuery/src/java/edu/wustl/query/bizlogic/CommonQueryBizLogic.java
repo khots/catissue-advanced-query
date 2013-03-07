@@ -70,9 +70,10 @@ public class CommonQueryBizLogic
 			queryParams.setStartIndex(startIndex);
 			queryParams.setNoOfRecords(querySessionData.getRecordsPerPage());
 			AbstractQueryExecutor queryExecutor = Utility.getQueryExecutor();
-			edu.wustl.common.util.PagenatedResultData pagenatedResultData =
-				queryExecutor.getQueryResultList(queryParams);
-
+			edu.wustl.common.util.PagenatedResultData pagenatedResultData = queryExecutor.getQueryResultList(queryParams);
+			
+			querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
+			
 			return pagenatedResultData;
 		}
 		catch (SMException exp)

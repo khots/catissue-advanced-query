@@ -6,156 +6,157 @@
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
 <%@ page import="edu.wustl.query.util.global.Utility"%>
 <%@ page import="edu.wustl.query.util.global.Variables"%>
-<%@ page
-	import="edu.wustl.common.query.queryobject.impl.QueryTreeNodeData"%>
+<%@ page import="edu.wustl.common.query.queryobject.impl.QueryTreeNodeData"%>
 <%@ page import="edu.wustl.query.actionForm.CategorySearchForm"%>
 <%@ page import="edu.wustl.common.beans.NameValueBean"%>
 <%@ page import="edu.wustl.common.util.global.ApplicationProperties"%>
 <html>
 <head>
-
-<meta http-equiv="Content-Language" content="en-us">
-<meta http-equiv="Content-Type"
-	content="text/html; charset=windows-1252">
-	<script src="dhtmlx_suite/js/dhtmlxcommon.js"></script>
+	<meta http-equiv="Content-Language" content="en-us">
+	<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+	
 	
 	<script language="JavaScript" type="text/javascript" src="dhtmlx_suite/js/dhtmlxtree.js"></script>
-	<link rel="stylesheet" type="text/css"
-	href="dhtmlx_suite/css/dhtmlxtree.css" />
+	<link rel="stylesheet" type="text/css" href="dhtmlx_suite/css/dhtmlxtree.css" />
+	<link rel="stylesheet" type="text/css" 	href="css/advQuery/catissue_suite.css" />
+	<link rel="stylesheet" type="text/css" href="css/advQuery/styleSheet.css" />
 	
-	<link rel="stylesheet" type="text/css"
-	href="css/advQuery/catissue_suite.css" />
-	
-	<link rel="stylesheet" type="text/css"
-	href="css/advQuery/styleSheet.css" />
+	<script src="dhtmlx_suite/js/dhtmlxcommon.js"></script>
 	<script src="jss/advQuery/script.js"></script>
-	
-	
 </head>
-<body>
-	
-
+<body onload="initTreeView()">
 
 <%
 	String callAction = AQConstants.CONFIGURE_GRID_VIEW_ACTION;
 	CategorySearchForm form = (CategorySearchForm) request
 			.getAttribute("categorySearchForm");
-	String currentSelectedNodeInTree = form
-			.getCurrentSelectedNodeInTree();
+	String currentSelectedNodeInTree = form.getCurrentSelectedNodeInTree();
 	String showSelected = "false";
 	List selectedColumnNameValueBeanList = form.getSelColNVBeanList();
 	String appName = ApplicationProperties.getValue("app.name");
 %>
 
-
-<html:form method="GET" action="<%=callAction%>">
-	<html:hidden property="operation" value="" />
-	
-	<body onload="initTreeView()">
-	<table border="0" width="400" cellspacing="0" cellpadding="0"
-		bgcolor="#FFFFFF" height="90%" bordercolorlight="#000000">
-		<tr>
-			<td width="1px">&nbsp;</td>
-			<td valign="top" width="100"></td>
-		</tr>
-
-		<tr>
-			<td width="1px">&nbsp;</td>
-			<td valign="top" colspan="8" width="100%">
-			<%if(!appName.equalsIgnoreCase("ClinPortal"))
-			{%>
-			<bean:message
-				key="query.defineGridResultsView.message" />
-				<%}%>
-				</td>
-		</tr>
-
-
-		<tr>
-			<td width="1px">&nbsp;</td>
-			<td valign="top" width="90%" height="90%">
-			<div id="treeBox"
-				style="background-color: white; overflow: auto; height: 270; width: 260; border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px;"></div>
-			</td>
-			<td width="1%">&nbsp;</td>
-			<td align="center" valign="center" width=""><html:button
-				styleClass="actionButton" property="shiftRight" styleId="shiftRight"
-				onclick="moveOptionsRight(this.form.columnNames, this.form.selectedColumnNames);">
-				<bean:message key="buttons.addToView" />
-			</html:button> <br />
-			<br />
-			<html:button styleClass="actionButton" property="shiftLeft"
-				styleId="shiftLeft"
-				onclick="moveOptionsLeft(this.form.selectedColumnNames, this.form.columnNames);">
-				<bean:message key="buttons.deleteFromView" />
-			</html:button></td>
-			<td width="1%">&nbsp;</td>
-			<td class="" valign="top" width="60" height="85%"><!-- Mandar : 434 : for tooltip -->
-			<html:select property="selectedColumnNames" styleClass=""
-				styleId="selectedColNamesId" size="16" multiple="true">
-				<html:options collection="selectedColumnNameValueBeanList"
-					labelProperty="name" property="value" />
-			</html:select></td>
-			<td width="1%">&nbsp;</td>
-			<td align="center" valign="center"><html:button
-				styleClass="actionButton" property="shiftUp"
-				styleClass="actionButton" styleId="shiftUp"
-				onclick="moveUp(this.form.selectedColumnNames);">
-				<bean:message key="buttons.up" />
-			</html:button> <br />
-			<br />
-
-			<html:button styleClass="actionButton" property="shiftDown"
-				styleClass="actionButton" styleId="shiftDown"
-				onclick="moveDown(this.form.selectedColumnNames)">
-				<bean:message key="buttons.down" />
-			</html:button></td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td align="left" height="2%" colspan="6">
-						<html:checkbox
-						property="normalizedQuery" value="true" styleId="normalizedQuery" />
-						<span valign="top"
-								class="black_ar"><bean:message key="query.normalized.view" /></span>
-						
-			</td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td colspan="6" align="left" valign="top">
-			<table border="0" cellpadding="0" cellspacing="0" width="100%">
-				<tr height="1px">
-					<td align="center" height="2%"><html:button
-						styleClass="actionButton" styleId="cancelBtnId"
-						property="configureButton"
-						onclick="onSubmit(this.form.selectedColumnNames,'back');">
-						<bean:message key="query.back.button" />
-					</html:button></td>
-					<td align="center" height="2%"><html:button
-						styleClass="actionButton" styleId="restoreDefaultBtnId"
-						property="redefineButton"
-						onclick="onSubmit(this.form.selectedColumnNames,'restore');">
-						<bean:message key="query.restoreDefault.button" />
-					</html:button></td>
-					<td align="center" height="2%"><html:button
-						styleClass="actionButton" styleId="finishBtnId"
-						property="configButton"
-						onclick="onSubmit(this.form.selectedColumnNames,'finish');">
-						<bean:message key="query.finish.button" />
-					</html:button></td>
-					<td width="40%"></td>
-				</tr>
-			</table>
-			</td>
-		</tr>
-	</table>
-	</body>
-</html:form>
+<table cellpadding='0' cellspacing='0' border='0' align='center'
+		style="width: 100%; height: 100%;">
+	<tr height="1%">
+		<td width="33%" align="center" class="bgWizardImage">
+			<img src="images/advQuery/1_inactive.gif" /> <!-- width="118" height="25" /-->
+		</td>
+		<td width="33%" align="center" class="bgWizardImage">
+			<img src="images/advQuery/2_inactive.gif" /> <!-- width="199" height="38" /-->
+		</td>
+		<td width="33%" align="center" class="bgWizardImage">
+			<img src="images/advQuery/3_active.gif" /> <!--  width="139" height="38" /-->
+		</td>
+	</tr>
+	<tr valign="top">
+		<td valign="top" width="100%" colspan="3" >
+			<html:form method="GET" action="<%=callAction%>">
+				<html:hidden property="operation" value="" />
+								
+				<table border="0" width="400" cellspacing="0" cellpadding="0"
+					bgcolor="#FFFFFF" height="90%" bordercolorlight="#000000">
+					<tr>
+						<td width="1px">&nbsp;</td>
+						<td valign="top" width="100"></td>
+					</tr>
+			
+					<tr>
+						<td width="1px">&nbsp;</td>
+						<td valign="top" colspan="8" width="100%">
+						<%if(!appName.equalsIgnoreCase("ClinPortal")){%>
+							<bean:message key="query.defineGridResultsView.message" />
+						<%}%>
+						</td>
+					</tr>
+					<tr>
+						<td width="1px">&nbsp;</td>
+						<td valign="top" width="90%" height="90%">
+						<div id="treeBox"
+							style="background-color: white; overflow: auto; height: 270; width: 260; 
+									border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; 
+									border-bottom: solid 1px;"></div>
+						</td>
+						<td width="1%">&nbsp;</td>
+						<td align="center" valign="center" width="">
+							<html:button styleClass="actionButton" property="shiftRight" styleId="shiftRight"
+								onclick="moveOptionsRight(this.form.columnNames, this.form.selectedColumnNames);">
+								<bean:message key="buttons.addToView" />
+							</html:button> 
+						<br /> <br />
+							<html:button styleClass="actionButton" property="shiftLeft"
+								styleId="shiftLeft"
+								onclick="moveOptionsLeft(this.form.selectedColumnNames, this.form.columnNames);">
+								<bean:message key="buttons.deleteFromView" />
+							</html:button></td>
+						<td width="1%">&nbsp;</td>
+						<td class="" valign="top" width="60" height="85%"><!-- Mandar : 434 : for tooltip -->
+							<html:select property="selectedColumnNames" styleClass=""
+								styleId="selectedColNamesId" size="16" multiple="true">
+								<html:options collection="selectedColumnNameValueBeanList"
+									labelProperty="name" property="value" />
+							</html:select></td>
+						<td width="1%">&nbsp;</td>
+						<td align="center" valign="center">
+							<html:button styleClass="actionButton" property="shiftUp"
+								styleClass="actionButton" styleId="shiftUp"
+								onclick="moveUp(this.form.selectedColumnNames);">
+								<bean:message key="buttons.up" />
+							</html:button> 
+							<br /><br />
+			
+							<html:button styleClass="actionButton" property="shiftDown"
+								styleClass="actionButton" styleId="shiftDown"
+								onclick="moveDown(this.form.selectedColumnNames)">
+								<bean:message key="buttons.down" />
+							</html:button></td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td align="left" height="2%" colspan="6">
+							<html:checkbox property="normalizedQuery" value="true" styleId="normalizedQuery" />
+							<span valign="top" class="black_ar">
+								<bean:message key="query.normalized.view" />
+							</span>						
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td colspan="6" align="left" valign="top">
+						<table border="0" cellpadding="0" cellspacing="0" width="100%">
+							<tr height="1px">
+								<td align="center" height="2%"><html:button
+									styleClass="actionButton" styleId="cancelBtnId"
+									property="configureButton"
+									onclick="onSubmit(this.form.selectedColumnNames,'back');">
+									<bean:message key="query.back.button" />
+								</html:button></td>
+								<td align="center" height="2%"><html:button
+									styleClass="actionButton" styleId="restoreDefaultBtnId"
+									property="redefineButton"
+									onclick="onSubmit(this.form.selectedColumnNames,'restore');">
+									<bean:message key="query.restoreDefault.button" />
+								</html:button></td>
+								<td align="center" height="2%"><html:button
+									styleClass="actionButton" styleId="finishBtnId"
+									property="configButton"
+									onclick="onSubmit(this.form.selectedColumnNames,'finish');">
+									<bean:message key="query.finish.button" />
+								</html:button></td>
+								<td width="40%"></td>
+							</tr>
+						</table>
+						</td>
+					</tr>
+				</table>				
+			</html:form>
+		</td>
+	</tr>
+</table>
 
 <SCRIPT LANGUAGE="JavaScript">
 
@@ -375,16 +376,15 @@
 </script>
 <script>
 	var tree;
-function initTreeView()
-{
-	tree = new dhtmlXTreeObject("treeBox", "100%", "100%", 0);
+	function initTreeView()
+	{
+		tree = new dhtmlXTreeObject("treeBox", "100%", "100%", 0);
 		tree.setImagePath("dhtmlx_suite/imgs/");
 		//tree.setOnClickHandler();
 		tree.enableCheckBoxes(1);
-	    tree.enableThreeStateCheckboxes(true);
+		tree.enableThreeStateCheckboxes(true);
 
-<%List treeData = (List) request.getSession().getAttribute(
-					AQConstants.TREE_DATA);
+		<%List treeData = (List) request.getSession().getAttribute(AQConstants.TREE_DATA);
 			if (treeData != null && treeData.size() != 0) {
 
 				Iterator itr = treeData.iterator();
@@ -401,44 +401,41 @@ function initTreeView()
 						showSelected = "true";
 					}
 					String img = "results.gif";
-					//if (parentId.equals("0"))
-					//{
-					//nodeColapseCode += "tree.closeAllItems('" + nodeId + "');";
-					//}%>
-tree.insertNewChild("<%=parentId%>","<%=nodeId%>","<%=data.getDisplayName()%>",0,"<%=img%>","<%=img%>","<%=img%>","");
-tree.setUserData("<%=nodeId%>","<%=nodeId%>","<%=data%>");
-tree.setItemText("<%=nodeId%>","<%=data.getDisplayName()%>","<%=data.getDisplayName()%>");
-if("<%=showSelected%>" == "true")
-{
-	tree.setCheck("<%=currentSelectedNodeInTree%>",true);
-	tree.openItem("<%=currentSelectedNodeInTree%>");
-}
- <%if (selectedColumnNameValueBeanList != null) {
+		%>
+		tree.insertNewChild("<%=parentId%>","<%=nodeId%>","<%=data.getDisplayName()%>",0,"<%=img%>","<%=img%>","<%=img%>","");
+		tree.setUserData("<%=nodeId%>","<%=nodeId%>","<%=data%>");
+		tree.setItemText("<%=nodeId%>","<%=data.getDisplayName()%>","<%=data.getDisplayName()%>");
+		if("<%=showSelected%>" == "true")
+		{
+			tree.setCheck("<%=currentSelectedNodeInTree%>",true);
+			tree.openItem("<%=currentSelectedNodeInTree%>");
+		}
+					 <%if (selectedColumnNameValueBeanList != null) {
 						for (int i = 0; i < selectedColumnNameValueBeanList
 								.size(); i++) {
 							NameValueBean nameValueBean = (NameValueBean) selectedColumnNameValueBeanList
 									.get(i);
 							String name = nameValueBean.getName();
 							String value = nameValueBean.getValue();
-							if (nodeId.equalsIgnoreCase(value)) {%>
+							if (nodeId.equalsIgnoreCase(value)) {
+					%>
 		tree.setCheck("<%=value%>",true);
 		tree.openItem("<%=value%>");
-<%} //end of if
+					<%		} //end of if
 						}//end of for
-					} //end of if%>
+					} //end of if
+					%>
 
+		<%	}// end of while
+		} // end of if
+		%>
+	}
 
-
-
-<%}// end of while
-			} // end of if%>
-
-}
-function shiftRight()
-{
-	var list=tree.getAllChecked();
-	alert(list);
-}
+	function shiftRight()
+	{
+		var list=tree.getAllChecked();
+		alert(list);
+	}
 </script>
 </body>
 </html>

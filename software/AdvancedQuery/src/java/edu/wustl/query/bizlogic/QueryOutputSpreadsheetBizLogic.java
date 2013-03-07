@@ -372,10 +372,15 @@ public class QueryOutputSpreadsheetBizLogic
 			DAOException
 	{
 		Map spreadSheetDataMap = new HashMap();
-		String tableName = AQConstants.TEMP_OUPUT_TREE_TABLE_NAME
-				+ queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
+		String sql = queryDetailsObj.getSaveGeneratedQuery();
+		int cnt = 0;
+		while (sql.contains("?")) {
+			String value = "'"+queryDetailsObj.getColumnValueBean().get(cnt++).getColumnName()+"'";
+			sql = sql.replaceFirst("\\?", value);//modifying sql for inserting variables in where clause
+		}
+		
 		String parentIdColumnName = QueryModuleUtil.getParentIdColumnName(node);
-		String selectSql = createSQL(parentData, tableName, spreadSheetDataMap, parentIdColumnName,
+		String selectSql = createSQL(parentData, "(" + sql +")temp", spreadSheetDataMap, parentIdColumnName,
 				node, queryResultObjectDataBeanMap, queryDetailsObj, constraints,
 				outputTermsColumns,specimenMap);
 		int startIndex = 0;
@@ -422,15 +427,18 @@ public class QueryOutputSpreadsheetBizLogic
 		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAttrMap =
 			new HashMap<Integer, QueryOutputTreeAttributeMetadata>();
 		int columnIndex = 0;
-
+				
 		List<QueryOutputTreeAttributeMetadata> attributes = node.getAttributes();
+		
+		for(OutputTreeDataNode child: QueryModuleUtil.getInViewChildren(node)) {
+			attributes.addAll(child.getAttributes());
+		}
+		
 		for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
 		{
 			AttributeInterface attribute = attributeMetaData.getAttribute();
 			String sqlColumnName = attributeMetaData.getColumnName();
-
-			String className = attribute.getEntity().getName();
-			className = edu.wustl.query.util.global.Utility.parseClassName(className);
+			
 			if (!selectedColumnMetaData.isDefinedView()
 					&& (attribute.getIsIdentified() != null && attribute.getIsIdentified()))
 			{
@@ -455,11 +463,9 @@ public class QueryOutputSpreadsheetBizLogic
 			}
 			else
 			{
-				selectSql = selectSql + sqlColumnName + ",";
-				String attrLabel = Utility.getDisplayLabel(attribute.getName());
-				columnsList.add(attrLabel + " : " + className);
-				IOutputAttribute attr = new OutputAttribute(constraints.getExpression(node
-						.getExpressionId()), attribute);
+				selectSql = selectSql + sqlColumnName + ",";				
+				columnsList.add(attributeMetaData.getDisplayName());
+				IOutputAttribute attr = new OutputAttribute(constraints.getExpression(node.getExpressionId()), attribute);
 				selectedOutputAttributeList.add(attr);
 				objectDataColumnIds.add(columnIndex);
 				columnIndex++;
@@ -538,6 +544,9 @@ public class QueryOutputSpreadsheetBizLogic
 			if (selectSql.indexOf(AQConstants.SELECT_DISTINCT) == -1 && !selectedColumnMetaData.isDefinedView())
 			{
 				selectSql = AQConstants.SELECT_DISTINCT + selectSql;
+			}
+			if(selectSql.indexOf("select") != 0) {
+				selectSql = "select " + selectSql;
 			}
 		}
 		return selectSql;
@@ -960,12 +969,11 @@ public class QueryOutputSpreadsheetBizLogic
 		querySessionData.setSql(selectSql);
 		querySessionData.setQueryResultObjectDataMap(queryResultObjectDataBeanMap);
 		querySessionData.setRecordsPerPage(recordsPerPage);
-		boolean isContPresent = false;
+		boolean isContPresent = isContainmentPresent(queryDetailsObj.getQuery());;
 		if(selectedColMetadata.isDefinedView())
 		{
-			StringBuffer modifiedSql = modifySqlForDefineView(selectSql,queryDetailsObj);
-			querySessionData.setSql(modifiedSql.toString());
-			isContPresent = isContainmentPresent(queryDetailsObj.getQuery());
+			StringBuffer modifiedSql = modifySqlForDefineView(selectSql, queryDetailsObj);
+			querySessionData.setSql(modifiedSql.toString());			
 		}
 		querySessionData.setSecureExecute(queryDetailsObj.getSessionData().isSecurityRequired());
 		querySessionData.setHasConditionOnIdentifiedField(hasConditionOnIdentifiedField);
@@ -978,7 +986,7 @@ public class QueryOutputSpreadsheetBizLogic
 		querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
 		// if denormalization is on then execute below block else do not execute this block.
 
-		if(selectedColMetadata.isDefinedView() && queryDetailsObj.getQuery().getConstraints().size() != 1 && isContPresent && !queryDetailsObj.getQuery().getIsNormalizedResultQuery())
+		if(queryDetailsObj.getQuery().getConstraints().size() != 1 && isContPresent && !queryDetailsObj.getQuery().getIsNormalizedResultQuery())
 		{
 			SpreadsheetDenormalizationBizLogic  denormalizationBizLogic =
 				new SpreadsheetDenormalizationBizLogic();
@@ -1027,8 +1035,7 @@ public class QueryOutputSpreadsheetBizLogic
 		return querySessionData;
 	}
 
-	private StringBuffer modifySqlForDefineView(String selectSql,
-			QueryDetails queryDetailsObj)
+	private StringBuffer modifySqlForDefineView(String selectSql, QueryDetails queryDetailsObj)
 	{
 		StringBuffer sql = new StringBuffer(selectSql);
 		List<String> selectSqlColumnList = getListOfSelectedColumns(selectSql);
@@ -1096,7 +1103,7 @@ public class QueryOutputSpreadsheetBizLogic
 		return selectedColMetadata;
 	}
 
-	private boolean isContainmentPresent(IQuery query)
+	public boolean isContainmentPresent(IQuery query)
 	{
 		boolean isContPresent = false;
 		IConstraints constraints = query.getConstraints();

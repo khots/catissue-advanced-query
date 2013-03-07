@@ -33,68 +33,7 @@ import edu.wustl.security.exception.SMException;
 final public class QueryModuleSqlUtil {
 	private QueryModuleSqlUtil() {
 	}
-
-	/**
-	 * Creates a view in database for advance query.
-	 *
-	 * @param tableName
-	 *            name of the table to be deleted before creating new one.
-	 * @param createTableSql
-	 *            SQL to create table
-	 * @param sessionData
-	 *            session data.
-	 * @throws DAOException
-	 *             DAOException
-	 */
-	public static void executeCreateTable(final String tableName,
-			final String createTableSql, QueryDetails queryDetailsObj)
-			throws DAOException {
-		String appName = CommonServiceLocator.getInstance().getAppName();
-		IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(
-				appName);
-		JDBCDAO jdbcDao = daoFactory.getJDBCDAO();
-		try {
-			String tablespace = XMLPropertyHandler
-					.getValue(AQConstants.TABLESPACE);
-			if (tablespace.length() != 0) {
-				tablespace = "TABLESPACE " + tablespace;
-			}
-			jdbcDao.openSession(queryDetailsObj.getSessionData());
-			final String tempInnerViewName = AQConstants.TEMP_INNER_VIEW +queryDetailsObj.getSessionData().getUserId()+AQConstants.UNDERSCORE;
-			String createViewQuery = createTableSql;
-				while (createViewQuery.contains("(select")) {//check for inner select query
-					int startIndex = createViewQuery.indexOf("(select");
-					int lastIndex = createViewQuery.indexOf(")");
-
-					while (lastIndex < startIndex) {//indices for inner select query
-						lastIndex = createViewQuery.indexOf(")", lastIndex + 1);
-					}
-					//substring for creating inner view from inner select query
-
-					String innerViewQuery = createViewQuery.substring(startIndex, lastIndex + 1);
-
-					String innerViewName = (tempInnerViewName + (new Random().nextInt(1000)));//inner view name
-					String innerView = "CREATE OR REPLACE VIEW "+ innerViewName + " " + tablespace + " " + " AS "+ innerViewQuery;
-					//inner view create query
-
-					jdbcDao.executeUpdate(innerView);//creating inner view
-
-					/**
-					 * Replacing the inner select query substring with the created inner view
-					 */
-					createViewQuery = createViewQuery.replace(innerViewQuery,innerViewName);
-				}
-			//creating a final view with inner views
-			String advViewQuery = "CREATE OR REPLACE VIEW " + tableName + " "+ tablespace + " " + " AS " + createViewQuery;
-			executeInsertQuery(queryDetailsObj, jdbcDao, advViewQuery);
-		} catch (DAOException e) {
-			Logger.out.error(e);
-			throw e;
-		} finally {
-			jdbcDao.closeSession();
-		}
-	}
-
+		
 	/**
 	 * @param queryDetailsObj
 	 *            queryDetailsObj
@@ -218,7 +157,7 @@ final public class QueryModuleSqlUtil {
 	 * @throws DAOException
 	 * @throws SQLException
 	 * @throws SQLException
-	 */
+	 */ 
 	public static void updateAuditQueryDetails(String columnName,
 			String newColumnValue, long auditEventId) throws DAOException,
 			SQLException {
@@ -250,6 +189,7 @@ final public class QueryModuleSqlUtil {
 		}
 	}
 
+	
 	/**
 	 * @param columnName
 	 *            columnName

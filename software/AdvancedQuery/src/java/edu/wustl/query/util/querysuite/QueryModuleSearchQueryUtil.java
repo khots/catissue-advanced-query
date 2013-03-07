@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.query.factory.AbstractQueryGeneratorFactory;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.QueryTreeNodeData;
@@ -35,10 +34,8 @@ import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.bizlogic.CommonQueryBizLogic;
 import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
-import edu.wustl.query.bizlogic.QueryOutputTreeBizLogic;
 import edu.wustl.query.generator.ISqlGenerator;
 import edu.wustl.query.util.global.AQConstants;
-import edu.wustl.security.exception.SMException;
 
 /**
  * @author santhoshkumar_c
@@ -116,7 +113,8 @@ public class QueryModuleSearchQueryUtil
 			originalQuery = queryDetailsObj.getQuery();
 			queryDetailsObj.setQuery(newQuery);
 		}
-		QueryOutputTreeBizLogic outputTreeBizLogic = auditQuery();
+		
+		auditQuery();
 		boolean hasCondOnIdentifiedField;
 		if(newQuery == null)
 		{
@@ -129,7 +127,7 @@ public class QueryModuleSearchQueryUtil
 			hasCondOnIdentifiedField = edu.wustl.query.util.global.Utility
 					.isConditionOnIdentifiedField(newQuery);
 		}
-		setDataInSession(outputTreeBizLogic, hasCondOnIdentifiedField);
+		setDataInSession(hasCondOnIdentifiedField);
 		if(originalQuery != null)
 		{
 			query = originalQuery;
@@ -144,51 +142,11 @@ public class QueryModuleSearchQueryUtil
 	 * @param hasCondOnIdentifiedField
 	 * @throws QueryModuleException
 	 */
-	private void setDataInSession(QueryOutputTreeBizLogic outputTreeBizLogic,
-			boolean hasCondOnIdentifiedField) throws QueryModuleException
+	private void setDataInSession(boolean hasCondOnIdentifiedField) throws QueryModuleException
 	{
 		int initialValue = 0;
 		QueryModuleException queryModExp;
 		List<OutputTreeDataNode> inViewRootList = getRootOutputNodeList(queryDetailsObj.getRootOutputTreeNodeList());
-		try
-		{
-			 for(OutputTreeDataNode rootOutputnode:inViewRootList)
-			 {
-			   List<QueryTreeNodeData> treeData = outputTreeBizLogic.createDefaultOutputTreeData
-				(initialValue, rootOutputnode,hasCondOnIdentifiedField, queryDetailsObj);
-				initialValue = setTreeData(initialValue, treeData);
-			 }
-
-		}
-		catch (DAOException e)
-		{
-			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
-			throw queryModExp;
-		}
-		catch (ClassNotFoundException e)
-		{
-			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.CLASS_NOT_FOUND);
-			throw queryModExp;
-		}
-		catch (BizLogicException e)
-		{
-			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
-			throw queryModExp;
-		}
-		catch (SMException e)
-		{
-			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
-			throw queryModExp;
-		}
-		catch (SQLException e)
-		{
-			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
-			throw queryModExp;
-		}
-		session.setAttribute(AQConstants.TREE_ROOTS, inViewRootList);
-		Long noOfTrees = Long.valueOf(inViewRootList.size());
-		session.setAttribute(AQConstants.NO_OF_TREES, noOfTrees);
-		//OutputTreeDataNode node = queryDetailsObj.getRootOutputTreeNodeList().get(0).getChildren().get(0);
 		processRecords(queryDetailsObj, inViewRootList.get(0), hasCondOnIdentifiedField);
 	}
 
@@ -239,18 +197,18 @@ public class QueryModuleSearchQueryUtil
 	 * @return outputTreeBizLogic
 	 * @throws QueryModuleException
 	 */
-	private QueryOutputTreeBizLogic auditQuery() throws QueryModuleException
+	private void auditQuery() throws QueryModuleException
 	{
 	    CommonQueryBizLogic queryBizLogic = new CommonQueryBizLogic();
 		QueryModuleException queryModExp;
-		QueryOutputTreeBizLogic outputTreeBizLogic = new QueryOutputTreeBizLogic();
+		
 		try
 		{
 			String selectSql = (String) session.getAttribute(AQConstants.SAVE_GENERATED_SQL);
 			long auditEventId = getAuditEventId(queryBizLogic, selectSql);
 			boolean alreadySavedQuery = Boolean.valueOf((String)session.getAttribute("savedQuery"));
 			queryDetailsObj.setAuditEventId(auditEventId);
-			getNewQuery(outputTreeBizLogic, selectSql, alreadySavedQuery);
+			getNewQuery(selectSql, alreadySavedQuery);
 		}
 		catch (DAOException e)
 		{
@@ -277,7 +235,6 @@ public class QueryModuleSearchQueryUtil
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
 			throw queryModExp;
 		}
-		return outputTreeBizLogic;
 	}
 
 	/**
@@ -312,8 +269,7 @@ public class QueryModuleSearchQueryUtil
 	 * @throws DAOException DAOException
 	 * @throws SQLException SQLException
 	 */
-	private void getNewQuery(QueryOutputTreeBizLogic outputTreeBizLogic,
-			String selectQuery, boolean alreadySavedQuery)
+	private void getNewQuery(String selectQuery, boolean alreadySavedQuery)
 			throws MultipleRootsException, SqlException, DAOException,
 			SQLException
 	{
@@ -333,7 +289,7 @@ public class QueryModuleSearchQueryUtil
 			}
 			selectSql = newSql;
 		}
-		outputTreeBizLogic.createOutputTreeTable(selectSql, queryDetailsObj);
+	
 	}
 
 	/**
@@ -345,6 +301,7 @@ public class QueryModuleSearchQueryUtil
 		validateQuery(sqlGenerator);
 		List<OutputTreeDataNode> rootOutputTreeNodeList = sqlGenerator.getRootOutputTreeNodeList();
 		session.setAttribute(AQConstants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
+		queryDetailsObj.setSaveGeneratedQuery((String)session.getAttribute(AQConstants.SAVE_GENERATED_SQL));
 		queryDetailsObj.setRootOutputTreeNodeList(rootOutputTreeNodeList);
 		queryDetailsObj.setColumnValueBean(sqlGenerator.getColumnValueBean());
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
@@ -396,11 +353,9 @@ public class QueryModuleSearchQueryUtil
 		try
 		{
 			session.setAttribute(AQConstants.SAVE_GENERATED_SQL, sqlGenerator.generateSQL(query));
-			Map<AttributeInterface, String> attributeColumnNameMap = sqlGenerator
-			.getAttributeColumnNameMap();
+			Map<AttributeInterface, String> attributeColumnNameMap = sqlGenerator.getAttributeColumnNameMap();
 			session.setAttribute(AQConstants.ATTRIBUTE_COLUMN_NAME_MAP, attributeColumnNameMap);
-			session.setAttribute(AQConstants.OUTPUT_TERMS_COLUMNS, sqlGenerator
-					.getOutputTermsColumns());
+			session.setAttribute(AQConstants.OUTPUT_TERMS_COLUMNS, sqlGenerator.getOutputTermsColumns());
 			session.setAttribute(AQConstants.COLUMN_VALUE_BEAN, sqlGenerator.getColumnValueBean());
 		}
 		catch (MultipleRootsException e)
@@ -435,15 +390,14 @@ public class QueryModuleSearchQueryUtil
 			boolean hasCondOnIdentifiedField) throws QueryModuleException
 	{
 		SelectedColumnsMetadata selectedColumnsMetadata = getAppropriateSelectedColumnMetadata(
-				query, (SelectedColumnsMetadata) session
-						.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA));
+				query, (SelectedColumnsMetadata) session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA));
 		selectedColumnsMetadata.setCurrentSelectedObject(node);
 		QueryModuleException queryModExp;
 		int recordsPerPage = setRecordsPerPage();
 		checkForSavedQuery(QueryDetailsObj, selectedColumnsMetadata);
 
 		QueryResultObjectDataBean queryResulObjectDataBean = QueryCSMUtil
-				.getQueryResulObjectDataBean(node, QueryDetailsObj);
+																.getQueryResulObjectDataBean(node, QueryDetailsObj);
 		Map<Long, QueryResultObjectDataBean> queryResultObjDataBeanMap = new HashMap<Long, QueryResultObjectDataBean>();
 		queryResultObjDataBeanMap.put(node.getId(), queryResulObjectDataBean);
 		QueryOutputSpreadsheetBizLogic outputSpreadsheetBizLogic = new QueryOutputSpreadsheetBizLogic();
@@ -518,8 +472,7 @@ public class QueryModuleSearchQueryUtil
 			populateExpressionIds(expressionIdsInQuery, constraints);
 			isQueryChanged = isQueryChanged(expressionIdsInQuery, selAttributeMetaDataList,selectedColumnsMetadata);
 		}
-		selectedColumnsMetadata = setDefinedViewInMetadata(
-				selectedColumnsMetadata, isQueryChanged);
+		selectedColumnsMetadata = setDefinedViewInMetadata(selectedColumnsMetadata, isQueryChanged);
 		return selectedColumnsMetadata;
 	}
 
@@ -596,8 +549,7 @@ public class QueryModuleSearchQueryUtil
 		String recordsPerPgSessionValue = (String) session.getAttribute(AQConstants.RESULTS_PER_PAGE);
 		if (recordsPerPgSessionValue == null)
 		{
-			recordsPerPgSessionValue = XMLPropertyHandler
-					.getValue(AQConstants.RECORDS_PER_PAGE_PROPERTY_NAME);
+			recordsPerPgSessionValue = XMLPropertyHandler.getValue(AQConstants.RECORDS_PER_PAGE_PROPERTY_NAME);
 			session.setAttribute(AQConstants.RESULTS_PER_PAGE, recordsPerPgSessionValue);
 		}
 		recordsPerPage = Integer.valueOf(recordsPerPgSessionValue);
@@ -631,10 +583,8 @@ public class QueryModuleSearchQueryUtil
 				.get(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP));
 		session.setAttribute(AQConstants.DEFINE_VIEW_RESULT_MAP,
 				spreadSheetDatamap.get(AQConstants.DEFINE_VIEW_RESULT_MAP));
-		if(selectedColumnsMetadata.isDefinedView())
-		{
-			session.setAttribute(AQConstants.DENORMALIZED_LIST, spreadSheetDatamap.get(AQConstants.SPREADSHEET_DATA_LIST));
-		}
+		session.setAttribute(AQConstants.DENORMALIZED_LIST, spreadSheetDatamap.get(AQConstants.SPREADSHEET_DATA_LIST));
+		
 	}
 
 	/**
