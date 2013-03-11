@@ -5,6 +5,13 @@ body {
 	background: white;
 }
 
+#poupHeader{
+	font-size: .82em; 
+	font-family: verdana;
+ 	padding-left: 35px; 
+	font-weight:bold;
+}
+
 #wrapper {
 	height:100%;
 }

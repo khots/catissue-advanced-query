@@ -35,10 +35,11 @@ import edu.wustl.security.exception.SMException;
 public class CommonQueryBizLogic
 {
 	public final String GET_QUERY_DETAILS = "SELECT " 
-			+ "qti.identifier, qpq.identifier, qpq.query_name, qpq.description "
+			+ "qti.identifier, qpq.identifier, qpq.query_name, qpq.description, qt.user_id "
 			+ "FROM " 
-			+ "query_tag_items qti, query_parameterized_query qpq "
+			+ "query_tags qt, query_tag_items qti, query_parameterized_query qpq "
 			+ "WHERE " 
+			+ "qt.identifier = qti.tag_id AND "
 			+ "qpq.identifier = qti.obj_id AND "
 			+ "qti.tag_id = ? "
 			+ "ORDER BY qti.identifier DESC";				 

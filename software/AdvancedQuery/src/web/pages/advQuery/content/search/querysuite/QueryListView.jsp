@@ -144,11 +144,11 @@ function showGrid() {
 function setHeader(isQueryChecked)
 {
 	if(isQueryChecked == true){		 
-		document.getElementById("poupHeader").textContent ="Add Queries to folder";
-		document.getElementById("poupHeader").innerText ="Add Queries to folder";
+		document.getElementById("poupHeader").textContent ="Assign the query(s) to folder";
+		document.getElementById("poupHeader").innerText ="Assign the query(s) to folder";
 	}else{
-		document.getElementById("poupHeader").textContent ="Share folder with users";
-		document.getElementById("poupHeader").innerText ="Share folder with users";
+		document.getElementById("poupHeader").textContent ="Share the folder(s) with user";
+		document.getElementById("poupHeader").innerText ="Share the folder(s) with user";
 	} 
 }
 </script>
@@ -194,7 +194,7 @@ function checkForValidation()
 		}
 		else
 		{
-			ajaxShareTagFunctionCall("ShareTagAction.do","Select at least one existing folder or create a new folder.") 
+			ajaxShareTagFunctionCall("ShareTagAction.do","Select at least one existing folder.") 
 		}
 	}
 }
@@ -315,9 +315,9 @@ Ext.onReady(function(){
 					<table class=" manage tags" width="100%" cellspacing="0"
 						cellpadding="0" border="0">
 							<tr valign="center" height="35" bgcolor="#d5e8ff">
-								<td width="27%" align="left">
+								<td id="poupHeader" width="28%" align="left">
 									<p>
-										&nbsp&nbsp&nbsp&nbsp<div id="poupHeader" style="font-size: 1em; margin-left:35px; font-weight:bold; font-family: verdana;"><b> <%=popupHeader%></b></div>
+										&nbsp&nbsp&nbsp&nbsp<b> <%=popupHeader%></b>
 									</p>
 								</td>
 							</tr>

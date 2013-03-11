@@ -294,6 +294,7 @@ public class QueryTagBizLogic implements ITagBizlogic
  				JSONObject obj = new JSONObject();
 				obj.put(AQConstants.IDENTIFIER, Long.parseLong(row.get(0)));
 				obj.put(AQConstants.NAME, row.get(2));
+				obj.put("ownerId",row.get(4));
 				childCount++;
 				treeData.put(obj);
 			}

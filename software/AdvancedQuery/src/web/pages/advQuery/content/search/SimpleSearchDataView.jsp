@@ -219,7 +219,7 @@
 			<tr valign="center" height="35" bgcolor="#d5e8ff">
 				<td width="28%" align="left"
 					style="font-size: .82em; font-family: verdana;">
-					<p>&nbsp&nbsp&nbsp&nbsp<b> Specimen Lists</b></p>
+					<p>&nbsp&nbsp&nbsp&nbsp<b>Assign the specimen(s) to list</b></p>
 				</td>
 			</tr>
 		</tbody>
