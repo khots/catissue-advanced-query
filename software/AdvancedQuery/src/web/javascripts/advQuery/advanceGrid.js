@@ -1,48 +1,3 @@
- /*
-function checkAllAcrossAllPages(element)
-{
-	var state = element.checked;
-	isCheckAllPagesChecked = state;
-	mygrid.setCheckedRows(0, state);
-	
-	var chkBox = document.getElementById('checkAll2').checked = false;
-	var url = "SpreadsheetView.do?isAjax=true&amp;isPaging=true&amp;checkAllPages=" + state;
-	
-	var request = newXMLHTTPReq();
-	request.onreadystatechange = getReadyStateHandler(request, setEditableChkbox, true);
-	request.open("POST", url, true);
-	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-	request.send("");
-}
-
-function checkAllOnThisPage(element)
-{
-	mygrid.setEditable(true);
-	var state = element.checked;
-	mygrid.setCheckedRows(0, state);
-	
-	document.getElementById('checkAll').checked = false;
-	var param = "checkAllPages=false&isPaging=true";
-	var url = "SpreadsheetView.do?isAjax=true&amp;isPaging=true&amp;checkAllPages=false";
-	var request = newXMLHTTPReq();
-	
-	request.onreadystatechange = getReadyStateHandler(request, checkAllOnThisPageResponse,  true);
-	request.open("POST",url,true);
-	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-	request.send(param);
-}
-
-function checkAllOnThisPageResponse() { }
-
-
-function setEditableChkbox(checkAllPages) {
-	if(checkAllPages == 'true')	{
-		mygrid.setEditable(false);
-	} else {
-		mygrid.setEditable(true);
-	}
-}
-*/
 
 //function to update hidden fields as per check box selections.
 function updateHiddenFields() {		
@@ -107,18 +62,11 @@ function initQueryGrid() {
 	mygrid.parse(jsonData, "json");
 	rowCount = jsonData.rows.length;
 	createHiddenElement(jsonData);
-		
-	/*	
-	var hideCols = getIDColumns();
-	for(i = 0; i < hideCols.length; i++) {
-		mygrid.setHeaderCol(hideCols[i], "");
-		mygrid.setColumnHidden(hideCols[i], true);
-	}*/
-		
 	window.setTimeout(addRecordPerPageOption, 500)
 	
-	document.getElementsByClassName('hdrcell')[1].style.paddingLeft = "0px";
-	gridBOxTag.style.width = (gridBOxTag.offsetWidth - 5 ) + "px"		
+	checkBoxCell = getElementsByClassName('hdrcell');
+	checkBoxCell.style.paddingLeft = "0px";
+	gridBOxTag.style.width = (gridBOxTag.offsetWidth - 6 ) + "px"		
 }
 
 mygrid.attachEvent("onFilterStart", function(ind){
@@ -136,7 +84,9 @@ mygrid.attachEvent("onBeforePageChanged", function(ind, count){
 	
 function addRecordPerPageOption() {		
 	toolbar = mygrid.aToolBar;
-	var  opt = [10, 50, 100, 500, 1000]
+	toolbar.setWidth('perpagenum', 130);
+	var  opt = [10, 50, 100, 500, 1000];
+	
 	for(i = 5; i < 35; i += 5) {
 		toolbar.removeListOption('perpagenum', 'perpagenum_'+i);
 	}
@@ -188,7 +138,7 @@ function getJsonForFilter() {
 	for(i = 1; i < mygrid.getColumnsNum(); i++) {
 		var value = mygrid.getFilterElement(i).value;
 		if(value != "") {
-			columns[j] = mygrid.getColumnLabel(i,0);
+			columns[j] = mygrid.getColumnLabel(i, 0);
 			values[j++] = value;				
 		}
 	}
@@ -204,4 +154,13 @@ function getColumnLabel(columnList) {
 			mygrid.insertColumn(i, columnList[i], 'ro', "100");
 		}
 	}	
+}
+
+function getElementsByClassName(className) {
+	if (document.getElementsByClassName) { 		
+	  return document.getElementsByClassName('hdrcell')[1]; 
+	} else { 		
+		var els = (gridBOxTag.getElementsByTagName('td'))[1].childNodes;			
+		return els[0];			
+	} 
 }

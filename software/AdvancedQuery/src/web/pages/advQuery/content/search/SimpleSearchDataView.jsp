@@ -12,32 +12,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <head>
-
-<style>
-	.active-column-0 {
-		width: 30px
-	}
-	
-	tr#hiddenCombo {
-		display: none;
-	}
-	
-	.nav_button {
-		border: 1px solid #A4BED4;
-		border-radius: 6px;
-		padding: 5px 0;
-		width: 130px;
-		font-size: 11px;
-		background-image: -ms-linear-gradient(top, #F2F2F2 20%, #CCCCCC 90%);
-		background-image: -moz-linear-gradient(top, #F2F2F2 20%, #CCCCCC 90%);
-		background-image: -o-linear-gradient(top, #F2F2F2 20%, #CCCCCC 90%);
-		background-image: url('images/list2_add.gif'), -webkit-gradient(linear, left top, left bottom, color-stop(0.2, #F2F2F2), color-stop(0.9, #CCCCCC));
-		background-image: -webkit-linear-gradient(top, #F2F2F2 20%, #CCCCCC 90%);
-		background-image: linear-gradient(to bottom, #F2F2F2 20%, #CCCCCC 90%);
-		//background-repeat: no-repeat;
-		//background-position: 10, 10;
-	}
-</style>
+<link rel="STYLESHEET" type="text/css" href="css/advQuery/simpleSearchDataView.css">
 
 <script src="jss/advQuery/queryModule.js"></script>
 <script src="jss/advQuery/script.js"></script>
@@ -50,10 +25,8 @@
 	int totalResult = ((Integer)session.getAttribute(AQConstants.TOTAL_RESULTS)).intValue();
 	List dataList = (List) request.getAttribute(AQConstants.PAGINATION_DATA_LIST);
 	String pageOf = (String) request.getAttribute(AQConstants.PAGEOF);
-	String title = pageOf + ".searchResultTitle";
-	boolean isSpecimenData = false;
-	int IDCount = 0;
-	
+	String title = pageOf + ".searchResultTitle";	
+		
 	List columnList = new ArrayList((List)session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST));
 	columnList.add(0, " ");
 	
@@ -82,8 +55,7 @@
 <script type="text/javascript">
 	var isQueryModule = "<%=pageOf.equals(AQConstants.PAGEOF_QUERY_MODULE)%>";
 	var checkAllPages = <%=(checkAllPages != null && checkAllPages.equals("true"))%>
-	var QueryResultsConfigureTarget = "<%=AQConstants.GRID_DATA_VIEW_FRAME%>";
-	
+		
 </script>
 <script type="text/javascript" src="jss/advQuery/simpleSearchDataView.js"></script>
 
@@ -101,26 +73,15 @@
 		configAction = "onAdvanceConfigure()";
 		redefineQueryAction = "onRedefineAdvanceQuery()";
 	}
-	boolean mac = false;
-	Object os = request.getHeader("user-agent");
 	
-	if (os != null && os.toString().toLowerCase().indexOf("mac") != -1) {
-		mac = true;
-	}
-	String height = "100%";
-	if (mac) {
-		/* mac gives problem if the values aer specified in percentage*/
-		height = "500";
-	}
 %>
 	
 	<script language="JavaScript" type="text/javascript" src="jss/advQuery/javaScript.js"></script>
 </head>
-<body onload="setCheckBoxState();">
+<body>
 
-<table cellpadding='0' cellspacing='0' border='0' align='center'
-		style="width: 100%; height: 100%;">
-	<tr height="1%">
+<table cellpadding='0' cellspacing='0' border='0' align='center' width="100%">
+	<tr>
 		<td width="33%" align="center" class="bgWizardImage">
 			<img src="images/advQuery/1_inactive.gif" /> <!-- width="118" height="25" /-->
 		</td>
@@ -132,7 +93,7 @@
 		</td>
 	</tr>	
 </table>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" height="100%">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" >
 	<logic:equal name="pageOf" value="<%=AQConstants.PAGEOF_SIMPLE_QUERY_INTERFACE%>">
 		<tr height="95%"><td>
 			<table border="0" cellpadding="0" cellspacing="0">
@@ -147,12 +108,12 @@
 		</tr>
 	</logic:equal>
 	<tr>
-		<td >
+		<td>
 		<html:form action="QueryWizard.do" style="margin:0;padding:0;">
 			<html:hidden property="checkAllPages" value="" />
 				
-			<table width="100%" border="0" cellpadding="0" cellspacing="0" height="100%">
-				<tr height="1%">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tr >
 					<td id="errorStatus"><%@ include file="/pages/advQuery/content/common/ActionErrors.jsp"%></td>
 				</tr>
 				<%
@@ -184,15 +145,15 @@
 						}
 				%>
 
-				<tr width="100%">
-					<td width="100">									
+				<tr>
+					<td>									
 						<%@ include file="/pages/advQuery/content/search/AdvanceGrid.jsp"%>
 					</td>
 				</tr>
 
 				<tr width="100%">
-					<td>
-					<table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
+					<td style="padding: 5px 0 0 3px;">
+					<table cellpadding="0" cellspacing="0" border="0" width="100%">
 						<tr>			
 							<%
 								if(!idColumnsForSpecimenList.equals("")) {

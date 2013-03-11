@@ -31,27 +31,17 @@
 <script type="text/javascript" src="jss/dhtmlDropDown.js"></script>
 <script type="text/javascript" src="jss/javaScript.js"></script>
 <script type="text/javascript" src="jss/caTissueSuite.js"></script>
+<script type="text/javascript" src="jss/advQuery/json2.js"></script>
 
 <style>
-body:nth-of-type(1) div.gridbox_dhx_skyblue table.hdr tr {
-	background: -ms-linear-gradient(top, #F7F7F7 0%, #D6D6D6 100%);
-	background: -moz-linear-gradient(top, #F7F7F7 0%, #D6D6D6 100%);
-	background: -o-linear-gradient(top, #F7F7F7 0%, #D6D6D6 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F7F7F7), color-stop(1, #D6D6D6));
-	background: -webkit-linear-gradient(top, #F7F7F7 0%, #D6D6D6 100%);
-	background: linear-gradient(to bottom, #F7F7F7 0%, #D6D6D6 100%);
-	border-radius: 0.3em 0.3em 0.3em 0.3em;
-}
-.dhx_toolbar_base_dhx_skyblue {
-	background: -ms-linear-gradient(top, #F7F7F7 0%, #D6D6D6 100%);
-	background: -moz-linear-gradient(top, #F7F7F7 0%, #D6D6D6 100%);
-	background: -o-linear-gradient(top, #F7F7F7 0%, #D6D6D6 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F7F7F7), color-stop(1, #D6D6D6));
-	background: -webkit-linear-gradient(top, #F7F7F7 0%, #D6D6D6 100%);
-	background: linear-gradient(to bottom, #F7F7F7 0%, #D6D6D6 100%);
-	border-radius: 0.3em 0.3em 0.3em 0.3em;
-	
-}
+	body:nth-of-type(1) div.gridbox_dhx_skyblue table.hdr tr {
+		border-radius: 0.3em 0.3em 0.3em 0.3em;
+	}
+	.dhx_toolbar_base_dhx_skyblue {	
+		background-image: url("dhtmlx_suite/imgs/dhxtoolbar_dhx_skyblue/sky_blue_grid1.gif");
+		background-repeat: repeat-x;
+		border-radius: 0.3em 0.3em 0.3em 0.3em;	
+	}
 </style>
 
 <script type="text/javascript">
@@ -112,11 +102,10 @@ body:nth-of-type(1) div.gridbox_dhx_skyblue table.hdr tr {
 	
 </script>
 
-<table width="100%" valign="top" border="0" height="100%" >
-	<tr valign="top">
-		<td valign="top">
-			<div id='gridbox'  border='0' style='height:100%; background-color:#d9d7d7;' valign="top">
-			</div>
+<table width="100%" border="0">
+	<tr>
+		<td>
+			<div id='gridbox' border='0' style='background-color:#d9d7d7;'></div>
 			<div id="pagingArea" style="border: 1px solid #A4BED4;"></div>
 			<div id="hiddenBox"></div>
 		</td>
@@ -128,10 +117,8 @@ body:nth-of-type(1) div.gridbox_dhx_skyblue table.hdr tr {
 	var recordPerPage = <%=numResultsPerPage%>	
 	var gridBOxTag = document.getElementById('gridbox');
 	gridBOxTag.style.height = (document.body.clientHeight * 65) / 100 + 'px';
-		
 </script>
 <script type="text/javascript" src="jss/advQuery/advanceGrid.js"></script>
 <script>
-	initQueryGrid();
+	 window.onload = initQueryGrid;	
 </script>
-

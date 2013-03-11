@@ -38,26 +38,6 @@ function displayStatus(response) {
 	document.getElementById('errorStatus').innerHTML = response;
 }
 
-function setCheckBoxState()
-{
-	if(document.getElementById('checkAll')) {
-		var chkBox = document.getElementById('checkAll');
-		var isCheckAllAcrossAllChecked = false;
-		
-		if(checkAllPages == "true") {
-			chkBox.checked = true;
-			rowCount = mygrid.getRowsNum();
-			for(i = 1; i <= rowCount; i++)
-			{
-				var cl = mygrid.cells(i, 0);
-				if(cl.isCheckbox())
-					cl.setChecked(true);
-			}
-		}	
-	}
-}
-
-
 function getData()
 {	//ajax call to get update data from server
 	var param = "updateSessionData=updateSessionData";
@@ -96,7 +76,7 @@ function onExport() {
 	var action = "SpreadsheetExport.do?pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked ;
 	document.forms[0].operation.value="export";
 	document.forms[0].action = action;
-	document.forms[0].target = "_blank";
+	document.forms[0].target = "_self";
 	document.forms[0].submit();		
 	window.setTimeout(removeLoading, 500)	
 }
@@ -236,9 +216,9 @@ function assignToSpecimenList()
 	
 }
 
-function giveCall(url,msg,msg1,id)
+function giveCall(url, msg, msg1, id)
 {		
-	document.getElementById('objCheckbox').checked=true;
-	document.getElementById('objCheckbox').value=id;
-	ajaxAssignTagFunctionCall(url,msg,msg1);
+	document.getElementById('objCheckbox').checked = true;
+	document.getElementById('objCheckbox').value = id;
+	ajaxAssignTagFunctionCall(url, msg, msg1);
 }
