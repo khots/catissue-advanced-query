@@ -24,6 +24,7 @@ import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.dao.util.DAOUtility;
 import edu.wustl.query.beans.DashBoardBean;
+import edu.wustl.query.bizlogic.DefaultQueryBizLogic;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.UserCache;
 import edu.wustl.query.util.global.Utility;
@@ -57,8 +58,8 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	 * @param userId user id
 	 * @return map of query id and its related data
 	 * @throws BizLogicException BizLogicException
-	 * @throws ClassNotFoundException 
-	 * @throws DAOException 
+	 * @throws ClassNotFoundException
+	 * @throws DAOException
 	 */
 	public Map<Long, DashBoardBean> getDashBoardDetails(
 			Collection<IParameterizedQuery> queryCollection, String userId)
@@ -66,15 +67,17 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	{
 		Map<Long, DashBoardBean> dashBoardDataMap = new HashMap<Long, DashBoardBean>();
 		Map<Long, String> queryUserIdMap = getAllQueryIds(queryCollection);
+		String sql = dashBoardDetailsQuery();
+		JDBCDAO dao = DAOUtil.getJDBCDAO(null);
 		for (IParameterizedQuery parameterizedQuery : queryCollection)
 		{
 			LinkedList<ColumnValueBean> columnValueBean = getColumnValueBean(userId,
 					parameterizedQuery);
-			String sql = dashBoardDetailsQuery();
+
 			try
 			{
 				getDataList(dashBoardDataMap, parameterizedQuery, columnValueBean, sql,
-						queryUserIdMap);
+						queryUserIdMap,dao);
 			}
 			catch (DAOException e)
 			{
@@ -92,6 +95,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 						+ " for query dashboard");
 			}
 		}
+		DAOUtil.closeJDBCDAO(dao);
 		return dashBoardDataMap;
 	}
 
@@ -154,11 +158,11 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	 */
 	private void getDataList(Map<Long, DashBoardBean> dashBoardDataMap,
 			IParameterizedQuery parameterizedQuery, LinkedList<ColumnValueBean> columnValueBean,
-			String sql, Map<Long, String> queryUserIdMap) throws DAOException,
+			String sql, Map<Long, String> queryUserIdMap,JDBCDAO dao) throws DAOException,
 			ClassNotFoundException, SMException, BizLogicException
 	{
 		List<List<String>> dataList;
-		dataList = Utility.executeSQL(sql, columnValueBean);
+		dataList = dao.executeQuery(sql, null, columnValueBean);
 		if (dataList.isEmpty())
 		{
 			populateBeanWithNA(parameterizedQuery, dashBoardDataMap, queryUserIdMap);
@@ -248,7 +252,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 			List<List<String>> rootDatalist = Utility.executeSQL(sql, columnValueBean);
 			if (!rootDatalist.isEmpty())
 			{
-				List<String> record = (List<String>) rootDatalist.get(0);
+				List<String> record = rootDatalist.get(0);
 				rootEntityName = setRootEntityName(rootEntityName, record);
 				cntOfRootRecs = setRootRecordCount(cntOfRootRecs, record);
 			}
@@ -601,7 +605,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	 * @param userName user name
 	 * @return all queries(shared/created) of the user with given CSM user ID.
 	 * @throws BizLogicException instance of BizLogicException
-	 * @throws ClassNotFoundException 
+	 * @throws ClassNotFoundException
 	 */
 	public Collection<IParameterizedQuery> getAllQueries(String csmUserId, String userName)
 			throws BizLogicException, ClassNotFoundException
@@ -677,7 +681,7 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 	 * @param csmUserId CSM user id
 	 * @return all queries created by the user with given CSM user Id
 	 * @throws BizLogicException instance of BizLogicException
-	 * @throws ClassNotFoundException 
+	 * @throws ClassNotFoundException
 	 */
 	public Collection<IParameterizedQuery> getMyQueries(String csmUserId, String userName)
 			throws BizLogicException, ClassNotFoundException
