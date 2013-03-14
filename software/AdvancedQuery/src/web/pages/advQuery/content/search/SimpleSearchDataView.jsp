@@ -1,9 +1,7 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
-<%@ taglib uri="/WEB-INF/PagenationTag.tld" prefix="custom"%>
 <%@ page import="java.util.List, java.util.ArrayList"%>
-<%@ page import="java.util.Hashtable"%>
 <%@ page import="edu.wustl.query.actionForm.QueryAdvanceSearchForm"%>
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
 <%@ page import="edu.wustl.query.util.global.Utility"%>
@@ -14,52 +12,22 @@
 <head>
 <link rel="STYLESHEET" type="text/css" href="css/advQuery/simpleSearchDataView.css">
 
-<script src="jss/advQuery/queryModule.js"></script>
-<script src="jss/advQuery/script.js"></script>
+<script type="text/javascript" src="jss/advQuery/queryModule.js"></script>
+<script type="text/javascript" src="jss/advQuery/script.js"></script>
 <script type="text/javascript" src="jss/advQuery/ajax.js"></script>
 
-<%	
-	int specIdColumnIndex = 0;	
+<%		
 	String checkAllPages = (String) session.getAttribute("checkAllPages");
 	QueryAdvanceSearchForm form = (QueryAdvanceSearchForm) session.getAttribute("advanceSearchForm");
-	int totalResult = ((Integer)session.getAttribute(AQConstants.TOTAL_RESULTS)).intValue();
 	List dataList = (List) request.getAttribute(AQConstants.PAGINATION_DATA_LIST);
 	String pageOf = (String) request.getAttribute(AQConstants.PAGEOF);
-	String title = pageOf + ".searchResultTitle";	
 		
 	List columnList = new ArrayList((List)session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST));
 	columnList.add(0, " ");
 	
-	String idColumnsList = "";
-	String idColumnsForSpecimenList = "";
-	for(int col = 0; col < columnList.size(); col++)
-	{
-		if (columnList.get(col).toString().trim().equals("ID")) {
-			if(idColumnsList == "") { 
-				idColumnsList += col;
-			} else {
-				idColumnsList += "," + col;
-			}
-		}
-		
-		if (columnList.get(col).toString().trim().equals("Specimen : Id")) {
-			if(idColumnsForSpecimenList == "") { 
-				idColumnsForSpecimenList += col;
-			} else {
-				idColumnsForSpecimenList += "," + col;
-			}
-		}		
-	}
-%>
+	int idColIndex = columnList.indexOf("ID");
+	int specimentIdColIndex = columnList.indexOf("Specimen : Id");
 
-<script type="text/javascript">
-	var isQueryModule = "<%=pageOf.equals(AQConstants.PAGEOF_QUERY_MODULE)%>";
-	var checkAllPages = <%=(checkAllPages != null && checkAllPages.equals("true"))%>
-		
-</script>
-<script type="text/javascript" src="jss/advQuery/simpleSearchDataView.js"></script>
-
-<%
 	String configAction = new String();
 	String redefineQueryAction = new String();
 	
@@ -75,8 +43,14 @@
 	}
 	
 %>
-	
-	<script language="JavaScript" type="text/javascript" src="jss/advQuery/javaScript.js"></script>
+<script type="text/javascript">
+	var isQueryModule = "<%=pageOf.equals(AQConstants.PAGEOF_QUERY_MODULE)%>";
+	var checkAllPages = <%=(checkAllPages != null && checkAllPages.equals("true"))%>	
+	var specimentIdColIndex = <%=specimentIdColIndex%>
+</script>
+<script type="text/javascript" src="jss/advQuery/simpleSearchDataView.js"></script>
+<script type="text/javascript" src="jss/advQuery/javaScript.js"></script>
+
 </head>
 <body>
 
@@ -156,7 +130,7 @@
 					<table cellpadding="0" cellspacing="0" border="0" width="100%">
 						<tr>			
 							<%
-								if(!idColumnsForSpecimenList.equals("")) {
+								if(specimentIdColIndex != -1) {
 							%>
 							<td width="12%">									
 								<button type="button" class="nav_button" style="width: 145px" onclick="addToSpecimenList()">

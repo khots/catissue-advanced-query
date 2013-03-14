@@ -299,7 +299,7 @@ public class AQConstants
 	public static final String RELATIONAL_OPERATORS = "fourthDropDown";
 	public static final String TIME_INTERVALS_LIST = "timeIntervals";
 	public static final String ENTITY_LABEL_LIST = "entityList";
-
+	public static final String QUERY_WITH_FILTERS = "queryWithFilter";
 
 	/**
 	 * Specify the ADD_TO_LIMIT_ACTION field.

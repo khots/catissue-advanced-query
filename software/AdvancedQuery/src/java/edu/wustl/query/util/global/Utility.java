@@ -21,6 +21,7 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -59,11 +60,8 @@ import edu.wustl.query.security.QueryCsmCacheManager;
 
 public class Utility //extends edu.wustl.common.util.Utility
 {
-	private static org.apache.log4j.Logger logger = LoggerConfig
-	.getConfiguredLogger(Utility.class);
-	/**
-	 * Date pattern.
-	 */
+	private static org.apache.log4j.Logger logger = LoggerConfig.getConfiguredLogger(Utility.class);
+	
 	private static String pattern = "MM-dd-yyyy";
 
 	/**
@@ -72,25 +70,14 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 * @return obj The formatted object
 	 */
 	public static Object toNewGridFormat(Object object)
-	{
-		Object obj = object;
-	    obj = edu.wustl.common.util.Utility.toGridFormat(obj);
-		if (obj instanceof String)
+	{		
+		object = edu.wustl.common.util.Utility.toGridFormat(object);
+		if (object instanceof String)
 		{
-			String objString = (String) obj;
-			StringBuffer tokenedString = new StringBuffer();
-
-			StringTokenizer tokenString = new StringTokenizer(objString, ",");
-
-			while (tokenString.hasMoreTokens())
-			{
-				tokenedString.append(tokenString.nextToken()).append(' ');
-			}
-			String gridFormattedStr = new String(tokenedString);
-			obj = gridFormattedStr;
+			object = object.toString().replaceAll(",", " ");		
 		}
 
-		return obj;
+		return object;
 	}
 	/**
 	 * Executes SQL through JDBC and returns the list of records.
@@ -99,7 +86,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 * @throws DAOException DAOException
 	 * @throws ClassNotFoundException ClassNotFoundException
 	 */
-	public static List executeSQL(String sql,LinkedList<ColumnValueBean> columnValueBean) throws DAOException, ClassNotFoundException
+	public static List executeSQL(String sql, LinkedList<ColumnValueBean> columnValueBean) throws DAOException, ClassNotFoundException
 	{
 		String appName=CommonServiceLocator.getInstance().getAppName();
 		IDAOFactory daofactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
@@ -130,8 +117,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 *            second attribute value
 	 * @return List containing value1 and value2 in sorted order
 	 */
-	public static List<String> getAttributeValuesInProperOrder
-					(String dataType, String value1,String value2)
+	public static List<String> getAttributeValuesInProperOrder(String dataType, String value1, String value2)
 	{
 		String attributeValue1 = value1;
 		String attributeValue2 = value2;
@@ -298,14 +284,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 * @return columnWidth column width
 	 */
 	private static String getColumnWidth(String columnName)
-	{
-		/*
-		 * Patch ID: Bug#3090_31 Description: The first column which is just a
-		 * checkbox, used to select the rows, was always given a width of 100.
-		 * Now width of 20 is set for the first column. Also, width of 100 was
-		 * being applied to each column of the grid, which increasing the total
-		 * width of the grid. Now the width of each column is set to 80.
-		 */
+	{		
 		String columnWidth;
 		if ("ID".equals(columnName.trim()))
 		{
@@ -322,52 +301,8 @@ public class Utility //extends edu.wustl.common.util.Utility
 		return columnWidth;
 	}
 
-	/**
-	 * Get column width in case of mozilla browser.
-	 * @param columnNames column names
-	 * @return colWidth column width
-	 */
-	public static String getColumnWidthP(List columnNames)
-	{
-		StringBuffer colWidth = new StringBuffer();
-
-		int size = (columnNames.size()-1);
-		for (int col = 0; col <= size; col++)
-		{
-			if(columnNames.get(0).equals(" "))
-			{
-				if(col == 0)
-				{
-					colWidth.append('3');
-				}
-				else
-				{
-					colWidth.append(String.valueOf(99.5f / (size)));
-				}
-			}
-			else
-			{
-				colWidth.append(String.valueOf(99.5f / (size)));
-			}
-			colWidth.append(',');
-		}
-		if(colWidth.lastIndexOf(",")== colWidth.length()-1)
-		{
-			colWidth.deleteCharAt(colWidth.length()-1);
-		}
-		return colWidth.toString();
-	}
-
-	/**
-	 * Get the grid width.
-	 * @param columnNames column names
-	 * @return colWidth column width
-	 */
-	public static String getGridWidth(List columnNames)
-	{
-		StringBuffer colWidth = new StringBuffer("");
-		return colWidth.toString();
-	}
+	
+	
 
 	/**
 	 * limits the title of the saved query to 125 characters to avoid horizontal
@@ -437,6 +372,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 						queryResultObjectDataBeanMap, isDefineView);
 			}
 		}
+		
 		return paginationDataList;
 	}
 
@@ -475,6 +411,24 @@ public class Utility //extends edu.wustl.common.util.Utility
 		}
 	}
 
+	public static String getGridDataJson(List dataList, List columnList, HttpServletRequest request)
+	{
+		HttpSession session = request.getSession();	
+		int  pageNum = Integer.parseInt ((String)request.getAttribute(AQConstants.PAGE_NUMBER));
+		int totalResult = ((Integer) session.getAttribute(AQConstants.TOTAL_RESULTS)).intValue();
+		Integer recordsPerPage = Integer.parseInt((String)session.getAttribute(AQConstants.RESULTS_PER_PAGE));
+		int pos = recordsPerPage * (pageNum - 1);	
+		
+		StringBuilder  gridData = new StringBuilder();
+		gridData.append("{total_count: ").append(totalResult)
+				.append(",\n pos: ").append(pos)
+				.append(",\n rows: [").append(getGridData(dataList, pos)).append("]}");	
+		
+		StringBuilder json = new StringBuilder("{columns: ").append(getColumnsLabels(columnList)) 
+									.append(", gridData: ").append(gridData).append("}");
+		return json.toString();
+	}
+	
 	/**
 	 * Set the grid data.
 	 * @param dataList DataList
@@ -483,23 +437,19 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 */
 	public static void setGridData(List dataList, List columnList, HttpServletRequest request)
 	{
-		request.setAttribute("myData",getmyData(dataList));
-		request.setAttribute("columns", getcolumns(columnList));
-		boolean isWidthInPercent = isWidthInPercent(columnList);
-		request.setAttribute("colWidth",getcolWidth(columnList,isWidthInPercent));
-		request.setAttribute("isWidthInPercent",isWidthInPercent);
-		request.setAttribute("colTypes",getcolTypes(dataList));
-		int heightOfGrid = setHeightOfGrid(dataList);
-		request.setAttribute("heightOfGrid", heightOfGrid);
-		int col;
-		int index=0;
-		StringBuffer hiddenColNos=new StringBuffer();
-		if(columnList!=null)
+		request.setAttribute("gridDataJson",getGridDataJson(dataList, columnList, request));		
+		request.setAttribute("colTypes", getcolTypes(dataList));
+		columnList.add(0, ""); // added for checkbox
+		request.setAttribute("colWidth", getColumnWidth(columnList));
+		columnList.remove(0);
+			
+		int index = 0;
+		StringBuffer hiddenColNos = new StringBuffer();
+		if(columnList != null)
 		{
-			for(col=0;col<columnList.size();col++)
+			for(int col = 0; col < columnList.size(); col++)
 			{
-				index = populateHiddenColNos(columnList, col, index,
-						hiddenColNos);
+				index = populateHiddenColNos(columnList, col, index, hiddenColNos);
 			}
 		}
 		request.setAttribute("hiddenColumnNumbers", hiddenColNos.toString());
@@ -512,13 +462,13 @@ public class Utility //extends edu.wustl.common.util.Utility
 	private static boolean isWidthInPercent(List columnList)
 	{
 		boolean isWidthInPercent;
-		if( columnList.size()<AQConstants.TEN)
+		if( columnList.size() < AQConstants.TEN)
 		{
-			isWidthInPercent=true;
+			isWidthInPercent = true;
 		}
 		else
 		{
-			isWidthInPercent=false;
+			isWidthInPercent = false;
 		}
 		return isWidthInPercent;
 	}
@@ -544,30 +494,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 		}
 		return index;
 	}
-
-	/**
-	 * @param dataList data list
-	 * @return
-	 */
-	private static int setHeightOfGrid(List dataList)
-	{
-		int heightOfGrid;
-		if(dataList==null)
-		{
-			heightOfGrid = AQConstants.HUNDRED;
-		}
-		else
-		{
-			int noOfRows = dataList.size();
-			heightOfGrid = (noOfRows + AQConstants.TWO) * AQConstants.TWENTY;
-			if(heightOfGrid > AQConstants.TWO_HUNDRED_FORTY)
-			{
-				heightOfGrid = AQConstants.TWO_HUNDRED_THIRTY;
-			}
-		}
-		return heightOfGrid;
-	}
-
+	
 	/**
 	 * Get column width.
 	 * @param columnList columnList
@@ -576,9 +503,9 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 */
 	public static String getcolWidth(List columnList, boolean isWidthInPercent)
 	{
-		StringBuffer colWidth= new StringBuffer("\"");
-		int col;
-		if(columnList!=null)
+		StringBuffer colWidth = new StringBuffer("\"");
+		
+		if(columnList != null)
 		{
 			String fixedColWidth;
 			if(isWidthInPercent)
@@ -587,15 +514,15 @@ public class Utility //extends edu.wustl.common.util.Utility
 			}
 			else
 			{
-				fixedColWidth="100";
+				fixedColWidth = "100";
 			}
-			for(col=0;col<(columnList.size()-1);col++)
+			for(int col = 0; col < (columnList.size()-1); col++)
 			{
 				colWidth.append(fixedColWidth).append(',');
 			}
 			colWidth.append(fixedColWidth);
 		}
-		colWidth.append('\'');
+		colWidth.append("\"");
 		return colWidth.toString();
 	}
 
@@ -608,7 +535,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	{
 		StringBuffer colTypes= new StringBuffer();
 		colTypes.append('"');
-		colTypes.append(edu.wustl.query.util.global.Variables.prepareColTypes(dataList));
+		colTypes.append(Variables.prepareColTypes(dataList, true));
 		colTypes.append('"');
 		return colTypes.toString();
 	}
@@ -618,66 +545,39 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 * @param dataList DataList
 	 * @return myData myData
 	 */
-	public static String getmyData(List dataList)
+	
+	private static String getGridData(List dataList, int pos)
 	{
-		StringBuffer myData = new StringBuffer("[");
-		int index;
-		if(dataList !=null && !dataList.isEmpty())
-		{
-			for (index=0;index<(dataList.size()-1);index++)
-			{
-				List row = (List)dataList.get(index);
-				int counter = addToMyData(myData, row);
-				myData.append(Utility.toNewGridFormat(row.get(counter)).toString());
-				myData.append("\",");
+		StringBuilder rows = new StringBuilder();
+		for (int i = 0; i < dataList.size(); i++){
+			List row = (List)dataList.get(i);
+			
+			StringBuilder col = new StringBuilder();
+			for (Object data: row){	
+				col.append(", \"")
+					.append(Utility.toNewGridFormat(data))
+					.append("\"");
 			}
-			List row = (List)dataList.get(index);
-			int rowCtr = addToMyData(myData, row);
-			myData.append(Utility.toNewGridFormat(row.get(rowCtr)).toString());
-			myData.append('\'');
-		}
-		myData.append(']');
-		return myData.toString();
-	}
-
-	/**
-	 * @param myData myData
-	 * @param row row
-	 * @return rowCtr
-	 */
-	private static int addToMyData(StringBuffer myData, List row)
-	{
-		int rowCtr;
-		myData.append('\'');
-		for (rowCtr=0;rowCtr < (row.size()-1);rowCtr++)
-		{
-			myData.append(Utility.toNewGridFormat(row.get(rowCtr)).toString());
-			myData.append(',');
-		}
-		return rowCtr;
-	}
-
-	/**
-	 * Returns the columns separated by comma.
-	 * @param columnList List of columns
-	 * @return columns Columns
-	 */
-	public static String getcolumns(List columnList)
-	{
-		StringBuffer columns= new StringBuffer("\"");
-		int col;
-		if(columnList!=null)
-		{
-			for(col=0;col<(columnList.size()-1);col++)
-			{
-				columns.append(columnList.get(col));
-				columns.append(',');
+			if(i != 0) {
+				rows.append(", ");
 			}
-			columns.append(columnList.get(col));
+			rows.append("{id : ").append(pos + i).append(", data: [0").append(col).append("]}") ;
 		}
-		columns.append('\'');
-		return columns.toString();
+		
+		return rows.toString();
 	}
+		
+	private static String getColumnsLabels(List columnList) {
+		
+		StringBuilder  colsLabels = new StringBuilder("[");		
+		for(Object column: columnList) {
+			colsLabels.append(", \"").append(column).append("\"");
+		}
+		colsLabels.append("]");
+		
+		return colsLabels.toString();
+	}
+	
 	/** Added By Rukhsana
      * Added list of objects on which read denied has to be checked while filtration of result
      * for csm-query performance.
@@ -685,6 +585,7 @@ public class Utility //extends edu.wustl.common.util.Utility
      * (Collection protocol, Clinical Study) Ids for that entity id as value for csm-query performance.
      * Reading the above values from a properties file to make query module application independent
      */
+	
     public static void setReadDeniedAndEntitySqlMap()
     {
         List<String> readDeniedObjList = new ArrayList<String>();
@@ -1048,8 +949,7 @@ public class Utility //extends edu.wustl.common.util.Utility
      * @param condition
      *            condition to be updated.
      */
-    public static void updateConditionToEmptyCondition(
-            final ICondition condition)
+    public static void updateConditionToEmptyCondition(final ICondition condition)
     {
         try
         {
@@ -1087,17 +987,14 @@ public class Utility //extends edu.wustl.common.util.Utility
      * @throws CheckedException
      *             exception.
      */
-    private static String getDefaultOperatorForAttribute(
-            final AttributeInterface attribute)
+    private static String getDefaultOperatorForAttribute(final AttributeInterface attribute)
             throws CheckedException
     {
         String operator;
-        InputStream inputStream = Utility.class.getClassLoader().getResourceAsStream(
-                AQConstants.DYNAMIC_UI_XML);
-        final ParseXMLFile parseFile = ParseXMLFile
-                    .getInstance(inputStream);
-            operator = HtmlUtility.getConditionsList(attribute, parseFile).get(
-                    0);
+        InputStream inputStream = Utility.class.getClassLoader()
+										.getResourceAsStream(AQConstants.DYNAMIC_UI_XML);
+        final ParseXMLFile parseFile = ParseXMLFile.getInstance(inputStream);
+            operator = HtmlUtility.getConditionsList(attribute, parseFile).get(0);
 
         return operator;
     }

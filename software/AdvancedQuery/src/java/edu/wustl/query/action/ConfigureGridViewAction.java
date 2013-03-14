@@ -50,126 +50,83 @@ public class ConfigureGridViewAction extends SecureAction
 	 * @throws Exception Exception
 	 * @return ActionForward actionForward
 	 */
+	@SuppressWarnings("unchecked")
 	protected ActionForward executeSecureAction(ActionMapping mapping,
-		ActionForm form, HttpServletRequest request, HttpServletResponse response)
-			throws Exception
+		ActionForm form, HttpServletRequest request, HttpServletResponse response)throws Exception
 	{
 		CategorySearchForm categorySearchForm = (CategorySearchForm) form;
-		HttpSession session = request.getSession();
-		Map<String, IOutputTerm> outputTermsColumns =
-			(Map<String, IOutputTerm>)session.getAttribute(AQConstants.OUTPUT_TERMS_COLUMNS);
-		Map<String, String> specimenMap = new HashMap<String, String>();
-		IQuery query = (IQuery)session.getAttribute(AQConstants.QUERY_OBJECT);
+		HttpSession session = request.getSession();		
+		QuerySessionData querySessionData = (QuerySessionData) session.getAttribute(AQConstants.QUERY_SESSION_DATA);
 		QueryDetails queryDetailsObj = new QueryDetails(session);
+		IQuery query = (IQuery)session.getAttribute(AQConstants.QUERY_OBJECT);		
 		query.setIsNormalizedResultQuery(categorySearchForm.getNormalizedQuery());
 		SelectedColumnsMetadata selectedColumnsMetadata =
 			(SelectedColumnsMetadata)session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
 		OutputTreeDataNode currentSelectedObject = selectedColumnsMetadata.getCurrentSelectedObject();
-		if("edu.wustl.catissuecore.domain.Specimen".equals(currentSelectedObject.getOutputEntity().getDynamicExtensionsEntity().getName()))
-			request.setAttribute("isSpecPresent", Boolean.TRUE);
-		
-		QuerySessionData querySessionData =
-			(QuerySessionData) session.getAttribute(AQConstants.QUERY_SESSION_DATA);
-		String recordsPerPageStr = (String) session.getAttribute(AQConstants.RESULTS_PER_PAGE);
-		int recordsPerPage = Integer.valueOf(recordsPerPageStr);
-
-		boolean hasConditionOnIdentifiedData = Utility.isConditionOnIdentifiedField(query);
-
-		DefineGridViewBizLogic defineGridViewBizLogic = new DefineGridViewBizLogic();
-		QueryOutputSpreadsheetBizLogic queryOutputSpreadsheetBizLogic =
-			new QueryOutputSpreadsheetBizLogic();
-
-		
-		String sql = querySessionData.getSql();
+				
 		session.removeAttribute(AQConstants.EXPORT_DATA_LIST);
 		session.removeAttribute(AQConstants.ENTITY_IDS_MAP);
-
+		session.removeAttribute(AQConstants.QUERY_WITH_FILTERS);
+		
+		int recordsPerPage = Integer.parseInt((String) session.getAttribute(AQConstants.RESULTS_PER_PAGE));
+		boolean hasConditionOnIdentifiedData = Utility.isConditionOnIdentifiedField(query);		
+		String sql = querySessionData.getSql();
+		
 		Map spreadSheetDataMap = new HashMap();
 		List<String> definedColumnsList = new ArrayList<String>();
-		List<NameValueBean> selectedCNVBList =
-			categorySearchForm.getSelColNVBeanList();
+		Map<String, String> specimenMap = new HashMap<String, String>();
+		DefineGridViewBizLogic defineGridViewBizLogic = new DefineGridViewBizLogic();
+		QueryOutputSpreadsheetBizLogic queryOutputSpreadsheetBizLogic = new QueryOutputSpreadsheetBizLogic();
+		Map<Long, QueryResultObjectDataBean> queryResultObjecctDataMap = null;
+		List<NameValueBean> selectedCNVBList = categorySearchForm.getSelColNVBeanList();
 		String operation = request.getParameter(AQConstants.OPERATION);
-		if (operation==null)
+		
+		if (operation == null || operation.equalsIgnoreCase(AQConstants.FINISH))
 		{
-			operation = AQConstants.FINISH;
-		}
-		if (operation.equalsIgnoreCase(AQConstants.FINISH))
-		{
-			selectedColumnsMetadata.setDefinedView(true);
-			Map<Long, QueryResultObjectDataBean> queryResultObjecctDataMap =
-				new HashMap<Long, QueryResultObjectDataBean>();
+			selectedColumnsMetadata.setDefinedView(true);			
 			defineGridViewBizLogic.getSelectedColumnsMetadata(categorySearchForm,
-					queryDetailsObj, selectedColumnsMetadata,query.getConstraints());
-			StringBuffer selectedColumnNames = new StringBuffer();
-			String nodeData = getClickedNodeData(sql);
-			definedColumnsList = defineGridViewBizLogic.getSelectedColumnList(categorySearchForm,
-					selectedColumnsMetadata.getSelectedAttributeMetaDataList(), selectedColumnNames,
-					queryResultObjecctDataMap, queryDetailsObj, outputTermsColumns,nodeData,specimenMap);
-			if(definedColumnsList.contains("Specimen : Id"))
-					{
-						request.setAttribute("specIdColumnIndex", definedColumnsList.indexOf("Specimen : Id")+1);
-						request.setAttribute("isDefineView", Boolean.TRUE);
-					}
-			else if(definedColumnsList.contains("Id : Specimen"))
-			{
-				request.setAttribute("specIdColumnIndex", definedColumnsList.indexOf("Id : Specimen")+1);
-				request.setAttribute("isDefineView", Boolean.TRUE);
-			}
-			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
-			// gets the message and sets it in the session.
-			String sqlForSelectedColumns =
-			defineGridViewBizLogic.createSQLForSelectedColumn(selectedColumnNames.toString(), sql);
-			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
-					recordsPerPage, 0, spreadSheetDataMap, sqlForSelectedColumns,
-					queryResultObjecctDataMap, hasConditionOnIdentifiedData,selectedColumnsMetadata);
-			selectedCNVBList = categorySearchForm.getSelColNVBeanList();
-			session.setAttribute(AQConstants.DEFINE_VIEW_RESULT_MAP,
-					queryResultObjecctDataMap);
-			spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
-					queryResultObjecctDataMap);
-			spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
-					session.getAttribute(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP));
+					queryDetailsObj, selectedColumnsMetadata, query.getConstraints());						
 		}
 		else if (operation.equalsIgnoreCase(AQConstants.BACK))
 		{
-			Map<Long, QueryResultObjectDataBean> queryResultObjecctDataMap =
-			populateMapForBackOperation(session, selectedColumnsMetadata, spreadSheetDataMap);
-			selectedCNVBList =
-				selectedColumnsMetadata.getSelColNVBeanList();
+			queryResultObjecctDataMap = populateMapForBackOperation(session, selectedColumnsMetadata, spreadSheetDataMap);
+			selectedCNVBList = selectedColumnsMetadata.getSelColNVBeanList();
 			categorySearchForm.setSelColNVBeanList(selectedCNVBList);
-			definedColumnsList = (List<String>)
-			session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
+			definedColumnsList = (List<String>)session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
 					recordsPerPage, 0, spreadSheetDataMap, sql, queryResultObjecctDataMap,
-					hasConditionOnIdentifiedData,selectedColumnsMetadata);
+					hasConditionOnIdentifiedData, selectedColumnsMetadata);
 		}
 		else if (operation.equalsIgnoreCase(AQConstants.RESTORE))
-		{
-			Map<Long, QueryResultObjectDataBean> queryResultObjecctDataMap =
-				new HashMap<Long, QueryResultObjectDataBean>();
+		{			
 			selectedColumnsMetadata.setDefinedView(false);
-			defineGridViewBizLogic.getColumnsMetadataForSelectedNode
-			(currentSelectedObject,selectedColumnsMetadata,query.getConstraints());
-			StringBuffer selectedColumnNames = new StringBuffer();
-			//Restoring to the default view.
+			defineGridViewBizLogic.getColumnsMetadataForSelectedNode(currentSelectedObject, selectedColumnsMetadata, query.getConstraints());
 			selectedColumnsMetadata.setSelectedOutputAttributeList(new ArrayList<IOutputAttribute>());
+			selectedCNVBList = null;			
+		}
+		
+		if(queryResultObjecctDataMap == null) {
+			queryResultObjecctDataMap = new HashMap<Long, QueryResultObjectDataBean>();
+			Map<String, IOutputTerm> outputTermsColumns =
+						(Map<String, IOutputTerm>)session.getAttribute(AQConstants.OUTPUT_TERMS_COLUMNS);
 			String nodeData = getClickedNodeData(sql);
+			StringBuffer selectedColumnNames = new StringBuffer();
 			definedColumnsList = defineGridViewBizLogic.getSelectedColumnList(categorySearchForm,
-			selectedColumnsMetadata.getSelectedAttributeMetaDataList(),selectedColumnNames,
-			queryResultObjecctDataMap, queryDetailsObj,outputTermsColumns,nodeData,specimenMap);
-			String sqlForSelectedColumns = defineGridViewBizLogic.createSQLForSelectedColumn
-			(selectedColumnNames.toString(), sql);
+					selectedColumnsMetadata.getSelectedAttributeMetaDataList(),selectedColumnNames,
+					queryResultObjecctDataMap, queryDetailsObj, outputTermsColumns, nodeData, specimenMap);
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
+			String sqlForSelectedColumns = defineGridViewBizLogic.createSQLForSelectedColumn(selectedColumnNames.toString(), sql);
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
 					recordsPerPage, 0, spreadSheetDataMap, sqlForSelectedColumns,
-					queryResultObjecctDataMap, hasConditionOnIdentifiedData,selectedColumnsMetadata);
-			selectedCNVBList = null;
-			spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
-					queryResultObjecctDataMap);
-			spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
-					queryResultObjecctDataMap);
+					queryResultObjecctDataMap, hasConditionOnIdentifiedData, selectedColumnsMetadata);
+			spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP, queryResultObjecctDataMap);
+			spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP, queryResultObjecctDataMap);
+			if(!operation.equalsIgnoreCase(AQConstants.RESTORE)) {
+				selectedCNVBList = categorySearchForm.getSelColNVBeanList();				
+			}
 		}
+		
 		if(spreadSheetDataMap.get(AQConstants.SPREADSHEET_COLUMN_LIST) == null)
 		{
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
@@ -178,7 +135,7 @@ public class ConfigureGridViewAction extends SecureAction
 		selectedColumnsMetadata.setSelColNVBeanList(selectedCNVBList);
 		selectedColumnsMetadata.setCurrentSelectedObject(currentSelectedObject);
 		spreadSheetDataMap.put(AQConstants.QUERY_SESSION_DATA, querySessionData);
-		spreadSheetDataMap.put(AQConstants.SELECTED_COLUMN_META_DATA,selectedColumnsMetadata);
+		spreadSheetDataMap.put(AQConstants.SELECTED_COLUMN_META_DATA, selectedColumnsMetadata);
 		spreadSheetDataMap.put(AQConstants.MAIN_ENTITY_MAP, queryDetailsObj.getMainEntityMap());
 		if(selectedColumnsMetadata.isDefinedView())
 		{
@@ -186,6 +143,7 @@ public class ConfigureGridViewAction extends SecureAction
 			session.setAttribute(AQConstants.DENORMALIZED_LIST, spreadSheetDataMap.get(AQConstants.SPREADSHEET_DATA_LIST));
 		}
 		QueryModuleUtil.setGridData(request, spreadSheetDataMap);
+		Utility.setGridData((List) spreadSheetDataMap.get(AQConstants.SPREADSHEET_DATA_LIST), definedColumnsList, request);
 		return mapping.findForward(AQConstants.SUCCESS);
 	}
 
@@ -195,23 +153,21 @@ public class ConfigureGridViewAction extends SecureAction
 	 * @param spreadSheetDataMap spreadSheetDataMap
 	 * @return queryResultObjecctDataMap
 	 */
+	@SuppressWarnings("unchecked")
 	private Map<Long, QueryResultObjectDataBean> populateMapForBackOperation(
 			HttpSession session,
 			SelectedColumnsMetadata selectedColumnsMetadata,
 			Map spreadSheetDataMap)
 	{
 		Map<Long, QueryResultObjectDataBean> queryResultObjecctDataMap =
-			(Map<Long, QueryResultObjectDataBean>)session.getAttribute
-			(AQConstants.DEFINE_VIEW_RESULT_MAP);
-		spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
-				queryResultObjecctDataMap);
+			(Map<Long, QueryResultObjectDataBean>)session.getAttribute(AQConstants.DEFINE_VIEW_RESULT_MAP);
+		spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP, queryResultObjecctDataMap);
 		if(!selectedColumnsMetadata.isDefinedView())
 		{
 			selectedColumnsMetadata.setDefinedView(false);
 			queryResultObjecctDataMap = (Map<Long, QueryResultObjectDataBean>)
-			session.getAttribute(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP);
-			spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP,
-					queryResultObjecctDataMap);
+													session.getAttribute(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP);
+			spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP, queryResultObjecctDataMap);
 		}
 		return queryResultObjecctDataMap;
 	}
@@ -227,7 +183,7 @@ public class ConfigureGridViewAction extends SecureAction
 		String clickedData = "";
 		if(index != -1)
 		{
-			clickedData = sql.substring(index +1,sql.length());
+			clickedData = sql.substring(index + 1, sql.length());
 		}
 		return clickedData;
 	}

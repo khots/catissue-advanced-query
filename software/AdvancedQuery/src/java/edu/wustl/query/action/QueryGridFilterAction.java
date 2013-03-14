@@ -21,11 +21,11 @@ import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
+import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
@@ -45,16 +45,17 @@ public class QueryGridFilterAction extends SecureAction
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{		
 		HttpSession session = request.getSession();	
-		int  pageNum = Integer.parseInt ((String)request.getParameter("pageNum"));
-		int recordsPerPage = Integer.parseInt((String)request.getParameter("recordPerPage"));
+		Integer pageNum = Integer.parseInt ((String)request.getParameter(AQConstants.PAGE_NUMBER));
+		Integer recordsPerPage = Integer.parseInt((String)request.getParameter("recordPerPage"));
 		
+		request.setAttribute(AQConstants.PAGE_NUMBER, pageNum.toString());
+		session.setAttribute(AQConstants.RESULTS_PER_PAGE, recordsPerPage.toString());
 		SelectedColumnsMetadata selectedColMetadata =(SelectedColumnsMetadata)session
 															.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
 				
-		QuerySessionData querySessionData = (QuerySessionData) session
-							.getAttribute(edu.wustl.common.util.global.Constants.QUERY_SESSION_DATA);
+		QuerySessionData querySessionData = (QuerySessionData) session.getAttribute(Constants.QUERY_SESSION_DATA);
 		QueryDetails queryDetailsObj = new QueryDetails(session);
-		String oldquery = querySessionData.getSql();		
+		String oldquery = querySessionData.getSql();
 		querySessionData.setSql(getQuery(session, request, oldquery));
 				
 		boolean isContPresent = new QueryOutputSpreadsheetBizLogic().isContainmentPresent(queryDetailsObj.getQuery());;		
@@ -75,9 +76,11 @@ public class QueryGridFilterAction extends SecureAction
 				session.setAttribute(AQConstants.SPREADSHEET_COLUMN_LIST, colList);
 			}
 		}
-		
+		session.setAttribute(AQConstants.DENORMALIZED_LIST, dataList);
 		session.setAttribute(AQConstants.TOTAL_RESULTS, querySessionData.getTotalNumberOfRecords());
-		createAndWriteJsonInResponse(dataList, pageNum, recordsPerPage, response, session);
+		List<String> columnList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
+		String json = Utility.getGridDataJson(dataList, columnList, request);
+		response.getWriter().write(json);
 		
 		// set original query
 		querySessionData.setSql(oldquery);
@@ -95,6 +98,9 @@ public class QueryGridFilterAction extends SecureAction
 			JSONObject jsonObj = new JSONObject(jsonString);
 			JSONArray columns = jsonObj.getJSONArray("columns");
 			JSONArray values = jsonObj.getJSONArray("values");
+			String sortColumn = jsonObj.getString("sortColumn");
+			String sortDir = jsonObj.getString("sortDir");
+			
 			Map<String, String> paramsMap = new HashMap<String, String>();
 			
 			for(int i = 0; i < columns.length(); i++) {
@@ -111,7 +117,9 @@ public class QueryGridFilterAction extends SecureAction
 					attributes.addAll(child.getAttributes());
 				}
 			}
-						
+			
+			String orderBy = "";
+			
 			for(QueryOutputTreeAttributeMetadata attr: attributes){
 				AttributeTypeInformation type = (AttributeTypeInformation) attr.getAttribute().getAttributeTypeInformation();
 				String value = paramsMap.get(attr.getDisplayName());
@@ -128,58 +136,22 @@ public class QueryGridFilterAction extends SecureAction
 						
 					}
 				}
+				
+				if(attr.getDisplayName().equalsIgnoreCase(sortColumn)){
+					orderBy = attr.getColumnName() + " " + sortDir + ", ";
+				}
 			}	
 			
-			query.append(oldquery.substring(oldquery.lastIndexOf("where")+ 5));			
-			
+			query.append(oldquery.substring(oldquery.lastIndexOf("where")+ 5));		
+			if(!orderBy.equals("")) {
+				int index = query.lastIndexOf("ORDER BY");
+				query.insert(index + 9, orderBy);
+			}
+			session.setAttribute(AQConstants.QUERY_WITH_FILTERS, query.toString());
 			LOGGER.out.error("New query : "+ query.toString());
 		} catch(Exception e ){
 			LOGGER.out.error("Exception found while creating query :", e);
 		}
 		return query.toString();
-	}
-	
-	private void createAndWriteJsonInResponse(List dataList, int pageNum, int recordsPerPage, 
-			HttpServletResponse response, HttpSession session) throws IOException {
-		Map hyperlinkColumnMap = (Map)session.getAttribute(AQConstants.HYPERLINK_COLUMN_MAP);
-		if (hyperlinkColumnMap == null) {
-				hyperlinkColumnMap = new HashMap();
-		}
-		List<String> columnsList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
-		StringBuilder  columns = new StringBuilder();
-		columns.append("columns: [");
-		for(String column: columnsList) {
-			columns.append(",\"").append(column).append("\"");
-		}
-		columns.append("]");		
-		
-		int totalResult = ((Integer) session.getAttribute(AQConstants.TOTAL_RESULTS)).intValue();
-		int pos = recordsPerPage * (pageNum - 1);
-		StringBuilder  jsonData = new StringBuilder();
-		jsonData.append("data: {total_count: ")
-				.append(totalResult)
-				.append(",\n pos: ")
-				.append(pos)
-				.append(",\n rows: [");
-		
-		
-		for (int i = 0; i < dataList.size(); i++){
-			List row = (List)dataList.get(i);
-			if(i != 0) {
-				jsonData.append(", ");
-			}
-			
-			jsonData.append("{id : ").append(pos + i).append(", data:[0");
-			
-			for (int j = 0; j < row.size(); j++){	
-				jsonData.append(",\"")
-						.append(Utility.toNewGridFormatWithHref(row, hyperlinkColumnMap, j))
-						.append("\"");
-			}
-			jsonData.append("]}") ;
-		}
-		jsonData.append("]}");
-				
-		response.getWriter().write("{"+ columns.toString() + ", "+ jsonData.toString() + "}");
-	}
+	}	
 }

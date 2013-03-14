@@ -3,8 +3,6 @@
 <%@ page import="java.util.HashMap,java.util.Map,edu.wustl.common.beans.QueryResultObjectData,java.util.List"%>
 
 <%@ page import="edu.wustl.query.util.global.AQConstants"%>
-<%@ page import="edu.wustl.query.util.global.Utility"%>
-<%@ page import="edu.wustl.query.util.global.Variables"%>
 
 <link rel="STYLESHEET" type="text/css" href="dhtmlx_suite/css/dhtmlxgrid.css">
 <link rel="STYLESHEET" type="text/css" href="dhtmlx_suite/ext/dhtmlxgrid_pgn_bricks.css">
@@ -42,65 +40,11 @@
 		background-repeat: repeat-x;
 		border-radius: 0.3em 0.3em 0.3em 0.3em;	
 	}
+	
+	div.gridbox_dhx_skyblue table.obj.row20px tr.rowselected td {
+		background-image: url("dhtmlx_suite/imgs/sky_blue_sel_1.png");
+	}
 </style>
-
-<script type="text/javascript">
-<%
-	int totalResults = ((Integer) session.getAttribute(AQConstants.TOTAL_RESULTS)).intValue();
-	int numResultsPerPage = Integer.parseInt((String) session.getAttribute(AQConstants.RESULTS_PER_PAGE));
-	
-	
-	Map hyperlinkColumnMap = (Map)session.getAttribute(AQConstants.HYPERLINK_COLUMN_MAP);
-	if (hyperlinkColumnMap==null)
-		hyperlinkColumnMap = new HashMap();
-		
-%>	
-	var jsonData = {rows:[
-						<%
-							for (int i=0; i < dataList.size(); i++){
-								List row = (List)dataList.get(i);
-								
-								if(i != 0) {out.print(",");}
-								
-								out.print("{id: "+ i +", data:[");
-								
-								for (int j = 0; j < row.size(); j++){									
-									out.print(",\""+ Utility.toNewGridFormatWithHref(row,hyperlinkColumnMap,j)+"\"") ;
-								}				
-								out.print("]}");
-							}								
-						%> 							
-					]}
-	var isCheckAllPagesChecked ;
-	
-	var columns = "<%=columnList.get(0)%><%for(int col = 1; col < columnList.size(); col++){%>,<%=columnList.get(col)%><%}%>";
-	var filters = "#master_checkbox<%for(int col = 1; col < columnList.size(); col++){%>,#text_filter<%}%>"
-	var colWidth = "<%=Utility.getColumnWidth(columnList)%>";
-	var colTypes = "<%=Variables.prepareColTypes(dataList, true)%>";
-	var colDataTypes = colTypes;
-
-	while(colDataTypes.indexOf("str") !=-1)
-	{
-		colDataTypes = colDataTypes.replace(/str/,"ro");
-	}
-
-	function getIDColumns()
-	{	
-		var hiddenColumnNumbers = [<%=idColumnsList%>];
-		return hiddenColumnNumbers;
-	}
-	function isIDColumnsForSpecimen()
-	{		
-		var hiddenColumnNumbers = [<%=idColumnsForSpecimenList%>];
-		return hiddenColumnNumbers;
-	}
-	function getIDColumnsForSpecimen()
-	{		
-		var hiddenColumnNumbers = [<%=idColumnsForSpecimenList%>];
-		return hiddenColumnNumbers;
-	}
-	
-</script>
 
 <table width="100%" border="0">
 	<tr>
@@ -113,8 +57,20 @@
 </table>
 
 <script type="text/javascript">
+	var isCheckAllPagesChecked ;
+	var gridDataJson = <%=(String) request.getAttribute("gridDataJson")%>;
+	var filters = "#master_checkbox<%for(int col = 1; col < columnList.size(); col++){%>,#text_filter<%}%>";
+	var colWidth = "<%=(String) request.getAttribute("colWidth")%>";
+	var colTypes = <%=(String) request.getAttribute("colTypes")%>;
+	var colDataTypes = colTypes;
+
+	while(colDataTypes.indexOf("str") != -1)
+	{
+		colDataTypes = colDataTypes.replace(/str/,"ro");
+	}
+	
 	var pageNum = 1;
-	var recordPerPage = <%=numResultsPerPage%>	
+	var recordPerPage = <%=(String) session.getAttribute(AQConstants.RESULTS_PER_PAGE)%>	
 	var gridBOxTag = document.getElementById('gridbox');
 	gridBOxTag.style.height = (document.body.clientHeight * 65) / 100 + 'px';
 </script>

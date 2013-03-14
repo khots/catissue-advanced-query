@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.query.actionForm.CategorySearchForm;
 import edu.wustl.query.util.global.AQConstants;
+import edu.wustl.query.util.global.Utility;
 
 /**
  * This is a action called when user clicks on search button from addlimits .jsp. The result data lists are already
@@ -46,6 +47,7 @@ public class ViewSearchResultsJSPAction extends Action
 		}
 		
 		HttpSession session = request.getSession();
+		session.removeAttribute(AQConstants.QUERY_WITH_FILTERS);
 		request.setAttribute(AQConstants.PAGE_NUMBER, Integer.toString(1));
 		List dataList = (List) session.getAttribute(AQConstants.PAGINATION_DATA_LIST);
 		request.setAttribute(AQConstants.PAGINATION_DATA_LIST, dataList);
@@ -53,8 +55,7 @@ public class ViewSearchResultsJSPAction extends Action
 		request.setAttribute(AQConstants.SPREADSHEET_COLUMN_LIST, columnsList);
 		session.setAttribute(AQConstants.PAGINATION_DATA_LIST, null);
 		request.setAttribute(AQConstants.PAGEOF, "pageOfQueryModule");
-		request.getSession().setAttribute(AQConstants.TREE_CHECK_VALUE, actionForm.isShowTree());
-		request.setAttribute(AQConstants.HIDE_TREE_CHECK_VALUE, request.getSession().getAttribute(AQConstants.TREE_CHECK_VALUE));
+		Utility.setGridData(dataList, columnsList, request);
 		return mapping.findForward(target);
 	}
 }

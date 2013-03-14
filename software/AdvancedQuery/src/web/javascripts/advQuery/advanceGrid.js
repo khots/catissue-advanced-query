@@ -39,9 +39,8 @@ var mygrid = new dhtmlXGridObject('gridbox'); ;
 var rowCount = 0;
 function initQueryGrid() {	
 	
-	mygrid.setImagePath("newDhtmlx/imgs/");
-	
-	mygrid.setHeader(columns);
+	mygrid.setImagePath("newDhtmlx/imgs/");	
+	mygrid.setHeader(gridDataJson.columns.join());
 	mygrid.attachHeader(filters);
 	mygrid.enableAutoHeigth(false);
 	mygrid.setColTypes(colDataTypes);
@@ -58,10 +57,10 @@ function initQueryGrid() {
 	mygrid.setEditable(!checkAllPages);
 	
 	mygrid.splitAt(1);
-	
+	var jsonData = gridDataJson.gridData;
 	mygrid.parse(jsonData, "json");
 	rowCount = jsonData.rows.length;
-	createHiddenElement(jsonData);
+	createHiddenElement();
 	window.setTimeout(addRecordPerPageOption, 500)
 	
 	checkBoxCell = getElementsByClassName('hdrcell');
@@ -69,11 +68,21 @@ function initQueryGrid() {
 	gridBOxTag.style.width = (gridBOxTag.offsetWidth - 6 ) + "px"		
 }
 
+var sortIndex;
+var sortDirection = "asc";
+mygrid.attachEvent("onBeforeSorting",function(ind, type, direction){
+	sortIndex = ind;
+	sortDirection = direction;
+	this.setSortImgState(true, ind, direction);   //set a correct sorting image	
+	this.clearAll();  
+	return true;   
+});
+
 mygrid.attachEvent("onFilterStart", function(ind){
 	mygrid.clearAll();	
 	return false;
 })
- 
+	
 mygrid.attachEvent("onBeforePageChanged", function(ind, count){
 	var option = mygrid.aToolBar.getListOptionSelected('perpagenum').split("_");
 	recordPerPage = option[1];
@@ -81,7 +90,69 @@ mygrid.attachEvent("onBeforePageChanged", function(ind, count){
 	getGridData()
 	return true;
 });
+
+function getGridData() {	
+	var param = "Data=" + getJsonForFilter() + "&pageNum="+pageNum+"&recordPerPage="+recordPerPage;
+	var url = "QueryGridFilter.do";
+	var xmlhttp = newXMLHTTPReq();
 	
+	xmlhttp.onreadystatechange =  function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				var json = eval('(' + xmlhttp.responseText + ')');
+				setColumn(json.columns)
+				mygrid.parse(json.gridData, "json");
+				rowCount = json.gridData.rows.length;
+				createHiddenElement();
+				checkBoxCell = getElementsByClassName('hdrcell');
+				checkBoxCell.getElementsByTagName('input')[0].checked = false; 
+			}				  		
+		}
+	xmlhttp.open("POST", url,  true);
+	xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	xmlhttp.send(param);
+}
+
+function getJsonForFilter() {
+	var columns = []
+	var values = []
+	var j = 0;
+	for(i = 1; i < mygrid.getColumnsNum(); i++) {
+		var value = mygrid.getFilterElement(i).value;
+		if(value != "") {
+			columns[j] = mygrid.getColumnLabel(i, 0);
+			values[j++] = value;				
+		}
+	}
+	var sortColumn = sortIndex ? mygrid.getColumnLabel(sortIndex, 0): "";
+	sortDirection = sortDirection == "asc" ? sortDirection: "desc";
+	
+	return JSON.stringify({"columns": columns, "values": values, "sortColumn": sortColumn ,"sortDir": sortDirection});
+}
+
+function createHiddenElement() {
+	var cont = document.getElementById("hiddenBox")
+	cont.innerHTML  = '';
+	for(var row = 0; row < rowCount; row++)
+	{						
+		var el = document.createElement("input");
+		el.type = "hidden";
+		el.id = row;
+		el.name = "value1(CHK_" + row + ")";
+		
+		cont.appendChild(el);					
+	}	
+}
+
+function setColumn(columnList) {
+			
+	for(i = 1; i < columnList.length; i++) {
+		var columnLabel = mygrid.getColumnLabel(i, 0)
+		if( columnLabel != columnList[i] ) {
+			mygrid.insertColumn(i, columnList[i], 'ro', "100");
+		}
+	}	
+}
+
 function addRecordPerPageOption() {		
 	toolbar = mygrid.aToolBar;
 	toolbar.setWidth('perpagenum', 130);
@@ -98,67 +169,9 @@ function addRecordPerPageOption() {
 	toolbar.setListOptionSelected('perpagenum', 'perpagenum_' + recordPerPage);
 }
 
-function getGridData() {	
-	var param = "Data=" + getJsonForFilter() + "&pageNum="+pageNum+"&recordPerPage="+recordPerPage;
-	var url = "QueryGridFilter.do";
-	var xmlhttp = newXMLHTTPReq();
-	
-	xmlhttp.onreadystatechange =  function() {
-			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-				var json = eval('(' + xmlhttp.responseText + ')');
-				getColumnLabel(json.columns)
-				mygrid.parse(json.data, "json");
-				rowCount = json.data.rows.length;
-				createHiddenElement(json.data);				
-			}				  		
-		}
-	xmlhttp.open("POST", url,  true);
-	xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-	xmlhttp.send(param);
-}
-
-function createHiddenElement(data) {
-	var cont = document.getElementById("hiddenBox")
-	cont.innerHTML  = '';
-	for(var row = 0; row < data.rows.length; row++)
-	{						
-		var el = document.createElement("input");
-		el.type = "hidden";
-		el.id = row;
-		el.name = "value1(CHK_" + row + ")";
-		
-		cont.appendChild(el);					
-	}	
-}
- 
-function getJsonForFilter() {
-	var columns = []
-	var values = []
-	var j = 0;
-	for(i = 1; i < mygrid.getColumnsNum(); i++) {
-		var value = mygrid.getFilterElement(i).value;
-		if(value != "") {
-			columns[j] = mygrid.getColumnLabel(i, 0);
-			values[j++] = value;				
-		}
-	}
-	
-	return JSON.stringify({"columns": columns, "values": values});
-}
-
-function getColumnLabel(columnList) {
-			
-	for(i = 1; i < columnList.length; i++) {
-		var columnLabel = mygrid.getColumnLabel(i, 0)
-		if( columnLabel != columnList[i] ) {
-			mygrid.insertColumn(i, columnList[i], 'ro', "100");
-		}
-	}	
-}
-
 function getElementsByClassName(className) {
 	if (document.getElementsByClassName) { 		
-	  return document.getElementsByClassName('hdrcell')[1]; 
+		return document.getElementsByClassName('hdrcell')[1]; 
 	} else { 		
 		var els = (gridBOxTag.getElementsByTagName('td'))[1].childNodes;			
 		return els[0];			

@@ -26,6 +26,7 @@ import edu.wustl.common.util.global.Constants;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 import edu.wustl.query.bizlogic.CreateQueryObjectBizLogic;
 import edu.wustl.query.util.global.AQConstants;
+import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 /**
@@ -148,6 +149,7 @@ public class ExecuteQueryAction extends Action
 		}		
 		
 		HttpSession session = request.getSession();
+		session.removeAttribute(AQConstants.QUERY_WITH_FILTERS);
 		request.setAttribute(AQConstants.PAGE_NUMBER, Integer.toString(1));
 		List dataList = (List) session.getAttribute(AQConstants.PAGINATION_DATA_LIST);
 		request.setAttribute(AQConstants.PAGINATION_DATA_LIST, dataList);		
@@ -155,6 +157,8 @@ public class ExecuteQueryAction extends Action
 		request.setAttribute(AQConstants.SPREADSHEET_COLUMN_LIST, columnsList);
 		session.setAttribute(AQConstants.PAGINATION_DATA_LIST, null);		
 		request.setAttribute(AQConstants.PAGEOF, "pageOfQueryModule");
+		
+		Utility.setGridData(dataList, columnsList, request);
 		actionForward =  actionMapping.findForward(target);
 		return actionForward;
 	}

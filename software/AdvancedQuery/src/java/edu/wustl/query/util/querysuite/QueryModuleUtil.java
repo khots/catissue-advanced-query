@@ -601,17 +601,13 @@ final public class QueryModuleUtil
 		int pageNum = AQConstants.START_PAGE;
 		SelectedColumnsMetadata selColumnsMdata = (SelectedColumnsMetadata) spreadSheetDtmap
 				.get(AQConstants.SELECTED_COLUMN_META_DATA);
-		// OutputTreeDataNode object =
-		// selectedColumnsMetadata.getCurrentSelectedObject();
 		HttpSession session = request.getSession();
-		// session.setAttribute(Constants.CURRENT_SELECTED_OBJECT,object);
 		request.setAttribute(AQConstants.PAGE_NUMBER, Integer.toString(pageNum));
 		QuerySessionData querySessionData = (QuerySessionData) spreadSheetDtmap
 				.get(AQConstants.QUERY_SESSION_DATA);
 		int totalNoOfRecords = querySessionData.getTotalNumberOfRecords();
 		List<List<String>> dataList = (List<List<String>>) spreadSheetDtmap
 				.get(AQConstants.SPREADSHEET_DATA_LIST);
-		// request.setAttribute(Constants.SPREADSHEET_DATA_LIST,dataList);
 		request.setAttribute(AQConstants.PAGINATION_DATA_LIST, dataList);
 		List columnsList = (List) spreadSheetDtmap.get(AQConstants.SPREADSHEET_COLUMN_LIST);
 		if (columnsList != null)

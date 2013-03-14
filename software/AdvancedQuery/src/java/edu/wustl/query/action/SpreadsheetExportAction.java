@@ -283,6 +283,10 @@ public class SpreadsheetExportAction extends SecureAction
 		}
 		QuerySessionData querySessionData = (QuerySessionData) session
 				.getAttribute(edu.wustl.common.util.global.Constants.QUERY_SESSION_DATA);
+		String oldQuery = querySessionData.getSql();
+		if(session.getAttribute(AQConstants.QUERY_WITH_FILTERS) != null) {
+			querySessionData.setSql((String)session.getAttribute(AQConstants.QUERY_WITH_FILTERS));
+		}
 		List dataList1 = Utility.getPaginationDataList(request, getSessionData(request),
 				recordsPerPage, pageNum, querySessionData, isDefinedView);
 		List<List<String>> dataList = (List<List<String>>) session
@@ -292,6 +296,7 @@ public class SpreadsheetExportAction extends SecureAction
 			dataList = dataList1;
 		}
 		dataList = Utility.getFormattedOutput(dataList);
+		querySessionData.setSql(oldQuery);
 		return dataList;
 	}
 

@@ -1039,30 +1039,26 @@ public class QueryOutputSpreadsheetBizLogic
 	{
 		StringBuffer sql = new StringBuffer(selectSql);
 		List<String> selectSqlColumnList = getListOfSelectedColumns(selectSql);
-			Iterator<OutputTreeDataNode> iterator = queryDetailsObj.getUniqueIdNodesMap().values()
-			.iterator();
+			Iterator<OutputTreeDataNode> iterator = queryDetailsObj.getUniqueIdNodesMap().values().iterator();
 			while (iterator.hasNext())
 			{
 				OutputTreeDataNode outputTreeDataNode = iterator.next();
-				/*if(outputTreeDataNode.getExpressionId() == rootExp.getExpressionId())
-				{*/
-					List<QueryOutputTreeAttributeMetadata> attributes = outputTreeDataNode.getAttributes();
-					for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
+				List<QueryOutputTreeAttributeMetadata> attributes = outputTreeDataNode.getAttributes();
+				for (QueryOutputTreeAttributeMetadata attributeMetaData : attributes)
+				{
+					AttributeInterface attribute = attributeMetaData.getAttribute();
+					String sqlColumnName = attributeMetaData.getColumnName().trim();
+					if (attribute.getName().equals(AQConstants.IDENTIFIER))
 					{
-						AttributeInterface attribute = attributeMetaData.getAttribute();
-						String sqlColumnName = attributeMetaData.getColumnName().trim();
-						if (attribute.getName().equals(AQConstants.IDENTIFIER))
-						{
-							int index = selectSqlColumnList.indexOf(sqlColumnName);
+						int index = selectSqlColumnList.indexOf(sqlColumnName);
 
-							if (index < 0)
-							{
-								QueryCSMUtil.appendColNameToSql(selectSql, sql, sqlColumnName);
-								break;
-							}
+						if (index < 0)
+						{
+							QueryCSMUtil.appendColNameToSql(selectSql, sql, sqlColumnName);
+							break;
 						}
 					}
-				//}
+				}			
 			}
 		return sql;
 	}
@@ -1184,50 +1180,7 @@ public class QueryOutputSpreadsheetBizLogic
 		}
 		return column;
 	}
-
-	/**
-	 * Get number of records to be displayed per page in case of defined view.
-	 * @param queryDetailsObj queryDetailsObj
-	 * @param recordsPerPage recordsPerPage
-	 * @param selectSql selectSql
-	 * @return recordCount
-	 * @throws DAOException DAOException
-	 */
-	public int getRecordsPerPage(QueryDetails queryDetailsObj, String column, int recordsPerPage)
-	throws DAOException
-	{
-		int recordCount=0;
-		try
-		{
-			StringBuffer sql = new StringBuffer(80);
-			sql.append("SELECT ");
-			String tableName = AQConstants.TEMP_OUPUT_TREE_TABLE_NAME
-			+ queryDetailsObj.getSessionData().getUserId() + queryDetailsObj.getRandomNumber();
-			sql.append(column).append(",count(").append(column).append(") FROM ").append(tableName)
-			.append(" GROUP BY ").append(column).append(" ORDER BY ").append(column);
-			String appName=CommonServiceLocator.getInstance().getAppName();
-			IDAOFactory daoFactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
-			JDBCDAO jdbcDao = daoFactory.getJDBCDAO();
-			jdbcDao.openSession(null);
-			ResultSet resultSet = jdbcDao.getQueryResultSet(sql.toString());
-			int count=0;
-			while(resultSet.next())
-			{
-				if(count>=recordsPerPage)
-				{
-					break;
-				}
-				recordCount+=resultSet.getInt(2);
-				count++;
-			}
-		}
-		catch(SQLException e)
-		{
-			logger.error(e.getMessage(), e);
-		}
-		return recordCount;
-	}
-
+	
 	/**
 	 * If file type attribute column is present in the spreadsheet view
 	 * add the column to the data list.

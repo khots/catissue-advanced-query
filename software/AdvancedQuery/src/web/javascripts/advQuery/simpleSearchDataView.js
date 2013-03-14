@@ -1,10 +1,10 @@
 
 function onAddToCart() {
 	var isChecked = updateHiddenFields();	
-	var isCheckAllAcrossAllChecked = false;
+	var isCheckAllAcrossAllChecked = !isChecked;
 
     if(isChecked) {
-    	var action = "ShoppingCart.do";    	
+    	var action = "ShoppingCart.do";
 		if(isQueryModule == "true") {
 			action = "AddDeleteCart.do";			
 		} 
@@ -44,7 +44,7 @@ function getData()
 	var url = "ValidateQuery.do";
 	
 	var request = newXMLHTTPReq();
-	request.onreadystatechange = getReadyStateHandler(request,displayValidationMessage,true);
+	request.onreadystatechange = getReadyStateHandler(request, displayValidationMessage, true);
 	request.open("POST", url, true);
 	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 	request.send(param);
@@ -82,8 +82,8 @@ function onExport() {
 }
 
 function removeLoading() {
-	var superiframe=document.getElementById('superiframe');
-	superiframe.className="HiddenFrame";
+	var superiframe = document.getElementById('superiframe');
+	superiframe.className = "HiddenFrame";
 }
 
 //function that is called on click of Define View button for the configuration of search results
@@ -132,21 +132,6 @@ function onRedefineDAGQuery()
 	document.forms[0].submit();
 	hideCursor();
 }
-var selected;
-
-function addCheckBoxValuesToArray(checkBoxName)
-{
-	var theForm = document.forms[0];
-    selected = new Array();
-
-    for(var i = 0, j = 0; i < theForm.elements.length; i++)
-    {
- 	  	if(theForm[i].type == 'checkbox' && theForm[i].checked == true)
-	        selected[j++] = theForm[i].value;
-	}
-}
-
-   //Commented out By Baljeet...
 
 function callAction(action)
 {
@@ -154,24 +139,21 @@ function callAction(action)
 	document.forms[0].submit();
 }
 	
-	
 function getSpecimenIdList()
 {
-	var checkedRows = mygrid.getCheckedRows(0);
-	var idColumn = getIDColumnsForSpecimen();
-	var n = checkedRows.split(",");
+	var rows = mygrid.getCheckedRows(0).split(",");	
 	var specIds = "";
 	
-	for(var i = 0; i < n.length; i++)	{
-		specIds = specIds + mygrid.cellById(n[i],  idColumn).getValue()+ ",";
+	for(var i = 0; i < rows.length; i++)	{
+		specIds = specIds + mygrid.cellById(rows[i],  specimentIdColIndex).getValue()+ ",";
 	}
 	return specIds;
 }
 
 // for pop-up div
 function addToSpecimenList() {
-	var idSpecimenPresent = isIDColumnsForSpecimen();
-	if(idSpecimenPresent == null || idSpecimenPresent == '') {
+	
+	if(specimentIdColIndex == -1) {
 		alert('Specimen:Id missing in the grid! Please redefine the view and include Specimen:Id to use the Specimen List feature');
 	} else {
 		var checkedRows = mygrid.getCheckedRows(0);
@@ -200,7 +182,7 @@ function assignToSpecimenList()
 	if(isCheckAllPagesChecked)
 	{
 		var isCheckAllAcrossAllChecked = document.getElementById('checkAll').checked;
-		var specId =  getIDColumnsForSpecimen();
+		var specId =  specimentIdColIndex;
 		var parameter = "specIndex="+specId+"&operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
 		var url = "CatissueCommonAjaxAction.do?type=getSpecimenIds&"+parameter;
 
@@ -211,7 +193,7 @@ function assignToSpecimenList()
 		request.send("");
 	} else {		
 		giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&isCheckAllAcrossAllChecked='+isCheckAllPagesChecked,
-					'Select at least one existing list or create a new list.','No list has been selected to assign.',specimenIDS);
+					'Select at least one existing list or create a new list.','No list has been selected to assign.', specimenIDS);
 	}
 	
 }
