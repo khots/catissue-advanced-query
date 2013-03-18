@@ -64,8 +64,18 @@ function QueryWizard()
 	document.forms[0].submit();
 }
 window.onload = function() {  
-	ajaxQueryGridInitCall("QueryGridInitAction.do")
-   	doInitGrid();
+	<%
+		String tagId =(String) request.getAttribute("tagId");
+		if(tagId != null){ 
+	%>
+			doInitGrid('<%=tagId%>');
+			doOnRowSelected('<%=tagId%>');
+   	<%
+		} else { 
+	%>
+   			ajaxQueryGridInitCall("QueryGridInitAction.do");
+			doInitGrid();
+   	<%}%>
 	document.getElementById('protocolCoordinatorIds').style.marginLeft= "15px";
 	document.getElementById('addButton_coord').style.marginLeft= "21px";
 	document.getElementById('removeButton_coord').style.marginLeft= "21px";
@@ -76,7 +86,7 @@ function f()
 	searchDivTag.style.height = (document.body.clientHeight-105) + 'px';
 }
 var grid;
-function doInitGrid()
+function doInitGrid(tagId)
 {
 	grid = new dhtmlXGridObject('mygrid_container');
 	grid.setImagePath("dhtmlx_suite/dhtml_pop/imgs/");
@@ -88,7 +98,9 @@ function doInitGrid()
  	grid.setEditable(false);
    	grid.attachEvent("onRowSelect", doOnRowSelected);
  	grid.init();
- 	grid.load ("TagGridInItAction.do"); 
+ 	grid.load ("TagGridInItAction.do",function() {
+  	   grid.selectRowById(tagId);
+  	});
 }
 
 function doOnRowSelected(rId)
@@ -364,6 +376,9 @@ Ext.onReady(function(){
  										&nbsp&nbsp
 										<input type="button"  id="shareButton" value="SHARE FOLDER" title="Share Folder (Folder will be visible to the users you choose)" onclick="checkForValidation()"
 												onkeydown="checkForValidation()" style="width:120px; display:none" class="btn3">
+										<img id="loadingImg" style="float:left; padding-left:5px; display:none;"
+												height='25px' width='120px' src='images/advQuery/loading_circle.gif'
+										border='0'>
 									</p>
 								</td>
 							</tr>

@@ -72,7 +72,10 @@ public class ShowQueryDashboardAction extends SecureAction
 					ApplicationProperties.getValue("queryfolder.app.newfolder.text"));
 			request.setAttribute(AQConstants.POPUP_DELETE_QUERY_FOLDER_MESSAGE,
 					ApplicationProperties.getValue("queryfolder.confirmBox.folderdelete.message"));
-		
+			String tagId = request.getParameter("tagId");
+			if(tagId != null){
+				request.setAttribute("tagId", tagId);
+			}
 		}
 		else
 		{

@@ -9,6 +9,7 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 import edu.wustl.common.tags.bizlogic.ITagBizlogic;
@@ -16,7 +17,6 @@ import edu.wustl.common.tags.dao.TagDAO;
 import edu.wustl.common.tags.domain.Tag;
 import edu.wustl.common.tags.domain.TagItem;
 import edu.wustl.common.tags.util.TagUtil;
-import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.util.global.AQConstants;
@@ -108,14 +108,14 @@ public class QueryTagBizLogic implements ITagBizlogic
 	 * @throws DAOException,BizLogicException.
 	 */
 
-	public List<Tag> getTagList(Long userId) throws DAOException, BizLogicException
+	public List<Tag> getTagList(SessionDataBean sessionBean) throws DAOException, BizLogicException
 	{
 		TagDAO tagDao = null;
 		List<Tag> tagList = null;
 		try
 		{
 			tagDao = new TagDAO(AQConstants.ENTITY_QUERYTAG);
-			tagList = tagDao.getTags(userId); 
+			tagList = tagDao.getTags(sessionBean); 
 			return tagList;
 		}
 		catch (DAOException e)
@@ -198,17 +198,17 @@ public class QueryTagBizLogic implements ITagBizlogic
 	 * @throws DAOException,BizLogicException.
 	 */
 
-	public void deleteTag(Long tagId, Long userId) throws DAOException, BizLogicException
+	public void deleteTag(SessionDataBean sessionBean, Long tagId) throws DAOException, BizLogicException
 	{
 		TagDAO tagDao = null;
 		try
 		{
 			tagDao = new TagDAO(AQConstants.ENTITY_QUERYTAG); 
 			Tag tag = tagDao.getTagById(tagId);
-			if(tag.getUserId() == userId){
+			if(tag.getUserId() == sessionBean.getUserId()){
 				tagDao.deleteTag(tag);
 			} else {
-				tag.getSharedUserIds().remove(userId);
+				tag.getSharedUserIds().remove(Long.parseLong(sessionBean.getCsmUserId()));
 				tagDao.updateTag(tag);
 			}
 			tagDao.commit();
@@ -314,10 +314,11 @@ public class QueryTagBizLogic implements ITagBizlogic
 	 * @param Set<Long> tagIdSet.
 	 * @throws DAOException.
 	 */
-	public void shareTags(Long userId, Set<Long> tagIdSet, Set<Long> selectedUsers)
+	public void shareTags(SessionDataBean sessionBean, Set<Long> tagIdSet, Set<Long> csmUserIds)
 			throws DAOException, BizLogicException 
 	{
 		List<Tag> tags = new ArrayList<Tag>();
+		
 		for(Long tagId : tagIdSet) 
 		{
 			TagDAO tagDao = null;
@@ -325,16 +326,17 @@ public class QueryTagBizLogic implements ITagBizlogic
 			{
 				tagDao = new TagDAO(AQConstants.ENTITY_QUERYTAG);
 				Tag tag = tagDao.getTagById(tagId);
-				if(tag.getUserId() == userId)
+				if(tag.getUserId() == sessionBean.getUserId())
 				{
-					if(selectedUsers.contains(tag.getUserId())){
-						selectedUsers.remove(tag.getUserId());
+					Long csmUserId = Long.parseLong(sessionBean.getCsmUserId());
+					if(csmUserIds.contains(csmUserId)){
+						csmUserIds.remove(csmUserId);
 					}
-					tag.getSharedUserIds().addAll(selectedUsers);
+					tag.getSharedUserIds().addAll(csmUserIds); 
 					tagDao.updateTag(tag);
-					tags.add(tag);
 				}
 				tagDao.commit();
+				tags.add(tag);
 			}
 			catch (DAOException e)
 			{
@@ -348,19 +350,28 @@ public class QueryTagBizLogic implements ITagBizlogic
 				}
 			}	
 		} 
-		try {
-			Set<User> selectedUserSet = new HashSet<User>();
-			User user = UserCache.getUser(userId.toString());
-			for(Long sUserId:selectedUsers){
-				selectedUserSet.add (UserCache.getUser(sUserId.toString()));		
-			}
+		try 
+		{
 			if (! tags.isEmpty()){
+				Set<User> users = getUsersFromCsmIds(csmUserIds);
+				User user = UserCache.getUser(sessionBean.getCsmUserId());
 				TagUtil.sendSharedTagEmailNotification(user, tags, 
-						selectedUserSet, AQConstants.SHARE_QUERY_FOLDER_EMAIL_TEMPL);
+						users, AQConstants.SHARE_QUERY_FOLDER_EMAIL_TEMPL);
 			}
 		} catch (Exception e) {
 			LOGGER.error("Error while sending email for query folder",e);
 		} 
+	}
+	
+	public Set<User> getUsersFromCsmIds(Set<Long> csmUserIds) 
+			throws BizLogicException
+	{
+		Set<User> users = new HashSet<User>();		
+		for(Long userId : csmUserIds){
+			User user = UserCache.getUser(userId.toString());
+			users.add(user);	
+		}
+		return users;
 	}
  
 	/**
