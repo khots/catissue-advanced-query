@@ -122,10 +122,10 @@ int queryCount = 0;%>
 					{
 						%>
 				<option name="myQueries"
-					style="font-size: 0.9em; font-family: verdana;" value="MyQueries"><b><bean:message
+					style="font-size: 0.9em; font-family: verdana;" value="MyQueries" SELECTED><b><bean:message
 					key="my.queries" /></b></option>
 				<option name="allQueries" value="AllQueries"
-					style="font-size: 0.9em; font-family: verdana;" SELECTED><bean:message
+					style="font-size: 0.9em; font-family: verdana;" ><bean:message
 					key="all.queries" /></option>
 				<option name="allQueries" value="SharedQueries"
 					style="font-size: 0.9em; font-family: verdana;"><bean:message
