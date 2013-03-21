@@ -1389,7 +1389,7 @@ var interfaceObj;
 
 var jsReady = false;
 
-// ——- functions called by ActionScript ——-
+// -functions called by ActionScript -
 // called to check if the page has initialized and JavaScript is available
 	function isReady()
 	{
@@ -1441,12 +1441,55 @@ var jsReady = false;
 	/*This function is called form QueryListView.jsp. Pops up for confirmation while deleting the query*/
 	function deleteQueryPopup(queryId)
 	{
-		var r=confirm("Are you sure you want to delete the query?");
+		var r = confirm("Are you sure you want to delete the query?");
 		if (r==true)
 		{
 			deleteQuery(queryId);
 		}
 	}
+	var xmlHttpobj = false;
+	var queryGrid;
+	function deleteQuery(queryId) 	
+	{
+		var url = "DeleteQuery.do";
+		if (window.XMLHttpRequest)
+		{ 
+			xmlHttpobj=new XMLHttpRequest();
+		}
+		else
+		{ 
+			xmlHttpobj=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlHttpobj.open("POST", url, true);
+		xmlHttpobj.setRequestHeader("Content-Type",
+					"application/x-www-form-urlencoded");
+			 
+		xmlHttpobj.send("&queryId=" +queryId);
+		xmlHttpobj.onreadystatechange = showMsg;
+	} 
+		
+	function showMsg()
+	{
+	   if (xmlHttpobj.readyState == 4) 
+	   {
+		   var response = xmlHttpobj.responseText;
+		   var arrObj = eval('(' +response+ ')');	 
+		   var msg = arrObj.error;
+		   var color = 'red';
+		   if (arrObj.error == null) {
+			   queryGrid.deleteRow(queryGrid.getSelectedId());
+			   color = 'green';
+			   msg = arrObj.success;
+		   }
+		   document.getElementById('messageDiv').style.display = "block";
+		   document.getElementById('errorDiv').style.display = "none";
+		   document.getElementById("messageDiv").style.color = color;
+		   document.getElementById("messageDiv").textContent = msg;
+		   document.getElementById("messageDiv").innerText = msg;
+	 
+	   }
+	} 
+		 
 
 	/* This function is called from QueryListView.jsp*/
 	function editQuery(queryId)
@@ -1458,13 +1501,6 @@ var jsReady = false;
 		hideCursor();*/
 		document.forms['saveQueryForm'].action="EditQueryAction.do?queryId="+queryId;
 		document.forms['saveQueryForm'].submit();
-	}
-
-	function deleteQuery(queryId)
-	{
-		action="DeleteQuery.do?queryId="+queryId;
-		document.forms[0].action = action;
-		document.forms[0].submit();
 	}
 
 	function openDecisionMakingPage()

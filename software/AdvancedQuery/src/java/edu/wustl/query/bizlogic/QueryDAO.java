@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -39,11 +38,13 @@ public class QueryDAO {
 		+ " LEFT OUTER JOIN catissue_audit_event ae ON aeq.audit_event_id = ae.identifier" 
 		+ " WHERE" 
 		+ " aeq.query_id is null" 
+		+ " AND pq.status = 'ACTIVE'" 
 		+ " OR (ae.event_timestamp =" 
 				+ " (SELECT MAX(iae.event_timestamp)" 
 				+ " FROM catissue_audit_event iae, catissue_audit_event_query_log iaeq" 
 				+ " WHERE iaeq.audit_event_id = iae.identifier" 
-				+ " AND iaeq.query_id = pq.identifier))";
+				+ " AND iaeq.query_id = pq.identifier" 
+				+ " AND pq.status = 'ACTIVE'))";
 	
 	protected final static String GET_QUERIES_BY_ID =  
 		  " SELECT" 
@@ -53,12 +54,22 @@ public class QueryDAO {
 		+ " LEFT OUTER JOIN catissue_audit_event_query_log aeq ON aeq.query_id = pq.identifier" 
 		+ " LEFT OUTER JOIN catissue_audit_event ae ON aeq.audit_event_id = ae.identifier" 
 		+ " WHERE pq.identifier IN (%s)" 
+		+ " AND pq.status = 'ACTIVE'" 
 		+ " AND (aeq.query_id is null" 
 		+ " OR(ae.event_timestamp =" 
 				+ " (SELECT MAX(iae.event_timestamp)" 
 				+ " FROM catissue_audit_event iae, catissue_audit_event_query_log iaeq" 
 				+ " WHERE iaeq.audit_event_id = iae.identifier" 
-				+ " AND iaeq.query_id = pq.identifier)))";
+				+ " AND iaeq.query_id = pq.identifier" 
+				+ " AND pq.status = 'ACTIVE')))";
+	
+	private final static String UPDATE_QUERY_STATUS = 
+		  " UPDATE query_parameterized_query pq"
+		+ " SET pq.status = ?"
+		+ " WHERE"
+		+ " pq.identifier = ?";
+	
+	private final static String DELETE_TAGITEMS = "DELETE FROM query_tag_items WHERE obj_id = ?";
 	
 	public List<QueryDTO> getAllQueries() 
 	throws BizLogicException, DAOException {
@@ -185,4 +196,51 @@ public class QueryDAO {
 		
 		return parameters.toString();
 	}	
+	
+	public void deleteQuery(Long queryId) throws DAOException, BizLogicException
+	{
+		String appName=CommonServiceLocator.getInstance().getAppName();
+		IDAOFactory daofactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
+		JDBCDAO jdbcDAO = daofactory.getJDBCDAO(); 
+		try 
+		{
+			jdbcDAO.openSession(null);
+			List<ColumnValueBean> parameters = new ArrayList<ColumnValueBean>();
+			parameters.add(new ColumnValueBean("DELETED", DBTypes.VARCHAR));
+			parameters.add(new ColumnValueBean(queryId, DBTypes.LONG));	
+			jdbcDAO.executeUpdate(UPDATE_QUERY_STATUS, parameters); 
+			jdbcDAO.commit();	 
+		} 
+		catch (DAOException e) 
+		{
+			throw new BizLogicException(null,e,"DAOException: while deleting query");
+		} 
+		finally 
+		{
+			jdbcDAO.closeSession();
+		}
+	}
+	
+	public void deleteQueryTagItem(Long queryId) throws DAOException, BizLogicException
+	{
+		String appName=CommonServiceLocator.getInstance().getAppName();
+		IDAOFactory daofactory = DAOConfigFactory.getInstance().getDAOFactory(appName);
+		JDBCDAO jdbcDAO = daofactory.getJDBCDAO(); 
+		try 
+		{
+			jdbcDAO.openSession(null);
+			List<ColumnValueBean> parameters = new ArrayList<ColumnValueBean>();
+			parameters.add(new ColumnValueBean(queryId, DBTypes.LONG));
+			jdbcDAO.executeUpdate(DELETE_TAGITEMS, parameters); 
+			jdbcDAO.commit();	 
+		} 
+		catch (DAOException e) 
+		{
+			throw new BizLogicException(null,e,"DAOException: while deleting tag queries");
+		} 
+		finally 
+		{
+			jdbcDAO.closeSession();
+		}
+	}
 }

@@ -41,6 +41,7 @@ public class CommonQueryBizLogic
 			+ "WHERE " 
 			+ "qt.identifier = qti.tag_id AND "
 			+ "qpq.identifier = qti.obj_id AND "
+			+ "qpq.status = 'ACTIVE' AND "
 			+ "qti.tag_id = ? "
 			+ "ORDER BY qti.identifier DESC";				 
 						         

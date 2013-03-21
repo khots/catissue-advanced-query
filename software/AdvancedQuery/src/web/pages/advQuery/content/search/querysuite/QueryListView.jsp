@@ -21,8 +21,7 @@
 <%@ page import="edu.wustl.query.beans.DashboardBean"%>
 <head>
 <!-- dhtmlx Grid/tree Grid -->
-<script language="JavaScript" type="text/javascript"
-	src="jss/advQuery/queryModule.js"></script>
+<script type="text/javascript" src="jss/advQuery/queryModule.js"></script>
 <script type="text/javascript" src="jss/advQuery/wz_tooltip.js"></script>
 <script type="text/javascript" src="jss/tag-popup.js"></script>
 <link rel="stylesheet" type="text/css"
@@ -150,6 +149,7 @@ function showGrid() {
 		 queryGrid.enablePaging(true,20,10,"pagingArea",true);
 		 queryGrid.setPagingSkin("bricks");
 		 queryGrid.loadXMLString(responseString); 
+		 document.getElementById('messageDiv').style.display = "none";
 	}
 }
 
@@ -256,8 +256,9 @@ Ext.onReady(function(){
 					src="images/advQuery/dot.gif" width="1" height="25" /></td>
 			</tr>
 			<tr>
-				<td style="margin-left:10px;" class="savedQueryHeading">
-						<html:errors />
+				<td style="padding-left:10px;" class="savedQueryHeading">
+						<div id="errorDiv" ><html:errors /></div>
+						<div id="messageDiv" style="font-size: 0.9em; font-family: verdana; display:none"> <bean:message key="query.deletedSuccessfully.message"/></div>
 				</td>
 				<td>
 					<div>
@@ -405,3 +406,8 @@ Ext.onReady(function(){
 <html:hidden styleId="queryId" property="queryId" />
 </html:form>
 </body>
+<script>
+
+ 
+
+</script>
