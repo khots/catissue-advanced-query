@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.wustl.common.query.factory.AbstractQueryGeneratorFactory;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
-import edu.wustl.common.query.queryobject.impl.QueryTreeNodeData;
 import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.query.queryobject.util.QueryObjectProcessor;
@@ -147,7 +146,9 @@ public class QueryModuleSearchQueryUtil
 		int initialValue = 0;
 		QueryModuleException queryModExp;
 		List<OutputTreeDataNode> inViewRootList = getRootOutputNodeList(queryDetailsObj.getRootOutputTreeNodeList());
+		
 		processRecords(queryDetailsObj, inViewRootList.get(0), hasCondOnIdentifiedField);
+		
 	}
 
 	/**
@@ -170,29 +171,7 @@ public class QueryModuleSearchQueryUtil
          return childList;
 
 	}
-
-	/**
-	 * @param option
-	 * @param initialValue
-	 * @param treeData
-	 * @return int
-	 * @throws QueryModuleException
-	 */
-	private int setTreeData(int initValue, List<QueryTreeNodeData> treeData)
-			throws QueryModuleException
-	{
-		int initialValue = initValue;
-		int resultsSize = treeData.size();
-		if (resultsSize == 0)
-		{
-			throw new QueryModuleException("Query Returns Zero Results",
-					QueryModuleError.NO_RESULT_PRESENT);
-		}
-		session.setAttribute(AQConstants.TREE_DATA + AQConstants.UNDERSCORE + initialValue, treeData);
-		initialValue += 1;
-		return initialValue;
-	}
-
+ 
 	/**
 	 * @return outputTreeBizLogic
 	 * @throws QueryModuleException

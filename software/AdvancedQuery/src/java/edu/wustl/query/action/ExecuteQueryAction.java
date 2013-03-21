@@ -138,9 +138,19 @@ public class ExecuteQueryAction extends Action
 		ActionForward actionForward;
 		String errorMessage = QueryModuleUtil.executeQuery(request, cloneQuery);
 
-		if ("".equals(errorMessage))
+		if (errorMessage != null || !errorMessage.isEmpty())
 		{
 			target = AQConstants.SUCCESS;
+			HttpSession session = request.getSession();
+			session.removeAttribute(AQConstants.QUERY_WITH_FILTERS);
+			request.setAttribute(AQConstants.PAGE_NUMBER, Integer.toString(1));
+			List dataList = (List) session.getAttribute(AQConstants.PAGINATION_DATA_LIST);
+			request.setAttribute(AQConstants.PAGINATION_DATA_LIST, dataList);		
+			List<String> columnsList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
+			request.setAttribute(AQConstants.SPREADSHEET_COLUMN_LIST, columnsList);
+			session.setAttribute(AQConstants.PAGINATION_DATA_LIST, null);		
+			request.setAttribute(AQConstants.PAGEOF, "pageOfQueryModule");			
+			Utility.setGridData(dataList, columnsList, request);			
 		}
 		else
 		{
@@ -148,17 +158,6 @@ public class ExecuteQueryAction extends Action
 			saveActionErrors(request, errorMessage);
 		}		
 		
-		HttpSession session = request.getSession();
-		session.removeAttribute(AQConstants.QUERY_WITH_FILTERS);
-		request.setAttribute(AQConstants.PAGE_NUMBER, Integer.toString(1));
-		List dataList = (List) session.getAttribute(AQConstants.PAGINATION_DATA_LIST);
-		request.setAttribute(AQConstants.PAGINATION_DATA_LIST, dataList);		
-		List<String> columnsList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
-		request.setAttribute(AQConstants.SPREADSHEET_COLUMN_LIST, columnsList);
-		session.setAttribute(AQConstants.PAGINATION_DATA_LIST, null);		
-		request.setAttribute(AQConstants.PAGEOF, "pageOfQueryModule");
-		
-		Utility.setGridData(dataList, columnsList, request);
 		actionForward =  actionMapping.findForward(target);
 		return actionForward;
 	}

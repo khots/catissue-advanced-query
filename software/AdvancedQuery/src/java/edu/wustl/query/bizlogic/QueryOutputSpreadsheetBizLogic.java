@@ -1,8 +1,6 @@
 
 package edu.wustl.query.bizlogic;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,19 +38,16 @@ import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
 import edu.wustl.common.querysuite.queryobject.impl.OutputAttribute;
 import edu.wustl.common.querysuite.utils.QueryUtility;
 import edu.wustl.common.util.PagenatedResultData;
-import edu.wustl.common.util.Utility;
-import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.LoggerConfig;
-import edu.wustl.dao.JDBCDAO;
-import edu.wustl.dao.daofactory.DAOConfigFactory;
-import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
 import edu.wustl.query.util.querysuite.QueryDetails;
+import edu.wustl.query.util.querysuite.QueryModuleError;
+import edu.wustl.query.util.querysuite.QueryModuleException;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 import edu.wustl.query.util.querysuite.TemporalColumnMetadata;
 import edu.wustl.query.util.querysuite.TemporalColumnUIBean;
@@ -106,6 +101,7 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @return Map for data
 	 * @throws DAOException DAOException
 	 * @throws ClassNotFoundException ClassNotFoundException
+	 * @throws QueryModuleException 
 	 */
 	public Map processSpreadsheetForLabelNode(HttpSession session,
 			Map<Long, Map<AttributeInterface, String>> columnMap, String idOfClickedNode,
@@ -113,7 +109,7 @@ public class QueryOutputSpreadsheetBizLogic
 			boolean hasConditionOnIdentifiedField,
 			Map<Long, QueryResultObjectDataBean> beanMap,
 			IConstraints constraints, Map<String, IOutputTerm> outputTermsColumns, Map<String, String> specimenMap)
-			throws DAOException, ClassNotFoundException
+			throws DAOException, ClassNotFoundException, QueryModuleException
 	{
 		Map<Long, QueryResultObjectDataBean> queryResultDataMap = beanMap;
 		QueryDetails queryDetailsObj = new QueryDetails(session);
@@ -245,12 +241,13 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @return Map of spreadsheet data
 	 * @throws DAOException DAOException
 	 * @throws ClassNotFoundException ClassNotFoundException
+	 * @throws QueryModuleException 
 	 */
 	public Map processSpreadsheetForDataNode(HttpSession session,
 	String actualParentNodeId, int recordsPerPage,SelectedColumnsMetadata
 	selectedColumnMetaData, boolean hasConditionOnIdentifiedField,
 	Map<Long, QueryResultObjectDataBean> beanMap,IConstraints constraints,
-	Map<String, IOutputTerm> outputTermsColumns, Map<String, String> specimenMap)throws DAOException, ClassNotFoundException
+	Map<String, IOutputTerm> outputTermsColumns, Map<String, String> specimenMap)throws DAOException, ClassNotFoundException, QueryModuleException
 	{
 		Map<Long, QueryResultObjectDataBean> queryResultDataMap = beanMap;
 		QueryDetails queryDetailsObj = new QueryDetails(session);
@@ -315,6 +312,7 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @param outputTermsColumns outputTermsColumns
 	 * @return map having data for column headers and data records.
 	 * @throws DAOException  DAOException
+	 * @throws QueryModuleException 
 	 */
 	public Map<String, List<String>> createSpreadsheetData(String treeNo, OutputTreeDataNode node,
 			QueryDetails queryDetailsObj, String parentData, int recordsPerPage,
@@ -322,7 +320,7 @@ public class QueryOutputSpreadsheetBizLogic
 			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap,
 			boolean hasConditionOnIdentifiedField, IConstraints constraints,
 			Map<String, IOutputTerm> outputTermsColumns, Map<String, String> specimenMap) throws DAOException,
-			ClassNotFoundException
+			ClassNotFoundException, QueryModuleException
 	{
 		selectedColumnMetaData = selectedColumnsMetadata;
 		Map spreadSheetDataMap = updateSpreadsheetData(queryDetailsObj, parentData, node,
@@ -363,13 +361,14 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @return spreadSheetDataMap
 	 * @throws ClassNotFoundException ClassNotFoundException
 	 * @throws DAOException DAOException
+	 * @throws QueryModuleException 
 	 */
 	private Map updateSpreadsheetData(QueryDetails queryDetailsObj, String parentData,
 			OutputTreeDataNode node, int recordsPerPage,
 			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap,
 			boolean hasConditionOnIdentifiedField, IConstraints constraints,
 			Map<String, IOutputTerm> outputTermsColumns, Map<String, String> specimenMap) throws ClassNotFoundException,
-			DAOException
+			DAOException, QueryModuleException
 	{
 		Map spreadSheetDataMap = new HashMap();
 		String sql = queryDetailsObj.getSaveGeneratedQuery();
@@ -958,11 +957,12 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @return querySessionData
 	 * @throws ClassNotFoundException
 	 * @throws DAOException
+	 * @throws QueryModuleException 
 	 */
 	public QuerySessionData getQuerySessionData(QueryDetails queryDetailsObj, int recordsPerPage,
 			int startIndex, Map spreadSheetDataMap, String selectSql,
 			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap,
-			boolean hasConditionOnIdentifiedField, SelectedColumnsMetadata selectedColumnsMetadata) throws ClassNotFoundException, DAOException
+			boolean hasConditionOnIdentifiedField, SelectedColumnsMetadata selectedColumnsMetadata) throws ClassNotFoundException, DAOException, QueryModuleException
 	{
 		SelectedColumnsMetadata selectedColMetadata = handleDefineViewCase(selectedColumnsMetadata);
 		QuerySessionData querySessionData = new QuerySessionData();
@@ -982,6 +982,10 @@ public class QueryOutputSpreadsheetBizLogic
 		PagenatedResultData pagenatedResultData = qBizLogic.execute(queryDetailsObj
 				.getSessionData(), querySessionData, startIndex);
 		List<List<String>> dataList = pagenatedResultData.getResult();
+		if(dataList == null || dataList.isEmpty()){
+			throw new QueryModuleException("Query Returns Zero Records",
+					QueryModuleError.NO_RESULT_PRESENT);
+		}
 		List<List<String>> listForFileType = dataList;
 		querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
 		// if denormalization is on then execute below block else do not execute this block.
