@@ -35,6 +35,7 @@ import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
 import edu.wustl.query.generator.ISqlGenerator;
 import edu.wustl.query.util.global.AQConstants;
+import edu.wustl.security.exception.SMException;
 
 /**
  * @author santhoshkumar_c
@@ -140,38 +141,40 @@ public class QueryModuleSearchQueryUtil
 	 * @param outputTreeBizLogic
 	 * @param hasCondOnIdentifiedField
 	 * @throws QueryModuleException
+	 * @throws SQLException 
 	 */
 	private void setDataInSession(boolean hasCondOnIdentifiedField) throws QueryModuleException
-	{
-		int initialValue = 0;
+	{		 
 		QueryModuleException queryModExp;
-		List<OutputTreeDataNode> inViewRootList = getRootOutputNodeList(queryDetailsObj.getRootOutputTreeNodeList());
-		
-		processRecords(queryDetailsObj, inViewRootList.get(0), hasCondOnIdentifiedField);
-		
+		OutputTreeDataNode rootOutputnode = queryDetailsObj.getRootOutputTreeNodeList().get(0);
+		try
+		{	
+			int count = QueryModuleSqlUtil.getCountForQuery(queryDetailsObj.getSaveGeneratedQuery(), queryDetailsObj);
+			updateQueryAuditDetails(rootOutputnode, count, queryDetailsObj.getAuditEventId());
+			processRecords(queryDetailsObj, rootOutputnode, hasCondOnIdentifiedField);	
+		} 
+		catch (DAOException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
+		}
+		catch (ClassNotFoundException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.CLASS_NOT_FOUND);
+			throw queryModExp;
+		}
+		catch (SMException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
+			throw queryModExp;
+		}
+		catch (SQLException e)
+		{
+			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.SQL_EXCEPTION);
+			throw queryModExp;
+		}
 	}
 
-	/**
-	 * @param rootOutputTreeNodeList
-	 * @return
-	 */
-	private List<OutputTreeDataNode> getRootOutputNodeList(List<OutputTreeDataNode> rootOutputTreeNodeList)
-	{
-		 List<OutputTreeDataNode> childList = new ArrayList<OutputTreeDataNode>();
-		 OutputTreeDataNode parentNode = rootOutputTreeNodeList.get(0);
-         if(parentNode.isInView())
-        {
-    	   childList.add(parentNode);
-        }
-         else
-         {
-	        childList.addAll(QueryModuleUtil.getInViewChildren(parentNode));
-         }
-
-         return childList;
-
-	}
- 
 	/**
 	 * @return outputTreeBizLogic
 	 * @throws QueryModuleException
@@ -179,8 +182,7 @@ public class QueryModuleSearchQueryUtil
 	private void auditQuery() throws QueryModuleException
 	{
 	    CommonQueryBizLogic queryBizLogic = new CommonQueryBizLogic();
-		QueryModuleException queryModExp;
-		
+		QueryModuleException queryModExp;		
 		try
 		{
 			String selectSql = (String) session.getAttribute(AQConstants.SAVE_GENERATED_SQL);
@@ -228,7 +230,7 @@ public class QueryModuleSearchQueryUtil
 		long auditEventId;
 		if(session.getAttribute(AQConstants.AUDIT_EVENT_ID)== null)
 		{
-			auditEventId = queryBizLogic.insertQuery(selectSql, queryDetailsObj.getSessionData());
+			auditEventId = queryBizLogic.insertQuery(selectSql, queryDetailsObj.getSessionData()); 
 			QueryModuleSqlUtil.updateAuditQueryDetails(AQConstants.QUERY_ID, query.getId().toString(), auditEventId);
 			session.setAttribute(AQConstants.AUDIT_EVENT_ID,auditEventId);
 		}
@@ -268,7 +270,6 @@ public class QueryModuleSearchQueryUtil
 			}
 			selectSql = newSql;
 		}
-	
 	}
 
 	/**
@@ -643,5 +644,15 @@ public class QueryModuleSearchQueryUtil
 		selectedColumnsMetadata.setDefinedView(false);
 		isDefinedView = false;
 		return isDefinedView;
+	}
+	
+	private void updateQueryAuditDetails(OutputTreeDataNode root, int cntOfRootRecs,
+    		long auditEventId) throws DAOException, SQLException
+    {
+		String rootEntityName = root.getOutputEntity().getDynamicExtensionsEntity().getName();
+		QueryModuleSqlUtil.updateAuditQueryDetails(AQConstants.ROOT_ENTITY_NAME,
+				rootEntityName, auditEventId);
+		QueryModuleSqlUtil.updateAuditQueryDetails(AQConstants.COUNT_OF_ROOT_RECORDS,
+				Integer.toString(cntOfRootRecs), auditEventId);
 	}
 }

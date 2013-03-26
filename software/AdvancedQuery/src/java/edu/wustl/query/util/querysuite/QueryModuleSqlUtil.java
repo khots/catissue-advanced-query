@@ -7,11 +7,9 @@ import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.util.QueryParams;
-import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.JDBCDAO;
@@ -142,7 +140,7 @@ final public class QueryModuleSqlUtil {
 		} finally {
 			jdbcDao.closeSession();
 		}
-		if (dataList != null) {
+		if (dataList != null  && ! dataList.isEmpty()) {
 			List<String> countList = dataList.get(0);
 			count = Integer.valueOf(countList.get(0));
 		}
