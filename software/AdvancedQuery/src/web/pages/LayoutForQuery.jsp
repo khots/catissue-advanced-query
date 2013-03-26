@@ -140,7 +140,15 @@
 			var frameUrl = "<%=XMLPropertyHandler.getValue("userguide.link")%>";
 			NewWindow(frameUrl,'name');
 		}
-
+		
+		function getHelpURL()
+		{
+			var URL="<%=helpURL%>";
+			if(URL!="")
+			{
+				window.open(URL,'_blank');
+			}		
+		}
 	</script>
 <!--Jitendra -->
 
