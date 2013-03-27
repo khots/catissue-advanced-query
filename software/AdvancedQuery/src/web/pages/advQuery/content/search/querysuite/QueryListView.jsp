@@ -42,6 +42,7 @@
 <script src="dhtmlx_suite/ext/dhtmlxgrid_pgn.js"></script>
 <script src="dhtmlx_suite/js/dhtmlxgridcell.js"></script>
 <script src="dhtmlx_suite/dhtml_pop/js/spec_dhtmlXTreeGrid.js"></script>  
+<script src="dhtmlx_suite/gridexcells/dhtmlxgrid_excell_link.js"></script> 
 
 <!-- Combo box -->
 <script>var imgsrc="/images/de/";</script>
@@ -137,12 +138,13 @@ function showGrid() {
 		 queryGrid.attachHeader("#rspan,#numeric_filter,#text_filter,#text_filter,#rspan,#select_filter,#rspan"); 
 		 queryGrid.setInitWidthsP("3,5,*,20,11,12,10");
 		 queryGrid.setColAlign("center,center,left,left,center,center,left");
-		 queryGrid.setColTypes("txt,txt,txt,txt,txt,txt,txt");
-		 queryGrid.setColSorting("str,int,str,str,str,str");
+		 queryGrid.setColTypes("txt,txt,link,txt,txt,txt,txt");
+		 queryGrid.setColSorting("str,int,str_custom,str,str,str");
 		 queryGrid.setSkin("dhx_skyblue"); // (xp, mt, gray, light, clear, modern)
 		 queryGrid.enableRowsHover(true,'grid_hover')
 		 queryGrid.setEditable(false);
-		 queryGrid.enableTooltips("false,false,false,false,false,false,false");
+		 queryGrid.enableTooltips("false,false,true,false,false,false,false");
+		 queryGrid.setCustomSorting(str_custom, 2);
 		 queryGrid.clearAll(true);
 		 queryGrid.init();
 		 queryGrid.enablePaging(true,20,10,"pagingArea",true);

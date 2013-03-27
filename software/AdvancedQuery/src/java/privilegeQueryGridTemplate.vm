@@ -4,7 +4,7 @@
 	<row id="$query.queryId">
 		<cell><![CDATA[<input name='objCheckbox' value='$query.queryId' type='checkbox'/>]]></cell>	
 		<cell>$query.queryId</cell>
-		<cell><![CDATA[<a style='font-size: 1em;' href='#' onmouseover='Tip("Description : $query.queryDescription", WIDTH,200)' onclick='executeQuery("$query.queryId")'> $query.queryName </a>]]></cell>
+		<cell style='font-size:.7em;' title="Description : $query.queryDescription "> $query.queryName^javascript:executeQuery("$query.queryId");^_self</cell>
 		<cell>$query.rootEntityName ($query.countOfRootRecords)</cell>
 		<cell>$query.executedOn</cell>
 		<cell>$query.ownerName </cell>
