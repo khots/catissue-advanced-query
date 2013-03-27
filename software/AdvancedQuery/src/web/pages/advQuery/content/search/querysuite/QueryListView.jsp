@@ -76,6 +76,7 @@ window.onload = function() {
 	document.getElementById('protocolCoordinatorIds').style.marginLeft= "15px";
 	document.getElementById('addButton_coord').style.marginLeft= "21px";
 	document.getElementById('removeButton_coord').style.marginLeft= "21px";
+	initCombo();
 }  
 function f()
 {
@@ -208,7 +209,7 @@ function checkForValidation()
 		}
 	}
 }
-Ext.onReady(function(){
+function initCombo(){
 	var myUrl= 'ShareQueryAjax.do?';
 	var ds = new Ext.data.Store({proxy: new Ext.data.HttpProxy({url: myUrl}),
 	reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, [{name: 'id', mapping: 'id'},{name: 'excerpt', mapping: 'field'}])});
@@ -228,7 +229,8 @@ Ext.onReady(function(){
 		if (this.getAt(0) != null && this.getAt(0).get('excerpt')) 
 		{combo.typeAheadDelay=50;
 		} else {combo.typeAheadDelay=60000}
-		});});
+		});
+	}
 </script>
  
  <html:messages id="messageKey" message="true">
