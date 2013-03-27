@@ -136,9 +136,9 @@ public class ExecuteQueryAction extends Action
 	{
 		String target;// = AQConstants.FAILURE;
 		ActionForward actionForward;
-		String errorMessage = QueryModuleUtil.executeQuery(request, cloneQuery);
+		String errorMessage = QueryModuleUtil.executeQuery(request, cloneQuery);  
 
-		if (errorMessage != null || !errorMessage.isEmpty())
+		if (errorMessage == null || errorMessage.isEmpty()) 
 		{
 			target = AQConstants.SUCCESS;
 			HttpSession session = request.getSession();
