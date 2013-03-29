@@ -24,7 +24,6 @@ import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.dao.util.DAOUtility;
 import edu.wustl.query.beans.DashBoardBean;
-import edu.wustl.query.bizlogic.DefaultQueryBizLogic;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.UserCache;
 import edu.wustl.query.util.global.Utility;
@@ -691,10 +690,17 @@ public class DashboardBizLogic extends DefaultQueryBizLogic
 		String queryNameLike = "";
 		try
 		{
+			Set<Long> allQueryIds = new HashSet<Long>();
+
+            queries = CsmUtility.retrieveQueries(allQueryIds, queryNameLike);
 			Collection<Long> myQueriesIdList = CsmUtility.getQueriesIdList(userPG);
+			Collection<Long> sharedQueryIdList = CsmUtility.getSharedQueryIdList(userName);
 			Collection<Long> queryIds = getQueryIdsFromUserId(csmUserId);
-			myQueriesIdList.addAll(queryIds);
-			queries = CsmUtility.retrieveQueries(myQueriesIdList, queryNameLike);
+
+            allQueryIds.addAll(myQueriesIdList);
+            allQueryIds.addAll(queryIds);
+            allQueryIds.addAll(sharedQueryIdList);
+			queries = CsmUtility.retrieveQueries(allQueryIds, queryNameLike);
 		}
 		catch (SMException e)
 		{
