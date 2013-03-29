@@ -37,7 +37,7 @@ function hideTreeChecked()
 
 }
 </script>
-<html:form method="GET" action="<%=formAction%>"
+<html:form method="POST" action="<%=formAction%>"
 	style="margin:0;padding:0;">
 	<html:hidden property="stringToCreateQueryObject" value="" />
 	<html:hidden property="nextOperation" value="" />
