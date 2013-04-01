@@ -37,6 +37,7 @@ function viewSPR(id)
 /************************************ Query Grid **************************************/
 var mygrid = new dhtmlXGridObject('gridbox'); ;
 var rowCount = 0;
+var totalCount = 0;
 function initQueryGrid() {	
 	
 	mygrid.setImagePath("newDhtmlx/imgs/");	
@@ -60,12 +61,13 @@ function initQueryGrid() {
 	var jsonData = gridDataJson.gridData;
 	mygrid.parse(jsonData, "json");
 	rowCount = jsonData.rows.length;
+	totalCount = jsonData.total_count;
 	createHiddenElement();
 	window.setTimeout(addRecordPerPageOption, 500)
 	
 	checkBoxCell = getElementsByClassName('hdrcell');
 	checkBoxCell.style.paddingLeft = "0px";
-	gridBOxTag.style.width = (gridBOxTag.offsetWidth - 6 ) + "px"		
+	gridBOxTag.style.width = (gridBOxTag.offsetWidth - 6 ) + "px"
 }
 
 var sortIndex;
@@ -87,7 +89,7 @@ mygrid.attachEvent("onBeforePageChanged", function(ind, count){
 	var option = mygrid.aToolBar.getListOptionSelected('perpagenum').split("_");
 	recordPerPage = option[1];
 	pageNum = count;
-	getGridData()
+	getGridData();
 	return true;
 });
 
@@ -165,8 +167,10 @@ function addRecordPerPageOption() {
 	for(i = 0; i < opt.length; i++) {
 		toolbar.addListOption('perpagenum', 'perpagenum_'+ opt[i], NaN, "button", opt[i]+" "+ mygrid.i18n.paging.perpage);
 	}
-		
+
 	toolbar.setListOptionSelected('perpagenum', 'perpagenum_' + recordPerPage);
+	toolbar.addText("blanck_space",10,"");
+	toolbar.addText("total_count_txt",11 ," Total Records : "+totalCount);
 }
 
 function getElementsByClassName(className) {
