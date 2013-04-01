@@ -46,7 +46,7 @@
 	}
 </style>
 
-<table width="100%" border="0">
+<table width="99.9%" border="0">
 	<tr>
 		<td>
 			<div id='gridbox' border='0' style='background-color:#d9d7d7;'></div>
@@ -59,11 +59,13 @@
 <script type="text/javascript">
 	var isCheckAllPagesChecked ;
 	var gridDataJson = <%=(String) request.getAttribute("gridDataJson")%>;
-	var filters = "#master_checkbox<%for(int col = 1; col < columnList.size(); col++){%>,#text_filter<%}%>";
+	<% int tempColumnSize = (Integer)session.getAttribute("temporalColumnSize");
+	int filterCounts = columnList.size()-tempColumnSize;%>
+	var filters = "#master_checkbox<%for(int col = 1; col < columnList.size(); col++){ if(col< filterCounts){ %>,#text_filter<%} else {%>,#rspan<%}}%>";
 	var colWidth = "<%=(String) request.getAttribute("colWidth")%>";
 	var colTypes = <%=(String) request.getAttribute("colTypes")%>;
 	var colDataTypes = colTypes;
-
+	var filterCounts = <%= filterCounts %>;
 	while(colDataTypes.indexOf("str") != -1)
 	{
 		colDataTypes = colDataTypes.replace(/str/,"ro");

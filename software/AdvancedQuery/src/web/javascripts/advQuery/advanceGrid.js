@@ -118,7 +118,7 @@ function getJsonForFilter() {
 	var columns = []
 	var values = []
 	var j = 0;
-	for(i = 1; i < mygrid.getColumnsNum(); i++) {
+	for(i = 1; i < filterCounts; i++) {
 		var value = mygrid.getFilterElement(i).value;
 		if(value != "") {
 			columns[j] = mygrid.getColumnLabel(i, 0);

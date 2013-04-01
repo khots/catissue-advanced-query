@@ -385,6 +385,7 @@ public class QueryModuleSearchQueryUtil
 		{
 			ISqlGenerator sqlGenerator = AbstractQueryGeneratorFactory.getDefaultQueryGenerator();
 			Map<String, IOutputTerm> outputTermsColumns = populateOutputTerms(sqlGenerator);
+			session.setAttribute("temporalColumnSize", outputTermsColumns.size());
 			session.setAttribute(AQConstants.OUTPUT_TERMS_COLUMNS, outputTermsColumns);
 			Map<String, List<String>> spreadSheetDatamap = outputSpreadsheetBizLogic
 					.createSpreadsheetData(AQConstants.TREENO_ZERO, node, QueryDetailsObj, null,
