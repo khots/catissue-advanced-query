@@ -59,22 +59,26 @@ public class QueryGridFilterAction extends SecureAction
 		querySessionData.setSql(getQuery(session, request, oldquery));
 				
 		boolean isContPresent = new QueryOutputSpreadsheetBizLogic().isContainmentPresent(queryDetailsObj.getQuery());;		
-				
-		List dataList = Utility.getPaginationDataList(request, getSessionData(request),
-				recordsPerPage, pageNum, querySessionData, selectedColMetadata.isDefinedView());
-		
-		if(isContPresent && queryDetailsObj.getQuery().getConstraints().size() != 1 
-				&& !queryDetailsObj.getQuery().getIsNormalizedResultQuery())
-		{
-			SpreadsheetDenormalizationBizLogic  denormalizationBizLogic = new SpreadsheetDenormalizationBizLogic();
-			Map<String,Object> exportDetailsMap = denormalizationBizLogic.scanIQuery
-														(queryDetailsObj, dataList, selectedColMetadata, querySessionData);
-			if(!exportDetailsMap.isEmpty())
+		List dataList = new ArrayList();
+		try{
+			dataList = Utility.getPaginationDataList(request, getSessionData(request), 
+					recordsPerPage, pageNum, querySessionData, selectedColMetadata.isDefinedView());
+			
+			if(isContPresent && queryDetailsObj.getQuery().getConstraints().size() != 1 
+					&& !queryDetailsObj.getQuery().getIsNormalizedResultQuery())
 			{
-				dataList = (List<List<String>>)exportDetailsMap.get("dataList");
-				List<String>colList = (List<String>)exportDetailsMap.get("headerList");
-				session.setAttribute(AQConstants.SPREADSHEET_COLUMN_LIST, colList);
+				SpreadsheetDenormalizationBizLogic  denormalizationBizLogic = new SpreadsheetDenormalizationBizLogic();
+				Map<String,Object> exportDetailsMap = denormalizationBizLogic.scanIQuery
+															(queryDetailsObj, dataList, selectedColMetadata, querySessionData);
+				if(!exportDetailsMap.isEmpty())
+				{
+					dataList = (List<List<String>>)exportDetailsMap.get("dataList");
+					List<String>colList = (List<String>)exportDetailsMap.get("headerList");
+					session.setAttribute(AQConstants.SPREADSHEET_COLUMN_LIST, colList);
+				}
 			}
+		} catch(Exception e){
+			LOGGER.error("Exception while executing query: ", e);
 		}
 		session.setAttribute(AQConstants.DENORMALIZED_LIST, dataList);
 		session.setAttribute(AQConstants.TOTAL_RESULTS, querySessionData.getTotalNumberOfRecords());
@@ -123,13 +127,18 @@ public class QueryGridFilterAction extends SecureAction
 			for(QueryOutputTreeAttributeMetadata attr: attributes){
 				AttributeTypeInformation type = (AttributeTypeInformation) attr.getAttribute().getAttributeTypeInformation();
 				String value = paramsMap.get(attr.getDisplayName());
-				if(value != null && !value.equals("")){
+				if(value != null && !value.equals("")){  
 					if(type instanceof StringAttributeTypeInformation) {
-						query.append(attr.getColumnName()).append(" LIKE '")
-							.append(value).append("%' and ");
+						query.append("UPPER (").append(attr.getColumnName()).append(") LIKE '%")
+							.append(value.toUpperCase()).append("%' and ");						
+					} else if(type instanceof NumericAttributeTypeInformation || 
+								type instanceof BooleanAttributeTypeInformation){ 
 						
-					} else if(type instanceof NumericAttributeTypeInformation ||
-								type instanceof BooleanAttributeTypeInformation){
+						if(!value.matches("[0-9]+")){
+							value = "true".contains(value.toLowerCase())? "true": value ;
+							value = "false".contains(value.toLowerCase())? "false": value ;
+						}
+						
 						query.append(attr.getColumnName()).append(" = ")
 							.append(value).append(" and ");						
 					} else if(type instanceof DateAttributeTypeInformation) {
