@@ -125,9 +125,9 @@
 					</td>
 				</tr>
 
-				<tr width="100%">
+				<tr>
 					<td style="padding: 5px 0 0 3px;">
-					<table cellpadding="0" cellspacing="0" border="0" width="100%">
+					<table cellpadding="0" cellspacing="0" border="0" width="99.9%">
 						<tr>			
 							<%
 								if(specimentIdColIndex != -1) {
