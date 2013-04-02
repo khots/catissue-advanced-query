@@ -76,16 +76,19 @@ public class QueryTagBizLogic implements ITagBizlogic
 		TagDAO<ParameterizedQuery> tagDao = null;
 		try
 		{
-			Tag tag = new Tag();
-			tag.setIdentifier(tagId);
-			TagItem<ParameterizedQuery> tagItem = new TagItem<ParameterizedQuery>();
-  
-			tagItem.setTag(tag);
-			tagItem.setObjId(objId);
-
-			tagDao = new TagDAO<ParameterizedQuery>(AQConstants.ENTITY_QUERYTAGITEM);
-			tagDao.insertTagItem(tagItem);
-		
+			tagDao = new TagDAO(AQConstants.ENTITY_QUERYTAGITEM);
+			boolean alreadyAssigned = tagDao.isTagItemAlreadyAssigned(tagId, objId);
+			if (! alreadyAssigned)
+			{
+				Tag tag = new Tag();
+				tag.setIdentifier(tagId);
+				TagItem<ParameterizedQuery> tagItem = new TagItem<ParameterizedQuery>();
+	  
+				tagItem.setTag(tag);
+				tagItem.setObjId(objId);
+				
+				tagDao.insertTagItem(tagItem);
+			}
 			tagDao.commit();
 		}
 		catch (DAOException e)
