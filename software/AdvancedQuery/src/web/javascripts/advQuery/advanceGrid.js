@@ -187,13 +187,37 @@ function addRecordPerPageOption() {
 	toolbar.setListOptionSelected('perpagenum', 'perpagenum_' + recordPerPage);
 	toolbar.addText("blanck_space",10,"");
 	toolbar.addText("total_count_txt",11 ," Total Records : "+totalCount);
+	setPageDivStyle();
 }
 
-function getCheckBox(className) {
+function getCheckBox() {
 	if (document.getElementsByClassName) { 		
 		return document.getElementsByClassName('hdrcell')[1]; 
 	} else { 		
 		var els = (gridBOxTag.getElementsByTagName('td'))[1].childNodes;			
 		return els[0];			
+	} 
+}
+
+function setPageDivStyle() {
+	if (document.getElementsByClassName) { 		
+		pageDiv = document.getElementsByClassName('dhx_toolbar_poly_dhx_skyblue')[0]; 
+		pageDiv.style.maxHeight = "210px"
+		pageDiv.style.overflowY = "auto"
+	} else { 		
+		var elements = document.getElementsByTagName('div');
+		for(i = 0; i < elements.length; i++) {
+			if(elements[i].className == 'dhx_toolbar_poly_dhx_skyblue') {
+				pageDiv = elements[i];				
+				if(pageDiv.childNodes.length < 10) {
+					pageDiv.style.height = 21 * pageDiv.childNodes.length + "px"					
+				} else {
+					pageDiv.style.height = 21 * 10 + "px"
+					pageDiv.style.width = "96px";
+					pageDiv.style.overflowY = "auto"
+				}				
+				break;
+			}
+		}
 	} 
 }

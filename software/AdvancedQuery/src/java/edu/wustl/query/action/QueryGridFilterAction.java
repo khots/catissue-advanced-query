@@ -131,9 +131,7 @@ public class QueryGridFilterAction extends SecureAction
 					if(type instanceof StringAttributeTypeInformation) {
 						query.append("UPPER (").append(attr.getColumnName()).append(") LIKE '%")
 							.append(value.toUpperCase()).append("%' and ");						
-					} else if(type instanceof NumericAttributeTypeInformation || 
-								type instanceof BooleanAttributeTypeInformation){ 
-						
+					} else if(type instanceof BooleanAttributeTypeInformation){ 						
 						if(!value.matches("[0-9]+")){
 							value = "true".contains(value.toLowerCase())? "true": value ;
 							value = "false".contains(value.toLowerCase())? "false": value ;
@@ -141,9 +139,7 @@ public class QueryGridFilterAction extends SecureAction
 						
 						query.append(attr.getColumnName()).append(" = ")
 							.append(value).append(" and ");						
-					} else if(type instanceof DateAttributeTypeInformation) {
-						
-					}
+					} 
 				}
 				
 				if(attr.getDisplayName().equalsIgnoreCase(sortColumn)){
