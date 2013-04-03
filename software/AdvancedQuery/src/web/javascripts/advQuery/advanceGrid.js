@@ -121,6 +121,7 @@ function getGridData() {
 				createHiddenElement();
 				checkBoxCell = getCheckBox();
 				checkBoxCell.getElementsByTagName('input')[0].checked = false; 
+				setPageDivStyle();
 			}				  		
 		}
 	xmlhttp.open("POST", url,  true);
