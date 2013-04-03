@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,13 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import edu.common.dynamicextensions.domain.AttributeTypeInformation;
+import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
@@ -31,6 +39,8 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.cab2b.common.exception.CheckedException;
 import edu.wustl.common.beans.QueryResultObjectData;
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
+import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.querysuite.queryobject.ICondition;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IQuery;
@@ -56,6 +66,7 @@ import edu.wustl.query.executor.OracleQueryExecutor;
 import edu.wustl.query.htmlprovider.HtmlUtility;
 import edu.wustl.query.htmlprovider.ParseXMLFile;
 import edu.wustl.query.security.QueryCsmCacheManager;
+import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 
 public class Utility //extends edu.wustl.common.util.Utility
@@ -301,9 +312,6 @@ public class Utility //extends edu.wustl.common.util.Utility
 		return columnWidth;
 	}
 
-	
-	
-
 	/**
 	 * limits the title of the saved query to 125 characters to avoid horizontal
 	 * scroll bar.
@@ -413,20 +421,31 @@ public class Utility //extends edu.wustl.common.util.Utility
 
 	public static String getGridDataJson(List dataList, List columnList, HttpServletRequest request)
 	{
-		HttpSession session = request.getSession();	
-		int  pageNum = Integer.parseInt ((String)request.getAttribute(AQConstants.PAGE_NUMBER));
-		int totalResult = ((Integer) session.getAttribute(AQConstants.TOTAL_RESULTS)).intValue();
-		Integer recordsPerPage = Integer.parseInt((String)session.getAttribute(AQConstants.RESULTS_PER_PAGE));
-		int pos = recordsPerPage * (pageNum - 1);	
+		try {
+			HttpSession session = request.getSession();	
+			int  pageNum = Integer.parseInt ((String)request.getAttribute(AQConstants.PAGE_NUMBER));
+			int totalResult = ((Integer) session.getAttribute(AQConstants.TOTAL_RESULTS)).intValue();
+			Integer recordsPerPage = Integer.parseInt((String)session.getAttribute(AQConstants.RESULTS_PER_PAGE));
+			int pos = recordsPerPage * (pageNum - 1);	
+			List columnLabels = new ArrayList(columnList);
+			columnLabels.add(0, "");
+			
+			Map gridData = new HashMap();
+			gridData.put("total_count", totalResult);
+			gridData.put("pos", pos);
+			gridData.put("rows", getGridData(dataList, pos));			
+			
+			JSONObject json = new JSONObject();
+			json.put("columns", columnLabels);
+			json.put("columnType", getColumnTypes(session, columnLabels));
+			json.put("gridData", gridData);
+			
+			return json.toString();			
+		} catch(Exception e) {
+			logger.error("Exception found while creating json", e);			
+		}
 		
-		StringBuilder  gridData = new StringBuilder();
-		gridData.append("{total_count: ").append(totalResult)
-				.append(",\n pos: ").append(pos)
-				.append(",\n rows: [").append(getGridData(dataList, pos)).append("]}");	
-		
-		StringBuilder json = new StringBuilder("{columns: ").append(getColumnsLabels(columnList)) 
-									.append(", gridData: ").append(gridData).append("}");
-		return json.toString();
+		return "{}";
 	}
 	
 	/**
@@ -437,7 +456,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 */
 	public static void setGridData(List dataList, List columnList, HttpServletRequest request)
 	{
-		request.setAttribute("gridDataJson",getGridDataJson(dataList, columnList, request));		
+		request.setAttribute("gridDataJson", getGridDataJson(dataList, columnList, request));		
 		request.setAttribute("colTypes", getcolTypes(dataList));
 		columnList.add(0, ""); // added for checkbox
 		request.setAttribute("colWidth", getColumnWidth(columnList));
@@ -545,39 +564,76 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 * @param dataList DataList
 	 * @return myData myData
 	 */
-	
-	private static String getGridData(List dataList, int pos)
-	{
-		StringBuilder rows = new StringBuilder();
-		for (int i = 0; i < dataList.size(); i++){
+	private static JSONArray getGridData(List dataList, Integer pos)
+	{		
+		JSONArray rows = new JSONArray();
+		
+		for (int i = 0; i < dataList.size(); i++){ 
 			List row = (List)dataList.get(i);
 			
-			StringBuilder col = new StringBuilder();
-			for (Object data: row){	
-				col.append(", \"")
-					.append(Utility.toNewGridFormat(data))
-					.append("\"");
+			JSONArray data = new JSONArray();			
+			data.put("");
+			for (Object obj: row){	
+				data.put(Utility.toNewGridFormat(obj));
 			}
-			if(i != 0) {
-				rows.append(", ");
-			}
-			rows.append("{id : ").append(pos + i).append(", data: [0").append(col).append("]}") ;
+			
+			Map dataRow = new HashMap();			
+			dataRow.put("id", pos + i);
+			dataRow.put("data", data);			
+			rows.put(dataRow);
 		}
-		
-		return rows.toString();
-	}
-		
-	private static String getColumnsLabels(List columnList) {
-		
-		StringBuilder  colsLabels = new StringBuilder("[");		
-		for(Object column: columnList) {
-			colsLabels.append(", \"").append(column).append("\"");
-		}
-		colsLabels.append("]");
-		
-		return colsLabels.toString();
+			
+		return rows;
 	}
 	
+	
+	@SuppressWarnings("unchecked")
+	private static List getColumnTypes(HttpSession session, List columnList) {
+		List<OutputTreeDataNode> rootOutputTreeNodeList = (List<OutputTreeDataNode>) session
+											.getAttribute(AQConstants.SAVE_TREE_NODE_LIST);
+		List<QueryOutputTreeAttributeMetadata> attributes = new ArrayList<QueryOutputTreeAttributeMetadata>();
+		
+		for(OutputTreeDataNode node: rootOutputTreeNodeList) { 
+			attributes.addAll(node.getAttributes());
+			for(OutputTreeDataNode child: QueryModuleUtil.getInViewChildren(node)) {
+				attributes.addAll(child.getAttributes());
+			}
+		}
+				
+		String[] columnTypes = new String[columnList.size()];
+		columnTypes[0] = "ch";
+		
+		for(QueryOutputTreeAttributeMetadata attr: attributes){
+			AttributeTypeInformation type = (AttributeTypeInformation) attr.getAttribute().getAttributeTypeInformation();
+			String colName = attr.getDisplayName();
+			int index = columnList.indexOf(attr.getDisplayName());
+			if(index != -1) {
+				String attrType =  type.getClass().getSimpleName();
+				if(type instanceof NumericAttributeTypeInformation ) {
+					attrType = "NumericAttributeTypeInformation";
+				}
+				setDataTypeInArray(columnList, index, columnTypes, colName, attrType);
+			}
+		}
+		
+		/*StringBuilder filter = new StringBuilder("[\"ch\"");
+		for(String type: columnTypes) {			
+			filter.append(", \"").append(type).append("\"");
+		}
+		filter.append("]");*/
+		List typeList = Arrays.asList(columnTypes);
+		
+		return typeList;
+	}
+	
+	private static void setDataTypeInArray(List columnList, int index, String[] columnTypes, String colName, String type ) {
+		columnTypes[index] =  type;
+		int i = 1;
+		while((index = columnList.indexOf(colName + "_" + i)) != -1) {
+			columnTypes[index] =  type;
+			i++;
+		}
+	}
 	/** Added By Rukhsana
      * Added list of objects on which read denied has to be checked while filtration of result
      * for csm-query performance.

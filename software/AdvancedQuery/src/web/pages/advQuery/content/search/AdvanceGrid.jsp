@@ -59,18 +59,14 @@
 <script type="text/javascript">
 	var isCheckAllPagesChecked ;
 	var gridDataJson = <%=(String) request.getAttribute("gridDataJson")%>;
-	<% int tempColumnSize = (Integer)session.getAttribute("temporalColumnSize");
-	int filterCounts = columnList.size()-tempColumnSize;%>
-	var filters = "#master_checkbox<%for(int col = 1; col < columnList.size(); col++){ if(col< filterCounts){ %>,#text_filter<%} else {%>,#rspan<%}}%>";
-	var colWidth = "<%=(String) request.getAttribute("colWidth")%>";
-	var colTypes = <%=(String) request.getAttribute("colTypes")%>;
-	var colDataTypes = colTypes;
-	var filterCounts = <%= filterCounts %>;
-	while(colDataTypes.indexOf("str") != -1)
-	{
-		colDataTypes = colDataTypes.replace(/str/,"ro");
-	}
+	<%
+		int tempColumnSize = (Integer)session.getAttribute("temporalColumnSize");
+		int filterCounts = columnList.size() - tempColumnSize;	
+	%>
 	
+	var colWidth = "<%=(String) request.getAttribute("colWidth")%>";
+	var filterCounts = <%= filterCounts %>;
+		
 	var pageNum = 1;
 	var recordPerPage = <%=(String) session.getAttribute(AQConstants.RESULTS_PER_PAGE)%>	
 	var gridBOxTag = document.getElementById('gridbox');

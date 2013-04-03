@@ -38,6 +38,20 @@ function viewSPR(id)
 var mygrid = new dhtmlXGridObject('gridbox'); ;
 var rowCount = 0;
 var totalCount = 0;
+var colTypes = gridDataJson.columnType
+var colDataTypes =  new Array(colTypes.length - 1).join(",ro");
+colDataTypes = "ch" + colDataTypes;
+
+var filters = "#master_checkbox";
+for(i = 1; i < colTypes.length; i++){
+	filters += ","
+	if(colTypes[i] != "NumericAttributeTypeInformation" 
+		&& colTypes[i] != "DateAttributeTypeInformation" &&  i < filterCounts) {
+		filters += "#text_filter"
+	} 	
+	colTypes[i] = "str";// for sorting enable
+}
+
 function initQueryGrid() {	
 	
 	mygrid.setImagePath("newDhtmlx/imgs/");	
@@ -51,7 +65,7 @@ function initQueryGrid() {
 	
 	mygrid.enableRowsHover(true, 'grid_hover')
 	mygrid.enableMultiselect(true);
-	mygrid.setColSorting(colTypes);		
+	mygrid.setColSorting(colTypes.join());		
 	mygrid.enableAlterCss("even", "uneven");
 	mygrid.enablePaging(true, recordPerPage, null, "pagingArea", false);
 	mygrid.setPagingSkin("toolbar", "dhx_skyblue")		
@@ -65,7 +79,7 @@ function initQueryGrid() {
 	createHiddenElement();
 	window.setTimeout(addRecordPerPageOption, 500)
 	
-	checkBoxCell = getElementsByClassName('hdrcell');
+	checkBoxCell = getCheckBox();
 	checkBoxCell.style.paddingLeft = "0px";
 	gridBOxTag.style.width = (gridBOxTag.offsetWidth - 6 ) + "px"
 }
@@ -105,7 +119,7 @@ function getGridData() {
 				mygrid.parse(json.gridData, "json");
 				rowCount = json.gridData.rows.length;
 				createHiddenElement();
-				checkBoxCell = getElementsByClassName('hdrcell');
+				checkBoxCell = getCheckBox();
 				checkBoxCell.getElementsByTagName('input')[0].checked = false; 
 			}				  		
 		}
@@ -119,10 +133,12 @@ function getJsonForFilter() {
 	var values = []
 	var j = 0;
 	for(i = 1; i < filterCounts; i++) {
-		var value = mygrid.getFilterElement(i).value;
-		if(value != "") {
-			columns[j] = mygrid.getColumnLabel(i, 0);
-			values[j++] = value;				
+		if(mygrid.getFilterElement(i)){
+			var value = mygrid.getFilterElement(i).value;
+			if(value != "") {
+				columns[j] = mygrid.getColumnLabel(i, 0);
+				values[j++] = value;				
+			}
 		}
 	}
 	var sortColumn = sortIndex ? mygrid.getColumnLabel(sortIndex, 0): "";
@@ -173,7 +189,7 @@ function addRecordPerPageOption() {
 	toolbar.addText("total_count_txt",11 ," Total Records : "+totalCount);
 }
 
-function getElementsByClassName(className) {
+function getCheckBox(className) {
 	if (document.getElementsByClassName) { 		
 		return document.getElementsByClassName('hdrcell')[1]; 
 	} else { 		
