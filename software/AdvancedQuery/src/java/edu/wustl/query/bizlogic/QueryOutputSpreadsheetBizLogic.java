@@ -424,10 +424,11 @@ public class QueryOutputSpreadsheetBizLogic
 		List<Integer> identifiedDataColumnIds = new ArrayList<Integer>();
 		List<Integer> objectDataColumnIds = new ArrayList<Integer>();
 		Map<Integer, QueryOutputTreeAttributeMetadata> fileTypeAttrMap =
-			new HashMap<Integer, QueryOutputTreeAttributeMetadata>();
+			new HashMap<Integer, QueryOutputTreeAttributeMetadata>(); 
 		int columnIndex = 0;
 				
-		List<QueryOutputTreeAttributeMetadata> attributes = node.getAttributes();
+		List<QueryOutputTreeAttributeMetadata> attributes = new ArrayList<QueryOutputTreeAttributeMetadata>();
+		attributes.addAll(node.getAttributes());
 		
 		for(OutputTreeDataNode child: QueryModuleUtil.getInViewChildren(node)) {
 			attributes.addAll(child.getAttributes());
