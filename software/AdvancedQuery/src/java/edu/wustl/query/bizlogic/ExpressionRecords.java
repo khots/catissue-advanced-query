@@ -1,6 +1,7 @@
 package edu.wustl.query.bizlogic;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import edu.wustl.common.query.queryobject.impl.OutputAssociationColumn;
@@ -13,8 +14,7 @@ import edu.wustl.common.query.queryobject.impl.OutputAssociationColumn;
  */
 public class ExpressionRecords
 {
-	private Map<String, Map<OutputAssociationColumn, Object>> expRecs =
-		new HashMap<String, Map<OutputAssociationColumn, Object>>();
+	private Map<String, Map<OutputAssociationColumn, Object>> expRecs = new LinkedHashMap<String, Map<OutputAssociationColumn,Object>>();
 
 	public void addRecords(String id,
 			Map<OutputAssociationColumn, Object> map)

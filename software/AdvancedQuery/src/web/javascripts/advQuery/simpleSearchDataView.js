@@ -143,9 +143,10 @@ function getSpecimenIdList()
 {
 	var rows = mygrid.getCheckedRows(0).split(",");	
 	var specIds = "";
-	
-	for(var i = 0; i < rows.length; i++)	{
-		specIds = specIds + mygrid.cellById(rows[i],  specimentIdColIndex).getValue()+ ",";
+	if(rows != "") {
+		for(var i = 0; i < rows.length; i++)	{
+			specIds = specIds + mygrid.cellById(rows[i],  specimentIdColIndex).getValue()+ ",";
+		}
 	}
 	return specIds;
 }
@@ -156,34 +157,29 @@ function addToSpecimenList() {
 	if(specimentIdColIndex == -1) {
 		alert('Specimen:Id missing in the grid! Please redefine the view and include Specimen:Id to use the Specimen List feature');
 	} else {
-		var checkedRows = mygrid.getCheckedRows(0);
-		if(checkedRows != "") {
-			ajaxTreeGridInitCall('Are you sure you want to delete this specimen from the list?',
+		ajaxTreeGridInitCall('Are you sure you want to delete this specimen from the list?',
 									'List contains specimens, Are you sure to delete the selected list?',
 									'SpecimenListTag','SpecimenListTagItem');
-		} else {
-			alert("Please select atleast one specimen");
-		}
+		
 	}
  }
 
 function onResponseSet(response) 
 {	
-	var specimenIDS = response;
+	var specimenIds = response;
 	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem',
 			'Select at least one existing list or create a new list.',
-			'No list has been selected to assign.', specimenIDS);
+			'No list has been selected to assign.', specimenIds);
 }
 
 function assignToSpecimenList()
 {
-	var specimenIDS = getSpecimenIdList();
+	var specimenIds = getSpecimenIdList();
 
-	if(isCheckAllPagesChecked)
-	{
-		var isCheckAllAcrossAllChecked = document.getElementById('checkAll').checked;
+	if(specimenIds == "")
+	{		
 		var specId =  specimentIdColIndex;
-		var parameter = "specIndex="+specId+"&operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
+		var parameter = "specIndex="+specId+"&operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked=true";
 		var url = "CatissueCommonAjaxAction.do?type=getSpecimenIds&"+parameter;
 
 		request = newXMLHTTPReq();
@@ -192,8 +188,8 @@ function assignToSpecimenList()
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
 		request.send("");
 	} else {		
-		giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&isCheckAllAcrossAllChecked='+isCheckAllPagesChecked,
-					'Select at least one existing list or create a new list.','No list has been selected to assign.', specimenIDS);
+		giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&isCheckAllAcrossAllChecked=false',
+					'Select at least one existing list or create a new list.','No list has been selected to assign.', specimenIds);
 	}
 	
 }
