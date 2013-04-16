@@ -111,7 +111,7 @@ final public class QueryModuleSqlUtil {
 	 * @throws ClassNotFoundException
 	 * @throws SMException
 	 */
-	public static int getCountForQuery(final String sql,
+	public static int getCountForQuery(String sql,
 			QueryDetails queryDetailsObj) throws DAOException,
 			ClassNotFoundException, SMException {
 		int count = 0;
@@ -121,6 +121,11 @@ final public class QueryModuleSqlUtil {
 				appName);
 		JDBCDAO jdbcDao = daoFactory.getJDBCDAO();
 		try {
+			int cnt = 0;
+			while (sql.contains("?")) {
+				String value = "'" + queryDetailsObj.getColumnValueBean().get(cnt++).getColumnValue()+"'";
+				sql = sql.replaceFirst("\\?", value);//modifying sql for inserting variables in where clause
+			}
 			String countSql = "Select count(*) from (" + sql + ") alias";
 
 			QueryParams queryParams = new QueryParams();

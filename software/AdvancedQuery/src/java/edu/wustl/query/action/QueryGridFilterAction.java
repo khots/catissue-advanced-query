@@ -129,7 +129,7 @@ public class QueryGridFilterAction extends SecureAction
 				String value = paramsMap.get(attr.getDisplayName());
 				if(value != null && !value.equals("")){  
 					if(type instanceof StringAttributeTypeInformation) {
-						query.append("UPPER (").append(attr.getColumnName()).append(") LIKE '%")
+						query.append("UPPER(").append(attr.getColumnName()).append(") LIKE '%")
 							.append(value.toUpperCase()).append("%' and ");						
 					} else if(type instanceof BooleanAttributeTypeInformation){ 						
 						if(!value.matches("[0-9]+")){
