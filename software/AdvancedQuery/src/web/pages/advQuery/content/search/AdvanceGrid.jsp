@@ -44,6 +44,9 @@
 	div.gridbox_dhx_skyblue table.obj.row20px tr.rowselected td {
 		background-image: url("dhtmlx_suite/imgs/sky_blue_sel_1.png");
 	}
+	div.dhx_toolbar_poly_dhx_skyblue div.btn_item span {
+		margin-left: 5px;
+	}
 </style>
 
 <table width="99.9%" border="0">
