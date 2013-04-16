@@ -175,7 +175,7 @@ function setColumn(columnList) {
 function addRecordPerPageOption() {		
 	toolbar = mygrid.aToolBar;
 	toolbar.setWidth('perpagenum', 130);
-	var  opt = [10, 50, 100, 500, 1000];
+	var  opt = [10, 50, 100, 500, 1000, 5000];
 	
 	for(i = 5; i < 35; i += 5) {
 		toolbar.removeListOption('perpagenum', 'perpagenum_'+i);
