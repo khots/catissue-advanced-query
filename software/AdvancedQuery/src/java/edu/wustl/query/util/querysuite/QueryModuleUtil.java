@@ -723,6 +723,9 @@ final public class QueryModuleUtil
 			case RESULTS_MORE_THAN_LIMIT :
 				errorMessage = AQConstants.TREE_ND_LMT_EXCEED_REC;
 				break;
+			case INVALID_METADATA:
+				errorMessage = ApplicationProperties.getValue("invalid.metadata.message");
+				break;
 			default :
 				errorMessage = "";
 		}

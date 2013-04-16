@@ -418,7 +418,7 @@ public class DefineGridViewBizLogic
 		while (mapItr.hasNext())
 		{
 			queryResulObjectDataBean = queryResultObjecctDataMap.get(mapItr.next());
-			if (queryResulObjectDataBean.getMainEntityIdentifierColumnId() == -1)
+//			if (queryResulObjectDataBean.getMainEntityIdentifierColumnId() == -1)
 			{
 				Map<EntityInterface, Integer> entityIdIndexMap =
 					new HashMap<EntityInterface, Integer>();

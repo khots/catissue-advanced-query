@@ -303,4 +303,21 @@ public class QueryResultObjectDataBean implements QueryDataBean
 	{
 		this.tqColumnMetadataList = tqColumnMetadataList;
 	}
+	private int mainProtocolIdIndex = -1;
+
+	/**
+	 * @return the mainProtocolIdIndex
+	 */
+	public int getMainProtocolIdIndex() {
+		return mainProtocolIdIndex;
+	}
+
+	/**
+	 * @param mainProtocolIdIndex
+	 *            the mainProtocolIdIndex to set
+	 */
+	public void setMainProtocolIdIndex(int mainProtocolIdIndex) {
+		this.mainProtocolIdIndex = mainProtocolIdIndex;
+	}
+
 }

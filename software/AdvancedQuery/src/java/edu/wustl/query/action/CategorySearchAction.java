@@ -201,19 +201,33 @@ public class CategorySearchAction extends SecureAction
 	{
 		EntityInterface entity = (EntityInterface) resultList.get(counter);
 		String entityName = entity.getName();
-		String parsedEntityName = edu.wustl.query.util.global.
-		Utility.parseClassName(entityName);
-		String entityLabel = Utility.getDisplayLabel(parsedEntityName);
-		String entityId = entity.getId().toString();
-		String description = entity.getDescription();
-		if(description == null || description.equals(""))
+		if(!isChildSpecimenEntry(entityName))
 		{
-			description = AQConstants.NO_DESCRIPTION;
+			String parsedEntityName = edu.wustl.query.util.global.
+			Utility.parseClassName(entityName);
+			String entityLabel = Utility.getDisplayLabel(parsedEntityName);
+			String entityId = entity.getId().toString();
+			String description = entity.getDescription();
+			if(description == null || description.equals(""))
+			{
+				description = AQConstants.NO_DESCRIPTION;
+			}
+			entitiesString.append(edu.wustl.query.util.global.AQConstants.ENTITY_SEPARATOR).append
+			(entityLabel).append(edu.wustl.query.util.global.AQConstants.ATTRIBUTE_SEPARATOR)
+			.append(entityId).append(edu.wustl.query.util.global.AQConstants.ATTRIBUTE_SEPARATOR)
+			.append(description);
 		}
-		entitiesString.append(edu.wustl.query.util.global.AQConstants.ENTITY_SEPARATOR).append
-		(entityLabel).append(edu.wustl.query.util.global.AQConstants.ATTRIBUTE_SEPARATOR)
-		.append(entityId).append(edu.wustl.query.util.global.AQConstants.ATTRIBUTE_SEPARATOR)
-		.append(description);
+	}
+
+	private boolean isChildSpecimenEntry(String entityName) {
+		if(AQConstants.TISSUE_SPECIMEN.equalsIgnoreCase(entityName) ||
+				AQConstants.CELL_SPECIMEN.equalsIgnoreCase(entityName) ||
+				AQConstants.MOLECULAR_SPECIMEN.equalsIgnoreCase(entityName) ||
+				AQConstants.FLUID_SPECIMEN.equalsIgnoreCase(entityName) )
+		{
+			return true;
+		}
+		return false;
 	}
 
 	/**

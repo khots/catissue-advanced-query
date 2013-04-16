@@ -625,4 +625,16 @@ public class AQConstants
  
 	public static final String SHARE_QUERY_FOLDER_EMAIL_TEMPL = "query.shareQueryFolderTemplate";
 	public static final String SHARE_QUERY_EMAIL_TEMPL = "query.shareQueryTemplate";
+	
+	/** The Constant TISSUE_SPECIMEN. */
+	public static final String TISSUE_SPECIMEN = "edu.wustl.catissuecore.domain.TissueSpecimen";
+
+	/** The Constant MOLECULAR_SPECIMEN. */
+	public static final String MOLECULAR_SPECIMEN = "edu.wustl.catissuecore.domain.MolecularSpecimen";
+
+	/** The Constant FLUID_SPECIMEN. */
+	public static final String FLUID_SPECIMEN = "edu.wustl.catissuecore.domain.FluidSpecimen";
+
+	/** The Constant CELL_SPECIMEN. */
+	public static final String CELL_SPECIMEN = "edu.wustl.catissuecore.domain.CellSpecimen";
 }

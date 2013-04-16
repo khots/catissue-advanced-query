@@ -942,8 +942,9 @@ public class QueryOutputSpreadsheetBizLogic
 				element.setMainEntityIdentifierColumnId(entityIdIndexMap.get(element
 								.getEntity()));
 			}
-
 		}
+		element.setEntityIdIndexMap(entityIdIndexMap);
+		QueryCSMUtil.setMainProtocolIdIndex(element);
 	}
 
 	/**

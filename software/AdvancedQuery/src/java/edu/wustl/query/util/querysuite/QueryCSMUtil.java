@@ -993,6 +993,7 @@ public class QueryCSMUtil
 		if (queryResultObjectDataBean != null)
 		{
 			queryResultObjectDataBean.setEntityIdIndexMap(entityIdIndexMap);
+			setMainProtocolIdIndex(queryResultObjectDataBean);
 			if (entityIdIndexMap.get(queryResultObjectDataBean.getMainEntity()) != null)
 			{
 				queryResultObjectDataBean.setMainEntityIdentifierColumnId(entityIdIndexMap
@@ -1131,6 +1132,27 @@ public class QueryCSMUtil
 			if(key.equals("columnIndex"))
 			{
 				request.setAttribute("specIdColumnIndex", specimenMap.get(key));
+			}
+		}
+	}
+	/**
+	 * This method sets index of main protocol object's identifier column from the data list.
+	 * 
+	 * @param queryResultObjectDataBean
+	 */
+	public static void setMainProtocolIdIndex(
+			QueryResultObjectDataBean queryResultObjectDataBean) {
+		Integer cpIdIndex = null;
+		Iterator<EntityInterface> iterator = queryResultObjectDataBean.getEntityIdIndexMap().keySet().iterator();
+		while(iterator.hasNext())
+		{
+			EntityInterface next = iterator.next();
+			if(next.getName().equalsIgnoreCase(Variables.mainProtocolObject))
+			{
+				cpIdIndex = queryResultObjectDataBean.getEntityIdIndexMap().get(next);
+				if(cpIdIndex != null)
+					queryResultObjectDataBean.setMainProtocolIdIndex(cpIdIndex);
+				break;
 			}
 		}
 	}

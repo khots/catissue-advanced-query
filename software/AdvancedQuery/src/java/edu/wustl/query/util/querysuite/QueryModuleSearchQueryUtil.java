@@ -96,10 +96,29 @@ public class QueryModuleSearchQueryUtil
 		catch (QueryModuleException e)
 		{
 			status = e.getKey();
+			if(!ifValidQuery())
+			{
+				status = QueryModuleError.INVALID_METADATA;
+			}
 			LOGGER.error(e.getMessage(),e);
 		}
 		return status;
 	}
+
+	protected boolean ifValidQuery() {
+		for (IExpression expression : query.getConstraints()) {
+			String entityName = expression.getQueryEntity()
+			.getDynamicExtensionsEntity().getName();
+			if(AQConstants.TISSUE_SPECIMEN.equalsIgnoreCase(entityName) ||
+					AQConstants.CELL_SPECIMEN.equalsIgnoreCase(entityName) ||
+					AQConstants.MOLECULAR_SPECIMEN.equalsIgnoreCase(entityName) ||
+					AQConstants.FLUID_SPECIMEN.equalsIgnoreCase(entityName) )
+			{
+				return false;
+			}
+		}
+		return true;
+		}
 
 	/**
 	 * @param newQuery new query

@@ -677,9 +677,10 @@ public class FromBuilder
     	EntityInterface root = entity;
         // old code also checked inheritance strategy here; not needed if
         // strategies are not mixed.
-        while (entity.getParentEntity() != null)
+        while (entity != null)
         {
-            root = entity.getParentEntity();
+        	root = entity;
+        	entity = entity.getParentEntity();
         }
         return root;
     }

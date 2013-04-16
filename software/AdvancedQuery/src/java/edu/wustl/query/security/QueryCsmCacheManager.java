@@ -143,11 +143,21 @@ public class QueryCsmCacheManager
 				//Check if user has read privilege on particular object or not.
 				if ((mainEntityId != -1) && (queryResultObjectDataBean.isReadDeniedObject()))
 				{
-					finalMainEntityId = getFinalMainEntityId(
-							queryResultObjectDataBean, mainEntityId,
-							finalMainEntityId);
-					List<List<String>> cpIdsList =
-					getCpIdsListForGivenEntityId(entityName, finalMainEntityId);
+					int mainProtocolIdIndex = queryResultObjectDataBean.getMainProtocolIdIndex();
+					List<List<String>> cpIdsList = null;
+					if(mainProtocolIdIndex != -1)
+					{
+						cpIdsList = getCSIdFromDataList(aList,
+								finalMainEntityId,mainProtocolIdIndex);
+					}
+					else
+					{
+						finalMainEntityId = getFinalMainEntityId(
+								queryResultObjectDataBean, mainEntityId,
+								finalMainEntityId);
+						cpIdsList =
+							getCpIdsListForGivenEntityId(entityName, finalMainEntityId);
+					}
 					//if this object is not associated to any CP
 					//then user will not have identified privilege on it.
 					hasPrivilegeOnID = checkHasPrivilegeOnId(sessionDataBean,
@@ -1286,5 +1296,24 @@ public class QueryCsmCacheManager
 		accessprivilegeMap.put(AQConstants.HAS_PHI_ACCESS, hasPrivilegeOnIdentifiedData);
 
 		return accessprivilegeMap;
+	}
+	/**
+	 * This method gets Clinical Study ids from the datalist available. This is to improve the 
+	 * performance when a scientist user exports data. Here we are saving DB calls which were being made to fetch CP id 
+	 * for given main object.
+	 * @param aList
+	 * @param queryResultObjectDataBean
+	 * @param finalMainEntityId
+	 * @return
+	 */
+	private List<List<String>> getCSIdFromDataList(List aList,
+			long finalMainEntityId,int cpIdIndex) {
+		List<List<String>> cpIdsList = new ArrayList<List<String>>();
+		String cpId = (String)aList.get(cpIdIndex);
+		List<String> cpIdList = new ArrayList<String>();
+		cpIdList.add(String.valueOf(cpId));
+		cpIdList.add(String.valueOf(finalMainEntityId));
+		cpIdsList.add(cpIdList);
+		return cpIdsList;
 	}
 }
