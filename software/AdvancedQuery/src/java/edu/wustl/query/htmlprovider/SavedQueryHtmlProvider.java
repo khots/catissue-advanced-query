@@ -280,10 +280,11 @@ public class SavedQueryHtmlProvider
 			String calendarId = componentId + "_calendar";
 			generateHTML.append("<td valign=\"top\">");
 			String date = "";
+			String datePattern = CommonServiceLocator.getInstance().getDatePattern();	
 			if(operand.getDate()!=null)
 			{
 				SimpleDateFormat format =
-			        new SimpleDateFormat(CommonServiceLocator.getInstance().getDatePattern());
+				        new SimpleDateFormat(datePattern);
 				date = format.format(operand.getDate());
 			}
 			String html ="<input style=\"width:150px; display:block;\" value='"
@@ -293,7 +294,7 @@ public class SavedQueryHtmlProvider
 			generateHTML.append("</td>");
 			String imgStr = "<img id=\"calendarImg\" "
 					+"src=\"images/advQuery/calendar.gif\" width=\"24\" height=\"22\""
-					+" border=\"0\"  onclick='scwShow("+ textBoxId + ",event);'>";
+					+" border=\"0\"  onclick='scwShow("+ textBoxId + ",event,\""+datePattern+"\");'>";
 			String innerStr = "\n<td width='45%' valign='top' id=\"" + calendarId + "\">"
 						+ "\n" + imgStr ;
 			generateHTML.append(innerStr);

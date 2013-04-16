@@ -379,14 +379,15 @@ public class GenerateHtml
 	private static String generateHTMLForCalendar(String  componentId, boolean isFirst,
 			boolean isBetween, String cssClass)
 	{
-		StringBuffer innerStr = new StringBuffer(90);
+		String datePattern = CommonServiceLocator.getInstance().getDatePattern();
+		StringBuffer innerStr = new StringBuffer(90); 
 		if (isFirst)
 		{
 			String textBoxId = componentId + "_textBox";
 			String calendarId = componentId + "_calendar";
 			String imgStr = "\n<img id=\"calendarImg\" " +
 					"src=\"images/advQuery/calendar.gif\" width=\"24\" height=\"22\"" +
-					" border=\"0\" onclick='scwShow(document.getElementById(\""+ textBoxId + "\"),event);'>";
+					" border=\"0\" onclick='scwShow(document.getElementById(\""+ textBoxId + "\"),event,\""+datePattern+"\");'>";
 			innerStr.append("\n<td width='3%' class='"+ cssClass
 					    + "' valign='top' id=\"" + calendarId + "\">"
 						+ "\n" + imgStr);
@@ -398,7 +399,7 @@ public class GenerateHtml
 			String imgStr = "\n<img id=\"calendarImg\" " +
 					"src=\"images/advQuery/calendar.gif\"" +
 					" width=\"24\" height=\"22\" border='0'" +
-					" onclick='scwShow(document.getElementById(\""+ textBoxId1 + "\"),event);'>";
+					" onclick='scwShow(document.getElementById(\""+ textBoxId1 + "\"),event,\""+datePattern+"\");'>";
 			String style;
 			if (isBetween)
 			{

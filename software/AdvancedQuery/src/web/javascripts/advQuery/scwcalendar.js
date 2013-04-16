@@ -742,8 +742,14 @@
 // ****************************************************************************
 
     function showCal(scwEle,scwSourceEvent) {scwShow(scwEle,scwSourceEvent);};
-    function scwShow(scwEle,scwSourceEvent)
+    function scwShow(scwEle,scwSourceEvent,dateFormat)
         {if (!scwSourceEvent) {scwSourceEvent = window.event;}
+	
+	 if(dateFormat)
+	{ 
+		 scwDateDisplayFormat = dateFormat;	
+		 scwDateOutputFormat = dateFormat;
+	}   
 
          var scwSourceEle = (scwSourceEvent.target)
                                 ?scwSourceEvent.target
