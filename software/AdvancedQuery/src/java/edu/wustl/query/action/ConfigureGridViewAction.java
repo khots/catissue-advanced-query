@@ -143,8 +143,8 @@ public class ConfigureGridViewAction extends SecureAction
 			session.setAttribute(AQConstants.DENORMALIZED_LIST, spreadSheetDataMap.get(AQConstants.SPREADSHEET_DATA_LIST));
 		}
 		QueryModuleUtil.setGridData(request, spreadSheetDataMap);
-		Utility.setGridData((List) spreadSheetDataMap.get(AQConstants.SPREADSHEET_DATA_LIST), definedColumnsList, request);
-		return mapping.findForward(AQConstants.SUCCESS);
+		Utility.setGridData((List) spreadSheetDataMap.get(AQConstants.SPREADSHEET_DATA_LIST),
+					(List)spreadSheetDataMap.get(AQConstants.SPREADSHEET_COLUMN_LIST), request);return mapping.findForward(AQConstants.SUCCESS);
 	}
 
 	/**

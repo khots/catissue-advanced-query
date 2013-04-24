@@ -39,7 +39,7 @@ var mygrid = new dhtmlXGridObject('gridbox'); ;
 var rowCount = 0;
 var totalCount = 0;
 var colTypes = gridDataJson.columnType
-var colDataTypes =  new Array(colTypes.length - 1).join(",ro");
+var colDataTypes =  new Array(colTypes.length).join(",ro");
 colDataTypes = "ch" + colDataTypes;
 
 var filters = "#master_checkbox";
