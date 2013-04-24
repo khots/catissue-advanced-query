@@ -680,9 +680,13 @@ public class QueryOutputSpreadsheetBizLogic
 			QueryDetails queryDetailsObj, String parentData, OutputTreeDataNode node, Set<IExpression>
 	expressionsInTerm)
 	{
+		String sql = queryDetailsObj.getSaveGeneratedQuery();
+		int cnt = 0;
+		while (sql.contains("?")) {
+			String value = "'"+queryDetailsObj.getColumnValueBean().get(cnt++).getColumnName()+"'";
+			sql = sql.replaceFirst("\\?", value);//modifying sql for inserting variables in where clause
+		}
 		boolean isValidCardinality = false;
-		String tableName = AQConstants.TEMP_OUPUT_TREE_TABLE_NAME + queryDetailsObj
-		.getSessionData().getUserId()+ queryDetailsObj.getRandomNumber();
 		IConstraints constraints = temporalColumnUIBean.getConstraints();
 		IExpression clickedExpression = constraints.getExpression(node.getExpressionId());
 		IExpression anotherExpressionInCF = getAnotherExpressionInCF(clickedExpression,expressionsInTerm);
@@ -695,7 +699,7 @@ public class QueryOutputSpreadsheetBizLogic
 		if(parentData == null)
 		{
 			sqlTofindOutCardinality = "select count(*) from (select "+clickedExpIdColumn + ", " +
-					"count(distinct "+anotherExpIdColumn+") as card from "+tableName+" group by "+
+					"count(distinct "+anotherExpIdColumn+") as card from ("+sql+") temp group by "+
 					clickedExpIdColumn+" having card >1) x ";
 			int intCount = executeSqlToGetCount(sqlTofindOutCardinality);
 			if(intCount == 0)
@@ -705,7 +709,7 @@ public class QueryOutputSpreadsheetBizLogic
 		}
 		else
 		{
-			sqlTofindOutCardinality = "select count(distinct "+anotherExpIdColumn + ") from "+tableName +
+			sqlTofindOutCardinality = "select count(distinct "+anotherExpIdColumn + ") from ("+sql+") temp "+
 			" where "+clickedExpIdColumn +"= "+parentData;
 			int intCount = executeSqlToGetCount(sqlTofindOutCardinality);
 			if(intCount <= 1)
