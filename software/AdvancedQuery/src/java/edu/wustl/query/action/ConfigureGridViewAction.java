@@ -144,7 +144,8 @@ public class ConfigureGridViewAction extends SecureAction
 		}
 		QueryModuleUtil.setGridData(request, spreadSheetDataMap);
 		Utility.setGridData((List) spreadSheetDataMap.get(AQConstants.SPREADSHEET_DATA_LIST),
-					(List)spreadSheetDataMap.get(AQConstants.SPREADSHEET_COLUMN_LIST), request);return mapping.findForward(AQConstants.SUCCESS);
+					(List)spreadSheetDataMap.get(AQConstants.SPREADSHEET_COLUMN_LIST), request);
+		return mapping.findForward(AQConstants.SUCCESS);
 	}
 
 	/**
