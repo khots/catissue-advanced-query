@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.Session;
 
 import edu.wustl.common.exception.BizLogicException;
@@ -132,12 +133,12 @@ public class QueryDAO {
 				while (rs.next()) {
 					QueryDTO queryDTO = new QueryDTO();
 					queryDTO.setQueryId(rs.getLong(1));
-					queryDTO.setQueryName(rs.getString(2));
-					queryDTO.setQueryDescription(rs.getString(3));	
+					queryDTO.setQueryName(StringEscapeUtils.escapeXml(rs.getString(2)));
+					queryDTO.setQueryDescription(StringEscapeUtils.escapeXml(rs.getString(3)));	
 					queryDTO.setExecutedOn(getExecutedOnTime(rs.getTimestamp(4)));
 					queryDTO.setRootEntityName(getRootEntityName(rs.getString(5)));
 					queryDTO.setCountOfRootRecords(getRootRecordCount(rs.getString(6)));
-					queryDTO.setOwnerName(getOwnerName(rs.getString(1)));
+					queryDTO.setOwnerName(StringEscapeUtils.escapeXml(getOwnerName(rs.getString(1))));
 					queries.add(queryDTO);
 				}
 			}
