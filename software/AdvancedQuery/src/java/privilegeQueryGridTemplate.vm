@@ -4,11 +4,7 @@
 	<row id="$query.queryId">
 		<cell><![CDATA[<input name='objCheckbox' value='$query.queryId' type='checkbox'/>]]></cell>	
 		<cell>$query.queryId</cell>
-		#if($query.queryDescription == "")
-		<cell style='font-size:.7em;' title="Description : Not Available"> $query.queryName^javascript:executeQuery("$query.queryId");^_self</cell>
-		#{else}
 		<cell style='font-size:.7em;' title="Description : $query.queryDescription "> $query.queryName^javascript:executeQuery("$query.queryId");^_self</cell>
-		#end
 		<cell>$query.rootEntityName ($query.countOfRootRecords)</cell>
 		<cell>$query.executedOn</cell>
 		<cell>$query.ownerName </cell>

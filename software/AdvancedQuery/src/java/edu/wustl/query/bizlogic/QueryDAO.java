@@ -134,8 +134,8 @@ public class QueryDAO {
 					QueryDTO queryDTO = new QueryDTO();
 					queryDTO.setQueryId(rs.getLong(1));
 					queryDTO.setQueryName(StringEscapeUtils.escapeXml(rs.getString(2)));
-					queryDTO.setQueryDescription(StringEscapeUtils.escapeXml(rs.getString(3)));	
-					queryDTO.setExecutedOn(getExecutedOnTime(rs.getTimestamp(4)));
+					queryDTO.setQueryDescription(getDescription(rs.getString(3)));	
+					queryDTO.setExecutedOn(getExecutedOnTime(rs.getTimestamp(4))); 
 					queryDTO.setRootEntityName(getRootEntityName(rs.getString(5)));
 					queryDTO.setCountOfRootRecords(getRootRecordCount(rs.getString(6)));
 					queryDTO.setOwnerName(StringEscapeUtils.escapeXml(getOwnerName(rs.getString(1))));
@@ -154,6 +154,15 @@ public class QueryDAO {
 			count = recordCount;
 		}
 		return count;
+	}
+	
+	private String getDescription(String position) {
+		String description = "Not Available";
+		String desc = StringEscapeUtils.escapeXml(position);
+		if(desc != null && !desc.isEmpty()) {
+			description = desc;
+		}
+		return description;
 	}
 	
 	private String getRootEntityName(String rootEntityName) {	 
