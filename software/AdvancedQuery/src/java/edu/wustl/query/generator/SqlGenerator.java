@@ -79,7 +79,7 @@ import edu.wustl.query.util.querysuite.QueryModuleUtil;
  */
 public class SqlGenerator implements ISqlGenerator
 {
-
+	
 	/**
 	 * Select string.
 	 */
@@ -235,13 +235,12 @@ public class SqlGenerator implements ISqlGenerator
 		// new HashSet<IExpression>());
 		String fromPart = fromBuilder.getFromClause();
 		String wherePart = getCompleteWherePart(rootExpression);
+		wherePart += fromBuilder.getWhereClause();
 		String selectPart = getSelectPart();
-
 		selectPart += getSelectForOutputTerms(queryClone.getOutputTerms());
 		selectPart = removeLastComma(selectPart);
 
 		String sql = selectPart + " " + fromPart + " " + wherePart;
-
 		log(sql);
 		return sql;
 	}

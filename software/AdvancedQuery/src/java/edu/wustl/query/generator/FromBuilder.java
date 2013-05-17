@@ -2,20 +2,20 @@ package edu.wustl.query.generator;
 
 import static edu.wustl.query.generator.SqlKeyWords.FROM;
 import static edu.wustl.query.generator.SqlKeyWords.INNER_JOIN;
-import static edu.wustl.query.generator.SqlKeyWords.LEFT_JOIN;
 import static edu.wustl.query.generator.SqlKeyWords.JOIN_ON;
-import static edu.wustl.query.generator.SqlKeyWords.SELECT;
-import static edu.wustl.query.generator.SqlKeyWords.WHERE;
+import static edu.wustl.query.generator.SqlKeyWords.LEFT_JOIN;
+import static edu.wustl.query.generator.SqlKeyWords.AND;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.util.global.DEConstants.InheritanceStrategy;
 import edu.wustl.common.query.queryobject.util.InheritanceUtils;
@@ -24,7 +24,7 @@ import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
 import edu.wustl.common.util.Utility;
-
+import edu.wustl.query.util.global.AQConstants;
 /**
  * Note to human debugger: If an error occurs similar to "column foo_bar is
  * ambiguous" while firing a generated SQL, this is because the column "foo_bar"
@@ -48,13 +48,18 @@ public class FromBuilder
     /**
      * length of the alias name.
      */
-    private static final int ALIAS_NAME_LENGTH = 25;
+    private static final int ALIAS_NAME_LENGTH = 26;
 
     /**
      * from clause.
      */
-    private final String fromClause;
+    private String fromClause;
 
+    /**
+     * where clause
+     */
+    private String whereClause;
+    
     /**
      * Parameterized constructor.
      * @param joinGraph joinGraph
@@ -75,7 +80,7 @@ public class FromBuilder
         {
             throw new IllegalArgumentException(e);
         }
-        this.fromClause = buildFrom();
+        buildFrom();
     }
 
     /**
@@ -84,12 +89,9 @@ public class FromBuilder
      * @param expr expression
      * @return The Alias Name for the given Entity.
      */
-    private String aliasOf(IExpression expr)
-    {
-        String entName = entity(expr).getName();
-        String className = entName.substring
-        (entName.lastIndexOf('.') + 1, entName.length());
-        return alias(className, expr);
+    private static String aliasOf(IExpression expr)
+    {    	
+    	return alias(tableName(entity(expr)), expr);
     }
 
     /**
@@ -98,7 +100,7 @@ public class FromBuilder
      * @param expr expression
      * @return alias
      */
-    private String alias(String string, IExpression expr)
+    private static String alias(String string, IExpression expr)
     {
         String stringAlias = Utility.removeSpecialCharactersFromString(string);
         if (stringAlias.length() > ALIAS_NAME_LENGTH)
@@ -115,8 +117,9 @@ public class FromBuilder
      * @return alias
      */
     protected String aliasOf(AttributeInterface attr, IExpression expr)
-    {
-        return aliasOf(expr) + "." + columnName(origAttr(attr));
+    { 
+    	attr = origAttr(attr);    
+    	return alias(tableName(attr.getEntity()), expr) + "." + columnName(attr);
     }
 
     /**
@@ -129,14 +132,31 @@ public class FromBuilder
     }
 
     /**
+     * Returns the generated where clause.
+     * @return from clause
+     */
+    protected String getWhereClause()
+    {
+        return whereClause;
+    }
+    
+    
+    /**
      * Builds the from clause.
      * @return from clause
      */
-    private String buildFrom()
-    {
-        StringBuilder res = new StringBuilder();
-        res.append(FROM);
-        res.append(getExprSrc(root));
+    private void buildFrom()
+    {   	 
+    	StringBuilder fromClause = new StringBuilder();
+    	StringBuilder whereClause = new StringBuilder();
+    	
+    	Map<String, String> clause = new HashMap<String, String>();
+    	getExprSrc(root, clause);
+    	
+    	fromClause.append(FROM).append(clause.get("from"));
+    	if(clause.get("where") != null && !clause.get("where").isEmpty()){
+    		whereClause.append(AND).append(clause.get("where"));
+    	}
 
         Set<IExpression> currExprs = new HashSet<IExpression>();
         currExprs.addAll(children(root));
@@ -146,27 +166,24 @@ public class FromBuilder
             Set<IExpression> nextExprs = new HashSet<IExpression>();
             for (IExpression currExpr : currExprs)
             {
-                nextExprs.addAll(children(currExpr));
-
-                String src = getExprSrc(currExpr);
-                String joinConds = getJoinConds(currExpr);
-                res.append(oneExprStr(src, joinConds));
+            	clause.clear();
+            	nextExprs.addAll(children(currExpr));
+            	
+            	getExprSrc(currExpr, clause);
+            	String joinConds = getJoinConds(currExpr);
+            	
+            	fromClause.append(LEFT_JOIN).append(clause.get("from")).append(JOIN_ON).append(joinConds);
+            	
+            	if(clause.get("where") != null && !clause.get("where").isEmpty() ){
+            		whereClause.append(AND).append(clause.get("where"));
+            	}
             }
             currExprs = nextExprs;
         }
-        return res.toString();
+        this.fromClause = fromClause.toString();
+        this.whereClause = whereClause.toString();
     }
-
-    /**
-     * Add join conditions.
-     * @param src source
-     * @param joinConds join condition
-     * @return string with join condition
-     */
-    private String oneExprStr(String src, String joinConds)
-    {
-        return LEFT_JOIN + src + JOIN_ON + "(" + joinConds + ")";
-    }
+  
 
     /**
      * Get the join conditions.
@@ -196,24 +213,26 @@ public class FromBuilder
         AssociationInterface assoc = getAssociation(leftExpr, rightExpr);
         String returnValue;
         ConstraintPropertiesInterface assocProps = assoc.getConstraintProperties();
-        String leftAttr= assocProps.getSrcEntityConstraintKeyProperties() == null ?
-        		null :assocProps.getSrcEntityConstraintKeyProperties().
-        		getTgtForiegnKeyColumnProperties().getName();
-        String rightAttr= assocProps.getTgtEntityConstraintKeyProperties() == null ?
-        		null :assocProps.getTgtEntityConstraintKeyProperties().
-        		getTgtForiegnKeyColumnProperties().getName();
+        String leftAttr = assocProps.getSrcEntityConstraintKeyProperties() == null ?
+			        		null :assocProps.getSrcEntityConstraintKeyProperties().
+			        			getTgtForiegnKeyColumnProperties().getName();
+        String rightAttr = assocProps.getTgtEntityConstraintKeyProperties() == null ?
+			        		null :assocProps.getTgtEntityConstraintKeyProperties().
+			        			getTgtForiegnKeyColumnProperties().getName();
         if (leftAttr != null && rightAttr != null)
         {
             // tricky choice of PK.
-        	returnValue = equate(middleTabAlias(assoc, rightExpr), assocProps.
-            getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().getName(),
-            aliasOf(rightExpr),primaryKey(entity(rightExpr)));
+        	String leftTab = middleTabAlias(assoc, rightExpr)+ "." + assocProps
+        						.getTgtEntityConstraintKeyProperties()
+        						.getTgtForiegnKeyColumnProperties().getName();
+        	String rightTab = primaryKey(entity(rightExpr), rightExpr);
+        	returnValue = equate(leftTab, rightTab);
         }
         else
         {
-	        leftAttr = getAppropriateAttribute(assoc.getEntity(), leftAttr);
-	        rightAttr = getAppropriateAttribute(assoc.getTargetEntity(), rightAttr);
-	        returnValue = equate(aliasOf(leftExpr), leftAttr, aliasOf(rightExpr), rightAttr);
+        	leftAttr = getAppropriateAttribute(assoc.getEntity(), leftAttr, leftExpr);
+	        rightAttr = getAppropriateAttribute(assoc.getTargetEntity(), rightAttr, rightExpr);
+	        returnValue = equate(leftAttr, rightAttr);
         }
         return returnValue;
     }
@@ -223,15 +242,17 @@ public class FromBuilder
      * @param tempAttribute attribute
      * @return attribute
      */
-	private String getAppropriateAttribute(EntityInterface src, String tempAttribute)
+    private String getAppropriateAttribute(EntityInterface src, String tempAttribute, IExpression expr)
 	{
 		String attribute = tempAttribute;
-		if (attribute == null)
-        {
-            attribute = primaryKey(src);
-        }
+		if (attribute == null) 	{
+        	attribute = primaryKey(src, expr);
+    	} else {        		
+    		attribute = alias(tableName(src), expr) + "." + tempAttribute;
+    	}
 		return attribute;
 	}
+
 
     /**
      * @param leftTab left Table
@@ -240,9 +261,9 @@ public class FromBuilder
      * @param rightCol right Column
      * @return complete string
      */
-    private String equate(String leftTab, String leftCol, String rightTab, String rightCol)
+    private String equate(String leftAttr, String rightAttr)
     {
-        return leftTab + "." + leftCol + "=" + rightTab + "." + rightCol;
+		return leftAttr  + "="  + rightAttr;
     }
 
     /**
@@ -287,36 +308,27 @@ public class FromBuilder
      */
     private String middleTabAlias(AssociationInterface assoc, IExpression rightExpr)
     {
-        return alias(middleTabName(assoc), rightExpr);
+        return alias(middleTabName(assoc), rightExpr) + "_";
     }
 
     /**
      * @param expr expression
      * @return string with join condition
      */
-    private String getExprSrc(IExpression expr)
+    private void getExprSrc(IExpression expr, Map<String, String> clause)
     {
         SrcStringProvider srcStringProvider = getStringProvider(expr);
-        String src = srcStringProvider.srcString(expr) + " " + aliasOf(expr);
-        String returnValue;
-        if (expr == root)
-        {
-        	returnValue = src;
-        }
-        else
-        {
+        srcStringProvider.srcString(expr, clause);
+       
+        if (expr != root)
+        {     	
 	        // many-many ??
 	        String res = processForManyToMany(expr);
-	        if ("".equals(res))
-	        {
-	        	returnValue = src;
+	        if (!"".equals(res))
+	        {        	
+	        	clause.put("from", res + LEFT_JOIN + clause.get("from"));
 	        }
-	        else
-	        {
-	        	returnValue = res + LEFT_JOIN + src;
-	        }
-        }
-        return returnValue;
+        }        
     }
 
     /**
@@ -331,16 +343,16 @@ public class FromBuilder
             AssociationInterface assoc = getAssociation(parent, expr);
             if (manyToMany(assoc))
             {
-                ConstraintPropertiesInterface constraintProperty =
-                assoc.getConstraintProperties();
+                ConstraintPropertiesInterface constraintProperty = assoc.getConstraintProperties();
                 String middleTabAlias = middleTabAlias(assoc, expr);
-                String joinCond = equate(aliasOf(parent),
-                primaryKey(entity(parent)), middleTabAlias,
-                constraintProperty.getSrcEntityConstraintKeyProperties()
-                .getTgtForiegnKeyColumnProperties().getName());
+                String leftCol = primaryKey(entity(parent), parent);
+                String rightCol = middleTabAlias + "."+ constraintProperty
+                					.getSrcEntityConstraintKeyProperties()
+                					.getTgtForiegnKeyColumnProperties().getName();
+                String joinCond = equate(leftCol, rightCol);
 
                 res.append(constraintProperty.getName())
-                .append(' ').append(middleTabAlias).append(JOIN_ON).append(joinCond);
+                	.append(' ').append(middleTabAlias).append(JOIN_ON).append(joinCond);
             }
         }
 		return res.toString();
@@ -374,11 +386,9 @@ public class FromBuilder
      */
     private boolean manyToMany(AssociationInterface assoc)
     {
-        ConstraintPropertiesInterface constraintProperty =
-        assoc.getConstraintProperties();
-        return constraintProperty.getSrcEntityConstraintKeyProperties()
-        != null && constraintProperty.getTgtEntityConstraintKeyProperties()
-        != null;
+        ConstraintPropertiesInterface constraintProperty = assoc.getConstraintProperties();
+        return constraintProperty.getSrcEntityConstraintKeyProperties()!= null 
+        		&& constraintProperty.getTgtEntityConstraintKeyProperties() != null;
     }
 
     /**
@@ -410,7 +420,7 @@ public class FromBuilder
      */
     private interface SrcStringProvider
     {
-        String srcString(IExpression expression);
+        void srcString(IExpression expression, Map<String, String> clause);
     }
 
     private static class DefaultSrcProvider implements SrcStringProvider
@@ -418,21 +428,17 @@ public class FromBuilder
     	/**
     	 * @return query string
     	 */
-        public String srcString(IExpression expression)
+        public void srcString(IExpression expression, Map<String, String> clause)
         {
-        	String returnValue;
             EntityInterface entity = entity(expression);
             AttributeInterface actAttr = activityStatus(entity);
-            if (actAttr == null)
-            {
-            	returnValue = tableName(entity);
+            String tabAlias = aliasOf(expression);
+
+            clause.put("from", tableName(entity) + " " + tabAlias);
+            if (actAttr != null)
+            {   
+            	clause.put("where", activeCond(tabAlias + "." + columnName(actAttr)));
             }
-            else
-            {
-            	returnValue = "(" + SELECT + "*" + FROM + tableName(entity)
-            	+ WHERE + activeCond(columnName(actAttr)) + ")";
-            }
-            return returnValue;
         }
     }
 
@@ -451,13 +457,12 @@ public class FromBuilder
     	/**
     	 * @return query
     	 */
-        public String srcString(IExpression expression)
+        public void srcString(IExpression expression, Map<String, String> clause)
         {
             EntityInterface entity = entity(expression);
-
             String table = tableName(getRoot(entity));
-            return "(" + SELECT + "*" + FROM + table +
-            WHERE + conds(entity) + ")";
+            clause.put("from", table + " " + alias(table, expression));
+            clause.put("where", conds(entity));            
         }
 
         /**
@@ -465,17 +470,12 @@ public class FromBuilder
          * @return res
          */
         private String conds(EntityInterface entity)
-        {
-        	String condition;
-            String res = discriminator(entity);
+        {   
+            String condition = discriminator(entity);
             AttributeInterface actAttr = activityStatus(entity);
-            if (actAttr == null)
+            if (actAttr != null)
             {
-            	condition = res;
-            }
-            else
-            {
-            	condition = res + " and " + activeCond(columnName(actAttr));
+            	condition += " and " + activeCond(columnName(actAttr));
             }
             return condition;
         }
@@ -498,6 +498,7 @@ public class FromBuilder
      */
     private class TblPerSubClass implements SrcStringProvider
     {
+       	private IExpression expr;
 
         /**
          * TODO assumes a rosy practical database design where (1). SAME KEY for
@@ -510,106 +511,29 @@ public class FromBuilder
          * aliases for the columns in this SELECT clause.
          * @return query string
          */
-        public String srcString(IExpression expression)
+        public void srcString(IExpression expression, Map<String, String> clause)
         {
-            EntityInterface child = entity(expression);
-            return "(" + selectClause(expression) +
-            fromClause(child) + whereClause(child) + ")";
+        	this.expr = expression;
+        	EntityInterface child = entity(expression);
+        	clause.put("from", " ("+ fromClause(child) +") ");
+        	clause.put("where", whereClause(child));            
         }
-
-        /**
-         * Form select clause.
-         * @param expr expression
-         * @return select clause
-         */
-        private String selectClause(IExpression expr)
-        {
-            EntityInterface entity = entity(expr);
-            StringBuilder res = new StringBuilder();
-            res.append(SELECT);
-
-            final String comma = ", ";
-            for (AttributeInterface attr : attributes(entity))
-            {
-                res.append(qualifiedColName(attr));
-                res.append(comma);
-            }
-            processParentExpression(expr, res, comma);
-            for (IExpression child : children(expr))
-            {
-                processChildExpression(expr, res, comma, child);
-            }
-            return removeLastOccur(res.toString(), comma);
-        }
-
-        /**
-         * @param expr expression
-         * @param res result
-         * @param comma comma
-         * @param child child
-         */
-		private void processChildExpression(IExpression expr,
-				StringBuilder res, final String comma, IExpression child)
-		{
-			AssociationInterface assoc = getAssociation(expr, child);
-			ConstraintKeyPropertiesInterface constraintProp =
-			assoc.getConstraintProperties()
-			.getSrcEntityConstraintKeyProperties();
-			String foreignKey = constraintProp == null ? null :
-			constraintProp.getTgtForiegnKeyColumnProperties().getName();
-			if (foreignKey != null && !manyToMany(assoc))
-			{
-			    foreignKey = tableName(assoc.getEntity()) + "." + foreignKey;
-			    if(res.indexOf(foreignKey) == -1)
-			    {
-				    res.append(foreignKey);
-				    res.append(comma);
-			    }
-			}
-		}
-
-        /**
-         * @param expr expression
-         * @param res result
-         * @param comma comma
-         */
-		private void processParentExpression(IExpression expr,
-				StringBuilder res, final String comma)
-		{
-			for (IExpression parent : parents(expr))
-            {
-                AssociationInterface assoc = getAssociation(parent, expr);
-                ConstraintKeyPropertiesInterface constraintProp =
-                assoc.getConstraintProperties()
-                .getTgtEntityConstraintKeyProperties();
-                String foreignKey = constraintProp == null ? null :
-                constraintProp.getTgtForiegnKeyColumnProperties().getName();
-                if (foreignKey != null && !manyToMany(assoc))
-                {
-                    foreignKey = tableName(assoc.getTargetEntity()) + "." + foreignKey;
-                    res.append(foreignKey);
-                    res.append(comma);
-                }
-            }
-		}
-
+        
         /**
          * Return from clause.
          * @param childEntity child entity
          * @return from clause
          */
-        private String fromClause(EntityInterface childEntity)
-        {
-        	EntityInterface child = childEntity;
-            StringBuilder res = new StringBuilder();
-            res.append(FROM);
-            res.append(tableName(child));
+        private String fromClause(EntityInterface child)
+        {        	        	
+            StringBuilder res = new StringBuilder();           
+            res.append(tableName(child) + " " + alias(tableName(child), expr));
             EntityInterface parent = child.getParentEntity();
             while (parent != null)
             {
                 res.append(INNER_JOIN);
-                res.append(tableName(parent));
-                res.append(" on ");
+                res.append(tableName(parent)+ " " + alias(tableName(parent), expr));
+                res.append(JOIN_ON);
                 res.append(joinWithParent(child));
 
                 child = parent;
@@ -625,7 +549,7 @@ public class FromBuilder
          */
         private String joinWithParent(EntityInterface entity)
         {
-            return key(entity) + "=" + key(entity.getParentEntity());
+            return key(entity) + " = " + key(entity.getParentEntity());
         }
 
         /**
@@ -634,7 +558,7 @@ public class FromBuilder
          */
         private String key(EntityInterface entity)
         {
-            return tableName(entity) + "." + primaryKey(entity);
+        	return primaryKey(entity, expr);
         }
 
         /**
@@ -642,8 +566,8 @@ public class FromBuilder
          * @return Qualified column name
          */
         private String qualifiedColName(AttributeInterface attr)
-        {
-            return tableName(origAttr(attr).getEntity()) + "." + columnName(attr);
+        {           
+            return alias(tableName(origAttr(attr).getEntity()), expr) + "." + columnName(attr);
         }
 
         /**
@@ -653,16 +577,13 @@ public class FromBuilder
          */
         private String whereClause(EntityInterface child)
         {
-        	String whereClause = null;
-            AttributeInterface actAttr = activityStatus(child);
-            if (actAttr == null)
-            {
-            	whereClause =  "";
-            }
-            if(whereClause == null)
-            {
-            	whereClause =  WHERE + activeCond(qualifiedColName(actAttr));
-            }
+        	String whereClause = "";
+        	AttributeInterface actAttr = activityStatus(child);
+        	if (actAttr != null)
+        	{
+        		whereClause = activeCond(qualifiedColName(actAttr));
+        	}
+            
             return whereClause;
         }
     }
@@ -674,15 +595,14 @@ public class FromBuilder
      */
     private static EntityInterface getRoot(EntityInterface entity)
     {
-    	EntityInterface root = entity;
         // old code also checked inheritance strategy here; not needed if
         // strategies are not mixed.
-        while (entity != null)
-        {
-        	root = entity;
-        	entity = entity.getParentEntity();
-        }
-        return root;
+		while (entity.getParentEntity() != null) 
+		{
+			entity = entity.getParentEntity();
+		}
+	
+		return entity;
     }
 
     /**
@@ -771,23 +691,22 @@ public class FromBuilder
      * @param entity the DE entity.
      * @return The Primary key attribute of the given entity.
      */
-    private static String primaryKey(EntityInterface entity)
+    private static String primaryKey(EntityInterface entity, IExpression expr)
     {
         Collection<AttributeInterface> attributes = attributes(entity);
         for (AttributeInterface attribute : attributes)
         {
             if (attribute.getIsPrimaryKey() || attribute.getName().equals("id"))
-            {
-                return columnName(attribute);
+            {               
+                return alias(tableName(entity), expr) + "." + columnName(attribute); 
             }
         }
         EntityInterface parentEntity = entity.getParentEntity();
         if (parentEntity != null)
         {
-            return primaryKey(parentEntity);
+            return primaryKey(parentEntity, expr);
         }
-        throw new RuntimeException("No Primary key attribute" +
-        		" found for Entity:" + entity.getName());
+        throw new RuntimeException("No Primary key attribute found for Entity:" + entity.getName());
     }
 
     /**
@@ -802,8 +721,7 @@ public class FromBuilder
     	AttributeInterface activityStatus = null;
         for (AttributeInterface attribute : attributes(entity))
         {
-            if (attribute.getName().equals
-            (edu.wustl.query.util.global.AQConstants.ACTIVITY_STATUS))
+            if (attribute.getName().equals(AQConstants.ACTIVITY_STATUS))
             {
                 activityStatus = attribute;
             }
@@ -818,8 +736,7 @@ public class FromBuilder
      */
     private static String activeCond(String attr)
     {
-        return attr + " != '" +
-        edu.wustl.query.util.global.AQConstants.ACTIVITY_STATUS_DISABLED + "'";
+        return attr + " != '" + AQConstants.ACTIVITY_STATUS_DISABLED + "'";
     }
 
     /**

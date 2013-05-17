@@ -15,4 +15,6 @@ public class SqlKeyWords
     public static final String INNER_JOIN = " inner join ";
 
     public static final String JOIN_ON = " on ";
+    
+    public static final String AND = " and ";
 }
