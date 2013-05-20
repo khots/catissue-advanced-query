@@ -265,7 +265,7 @@ function checkForValidation()
 		<tr height="15"></tr>
 			<td></td>
 			<td id="multiSelectId" nowrap="" colspan="1" class="black_ar_new" style="display:none">
-			<mCombo:multiSelectUsingCombo identifier="coord" styleClass="black_ar_new"  size="15" addButtonOnClick="moveOptions('coord','protocolCoordinatorIds', 'add')" removeButtonOnClick="moveOptions('protocolCoordinatorIds','coord', 'edit')" selectIdentifier="protocolCoordinatorIds" collection="<%=(List)request.getAttribute("selectedCoordinators")%>"/>
+			<mCombo:multiSelectUsingCombo identifier="coord" styleClass="black_ar_new"  size="15" addButtonOnClick="moveOptions('coord','protocolCoordinatorIds', 'add')" removeButtonOnClick="moveOptions('protocolCoordinatorIds','coord', 'edit')" selectIdentifier="protocolCoordinatorIds" collection='<%=(List)request.getAttribute("selectedCoordinators")%>'/>
 			</td>
 		</tr>
 		<tr>
