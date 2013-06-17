@@ -23,6 +23,7 @@ import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.metadata.associations.IIntraModelAssociation;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IJoinGraph;
+import edu.wustl.common.querysuite.queryobject.IRule;
 import edu.wustl.common.util.Utility;
 import edu.wustl.query.util.global.AQConstants;
 /**
@@ -212,6 +213,7 @@ public class FromBuilder
     {
         AssociationInterface assoc = getAssociation(leftExpr, rightExpr);
         String returnValue;
+        
         ConstraintPropertiesInterface assocProps = assoc.getConstraintProperties();
         String leftAttr = assocProps.getSrcEntityConstraintKeyProperties() == null ?
 			        		null :assocProps.getSrcEntityConstraintKeyProperties().
@@ -431,11 +433,11 @@ public class FromBuilder
         public void srcString(IExpression expression, Map<String, String> clause)
         {
             EntityInterface entity = entity(expression);
-            AttributeInterface actAttr = activityStatus(entity);
+            AttributeInterface actAttr;
             String tabAlias = aliasOf(expression);
 
             clause.put("from", tableName(entity) + " " + tabAlias);
-            if (actAttr != null)
+            if (expression.containsRule() &&  (actAttr = activityStatus(entity)) != null)
             {   
             	clause.put("where", activeCond(tabAlias + "." + columnName(actAttr)));
             }
@@ -462,7 +464,9 @@ public class FromBuilder
             EntityInterface entity = entity(expression);
             String table = tableName(getRoot(entity));
             clause.put("from", table + " " + alias(table, expression));
-            clause.put("where", conds(entity));            
+            if (expression.containsRule()) {
+            	clause.put("where", conds(entity));  
+            }
         }
 
         /**
@@ -516,7 +520,10 @@ public class FromBuilder
         	this.expr = expression;
         	EntityInterface child = entity(expression);
         	clause.put("from", " ("+ fromClause(child) +") ");
-        	clause.put("where", whereClause(child));            
+        	
+        	if (expression.containsRule()) {
+        		clause.put("where", whereClause(child));  
+        	}
         }
         
         /**
@@ -753,5 +760,5 @@ public class FromBuilder
         	returnSrc = src.substring(0, src.length() - toRemove.length());
         }
         return returnSrc;
-    }
+    }    
 }

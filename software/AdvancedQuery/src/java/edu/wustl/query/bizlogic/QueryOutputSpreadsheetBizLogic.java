@@ -446,7 +446,7 @@ public class QueryOutputSpreadsheetBizLogic
 				queryResultObjectDataBean.setIdentifiedDataColumnIds(identifiedDataColumnIds);
 				queryResultObjectDataBean.setHasAssociatedIdentifiedData(true);
 			}
-			if (attribute.getName().equals(AQConstants.IDENTIFIER))
+			if (attribute.getName().equals(AQConstants.IDENTIFIER) && idColumnOfCurrentNode.isEmpty())
 			{
 				idColumnOfCurrentNode = sqlColumnName;
 				if (!selectedColumnMetaData.isDefinedView())
@@ -995,8 +995,9 @@ public class QueryOutputSpreadsheetBizLogic
 		List<List<String>> listForFileType = dataList;
 		querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
 		// if denormalization is on then execute below block else do not execute this block.
-
-		if(queryDetailsObj.getQuery().getConstraints().size() != 1 && isContPresent && !queryDetailsObj.getQuery().getIsNormalizedResultQuery())
+		 
+		if(queryDetailsObj.getQuery().getConstraints().size() != 1 && isContPresent 
+				&& !queryDetailsObj.getQuery().getIsNormalizedResultQuery())
 		{
 			SpreadsheetDenormalizationBizLogic  denormalizationBizLogic =
 				new SpreadsheetDenormalizationBizLogic();
@@ -1010,8 +1011,7 @@ public class QueryOutputSpreadsheetBizLogic
 
 				selectedColMetadata.setActualTotalRecords(pagenatedResultData.getTotalRecords());
 			}
-		}
-
+		} 
 
 		for (Long id : queryResultObjectDataBeanMap.keySet())
 		{
@@ -1138,7 +1138,7 @@ public class QueryOutputSpreadsheetBizLogic
 		}
 		return isContPresent;
 	}
-
+ 
 	/**
 	 * To set the order of attributes to be displayed on spreadsheet
 	 * as that of define view in case of save query.
