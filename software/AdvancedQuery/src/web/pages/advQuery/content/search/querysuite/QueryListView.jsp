@@ -21,6 +21,7 @@
 <%@ page import="edu.wustl.query.beans.DashboardBean"%>
 <head>
 <!-- dhtmlx Grid/tree Grid -->
+<script type="text/javascript" src="jss/advQuery/SavedQuery.js"></script>
 <script type="text/javascript" src="jss/advQuery/queryModule.js"></script>
 <script type="text/javascript" src="jss/advQuery/wz_tooltip.js"></script>
 <script type="text/javascript" src="jss/tag-popup.js"></script>
@@ -48,19 +49,12 @@
 <script>var imgsrc="/images/de/";</script>
 <script language="JavaScript" type="text/javascript"
 	src="javascripts/de/scr.js"></script>
- 
 <link rel="stylesheet" type="text/css"
 	href="css/clinicalstudyext-all.css" />
 <script language="JavaScript" type="text/javascript"
 	src="javascripts/de/ajax.js"></script>
 <script type='text/JavaScript' src='jss/advQuery/scwcalendar.js'></script>
 <script>
-function QueryWizard()
-{
-	var rand_no = Math.random();
-	document.forms[0].action='QueryWizard.do?random='+rand_no;
-	document.forms[0].submit();
-}
 window.onload = function() {  
 	<%
 		String tagId =(String) request.getAttribute("tagId");
@@ -71,103 +65,16 @@ window.onload = function() {
    	<%
 		} else { 
 	%>
-   			ajaxQueryGridInitCall("QueryGridInitAction.do");
+			ajaxQueryGridInitCall("QueryGridInitAction.do");
 			doInitGrid();
    	<%}%>
 	document.getElementById('protocolCoordinatorIds').style.marginLeft= "15px";
 	document.getElementById('addButton_coord').style.marginLeft= "21px";
 	document.getElementById('removeButton_coord').style.marginLeft= "21px";
 	initCombo();
+	 
 }  
-function f()
-{
-	searchDivTag=document.getElementById('searchDiv');
-	searchDivTag.style.height = (document.body.clientHeight-105) + 'px';
-}
-var grid;
-function doInitGrid(tagId)
-{
-	grid = new dhtmlXGridObject('mygrid_container');
-	grid.setImagePath("dhtmlx_suite/dhtml_pop/imgs/");
- 	grid.setHeader("My Folders");
- 	grid.setInitWidthsP("100");
- 	grid.setColAlign("left");
- 	grid.setSkin("dhx_skyblue"); // (xp, mt, gray, light, clear, modern)
- 	grid.enableRowsHover(true,'grid_hover')
- 	grid.setEditable(false);
-   	grid.attachEvent("onRowSelect", doOnRowSelected);
- 	grid.init();
- 	grid.load ("TagGridInItAction.do",function() {
-  	   grid.selectRowById(tagId);
-  	});
-}
-
-function doOnRowSelected(rId)
-{
-	ajaxQueryGridInitCall("QueryGridInitAction.do?tagId="+rId);
-	document.getElementById('myQueries').className='btn1';
-	document.getElementById('allQueries').className='btn1';
-	document.getElementById('sharedQueries').className='btn1';
-}
- 
-var xmlHttpobj = false;
-function ajaxQueryGridInitCall(url) {
-	
- if (window.XMLHttpRequest)
- { 
-  	xmlHttpobj=new XMLHttpRequest();
- }
- else
- { 
-  	xmlHttpobj=new ActiveXObject("Microsoft.XMLHTTP");
- }
-	  
-	xmlHttpobj.onreadystatechange = showGrid;
-	xmlHttpobj.open("POST", url,false);
-	xmlHttpobj.send(null);
-}
-var responseString;
-var queryGrid;
-function showGrid() {
-	if (xmlHttpobj.readyState == 4) 
-	{
-		 responseString =xmlHttpobj.responseText;
-		 queryGrid = new dhtmlXGridObject('mygrid_right_container');
-		 queryGrid.setImagePath("dhtmlx_suite/dhtml_pop/imgs/");
-		 queryGrid.setHeader(",<b>ID,<b>Title,<b>Results,<b>Executed On,<b>Owner,<b>Actions ");
-		 queryGrid.attachHeader("#rspan,#numeric_filter,#text_filter,#text_filter,#rspan,#select_filter,#rspan"); 
-		 queryGrid.setInitWidthsP("3,5,*,20,11,12,10");
-		 queryGrid.setColAlign("center,center,left,left,center,center,left");
-		 queryGrid.setColTypes("txt,txt,link,txt,txt,txt,txt");
-		 queryGrid.setColSorting("str,int,str_custom,str,str,str");
-		 queryGrid.setSkin("dhx_skyblue"); // (xp, mt, gray, light, clear, modern)
-		 queryGrid.enableRowsHover(true,'grid_hover')
-		 queryGrid.setEditable(false);
-		 queryGrid.enableTooltips("false,false,true,false,false,false,false");
-		 queryGrid.setCustomSorting(str_custom, 2);
-		 queryGrid.clearAll(true);
-		 queryGrid.init();
-		 queryGrid.enablePaging(true,20,10,"pagingArea",true);
-		 queryGrid.setPagingSkin("bricks");
-		 queryGrid.loadXMLString(responseString); 
-		 document.getElementById('messageDiv').style.display = "none";
-	}
-}
-
-function setHeader(isQueryChecked)
-{
-	if(isQueryChecked == true){		 
-		document.getElementById("poupHeader").textContent ="Assign the query(s) to folder";
-		document.getElementById("poupHeader").innerText ="Assign the query(s) to folder";
-	}else{
-		document.getElementById("poupHeader").textContent ="Share the folder(s) with user";
-		document.getElementById("poupHeader").innerText ="Share the folder(s) with user";
-	} 
-}
-</script>
-
- 
- 
+</script>  
 <body onunload="doInitOnLoad();" onresize='f()'>
 	<%
 		boolean mac = false;
@@ -192,48 +99,7 @@ function setHeader(isQueryChecked)
 		String queryOption = (String) request.getAttribute("queryOption");
 	%>
 
-<script>
-
-function checkForValidation()
-{
-	var tdId = "multiSelectId";
-	var displayStyle = 	document.getElementById(tdId).style.display;
-	if(displayStyle == "block")
-	{
-		var coords = document.getElementById('protocolCoordinatorIds');
-		if(coords.options.length == 0)
-		{
-			alert("Please select atleast one user from the dropdown");
-		}
-		else
-		{
-			ajaxShareTagFunctionCall("ShareTagAction.do","Select at least one existing folder.") 
-		}
-	}
-}
-function initCombo(){
-	var myUrl= 'ShareQueryAjax.do?';
-	var ds = new Ext.data.Store({proxy: new Ext.data.HttpProxy({url: myUrl}),
-	reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, [{name: 'id', mapping: 'id'},{name: 'excerpt', mapping: 'field'}])});
-	var combo = new Ext.form.ComboBox({store: ds,hiddenName: 'CB_coord',displayField:'excerpt',valueField: 'id',typeAhead: 'false',pageSize:15,forceSelection: 'true',queryParam : 'query',mode: 'remote',triggerAction: 'all',minChars : 3,queryDelay:500,lazyInit:true,emptyText:'--Select--',valueNotFoundText:'',selectOnFocus:'true',applyTo: 'coord'});
-
-	combo.on("expand", function() {
-	if(Ext.isIE || Ext.isIE7)
-	{
-		combo.list.setStyle("width", "250");
-		combo.innerList.setStyle("width", "250");
-	}else{
-		combo.list.setStyle("width", "250");
-		combo.innerList.setStyle("width", "250");
-	}
-	}, {single: true});
-	ds.on('load',function(){
-		if (this.getAt(0) != null && this.getAt(0).get('excerpt')) 
-		{combo.typeAheadDelay=50;
-		} else {combo.typeAheadDelay=60000}
-		});
-	}
-</script>
+ 
  
  <html:messages id="messageKey" message="true">
 		<%
@@ -263,15 +129,28 @@ function initCombo(){
 						<div id="messageDiv" style="font-size: 0.9em; font-family: verdana; display:none"> <bean:message key="query.deletedSuccessfully.message"/></div>
 				</td>
 				<td>
-					<div>
+				 
 						<%
  						String	organizeTarget = "ajaxTreeGridInitCall('"+popupDeleteMessage+"','"+popupFolderDeleteMessage+"','"+entityTag+"','"+entityTagItem+"')";
  						%>
-						<input type="button" value="ORGANIZE"
-							onclick="<%=organizeTarget%> " title ="Organize"  class="btn"> <input
-							type="button" value="CREATE NEW QUERY" title ="Create New Query" onclick="QueryWizard()"
-							class="btn2">
-				</td>
+						<div id="navcontainer">
+						<ul id="navlist">
+						<li id="active" ><input type="button" class="btn" title="Organize" onclick="ajaxTreeGridInitCall('Are you sure you want to delete?','Are you sure you want to delete?','QueryTag','QueryTagItem') " value="Organize"></a></li>
+						</ul>
+						<ul id="navlist">
+							<li > <button type="input" id="newbtn" style="float: right;" onclick="" title="New Query"> New Query <img src="images/advQuery/dropdown_arrow.gif" style=""padding-top:1px;"/></button> 
+								<ul id="subnavlist" style="margin-left:3px;"> 
+									<li style="height:20px;"><a href="javascript:QueryWizard();" title="Create New Query">Create New Query</a></li> 
+										</a>
+									</li>
+                   				    <li style="height:20px; "><a  href="javascript:popup('new_PopUpDiv')" title="Import New Query">Import New Query</a></li>	    				   
+           				 			 
+								</ul>
+							</li>		
+								 
+						</ul>				
+						</div>
+				</td> 
 			</tr>
 			<td height="7px;"> </td>
 			<tr>
@@ -317,10 +196,11 @@ function initCombo(){
 			</table>
 
 		</div>
- 
+  
 		<div id="wrapper">
 			<div id="mainContent">
 				<!--POPUP-->
+			
 				<div id="blanket" style="display: none;"></div>
 				<div id="popUpDiv" style="display: none; top: 100px; left: 210.5px;">
 					<a onclick="popup('popUpDiv')"><img style="float: right; cursor:pointer;"
@@ -358,7 +238,7 @@ function initCombo(){
 							<tr>
 								<td  align="left">
 									<div id="multiSelectId" class="black_ar_new" style="display:none; margin-left:35px">
-											&nbsp&nbsp&nbsp<mCombo:multiSelectUsingCombo identifier="coord" styleClass="black_ar_new"  size="20" addButtonOnClick="moveOptions('coord','protocolCoordinatorIds', 'add')" removeButtonOnClick="moveOptions('protocolCoordinatorIds','coord', 'edit')" selectIdentifier="protocolCoordinatorIds" collection='<%=(List)request.getAttribute("selectedCoordinators")%>'/>
+											&nbsp&nbsp&nbsp<mCombo:multiSelectUsingCombo identifier="coord" styleClass="black_ar_new"  size="20" addButtonOnClick="moveOptions('coord','protocolCoordinatorIds', 'add')" removeButtonOnClick="moveOptions('protocolCoordinatorIds','coord', 'edit')" selectIdentifier="protocolCoordinatorIds" collection="<%=(List)request.getAttribute("selectedCoordinators")%>"/>
 								 
 									</div>
 								</td>
@@ -402,14 +282,54 @@ function initCombo(){
 			</div>
 
 		</div>
+		
+		    
 </td>
 </tr> 
 </table>
 <html:hidden styleId="queryId" property="queryId" />
 </html:form>
+<form method="POST" id="uploadForm" class="upload-form" enctype="multipart/form-data">
+	<div id="new_PopUpDiv" style="display: none; margin-top:5%; margin-left:12%;">
+		<a onclick="javascript: openImportPopup();"><img style="float:right; cursor:pointer;"
+			height='23' width='24' title="Close" src='images/advQuery/close_button.gif'
+			border='0'> </a>
+		<table class="manage tags" width="100%">
+			<tr height="30px" class="alert alert-title" bgcolor="#d5e8ff">
+				<td width="28%" align="left">		 
+					<p>
+					<label  width="28%" align="left"
+						style="font-size: .82em; font-family: verdana;"><b> Choose Query XML File</b> </label>
+					</p>
+				</td>
+			</tr>
+			<tr height="30px">
+				<td> 
+				<div id="popMessageDiv" class="alert alert-error" style="display:none"></div>
+			</tr>
+			<tr id ="queryNameTr">
+				<td> 
+					<label id="newTagLabel" width="28%" align="left"
+						style="margin-left :15px; font-size: .82em; font-family: verdana;">
+						<b> Title : </b>
+				 		<input type="text" id="queryName" name="queryName" size="24" onkeydown="avoidEnter();" value="" onclick="this.value='';" maxlength="255" />
+				 </label>
+				 </td>
+			</tr>
+			<tr height="35px">
+				<td width="28%" align="left">
+					 <input type="file"  id="file" style="margin-left :15px; cursor: pointer; z-index:1;" name="file"/> 
+				</td>
+			</tr>
+			<tr height="2px"></tr>
+			<tr height="35px">
+				<td width="28%" align="left">
+				<button type="button" name="submitImage" id="newbtn" style="margin-left :15px; margin-top:0px" onkeydown="donothing()"
+				    onClick="fileUpload(this.form, '/catissuecore/ImportQuery'); return false;"> Import Query </button>
+				</td>
+			</tr>
+		</table>	 
+	</div>
+</form>				
 </body>
-<script>
-
  
-
-</script>

@@ -323,7 +323,9 @@ PUBLIC
 			type="edu.wustl.common.tags.action.ShareTagAction" validate="false"
 			scope="session" />
 	
-		
+		<action path="/ExportQueryAction"
+			type="edu.wustl.query.action.ExportQueryAction" validate="false"
+			scope="session" />
 	</action-mappings>
 
 	<controller processorClass="edu.wustl.common.struts.ApplicationRequestProcessor" />
