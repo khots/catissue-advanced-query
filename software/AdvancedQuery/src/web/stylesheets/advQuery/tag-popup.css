@@ -304,8 +304,6 @@ ul#navlist li:hover ul#subnavlist {
 	z-index: 15000;
 }
 
-
-
 ul#navlist li:hover ul#subnavlist li a {
 	display: block;
 	width: 100px;
@@ -350,6 +348,28 @@ ul#navlist li ul#subnavlist li:hover a {
     background: url("../images/de/default/menu/item-over.gif") repeat-x scroll left bottom #EBF3FD;
     border: 1px solid #AACCF6;
     padding: 2px;
+}
+.subnavlist-class{
+	top: 17.5%;
+	left:83%;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	display: block;
+	position: absolute;
+	z-index: 15000;
+	width:114px;
+	background: url("../images/de/default/menu/menu.gif") repeat-y scroll 0 0 #F0F0F0;
+	color: #222222;
+	cursor: pointer;
+	text-decoration: none;
+	white-space: nowrap;
+	-moz-box-shadow: 3px 4px 5px #616d80;
+	-webkit-box-shadow: 3px 4px 5px #616d80;
+	box-shadow: 3px 4px 5px #616d80;
+	border-left : 1px solid #718BB7;
+	border-right : 1px solid #718BB7;
+	border-bottom : 1px solid #718BB7;
+	unicode-bidi: -moz-isolate;
 }
 .alert {
   padding: 4px 0px 4px 0px;

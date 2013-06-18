@@ -1,8 +1,4 @@
-function f()
-{
-	searchDivTag=document.getElementById('searchDiv');
-	searchDivTag.style.height = (document.body.clientHeight-105) + 'px';
-}
+
 var grid;
 function doInitGrid(tagId)
 {
@@ -124,19 +120,19 @@ function fileUpload(form, actionUrl) {
           			var contentArray = content.split("'");
           	    	ajaxQueryGridInitCall("QueryGridInitAction.do");
           	    	popup('new_PopUpDiv');	
-        			document.getElementById('errorDiv').style.display = "none";
+          	    	document.getElementById('errorDiv').style.display = "none";
         			document.getElementById('popMessageDiv').style.display = "none";
         			document.getElementById("messageDiv").style.color = "green";
         			document.getElementById('messageDiv').style.display = "block";
            			document.getElementById("messageDiv").textContent = "The query '"+contentArray[1]+"' has been imported successfully.";
           		} else if (content.indexOf("Error")>= 0){			
-        			document.getElementById('errorDiv').style.display = "none";
+          			document.getElementById('errorDiv').style.display = "none";
         			document.getElementById('popMessageDiv').style.display = "block";
         			document.getElementById("popMessageDiv").style.color = "red";
         			document.getElementById("popMessageDiv").textContent = "Error! While importing query. Try to import with new title.";
           		}     
         	} else if (iframeId.contentWindow) {
-         	  	content = iframeId.contentWindow.document.body.innerHTML;
+         	  		content = iframeId.contentWindow.document.body.innerHTML;
         	} else if (iframeId.document) {
            		content = iframeId.document.body.innerHTML;
         	}
@@ -171,7 +167,8 @@ function openImportPopup(){
 	document.getElementById('file').value="";
 	document.getElementById('queryName').value = "";
 	document.getElementById('popMessageDiv').style.display = "none";
-	
+	document.getElementById('subnavlist').style.display="none";
+	flag =true;
 }
 
 function avoidEnter(event){
@@ -233,4 +230,16 @@ function QueryWizard()
 	var rand_no = Math.random();
 	document.forms[0].action='QueryWizard.do?random='+rand_no;
 	document.forms[0].submit();
+}
+var flag =true;	
+function showlist(){
+	
+	if(flag == false){
+		document.getElementById('subnavlist').style.display="none";
+		flag = true;
+	}else {
+		document.getElementById('subnavlist').style.display="block";
+		document.getElementById('subnavlist').className="subnavlist-class";
+		flag = false;
+	}
 }

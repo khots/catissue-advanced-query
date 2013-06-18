@@ -75,7 +75,7 @@ window.onload = function() {
 	 
 }  
 </script>  
-<body onunload="doInitOnLoad();" onresize='f()'>
+<body>
 	<%
 		boolean mac = false;
 		Object os = request.getHeader("user-agent");
@@ -135,19 +135,18 @@ window.onload = function() {
  						%>
 						<div id="navcontainer">
 						<ul id="navlist">
-						<li id="active" ><input type="button" class="btn" title="Organize" onclick="ajaxTreeGridInitCall('Are you sure you want to delete?','Are you sure you want to delete?','QueryTag','QueryTagItem') " value="Organize"></a></li>
+						<li id="active" ><input type="button" class="btn" title="Organize" onclick="ajaxTreeGridInitCall('Are you sure you want to delete?','Are you sure you want to delete?','QueryTag','QueryTagItem') " value="Organize"></btton></li>
 						</ul>
 						<ul id="navlist">
-							<li > <button type="input" id="newbtn" style="float: right;" onclick="" title="New Query"> New Query <img src="images/advQuery/dropdown_arrow.gif" style=""padding-top:1px;"/></button> 
+							<li> <button type="input" id="newbtn" style="float: right;" onclick="return showlist();" title="New Query"> New Query <img src="images/advQuery/dropdown_arrow.gif" style=""padding-top:1px;"/></button> 
 								<ul id="subnavlist" style="margin-left:3px;"> 
 									<li style="height:20px;"><a href="javascript:QueryWizard();" title="Create New Query">Create New Query</a></li> 
 										</a>
 									</li>
-                   				    <li style="height:20px; "><a  href="javascript:popup('new_PopUpDiv')" title="Import New Query">Import New Query</a></li>	    				   
+                   				    <li style="height:20px; "><a  href="javascript:openImportPopup();" title="Import New Query">Import New Query</a></li>	    				   
            				 			 
-								</ul>
-							</li>		
-								 
+								</ul> 
+							</li>		 
 						</ul>				
 						</div>
 				</td> 
@@ -312,7 +311,7 @@ window.onload = function() {
 					<label id="newTagLabel" width="28%" align="left"
 						style="margin-left :15px; font-size: .82em; font-family: verdana;">
 						<b> Title : </b>
-				 		<input type="text" id="queryName" name="queryName" size="24" onkeydown="avoidEnter();" value="" onclick="this.value='';" maxlength="255" />
+				 		<input type="text" id="queryName" name="queryName" size="24" onkeydown="javascript:avoidEnter();" value="" onclick="this.value='';" maxlength="255" />
 				 </label>
 				 </td>
 			</tr>
@@ -324,12 +323,12 @@ window.onload = function() {
 			<tr height="2px"></tr>
 			<tr height="35px">
 				<td width="28%" align="left">
-				<button type="button" name="submitImage" id="newbtn" style="margin-left :15px; margin-top:0px" onkeydown="donothing()"
+				<button type="button" name="submitImage" id="newbtn" style="margin-left :15px; margin-top:0px"  
 				    onClick="fileUpload(this.form, '/catissuecore/ImportQuery'); return false;"> Import Query </button>
 				</td>
 			</tr>
 		</table>	 
 	</div>
-</form>				
+</form>			 
 </body>
  
