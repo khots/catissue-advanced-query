@@ -72,8 +72,6 @@ function showGrid() {
 
 function setHeader(isQueryChecked)
 {
-	document.getElementById('subnavlist').style.display="none";
-	flag = true;
 	if(isQueryChecked == true){		 
 		document.getElementById("poupHeader").textContent ="Assign the query(s) to folder";
 		document.getElementById("poupHeader").innerText ="Assign the query(s) to folder";
@@ -183,8 +181,6 @@ function openImportPopup(){
 	document.getElementById('file').value="";
 	document.getElementById('queryName').value = "";
 	document.getElementById('popMessageDiv').style.display = "none";
-	document.getElementById('subnavlist').style.display="none";
-	flag =true;
 }
 
 function avoidEnter(event){
@@ -249,7 +245,6 @@ function QueryWizard()
 }
 
 function showlist(){
-	
 	if(flag == false){
 		document.getElementById('subnavlist').style.display="none";
 		flag = true;
@@ -263,8 +258,6 @@ function showlist(){
 //function called for AllQueries,SharedQueries,MyQueries
 function submitTheForm(url,btn) {
   	ajaxQueryGridInitCall(url);
-	document.getElementById('subnavlist').style.display="none";
-	flag = true;
     if (btn == "myQueries")
 	{
 		document.getElementById('myQueries').className='activebtn';
