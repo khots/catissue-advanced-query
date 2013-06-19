@@ -1,4 +1,4 @@
-
+var flag =true;	
 var grid;
 function doInitGrid(tagId)
 {
@@ -72,6 +72,8 @@ function showGrid() {
 
 function setHeader(isQueryChecked)
 {
+	document.getElementById('subnavlist').style.display="none";
+	flag = true;
 	if(isQueryChecked == true){		 
 		document.getElementById("poupHeader").textContent ="Assign the query(s) to folder";
 		document.getElementById("poupHeader").innerText ="Assign the query(s) to folder";
@@ -133,6 +135,20 @@ function fileUpload(form, actionUrl) {
           		}     
         	} else if (iframeId.contentWindow) {
          	  		content = iframeId.contentWindow.document.body.innerHTML;
+         	  		document.getElementById("errorDiv").style.display = "none";
+         	  		var test = new String(content);		
+         	  		if(test.indexOf("Success")>=0){
+         	  			ajaxQueryGridInitCall("QueryGridInitAction.do");
+         	  			popup('new_PopUpDiv');
+         	  			document.getElementById('messageDiv').style.display = "block"
+         	  			document.getElementById("messageDiv").style.color = "green";
+         	  			document.getElementById("messageDiv").textContent = "The query has been imported successfully.";	
+         	  			document.getElementById("messageDiv").innerText = "The query has been imported successfully.";
+         	  		}else {
+         	  			document.getElementById("popMessageDiv").style.display = "block";
+         	  			document.getElementById("popMessageDiv").style.color = "red";
+         	  			document.getElementById("popMessageDiv").innerHTML = "Error! While importing query. Try to import with new title.";
+        			} 
         	} else if (iframeId.document) {
            		content = iframeId.document.body.innerHTML;
         	}
@@ -231,7 +247,7 @@ function QueryWizard()
 	document.forms[0].action='QueryWizard.do?random='+rand_no;
 	document.forms[0].submit();
 }
-var flag =true;	
+
 function showlist(){
 	
 	if(flag == false){
@@ -242,4 +258,29 @@ function showlist(){
 		document.getElementById('subnavlist').className="subnavlist-class";
 		flag = false;
 	}
+}
+
+//function called for AllQueries,SharedQueries,MyQueries
+function submitTheForm(url,btn) {
+  	ajaxQueryGridInitCall(url);
+	document.getElementById('subnavlist').style.display="none";
+	flag = true;
+    if (btn == "myQueries")
+	{
+		document.getElementById('myQueries').className='activebtn';
+		document.getElementById('allQueries').className='btn1';
+		document.getElementById('sharedQueries').className='btn1';
+	}
+	else if (btn == "allQueries")
+	{
+		document.getElementById('myQueries').className='btn1';
+		document.getElementById('allQueries').className='activebtn';
+		document.getElementById('sharedQueries').className='btn1';
+	}
+	else
+	{
+		document.getElementById('myQueries').className='btn1';
+		document.getElementById('allQueries').className='btn1';
+		document.getElementById('sharedQueries').className='activebtn';
+	}	
 }

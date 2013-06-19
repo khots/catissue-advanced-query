@@ -206,7 +206,7 @@
 		{
 			var superiframe=document.getElementById('superiframe');
 			superiframe.className="VisibleFrame";
-		//	superiframe.src="pages/WaitSymbol.jsp";
+			superiframe.src="pages/WaitSymbol.jsp";
 		}
 		function newsubmit()
 	{
@@ -237,20 +237,9 @@
 		}
 
 		if (window.ActiveXObject) // code for IE
-		{
-			var formControls=document.forms;
-			var originalSubmit;
-
-			for(var counter=0;counter<formControls.length;counter++)
-			{
-				originalSubmit=formControls[counter].submit;
-				formControls[counter].submit=function newsubmit() {
-								showHourGlass();
-								originalSubmit();
-								}
-			}
-		}
-		else
+		{			
+                         window.onunload=showHourGlass;
+			
 		{
 			HTMLFormElement.prototype._submit = HTMLFormElement.prototype.submit;
 			HTMLFormElement.prototype.submit = newsubmit;
