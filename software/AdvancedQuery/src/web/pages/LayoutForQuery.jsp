@@ -206,7 +206,7 @@
 		{
 			var superiframe=document.getElementById('superiframe');
 			superiframe.className="VisibleFrame";
-			superiframe.src="pages/WaitSymbol.jsp";
+			//superiframe.src="pages/WaitSymbol.jsp";
 		}
 		function newsubmit()
 	{
@@ -238,9 +238,8 @@
 
 		if (window.ActiveXObject) // code for IE
 		{			
-                         window.onunload=showHourGlass;
-			
-		{
+             window.onunload=showHourGlass;
+        }else{
 			HTMLFormElement.prototype._submit = HTMLFormElement.prototype.submit;
 			HTMLFormElement.prototype.submit = newsubmit;
 		}
