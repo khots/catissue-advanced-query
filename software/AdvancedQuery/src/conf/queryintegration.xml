@@ -16,6 +16,7 @@
 		Check user selected deploy.AdvanceQuery to true and
 		AdvanceQuery_Installable.zip exists
 	-->
+	 
 	<target name="aq_check_prerequisite">
 		<!--
 			Check AdvanceQueryInstallable.zip file exists or not in base
@@ -47,7 +48,8 @@
 		<echo message="datatype : ${database.type}" />
 		<echo message="deploy temp dir : ${deploy.temp.dir}" />
 		<echo message="war dir: ${war.dir}" />
-
+		 
+		<antcall target="upgrade_to_plus_30"/>  
 		<if>
 			<equals arg1="mysql" arg2="${database.type}" />
 			<then>
@@ -399,6 +401,14 @@
 					<property name="database.name" value="${database.name}" />
 					<property name="database.username" value="${database.username}" />
 					<property name="database.password" value="${database.password}" />
+				</ant>
+		</target>
+		
+		<target name="upgrade_to_plus_30" description="Check for Advance Query 3.0 Module">
+			<echo>Check for Advance Query 3.0 Module</echo>
+				<ant dir="${deploy.temp.dir}/AdvanceQuery" inheritAll="false" antfile="aqupgrade.xml" target="upgrade_to_plus_30">
+					<property name="deploy.temp.dir" value="${deploy.temp.dir}"/>
+					<property name="war.dir" value="catissuecore"/> 
 				</ant>
 		</target>
 	<!--Advance Query Related  End -->

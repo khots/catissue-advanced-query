@@ -129,6 +129,7 @@
 		<copy file="./src/conf/deploy.xml" todir="${dist.dir}" overwrite="true" />
 		<copy file="./src/conf/queryintegration.xml" todir="${dist.dir}" overwrite="true" />
 		<copy file="./src/conf/advanceQuery.properties" todir="${dist.dir}" overwrite="true" />
+		<copy file="./src/conf/aqupgrade.xml" todir="${dist.dir}" overwrite="true" />
 		<!--
 		<copy file="log4j.xml" todir="${zip.dir}" overwrite="true" />
 		<copy file="login-config.xml" todir="${zip.dir}" overwrite="true" />
@@ -187,10 +188,15 @@
 			<fileset dir="${base.dir}/src/web/javascripts" />
 		</copy>
 		<!--Copying dhtml folder -->
-		<copy todir="${dist.dir}/dhtml" overwrite="true">
-			<fileset dir="${base.dir}/src/web/dhtml" />
+	 	
+		<copy todir="${dist.dir}/dhtmlx_suite" overwrite="true">
+			<fileset dir="${base.dir}/src/web/dhtmlx_suite" />
 		</copy>
-					 
+		
+		<copy todir="${dist.dir}/patch" overwrite="true">
+			<fileset dir="${base.dir}/patch"/>
+		</copy>
+				
 		<!--Coying Images -->
 		<copy todir="${dist.dir}/images" overwrite="true">
 		<!--
