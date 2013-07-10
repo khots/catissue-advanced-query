@@ -64,7 +64,7 @@ public class QueryGridFilterAction extends SecureAction
 			dataList = Utility.getPaginationDataList(request, getSessionData(request), 
 					recordsPerPage, pageNum, querySessionData, selectedColMetadata.isDefinedView());
 			
-			if(isContPresent && queryDetailsObj.getQuery().getConstraints().size() != 1 
+			/*if(isContPresent && queryDetailsObj.getQuery().getConstraints().size() != 1 
 					&& !queryDetailsObj.getQuery().getIsNormalizedResultQuery())
 			{
 				SpreadsheetDenormalizationBizLogic  denormalizationBizLogic = new SpreadsheetDenormalizationBizLogic();
@@ -76,11 +76,11 @@ public class QueryGridFilterAction extends SecureAction
 					List<String>colList = (List<String>)exportDetailsMap.get("headerList");
 					session.setAttribute(AQConstants.SPREADSHEET_COLUMN_LIST, colList);
 				}
-			}
+			}*/
 		} catch(Exception e){
 			LOGGER.error("Exception while executing query: ", e);
 		}
-		session.setAttribute(AQConstants.DENORMALIZED_LIST, dataList);
+		//session.setAttribute(AQConstants.DENORMALIZED_LIST, dataList);
 		session.setAttribute(AQConstants.TOTAL_RESULTS, querySessionData.getTotalNumberOfRecords());
 		List<String> columnList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
 		String json = Utility.getGridDataJson(dataList, columnList, request);

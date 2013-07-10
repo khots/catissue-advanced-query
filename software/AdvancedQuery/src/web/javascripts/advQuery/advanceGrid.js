@@ -54,7 +54,7 @@ for(i = 1; i < colTypes.length; i++){
 
 function initQueryGrid() {	
 	
-	mygrid.setImagePath("newDhtmlx/imgs/");	
+	mygrid.setImagePath("dhtmlx_suite/imgs/");	
 	mygrid.setHeader(gridDataJson.columns.join());
 	mygrid.attachHeader(filters);
 	mygrid.enableAutoHeigth(false);

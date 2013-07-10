@@ -213,7 +213,7 @@ public class QueryOutputSpreadsheetBizLogic
 			{
 				spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP,
 						queryResultObjectDataBeanMap);
-				session.setAttribute(AQConstants.DENORMALIZED_LIST, spreadSheetDataMap.get(AQConstants.SPREADSHEET_DATA_LIST));
+				//session.setAttribute(AQConstants.DENORMALIZED_LIST, spreadSheetDataMap.get(AQConstants.SPREADSHEET_DATA_LIST));
 			}
 			else
 			{
@@ -995,9 +995,9 @@ public class QueryOutputSpreadsheetBizLogic
 		List<List<String>> listForFileType = dataList;
 		querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
 		// if denormalization is on then execute below block else do not execute this block.
-		 
+		/*
 		if(queryDetailsObj.getQuery().getConstraints().size() != 1 && isContPresent 
-				&& !queryDetailsObj.getQuery().getIsNormalizedResultQuery())
+				&& !queryDetailsObj.getQuery().getIsNormalizedResultQuery()))
 		{
 			SpreadsheetDenormalizationBizLogic  denormalizationBizLogic =
 				new SpreadsheetDenormalizationBizLogic();
@@ -1011,7 +1011,8 @@ public class QueryOutputSpreadsheetBizLogic
 
 				selectedColMetadata.setActualTotalRecords(pagenatedResultData.getTotalRecords());
 			}
-		} 
+		}*/
+
 
 		for (Long id : queryResultObjectDataBeanMap.keySet())
 		{
@@ -1242,6 +1243,11 @@ public class QueryOutputSpreadsheetBizLogic
 		return exportMetataDataMap;
 	}
 
+	public Map<Integer, Integer> updateSpreadSheetColumnList(List<String> spreadsheetColumnsList,
+			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap)
+	{
+		 return updateSpreadSheetColumnList(spreadsheetColumnsList, queryResultObjectDataBeanMap, false);
+	}
 	/**
 	 * @param spreadsheetColumnsList spreadsheetColumnsList
 	 * @param queryResultObjectDataBeanMap queryResultObjectDataBeanMap

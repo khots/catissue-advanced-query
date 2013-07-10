@@ -583,7 +583,7 @@ public class QueryModuleSearchQueryUtil
 				.get(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP));
 		session.setAttribute(AQConstants.DEFINE_VIEW_RESULT_MAP,
 				spreadSheetDatamap.get(AQConstants.DEFINE_VIEW_RESULT_MAP));
-		session.setAttribute(AQConstants.DENORMALIZED_LIST, spreadSheetDatamap.get(AQConstants.SPREADSHEET_DATA_LIST));
+		//session.setAttribute(AQConstants.DENORMALIZED_LIST, spreadSheetDatamap.get(AQConstants.SPREADSHEET_DATA_LIST));
 		
 	}
 

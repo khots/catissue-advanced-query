@@ -33,9 +33,9 @@
 	String currentSelectedNodeInTree = form.getCurrentSelectedNodeInTree();
 	String showSelected = "false";
 	List selectedColumnNameValueBeanList = form.getSelColNVBeanList();
-	String appName = ApplicationProperties.getValue("app.name");
+	String appName = ApplicationProperties.getValue("app.name");	
 %>
-
+ 
 <table cellpadding='0' cellspacing='0' border='0' align='center'
 		style="width: 100%; height: 100%;">
 	<tr height="1%">
@@ -115,12 +115,12 @@
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
-						<td align="left" height="2%" colspan="6">
+						<td id= "normalizedQueryText" style="visibility:hidden;" align="left" height="2%" colspan="6">
 							<html:checkbox property="normalizedQuery" value="true" styleId="normalizedQuery" />
 							<span valign="top" class="black_ar">
 								<bean:message key="query.normalized.view" />
-							</span>						
-						</td>
+							</span>			 	 				 
+						</td> 
 					</tr>
 					<tr>
 						<td>&nbsp;</td>

@@ -89,7 +89,7 @@ public class SpreadsheetExportAction extends SecureAction
 		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll,selectedColumnsMetadata);
 
 		boolean isDefineView = false;
-		if(queryDetails.getQuery()!=null && !queryDetails.getQuery().getIsNormalizedResultQuery() && selectedColumnsMetadata != null)
+		/*if(queryDetails.getQuery()!=null && !queryDetails.getQuery().getIsNormalizedResultQuery() && selectedColumnsMetadata != null)
 		{
 			IExpression rootExpression = queryDetails.getQuery().getConstraints().getJoinGraph().getRoot();
 			if(!queryDetails.getQuery().getConstraints().getJoinGraph().getChildrenList(rootExpression).isEmpty())
@@ -127,7 +127,7 @@ public class SpreadsheetExportAction extends SecureAction
 			List tmpDataList = populateTemporaryList(columnList, dataList,tmpColumnList);
 			columnList = tmpColumnList;
 			dataList = tmpDataList;
-		}
+		}*/
 		//Mandar 06-Apr-06 Bugid:1165 : Extra ID columns end. Adding first row(column names) to exportData
 		exportList.add(columnList);
 		session.setAttribute("COLUMNS_LIST", columnList);
