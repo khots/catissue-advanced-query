@@ -1,6 +1,6 @@
 <%@page import="edu.wustl.query.bizlogic.DashboardBizLogic"%><META
 	HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
-<%-- TagLibs --%>
+<%-- TagLibs --%>  
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c"%>
@@ -306,7 +306,7 @@ window.onload = function() {
 				<td> 
 				<div id="popMessageDiv" class="alert alert-error" style="display:none"></div>
 			</tr>
-			<tr id ="queryNameTr">
+			<tr id ="queryNameTr" style="display:none;">
 				<td> 
 					<label id="newTagLabel" width="28%" align="left"
 						style="margin-left :15px; font-size: .82em; font-family: verdana;">
@@ -315,16 +315,22 @@ window.onload = function() {
 				 </label>
 				 </td>
 			</tr>
-			<tr height="35px">
+			<tr id ="fileTr" height="35px">
 				<td width="28%" align="left">
 					 <input type="file"  id="file" style="margin-left :15px; cursor: pointer; z-index:1;" name="file"/> 
 				</td>
 			</tr>
-			<tr height="2px"></tr>
-			<tr height="35px">
+			<tr height="15px"></tr>
+			<tr id ="importBtnTr"height="35px">
 				<td width="28%" align="left">
-				<button type="button" name="submitImage" id="newbtn" style="margin-left :15px; margin-top:0px"  
-				    onClick="fileUpload(this.form, '/catissuecore/ImportQuery'); return false;"> Import Query </button>
+				<button type="button" name="submitfile" id="newbtn" style="margin-left :15px; margin-top:0px"  
+				    onClick="fileUpload(this.form, 'ImportQuery'); return false;"> Import Query </button>
+				</td>
+			</tr>
+			<tr id ="saveBtnTr" height="35px" style="display:none;"> 
+				<td width="28%" align="left">
+				<button type="button" name="savebtn" id="newbtn" style="margin-left :15px; margin-top:0px"  
+				    onClick="saveQuery();"> Save Query </button>
 				</td>
 			</tr>
 		</table>	 

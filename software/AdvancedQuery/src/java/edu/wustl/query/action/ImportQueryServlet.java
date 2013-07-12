@@ -1,20 +1,19 @@
 package edu.wustl.query.action;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.List;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.IOUtils;
 
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.query.bizlogic.QueryExportImport;
 
@@ -26,34 +25,44 @@ public class ImportQueryServlet extends HttpServlet {
 			.getConfiguredLogger(ImportQueryServlet.class);
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			String queryName = null;
-
-			SessionDataBean sessionDataBean = (SessionDataBean) request.getSession()
+		InputStream xmlStream = null;
+		IParameterizedQuery query = null;
+		try {		
+			
+			HttpSession session = request.getSession();
+			SessionDataBean sdb = (SessionDataBean) session
 					.getAttribute(edu.wustl.common.util.global.Constants.SESSION_DATA);
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			ServletFileUpload upload = new ServletFileUpload(factory);
-			List<FileItem> items = upload.parseRequest(request);
 			
-			StringWriter writer = new StringWriter();
-			InputStream nameStream = items.get(0).getInputStream();		
-			IOUtils.copy(nameStream, writer);
-			queryName = writer.toString();
-			nameStream.close();
-			 
-
-			InputStream xmlStream = items.get(1).getInputStream();	
-			QueryExportImport queryExim = new QueryExportImport();
-			queryExim.importQuery(sessionDataBean, queryName, xmlStream);
+			String queryName = request.getParameter("queryName");	
+			QueryExportImport queryExim = new QueryExportImport();	
 			
-			response.getWriter().write("Success :'" + queryName + "'");
-		} catch (Exception e) {
-			 try {
-				response.getWriter().write("Error:");
-				throw new RuntimeException("Error occured during importing query", e);
-			 } catch (IOException e1) {
-				LOGGER.error(e1.getMessage());
+			if (request.getContentType() != null && 
+				request.getContentType().toLowerCase().indexOf("multipart/form-data") > -1 ) 
+			{
+				DiskFileItemFactory factory = new DiskFileItemFactory();
+				ServletFileUpload upload = new ServletFileUpload(factory);
+				List<FileItem> items = upload.parseRequest(request);
+				if (items != null || ! items.isEmpty()){
+					xmlStream = items.get(1).getInputStream();
+					query = queryExim.getQuery(xmlStream);
+				}
+			} else if (queryName != null || ! queryName.isEmpty() ){
+				query =	(IParameterizedQuery) session.getAttribute("deSerializedQueryObj");	
+				query.setName(queryName);
 			}
+			
+			boolean isQueryImported = queryExim.importQuery(query, sdb);
+			
+			if (isQueryImported) {
+				response.getWriter().write("Success :'" + query.getName() + "'");
+				session.removeAttribute("deSerializedQueryObj");
+			} else {
+				session.setAttribute("deSerializedQueryObj", query);
+				response.getWriter().write("Error:");
+			}
+			
+		} catch (Exception e) {
+			 throw new RuntimeException("Error occured during importing query", e);
 		}
 	}
 }

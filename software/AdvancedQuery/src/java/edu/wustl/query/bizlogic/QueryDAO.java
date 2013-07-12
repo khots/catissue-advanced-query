@@ -11,9 +11,11 @@ import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.Session;
 
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.LoggerConfig;
+import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.daofactory.IDAOFactory;
@@ -21,6 +23,7 @@ import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.dao.query.generator.DBTypes;
 import edu.wustl.query.dto.QueryDTO;
+import edu.wustl.query.util.querysuite.DAOUtil;
 import gov.nih.nci.security.authorization.domainobjects.User;
 
 public class QueryDAO {
@@ -71,6 +74,8 @@ public class QueryDAO {
 		+ " pq.identifier = ?";
 	
 	private final static String DELETE_TAGITEMS = "DELETE FROM query_tag_items WHERE obj_id = ?";
+	
+	private static final String IS_QUERY_NAME_EXIST = "SELECT name FROM ParameterizedQuery WHERE name = :queryName ";
 	
 	public List<QueryDTO> getAllQueries() 
 	throws BizLogicException, DAOException {
@@ -252,5 +257,40 @@ public class QueryDAO {
 		{
 			jdbcDAO.closeSession();
 		}
+	}
+	
+	public boolean isQueryNamePresent(SessionDataBean sdb, String queryName) throws BizLogicException{	
+		boolean isQueryNamePresent = false;
+		HibernateDAO hibernateDao = null;
+		List result = null;
+		try
+		{
+			hibernateDao = DAOUtil.getHibernateDAO(sdb);
+			List<ColumnValueBean> parameters = new ArrayList<ColumnValueBean>(); 
+			parameters.add(new ColumnValueBean("queryName", queryName)); 
+			result = hibernateDao.executeParamHQL(IS_QUERY_NAME_EXIST, parameters);
+			if(! result.isEmpty()){
+				isQueryNamePresent = true;
+			}
+		}
+		catch (DAOException e)
+		{
+			throw new BizLogicException(e);
+		}
+		finally
+		{
+			if (hibernateDao != null)
+			{
+				try
+				{
+					DAOUtil.closeHibernateDAO(hibernateDao);
+				}
+				catch (DAOException e)
+				{
+					LOGGER.error(e.getMessage(), e);
+				}
+			}
+		}
+		return isQueryNamePresent;	
 	}
 }

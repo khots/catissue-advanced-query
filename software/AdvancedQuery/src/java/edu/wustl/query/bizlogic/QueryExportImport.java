@@ -11,12 +11,22 @@ import edu.wustl.query.beans.SharedQueryBean;
 
 
 public class QueryExportImport {
-	public void importQuery(SessionDataBean sdb, String queryName, InputStream in) throws BizLogicException {
+ 
+	public IParameterizedQuery getQuery(InputStream in)throws Exception {
 		ParameterizedQuerySerializer serializer = new ParameterizedQueryXmlSerializer();
-		IParameterizedQuery query = serializer.deserialize(in);
-		query.setName(queryName);
-		SaveQueryBizLogic saveQueryBizLogic = new SaveQueryBizLogic();
-		saveQueryBizLogic.saveQuery(query, sdb, new SharedQueryBean());
+		return serializer.deserialize(in);
+	}
+	
+	public boolean importQuery(IParameterizedQuery query, SessionDataBean sdb) throws BizLogicException{
+		QueryDAO queryDAO = new QueryDAO();
+		boolean isTitlePresent = queryDAO.isQueryNamePresent(sdb, query.getName());
+		
+		if(!isTitlePresent){
+			SaveQueryBizLogic saveQueryBizLogic = new SaveQueryBizLogic();
+			saveQueryBizLogic.saveQuery(query, sdb, new SharedQueryBean());
+			return true;
+		}
+		return false;
 	}
 
 	public void exportQuery(SessionDataBean sdb, Long queryId, OutputStream out) throws DAOException {

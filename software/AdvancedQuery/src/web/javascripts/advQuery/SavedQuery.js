@@ -1,6 +1,6 @@
 var flag =true;	
 var grid;
-function doInitGrid(tagId)
+function doInitGrid(tagId) 
 {
 	grid = new dhtmlXGridObject('mygrid_container');
 	grid.setImagePath("dhtmlx_suite/dhtml_pop/imgs/");
@@ -25,22 +25,24 @@ function doOnRowSelected(rId)
 	document.getElementById('sharedQueries').className='btn1';
 }
  
-var xmlHttpobj = false;
+var xmlHttpobj = false;	 
 function ajaxQueryGridInitCall(url) {
-	
- if (window.XMLHttpRequest)
- { 
-  	xmlHttpobj=new XMLHttpRequest();
- }
- else
- { 
-  	xmlHttpobj=new ActiveXObject("Microsoft.XMLHTTP");
- }
-	  
-	xmlHttpobj.onreadystatechange = showGrid;
+	xmlHttpobj = false;
+	initAjaxPostCall(url,showGrid);
+}
+
+function initAjaxPostCall(url,successCall){
+	if (window.XMLHttpRequest){
+		xmlHttpobj=new XMLHttpRequest();
+	}else {
+		xmlHttpobj=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlHttpobj.onreadystatechange = successCall;
 	xmlHttpobj.open("POST", url,false);
 	xmlHttpobj.send(null);
 }
+
+ 
 var responseString; 
 var queryGrid;
 function showGrid() {
@@ -88,9 +90,7 @@ function fileUpload(form, actionUrl) {
 	if(fileNameArray[arraySize -1] != 'xml')
 	{
 		alert("Please select a XML file (.xml).");
-	} else if(document.getElementById('queryName').value==""){
-		alert("Please insert title for the query.");
-	}else {
+	} else {
 		var iframe = document.createElement("iframe");
 		iframe.setAttribute("id", "upload_iframe");
 		iframe.setAttribute("name", "upload_iframe");
@@ -126,10 +126,7 @@ function fileUpload(form, actionUrl) {
         			document.getElementById('messageDiv').style.display = "block";
            			document.getElementById("messageDiv").textContent = "The query '"+contentArray[1]+"' has been imported successfully.";
           		} else if (content.indexOf("Error")>= 0){			
-          			document.getElementById('errorDiv').style.display = "none";
-        			document.getElementById('popMessageDiv').style.display = "block";
-        			document.getElementById("popMessageDiv").style.color = "red";
-        			document.getElementById("popMessageDiv").textContent = "Error! While importing query. Try to import with new title.";
+          			importFailureChanges();
           		}     
         	} else if (iframeId.contentWindow) {
          	  		content = iframeId.contentWindow.document.body.innerHTML;
@@ -143,14 +140,12 @@ function fileUpload(form, actionUrl) {
          	  			document.getElementById("messageDiv").textContent = "The query has been imported successfully.";	
          	  			document.getElementById("messageDiv").innerText = "The query has been imported successfully.";
          	  		}else {
-         	  			document.getElementById("popMessageDiv").style.display = "block";
-         	  			document.getElementById("popMessageDiv").style.color = "red";
-         	  			document.getElementById("popMessageDiv").innerHTML = "Error! While importing query. Try to import with new title.";
+         	  			importFailureChanges();
         			} 
         	} else if (iframeId.document) {
            		content = iframeId.document.body.innerHTML;
         	}
-       		 // Del the iframe...
+        	// Del the iframe...
         	setTimeout('iframeId.parentNode.removeChild(iframeId)', 250);
     	}
 
@@ -176,11 +171,29 @@ function fileUpload(form, actionUrl) {
 	}
 }
 
+function importFailureChanges(){
+	document.getElementById('popMessageDiv').style.display = "block";
+	document.getElementById('popMessageDiv').className ="alert alert-error";
+	document.getElementById("popMessageDiv").style.color = "red";	
+	document.getElementById('queryNameTr').style.display = "block";
+	document.getElementById('saveBtnTr').style.display = "block";
+	document.getElementById('fileTr').style.display = "none";
+	document.getElementById('importBtnTr').style.display = "none";     
+	document.getElementById("popMessageDiv").textContent = " Given query already exist. Please provide new title.";
+	document.getElementById("popMessageDiv").innerText = " Given query already exist. Please provide new title.";
+}
+
 function openImportPopup(){
 	popup('new_PopUpDiv');
 	document.getElementById('file').value="";
 	document.getElementById('queryName').value = "";
+	document.getElementById('errorDiv').style.display = "none";
+	document.getElementById('messageDiv').style.display = "none";
 	document.getElementById('popMessageDiv').style.display = "none";
+	document.getElementById('queryNameTr').style.display = "none";
+	document.getElementById('saveBtnTr').style.display = "none";
+	document.getElementById('fileTr').style.display = "block";
+	document.getElementById('importBtnTr').style.display = "block";
 }
 
 function avoidEnter(event){
@@ -195,6 +208,43 @@ function exportQuery(queryId)
 	var url = "ExportQueryAction.do?queryId="+queryId;
 	window.open(url);
 }
+
+function saveQuery()
+{
+	var queryName = document.getElementById('queryName').value;
+	var url = null;
+	if(queryName == ''){
+		alert("Please insert title for the query.");
+	} else {
+		url = "ImportQuery?queryName="+queryName;
+		initAjaxPostCall(url,showMessages)
+	}
+}
+function showMessages(){
+	if (xmlHttpobj.readyState == 4) 
+	{
+		 var respoString = xmlHttpobj.responseText;
+		 if(respoString.indexOf("Error")>= 0){
+			 document.getElementById('queryName').value = "";
+			 document.getElementById('popMessageDiv').style.display = "block";
+			 document.getElementById('popMessageDiv').className ="alert alert-error";
+			 document.getElementById("popMessageDiv").style.color = "red";
+			 document.getElementById("popMessageDiv").textContent = "Given query already exist. Please provide new title.";
+			 document.getElementById("popMessageDiv").innerText ="Given query already exist. Please provide new title.";
+		 } else if (respoString.indexOf("Success")>= 0){
+			 var contentArray = respoString.split("'");
+			 ajaxQueryGridInitCall("QueryGridInitAction.do");
+			 popup('new_PopUpDiv');
+			 document.getElementById('errorDiv').style.display = "none";
+			 document.getElementById('popMessageDiv').style.display = "none";
+			 document.getElementById("messageDiv").style.color = "green";
+			 document.getElementById('messageDiv').style.display = "block";
+			 document.getElementById("messageDiv").textContent = "The query '"+contentArray[1]+"' has been imported successfully.";	 
+			 document.getElementById("messageDiv").innerText = "The query '"+contentArray[1]+"' has been imported successfully.";
+		 }
+	}
+}
+
 
 function checkForValidation()
 {
