@@ -238,7 +238,7 @@
 
 		if (window.ActiveXObject) // code for IE
 		{
-			var formControls=document.forms;
+		/* 	var formControls=document.forms;
 			var originalSubmit;
 
 			for(var counter=0;counter<formControls.length;counter++)
@@ -248,7 +248,7 @@
 								showHourGlass();
 								originalSubmit();
 								}
-			}
+			} */
 		}
 		else
 		{
