@@ -355,6 +355,7 @@ public class AQConstants
 	public static final String PAGE_NUMBER = "pageNum";
 	public static final String TOTAL_RESULTS = "totalResults";
 	public static final String RESULTS_PER_PAGE = "numResultsPerPage";
+	public static final String FETCH_RECORD_SIZE = "fetchRecordSize";
 	public static final String SPREADSHEET_COLUMN_LIST = "spreadsheetColumnList";
 	public static final String PAGE_OF = "pageOf";
 
@@ -511,6 +512,7 @@ public class AQConstants
 	public static final String ACTIVITY_STATUS_DISABLED = "Disabled";
 	public static final int HASH_PRIME = 7;
 	public static final String RECORDS_PER_PAGE_PROPERTY_NAME = "resultView.noOfRecordsPerPage";
+	public static final String FETCH_RECORD_SIZE_PROPERTY_NAME = "resultView.fetchRecordSize";
 	public static final String DHTMLXGRID_DELIMETER = "|@|";
 	public static final String PAGEOF_QUERY_RESULTS = "pageOfQueryResults";
 	public static final String PAGEOF_SIMPLE_QUERY_INTERFACE = "pageOfSimpleQueryInterface";

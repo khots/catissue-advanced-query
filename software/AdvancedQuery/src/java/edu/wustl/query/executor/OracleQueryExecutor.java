@@ -55,22 +55,7 @@ public class OracleQueryExecutor extends AbstractQueryExecutor
 
 		resultSet = jdbcDAO.getQueryResultSet(sqlToBeExecuted);
 		List list = getListFromResultSet(jdbcDAO);
-
-		// Find the total number of records that query can return.
-		int totalRecords;
-		if (getSublistOfResult)
-		{
-			sqlToBeExecuted = getCountQuery(query);
-			resultSet.close();
-			resultSet = jdbcDAO.getQueryResultSet(sqlToBeExecuted);
-			resultSet.next();
-			totalRecords = resultSet.getInt(1);
-		}
-		else
-		{
-			totalRecords = list.size(); // these are all records returned from query.
-		}
-		return new PagenatedResultData(list, totalRecords);
+		return new PagenatedResultData(list, 0);
 	}
 	/**
 	 * To modify the SQL, to get the required no. of records with the given offset from the query.

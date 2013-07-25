@@ -46,23 +46,23 @@ public class QueryGridFilterAction extends SecureAction
 	{		
 		HttpSession session = request.getSession();	
 		Integer pageNum = Integer.parseInt ((String)request.getParameter(AQConstants.PAGE_NUMBER));
-		Integer recordsPerPage = Integer.parseInt((String)request.getParameter("recordPerPage"));
+		Integer fetchRecordSize = Integer.parseInt((String)session.getAttribute(AQConstants.FETCH_RECORD_SIZE));
 		
 		request.setAttribute(AQConstants.PAGE_NUMBER, pageNum.toString());
-		session.setAttribute(AQConstants.RESULTS_PER_PAGE, recordsPerPage.toString());
+		//session.setAttribute(AQConstants.RESULTS_PER_PAGE, recordsPerPage.toString());
 		SelectedColumnsMetadata selectedColMetadata =(SelectedColumnsMetadata)session
 															.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
 				
 		QuerySessionData querySessionData = (QuerySessionData) session.getAttribute(Constants.QUERY_SESSION_DATA);
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		String oldquery = querySessionData.getSql();
-		querySessionData.setSql(getQuery(session, request, oldquery));
+		querySessionData.setSql(getQuery(session, request, oldquery,queryDetailsObj));
 				
 		boolean isContPresent = new QueryOutputSpreadsheetBizLogic().isContainmentPresent(queryDetailsObj.getQuery());;		
 		List dataList = new ArrayList();
 		try{
 			dataList = Utility.getPaginationDataList(request, getSessionData(request), 
-					recordsPerPage, pageNum, querySessionData, selectedColMetadata.isDefinedView());
+					fetchRecordSize, pageNum, querySessionData, selectedColMetadata.isDefinedView());
 			
 			/*if(isContPresent && queryDetailsObj.getQuery().getConstraints().size() != 1 
 					&& !queryDetailsObj.getQuery().getIsNormalizedResultQuery())
@@ -93,9 +93,10 @@ public class QueryGridFilterAction extends SecureAction
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String getQuery(HttpSession session, HttpServletRequest request, String oldquery)
+	private String getQuery(HttpSession session, HttpServletRequest request, String oldquery, QueryDetails queryDetailsObj)
 	{		
 		StringBuilder query = new StringBuilder();
+		Map<String, String> columnNameVsAliasMap = queryDetailsObj.getColumnNameVsAliasMap();
 		query.append(oldquery.substring(0, oldquery.lastIndexOf("where") + 6));
 		try {
 			String jsonString = (String) request.getParameter("Data");			
@@ -129,7 +130,7 @@ public class QueryGridFilterAction extends SecureAction
 				String value = paramsMap.get(attr.getDisplayName());
 				if(value != null && !value.equals("")){  
 					if(type instanceof StringAttributeTypeInformation) {
-						query.append("UPPER(").append(attr.getColumnName()).append(") LIKE '%")
+						query.append("UPPER(").append(columnNameVsAliasMap.get(attr.getColumnName())).append(") LIKE '%")
 							.append(value.toUpperCase()).append("%' and ");						
 					} else if(type instanceof BooleanAttributeTypeInformation){ 						
 						if(!value.matches("[0-9]+")){
@@ -137,13 +138,13 @@ public class QueryGridFilterAction extends SecureAction
 							value = "false".contains(value.toLowerCase())? "false": value ;
 						}
 						
-						query.append(attr.getColumnName()).append(" = ")
+						query.append(columnNameVsAliasMap.get(attr.getColumnName())).append(" = ")
 							.append(value).append(" and ");						
 					} 
 				}
 				
 				if(attr.getDisplayName().equalsIgnoreCase(sortColumn)){
-					orderBy = attr.getColumnName() + " " + sortDir + ", ";
+					orderBy = columnNameVsAliasMap.get(attr.getColumnName()) + " " + sortDir + ", ";
 				}
 			}	
 			

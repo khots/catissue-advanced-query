@@ -2,21 +2,32 @@
 //function to update hidden fields as per check box selections.
 function updateHiddenFields() {		
 	var isChecked = false;
-	var checkedRows = mygrid.getCheckedRows(0);
+	var currentPage = mygrid.currentPage;
+	var startIndex = (currentPage-1) * 100;
+	var endIndex = startIndex + 100; 
+//	var checkedRows = mygrid.getCheckedRows(0);
 	
-	if(checkedRows.length > 0) {
-	    isChecked = true;
-		var cb = checkedRows.split(",");		
-		
-		for(i = 0; i < rowCount; i++) {
+	for(var i=startIndex; i < endIndex; i++){
+		if(mygrid.cells(i, 0).isChecked()) {
+			isChecked = true;
+			break;
+		} 
+	}
+	
+	if(isChecked == true) {
+		for(var i=startIndex; i < endIndex; i++) {
 			var cbvalue = document.getElementById("" + i);
-			if(mygrid.cells(i, 0).isChecked()) {
-				cbvalue.value = "1";
-				cbvalue.disabled = false;
+			if (cbvalue != null){
+				if(mygrid.cells(i, 0).isChecked()) {
+					cbvalue.value = "1";
+					cbvalue.disabled = false;
+				} else {
+					cbvalue.value = "0";
+					cbvalue.disabled = true;
+				}
 			} else {
-				cbvalue.value = "0";
-				cbvalue.disabled = true;
-			}
+				break;
+			}	
 		}
 	} 		
 	return isChecked;
@@ -52,8 +63,7 @@ for(i = 1; i < colTypes.length; i++){
 	colTypes[i] = "str";// for sorting enable
 }
 
-function initQueryGrid() {	
-	
+function initQueryGrid() {		
 	mygrid.setImagePath("dhtmlx_suite/imgs/");	
 	mygrid.setHeader(gridDataJson.columns.join());
 	mygrid.attachHeader(filters);
@@ -61,66 +71,88 @@ function initQueryGrid() {
 	mygrid.setColTypes(colDataTypes);
 	mygrid.setInitWidths(colWidth);			 
 	mygrid.setSkin("dhx_skyblue");		
-	mygrid.init();			
-	
+	mygrid.init();		 	
+	 
 	mygrid.enableRowsHover(true, 'grid_hover')
 	mygrid.enableMultiselect(true);
 	mygrid.setColSorting(colTypes.join());		
 	mygrid.enableAlterCss("even", "uneven");
-	mygrid.enablePaging(true, recordPerPage, null, "pagingArea", false);
-	mygrid.setPagingSkin("toolbar", "dhx_skyblue")		
+/*	mygrid.enablePaging(true, recordPerPage, null, "pagingArea", false);
+	mygrid.setPagingSkin("toolbar", "dhx_skyblue")		*/
 	mygrid.setEditable(!checkAllPages);
-	
+	mygrid.enablePaging(true,100,15,"pagingArea",true);
+	mygrid.setPagingSkin("bricks");
 	mygrid.splitAt(1);
 	var jsonData = gridDataJson.gridData;
 	mygrid.parse(jsonData, "json");
 	rowCount = jsonData.rows.length;
 	totalCount = jsonData.total_count;
 	createHiddenElement();
-	window.setTimeout(addRecordPerPageOption, 500)
+	window.setTimeout("100", 500)
 	
 	checkBoxCell = getCheckBox();
 	checkBoxCell.style.paddingLeft = "0px";
+	var checkbox = checkBoxCell.childNodes[0];
+	checkbox.onclick = null;
+	checkbox.onclick = checkFromCurrentPage;
 	gridBOxTag.style.width = (gridBOxTag.offsetWidth - 6 ) + "px"
+}
+
+function checkFromCurrentPage(){
+	var checkBoxCell = getCheckBox();
+	var checkbox_status = checkBoxCell.childNodes[0].checked ;
+	var currentPage = mygrid.currentPage;
+	var startIndex = (currentPage-1) * 100;
+	var endIndex = startIndex + 100; 
+	endIndex =  mygrid.getRowsNum() > endIndex ? endIndex: mygrid.getRowsNum();
+	
+	for(var i=startIndex; i < endIndex; i++){
+		var checked = mygrid.cells(i, 0).isChecked();	
+		if(mygrid.cells(i, 0).isChecked() != checkbox_status){
+			var cell = mygrid.cells(i, 0).cell.childNodes[0];
+			console.log(cell);
+			(new eXcell_ch(cell.parentNode)).changeState(); 
+		}
+	}
 }
 
 var sortIndex;
 var sortDirection = "asc";
+/*
 mygrid.attachEvent("onBeforeSorting",function(ind, type, direction){
 	sortIndex = ind;
 	sortDirection = direction;
 	this.setSortImgState(true, ind, direction);   //set a correct sorting image	
 	this.clearAll();  
 	return true;   
-});
+});*/
 
 mygrid.attachEvent("onFilterStart", function(ind){
-	mygrid.clearAll();	
-	return false;
+	mygrid.clearAll();
+	getGridData();
 })
 	
 mygrid.attachEvent("onBeforePageChanged", function(ind, count){
-	var option = mygrid.aToolBar.getListOptionSelected('perpagenum').split("_");
-	recordPerPage = option[1];
-	pageNum = count;
-	getGridData();
+	var checkBoxCell = getCheckBox();
+	checkBoxCell.childNodes[0].checked = false;
+	checkFromCurrentPage();
 	return true;
-});
+}); 
 
 function getGridData() {	
-	var param = "Data=" + getJsonForFilter() + "&pageNum="+pageNum+"&recordPerPage="+recordPerPage;
+	var param = "Data=" + getJsonForFilter() + "&pageNum="+1+"&recordPerPage="+10000;
 	var url = "QueryGridFilter.do";
 	var xmlhttp = newXMLHTTPReq();
-	
 	xmlhttp.onreadystatechange =  function() {
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 				var json = eval('(' + xmlhttp.responseText + ')');
-				setColumn(json.columns)
-				mygrid.parse(json.gridData, "json");
+				setColumn(json.columns);
+				var jsonData = json.gridData;
+				mygrid.parse(jsonData, "json");
 				rowCount = json.gridData.rows.length;
 				createHiddenElement();
 				checkBoxCell = getCheckBox();
-				checkBoxCell.getElementsByTagName('input')[0].checked = false; 
+				checkBoxCell.getElementsByTagName('input')[0].checked = false;
 				setPageDivStyle();
 			}				  		
 		}
@@ -157,6 +189,7 @@ function createHiddenElement() {
 		el.type = "hidden";
 		el.id = row;
 		el.name = "value1(CHK_" + row + ")";
+		el.disabled = true;
 		
 		cont.appendChild(el);					
 	}	
@@ -172,7 +205,7 @@ function setColumn(columnList) {
 	}	
 }
 
-function addRecordPerPageOption() {		
+/*function addRecordPerPageOption() {		
 	toolbar = mygrid.aToolBar;
 	toolbar.setWidth('perpagenum', 130);
 	var  opt = [10, 50, 100, 500, 1000, 5000];
@@ -189,7 +222,7 @@ function addRecordPerPageOption() {
 	toolbar.addText("blanck_space",10,"");
 	toolbar.addText("total_count_txt",11 ," Total Records : "+totalCount);
 	setPageDivStyle();
-}
+}*/
 
 function getCheckBox() {
 	if (document.getElementsByClassName) { 		

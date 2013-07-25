@@ -10,49 +10,7 @@
 	<property name="base.dir" value="." />
 	<loadproperties srcFile="../../caTissueInstall.properties" />
 	<property file="../../caTissueInstall.properties" />
-	<property name="oracle.driver.string" value="oracle.jdbc.driver.OracleDriver" />
-	<property name="mysql.driver.string" value="org.gjt.mm.mysql.Driver"/>
-	
-	<echo message="Setting Global DRIVER and URL Property" />
-
-	<if>
-		<equals arg1="mysql" arg2="${database.type}" />
-			<then>
-				<property name ="final.database.driver" value="${mysql.driver.string}"/>
-				<property name="final.database.url" value="jdbc:mysql://${database.host}:${database.port}/${database.name}" />
-				<property name="final.csm.database.url" value="jdbc:mysql://${csm.database.host}:${csm.database.port}/${csm.database.name}" />
-			</then>
-
-		<elseif>
-		<equals arg1="oracle" arg2="${database.type}" />
-			<then>
-				<property name ="final.database.driver" value="${oracle.driver.string}"/>
-				<property name="final.database.url" value="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}" />
-				<property name="final.csm.database.url" value="jdbc:oracle:thin:@${csm.database.host}:${csm.database.port}:${csm.database.name}" />
-			</then>
-		</elseif>
-	</if>
-    
-	<path id="liquibaseClasspath">
-		<fileset dir="${deploy.temp.dir}/AdvanceQuery/lib" includes="*.jar" />
-	</path>
-	
-	<taskdef resource="liquibasetasks.properties">
-		<classpath>
-			<pathelement location="${deploy.temp.dir}/AdvanceQuery/lib/liquibase.jar" />
-		</classpath>
-	</taskdef>
-	
-	<path id="liquibaserollBackClasspath">
-		<fileset dir="./modules/caTissue/lib" includes="*.jar" />
-	</path>
-		
-	<taskdef resource="liquibasetasks.properties">
-		<classpath>
-			<pathelement location="./modules/caTissue/lib/liquibase.jar" />
-		</classpath>
-	</taskdef>
-	
+	 
 	<target name="upgrade_to_plus_30">
 		<if>
 			<equals arg1="${patch_aq_plus_30}" arg2="true" /> 
@@ -70,6 +28,9 @@
 				<include name="DAO-1.1.9.5.jar"/>
 				<include name="mail.jar"/>
 				<include name="velocity-dep-1.5.jar"/>
+				<include name="scrubber-runtime.jar"/>
+				<include name="xstream-1.4.4.jar"/>
+				<include name="xstream-hibernate-1.4.4.jar"/>
 			</fileset>
 		</copy>
 		
@@ -124,22 +85,9 @@
 		    <entry  key="login.contactnumber" default="" operation="+" value="${contact.number}"/>  
 		</propertyfile>
 		
-		<antcall target="edit_hibernate_cfg_for_aq3.0"/>	
-		 
-		<antcall target="upgrade_db_for_aq_plusv3.0"/>	
-		
-		<copy file="${deploy.temp.dir}/AdvanceQuery/aqupgrade.xml" tofile="../../rollback_aq_upgrade.xml" overwrite="true"/>
-		 
-		<replace casesensitive="true" file="../../rollback_aq_upgrade.xml">
-			<replacetoken><![CDATA[../../caTissueInstall.properties]]></replacetoken>  
-				<replacevalue><![CDATA[./caTissueInstall.properties]]></replacevalue> 
-			</replace>
-				
-		<replace casesensitive="false" file="../../rollback_aq_upgrade.xml">
-			<replacetoken>lib/ant-contrib.jar</replacetoken>  
-				<replacevalue>modules/caTissue/lib/ant-contrib.jar</replacevalue> 
-		</replace>
-				
+		<antcall target="edit_hibernate_cfg_for_aq3.0"/>			 
+		<antcall target="edit_web.xml_for_aq3.0"/>
+	 
 	</target>	
  
 	<target name="edit_hibernate_cfg_for_aq3.0">
@@ -188,45 +136,23 @@
 		<zip destfile="${deploy.temp.dir}/${war.dir}/WEB-INF/lib/washu-commons-1.1.7.jar" basedir="${base.dir}/temp"/>
 		<delete dir="${base.dir}/temp"/>
 	</target>
-	
-	<target name="upgrade_db_for_aq_plusv3.0">
-		
-		<echo message="upgrading database with URL ${final.database.url} username=${database.username} password=${database.password}"/>		 
-			<!--upgradations for colums in query and query_parameterized_query table  --> 				 
-		<updateDatabase
-				changeLogFile="${deploy.temp.dir}/AdvanceQuery/db/db-upgrade/liquibase_xml/query_Suite1.2_to_3.0.xml"
-				driver="${final.database.driver}" url="${final.database.url}"
-				username="${database.username}" password="${database.password}" 
-				dropFirst="false" classpathref="liquibaseClasspath"/>		
-	</target>
-	
-	<target name="rollback_aq_plus_db">
-		<antcall target="unzip_aq_installable"/>	
-		<echo message="rollbacking database with URL ${final.database.url} username=${database.username} password=${database.password}"/>		 
-		<rollbackDatabase
-				changeLogFile="${base.dir}/temp/AdvanceQuery/db/db-upgrade/liquibase_xml/query_Suite1.2_to_3.0.xml"
-				driver="${final.database.driver}" url="${final.database.url}"
-				username="${database.username}" password="${database.password}" 
-				classpathref="liquibaserollBackClasspath"
-				rollbackTag="aq_db_1.2"/>		
-	</target>
-	
-	<target name="unzip_aq_installable" depends="aq_check_prerequisite" description="unzip the advance query zip">
-			<unzip src="${base.dir}/modules/query/lib/AdvanceQuery_Installable.zip" dest="./temp/AdvanceQuery"
-			overwrite="true" />
-	</target>
-	
-	<target name="aq_check_prerequisite" description="Check AdvanceQueryInstallable.zip file exists or not in base directory">
-		<available file="${base.dir}/modules/query/lib/AdvanceQuery_Installable.zip" property="file.exists" value="false" />
-		<if>
-			<not>
-				<isset property="file.exists" />
-			</not>
-			<then>
-				<echo
-					message="AdvanceQuery_Installable.zip file not found. It should be in base directory to deploy Advance Query."
-					level="error" />
-			</then>
-		</if>
+
+	<target name="edit_web.xml_for_aq3.0">
+	 	<replace casesensitive="true" 
+		       	file="${deploy.temp.dir}/${war.dir}/WEB-INF/web.xml">
+		     	<replacetoken><![CDATA[</web-app>]]></replacetoken>  
+		       	<replacevalue> <![CDATA[
+		  			<servlet>
+						<servlet-name>ImportQuery</servlet-name>
+						<servlet-class>edu.wustl.query.action.ImportQueryServlet</servlet-class>
+					</servlet>
+
+					<servlet-mapping>
+						<servlet-name>ImportQuery</servlet-name>
+						<url-pattern>/ImportQuery</url-pattern>
+					</servlet-mapping>
+				</web-app>]]>
+				</replacevalue> 
+		</replace>
 	</target>
 </project>

@@ -5,13 +5,13 @@
 		<cell><![CDATA[<input name='objCheckbox' value='$query.queryId' type='checkbox'/>]]></cell>	
 		<cell>$query.queryId</cell>
 		<cell style='font-size:.7em;' title="Description : $query.queryDescription "> $query.queryName^javascript:executeQuery("$query.queryId");^_self</cell>
-		<cell>$query.rootEntityName ($query.countOfRootRecords)</cell>
+		<cell>$query.rootEntityName</cell>
 		<cell>$query.executedOn</cell>
 		<cell>$query.ownerName </cell>
 		#if($queryPageOf == "myQueries")
-		<cell><![CDATA[<img src='images/advQuery/application_edit.png' title='Edit Query' onclick='editQuery("$query.queryId")'/>&nbsp&nbsp&nbsp<img src='images/advQuery/execute-button-1.PNG' title='Execute Query' onclick='executeQuery("$query.queryId")'/>&nbsp&nbsp&nbsp<img src='images/advQuery/cancel.png' title='Delete Query' onclick='deleteQueryPopup("$query.queryId")'/>&nbsp&nbsp&nbsp<img src='images/advQuery/export.jpg' title='Export Query' onclick='exportQuery("$query.queryId")'/>]]> </cell>
+		<cell><![CDATA[<img src='images/advQuery/application_edit.png' onclick='editQuery("$query.queryId")'   height='90%' />&nbsp&nbsp&nbsp<img src='images/advQuery/execute-button-1.PNG' onclick='executeQuery("$query.queryId")'  height='90%' />&nbsp&nbsp&nbsp<img src='images/advQuery/cancel.png' onclick='deleteQueryPopup("$query.queryId")'    height='90%' />&nbsp&nbsp&nbsp<img src='images/advQuery/export.jpg' title='Export Query' onclick='exportQuery("$query.queryId")' height='90%' />]]> </cell>
 		#{else}
-		<cell><![CDATA[<img src='images/advQuery/application_edit.png' title='Edit Query' onclick='editQuery("$query.queryId")'/>&nbsp&nbsp&nbsp<img src='images/advQuery/execute-button-1.PNG' title='Execute Query' onclick='executeQuery("$query.queryId")'/>&nbsp&nbsp&nbsp<img src='images/advQuery/export.jpg' title='Export Query' onclick='exportQuery("$query.queryId")'/>]]> </cell>
+		<cell><![CDATA[<img src='images/advQuery/application_edit.png' onclick='editQuery("$query.queryId")'   height='90%' />&nbsp&nbsp&nbsp<img src='images/advQuery/execute-button-1.PNG' onclick='executeQuery("$query.queryId")' height='90%' /> &nbsp&nbsp&nbsp<img src='images/advQuery/export.jpg' title='Export Query' onclick='exportQuery("$query.queryId")' height='90%' />]]> </cell>
 		#end
 	</row> 
 	#end

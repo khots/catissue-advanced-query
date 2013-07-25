@@ -36,6 +36,7 @@ public class QueryDetails
 	private long auditEventId;
 	private LinkedList<ColumnValueBean> columnValueBean;
 	private String saveGenratedQuery;
+	private Map<String, String> columnNameVsAliasMap;
 
 	//private HttpSession session;
 
@@ -70,6 +71,7 @@ public class QueryDetails
 		{
 			auditEventId =(Long) session.getAttribute("AUDIT_EVENT_ID");
 		}
+		columnNameVsAliasMap = (Map<String, String>) session.getAttribute("columnNameVsAliasMap");
 	}
 
 	/**
@@ -241,5 +243,12 @@ public class QueryDetails
 	public void setSaveGeneratedQuery(String saveGenratedQuery) {
 		this.saveGenratedQuery = saveGenratedQuery;
 	}
-	
+
+	public Map<String, String> getColumnNameVsAliasMap() {
+		return columnNameVsAliasMap;
+	}
+
+	public void setColumnNameVsAliasMap(Map<String, String> columnNameVsAliasMap) {
+		this.columnNameVsAliasMap = columnNameVsAliasMap;
+	}
 }

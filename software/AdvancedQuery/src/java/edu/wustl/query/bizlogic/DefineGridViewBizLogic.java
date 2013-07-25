@@ -333,7 +333,7 @@ public class DefineGridViewBizLogic
 		queryResultObjecctDataMap.clear();
 		List<String> definedColumnsList = new ArrayList<String>();
 		List<NameValueBean> selectedColumnNameValue = new ArrayList<NameValueBean>();
-
+		Map<String, String> columnNameVsAliasMap= queryDetailsObj.getColumnNameVsAliasMap();
 		QueryResultObjectDataBean queryResulObjectDataBean = null;
 
 		List<EntityInterface> defineViewNodeList = new ArrayList<EntityInterface>();
@@ -386,7 +386,7 @@ public class DefineGridViewBizLogic
 			else
 			{
 				queryResulObjectDataBean.getObjectColumnIds().add(columnIndex);
-				selectedColumnNames.append(element.getColumnName());
+				selectedColumnNames.append(columnNameVsAliasMap.get(element.getColumnName())+" "+ element.getColumnName());
 				selectedColumnNames.append(AQConstants.DELIMETER);
 				definedColumnsList.add(element.getDisplayName());
 				columnIndex++;
@@ -411,7 +411,8 @@ public class DefineGridViewBizLogic
 			queryResulObjectDataBean.setTqColumnMetadataList
 			(gridBizLogic.modifySqlForTemporalColumns(temporalColumnUIBean, queryDetailsObj,
 					nodeData));
-			sql = temporalColumnUIBean.getSql();
+			//sql = temporalColumnUIBean.getSql();
+			sql = sql +", "+ columnNameVsAliasMap.get("temporal");
 			columnIndex = temporalColumnUIBean.getColumnIndex();
 		}
 		selectedColumnNames.replace(0, selectedColumnNames.length(), sql);
@@ -456,7 +457,7 @@ public class DefineGridViewBizLogic
 	public String createSQLForSelectedColumn(String columnsInSql, String sql)
 	{
 		//String columnsInSql = selectedColumnNames.toString();
-		int indexOfSelectDistict = sql.indexOf("select");
+		/*int indexOfSelectDistict = sql.indexOf("select");
 		int selectDistictLength = "select".length();
 		int indexOfFrom = sql.indexOf(AQConstants.FROM);
 		int indexOfWhere = sql.indexOf(AQConstants.WHERE);
@@ -469,8 +470,10 @@ public class DefineGridViewBizLogic
 		if(newSql.indexOf("ORDER BY") == -1)
 		{
 			newSql.append(" ORDER BY").append(sql.substring(indexOfWhere+6, indexOfIs));
-		}
-		return newSql.toString();
+		}*/
+		
+		String newSql = "SELECT DISTINCT "+ columnsInSql + " " + sql.substring(sql.indexOf("from"));
+		return newSql;
 	}
 
 	/**

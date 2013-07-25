@@ -377,9 +377,9 @@ public class QueryOutputSpreadsheetBizLogic
 			String value = "'"+queryDetailsObj.getColumnValueBean().get(cnt++).getColumnName()+"'";
 			sql = sql.replaceFirst("\\?", value);//modifying sql for inserting variables in where clause
 		}
-		
+
 		String parentIdColumnName = QueryModuleUtil.getParentIdColumnName(node);
-		String selectSql = createSQL(parentData, "(" + sql +")temp", spreadSheetDataMap, parentIdColumnName,
+		String selectSql = createSQL(parentData, sql, spreadSheetDataMap, parentIdColumnName,
 				node, queryResultObjectDataBeanMap, queryDetailsObj, constraints,
 				outputTermsColumns,specimenMap);
 		int startIndex = 0;
@@ -406,7 +406,7 @@ public class QueryOutputSpreadsheetBizLogic
 	 * @param outputTermsColumns outputTermsColumns
 	 * @return query string
 	 */
-	private String createSQL(String parentData, String tableName, Map spreadSheetDataMap,
+	private String createSQL(String parentData, String originalSQL, Map spreadSheetDataMap,
 			String parentIdColumnName, OutputTreeDataNode node,
 			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap,
 			QueryDetails queryDetailsObj, IConstraints constraints,
@@ -479,7 +479,7 @@ public class QueryOutputSpreadsheetBizLogic
 		if (selectedColumnMetaData.isDefinedView())
 		{
 			queryResultObjectDataBeanMap.clear();
-			selectSql = getSQLForSelectedColumns(spreadSheetDataMap, queryResultObjectDataBeanMap,
+			originalSQL = getSQLForSelectedColumns(spreadSheetDataMap, queryResultObjectDataBeanMap,
 					queryDetailsObj, outputTermsColumns, parentData,specimenMap);
 			columnsList = (List<String>) spreadSheetDataMap.get(AQConstants.SPREADSHEET_COLUMN_LIST);
 		}
@@ -521,7 +521,7 @@ public class QueryOutputSpreadsheetBizLogic
 					}
 				}
 			}
-			selectSql = selectSql + " from " + tableName;
+			selectSql = selectSql + " from " + originalSQL;
 			if (parentData == null)
 			{
 				selectSql = selectSql + " where " + idColumnOfCurrentNode + " "
@@ -549,7 +549,7 @@ public class QueryOutputSpreadsheetBizLogic
 				selectSql = "select " + selectSql;
 			}
 		}
-		return selectSql;
+		return originalSQL;
 	}
 
 	/**
@@ -627,8 +627,11 @@ public class QueryOutputSpreadsheetBizLogic
 					modifyTemporalColumnBean(temporalColumnUIBean,outputTerm.getName(),columnName);
 					setTQColumnMetadata(temporalColumnUIBean.getColumnIndex(),
 							tQColumnMetataDataList, term,timeInterval);
+				} else {
+					temporalColumnUIBean.getColumnsList().add(outputTerm.getName());
 				}
 			}
+			
 		}
 		return  tQColumnMetataDataList;
 	}
@@ -681,11 +684,6 @@ public class QueryOutputSpreadsheetBizLogic
 	expressionsInTerm)
 	{
 		String sql = queryDetailsObj.getSaveGeneratedQuery();
-		int cnt = 0;
-		while (sql.contains("?")) {
-			String value = "'"+queryDetailsObj.getColumnValueBean().get(cnt++).getColumnName()+"'";
-			sql = sql.replaceFirst("\\?", value);//modifying sql for inserting variables in where clause
-		}
 		boolean isValidCardinality = false;
 		IConstraints constraints = temporalColumnUIBean.getConstraints();
 		IExpression clickedExpression = constraints.getExpression(node.getExpressionId());
@@ -758,8 +756,8 @@ public class QueryOutputSpreadsheetBizLogic
 			String displayColumnName, String columnName)
 	{
 		temporalColumnUIBean.getColumnsList().add(displayColumnName);
-		String sql = temporalColumnUIBean.getSql() + ", " + columnName;
-		temporalColumnUIBean.setSql(sql);
+	//	String sql = temporalColumnUIBean.getSql() + ", " + columnName;
+	//	temporalColumnUIBean.setSql(sql);
 		temporalColumnUIBean.setColumnIndex(temporalColumnUIBean.getColumnIndex() + 1);
 
 	}
@@ -815,11 +813,13 @@ public class QueryOutputSpreadsheetBizLogic
 			QueryDetails queryDetailsObj, Map<String, IOutputTerm> outputTermsColumns,
 			String parentData, Map<String, String> specimenMap)
 	{
-		String selectSql = "";
+		String selectSql = queryDetailsObj.getSaveGeneratedQuery();
 		List<String> definedColumnsList = new ArrayList<String>();
 		StringBuffer sqlColumnNames = new StringBuffer();
 		List<QueryOutputTreeAttributeMetadata> selectedAttributeMetaDataList = selectedColumnMetaData
 				.getSelectedAttributeMetaDataList();
+		
+		Map<String, String> columnNameVsAliasMap= queryDetailsObj.getColumnNameVsAliasMap();
 		int columnIndex = 0;
 		int addedFileTypeAttributes = 0;
 		List<EntityInterface> defineViewNodeList = new ArrayList<EntityInterface>();
@@ -830,6 +830,7 @@ public class QueryOutputSpreadsheetBizLogic
 			for (QueryOutputTreeAttributeMetadata metaData : selectedAttributeMetaDataList)
 			{
 				AttributeInterface attribute = metaData.getAttribute();
+				
 				if (metaData.getAttribute().equals(outputAttribute.getAttribute())
 					&& metaData.getTreeDataNode().getExpressionId() == outputAttribute.getExpression().getExpressionId())
 				{
@@ -869,7 +870,8 @@ public class QueryOutputSpreadsheetBizLogic
 					}
 					else
 					{
-						String sqlColumnName = metaData.getColumnName();
+						//String sqlColumnName = metaData.getColumnName();
+						String sqlColumnName = columnNameVsAliasMap.get(metaData.getColumnName())+" "+ metaData.getColumnName();
 						sqlColumnNames.append(sqlColumnName);
 						sqlColumnNames.append(", ");
 						String columnDisplayName = metaData.getDisplayName();
@@ -892,8 +894,9 @@ public class QueryOutputSpreadsheetBizLogic
 			TemporalColumnUIBean temporalColumnUIBean = new TemporalColumnUIBean(null, selectSql,
 					definedColumnsList, outputTermsColumns, columnIndex, constraints);
 			tqColumnList = modifySqlForTemporalColumns(temporalColumnUIBean, queryDetailsObj, parentData);
-			selectSql = temporalColumnUIBean.getSql();
+			sqlColumnNames.append(" " + columnNameVsAliasMap.get("temporal")+ " ") ;
 			columnIndex = temporalColumnUIBean.getColumnIndex();
+			lastindexOfComma = sqlColumnNames.length() -1;
 		}
 		if (lastindexOfComma != -1 || "".equals(selectSql))
 		{
@@ -904,7 +907,8 @@ public class QueryOutputSpreadsheetBizLogic
 			}
 			if (!"".equals(selectSql))
 			{
-				columnsInSql = columnsInSql + selectSql;
+				//columnsInSql = columnsInSql + selectSql;
+				columnsInSql = "SELECT DISTINCT "+ columnsInSql + " " + selectSql.substring(selectSql.indexOf("from"));
 			}
 			Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
 			columnsInSql = QueryCSMUtil.updateEntityIdIndexMap(null, columnIndex, columnsInSql,
@@ -916,7 +920,7 @@ public class QueryOutputSpreadsheetBizLogic
 				setMainEntityColumnIdentifier(tqColumnList, entityIdIndexMap,
 						iterator);
 			}
-			selectSql = "select " + columnsInSql;
+			selectSql = /*"select " + */columnsInSql;
 		}
 		spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 		return selectSql;
@@ -975,16 +979,15 @@ public class QueryOutputSpreadsheetBizLogic
 		querySessionData.setSql(selectSql);
 		querySessionData.setQueryResultObjectDataMap(queryResultObjectDataBeanMap);
 		querySessionData.setRecordsPerPage(recordsPerPage);
-		boolean isContPresent = isContainmentPresent(queryDetailsObj.getQuery());;
-		if(selectedColMetadata.isDefinedView())
-		{
+		//boolean isContPresent = isContainmentPresent(queryDetailsObj.getQuery());;
+		/*if(selectedColMetadata.isDefinedView())
+		{ 
 			StringBuffer modifiedSql = modifySqlForDefineView(selectSql, queryDetailsObj);
 			querySessionData.setSql(modifiedSql.toString());			
-		}
+		}*/
 		querySessionData.setSecureExecute(queryDetailsObj.getSessionData().isSecurityRequired());
 		querySessionData.setHasConditionOnIdentifiedField(hasConditionOnIdentifiedField);
 		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
-
 		PagenatedResultData pagenatedResultData = qBizLogic.execute(queryDetailsObj
 				.getSessionData(), querySessionData, startIndex);
 		List<List<String>> dataList = pagenatedResultData.getResult();
@@ -1012,7 +1015,6 @@ public class QueryOutputSpreadsheetBizLogic
 				selectedColMetadata.setActualTotalRecords(pagenatedResultData.getTotalRecords());
 			}
 		}*/
-
 
 		for (Long id : queryResultObjectDataBeanMap.keySet())
 		{
@@ -1042,7 +1044,7 @@ public class QueryOutputSpreadsheetBizLogic
 		 * saving required query data in Session so that can be used later on while navigation through
 		 * result pages using pagination.
 		 */
-
+		 
 		return querySessionData;
 	}
 

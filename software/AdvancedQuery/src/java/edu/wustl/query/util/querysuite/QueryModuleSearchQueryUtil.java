@@ -35,6 +35,7 @@ import edu.wustl.query.bizlogic.DefineGridViewBizLogic;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
 import edu.wustl.query.generator.ISqlGenerator;
 import edu.wustl.query.util.global.AQConstants;
+import edu.wustl.query.util.global.Utility;
 import edu.wustl.security.exception.SMException;
 
 /**
@@ -152,7 +153,7 @@ public class QueryModuleSearchQueryUtil
 			query = originalQuery;
 			session.setAttribute(AQConstants.QUERY_OBJECT, originalQuery);
 			queryDetailsObj.setQuery(originalQuery);
-		}
+		}		
 	}
 
 	/**
@@ -168,21 +169,11 @@ public class QueryModuleSearchQueryUtil
 		OutputTreeDataNode rootOutputnode = queryDetailsObj.getRootOutputTreeNodeList().get(0);
 		try
 		{	
-			int count = QueryModuleSqlUtil.getCountForQuery(queryDetailsObj.getSaveGeneratedQuery(), queryDetailsObj);
-			updateQueryAuditDetails(rootOutputnode, count, queryDetailsObj.getAuditEventId());
+			//int count = QueryModuleSqlUtil.getCountForQuery(queryDetailsObj.getSaveGeneratedQuery(), queryDetailsObj);
+			updateQueryAuditDetails(rootOutputnode, 0, queryDetailsObj.getAuditEventId());
 			processRecords(queryDetailsObj, rootOutputnode, hasCondOnIdentifiedField);	
 		} 
 		catch (DAOException e)
-		{
-			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
-			throw queryModExp;
-		}
-		catch (ClassNotFoundException e)
-		{
-			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.CLASS_NOT_FOUND);
-			throw queryModExp;
-		}
-		catch (SMException e)
 		{
 			queryModExp = new QueryModuleException(e.getMessage(), QueryModuleError.DAO_EXCEPTION);
 			throw queryModExp;
@@ -208,7 +199,7 @@ public class QueryModuleSearchQueryUtil
 			long auditEventId = getAuditEventId(queryBizLogic, selectSql);
 			boolean alreadySavedQuery = Boolean.valueOf((String)session.getAttribute("savedQuery"));
 			queryDetailsObj.setAuditEventId(auditEventId);
-			getNewQuery(selectSql, alreadySavedQuery);
+			getNewQuery(selectSql, alreadySavedQuery);			
 		}
 		catch (DAOException e)
 		{
@@ -287,8 +278,11 @@ public class QueryModuleSearchQueryUtil
 			{
 				newSql = sqlGenerator.generateSQL(query);
 			}
-			selectSql = newSql;
+			selectSql = newSql;	
 		}
+		Map<String, String> columnNameVsAliasMap = Utility.splitQuery(selectSql);
+		session.setAttribute("columnNameVsAliasMap", columnNameVsAliasMap);
+		queryDetailsObj.setColumnNameVsAliasMap(columnNameVsAliasMap);
 	}
 
 	/**
@@ -299,8 +293,7 @@ public class QueryModuleSearchQueryUtil
 		ISqlGenerator sqlGenerator = AbstractQueryGeneratorFactory.getDefaultQueryGenerator();
 		validateQuery(sqlGenerator);
 		List<OutputTreeDataNode> rootOutputTreeNodeList = sqlGenerator.getRootOutputTreeNodeList();
-		session.setAttribute(AQConstants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);
-		queryDetailsObj.setSaveGeneratedQuery((String)session.getAttribute(AQConstants.SAVE_GENERATED_SQL));
+		session.setAttribute(AQConstants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);		
 		queryDetailsObj.setRootOutputTreeNodeList(rootOutputTreeNodeList);
 		queryDetailsObj.setColumnValueBean(sqlGenerator.getColumnValueBean());
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
@@ -320,6 +313,14 @@ public class QueryModuleSearchQueryUtil
 			session.setAttribute(AQConstants.SAVED_QUERY, AQConstants.FALSE);
 			session.setAttribute(AQConstants.PROCESSED_SAVED_QUERY, AQConstants.FALSE);
 		}
+		int cnt = 0;
+		String selectSql = (String)session.getAttribute(AQConstants.SAVE_GENERATED_SQL);
+		while (selectSql.contains("?")) {
+			String value = "'"+queryDetailsObj.getColumnValueBean().get(cnt++).getColumnName()+"'";
+			selectSql = selectSql.replaceFirst("\\?", value);//modifying sql for inserting variables in where clause
+		}
+		queryDetailsObj.setSaveGeneratedQuery(selectSql);
+		session.setAttribute(AQConstants.SAVE_GENERATED_SQL, selectSql);
 		return newQuery;
 	}
 
@@ -392,7 +393,7 @@ public class QueryModuleSearchQueryUtil
 				query, (SelectedColumnsMetadata) session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA));
 		selectedColumnsMetadata.setCurrentSelectedObject(node);
 		QueryModuleException queryModExp;
-		int recordsPerPage = setRecordsPerPage();
+		int recordsPerPage = setFetchRecordSize();
 		checkForSavedQuery(QueryDetailsObj, selectedColumnsMetadata);
 
 		QueryResultObjectDataBean queryResulObjectDataBean = QueryCSMUtil
@@ -543,17 +544,22 @@ public class QueryModuleSearchQueryUtil
 	/** It will set the results per page.
 	 * @return recordsPerPage
 	 */
-	private int setRecordsPerPage()
-	{
-		int recordsPerPage;
+	private void setRecordsPerPage()
+	{		
 		String recordsPerPgSessionValue = (String) session.getAttribute(AQConstants.RESULTS_PER_PAGE);
 		if (recordsPerPgSessionValue == null)
 		{
 			recordsPerPgSessionValue = XMLPropertyHandler.getValue(AQConstants.RECORDS_PER_PAGE_PROPERTY_NAME);
 			session.setAttribute(AQConstants.RESULTS_PER_PAGE, recordsPerPgSessionValue);
-		}
-		recordsPerPage = Integer.valueOf(recordsPerPgSessionValue);
-		return recordsPerPage;
+		}		
+	}
+	
+	private int setFetchRecordSize()
+	{
+		setRecordsPerPage();
+		String fetchDataSize = XMLPropertyHandler.getValue(AQConstants.FETCH_RECORD_SIZE_PROPERTY_NAME);
+		session.setAttribute(AQConstants.FETCH_RECORD_SIZE, fetchDataSize);
+		return Integer.parseInt(fetchDataSize);
 	}
 
 	/**

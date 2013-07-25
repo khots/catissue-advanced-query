@@ -52,25 +52,9 @@ public class MysqlQueryExecutor extends AbstractQueryExecutor
 			sqlToBeExecuted = new StringBuilder(query).append(" Limit ")
 						.append(startIndex).append(" , ").append(noOfRecords).toString();
 		}
-		
 		resultSet = jdbcDAO.getQueryResultSet(sqlToBeExecuted);		
-		List list = getListFromResultSet(jdbcDAO); // get the result set.
-
-		// find the total number of records.
-		int totalRecords;
-		if (getSublistOfResult)
-		{
-			sqlToBeExecuted = getCountQuery(query);
-			resultSet.close();
-			resultSet = jdbcDAO.getQueryResultSet(sqlToBeExecuted);
-			resultSet.next();
-			totalRecords = resultSet.getInt(1);
-		}
-		else
-		{
-			totalRecords = list.size(); // these are all records returned from query.
-		}
-		return new PagenatedResultData(list, totalRecords);
+		List list = getListFromResultSet(jdbcDAO); // get the result set. 
+		return new PagenatedResultData(list, 0);
 	}
 
 	@Override
@@ -97,10 +81,5 @@ public class MysqlQueryExecutor extends AbstractQueryExecutor
 		catch (DAOException ex) {
 			logger.debug("Could not delete the Query Module Search temporary table:"+ ex.getMessage(), ex);
 		}
-
-
 	}
-
-
-
 }

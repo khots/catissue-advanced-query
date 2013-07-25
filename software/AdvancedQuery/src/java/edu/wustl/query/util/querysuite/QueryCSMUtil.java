@@ -1037,7 +1037,7 @@ public class QueryCSMUtil
 					}
 					else
 					{
-						appendColNameToSql(selectSql, sql, sqlColumnName);
+						//appendColNameToSql(selectSql, sql, sqlColumnName);
 						entityIdIndexMap.put(attribute.getEntity(), columnIndex);
 						columnIndex++;
 						if(outputTreeDataNode.getOutputEntity().getDynamicExtensionsEntity().getName().equals("edu.wustl.catissuecore.domain.Specimen"))

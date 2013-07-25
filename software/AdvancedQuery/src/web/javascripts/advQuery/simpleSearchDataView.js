@@ -3,13 +3,13 @@ function onAddToCart() {
 	var isChecked = updateHiddenFields();	
 	var isCheckAllAcrossAllChecked = !isChecked;
 
-    if(isChecked) {
+    if(isChecked) { 
     	var action = "ShoppingCart.do";
 		if(isQueryModule == "true") {
 			action = "AddDeleteCart.do";			
 		} 
 		
-		var url = action + "?operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
+		var url = action + "?operation=add&pageNum="+mygrid.currentPage+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
 	
 		var request = newXMLHTTPReq();
 		request.onreadystatechange = getReadyStateHandler(request, displayStatus, true);
@@ -23,11 +23,15 @@ function onAddToCart() {
 }
 
 function getCheckedField() {
+	var currentPage = mygrid.currentPage;
+	var startIndex = (currentPage-1) * 100;
+	var endIndex = startIndex + 100;
 	var params = "";
-	for(i = 0; i < rowCount; i++) {
+	for(i = startIndex; i < endIndex; i++) {
 		var cbvalue = document.getElementById("" + i);		
-		if(!cbvalue.disabled) {
-			params += cbvalue.name+"="+cbvalue.value+"&";
+		if(cbvalue != null && !cbvalue.disabled ) {		
+			var row = i % 100;
+			params += "value1(CHK_" + row + ")="+cbvalue.value+"&";
 		}		
 	}
 	
@@ -35,6 +39,15 @@ function getCheckedField() {
 }
 
 function displayStatus(response) {
+	console.log(response);
+	var test = new String(response);
+	if(test.indexOf("messagetextsuccess")>=0){
+		document.getElementById("errorStatus").style.color = "green";
+		document.getElementById('errorStatus').innerHTML = "Records has been sucessfully added to list";
+	} else {
+		document.getElementById("errorStatus").style.color = "red";
+		document.getElementById('errorStatus').innerHTML = "Cannot add in to List as view of List is different";
+	}
 	document.getElementById('errorStatus').innerHTML = response;
 }
 
@@ -73,17 +86,35 @@ function onExport() {
 	var isChecked = updateHiddenFields();	
 	var isCheckAllAcrossAllChecked = !isChecked;
     
-	var action = "SpreadsheetExport.do?pageNum="+pageNum+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked ;
+	var action = "SpreadsheetExport.do?pageNum="+mygrid.currentPage+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked ;
 	document.forms[0].operation.value="export";
 	document.forms[0].action = action;
 	document.forms[0].target = "_self";
 	document.forms[0].submit();		
-	window.setTimeout(removeLoading, 500)	
+	window.setTimeout(removeLoading, 500);	
+	window.setTimeout(disableInputs, 500);
 }
 
 function removeLoading() {
 	var superiframe = document.getElementById('superiframe');
 	superiframe.className = "HiddenFrame";
+}
+
+function disableInputs(){
+ 
+	var currentPage = mygrid.currentPage;
+	var startIndex = (currentPage-1) * 100;
+	var endIndex = startIndex + 100; 
+	
+	for(var i=startIndex; i < endIndex; i++) {
+		var cbvalue = document.getElementById("" + i);
+		if (cbvalue != null){ 
+			cbvalue.value = "0";
+			cbvalue.disabled = true;
+		} else {
+			break;
+		}	
+	}	 		
 }
 
 //function that is called on click of Define View button for the configuration of search results

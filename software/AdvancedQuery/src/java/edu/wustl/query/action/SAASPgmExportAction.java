@@ -36,7 +36,7 @@ public class SAASPgmExportAction extends SpreadsheetExportAction {
 		List<String> idIndexList = new ArrayList<String>();
 		Map<Integer, List<String>> entityIdsMap = (Map<Integer, List<String>>) session
 		.getAttribute(AQConstants.ENTITY_IDS_MAP);
-		super.generateSpreadsheetData(form, request, session, exportList,
+		super.generateSpreadsheetData(form, response, request, session, exportList,
 				idIndexList, entityIdsMap);
 		this.exportAndSend(request, response, session, exportList, idIndexList, entityIdsMap);
 		

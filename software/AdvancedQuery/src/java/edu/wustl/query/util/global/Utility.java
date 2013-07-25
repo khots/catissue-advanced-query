@@ -25,11 +25,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.common.dynamicextensions.domain.AttributeTypeInformation;
-import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -363,6 +361,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 		List paginationDataList;
 		querySessionData.setRecordsPerPage(recordsPerPage);
 		int startIndex = recordsPerPage * (pageNum - 1);
+		recordsPerPage = startIndex+ recordsPerPage;
 		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
 
 		PagenatedResultData pagenatedResult = qBizLogic.execute(sessionData, querySessionData,
@@ -1053,5 +1052,26 @@ public class Utility //extends edu.wustl.common.util.Utility
             operator = HtmlUtility.getConditionsList(attribute, parseFile).get(0);
 
         return operator;
+    }
+    
+    public static Map<String,String> splitQuery(String sql){
+    	int fromIndex = sql.indexOf("from");
+		String select = sql.substring(15, fromIndex).trim(); //15 is a index upto SELECT DISTINCT 
+		String [] columns = select.split(", ");	
+		
+		Map<String, String> columnsVsAlias = new HashMap<String, String>();
+		int lastindex = 0;
+		for(String column : columns){
+			String names[] = column.split("Column");
+			if(names.length == 2 && names[1].matches("[0-9]+")){
+				columnsVsAlias.put("Column" + names[1], names[0]);
+				lastindex = sql.indexOf(column) + column.length();
+			}else {
+				String temp = sql.substring(lastindex + 1, fromIndex).trim();
+				columnsVsAlias.put("temporal", temp);
+				break;
+			}
+		}
+		return columnsVsAlias;
     }
 }

@@ -15,9 +15,10 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.action.SecureAction;
+import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
+import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttributeMetadata;
 import edu.wustl.common.query.queryobject.impl.metadata.SelectedColumnsMetadata;
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
-import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.ExportReport;
 import edu.wustl.common.util.SendFile;
@@ -27,7 +28,6 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.actionForm.QueryAdvanceSearchForm;
 import edu.wustl.query.bizlogic.ExportQueryBizLogic;
-import edu.wustl.query.bizlogic.SpreadsheetDenormalizationBizLogic;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryDetails;
@@ -43,10 +43,14 @@ public class SpreadsheetExportAction extends SecureAction
 	 * @throws Exception Exception
 	 * @return ActionForward object
 	 */
+	
+	private ExportReport report;
+	
 	public ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
+	
 		List<List<String>> exportList = new ArrayList<List<String>>();
 		if(session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA) != null)
 		{
@@ -57,38 +61,89 @@ public class SpreadsheetExportAction extends SecureAction
 		Map<Integer, List<String>> entityIdsMap = (Map<Integer, List<String>>) session
 		.getAttribute(AQConstants.ENTITY_IDS_MAP);
 
-		generateSpreadsheetData(form,request, session, exportList, idIndexList,
+		generateSpreadsheetData(form, response, request, session, exportList, idIndexList,
 				entityIdsMap);
-		exportAndSend(request, response, session, exportList, idIndexList, entityIdsMap);
+		
 		return null;
 	}
 
 	/**
 	 * @param form
+	 * @param response 
 	 * @param request
 	 * @param session
-	 * @param exportList
+	 * @param exportList 
 	 * @param idIndexList
 	 * @param entityIdsMap
 	 * @throws DAOException
 	 * @throws MultipleRootsException
+	 * @throws IOException 
 	 */
-	protected void generateSpreadsheetData(ActionForm form, HttpServletRequest request,
-			HttpSession session, List<List<String>> exportList,
+	protected void generateSpreadsheetData(ActionForm form, HttpServletResponse response, 
+			HttpServletRequest request, HttpSession session, List<List<String>> exportList, 
 			List<String> idIndexList, Map<Integer, List<String>> entityIdsMap)
-			throws DAOException, MultipleRootsException {
-		QueryAdvanceSearchForm searchForm = (QueryAdvanceSearchForm) form;
+		throws DAOException, MultipleRootsException, IOException 
+	{
 		String isChkAllAcrossAll = request.getParameter(AQConstants.CHECK_ALL_ACROSS_ALL_PAGES);
-
-		Map map = searchForm.getValues();
-		Object[] obj = map.keySet().toArray();
+	
 		List<String> columnList = (List<String>) session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
 		SelectedColumnsMetadata selectedColumnsMetadata =
 			(SelectedColumnsMetadata)session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA);
 		QueryDetails queryDetails = new QueryDetails(session);
-		List<List<String>> dataList = getDataList(request, session,isChkAllAcrossAll,selectedColumnsMetadata);
-
-		boolean isDefineView = false;
+	
+		//List<List<String>> dataList = getDataList(request,session,isChkAllAcrossAll,selectedColumnsMetadata, queryDetails);
+		
+		int actualNoOfRec = 0;
+		boolean isDefinedView = false;
+		if(selectedColumnsMetadata != null)
+		{
+			actualNoOfRec = selectedColumnsMetadata.getActualTotalRecords();
+			isDefinedView = selectedColumnsMetadata.isDefinedView();
+		}
+		String pageNo = request.getParameter(AQConstants.PAGE_NUMBER);
+		if (pageNo != null)
+		{
+			request.setAttribute(AQConstants.PAGE_NUMBER, pageNo);
+		}
+		int pageNum = Integer.valueOf(pageNo);
+		int recordsPerPage;
+		if (isChkAllAcrossAll != null
+				&& isChkAllAcrossAll.equalsIgnoreCase("true"))
+		{
+			if(actualNoOfRec == 0)
+			{
+				String totalRecords = (String) session.getAttribute(AQConstants.FETCH_RECORD_SIZE);
+				recordsPerPage = Integer.parseInt(totalRecords);
+				pageNum = 1;
+			}
+			else
+			{
+				recordsPerPage = actualNoOfRec; 
+			}
+		}
+		else
+		{
+			if(actualNoOfRec ==0)
+			{
+			    String recordsPerPageStr = (String) session.getAttribute(AQConstants.RESULTS_PER_PAGE);
+				recordsPerPage= Integer.parseInt(recordsPerPageStr); ;
+			}
+			else
+			{
+				QuerySessionData querySessionData = (QuerySessionData)session.getAttribute(AQConstants.QUERY_SESSION_DATA);
+				recordsPerPage = querySessionData.getRecordsPerPage();
+			}
+		}
+		QuerySessionData querySessionData = (QuerySessionData) session 
+				.getAttribute(edu.wustl.common.util.global.Constants.QUERY_SESSION_DATA);
+		
+		if(session.getAttribute(AQConstants.QUERY_WITH_FILTERS) != null) {
+			querySessionData.setSql((String)session.getAttribute(AQConstants.QUERY_WITH_FILTERS));
+		}
+		
+		session.setAttribute("COLUMNS_LIST", columnList);	
+		
+		//boolean isDefineView = false;
 		/*if(queryDetails.getQuery()!=null && !queryDetails.getQuery().getIsNormalizedResultQuery() && selectedColumnsMetadata != null)
 		{
 			IExpression rootExpression = queryDetails.getQuery().getConstraints().getJoinGraph().getRoot();
@@ -129,9 +184,49 @@ public class SpreadsheetExportAction extends SecureAction
 			dataList = tmpDataList;
 		}*/
 		//Mandar 06-Apr-06 Bugid:1165 : Extra ID columns end. Adding first row(column names) to exportData
-		exportList.add(columnList);
-		session.setAttribute("COLUMNS_LIST", columnList);
+		
+		
+		if(isChkAllAcrossAll != null && isChkAllAcrossAll.equalsIgnoreCase("true"))
+		{
+			QuerySessionData clone = createCloneQuerySessionData(querySessionData);
+			modifySql(clone, queryDetails, session);
+			int dataSize = recordsPerPage;
+			int pageNumber = 1; 
+			while(dataSize == recordsPerPage)
+			{
+				List<List<String>> dataList = new ArrayList<List<String>>();
+				List<List<String>> subExportList = new ArrayList<List<String>>();
+				dataList =	Utility.getPaginationDataList(request, getSessionData(request),
+						recordsPerPage, pageNumber, querySessionData, isDefinedView);
+				dataSize = dataList.size();				
+				pageNumber ++;		
 
+				dataList = Utility.getFormattedOutput(dataList);
+				subExportList = addDataToExportList(form, isChkAllAcrossAll,subExportList, 
+						columnList, dataList, idIndexList, entityIdsMap);
+				
+				exportAndSend(request, response, session, subExportList, idIndexList, entityIdsMap, !(dataSize == recordsPerPage));
+			}
+		} else {
+			List<List<String>> dataList = new ArrayList<List<String>>();
+			dataList =	Utility.getPaginationDataList(request, getSessionData(request),
+					recordsPerPage, pageNum, querySessionData, isDefinedView);
+			exportList = addDataToExportList(form, isChkAllAcrossAll,exportList, 
+					columnList, dataList, idIndexList, entityIdsMap);
+			exportAndSend(request, response, session, exportList, idIndexList, entityIdsMap, true);
+		}
+		
+	}
+	
+	private List<List<String>> addDataToExportList(ActionForm form, String isChkAllAcrossAll,
+			List<List<String>> exportList, List<String> columnList, List<List<String>> dataList, 
+			List<String> idIndexList, Map<Integer, List<String>> entityIdsMap)
+	{
+		QueryAdvanceSearchForm searchForm = (QueryAdvanceSearchForm) form;
+		Map map = searchForm.getValues();
+		Object[] obj = map.keySet().toArray();
+		boolean isDefineView = false;
+		exportList.add(columnList);
 		int columnsSize = columnList.size();
 
 		if (isDefineView || (isChkAllAcrossAll != null && isChkAllAcrossAll.equalsIgnoreCase("true")))
@@ -155,15 +250,19 @@ public class SpreadsheetExportAction extends SecureAction
 		{
 			for (int counter = 0; counter < obj.length; counter++)
 			{
-				int indexOf = obj[counter].toString().indexOf("_") + 1;
-				int index = Integer.parseInt(obj[counter].toString().substring(indexOf));
-				List<String> list = dataList.get(index);
+				String index = obj[counter].toString().split("_")[1];
+				if(index.length() > 2){
+					index = index.substring(1);
+				}				
+				int id = Integer.parseInt(index);
+				List<String> list = dataList.get(id);
 				List<String> subList = list.subList(0, columnsSize);
-				populateIndexList(idIndexList, entityIdsMap, index);
+				populateIndexList(idIndexList, entityIdsMap, id);
 				exportList.add(subList);
 			}
 
 		}
+		return exportList;
 	}
 
 	/**
@@ -230,77 +329,6 @@ public class SpreadsheetExportAction extends SecureAction
 	}
 
 	/**
-	 * @param request request
-	 * @param session session
-	 * @param isChkAllAcrossAll if all check boxes are checked
-	 * @param actualNoOfRec
-	 * @return dataList
-	 * @throws DAOException DAOException
-	 */
-	private List<List<String>> getDataList(HttpServletRequest request,
-			HttpSession session, String isChkAllAcrossAll, SelectedColumnsMetadata selectedMetadata) throws DAOException
-	{
-		int actualNoOfRec = 0;
-		boolean isDefinedView = false;
-		if(selectedMetadata != null)
-		{
-			actualNoOfRec = selectedMetadata.getActualTotalRecords();
-			isDefinedView = selectedMetadata.isDefinedView();
-		}
-		String pageNo = request.getParameter(AQConstants.PAGE_NUMBER);
-		if (pageNo != null)
-		{
-			request.setAttribute(AQConstants.PAGE_NUMBER, pageNo);
-		}
-		int pageNum = Integer.valueOf(pageNo);
-		int recordsPerPage;
-		if (isChkAllAcrossAll != null
-				&& isChkAllAcrossAll.equalsIgnoreCase("true"))
-		{
-			if(actualNoOfRec == 0)
-			{
-				Integer totalRecords = (Integer) session.getAttribute(AQConstants.TOTAL_RESULTS);
-				recordsPerPage = totalRecords;
-				pageNum = 1;
-			}
-			else
-			{
-				recordsPerPage = actualNoOfRec;
-			}
-		}
-		else
-		{
-			if(actualNoOfRec ==0)
-			{
-				String recordsPerPageStr = (String) session.getAttribute(AQConstants.RESULTS_PER_PAGE);
-				recordsPerPage= Integer.valueOf(recordsPerPageStr);
-			}
-			else
-			{
-				QuerySessionData querySessionData = (QuerySessionData)session.getAttribute(AQConstants.QUERY_SESSION_DATA);
-				recordsPerPage = querySessionData.getRecordsPerPage();
-			}
-		}
-		QuerySessionData querySessionData = (QuerySessionData) session
-				.getAttribute(edu.wustl.common.util.global.Constants.QUERY_SESSION_DATA);
-		String oldQuery = querySessionData.getSql();
-		if(session.getAttribute(AQConstants.QUERY_WITH_FILTERS) != null) {
-			querySessionData.setSql((String)session.getAttribute(AQConstants.QUERY_WITH_FILTERS));
-		}
-		List dataList1 = Utility.getPaginationDataList(request, getSessionData(request),
-				recordsPerPage, pageNum, querySessionData, isDefinedView);
-		List<List<String>> dataList = (List<List<String>>) session
-				.getAttribute(AQConstants.EXPORT_DATA_LIST);
-		if (dataList == null)
-		{
-			dataList = dataList1;
-		}
-		dataList = Utility.getFormattedOutput(dataList);
-		querySessionData.setSql(oldQuery);
-		return dataList;
-	}
-
-	/**
 	 * @param columnList column List
 	 * @return idColCount
 	 */
@@ -329,17 +357,17 @@ public class SpreadsheetExportAction extends SecureAction
 	 */
 	private void exportAndSend(HttpServletRequest request,HttpServletResponse response,
 			HttpSession session, List<List<String>> exportList,
-			List<String> idIndexList, Map<Integer, List<String>> entityIdsMap)
+			List<String> idIndexList, Map<Integer, List<String>> entityIdsMap, boolean downloadFile)
 			throws IOException
-	{
-		ExportReport report;
+	{		
 		String appName = CommonServiceLocator.getInstance().getAppHome();
 		String path = appName + System.getProperty("file.separator");
-		String csvfileName = path + AQConstants.SEARCH_RESULT;
+		String csvfileName = path + AQConstants.SEARCH_RESULT; 
 		String zipFileName = path + session.getId() + AQConstants.ZIP_FILE_EXTENSION;
 		String fileName = path + session.getId() + AQConstants.CSV_FILE_EXTENSION;
+		
 		if (entityIdsMap != null && !entityIdsMap.isEmpty())
-		{
+		{	
 			report = new ExportReport(path, csvfileName, zipFileName);
 			report.writeDataToZip(exportList, AQConstants.DELIMETER, idIndexList);
 			SendFile.sendFileToClient(response, zipFileName, AQConstants.EXPORT_ZIP_NAME,
@@ -347,11 +375,51 @@ public class SpreadsheetExportAction extends SecureAction
 		}
 		else
 		{
-			report = new ExportReport(fileName);
+			if(report == null){
+				report = new ExportReport(fileName);
+			}
 			report.writeData(exportList, AQConstants.DELIMETER);
-			report.closeFile();
-			SendFile.sendFileToClient(response, fileName, AQConstants.SEARCH_RESULT,
-					"application/download");
+			if(downloadFile){
+				report.closeFile();
+				report = null;
+				SendFile.sendFileToClient(response, fileName, AQConstants.SEARCH_RESULT,
+						"application/download");
+			}	
 		}
+	}	
+	
+	private void modifySql(QuerySessionData querySessionData, QueryDetails queryDetails, HttpSession session){
+		Map<String,String> aliasMap = queryDetails.getColumnNameVsAliasMap();
+		List<OutputTreeDataNode> rootOutputTreeNodeList = (List<OutputTreeDataNode>) session
+				.getAttribute(AQConstants.SAVE_TREE_NODE_LIST);
+	    String columnAlias = null;
+		for (QueryOutputTreeAttributeMetadata attrMeta: rootOutputTreeNodeList.get(0).getAttributes())
+		{
+			if (attrMeta.getAttribute().getName().equals(AQConstants.IDENTIFIER) )
+			{
+				columnAlias = aliasMap.get(attrMeta.getColumnName());
+				break;
+			}
+		}
+		String sql = querySessionData.getSql();		
+		
+		if (columnAlias != null){
+			if(sql.indexOf(columnAlias) < 0){
+			    sql = "SELECT DISTINCT "+ columnAlias +", "+ sql.substring(15);
+			}
+			sql = sql+ " ORDER BY " + columnAlias;
+		}
+		querySessionData.setSql(sql);	
+	}
+	
+	private QuerySessionData createCloneQuerySessionData(QuerySessionData querySessionData){
+		QuerySessionData clone = new QuerySessionData();
+		clone.setSql(querySessionData.getSql());
+		clone.setTotalNumberOfRecords(querySessionData.getTotalNumberOfRecords());
+		clone.setRecordsPerPage(querySessionData.getRecordsPerPage());
+		clone.setSecureExecute(querySessionData.isSecureExecute());
+		clone.setHasConditionOnIdentifiedField(querySessionData.isHasConditionOnIdentifiedField());
+		clone.setQueryResultObjectDataMap(querySessionData.getQueryResultObjectDataMap());
+		return clone;
 	}
 }

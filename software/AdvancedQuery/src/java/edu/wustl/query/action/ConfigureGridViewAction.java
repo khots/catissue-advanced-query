@@ -68,7 +68,7 @@ public class ConfigureGridViewAction extends SecureAction
 		session.removeAttribute(AQConstants.ENTITY_IDS_MAP);
 		session.removeAttribute(AQConstants.QUERY_WITH_FILTERS);
 		
-		int recordsPerPage = Integer.parseInt((String) session.getAttribute(AQConstants.RESULTS_PER_PAGE));
+		int fetchRecordSize = Integer.parseInt((String) session.getAttribute(AQConstants.FETCH_RECORD_SIZE));
 		boolean hasConditionOnIdentifiedData = Utility.isConditionOnIdentifiedField(query);		
 		String sql = querySessionData.getSql();
 		
@@ -95,7 +95,7 @@ public class ConfigureGridViewAction extends SecureAction
 			definedColumnsList = (List<String>)session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
-					recordsPerPage, 0, spreadSheetDataMap, sql, queryResultObjecctDataMap,
+					fetchRecordSize, 0, spreadSheetDataMap, sql, queryResultObjecctDataMap,
 					hasConditionOnIdentifiedData, selectedColumnsMetadata);
 		}
 		else if (operation.equalsIgnoreCase(AQConstants.RESTORE))
@@ -118,7 +118,7 @@ public class ConfigureGridViewAction extends SecureAction
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 			String sqlForSelectedColumns = defineGridViewBizLogic.createSQLForSelectedColumn(selectedColumnNames.toString(), sql);
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
-					recordsPerPage, 0, spreadSheetDataMap, sqlForSelectedColumns,
+					fetchRecordSize, 0, spreadSheetDataMap, sqlForSelectedColumns,
 					queryResultObjecctDataMap, hasConditionOnIdentifiedData, selectedColumnsMetadata);
 			spreadSheetDataMap.put(AQConstants.DEFINE_VIEW_RESULT_MAP, queryResultObjecctDataMap);
 			spreadSheetDataMap.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP, queryResultObjecctDataMap);
