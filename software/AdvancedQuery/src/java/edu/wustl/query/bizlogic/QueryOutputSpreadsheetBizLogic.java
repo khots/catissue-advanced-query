@@ -372,12 +372,6 @@ public class QueryOutputSpreadsheetBizLogic
 	{
 		Map spreadSheetDataMap = new HashMap();
 		String sql = queryDetailsObj.getSaveGeneratedQuery();
-		int cnt = 0;
-		while (sql.contains("?")) {
-			String value = "'"+queryDetailsObj.getColumnValueBean().get(cnt++).getColumnName()+"'";
-			sql = sql.replaceFirst("\\?", value);//modifying sql for inserting variables in where clause
-		}
-
 		String parentIdColumnName = QueryModuleUtil.getParentIdColumnName(node);
 		String selectSql = createSQL(parentData, sql, spreadSheetDataMap, parentIdColumnName,
 				node, queryResultObjectDataBeanMap, queryDetailsObj, constraints,

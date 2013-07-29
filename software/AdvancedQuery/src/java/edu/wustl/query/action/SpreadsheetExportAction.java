@@ -3,6 +3,7 @@ package edu.wustl.query.action;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
@@ -50,12 +53,13 @@ public class SpreadsheetExportAction extends SecureAction
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		HttpSession session = request.getSession();
-	
+		
 		List<List<String>> exportList = new ArrayList<List<String>>();
 		if(session.getAttribute(AQConstants.SELECTED_COLUMN_META_DATA) != null)
 		{
 			exportList = getExportList(session);
 		}
+				
 		//Extracting map from form bean which gives the serial numbers of selected rows
 		List<String> idIndexList = new ArrayList<String>();
 		Map<Integer, List<String>> entityIdsMap = (Map<Integer, List<String>>) session
@@ -64,6 +68,7 @@ public class SpreadsheetExportAction extends SecureAction
 		generateSpreadsheetData(form, response, request, session, exportList, idIndexList,
 				entityIdsMap);
 		
+
 		return null;
 	}
 
@@ -208,12 +213,18 @@ public class SpreadsheetExportAction extends SecureAction
 				exportAndSend(request, response, session, subExportList, idIndexList, entityIdsMap, !(dataSize == recordsPerPage));
 			}
 		} else {
-			List<List<String>> dataList = new ArrayList<List<String>>();
-			dataList =	Utility.getPaginationDataList(request, getSessionData(request),
+			//List<List<String>> dataList = new ArrayList<List<String>>();
+			/*dataList =	Utility.getPaginationDataList(request, getSessionData(request),
 					recordsPerPage, pageNum, querySessionData, isDefinedView);
 			exportList = addDataToExportList(form, isChkAllAcrossAll,exportList, 
-					columnList, dataList, idIndexList, entityIdsMap);
-			exportAndSend(request, response, session, exportList, idIndexList, entityIdsMap, true);
+					columnList, dataList, idIndexList, entityIdsMap);*/
+			try{
+				exportList.add(columnList);
+				exportList.addAll(parseJson(request));
+				exportAndSend(request, response, session, exportList, idIndexList, entityIdsMap, true);
+			}catch(Exception e){
+				
+			}
 		}
 		
 	}
@@ -421,5 +432,23 @@ public class SpreadsheetExportAction extends SecureAction
 		clone.setHasConditionOnIdentifiedField(querySessionData.isHasConditionOnIdentifiedField());
 		clone.setQueryResultObjectDataMap(querySessionData.getQueryResultObjectDataMap());
 		return clone;
+	}
+	
+	private List<List<String>> parseJson(HttpServletRequest request) throws JSONException
+	{
+		List<List<String>> dataList = new ArrayList<List<String>>();
+		
+		String jsonDataStr = request.getParameter("jsonData");
+		JSONArray jsonArray = new JSONArray(jsonDataStr);
+		
+		for(int i = 0; i < jsonArray.length(); i++){ 
+			String row =  jsonArray.getString(i);
+			row = row.replace("[", "").replace("]", "");
+			String [] cols = row.split(",") ;
+			List<String> colList = new ArrayList<String>(Arrays.asList(cols));
+			dataList.add(colList);
+		}
+		
+		return dataList;
 	}
 }

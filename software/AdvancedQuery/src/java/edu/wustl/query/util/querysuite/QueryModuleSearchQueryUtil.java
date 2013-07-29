@@ -280,6 +280,14 @@ public class QueryModuleSearchQueryUtil
 			}
 			selectSql = newSql;	
 		}
+		
+		int cnt = 0;
+		while (selectSql.contains("?")) {
+			String value = "'"+queryDetailsObj.getColumnValueBean().get(cnt++).getColumnName()+"'";
+			selectSql = selectSql.replaceFirst("\\?", value);//modifying sql for inserting variables in where clause
+		}
+		queryDetailsObj.setSaveGeneratedQuery(selectSql);
+		session.setAttribute(AQConstants.SAVE_GENERATED_SQL, selectSql);
 		Map<String, String> columnNameVsAliasMap = Utility.splitQuery(selectSql);
 		session.setAttribute("columnNameVsAliasMap", columnNameVsAliasMap);
 		queryDetailsObj.setColumnNameVsAliasMap(columnNameVsAliasMap);
@@ -293,9 +301,12 @@ public class QueryModuleSearchQueryUtil
 		ISqlGenerator sqlGenerator = AbstractQueryGeneratorFactory.getDefaultQueryGenerator();
 		validateQuery(sqlGenerator);
 		List<OutputTreeDataNode> rootOutputTreeNodeList = sqlGenerator.getRootOutputTreeNodeList();
+		Map<AttributeInterface, String> attributeColumnNameMap = sqlGenerator.getAttributeColumnNameMap();
+		
 		session.setAttribute(AQConstants.SAVE_TREE_NODE_LIST, rootOutputTreeNodeList);		
 		queryDetailsObj.setRootOutputTreeNodeList(rootOutputTreeNodeList);
 		queryDetailsObj.setColumnValueBean(sqlGenerator.getColumnValueBean());
+		queryDetailsObj.setAttributeColumnNameMap(attributeColumnNameMap);
 		Map<String, OutputTreeDataNode> uniqueIdNodesMap = QueryObjectProcessor
 		.getAllChildrenNodes(rootOutputTreeNodeList);
 		queryDetailsObj.setUniqueIdNodesMap(uniqueIdNodesMap);
@@ -313,14 +324,6 @@ public class QueryModuleSearchQueryUtil
 			session.setAttribute(AQConstants.SAVED_QUERY, AQConstants.FALSE);
 			session.setAttribute(AQConstants.PROCESSED_SAVED_QUERY, AQConstants.FALSE);
 		}
-		int cnt = 0;
-		String selectSql = (String)session.getAttribute(AQConstants.SAVE_GENERATED_SQL);
-		while (selectSql.contains("?")) {
-			String value = "'"+queryDetailsObj.getColumnValueBean().get(cnt++).getColumnName()+"'";
-			selectSql = selectSql.replaceFirst("\\?", value);//modifying sql for inserting variables in where clause
-		}
-		queryDetailsObj.setSaveGeneratedQuery(selectSql);
-		session.setAttribute(AQConstants.SAVE_GENERATED_SQL, selectSql);
 		return newQuery;
 	}
 

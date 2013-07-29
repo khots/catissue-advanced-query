@@ -1,45 +1,36 @@
 
 function onAddToCart() {
-	var isChecked = updateHiddenFields();	
-	var isCheckAllAcrossAllChecked = !isChecked;
-
-    if(isChecked) { 
+	checkRowStatus(); 
+	 
+    if(checkedRowIds.length > 0) { 
     	var action = "ShoppingCart.do";
 		if(isQueryModule == "true") {
 			action = "AddDeleteCart.do";			
 		} 
-		
-		var url = action + "?operation=add&pageNum="+mygrid.currentPage+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
+		var gridDataJson = getJsonfromGridData();
+		var url = action + "?operation=add&pageNum="+mygrid.currentPage+"&isCheckAllAcrossAllChecked=false";
 	
-		var request = newXMLHTTPReq();
+		var request = newXMLHTTPReq(); 
 		request.onreadystatechange = getReadyStateHandler(request, displayStatus, true);
 		request.open("POST", url, true);
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-		request.send(getCheckedField());
-		
+		request.send(getCheckedField()+"&gridDataJson="+gridDataJson);
+		window.setTimeout(unCheckGridRows, 500);
 	} else {
 		alert("Please select at least one checkbox");
-	}
+	}   
 }
 
 function getCheckedField() {
-	var currentPage = mygrid.currentPage;
-	var startIndex = (currentPage-1) * 100;
-	var endIndex = startIndex + 100;
+	checkRowStatus();
 	var params = "";
-	for(i = startIndex; i < endIndex; i++) {
-		var cbvalue = document.getElementById("" + i);		
-		if(cbvalue != null && !cbvalue.disabled ) {		
-			var row = i % 100;
-			params += "value1(CHK_" + row + ")="+cbvalue.value+"&";
-		}		
+	for(var i=0; i<checkedRowIds.length; i++){
+		params += "value1(CHK_" + i + ")=1&";
 	}
-	
 	return params;
 }
 
 function displayStatus(response) {
-	console.log(response);
 	var test = new String(response);
 	if(test.indexOf("messagetextsuccess")>=0){
 		document.getElementById("errorStatus").style.color = "green";
@@ -83,16 +74,38 @@ function displayValidationMessage(message)
 }
 	
 function onExport() {
-	var isChecked = updateHiddenFields();	
-	var isCheckAllAcrossAllChecked = !isChecked;
-    
-	var action = "SpreadsheetExport.do?pageNum="+mygrid.currentPage+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked ;
+	//var isChecked = updateHiddenFields();	
+	checkRowStatus();
+	var jsonData;
+	var isCheckAllAcrossAllChecked = false
+	if(checkedRowIds.length == 0){
+		isCheckAllAcrossAllChecked = true;
+	}else{
+		jsonData = getJsonfromGridData();
+	}	
+	//console.log(jsonData);
+	document.getElementById('jsonData').value = jsonData;
+	var action = "SpreadsheetExport.do?pageNum="+mygrid.currentPage+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
 	document.forms[0].operation.value="export";
 	document.forms[0].action = action;
 	document.forms[0].target = "_self";
 	document.forms[0].submit();		
 	window.setTimeout(removeLoading, 500);	
-	window.setTimeout(disableInputs, 500);
+	if(checkedRowIds.length > 0){
+		window.setTimeout(unCheckGridRows, 500);
+	}
+}
+
+function getJsonfromGridData(){
+	var jsonData;
+	checkedRowIds.sort(function(a,b){return a-b;});
+	jsonData = "[";
+	for(var i = 0; i < checkedRowIds.length; i++){
+		var data = mygridData.rows[checkedRowIds[i]].data.join();
+		jsonData += "\"[" + data.substring(1) + "]\",";
+	}
+	jsonData += "]"
+	return jsonData;	
 }
 
 function removeLoading() {
@@ -100,21 +113,19 @@ function removeLoading() {
 	superiframe.className = "HiddenFrame";
 }
 
-function disableInputs(){
- 
-	var currentPage = mygrid.currentPage;
-	var startIndex = (currentPage-1) * 100;
-	var endIndex = startIndex + 100; 
-	
-	for(var i=startIndex; i < endIndex; i++) {
-		var cbvalue = document.getElementById("" + i);
-		if (cbvalue != null){ 
-			cbvalue.value = "0";
-			cbvalue.disabled = true;
-		} else {
-			break;
-		}	
-	}	 		
+function unCheckGridRows(){	
+	if(!confirm("Do you want uncheck all rows?"))
+	{
+		 return;
+	}
+	for(var i=0; i<checkedRowIds.length; i++){
+		var cell = mygrid.cells(checkedRowIds[i], 0).cell.childNodes[0];			
+		(new eXcell_ch(cell.parentNode)).changeState(); 
+	}
+	var checkBoxCell = getCheckBox();
+	checkBoxCell.childNodes[0].checked = false;
+	checkedAllPages = new Array();
+	checkedRowIds = new Array();
 }
 
 //function that is called on click of Define View button for the configuration of search results

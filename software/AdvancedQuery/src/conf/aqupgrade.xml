@@ -78,6 +78,7 @@
 		
 		<antcall target="patch_aq3.0_to_commonpackage" />
 		<antcall target="patch_aq3.0_to_washu-commons" />
+		<antcall target="patch_adddeletecartaction_in_war" />
  
 		<propertyfile
 		    file="${deploy.temp.dir}/${war.dir}/WEB-INF/classes/ApplicationResources.properties"
@@ -154,5 +155,15 @@
 				</web-app>]]>
 				</replacevalue> 
 		</replace>
+	</target>
+	
+	<target name="patch_adddeletecartaction_in_war">
+		<delete file="${deploy.temp.dir}/catissuecore/WEB-INF/classes/edu/wustl/catissuecore/action/AddDeleteCartAction.class" />
+		<copy todir="${deploy.temp.dir}/catissuecore/WEB-INF/classes/edu/wustl/catissuecore/action" 
+			overwrite="true">
+			<fileset dir="${base.dir}/patch/3.0/classes/catissuecore">
+				<include name="AddDeleteCartAction.class"/>
+			</fileset>
+		</copy>
 	</target>
 </project>

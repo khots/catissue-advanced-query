@@ -5,13 +5,14 @@ function updateHiddenFields() {
 	var currentPage = mygrid.currentPage;
 	var startIndex = (currentPage-1) * 100;
 	var endIndex = startIndex + 100; 
+	endIndex =  mygrid.getRowsNum() > endIndex ? endIndex: mygrid.getRowsNum();
 //	var checkedRows = mygrid.getCheckedRows(0);
-	
+	 
 	for(var i=startIndex; i < endIndex; i++){
 		if(mygrid.cells(i, 0).isChecked()) {
 			isChecked = true;
 			break;
-		} 
+		}  
 	}
 	
 	if(isChecked == true) {
@@ -52,6 +53,7 @@ var totalCount = 0;
 var colTypes = gridDataJson.columnType
 var colDataTypes =  new Array(colTypes.length).join(",ro");
 colDataTypes = "ch" + colDataTypes;
+var mygridData = gridDataJson.gridData;
 
 var filters = "#master_checkbox";
 for(i = 1; i < colTypes.length; i++){
@@ -60,7 +62,12 @@ for(i = 1; i < colTypes.length; i++){
 		&& colTypes[i] != "DateAttributeTypeInformation" &&  i < filterCounts) {
 		filters += "#text_filter"
 	} 	
-	colTypes[i] = "str";// for sorting enable
+	// for sorting enable
+	if(colTypes[i] == "NumericAttributeTypeInformation"){
+		colTypes[i] = "int";
+	}else {
+		colTypes[i] = "str";
+	}
 }
 
 function initQueryGrid() {		
@@ -98,6 +105,9 @@ function initQueryGrid() {
 	gridBOxTag.style.width = (gridBOxTag.offsetWidth - 6 ) + "px"
 }
 
+var checkedAllPages = new Array();
+var checkedRowIds = new Array();
+
 function checkFromCurrentPage(){
 	var checkBoxCell = getCheckBox();
 	var checkbox_status = checkBoxCell.childNodes[0].checked ;
@@ -106,11 +116,16 @@ function checkFromCurrentPage(){
 	var endIndex = startIndex + 100; 
 	endIndex =  mygrid.getRowsNum() > endIndex ? endIndex: mygrid.getRowsNum();
 	
+	if(checkbox_status){
+		checkedAllPages[checkedAllPages.length] = currentPage;
+	}else {
+		checkedAllPages.splice(checkedAllPages.indexOf(currentPage), 1);
+	}
+	console.log(checkedAllPages);
 	for(var i=startIndex; i < endIndex; i++){
 		var checked = mygrid.cells(i, 0).isChecked();	
 		if(mygrid.cells(i, 0).isChecked() != checkbox_status){
-			var cell = mygrid.cells(i, 0).cell.childNodes[0];
-			console.log(cell);
+			var cell = mygrid.cells(i, 0).cell.childNodes[0];			
 			(new eXcell_ch(cell.parentNode)).changeState(); 
 		}
 	}
@@ -134,10 +149,43 @@ mygrid.attachEvent("onFilterStart", function(ind){
 	
 mygrid.attachEvent("onBeforePageChanged", function(ind, count){
 	var checkBoxCell = getCheckBox();
+	var currentPage = mygrid.currentPage;
 	checkBoxCell.childNodes[0].checked = false;
-	checkFromCurrentPage();
+	checkRowStatus();	
 	return true;
 }); 
+
+mygrid.attachEvent("onPageChanged", function(ind, count){
+	var checkBoxCell = getCheckBox();
+	//checkBoxCell.childNodes[0].checked = false;
+	if(checkedAllPages.indexOf(mygrid.currentPage) >= 0){
+		checkBoxCell.childNodes[0].checked = true;
+	}
+	
+	return true;
+}); 
+
+function checkRowStatus(){
+	var currentPage = mygrid.currentPage;
+	var startIndex = (currentPage-1) * 100;
+	var endIndex = startIndex + 100; 	
+	endIndex =  mygrid.getRowsNum() > endIndex ? endIndex: mygrid.getRowsNum();
+	
+	for(var i=startIndex; i < endIndex; i++){
+		var checked = mygrid.cells(i, 0).isChecked();	
+		if(checked){
+			if(checkedRowIds.indexOf(i) < 0){
+				checkedRowIds[checkedRowIds.length] = i;
+			}
+		}else {
+			if(checkedRowIds.indexOf(i) >= 0){
+				checkedRowIds.splice(checkedRowIds.indexOf(i), 1);
+			}
+		}
+	}	
+	
+	console.log(checkedRowIds);
+}
 
 function getGridData() {	
 	var param = "Data=" + getJsonForFilter() + "&pageNum="+1+"&recordPerPage="+10000;
@@ -147,8 +195,8 @@ function getGridData() {
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 				var json = eval('(' + xmlhttp.responseText + ')');
 				setColumn(json.columns);
-				var jsonData = json.gridData;
-				mygrid.parse(jsonData, "json");
+				mygridData = json.gridData;
+				mygrid.parse(mygridData, "json");
 				rowCount = json.gridData.rows.length;
 				createHiddenElement();
 				checkBoxCell = getCheckBox();
