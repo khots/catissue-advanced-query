@@ -114,10 +114,6 @@ function removeLoading() {
 }
 
 function unCheckGridRows(){	
-	if(!confirm("Do you want uncheck all rows?"))
-	{
-		 return;
-	}
 	for(var i=0; i<checkedRowIds.length; i++){
 		var cell = mygrid.cells(checkedRowIds[i], 0).cell.childNodes[0];			
 		(new eXcell_ch(cell.parentNode)).changeState(); 
