@@ -208,7 +208,10 @@
 			size="20" onclick="this.value='';"  maxlength="50"  /> <br />
 	</p>
 	<p>
-		<input type="button" value="ASSIGN" onclick="assignToSpecimenList()" class="btn3">
+		<input id="assignListbtn" type="button" value="ASSIGN" onclick="assignToSpecimenList()" class="btn3"/>
+		<img id="loadingImg" style="float:left; padding-left:5px; display:none;"
+			height='25px' width='120px' src='images/advQuery/loading_circle.gif'
+			border='0'/>
 		<input type="checkbox" name="objCheckbox"  id="objCheckbox" style="display:none" value="team" checked/>
 	</p>
 </div>

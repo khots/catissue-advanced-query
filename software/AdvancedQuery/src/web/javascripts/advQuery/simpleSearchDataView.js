@@ -1,5 +1,5 @@
 
-function onAddToCart() {
+function onAddToCart() { 
 	checkRowStatus(); 
 	 
     if(checkedRowIds.length > 0) { 
@@ -179,11 +179,11 @@ function callAction(action)
 	
 function getSpecimenIdList()
 {
-	var rows = mygrid.getCheckedRows(0).split(",");	
+	checkRowStatus();
 	var specIds = "";
-	if(rows != "") {
-		for(var i = 0; i < rows.length; i++)	{
-			specIds = specIds + mygrid.cellById(rows[i],  specimentIdColIndex).getValue()+ ",";
+	if(checkedRowIds.length > 0) {
+		for(var i = 0; i < checkedRowIds.length; i++)	{
+			specIds = specIds + mygrid.cellById(checkedRowIds[i],  specimentIdColIndex).getValue()+ ",";
 		}
 	}
 	return specIds;
@@ -195,6 +195,8 @@ function addToSpecimenList() {
 	if(specimentIdColIndex == -1) {
 		alert('Specimen:Id missing in the grid! Please redefine the view and include Specimen:Id to use the Specimen List feature');
 	} else {
+		document.getElementById("assignListbtn").style.display="block";
+		document.getElementById("loadingImg").style.display="none";
 		ajaxTreeGridInitCall('Are you sure you want to delete this specimen from the list?',
 									'List contains specimens, Are you sure to delete the selected list?',
 									'SpecimenListTag','SpecimenListTagItem');
@@ -205,35 +207,49 @@ function addToSpecimenList() {
 function onResponseSet(response) 
 {	
 	var specimenIds = response;
-	giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem',
+	assignSpecimens('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem',
 			'Select at least one existing list or create a new list.',
 			'No list has been selected to assign.', specimenIds);
 }
 
 function assignToSpecimenList()
 {
+	document.getElementById("assignListbtn").style.display="none";
+	document.getElementById("loadingImg").style.display="block";
 	var specimenIds = getSpecimenIdList();
-
 	if(specimenIds == "")
 	{		
-		var specId =  specimentIdColIndex;
+		var specIds = getSpecIds(specimentIdColIndex);
+		/*var specId =  specimentIdColIndex;
 		var parameter = "specIndex="+specId+"&operation=add&pageNum="+pageNum+"&isCheckAllAcrossAllChecked=true";
-		var url = "CatissueCommonAjaxAction.do?type=getSpecimenIds&"+parameter;
+		var url = "CatissueCommonAjaxAction.do?type=setSpecimenIds&"+parameter;
 
 		request = newXMLHTTPReq();
 		request.onreadystatechange = getReadyStateHandler(request,onResponseSet,true);	;	
 		request.open("POST", url, true);	
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");	
-		request.send("");
+		request.send("specIds="+specIds);*/
+		assignSpecimens('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem',
+				'Select at least one existing list or create a new list.',
+				'No list has been selected to assign.', specIds);
 	} else {		
-		giveCall('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&isCheckAllAcrossAllChecked=false',
+		assignSpecimens('AssignTagAction.do?entityTag=SpecimenListTag&entityTagItem=SpecimenListTagItem&isCheckAllAcrossAllChecked=false',
 					'Select at least one existing list or create a new list.','No list has been selected to assign.', specimenIds);
+		unCheckGridRows();
 	}
-	
+	 
 }
 
-function giveCall(url, msg, msg1, id)
-{		
+function getSpecIds(specimentIdColIndex){
+	var specIds	= "";
+	for(var i = 0; i < mygridData.rows.length; i++){
+		var data = mygridData.rows[i].data[specimentIdColIndex];
+		specIds = specIds + data.replace(/\s/g, ",")
+	}
+	return specIds;	
+}
+function assignSpecimens(url, msg, msg1, id)
+{	
 	document.getElementById('objCheckbox').checked = true;
 	document.getElementById('objCheckbox').value = id;
 	ajaxAssignTagFunctionCall(url, msg, msg1);
