@@ -151,7 +151,8 @@
 							<td width="10%">
 								<button type="button" class="nav_button" id="exportImgId" onclick="onExport()">
 									<img src="images/advQuery/excel.gif" style="margin-right: 5px"/>
-									Export CSV</button></td>								
+									Export CSV</button></td>
+									<input id="jsonData" type="hidden" name="jsonData" >									
 							<td>&nbsp;</td>
 							<td width="10%">
 								<input type="button" value="Define View" id="defineViewId"
