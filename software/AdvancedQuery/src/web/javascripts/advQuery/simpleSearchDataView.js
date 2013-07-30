@@ -213,9 +213,7 @@ function onResponseSet(response)
 }
 
 function assignToSpecimenList()
-{
-	document.getElementById("assignListbtn").style.display="none";
-	document.getElementById("loadingImg").style.display="block";
+{	document.getElementById("loadingImg").style.display="block";
 	var specimenIds = getSpecimenIdList();
 	if(specimenIds == "")
 	{		
