@@ -1,5 +1,4 @@
-
-function onAddToCart() { 
+function onAddToCart() { 
 	checkRowStatus(); 
 	 
     if(checkedRowIds.length > 0) { 
@@ -55,7 +54,7 @@ function getData()
 }
 
 function displayValidationMessage(message)
-{
+{	document.getElementById("messageDiv").style.display = "none";
 	//var message contains space " " if the message is not to be shown.
 	if (message != null && message == " ") 		// do not show popup
 	{

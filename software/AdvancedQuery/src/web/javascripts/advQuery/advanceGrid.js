@@ -3,15 +3,15 @@
 function updateHiddenFields() {		
 	var isChecked = false;
 	var currentPage = mygrid.currentPage;
-	var startIndex = (currentPage-1) * 100;
-	var endIndex = startIndex + 100; 
+	var startIndex = (currentPage-1) * recordPerPage;
+	var endIndex = startIndex + recordPerPage; 
 	endIndex =  mygrid.getRowsNum() > endIndex ? endIndex: mygrid.getRowsNum();
 //	var checkedRows = mygrid.getCheckedRows(0);
 	 
 	for(var i=startIndex; i < endIndex; i++){
 		if(mygrid.cells(i, 0).isChecked()) {
 			isChecked = true;
-			break;
+			break; 
 		}  
 	}
 	
@@ -87,7 +87,7 @@ function initQueryGrid() {
 /*	mygrid.enablePaging(true, recordPerPage, null, "pagingArea", false);
 	mygrid.setPagingSkin("toolbar", "dhx_skyblue")		*/
 	mygrid.setEditable(!checkAllPages);
-	mygrid.enablePaging(true,100,15,"pagingArea",true);
+	mygrid.enablePaging(true,recordPerPage,15,"pagingArea",true);
 	mygrid.setPagingSkin("bricks");
 	mygrid.splitAt(1);
 	var jsonData = gridDataJson.gridData;
@@ -103,6 +103,11 @@ function initQueryGrid() {
 	checkbox.onclick = null;
 	checkbox.onclick = checkFromCurrentPage;
 	gridBOxTag.style.width = (gridBOxTag.offsetWidth - 6 ) + "px"
+	if(mygrid.getRowsNum() == fetchRecordSize){
+		document.getElementById("messageDiv").style.display = "block";
+		document.getElementById("messageDiv").textContent = "Showing the top "+fetchRecordSize+" rows. Click on Export button to view all the rows.";
+		document.getElementById("messageDiv").innerText ="Showing the top "+fetchRecordSize+" rows. Click on Export button to view all the rows.";
+	}
 }
 
 var checkedAllPages = new Array();
@@ -112,8 +117,8 @@ function checkFromCurrentPage(){
 	var checkBoxCell = getCheckBox();
 	var checkbox_status = checkBoxCell.childNodes[0].checked ;
 	var currentPage = mygrid.currentPage;
-	var startIndex = (currentPage-1) * 100;
-	var endIndex = startIndex + 100; 
+	var startIndex = (currentPage-1) * recordPerPage;
+	var endIndex = startIndex + recordPerPage; 
 	endIndex =  mygrid.getRowsNum() > endIndex ? endIndex: mygrid.getRowsNum();
 	
 	if(checkbox_status){
@@ -152,6 +157,7 @@ mygrid.attachEvent("onBeforePageChanged", function(ind, count){
 	var currentPage = mygrid.currentPage;
 	checkBoxCell.childNodes[0].checked = false;
 	checkRowStatus();	
+	document.getElementById("messageDiv").style.display = "none";
 	return true;
 }); 
 
@@ -167,8 +173,8 @@ mygrid.attachEvent("onPageChanged", function(ind, count){
 
 function checkRowStatus(){
 	var currentPage = mygrid.currentPage;
-	var startIndex = (currentPage-1) * 100;
-	var endIndex = startIndex + 100; 	
+	var startIndex = (currentPage-1) * recordPerPage;
+	var endIndex = startIndex + recordPerPage; 	
 	endIndex =  mygrid.getRowsNum() > endIndex ? endIndex: mygrid.getRowsNum();
 	
 	for(var i=startIndex; i < endIndex; i++){

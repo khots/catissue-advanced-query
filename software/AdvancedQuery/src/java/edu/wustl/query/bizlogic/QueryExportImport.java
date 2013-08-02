@@ -22,8 +22,10 @@ public class QueryExportImport {
 		boolean isTitlePresent = queryDAO.isQueryNamePresent(sdb, query.getName());
 		
 		if(!isTitlePresent){
+			SharedQueryBean bean = new SharedQueryBean();
+			bean.setShareTo("all");
 			SaveQueryBizLogic saveQueryBizLogic = new SaveQueryBizLogic();
-			saveQueryBizLogic.saveQuery(query, sdb, new SharedQueryBean());
+			saveQueryBizLogic.saveQuery(query, sdb, bean);
 			return true;
 		}
 		return false;

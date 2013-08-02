@@ -47,13 +47,23 @@
 	div.dhx_toolbar_poly_dhx_skyblue div.btn_item span {
 		margin-left: 5px;
 	}
+	.alertbox{
+	    color: green;
+    	font-family: Verdana;
+    	font-size: 11px;
+    	margin: 0;
+    	vertical-align: middle;
+    	margin-bottom: 5px;
+    	margin-left: 5px;
+	}
 </style>
 
 <table width="99.9%" border="0">
 	<tr>
 		<td>
+			<div id='messageDiv' class="alertbox" width="95%" height="10px" style="display:none;" ></div> 
 			<div id='gridbox' border='0' style='background-color:#d9d7d7;'></div>
-			<div id="pagingArea" style="border: 1px solid #A4BED4;"></div>
+			<div id="pagingArea" width="99%" style="border: 1px solid #A4BED4;"></div>
 			<div id="hiddenBox"></div>
 		</td>
 	</tr>	
@@ -65,8 +75,9 @@
 	<%
 		int tempColumnSize = (Integer)session.getAttribute("temporalColumnSize");
 		int filterCounts = columnList.size() - tempColumnSize;	
+		int fetchRecordSize = Integer.parseInt((String) session.getAttribute(AQConstants.FETCH_RECORD_SIZE));
 	%>
-	
+	var fetchRecordSize = "<%=fetchRecordSize%>";
 	var colWidth = "<%=(String) request.getAttribute("colWidth")%>";
 	var filterCounts = <%= filterCounts %>;
 		
