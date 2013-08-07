@@ -16,12 +16,12 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 	
 	
-	<script language="JavaScript" type="text/javascript" src="dhtmlx_suite/js/dhtmlxtree.js"></script>
+	<script type="text/javascript" src="dhtmlx_suite/js/dhtmlxcommon.js"></script>
+	<script type="text/javascript" src="dhtmlx_suite/js/dhtmlxtree.js"></script>
 	<link rel="stylesheet" type="text/css" href="dhtmlx_suite/css/dhtmlxtree.css" />
 	<link rel="stylesheet" type="text/css" 	href="css/advQuery/catissue_suite.css" />
 	<link rel="stylesheet" type="text/css" href="css/advQuery/styleSheet.css" />
 	
-	<script src="dhtmlx_suite/js/dhtmlxcommon.js"></script>
 	<script src="jss/advQuery/script.js"></script>
 </head>
 <body onload="initTreeView()">

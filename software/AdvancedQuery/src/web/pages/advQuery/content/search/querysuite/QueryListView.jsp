@@ -120,8 +120,8 @@ window.onload = function() {
 					align="absmiddle" /> <span class="savedQueryHeading"> <bean:message
 							key="query.savedQueries.label" /> </span></td>
 
-				<td width="1" valign="middle" class="bgImage" align="left"><img
-					src="images/advQuery/dot.gif" width="1" height="25" /></td>
+				<td width="1" valign="middle" class="bgImage" align="left"><!-- <img
+					src="images/advQuery/dot.gif" width="1" height="25" /> --></td>
 			</tr>
 			<tr>
 				<td style="padding-left:10px;" class="savedQueryHeading">

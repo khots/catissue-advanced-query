@@ -126,7 +126,7 @@ function checkFromCurrentPage(){
 	}else {
 		checkedAllPages.splice(checkedAllPages.indexOf(currentPage), 1);
 	}
-	console.log(checkedAllPages);
+
 	for(var i=startIndex; i < endIndex; i++){
 		var checked = mygrid.cells(i, 0).isChecked();	
 		if(mygrid.cells(i, 0).isChecked() != checkbox_status){
@@ -189,8 +189,6 @@ function checkRowStatus(){
 			}
 		}
 	}	
-	
-	console.log(checkedRowIds);
 }
 
 function getGridData() {	

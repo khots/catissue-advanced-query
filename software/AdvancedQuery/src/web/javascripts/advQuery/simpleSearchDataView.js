@@ -82,7 +82,7 @@ function onExport() {
 	}else{
 		jsonData = getJsonfromGridData();
 	}	
-	//console.log(jsonData);
+ 
 	document.getElementById('jsonData').value = jsonData;
 	var action = "SpreadsheetExport.do?pageNum="+mygrid.currentPage+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
 	document.forms[0].operation.value="export";

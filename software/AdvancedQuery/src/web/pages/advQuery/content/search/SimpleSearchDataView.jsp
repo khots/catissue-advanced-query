@@ -49,8 +49,7 @@
 	var specimentIdColIndex = <%=specimentIdColIndex%>
 </script>
 <script type="text/javascript" src="jss/advQuery/simpleSearchDataView.js"></script>
-<script type="text/javascript" src="jss/advQuery/javaScript.js"></script>
-
+ 
 </head>
 <body>
 

@@ -83,7 +83,8 @@ public class Utility //extends edu.wustl.common.util.Utility
 		object = edu.wustl.common.util.Utility.toGridFormat(object);
 		if (object instanceof String)
 		{
-			object = object.toString().replaceAll(",", " ");		
+			object = object.toString().replaceAll(",", " ");
+			object = object.toString().replaceAll("&", "and");
 		}
 
 		return object;

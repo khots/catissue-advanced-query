@@ -9,18 +9,12 @@
 <%-- <%@ page import="edu.wustl.catissuecore.util.HelpXMLPropertyHandler"%> --%>
 <%@ page import="java.text.MessageFormat"%>
 
-<link rel="STYLESHEET" type="text/css" href="css/advQuery/dhtmlxtabbar.css" />
-<link rel="stylesheet" type="text/css" href="css/advQuery/styleSheet.css" />
-<link rel="stylesheet" type="text/css" href="css/advQuery/CascadeMenu.css" />
+<link rel="stylesheet" type="text/css" href="css/advQuery/styleSheet.css" /> 
 <link rel="stylesheet" type="text/css" href="css/advQuery/catissue_suite.css" />
 <link href="css/advQuery/loadingframe.css" rel="stylesheet" type="text/css" />
 
 <script src="jss/advQuery/script.js" type="text/javascript"></script>
-<script src="jss/advQuery/overlib_mini.js" type="text/javascript"></script>
-<script src="jss/advQuery/calender.js" type="text/javascript"></script>
-<script src="jss/advQuery/splitter.js" type="text/javascript"></script>
 <script src="jss/advQuery/ajax.js" type="text/javascript"></script>
-<script src="jss/advQuery/caTissueSuite.js" type="text/javascript"></script>
 
 <html>
 <tiles:importAttribute />

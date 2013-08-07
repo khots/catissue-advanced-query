@@ -383,6 +383,8 @@ public class QueryOutputSpreadsheetBizLogic
 		spreadSheetDataMap.put(AQConstants.QUERY_SESSION_DATA, querySessionData);
 		spreadSheetDataMap
 				.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP, queryResultObjectDataBeanMap);
+		spreadSheetDataMap
+				.put(AQConstants.DEFINE_VIEW_RESULT_MAP, queryResultObjectDataBeanMap);
 
 		return spreadSheetDataMap;
 	}
