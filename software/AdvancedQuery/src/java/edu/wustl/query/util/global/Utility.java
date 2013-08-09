@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -234,16 +235,19 @@ public class Utility //extends edu.wustl.common.util.Utility
 	/**
 	 * Replaces the escape characters with the original special characters (i.e. single/double quotes)
 	 * @param dataList dataList
+	 * @param columnSize 
 	 * @return newList
 	 */
-	public static List<List<String>> getFormattedOutput(List<List<String>> dataList)
+	public static List<List<String>> getFormattedOutput(List<List<String>> dataList, int columnSize)
 	{
 		List<List<String>> newList = new ArrayList<List<String>>();
-		List<String> rowList;
+		List<String> rowList;	
 		for(int i=0;i<dataList.size();i++)
 		{
 			rowList = new ArrayList<String>();
 			List<String> row = dataList.get(i);
+			removeUnwantedIdColumns(row, columnSize);
+		
 			for(int j=0;j<row.size();j++)
 			{
 				populateInternalRow(rowList, row, j);
@@ -433,7 +437,8 @@ public class Utility //extends edu.wustl.common.util.Utility
 			Map gridData = new HashMap();
 			gridData.put("total_count", totalResult);
 			gridData.put("pos", pos);
-			gridData.put("rows", getGridData(dataList, pos));			
+			
+			gridData.put("rows", getGridData(dataList, pos, columnList.size()));			
 			
 			JSONObject json = new JSONObject();
 			json.put("columns", columnLabels);
@@ -562,14 +567,16 @@ public class Utility //extends edu.wustl.common.util.Utility
 	/**
 	 *
 	 * @param dataList DataList
+	 * @param columnSize 
 	 * @return myData myData
 	 */
-	private static JSONArray getGridData(List dataList, Integer pos)
+	private static JSONArray getGridData(List dataList, Integer pos, int columnSize)
 	{		
 		JSONArray rows = new JSONArray();
-		
+
 		for (int i = 0; i < dataList.size(); i++){ 
 			List row = (List)dataList.get(i);
+			removeUnwantedIdColumns(row, columnSize);
 			
 			JSONArray data = new JSONArray();			
 			data.put("");
@@ -587,6 +594,11 @@ public class Utility //extends edu.wustl.common.util.Utility
 	}
 	
 	
+	private static List removeUnwantedIdColumns(List row, int columnSize) {
+		int idCount = row.size()-columnSize;
+		row.subList(0, idCount).clear();
+		return row;
+	}
 	@SuppressWarnings("unchecked")
 	private static List getColumnTypes(HttpSession session, List columnList) {
 		List<OutputTreeDataNode> rootOutputTreeNodeList = (List<OutputTreeDataNode>) session
@@ -1074,5 +1086,21 @@ public class Utility //extends edu.wustl.common.util.Utility
 			}
 		}
 		return columnsVsAlias;
+    }
+    
+    public static String generateHiddenIds(Set<String>tableAliasNames,String columnsInSql)
+    {
+    	StringBuffer hiddenIdColumns = new StringBuffer();
+    	if(tableAliasNames != null || ! tableAliasNames.isEmpty()){
+    		int index = 0;
+    		for (String tableAliasName : tableAliasNames){
+    			String value = tableAliasName+".IDENTIFIER";
+    			if(columnsInSql.indexOf(value) < 0){
+    				hiddenIdColumns.append(value+" "+"Id"+index+", ");
+    				index++;
+    			}
+    		}
+    	}
+    	return hiddenIdColumns.toString();
     }
 }

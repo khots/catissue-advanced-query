@@ -4,6 +4,7 @@ package edu.wustl.query.bizlogic;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,7 @@ import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.util.global.AQConstants;
+import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryCSMUtil;
 import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.QueryModuleError;
@@ -820,6 +822,7 @@ public class QueryOutputSpreadsheetBizLogic
 		int addedFileTypeAttributes = 0;
 		List<EntityInterface> defineViewNodeList = new ArrayList<EntityInterface>();
 		List<NameValueBean> selectedColumnNameValue = new ArrayList<NameValueBean>();
+		Set<String> tableAliasNames = new HashSet<String>();
 		List<IOutputAttribute> selAttrList = selectedColumnMetaData.getSelectedOutputAttributeList();
 		for (IOutputAttribute outputAttribute : selAttrList)
 		{
@@ -867,7 +870,9 @@ public class QueryOutputSpreadsheetBizLogic
 					else
 					{
 						//String sqlColumnName = metaData.getColumnName();
-						String sqlColumnName = columnNameVsAliasMap.get(metaData.getColumnName())+" "+ metaData.getColumnName();
+						String actualColumnName = columnNameVsAliasMap.get(metaData.getColumnName());
+						tableAliasNames.add(actualColumnName.split("\\.")[0]); 
+						String sqlColumnName = actualColumnName+" "+ metaData.getColumnName();
 						sqlColumnNames.append(sqlColumnName);
 						sqlColumnNames.append(", ");
 						String columnDisplayName = metaData.getDisplayName();
@@ -903,8 +908,9 @@ public class QueryOutputSpreadsheetBizLogic
 			}
 			if (!"".equals(selectSql))
 			{
+				String hiddenIdColumns = Utility.generateHiddenIds(tableAliasNames, columnsInSql);
 				//columnsInSql = columnsInSql + selectSql;
-				columnsInSql = "SELECT DISTINCT "+ columnsInSql + " " + selectSql.substring(selectSql.indexOf("from"));
+				columnsInSql = "SELECT DISTINCT "+ hiddenIdColumns +columnsInSql + " " + selectSql.substring(selectSql.indexOf("from"));
 			}
 			Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
 			columnsInSql = QueryCSMUtil.updateEntityIdIndexMap(null, columnIndex, columnsInSql,

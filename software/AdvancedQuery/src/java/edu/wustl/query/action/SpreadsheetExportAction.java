@@ -206,7 +206,7 @@ public class SpreadsheetExportAction extends SecureAction
 				dataSize = dataList.size();				
 				pageNumber ++;		
 
-				dataList = Utility.getFormattedOutput(dataList);
+				dataList = Utility.getFormattedOutput(dataList, columnList.size());
 				subExportList = addDataToExportList(form, isChkAllAcrossAll,subExportList, 
 						columnList, dataList, idIndexList, entityIdsMap);
 				

@@ -335,7 +335,7 @@ public class DefineGridViewBizLogic
 		List<NameValueBean> selectedColumnNameValue = new ArrayList<NameValueBean>();
 		Map<String, String> columnNameVsAliasMap= queryDetailsObj.getColumnNameVsAliasMap();
 		QueryResultObjectDataBean queryResulObjectDataBean = null;
-
+		Set<String> tableAliasNames = new HashSet<String>();
 		List<EntityInterface> defineViewNodeList = new ArrayList<EntityInterface>();
 		int columnIndex = 0;
 		int totalFileTypeAttributes = 0;
@@ -373,7 +373,7 @@ public class DefineGridViewBizLogic
 					queryResulObjectDataBean.setEntityId(columnIndex);
 				//}
 			}
-			if (AQConstants.FILE.equalsIgnoreCase(element.getAttribute().getDataType()))
+			if (AQConstants.FILE.equalsIgnoreCase(element.getAttribute().getDataType())) 
 			{
 				queryResulObjectDataBean.setClobeType(true);
 				Map beanMetadataMap = queryResulObjectDataBean
@@ -386,7 +386,9 @@ public class DefineGridViewBizLogic
 			else
 			{
 				queryResulObjectDataBean.getObjectColumnIds().add(columnIndex);
-				selectedColumnNames.append(columnNameVsAliasMap.get(element.getColumnName())+" "+ element.getColumnName());
+				String actualColumnName = columnNameVsAliasMap.get(element.getColumnName());
+				tableAliasNames.add(actualColumnName.split("\\.")[0]); 
+				selectedColumnNames.append(actualColumnName+" "+ element.getColumnName());
 				selectedColumnNames.append(AQConstants.DELIMETER);
 				definedColumnsList.add(element.getDisplayName());
 				columnIndex++;
@@ -401,7 +403,11 @@ public class DefineGridViewBizLogic
 		{
 			sql = selectedColumnNames.substring(0, selectedColumnNames
 					.lastIndexOf(AQConstants.DELIMETER));
-		}
+		} 
+		
+		String hiddenIdColumns = edu.wustl.query.util.global.Utility.generateHiddenIds(tableAliasNames, selectedColumnNames.toString());
+		sql = hiddenIdColumns + sql;
+		
 		if (!outputTermsColumns.isEmpty())
 		{
 			QueryOutputSpreadsheetBizLogic gridBizLogic = new QueryOutputSpreadsheetBizLogic();
