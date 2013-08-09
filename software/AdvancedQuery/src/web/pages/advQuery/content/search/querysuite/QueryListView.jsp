@@ -1,5 +1,4 @@
-<%@page import="edu.wustl.query.bizlogic.DashboardBizLogic"%><META
-	HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+<%@page import="edu.wustl.query.bizlogic.DashboardBizLogic"%> 
 <%-- TagLibs --%>  
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
@@ -97,6 +96,7 @@ window.onload = function() {
 		String popupText = (String) request
 				.getAttribute(AQConstants.POPUP_TEXT);
 		String queryOption = (String) request.getAttribute("queryOption");
+		List selectedCoordinators= (List)request.getAttribute("selectedCoordinators");
 	%>
 
  
@@ -120,8 +120,7 @@ window.onload = function() {
 					align="absmiddle" /> <span class="savedQueryHeading"> <bean:message
 							key="query.savedQueries.label" /> </span></td>
 
-				<td width="1" valign="middle" class="bgImage" align="left"><!-- <img
-					src="images/advQuery/dot.gif" width="1" height="25" /> --></td>
+				<td width="1" valign="middle" class="bgImage" align="left"></td>
 			</tr>
 			<tr>
 				<td style="padding-left:10px;" class="savedQueryHeading">
@@ -237,7 +236,7 @@ window.onload = function() {
 							<tr>
 								<td  align="left">
 									<div id="multiSelectId" class="black_ar_new" style="display:none; margin-left:35px">
-											&nbsp&nbsp&nbsp<mCombo:multiSelectUsingCombo identifier="coord" styleClass="black_ar_new"  size="15" addButtonOnClick="moveOptions('coord','protocolCoordinatorIds', 'add')" removeButtonOnClick="moveOptions('protocolCoordinatorIds','coord', 'edit')" selectIdentifier="protocolCoordinatorIds" collection="<%=(List)request.getAttribute("selectedCoordinators")%>"/>
+							&nbsp&nbsp&nbsp<mCombo:multiSelectUsingCombo identifier="coord" styleClass="black_ar_new"  size="15" addButtonOnClick="moveOptions('coord','protocolCoordinatorIds', 'add')" removeButtonOnClick="moveOptions('protocolCoordinatorIds','coord', 'edit')" selectIdentifier="protocolCoordinatorIds" collection="<%=selectedCoordinators%>"/>
 								 
 									</div>
 								</td>
