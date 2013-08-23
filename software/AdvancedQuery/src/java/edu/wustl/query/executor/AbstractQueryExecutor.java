@@ -441,7 +441,7 @@ public abstract class AbstractQueryExecutor
 	 */
 	private void filterDataForAdvancedSearch(QueryCsmCacheManager cacheManager,
 			QueryCsmCache cache, List aList) throws SMException {
-		if (sessionDataBean != null & sessionDataBean.isSecurityRequired())
+		if (sessionDataBean != null && sessionDataBean.isSecurityRequired())
 		{
 			//Supriya :call filterRow of method of csm cache manager changed
 			//for csm-query performance issue.

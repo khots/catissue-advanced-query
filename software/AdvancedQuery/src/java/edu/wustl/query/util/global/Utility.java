@@ -59,6 +59,7 @@ import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.bizlogic.CommonQueryBizLogic;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
+import edu.wustl.query.dto.QueryExportDTO;
 import edu.wustl.query.executor.AbstractQueryExecutor;
 import edu.wustl.query.executor.MysqlQueryExecutor;
 import edu.wustl.query.executor.OracleQueryExecutor;
@@ -387,7 +388,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 		
 		return paginationDataList;
 	}
-
+	
 	/**
 	 * @param request request
 	 * @param paginationDataList data list
@@ -418,6 +419,62 @@ public class Utility //extends edu.wustl.common.util.Utility
 					exportMetataDataMap.get(AQConstants.ENTITY_IDS_MAP));
 				request.getSession().setAttribute(AQConstants.EXPORT_DATA_LIST,
 					exportMetataDataMap.get(AQConstants.EXPORT_DATA_LIST));
+				break;
+			}
+		}
+	}
+	
+	
+	public static List getPaginationDataList(String isSimpleSearch, List<String> columnsList, SessionDataBean sessionData, 
+			int recordsPerPage, int pageNum, QuerySessionData querySessionData, boolean isDefineView) 
+					throws DAOException
+	{
+		List paginationDataList;
+		querySessionData.setRecordsPerPage(recordsPerPage);
+		int startIndex = recordsPerPage * (pageNum - 1);
+		recordsPerPage = startIndex+ recordsPerPage;
+		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
+
+		PagenatedResultData pagenatedResult = qBizLogic.execute(sessionData, querySessionData,
+				startIndex);
+		paginationDataList = pagenatedResult.getResult();
+		
+		if (isSimpleSearch == null || (!isSimpleSearch.equalsIgnoreCase(AQConstants.TRUE)))
+		{
+			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap = querySessionData
+					.getQueryResultObjectDataMap();
+			if (queryResultObjectDataBeanMap != null)
+			{
+				populateSessionData(columnsList, paginationDataList,
+						queryResultObjectDataBeanMap, isDefineView);
+			}
+		}
+		
+		return paginationDataList;
+	}
+		
+	/**
+	 * @param request request
+	 * @param paginationDataList data list
+	 * @param queryResultObjectDataBeanMap map
+	 */
+	private static void populateSessionData(List<String> columnsList, List paginationDataList,
+			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap, boolean isDefineView)
+	{
+		for (Iterator<Long> beanMapIterator = queryResultObjectDataBeanMap.keySet()
+				.iterator(); beanMapIterator.hasNext();)
+		{
+			Long identifier = beanMapIterator.next();
+			QueryResultObjectDataBean bean =
+				queryResultObjectDataBeanMap.get(identifier);
+			if (bean.isClobeType())
+			{
+				QueryOutputSpreadsheetBizLogic queryBizLogic = new QueryOutputSpreadsheetBizLogic();
+				Map<Integer, Integer> fileTypMnEntMap =
+					queryBizLogic.updateSpreadSheetColumnList(columnsList,
+								queryResultObjectDataBeanMap, isDefineView);
+				Map exportMetataDataMap = QueryOutputSpreadsheetBizLogic.
+				updateDataList(paginationDataList, fileTypMnEntMap);
 				break;
 			}
 		}

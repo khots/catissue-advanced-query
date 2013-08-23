@@ -17,7 +17,7 @@
 	import="edu.wustl.cab2b.client.ui.query.IClientQueryBuilderInterface,edu.wustl.cab2b.client.ui.query.ClientQueryBuilder,edu.wustl.query.flex.dag.DAGConstant,edu.wustl.common.querysuite.queryobject.IQuery,edu.wustl.common.querysuite.queryobject.impl.Query,edu.wustl.common.querysuite.queryobject.IParameterizedQuery"%>
 <%@ page
 	import="java.util.*,java.text.DateFormat,java.text.SimpleDateFormat"%>
-<%@ page import="edu.wustl.query.beans.DashboardBean"%>
+<%@ page import="edu.wustl.query.beans.DashboardBean,edu.wustl.common.util.global.ApplicationProperties"%>
 <head>
 <!-- dhtmlx Grid/tree Grid -->
 <script type="text/javascript" src="jss/advQuery/SavedQuery.js"></script>
@@ -57,6 +57,18 @@
 window.onload = function() {  
 	<%
 		String tagId =(String) request.getAttribute("tagId");
+		String fileName =(String) request.getAttribute("fileName");
+		if(fileName != null && fileName != "fileNotPresent"){
+	%>
+			var url = "QueryDataExport.do?fileName=<%=fileName%>";
+			window.open(url);
+   	<%
+		}else if(fileName == "fileNotPresent") {
+				String errMsg = ApplicationProperties.getValue("query.data.export.file.not.present");
+	%>
+			alert("<%=errMsg%>");
+    <%
+		}
 		if(tagId != null){ 
 	%>
 			doInitGrid('<%=tagId%>');

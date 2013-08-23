@@ -72,32 +72,10 @@ function displayValidationMessage(message)
 	}
 }
 	
-function onExport() {
-	//var isChecked = updateHiddenFields();	
-	checkRowStatus();
-	var jsonData;
-	var isCheckAllAcrossAllChecked = false
-	if(checkedRowIds.length == 0){
-		isCheckAllAcrossAllChecked = true;
-	}else{
-		jsonData = getJsonfromGridData();
-	}	
- 
-	document.getElementById('jsonData').value = jsonData;
-	var action = "SpreadsheetExport.do?pageNum="+mygrid.currentPage+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;
-	document.forms[0].operation.value="export";
-	document.forms[0].action = action;
-	document.forms[0].target = "_self";
-	document.forms[0].submit();		
-	window.setTimeout(removeLoading, 500);	
-	if(checkedRowIds.length > 0){
-		window.setTimeout(unCheckGridRows, 500);
-	}
-}
-
+function onExport(form) {	var iframe = document.createElement("iframe");	iframe.setAttribute("id", "upload_iframe");	iframe.setAttribute("name", "upload_iframe");	iframe.setAttribute("width", "0");	iframe.setAttribute("height", "0"); 	iframe.setAttribute("border", "0");	iframe.setAttribute("style", "width: 0; height: 0; border: none;");			form.parentNode.appendChild(iframe);	window.frames['upload_iframe'].name = "upload_iframe";	iframeId = document.getElementById("upload_iframe");	// Add event...		var eventHandler = function () {       	if (iframeId.detachEvent) {		iframeId.detachEvent("onload", eventHandler);	} else {		iframeId.removeEventListener("load", eventHandler, false);	}        	// Message from server...        if (iframeId.contentDocument) {		content = iframeId.contentDocument.body.innerHTML;		alert(content);       	} else if (iframeId.contentWindow) {		content = iframeId.contentWindow.document.body.innerHTML;		alert(content);        } else if (iframeId.document) {           	content = iframeId.document.body.innerHTML;		alert(content);        }        	// Del the iframe...        	setTimeout('iframeId.parentNode.removeChild(iframeId)', 250);    	}	if (iframeId.addEventListener) {		iframeId.addEventListener("load", eventHandler, true);	}		if (iframeId.attachEvent) {		iframeId.attachEvent("onload", eventHandler);	}	// Set properties of form...	checkRowStatus();	var jsonData;	var isCheckAllAcrossAllChecked = false	if(checkedRowIds.length == 0){		isCheckAllAcrossAllChecked = true;		if(mygrid.getRowsNum() < fetchRecordSize)		{			jsonData = getAllDatafromGrid();			isCheckAllAcrossAllChecked = false;		}	}else{		jsonData = getJsonfromGridData();	}	 	document.getElementById('jsonData').value = jsonData;	var action = "QueryDataExport.do?pageNum="+mygrid.currentPage+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;	 	form.setAttribute("target", "upload_iframe");	form.setAttribute("action", action);	form.setAttribute("method", "post");	form.setAttribute("operation.value","export");			// Submit the form...	form.submit();	window.setTimeout(removeLoading, 500);		if(checkedRowIds.length > 0){		window.setTimeout(unCheckGridRows, 500);	}}
 function getJsonfromGridData(){
-	var jsonData;
-	checkedRowIds.sort(function(a,b){return a-b;});
+	var jsonData;	
+	checkedRowIds.sort(function(a,b){return a-b;});	
 	jsonData = "[";
 	for(var i = 0; i < checkedRowIds.length; i++){
 		var data = mygridData.rows[checkedRowIds[i]].data.join();
@@ -105,6 +83,17 @@ function getJsonfromGridData(){
 	}
 	jsonData += "]"
 	return jsonData;	
+}
+
+function getAllDatafromGrid(){	
+	var jsonData;	
+	jsonData = "[";	
+	for(var i = 0; i < mygridData.rows.length; i++){		
+		var data = mygridData.rows[i].data.join();		
+		jsonData += "\"[" + data.substring(1) + "]\",";
+	}	
+	jsonData += "]"	
+	return jsonData;
 }
 
 function removeLoading() {

@@ -148,10 +148,11 @@
 							<% 	} %> 							 
 							
 							<td width="10%">
-								<button type="button" class="nav_button" id="exportImgId" onclick="onExport()">
+								<button type="button" class="nav_button" id="exportImgId" onclick="onExport(this.form)">
 									<img src="images/advQuery/excel.gif" style="margin-right: 5px"/>
 									Export CSV</button></td>
-									<input id="jsonData" type="hidden" name="jsonData" >									
+									<input id="jsonData" type="hidden" name="jsonData" />
+									<input id="filePath" type="hidden" value="" name="filePath"/>									
 							<td>&nbsp;</td>
 							<td width="10%">
 								<input type="button" value="Define View" id="defineViewId"
