@@ -54,7 +54,7 @@ public class CommonQueryBizLogic
 	 * @throws DAOException generic DAOException.
 	 */
 	public PagenatedResultData execute(SessionDataBean sessionDataBean,
-			QuerySessionData querySessionData, int startIndex) throws DAOException
+			QuerySessionData querySessionData, int startIndex, int columnSize) throws DAOException
 	{
 		IDAOFactory daofactory = DAOConfigFactory.getInstance().getDAOFactory();
 		JDBCDAO dao = daofactory.getJDBCDAO();
@@ -72,7 +72,7 @@ public class CommonQueryBizLogic
 			queryParams.setStartIndex(startIndex);
 			queryParams.setNoOfRecords(querySessionData.getRecordsPerPage());
 			AbstractQueryExecutor queryExecutor = Utility.getQueryExecutor();
-			edu.wustl.common.util.PagenatedResultData pagenatedResultData = queryExecutor.getQueryResultList(queryParams);
+			edu.wustl.common.util.PagenatedResultData pagenatedResultData = queryExecutor.getQueryResultList(queryParams, columnSize);
 			
 			querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
 			

@@ -412,6 +412,7 @@ public class QueryOutputSpreadsheetBizLogic
 	{
 		String selectSql = "";
 		String idColumnOfCurrentNode = "";
+		int actualColumnSize = 0;
 		List<String> columnsList = new ArrayList<String>();
 		List<IOutputAttribute> selectedOutputAttributeList = new ArrayList<IOutputAttribute>();
 		QueryResultObjectDataBean queryResultObjectDataBean = new QueryResultObjectDataBean();
@@ -479,7 +480,7 @@ public class QueryOutputSpreadsheetBizLogic
 			queryResultObjectDataBeanMap.clear();
 			originalSQL = getSQLForSelectedColumns(spreadSheetDataMap, queryResultObjectDataBeanMap,
 					queryDetailsObj, outputTermsColumns, parentData,specimenMap);
-			columnsList = (List<String>) spreadSheetDataMap.get(AQConstants.SPREADSHEET_COLUMN_LIST);
+			columnsList = (List<String>) spreadSheetDataMap.get(AQConstants.SPREADSHEET_COLUMN_LIST);		
 		}
 		else
 		{
@@ -487,6 +488,7 @@ public class QueryOutputSpreadsheetBizLogic
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, columnsList);
 			selectedColumnMetaData.setSelectedAttributeMetaDataList(attributes);
 		}
+		actualColumnSize = columnsList.size();
 		if (parentData != null && parentData.equals(AQConstants.HASHED_NODE_ID) && false)
 		{
 			addHashedRow(spreadSheetDataMap);
@@ -505,6 +507,7 @@ public class QueryOutputSpreadsheetBizLogic
 					queryResultObjectDataBean.setTqColumnMetadataList(tqColumnMetadataList);
 					selectSql = temporalColumnUIBean.getSql();
 					columnIndex = temporalColumnUIBean.getColumnIndex();
+					actualColumnSize += outputTermsColumns.size(); 
 				}
 				if (queryResultObjectDataBean.getMainEntityIdentifierColumnId() == -1)
 				{
@@ -547,6 +550,7 @@ public class QueryOutputSpreadsheetBizLogic
 				selectSql = "select " + selectSql;
 			}
 		}
+		queryDetailsObj.setColumnSize(actualColumnSize);
 		return originalSQL;
 	}
 
@@ -901,6 +905,7 @@ public class QueryOutputSpreadsheetBizLogic
 		}
 		if (lastindexOfComma != -1 || "".equals(selectSql))
 		{
+			String hiddenIdColumns = "";
 			String columnsInSql = "";
 			if (lastindexOfComma != -1)
 			{
@@ -908,9 +913,10 @@ public class QueryOutputSpreadsheetBizLogic
 			}
 			if (!"".equals(selectSql))
 			{
-				String hiddenIdColumns = Utility.generateHiddenIds(tableAliasNames, columnsInSql);
+				queryDetailsObj.setColumnSize(definedColumnsList.size());
+				hiddenIdColumns = Utility.generateHiddenIds(tableAliasNames, columnsInSql);
 				//columnsInSql = columnsInSql + selectSql;
-				columnsInSql = "SELECT DISTINCT "+ hiddenIdColumns +columnsInSql + " " + selectSql.substring(selectSql.indexOf("from"));
+			
 			}
 			Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
 			columnsInSql = QueryCSMUtil.updateEntityIdIndexMap(null, columnIndex, columnsInSql,
@@ -922,7 +928,7 @@ public class QueryOutputSpreadsheetBizLogic
 				setMainEntityColumnIdentifier(tqColumnList, entityIdIndexMap,
 						iterator);
 			}
-			selectSql = /*"select " + */columnsInSql;
+			selectSql =  "SELECT DISTINCT "+ hiddenIdColumns+ " " + columnsInSql +" "+ selectSql.substring(selectSql.indexOf("from"));
 		}
 		spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 		return selectSql;
@@ -939,7 +945,7 @@ public class QueryOutputSpreadsheetBizLogic
 	{
 		QueryResultObjectDataBean element = iterator.next();
 		element.setTqColumnMetadataList(tqColumnList);
-		if (element.getMainEntityIdentifierColumnId() == -1)
+	/*	if (element.getMainEntityIdentifierColumnId() == -1)
 		{
 			if (!element.isMainEntity() && entityIdIndexMap.get(element
 					.getMainEntity())!=null)
@@ -952,7 +958,7 @@ public class QueryOutputSpreadsheetBizLogic
 				element.setMainEntityIdentifierColumnId(entityIdIndexMap.get(element
 								.getEntity()));
 			}
-		}
+		}*/
 		element.setEntityIdIndexMap(entityIdIndexMap);
 		QueryCSMUtil.setMainProtocolIdIndex(element);
 	}
@@ -990,8 +996,9 @@ public class QueryOutputSpreadsheetBizLogic
 		querySessionData.setSecureExecute(queryDetailsObj.getSessionData().isSecurityRequired());
 		querySessionData.setHasConditionOnIdentifiedField(hasConditionOnIdentifiedField);
 		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
+ 
 		PagenatedResultData pagenatedResultData = qBizLogic.execute(queryDetailsObj
-				.getSessionData(), querySessionData, startIndex);
+				.getSessionData(), querySessionData, startIndex, queryDetailsObj.getColumnSize());
 		List<List<String>> dataList = pagenatedResultData.getResult();
 		if(dataList == null || dataList.isEmpty()){
 			throw new QueryModuleException("Query Returns Zero Records",
@@ -1025,7 +1032,7 @@ public class QueryOutputSpreadsheetBizLogic
 			if (queryResultObjectDataBean.isClobeType())
 			{
 				List<String> columnList = (List<String>) spreadSheetDataMap
-						.get(AQConstants.SPREADSHEET_COLUMN_LIST);
+						.get(AQConstants.SPREADSHEET_COLUMN_LIST);	
 				Map<Integer, Integer> fileTypeIndxMap = updateSpreadSheetColumnList(
 						columnList, queryResultObjectDataBeanMap,selectedColMetadata.isDefinedView());
 				Map exportMetataDataMap = updateDataList(dataList, fileTypeIndxMap);

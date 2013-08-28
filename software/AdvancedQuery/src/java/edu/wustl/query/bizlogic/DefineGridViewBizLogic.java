@@ -405,7 +405,8 @@ public class DefineGridViewBizLogic
 					.lastIndexOf(AQConstants.DELIMETER));
 		} 
 		
-		String hiddenIdColumns = edu.wustl.query.util.global.Utility.generateHiddenIds(tableAliasNames, selectedColumnNames.toString());
+		String hiddenIdColumns = edu.wustl.query.util.global.Utility
+				.generateHiddenIds(tableAliasNames, selectedColumnNames.toString());
 		sql = hiddenIdColumns + sql;
 		
 		if (!outputTermsColumns.isEmpty())
@@ -421,6 +422,7 @@ public class DefineGridViewBizLogic
 			sql = sql +", "+ columnNameVsAliasMap.get("temporal");
 			columnIndex = temporalColumnUIBean.getColumnIndex();
 		}
+		queryDetailsObj.setColumnSize(definedColumnsList.size());
 		selectedColumnNames.replace(0, selectedColumnNames.length(), sql);
 		while (mapItr.hasNext())
 		{
@@ -433,7 +435,7 @@ public class DefineGridViewBizLogic
 						sql, defineViewNodeList, entityIdIndexMap, queryDetailsObj,specimenMap);
 				selectedColumnNames.replace(AQConstants.ARGUMENT_ZERO, selectedColumnNames
 						.length(), sql);
-				if (queryResulObjectDataBean.isMainEntity())
+				/*if (queryResulObjectDataBean.isMainEntity())
 				{
 					EntityInterface entity = queryResulObjectDataBean.getEntity();
 					Integer integer = queryResulObjectDataBean.
@@ -448,7 +450,7 @@ public class DefineGridViewBizLogic
 						queryResulObjectDataBean.setMainEntityIdentifierColumnId
 						(queryResulObjectDataBean.getEntityIdIndexMap().get(mainEntity));
 					}
-				}
+				}*/
 			}
 		}
 		categorySearchForm.setSelColNVBeanList(selectedColumnNameValue);

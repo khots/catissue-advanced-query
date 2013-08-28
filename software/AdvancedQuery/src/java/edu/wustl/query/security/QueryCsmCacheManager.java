@@ -589,7 +589,7 @@ public class QueryCsmCacheManager
 		{
 			//If user is not authorized to see identified data then
 			//replace identified column values by ##
-			if (!hasPrivilegeOnID)
+			if (!hasPrivilegeOnID || queryResultObjectDataBean.getIdentifiedDataColumnIds().size() > 0)
 			{
 				removeUnauthorizedFieldsData(aList,true,queryResultObjectDataBean);
 			}

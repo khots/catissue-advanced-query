@@ -134,8 +134,9 @@ final public class QueryModuleSqlUtil {
 			queryParams.setNoOfRecords(200);
 			jdbcDao.openSession(queryDetailsObj.getSessionData());
 			AbstractQueryExecutor queryExecutor = Utility.getQueryExecutor();
-			dataList = queryExecutor.getQueryResultList(queryParams)
-					.getResult();
+			dataList = queryExecutor.getQueryResultList(queryParams, 0)
+					.getResult(); ///getQueryResultList has second param columnSize which is nothing but actual column size. 
+			                      //As for getting record count there is no necessary of columnSize, that why passed as 0.
 			jdbcDao.commit();
 		} finally {
 			jdbcDao.closeSession();

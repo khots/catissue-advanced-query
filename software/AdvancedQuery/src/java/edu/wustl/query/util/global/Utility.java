@@ -66,6 +66,7 @@ import edu.wustl.query.executor.OracleQueryExecutor;
 import edu.wustl.query.htmlprovider.HtmlUtility;
 import edu.wustl.query.htmlprovider.ParseXMLFile;
 import edu.wustl.query.security.QueryCsmCacheManager;
+import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 
@@ -247,7 +248,6 @@ public class Utility //extends edu.wustl.common.util.Utility
 		{
 			rowList = new ArrayList<String>();
 			List<String> row = dataList.get(i);
-			removeUnwantedIdColumns(row, columnSize);
 		
 			for(int j=0;j<row.size();j++)
 			{
@@ -362,16 +362,16 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 */
 	public static List getPaginationDataList(HttpServletRequest request,
 			SessionDataBean sessionData, int recordsPerPage, int pageNum,
-			QuerySessionData querySessionData, boolean isDefineView) throws DAOException
+			QuerySessionData querySessionData, boolean isDefineView, int columnSize) throws DAOException
 	{
 		List paginationDataList;
 		querySessionData.setRecordsPerPage(recordsPerPage);
 		int startIndex = recordsPerPage * (pageNum - 1);
 		recordsPerPage = startIndex+ recordsPerPage;
 		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
-
+		
 		PagenatedResultData pagenatedResult = qBizLogic.execute(sessionData, querySessionData,
-				startIndex);
+				startIndex, columnSize);
 		paginationDataList = pagenatedResult.getResult();
 		String isSimpleSearch = (String) request.getSession().getAttribute(
 				AQConstants.IS_SIMPLE_SEARCH);
@@ -436,7 +436,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
 
 		PagenatedResultData pagenatedResult = qBizLogic.execute(sessionData, querySessionData,
-				startIndex);
+				startIndex, columnsList.size());
 		paginationDataList = pagenatedResult.getResult();
 		
 		if (isSimpleSearch == null || (!isSimpleSearch.equalsIgnoreCase(AQConstants.TRUE)))
@@ -633,7 +633,6 @@ public class Utility //extends edu.wustl.common.util.Utility
 
 		for (int i = 0; i < dataList.size(); i++){ 
 			List row = (List)dataList.get(i);
-			removeUnwantedIdColumns(row, columnSize);
 			
 			JSONArray data = new JSONArray();			
 			data.put("");
@@ -649,13 +648,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 			
 		return rows;
 	}
-	
-	
-	private static List removeUnwantedIdColumns(List row, int columnSize) {
-		int idCount = row.size()-columnSize;
-		row.subList(0, idCount).clear();
-		return row;
-	}
+	 
 	@SuppressWarnings("unchecked")
 	private static List getColumnTypes(HttpSession session, List columnList) {
 		List<OutputTreeDataNode> rootOutputTreeNodeList = (List<OutputTreeDataNode>) session

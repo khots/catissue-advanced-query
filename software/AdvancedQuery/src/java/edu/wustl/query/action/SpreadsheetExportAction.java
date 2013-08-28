@@ -201,9 +201,9 @@ public class SpreadsheetExportAction extends SecureAction
 			{
 				List<List<String>> dataList = new ArrayList<List<String>>();
 				List<List<String>> subExportList = new ArrayList<List<String>>();
-				dataList =	Utility.getPaginationDataList(request, getSessionData(request),
+			/*	dataList =	Utility.getPaginationDataList(request, getSessionData(request),
 						recordsPerPage, pageNumber, querySessionData, isDefinedView);
-				dataSize = dataList.size();				
+				dataSize = dataList.size();		*/		
 				pageNumber ++;		
 
 				dataList = Utility.getFormattedOutput(dataList, columnList.size());

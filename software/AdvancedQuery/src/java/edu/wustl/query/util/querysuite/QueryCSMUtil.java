@@ -946,17 +946,19 @@ public class QueryCSMUtil
 	public static String updateEntityIdIndexMap(
 			QueryResultObjectDataBean queryResultObjectDataBean, int colIndex, String tempSql,
 			List<EntityInterface> defineViewNodeList,
-			Map<EntityInterface, Integer> entityIdIndexMap, QueryDetails queryDetailsObj, Map<String, String> specimenMap)
+			Map<EntityInterface, Integer> entityIdIndexMap, 
+			QueryDetails queryDetailsObj, Map<String, String> specimenMap)
 	{
 		String selectSql = tempSql;
 		int columnIndex = colIndex;
+		Map<String, String> columnNameVsAliasMap = queryDetailsObj.getColumnNameVsAliasMap();
 		List<String> selectSqlColumnList = getListOfSelectedColumns(selectSql);
 		if (defineViewNodeList == null)
 		{
 			OutputTreeDataNode outputTreeDataNode = getMatchingEntityNode(queryResultObjectDataBean
 					.getMainEntity(), queryDetailsObj);
 			Map sqlIndexMap = putIdColumnsInSql(columnIndex, selectSql, entityIdIndexMap,
-					selectSqlColumnList, outputTreeDataNode,specimenMap);
+					selectSqlColumnList, outputTreeDataNode,specimenMap, columnNameVsAliasMap);
 			selectSql = (String) sqlIndexMap.get(AQConstants.SQL);
 			columnIndex = (Integer) sqlIndexMap.get(AQConstants.ID_COLUMN_ID);
 		}
@@ -972,13 +974,13 @@ public class QueryCSMUtil
 						queryDetailsObj.getUniqueIdNodesMap().get(key);
 					Map sqlIndexMap = putIdColumnsInSql
 					(columnIndex, selectSql, entityIdIndexMap,
-							selectSqlColumnList, outputTreeDataNode,specimenMap);
+							selectSqlColumnList, outputTreeDataNode,specimenMap, columnNameVsAliasMap);
 					selectSql = (String) sqlIndexMap.get(AQConstants.SQL);
 					columnIndex = (Integer) sqlIndexMap.get(AQConstants.ID_COLUMN_ID);
 				}
 			}
 		}
-		populateBean(queryResultObjectDataBean, entityIdIndexMap);
+//		populateBean(queryResultObjectDataBean, entityIdIndexMap);
 		return selectSql;
 	}
 
@@ -1014,7 +1016,7 @@ public class QueryCSMUtil
 	 */
 	private static Map putIdColumnsInSql(int colIndex, String selectSql,
 			Map<EntityInterface, Integer> entityIdIndexMap, List<String> selectSqlColumnList,
-			OutputTreeDataNode outputTreeDataNode, Map<String, String> specimenMap)
+			OutputTreeDataNode outputTreeDataNode, Map<String, String> specimenMap,Map columnNameVsAliasMap)
 	{
 		int columnIndex = colIndex;
 		StringBuffer sql = new StringBuffer(selectSql);
@@ -1028,7 +1030,7 @@ public class QueryCSMUtil
 				String sqlColumnName = attributeMetaData.getColumnName().trim();
 				if (attribute.getName().equals(AQConstants.IDENTIFIER))
 				{
-					int index = selectSqlColumnList.indexOf(sqlColumnName);
+					int index = selectSqlColumnList.indexOf(columnNameVsAliasMap.get(sqlColumnName)+" "+sqlColumnName);
 
 					if (index >= 0)
 					{

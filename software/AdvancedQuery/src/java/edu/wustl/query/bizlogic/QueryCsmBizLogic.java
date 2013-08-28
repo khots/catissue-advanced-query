@@ -69,7 +69,7 @@ public class QueryCsmBizLogic
             AbstractQueryExecutor queryExecutor = Utility.getQueryExecutor();
             try
             {
-				dataList = queryExecutor.getQueryResultList(queryParams).getResult();
+				dataList = queryExecutor.getQueryResultList(queryParams, queryDetailsObj.getColumnSize()).getResult();
 			}
             catch (DAOException e)
             {

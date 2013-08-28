@@ -108,6 +108,12 @@ public abstract class AbstractQueryExecutor
 	 * Start index in the Query Resultset. & no of records to fetch from the query result.
 	 */
 	protected int startIndex, noOfRecords;
+	
+	/**
+	 * Required for defined view,To remove the hidden id data of entities from result set.
+	 * 
+	 */
+	protected int actualColumnSize = 0; 
 
 	/**
 	 * Method to get the Query executor instance.
@@ -153,6 +159,7 @@ public abstract class AbstractQueryExecutor
 		this.startIndex = startIndex;
 		this.noOfRecords = noOfRecords;
 		getSublistOfResult = startIndex != -1; // this will be used, when its
+		this.actualColumnSize = 0;
 		//required to get sublist of the result set.
 		/**
 		 * setting noOfRecords = Integer.MAX_VALUE, if All records are expected from result.
@@ -200,7 +207,7 @@ public abstract class AbstractQueryExecutor
 	 * @throws DAOException DAOException
 	 * @throws SMException Security Manager Exception
 	 */
-	public PagenatedResultData getQueryResultList(QueryParams queryParams) throws DAOException, SMException
+	public PagenatedResultData getQueryResultList(QueryParams queryParams, int columnSize) throws DAOException, SMException
 	{
 		query = queryParams.getQuery();
 		sessionDataBean = queryParams.getSessionDataBean();
@@ -209,6 +216,7 @@ public abstract class AbstractQueryExecutor
 		queryResultObjectDataMap = queryParams.getQueryResultObjectDataMap();
 		startIndex = queryParams.getStartIndex();
 		noOfRecords = queryParams.getNoOfRecords();
+		actualColumnSize = columnSize;
 		getSublistOfResult = startIndex != -1; // this will be used, when it required to get sublist of the result set.
 		  //setting noOfRecords = Integer.MAX_VALUE, if All records are expected from result. see getListFromResultSet method
 		if (!getSublistOfResult)
@@ -221,7 +229,7 @@ public abstract class AbstractQueryExecutor
 		try
 		{
 			jdbcDAO = DAOConfigFactory.getInstance().getDAOFactory(appName).getJDBCDAO();
-			jdbcDAO.openSession(null);
+			jdbcDAO.openSession(null); 
 			pagenatedResultData = createStatemtentAndExecuteQuery(jdbcDAO);
 			logger.debug("Query Execution on MySQL Completed...");
 		}
@@ -304,14 +312,22 @@ public abstract class AbstractQueryExecutor
 		/**
 		 * noOfRecords will hold value = Integer.MAX_VALUE when All records are expected from result.
 		 */
+		int noHiddenColumns = 0;
+		if(actualColumnSize > 0){
+			noHiddenColumns = columnCount - actualColumnSize;
+		}
 		while (resultSet.next() && recordCount < noOfRecords)
-		{
+		{	
 			List aList = new ArrayList();
 			// Srinath: rewrote to use resultSet getters of correct type.
+			
 			for (int i = 1; i <= columnCount; i++)
-			{
+			{ 
                 populateListToFilter(metaData, aList, i);
             }
+			if(noHiddenColumns > 0){
+				aList.subList(0, noHiddenColumns).clear();
+			}
 			if(!isLongKeyOfMap && queryResultObjectDataMap!=null)
 			{
 				//Aarti: If query has condition on identified data then check user's permission
@@ -338,7 +354,8 @@ public abstract class AbstractQueryExecutor
 			{
 				if (AQConstants.SWITCH_SECURITY && hasConditionOnIdentifiedField && isSecureExecute)
 				{
-					boolean hasPrivilegeOnIdentifiedData =cacheManager.hasPrivilegeOnIdentifiedData(sessionDataBean, queryResultObjectDataMap, aList,cache);
+					boolean hasPrivilegeOnIdentifiedData =cacheManager
+							.hasPrivilegeOnIdentifiedData(sessionDataBean, queryResultObjectDataMap, aList,cache);
 					if (!hasPrivilegeOnIdentifiedData)
 					{
 						continue;
