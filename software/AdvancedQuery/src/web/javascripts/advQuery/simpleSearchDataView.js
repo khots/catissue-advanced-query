@@ -20,7 +20,7 @@
 	}   
 }
 
-function getCheckedField() {
+function getCheckedField() {	
 	checkRowStatus();
 	var params = "";
 	for(var i=0; i<checkedRowIds.length; i++){
@@ -75,10 +75,10 @@ function displayValidationMessage(message)
 function onExport(form) {	var iframe = document.createElement("iframe");	iframe.setAttribute("id", "upload_iframe");	iframe.setAttribute("name", "upload_iframe");	iframe.setAttribute("width", "0");	iframe.setAttribute("height", "0"); 	iframe.setAttribute("border", "0");	iframe.setAttribute("style", "width: 0; height: 0; border: none;");			form.parentNode.appendChild(iframe);	window.frames['upload_iframe'].name = "upload_iframe";	iframeId = document.getElementById("upload_iframe");	// Add event...		var eventHandler = function () {       	if (iframeId.detachEvent) {		iframeId.detachEvent("onload", eventHandler);	} else {		iframeId.removeEventListener("load", eventHandler, false);	}        	// Message from server...        if (iframeId.contentDocument) {		content = iframeId.contentDocument.body.innerHTML;		alert(content);       	} else if (iframeId.contentWindow) {		content = iframeId.contentWindow.document.body.innerHTML;		alert(content);        } else if (iframeId.document) {           	content = iframeId.document.body.innerHTML;		alert(content);        }        	// Del the iframe...        	setTimeout('iframeId.parentNode.removeChild(iframeId)', 250);    	}	if (iframeId.addEventListener) {		iframeId.addEventListener("load", eventHandler, true);	}		if (iframeId.attachEvent) {		iframeId.attachEvent("onload", eventHandler);	}	// Set properties of form...	checkRowStatus();	var jsonData;	var isCheckAllAcrossAllChecked = false	if(checkedRowIds.length == 0){		isCheckAllAcrossAllChecked = true;		if(mygrid.getRowsNum() < fetchRecordSize)		{			jsonData = getAllDatafromGrid();			isCheckAllAcrossAllChecked = false;		}	}else{		jsonData = getJsonfromGridData();	}	 	document.getElementById('jsonData').value = jsonData;	var action = "QueryDataExport.do?pageNum="+mygrid.currentPage+"&isCheckAllAcrossAllChecked="+isCheckAllAcrossAllChecked;	 	form.setAttribute("target", "upload_iframe");	form.setAttribute("action", action);	form.setAttribute("method", "post");	form.setAttribute("operation.value","export");			// Submit the form...	form.submit();	window.setTimeout(removeLoading, 500);		if(checkedRowIds.length > 0){		window.setTimeout(unCheckGridRows, 500);	}}
 function getJsonfromGridData(){
 	var jsonData;	
-	checkedRowIds.sort(function(a,b){return a-b;});	
+	if(sortDirection == "asc"){		checkedIndexes.sort(function(a,b){return a-b;});	} else{		checkedIndexes.sort(function(a,b){return b-a;});	}	
 	jsonData = "[";
 	for(var i = 0; i < checkedRowIds.length; i++){
-		var data = mygridData.rows[checkedRowIds[i]].data.join();
+		var data = mygridData.rows[mygrid.getRowId(checkedIndexes[i])].data.join();
 		jsonData += "\"[" + data.substring(1) + "]\",";
 	}
 	jsonData += "]"
@@ -102,14 +102,14 @@ function removeLoading() {
 }
 
 function unCheckGridRows(){	
-	for(var i=0; i<checkedRowIds.length; i++){
-		var cell = mygrid.cells(checkedRowIds[i], 0).cell.childNodes[0];			
+	for(var i=0; i<checkedIndexes.length; i++){
+		var cell = mygrid.cells(mygrid.getRowId(checkedIndexes[i]), 0).cell.childNodes[0];			
 		(new eXcell_ch(cell.parentNode)).changeState(); 
 	}
 	var checkBoxCell = getCheckBox();
 	checkBoxCell.childNodes[0].checked = false;
 	checkedAllPages = new Array();
-	checkedRowIds = new Array();
+	checkedRowIds = new Array();	checkedIndexes = new Array();
 }
 
 //function that is called on click of Define View button for the configuration of search results

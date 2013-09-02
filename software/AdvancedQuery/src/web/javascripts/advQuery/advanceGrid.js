@@ -112,6 +112,7 @@ function initQueryGrid() {
 
 var checkedAllPages = new Array();
 var checkedRowIds = new Array();
+var checkedIndexes = new Array();
 
 function checkFromCurrentPage(){
 	var checkBoxCell = getCheckBox();
@@ -128,9 +129,10 @@ function checkFromCurrentPage(){
 	}
 
 	for(var i=startIndex; i < endIndex; i++){
-		var checked = mygrid.cells(i, 0).isChecked();	
-		if(mygrid.cells(i, 0).isChecked() != checkbox_status){
-			var cell = mygrid.cells(i, 0).cell.childNodes[0];			
+		var rowId = mygrid.getRowId(i);
+		var checked = mygrid.cells(rowId, 0).isChecked();	
+		if(checked != checkbox_status){
+			var cell = mygrid.cells(rowId, 0).cell.childNodes[0];			
 			(new eXcell_ch(cell.parentNode)).changeState(); 
 		}
 	}
@@ -138,15 +140,16 @@ function checkFromCurrentPage(){
 
 var sortIndex;
 var sortDirection = "asc";
-/*
-mygrid.attachEvent("onBeforeSorting",function(ind, type, direction){
-	sortIndex = ind;
-	sortDirection = direction;
-	this.setSortImgState(true, ind, direction);   //set a correct sorting image	
-	this.clearAll();  
-	return true;   
-});*/
 
+mygrid.attachEvent("onBeforeSorting",function(ind, type, direction){
+	sortDirection = direction;
+	if(type != "ch"){
+		checkRowStatus()
+		unCheckGridRows();
+	}
+	return true;   
+});
+ 
 mygrid.attachEvent("onFilterStart", function(ind){
 	mygrid.clearAll();
 	getGridData();
@@ -178,14 +181,17 @@ function checkRowStatus(){
 	endIndex =  mygrid.getRowsNum() > endIndex ? endIndex: mygrid.getRowsNum();
 	
 	for(var i=startIndex; i < endIndex; i++){
-		var checked = mygrid.cells(i, 0).isChecked();	
+                var rowId = mygrid.getRowId(i);
+		var checked = mygrid.cells(rowId, 0).isChecked();	
 		if(checked){
-			if(checkedRowIds.indexOf(i) < 0){
-				checkedRowIds[checkedRowIds.length] = i;
+			if(checkedRowIds.indexOf(rowId) < 0){
+				checkedRowIds[checkedRowIds.length] = rowId;
+				checkedIndexes[checkedIndexes.length] = i
 			}
 		}else {
-			if(checkedRowIds.indexOf(i) >= 0){
-				checkedRowIds.splice(checkedRowIds.indexOf(i), 1);
+			if(checkedRowIds.indexOf(rowId) >= 0){
+				checkedRowIds.splice(checkedRowIds.indexOf(rowId), 1);
+				checkedIndexes.splice(checkedIndexes.indexOf(i), 1);
 			}
 		}
 	}	
