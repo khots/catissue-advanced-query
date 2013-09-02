@@ -93,6 +93,7 @@ public class DefineGridViewBizLogic
 		if (!queryDetailsObj.getUniqueIdNodesMap().isEmpty())
 		{
 			addRootNode(treeDataVector);
+			List<NameValueBean> selectedColumnNameValue = new ArrayList<NameValueBean>();
 			Set keySet = queryDetailsObj.getUniqueIdNodesMap().keySet();
 			Iterator iterator = keySet.iterator();
 			Object identifier;
@@ -107,10 +108,17 @@ public class DefineGridViewBizLogic
 					node = queryDetailsObj.getUniqueIdNodesMap().get(nodeId);
 					if(node.isInView())
 					{
-					  addClassAndAttributeNodes(treeDataVector, node, categorySearchForm,
-  					currentSelectedObj);
+						addClassAndAttributeNodes(treeDataVector, node, 
+								categorySearchForm, currentSelectedObj, selectedColumnNameValue);
 					}
 				}
+			}
+			if (selectedColList != null)
+			{
+				categorySearchForm
+						.setSelColNVBeanList(selectedColList);
+			} else {
+				categorySearchForm.setSelColNVBeanList(selectedColumnNameValue);
 			}
 		}
 	}
@@ -139,10 +147,11 @@ public class DefineGridViewBizLogic
 	 * @param node OutputTreeDataNode node to be added in tree
 	 * @param categorySearchForm action form
 	 * @param currentSelectedObject  OutputTreeDataNode
+	 * @return 
 	 */
 	private void addClassAndAttributeNodes(List<QueryTreeNodeData> treeDataVector,
 			OutputTreeDataNode node, CategorySearchForm categorySearchForm,
-			OutputTreeDataNode currentSelectedObject)
+			OutputTreeDataNode currentSelectedObject, List<NameValueBean> selectedColumnNameValue)
 	{
 		long selectedObjectId = currentSelectedObject.getId();
 		long nodeId = node.getId();
@@ -161,17 +170,13 @@ public class DefineGridViewBizLogic
 		classTreeNode.setParentIdentifier(AQConstants.ROOT);
 		classTreeNode.setParentObjectName("");
 		treeDataVector.add(classTreeNode);
-		boolean isSelectedObject = false;
-		if (selectedObjectId == nodeId)
+		 
+		if (selectedColList == null)
 		{
-			isSelectedObject = true;
-			if (selectedColList == null)
-			{
-				categorySearchForm.setCurrentSelectedNodeInTree(treeClassNodeId);
-			}
+			categorySearchForm.setCurrentSelectedNodeInTree(treeClassNodeId);
 		}
-		addAttributeNodes(treeDataVector, className, treeClassNodeId, categorySearchForm, node
-				.getAttributes(), isSelectedObject);
+		addAttributeNodes(treeDataVector, className, treeClassNodeId, categorySearchForm,
+				selectedColumnNameValue, node.getAttributes());
 	}
 
 	/**
@@ -184,11 +189,10 @@ public class DefineGridViewBizLogic
 	 * @param isSelectedObject whether the object is selected
 	 */
 	private void addAttributeNodes(List<QueryTreeNodeData> treeDataVector, String className,
-			String treeClassNodeId, CategorySearchForm categorySearchForm,
-			List<QueryOutputTreeAttributeMetadata> attributeMetadataList, boolean isSelectedObject)
+			String treeClassNodeId, CategorySearchForm categorySearchForm, List<NameValueBean> selectedColumnNameValue,
+			List<QueryOutputTreeAttributeMetadata> attributeMetadataList)
 	{
 		//List<QueryOutputTreeAttributeMetadata> attributeMetadataList = node.getAttributes();
-		List<NameValueBean> selectedColumnNameValue = new ArrayList<NameValueBean>();
 		AttributeInterface attribute;
 		String attributeName;
 		String attributeDisplayName;
@@ -215,16 +219,8 @@ public class DefineGridViewBizLogic
 			nameValueBean.setValue(treeAttributeNodeId);
 			selectedColumnNameValue.add(nameValueBean);
 		}
-		if (selectedColList != null)
-		{
-			categorySearchForm
-					.setSelColNVBeanList(selectedColList);
-		}
-		else if (isSelectedObject)
-		{
-			categorySearchForm.setSelColNVBeanList(selectedColumnNameValue);
-		}
 	}
+	
 
 	/**
 	 * returns list of selected columns.

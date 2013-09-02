@@ -93,6 +93,9 @@ public class ConfigureGridViewAction extends SecureAction
 			selectedCNVBList = selectedColumnsMetadata.getSelColNVBeanList();
 			categorySearchForm.setSelColNVBeanList(selectedCNVBList);
 			definedColumnsList = (List<String>)session.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
+			if(selectedColumnsMetadata.isDefinedView()){
+				queryDetailsObj.setColumnSize(definedColumnsList.size());
+			}
 			spreadSheetDataMap.put(AQConstants.SPREADSHEET_COLUMN_LIST, definedColumnsList);
 			querySessionData = queryOutputSpreadsheetBizLogic.getQuerySessionData(queryDetailsObj,
 					fetchRecordSize, 0, spreadSheetDataMap, sql, queryResultObjecctDataMap,
