@@ -639,4 +639,6 @@ public class AQConstants
 
 	/** The Constant CELL_SPECIMEN. */
 	public static final String CELL_SPECIMEN = "edu.wustl.catissuecore.domain.CellSpecimen";
+	
+	public static final Long MILLISECONDS_IN_DAY = 24L * 60 * 60 * 1000;
 }

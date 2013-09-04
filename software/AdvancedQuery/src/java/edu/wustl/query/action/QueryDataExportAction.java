@@ -55,7 +55,7 @@ public class QueryDataExportAction extends SecureAction {
 			QueryDataExportTask dataExportTask = new QueryDataExportTask(queryExportDTO);
 			String filePath = dataExportTask.getActualFilePath();
 			SendFile.sendFileToClient(response, filePath, AQConstants.SEARCH_RESULT,
-					"application/download");
+					"application/download", false);
 			return null;
 		}
 		

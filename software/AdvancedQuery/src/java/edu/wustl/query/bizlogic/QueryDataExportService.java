@@ -2,11 +2,14 @@ package edu.wustl.query.bizlogic;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,6 +18,7 @@ import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.dto.QueryExportDTO;
 import edu.wustl.query.querysuite.QueryDataExportTask;
+import edu.wustl.query.util.global.AQConstants;
 
 public class QueryDataExportService {
 	
@@ -23,6 +27,8 @@ public class QueryDataExportService {
 	private static ExecutorService executorService = 
 			Executors.newFixedThreadPool(Integer.parseInt(XMLPropertyHandler.getValue("export.threadPool.size")));
 	
+	private static ScheduledExecutorService schedulerExecutor = Executors.newSingleThreadScheduledExecutor(); 
+	
 	private static final Logger LOGGER = Logger.getCommonLogger(QueryDataExportService.class);
 	
 	//
@@ -30,15 +36,24 @@ public class QueryDataExportService {
 	// Value : QueryDataExportTask
 	//
 	private static Map<String, QueryDataExportTask> exportTaskMap = new HashMap<String, QueryDataExportTask>();
-		
-	public static QueryDataExportService getInstance(){
+	
+	private static String appPath = CommonServiceLocator.getInstance().getPropDirPath();
+	
+	private static String path = appPath + System.getProperty("file.separator")+"reports";
+	
+	public static void initialize(){
 		if(instance == null){
-			instance = new QueryDataExportService();
-			String appPath = CommonServiceLocator.getInstance().getPropDirPath();
-			String path = appPath + System.getProperty("file.separator")+"reports";
-			File file = new File(path);
-			file.mkdir();
+			instance = getInstance();
 		}
+		instance.scheduleExpiredExportDataFilesDeletion();
+	}
+		
+	public static QueryDataExportService getInstance() {
+		instance = new QueryDataExportService();
+		String appPath = CommonServiceLocator.getInstance().getPropDirPath();
+		String path = appPath + System.getProperty("file.separator")+"reports";
+		File file = new File(path);
+		file.mkdir();
 		return instance;
 	}
 	
@@ -74,7 +89,7 @@ public class QueryDataExportService {
 		}
 	}
 	
-	public boolean isAlreadyInProgress(QueryExportDTO queryExportDTO)
+	public boolean isAlreadyInProgress(QueryExportDTO queryExportDTO) 
 	{
 		Long queryId = queryExportDTO.getQueryDetails().getQuery().getId();
 		QueryDataExportTask queryDataExportTask = exportTaskMap.get(queryExportDTO.getCsmUserId()+"_"+queryId);
@@ -83,4 +98,41 @@ public class QueryDataExportService {
 		}	
 		return false;		
 	}
+	
+	public void scheduleExpiredExportDataFilesDeletion() {
+		final Runnable cleanUpTask = new Runnable() {
+			public void run() {
+				deleteExpiredExportDataFiles();
+			}
+		};
+				
+		schedulerExecutor.scheduleWithFixedDelay(cleanUpTask, getStartTimeForSchedular(), 
+				AQConstants.MILLISECONDS_IN_DAY, TimeUnit.MILLISECONDS);
+	}
+	 
+	private Long getStartTimeForSchedular() {
+		
+		Calendar startTime = Calendar.getInstance();
+		startTime.add (Calendar.DAY_OF_MONTH, 1);
+		startTime.set (Calendar.HOUR_OF_DAY, 0);
+		startTime.set (Calendar.MINUTE, 0);
+		startTime.set (Calendar.SECOND, 0);
+		startTime.set (Calendar.MILLISECOND, 0);
+		
+		return (startTime.getTimeInMillis() - System.currentTimeMillis());
+	}
+	
+	private void deleteExpiredExportDataFiles() {
+		File folder = new File(path);
+		File[] listOfFiles = folder.listFiles();
+		Long retainTimeInDay = Long.parseLong(XMLPropertyHandler.getValue("queryExportDataFileRetainDays"));
+		//retainTimeInMilis represents the time to retain file in milliseconds 
+		Long retainTimeInMilis = retainTimeInDay * AQConstants.MILLISECONDS_IN_DAY;
+			
+		for (File file : listOfFiles) {
+		    if (file.isFile() && (System.currentTimeMillis() - file.lastModified()) > retainTimeInMilis) {
+		    	   file.delete();        
+		    }
+		}
+	 }
 }
