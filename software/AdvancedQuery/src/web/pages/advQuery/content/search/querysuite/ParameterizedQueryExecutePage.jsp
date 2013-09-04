@@ -81,7 +81,7 @@
 		<tr>
 			<td>
 			<div
-				style="width:100%;  max-height:300px; min-height:50px; overflow-y:auto;">
+				style="width:100%;">
 			<%=request.getAttribute(AQConstants.HTML_CONTENTS)%></div>
 
 
