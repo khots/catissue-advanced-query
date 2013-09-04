@@ -7,37 +7,88 @@
 		<artifact name="advancedquery" type="pom" ext="pom" />
 	</publications>
 	
-    <dependencies>
-<!--
-    ToDo Move dependencies to cbiit + maven
-    https://bugzilla.wustl.edu/bugzilla/show_bug.cgi?id=21223
--->
-<!-- LOCAL SVN REPO -->
-		<dependency org="local" name="AdvancedQuery" rev="1.0"/>
+  <dependencies>
 
-<!-- PUBLIC REPO -->
-<!--
-        <dependency org="log4j" name="log4j" rev="1.2.14"/>
-        <dependency org="junit" name="junit" rev="4.5" />
-        <dependency org="dozer" name="dozer-osgi" rev="5.2.1"/>
-        <dependency org="javax.activation" name="activation" rev="1.1.1"/>
-        <dependency org="net.sourceforge.addressing" name="addressing" rev="1.1"/>
-        <dependency org="ant-contrib" name="ant-contrib" rev="1.0b2"/>
-        <dependency org="antlr" name="antlr" rev="2.7.5"/>
-        <dependency org="asm" name="asm" rev="1.5.3"/>
-        <dependency org="asm" name="asm-attrs" rev="1.5.3"/>
-        <dependency org="c3p0" name="c3p0" rev="0.9.0"/>
-        <dependency org="castor" name="castor" rev="0.9.9"/>
-        <dependency org="cglib" name="cglib" rev="2.2.2"/>
-        <dependency org="ncicb" name="clm" rev="3.2"/>
-        <dependency org="globus" name="jcog" rev="1.2"/>
-        <dependency org="commons-beanutils" name="commons-beanutils" rev="1.6"/>
-        <dependency org="commons-codec" name="commons-codec" rev="1.3"/>
-        <dependency org="commons-collections" name="commons-collections" rev="3.2"/>
-        <dependency org="commons-digester" name="commons-digester" rev="1.5"/>
-        <dependency org="commons-discovery" name="commons-discovery" rev="0.2"/>
-        <dependency org="commons-fileupload" name="commons-fileupload" rev="1.1"/>
--->
-
+    <dependency org="DynamicExtensions" 
+                name="DynamicExtensions" 
+                rev="1.4.0.rc4"
+                conf="*->master"/>
+                
+    <dependency org="edu.wustl" 
+                name="securitymanager" 
+                rev="1.1.7.1"
+                conf="*->master"/>
+                
+    <dependency org="edu.wustl" 
+                name="query" 
+                rev="July-14-2009-1825"
+                conf="*->master"/>
+                
+    <dependency org="com.oracle" 
+                name="ojdbc14" 
+                rev="10.2.0.4.0"
+                conf="*->master"/>
+                
+    <dependency org="json" 
+                name="json" 
+                rev="1.0"
+                conf="*->master"/> 
+                
+    <dependency org="org.netbeans" 
+                name="graph" 
+                rev="1.0"
+                conf="*->master"/>                 
+                
+    <dependency org="struts"
+                name="struts"
+                rev="1.1"/>
+                
+    <dependency org="org.owasp" 
+                name="stinger" 
+                rev="2.6.1"/>
+                
+    <dependency org="advancedquery"
+                name="csmapi"
+                rev="1.0"
+                conf="*->master"/>
+                
+    <dependency org="org.hibernate"
+                name="hibernate"
+                rev="3.1.3"
+                conf="*->master"/>
+                
+    <dependency org="backport-util-concurrent"
+                name="backport-util-concurrent"
+                rev="2.2"
+                conf="*->master"/>                
+    
+    <dependency org="edu.wustl"
+                name="commonpackage"
+                rev="1.1.8.1"
+                conf="*->master"/>     
+                
+    <dependency org="edu.wustl"
+                name="DAO"
+                rev="1.1.9.1"
+                conf="*->master"/>
+                
+    <dependency org="edu.wustl"
+                name="washu-commons"
+                rev="1.1.7"
+                conf="*->master"/>               
+                
+    <dependency org="log4j" 
+                name="log4j" 
+                rev="1.2.14"
+                conf="*->master"/> 
+                
+    <dependency org="com.adobe" 
+                name="flex-messaging" 
+                rev="2.5.166921"
+                conf="*->master"/> 
+                
+    <!-- er not sure what tries to bring this in, but block it because the jar isnt found in repo and we dont need it -->             
+    <exclude org="javax.sql" module="jdbc-stdext" />   
+    
     </dependencies>
 </ivy-module>

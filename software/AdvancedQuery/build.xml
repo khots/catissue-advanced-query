@@ -6,19 +6,11 @@
 	<import file="${basedir}/conf/build-properties.xml" />
 
     <target name="postResolve" depends="resolve">
+    <mkdir dir="lib"/>
         <taskdef resource="net/sf/antcontrib/antcontrib.properties">
             <classpath><fileset dir="${basedir}/lib/"><include name="ant-contrib*.jar" /></fileset></classpath>
         </taskdef>
-        <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
-        <taskdef name="hibernatedoclet" classname="xdoclet.modules.hibernate.HibernateDocletTask">
-            <classpath refid="xdoclet.classpath" />
-        </taskdef>
-        <taskdef name="jmeter" classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask">
-            <classpath><fileset dir="${basedir}/lib/"><include name="ant-jmeter*.jar" /></fileset></classpath>
-        </taskdef>
-        <taskdef resource="flexTasks.tasks">
-            <classpath><fileset dir="${basedir}/lib/"><include name="flexTasks*.jar" /></fileset></classpath>
-        </taskdef>
+
     </target>
 
 	<!--define require dir and Properties -->
@@ -51,12 +43,6 @@
 	<property name="coverage.dir" value="${basedir}/cobertura" />
 	<property name="test.classes.dir" value="${dist.dir}/test/classes" />
 
-	<path id="cobertura.classpath">
-		<fileset dir="${cobertura.lib}">
-			<include name="cobertura.jar" />
-			<include name="**/*.jar" />
-		</fileset>
-	</path>
 
 
 	<loadfile property="dist.revision" srcFile="../../.svn/entries">
@@ -140,7 +126,9 @@
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
+      <!--
 			<classpath refid="cobertura.classpath" />
+      -->
 		</javac>
 		<copy todir="${target.dir}/WEB-INF">
 			<fileset dir="${src.dir}">
@@ -831,9 +819,9 @@
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
-
+<!--
 			<classpath refid="cobertura.classpath" />
-
+-->
 			<batchtest todir="${junit.report.dir}">
 				<fileset dir="${test.dir}">
 					<include name="**/TestAll.java" />
