@@ -201,6 +201,10 @@ public abstract class AbstractQueryExecutor
 		return pagenatedResultData;
 	}
 
+	public PagenatedResultData getQueryResultList(QueryParams queryParams) throws DAOException, SMException
+	{
+		return getQueryResultList(queryParams, 0); //set columnSize as 0 required for simple query  
+	}
 	/**
 	 * @param queryParams QueryParams object
 	 * @return pagenatedResultData Pagenated Result Data
