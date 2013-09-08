@@ -49,7 +49,7 @@
                 
     <dependency org="advancedquery"
                 name="csmapi"
-                rev="1.0"
+                rev="1.0b"
                 conf="*->master"/>
                 
     <dependency org="org.hibernate"

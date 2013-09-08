@@ -12,24 +12,10 @@
 	<resolvers>
 		<chain name="default-resolver" returnFirst="true">
 
-      <ibiblio name="local_advanced_query" 
+      <ibiblio name="cbiit" 
                m2compatible="true" 
-               root="http://localhost:8081/nexus/content/repositories/advanced_query_sandbox"/>
+               root="https://ncimvn.nci.nih.gov/nexus/content/groups/public/"/>
            
-      <ibiblio name="local_de" 
-               m2compatible="true" 
-               root="http://localhost:8081/nexus/content/repositories/catissue_sandbox"/>
-           
-      <ibiblio name="mvn.repo" 
-               root="http://repo1.maven.org/maven2/" 
-               m2compatible="true" 
-               changingPattern=".*SNAPSHOT" />
-	
-			<url name="nci-mvn-nexus" m2compatible="true">
-				<ivy pattern="https://ncimvn.nci.nih.gov/nexus/content/repositories/snapshots/gov/nih/nci/catissue/[module]/[revision]/[artifact]-[revision].[ext]" />
-				<artifact pattern="https://ncimvn.nci.nih.gov/nexus/content/repositories/snapshots/gov/nih/nci/catissue/[module]/[revision]/[artifact]-[revision].[ext]" />
-			</url>        	
-
     </chain>
 	</resolvers>
 	        
