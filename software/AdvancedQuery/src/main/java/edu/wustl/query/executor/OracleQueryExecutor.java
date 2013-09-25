@@ -1,3 +1,13 @@
+/*L
+ *  Copyright Washington University in St. Louis
+ *  Copyright SemanticBits
+ *  Copyright Persistent Systems
+ *  Copyright Krishagni
+ *
+ *  Distributed under the OSI-approved BSD 3-Clause License.
+ *  See http://ncip.github.com/catissue-advanced-query/LICENSE.txt for details.
+ */
+
 /**
  * <p>Title: Query Executor Class for Oracle database</p>
  * <p>Description:  MysqlQueryExecutor class is a class which contains code to execute the sql query to get the results from Oracle database. </p>

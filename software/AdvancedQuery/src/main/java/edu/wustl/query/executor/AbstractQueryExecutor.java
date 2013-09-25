@@ -1,3 +1,13 @@
+/*L
+ *  Copyright Washington University in St. Louis
+ *  Copyright SemanticBits
+ *  Copyright Persistent Systems
+ *  Copyright Krishagni
+ *
+ *  Distributed under the OSI-approved BSD 3-Clause License.
+ *  See http://ncip.github.com/catissue-advanced-query/LICENSE.txt for details.
+ */
+
 /**
  * <p>Title: Query Executor Class </p>
  * <p>Description:  AbstractQueryExecutor class is a base class which contains code
