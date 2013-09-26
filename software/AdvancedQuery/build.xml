@@ -44,13 +44,14 @@
 	<property name="test.classes.dir" value="${dist.dir}/test/classes" />
 
 
-
+  <property name="dist.revision" value="1"/>
+  <!--
 	<loadfile property="dist.revision" srcFile="../../.svn/entries">
 		<filterchain>
 			<headfilter lines="1" skip="4" />
 		</filterchain>
 	</loadfile>
-
+   -->
 	<!-- flex related properties -->
 	<property name="FLEX_HOME" value="C:/Flex SDK 2" />
 	<property name="FLEX_APP_ROOT" value="${basedir}/src/main/resources/flexclient" />
