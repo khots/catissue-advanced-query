@@ -48,16 +48,16 @@ public class QueryDataExportTask implements Runnable {
 			List<List<String>> subExportList = new ArrayList<List<String>>();
 			try 
 			{
-				dataList = Utility.getPaginationDataList(dto.isSimpleSearch(), dto.getColumnList(), null,
-						recordsPerPage, pageNumber, dto.getQuerySessionData(), dto.isDefinedView());
+//				dataList = Utility.getPaginationDataList(dto.isSimpleSearch(), dto.getColumnList(), null,
+//						recordsPerPage, pageNumber, dto.getQuerySessionData(), dto.isDefinedView());
 				dataSize = dataList.size();					
-				dataList = Utility.getFormattedOutput(dataList, dto.getColumnList().size());
+				dataList = Utility.getFormattedOutput(dataList);
 				subExportList = addDataToExportList(subExportList, dto.getColumnList(),  
 						dataList, pageNumber);
 				exportAndSend(subExportList, !(dataSize == recordsPerPage), true);
 				pageNumber ++;	
-			} catch (DAOException e) {
-				LOGGER.error("Error while exporting all data"+ e.getMessage());
+			//} //catch (DAOException e) {
+				//LOGGER.error("Error while exporting all data"+ e.getMessage());
 			} catch (IOException e) {
 				LOGGER.error("Error while exporting all data"+ e.getMessage());
 			}

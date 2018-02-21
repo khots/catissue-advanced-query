@@ -382,6 +382,10 @@ public class QueryOutputSpreadsheetBizLogic
 		QuerySessionData querySessionData = getQuerySessionData(queryDetailsObj, recordsPerPage,
 				startIndex, spreadSheetDataMap, selectSql, queryResultObjectDataBeanMap,
 				hasConditionOnIdentifiedField,null);
+		List dataList = (List)spreadSheetDataMap.get(AQConstants.SPREADSHEET_DATA_LIST);
+		if(dataList == null || dataList.isEmpty()){
+			throw new QueryModuleException("Query Returns Zero Records", QueryModuleError.NO_RESULT_PRESENT);
+		}
 		spreadSheetDataMap.put(AQConstants.QUERY_SESSION_DATA, querySessionData);
 		spreadSheetDataMap
 				.put(AQConstants.QUERY_REASUL_OBJECT_DATA_MAP, queryResultObjectDataBeanMap);
@@ -995,15 +999,13 @@ public class QueryOutputSpreadsheetBizLogic
 		}*/
 		querySessionData.setSecureExecute(queryDetailsObj.getSessionData().isSecurityRequired());
 		querySessionData.setHasConditionOnIdentifiedField(hasConditionOnIdentifiedField);
+ 
 		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
  
 		PagenatedResultData pagenatedResultData = qBizLogic.execute(queryDetailsObj
 				.getSessionData(), querySessionData, startIndex, queryDetailsObj.getColumnSize());
+		
 		List<List<String>> dataList = pagenatedResultData.getResult();
-		if(dataList == null || dataList.isEmpty()){
-			throw new QueryModuleException("Query Returns Zero Records",
-					QueryModuleError.NO_RESULT_PRESENT);
-		}
 		List<List<String>> listForFileType = dataList;
 		querySessionData.setTotalNumberOfRecords(pagenatedResultData.getTotalRecords());
 		// if denormalization is on then execute below block else do not execute this block.
@@ -1027,8 +1029,7 @@ public class QueryOutputSpreadsheetBizLogic
 
 		for (Long id : queryResultObjectDataBeanMap.keySet())
 		{
-			QueryResultObjectDataBean queryResultObjectDataBean = queryResultObjectDataBeanMap
-					.get(id);
+			QueryResultObjectDataBean queryResultObjectDataBean = queryResultObjectDataBeanMap.get(id);
 			if (queryResultObjectDataBean.isClobeType())
 			{
 				List<String> columnList = (List<String>) spreadSheetDataMap

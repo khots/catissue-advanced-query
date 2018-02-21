@@ -1,4 +1,4 @@
-
+	
 package edu.wustl.query.util.global;
 
 import java.io.File;
@@ -59,14 +59,12 @@ import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.query.beans.QueryResultObjectDataBean;
 import edu.wustl.query.bizlogic.CommonQueryBizLogic;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
-import edu.wustl.query.dto.QueryExportDTO;
 import edu.wustl.query.executor.AbstractQueryExecutor;
 import edu.wustl.query.executor.MysqlQueryExecutor;
 import edu.wustl.query.executor.OracleQueryExecutor;
 import edu.wustl.query.htmlprovider.HtmlUtility;
 import edu.wustl.query.htmlprovider.ParseXMLFile;
 import edu.wustl.query.security.QueryCsmCacheManager;
-import edu.wustl.query.util.querysuite.QueryDetails;
 import edu.wustl.query.util.querysuite.QueryModuleUtil;
 
 
@@ -92,6 +90,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 
 		return object;
 	}
+ 
 	/**
 	 * Executes SQL through JDBC and returns the list of records.
 	 * @param sql SQL to be fired
@@ -237,18 +236,16 @@ public class Utility //extends edu.wustl.common.util.Utility
 	/**
 	 * Replaces the escape characters with the original special characters (i.e. single/double quotes)
 	 * @param dataList dataList
-	 * @param columnSize 
 	 * @return newList
 	 */
-	public static List<List<String>> getFormattedOutput(List<List<String>> dataList, int columnSize)
+	public static List<List<String>> getFormattedOutput(List<List<String>> dataList)
 	{
 		List<List<String>> newList = new ArrayList<List<String>>();
-		List<String> rowList;	
+		List<String> rowList;
 		for(int i=0;i<dataList.size();i++)
 		{
 			rowList = new ArrayList<String>();
 			List<String> row = dataList.get(i);
-		
 			for(int j=0;j<row.size();j++)
 			{
 				populateInternalRow(rowList, row, j);
@@ -362,16 +359,18 @@ public class Utility //extends edu.wustl.common.util.Utility
 	 */
 	public static List getPaginationDataList(HttpServletRequest request,
 			SessionDataBean sessionData, int recordsPerPage, int pageNum,
-			QuerySessionData querySessionData, boolean isDefineView, int columnSize) throws DAOException
+			QuerySessionData querySessionData, boolean isDefineView) throws DAOException
 	{
 		List paginationDataList;
 		querySessionData.setRecordsPerPage(recordsPerPage);
 		int startIndex = recordsPerPage * (pageNum - 1);
 		recordsPerPage = startIndex+ recordsPerPage;
 		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
-		
+
+		List<String> columnsList = (List<String>) request.getSession()
+								.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
 		PagenatedResultData pagenatedResult = qBizLogic.execute(sessionData, querySessionData,
-				startIndex, columnSize);
+				startIndex, columnsList.size());
 		paginationDataList = pagenatedResult.getResult();
 		String isSimpleSearch = (String) request.getSession().getAttribute(
 				AQConstants.IS_SIMPLE_SEARCH);
@@ -388,7 +387,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 		
 		return paginationDataList;
 	}
-	
+
 	/**
 	 * @param request request
 	 * @param paginationDataList data list
@@ -423,62 +422,6 @@ public class Utility //extends edu.wustl.common.util.Utility
 			}
 		}
 	}
-	
-	
-	public static List getPaginationDataList(String isSimpleSearch, List<String> columnsList, SessionDataBean sessionData, 
-			int recordsPerPage, int pageNum, QuerySessionData querySessionData, boolean isDefineView) 
-					throws DAOException
-	{
-		List paginationDataList;
-		querySessionData.setRecordsPerPage(recordsPerPage);
-		int startIndex = recordsPerPage * (pageNum - 1);
-		recordsPerPage = startIndex+ recordsPerPage;
-		CommonQueryBizLogic qBizLogic = new CommonQueryBizLogic();
-
-		PagenatedResultData pagenatedResult = qBizLogic.execute(sessionData, querySessionData,
-				startIndex, columnsList.size());
-		paginationDataList = pagenatedResult.getResult();
-		
-		if (isSimpleSearch == null || (!isSimpleSearch.equalsIgnoreCase(AQConstants.TRUE)))
-		{
-			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap = querySessionData
-					.getQueryResultObjectDataMap();
-			if (queryResultObjectDataBeanMap != null)
-			{
-				populateSessionData(columnsList, paginationDataList,
-						queryResultObjectDataBeanMap, isDefineView);
-			}
-		}
-		
-		return paginationDataList;
-	}
-		
-	/**
-	 * @param request request
-	 * @param paginationDataList data list
-	 * @param queryResultObjectDataBeanMap map
-	 */
-	private static void populateSessionData(List<String> columnsList, List paginationDataList,
-			Map<Long, QueryResultObjectDataBean> queryResultObjectDataBeanMap, boolean isDefineView)
-	{
-		for (Iterator<Long> beanMapIterator = queryResultObjectDataBeanMap.keySet()
-				.iterator(); beanMapIterator.hasNext();)
-		{
-			Long identifier = beanMapIterator.next();
-			QueryResultObjectDataBean bean =
-				queryResultObjectDataBeanMap.get(identifier);
-			if (bean.isClobeType())
-			{
-				QueryOutputSpreadsheetBizLogic queryBizLogic = new QueryOutputSpreadsheetBizLogic();
-				Map<Integer, Integer> fileTypMnEntMap =
-					queryBizLogic.updateSpreadSheetColumnList(columnsList,
-								queryResultObjectDataBeanMap, isDefineView);
-				Map exportMetataDataMap = QueryOutputSpreadsheetBizLogic.
-				updateDataList(paginationDataList, fileTypMnEntMap);
-				break;
-			}
-		}
-	}
 
 	public static String getGridDataJson(List dataList, List columnList, HttpServletRequest request)
 	{
@@ -492,10 +435,9 @@ public class Utility //extends edu.wustl.common.util.Utility
 			columnLabels.add(0, "");
 			
 			Map gridData = new HashMap();
-			gridData.put("total_count", totalResult);
+			gridData.put("total_count", 0);
 			gridData.put("pos", pos);
-			
-			gridData.put("rows", getGridData(dataList, pos, columnList.size()));			
+			gridData.put("rows", getGridData(dataList, pos));			
 			
 			JSONObject json = new JSONObject();
 			json.put("columns", columnLabels);
@@ -624,13 +566,14 @@ public class Utility //extends edu.wustl.common.util.Utility
 	/**
 	 *
 	 * @param dataList DataList
-	 * @param columnSize 
 	 * @return myData myData
 	 */
-	private static JSONArray getGridData(List dataList, Integer pos, int columnSize)
+	private static JSONArray getGridData(List dataList, Integer pos)
 	{		
 		JSONArray rows = new JSONArray();
-
+		if(dataList == null){
+			return rows;
+		}
 		for (int i = 0; i < dataList.size(); i++){ 
 			List row = (List)dataList.get(i);
 			
@@ -648,7 +591,8 @@ public class Utility //extends edu.wustl.common.util.Utility
 			
 		return rows;
 	}
-	 
+	
+	
 	@SuppressWarnings("unchecked")
 	private static List getColumnTypes(HttpSession session, List columnList) {
 		List<OutputTreeDataNode> rootOutputTreeNodeList = (List<OutputTreeDataNode>) session
@@ -904,7 +848,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 	            for (ICondition condition : conditions)
 	            {
 	                Boolean isCondnOnIdAttr = condition.getAttribute().getIsIdentified();
-
+	                
 	                if (Boolean.TRUE.equals(isCondnOnIdAttr))
 	                {
 	                	isCondnOnIdField = true;
@@ -1138,7 +1082,7 @@ public class Utility //extends edu.wustl.common.util.Utility
 		return columnsVsAlias;
     }
     
-    public static String generateHiddenIds(Set<String>tableAliasNames,String columnsInSql)
+    public static String generateHiddenIds(Set<String>tableAliasNames, String columnsInSql)
     {
     	StringBuffer hiddenIdColumns = new StringBuffer();
     	if(tableAliasNames != null || ! tableAliasNames.isEmpty()){
@@ -1152,5 +1096,16 @@ public class Utility //extends edu.wustl.common.util.Utility
     		}
     	}
     	return hiddenIdColumns.toString();
+    }
+    
+    public static String getTableAliasName(EntityInterface entity){
+    	String tableName = entity.getTableProperties().getName();
+		String entityAlias = edu.wustl.common.util.Utility.removeSpecialCharactersFromString(tableName);
+        if (entityAlias.length() > 26)
+        {
+        	entityAlias = entityAlias.substring(0, 26);
+        }
+        
+        return entityAlias;
     }
 }

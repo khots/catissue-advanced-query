@@ -1,5 +1,6 @@
 package edu.wustl.query.action;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,8 @@ import org.json.JSONObject;
 
 import edu.common.dynamicextensions.domain.AttributeTypeInformation;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.wustl.common.action.SecureAction;
 import edu.wustl.common.query.queryobject.impl.OutputTreeDataNode;
@@ -26,6 +29,7 @@ import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.global.QuerySessionData;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.query.bizlogic.QueryOutputSpreadsheetBizLogic;
+import edu.wustl.query.bizlogic.SpreadsheetDenormalizationBizLogic;
 import edu.wustl.query.util.global.AQConstants;
 import edu.wustl.query.util.global.Utility;
 import edu.wustl.query.util.querysuite.QueryDetails;
@@ -43,7 +47,7 @@ public class QueryGridFilterAction extends SecureAction
 		HttpSession session = request.getSession();	
 		Integer pageNum = Integer.parseInt ((String)request.getParameter(AQConstants.PAGE_NUMBER));
 		Integer fetchRecordSize = Integer.parseInt((String)session.getAttribute(AQConstants.FETCH_RECORD_SIZE));
-			
+		
 		request.setAttribute(AQConstants.PAGE_NUMBER, pageNum.toString());
 		//session.setAttribute(AQConstants.RESULTS_PER_PAGE, recordsPerPage.toString());
 		SelectedColumnsMetadata selectedColMetadata =(SelectedColumnsMetadata)session
@@ -53,17 +57,12 @@ public class QueryGridFilterAction extends SecureAction
 		QueryDetails queryDetailsObj = new QueryDetails(session);
 		String oldquery = querySessionData.getSql();
 		querySessionData.setSql(getQuery(session, request, oldquery,queryDetailsObj));
-		List<String> columnsList = (List<String>) request.getSession()
-				.getAttribute(AQConstants.SPREADSHEET_COLUMN_LIST);
-		int actualcolumnSize = columnsList.size();
-		if(queryDetailsObj.getOutputTermsColumns().size() > 0 ){
-			actualcolumnSize += queryDetailsObj.getOutputTermsColumns().size();
-		}
+				
 		boolean isContPresent = new QueryOutputSpreadsheetBizLogic().isContainmentPresent(queryDetailsObj.getQuery());;		
 		List dataList = new ArrayList();
 		try{
 			dataList = Utility.getPaginationDataList(request, getSessionData(request), 
-					fetchRecordSize, pageNum, querySessionData, selectedColMetadata.isDefinedView(), actualcolumnSize);
+					fetchRecordSize, pageNum, querySessionData, selectedColMetadata.isDefinedView());
 			
 			/*if(isContPresent && queryDetailsObj.getQuery().getConstraints().size() != 1 
 					&& !queryDetailsObj.getQuery().getIsNormalizedResultQuery())

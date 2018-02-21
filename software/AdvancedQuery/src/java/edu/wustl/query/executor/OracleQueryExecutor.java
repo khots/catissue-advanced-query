@@ -44,18 +44,28 @@ public class OracleQueryExecutor extends AbstractQueryExecutor
 	 */
 	protected PagenatedResultData createStatemtentAndExecuteQuery(JDBCDAO jdbcDAO) throws SQLException, SMException, DAOException
 	{
-		String sqlToBeExecuted = query;
+		StringBuilder sqlToBeExecuted = new StringBuilder(query);
+		String cpSql = null;//checkCPBasedAuthentication(jdbcDAO);
+		if(cpSql != null && cpSql.isEmpty()){
+			return new PagenatedResultData(new ArrayList(), totalFetchedRecords);
+		} 
 		// modify the SQL by adding rownum condition if required.
 		if (getSublistOfResult)
 		{
-			sqlToBeExecuted = putPageNumInSQL(query, startIndex, noOfRecords);
+			sqlToBeExecuted = new StringBuilder();
+			sqlToBeExecuted.append(putPageNumInSQL(query, startIndex, noOfRecords));
+		}
+		
+		if (cpSql != null){
+			String[] sql = sqlToBeExecuted.toString().split("where");
+			sqlToBeExecuted = new StringBuilder(sql[0]).append("where").append(cpSql).append(sql[1]);
 		}
 
 		// execute the modified query & get Results
 
-		resultSet = jdbcDAO.getQueryResultSet(sqlToBeExecuted);
+		resultSet = jdbcDAO.getQueryResultSet(sqlToBeExecuted.toString());
 		List list = getListFromResultSet(jdbcDAO);
-		return new PagenatedResultData(list, 0);
+		return new PagenatedResultData(list, totalFetchedRecords);
 	}
 	/**
 	 * To modify the SQL, to get the required no. of records with the given offset from the query.
@@ -125,6 +135,20 @@ public class OracleQueryExecutor extends AbstractQueryExecutor
 
 
 	}
+  @Override
+  protected PagenatedResultData createStatemtentAndExecuteAdvanceQuery(JDBCDAO paramJDBCDAO)
+      throws SQLException, SMException, DAOException
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  @Override
+  protected PagenatedResultData createStatemtentAndExecuteSimpleQuery(JDBCDAO paramJDBCDAO)
+      throws SQLException, SMException, DAOException
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
 
 }

@@ -341,8 +341,7 @@ public class DefineGridViewBizLogic
 		while (iterator.hasNext())
 		{
 			element = iterator.next();
-			queryResulObjectDataBean = queryResultObjecctDataMap.get(element.getTreeDataNode()
-					.getId());
+			queryResulObjectDataBean = queryResultObjecctDataMap.get(element.getTreeDataNode().getId());
 			if (queryResulObjectDataBean == null)
 			{
 				queryResulObjectDataBean = QueryCSMUtil.getQueryResulObjectDataBean(element
@@ -403,7 +402,6 @@ public class DefineGridViewBizLogic
 		
 		String hiddenIdColumns = edu.wustl.query.util.global.Utility
 				.generateHiddenIds(tableAliasNames, selectedColumnNames.toString());
-		sql = hiddenIdColumns + sql;
 		
 		if (!outputTermsColumns.isEmpty())
 		{
@@ -425,12 +423,12 @@ public class DefineGridViewBizLogic
 			queryResulObjectDataBean = queryResultObjecctDataMap.get(mapItr.next());
 //			if (queryResulObjectDataBean.getMainEntityIdentifierColumnId() == -1)
 			{
-				Map<EntityInterface, Integer> entityIdIndexMap =
-					new HashMap<EntityInterface, Integer>();
+				Map<EntityInterface, Integer> entityIdIndexMap = new HashMap<EntityInterface, Integer>();
 				sql = QueryCSMUtil.updateEntityIdIndexMap(queryResulObjectDataBean, columnIndex,
 						sql, defineViewNodeList, entityIdIndexMap, queryDetailsObj,specimenMap);
+				
 				selectedColumnNames.replace(AQConstants.ARGUMENT_ZERO, selectedColumnNames
-						.length(), sql);
+						.length(), hiddenIdColumns + sql);
 				/*if (queryResulObjectDataBean.isMainEntity())
 				{
 					EntityInterface entity = queryResulObjectDataBean.getEntity();

@@ -1,7 +1,6 @@
 
 package edu.wustl.query.action;
 
-import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,15 +24,11 @@ import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.IParameterizedQuery;
 import edu.wustl.common.util.global.ApplicationProperties;
-import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.query.actionForm.SaveQueryForm;
 import edu.wustl.query.beans.DashboardBean;
 import edu.wustl.query.bizlogic.DashboardBizLogic;
-import edu.wustl.query.dto.QueryExportDTO;
 import edu.wustl.query.flex.dag.DAGConstant;
-import edu.wustl.query.querysuite.QueryDataExportTask;
 import edu.wustl.query.util.global.AQConstants;
-import edu.wustl.query.util.global.Utility;
 
 /**
  * The Class ShowQueryDashboardAction.
@@ -57,11 +52,6 @@ public class ShowQueryDashboardAction extends SecureAction
 	protected ActionForward executeSecureAction(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		HttpSession session = request.getSession();
-		
-		SessionDataBean sessionDataBean = (SessionDataBean)session.getAttribute(
-				edu.wustl.common.util.global.Constants.SESSION_DATA);
-		
 		cleanUpSession(request);
 		saveToken(request);
 		ActionForward actionForward;
@@ -85,25 +75,6 @@ public class ShowQueryDashboardAction extends SecureAction
 			String tagId = request.getParameter("tagId");
 			if(tagId != null){
 				request.setAttribute("tagId", tagId);
-			}
-			
-			
-			//
-			// file name is not empty when user clicks on link to download exported data
-			//
-			String fileName = request.getParameter("fileName");
-			if(fileName != null && !fileName.isEmpty()){	
-				QueryExportDTO queryExportDTO = new QueryExportDTO(); 
-				queryExportDTO.setCsmUserId(sessionDataBean.getCsmUserId());
-				queryExportDTO.setFileName(fileName);
-				QueryDataExportTask dataExportTask = new QueryDataExportTask(queryExportDTO);
-				String actualFile = dataExportTask.getActualFilePath();
-
-				if(new File(actualFile).isFile()){
-					request.setAttribute("fileName", fileName);
-				} else {
-					request.setAttribute("fileName", "fileNotPresent");
-				}
 			}
 		}
 		else

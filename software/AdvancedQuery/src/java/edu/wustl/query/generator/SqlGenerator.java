@@ -36,9 +36,13 @@ import edu.wustl.common.query.queryobject.impl.metadata.QueryOutputTreeAttribute
 import edu.wustl.common.querysuite.exceptions.MultipleRootsException;
 import edu.wustl.common.querysuite.exceptions.SqlException;
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
+import edu.wustl.common.querysuite.queryobject.ArithmeticOperator;
+import edu.wustl.common.querysuite.queryobject.IArithmeticOperand;
 import edu.wustl.common.querysuite.queryobject.ICondition;
+import edu.wustl.common.querysuite.queryobject.IConnector;
 import edu.wustl.common.querysuite.queryobject.IConstraints;
 import edu.wustl.common.querysuite.queryobject.ICustomFormula;
+import edu.wustl.common.querysuite.queryobject.IDateLiteral;
 import edu.wustl.common.querysuite.queryobject.IExpression;
 import edu.wustl.common.querysuite.queryobject.IExpressionAttribute;
 import edu.wustl.common.querysuite.queryobject.IExpressionOperand;
@@ -51,6 +55,8 @@ import edu.wustl.common.querysuite.queryobject.LogicalOperator;
 import edu.wustl.common.querysuite.queryobject.RelationalOperator;
 import edu.wustl.common.querysuite.queryobject.TimeInterval;
 import edu.wustl.common.querysuite.queryobject.impl.Connector;
+import edu.wustl.common.querysuite.queryobject.impl.DateLiteral;
+import edu.wustl.common.querysuite.queryobject.impl.DateOffsetLiteral;
 import edu.wustl.common.querysuite.queryobject.impl.Expression;
 import edu.wustl.common.querysuite.queryobject.impl.JoinGraph;
 import edu.wustl.common.querysuite.utils.CustomFormulaProcessor;
@@ -60,7 +66,6 @@ import edu.wustl.common.querysuite.utils.TermProcessor;
 import edu.wustl.common.querysuite.utils.TermProcessor.IAttributeAliasProvider;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.CommonServiceLocator;
-import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
@@ -250,7 +255,7 @@ public class SqlGenerator implements ISqlGenerator
 	 *
 	 * @param query
 	 *            query
-	 * @return clone of the query
+	 * @return clone of the q	uery
 	 */
 	private IQuery cloneQuery(IQuery query)
 	{
@@ -406,7 +411,7 @@ public class SqlGenerator implements ISqlGenerator
 		int currentNestingCounter = 0;
 		// holds current nesting number count i.e. no of opening Braces that
 		// needs to be closed.
-		int noOfRules = expression.numberOfOperands();
+		int noOfRules = expression.numberOfOperands(); 
 		for (int i = 0; i < noOfRules; i++)
 		{
 			IExpressionOperand operand = expression.getOperand(i);
@@ -478,7 +483,7 @@ public class SqlGenerator implements ISqlGenerator
 		String tempSQL = operandSQL;
 		if (!"".equals(operandSQL) && noOfRules != 1)
 		{
-			tempSQL = "(" + operandSQL + ")";
+			tempSQL = " (" + operandSQL + ") ";
 			/*
 			 * putting RuleSQL in Braces so that it will not get mixed with
 			 * other Rules.
@@ -514,9 +519,36 @@ public class SqlGenerator implements ISqlGenerator
 		}
 		else
 		{
-			operandSQL = getCustomFormulaString((ICustomFormula) operand);
+			ICustomFormula formula = (ICustomFormula) operand;
+			if(isYearInterval(formula)){
+			   operandSQL = getCFForYear(formula); //custom formula for time interval: Year
+			}
+			else{
+			   operandSQL = getCustomFormulaString(formula);
+			}
 		}
 		return operandSQL;
+	}
+
+	private String getCFForYear(ICustomFormula formula) {
+		String lhsString = modifyForTimeIntervalYear(formula.getLhs());
+		ITerm term = formula.getAllRhs().get(0);
+		DateOffsetLiteral operand = (DateOffsetLiteral)term.getOperand(0);
+		
+		StringBuilder sql = new StringBuilder("");
+		sql.append(lhsString).append(" ");  
+		sql.append(RelationalOperator.getSQL(formula.getOperator())).append(" ");
+		sql.append(operand.getOffset());	
+		return sql.toString();
+	}
+
+	private boolean isYearInterval(ICustomFormula formula) {
+		ITerm term = formula.getAllRhs().get(0);
+		if(term.getOperand(0) instanceof DateOffsetLiteral){
+			DateOffsetLiteral operand = (DateOffsetLiteral)term.getOperand(0);
+			return (operand.getTimeInterval() == TimeInterval.Year);		
+		}
+		return false;
 	}
 
 	/**
@@ -564,7 +596,7 @@ public class SqlGenerator implements ISqlGenerator
 		int currentNestingCounter = nestingCounter;
 		if (currentNestingCounter < nestingNumber)
 		{
-			buffer.append(getParenthesis(nestingNumber - currentNestingCounter, "("));
+			buffer.append(getParenthesis(nestingNumber - currentNestingCounter, " ("));
 			currentNestingCounter = nestingNumber;
 			buffer.append(operandSQL);
 		}
@@ -1125,13 +1157,13 @@ public class SqlGenerator implements ISqlGenerator
 		}
 		else if (dataType instanceof IntegerTypeInformationInterface)
 		{
-			if (!new Validator().isNumeric(tempValue))
+			if (!isNumeric(tempValue))
 			{
 				throw new SqlException("Non numeric value found in value part!!!");
 			}
 		}
 		else if (dataType instanceof DoubleTypeInformationInterface
-				&& !new Validator().isDouble(tempValue))
+				&& !isDouble(tempValue))
 		{
 			throw new SqlException("Non numeric value found in value part!!!");
 		}
@@ -1143,6 +1175,33 @@ public class SqlGenerator implements ISqlGenerator
 		return tempValue;
 	}
 
+	private boolean isNumeric(String numString)
+	{
+		boolean isNumeric = true;
+		try
+		{
+			Long.parseLong(numString);
+		}
+		catch (NumberFormatException exp)
+		{ 
+			isNumeric = false;
+		}
+		return isNumeric;
+	}
+	
+	private boolean isDouble(String dblString)
+	{
+		boolean isDouble = true;
+		try
+		{
+			Double.parseDouble(dblString);
+		}
+		catch (NumberFormatException exp)
+		{
+			isDouble = false;
+		}
+		return isDouble;
+	}
 	/**
 	 * To Modify value for Boolean data type. For Boolean dataType it will
 	 * change value to 1 if its TRUE, else 0.
@@ -1569,7 +1628,7 @@ public class SqlGenerator implements ISqlGenerator
 	{
 		return getTermProcessor().convertTerm(term).getString();
 	}
-
+	
 	/**
 	 * @param terms
 	 *            List of output terms.
@@ -1581,15 +1640,51 @@ public class SqlGenerator implements ISqlGenerator
 		StringBuffer selectClause = new StringBuffer();
 		for (IOutputTerm term : terms)
 		{
-			String termString = "(" + getTermString(term.getTerm()) + ")";
-			termString = modifyForTimeInterval(termString, term.getTimeInterval());
+			String termString = null;
+			if(term.getTimeInterval() == TimeInterval.Year){
+				termString = modifyForTimeIntervalYear(term.getTerm());
+			} else {
+				termString = " (" + getTermString(term.getTerm()) + ")";
+				termString = modifyForTimeInterval(termString, term.getTimeInterval());
+			}
 			String columnName = COLUMN_NAME + selectIndex++;
 			selectClause.append(termString).append(' ').append(columnName).append(SELECT_COMMA);
 			outputTermsColumns.put(columnName, term);
 		}
 		return removeLastComma(selectClause.toString());
 	}
-
+	
+	private String modifyForTimeIntervalYear(ITerm term)
+	{
+		IConnector<ArithmeticOperator> operator = term.getConnector(0, 1);
+		String operatorStr = "";
+		if(operator.getOperator().name().equalsIgnoreCase("MINUS")){
+			operatorStr = " - ";
+		} else {
+			operatorStr = " + ";
+		}
+		StringBuilder termString = new StringBuilder(" (");
+			
+		for(int i = 0; i < term.numberOfOperands(); i++) {
+			IArithmeticOperand opr = term.getOperand(i);
+			if(opr instanceof IDateLiteral){
+				Calendar date = Calendar.getInstance();
+				date.setTime( ((DateLiteral)opr).getDate());
+				int year = date.get(Calendar.YEAR); 				
+				termString.append(year);		
+			} else if (opr instanceof IExpressionAttribute){
+				IExpressionAttribute exprAttr = (IExpressionAttribute) opr;
+				String alias = fromBuilder.aliasOf(exprAttr.getAttribute(), exprAttr.getExpression());
+				termString.append("Extract(Year from ").append(alias).append(") ");
+			}
+			
+			if(i == 0){
+				termString.append(operatorStr);				
+			}
+		}
+		
+		return termString.append(")").toString();	
+	}
 	/**
 	 * @param tempString
 	 *            temporary term String

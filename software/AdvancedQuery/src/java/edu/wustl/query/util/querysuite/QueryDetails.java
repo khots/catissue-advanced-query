@@ -35,9 +35,10 @@ public class QueryDetails
 	private IQuery query;
 	private long auditEventId;
 	private LinkedList<ColumnValueBean> columnValueBean;
-	private String saveGenratedQuery;	
+	private String saveGenratedQuery;
 	private Map<String, String> columnNameVsAliasMap;
-	private int columnSize = 0; 
+	private int columnSize = 0;
+
 	//private HttpSession session;
 
 	public QueryDetails(HttpSession session)

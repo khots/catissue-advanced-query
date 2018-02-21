@@ -946,13 +946,12 @@ public class QueryCSMUtil
 	public static String updateEntityIdIndexMap(
 			QueryResultObjectDataBean queryResultObjectDataBean, int colIndex, String tempSql,
 			List<EntityInterface> defineViewNodeList,
-			Map<EntityInterface, Integer> entityIdIndexMap, 
-			QueryDetails queryDetailsObj, Map<String, String> specimenMap)
+			Map<EntityInterface, Integer> entityIdIndexMap, QueryDetails queryDetailsObj, Map<String, String> specimenMap)
 	{
 		String selectSql = tempSql;
 		int columnIndex = colIndex;
-		Map<String, String> columnNameVsAliasMap = queryDetailsObj.getColumnNameVsAliasMap();
 		List<String> selectSqlColumnList = getListOfSelectedColumns(selectSql);
+		Map<String, String> columnNameVsAliasMap = queryDetailsObj.getColumnNameVsAliasMap();
 		if (defineViewNodeList == null)
 		{
 			OutputTreeDataNode outputTreeDataNode = getMatchingEntityNode(queryResultObjectDataBean
@@ -980,7 +979,7 @@ public class QueryCSMUtil
 				}
 			}
 		}
-//		populateBean(queryResultObjectDataBean, entityIdIndexMap);
+		populateBean(queryResultObjectDataBean, entityIdIndexMap);
 		return selectSql;
 	}
 
@@ -1016,7 +1015,7 @@ public class QueryCSMUtil
 	 */
 	private static Map putIdColumnsInSql(int colIndex, String selectSql,
 			Map<EntityInterface, Integer> entityIdIndexMap, List<String> selectSqlColumnList,
-			OutputTreeDataNode outputTreeDataNode, Map<String, String> specimenMap,Map columnNameVsAliasMap)
+			OutputTreeDataNode outputTreeDataNode, Map<String, String> specimenMap, Map<String, String> columnNameVsAliasMap)
 	{
 		int columnIndex = colIndex;
 		StringBuffer sql = new StringBuffer(selectSql);
@@ -1040,7 +1039,7 @@ public class QueryCSMUtil
 					else
 					{
 						//appendColNameToSql(selectSql, sql, sqlColumnName);
-						entityIdIndexMap.put(attribute.getEntity(), columnIndex);
+						entityIdIndexMap.put(attribute.getEntity(), null);
 						columnIndex++;
 						if(outputTreeDataNode.getOutputEntity().getDynamicExtensionsEntity().getName().equals("edu.wustl.catissuecore.domain.Specimen"))
 						{

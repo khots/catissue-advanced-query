@@ -12,7 +12,6 @@
 	<!--define require dir and Properties -->
 	<property file="./src/conf/advanceQuery.properties" />
 	<property name="base.dir" value="." />
-	<property name="dist.dir" value="dist" />
 	<property name="software.dir" value=".." />
 	<property name="src.dir" value="${base.dir}/src/java" />
 	<property name="test.dir" value="${base.dir}/test/unit/java" />

@@ -223,7 +223,7 @@ public class QueryDAO {
 			List<ColumnValueBean> parameters = new ArrayList<ColumnValueBean>();
 			parameters.add(new ColumnValueBean("DELETED", DBTypes.VARCHAR));
 			parameters.add(new ColumnValueBean(queryId, DBTypes.LONG));	
-			jdbcDAO.executeUpdate(UPDATE_QUERY_STATUS, parameters); 
+			jdbcDAO.executeUpdate(parameters, UPDATE_QUERY_STATUS); 
 			jdbcDAO.commit();	 
 		} 
 		catch (DAOException e) 
@@ -246,7 +246,7 @@ public class QueryDAO {
 			jdbcDAO.openSession(null);
 			List<ColumnValueBean> parameters = new ArrayList<ColumnValueBean>();
 			parameters.add(new ColumnValueBean(queryId, DBTypes.LONG));
-			jdbcDAO.executeUpdate(DELETE_TAGITEMS, parameters); 
+			jdbcDAO.executeUpdate(parameters, DELETE_TAGITEMS); 
 			jdbcDAO.commit();	 
 		} 
 		catch (DAOException e) 
